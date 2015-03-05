@@ -514,9 +514,16 @@ void load_setting( QSettings& s, const QString& name, QComboBox* choice, const Q
     choice -> setCurrentIndex( index );
   else if ( !default_value.isEmpty() )
   {
-    int default_index = choice -> findText( default_value );
-    if ( default_index != -1 )
-      choice -> setCurrentIndex( default_index );
+    bool ok;
+    v.toInt( &ok, 10 );
+    if ( ok )
+      choice -> setCurrentText( v );
+    else
+    {
+      int default_index = choice -> findText( default_value );
+      if ( default_index != -1 )
+        choice -> setCurrentIndex( default_index );
+    }
   }
   else
   {

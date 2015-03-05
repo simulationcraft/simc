@@ -8,14 +8,11 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 
-
 ///////////////////////////////////////////////////////////////////////////////
 ////
 ////                        Constants
 ////
 ///////////////////////////////////////////////////////////////////////////////
-
-
 
 QString classSpecText[ 11 ][ 5 ] = {
     { "Death Knight", "Blood", "Frost", "Unholy", "N/A" },
@@ -36,7 +33,6 @@ QString classSpecText[ 11 ][ 5 ] = {
 ////                        Logic Stuff
 ////
 ///////////////////////////////////////////////////////////////////////////////
-
 
 // Local method to perform tokenize on QStrings
 QString automation::tokenize( QString qstr )
@@ -669,7 +665,6 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 ////
 ///////////////////////////////////////////////////////////////////////////////
 
-
 QComboBox* createChoice( int count, ... )
 {
   QComboBox* choice = new QComboBox();
@@ -679,6 +674,11 @@ QComboBox* createChoice( int count, ... )
     choice -> addItem( va_arg( vap, char* ) );
   va_end( vap );
   return choice;
+}
+
+QComboBox* addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* comboBox )
+{
+  return SC_ComboBoxIntegerValidator::ApplyValidatorToComboBox( new SC_ComboBoxIntegerValidator( lowerBound, upperBound, comboBox ), comboBox );
 }
 
 //QComboBox* createInputMode( int count, ... )
@@ -1216,14 +1216,13 @@ void SC_ImportTab::createAutomationTab()
   // Define a layout for the box
   QFormLayout* compLayout = new QFormLayout();
   compLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  
+
   // Create Combo Box and add it to the layout
   choice.comp_type = createChoice( 5 , "None", "Talents", "Glyphs", "Gear", "Rotation" );
   compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
 
   // Apply the layout to the compGroupBox
   compGroupBox -> setLayout( compLayout );
-  
 
   // Elements (0,1) - (0,2) are the helpbar
   textbox.helpbar = new SC_TextEdit;
@@ -1258,14 +1257,14 @@ void SC_ImportTab::createAutomationTab()
   choice.player_race = createChoice( 13, "Blood Elf", "Draenei", "Dwarf", "Gnome", "Goblin", "Human", "Night Elf", "Orc", "Pandaren", "Tauren", "Troll", "Undead", "Worgen");
   defaultsFormLayout -> addRow( tr( "Race" ), choice.player_race );
 
-  choice.player_level = createChoice( 2, "100", "90" );
+  choice.player_level = addValidatorToComboBox( 1, 100, createChoice( 4, "80", "85", "90", "100" ) );
   defaultsFormLayout -> addRow( tr( "Level" ), choice.player_level );
 
   // Create text boxes for default talents and glyphs, and add them to the FormLayout
   label.talents = new QLabel( tr("Default Talents" ) );
   textbox.talents = new QLineEdit;
   defaultsFormLayout -> addRow( label.talents, textbox.talents );
-  
+
   label.glyphs = new QLabel( tr("Default Glyphs" ) );
   textbox.glyphs = new QLineEdit;
   defaultsFormLayout -> addRow( label.glyphs, textbox.glyphs );
@@ -1273,16 +1272,15 @@ void SC_ImportTab::createAutomationTab()
   // set the GroupBox's layout now that we've defined it
   defaultsGroupBox -> setLayout( defaultsFormLayout );
 
-  
   // Elements (3,0) - (8,0) are the default gear and rotation labels and text boxes
-  
+
   // Create a label and an edit box for gear
   label.gear = new QLabel( tr( "Default Gear" ) );
   textbox.gear = new SC_TextEdit;
   // assign the label and edit box to cells
   gridLayout -> addWidget( label.gear,   3, 0, 0 );
   gridLayout -> addWidget( textbox.gear, 4, 0, 0 );
-  
+
   // and again for rotation Header
   label.rotationHeader = new QLabel( tr( "Default Rotation" ) );
   textbox.rotationHeader = new SC_TextEdit;
@@ -1317,12 +1315,12 @@ void SC_ImportTab::createAutomationTab()
   textbox.sidebar -> setText( " Stuff Goes Here" );
   gridLayout -> addWidget( label.sidebar,   1, 2, 0 );
   gridLayout -> addWidget( textbox.sidebar, 2, 2, 7, 1, 0 );
-  
+
   // this adjusts the relative width of each column
   gridLayout -> setColumnStretch( 0, 1 );
   gridLayout -> setColumnStretch( 1, 2 );
   gridLayout -> setColumnStretch( 2, 1 );
-  
+
   // set the tab's layout to mainLayout
   automationTabScrollArea -> setLayout( gridLayout );
 
@@ -1340,7 +1338,6 @@ void SC_ImportTab::createAutomationTab()
   // set up all the tooltips
   createTooltips();
 }
-
 
 // Encode all options and text fields into a string ( to be able to save it to the history )
 // Decode / Encode order needs to be equal!
@@ -1366,7 +1363,6 @@ void SC_ImportTab::encodeSettings()
   settings.setValue( "advRotation", advRotation );
   settings.setValue( "sidebox", textbox.sidebar -> document() -> toPlainText() );
   settings.setValue( "footer", textbox.footer -> document() -> toPlainText() );
-  
   QString encoded;
 
   settings.endGroup(); // end group "automation"
@@ -1387,9 +1383,16 @@ void SC_ImportTab::load_setting( QSettings& s, const QString& name, QComboBox* c
     choice -> setCurrentIndex( index );
   else if ( !default_value.isEmpty() )
   {
-    int default_index = choice -> findText( default_value );
-    if ( default_index != -1 )
-      choice -> setCurrentIndex( default_index );
+    bool ok;
+    v.toInt( &ok, 10 );
+    if ( ok )
+      choice -> setCurrentText( v );
+    else
+    {
+      int default_index = choice -> findText( default_value );
+      if ( default_index != -1 )
+        choice -> setCurrentIndex( default_index );
+    }
   }
   else
   {
