@@ -434,7 +434,7 @@ public:
   double  jotp_haste();
   void    trigger_grand_crusader();
   void    trigger_shining_protector( action_state_t* );
-  void    trigger_holy_shield();
+  void    trigger_holy_shield( action_state_t* s );
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
@@ -4687,15 +4687,22 @@ void paladin_t::trigger_shining_protector( action_state_t* s )
   }
 }
 
-void paladin_t::trigger_holy_shield()
+void paladin_t::trigger_holy_shield( action_state_t* s )
 {
   // escape if we don't have Holy Shield
   if ( ! talents.holy_shield -> ok() )
     return;
 
+  // sanity check - no friendly-fire
+  if ( ! s -> action -> player -> is_enemy() )
+    return;
+
   // Check for proc
   if ( rng().roll( talents.holy_shield -> proc_chance() ) )
+  {
+    active_holy_shield_proc -> target = s -> action -> player;
     active_holy_shield_proc -> schedule_execute();
+  }
 }
 
 // paladin_t::init_base =====================================================
@@ -6394,7 +6401,7 @@ void paladin_t::assess_damage( school_e school,
   // On a block event, trigger Holy Shield & Defender of the Light
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
-    trigger_holy_shield();
+    trigger_holy_shield( s );
 
     if ( sets.set( PALADIN_PROTECTION, T17, B4 ) -> ok() && rppm_defender_of_the_light.trigger() )
       buffs.defender_of_the_light -> trigger();
@@ -6459,7 +6466,7 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
         buffs.holy_shield_absorb -> consume( block_amount );
 
         // Trigger the damage event
-        trigger_holy_shield();
+        trigger_holy_shield( s );
       }
       else
       {        
