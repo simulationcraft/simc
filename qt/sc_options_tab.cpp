@@ -1151,23 +1151,29 @@ QString SC_OptionsTab::mergeOptions()
       QDateTime dateTime = QDateTime::currentDateTime();
       text += dateTime.toString( Qt::ISODate );
       text.replace( ":", "" );
-      text += ".html";
     }
     else
     {
       bool ok;
       text = QInputDialog::getText( this, tr( "HTML File Name" ),
-        tr( "What would you like to name this HTML file?" ), QLineEdit::Normal,
+        tr( "What would you like to name this HTML file?\n File name cannot include spaces, or illegal file name characters such as : / \ * ? | < >" ), QLineEdit::Normal,
         QDir::home().dirName(), &ok );
-      if ( ok && !text.isEmpty() )
-      {
-        text += ".html";
-      }
     }
   }
+  text.replace( " ", "" ); // No spaces.
+  text.replace( "/", "" ); // I don't think QT has a function that removes off limits character names.
+  text.replace( "\\", "" );
+  text.replace( "*", "" );
+  text.replace( "?", "" );
+  text.replace( "<", "" );
+  text.replace( ">", "" );
+  text.replace( "|", "" );
+  text.replace( ":", "" );\
+
   if ( text == "" )
     text += "results.html";
-
+  else
+    text += ".html";
   options += text;
   options += "\n";
 
