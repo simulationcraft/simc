@@ -10,7 +10,7 @@ set /p revision=<bla.txt
 :: Hacky hack because windows command prompt is annoying.
 del bla.txt
 
-set simcversion=610-03
+set simcversion=610-04
 set install=simc-%simcversion%-source
 cd>bla.txt
 set /p download=<bla.txt
@@ -32,7 +32,7 @@ rd %install% /s /q
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=WebKit-PGO /p:platform=x64 /nr:true
+"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=WebKit /p:platform=x64 /nr:true
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm

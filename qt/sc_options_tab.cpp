@@ -62,7 +62,7 @@ void appendCheckBox( const QString& label, const QString& option, const QString&
 }
 
 #if defined SC_WINDOWS
-#define WINDOWS_DEVICES "CON|AUX|PRN|COM1|COM2|LPT1|LPT2|NUL"
+#define WINDOWS_DEVICES "CON|AUX|PRN|COM1|COM2|COM3|LPT1|LPT2|LPT3|NUL"
 static QRegExp rc(QLatin1String(WINDOWS_DEVICES), Qt::CaseInsensitive);
 #endif
 #define SLASHES "/\\"
