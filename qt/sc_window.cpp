@@ -341,7 +341,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 void SC_MainWindow::createCmdLine()
 {
   cmdLine = new SC_MainWindowCommandLine( this );
-  cmdLine -> setCommandLineText( TAB_RESULTS, resultsFileText );
 
   connect( &simulationQueue, SIGNAL( firstItemWasAdded() ), this, SLOT( itemWasEnqueuedTryToSim() ) );
   connect( cmdLine, SIGNAL( pauseClicked() ), this, SLOT( pauseButtonClicked() ) );
@@ -1153,7 +1152,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     if ( mainTab -> currentTab() != TAB_SPELLQUERY )
       mainTab -> setCurrentTab( TAB_LOG );
 
-    // SPell Query
+    // Spell Query
     if ( mainTab -> currentTab() == TAB_SPELLQUERY )
     {
       QString result;
@@ -1499,7 +1498,7 @@ void SC_MainWindow::mainTabChanged( int index )
 
   // clear spell_query entries when changing tabs
   if ( cmdLine -> commandLineText().startsWith( "spell_query" ) )
-    cmdLine -> setCommandLineText( " " );
+    cmdLine -> setCommandLineText( "" );
 
   switch ( index )
   {
