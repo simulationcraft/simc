@@ -16,8 +16,8 @@ class SC_OptionsTab : public QTabWidget
 public:
   SC_OptionsTab( SC_MainWindow* parent );
 
-  void    decodeOptions();
-  void    encodeOptions();
+  void decodeOptions();
+  void encodeOptions();
 
   QString get_db_order() const;
   QString get_globalSettings();

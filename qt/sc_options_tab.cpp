@@ -1149,10 +1149,8 @@ QString SC_OptionsTab::mergeOptions()
     if ( choice.auto_save -> currentIndex() == 1 )
     {
       QDateTime dateTime = QDateTime::currentDateTime();
-      text = dateTime.toString();
-      text.replace( " ", "_" );
-      text.replace( ":", "_" );
-      text.toStdString();
+      text += dateTime.toString( Qt::ISODate );
+      text.replace( ":", "" );
       text += ".html";
     }
     else
@@ -1163,7 +1161,6 @@ QString SC_OptionsTab::mergeOptions()
         QDir::home().dirName(), &ok );
       if ( ok && !text.isEmpty() )
       {
-        text.toStdString();
         text += ".html";
       }
     }
