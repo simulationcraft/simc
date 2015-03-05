@@ -4209,8 +4209,8 @@ struct immolation_aura_t: public warlock_spell_t
     else
     {
       p() -> spells.immolation_aura = this;
-      p() -> buffs.immolation_aura -> trigger();
       warlock_spell_t::execute();
+      p() -> buffs.immolation_aura -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, composite_dot_duration( execute_state ) );
     }
   }
 
