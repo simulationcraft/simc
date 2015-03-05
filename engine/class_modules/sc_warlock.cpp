@@ -59,7 +59,6 @@ struct warlock_td_t: public actor_pair_t
 struct warlock_t: public player_t
 {
 public:
-
   player_t* havoc_target;
   player_t* latest_corruption_target;
 
@@ -175,13 +174,10 @@ public:
     const spell_data_t* emberstorm;
   } mastery_spells;
 
-
   //Procs and RNG
-
   real_ppm_t grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
   real_ppm_t grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
   real_ppm_t rppm_chaotic_infusion;
-
 
   // Perks
   struct
@@ -332,7 +328,6 @@ public:
   struct soul_swap_buffer_t
   {
     player_t* source;//where inhaled from
-
     //the 6.0 dot mechanics make it close to irrelevant how the dots were buffed when inhaling, as they are dynamically recalculated every tick.
     //thus we only store the whether the dot is up and its duration( and agony stacks).
 
@@ -4191,12 +4186,18 @@ struct immolation_aura_t: public warlock_spell_t
   immolation_aura_t( warlock_t* p ):
     warlock_spell_t( "immolation_aura", p, p -> find_spell( 104025 ) )
   {
-    may_miss = may_crit = callbacks = hasted_ticks = false;
-    tick_zero = false;
-    ignore_false_positive = true;
-
+    may_miss = may_crit = callbacks = tick_zero = false;
+    hasted_ticks = ignore_false_positive = true;
+    dot_duration = data().duration();
+    base_tick_time = dot_duration / 10.0;
     tick_action = new immolation_aura_tick_t( p, this );
     tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = costs_per_second[RESOURCE_DEMONIC_FURY];
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const
+  {
+    timespan_t tt = tick_time( s -> haste );
+    return tt * 10.0;
   }
 
   void execute()
