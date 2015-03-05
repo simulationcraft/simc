@@ -3173,7 +3173,7 @@ struct focus_fire_t: public hunter_spell_t
 
   virtual void execute()
   {
-    double stacks = p() -> active.pet -> buffs.frenzy -> stack();
+    int stacks = p() -> active.pet -> buffs.frenzy -> stack();
     double value = stacks * p() -> specs.focus_fire -> effectN( 1 ).percent();
     p() -> buffs.focus_fire -> trigger( stacks, value );
 

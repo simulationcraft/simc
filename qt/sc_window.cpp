@@ -1691,7 +1691,6 @@ void SimulateThread::run()
   }
 
   sim -> output_file_str = (mainWindow -> AppDataDir + QDir::separator() + SIMC_LOG_FILE).toStdString();
-  sim -> html_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_report.html").toStdString();
   sim -> xml_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml").toStdString();
   sim -> reforge_plot_output_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_plot_data.csv").toStdString();
   sim -> csv_output_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_report.csv").toStdString();
@@ -1726,6 +1725,7 @@ void SimulateThread::run()
     success = false;
     return;
   }
+
   success = sim -> execute();
   if ( success )
   {

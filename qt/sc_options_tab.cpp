@@ -7,6 +7,7 @@
 #include "simulationcraftqt.hpp"
 #include "SC_OptionsTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
+#include <qdatetime.h>
 
 namespace { // unnamed namespace
 
@@ -116,6 +117,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.target_race,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.threads,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.thread_priority,    SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.auto_save,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.version,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.world_lag,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( apikey,                    SIGNAL( textChanged( const QString& ) ), this, SLOT( _optionsChanged() ) );
@@ -196,6 +198,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
   globalsLayout_right -> addRow( tr( "Statistics Level" ),   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
+  globalsLayout_right -> addRow( tr( "Auto-Save HTML Reports" ), choice.auto_save = createChoice( 3, "No", "Use current date/time", "Ask for filename on each simulation" ) );
 
   createItemDataSourceSelector( globalsLayout_right );
 
@@ -606,6 +609,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "player_skill", choice.player_skill );
   load_setting( settings, "threads", choice.threads, QString::number( QThread::idealThreadCount() ) );
   load_setting( settings, "thread_priority", choice.thread_priority, "Lowest" );
+  load_setting( settings, "auto_save", choice.auto_save, "No" );
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
   load_setting( settings, "gui_localization", choice.gui_localization );
@@ -705,6 +709,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "player_skill", choice.player_skill -> currentText() );
   settings.setValue( "threads", choice.threads -> currentText() );
   settings.setValue( "thread_priority", choice.thread_priority -> currentText() );
+  settings.setValue( "auto_save", choice.auto_save -> currentText() );
   settings.setValue( "armory_region", choice.armory_region -> currentText() );
   settings.setValue( "gui_localization", choice.gui_localization -> currentText() );
   settings.setValue( "armory_spec", choice.armory_spec -> currentText() );
@@ -807,6 +812,8 @@ void SC_OptionsTab::createToolTips()
    
   choice.thread_priority -> setToolTip( tr( "This can allow for a more responsive computer while simulations are running.\n"
                                             "When set to 'Lowest', it will be possible to use your computer as normal while SimC runs in the background." ) );
+
+  choice.auto_save -> setToolTip( tr( "This will allow automatic saving of html reports to the simc folder." ) );
 
   choice.armory_region -> setToolTip( tr( "United States, Europe, Taiwan, China, Korea" ) );
 
@@ -1127,6 +1134,39 @@ QString SC_OptionsTab::mergeOptions()
     options += util::to_string( choice.print_style -> currentIndex() ).c_str();
     options += "\n";
   }
+
+  options += "html=";
+  QString text = "";
+  if ( choice.auto_save -> currentIndex() != 0 )
+  {
+    if ( choice.auto_save -> currentIndex() == 1 )
+    {
+      QDateTime dateTime = QDateTime::currentDateTime();
+      text = dateTime.toString();
+      text.replace( " ", "_" );
+      text.replace( ":", "_" );
+      text.toStdString();
+      text += ".html";
+    }
+    else
+    {
+      bool ok;
+      text = QInputDialog::getText( this, tr( "HTML File Name" ),
+        tr( "What would you like to name this HTML file?" ), QLineEdit::Normal,
+        QDir::home().dirName(), &ok );
+      if ( ok && !text.isEmpty() )
+      {
+        text.toStdString();
+        text += ".html";
+      }
+    }
+  }
+  if ( text == "" )
+    text += "results.html";
+
+  options += mainWindow -> AppDataDir + QDir::separator() + text;
+  options += "\n";
+
   options += "### End GUI options ###\n"
 
       "### Begin simulateText ###\n";
