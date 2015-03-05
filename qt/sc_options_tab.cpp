@@ -61,6 +61,31 @@ void appendCheckBox( const QString& label, const QString& option, const QString&
   layout -> addWidget( checkBox );
 }
 
+#if defined SC_WINDOWS
+#define WINDOWS_DEVICES "CON|AUX|PRN|COM1|COM2|LPT1|LPT2|NUL"
+static QRegExp rc(QLatin1String(WINDOWS_DEVICES), Qt::CaseInsensitive);
+#endif
+#define SLASHES "/\\"
+static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'"SLASHES;
+
+QString RemoveBadFileChar( QString& filename )
+{
+  filename.replace( " ", "" ); // No spaces, because our sim engine hates that.
+  for ( size_t i = 0; i < sizeof( notAllowedChars ); i++ )
+  {
+    filename.replace( notAllowedChars[i] , "" );
+  }
+  filename.replace( "..", "" );
+  filename.replace( ".html", "" );
+#if defined SC_WINDOWS
+  bool matchesWinDevice = rc.exactMatch( filename );
+  if ( matchesWinDevice )
+    filename = "";
+#endif
+  if ( filename.length() > 50 ) // The filename limit is much higher, but let's protect people from naming the file an absurdly long name and possibly hitting the 255 limit
+    filename.truncate( 50 );
+  return filename;
+}
 } // end unnamed namespace
 
 SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
@@ -1156,19 +1181,11 @@ QString SC_OptionsTab::mergeOptions()
     {
       bool ok;
       text = QInputDialog::getText( this, tr( "HTML File Name" ),
-        tr( "What would you like to name this HTML file?\n File name cannot include spaces, or illegal file name characters such as : / \ * ? | < >" ), QLineEdit::Normal,
+        tr( "What would you like to name this HTML file?" ), QLineEdit::Normal,
         QDir::home().dirName(), &ok );
     }
   }
-  text.replace( " ", "" ); // No spaces.
-  text.replace( "/", "" ); // I don't think QT has a function that removes off limits character names.
-  text.replace( "\\", "" );
-  text.replace( "*", "" );
-  text.replace( "?", "" );
-  text.replace( "<", "" );
-  text.replace( ">", "" );
-  text.replace( "|", "" );
-  text.replace( ":", "" );\
+  RemoveBadFileChar( text );
 
   if ( text == "" )
     text += "results.html";
