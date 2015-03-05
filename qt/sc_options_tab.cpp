@@ -1168,7 +1168,7 @@ QString SC_OptionsTab::mergeOptions()
   if ( text == "" )
     text += "results.html";
 
-  options += mainWindow -> AppDataDir + QDir::separator() + text;
+  options += text;
   options += "\n";
 
   options += "### End GUI options ###\n"
