@@ -1093,6 +1093,11 @@ void player_t::init_position()
     {
       sim -> errorf( "Player %s has an invalid position of %s.\n", name(), position_str.c_str() );
     }
+    else
+    {
+      initial.position = base.position;
+      change_position( base.position );
+    }
   }
   // if the position string is empty and we're a tank, assume they want to be in front
   else if ( primary_role() == ROLE_TANK )
