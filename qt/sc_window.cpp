@@ -16,7 +16,7 @@
 #endif
 #include <QStandardPaths>
 
-static int SC_GUI_HISTORY_VERSION = 640;
+static int SC_GUI_HISTORY_VERSION = 650;
 
 namespace { // UNNAMED NAMESPACE
 
@@ -116,7 +116,24 @@ void SC_MainWindow::loadHistory()
   QSettings settings;
   QString saveApiKey;
   saveApiKey = settings.value( "options/apikey" ).toString();
-
+  
+  QVariant simulateHistory = settings.value( "user_data/simulateHistory" );
+  if ( simulateHistory.isValid() )
+  {
+    QList<QVariant> a = simulateHistory.toList();
+    for ( int i = 0; i < a.size(); ++i )
+    {
+      const QVariant& entry = a.at( i );
+      if ( entry.isValid() )
+      {
+        QStringList sl = entry.toStringList();
+        if ( sl.size() == 2 )
+        {
+          simulateTab -> add_Text( sl.at( 1 ), sl.at( 0 ) );
+        }
+      }
+    }
+  }
   QVariant gui_version_number = settings.value( "gui/gui_version_number", 0 );
   if ( gui_version_number.toInt() < SC_GUI_HISTORY_VERSION )
   {
@@ -152,25 +169,6 @@ void SC_MainWindow::loadHistory()
   QString cache_file = TmpDir + "/simc_cache.dat";
   std::string cache_file_str = cache_file.toStdString();
   http::cache_load( cache_file_str.c_str() );
-
-
-  QVariant simulateHistory = settings.value( "user_data/simulateHistory" );
-  if ( simulateHistory.isValid() )
-  {
-    QList<QVariant> a = simulateHistory.toList();
-    for ( int i = 0; i < a.size(); ++i )
-    {
-      const QVariant& entry = a.at( i );
-      if ( entry.isValid() )
-      {
-        QStringList sl = entry.toStringList();
-        if ( sl.size() == 2 )
-        {
-          simulateTab -> add_Text( sl.at( 1 ), sl.at( 0 ) );
-        }
-      }
-    }
-  }
 
   QVariant history = settings.value( "user_data/historyList" );
   if ( history.isValid() )
