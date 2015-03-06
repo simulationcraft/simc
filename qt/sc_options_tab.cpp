@@ -177,7 +177,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(  "Target Error" ),    choice.target_error = createChoice( 8, "N/A", "Auto", "1%", "0.5%", "0.1%", "0.05%", "0.03%", "0.01%" ) );
   globalsLayout_left -> addRow( tr(    "Iterations" ),      choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 8, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),    choice.fight_length = addValidatorToComboBox( 1, 1000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
-  globalsLayout_left -> addRow( tr(   "Vary Length" ),  choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout_left -> addRow( tr(   "Vary Length %" ),  choice.fight_variance = addValidatorToComboBox( 0, 100, createChoice( 6, "0", "10", "20", "30", "40", "50" ) ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 6, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),    choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
@@ -635,7 +635,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "target_error", choice.target_error, "N/A" );
   load_setting( settings, "iterations", choice.iterations, "10000" );
   load_setting( settings, "fight_length", choice.fight_length, "450" );
-  load_setting( settings, "fight_variance", choice.fight_variance, "20%" );
+  load_setting( settings, "fight_variance", choice.fight_variance, "20" );
   load_setting( settings, "fight_style", choice.fight_style );
   load_setting( settings, "target_race", choice.target_race );
   load_setting( settings, "num_target", choice.num_target );
@@ -959,8 +959,9 @@ QString SC_OptionsTab::get_globalSettings()
   options += "max_time=" + choice.fight_length->currentText() + "\n";
 
   options += "vary_combat_length=";
-  const char *variance[] = { "0.0", "0.1", "0.2" };
-  options += variance[ choice.fight_variance->currentIndex() ];
+  double fight_variance_ = choice.fight_variance -> currentText().toDouble();
+  fight_variance_ /= 100;
+  options += QString::number( fight_variance_ );
   options += "\n";
 
   options += "fight_style=" + choice.fight_style->currentText() + "\n";
