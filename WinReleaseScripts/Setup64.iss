@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Simulationcraft(x64)"
-#define MyAppVersion "610-04"
-#define RealAppVersion "6.1.0.04"
+#define MyAppVersion "610-05"
+#define RealAppVersion "6.1.0.05"
 #define MyAppPublisher "Simulationcraft"
 #define MyAppURL "http://www.simulationcraft.org"
 #define MyAppExeName "SimulationCraft64.exe"
