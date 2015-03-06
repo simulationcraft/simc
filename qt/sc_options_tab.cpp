@@ -71,6 +71,8 @@ static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'"SLASHES;
 QString RemoveBadFileChar( QString& filename )
 {
   filename.replace( " ", "" ); // No spaces, because our sim engine hates that.
+  if ( filename == "" )
+    return filename;
   for ( size_t i = 0; i < sizeof( notAllowedChars ); i++ )
   {
     filename.replace( notAllowedChars[i] , "" );
@@ -1167,10 +1169,10 @@ QString SC_OptionsTab::mergeOptions()
     options += "\n";
   }
 
-  options += "html=";
-  QString text = "";
   if ( choice.auto_save -> currentIndex() != 0 )
   {
+    options += "html=";
+    QString text = "";
     if ( choice.auto_save -> currentIndex() == 1 )
     {
       QDateTime dateTime = QDateTime::currentDateTime();
@@ -1184,15 +1186,14 @@ QString SC_OptionsTab::mergeOptions()
         tr( "What would you like to name this HTML file?" ), QLineEdit::Normal,
         QDir::home().dirName(), &ok );
     }
+    RemoveBadFileChar( text );
+    if ( text == "" )
+      text += "results.html";
+    else
+      text += ".html";
+    options += text;
+    options += "\n";
   }
-  RemoveBadFileChar( text );
-
-  if ( text == "" )
-    text += "results.html";
-  else
-    text += ".html";
-  options += text;
-  options += "\n";
 
   options += "### End GUI options ###\n"
 
