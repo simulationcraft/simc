@@ -1194,6 +1194,8 @@ QString SC_OptionsTab::mergeOptions()
     options += text;
     options += "\n";
   }
+  else
+    options += "html=results.html";
 
   options += "### End GUI options ###\n"
 
