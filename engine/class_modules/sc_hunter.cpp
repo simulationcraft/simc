@@ -397,6 +397,12 @@ public:
 
     return pm;
   }
+
+  // shared code to interrupt a steady focus pair if the ability is cast between steady/cobras
+  virtual void no_steady_focus()
+  {
+    buffs.pre_steady_focus -> expire();
+  }
 };
 
 // Template for common hunter action code. See priest_action_t.
@@ -2989,6 +2995,7 @@ struct barrage_t: public hunter_spell_t
     }
     trigger_tier16_bm_4pc_melee();
     trigger_thrill_of_the_hunt();
+    p() -> no_steady_focus();
   }
 };
 
@@ -3057,6 +3064,8 @@ struct moc_t: public ranged_attack_t
   virtual void execute()
   {
     trigger_tier16_bm_4pc_brutal_kinship( p() );
+    
+    p() -> no_steady_focus();
     ranged_attack_t::execute();
   }
 };
@@ -3085,6 +3094,7 @@ struct dire_beast_t: public hunter_spell_t
   virtual void execute()
   {
     hunter_spell_t::execute();
+    p() -> no_steady_focus();
 
     pet_t* beast = p() -> pet_dire_beasts[0];
     if ( !beast -> is_sleeping() )
@@ -3183,6 +3193,7 @@ struct focus_fire_t: public hunter_spell_t
     hunter_spell_t::execute();
     p() -> active.pet -> buffs.frenzy -> expire();
     trigger_tier16_bm_4pc_melee();
+    p() -> no_steady_focus();
   }
 
   virtual bool ready()
@@ -3227,6 +3238,7 @@ struct kill_command_t: public hunter_spell_t
       p() -> active.pet -> active.kill_command -> execute();
       trigger_tier17_2pc_bm();
     }
+    p() -> no_steady_focus();
   }
 
   virtual bool ready()
@@ -3333,6 +3345,7 @@ struct stampede_t: public hunter_spell_t
       p() -> hunter_main_pets[i] -> stampede_summon( timespan_t::from_millis( 40027 ) );
       // Added 0.027 seconds to properly reflect haste threshholds seen in game.
     }
+    p() -> no_steady_focus();
   }
 };
 }
