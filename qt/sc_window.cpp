@@ -1202,7 +1202,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     resultsHtmlView -> enableKeyboardNavigation();
     resultsHtmlView -> enableMouseNavigation();
     resultsEntry -> addTab( resultsHtmlView, "html" );
-    QFile html_file( sim -> html_file_str.c_str() );
+    QFile html_file( AppDataDir + QDir::separator() + sim -> html_file_str.c_str() );
     QString html_file_absolute_path = QFileInfo( html_file ).absoluteFilePath();
     // just load it, let the error page extension handle failure to open
     resultsHtmlView -> load( QUrl::fromLocalFile( html_file_absolute_path ) );
