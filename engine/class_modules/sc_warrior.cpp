@@ -25,7 +25,6 @@ struct warrior_td_t: public actor_pair_t
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_charge;
   buff_t* debuffs_demoralizing_shout;
-  buff_t* debuffs_slam;
   buff_t* debuffs_taunt;
 
   warrior_t& warrior;
@@ -80,6 +79,7 @@ public:
     buff_t* gladiator_stance;
     buff_t* ravager;
     buff_t* ravager_protection;
+    buff_t* debuffs_slam;
     buff_t* sudden_death;
     // Glyphs
     buff_t* enraged_speed;
@@ -2707,14 +2707,14 @@ struct slam_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    td( execute_state -> target ) -> debuffs_slam -> trigger( 1 );
+    p() -> buff.debuffs_slam -> trigger( 1 );
   }
 
   double cost() const
   {
     double c = warrior_attack_t::cost();
 
-    c *= 1.0 + td( target ) -> debuffs_slam -> current_stack;
+    c *= 1.0 + p() -> buff.debuffs_slam -> current_stack;
 
     return c;
   }
@@ -2723,8 +2723,8 @@ struct slam_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( td( target ) -> debuffs_slam -> up() )
-      am *= 1.0 + ( ( static_cast<double>( td( target ) -> debuffs_slam -> current_stack ) ) / 2.0 );
+    if ( p() -> buff.debuffs_slam -> up() )
+      am *= 1.0 + ( ( static_cast<double>( p() -> buff.debuffs_slam -> current_stack ) ) / 2.0 );
 
     return am;
   }
@@ -4714,8 +4714,6 @@ actor_pair_t( target, &p ), warrior( p )
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( *this, "taunt", p.find_class_spell( "Taunt" ) );
-  debuffs_slam = buff_creator_t( *this, "slam", p.talents.slam )
-    .can_cancel( false );
 }
 
 // warrior_t::init_buffs ====================================================
@@ -4725,6 +4723,9 @@ void warrior_t::create_buffs()
   player_t::create_buffs();
 
   using namespace buffs;
+
+  buff.debuffs_slam = buff_creator_t( this, "slam", talents.slam )
+    .can_cancel( false );
 
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
