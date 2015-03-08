@@ -7309,16 +7309,15 @@ void death_knight_t::assess_damage( school_e     school,
 {
   double health_pct = health_percentage();
 
+  player_t::assess_damage( school, dtype, s );
   death_knight_td_t* td = get_target_data( s -> action -> player );
   if ( td -> debuffs_mark_of_sindragosa -> up() && bugs ) // Possibly a bug, but it appears to be healing based on pre-mitigated damage, and does not care if the damage is magic or not.
-  { // Also, we really can't simulate this, but it's also healing based on any damage anyone in the raid takes.
+  { // Also, it's also healing based on any damage anyone in the raid takes.
     // My guess is that this gets a WOTLK ret paladin level nerf, so there's no reason to model that part anyway.
     double heal_amount = s -> result_amount * td -> debuffs_mark_of_sindragosa -> data().effectN( 1 ).percent();
     active_spells.mark_of_sindragosa -> base_dd_min = active_spells.mark_of_sindragosa -> base_dd_max = heal_amount;
     active_spells.mark_of_sindragosa -> execute();
   }
-
-  player_t::assess_damage( school, dtype, s );
 
   // Bone shield will only decrement, if someone did damage to the dk
   if ( s -> result_amount > 0 )
