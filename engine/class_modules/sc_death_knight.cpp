@@ -292,7 +292,6 @@ public:
     gain_t* blood_tap_blood;
     gain_t* blood_tap_frost;
     gain_t* blood_tap_unholy;
-    gain_t* mark_of_sindragosa;
     gain_t* plague_leech;
     gain_t* hp_death_siphon;
     gain_t* t15_4pc_tank;
@@ -7152,7 +7151,6 @@ void death_knight_t::init_gains()
   gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   gains.blood_tap_frost                  = get_gain( "blood_tap_frost"            );
   gains.blood_tap_unholy                 = get_gain( "blood_tap_unholy"           );
-  gains.mark_of_sindragosa               = get_gain( "mark_of_sindragosa"         );
   gains.necrotic_plague                  = get_gain( "necrotic_plague"            );
   gains.plague_leech                     = get_gain( "plague_leech"               );
   gains.rc                               = get_gain( "runic_corruption_all"       );
