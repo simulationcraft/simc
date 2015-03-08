@@ -1169,9 +1169,10 @@ QString SC_OptionsTab::mergeOptions()
     options += "\n";
   }
 
+  options += "html=";
+  options +=  mainWindow -> AppDataDir + QDir::separator();
   if ( choice.auto_save -> currentIndex() != 0 )
   {
-    options += "html=";
     QString text = "";
     if ( choice.auto_save -> currentIndex() == 1 )
     {
@@ -1196,7 +1197,7 @@ QString SC_OptionsTab::mergeOptions()
     options += "\n";
   }
   else
-    options += "html=\"results.html\"\n";
+    options += "\"results.html\"\n";
 
   options += "### End GUI options ###\n"
 
