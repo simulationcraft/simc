@@ -66,7 +66,7 @@ void appendCheckBox( const QString& label, const QString& option, const QString&
 static QRegExp rc(QLatin1String(WINDOWS_DEVICES), Qt::CaseInsensitive);
 #endif
 #define SLASHES "/\\"
-static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'"SLASHES;
+static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'" SLASHES;
 
 QString RemoveBadFileChar( QString& filename )
 {
@@ -1169,11 +1169,11 @@ QString SC_OptionsTab::mergeOptions()
     options += "\n";
   }
 
-  options += "html=";
-  options +=  mainWindow -> AppDataDir + QDir::separator();
+  // Setup html report destination
+  QString html_filename = "simc_report.html";
   if ( choice.auto_save -> currentIndex() != 0 )
   {
-    QString text = "";
+    QString text;
     if ( choice.auto_save -> currentIndex() == 1 )
     {
       QDateTime dateTime = QDateTime::currentDateTime();
@@ -1188,16 +1188,14 @@ QString SC_OptionsTab::mergeOptions()
         QDir::home().dirName(), &ok );
     }
     RemoveBadFileChar( text );
-    if ( text == "" )
-      text += "results.html\"";
-    else
-      text += ".html\"";
-    text.insert( 0, QString( "\"" ) );
-    options += text;
-    options += "\n";
+    if ( ! text.isEmpty() )
+    {
+      html_filename = text + ".html";
+    }
   }
-  else
-    options += "\"results.html\"\n";
+  options += QString( "html=\"%1\"\n").arg( mainWindow -> AppDataDir + QDir::separator() + html_filename );
+
+
 
   options += "### End GUI options ###\n"
 
