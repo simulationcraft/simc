@@ -1210,11 +1210,15 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     // Text
     SC_TextEdit* resultsTextView = new SC_TextEdit( resultsEntry );
     resultsEntry -> addTab( resultsTextView, "text" );
-    QFile logFile( AppDataDir + "/" + SIMC_LOG_FILE );
+    QFile logFile( sim -> output_file_str.c_str() );
     if ( logFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      resultsTextView -> append( logFile.readAll() );
+      resultsTextView -> setPlainText( logFile.readAll() );
       logFile.close();
+    }
+    else
+    {
+        resultsTextView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> output_file_str.c_str(), logFile.errorString() ) );
     }
 
     // XML
@@ -1226,15 +1230,23 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       resultsXmlView -> append( xml_file.readAll() );
       xml_file.close();
     }
+    else
+    {
+      resultsXmlView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> xml_file_str.c_str(), xml_file.errorString() ) );
+    }
 
     // Plot Data
     SC_TextEdit* resultsPlotView = new SC_TextEdit( resultsEntry );
     resultsEntry -> addTab( resultsPlotView, tr("plot data") );
     QFile plot_file( sim -> reforge_plot_output_file_str.c_str() );
-    if ( xml_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    if ( plot_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
       resultsPlotView -> append( plot_file.readAll() );
       plot_file.close();
+    }
+    else
+    {
+        resultsPlotView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> reforge_plot_output_file_str.c_str(), plot_file.errorString() ) );
     }
 
     // CSV
