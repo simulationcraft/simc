@@ -1700,8 +1700,6 @@ void SimulateThread::run()
   }
 
   sim -> output_file_str = (mainWindow -> AppDataDir + QDir::separator() + SIMC_LOG_FILE).toStdString();
-  sim -> html_file_str = mainWindow -> optionsTab -> getHtmlDestination().toStdString();
-
   sim -> xml_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml").toStdString();
   sim -> reforge_plot_output_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_plot_data.csv").toStdString();
   sim -> csv_output_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_report.csv").toStdString();
