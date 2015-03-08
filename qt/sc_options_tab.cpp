@@ -1037,6 +1037,35 @@ QString SC_OptionsTab::get_globalSettings()
   return options;
 }
 
+QString SC_OptionsTab::getHtmlDestination() const
+{
+  // Setup html report destination
+  QString html_filename = "simc_report.html";
+  if ( choice.auto_save -> currentIndex() != 0 )
+  {
+    QString text;
+    if ( choice.auto_save -> currentIndex() == 1 )
+    {
+      QDateTime dateTime = QDateTime::currentDateTime();
+      text += dateTime.toString( Qt::ISODate );
+      text.replace( ":", "" );
+    }
+    else
+    {
+      bool ok;
+      text = QInputDialog::getText( mainWindow, tr( "HTML File Name" ),
+        tr( "What would you like to name this HTML file?" ), QLineEdit::Normal,
+        QDir::home().dirName(), &ok );
+    }
+    RemoveBadFileChar( text );
+    if ( ! text.isEmpty() )
+    {
+      html_filename = text + ".html";
+    }
+  }
+  return mainWindow -> AppDataDir + QDir::separator() + html_filename;
+}
+
 QString SC_OptionsTab::mergeOptions()
 {
   QString options = "### Begin GUI options ###\n";
@@ -1168,33 +1197,6 @@ QString SC_OptionsTab::mergeOptions()
     options += util::to_string( choice.print_style -> currentIndex() ).c_str();
     options += "\n";
   }
-
-  // Setup html report destination
-  QString html_filename = "simc_report.html";
-  if ( choice.auto_save -> currentIndex() != 0 )
-  {
-    QString text;
-    if ( choice.auto_save -> currentIndex() == 1 )
-    {
-      QDateTime dateTime = QDateTime::currentDateTime();
-      text += dateTime.toString( Qt::ISODate );
-      text.replace( ":", "" );
-    }
-    else
-    {
-      bool ok;
-      text = QInputDialog::getText( this, tr( "HTML File Name" ),
-        tr( "What would you like to name this HTML file?" ), QLineEdit::Normal,
-        QDir::home().dirName(), &ok );
-    }
-    RemoveBadFileChar( text );
-    if ( ! text.isEmpty() )
-    {
-      html_filename = text + ".html";
-    }
-  }
-  options += QString( "html=\"%1\"\n").arg( mainWindow -> AppDataDir + QDir::separator() + html_filename );
-
 
 
   options += "### End GUI options ###\n"

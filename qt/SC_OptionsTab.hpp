@@ -21,6 +21,7 @@ public:
 
   QString get_db_order() const;
   QString get_globalSettings();
+  QString getHtmlDestination() const;
   QString mergeOptions();
   QString get_active_spec();
   QString get_player_role();
