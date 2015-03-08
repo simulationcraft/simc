@@ -250,7 +250,6 @@ public:
 
   struct active_spells_t
   {
-    action_t* blood_caked_blade;
     spell_t* blood_plague;
     spell_t* frost_fever;
     melee_attack_t* frozen_power;
@@ -259,6 +258,7 @@ public:
     spell_t* breath_of_sindragosa;
     spell_t* necrosis;
     heal_t* conversion;
+    heal_t* mark_of_sindragosa;
   } active_spells;
 
   // Gains
@@ -292,6 +292,7 @@ public:
     gain_t* blood_tap_blood;
     gain_t* blood_tap_frost;
     gain_t* blood_tap_unholy;
+    gain_t* mark_of_sindragosa;
     gain_t* plague_leech;
     gain_t* hp_death_siphon;
     gain_t* t15_4pc_tank;
@@ -5282,6 +5283,21 @@ struct plague_leech_t : public death_knight_spell_t
   }
 };
 
+// Mark of Sindragosa ======================================================
+
+struct mark_of_sindragosa_heal_t: public death_knight_heal_t
+{
+  mark_of_sindragosa_heal_t( death_knight_t* p ):
+    death_knight_heal_t( "mark_of_sindragosa", p, p -> find_spell( 155166 ) )
+  {
+    may_miss = may_crit = callbacks = false; // Blood DK Heal from enemies who attack the DK with spells and have mark of sindragosa on them.
+    may_multistrike = 0;
+    dot_duration = timespan_t::zero();
+    attack_power_mod.direct = attack_power_mod.tick = 0.0;
+    target = p;
+  }
+};
+
 // Breath of Sindragosa =====================================================
 
 struct breath_of_sindragosa_tick_t: public death_knight_spell_t
@@ -6228,6 +6244,10 @@ void death_knight_t::init_spells()
   active_spells.blood_plague = new blood_plague_t( this );
   active_spells.frost_fever = new frost_fever_t( this );
   active_spells.necrotic_plague = new necrotic_plague_t( this );
+  if ( talent.breath_of_sindragosa -> ok() )
+  {
+    active_spells.mark_of_sindragosa = new mark_of_sindragosa_heal_t( this );
+  }
 
   if ( spec.necrosis -> ok() )
     active_spells.necrosis = new necrosis_t( this );
@@ -7132,6 +7152,7 @@ void death_knight_t::init_gains()
   gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   gains.blood_tap_frost                  = get_gain( "blood_tap_frost"            );
   gains.blood_tap_unholy                 = get_gain( "blood_tap_unholy"           );
+  gains.mark_of_sindragosa               = get_gain( "mark_of_sindragosa"         );
   gains.necrotic_plague                  = get_gain( "necrotic_plague"            );
   gains.plague_leech                     = get_gain( "plague_leech"               );
   gains.rc                               = get_gain( "runic_corruption_all"       );
@@ -7251,21 +7272,31 @@ void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
 
 void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
 {
-  if ( buffs.antimagic_shell -> up() && school != SCHOOL_PHYSICAL )
+  if ( school != SCHOOL_PHYSICAL )
   {
-    double absorbed = s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent();
+    if ( buffs.antimagic_shell -> up() )
+    {
+      double absorbed = s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent();
 
-    double generated = absorbed / resources.max[ RESOURCE_HEALTH ];
+      double generated = absorbed / resources.max[RESOURCE_HEALTH];
 
-    s -> result_amount -= absorbed;
-    s -> result_absorbed -= absorbed;
+      s -> result_amount -= absorbed;
+      s -> result_absorbed -= absorbed;
 
-    //gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
+      //gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
 
-    if ( antimagic_shell )
-      antimagic_shell -> add_result( absorbed, absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
+      if ( antimagic_shell )
+        antimagic_shell -> add_result( absorbed, absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
 
-    resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
+      resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
+    }
+    death_knight_td_t* td = get_target_data( s -> action -> player );
+    if ( td -> debuffs_mark_of_sindragosa -> up() )
+    {
+      double heal_amount = s -> result_amount * td -> debuffs_mark_of_sindragosa -> data().effectN( 1 ).percent();
+      active_spells.mark_of_sindragosa -> base_dd_min = active_spells.mark_of_sindragosa -> base_dd_max = heal_amount;
+      active_spells.mark_of_sindragosa -> execute();
+    }
   }
 
   if ( talent.necrotic_plague -> ok() && s -> result_amount > 0 && ! s -> action -> result_is_multistrike( s -> result ) )
