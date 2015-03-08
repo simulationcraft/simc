@@ -1608,11 +1608,11 @@ class SimulateThread : public QThread
   sim_t* sim;
 
 public:
-  QString options;
+  QByteArray utf8_options;
   QString error_str;
   bool success;
 
-  void start( sim_t* s, const QString& o ) { sim = s; options = o; success = false; QThread::start(); }
+  void start( sim_t* s, const QByteArray& o ) { sim = s; utf8_options = o; success = false; QThread::start(); }
   virtual void run();
   SimulateThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 )
   {

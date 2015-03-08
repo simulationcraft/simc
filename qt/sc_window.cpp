@@ -724,6 +724,7 @@ sim_t* SC_MainWindow::initSim()
   sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
 #endif
   sim -> parse_option( "debug", ( ( optionsTab -> choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
+
   return sim;
 }
 
@@ -1000,6 +1001,24 @@ void SC_MainWindow::startSim()
   simProgress = 0;
   sim = initSim();
 
+  QString options = simulationQueue.dequeue();
+
+  QByteArray utf8_profile = options.toUtf8();
+  QFile file( AppDataDir + QDir::separator() + "simc_gui.simc" );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  {
+    file.write( utf8_profile );
+    file.close();
+  }
+
+  QString reportFileBase = optionsTab -> getReportlDestination();
+  sim -> output_file_str = (reportFileBase + ".txt").toStdString();
+  sim -> html_file_str = (reportFileBase + ".html").toStdString();
+
+  sim -> xml_file_str = (reportFileBase + ".xml").toStdString();
+  sim -> reforge_plot_output_file_str = (reportFileBase + "_plotdata.csv").toStdString();
+  sim -> csv_output_file_str = (reportFileBase + ".csv").toStdString();
+
   if ( optionsTab -> get_api_key().size() == 32 ) // api keys are 32 characters long, it's not worth parsing <32 character keys.
     sim -> parse_option( "apikey",  optionsTab -> get_api_key().toUtf8().constData() );
 
@@ -1007,7 +1026,7 @@ void SC_MainWindow::startSim()
   {
     cmdLine -> setState( SC_MainWindowCommandLine::SIMULATING );
   }
-  simulateThread -> start( sim, simulationQueue.dequeue() );
+  simulateThread -> start( sim, utf8_profile );
 
   cmdLineText = "";
   timer -> start( 100 );
@@ -1691,23 +1710,10 @@ void SC_MainWindow::currentlyViewedTabCloseRequest()
 
 void SimulateThread::run()
 {
-  QByteArray utf8_profile = options.toUtf8();
-  QFile file( mainWindow -> AppDataDir + QDir::separator() + "simc_gui.simc" );
-  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
-  {
-    file.write( utf8_profile );
-    file.close();
-  }
-
-  sim -> output_file_str = (mainWindow -> AppDataDir + QDir::separator() + SIMC_LOG_FILE).toStdString();
-  sim -> xml_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml").toStdString();
-  sim -> reforge_plot_output_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_plot_data.csv").toStdString();
-  sim -> csv_output_file_str = (mainWindow -> AppDataDir + QDir::separator() + "simc_report.csv").toStdString();
-
   sim_control_t description;
   try
   {
-    description.options.parse_text( utf8_profile.constData() );
+    description.options.parse_text( utf8_options.constData() );
   }
   catch ( const std::exception& e )
   {
