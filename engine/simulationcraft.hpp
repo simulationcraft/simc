@@ -5322,6 +5322,14 @@ public:
   // Figure out another actor, by name. Prioritizes pets > harmful targets >
   // other players. Used by "actor.<name>" expression currently.
   virtual player_t* actor_by_name_str( const std::string& ) const;
+
+  // Patch 6.2 trinket related stuff
+
+  // Agility D
+  bool trinket_62_agi_d;
+  timespan_t trinket_62_agi_d_duration;
+  double trinket_62_agi_d_rppm;
+  double trinket_62_agi_d_multiplier;
 };
 
 // Target Specific ==========================================================
@@ -7088,23 +7096,6 @@ struct multistrike_execute_event_t : public event_t
         state -> action -> assess_damage( state -> result_type, state );
       else
         state -> action -> impact( state );
-
-      // Multistrike callbacks, if there are any
-      if ( state -> action -> callbacks )
-      {
-        proc_types pt = state -> proc_type();
-        proc_types2 pt2 = state -> execute_proc_type2();
-        if ( pt2 == PROC2_LANDED )
-          pt2 = state -> impact_proc_type2();
-
-        // "On an execute result"
-        if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-        {
-          action_callback_t::trigger( state -> action -> player -> callbacks.procs[ pt ][ pt2 ],
-                                      state -> action,
-                                      state );
-        }
-      }
     }
 
     action_state_t::release( state );
