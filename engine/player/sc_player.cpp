@@ -567,6 +567,11 @@ player_t::player_t( sim_t*             s,
   trinket_62_int_c_damage( 17022 ),
   trinket_62_int_c_rppm( 5.0 ),
 
+  trinket_62_int_d( false ),
+  trinket_62_int_d_duration( timespan_t::from_seconds( 10 ) ),
+  trinket_62_int_d_damage( 7449 ),
+  trinket_62_int_d_rppm( 1.5 ),
+
   trinket_62_int_value( 379 )
 {
   actor_index = sim -> actor_list.size();
@@ -1283,6 +1288,7 @@ struct agi_d_buff_t : public buff_t
     cb( 0 )
   {
     explosion = new agi_d_explosion_t( player );
+    player -> buffs.agi_d = this;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -2465,7 +2471,6 @@ void player_t::create_buffs()
 
   debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
                                     .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
-
 }
 
 // player_t::find_item ======================================================

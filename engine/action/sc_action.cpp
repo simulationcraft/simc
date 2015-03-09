@@ -1506,15 +1506,18 @@ void action_t::assess_damage( dmg_e    type,
     }
   }
 
-  if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
+  if ( ! player -> buffs.agi_d || ! player -> buffs.agi_d -> check() )
   {
-    player -> priority_iteration_dmg += s -> result_amount;
+    if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
+    {
+      player -> priority_iteration_dmg += s -> result_amount;
+    }
+
+    if ( s -> result_amount > 0 && composite_leech( s ) > 0 )
+      player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech, s -> action );
   }
 
-  if ( s -> result_amount > 0 && composite_leech( s ) > 0 )
-    player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech, s -> action );
-
-  // New callback system; proc spells on impact. 
+  // New callback system; proc spells on impact.
 
   if ( callbacks )
   {
@@ -1524,7 +1527,10 @@ void action_t::assess_damage( dmg_e    type,
       action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
   }
 
-  record_data( s );
+  if ( ! player -> buffs.agi_d || ! player -> buffs.agi_d -> check() )
+  {
+    record_data( s );
+  }
 }
 
 // action_t::record_data ====================================================

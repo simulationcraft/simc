@@ -4686,6 +4686,9 @@ struct player_t : public actor_t
     buff_t* surge_of_energy;
     buff_t* natures_fury;
     buff_t* brute_strength;
+
+    // 6.2 trinket proxy stuff
+    buff_t* agi_d;
   } buffs;
 
   struct debuffs_t
@@ -5348,6 +5351,11 @@ public:
   double trinket_62_int_c_rppm;
 
   double trinket_62_int_value;
+
+  bool trinket_62_int_d;
+  timespan_t trinket_62_int_d_duration;
+  double trinket_62_int_d_damage;
+  double trinket_62_int_d_rppm;
 
   pet_t* trinket_62_agi_c_pets[ 4 ];
 };
