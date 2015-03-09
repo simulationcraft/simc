@@ -6,8 +6,10 @@
 #include "simulationcraft.hpp"
 
 #include "sc_item_data.inc"
+#include "sc_item_data2.inc"
 #if SC_USE_PTR
 #include "sc_item_data_ptr.inc"
+#include "sc_item_data_ptr2.inc"
 #endif
 
 namespace {

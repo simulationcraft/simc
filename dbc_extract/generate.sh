@@ -51,15 +51,15 @@ fi
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t set_list2              >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t perk_list              >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t glyph_property_list    >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item > $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t random_property_points >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t random_suffix          >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_ench              >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_armor             >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t weapon_damage          >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t gem_properties         >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_upgrade           >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_bonus             >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item                   >  $OUTPATH/sc_item_data${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t random_property_points >  $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t random_suffix          >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_ench              >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_armor             >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t weapon_damage          >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t gem_properties         >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_upgrade           >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_bonus             >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 
 (
 cat << zz1234
