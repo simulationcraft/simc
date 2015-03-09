@@ -561,7 +561,13 @@ player_t::player_t( sim_t*             s,
   trinket_62_agi_c_tick_time( timespan_t::from_seconds( 1.0 ) ),
   trinket_62_agi_c_cooldown( timespan_t::from_seconds( 120.0 ) ),
 
-  trinket_62_agi_value( 379 )
+  trinket_62_agi_value( 379 ),
+
+  trinket_62_int_c( false ),
+  trinket_62_int_c_damage( 17022 ),
+  trinket_62_int_c_rppm( 5.0 ),
+
+  trinket_62_int_value( 379 )
 {
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
@@ -1087,6 +1093,11 @@ bool player_t::init_items()
     gear.add_stat( STAT_AGILITY, trinket_62_agi_value );
   }
 
+  if ( trinket_62_agi_c )
+  {
+    gear.add_stat( STAT_INTELLECT, trinket_62_int_value );
+  }
+
   return true;
 }
 
@@ -1326,6 +1337,29 @@ static void initialize_trinket62_agi_d( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct trinket_62_int_c_damage_t : public spell_t
+{
+  trinket_62_int_c_damage_t( player_t* player ) :
+    spell_t( "blacklight", player )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_int_c_damage;
+
+    aoe = -1;
+  }
+};
+
+static void initialize_trinket62_int_c( special_effect_t& effect )
+{
+  effect.execute_action = new trinket_62_int_c_damage_t( effect.player );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void player_t::init_special_effects()
 {
   if ( is_pet() || is_enemy() )
@@ -1376,6 +1410,19 @@ void player_t::init_special_effects()
     effect.ppm_ = -1.0 * trinket_62_agi_d_rppm;
     effect.custom_init = initialize_trinket62_agi_d;
     effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
+
+    special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  if ( trinket_62_int_c )
+  {
+    special_effect_t effect( this );
+    effect.name_str = "blacklight_driver";
+    effect.type = SPECIAL_EFFECT_CUSTOM;
+    effect.ppm_ = -1.0 * trinket_62_int_c_rppm;
+    effect.rppm_scale = RPPM_HASTE;
+    effect.custom_init = initialize_trinket62_int_c;
+    effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
 
     special_effects.push_back( new special_effect_t( effect ) );
   }
@@ -8965,6 +9012,10 @@ void player_t::create_options()
   add_option( opt_timespan( "trinket_62_agi_c_tick_time", trinket_62_agi_c_tick_time ) );
   add_option( opt_float( "trinket_62_agi_c_ap_coeff", trinket_62_agi_c_ap_coeff ) );
   add_option( opt_float( "trinket_62_agi_c_weapon_pct", trinket_62_agi_c_weapon_pct ) );
+
+  add_option( opt_bool( "trinket_62_int_c", trinket_62_int_c ) );
+  add_option( opt_float( "trinket_62_int_c_damage", trinket_62_int_c_damage ) );
+  add_option( opt_float( "trinket_62_int_c_rppm", trinket_62_int_c_rppm ) );
 }
 
 // player_t::create =========================================================

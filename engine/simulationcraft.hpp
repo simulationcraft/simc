@@ -5342,6 +5342,13 @@ public:
 
   double trinket_62_agi_value;
 
+  // Intellect C
+  bool trinket_62_int_c;
+  double trinket_62_int_c_damage;
+  double trinket_62_int_c_rppm;
+
+  double trinket_62_int_value;
+
   pet_t* trinket_62_agi_c_pets[ 4 ];
 };
 
