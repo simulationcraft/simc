@@ -123,6 +123,13 @@ public:
   timespan_t uf_expiration_delay;
   timespan_t uf_expiration_delay_stddev;
 
+  bool trinket_62;
+  // Enhance 6.2 trinket tweak values
+  double wf_damage_increase;
+  double wf_mw_procrate;
+  // Elemental 6.2 trinket tweak values
+  double lvb_spread_procrate;
+
   // Active
   action_t* active_lightning_charge;
 
@@ -381,6 +388,10 @@ public:
     player_t( sim, SHAMAN, name, r ),
     ls_reset( timespan_t::zero() ), lava_surge_during_lvb( false ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
+    trinket_62( false ),
+    wf_damage_increase( 2.0 ),
+    wf_mw_procrate( 0.2 ),
+    lvb_spread_procrate( 0.25 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
     action_improved_lava_lash( nullptr ),
@@ -441,7 +452,7 @@ public:
   // triggers
   void trigger_molten_earth( const action_state_t* );
   void trigger_fulmination_stack( const action_state_t* );
-  void trigger_maelstrom_weapon( const action_state_t* );
+  void trigger_maelstrom_weapon( const action_state_t*, double override_chance = 0 );
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_improved_lava_lash( const action_state_t* );
@@ -1831,6 +1842,21 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
+
+    if ( player -> trinket_62 )
+    {
+      weapon_multiplier *= 1.0 + player -> wf_damage_increase;
+    }
+  }
+
+  void impact( action_state_t* state )
+  {
+    shaman_attack_t::impact( state );
+
+    if ( p() -> trinket_62 )
+    {
+      p() -> trigger_maelstrom_weapon( state, p() -> wf_mw_procrate );
+    }
   }
 };
 
@@ -2018,7 +2044,7 @@ void shaman_spell_base_t<Base>::execute()
   if ( eligible_for_instant && ! as_cast && p -> specialization() == SHAMAN_ENHANCEMENT )
   {
     maelstrom_weapon_executed[ p -> buff.maelstrom_weapon -> check() ] -> add( 1 );
-    p -> buff.maelstrom_weapon -> expire();
+    p -> buff.maelstrom_weapon -> decrement ( 5 );
   }
 
   p -> buff.spiritwalkers_grace -> up();
@@ -2997,6 +3023,47 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
       p() -> buff.elemental_fusion -> trigger();
+
+    shaman_td_t* tdata = td( state -> target );
+
+    // Elemental 6.2 trinket
+    if ( result_is_hit( state -> result ) &&
+         p() -> trinket_62 &&
+         tdata -> dot.flame_shock -> is_ticking() &&
+         rng().roll( p() -> lvb_spread_procrate ) )
+    {
+      tdata -> dot.flame_shock -> refresh_duration();
+      double duration_left = std::numeric_limits<double>::max();
+      player_t* spread_target = 0;
+      // Spread, do a linear search for now, pick first target without a Flame Shock, or shortest duration left.
+      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
+      {
+        player_t* t = sim -> target_non_sleeping_list[ i ];
+        if ( t == state -> target )
+        {
+          continue;
+        }
+
+        shaman_td_t* spread_td = td( t );
+        if ( ! spread_td -> dot.flame_shock -> is_ticking()  )
+        {
+          spread_target = t;
+          break;
+        }
+        else
+        {
+          if ( spread_td -> dot.flame_shock -> remains().total_seconds() < duration_left )
+          {
+            spread_target = t;
+          }
+        }
+      }
+
+      if ( spread_target )
+      {
+        tdata -> dot.flame_shock -> copy( spread_target, DOT_COPY_CLONE );
+      }
+    }
   }
 
   //overwrite MS behavior for blizzards new idea of helping crit's value
@@ -4526,6 +4593,10 @@ void shaman_t::create_options()
 
   add_option( opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ) );
   add_option( opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ) );
+  add_option( opt_bool( "trinket_62", trinket_62 ) );
+  add_option( opt_float( "trinket_62_enh_wf_damage", wf_damage_increase ) );
+  add_option( opt_float( "trinket_62_enh_wf_mw_procrate", wf_mw_procrate ) );
+  add_option( opt_float( "trinket_62_ele_lvb_spread_procrate", lvb_spread_procrate ) );
 }
 
 // shaman_t::create_action  =================================================
@@ -4972,11 +5043,11 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
+void shaman_t::trigger_maelstrom_weapon( const action_state_t* state, double override_chance )
 {
   assert( debug_cast< shaman_attack_t* >( state -> action ) != 0 && "Maelstrom Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
-  if ( ! attack -> may_proc_maelstrom )
+  if ( ! attack -> may_proc_maelstrom && override_chance <= 0 )
     return;
 
   if ( ! attack -> weapon )
@@ -4985,7 +5056,15 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
   if ( ! spec.maelstrom_weapon -> ok() )
     return;
 
-  double chance = attack -> weapon -> proc_chance_on_swing( 8.0 );
+  double chance = 0;
+  if ( override_chance > 0 )
+  {
+    chance = override_chance;
+  }
+  else
+  {
+    chance = attack -> weapon -> proc_chance_on_swing( 8.0 );
+  }
 
   //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
   //  chance *= 1.2;
