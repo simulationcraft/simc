@@ -1853,7 +1853,7 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
   {
     shaman_attack_t::impact( state );
 
-    if ( p() -> trinket_62 )
+    if ( p() -> trinket_62 && result_is_hit( state -> result ) )
     {
       p() -> trigger_maelstrom_weapon( state, p() -> wf_mw_procrate );
     }
