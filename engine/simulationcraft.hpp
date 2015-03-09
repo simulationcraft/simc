@@ -5340,6 +5340,8 @@ public:
   timespan_t trinket_62_agi_c_tick_time;
   timespan_t trinket_62_agi_c_cooldown;
 
+  double trinket_62_agi_value;
+
   pet_t* trinket_62_agi_c_pets[ 4 ];
 };
 

@@ -559,7 +559,9 @@ player_t::player_t( sim_t*             s,
   trinket_62_agi_c_weapon_pct( 0.5 ),
   trinket_62_agi_c_duration( timespan_t::from_seconds( 20 ) ),
   trinket_62_agi_c_tick_time( timespan_t::from_seconds( 1.0 ) ),
-  trinket_62_agi_c_cooldown( timespan_t::from_seconds( 120.0 ) )
+  trinket_62_agi_c_cooldown( timespan_t::from_seconds( 120.0 ) ),
+
+  trinket_62_agi_value( 379 )
 {
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
@@ -1074,6 +1076,16 @@ bool player_t::init_items()
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
+
+  if ( trinket_62_agi_c )
+  {
+    gear.add_stat( STAT_AGILITY, trinket_62_agi_value );
+  }
+
+  if ( trinket_62_agi_d )
+  {
+    gear.add_stat( STAT_AGILITY, trinket_62_agi_value );
+  }
 
   return true;
 }
