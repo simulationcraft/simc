@@ -48,17 +48,19 @@ public:
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
 
   // Active
-  action_t* active_blood_craze;
-  action_t* active_bloodbath_dot;
-  action_t* active_deep_wounds;
-  action_t* active_enhanced_rend;
-  action_t* active_rallying_cry_heal;
-  action_t* active_second_wind;
-  attack_t* active_sweeping_strikes;
-  attack_t* active_aoe_sweeping_strikes;
-
-  heal_t* active_t16_2pc;
-  warrior_stance active_stance;
+  struct active_t
+  {
+    action_t* blood_craze;
+    action_t* bloodbath_dot;
+    action_t* deep_wounds;
+    action_t* enhanced_rend;
+    action_t* rallying_cry_heal;
+    action_t* second_wind;
+    attack_t* sweeping_strikes;
+    attack_t* aoe_sweeping_strikes;
+    heal_t* t16_2pc;
+    warrior_stance stance;
+  } active;
 
   // Buffs
   struct buffs_t
@@ -144,6 +146,8 @@ public:
     // Fury And Arms
     cooldown_t* die_by_the_sword;
     cooldown_t* recklessness;
+    // Arms only
+    cooldown_t* colossus_smash;
     // Prot Only
     cooldown_t* demoralizing_shout;
     cooldown_t* last_stand;
@@ -240,13 +244,14 @@ public:
     proc_t* delayed_auto_attack;
 
     //Tier bonuses
-    proc_t* t15_2pc_melee;
     proc_t* t17_2pc_arms;
     proc_t* t17_2pc_fury;
   } proc;
 
-  real_ppm_t t15_2pc_melee;
-  real_ppm_t sudden_death;
+  struct realppm_t
+  {
+    real_ppm_t* sudden_death;
+  } rppm;
 
   // Spec Passives
   struct spec_t
@@ -370,28 +375,28 @@ public:
     glyphs( glyphs_t() ),
     mastery( mastery_t() ),
     proc( procs_t() ),
-    t15_2pc_melee( *this ),
-    sudden_death( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
+    rppm( realppm_t() ),
     spec( spec_t() ),
     talents( talents_t() )
   {
     // Active
-    active_bloodbath_dot      = 0;
-    active_blood_craze        = 0;
-    active_deep_wounds        = 0;
-    active_rallying_cry_heal  = 0;
-    active_second_wind        = 0;
-    active_sweeping_strikes   = 0;
-    active_aoe_sweeping_strikes = 0;
-    active_enhanced_rend      = 0;
-    active_t16_2pc            = 0;
-    active_stance             = STANCE_BATTLE;
+    active.bloodbath_dot      = 0;
+    active.blood_craze        = 0;
+    active.deep_wounds        = 0;
+    active.rallying_cry_heal  = 0;
+    active.second_wind        = 0;
+    active.sweeping_strikes   = 0;
+    active.aoe_sweeping_strikes = 0;
+    active.enhanced_rend      = 0;
+    active.t16_2pc            = 0;
+    active.stance             = STANCE_BATTLE;
 
     // Cooldowns
     cooldown.avatar                   = get_cooldown( "avatar" );
     cooldown.bladestorm               = get_cooldown( "bladestorm" );
     cooldown.bloodbath                = get_cooldown( "bloodbath" );
     cooldown.charge                   = get_cooldown( "charge" );
+    cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
     cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
     cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
     cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
@@ -577,19 +582,19 @@ public:
   {
     if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
     { // If player is able to swap stances, has not disabled automated swapping in simc, not specced into gladiator's resolve, (continued)
-      if ( p() -> active_stance == STANCE_DEFENSE &&        // currently in defensive stance,
+      if ( p() -> active.stance == STANCE_DEFENSE &&        // currently in defensive stance,
            p() -> specialization() != WARRIOR_PROTECTION && // not protection specced,
            ( ( stancemask & STANCE_BATTLE ) != 0 ) )        // and is able to use this ability in battle stance.
            p() -> stance_swap();                            // Go ahead and swap to battle.
 
-      else if ( p() -> active_stance == STANCE_BATTLE &&         // On the other side, if player is in battle stance,
+      else if ( p() -> active.stance == STANCE_BATTLE &&         // On the other side, if player is in battle stance,
                 p() -> specialization() == WARRIOR_PROTECTION && // is a tank,
                 ( ( stancemask & STANCE_DEFENSE ) != 0 ) &&      // can use the ability in defensive stance,
                 p() -> primary_role() == ROLE_TANK )             // is reallly reallyyyy a tank, and not some strange person trying to dps in battle stance without gladiator's resolve, :p
                 p() -> stance_swap();                            // Swap back to defensive stance.
     }
     ab::execute();
-  }
+      }
 
   virtual timespan_t gcd() const
   {
@@ -628,12 +633,12 @@ public:
       return false;
 
     // Attack available in current stance?
-    if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> up() )
+    if ( ( ( stancemask & p() -> active.stance ) == 0 ) && p() -> cooldown.stance_swap -> up() )
     {
       p() -> stance_swap(); // Force the stance swap, the sim will try to use it again in 0.1 seconds.
       return false;
     }
-    else if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
+    else if ( ( ( stancemask & p() -> active.stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
       return false;
 
     return true;
@@ -800,14 +805,14 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   void trigger_bloodbath_dot( player_t* t, double dmg )
   {
     residual_action::trigger(
-      p() -> active_bloodbath_dot, // ignite spell
+      p() -> active.bloodbath_dot, // ignite spell
       t, // target
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
   }
 
   void trigger_rage_gain( action_state_t* s )
   {
-    if ( p() -> active_stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
+    if ( p() -> active.stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
       return;
 
     weapon_t*  w = weapon;
@@ -815,7 +820,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
     if ( p() -> specialization() == WARRIOR_ARMS )
     {
-      if ( p() -> active_stance == STANCE_BATTLE )
+      if ( p() -> active.stance == STANCE_BATTLE )
       {
         if ( s -> result == RESULT_CRIT )
           rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2015/02/02
@@ -963,52 +968,31 @@ static void trigger_sweeping_strikes( action_state_t* s )
   if ( s -> result_total <= 0 )
     return;
 
-  if ( !p -> active_sweeping_strikes )
+  if ( !p -> active.sweeping_strikes )
   {
-    p -> active_sweeping_strikes = new sweeping_strikes_attack_t( p );
-    p -> active_sweeping_strikes -> init();
+    p -> active.sweeping_strikes = new sweeping_strikes_attack_t( p );
+    p -> active.sweeping_strikes -> init();
   }
 
-  if ( !p -> active_aoe_sweeping_strikes )
+  if ( !p -> active.aoe_sweeping_strikes )
   {
-    p -> active_aoe_sweeping_strikes = new sweeping_strikes_aoe_attack_t( p );
-    p -> active_aoe_sweeping_strikes -> init();
+    p -> active.aoe_sweeping_strikes = new sweeping_strikes_aoe_attack_t( p );
+    p -> active.aoe_sweeping_strikes -> init();
   }
 
   if ( !s -> action -> is_aoe() )
   {
-    p -> active_sweeping_strikes -> base_dd_min = s -> result_total;
-    p -> active_sweeping_strikes -> base_dd_max = s -> result_total;
-    p -> active_sweeping_strikes -> execute();
+    p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
+    p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
+    p -> active.sweeping_strikes -> execute();
   }
   else
   {
     // aoe abilities proc a sweeping strike that deals half the damage of a autoattack
-    p -> active_aoe_sweeping_strikes -> execute();
+    p -> active.aoe_sweeping_strikes -> execute();
   }
 
   return;
-}
-
-// trigger_t15_2pc_melee ====================================================
-
-static bool trigger_t15_2pc_melee( warrior_attack_t* a )
-{
-  if ( !a -> player -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
-    return false;
-
-  warrior_t* p = a -> p();
-
-  bool procced;
-
-  if ( ( procced = p -> t15_2pc_melee.trigger() ) != false )
-  {
-    p -> proc.t15_2pc_melee -> occur();
-    if ( p -> specialization() != WARRIOR_ARMS )
-      p -> enrage();
-  }
-
-  return procced;
 }
 
 // ==========================================================================
@@ -1037,22 +1021,22 @@ void warrior_attack_t::impact( action_state_t* s )
       if ( p() -> buff.bloodbath -> up() && special )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
 
-      if ( p() -> active_second_wind )
+      if ( p() -> active.second_wind )
       {
         if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 )
         {
-          p() -> active_second_wind -> base_dd_min = s -> result_amount;
-          p() -> active_second_wind -> base_dd_max = s -> result_amount;
-          p() -> active_second_wind -> execute();
+          p() -> active.second_wind -> base_dd_min = s -> result_amount;
+          p() -> active.second_wind -> base_dd_max = s -> result_amount;
+          p() -> active.second_wind -> execute();
         }
       }
-      if ( p() -> active_rallying_cry_heal )
+      if ( p() -> active.rallying_cry_heal )
       {
         if ( p() -> buff.rallying_cry -> up() )
         {
-          p() -> active_rallying_cry_heal -> base_dd_min = s -> result_amount;
-          p() -> active_rallying_cry_heal -> base_dd_max = s -> result_amount;
-          p() -> active_rallying_cry_heal -> execute();
+          p() -> active.rallying_cry_heal -> base_dd_min = s -> result_amount;
+          p() -> active.rallying_cry_heal -> base_dd_max = s -> result_amount;
+          p() -> active.rallying_cry_heal -> execute();
         }
       }
     }
@@ -1065,9 +1049,11 @@ struct melee_t: public warrior_attack_t
 {
   bool mh_lost_melee_contact;
   bool oh_lost_melee_contact;
+  bool sudden_death;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
-    mh_lost_melee_contact( true ), oh_lost_melee_contact( true )
+    mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
+    sudden_death( false )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
@@ -1075,6 +1061,8 @@ struct melee_t: public warrior_attack_t
     trigger_gcd = timespan_t::zero();
     if ( p -> dual_wield() )
       base_hit -= 0.19;
+    if ( p -> talents.sudden_death -> ok() )
+      sudden_death = true;
   }
 
   void reset()
@@ -1133,39 +1121,32 @@ struct melee_t: public warrior_attack_t
 
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
-      trigger_t15_2pc_melee( this );
-      sudden_death();
+      if ( sudden_death && p() -> rppm.sudden_death -> trigger() )
+      {
+        p() -> buff.sudden_death -> trigger();
+      }
       trigger_rage_gain( s );
-      if ( p() -> active_enhanced_rend )
+      if ( p() -> active.enhanced_rend )
       {
         if ( td( s -> target ) -> dots_rend -> is_ticking() )
         {
-          p() -> active_enhanced_rend -> target = s -> target;
-          p() -> active_enhanced_rend -> execute();
+          p() -> active.enhanced_rend -> target = s -> target;
+          p() -> active.enhanced_rend -> execute();
         }
       }
     }
 
-    if ( p() -> active_blood_craze )
+    if ( p() -> active.blood_craze )
     {
       if ( result_is_multistrike( s -> result ) )
       {
         p() -> buff.blood_craze -> trigger();
         residual_action::trigger(
-          p() -> active_blood_craze, // ignite spell
+          p() -> active.blood_craze, // ignite spell
           p(), // target
           p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
       }
     }
-  }
-
-  void sudden_death()
-  {
-    if ( !p() -> talents.sudden_death -> ok() )
-      return;
-
-    if ( p() -> sudden_death.trigger() )
-      p() -> buff.sudden_death -> trigger();
   }
 };
 
@@ -1507,7 +1488,7 @@ struct colossus_smash_t: public warrior_attack_t
 
   double target_armor( player_t* t ) const
   {
-    return attack_t::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
+      return attack_t::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
   } // If they ever bring back a resetting colossus smash, this will need to be adjusted.
 
   void execute()
@@ -1572,10 +1553,10 @@ struct devastate_t: public warrior_attack_t
     {
       if ( p() -> buff.sword_and_board -> trigger() )
         p() -> cooldown.shield_slam -> reset( true );
-      if ( p() -> active_deep_wounds )
+      if ( p() -> active.deep_wounds )
       {
-        p() -> active_deep_wounds -> target = execute_state -> target;
-        p() -> active_deep_wounds -> execute();
+        p() -> active.deep_wounds -> target = execute_state -> target;
+        p() -> active.deep_wounds -> execute();
       }
       if ( p() -> talents.unyielding_strikes -> ok() )
       {
@@ -2640,7 +2621,7 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( rng().roll( p() -> sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
     {
-      if ( p() -> active_stance == STANCE_GLADIATOR )
+      if ( p() -> active.stance == STANCE_GLADIATOR )
         shield_charge_2pc -> execute();
       else
         shield_block_2pc -> execute();
@@ -2650,7 +2631,7 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> active_stance != STANCE_BATTLE )
+      if ( p() -> active.stance != STANCE_BATTLE )
       {
         p() -> resource_gain( RESOURCE_RAGE,
           rage_gain,
@@ -2841,12 +2822,12 @@ struct thunder_clap_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( p() -> active_deep_wounds )
+    if ( p() -> active.deep_wounds )
     {
       if ( result_is_hit( s -> result ) )
       {
-        p() -> active_deep_wounds -> target = s -> target;
-        p() -> active_deep_wounds -> execute();
+        p() -> active.deep_wounds -> target = s -> target;
+        p() -> active.deep_wounds -> execute();
       }
     }
   }
@@ -2855,7 +2836,7 @@ struct thunder_clap_t: public warrior_attack_t
   {
     double c = base_t::cost();
 
-    if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
+    if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active.stance == STANCE_DEFENSE )
       c = 0;
 
     return c;
@@ -3625,9 +3606,9 @@ struct stance_t: public warrior_spell_t
 
   void execute()
   {
-    if ( p() -> active_stance != switch_to_stance )
+    if ( p() -> active.stance != switch_to_stance )
     {
-      switch ( p() -> active_stance )
+      switch ( p() -> active.stance )
       {
       case STANCE_BATTLE: p() -> buff.battle_stance -> expire(); break;
       case STANCE_DEFENSE:
@@ -3655,11 +3636,11 @@ struct stance_t: public warrior_spell_t
 
     if ( swap > 0 )
     {
-      if ( swap >= 3.0 && p() -> active_stance != starting_stance )
+      if ( swap >= 3.0 && p() -> active.stance != starting_stance )
         switch_to_stance = starting_stance;
       if ( swap < 3.0 )
         cooldown -> start();
-      if ( swap >= 3.0 && p() -> active_stance == starting_stance )
+      if ( swap >= 3.0 && p() -> active.stance == starting_stance )
       {
         switch_to_stance = original_switch;
         cooldown -> start();
@@ -3673,7 +3654,7 @@ struct stance_t: public warrior_spell_t
     if ( p() -> in_combat && p() -> talents.gladiators_resolve -> ok() )
       return false;
     if ( p() -> cooldown.stance_swap -> down() || cooldown -> down() || 
-       ( swap == 0 && p() -> active_stance == switch_to_stance ) )
+       ( swap == 0 && p() -> active.stance == switch_to_stance ) )
          return false;
 
     return warrior_spell_t::ready();
@@ -3937,13 +3918,13 @@ void warrior_t::init_spells()
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
 
   // Active spells
-  if ( spec.blood_craze -> ok() ) active_blood_craze = new blood_craze_t( this );
-  if ( talents.bloodbath -> ok() ) active_bloodbath_dot = new bloodbath_dot_t( this );
-  if ( spec.deep_wounds -> ok() ) active_deep_wounds = new deep_wounds_t( this );
-  if ( perk.enhanced_rend -> ok() ) active_enhanced_rend = new enhanced_rend_t( this );
-  if ( glyphs.rallying_cry -> ok() ) active_rallying_cry_heal = new rallying_cry_heal_t( this );
-  if ( talents.second_wind -> ok() ) active_second_wind = new second_wind_t( this );
-  if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active_t16_2pc = new tier16_2pc_tank_heal_t( this );
+  if ( spec.blood_craze -> ok() ) active.blood_craze = new blood_craze_t( this );
+  if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
+  if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
+  if ( perk.enhanced_rend -> ok() ) active.enhanced_rend = new enhanced_rend_t( this );
+  if ( glyphs.rallying_cry -> ok() ) active.rallying_cry_heal = new rallying_cry_heal_t( this );
+  if ( talents.second_wind -> ok() ) active.second_wind = new second_wind_t( this );
+  if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
 
   if ( !talents.gladiators_resolve -> ok() )
@@ -4480,6 +4461,30 @@ void warrior_t::apl_default()
   default_list -> add_action( this, "Heroic Throw" );
 }
 
+namespace rppm{
+
+template <typename Base>
+struct warrior_real_ppm_t: public Base
+{
+  public:
+  typedef warrior_real_ppm_t base_t;
+
+  warrior_real_ppm_t( warrior_t& p, real_ppm_t& params ):
+    Base( params ), warrior( p )
+  {}
+
+  protected:
+  warrior_t& warrior;
+};
+
+struct sudden_death_t: public warrior_real_ppm_t < real_ppm_t >
+{
+  sudden_death_t( warrior_t& p ):
+    base_t( p, real_ppm_t( p, 2.5, RPPM_HASTE ) )
+  {}
+};
+};
+
 // =========================================================================
 // Buff Help Classes
 // =========================================================================
@@ -4595,7 +4600,7 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
 
   void execute( int a, double b, timespan_t t )
   {
-    warrior.active_stance = STANCE_DEFENSE;
+    warrior.active.stance = STANCE_DEFENSE;
     base_t::execute( a, b, t );
   }
 };
@@ -4610,7 +4615,7 @@ struct battle_stance_t: public warrior_buff_t < buff_t >
 
   void execute( int a, double b, timespan_t t )
   {
-    warrior.active_stance = STANCE_BATTLE;
+    warrior.active.stance = STANCE_BATTLE;
     base_t::execute( a, b, t );
   }
 };
@@ -4626,7 +4631,7 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
 
   void execute( int a, double b, timespan_t t )
   {
-    warrior.active_stance = STANCE_GLADIATOR;
+    warrior.active.stance = STANCE_GLADIATOR;
     base_t::execute( a, b, t );
   }
 };
@@ -4930,20 +4935,17 @@ void warrior_t::init_procs()
   proc.bloodsurge_wasted       = get_proc( "bloodsurge_wasted" );
   proc.delayed_auto_attack     = get_proc( "delayed_auto_attack" );
 
-  proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
   proc.t17_2pc_arms            = get_proc( "t17_2pc_arms" );
 }
 
-// warrior_t::init_rng ======================================================
+// warrior_t::init_rng ========================================================
 
 void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  sudden_death.set_frequency( 2.5 );
-
-  t15_2pc_melee.set_frequency( 1.11 );
+  rppm.sudden_death = new rppm::sudden_death_t( *this );
 }
 
 // warrior_t::init_resources ================================================
@@ -5053,11 +5055,11 @@ void warrior_t::arise()
 {
   player_t::arise();
 
-  if ( active_stance == STANCE_BATTLE )
+  if ( active.stance == STANCE_BATTLE )
     buff.battle_stance -> trigger();
-  else if ( active_stance == STANCE_GLADIATOR )
+  else if ( active.stance == STANCE_GLADIATOR )
     buff.gladiator_stance -> trigger();
-  else if ( active_stance == STANCE_DEFENSE )
+  else if ( active.stance == STANCE_DEFENSE )
     buff.defensive_stance -> trigger();
 
   if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility && level >= 80 ) // Currently it is impossible to remove this.
@@ -5104,16 +5106,13 @@ void warrior_t::reset()
 {
   player_t::reset();
 
-  active_stance = STANCE_BATTLE;
+  active.stance = STANCE_BATTLE;
   if ( gladiator )
-    active_stance = STANCE_GLADIATOR;
+    active.stance = STANCE_GLADIATOR;
 
   swapping = false;
   heroic_charge = 0;
   last_target_charged = 0;
-
-  t15_2pc_melee.reset();
-  sudden_death.reset();
 }
 
 // Movement related overrides. =============================================
@@ -5178,7 +5177,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   if ( buff.rude_interruption -> up() )
     m *= 1.0 + buff.rude_interruption -> value();
 
-  if ( active_stance == STANCE_GLADIATOR )
+  if ( active.stance == STANCE_GLADIATOR )
   {
     if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
     {
@@ -5198,7 +5197,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
   case ATTR_STAMINA:
-    if ( active_stance == STANCE_DEFENSE )
+    if ( active.stance == STANCE_DEFENSE )
       a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
     break;
   default:
@@ -5207,13 +5206,13 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
-// warrior_t::composite_armor_multiplier ======================================
+
 
 double warrior_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  if ( active_stance == STANCE_DEFENSE )
+  if ( active.stance == STANCE_DEFENSE )
   {
     a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
   }
@@ -5227,7 +5226,7 @@ double warrior_t::composite_melee_expertise( weapon_t* ) const
 {
   double e = player_t::composite_melee_expertise();
 
-  if ( active_stance == STANCE_DEFENSE )
+  if ( active.stance == STANCE_DEFENSE )
     e += spec.unwavering_sentinel -> effectN( 5 ).percent();
 
   return e;
@@ -5373,7 +5372,7 @@ double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( active_stance == STANCE_DEFENSE )
+  if ( active.stance == STANCE_DEFENSE )
     c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
   return c;
@@ -5521,7 +5520,7 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_CRIT ||
        s -> result == RESULT_GLANCE )
   {
-    if ( active_stance == STANCE_DEFENSE )
+    if ( active.stance == STANCE_DEFENSE )
       s -> result_amount *= 1.0 + ( buff.defensive_stance -> data().effectN( 1 ).percent() +
       talents.gladiators_resolve -> effectN( 2 ).percent() );
 
@@ -5570,20 +5569,20 @@ void warrior_t::assess_damage( school_e school,
                              gain.tier16_4pc_tank );
   }
 
-  if ( active_t16_2pc )
+  if ( active.t16_2pc )
   {
     if ( s -> block_result != BLOCK_RESULT_UNBLOCKED ) //heal if blocked
     {
       double heal_amount = floor( s -> blocked_amount * sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).percent() );
-      active_t16_2pc -> base_dd_min = active_t16_2pc -> base_dd_max = heal_amount;
-      active_t16_2pc -> execute();
+      active.t16_2pc -> base_dd_min = active.t16_2pc -> base_dd_max = heal_amount;
+      active.t16_2pc -> execute();
     }
 
     if ( s -> self_absorb_amount > 0 ) //always heal if shield_barrier absorbed it. This assumes that shield_barrier is our only own absorb spell.
     {
       double heal_amount = floor( s -> self_absorb_amount * sets.set( SET_TANK, T16, B2 ) -> effectN( 2 ).percent() );
-      active_t16_2pc -> base_dd_min = active_t16_2pc -> base_dd_max = heal_amount;
-      active_t16_2pc -> execute();
+      active.t16_2pc -> base_dd_min = active.t16_2pc -> base_dd_max = heal_amount;
+      active.t16_2pc -> execute();
     }
   }
 }
@@ -5668,7 +5667,7 @@ void warrior_t::stance_swap()
   warrior_stance swap;
   if ( talents.gladiators_resolve -> ok() && in_combat ) // Cannot swap stances with gladiator's resolve in combat.
     return;
-  switch ( active_stance )
+  switch ( active.stance )
   {
   case STANCE_BATTLE:
   {
@@ -5689,7 +5688,7 @@ void warrior_t::stance_swap()
     swap = STANCE_GLADIATOR;
     break;
   }
-  default: swap = active_stance; break;
+  default: swap = active.stance; break;
   }
 
   switch ( swap )
