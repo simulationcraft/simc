@@ -1050,6 +1050,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   {
     ri.gear_weights_lootrank_link        = chart::gear_weights_lootrank   ( p );
     ri.gear_weights_wowhead_std_link     = chart::gear_weights_wowhead    ( p );
+    ri.gear_weights_pawn_string          = chart::gear_weights_pawn       ( p );
     ri.gear_weights_askmrrobot_link      = chart::gear_weights_askmrrobot ( p );
   }
 

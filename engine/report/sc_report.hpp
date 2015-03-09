@@ -44,6 +44,7 @@ std::string dps_error( player_t& );
 
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank  ( player_t* );
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_wowhead   ( player_t* );
+std::array<std::string, SCALE_METRIC_MAX> gear_weights_pawn      ( player_t* );
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_askmrrobot( player_t* );
 
 } // end namespace sc_chart
