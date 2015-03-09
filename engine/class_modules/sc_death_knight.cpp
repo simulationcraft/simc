@@ -4568,6 +4568,7 @@ struct trinket_62_obliterate_attack_t : public death_knight_melee_attack_t
     background = special = true;
     callbacks = false;
     weapon = w;
+    rp_gain = 0;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
       weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
