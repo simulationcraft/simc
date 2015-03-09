@@ -4688,6 +4688,8 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
+  player_t::create_pets();
+
   pet_fire_elemental       = create_pet( "fire_elemental_pet"       );
   guardian_fire_elemental  = create_pet( "fire_elemental_guardian"  );
   pet_storm_elemental      = create_pet( "storm_elemental_pet"      );

@@ -551,7 +551,15 @@ player_t::player_t( sim_t*             s,
   trinket_62_agi_d( false ),
   trinket_62_agi_d_duration( timespan_t::from_seconds( 10.0 ) ),
   trinket_62_agi_d_rppm( 1.0 ),
-  trinket_62_agi_d_multiplier( 1.194 )
+  trinket_62_agi_d_multiplier( 1.194 ),
+
+  trinket_62_agi_c( false ),
+  trinket_62_agi_c_speed( timespan_t::from_seconds( 2.0 ) ),
+  trinket_62_agi_c_ap_coeff( 1.0 ),
+  trinket_62_agi_c_weapon_pct( 0.5 ),
+  trinket_62_agi_c_duration( timespan_t::from_seconds( 20 ) ),
+  trinket_62_agi_c_tick_time( timespan_t::from_seconds( 1.0 ) ),
+  trinket_62_agi_c_cooldown( timespan_t::from_seconds( 120.0 ) )
 {
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
@@ -6605,6 +6613,109 @@ struct pool_resource_t : public action_t
   }
 };
 
+struct trinket_62_agi_c_pet_t : public pet_t
+{
+  struct bladestorm_tick_t : public melee_attack_t
+  {
+    bladestorm_tick_t( pet_t* p ) :
+      melee_attack_t( "bladestorm_tick", p )
+    {
+      school = SCHOOL_PHYSICAL;
+
+      background = special = may_crit = true;
+      callbacks = false;
+      aoe = -1;
+
+      weapon_multiplier = p -> owner -> trinket_62_agi_c_weapon_pct;
+
+      weapon = &( p -> main_hand_weapon );
+    }
+
+    void init()
+    {
+      melee_attack_t::init();
+
+      pet_t* main_pet = player -> cast_pet() -> owner -> trinket_62_agi_c_pets[ 0 ];
+      if ( player != main_pet )
+      {
+        stats = main_pet -> find_action( "bladestorm_tick" ) -> stats;
+      }
+    }
+  };
+
+  struct bladestorm_t : public melee_attack_t
+  {
+    bladestorm_t( pet_t* p ) :
+      melee_attack_t( "bladestorm", p )
+    {
+      base_tick_time = p -> owner -> trinket_62_agi_c_tick_time;
+      dot_duration = p -> owner -> trinket_62_agi_c_duration * 3;
+      callbacks = may_miss = false;
+      channeled = true;
+
+      tick_action = new bladestorm_tick_t( p );
+    }
+
+    void init()
+    {
+      melee_attack_t::init();
+
+      pet_t* main_pet = player -> cast_pet() -> owner -> trinket_62_agi_c_pets[ 0 ];
+      if ( player != main_pet )
+      {
+        stats = main_pet -> find_action( "bladestorm" ) -> stats;
+      }
+    }
+  };
+
+  trinket_62_agi_c_pet_t( player_t* owner ) :
+    pet_t( owner -> sim, owner, "agi_c_pet", true, true )
+  {
+    main_hand_weapon.type = WEAPON_BEAST;
+    main_hand_weapon.swing_time = owner -> trinket_62_agi_c_speed;
+
+    owner_coeff.ap_from_ap = owner -> trinket_62_agi_c_ap_coeff;
+  }
+
+  void init_action_list()
+  {
+    action_list_str = "bladestorm";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "bladestorm" ) return new bladestorm_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+};
+
+struct trinket_62_agi_c_summon_t : public action_t
+{
+  trinket_62_agi_c_summon_t( player_t* player, const std::string& opts ) :
+    action_t( ACTION_USE, "agi_c_trinket", player )
+  {
+    cooldown -> duration = player -> trinket_62_agi_c_cooldown;
+    parse_options( opts );
+  }
+
+  void execute()
+  {
+    if ( sim -> log )
+      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+
+    for ( size_t i = 0; i < sizeof_array( player -> trinket_62_agi_c_pets ); ++i )
+    {
+      player -> trinket_62_agi_c_pets[ i ] -> summon( player -> trinket_62_agi_c_duration );
+    }
+
+    update_ready();
+  }
+};
 
 } // UNNAMED NAMESPACE
 
@@ -6636,8 +6747,22 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
   if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
   //if ( name == "variable"           ) return new           variable_t( this, options_str );
+  if ( trinket_62_agi_c && name == "trinket_62_agi_c" ) return new trinket_62_agi_c_summon_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
+}
+
+// player_t::create_pets ====================================================
+
+void player_t::create_pets()
+{
+  if ( trinket_62_agi_c )
+  {
+    for ( size_t i = 0; i < sizeof_array( trinket_62_agi_c_pets ); ++i )
+    {
+      trinket_62_agi_c_pets[ i ] = new trinket_62_agi_c_pet_t( this );
+    }
+  }
 }
 
 // player_t::parse_talents_numbers ==========================================
@@ -8820,6 +8945,14 @@ void player_t::create_options()
   add_option( opt_timespan( "trinket_62_agi_d_duration", trinket_62_agi_d_duration ) );
   add_option( opt_float( "trinket_62_agi_d_rppm", trinket_62_agi_d_rppm ) );
   add_option( opt_float( "trinket_62_agi_d_multiplier", trinket_62_agi_d_multiplier ) );
+
+  add_option( opt_bool( "trinket_62_agi_c", trinket_62_agi_c ) );
+  add_option( opt_timespan( "trinket_62_agi_c_duration", trinket_62_agi_c_duration ) );
+  add_option( opt_timespan( "trinket_62_agi_c_cooldown", trinket_62_agi_c_cooldown ) );
+  add_option( opt_timespan( "trinket_62_agi_c_swing_time", trinket_62_agi_c_speed ) );
+  add_option( opt_timespan( "trinket_62_agi_c_tick_time", trinket_62_agi_c_tick_time ) );
+  add_option( opt_float( "trinket_62_agi_c_ap_coeff", trinket_62_agi_c_ap_coeff ) );
+  add_option( opt_float( "trinket_62_agi_c_weapon_pct", trinket_62_agi_c_weapon_pct ) );
 }
 
 // player_t::create =========================================================

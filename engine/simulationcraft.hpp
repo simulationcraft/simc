@@ -5057,7 +5057,7 @@ struct player_t : public actor_t
   virtual void copy_from( player_t* source );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual void      create_pets() { }
+  virtual void      create_pets();
   virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
@@ -5330,6 +5330,17 @@ public:
   timespan_t trinket_62_agi_d_duration;
   double trinket_62_agi_d_rppm;
   double trinket_62_agi_d_multiplier;
+
+  // Agility C
+  bool trinket_62_agi_c;
+  timespan_t trinket_62_agi_c_speed;
+  double trinket_62_agi_c_ap_coeff;
+  double trinket_62_agi_c_weapon_pct;
+  timespan_t trinket_62_agi_c_duration;
+  timespan_t trinket_62_agi_c_tick_time;
+  timespan_t trinket_62_agi_c_cooldown;
+
+  pet_t* trinket_62_agi_c_pets[ 4 ];
 };
 
 // Target Specific ==========================================================
