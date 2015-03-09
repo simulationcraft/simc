@@ -533,7 +533,13 @@ void print_text_uptime( FILE* file, player_t* p )
 // print_text_waiting ==========================================================
 void print_text_waiting( FILE* file, player_t* p )
 {
-  util::fprintf( file, "  Waiting: %4.2f%%", 100.0* p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() );
+  double wait_time = 0;
+  if ( p -> collected_data.fight_length.mean() > 0 )
+  {
+    wait_time = p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean();
+  }
+
+  util::fprintf( file, "  Waiting: %4.2f%%", 100.0 * wait_time );
 }
 
 // print_text_waiting_all =======================================================
