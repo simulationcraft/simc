@@ -1959,7 +1959,11 @@ struct fan_of_knives_t: public rogue_attack_t
   void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
-    if ( p() -> perk.empowered_fan_of_knives -> ok() && result_is_hit( state -> result ) )
+    // Don't generate a combo point on the first target hit, since that's
+    // already covered by the action execution logic.
+    if ( state -> chain_target > 0 &&
+         p() -> perk.empowered_fan_of_knives -> ok() &&
+         result_is_hit( state -> result ) )
       p() -> trigger_combo_point_gain( state, 1, p() -> gains.empowered_fan_of_knives );
   }
 };
