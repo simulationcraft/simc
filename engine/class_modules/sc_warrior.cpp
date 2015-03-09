@@ -4469,7 +4469,7 @@ struct warrior_real_ppm_t: public Base
   public:
   typedef warrior_real_ppm_t base_t;
 
-  warrior_real_ppm_t( warrior_t& p, real_ppm_t& params ):
+  warrior_real_ppm_t( warrior_t& p, const real_ppm_t& params ):
     Base( params ), warrior( p )
   {}
 
