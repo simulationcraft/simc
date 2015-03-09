@@ -400,12 +400,11 @@ class CDNIndex(CASCObject):
 				continue
 
 			self.cdn_path = split[1]
-			self.cdn_host = split[2].split(' ')[0]
+			self.cdn_host = split[2].split(' ')[0].strip()
 
 		if not self.cdn_path or not self.cdn_host:
 			print >>sys.stderr, 'Unable to extract CDN information'
 			sys.exit(1)
-
 
 	def cdn_base_url(self):
 		return 'http://%s/%s' % (self.cdn_host, self.cdn_path)
