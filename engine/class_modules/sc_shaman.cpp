@@ -30,7 +30,7 @@ struct shaman_t;
 enum totem_e { TOTEM_NONE = 0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 enum imbue_e { IMBUE_NONE = 0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, FROSTBRAND_IMBUE, EARTHLIVING_IMBUE };
 
-#define MAX_MAELSTROM_STACK ( 5 )
+#define MAX_MAELSTROM_STACK ( 10 )
 
 struct shaman_attack_t;
 struct shaman_spell_t;
