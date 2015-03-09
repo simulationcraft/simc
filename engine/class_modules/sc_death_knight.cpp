@@ -3105,14 +3105,16 @@ struct blood_plague_t : public death_knight_spell_t
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
 
-  void tick( dot_t* d )
+  void assess_damage( dmg_e type, action_state_t* s )
   {
-    death_knight_spell_t::tick( d );
+    death_knight_spell_t::assess_damage( type, s );
 
-    if ( p() -> trinket_62 && p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
+    if ( s -> result_amount > 0 &&
+         p() -> trinket_62 &&
+         p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
     {
-      p() -> wandering_plague -> target = d -> target;
-      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = d -> state -> result_amount;
+      p() -> wandering_plague -> target = s -> target;
+      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = s -> result_amount;
       p() -> wandering_plague -> execute();
     }
   }
@@ -3144,14 +3146,16 @@ struct frost_fever_t : public death_knight_spell_t
       base_multiplier *= 1.0 + p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
 
-  void tick( dot_t* d )
+  void assess_damage( dmg_e type, action_state_t* s )
   {
-    death_knight_spell_t::tick( d );
+    death_knight_spell_t::assess_damage( type, s );
 
-    if ( p() -> trinket_62 && p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
+    if ( s -> result_amount > 0 &&
+         p() -> trinket_62 &&
+         p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
     {
-      p() -> wandering_plague -> target = d -> target;
-      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = d -> state -> result_amount;
+      p() -> wandering_plague -> target = s -> target;
+      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = s -> result_amount;
       p() -> wandering_plague -> execute();
     }
   }
@@ -3226,11 +3230,18 @@ struct necrotic_plague_t : public death_knight_spell_t
             player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
       new ( *sim ) np_spread_event_t<death_knight_td_t>( dot );
     }
+  }
 
-    if ( p() -> trinket_62 && p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    death_knight_spell_t::assess_damage( type, s );
+
+    if ( s -> result_amount > 0 &&
+         p() -> trinket_62 &&
+         p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
     {
-      p() -> wandering_plague -> target = dot -> target;
-      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = dot -> state -> result_amount;
+      p() -> wandering_plague -> target = s -> target;
+      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = s -> result_amount;
       p() -> wandering_plague -> execute();
     }
   }
