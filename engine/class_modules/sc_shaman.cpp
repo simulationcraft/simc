@@ -389,8 +389,8 @@ public:
     ls_reset( timespan_t::zero() ), lava_surge_during_lvb( false ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
     trinket_62( false ),
-    wf_damage_increase( 2.0 ),
-    wf_mw_procrate( 0.2 ),
+    wf_damage_increase( 4.0 ),
+    wf_mw_procrate( 0.5 ),
     lvb_spread_procrate( 0.25 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
@@ -948,7 +948,8 @@ public:
          ab::instant_eligibility() &&
          ! p -> buff.ancestral_swiftness -> check() )
     {
-      m *= 1.0 + p -> buff.maelstrom_weapon -> check() * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
+      size_t stacks = std::min( 5, p -> buff.maelstrom_weapon -> check() );
+      m *= 1.0 + stacks * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
     }
 
     return m;
