@@ -1245,13 +1245,20 @@ struct agi_d_damage_driver_cb_t : public dbc_proc_callback_t
 
   void activate()
   {
-    dbc_proc_callback_t::activate();
+    if ( ! active )
+    {
+      stored_value = 0;
+    }
 
-    stored_value = 0;
+    dbc_proc_callback_t::activate();
   }
 
   void execute( action_t* /* a */, action_state_t* trigger_state )
   {
+    if ( listener -> sim -> debug )
+    {
+      listener -> sim -> out_debug.printf( "%s spirit_shift accumulates %.0f damage.", listener -> name(), trigger_state -> result_amount );
+    }
     stored_value += trigger_state -> result_amount;
   }
 };
@@ -1295,7 +1302,7 @@ struct agi_d_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( cb -> stored_value > 0 )
+    if ( cb -> stored_value > 0 && ! player -> is_sleeping() )
     {
       explosion -> base_dd_min = explosion -> base_dd_max = cb -> stored_value * player -> trinket_62_agi_d_multiplier;
       explosion -> execute();
@@ -1416,6 +1423,7 @@ void player_t::init_special_effects()
     effect.ppm_ = -1.0 * trinket_62_agi_d_rppm;
     effect.custom_init = initialize_trinket62_agi_d;
     effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
+    effect.cooldown_ = trinket_62_agi_d_duration;
 
     special_effects.push_back( new special_effect_t( effect ) );
   }

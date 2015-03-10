@@ -1481,33 +1481,34 @@ void action_t::assess_damage( dmg_e    type,
   if ( sim -> debug )
     s -> debug();
 
-  if ( type == DMG_DIRECT )
-  {
-    if ( sim -> log )
-    {
-      sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     s -> target -> name(), s -> result_amount,
-                     util::school_type_string( get_school() ),
-                     util::result_type_string( s -> result ) );
-    }
-  }
-  else // DMG_OVER_TIME
-  {
-    if ( sim -> log )
-    {
-      dot_t* dot = get_dot( s -> target );
-      sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     dot -> current_tick, dot -> num_ticks,
-                     s -> target -> name(), s -> result_amount,
-                     util::school_type_string( get_school() ),
-                     util::result_type_string( s -> result ) );
-    }
-  }
 
   if ( ! player -> buffs.agi_d || ! player -> buffs.agi_d -> check() )
   {
+    if ( type == DMG_DIRECT )
+    {
+      if ( sim -> log )
+      {
+        sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
+    }
+    else // DMG_OVER_TIME
+    {
+      if ( sim -> log )
+      {
+        dot_t* dot = get_dot( s -> target );
+        sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       dot -> current_tick, dot -> num_ticks,
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
+    }
+
     if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
     {
       player -> priority_iteration_dmg += s -> result_amount;
