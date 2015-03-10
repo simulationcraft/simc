@@ -1358,6 +1358,8 @@ struct trinket_62_int_d_damage_t : public spell_t
     callbacks = false;
 
     base_dd_min = base_dd_max = player -> trinket_62_int_d_damage;
+
+    aoe = -1;
   }
 };
 
