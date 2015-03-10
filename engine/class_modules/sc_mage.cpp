@@ -389,7 +389,7 @@ public:
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
-  void trigger_icicle( const action_state_t* trigger_state, bool chain = false );
+  void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = 0 );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -2987,7 +2987,7 @@ struct ice_lance_t : public mage_spell_t
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
-    p() -> trigger_icicle( execute_state, true );
+    p() -> trigger_icicle( execute_state, true, target );
   }
 
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
@@ -5770,7 +5770,7 @@ icicle_data_t mage_t::get_icicle_object()
   return icicle_data_t( (double) 0, (stats_t*) 0 );
 }
 
-void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain )
+void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, player_t* chain_target )
 {
   if ( ! spec.icicles -> ok() )
     return;
@@ -5780,13 +5780,23 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain )
 
   std::pair<double, stats_t*> d;
 
+  player_t* icicle_target;
+  if ( chain_target )
+  {
+    icicle_target = chain_target;
+  }
+  else
+  {
+    icicle_target = trigger_state -> target;
+  }
+
   if ( chain && ! icicle_event )
   {
     d = get_icicle_object();
     if ( d.first == 0 )
       return;
 
-    icicle_event = new ( *sim ) events::icicle_event_t( *this, d, trigger_state -> target, true );
+    icicle_event = new ( *sim ) events::icicle_event_t( *this, d, icicle_target, true );
   }
   else if ( ! chain )
   {
@@ -5797,14 +5807,15 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain )
     icicle -> base_dd_min = icicle -> base_dd_max = d.first;
 
     actions::icicle_state_t* new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
-    new_state -> target = trigger_state -> target;
+    new_state -> target = icicle_target;
     new_state -> source = d.second;
     icicle -> schedule_execute( new_state );
   }
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "%s icicle use%s, damage=%f, total=%u",
-                           name(), chain ? " (chained)" : "", d.first,
+    sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
+                           name(), icicle_target -> name(),
+                           chain ? " (chained)" : "", d.first,
                            as<unsigned>( icicles.size() ) );
 }
 
