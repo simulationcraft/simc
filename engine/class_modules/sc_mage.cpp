@@ -28,7 +28,7 @@ typedef std::pair< double, stats_t* > icicle_data_t;
 // Icicle container object, stored in a list to launch icicles at unsuspecting enemies!
 typedef std::pair< timespan_t, icicle_data_t > icicle_tuple_t;
 
-struct mage_td_t : public actor_pair_t
+struct mage_td_t : public actor_target_data_t
 {
   struct dots_t
   {
@@ -409,7 +409,7 @@ namespace pets {
 
 struct water_elemental_pet_t;
 
-struct water_elemental_pet_td_t: public actor_pair_t
+struct water_elemental_pet_td_t: public actor_target_data_t
 {
   buff_t* water_jet;
 public:
@@ -582,7 +582,7 @@ struct water_elemental_pet_t : public pet_t
 };
 
 water_elemental_pet_td_t::water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly ) :
-  actor_pair_t( target, welly )
+  actor_target_data_t( target, welly )
 {
   water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) ).cd( timespan_t::zero() );
 }
@@ -4226,7 +4226,7 @@ struct icicle_event_t : public event_t
 // mage_td_t ================================================================
 
 mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
-  actor_pair_t( target, mage ),
+  actor_target_data_t( target, mage ),
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {

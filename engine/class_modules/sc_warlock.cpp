@@ -24,7 +24,7 @@ namespace pets {
 struct wild_imp_pet_t;
 }
 
-struct warlock_td_t: public actor_pair_t
+struct warlock_td_t: public actor_target_data_t
 {
   dot_t*  dots_agony;
   dot_t*  dots_corruption;
@@ -4832,11 +4832,11 @@ struct mannoroths_fury_t: public warlock_spell_t
 } // end actions namespace
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ):
-actor_pair_t( target, p ),
-ds_started_below_20( false ),
-agony_stack( 1 ),
-soc_trigger( 0 ),
-soulburn_soc_trigger( 0 )
+  actor_target_data_t( target, p ),
+  ds_started_below_20( false ),
+  agony_stack( 1 ),
+  soc_trigger( 0 ),
+  soulburn_soc_trigger( 0 )
 {
   dots_corruption = target -> get_dot( "corruption", p );
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", p );

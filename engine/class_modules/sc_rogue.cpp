@@ -69,7 +69,7 @@ struct shadow_reflect_event_t : public player_event_t
 // Rogue
 // ==========================================================================
 
-struct rogue_td_t : public actor_pair_t
+struct rogue_td_t : public actor_target_data_t
 {
   struct dots_t
   {
@@ -3983,7 +3983,7 @@ inline void actions::marked_for_death_t::impact( action_state_t* state )
 // ==========================================================================
 
 rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
-  actor_pair_t( target, source ),
+  actor_target_data_t( target, source ),
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
@@ -4025,14 +4025,14 @@ using namespace actions;
 
 struct shadow_reflection_pet_t : public pet_t
 {
-  struct shadow_reflection_td_t : public actor_pair_t
+  struct shadow_reflection_td_t : public actor_target_data_t
   {
     dot_t* revealing_strike;
 
     buff_t* vendetta;
 
     shadow_reflection_td_t( player_t* target, shadow_reflection_pet_t* source ) :
-      actor_pair_t( target, source )
+      actor_target_data_t( target, source )
     {
       revealing_strike = target -> get_dot( "revealing_strike", source );
 

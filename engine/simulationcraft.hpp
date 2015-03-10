@@ -4351,6 +4351,13 @@ struct action_variable_t
   { current_value_ = default_; }
 };
 
+struct actor_target_data_t : public actor_pair_t
+{
+  debuff_t* debuff_mark_of_doom;
+
+  actor_target_data_t( player_t* target, player_t* source );
+};
+
 struct player_t : public actor_t
 {
   static const int default_level = 100;
@@ -5117,8 +5124,7 @@ struct player_t : public actor_t
   double      get_player_distance( player_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
-  virtual actor_pair_t* get_target_data( player_t* /* target */ ) const
-  { return nullptr; }
+  virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const;
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}
@@ -6485,6 +6491,21 @@ struct strict_sequence_t : public action_t
   void interrupt_action();
   void schedule_execute( action_state_t* execute_state = 0 );
 };
+
+inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
+  actor_pair_t( target, source ),
+  debuff_mark_of_doom( 0 )
+{
+  if ( source -> trinket_62_int_d )
+  {
+    debuff_mark_of_doom = buff_creator_t( *this, "mark_of_doom" );
+  }
+}
+
+inline actor_target_data_t* player_t::get_target_data( player_t* ) const
+{
+  return nullptr;
+}
 
 // Primary proc type of the result (direct (aoe) damage/heal, periodic
 // damage/heal)

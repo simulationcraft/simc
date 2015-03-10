@@ -15,7 +15,7 @@ struct warrior_t;
 
 enum warrior_stance { STANCE_BATTLE = 2, STANCE_DEFENSE = 4, STANCE_GLADIATOR = 8 };
 
-struct warrior_td_t: public actor_pair_t
+struct warrior_td_t: public actor_target_data_t
 {
   dot_t* dots_bloodbath;
   dot_t* dots_deep_wounds;
@@ -4921,7 +4921,7 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 // ==========================================================================
 
 warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
-actor_pair_t( target, &p ), warrior( p )
+  actor_target_data_t( target, &p ), warrior( p )
 {
   using namespace buffs;
 

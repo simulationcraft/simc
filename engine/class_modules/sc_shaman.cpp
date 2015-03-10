@@ -40,7 +40,7 @@ struct totem_pulse_event_t;
 struct totem_pulse_action_t;
 struct maelstrom_weapon_buff_t;
 
-struct shaman_td_t : public actor_pair_t
+struct shaman_td_t : public actor_target_data_t
 {
   struct dots
   {
@@ -544,7 +544,7 @@ counter_t::counter_t( shaman_t* p ) :
 }
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
-  actor_pair_t( target, p )
+  actor_target_data_t( target, p )
 {
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
