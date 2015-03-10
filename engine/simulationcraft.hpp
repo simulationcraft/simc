@@ -5356,12 +5356,12 @@ public:
   double trinket_62_int_c_damage;
   double trinket_62_int_c_rppm;
 
-  double trinket_62_int_value;
-
   bool trinket_62_int_d;
   timespan_t trinket_62_int_d_duration;
   double trinket_62_int_d_damage;
   double trinket_62_int_d_rppm;
+
+  double trinket_62_int_value;
 
   pet_t* trinket_62_agi_c_pets[ 4 ];
 };
@@ -6491,16 +6491,6 @@ struct strict_sequence_t : public action_t
   void interrupt_action();
   void schedule_execute( action_state_t* execute_state = 0 );
 };
-
-inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
-  actor_pair_t( target, source ),
-  debuff_mark_of_doom( 0 )
-{
-  if ( source -> trinket_62_int_d )
-  {
-    debuff_mark_of_doom = buff_creator_t( *this, "mark_of_doom" );
-  }
-}
 
 inline actor_target_data_t* player_t::get_target_data( player_t* ) const
 {

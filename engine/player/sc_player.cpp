@@ -1098,7 +1098,12 @@ bool player_t::init_items()
     gear.add_stat( STAT_AGILITY, trinket_62_agi_value );
   }
 
-  if ( trinket_62_agi_c )
+  if ( trinket_62_int_c )
+  {
+    gear.add_stat( STAT_INTELLECT, trinket_62_int_value );
+  }
+
+  if ( trinket_62_int_d )
   {
     gear.add_stat( STAT_INTELLECT, trinket_62_int_value );
   }
@@ -1326,10 +1331,126 @@ struct agi_d_buff_t : public buff_t
   }
 };
 
+struct trinket_62_int_c_damage_t : public spell_t
+{
+  trinket_62_int_c_damage_t( player_t* player ) :
+    spell_t( "blacklight", player )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_int_c_damage;
+
+    aoe = -1;
+  }
+};
+
+struct trinket_62_int_d_damage_t : public spell_t
+{
+  trinket_62_int_d_damage_t( player_t* player ) :
+    spell_t( "mark_of_doom", player )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_int_d_damage;
+  }
+};
+
+struct trinket_62_int_d_driver_t : public dbc_proc_callback_t
+{
+  trinket_62_int_d_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state )
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+
+    td -> debuff_mark_of_doom -> trigger();
+  }
+};
+
+struct trinket_62_int_d_damage_driver_t : public dbc_proc_callback_t
+{
+  action_t* damage;
+  player_t* target;
+
+  trinket_62_int_d_damage_driver_t( const special_effect_t& effect, action_t* d, player_t* t ) :
+    dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
+  { }
+
+  void trigger( action_t* a, void* call_data )
+  {
+    const action_state_t* s = static_cast<const action_state_t*>( call_data );
+    if ( s -> target != target )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state )
+  {
+    damage -> target = trigger_state -> target;
+    damage -> execute();
+  }
+};
+
+struct trinket_62_int_d_debuff_t : public debuff_t
+{
+  trinket_62_int_d_damage_driver_t* driver_cb;
+  action_t* damage_spell;
+  special_effect_t* effect;
+
+  trinket_62_int_d_debuff_t( actor_pair_t* p ) :
+    debuff_t( buff_creator_t( *p, "mark_of_doom" ).duration( p -> source -> trinket_62_int_d_duration ) ),
+    damage_spell( p -> source -> find_action( "mark_of_doom" ) )
+  {
+    effect = new special_effect_t( p -> source );
+    effect -> name_str = "mark_of_doom_damage_driver";
+    effect -> proc_chance_ = 1.0;
+    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL;
+    effect -> proc_flags2_ = PF2_ALL_HIT;
+    p -> source -> special_effects.push_back( effect );
+
+    driver_cb = new trinket_62_int_d_damage_driver_t( *effect, damage_spell, p -> target );
+    driver_cb -> initialize();
+    driver_cb -> deactivate();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+
+    driver_cb -> deactivate();
+  }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    debuff_t::execute( stacks, value, duration );
+
+    driver_cb -> activate();
+  }
+
+  void reset()
+  {
+    debuff_t::reset();
+
+    driver_cb -> deactivate();
+  }
+};
+
 static void initialize_trinket62_agi_d_2( special_effect_t& effect )
 {
   agi_d_damage_driver_cb_t* damage_cb = new agi_d_damage_driver_cb_t( effect );
-  dynamic_cast<agi_d_buff_t*>( effect.custom_buff ) -> cb = damage_cb;
+  static_cast<agi_d_buff_t*>( effect.custom_buff ) -> cb = damage_cb;
 }
 
 static void initialize_trinket62_agi_d( special_effect_t& effect )
@@ -1350,27 +1471,16 @@ static void initialize_trinket62_agi_d( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-struct trinket_62_int_c_damage_t : public spell_t
-{
-  trinket_62_int_c_damage_t( player_t* player ) :
-    spell_t( "blacklight", player )
-  {
-    school = SCHOOL_SHADOW;
-
-    background = may_crit = true;
-    callbacks = false;
-
-    base_dd_min = base_dd_max = player -> trinket_62_int_c_damage;
-
-    aoe = -1;
-  }
-};
-
 static void initialize_trinket62_int_c( special_effect_t& effect )
 {
   effect.execute_action = new trinket_62_int_c_damage_t( effect.player );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+static void initialize_trinket62_int_d( special_effect_t& effect )
+{
+  new trinket_62_int_d_driver_t( effect );
 }
 
 void player_t::init_special_effects()
@@ -1437,6 +1547,21 @@ void player_t::init_special_effects()
     effect.rppm_scale = RPPM_HASTE;
     effect.custom_init = initialize_trinket62_int_c;
     effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
+
+    special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  if ( trinket_62_int_d )
+  {
+    new trinket_62_int_d_damage_t( this );
+
+    special_effect_t effect( this );
+    effect.name_str = "mark_of_doom_driver";
+    effect.type = SPECIAL_EFFECT_CUSTOM;
+    effect.ppm_ = -1.0 * trinket_62_int_d_rppm;
+    effect.custom_init = initialize_trinket62_int_d;
+    effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
+    effect.proc_flags2_ = PF2_ALL_HIT;
 
     special_effects.push_back( new special_effect_t( effect ) );
   }
@@ -9029,6 +9154,11 @@ void player_t::create_options()
   add_option( opt_bool( "trinket_62_int_c", trinket_62_int_c ) );
   add_option( opt_float( "trinket_62_int_c_damage", trinket_62_int_c_damage ) );
   add_option( opt_float( "trinket_62_int_c_rppm", trinket_62_int_c_rppm ) );
+
+  add_option( opt_bool( "trinket_62_int_d", trinket_62_int_d ) );
+  add_option( opt_timespan( "trinket_62_int_d_duration", trinket_62_int_d_duration ) );
+  add_option( opt_float( "trinket_62_int_d_damage", trinket_62_int_d_damage ) );
+  add_option( opt_float( "trinket_62_int_d_rppm", trinket_62_int_d_rppm ) );
 }
 
 // player_t::create =========================================================
@@ -10878,5 +11008,15 @@ player_t* player_t::actor_by_name_str( const std::string& name ) const
   }
 
   return 0;
+}
+
+actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
+  actor_pair_t( target, source ),
+  debuff_mark_of_doom( 0 )
+{
+  if ( source -> trinket_62_int_d )
+  {
+    debuff_mark_of_doom = new trinket_62_int_d_debuff_t( this );
+  }
 }
 
