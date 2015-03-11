@@ -5356,12 +5356,20 @@ public:
   double trinket_62_int_c_damage;
   double trinket_62_int_c_rppm;
 
+  // Intellect D
   bool trinket_62_int_d;
   timespan_t trinket_62_int_d_duration;
   double trinket_62_int_d_damage;
   double trinket_62_int_d_rppm;
 
   double trinket_62_int_value;
+
+  // Strength C
+  bool trinket_62_str_c;
+  double trinket_62_str_c_damage;
+  double trinket_62_str_c_rppm;
+
+  double trinket_62_str_value;
 
   pet_t* trinket_62_agi_c_pets[ 4 ];
 };

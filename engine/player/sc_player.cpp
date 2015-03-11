@@ -572,7 +572,13 @@ player_t::player_t( sim_t*             s,
   trinket_62_int_d_damage( 7449 ),
   trinket_62_int_d_rppm( 1.5 ),
 
-  trinket_62_int_value( 379 )
+  trinket_62_int_value( 379 ),
+
+  trinket_62_str_c( false ),
+  trinket_62_str_c_damage( 44882 ),
+  trinket_62_str_c_rppm( 3.0 ),
+
+  trinket_62_str_value( 379 )
 {
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
@@ -1108,6 +1114,11 @@ bool player_t::init_items()
     gear.add_stat( STAT_INTELLECT, trinket_62_int_value );
   }
 
+  if ( trinket_62_str_c )
+  {
+    gear.add_stat( STAT_STRENGTH, trinket_62_str_value );
+  }
+
   return true;
 }
 
@@ -1449,6 +1460,22 @@ struct trinket_62_int_d_debuff_t : public debuff_t
   }
 };
 
+struct trinket_62_str_c_damage_t : public melee_attack_t
+{
+  trinket_62_str_c_damage_t( player_t* player ) :
+    melee_attack_t( "fel_cleave", player )
+  {
+    school = SCHOOL_PHYSICAL;
+
+    background = special = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_str_c_damage;
+
+    aoe = -1;
+  }
+};
+
 static void initialize_trinket62_agi_d_2( special_effect_t& effect )
 {
   agi_d_damage_driver_cb_t* damage_cb = new agi_d_damage_driver_cb_t( effect );
@@ -1489,6 +1516,19 @@ static void initialize_trinket62_int_c( special_effect_t& effect )
 static void initialize_trinket62_int_d( special_effect_t& effect )
 {
   new trinket_62_int_d_driver_t( effect );
+}
+
+static void initialize_trinket62_str_c( special_effect_t& effect )
+{
+  action_t* a = effect.player -> create_proc_action( "fel_cleave" );
+  if ( ! a )
+  {
+    a = new trinket_62_str_c_damage_t( effect.player );
+  }
+
+  effect.execute_action = a;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void player_t::init_special_effects()
@@ -1575,6 +1615,19 @@ void player_t::init_special_effects()
     effect.custom_init = initialize_trinket62_int_d;
     effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
     effect.proc_flags2_ = PF2_ALL_HIT;
+
+    special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  if ( trinket_62_str_c )
+  {
+    special_effect_t effect( this );
+    effect.name_str = "fel_cleave_driver";
+    effect.type = SPECIAL_EFFECT_CUSTOM;
+    effect.ppm_ = -1.0 * trinket_62_str_c_rppm;
+    effect.rppm_scale = RPPM_HASTE;
+    effect.custom_init = initialize_trinket62_str_c;
+    effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
 
     special_effects.push_back( new special_effect_t( effect ) );
   }
@@ -9172,6 +9225,11 @@ void player_t::create_options()
   add_option( opt_timespan( "trinket_62_int_d_duration", trinket_62_int_d_duration ) );
   add_option( opt_float( "trinket_62_int_d_damage", trinket_62_int_d_damage ) );
   add_option( opt_float( "trinket_62_int_d_rppm", trinket_62_int_d_rppm ) );
+
+  add_option( opt_bool( "trinket_62_str_c", trinket_62_str_c ) );
+  add_option( opt_float( "trinket_62_str_c_damage", trinket_62_str_c_damage ) );
+  add_option( opt_float( "trinket_62_str_c_rppm", trinket_62_str_c_rppm ) );
+
 }
 
 // player_t::create =========================================================
