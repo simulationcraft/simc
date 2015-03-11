@@ -4353,7 +4353,12 @@ struct action_variable_t
 
 struct actor_target_data_t : public actor_pair_t
 {
+  // Int-D trinket
   debuff_t* debuff_mark_of_doom;
+
+  // Str-D trinket
+  debuff_t* debuff_fel_burn;
+  dot_t*    dot_fel_burn;
 
   actor_target_data_t( player_t* target, player_t* source );
 };
@@ -5368,6 +5373,12 @@ public:
   bool trinket_62_str_c;
   double trinket_62_str_c_damage;
   double trinket_62_str_c_rppm;
+
+  // Strength D
+  bool trinket_62_str_d;
+  double trinket_62_str_d_damage;
+  timespan_t trinket_62_str_d_period;
+  timespan_t trinket_62_str_d_duration;
 
   double trinket_62_str_value;
 

@@ -1871,10 +1871,10 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
+  if ( ( spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || base_td > 0 ) && dot_duration > timespan_t::zero() )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
-  if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
+  if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 || base_dd_min > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   // Tick actions use tick multipliers, so snapshot them too if direct
