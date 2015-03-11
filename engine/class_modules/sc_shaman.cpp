@@ -128,7 +128,8 @@ public:
   double wf_damage_increase;
   double wf_mw_procrate;
   // Elemental 6.2 trinket tweak values
-  double lvb_spread_procrate;
+  double fs_damage_multiplier;
+  double fs_duration_multiplier;
 
   // Active
   action_t* active_lightning_charge;
@@ -391,7 +392,8 @@ public:
     trinket_62( false ),
     wf_damage_increase( 4.0 ),
     wf_mw_procrate( 0.5 ),
-    lvb_spread_procrate( 0.25 ),
+    fs_damage_multiplier( 1.0 ),
+    fs_duration_multiplier( 1.0 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
     action_improved_lava_lash( nullptr ),
@@ -3024,47 +3026,6 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
       p() -> buff.elemental_fusion -> trigger();
-
-    shaman_td_t* tdata = td( state -> target );
-
-    // Elemental 6.2 trinket
-    if ( result_is_hit( state -> result ) &&
-         p() -> trinket_62 &&
-         tdata -> dot.flame_shock -> is_ticking() &&
-         rng().roll( p() -> lvb_spread_procrate ) )
-    {
-      tdata -> dot.flame_shock -> refresh_duration();
-      double duration_left = std::numeric_limits<double>::max();
-      player_t* spread_target = 0;
-      // Spread, do a linear search for now, pick first target without a Flame Shock, or shortest duration left.
-      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
-      {
-        player_t* t = sim -> target_non_sleeping_list[ i ];
-        if ( t == state -> target )
-        {
-          continue;
-        }
-
-        shaman_td_t* spread_td = td( t );
-        if ( ! spread_td -> dot.flame_shock -> is_ticking()  )
-        {
-          spread_target = t;
-          break;
-        }
-        else
-        {
-          if ( spread_td -> dot.flame_shock -> remains().total_seconds() < duration_left )
-          {
-            spread_target = t;
-          }
-        }
-      }
-
-      if ( spread_target )
-      {
-        tdata -> dot.flame_shock -> copy( spread_target, DOT_COPY_CLONE );
-      }
-    }
   }
 
   //overwrite MS behavior for blizzards new idea of helping crit's value
@@ -3573,6 +3534,12 @@ struct flame_shock_t : public shaman_spell_t
     uses_elemental_fusion = true;
     uses_unleash_flame    = true; // Disabled in spell data for some weird reason
     track_cd_waste        = false;
+
+    if ( player -> trinket_62 && player -> specialization() == SHAMAN_ELEMENTAL )
+    {
+      base_multiplier *= 1.0 + player -> fs_damage_multiplier;
+      dot_duration *= 1.0 + player -> fs_duration_multiplier;
+    }
   }
 
   void execute()
@@ -4597,7 +4564,8 @@ void shaman_t::create_options()
   add_option( opt_bool( "trinket_62", trinket_62 ) );
   add_option( opt_float( "trinket_62_enh_wf_damage", wf_damage_increase ) );
   add_option( opt_float( "trinket_62_enh_wf_mw_procrate", wf_mw_procrate ) );
-  add_option( opt_float( "trinket_62_ele_lvb_spread_procrate", lvb_spread_procrate ) );
+  add_option( opt_float( "trinket_62_ele_fs_damage_multiplier", fs_damage_multiplier ) );
+  add_option( opt_float( "trinket_62_ele_fs_duration_multiplier", fs_duration_multiplier ) );
 }
 
 // shaman_t::create_action  =================================================
