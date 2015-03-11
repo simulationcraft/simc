@@ -1475,7 +1475,13 @@ static void initialize_trinket62_agi_d( special_effect_t& effect )
 
 static void initialize_trinket62_int_c( special_effect_t& effect )
 {
-  effect.execute_action = new trinket_62_int_c_damage_t( effect.player );
+  action_t* action = effect.player -> create_proc_action( "blacklight" );
+  if ( ! action )
+  {
+    action = new trinket_62_int_c_damage_t( effect.player );
+  }
+
+  effect.execute_action = action;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1555,7 +1561,12 @@ void player_t::init_special_effects()
 
   if ( trinket_62_int_d )
   {
-    new trinket_62_int_d_damage_t( this );
+    action_t* action = create_proc_action( "mark_of_doom" );
+    if ( ! action )
+    {
+      action = new trinket_62_int_d_damage_t( this );
+    }
+    (void) action;
 
     special_effect_t effect( this );
     effect.name_str = "mark_of_doom_driver";

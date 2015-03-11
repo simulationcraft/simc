@@ -354,6 +354,7 @@ public:
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t* create_proc_action( const std::string& name );
   virtual void      create_pets();
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const { return ROLE_SPELL; }
@@ -4165,6 +4166,46 @@ struct water_jet_t : public action_t
   }
 };
 
+struct blacklight_proc_t : public mage_spell_t
+{
+  blacklight_proc_t( mage_t* player ) :
+    mage_spell_t( "blacklight", player )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = true;
+    callbacks = false;
+
+    // Mage specific control
+    may_proc_missiles = false;
+    consumes_ice_floes = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_int_c_damage;
+
+    aoe = -1;
+  }
+};
+
+struct mark_of_doom_proc_t : public mage_spell_t
+{
+  mark_of_doom_proc_t( mage_t* player ) :
+    mage_spell_t( "mark_of_doom", player )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = true;
+    callbacks = false;
+
+    // Mage specific control
+    may_proc_missiles = false;
+    consumes_ice_floes = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_int_d_damage;
+
+    aoe = -1;
+  }
+};
+
 } // namespace actions
 
 namespace events {
@@ -4333,6 +4374,16 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "prismatic_crystal" ) return new       prismatic_crystal_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// mage_t::create_proc_action ===============================================
+
+action_t* mage_t::create_proc_action( const std::string& name )
+{
+  if ( util::str_compare_ci( name, "blacklight" ) ) return new actions::blacklight_proc_t( this );
+  if ( util::str_compare_ci( name, "mark_of_doom" ) ) return new actions::mark_of_doom_proc_t( this );
+
+  return 0;
 }
 
 // mage_t::create_pets ======================================================
