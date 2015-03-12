@@ -24,5 +24,5 @@
  SOURCES += qt/sc_options_tab.cpp
  SOURCES += qt/sc_import.cpp
  SOURCES += qt/sc_automation.cpp
- HEADERS += qt/sc_SimulationThread.cpp
+ SOURCES += qt/sc_SimulationThread.cpp
  SOURCES += qt/main.cpp

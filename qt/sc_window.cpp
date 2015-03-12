@@ -766,12 +766,6 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 
     logText -> clear();
 
-    if ( !simulateThread -> success )
-    {
-      logText -> append( simulateThread -> getError() );
-      logText -> append( tr("Simulation failed!") );
-    }
-
     if ( !logFileOpenedSuccessfully )
     {
       for ( std::vector< std::string >::iterator it = errorListCopy.begin(); it != errorListCopy.end(); ++it )
@@ -1167,6 +1161,9 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     logText -> moveCursor( QTextCursor::End );
     if ( mainTab -> currentTab() != TAB_SPELLQUERY )
       mainTab -> setCurrentTab( TAB_LOG );
+
+    logText -> append( simulateThread -> getError() );
+    logText -> append( tr("Simulation failed!") );
 
     // Spell Query
     if ( mainTab -> currentTab() == TAB_SPELLQUERY )
