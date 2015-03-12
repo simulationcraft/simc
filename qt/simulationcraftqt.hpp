@@ -1597,35 +1597,6 @@ public slots:
   }
 };
 
-// ============================================================================
-// SimulateThread
-// ============================================================================
-
-class SimulateThread : public QThread
-{
-  Q_OBJECT
-  SC_MainWindow* mainWindow;
-  sim_t* sim;
-
-public:
-  QByteArray utf8_options;
-  QString error_str;
-  bool success;
-
-  void start( sim_t* s, const QByteArray& o ) { sim = s; utf8_options = o; success = false; QThread::start(); }
-  virtual void run();
-  SimulateThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 )
-  {
-    connect( this, SIGNAL( finished() ), this, SLOT( sim_finished() ) );
-  }
-private slots:
-  void sim_finished()
-  { emit simulationFinished( sim ); }
-
-signals:
-  void simulationFinished( sim_t* s );
-};
-
 class ImportThread : public QThread
 {
   Q_OBJECT
