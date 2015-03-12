@@ -575,7 +575,7 @@ player_t::player_t( sim_t*             s,
   trinket_62_int_value( 379 ),
 
   trinket_62_str_c( false ),
-  trinket_62_str_c_damage( 44882 ),
+  trinket_62_str_c_damage( 40394 ),
   trinket_62_str_c_rppm( 3.0 ),
 
   trinket_62_str_d( false ),
