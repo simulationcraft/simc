@@ -8,6 +8,7 @@
 #include "SC_OptionsTab.hpp"
 #include "SC_SpellQueryTab.hpp"
 #include "sc_SimulationThread.hpp"
+#include "sc_SampleProfilesTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
@@ -440,139 +441,12 @@ void SC_MainWindow::createImportTab()
 
 void SC_MainWindow::createBestInSlotTab()
 {
-  // Create BiS Tree ( table with profiles )
-  QStringList headerLabels( tr( "Player Class" ) ); headerLabels += QString( tr( "Location" ) );
 
-  QTreeWidget* bisTree = new QTreeWidget();
-  bisTree -> setColumnCount( 1 );
-  bisTree -> setHeaderLabels( headerLabels );
+  SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
 
-  static const char* tierNames[] = { "T17", "T18" };
-  static const int TIER_MAX = 2; // = sizeof_array( tierNames );
-
-  QTreeWidgetItem* playerItems[PLAYER_MAX];
-  range::fill( playerItems, 0 );
-  QTreeWidgetItem* rootItems[PLAYER_MAX][TIER_MAX];
-  for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
-  {
-    range::fill( rootItems[i], 0 );
-  }
-
-
-
-  QDir tdir = SC_PATHS::getDataPath() + "/profiles";
-  tdir.setFilter( QDir::Dirs );
-
-  QStringList tprofileList = tdir.entryList();
-  int tnumProfiles = tprofileList.count();
-  // Main loop through all subfolders of ./profiles/
-  for ( int i = 0; i < tnumProfiles; i++ )
-  {
-    QDir dir = SC_PATHS::getDataPath() + "/profiles" + "/" + tprofileList[ i ];
-    dir.setSorting( QDir::Name );
-    dir.setFilter( QDir::Files );
-    dir.setNameFilters( QStringList( "*.simc" ) );
-
-    QStringList profileList = dir.entryList();
-    int numProfiles = profileList.count();
-    for ( int k = 0; k < numProfiles; k++ )
-    {
-      QString profile = dir.absolutePath() + "/";
-      profile = QDir::toNativeSeparators( profile );
-      profile += profileList[k];
-
-      player_e player = PLAYER_MAX;
-
-      // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
-      if ( profile.contains( "Death_Knight" ) )
-        player = DEATH_KNIGHT;
-      else
-      {
-        for ( player_e j = PLAYER_NONE; j < PLAYER_MAX; j++ )
-        {
-          if ( profile.contains( util::player_type_string( j ), Qt::CaseInsensitive ) )
-          {
-            player = j;
-            break;
-          }
-        }
-      }
-
-      // exclude generate profiles
-      if ( profile.contains( "generate" ) )
-        continue;
-
-      int tier = TIER_MAX;
-      for ( int j = 0; j < TIER_MAX && tier == TIER_MAX; j++ )
-        if ( profile.contains( tierNames[j] ) )
-          tier = j;
-
-      if ( player != PLAYER_MAX && tier != TIER_MAX )
-      {
-        if ( !rootItems[player][tier] )
-        {
-          if ( !playerItems[player] )
-          {
-            QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::inverse_tokenize( util::player_type_string( player ) ).c_str() ) );
-            playerItems[player] = top;
-          }
-
-          if ( !rootItems[player][tier] )
-          {
-            QTreeWidgetItem* tieritem = new QTreeWidgetItem( QStringList( tierNames[tier] ) );
-            playerItems[player] -> addChild( rootItems[player][tier] = tieritem );
-          }
-        }
-
-        QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[k] << profile );
-        rootItems[player][tier] -> addChild( item );
-      }
-    }
-  }
-
-  // Register all the added profiles ( done here so they show up alphabetically )
-  for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
-  {
-    if ( playerItems[i] )
-    {
-      bisTree -> addTopLevelItem( playerItems[i] );
-      for ( int j = 0; j < TIER_MAX; j++ )
-      {
-        if ( rootItems[i][j] )
-        {
-          rootItems[i][j] -> setExpanded( true ); // Expand the subclass Tier bullets by default
-          rootItems[i][j] -> sortChildren( 0, Qt::AscendingOrder );
-        }
-      }
-    }
-  }
-
-  bisTree -> setColumnWidth( 0, 300 );
-
-  connect( bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
-
-  // Create BiS Introduction
-
-  QFormLayout* bisIntroductionFormLayout = new QFormLayout();
-  QLabel* bisText = new QLabel( tr( "These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
-    "The profiles are created with a lot of help from the theorycrafting community.\n"
-    "They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
-    "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
-    "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." ) );
-  bisIntroductionFormLayout -> addRow( bisText );
-
-  QWidget* bisIntroduction = new QWidget();
-  bisIntroduction -> setLayout( bisIntroductionFormLayout );
-
-  // Create BiS Tab ( Introduction + BiS Tree )
-
-  QVBoxLayout* bisTabLayout = new QVBoxLayout();
-  bisTabLayout -> addWidget( bisIntroduction, 1 );
-  bisTabLayout -> addWidget( bisTree, 9 );
-
-  QGroupBox* bisTab = new QGroupBox();
-  bisTab -> setLayout( bisTabLayout );
+  connect( bisTab -> bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
   importTab -> addTab( bisTab, tr( "Sample Profiles" ) );
+
 }
 
 void SC_MainWindow::createCustomTab()

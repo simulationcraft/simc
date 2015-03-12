@@ -28,6 +28,8 @@ CONFIG(qt) {
   OBJECTS_DIR = qt
 }
 
+Release: DEFINES += QT_NO_DEBUG_OUTPUT
+
 win32-mingw
 {
   ! macx {
