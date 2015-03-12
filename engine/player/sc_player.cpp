@@ -1433,7 +1433,7 @@ struct trinket_62_int_d_debuff_t : public debuff_t
   special_effect_t* effect;
 
   trinket_62_int_d_debuff_t( actor_pair_t* p ) :
-    debuff_t( buff_creator_t( *p, "mark_of_doom" ).duration( p -> source -> trinket_62_int_d_duration ) ),
+    debuff_t( buff_creator_t( *p, "mark_of_doom" ).duration( p -> source -> trinket_62_int_d_duration ).activated( false ) ),
     damage_spell( p -> source -> find_action( "mark_of_doom" ) )
   {
     effect = new special_effect_t( p -> source );
