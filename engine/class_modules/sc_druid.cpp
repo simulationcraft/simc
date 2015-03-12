@@ -2772,8 +2772,14 @@ struct shred_t : public cat_attack_t
 
     if ( p() -> buff.feral_fury -> up() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+
     if ( stealthed() )
-      m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
+    {
+      if ( p() -> wod_hotfix )
+        m *= 1.2;
+      else
+        m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
+    }
 
     return m;
   }
