@@ -746,6 +746,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     delete sim;
     sim = 0;
 
+
     QString contents;
     bool logFileOpenedSuccessfully = false;
     QFile logFile( QString::fromStdString( output_file_str ) );
@@ -763,8 +764,6 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     // Nothing in the log file, no point wondering about "permission issues"
     else
       logFileOpenedSuccessfully = true;
-
-    logText -> clear();
 
     if ( !logFileOpenedSuccessfully )
     {
@@ -924,6 +923,9 @@ void SC_MainWindow::importFinished()
   simProgress = 100;
   importSimProgress = 100;
   cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), "" );
+
+  logText -> clear();
+
   if ( importThread -> player )
   {
     simulateTab -> set_Text( importThread -> profile );
@@ -957,6 +959,10 @@ void SC_MainWindow::importFinished()
   {
     simulateTab -> setTabText( simulateTab -> currentIndex(), tr( "Import Failed" ) );
     simulateTab -> append_Text( tr("# Unable to generate profile from: ") + importThread -> url + "\n" );
+    for( size_t i = 0; i < import_sim -> error_list.size(); ++i )
+    {
+        simulateTab -> append_Text( QString( "# ") + QString::fromStdString( import_sim -> error_list[ i ] ) );
+    }
     deleteSim( import_sim, simulateTab -> current_Text() ); import_sim = 0;
   }
 
@@ -1156,12 +1162,15 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   simProgress = 100;
   cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), tr( "Finished!" ) );
   bool sim_was_debug = sim -> debug || sim -> log;
+
+  logText -> clear();
   if ( ! simulateThread -> success )
   {
     logText -> moveCursor( QTextCursor::End );
     if ( mainTab -> currentTab() != TAB_SPELLQUERY )
       mainTab -> setCurrentTab( TAB_LOG );
 
+    qDebug() << "sim failed!" << simulateThread -> getError();
     logText -> append( simulateThread -> getError() );
     logText -> append( tr("Simulation failed!") );
 
