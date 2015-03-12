@@ -1090,7 +1090,7 @@ void set_bonus::t17_lfr_passive_stat( special_effect_t& effect )
 
   double amount = util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level ) ) );
 
-  effect.player -> stat_gain( stat, amount, 0, 0, false );
+  effect.player -> initial.stats.add_stat( stat, amount );
 }
 
 void set_bonus::t17_lfr_4pc_agimelee( special_effect_t& effect )
