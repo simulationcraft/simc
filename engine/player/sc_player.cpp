@@ -564,12 +564,12 @@ player_t::player_t( sim_t*             s,
   trinket_62_agi_value( 379 ),
 
   trinket_62_int_c( false ),
-  trinket_62_int_c_damage( 17022 ),
+  trinket_62_int_c_damage( 12767 ),
   trinket_62_int_c_rppm( 5.0 ),
 
   trinket_62_int_d( false ),
   trinket_62_int_d_duration( timespan_t::from_seconds( 10 ) ),
-  trinket_62_int_d_damage( 7449 ),
+  trinket_62_int_d_damage( 5587 ),
   trinket_62_int_d_rppm( 1.5 ),
 
   trinket_62_int_value( 379 ),
@@ -1659,6 +1659,10 @@ void player_t::init_special_effects()
     effect.name_str = "blacklight_driver";
     effect.type = SPECIAL_EFFECT_CUSTOM;
     effect.ppm_ = -1.0 * trinket_62_int_c_rppm;
+    if ( specialization() == MAGE_ARCANE )
+    {
+      effect.ppm_ *= 0.6;
+    }
     effect.rppm_scale = RPPM_HASTE;
     effect.custom_init = initialize_trinket62_int_c;
     effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
@@ -1679,6 +1683,10 @@ void player_t::init_special_effects()
     effect.name_str = "mark_of_doom_driver";
     effect.type = SPECIAL_EFFECT_CUSTOM;
     effect.ppm_ = -1.0 * trinket_62_int_d_rppm;
+    if ( specialization() == MAGE_ARCANE )
+    {
+      effect.ppm_ *= 0.6;
+    }
     effect.custom_init = initialize_trinket62_int_d;
     effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
     effect.proc_flags2_ = PF2_ALL_HIT;
