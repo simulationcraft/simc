@@ -1,15 +1,15 @@
 #pragma once
 #include <QGroupBox>
-#include <QTreeWidget>
 
 class QDir;
+class QTreeWidget;
 
 class SC_SampleProfilesTab : public QGroupBox
 {
     Q_OBJECT
 public:
     SC_SampleProfilesTab( QWidget* parent = nullptr );
-    QTreeWidget* bisTree;
+    QTreeWidget* tree;
 private:
     void fillTree( QDir );
 };

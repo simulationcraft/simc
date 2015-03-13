@@ -12,6 +12,7 @@
  HEADERS += qt/simulationcraftqt.hpp
  HEADERS += qt/sc_SimulationThread.hpp
  HEADERS += qt/sc_SampleProfilesTab.hpp
+ HEADERS += qt/sc_AutomationTab.hpp
  HEADERS += qt/SC_SpellQueryTab.hpp
  HEADERS += qt/SC_OptionsTab.hpp
  SOURCES += qt/util/sc_textedit.cpp
@@ -24,7 +25,7 @@
  SOURCES += qt/sc_spell_query_tab.cpp
  SOURCES += qt/sc_options_tab.cpp
  SOURCES += qt/sc_import.cpp
- SOURCES += qt/sc_automation.cpp
  SOURCES += qt/sc_SimulationThread.cpp
  SOURCES += qt/sc_SampleProfilesTab.cpp
+ SOURCES += qt/sc_AutomationTab.cpp
  SOURCES += qt/main.cpp

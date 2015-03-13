@@ -9,6 +9,7 @@
 #include "SC_SpellQueryTab.hpp"
 #include "sc_SimulationThread.hpp"
 #include "sc_SampleProfilesTab.hpp"
+#include "sc_AutomationTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
@@ -185,7 +186,7 @@ void SC_MainWindow::loadHistory()
     }
   }
   optionsTab -> decodeOptions();
-  importTab -> decodeSettings();
+  importTab -> automationTab -> decodeSettings();
   spellQueryTab -> decodeSettings();
 
   if ( simulateTab -> count() <= 1 )
@@ -232,7 +233,7 @@ void SC_MainWindow::saveHistory()
   settings.endGroup();
 
   optionsTab -> encodeOptions();
-  importTab -> encodeSettings();
+  importTab -> automationTab -> encodeSettings();
   spellQueryTab -> encodeSettings();
 }
 
@@ -418,7 +419,7 @@ void SC_MainWindow::createImportTab()
   battleNetView -> disableKeyboardNavigation();
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
-  createBestInSlotTab();
+  createSampleProfilesTab();
 
   historyList = new QListWidget();
   historyList -> setSortingEnabled( true );
@@ -428,7 +429,7 @@ void SC_MainWindow::createImportTab()
   recentlyClosedTabModel = recentlyClosedTabImport -> getModel();
   importTab -> addTab( recentlyClosedTabImport, tr( "Recently Closed" ) );
 
-  importTab -> createAutomationTab();
+  importTab -> addTab( importTab -> automationTab, tr( "Automation" ) );
 
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab, SIGNAL( currentChanged( int ) ), this, SLOT( importTabChanged( int ) ) );
@@ -439,14 +440,11 @@ void SC_MainWindow::createImportTab()
   // createCustomTab();
 }
 
-void SC_MainWindow::createBestInSlotTab()
+void SC_MainWindow::createSampleProfilesTab()
 {
-
   SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
-
-  connect( bisTab -> bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
+  connect( bisTab -> tree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
   importTab -> addTab( bisTab, tr( "Sample Profiles" ) );
-
 }
 
 void SC_MainWindow::createCustomTab()
@@ -619,7 +617,6 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     delete sim -> pause_mutex;
     delete sim;
     sim = 0;
-
 
     QString contents;
     bool logFileOpenedSuccessfully = false;
@@ -863,7 +860,7 @@ void SC_MainWindow::startSim()
     return;
   }
   optionsTab -> encodeOptions();
-  importTab -> encodeSettings();
+  importTab -> automationTab -> encodeSettings();
 
   // Clear log text on success so users don't get confused if there is
   // an error from previous attempts

@@ -70,6 +70,7 @@ class SC_WebView;
 //class SC_SpellQueryTab;
 class SC_CommandLine;
 class SimulateThread;
+class sc_AutomationTab;
 #ifdef SC_PAPERDOLL
 class PaperdollThread;
 #endif
@@ -547,64 +548,8 @@ class SC_ImportTab: public SC_enumeratedTab < import_tabs_e >
 {
   Q_OBJECT
   public:
-  SC_ImportTab( QWidget* parent = 0 ):
-    SC_enumeratedTab<import_tabs_e>( parent )
-  {
-  }
-
-  // these are options on the Automation tab
-  struct choices_t
-  {
-    QComboBox* player_class;
-    QComboBox* player_spec;
-    QComboBox* player_race;
-    QComboBox* player_level;
-    QComboBox* comp_type;
-  } choice;
-
-  struct labels_t
-  {
-    QLabel* talents;
-    QLabel* glyphs;
-    QLabel* gear;
-    QLabel* rotationHeader;
-    QLabel* rotationFooter;
-    QLabel* advanced;
-    QLabel* sidebar;
-    QLabel* footer;
-  } label;
-
-  struct textBoxes_t
-  {
-    QLineEdit* talents;
-    QLineEdit* glyphs;
-    SC_TextEdit* gear;
-    SC_TextEdit* rotationHeader;
-    SC_TextEdit* rotationFooter;
-    SC_TextEdit* advanced;
-    SC_TextEdit* sidebar;
-    SC_TextEdit* helpbar;
-    SC_TextEdit* footer;
-  } textbox;
-
-  QString advTalent;
-  QString advGlyph;
-  QString advGear;
-  QString advRotation;
-
-  void encodeSettings();
-  void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value );
-  void load_setting( QSettings& s, const QString& name, QString* text, const QString& default_value );
-  void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value );
-  void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value );
-  void decodeSettings();
-  void createAutomationTab();
-  void createTooltips();
-
-  public slots:
-  void setSpecDropDown( const int player_class );
-  void setSidebarClassText();
-  void compTypeChanged( const int comp );
+      SC_ImportTab( QWidget* parent = 0 );
+      sc_AutomationTab* automationTab;
 };
 
 // ==========================================================================
@@ -1137,7 +1082,7 @@ public:
   void createSpellQueryTab();
   void createToolTips();
   void createTabShortcuts();
-  void createBestInSlotTab();
+  void createSampleProfilesTab();
   void createCustomTab();
 
 #ifdef SC_PAPERDOLL

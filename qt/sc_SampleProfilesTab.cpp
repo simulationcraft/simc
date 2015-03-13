@@ -1,4 +1,5 @@
 #include "sc_SampleProfilesTab.hpp"
+#include <QTreeWidget>
 #include <QDir>
 #include <QFormLayout>
 #include <QLabel>
@@ -6,12 +7,12 @@
 
 SC_SampleProfilesTab::SC_SampleProfilesTab( QWidget* parent ) :
     QGroupBox( parent ),
-    bisTree( new QTreeWidget( this ) )
+    tree( new QTreeWidget( this ) )
 {
     QStringList headerLabels( tr( "Player Class" ) ); headerLabels += QString( tr( "Location" ) );
-    bisTree -> setColumnCount( 1 );
-    bisTree -> setHeaderLabels( headerLabels );
-    bisTree -> setColumnWidth( 0, 300 );
+    tree -> setColumnCount( 1 );
+    tree -> setHeaderLabels( headerLabels );
+    tree -> setColumnWidth( 0, 300 );
 
     // Create BiS Introduction
     QFormLayout* bisIntroductionFormLayout = new QFormLayout();
@@ -33,7 +34,7 @@ SC_SampleProfilesTab::SC_SampleProfilesTab( QWidget* parent ) :
 
     QVBoxLayout* bisTabLayout = new QVBoxLayout();
     bisTabLayout -> addWidget( bisIntroduction, 1 );
-    bisTabLayout -> addWidget( bisTree, 9 );
+    bisTabLayout -> addWidget( tree, 9 );
 
     setLayout( bisTabLayout );
 }
@@ -126,7 +127,7 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
     {
       if ( playerItems[i] )
       {
-        bisTree -> addTopLevelItem( playerItems[i] );
+        tree -> addTopLevelItem( playerItems[i] );
         for ( int j = 0; j < TIER_MAX; j++ )
         {
           if ( rootItems[i][j] )
