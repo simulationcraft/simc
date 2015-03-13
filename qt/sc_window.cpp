@@ -321,10 +321,10 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   timer = new QTimer( this );
   connect( timer, SIGNAL( timeout() ), this, SLOT( updateSimProgress() ) );
 
-  importThread = new ImportThread( this );
+  importThread = new SC_ImportThread( this );
   connect( importThread, SIGNAL( finished() ), this, SLOT( importFinished() ) );
 
-  simulateThread = new SimulateThread( this );
+  simulateThread = new SC_SimulateThread( this );
   connect( simulateThread, SIGNAL( simulationFinished( sim_t* ) ), this, SLOT( simulateFinished( sim_t* ) ) );
 
 #ifdef SC_PAPERDOLL
@@ -1325,7 +1325,13 @@ void SC_MainWindow::importButtonClicked()
     break;
   }
   case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
-  case TAB_AUTOMATION: startAutomationImport( TAB_AUTOMATION ); break;
+  case TAB_AUTOMATION:
+  {
+      QString profile = importTab -> automationTab -> startImport();
+      simulateTab -> add_Text( profile,  tr( "Automation Import" ) );
+      mainTab -> setCurrentTab( TAB_SIMULATE );
+  }
+      break;
   default: break;
   }
 }

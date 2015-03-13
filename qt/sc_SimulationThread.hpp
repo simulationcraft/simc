@@ -5,7 +5,7 @@
 class SC_MainWindow;
 struct sim_t;
 
-class SimulateThread : public QThread
+class SC_SimulateThread : public QThread
 {
   Q_OBJECT
   SC_MainWindow* mainWindow;
@@ -15,7 +15,7 @@ class SimulateThread : public QThread
 
 public:
   bool success;
-  SimulateThread( SC_MainWindow* );
+  SC_SimulateThread( SC_MainWindow* );
   void start( sim_t* s, const QByteArray& o );
   virtual void run();
   QString getError() const

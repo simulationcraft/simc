@@ -3,14 +3,14 @@
 #include "simulationcraftqt.hpp"
 
 
-SimulateThread::SimulateThread( SC_MainWindow* mw ) :
+SC_SimulateThread::SC_SimulateThread( SC_MainWindow* mw ) :
     mainWindow( mw ),
     sim( 0 )
 {
   connect( this, SIGNAL( finished() ), this, SLOT( sim_finished() ) );
 }
 
-void SimulateThread::run()
+void SC_SimulateThread::run()
 {
   sim_control_t description;
   try
@@ -52,7 +52,7 @@ void SimulateThread::run()
     report::print_suite( sim );
   }
 }
-void SimulateThread::start( sim_t* s, const QByteArray& o )
+void SC_SimulateThread::start( sim_t* s, const QByteArray& o )
 {
     sim = s; utf8_options = o; success = false; QThread::start();
 }

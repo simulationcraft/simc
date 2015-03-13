@@ -9,6 +9,69 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 
+namespace {
+
+namespace automation {
+
+  QString tokenize( QString qstr );
+  QStringList splitPreservingComments( QString qstr );
+
+  QString automation_main( int sim_type,
+                        QString player_class,
+                        QString player_spec,
+                        QString player_race,
+                        QString player_level,
+                        QString player_talents,
+                        QString player_glyphs,
+                        QString player_gear,
+                        QString player_rotationHeader,
+                        QString player_rotationFooter,
+                        QString advanced_text,
+                        QString sidebar_text,
+                        QString footer_text
+                      );
+
+  QString auto_talent_sim( QString player_class,
+                           QString base_profile_info,
+                           QStringList advanced_text,
+                           QString player_glyphs,
+                           QString player_gear,
+                           QString player_rotation
+                         );
+
+  QString auto_glyph_sim( QString player_class,
+                          QString base_profile_info,
+                          QString player_talents,
+                          QStringList advanced_text,
+                          QString player_gear,
+                          QString player_rotation
+                        );
+
+  QString auto_gear_sim( QString player_class,
+                         QString base_profile_info,
+                         QString player_talents,
+                         QString player_glyphs,
+                         QStringList advanced_text,
+                         QString player_rotation
+                       );
+
+  QString auto_rotation_sim( QString player_class,
+                             QString player_spec,
+                             QString base_profile_info,
+                             QString player_talents,
+                             QString player_glyphs,
+                             QString player_gear,
+                             QString player_rotationHeader,
+                             QString player_rotationFooter,
+                             QStringList advanced_text,
+                             QString sidebar_text
+                           );
+
+  QStringList convert_shorthand( QStringList shorthandList, QString sidebar_text );
+  QStringList splitOption( QString options_shorthand );
+  QStringList splitOnFirst( QString str, const char* delimiter );
+
+} // end automation namespace
 
 ///////////////////////////////////////////////////////////////////////////////
 ////
@@ -694,20 +757,6 @@ QComboBox* addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* co
 //  return input_mode;
 //}
 
-// Method to set the "Spec" drop-down based on "Class" selection
-void sc_AutomationTab::setSpecDropDown( const int player_class )
-{
-  // If we have a fourth spec, remove it here
-  if ( choice.player_spec -> count() > 3 )
-    choice.player_spec -> removeItem( 3 );
-
-  choice.player_spec -> setItemText( 0, classSpecText[ player_class ][ 1 ] );
-  choice.player_spec -> setItemText( 1, classSpecText[ player_class ][ 2 ] );
-  choice.player_spec -> setItemText( 2, classSpecText[ player_class ][ 3 ] );
-  if ( player_class == 1 )
-    choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
-}
-
 QString defaultOptions = "AC#=action.$ability.charges>=#\nAE#=active_enemies>=#\nDR=target.dot.$ability.remains\nDR#=target.dot.$ability.remains>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability.remains,if=cooldown.$ability.remains<=#\n\n";
 QString defaultOperators = "BU=buff.$operand.up\nBA=buff.$operand.react\nBR=buff.$operand.remains\nBR#=buff.$operand.remains>#\nBC#=buff.$operand.charges>=#\nBS#=buff.$operand.stack>=#\nCD=cooldown.$operand.remains\nCD#=cooldown.$operand.remains>#\nDR=target.dot.$operand.remains\nDR#=target.dot.$operand.remains>=#\nDT=dot.$operand.ticking\nGCD=cooldown.$operand.remains<=gcd\nGCD#=cooldown.$operand.remains<=gcd*#\nT=talent.$operand.enabled\nG=glyph.$operand.enabled\n";
 
@@ -1057,8 +1106,9 @@ QString defaultRotationHeaderToolTip = "Default rotation, specified the same way
 QString defaultRotationFooterToolTip = "This box is only used for Rotation comparisons.";
 
 
+} // unnamed
 
-sc_AutomationTab::sc_AutomationTab( QWidget* parent )
+SC_AutomationTab::SC_AutomationTab( QWidget* parent )
 {
     // layout building based on
     // http://qt-project.org/doc/qt-4.8/layouts-basiclayouts.html
@@ -1196,13 +1246,27 @@ sc_AutomationTab::sc_AutomationTab( QWidget* parent )
     createTooltips();
 }
 
+// Method to set the "Spec" drop-down based on "Class" selection
+void SC_AutomationTab::setSpecDropDown( const int player_class )
+{
+  // If we have a fourth spec, remove it here
+  if ( choice.player_spec -> count() > 3 )
+    choice.player_spec -> removeItem( 3 );
+
+  choice.player_spec -> setItemText( 0, classSpecText[ player_class ][ 1 ] );
+  choice.player_spec -> setItemText( 1, classSpecText[ player_class ][ 2 ] );
+  choice.player_spec -> setItemText( 2, classSpecText[ player_class ][ 3 ] );
+  if ( player_class == 1 )
+    choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
+}
+
 // method to set the sidebar text based on class slection
-void sc_AutomationTab::setSidebarClassText()
+void SC_AutomationTab::setSidebarClassText()
 {
   textbox.sidebar -> setText( sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
 }
 
-void sc_AutomationTab::compTypeChanged( const int comp )
+void SC_AutomationTab::compTypeChanged( const int comp )
 {
   // store whatever text is in the advanced window in the appropriate QString 
   if ( ! textbox.talents -> isEnabled() )
@@ -1281,32 +1345,7 @@ void sc_AutomationTab::compTypeChanged( const int comp )
   }
 }
 
-void SC_MainWindow::startAutomationImport( int /*tab*/ )
-{
-  QString profile;
-
-  sc_AutomationTab* at = importTab -> automationTab;
-  profile = automation::automation_main( at -> choice.comp_type -> currentIndex(),
-                                      at -> choice.player_class -> currentText(),
-                                      at -> choice.player_spec -> currentText(),
-                                      at -> choice.player_race -> currentText(),
-                                      at -> choice.player_level -> currentText(),
-                                      at -> textbox.talents -> text(),
-                                      at -> textbox.glyphs -> text(),
-                                      at -> textbox.gear -> document() -> toPlainText(),
-                                      at -> textbox.rotationHeader -> document() -> toPlainText(),
-                                      at -> textbox.rotationFooter -> document() -> toPlainText(),
-                                      at -> textbox.advanced -> document() -> toPlainText(),
-                                      at -> textbox.sidebar -> document() -> toPlainText(),
-                                      at -> textbox.footer -> document() -> toPlainText()
-                                    );
-
-  simulateTab -> add_Text( profile,  tr( "Automation Import" ) );
-  
-  mainTab -> setCurrentTab( TAB_SIMULATE );
-}
-
-void sc_AutomationTab::createTooltips()
+void SC_AutomationTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
 
@@ -1338,17 +1377,10 @@ void sc_AutomationTab::createTooltips()
   textbox.rotationFooter-> setToolTip( "This box is only used for Rotation comparisons." );
 }
 
-SC_ImportTab::SC_ImportTab( QWidget* parent ):
-  SC_enumeratedTab<import_tabs_e>( parent ),
-  automationTab( new sc_AutomationTab( this ) )
-{
-
-}
-
 // Encode all options and text fields into a string ( to be able to save it to the history )
 // Decode / Encode order needs to be equal!
 
-void sc_AutomationTab::encodeSettings()
+void SC_AutomationTab::encodeSettings()
 {
   QSettings settings;
   settings.beginGroup( "automation" );
@@ -1380,7 +1412,7 @@ void sc_AutomationTab::encodeSettings()
  * If no default_value is specified, index 0 is used as default.
  */
 
-void sc_AutomationTab::load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value = QString() )
+void SC_AutomationTab::load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
 
@@ -1406,7 +1438,7 @@ void sc_AutomationTab::load_setting( QSettings& s, const QString& name, QComboBo
   }
 }
 
-void sc_AutomationTab::load_setting( QSettings& s, const QString& name, QString* text, const QString& default_value = QString() )
+void SC_AutomationTab::load_setting( QSettings& s, const QString& name, QString* text, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
 
@@ -1416,7 +1448,7 @@ void sc_AutomationTab::load_setting( QSettings& s, const QString& name, QString*
     *text = default_value;
 }
 
-void sc_AutomationTab::load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
+void SC_AutomationTab::load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
 
@@ -1426,7 +1458,7 @@ void sc_AutomationTab::load_setting( QSettings& s, const QString& name, QLineEdi
     textbox -> setText( default_value );
 }
 
-void sc_AutomationTab::load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value = QString() )
+void SC_AutomationTab::load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
 
@@ -1436,7 +1468,7 @@ void sc_AutomationTab::load_setting( QSettings& s, const QString& name, SC_TextE
     textbox -> setText( default_value );
 }
 
-void sc_AutomationTab::decodeSettings()
+void SC_AutomationTab::decodeSettings()
 {
   QSettings settings;
   settings.beginGroup( "automation" );
@@ -1461,5 +1493,28 @@ void sc_AutomationTab::decodeSettings()
   settings.endGroup();
 }
 
-// random test shorthand (ret paladin)
-// AA>AW>HA+HPL2>ES>LH>DS+T2&(HP5|DP|(HAB&HP3))>DS+DC&HP5>FV+HP5>FV+DP&DP4>HoW+W0.2>DS+DC>FV+AWB>HotR+T4>CS+W0.2>J+W0.2>DS+DC>FV+DP>EXO+W0.2>DS+T2>FV
+QString SC_AutomationTab::startImport()
+{
+  return automation::automation_main( choice.comp_type -> currentIndex(),
+                                      choice.player_class -> currentText(),
+                                      choice.player_spec -> currentText(),
+                                      choice.player_race -> currentText(),
+                                      choice.player_level -> currentText(),
+                                      textbox.talents -> text(),
+                                      textbox.glyphs -> text(),
+                                      textbox.gear -> document() -> toPlainText(),
+                                      textbox.rotationHeader -> document() -> toPlainText(),
+                                      textbox.rotationFooter -> document() -> toPlainText(),
+                                      textbox.advanced -> document() -> toPlainText(),
+                                      textbox.sidebar -> document() -> toPlainText(),
+                                      textbox.footer -> document() -> toPlainText()
+                                    );
+
+}
+
+SC_ImportTab::SC_ImportTab( QWidget* parent ):
+  SC_enumeratedTab<import_tabs_e>( parent ),
+  automationTab( new SC_AutomationTab( this ) )
+{
+
+}

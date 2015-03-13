@@ -16,7 +16,7 @@
 // Import
 // ==========================================================================
 
-void ImportThread::importBattleNet()
+void SC_ImportThread::importBattleNet()
 {
   QString region, server, character;
   QUrl qurl = url;
@@ -72,7 +72,7 @@ void ImportThread::importBattleNet()
 }
 
 
-void ImportThread::run()
+void SC_ImportThread::run()
 {
   cache::advance_era();
   sim -> parse_option( "item_db_source", item_db_sources.toUtf8().constData() );

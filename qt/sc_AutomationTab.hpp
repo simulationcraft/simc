@@ -7,7 +7,7 @@ class QLineEdit;
 class SC_TextEdit;
 class QSettings;
 
-class sc_AutomationTab : public QScrollArea
+class SC_AutomationTab : public QScrollArea
 {
     Q_OBJECT
 public:
@@ -51,7 +51,7 @@ public:
     QString advGlyph;
     QString advGear;
     QString advRotation;
-    sc_AutomationTab( QWidget* parent = 0 );
+    SC_AutomationTab( QWidget* parent = 0 );
     void encodeSettings();
     void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value );
     void load_setting( QSettings& s, const QString& name, QString* text, const QString& default_value );
@@ -60,7 +60,8 @@ public:
     void decodeSettings();
     void createTooltips();
 
-    public slots:
+public slots:
+    QString startImport();
     void setSpecDropDown( const int player_class );
     void setSidebarClassText();
     void compTypeChanged( const int comp );
