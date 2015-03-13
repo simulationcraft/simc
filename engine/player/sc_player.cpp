@@ -9304,6 +9304,8 @@ void player_t::create_options()
   add_option( opt_float( "trinket_62_agi_c_ap_coeff", trinket_62_agi_c_ap_coeff ) );
   add_option( opt_float( "trinket_62_agi_c_weapon_pct", trinket_62_agi_c_weapon_pct ) );
 
+  add_option( opt_float( "trinket_62_agi_value", trinket_62_agi_value ) );
+
   add_option( opt_bool( "trinket_62_int_c", trinket_62_int_c ) );
   add_option( opt_float( "trinket_62_int_c_damage", trinket_62_int_c_damage ) );
   add_option( opt_float( "trinket_62_int_c_rppm", trinket_62_int_c_rppm ) );
@@ -9313,6 +9315,8 @@ void player_t::create_options()
   add_option( opt_float( "trinket_62_int_d_damage", trinket_62_int_d_damage ) );
   add_option( opt_float( "trinket_62_int_d_rppm", trinket_62_int_d_rppm ) );
 
+  add_option( opt_float( "trinket_62_int_value", trinket_62_int_value ) );
+
   add_option( opt_bool( "trinket_62_str_c", trinket_62_str_c ) );
   add_option( opt_float( "trinket_62_str_c_damage", trinket_62_str_c_damage ) );
   add_option( opt_float( "trinket_62_str_c_rppm", trinket_62_str_c_rppm ) );
@@ -9321,6 +9325,8 @@ void player_t::create_options()
   add_option( opt_float( "trinket_62_str_d_damage", trinket_62_str_d_damage ) );
   add_option( opt_timespan( "trinket_62_str_d_period", trinket_62_str_d_period ) );
   add_option( opt_timespan( "trinket_62_str_d_duration", trinket_62_str_d_duration ) );
+
+  add_option( opt_float( "trinket_62_str_value", trinket_62_str_value ) );
 }
 
 // player_t::create =========================================================
