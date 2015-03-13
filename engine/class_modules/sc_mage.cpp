@@ -1240,6 +1240,7 @@ struct icicle_t : public mage_spell_t
     may_crit = false;
     may_multistrike = 0;
     proc = background = true;
+    callbacks = false;
 
     if ( p -> glyphs.splitting_ice -> ok() )
     {
@@ -1907,6 +1908,7 @@ struct blizzard_shard_t : public mage_spell_t
   {
     aoe = -1;
     background = true;
+    callbacks = false;
   }
 
   virtual void impact( action_state_t* s )
@@ -2435,6 +2437,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
     parse_effect_data( data().effectN( 1 ) );
     base_aoe_multiplier *= data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
     background = true;
+    callbacks = false;
   }
 
   virtual resource_e current_resource() const
@@ -2965,6 +2968,13 @@ struct ice_lance_t : public mage_spell_t
     }
   }
 
+  // If splitting ice is used, only the primary target of ice lance is allowed to proc things, and
+  // the splinters are considered a proc.
+  virtual bool impact_callbacks( const action_state_t* impact_state ) const
+  {
+    return impact_state -> chain_target == 0;
+  }
+
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
@@ -3407,6 +3417,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
   {
     aoe = -1;
     background = true;
+    callbacks = false;
   }
 
   virtual resource_e current_resource() const
