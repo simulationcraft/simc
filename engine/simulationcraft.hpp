@@ -6176,6 +6176,9 @@ public:
   virtual void do_teleport( action_state_t* );
 
   virtual timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const;
+
+  virtual bool impact_callbacks( const action_state_t* /* impact_state */ ) const
+  { return callbacks; }
 };
 
 struct call_action_list_t : public action_t

@@ -1520,7 +1520,7 @@ void action_t::assess_damage( dmg_e    type,
 
   // New callback system; proc spells on impact.
 
-  if ( callbacks )
+  if ( impact_callbacks( s ) )
   {
     proc_types pt = s -> proc_type();
     proc_types2 pt2 = s -> impact_proc_type2();
