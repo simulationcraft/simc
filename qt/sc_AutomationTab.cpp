@@ -80,7 +80,7 @@ namespace automation {
 ///////////////////////////////////////////////////////////////////////////////
 
 QString classSpecText[ 11 ][ 5 ] = {
-    { "Death Knight", "Blood", "Frost", "Unholy", "N/A" },
+    { "DeathKnight", "Blood", "Frost", "Unholy", "N/A" },
     { "Druid", "Balance", "Feral", "Guardian", "Restoration" },
     { "Hunter", "Beast Mastery", "Marksmanship", "Survival", "N/A" },
     { "Mage", "Arcane", "Fire", "Frost", "N/A" },
@@ -1156,7 +1156,7 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent )
     defaultsFormLayout -> setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
 
     // Create Combo Boxes and add to the FormLayout
-    choice.player_class = createChoice( 11 , "Death Knight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
+  choice.player_class = createChoice( 11 , "DeathKnight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
     defaultsFormLayout -> addRow( tr( "Class" ), choice.player_class );
 
     choice.player_spec = createChoice( 3, "1", "2", "3" );
