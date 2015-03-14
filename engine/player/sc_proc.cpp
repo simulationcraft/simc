@@ -1155,22 +1155,21 @@ void dbc_proc_callback_t::initialize()
   // Initialize the potential proc buff through special_effect_t. Can return 0,
   // in which case the proc does not trigger a buff.
   proc_buff = effect.create_buff();
-  
+
   if ( effect.weapon_proc && effect.item )
   {
     weapon = effect.item -> weapon();
   }
-  // TODO: Create action (through special_effect_t)
-  
+
   // Register callback to new proc system
   listener -> callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
 }
 
 /**
- * Cooldown name needs some special handling. Cooldowns in WoW are global,
- * regardless of the number of procs (i.e., weapon enchants). Thus, we straight
- * up use the driver's name, or override it with the special_effect_t name_str
- * if it's defined.
+ * Cooldown name needs some special handling. Cooldowns in WoW are global, regardless of the
+ * number of procs (i.e., weapon enchants). Thus, we straight up use the driver's name, or
+ * override it with the special_effect_t name_str if it's defined. We can also fall back to using
+ * the item name and the slot of the item, if ids are not defined.
  */
 std::string special_effect_t::cooldown_name() const
 {
@@ -1180,13 +1179,25 @@ std::string special_effect_t::cooldown_name() const
     return name_str;
   }
 
-  std::string n = driver() -> name_cstr();
-  assert( ! n.empty() );
+  std::string n;
+  if ( driver() -> id() > 0 )
+  {
+    n = driver() -> name_cstr();
+    // Append the spell ID of the driver to the cooldown name. In some cases, the
+    // drivers of different trinket procs are actually named identically, causing
+    // issues when the trinkets are worn.
+    n += "_" + util::to_string( driver() -> id() );
+  }
+  else if ( item )
+  {
+    n = item -> name();
+    n += "_";
+    n += item -> slot_name();
+  }
+
   util::tokenize( n );
-  // Append the spell ID of the driver to the cooldown name. In some cases, the
-  // drivers of different trinket procs are actually named identically, causing
-  // issues when the trinkets are worn.
-  n += "_" + util::to_string( driver() -> id() );
+
+  assert( ! n.empty() );
 
   return n;
 }

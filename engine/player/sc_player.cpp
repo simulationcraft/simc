@@ -6172,21 +6172,16 @@ struct use_item_t : public action_t
     buff = e.create_buff();
     action = e.create_action();
 
-    if ( !buff && !action )
+    if ( ! buff && ! action )
     {
       sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
       background = true;
+      return;
     }
 
     stats = player ->  get_stats( name_str, this );
 
-    use_name = e.name_str.empty() ? item -> name() : e.name_str;
-
-    std::string cooldown_name = use_name;
-    cooldown_name += "_";
-    cooldown_name += item -> slot_name();
-
-    cooldown = player -> get_cooldown( cooldown_name );
+    cooldown = player -> get_cooldown( e.cooldown_name() );
     cooldown -> duration = e.cooldown();
     trigger_gcd = timespan_t::zero();
   }
