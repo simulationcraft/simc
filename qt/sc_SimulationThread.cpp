@@ -1,7 +1,5 @@
 #include "sc_SimulationThread.hpp"
-#include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
-
 
 SC_SimulateThread::SC_SimulateThread( SC_MainWindow* mw ) :
     mainWindow( mw ),

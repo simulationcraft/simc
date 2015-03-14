@@ -1,5 +1,6 @@
 #pragma once
 #include "config.hpp"
+#include "simulationcraftqt.hpp"
 #include <QThread>
 
 class SC_MainWindow;
