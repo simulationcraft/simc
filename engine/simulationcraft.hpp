@@ -5161,12 +5161,6 @@ struct player_t : public actor_t
       return timespan_t::zero();
   }
 
-  virtual void trigger_movement( timespan_t duration )
-  {
-    buffs.raid_movement -> buff_duration = timespan_t::from_seconds( duration.total_seconds() );
-    buffs.raid_movement -> trigger();
-  }
-
   virtual void trigger_movement( double distance, movement_direction_e direction )
   {
     // Distance of 0 disables movement

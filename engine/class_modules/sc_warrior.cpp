@@ -451,7 +451,7 @@ public:
   virtual double    composite_spell_crit() const;
   virtual double    composite_player_critical_damage_multiplier() const;
   virtual void      teleport( double yards, timespan_t duration );
-  virtual void      update_movement( timespan_t duration );
+  virtual void      trigger_movement( double distance, movement_direction_e direction );
   virtual void      interrupt();
   virtual void      reset();
   virtual void      moving();
@@ -5135,7 +5135,10 @@ void warrior_t::interrupt()
   buff.heroic_leap_movement -> expire();
   buff.shield_charge_movement -> expire();
   buff.intervene_movement -> expire();
-  event_t::cancel( heroic_charge );
+  if ( heroic_charge )
+  {
+    event_t::cancel( heroic_charge );
+  }
   player_t::interrupt();
 }
 
@@ -5144,14 +5147,16 @@ void warrior_t::teleport( double, timespan_t )
   return; // All movement "teleports" are modeled.
 }
 
-void warrior_t::update_movement( timespan_t duration )
+void warrior_t::trigger_movement( double distance, movement_direction_e direction )
 {
   if ( heroic_charge )
-    player_t::update_movement( duration );
+  {
+    event_t::cancel( heroic_charge ); // Cancel heroic leap if it's running to make sure nothing weird happens when movement from another source is attempted.
+    player_t::trigger_movement( distance, direction );
+  }
   else
-  { // Cancel heroic leap if it's running to make sure nothing weird happens when movement from another source is attempted.
-    event_t::cancel( heroic_charge );
-    player_t::update_movement( duration );
+  {
+    player_t::trigger_movement( distance, direction );
   }
 }
 
