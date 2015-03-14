@@ -38,9 +38,13 @@ public:
   int initial_rage;
   bool warrior_fixed_time;
   player_t* last_target_charged;
-  bool swapping; // Disables automated swapping when it's not required to use the ability.
-  // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
-  // Also set to true whenever gladiator's resolve is talented.
+  bool stance_dance; // This is just a small optimization, if stance swapping is never required (99% of simulations),
+                     // then there's no reason to waste cpu cycles checking stance states inside of base_t::execute()
+                     // base_t::ready() continues to check if the ability is usable in the current stance, and if it is not usable in that stance
+                     // stance_swap is called. base_t::execute() adds an additional check, which will try and swap the player back to their original stance if possible
+  bool player_override_stance_dance;
+                     // When the player sets this to true, it will prevent stance_dance from being set to true.
+                     // This will allow full control over stance swapping.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
 
   // Active
@@ -414,7 +418,8 @@ public:
     initial_rage = 0;
     warrior_fixed_time = true;
     last_target_charged = 0;
-    swapping = false;
+    stance_dance = false;
+    player_override_stance_dance = false;
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
 
@@ -572,21 +577,33 @@ public:
 
   virtual void execute()
   {
-    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
-    { // If player is able to swap stances, has not disabled automated swapping in simc, not specced into gladiator's resolve, (continued)
-      if ( p() -> active.stance == STANCE_DEFENSE &&        // currently in defensive stance,
-           p() -> specialization() != WARRIOR_PROTECTION && // not protection specced,
-           ( ( stancemask & STANCE_BATTLE ) != 0 ) )        // and is able to use this ability in battle stance.
-           p() -> stance_swap();                            // Go ahead and swap to battle.
-
-      else if ( p() -> active.stance == STANCE_BATTLE &&         // On the other side, if player is in battle stance,
-                p() -> specialization() == WARRIOR_PROTECTION && // is a tank,
-                ( ( stancemask & STANCE_DEFENSE ) != 0 ) &&      // can use the ability in defensive stance,
-                p() -> primary_role() == ROLE_TANK )             // is reallly reallyyyy a tank, and not some strange person trying to dps in battle stance without gladiator's resolve, :p
-                p() -> stance_swap();                            // Swap back to defensive stance.
+    if ( p() -> stance_dance )
+    { // Part of automatic stance swapping, if the player is not in the default stance for the spec this will force them back to it.
+      // This is done because blizzard has enabled some automated swapping in game, and because most players use macros to swap back to the proper stance.
+      if ( p() -> cooldown.stance_swap -> up() )
+      {
+        switch ( p() -> active.stance )
+        {
+        case STANCE_DEFENSE:
+        { // If the player is currently in defensive stance, should not be in defensive stance, and the ability can be used in battle stance
+          if ( p() -> specialization() != WARRIOR_PROTECTION && ( ( stancemask & STANCE_BATTLE ) != 0 ) )
+            p() -> stance_swap(); // Swap back. The stance isn't actually swapped for about 0.2-0.3~ seconds in game, which is modeled here by not officially swapping stances
+          break;                  // until the buff has been applied, and the buff has a 0.25~ second delay.
+        }
+        case STANCE_BATTLE:
+        { // If player is in battle stance, is a tank, can use the ability in defensive stance, and is really reallly a tank 
+          // and not some strange person trying to dps in battle stance without gladiator's resolve :p
+          if ( p() -> specialization() == WARRIOR_PROTECTION && ( ( stancemask & STANCE_DEFENSE ) != 0 ) && p() -> primary_role() == ROLE_TANK )
+            p() -> stance_swap(); // Swap back to defensive stance.
+          break;
+        }
+        default:break;
+        }
+      }
+      p() -> stance_dance = false; // Reset variable.
     }
     ab::execute();
-      }
+  }
 
   virtual timespan_t gcd() const
   {
@@ -625,13 +642,14 @@ public:
       return false;
 
     // Attack available in current stance?
-    if ( ( ( stancemask & p() -> active.stance ) == 0 ) && p() -> cooldown.stance_swap -> up() )
+    if ( ( stancemask & p() -> active.stance ) == 0 )
     {
-      p() -> stance_swap(); // Force the stance swap, the sim will try to use it again in 0.1 seconds.
+      if ( p() -> cooldown.stance_swap -> up() && !p() -> player_override_stance_dance )
+      {
+        p() -> stance_swap(); // Force the stance swap, the sim will try to use it again in 0.1 seconds.
+      }
       return false;
     }
-    else if ( ( ( stancemask & p() -> active.stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
-      return false;
 
     return true;
   }
@@ -3548,12 +3566,9 @@ struct mass_spell_reflection_t: public warrior_spell_t
 
 struct stance_t: public warrior_spell_t
 {
-  warrior_stance switch_to_stance;
-  warrior_stance starting_stance;
-  warrior_stance original_switch;
+  warrior_stance switch_to_stance, starting_stance, original_switch;
   std::string stance_str;
   double swap;
-
   stance_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "stance", p ),
     switch_to_stance( STANCE_BATTLE ), stance_str( "" ), swap( 0 )
@@ -3562,12 +3577,11 @@ struct stance_t: public warrior_spell_t
     add_option( opt_float( "swap", swap ) );
     parse_options( options_str );
     range = -1;
-
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
 
     if ( p -> specialization() != WARRIOR_PROTECTION )
       starting_stance = STANCE_BATTLE;
-    else if ( p -> primary_role() == ROLE_ATTACK && p -> talents.gladiators_resolve )
+    else if ( p -> gladiator )
       starting_stance = STANCE_GLADIATOR;
     else
       starting_stance = STANCE_DEFENSE;
@@ -3592,58 +3606,65 @@ struct stance_t: public warrior_spell_t
     }
 
     if ( swap == 0 )
-      cooldown -> duration = p -> cooldown.stance_swap -> duration;
+      cooldown = p -> cooldown.stance_swap;
     else
-    {
-      p -> swapping = true;
       cooldown -> duration = ( timespan_t::from_seconds( swap ) );
-    }
-    ignore_false_positive = true;
+
+    ignore_false_positive = use_off_gcd = true;
     callbacks = harmful = false;
-    use_off_gcd = true;
   }
 
   void execute()
   {
-    if ( p() -> active.stance != switch_to_stance )
+    switch ( p() -> active.stance )
     {
-      switch ( p() -> active.stance )
-      {
-      case STANCE_BATTLE: p() -> buff.battle_stance -> expire(); break;
-      case STANCE_DEFENSE:
-      {
-        p() -> buff.defensive_stance -> expire();
-        p() -> recalculate_resource_max( RESOURCE_HEALTH );
-        break;
-      }
-      case STANCE_GLADIATOR: p() -> buff.gladiator_stance -> expire(); break;
-      }
-
-      switch ( switch_to_stance )
-      {
-      case STANCE_BATTLE: p() -> buff.battle_stance -> trigger(); break;
-      case STANCE_DEFENSE:
-      {
-        p() -> buff.defensive_stance -> trigger();
-        p() -> recalculate_resource_max( RESOURCE_HEALTH ); // Force stamina modifier, otherwise it doesn't apply until stat_loss is called
-        break;
-      }
-      case STANCE_GLADIATOR: p() -> buff.gladiator_stance -> trigger(); break;
-      }
-      p() -> cooldown.stance_swap -> start();
+    case STANCE_BATTLE: p() -> buff.battle_stance -> expire(); break;
+    case STANCE_DEFENSE:
+    {
+      p() -> buff.defensive_stance -> expire();
+      p() -> recalculate_resource_max( RESOURCE_HEALTH );
+      break;
     }
+    case STANCE_GLADIATOR: p() -> buff.gladiator_stance -> expire(); break;
+    }
+
+    switch ( switch_to_stance )
+    {
+    case STANCE_BATTLE: p() -> buff.battle_stance -> trigger(); break;
+    case STANCE_DEFENSE:
+    {
+      p() -> buff.defensive_stance -> trigger();
+      p() -> recalculate_resource_max( RESOURCE_HEALTH ); // Force stamina modifier, otherwise it doesn't apply until stat_loss is called
+      break;
+    }
+    case STANCE_GLADIATOR: p() -> buff.gladiator_stance -> trigger(); break;
+    }
+    if ( p() -> in_combat && !p() -> player_override_stance_dance && starting_stance != switch_to_stance )
+    {
+      p() -> stance_dance = true;
+    }
+    p() -> active.stance = switch_to_stance;
+    p() -> cooldown.stance_swap -> start();
+    p() -> cooldown.stance_swap -> adjust( -1 * p() -> cooldown.stance_swap -> duration * ( 1.0 - p() -> cache.attack_haste() ) ); // Yeah.... it's hasted by headlong rush.
 
     if ( swap > 0 )
     {
-      if ( swap >= 3.0 && p() -> active.stance != starting_stance )
-        switch_to_stance = starting_stance;
-      if ( swap < 3.0 )
-        cooldown -> start();
-      if ( swap >= 3.0 && p() -> active.stance == starting_stance )
+      timespan_t stance_gcd;
+      stance_gcd = p() -> cooldown.stance_swap -> remains();
+      if ( swap >= ( stance_gcd * 2 ).total_seconds() )
       {
-        switch_to_stance = original_switch;
         cooldown -> start();
-        cooldown -> adjust( -1 * p() -> cooldown.stance_swap -> duration );
+        if ( p() -> active.stance != starting_stance )
+          switch_to_stance = starting_stance;
+        else
+        {
+          switch_to_stance = original_switch;
+          cooldown -> adjust( -1 * stance_gcd );
+        }
+      }
+      else if ( cooldown -> duration > stance_gcd ) // Don't worry about starting the cooldown if the limitation will be the stance global.
+      {
+        cooldown -> start();
       }
     }
   }
@@ -3652,9 +3673,8 @@ struct stance_t: public warrior_spell_t
   {
     if ( p() -> in_combat && p() -> talents.gladiators_resolve -> ok() )
       return false;
-    if ( p() -> cooldown.stance_swap -> down() || cooldown -> down() || 
-       ( swap == 0 && p() -> active.stance == switch_to_stance ) )
-         return false;
+    if ( p() -> cooldown.stance_swap -> down() || cooldown -> down() || ( swap == 0 && p() -> active.stance == switch_to_stance ) )
+      return false;
 
     return warrior_spell_t::ready();
   }
@@ -5111,9 +5131,10 @@ void warrior_t::reset()
 
   active.stance = STANCE_BATTLE;
   if ( gladiator )
+  {
     active.stance = STANCE_GLADIATOR;
+  }
 
-  swapping = false;
   heroic_charge = 0;
   last_target_charged = 0;
   if ( rppm.sudden_death )
@@ -5607,7 +5628,7 @@ void warrior_t::create_options()
 
   add_option( opt_int( "initial_rage", initial_rage ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
-  add_option( opt_bool( "swapping", swapping ) );
+  add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
 }
 
 // Mark of the Shattered Hand ===============================================
@@ -5667,7 +5688,7 @@ void warrior_t::copy_from( player_t* source )
 
   initial_rage = p -> initial_rage;
   warrior_fixed_time = p -> warrior_fixed_time;
-  swapping = p -> swapping;
+  player_override_stance_dance = p -> player_override_stance_dance;
 }
 
 // warrior_t::stance_swap ==================================================
@@ -5676,9 +5697,11 @@ void warrior_t::stance_swap()
 {
   // Blizzard has automated stance swapping with defensive and battle stance. This function will swap to the stance automatically if
   // The ability that we are trying to use is not usable in the current stance.
-  warrior_stance swap;
   if ( talents.gladiators_resolve -> ok() && in_combat ) // Cannot swap stances with gladiator's resolve in combat.
     return;
+
+  warrior_stance swap;
+
   switch ( active.stance )
   {
   case STANCE_BATTLE:
@@ -5714,7 +5737,15 @@ void warrior_t::stance_swap()
   }
   case STANCE_GLADIATOR: buff.gladiator_stance -> trigger(); break;
   }
-  cooldown.stance_swap -> start();
+  if ( in_combat )
+  {
+    cooldown.stance_swap -> start();
+    cooldown.stance_swap -> adjust( -1 * cooldown.stance_swap -> duration * ( 1.0 - cache.attack_haste() ) ); // Yeah.... it's hasted by headlong rush.
+    if ( !player_override_stance_dance )
+    {
+      stance_dance = true; // Invalidate stance dancing, so that the simulation will try and swap back.
+    } // Only if the user doesn't override it. If overridden, the player will have to force it back to the original stance.
+  }
 }
 
 // warrior_t::enrage ========================================================
