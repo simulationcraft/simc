@@ -80,6 +80,11 @@ actions.aoe+=/bladestorm,if=((debuff.colossus_smash.up|cooldown.colossus_smash.r
 actions.aoe+=/colossus_smash,if=dot.rend.ticking
 actions.aoe+=/execute,cycle_targets=1,if=!buff.sudden_death.react&active_enemies<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)
 actions.aoe+=/heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down
+# Heroic Charge is an event that makes the warrior heroic leap out of melee range for an instant
+#If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.
+#This can delay autoattacks, but typically the rage gained from charging (Especially with bull rush glyphed) is more than
+#The amount lost from delayed autoattacks. Charge only grants rage from charging a different target than the last time.
+#Which means this is only worth doing on AoE, and only when you cycle your charge target.
 actions.aoe+=/mortal_strike,if=target.health.pct>20&active_enemies<=5
 actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.aoe+=/thunder_clap,if=(target.health.pct>20|active_enemies>=9)&glyph.resonating_power.enabled

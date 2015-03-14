@@ -36,12 +36,8 @@ struct warrior_t: public player_t
 public:
   event_t* heroic_charge;
   int initial_rage;
-  bool warrior_fixed_health;
+  bool warrior_fixed_time;
   player_t* last_target_charged;
-  double base_rage_generation;
-  double arms_battle_stance;
-  double arms_defensive_stance;
-  double battle_stance;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
   // Also set to true whenever gladiator's resolve is talented.
@@ -416,12 +412,8 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
-    warrior_fixed_health = true;
+    warrior_fixed_time = true;
     last_target_charged = 0;
-    base_rage_generation = 1.75;
-    arms_battle_stance = 3.40;
-    arms_defensive_stance = 1.60;
-    battle_stance = 2.00; //Base rage generation is 100%, normal battle stance increases it to 200%.
     swapping = false;
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
@@ -437,7 +429,6 @@ public:
   virtual void      init_gains();
   virtual void      init_position();
   virtual void      init_procs();
-  virtual void      init_rng();
   virtual void      init_resources( bool );
   virtual void      arise();
   virtual void      combat_begin();
@@ -464,6 +455,7 @@ public:
   virtual void      interrupt();
   virtual void      reset();
   virtual void      moving();
+  virtual void      init_rng();
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
@@ -809,49 +801,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       t, // target
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
   }
-
-  void trigger_rage_gain( action_state_t* s )
-  {
-    if ( p() -> active.stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
-      return;
-
-    weapon_t*  w = weapon;
-    double rage_gain = w -> swing_time.total_seconds() * p() -> base_rage_generation;
-
-    if ( p() -> specialization() == WARRIOR_ARMS )
-    {
-      if ( p() -> active.stance == STANCE_BATTLE )
-      {
-        if ( s -> result == RESULT_CRIT )
-          rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2015/02/02
-        else
-          rage_gain *= p() -> arms_battle_stance;
-      }
-      else
-        rage_gain *= p() -> arms_defensive_stance;
-    }
-    else
-    {
-      rage_gain *= p() -> battle_stance;
-      if ( w -> slot == SLOT_OFF_HAND )
-        rage_gain *= 0.5;
-    }
-
-    rage_gain = util::round( rage_gain, 1 );
-
-    if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
-    {
-      p() -> resource_gain( RESOURCE_RAGE,
-                            rage_gain,
-                            p() -> gain.melee_crit );
-    }
-    else
-    {
-      p() -> resource_gain( RESOURCE_RAGE,
-                            rage_gain,
-                            w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
-    }
-  }
 };
 
 // trigger_bloodbath ========================================================
@@ -1047,13 +996,15 @@ void warrior_attack_t::impact( action_state_t* s )
 
 struct melee_t: public warrior_attack_t
 {
-  bool mh_lost_melee_contact;
-  bool oh_lost_melee_contact;
-  bool sudden_death;
+  bool mh_lost_melee_contact, oh_lost_melee_contact, sudden_death;
+  double base_rage_generation, arms_battle_stance, arms_defensive_stance, battle_stance;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    sudden_death( false )
+    sudden_death( false ),
+    base_rage_generation( 1.75 ),
+    arms_battle_stance( 3.40 ), arms_defensive_stance( 1.60 ),
+    battle_stance( 2.00 )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
@@ -1121,11 +1072,11 @@ struct melee_t: public warrior_attack_t
 
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
+      trigger_rage_gain( s );
       if ( sudden_death && p() -> rppm.sudden_death -> trigger() )
       {
         p() -> buff.sudden_death -> trigger();
       }
-      trigger_rage_gain( s );
       if ( p() -> active.enhanced_rend )
       {
         if ( td( s -> target ) -> dots_rend -> is_ticking() )
@@ -1146,6 +1097,54 @@ struct melee_t: public warrior_attack_t
           p(), // target
           p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
       }
+    }
+  }
+
+  void trigger_rage_gain( action_state_t* s )
+  {
+    if ( p() -> active.stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
+      return;
+
+    weapon_t*  w = weapon;
+    double rage_gain = w -> swing_time.total_seconds() * base_rage_generation;
+
+    if ( p() -> specialization() == WARRIOR_ARMS )
+    {
+      if ( p() -> active.stance == STANCE_BATTLE )
+      {
+        if ( s -> result == RESULT_CRIT )
+          rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2015/02/02
+        else
+          rage_gain *= arms_battle_stance;
+      }
+      else
+      {
+        if ( s -> result == RESULT_CRIT )
+          rage_gain *= arms_battle_stance; // Grants battle stance rage if the crit occurs while in defensive.
+        else
+          rage_gain *= arms_defensive_stance;
+      }
+    }
+    else
+    {
+      rage_gain *= battle_stance;
+      if ( w -> slot == SLOT_OFF_HAND )
+        rage_gain *= 0.5;
+    }
+
+    rage_gain = util::round( rage_gain, 1 );
+
+    if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+        rage_gain,
+        p() -> gain.melee_crit );
+    }
+    else
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+        rage_gain,
+        w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
     }
   }
 };
@@ -4287,7 +4286,11 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
   aoe -> add_action( this, "Execute", "cycle_targets=1,if=!buff.sudden_death.react&active_enemies<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)" );
   aoe -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down" );
-  aoe -> add_action( this, "Mortal Strike", "if=target.health.pct>20&active_enemies<=5" );
+  aoe -> add_action( this, "Mortal Strike", "if=target.health.pct>20&active_enemies<=5", "Heroic Charge is an event that makes the warrior heroic leap out of melee range for an instant\n"
+                                                                                         "#If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.\n"
+                                                                                         "#This can delay autoattacks, but typically the rage gained from charging (Especially with bull rush glyphed) is more than\n"
+                                                                                         "#The amount lost from delayed autoattacks. Charge only grants rage from charging a different target than the last time.\n"
+                                                                                         "#Which means this is only worth doing on AoE, and only when you cycle your charge target." );
   aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Thunder Clap", "if=(target.health.pct>20|active_enemies>=9)&glyph.resonating_power.enabled" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=ticks_remain<2&target.time_to_die>8&!buff.colossus_smash_up.up&active_enemies>=9&rage<50&!talent.taste_for_blood.enabled" );
@@ -5072,22 +5075,22 @@ void warrior_t::combat_begin()
 {
   if ( !sim -> fixed_time )
   {
-    if ( warrior_fixed_health )
+    if ( warrior_fixed_time )
     {
       for ( size_t i = 0; i < sim -> player_list.size(); ++i )
       {
         player_t* p = sim -> player_list[i];
         if ( p -> specialization() != WARRIOR_FURY && p -> specialization() != WARRIOR_ARMS )
         {
-          warrior_fixed_health = false;
+          warrior_fixed_time = false;
           break;
         }
       }
-      if ( warrior_fixed_health )
+      if ( warrior_fixed_time )
       {
         sim -> fixed_time = true;
         sim -> errorf( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
-        sim -> errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add warrior_fixed_health=0 to your sim." );
+        sim -> errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add warrior_fixed_time=0 to your sim." );
       }
     }
   }
@@ -5594,7 +5597,7 @@ void warrior_t::create_options()
   player_t::create_options();
 
   add_option( opt_int( "initial_rage", initial_rage ) );
-  add_option( opt_bool( "warrior_fixed_health", warrior_fixed_health ) );
+  add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "swapping", swapping ) );
 }
 
@@ -5654,7 +5657,7 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
-  warrior_fixed_health = p -> warrior_fixed_health;
+  warrior_fixed_time = p -> warrior_fixed_time;
   swapping = p -> swapping;
 }
 

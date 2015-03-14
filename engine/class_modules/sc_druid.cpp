@@ -387,6 +387,7 @@ public:
     const spell_data_t* savage_roar;
     const spell_data_t* savagery;
     const spell_data_t* skull_bash;
+    const spell_data_t* solstice;
     const spell_data_t* survival_instincts;
     const spell_data_t* stampeding_roar;
 
