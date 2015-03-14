@@ -6,7 +6,6 @@
   This file contains all of the methods required for automated comparison sims
 */
 #include "sc_AutomationTab.hpp"
-#include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 
 namespace {
@@ -1108,7 +1107,7 @@ QString defaultRotationFooterToolTip = "This box is only used for Rotation compa
 
 } // unnamed
 
-SC_AutomationTab::SC_AutomationTab( QWidget* parent )
+SC_AutomationTab::SC_AutomationTab( QWidget* /*parent*/ )
 {
     // layout building based on
     // http://qt-project.org/doc/qt-4.8/layouts-basiclayouts.html
