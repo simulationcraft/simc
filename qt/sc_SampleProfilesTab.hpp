@@ -1,5 +1,7 @@
 #pragma once
-#include <QGroupBox>
+#include "config.hpp"
+#include <QtWidgets/QtWidgets>
+#include <QtGui/QtGui>
 
 class QDir;
 class QTreeWidget;

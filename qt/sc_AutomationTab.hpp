@@ -1,5 +1,6 @@
 #pragma once
-#include <QScrollArea>
+#include <QtWidgets/QtWidgets>
+#include <QtGui/QtGui>
 
 class QComboBox;
 class QLabel;

@@ -1,8 +1,5 @@
 #include "sc_SampleProfilesTab.hpp"
-#include <QTreeWidget>
 #include <QDir>
-#include <QFormLayout>
-#include <QLabel>
 #include "simulationcraftqt.hpp"
 
 SC_SampleProfilesTab::SC_SampleProfilesTab( QWidget* parent ) :
