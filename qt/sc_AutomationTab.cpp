@@ -1106,7 +1106,8 @@ QString defaultRotationFooterToolTip = "This box is only used for Rotation compa
 
 } // unnamed
 
-SC_AutomationTab::SC_AutomationTab( QWidget* /*parent*/ )
+SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
+    QScrollArea( parent )
 {
     // layout building based on
     // http://qt-project.org/doc/qt-4.8/layouts-basiclayouts.html
