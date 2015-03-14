@@ -246,7 +246,7 @@ public:
 
   struct realppm_t
   {
-    real_ppm_t* sudden_death;
+    std::shared_ptr<real_ppm_t> sudden_death;
   } rppm;
 
   // Spec Passives
@@ -4953,7 +4953,7 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.sudden_death = new rppm::sudden_death_t( *this );
+  rppm.sudden_death = std::shared_ptr<rppm::sudden_death_t>( new rppm::sudden_death_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
