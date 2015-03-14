@@ -421,11 +421,6 @@ public:
     regen_type = REGEN_DISABLED;
   }
 
-  virtual ~warrior_t() 
-  {
-    delete rppm.sudden_death;
-  }
-
   // Character Definition
   virtual void      init_spells();
   virtual void      init_base_stats();
@@ -5121,7 +5116,10 @@ void warrior_t::reset()
   swapping = false;
   heroic_charge = 0;
   last_target_charged = 0;
-  rppm.sudden_death -> reset();
+  if ( rppm.sudden_death )
+  {
+    rppm.sudden_death -> reset();
+  }
 }
 
 // Movement related overrides. =============================================
