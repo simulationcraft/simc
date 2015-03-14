@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -1092,18 +1092,18 @@ Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...
 Effects          :
 #1 (id=128615)   : Apply Aura (6) | Unknown effect sub type (373)
                    Base Value: 200 | Scaled Value: 200
-#2 (id=128616)   : Apply Aura (6) | Unknown effect sub type (395)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 339
-#3 (id=132033)   : Apply Aura (6) | Unknown effect sub type (395)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 365
-#4 (id=156817)   : Apply Aura (6) | Unknown effect sub type (263)
+#2 (id=128616)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
-#5 (id=157594)   : Apply Aura (6) | Unknown effect sub type (305)
+#3 (id=132033)   : Apply Aura (6) | Unknown effect sub type (305)
                    Base Value: 300 | Scaled Value: 300
-#6 (id=164864)   : Apply Aura (6) | Modify Attack Power (104)
+#4 (id=156817)   : Apply Aura (6) | Modify Attack Power (104)
                    Base Value: 0 | Scaled Value: 0
-#7 (id=172324)   : Apply Aura (6) | Unknown effect sub type (191)
-                   Base Value: 27 | Scaled Value: 27
+#5 (id=157594)   : Apply Aura (6) | Unknown effect sub type (191)
+                   Base Value: 35 | Scaled Value: 35
+#6 (id=164864)   : Apply Aura (6) | Unknown effect sub type (395)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 339
+#7 (id=172324)   : Apply Aura (6) | Unknown effect sub type (395)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 365
 Description      : Torpedo forward, dealing $117993s1 Nature damage to all enemies and $124040m1 healing to all allies in your path.
 
 Replaces Roll, and travels farther.
@@ -1120,7 +1120,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=128666)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Stance of the Sturdy Ox (Brewmaster Stance) (id=115069) [Spell Family (53)] 
@@ -1202,7 +1202,7 @@ Resource         : 2% Base Mana (3200 @Level 100) w/ Stance of the Spirited Cran
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Desperate Measures (126060), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Glyph of Expel Harm (159487)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Desperate Measures (126060), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Glyph of Expel Harm (159487)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1737,7 +1737,7 @@ Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Internal Medicine (115451), Lucidity (137331)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Internal Medicine (115451), Brewmaster Training (117967), Lucidity (137331)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2385,7 +2385,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680)
+Affecting spells : Thunder Focus Tea (116680), Brewmaster Training (117967)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2540,7 +2540,7 @@ Effects          :
 
 Name             : Brewmaster Training (id=117967) [Spell Family (53), Passive, Hidden] 
 Class            : Brewmaster Monk
-Spell Level      : 34
+Spell Level      : 10
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2554,6 +2554,9 @@ Effects          :
 #2 (id=158670)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Tiger Palm (100787)
+#3 (id=266354)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 2
+                   Affected Spells: Expel Harm (115072), Detox (115450), Surging Mist (116995), Zen Sphere (124081), Zen Sphere: Detonate (124101), Chi Burst (130654), Chi Wave (132463), Nimble Brew (137562)
 Description      : You become adept in the ways of the Brewmaster, amplifying three of your abilities.
 
 |CFFFFFFFFFortifying Brew|R
@@ -3547,8 +3550,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=156258)   : Energize Power% (137)
-                   Base Value: 4 | Scaled Value: 4
+#1 (id=156258)   : Energize Power (30)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: mana
 Description      : Consumes up to 2 Mana Tea stacks, restoring $115294m1% mana for each stack.
 
 Name             : Mana Tea (id=123762) 
@@ -3745,7 +3748,7 @@ Cooldown         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3782,7 +3785,7 @@ Name             : Zen Sphere: Detonate (id=124101) [Scaling Spell (5), Spell Fa
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4965,7 +4968,7 @@ Name             : Chi Burst (id=130654) [Scaling Spell (5), Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -5032,7 +5035,7 @@ Name             : Chi Wave (id=132463) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Guard (115295), Storm, Earth, and Fire (137639), 
+Affecting spells : Guard (115295), Brewmaster Training (117967), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -5322,6 +5325,7 @@ Class            : Monk
 Spell Level      : 30
 Duration         : 6 seconds
 Cooldown         : 120 seconds
+Affecting spells : Brewmaster Training (117967)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ .x...... ........ 
@@ -5813,11 +5817,11 @@ Effects          :
 #1 (id=219433)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 1
                    Affected Spells: Roll (109132), Chi Torpedo (115008)
-#2 (id=219434)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
-                   Base Value: 33 | Scaled Value: 33 | Misc Value: 3
+#2 (id=219434)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 95 | Scaled Value: 95 | Misc Value: 3
                    Affected Spells: Roll (109132), Chi Torpedo (115008)
-#3 (id=219435)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
-                   Base Value: 33 | Scaled Value: 33 | Misc Value: 23
+#3 (id=219435)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 95 | Scaled Value: 95 | Misc Value: 23
                    Affected Spells: Roll (109132), Chi Torpedo (115008)
 Description      : Your $?s115008[Chi Torpedo][Roll] now travels the same distance in $s1% less time.
 

@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -156,7 +156,7 @@ Resource         : 50 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Vendetta (79140), Sinister Strike Enabler (79327), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193)
+Affecting spells : Adrenaline Rush (13750), Vendetta (79140), Sinister Strike Enabler (79327), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Cold Blood (182304)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -425,7 +425,7 @@ Resource         : 35 Energy
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Ruthlessness (174597), Cold Blood (182304)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -785,7 +785,7 @@ Resource         : 60 Energy
 Spell Level      : 6
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Cold Blood (170882)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Cold Blood (170882), Cold Blood (182304)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1566,7 +1566,7 @@ Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 120 seconds
-Affecting spells : Blade Flurry (13877), Empowered Bandit's Guile (157581), Item - Rogue WoD PvP Combat 4P Bonus (165997)
+Affecting spells : Blade Flurry (13877), Empowered Bandit's Guile (157581)
 Attributes       : ....x... ........ x....... .....x..   ........ ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   x....... ..x..... xx...... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2978,7 +2978,7 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
-Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Item - Rogue T17 Combat 2P Bonus (165480)
+Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Item - Rogue T17 Combat 2P Bonus (165480), Cold Blood (182304)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4181,8 +4181,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #6 (id=217869)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 156327
-#7 (id=254016)   : Apply Aura (6) | Unknown effect sub type (147)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
+#7 (id=254016)   : Trigger Spell: (184963) (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 184963
 Description      : Finishing move that consumes combo points on the target to empower your weapons with shadow energy and perform a devastating two-part attack. 
 
 You whirl around, dealing up to $s2 damage to all enemies within 8 yds, then leap into the air and $?s32645[Envenom][Eviscerate] your target on the way back down, with such force that it has a $163786s2% stronger effect.

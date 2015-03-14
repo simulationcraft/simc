@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -42,7 +42,7 @@ Class            : Paladin
 Spell Level      : 16
 Range            : 40 yards
 Cooldown         : 600 seconds
-Affecting spells : Glyph of Divinity (54939), Glyph of Flash of Light (54957), Glyph of Flash of Light (57955), Holy Insight (112859), Unbreakable Spirit (114154), Beacon of Insight (157007)
+Affecting spells : Glyph of Divinity (54939), Glyph of Flash of Light (54957), Glyph of Flash of Light (57955), Sanctuary (105805), Holy Insight (112859), Unbreakable Spirit (114154), Beacon of Insight (157007)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -459,7 +459,7 @@ Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Glyph of Flash of Light (54957), Supplication (94686), Saint's Vigor (105742), Holy Insight (112859), Selfless Healer (114250), Lucidity (137288), Beacon of Faith (156910), Beacon of Insight (157007)
+Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Glyph of Flash of Light (54957), Supplication (94686), Saint's Vigor (105742), Sanctuary (105805), Holy Insight (112859), Selfless Healer (114250), Lucidity (137288), Beacon of Faith (156910), Beacon of Insight (157007)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -588,7 +588,7 @@ Melee attacks have a chance to heal.
 Name             : Seal of Insight (id=20167) [Spell Family (10)] 
 Class            : Paladin
 Spell Level      : 32
-Affecting spells : Holy Insight (112859)
+Affecting spells : Sanctuary (105805), Holy Insight (112859)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2445,10 +2445,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=57327)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -25 | Scaled Value: -25
                    Affected Spells: Holy Shock (25914)
 #2 (id=128489)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 25 | Scaled Value: 25
                    Affected Spells: Holy Shock (20473), Holy Shock (25912)
 Description      : Decreases the healing of Holy Shock by $63224s1% but increases its damage by $63224s2%.
 
@@ -3290,7 +3290,7 @@ Effects          :
 Name             : Protector of the Innocent (id=94289) [Scaling Spell (6), Spell Family (10)] 
 Class            : Paladin
 Range            : 100 yards
-Affecting spells : Holy Insight (112859)
+Affecting spells : Sanctuary (105805), Holy Insight (112859)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
@@ -3527,6 +3527,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3
 #5 (id=256092)   : Apply Aura (6) | Unknown effect sub type (21)
                    Base Value: 15 | Scaled Value: 15
+#6 (id=266383)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 2
+                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Seal of Insight (20167), Protector of the Innocent (94289), Eternal Flame (114163), Stay of Execution (114917), Arcing Light (119952), Word of Glory (130551), Eternal Flame (156322), Uther's Insight (156988)
 Description      : Decreases damage taken by $s1%, increases your chance to dodge by $s3%, and reduces the chance for your attacks to be parried by $s4%.
 
 Name             : Holy Avenger (id=105809) [Spell Family (10)] 
@@ -3726,7 +3729,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
-Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
+Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Sanctuary (105805), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3943,7 +3946,7 @@ Class            : Paladin
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 9 seconds
-Affecting spells : Glyph of Flash of Light (54957), Holy Insight (112859), 
+Affecting spells : Glyph of Flash of Light (54957), Sanctuary (105805), Holy Insight (112859), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ .x...... ........ ........ 
@@ -4325,7 +4328,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Glyph of Flash of Light (54957), Holy Insight (112859)
+Affecting spells : Glyph of Flash of Light (54957), Sanctuary (105805), Holy Insight (112859)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
                  : ........ ........ ........ ........   ........ x....... ........ ..x..... 
@@ -4512,7 +4515,7 @@ Name             : Word of Glory (id=130551) [Scaling Spell (6), Spell Family (1
 Class            : Paladin
 Spell Level      : 9
 Range            : 40 yards
-Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Glyph of Flash of Light (54957), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
+Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Glyph of Flash of Light (54957), Divine Purpose (90174), Sanctuary (105805), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : x....... .......x ........ ........   ........ ........ ........ .x...... 
@@ -5121,7 +5124,7 @@ Class            : Paladin
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910)
+Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Sanctuary (105805), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -5178,9 +5181,10 @@ Effects          :
 Description      : $@spelldesc152263
 Tooltip          : Movement speed increased by $s1%.
 
-Name             : Uther's Insight (id=156988) 
+Name             : Uther's Insight (id=156988) [Spell Family (10)] 
 Class            : Paladin
 Duration         : 21 seconds
+Affecting spells : Sanctuary (105805)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

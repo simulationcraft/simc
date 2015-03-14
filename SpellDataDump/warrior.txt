@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -520,7 +520,7 @@ Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 310 | Scaled Value: 3.1 (avg=0)
+                   Base Value: 350 | Scaled Value: 3.5 (avg=0)
 Description      : Attempt to finish off a wounded foe, causing $sw2 Physical damage$?s23881[ with your main-hand and $163558sw2 Physical damage with your off-hand][]. Only usable on enemies that have less than 20% health.$?s146971[ Successfully killing an enemy with Execute grants you ${$147352m1/10} rage.][]
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -1257,6 +1257,9 @@ Effects          :
 #5 (id=218365)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3
                    Affected Spells: Shield Block (2565), Shield Charge (156321)
+#6 (id=266358)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 2
+                   Affected Spells: Enraged Regeneration (55694), Impending Victory (118340), Victory Rush (118779), Blood Craze (159362), Blood Craze (159363)
 Description      : Your Defensive Stance provides several additional benefits.
 
 Increases your total Stamina by $s1%.
@@ -1681,7 +1684,7 @@ Class            : Warrior
 Spell Level      : 1
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Bladestorm (46924)
+Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924)
 Attributes       : ....x... ........ x.x..... ........   ........ .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -3686,7 +3689,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Affecting spells : Glyph of Mighty Victory (58104)
+Affecting spells : Unwavering Sentinel (29144), Glyph of Mighty Victory (58104)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3706,7 +3709,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Affecting spells : Glyph of Mighty Victory (58104)
+Affecting spells : Unwavering Sentinel (29144), Glyph of Mighty Victory (58104)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4918,6 +4921,7 @@ Spell Level      : 90
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
+Affecting spells : Unwavering Sentinel (29144)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4932,9 +4936,10 @@ Description      : Your multistrikes from auto attacks trigger a Blood Craze.
 
 Blood Craze regenerates $s1% of your health over $159363d. When this effect is refreshed, the remaining portion is added to the new effect.
 
-Name             : Blood Craze (id=159363) 
+Name             : Blood Craze (id=159363) [Spell Family (4)] 
 Class            : Warrior
 Duration         : 3 seconds
+Affecting spells : Unwavering Sentinel (29144)
 Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -5282,9 +5287,9 @@ Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 155 | Scaled Value: 1.55 (avg=0)
-#3 (id=239183)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 135 | Scaled Value: 1.35 (avg=0)
+#3 (id=239183)   : Energize Power (30)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: rage
 Description      : Attempt to finish off a foe, causing $sw2 Physical damage to the target, and consuming up to $m3 additional Rage to deal up to $168874sw2 additional damage. Only usable on enemies that have less than 20% health. $?s146971[ Successfully killing an enemy with Execute grants you ${$147352m1/10} rage.][]
 
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
@@ -5303,7 +5308,7 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 310 | Scaled Value: 3.1 (avg=0)
+                   Base Value: 350 | Scaled Value: 3.5 (avg=0)
 Description      : $@spelldesc5308
 
 Name             : Item - Warrior T17 Arms 2P Bonus (id=165336) [Spell Family (4), Passive, Hidden] 
@@ -5598,7 +5603,7 @@ Effects          :
 #1 (id=239184)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=239185)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5 (avg=0)
+                   Base Value: 405 | Scaled Value: 4.05 (avg=0)
 #3 (id=239186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 

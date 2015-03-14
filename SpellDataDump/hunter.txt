@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -2199,7 +2199,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=46172)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 0x7f
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f
 #2 (id=46173)    : Apply Aura (6) | Unknown effect sub type (197)
                    Base Value: -60 | Scaled Value: -60
 Description      : When at less than 35% health, your pet does $s1% more damage and has a $s2% reduced chance to be critically hit.
@@ -6624,8 +6624,8 @@ Name             : Steady Focus (id=177667) [Spell Family (9), Passive]
 Class            : Hunter
 Spell Level      : 1
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x....... ........ 
-                 : Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

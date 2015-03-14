@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -261,7 +261,7 @@ Attributes       : ........ ........ x......x ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=802)      : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 16 | Misc Value 2: 0x7
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 16 | Misc Value 2: 0x6
 #2 (id=803)      : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=131668)   : Apply Aura (6) | Unknown effect sub type (305)
@@ -897,6 +897,9 @@ Effects          :
                    Affected Spells: Fire Nova (1535), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Stormstrike (17364), Lava Lash (60103), Unleash Elements (73680), Windstrike (115356)
 #4 (id=263873)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1538
+                   Affected Spells: Fire Nova (1535), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Stormstrike (17364), Lava Lash (60103), Unleash Elements (73680), Windstrike (115356)
+#5 (id=266837)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1259
                    Affected Spells: Fire Nova (1535), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Stormstrike (17364), Lava Lash (60103), Unleash Elements (73680), Windstrike (115356)
 Description      : Melee haste effects lower the cooldown and global cooldown of your Stormstrike, Lava Lash, Shocks, Unleash Elements, and Fire Nova.
 
@@ -3984,7 +3987,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127153)   : Apply Aura (6) | Unknown effect sub type (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59346 | Misc Value 2: 0x7
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59346 | Misc Value 2: 0x6
 #2 (id=127166)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: -8000 | Scaled Value: -8000 | Misc Value: 1536
 #3 (id=127189)   : Apply Aura (6) | Unknown effect sub type (332)
@@ -4035,7 +4038,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127155)   : Apply Aura (6) | Unknown effect sub type (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59349 | Misc Value 2: 0x7
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59349 | Misc Value 2: 0x6
 #2 (id=127167)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : The Shaman transforms into a Water Ascendant for $114051d. While in this form, all healing done is duplicated and distributed evenly among nearby allies.
@@ -4182,7 +4185,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=128666)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Windstrike (id=115356) [Spell Family (11)] 

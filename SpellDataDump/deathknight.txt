@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -1228,6 +1228,9 @@ Effects          :
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
 #8 (id=248806)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
+#9 (id=266325)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 2
+                   Affected Spells: Unholy Strength (53365), Death Siphon (116783), Conversion (119975), Conversion (119980)
 Description      : Increases your haste and multistrike chance by $s1%.
 
 While in combat, you generate $s8 Runic Power per second.
@@ -1764,7 +1767,7 @@ Range            : 40 yards
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Runeforges (157376), Enhanced Fallen Crusader (157437)
+Affecting spells : Veteran of the Third War (50029), Improved Runeforges (157376), Enhanced Fallen Crusader (157437)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4240,7 +4243,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=128666)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Unholy Blight (id=115989) [Spell Family (15)] 
@@ -4280,6 +4283,7 @@ Name             : Death Siphon (id=116783) [Spell Family (15)]
 Class            : Death Knight
 Range            : 100 yards
 Velocity         : 30 yards/sec
+Affecting spells : Veteran of the Third War (50029)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ....x... ........ ........   ........ ........ ...x.... ........ 
@@ -4334,6 +4338,7 @@ Resource         : 15 Runic Power per second w/ Rime (id=59057)
 Resource         : 20 Runic Power per second w/ Reaping (id=56835)
 GCD              : 1 seconds
 Duration         : Aura (infinite)
+Affecting spells : Veteran of the Third War (50029)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4352,9 +4357,10 @@ Effects          :
 Description      : Converts Runic Power to health, restoring $119980s1% of maximum health per $119975t1 sec. Lasts until cancelled or Runic Power is exhausted.
 Tooltip          : Converting $119975s1 Runic Power into $119980s1% of maximum health each second.
 
-Name             : Conversion (Talent) (id=119980) 
+Name             : Conversion (Talent) (id=119980) [Spell Family (15)] 
 Class            : Death Knight
 GCD              : 1.5 seconds
+Affecting spells : Veteran of the Third War (50029)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 

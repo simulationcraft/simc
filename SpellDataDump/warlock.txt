@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.0 Live (build level 19702)
+SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -356,9 +356,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   ....x... .x...... ......x. ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=402)      : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Radius: 10 yards
+#1 (id=402)      : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47319 | Misc Value 2: 0x759
 #2 (id=403)      : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Radius: 10 yards
+#3 (id=268271)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 111685
 Description      : Summons a Infernal from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemy targets in the area for $22703d.  The Infernal will serve under your command for $111685d.
 
@@ -3210,7 +3212,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113189)   : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 0x7
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 0x9
 #2 (id=113190)   : Apply Aura (6) | Unknown effect sub type (396)
                    Base Value: 39 | Scaled Value: 39 | Misc Value: 15 | Misc Value 2: 0x1 | Trigger Spell: 123217
 #3 (id=251492)   : Apply Aura (6) | Modify Base Resistance (142)
@@ -4778,7 +4780,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=128666)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Shadow Shield (Special Ability) (id=115232) 
