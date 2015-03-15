@@ -1552,7 +1552,7 @@ static void initialize_trinket62_agi_d( special_effect_t& effect )
   damage_effect.name_str = "spirit_shift_damage";
   damage_effect.type = SPECIAL_EFFECT_CUSTOM;
   damage_effect.proc_chance_ = 1.0;
-  damage_effect.proc_flags_ = PF_ALL_DAMAGE;
+  damage_effect.proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
   damage_effect.proc_flags2_ = PF2_ALL_HIT | PF2_ALL_MULTISTRIKE;
   damage_effect.custom_buff = effect.custom_buff;
   damage_effect.custom_init = initialize_trinket62_agi_d_2;
