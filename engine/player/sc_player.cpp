@@ -7065,6 +7065,16 @@ struct trinket_62_agi_c_summon_t : public action_t
 
     update_ready();
   }
+
+  bool ready()
+  {
+    if ( ! player -> trinket_62_agi_c )
+    {
+      return false;
+    }
+
+    return action_t::ready();
+  }
 };
 
 } // UNNAMED NAMESPACE
@@ -7097,7 +7107,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
   if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
   //if ( name == "variable"           ) return new           variable_t( this, options_str );
-  if ( trinket_62_agi_c && name == "trinket_62_agi_c" ) return new trinket_62_agi_c_summon_t( this, options_str );
+  if ( name == "trinket_62_agi_c" ) return new trinket_62_agi_c_summon_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
 }
