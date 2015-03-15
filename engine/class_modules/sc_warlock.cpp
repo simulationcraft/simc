@@ -38,9 +38,9 @@ struct warlock_td_t: public actor_pair_t
   dot_t*  dots_unstable_affliction;
 
   buff_t* debuffs_haunt;
+  buff_t* debuffs_shadowflame;
 
   bool ds_started_below_20;
-  int shadowflame_stack;
   int agony_stack;
   double soc_trigger, soulburn_soc_trigger;
 
@@ -49,7 +49,6 @@ struct warlock_td_t: public actor_pair_t
   void reset()
   {
     ds_started_below_20 = false;
-    shadowflame_stack = 1;
     agony_stack = 1;
     soc_trigger = 0;
     soulburn_soc_trigger = 0;
@@ -2356,22 +2355,16 @@ struct shadowflame_t: public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
-    m *= td( target ) -> shadowflame_stack;
+    m *= td( target ) -> debuffs_shadowflame -> stack();
 
     return m;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void last_tick( dot_t* d )
   {
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( td( s-> target ) -> dots_shadowflame -> is_ticking() )
-        td( s -> target ) -> shadowflame_stack = 2;
-      else
-        td( s -> target ) -> shadowflame_stack = 1;
-    }
+    warlock_spell_t::last_tick( d );
 
-    warlock_spell_t::impact( s );
+    td ( d -> state -> target ) -> debuffs_shadowflame -> expire();
   }
 };
 
@@ -2421,6 +2414,16 @@ struct hand_of_guldan_t: public warlock_spell_t
     if ( p() -> buffs.metamorphosis -> check() ) r = false;
 
     return r;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_shadowflame -> trigger();
+    }
   }
 };
 
@@ -4831,7 +4834,6 @@ struct mannoroths_fury_t: public warlock_spell_t
 warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ):
 actor_pair_t( target, p ),
 ds_started_below_20( false ),
-shadowflame_stack( 1 ),
 agony_stack( 1 ),
 soc_trigger( 0 ),
 soulburn_soc_trigger( 0 )
@@ -4847,6 +4849,8 @@ soulburn_soc_trigger( 0 )
   dots_haunt = target -> get_dot( "haunt", p );
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 }
 
