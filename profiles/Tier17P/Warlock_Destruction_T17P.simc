@@ -27,7 +27,6 @@ actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_
 actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled
-actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
 actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/incinerate
 
