@@ -79,6 +79,11 @@ public:
          iv_haste,
          pet_multiplier;
 
+  // 6.2 trinkets
+  bool arcane_trinket,
+       fire_trinket,
+       frost_trinket;
+
   // Benefits
   struct benefits_t
   {
@@ -120,7 +125,8 @@ public:
           * enhanced_frostbolt,    // Perk
           * frozen_thoughts,       // T16 2pc Frost
           * ice_shard,             // T17 2pc Frost
-          * frost_t17_4pc;         // T17 4pc Frost
+          * frost_t17_4pc,         // T17 4pc Frost
+          * frost_trinket;         // 6.2 Frost Trinket
 
     // Talents
     buff_t* blazing_speed,
@@ -347,6 +353,7 @@ public:
   virtual void      init_spells();
   virtual void      init_base_stats();
   virtual void      create_buffs();
+  virtual void      create_options();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
@@ -1460,7 +1467,6 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-
   }
 
   virtual double cost() const
@@ -1532,6 +1538,23 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> buffs.arcane_affinity -> check() )
     {
       t *= 1.0 + p() -> buffs.arcane_affinity -> data().effectN( 1 ).percent();
+    }
+
+    if ( p() -> arcane_trinket && p() -> buffs.arcane_power -> check() )
+    {
+      t *= 0.5;
+    }
+
+    return t;
+  }
+
+  virtual timespan_t gcd() const
+  {
+    timespan_t t = mage_spell_t::gcd();
+
+    if ( p() -> arcane_trinket && p() -> buffs.arcane_power -> check() )
+    {
+      t *= 0.5;
     }
 
     return t;
@@ -2575,6 +2598,10 @@ struct frostbolt_t : public mage_spell_t
           -> trigger( 1, buff_t::DEFAULT_VALUE(),
                       p() -> spec.brain_freeze -> effectN( 1 ).percent() +
                       bf_multistrike_bonus );
+      if ( p() -> frost_trinket )
+      {
+        p() -> buffs.frost_trinket -> trigger();
+      }
     }
 
     p() -> buffs.frozen_thoughts -> expire();
@@ -3004,6 +3031,7 @@ struct ice_lance_t : public mage_spell_t
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
+    p() -> buffs.frost_trinket -> expire();
     p() -> trigger_icicle( execute_state, true, target );
   }
 
@@ -3060,6 +3088,12 @@ struct ice_lance_t : public mage_spell_t
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
+    }
+
+    // 6.2 Frost trinket: Increase damage by 60% if preceded by Frostbolt
+    if ( p() -> buffs.frost_trinket -> up() )
+    {
+      am *= 1.0 + 0.6;
     }
 
     return am;
@@ -3119,12 +3153,17 @@ struct icy_veins_t : public mage_spell_t
 struct inferno_blast_t : public mage_spell_t
 {
   int max_spread_targets;
+  flamestrike_t* trinket_flamestrike;
+
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "inferno_blast", p,
                   p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( options_str );
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
+
+    trinket_flamestrike = new flamestrike_t( p, options_str );
+    trinket_flamestrike -> background = true;
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
@@ -3219,6 +3258,14 @@ struct inferno_blast_t : public mage_spell_t
 
         spread_remaining--;
       }
+
+      // 6.2 Fire trinket: 60% proc instant Flamestrike
+      if ( p() -> fire_trinket && p() -> rng().roll( 0.6 ) )
+      {
+        trinket_flamestrike -> target = s -> target;
+        trinket_flamestrike -> execute();
+      }
+
 
       trigger_hot_streak( s );
 
@@ -4670,6 +4717,11 @@ void mage_t::create_buffs()
                                   .quiet( true )
                                   .tick_callback( frost_t17_4pc_fof_gain );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
+  buffs.frost_trinket         = buff_creator_t( this, "trinket_frost")
+                                  .duration( timespan_t::from_seconds( 0.9 ) )
+                                  .cd( timespan_t::zero() )
+                                  .chance( 1.0 );
+
 
   // Talents
   buffs.blazing_speed         = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
@@ -4679,6 +4731,17 @@ void mage_t::create_buffs()
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+}
+
+// mage_t::create_options =====================================================
+
+void mage_t::create_options()
+{
+  player_t::create_options();
+
+  add_option( opt_bool( "arcane_trinket", arcane_trinket ) );
+  add_option( opt_bool( "fire_trinket", fire_trinket ) );
+  add_option( opt_bool( "frost_trinket", frost_trinket ) );
 }
 
 // mage_t::init_gains =======================================================
