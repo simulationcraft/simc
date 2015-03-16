@@ -1542,7 +1542,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> arcane_trinket && p() -> buffs.arcane_power -> check() )
     {
-      t *= 0.5;
+      t *= 1.0 - 0.4;
     }
 
     return t;
@@ -1554,7 +1554,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> arcane_trinket && p() -> buffs.arcane_power -> check() )
     {
-      t *= 0.5;
+      t *= 1.0 - 0.4;
     }
 
     return t;
