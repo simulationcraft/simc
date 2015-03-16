@@ -142,7 +142,7 @@ struct enemy_action_t : public ACTION_TYPE
   void init()
   {
     action_type_t::init();
-    
+
     set_name_string();
     this -> cooldown = this -> player -> get_cooldown( this -> name_str );
 
@@ -173,8 +173,8 @@ struct enemy_action_t : public ACTION_TYPE
     if ( dmg_type_override != "none" )
       this -> school = util::parse_school_type( dmg_type_override );
 
-    if ( base_dd_max < base_dd_min )
-      base_dd_max = base_dd_min;
+    if ( this -> base_dd_max < this -> base_dd_min )
+      this -> base_dd_max = this -> base_dd_min;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
@@ -267,9 +267,9 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     std::vector<player_t*> target_list;
     if ( num_attacks > 1 )
     {
-      for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
-        if ( target_list.size() < num_attacks && sim -> player_no_pet_list[ i ] -> primary_role() == ROLE_TANK )
-          target_list.push_back( sim -> player_no_pet_list[ i ] );
+      for ( size_t i = 0; i < this -> sim -> player_no_pet_list.size(); i++ )
+        if ( target_list.size() < num_attacks && this -> sim -> player_no_pet_list[ i ] -> primary_role() == ROLE_TANK )
+          target_list.push_back( this -> sim -> player_no_pet_list[ i ] );
 
       // create a separate action for each potential target
       for ( size_t i = 0; i < target_list.size(); i++ )
@@ -287,7 +287,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     child_action_type_t::schedule_execute( s );
     if ( num_attacks > 1 )
       for ( size_t i = 0; i < ch_list.size(); i++ )
-        if ( ch_list[ i ] -> target != target )
+        if ( ch_list[ i ] -> target != this -> target )
           ch_list[ i ] -> schedule_execute( s );
     // todo: add random targeting logic here too
   }
