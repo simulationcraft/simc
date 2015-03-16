@@ -4,7 +4,7 @@ race=gnome
 role=spell
 position=back
 talents=3003322
-glyphs=arcane_power/cone_of_cold
+glyphs=cone_of_cold
 spec=arcane
 
 # This default action priority list is automatically created based on your character.
