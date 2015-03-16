@@ -5333,7 +5333,7 @@ expr_t* priest_t::create_expression( action_t* a,
     {
       priest_t& priest;
       shadowy_apparitions_in_flight_t( priest_t& p ) :
-        expr_t( "natural_shadow_word_death_range" ), priest( p )
+        expr_t( "shadowy_apparitions_in_flight" ), priest( p )
       {
       }
 
@@ -6502,7 +6502,7 @@ void priest_t::apl_shadow()
   cop -> add_action( "mind_spike,if=active_enemies<=4&buff.surge_of_darkness.react" );
   cop -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop -> add_action( "mind_spike,if=target.dot.devouring_plague_tick.remains&target.dot.devouring_plague_tick.remains<cast_time" );
-  cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
+  cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies>1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop -> add_action( "mind_spike" );
   cop -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
