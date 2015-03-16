@@ -282,7 +282,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 
     // if there are no valid targets, disable
     if ( ch_list.size() < 1 )
-      background = true;
+      this -> background = true;
   }
 
   virtual void schedule_execute( action_state_t* s )
