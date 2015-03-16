@@ -255,7 +255,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     child_action_type_t( player, options_str ), aoe_tanks( 0 ), num_attacks( 0 )
   {
     this -> add_option( opt_int( "aoe_tanks", aoe_tanks ) );
-    parse_options( options_str );
+    this -> parse_options( options_str );
 
     // handle the aoe_tanks flag: negative or 1 for all, 2+ represents 2+ random targets
     if ( aoe_tanks == 1 || aoe_tanks < 0 )
