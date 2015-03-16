@@ -274,7 +274,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
       // create a separate action for each potential target
       for ( size_t i = 0; i < target_list.size(); i++ )
       {
-        child_action_type_t* ch = new child_action_type_t( player, filter_options_list( options_str ) );
+        child_action_type_t* ch = new child_action_type_t( player, this -> filter_options_list( options_str ) );
         ch -> target = target_list[ i ];
         ch -> background = true;
         ch_list.push_back( ch );
