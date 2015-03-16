@@ -308,7 +308,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
         size_t i = 1;
         while ( i < num_attacks )
         {
-          size_t element = static_cast<size_t>( std::floor( rng().real() * rt_list.size() ) );
+          size_t element = static_cast<size_t>( std::floor( this -> rng().real() * rt_list.size() ) );
           if ( rt_list[ element] -> target != this -> target )
           {
             rt_list[ element ] -> schedule_execute( s );
