@@ -1663,6 +1663,12 @@ struct arcane_missiles_t : public mage_spell_t
     return am;
   }
 
+  // Flag Arcane Missiles as direct damage for triggering effects
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  {
+    return DMG_DIRECT;
+  }
+
   virtual void execute()
   {
     for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++ )
