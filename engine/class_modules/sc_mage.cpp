@@ -4717,7 +4717,7 @@ void mage_t::create_buffs()
                                   .quiet( true )
                                   .tick_callback( frost_t17_4pc_fof_gain );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
-  buffs.frost_trinket         = buff_creator_t( this, "trinket_frost")
+  buffs.frost_trinket         = buff_creator_t( this, "frost_trinket")
                                   .duration( timespan_t::from_seconds( 0.9 ) )
                                   .cd( timespan_t::zero() )
                                   .chance( 1.0 );
@@ -5361,6 +5361,8 @@ void mage_t::apl_frost()
                                "if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time&(buff.incanters_flow.stack>3|!talent.ice_nova.enabled)))&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))" );
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react" );
+  single_target -> add_action( this, "Frostbolt",
+                               "if=spec_trinket&buff.fingers_of_frost.react&!in_flight" );
   single_target -> add_action( this, "Ice Lance",
                                "if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Frostbolt",
@@ -5836,6 +5838,33 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     };
 
     return new icicles_expr_t( *this );
+  }
+
+  if ( util::str_compare_ci( name_str, "spec_trinket" ) )
+  {
+    struct spec_trinket_expr_t : public mage_expr_t
+    {
+      spec_trinket_expr_t( mage_t& m ) : mage_expr_t( "spec_trinket", m )
+      { }
+
+      double evaluate()
+      {
+        if ( mage.specialization() == MAGE_ARCANE )
+        {
+          return static_cast<double>( mage.arcane_trinket );
+        }
+        else if ( mage.specialization() == MAGE_FIRE )
+        {
+          return static_cast<double>( mage.fire_trinket );
+        }
+        else
+        {
+          return static_cast<double>( mage.frost_trinket );
+        }
+      }
+    };
+
+    return new spec_trinket_expr_t( *this );
   }
 
   // Fallback for string based lookup to "target name" expression. Bad things
