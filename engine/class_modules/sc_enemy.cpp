@@ -257,39 +257,72 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     this -> add_option( opt_int( "aoe_tanks", aoe_tanks ) );
     this -> parse_options( options_str );
 
+    // construct the target list
+    std::vector<player_t*> target_list;
+
+    for ( size_t i = 0; i < this -> sim -> player_no_pet_list.size(); i++ )
+      if ( this -> sim -> player_no_pet_list[ i ] -> primary_role() == ROLE_TANK )
+        target_list.push_back( this -> sim -> player_no_pet_list[ i ] );
+
+    // create a separate action for each potential target
+    for ( size_t i = 0; i < target_list.size(); i++ )
+    {
+      child_action_type_t* ch = new child_action_type_t( player, this -> filter_options_list( options_str ) );
+      ch -> target = target_list[ i ];
+      ch -> background = true;
+      ch_list.push_back( ch );
+    }
+
     // handle the aoe_tanks flag: negative or 1 for all, 2+ represents 2+ random targets
+    // Do this by defining num_attacks appropriately for later use
     if ( aoe_tanks == 1 || aoe_tanks < 0 )
-      num_attacks = this -> player -> sim -> actor_list.size();
+      num_attacks = ch_list.size();
     else
       num_attacks = static_cast<size_t>( aoe_tanks );
 
-    // construct the target list
-    std::vector<player_t*> target_list;
-    if ( num_attacks > 1 )
-    {
-      for ( size_t i = 0; i < this -> sim -> player_no_pet_list.size(); i++ )
-        if ( target_list.size() < num_attacks && this -> sim -> player_no_pet_list[ i ] -> primary_role() == ROLE_TANK )
-          target_list.push_back( this -> sim -> player_no_pet_list[ i ] );
-
-      // create a separate action for each potential target
-      for ( size_t i = 0; i < target_list.size(); i++ )
-      {
-        child_action_type_t* ch = new child_action_type_t( player, this -> filter_options_list( options_str ) );
-        ch -> target = target_list[ i ];
-        ch -> background = true;
-        ch_list.push_back( ch );
-      }
-    }
+    // if there are no valid targets, disable
+    if ( ch_list.size() < 1 )
+      this -> background = true;
   }
 
   virtual void schedule_execute( action_state_t* s )
   {
+    // first, execute on the primary target
     child_action_type_t::schedule_execute( s );
+
+    // if we're hitting more than one target, handle the children
     if ( num_attacks > 1 )
-      for ( size_t i = 0; i < ch_list.size(); i++ )
-        if ( ch_list[ i ] -> target != this -> target )
-          ch_list[ i ] -> schedule_execute( s );
-    // todo: add random targeting logic here too
+    {
+      if ( num_attacks == ch_list.size() )
+      {
+        // hit everyone
+        for ( size_t i = 0; i < ch_list.size(); i++ )
+          if ( ch_list[ i ] -> target != this -> target )
+            ch_list[ i ] -> schedule_execute( s );
+      }
+      else
+      {
+        // hit a random subset
+        std::vector<child_action_type_t*> rt_list;
+        rt_list = ch_list;
+        size_t i = 1;
+        while ( i < num_attacks )
+        {
+          size_t element = static_cast<size_t>( std::floor( this -> rng().real() * rt_list.size() ) );
+          if ( rt_list[ element] -> target != this -> target )
+          {
+            rt_list[ element ] -> schedule_execute( s );
+            i++;
+          }
+          // remove this element
+          rt_list.erase( rt_list.begin() + element );
+          
+          // infinte loop check
+          if ( rt_list.size() == 0 )
+            break;
+        }
+      }
+    }
   }
 
 };
@@ -382,7 +415,8 @@ struct auto_attack_t : public enemy_action_t<attack_t>
       mh_list.push_back( mh );
     }
 
-    p -> main_hand_attack = mh_list[ 0 ];
+    if ( mh_list.size() > 0 )
+      p -> main_hand_attack = mh_list[ 0 ];
   }
 
   virtual void set_name_string()
@@ -426,7 +460,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
   virtual bool ready()
   {
-    if ( player -> is_moving() ) return false;
+    if ( player -> is_moving() || ! player -> main_hand_attack ) return false;
     return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
