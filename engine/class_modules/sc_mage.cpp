@@ -3164,6 +3164,7 @@ struct inferno_blast_t : public mage_spell_t
 
     trinket_flamestrike = new flamestrike_t( p, options_str );
     trinket_flamestrike -> background = true;
+    trinket_flamestrike -> callbacks = false;
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
