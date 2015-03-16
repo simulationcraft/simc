@@ -4138,9 +4138,20 @@ struct water_jet_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
     action -> queued = true;
-    if( m -> pets.water_elemental -> executing )
+    // Interrupt existing cast
+    if ( m -> pets.water_elemental -> executing )
+    {
       m -> pets.water_elemental -> executing -> interrupt_action();
-    action -> schedule_execute();
+    }
+
+    // Cancel existing (potential) player-ready event ..
+    if ( m -> pets.water_elemental -> readying )
+    {
+      event_t::cancel( m -> pets.water_elemental -> readying );
+    }
+
+    // and schedule a new one immediately.
+    m -> pets.water_elemental -> schedule_ready();
   }
 
   bool ready()
