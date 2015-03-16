@@ -21,7 +21,8 @@ struct warrior_td_t: public actor_pair_t
   dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
   dot_t* dots_rend;
-
+  dot_t* dots_str_d;
+  buff_t* str_d_stacks;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_charge;
   buff_t* debuffs_demoralizing_shout;
@@ -46,6 +47,21 @@ public:
                      // When the player sets this to true, it will prevent stance_dance from being set to true.
                      // This will allow full control over stance swapping.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
+  bool fury_trinket;
+  bool arms_trinket;
+  double arms_trinket_chance;
+  double arms_trinket_stats;
+  double fury_trinket_stats;
+  double prot_trinket_stats;
+  double fury_trinket_buff_percent;
+  bool prot_trinket;
+  bool str_a;
+  bool str_b;
+  bool str_c;
+  bool str_d;
+  bool tank_a;
+  bool tank_b;
+  bool tank_c;
 
   // Active
   struct active_t
@@ -58,6 +74,8 @@ public:
     action_t* second_wind;
     attack_t* sweeping_strikes;
     attack_t* aoe_sweeping_strikes;
+    attack_t* str_c;
+    action_t* str_d;
     heal_t* t16_2pc;
     warrior_stance stance;
   } active;
@@ -65,6 +83,10 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* fury_trinket;
+    stat_buff_t* str_b;
+    buff_t* str_b_driver;
+    stat_buff_t* tank_b;
     // All Warriors
     buff_t* battle_stance;
     buff_t* berserker_rage;
@@ -240,6 +262,7 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* arms_trinket;
     proc_t* bloodsurge_wasted;
     proc_t* delayed_auto_attack;
 
@@ -251,6 +274,9 @@ public:
   struct realppm_t
   {
     std::shared_ptr<real_ppm_t> sudden_death;
+    std::shared_ptr<real_ppm_t> str_b;
+    std::shared_ptr<real_ppm_t> str_c;
+    std::shared_ptr<real_ppm_t> tank_b;
   } rppm;
 
   // Spec Passives
@@ -387,6 +413,8 @@ public:
     active.second_wind        = 0;
     active.sweeping_strikes   = 0;
     active.aoe_sweeping_strikes = 0;
+    active.str_c = 0;
+    active.str_d = 0;
     active.enhanced_rend      = 0;
     active.t16_2pc            = 0;
     active.stance             = STANCE_BATTLE;
@@ -423,6 +451,11 @@ public:
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
 
+    fury_trinket = arms_trinket = prot_trinket = str_a = str_b = str_c = str_d = tank_a = tank_b = tank_c = false;
+    arms_trinket_chance = 0.35;
+    arms_trinket_stats = fury_trinket_stats = prot_trinket_stats = 0;
+    fury_trinket_buff_percent = 0.025;
+
     regen_type = REGEN_DISABLED;
   }
 
@@ -441,6 +474,7 @@ public:
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_melee_haste() const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
   virtual double    composite_block_reduction() const;
@@ -603,6 +637,18 @@ public:
       p() -> stance_dance = false; // Reset variable.
     }
     ab::execute();
+    if ( result_is_hit( ab::execute_state -> result ) )
+    {
+      if ( p() -> str_b && p() -> rppm.str_b -> trigger() )
+        p() -> buff.str_b -> trigger();
+      if ( p() -> str_c && p() -> rppm.str_c -> trigger() )
+      {
+        p() -> active.str_c -> target = ab::execute_state -> target;
+        p() -> active.str_c -> execute();
+      }
+      if ( p() -> tank_b && p() -> rppm.tank_b -> trigger() )
+        p() -> buff.tank_b -> trigger();
+    }
   }
 
   virtual timespan_t gcd() const
@@ -662,6 +708,23 @@ public:
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> str_d && s -> result_amount > 0 )
+    {
+      if ( s -> target != p() && !( s -> action -> dot_duration > timespan_t::zero() ) )
+      {
+        if ( td( s -> target ) -> str_d_stacks -> current_stack == 0 )
+        {
+          td( s -> target ) -> str_d_stacks -> trigger( 1 );
+          p() -> active.str_d -> target = s -> target;
+          p() -> active.str_d -> execute();
+        }
+        else
+        {
+          td( s -> target ) -> str_d_stacks -> trigger( 1 );
+        }
+      }
+    }
 
     if ( ab::sim -> log || ab::sim -> debug )
     {
@@ -1095,6 +1158,18 @@ struct melee_t: public warrior_attack_t
       {
         p() -> buff.sudden_death -> trigger();
       }
+      if ( p() -> arms_trinket )
+      {
+        if ( rng().roll( p() -> arms_trinket_chance ) )
+        {
+          p() -> cooldown.colossus_smash -> reset( true );
+          p() -> proc.arms_trinket -> occur();
+        }
+      }
+      if ( p() -> fury_trinket )
+      {
+        p() -> buff.fury_trinket -> trigger( 1 );
+      }
       if ( p() -> active.enhanced_rend )
       {
         if ( td( s -> target ) -> dots_rend -> is_ticking() )
@@ -1265,7 +1340,7 @@ struct bladestorm_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     channeled = tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    callbacks = interrupt_auto_attack = hasted_ticks = false;
     
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
@@ -1493,8 +1568,10 @@ struct charge_t: public warrior_attack_t
 
 struct colossus_smash_t: public warrior_attack_t
 {
+  bool was_colossus_smash_up;
   colossus_smash_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash )
+    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash ),
+    was_colossus_smash_up( false )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE;
@@ -1502,9 +1579,17 @@ struct colossus_smash_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
   }
+  void reset()
+  {
+    warrior_attack_t::reset();
+    was_colossus_smash_up = false;
+  }
 
   double target_armor( player_t* t ) const
   {
+    if ( was_colossus_smash_up )
+      return warrior_attack_t::target_armor( t );
+    else
       return attack_t::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
   } // If they ever bring back a resetting colossus smash, this will need to be adjusted.
 
@@ -1514,6 +1599,10 @@ struct colossus_smash_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      if ( td( execute_state -> target ) -> debuffs_colossus_smash -> check() )
+        was_colossus_smash_up = true;
+      else
+        was_colossus_smash_up = false;
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
       p() -> buff.colossus_smash -> trigger();
 
@@ -2995,6 +3084,47 @@ struct whirlwind_t: public warrior_attack_t
   }
 };
 
+struct str_c_t: public warrior_attack_t
+{
+  str_c_t( warrior_t* p ):
+    warrior_attack_t( "str_c_proc", p, spell_data_t::nil() )
+  {
+    school = SCHOOL_PHYSICAL;
+    aoe = -1;
+    weapon_multiplier = 0.0;
+    attack_power_mod.direct = attack_power_mod.tick = 0;
+    base_dd_min = base_dd_max = 40393.8;
+  }
+};
+// Wild Strike ==============================================================
+struct str_d_t: public warrior_attack_t
+{
+  str_d_t( warrior_t* p ):
+    warrior_attack_t( "str_d_proc", p, spell_data_t::nil() )
+  {
+    tick_zero = false;
+    dot_duration = timespan_t::from_seconds( 15.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks = false;
+    tick_may_crit = true;
+    base_td = 2655.0 / 15.0;
+    school = SCHOOL_FIRE;
+  }
+
+  double calculate_tick_amount( action_state_t* state, double dmg_multiplier )
+  {
+    dmg_multiplier = td( target ) -> str_d_stacks -> current_stack;
+    return warrior_attack_t::calculate_tick_amount( state, dmg_multiplier );
+  }
+
+  void last_tick( dot_t* d )
+  {
+    warrior_attack_t::last_tick( d );
+    td( d -> state -> target ) -> str_d_stacks -> expire();
+  }
+  double composite_haste() const { return 1.0; }
+};
+
 // Wild Strike ==============================================================
 
 struct wild_strike_t: public warrior_attack_t
@@ -3944,6 +4074,8 @@ void warrior_t::init_spells()
   if ( glyphs.rallying_cry -> ok() ) active.rallying_cry_heal = new rallying_cry_heal_t( this );
   if ( talents.second_wind -> ok() ) active.second_wind = new second_wind_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
+  if ( str_c ) active.str_c = new str_c_t( this );
+  if ( str_d ) active.str_d = new str_d_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
 
   if ( !talents.gladiators_resolve -> ok() )
@@ -3969,6 +4101,50 @@ void warrior_t::init_base_stats()
   // Just need to add class- or spec-based modifiers here.
 
   base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
+  if ( str_a )
+  {
+    base.stats.attribute[ATTR_STRENGTH] += 358.0;
+    base.stats.mastery_rating += 210.0;
+    base.stats.multistrike_rating += 210.0;
+  }
+  if ( str_b )
+  {
+    base.stats.crit_rating += 379.0;
+  }
+  if ( str_c )
+  {
+    base.stats.attribute[ ATTR_STRENGTH ] += 379.0;
+  }
+  if ( str_d )
+  {
+    base.stats.attribute[ ATTR_STRENGTH ] += 379.0;
+  }
+  if ( tank_a )
+  {
+    base.stats.attribute[ATTR_STAMINA] += 569.0;
+    base.stats.versatility_rating += 379.0;
+    base.stats.bonus_armor += 379.0;
+  }
+  if ( tank_b )
+  {
+    base.stats.bonus_armor += 379.0;
+  }
+  if ( tank_c )
+  {
+    base.stats.attribute[ ATTR_STRENGTH ] += 379.0;
+  }
+  if ( arms_trinket_stats > 0 )
+  {
+    base.stats.attribute[ ATTR_STRENGTH ] += arms_trinket_stats;
+  }
+  if ( fury_trinket_stats > 0 )
+  {
+    base.stats.attribute[ATTR_STRENGTH] += fury_trinket_stats;
+  }
+  if ( prot_trinket_stats > 0 )
+  {
+    base.stats.attribute[ATTR_STRENGTH] += prot_trinket_stats;
+  }
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -4506,11 +4682,32 @@ struct sudden_death_t: public warrior_real_ppm_t < real_ppm_t >
     base_t( p, real_ppm_t( p, 2.5, RPPM_HASTE ) )
   {}
 };
+
+struct str_b: public warrior_real_ppm_t < real_ppm_t >
+{
+  str_b( warrior_t& p ):
+    base_t( p, real_ppm_t( p, 1.00 ) )
+  {}
 };
 
+struct str_c: public warrior_real_ppm_t < real_ppm_t >
+{
+  str_c( warrior_t& p ):
+    base_t( p, real_ppm_t( p, 3.00, RPPM_HASTE ) )
+  {}
+};
 // =========================================================================
+struct tank_b: public warrior_real_ppm_t < real_ppm_t >
+{
+  tank_b( warrior_t& p ):
+    base_t( p, real_ppm_t( p, 1.50 ) )
+  {}
+};
+};
 // Buff Help Classes
 // =========================================================================
+
+// Defensive Stance Rage Gain ==============================================
 
 // Defensive Stance Rage Gain ==============================================
 
@@ -4732,6 +4929,10 @@ actor_pair_t( target, &p ), warrior( p )
   dots_deep_wounds = target -> get_dot( "deep_wounds", &p );
   dots_ravager     = target -> get_dot( "ravager", &p );
   dots_rend        = target -> get_dot( "rend", &p );
+  dots_str_d       = target -> get_dot( "str_d", &p );
+  str_d_stacks     = buff_creator_t( *this, "str_d_stacks" )
+    .duration( timespan_t::from_seconds( 15.0 ) )
+    .max_stack( 50 );
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
     .duration( p.spec.colossus_smash -> duration() )
@@ -4751,6 +4952,24 @@ void warrior_t::create_buffs()
   player_t::create_buffs();
 
   using namespace buffs;
+
+  buff.str_b = stat_buff_creator_t( this, "str_b" )
+    .add_stat( STAT_STRENGTH, 104 )
+    .duration( timespan_t::from_seconds( 20.0 ) )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
+    .period( timespan_t::from_seconds( 1.0 ) )
+    .max_stack( 20 )
+    .add_invalidate( CACHE_STRENGTH );
+  
+  buff.tank_b = stat_buff_creator_t( this, "tank_b" )
+    .add_stat( STAT_STRENGTH, 1390 )
+    .add_invalidate( CACHE_STRENGTH )
+    .duration( timespan_t::from_seconds( 10 ) );
+
+  buff.fury_trinket = buff_creator_t( this, "fury_trinket" )
+    .duration( timespan_t::from_seconds( 10.0 ) )
+    .max_stack( 10 )
+    .add_invalidate( CACHE_HASTE );
 
   buff.debuffs_slam = buff_creator_t( this, "slam", talents.slam )
     .can_cancel( false );
@@ -4844,7 +5063,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() + prot_trinket ? 0.2 : 0.0 )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -4960,6 +5179,7 @@ void warrior_t::init_procs()
 
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
   proc.t17_2pc_arms            = get_proc( "t17_2pc_arms" );
+  proc.arms_trinket            = get_proc( "arms_trinket" );
 }
 
 // warrior_t::init_rng ========================================================
@@ -4969,6 +5189,9 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   rppm.sudden_death = std::shared_ptr<rppm::sudden_death_t>( new rppm::sudden_death_t( *this ) );
+  rppm.str_b = std::shared_ptr<rppm::str_b>( new rppm::str_b( *this ) );
+  rppm.str_c = std::shared_ptr<rppm::str_c>( new rppm::str_c( *this ) );
+  rppm.tank_b = std::shared_ptr<rppm::tank_b>( new rppm::tank_b( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -5141,6 +5364,18 @@ void warrior_t::reset()
   {
     rppm.sudden_death -> reset();
   }
+  if ( rppm.str_b )
+  {
+    rppm.str_b -> reset();
+  }
+  if ( rppm.str_c )
+  {
+    rppm.str_c -> reset();
+  }
+  if ( rppm.tank_b )
+  {
+    rppm.tank_b -> reset();
+  }
 }
 
 // Movement related overrides. =============================================
@@ -5239,7 +5474,16 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
+double warrior_t::composite_melee_haste() const
+{
+  double a = player_t::composite_melee_haste();
 
+  a *= 1.0 / ( 1.0 + ( fury_trinket_buff_percent * buff.fury_trinket -> current_stack ) );
+
+  return a;
+}
+
+// warrior_t::composite_armor_multiplier ======================================
 
 double warrior_t::composite_armor_multiplier() const
 {
@@ -5248,6 +5492,11 @@ double warrior_t::composite_armor_multiplier() const
   if ( active.stance == STANCE_DEFENSE )
   {
     a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
+  }
+  if ( prot_trinket )
+  {
+    if ( buff.shield_barrier -> current_value > 0 )
+      a *= 1.2;
   }
 
   return a;
@@ -5593,6 +5842,12 @@ void warrior_t::assess_damage( school_e school,
                              gain.drawn_sword_glyph );
   }
 
+  if ( prot_trinket )
+  {
+    if ( school != SCHOOL_PHYSICAL && buff.shield_block -> check() )
+      s -> result_amount *= 0.8;
+  }
+
   player_t::assess_damage( school, dtype, s );
 
   if ( ( s -> result == RESULT_HIT || s -> result == RESULT_CRIT || s -> result == RESULT_GLANCE ) && buff.tier16_reckless_defense -> up() )
@@ -5629,6 +5884,21 @@ void warrior_t::create_options()
   add_option( opt_int( "initial_rage", initial_rage ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
+  add_option( opt_bool( "fury_trinket", fury_trinket ) );
+  add_option( opt_bool( "arms_trinket", arms_trinket ) );
+  add_option( opt_bool( "prot_trinket", prot_trinket ) );
+  add_option( opt_bool( "str_a", str_a ) );
+  add_option( opt_bool( "str_b", str_b ) );
+  add_option( opt_bool( "str_c", str_c ) );
+  add_option( opt_bool( "str_d", str_d ) );
+  add_option( opt_bool( "tank_a", tank_a ) );
+  add_option( opt_bool( "tank_b", tank_b ) );
+  add_option( opt_bool( "tank_c", tank_c ) );
+  add_option( opt_float( "arms_trinket_chance", arms_trinket_chance ) );
+  add_option( opt_float( "arms_trinket_stats", arms_trinket_stats ) );
+  add_option( opt_float( "fury_trinket_stats", fury_trinket_stats ) );
+  add_option( opt_float( "prot_trinket_stats", prot_trinket_stats ) );
+  add_option( opt_float( "fury_trinket_buff_percent", fury_trinket_buff_percent ) );
 }
 
 // Mark of the Shattered Hand ===============================================
@@ -5689,6 +5959,22 @@ void warrior_t::copy_from( player_t* source )
   initial_rage = p -> initial_rage;
   warrior_fixed_time = p -> warrior_fixed_time;
   player_override_stance_dance = p -> player_override_stance_dance;
+
+  fury_trinket = p -> fury_trinket;
+  arms_trinket = p -> arms_trinket;
+  prot_trinket = p -> prot_trinket;
+  str_a = p -> str_a;
+  str_b = p -> str_b;
+  str_c = p -> str_c;
+  str_d = p -> str_d;
+  tank_a = p -> tank_a;
+  tank_b = p -> tank_b;
+  tank_c = p -> tank_c;
+  arms_trinket_chance = p -> arms_trinket_chance;
+  arms_trinket_stats = p -> arms_trinket_stats;
+  fury_trinket_stats = p -> fury_trinket_stats;
+  prot_trinket_stats = p -> prot_trinket_stats;
+  fury_trinket_buff_percent = p -> fury_trinket_buff_percent;
 }
 
 // warrior_t::stance_swap ==================================================
