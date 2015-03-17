@@ -634,7 +634,7 @@ struct spell_nuke_t : public enemy_action_t<spell_t>
 struct spell_nuke_driver_t : public enemy_action_driver_t<spell_nuke_t>
 {
   spell_nuke_driver_t( player_t* p, const std::string& options_str ) :
-    enemy_action_driver_t( p, options_str )
+    enemy_action_driver_t<spell_nuke_t>( p, options_str )
   {}
 };
 
