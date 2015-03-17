@@ -45,7 +45,7 @@ namespace buffs {
 struct heart_of_the_wild_buff_t;
 }
 
-struct druid_td_t : public actor_pair_t
+struct druid_td_t : public actor_target_data_t
 {
   struct dots_t
   {
@@ -7596,7 +7596,7 @@ void druid_t::assess_heal( school_e school,
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
-  : actor_pair_t( &target, &source ),
+  : actor_target_data_t( &target, &source ),
     dots( dots_t() ),
     buffs( buffs_t() ),
     lacerate_stack( 0 )

@@ -1481,42 +1481,46 @@ void action_t::assess_damage( dmg_e    type,
   if ( sim -> debug )
     s -> debug();
 
-  if ( type == DMG_DIRECT )
+
+  if ( ! player -> buffs.agi_d || ! player -> buffs.agi_d -> check() )
   {
-    if ( sim -> log )
+    if ( type == DMG_DIRECT )
     {
-      sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     s -> target -> name(), s -> result_amount,
-                     util::school_type_string( get_school() ),
-                     util::result_type_string( s -> result ) );
+      if ( sim -> log )
+      {
+        sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
     }
-  }
-  else // DMG_OVER_TIME
-  {
-    if ( sim -> log )
+    else // DMG_OVER_TIME
     {
-      dot_t* dot = get_dot( s -> target );
-      sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     dot -> current_tick, dot -> num_ticks,
-                     s -> target -> name(), s -> result_amount,
-                     util::school_type_string( get_school() ),
-                     util::result_type_string( s -> result ) );
+      if ( sim -> log )
+      {
+        dot_t* dot = get_dot( s -> target );
+        sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       dot -> current_tick, dot -> num_ticks,
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
     }
+
+    if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
+    {
+      player -> priority_iteration_dmg += s -> result_amount;
+    }
+
+    if ( s -> result_amount > 0 && composite_leech( s ) > 0 )
+      player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech, s -> action );
   }
 
-  if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
-  {
-    player -> priority_iteration_dmg += s -> result_amount;
-  }
+  // New callback system; proc spells on impact.
 
-  if ( s -> result_amount > 0 && composite_leech( s ) > 0 )
-    player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech, s -> action );
-
-  // New callback system; proc spells on impact. 
-
-  if ( callbacks )
+  if ( impact_callbacks( s ) )
   {
     proc_types pt = s -> proc_type();
     proc_types2 pt2 = s -> impact_proc_type2();
@@ -1524,7 +1528,10 @@ void action_t::assess_damage( dmg_e    type,
       action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
   }
 
-  record_data( s );
+  if ( ! player -> buffs.agi_d || ! player -> buffs.agi_d -> check() )
+  {
+    record_data( s );
+  }
 }
 
 // action_t::record_data ====================================================
@@ -1864,10 +1871,10 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
+  if ( ( spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || base_td > 0 ) && dot_duration > timespan_t::zero() )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
-  if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
+  if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 || base_dd_min > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   // Tick actions use tick multipliers, so snapshot them too if direct

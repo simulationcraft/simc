@@ -36,7 +36,7 @@ enum seal_e
 // Paladin Target Data
 // ==========================================================================
 
-struct paladin_td_t : public actor_pair_t
+struct paladin_td_t : public actor_target_data_t
 {
   struct dots_t
   {
@@ -4563,7 +4563,7 @@ void hand_of_sacrifice_t::execute()
 // ==========================================================================
 
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
-  actor_pair_t( target, paladin )
+  actor_target_data_t( target, paladin )
 {
   dots.eternal_flame      = target -> get_dot( "eternal_flame",      paladin );
   dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );

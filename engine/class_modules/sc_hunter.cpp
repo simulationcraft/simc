@@ -23,7 +23,7 @@ enum aspect_type { ASPECT_NONE = 0, ASPECT_MAX };
 
 enum exotic_munitions { NO_AMMO = 0, FROZEN_AMMO = 2, INCENDIARY_AMMO = 4, POISONED_AMMO = 8 };
 
-struct hunter_td_t: public actor_pair_t
+struct hunter_td_t: public actor_target_data_t
 {
   buff_t* debuffs_pvp_surv_4p_black_fire;
   struct dots_t
@@ -643,7 +643,7 @@ public:
 // Hunter Main Pet
 // ==========================================================================
 
-struct hunter_main_pet_td_t: public actor_pair_t
+struct hunter_main_pet_td_t: public actor_target_data_t
 {
 public:
   hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p );
@@ -1521,7 +1521,7 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
 
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
-actor_pair_t( target, p )
+  actor_target_data_t( target, p )
 {
 }
 // hunter_pet_t::create_action ==============================================
@@ -3351,8 +3351,8 @@ struct stampede_t: public hunter_spell_t
 }
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
-actor_pair_t( target, p ),
-dots( dots_t() )
+  actor_target_data_t( target, p ),
+  dots( dots_t() )
 {
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );

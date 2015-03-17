@@ -15,7 +15,7 @@ namespace actions { namespace spells { struct shadowy_apparition_spell_t; } }
 /* Priest target data
  * Contains target specific things
  */
-struct priest_td_t : public actor_pair_t
+struct priest_td_t : public actor_target_data_t
 {
 public:
   struct dots_t
@@ -35,6 +35,11 @@ public:
     absorb_buff_t* spirit_shell;
     buff_t* holy_word_serenity;
   } buffs;
+
+  struct debuffs_t
+  {
+    debuff_t* mental_fatigue;
+  } debuffs;
 
   bool glyph_of_mind_harvest_consumed;
 
@@ -2238,6 +2243,20 @@ struct mind_blast_t : public priest_spell_t
     casted_with_shadowy_insight = false;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    priest_td_t& td = get_td( target );
+
+    if ( td.debuffs.mental_fatigue -> up() )
+    {
+      m *= 1.0 + (td.debuffs.mental_fatigue -> current_stack * td.debuffs.mental_fatigue -> default_value);
+    }
+
+    return m;
+  }
+
   virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
@@ -2446,6 +2465,20 @@ struct mind_spike_t : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
+  virtual double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    priest_td_t& td = get_td( target );
+
+    if ( td.debuffs.mental_fatigue -> up() )
+    {
+      m *= 1.0 + (td.debuffs.mental_fatigue -> current_stack * td.debuffs.mental_fatigue -> default_value);
+    }
+
+    return m;
+  }
+
   virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
@@ -2536,6 +2569,11 @@ struct mind_sear_base_t : public priest_spell_t
     priest_td_t& td = get_td( target );
     if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
       am *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
+
+    if ( td.debuffs.mental_fatigue -> up() )
+    {
+      am *= 1.0 + (td.debuffs.mental_fatigue -> current_stack * td.debuffs.mental_fatigue -> default_value);
+    }
 
     return am;
   }
@@ -3082,20 +3120,40 @@ struct mind_flay_base_t : public priest_spell_t
 
   virtual double action_multiplier() const override
   {
-    double am = priest_spell_t::action_multiplier();
+    double m = priest_spell_t::action_multiplier();
+
+    priest_td_t& td = get_td( target );
+
+    if ( td.debuffs.mental_fatigue -> up() )
+    {
+      m *= 1.0 + (td.debuffs.mental_fatigue -> current_stack * td.debuffs.mental_fatigue -> default_value);
+    }
+
+    return m;
+  }
+
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
     {
-      am *= 1.0 + priest.cache.mastery_value();
+      d *= 1.0 + priest.cache.mastery_value();
     }
 
-    return am;
+    return d;
   }
 
   virtual void tick( dot_t * d )
   {
     priest_spell_t::tick( d );
     priest.buffs.glyph_of_mind_flay -> trigger();
+
+    if ( priest.find_item( "shadow_t18_trinket" ) )
+    {
+      priest_td_t& td = get_td( d -> target );
+      td.debuffs.mental_fatigue -> trigger();
+    }
   }
 };
 
@@ -5066,9 +5124,10 @@ struct spirit_shell_t : public priest_buff_t<buff_t>
 // ==========================================================================
 
 priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
-  actor_pair_t( target, &p ),
+  actor_target_data_t( target, &p ),
   dots(),
   buffs(),
+  debuffs(),
   glyph_of_mind_harvest_consumed( false ),
   priest( p )
 {
@@ -5092,6 +5151,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                              .spell( p.find_spell( 88684 ) )
                              .cd( timespan_t::zero() )
                              .activated( false );
+
+  debuffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue" )
+                           .max_stack( 10 )
+                           .duration( timespan_t::from_seconds( 10.0 ) )
+                           .default_value( 0.03 );
 
   target -> callbacks_on_demise.push_back( std::bind( &priest_td_t::target_demise, this ) );
 }
@@ -5347,10 +5411,28 @@ expr_t* priest_t::create_expression( action_t* a,
     };
     return new shadowy_apparitions_in_flight_t( *this );
   }
+  if( name_str == "shadow_t18_trinket" )
+  {
+    struct shadow_t18_trinket_t : public expr_t
+    {
+      priest_t& priest;
+      shadow_t18_trinket_t( priest_t& p ) :
+        expr_t( "shadow_t18_trinket" ), priest( p )
+      {
+      }
 
+      virtual double evaluate()
+      {
+        if ( priest.find_item( "shadow_t18_trinket" ) )
+        return 1;
+      else
+        return 0;
+      }
+    };
+    return new shadow_t18_trinket_t( *this );
+  }
 
   return player_t::create_expression( a, name_str );
-
 }
 
 void priest_t::init_resources( bool force )
