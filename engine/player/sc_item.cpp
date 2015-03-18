@@ -121,13 +121,21 @@ std::string item_t::item_stats_str()
   }
 
   std::string str = s.str();
-  str.erase( str.end() - 2, str.end() );
+  if ( str.size() > 2 )
+  {
+    str.erase( str.end() - 2, str.end() );
+  }
 
   return str;
 }
 
 std::string item_t::weapon_stats_str()
 {
+  if ( ! weapon() )
+  {
+    return std::string();
+  }
+
   std::ostringstream s;
 
   weapon_t* w = weapon();
@@ -143,6 +151,11 @@ std::string item_t::weapon_stats_str()
 
 std::string item_t::suffix_stats_str()
 {
+  if ( parsed.suffix_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
   std::ostringstream s;
 
   for ( size_t i = 0; i < parsed.suffix_stats.size(); i++ )
@@ -159,6 +172,11 @@ std::string item_t::suffix_stats_str()
 
 std::string item_t::gem_stats_str()
 {
+  if ( parsed.gem_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
   std::ostringstream s;
 
   for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
@@ -175,6 +193,11 @@ std::string item_t::gem_stats_str()
 
 std::string item_t::enchant_stats_str()
 {
+  if ( parsed.enchant_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
   std::ostringstream s;
 
   for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
@@ -191,6 +214,11 @@ std::string item_t::enchant_stats_str()
 
 std::string item_t::socket_bonus_stats_str()
 {
+  if ( parsed.socket_bonus_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
   std::ostringstream s;
 
   for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
