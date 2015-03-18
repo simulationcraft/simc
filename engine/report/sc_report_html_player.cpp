@@ -1104,7 +1104,7 @@ void print_html_gear( report::sc_html_stream& os, player_t* p )
 
       if ( item.parsed.gem_stats.size() > 0 )
       {
-        item_sim_desc += "gems: { ";
+        item_sim_desc += ", gems: { ";
         item_sim_desc += item.gem_stats_str();
         if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
         {
