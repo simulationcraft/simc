@@ -2413,8 +2413,8 @@ struct death_knight_action_t : public Base
       // Not the type it is after consumption
       int consumed_type = p() -> _runes.slot[ i ].type;
 
-      // Consume the rune, and potentially reap it. Reaping requires some
-      // trickery
+      // Consume the rune, and potentially reap it. Reaping requires some trickery. Basically, you
+      // only reap consumed runes that are included in the base cost of the ability that reaps.
       bool reap_rune = convert_runes;
       if ( ( rune.is_blood() && ! blood ) ||
            ( rune.is_frost() && ! frost ) ||
