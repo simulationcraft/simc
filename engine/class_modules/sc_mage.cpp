@@ -529,6 +529,7 @@ struct water_elemental_pet_t : public pet_t
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
       spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
+      trigger_gcd = timespan_t::zero();
       parse_options( options_str );
       may_crit = true;
     }
