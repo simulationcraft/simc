@@ -524,6 +524,7 @@ struct water_elemental_pet_t : public pet_t
       td = new water_elemental_pet_td_t( target, const_cast<water_elemental_pet_t*>(this) );
     return td;
   }
+
   struct waterbolt_t: public spell_t
   {
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
@@ -532,6 +533,21 @@ struct water_elemental_pet_t : public pet_t
       trigger_gcd = timespan_t::zero();
       parse_options( options_str );
       may_crit = true;
+    }
+
+    const water_elemental_pet_t* p() const
+    { return static_cast<water_elemental_pet_t*>( player ); }
+
+    virtual double action_multiplier() const
+    {
+      double am = spell_t::action_multiplier();
+
+      if ( p() -> o() -> spec.icicles -> ok() )
+      {
+        am *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return am;
     }
   };
 
@@ -561,9 +577,6 @@ struct water_elemental_pet_t : public pet_t
   virtual double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> spec.icicles -> ok() )
-      m *= 1.0 + o() -> cache.mastery_value();
 
     if ( o() -> buffs.rune_of_power -> check() )
     {
