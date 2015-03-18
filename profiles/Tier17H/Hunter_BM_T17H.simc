@@ -75,13 +75,13 @@ trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
 main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=566,enchant_id=5383
 
 # Gear Summary
-# gear_agility=3263
-# gear_stamina=3942
-# gear_crit_rating=681
-# gear_haste_rating=277
-# gear_mastery_rating=1497
-# gear_armor=1370
-# gear_multistrike_rating=1167
+# gear_agility=3409
+# gear_stamina=4114
+# gear_crit_rating=709
+# gear_haste_rating=290
+# gear_mastery_rating=1556
+# gear_armor=1401
+# gear_multistrike_rating=1224
 # gear_versatility_rating=101
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

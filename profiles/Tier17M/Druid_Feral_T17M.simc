@@ -89,13 +89,13 @@ trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=3828
-# gear_stamina=4545
-# gear_crit_rating=1792
-# gear_haste_rating=338
-# gear_mastery_rating=536
-# gear_armor=1147
-# gear_multistrike_rating=1145
-# gear_versatility_rating=454
+# gear_agility=4011
+# gear_stamina=4763
+# gear_crit_rating=1865
+# gear_haste_rating=355
+# gear_mastery_rating=563
+# gear_armor=1177
+# gear_multistrike_rating=1201
+# gear_versatility_rating=476
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

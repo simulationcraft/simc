@@ -59,13 +59,13 @@ main_hand=franzoks_headsmasher,id=113904,bonus_id=566,enchant=mark_of_the_frostw
 off_hand=enginestokers_lantern,id=113960,bonus_id=566
 
 # Gear Summary
-# gear_stamina=3918
-# gear_intellect=3232
-# gear_spell_power=1525
-# gear_crit_rating=945
-# gear_haste_rating=1016
+# gear_stamina=4079
+# gear_intellect=3370
+# gear_spell_power=1595
+# gear_crit_rating=989
+# gear_haste_rating=1059
 # gear_mastery_rating=123
-# gear_armor=780
-# gear_multistrike_rating=1234
-# gear_versatility_rating=356
+# gear_armor=809
+# gear_multistrike_rating=1276
+# gear_versatility_rating=369
 # set_bonus=tier17_2pc=1

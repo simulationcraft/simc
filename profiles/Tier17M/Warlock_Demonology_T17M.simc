@@ -119,15 +119,15 @@ trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant_id=5384
 
 # Gear Summary
-# gear_stamina=4545
-# gear_intellect=3811
-# gear_spell_power=1753
-# gear_crit_rating=499
-# gear_haste_rating=1196
-# gear_mastery_rating=1994
-# gear_armor=870
-# gear_multistrike_rating=456
-# gear_versatility_rating=103
+# gear_stamina=4763
+# gear_intellect=3993
+# gear_spell_power=1837
+# gear_crit_rating=523
+# gear_haste_rating=1255
+# gear_mastery_rating=2075
+# gear_armor=900
+# gear_multistrike_rating=479
+# gear_versatility_rating=108
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felguard

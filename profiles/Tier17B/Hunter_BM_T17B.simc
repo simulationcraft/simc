@@ -74,15 +74,15 @@ trinket2=humming_blackiron_trigger,id=113985,bonus_id=41/562/565/567,gem_id=1158
 main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5383
 
 # Gear Summary
-# gear_agility=4010
-# gear_stamina=4785
-# gear_crit_rating=828
-# gear_haste_rating=337
-# gear_mastery_rating=2459
-# gear_armor=1503
-# gear_multistrike_rating=1418
-# gear_versatility_rating=122
-# gear_leech_rating=1984
+# gear_agility=4211
+# gear_stamina=5019
+# gear_crit_rating=867
+# gear_haste_rating=353
+# gear_mastery_rating=2533
+# gear_armor=1536
+# gear_multistrike_rating=1488
+# gear_versatility_rating=128
+# gear_leech_rating=2082
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

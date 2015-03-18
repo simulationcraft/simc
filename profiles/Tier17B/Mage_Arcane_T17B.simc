@@ -131,15 +131,15 @@ trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=11581
 main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_stamina=4734
-# gear_intellect=3976
-# gear_spell_power=1852
-# gear_crit_rating=569
-# gear_haste_rating=1022
-# gear_mastery_rating=2910
-# gear_armor=909
-# gear_multistrike_rating=587
+# gear_stamina=4954
+# gear_intellect=4168
+# gear_spell_power=1943
+# gear_crit_rating=596
+# gear_haste_rating=1071
+# gear_mastery_rating=2997
+# gear_armor=943
+# gear_multistrike_rating=617
 # gear_versatility_rating=86
-# gear_speed_rating=1984
+# gear_speed_rating=2082
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

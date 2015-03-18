@@ -59,14 +59,14 @@ main_hand=franzoks_headsmasher,id=113904,bonus_id=567/523/448/42,gem_id=115813,e
 off_hand=enginestokers_lantern,id=113960,bonus_id=567/523/448/42,gem_id=115813
 
 # Gear Summary
-# gear_stamina=4781
-# gear_intellect=3938
-# gear_spell_power=1855
-# gear_crit_rating=1257
-# gear_haste_rating=1122
-# gear_mastery_rating=149
-# gear_armor=909
-# gear_multistrike_rating=2076
-# gear_versatility_rating=560
-# gear_speed_rating=1982
+# gear_stamina=5014
+# gear_intellect=4134
+# gear_spell_power=1940
+# gear_crit_rating=1320
+# gear_haste_rating=1177
+# gear_mastery_rating=156
+# gear_armor=943
+# gear_multistrike_rating=2130
+# gear_versatility_rating=588
+# gear_speed_rating=2080
 # set_bonus=tier17_2pc=1

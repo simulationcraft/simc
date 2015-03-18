@@ -117,13 +117,13 @@ main_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,ench
 off_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3912
-# gear_stamina=4716
-# gear_crit_rating=660
-# gear_haste_rating=2372
-# gear_mastery_rating=719
-# gear_armor=1503
-# gear_multistrike_rating=984
-# gear_versatility_rating=383
+# gear_agility=4107
+# gear_stamina=4946
+# gear_crit_rating=691
+# gear_haste_rating=2436
+# gear_mastery_rating=754
+# gear_armor=1536
+# gear_multistrike_rating=1034
+# gear_versatility_rating=402
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

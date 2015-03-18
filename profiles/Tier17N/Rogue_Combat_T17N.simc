@@ -83,13 +83,13 @@ main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_agility=2809
-# gear_stamina=3388
-# gear_crit_rating=465
-# gear_haste_rating=1206
-# gear_mastery_rating=651
-# gear_armor=976
-# gear_multistrike_rating=826
+# gear_agility=2935
+# gear_stamina=3537
+# gear_crit_rating=483
+# gear_haste_rating=1250
+# gear_mastery_rating=681
+# gear_armor=1002
+# gear_multistrike_rating=864
 # gear_versatility_rating=93
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

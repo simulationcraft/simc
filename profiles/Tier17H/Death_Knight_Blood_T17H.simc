@@ -102,14 +102,14 @@ trinket2=petrified_flesheating_spore,id=113663,bonus_id=566
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=566,enchant=rune_of_the_stoneskin_gargoyle
 
 # Gear Summary
-# gear_strength=2628
-# gear_stamina=5104
-# gear_crit_rating=310
-# gear_haste_rating=625
-# gear_mastery_rating=462
-# gear_armor=2148
-# gear_bonus_armor=581
-# gear_multistrike_rating=1460
-# gear_versatility_rating=582
+# gear_strength=2744
+# gear_stamina=5276
+# gear_crit_rating=326
+# gear_haste_rating=654
+# gear_mastery_rating=484
+# gear_armor=2181
+# gear_bonus_armor=596
+# gear_multistrike_rating=1517
+# gear_versatility_rating=598
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

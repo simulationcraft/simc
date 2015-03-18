@@ -103,14 +103,14 @@ main_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant_id=5336
 off_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant_id=5384
 
 # Gear Summary
-# gear_agility=2590
-# gear_stamina=3885
-# gear_crit_rating=612
-# gear_haste_rating=316
-# gear_mastery_rating=1865
-# gear_armor=1057
-# gear_bonus_armor=815
-# gear_multistrike_rating=847
+# gear_agility=2703
+# gear_stamina=4054
+# gear_crit_rating=642
+# gear_haste_rating=331
+# gear_mastery_rating=1941
+# gear_armor=1086
+# gear_bonus_armor=847
+# gear_multistrike_rating=889
 # gear_versatility_rating=99
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -138,12 +138,12 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=mark_of_the_thunder
 off_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=3765
-# gear_stamina=4478
-# gear_crit_rating=1648
-# gear_haste_rating=874
-# gear_mastery_rating=1220
-# gear_armor=2250
-# gear_multistrike_rating=456
+# gear_strength=3945
+# gear_stamina=4694
+# gear_crit_rating=1714
+# gear_haste_rating=917
+# gear_mastery_rating=1282
+# gear_armor=2287
+# gear_multistrike_rating=478
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -127,14 +127,14 @@ trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=3942
-# gear_intellect=3306
-# gear_spell_power=1524
-# gear_crit_rating=1228
-# gear_haste_rating=674
-# gear_mastery_rating=1451
-# gear_armor=780
-# gear_multistrike_rating=271
+# gear_stamina=4114
+# gear_intellect=3455
+# gear_spell_power=1596
+# gear_crit_rating=1275
+# gear_haste_rating=706
+# gear_mastery_rating=1515
+# gear_armor=809
+# gear_multistrike_rating=283
 # gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
