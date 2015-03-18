@@ -2992,6 +2992,7 @@ struct ice_lance_t : public mage_spell_t
     }
 
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) &&
+         frozen_orb_action_id >= 0 &&
          p() -> get_active_dots( frozen_orb_action_id ) >= 1)
     {
       p() -> buffs.ice_shard -> trigger();
