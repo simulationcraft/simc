@@ -3712,8 +3712,6 @@ struct drain_soul_t: public warlock_spell_t
     double multiplier = data().effectN( 3 ).percent();
 
     multiplier *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-    if ( target -> health_percentage() <= 20)
-      multiplier *= 1.0 + p() -> perk.improved_drain_soul -> effectN( 1 ).percent();
 
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony, multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption, multiplier );
