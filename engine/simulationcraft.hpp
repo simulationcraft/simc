@@ -2258,6 +2258,21 @@ private:
 
 };
 
+struct target_wrapper_expr_t : public expr_t
+{
+  action_t& action;
+  std::vector<expr_t*> proxy_expr;
+  std::string suffix_expr_str;
+
+  // Inlined
+  target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str );
+  virtual player_t* target() const;
+  double evaluate();
+
+  ~target_wrapper_expr_t()
+  { range::dispose( proxy_expr ); }
+};
+
 // Template to return a function expression
 template <typename F>
 inline expr_t* make_fn_expr( const std::string& name, F f )
@@ -7575,6 +7590,31 @@ inline void player_t::do_dynamic_regen()
     }
   }
 }
+
+inline target_wrapper_expr_t::target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str ) :
+  expr_t( name_str ), action( a ), suffix_expr_str( expr_str )
+{
+  proxy_expr.resize( action.sim -> actor_list.size() + 1, 0 );
+}
+
+inline double target_wrapper_expr_t::evaluate()
+{
+  assert( target() );
+
+  size_t actor_index = target() -> actor_index;
+
+  if ( proxy_expr[ actor_index ] == 0 )
+  {
+    proxy_expr[ actor_index ] = target() -> create_expression( &( action ), suffix_expr_str );
+  }
+
+  std::cout << "target_wrapper_expr_t " << name() << " evaluate " << target() -> name() << " " <<  proxy_expr[ actor_index ] -> eval() << std::endl;
+
+  return proxy_expr[ actor_index ] -> eval();
+}
+
+inline player_t* target_wrapper_expr_t::target() const
+{ return action.target; }
 
 /* Simple String to Number function, using stringstream
  * This will NOT translate all numbers in the string to a number,
