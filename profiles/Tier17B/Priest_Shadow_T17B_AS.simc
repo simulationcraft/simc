@@ -251,15 +251,15 @@ trinket2=goren_soul_repository,id=119194,bonus_id=567/523/448/42,gem_id=115809
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567/523/448/42,gem_id=115809,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=4785
-# gear_intellect=3940
-# gear_spell_power=1852
-# gear_crit_rating=2438
-# gear_haste_rating=824
-# gear_mastery_rating=1247
-# gear_armor=909
-# gear_multistrike_rating=522
-# gear_versatility_rating=103
-# gear_speed_rating=1984
+# gear_stamina=5019
+# gear_intellect=4137
+# gear_spell_power=1943
+# gear_crit_rating=2510
+# gear_haste_rating=865
+# gear_mastery_rating=1306
+# gear_armor=943
+# gear_multistrike_rating=548
+# gear_versatility_rating=108
+# gear_speed_rating=2082
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

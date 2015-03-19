@@ -251,14 +251,14 @@ trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=3942
-# gear_intellect=3248
-# gear_spell_power=1524
-# gear_crit_rating=999
-# gear_haste_rating=1271
-# gear_mastery_rating=1225
-# gear_armor=780
-# gear_multistrike_rating=143
+# gear_stamina=4114
+# gear_intellect=3394
+# gear_spell_power=1596
+# gear_crit_rating=1035
+# gear_haste_rating=1331
+# gear_mastery_rating=1279
+# gear_armor=809
+# gear_multistrike_rating=150
 # gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

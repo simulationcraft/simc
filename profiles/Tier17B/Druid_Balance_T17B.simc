@@ -77,14 +77,14 @@ trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567/448
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567/448,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=4785
-# gear_intellect=3940
-# gear_spell_power=1852
-# gear_crit_rating=1311
-# gear_haste_rating=919
-# gear_mastery_rating=1509
-# gear_armor=1186
-# gear_multistrike_rating=613
-# gear_versatility_rating=103
+# gear_stamina=5019
+# gear_intellect=4137
+# gear_spell_power=1943
+# gear_crit_rating=1364
+# gear_haste_rating=963
+# gear_mastery_rating=1582
+# gear_armor=1219
+# gear_multistrike_rating=644
+# gear_versatility_rating=108
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

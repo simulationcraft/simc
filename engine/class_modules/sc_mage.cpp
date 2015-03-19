@@ -532,13 +532,30 @@ struct water_elemental_pet_t : public pet_t
       td = new water_elemental_pet_td_t( target, const_cast<water_elemental_pet_t*>(this) );
     return td;
   }
+
   struct waterbolt_t: public spell_t
   {
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
       spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
+      trigger_gcd = timespan_t::zero();
       parse_options( options_str );
       may_crit = true;
+    }
+
+    const water_elemental_pet_t* p() const
+    { return static_cast<water_elemental_pet_t*>( player ); }
+
+    virtual double action_multiplier() const
+    {
+      double am = spell_t::action_multiplier();
+
+      if ( p() -> o() -> spec.icicles -> ok() )
+      {
+        am *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return am;
     }
   };
 
@@ -568,9 +585,6 @@ struct water_elemental_pet_t : public pet_t
   virtual double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> spec.icicles -> ok() )
-      m *= 1.0 + o() -> cache.mastery_value();
 
     if ( o() -> buffs.rune_of_power -> check() )
     {
@@ -2985,6 +2999,7 @@ struct ice_floes_t : public mage_spell_t
 
 struct ice_lance_t : public mage_spell_t
 {
+  int frozen_orb_action_id;
   frost_bomb_explosion_t* frost_bomb_explosion;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
@@ -3015,12 +3030,17 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) && td( execute_state -> target ) -> dots.frozen_orb -> is_ticking() )
-      p() -> buffs.ice_shard -> trigger();
-
     if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
+    {
       p() -> buffs.icy_veins -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.thermal_void -> effectN( 1 ).base_value() ) );
+    }
 
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) &&
+         frozen_orb_action_id >= 0 &&
+         p() -> get_active_dots( frozen_orb_action_id ) >= 1)
+    {
+      p() -> buffs.ice_shard -> trigger();
+    }
 
     // Begin casting all Icicles at the target, beginning 0.25 seconds after the
     // Ice Lance cast with remaining Icicles launching at intervals of 0.75
@@ -3064,6 +3084,13 @@ struct ice_lance_t : public mage_spell_t
       frost_bomb_explosion -> target = s -> target;
       frost_bomb_explosion -> execute();
     }
+  }
+
+  virtual void init()
+  {
+    mage_spell_t::init();
+
+    frozen_orb_action_id = p() -> find_action_id( "frozen_orb" );
   }
 
   virtual double action_multiplier() const

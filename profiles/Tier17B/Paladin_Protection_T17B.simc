@@ -183,14 +183,14 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=567/523/448,gem_id=115811,encha
 off_hand=absaloms_bloody_bulwark,id=113666,bonus_id=567/523/448,gem_id=115811
 
 # Gear Summary
-# gear_strength=3140
-# gear_stamina=4715
-# gear_crit_rating=351
-# gear_haste_rating=2039
-# gear_mastery_rating=1661
-# gear_armor=3072
-# gear_bonus_armor=1409
-# gear_multistrike_rating=316
-# gear_versatility_rating=234
+# gear_strength=3275
+# gear_stamina=4911
+# gear_crit_rating=368
+# gear_haste_rating=2075
+# gear_mastery_rating=1732
+# gear_armor=3104
+# gear_bonus_armor=1458
+# gear_multistrike_rating=331
+# gear_versatility_rating=246
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

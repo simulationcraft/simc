@@ -3712,8 +3712,6 @@ struct drain_soul_t: public warlock_spell_t
     double multiplier = data().effectN( 3 ).percent();
 
     multiplier *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-    if ( target -> health_percentage() <= 20)
-      multiplier *= 1.0 + p() -> perk.improved_drain_soul -> effectN( 1 ).percent();
 
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony, multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption, multiplier );
@@ -5734,7 +5732,7 @@ void warlock_t::apl_destruction()
   action_list_str +="/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)";
 
   single_target -> action_list_str += "/havoc,target=2";
-  single_target -> action_list_str += "/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)";
+  single_target -> action_list_str += "/shadowburn,if=talent.charred_remains.enabled&target.time_to_die<10";
   single_target -> action_list_str += "/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)";
   single_target -> action_list_str += "/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled";
   single_target -> action_list_str += "/cataclysm,if=active_enemies>1";
@@ -5748,11 +5746,10 @@ void warlock_t::apl_destruction()
   single_target -> action_list_str += "/rain_of_fire,if=remains<=tick_time&(active_enemies>4|(buff.mannoroths_fury.up&active_enemies>2))";
   single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&active_enemies>1&target.health.pct>20";
   single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5";
-  single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|(burning_ember>=3&buff.ember_master.react)|target.time_to_die<20)";
+  single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20)";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&set_bonus.tier17_2pc=1&burning_ember>=2.5";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&buff.archmages_greater_incandescence_int.react&buff.archmages_greater_incandescence_int.remains>cast_time";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time";
-  single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>=cast_time";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.crit.react&trinket.proc.crit.remains>cast_time";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_proc.multistrike.react>=8&trinket.stacking_proc.multistrike.remains>=cast_time";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.multistrike.react&trinket.proc.multistrike.remains>cast_time";

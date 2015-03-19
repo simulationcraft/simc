@@ -634,7 +634,7 @@ struct spell_nuke_t : public enemy_action_t<spell_t>
 struct spell_nuke_driver_t : public enemy_action_driver_t<spell_nuke_t>
 {
   spell_nuke_driver_t( player_t* p, const std::string& options_str ) :
-    enemy_action_driver_t( p, options_str )
+    enemy_action_driver_t<spell_nuke_t>( p, options_str )
   {}
 };
 
@@ -698,7 +698,7 @@ struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
   virtual void schedule_execute( action_state_t* s )
   {
     target_cache.is_valid = false;
-    enemy_action_driver_t::schedule_execute( s );
+    enemy_action_driver_t<spell_dot_t>::schedule_execute( s );
   }
 };
 

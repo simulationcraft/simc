@@ -45,7 +45,7 @@ actions+=/run_action_list,name=single_target,if=active_enemies<6&(!talent.charre
 actions+=/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)
 
 actions.single_target=havoc,target=2
-actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)
+actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&target.time_to_die<10
 actions.single_target+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
 actions.single_target+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions.single_target+=/cataclysm,if=active_enemies>1
@@ -59,11 +59,10 @@ actions.single_target+=/cataclysm
 actions.single_target+=/rain_of_fire,if=remains<=tick_time&(active_enemies>4|(buff.mannoroths_fury.up&active_enemies>2))
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&active_enemies>1&target.health.pct>20
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|(burning_ember>=3&buff.ember_master.react)|target.time_to_die<20)
+actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20)
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&set_bonus.tier17_2pc=1&burning_ember>=2.5
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&buff.archmages_greater_incandescence_int.react&buff.archmages_greater_incandescence_int.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>=cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.crit.react&trinket.proc.crit.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_proc.multistrike.react>=8&trinket.stacking_proc.multistrike.remains>=cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.multistrike.react&trinket.proc.multistrike.remains>cast_time
@@ -105,14 +104,14 @@ trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant_id=5384
 
 # Gear Summary
-# gear_stamina=3942
-# gear_intellect=3248
-# gear_spell_power=1524
-# gear_crit_rating=1087
-# gear_haste_rating=823
-# gear_mastery_rating=1590
-# gear_armor=780
-# gear_multistrike_rating=117
+# gear_stamina=4114
+# gear_intellect=3394
+# gear_spell_power=1596
+# gear_crit_rating=1138
+# gear_haste_rating=862
+# gear_mastery_rating=1649
+# gear_armor=809
+# gear_multistrike_rating=122
 # gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

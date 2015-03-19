@@ -102,14 +102,14 @@ trinket2=evergaze_arcane_eidolon,id=113861
 main_hand=headlopper_skullscythe,id=119448,enchant_id=5336
 
 # Gear Summary
-# gear_agility=2290
-# gear_stamina=3437
-# gear_crit_rating=671
-# gear_haste_rating=165
-# gear_mastery_rating=1961
-# gear_armor=976
-# gear_bonus_armor=353
-# gear_multistrike_rating=737
+# gear_agility=2390
+# gear_stamina=3589
+# gear_crit_rating=703
+# gear_haste_rating=173
+# gear_mastery_rating=2025
+# gear_armor=1002
+# gear_bonus_armor=365
+# gear_multistrike_rating=772
 # gear_versatility_rating=90
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

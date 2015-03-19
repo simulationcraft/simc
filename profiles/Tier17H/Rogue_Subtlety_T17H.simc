@@ -45,13 +45,13 @@ actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&bu
 actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/shadow_dance,if=energy>=50&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
 actions+=/pool_resource,for_next=1,extra_amount=50
-actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&(combo_points<4|(talent.anticipation.enabled&combo_points<3))&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=50
-actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&(combo_points<4|(talent.anticipation.enabled&combo_points<3))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=90
-actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=90&(combo_points<4|(talent.anticipation.enabled&combo_points<3))&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=90
-actions+=/vanish,if=talent.subterfuge.enabled&energy>=90&(combo_points<4|(talent.anticipation.enabled&combo_points<3))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/vanish,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/marked_for_death,if=combo_points=0
 actions+=/run_action_list,name=finisher,if=combo_points=5&(buff.vanish.down|!talent.shadow_focus.enabled)
 actions+=/run_action_list,name=generator,if=combo_points<4|(combo_points=4&cooldown.honor_among_thieves.remains>1&energy>95-25*talent.anticipation.enabled-energy.regen)|(talent.anticipation.enabled&anticipation_charges<3&debuff.find_weakness.down)
@@ -100,13 +100,13 @@ main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of
 off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=3163
-# gear_stamina=3885
-# gear_crit_rating=751
-# gear_haste_rating=294
-# gear_mastery_rating=924
-# gear_armor=1057
-# gear_multistrike_rating=1596
+# gear_agility=3291
+# gear_stamina=4054
+# gear_crit_rating=782
+# gear_haste_rating=308
+# gear_mastery_rating=967
+# gear_armor=1086
+# gear_multistrike_rating=1661
 # gear_versatility_rating=101
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

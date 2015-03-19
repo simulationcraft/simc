@@ -45,7 +45,7 @@ actions+=/run_action_list,name=single_target,if=active_enemies<6&(!talent.charre
 actions+=/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)
 
 actions.single_target=havoc,target=2
-actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)
+actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&target.time_to_die<10
 actions.single_target+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
 actions.single_target+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions.single_target+=/cataclysm,if=active_enemies>1
@@ -59,11 +59,10 @@ actions.single_target+=/cataclysm
 actions.single_target+=/rain_of_fire,if=remains<=tick_time&(active_enemies>4|(buff.mannoroths_fury.up&active_enemies>2))
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&active_enemies>1&target.health.pct>20
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|(burning_ember>=3&buff.ember_master.react)|target.time_to_die<20)
+actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20)
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&set_bonus.tier17_2pc=1&burning_ember>=2.5
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&buff.archmages_greater_incandescence_int.react&buff.archmages_greater_incandescence_int.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>=cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.crit.react&trinket.proc.crit.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_proc.multistrike.react>=8&trinket.stacking_proc.multistrike.remains>=cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.multistrike.react&trinket.proc.multistrike.remains>cast_time
@@ -106,16 +105,16 @@ main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=11
 off_hand=caged_living_ooze,id=113879,bonus_id=41/562/565/567,gem_id=115812
 
 # Gear Summary
-# gear_stamina=4781
-# gear_intellect=3938
-# gear_spell_power=1855
-# gear_crit_rating=913
-# gear_haste_rating=935
-# gear_mastery_rating=2853
-# gear_armor=909
-# gear_multistrike_rating=267
-# gear_versatility_rating=230
-# gear_leech_rating=1982
+# gear_stamina=5014
+# gear_intellect=4134
+# gear_spell_power=1940
+# gear_crit_rating=958
+# gear_haste_rating=981
+# gear_mastery_rating=2943
+# gear_armor=943
+# gear_multistrike_rating=280
+# gear_versatility_rating=241
+# gear_leech_rating=2080
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felhunter

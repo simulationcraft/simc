@@ -127,14 +127,14 @@ trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_stamina=4545
-# gear_intellect=3811
-# gear_spell_power=1753
-# gear_crit_rating=1046
-# gear_haste_rating=704
-# gear_mastery_rating=694
-# gear_armor=870
-# gear_multistrike_rating=1256
-# gear_versatility_rating=521
+# gear_stamina=4763
+# gear_intellect=3993
+# gear_spell_power=1837
+# gear_crit_rating=1097
+# gear_haste_rating=739
+# gear_mastery_rating=728
+# gear_armor=900
+# gear_multistrike_rating=1303
+# gear_versatility_rating=546
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

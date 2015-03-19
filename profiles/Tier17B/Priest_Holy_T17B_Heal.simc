@@ -64,15 +64,15 @@ trinket2=ironspike_chew_toy,id=119192,bonus_id=567/523/448/42,gem_id=115813
 main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448/42,gem_id=115813,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=4785
-# gear_intellect=3451
-# gear_spirit=1310
-# gear_spell_power=1852
-# gear_crit_rating=854
-# gear_haste_rating=1247
-# gear_mastery_rating=981
-# gear_armor=909
-# gear_multistrike_rating=1554
-# gear_speed_rating=1984
+# gear_stamina=5019
+# gear_intellect=3625
+# gear_spirit=1375
+# gear_spell_power=1943
+# gear_crit_rating=896
+# gear_haste_rating=1307
+# gear_mastery_rating=1028
+# gear_armor=943
+# gear_multistrike_rating=1584
+# gear_speed_rating=2082
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

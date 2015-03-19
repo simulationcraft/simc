@@ -148,13 +148,13 @@ main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_the_frostw
 off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=3283
-# gear_stamina=3885
-# gear_crit_rating=1117
-# gear_haste_rating=463
-# gear_mastery_rating=266
-# gear_armor=1057
-# gear_multistrike_rating=1627
-# gear_versatility_rating=212
+# gear_agility=3429
+# gear_stamina=4054
+# gear_crit_rating=1163
+# gear_haste_rating=484
+# gear_mastery_rating=280
+# gear_armor=1086
+# gear_multistrike_rating=1693
+# gear_versatility_rating=217
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

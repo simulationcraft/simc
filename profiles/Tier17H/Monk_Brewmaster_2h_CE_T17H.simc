@@ -102,14 +102,14 @@ trinket2=blast_furnace_door,id=113893,bonus_id=566
 main_hand=headlopper_skullscythe,id=119448,bonus_id=566,enchant_id=5336
 
 # Gear Summary
-# gear_agility=2628
-# gear_stamina=3942
-# gear_crit_rating=772
-# gear_haste_rating=190
-# gear_mastery_rating=1885
-# gear_armor=1057
-# gear_bonus_armor=815
-# gear_multistrike_rating=847
+# gear_agility=2744
+# gear_stamina=4114
+# gear_crit_rating=810
+# gear_haste_rating=199
+# gear_mastery_rating=1962
+# gear_armor=1086
+# gear_bonus_armor=847
+# gear_multistrike_rating=889
 # gear_versatility_rating=99
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -1081,6 +1081,57 @@ void print_html_gear( report::sc_html_stream& os, player_t* p )
       item.source_str.c_str(),
       util::inverse_tokenize( item.slot_name() ).c_str(),
       item_string.c_str() );
+    if ( item.active() )
+    {
+      std::string item_sim_desc = "ilevel: " + util::to_string( item.item_level() );
+
+      if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
+      {
+        item_sim_desc += ", weapon: { " + item.weapon_stats_str() + " }";
+      }
+
+      if ( item.has_stats() )
+      {
+        item_sim_desc += ", stats: { ";
+        item_sim_desc += item.item_stats_str();
+        if ( item.parsed.suffix_stats.size() > 0 )
+        {
+          item_sim_desc += ", " + item.suffix_stats_str();
+        }
+
+        item_sim_desc += " }";
+      }
+
+      if ( item.parsed.gem_stats.size() > 0 )
+      {
+        item_sim_desc += ", gems: { ";
+        item_sim_desc += item.gem_stats_str();
+        if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
+        {
+          item_sim_desc += ", ";
+          item_sim_desc += item.socket_bonus_stats_str();
+        }
+        item_sim_desc += " }";
+      }
+
+      if ( item.parsed.enchant_stats.size() > 0 )
+      {
+        item_sim_desc += ", enchant: { ";
+        item_sim_desc += item.enchant_stats_str();
+        item_sim_desc += " }";
+      }
+      else if ( ! item.parsed.encoded_enchant.empty() )
+      {
+        item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
+      }
+
+      os.format(
+        "<tr>\n"
+        "<th class=\"left\" colspan=\"2\"></th>\n"
+        "<td class=\"left small\">%s</td>\n"
+        "</tr>\n",
+        item_sim_desc.c_str() );
+    }
   }
 
   os << "</table>\n"

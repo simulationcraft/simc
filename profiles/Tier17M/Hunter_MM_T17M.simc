@@ -81,14 +81,14 @@ trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
 main_hand=mouth_of_the_fury,id=113885,bonus_id=567,enchant_id=5276
 
 # Gear Summary
-# gear_agility=3828
-# gear_stamina=4545
-# gear_crit_rating=1759
-# gear_haste_rating=560
-# gear_mastery_rating=706
-# gear_armor=1463
-# gear_multistrike_rating=1010
-# gear_versatility_rating=237
+# gear_agility=4011
+# gear_stamina=4763
+# gear_crit_rating=1829
+# gear_haste_rating=588
+# gear_mastery_rating=741
+# gear_armor=1496
+# gear_multistrike_rating=1058
+# gear_versatility_rating=248
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

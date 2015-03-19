@@ -80,15 +80,15 @@ trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=41/562/565/567,gem_id=
 main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=41/562/565/567,gem_id=115813,enchant_id=5275
 
 # Gear Summary
-# gear_agility=3882
-# gear_stamina=4785
-# gear_crit_rating=848
-# gear_haste_rating=425
-# gear_mastery_rating=914
-# gear_armor=1503
-# gear_multistrike_rating=2685
-# gear_versatility_rating=288
-# gear_leech_rating=1972
+# gear_agility=4063
+# gear_stamina=5019
+# gear_crit_rating=889
+# gear_haste_rating=447
+# gear_mastery_rating=960
+# gear_armor=1536
+# gear_multistrike_rating=2768
+# gear_versatility_rating=303
+# gear_leech_rating=2063
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

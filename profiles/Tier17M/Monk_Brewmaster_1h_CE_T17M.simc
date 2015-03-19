@@ -103,14 +103,14 @@ main_hand=phemos_double_slasher,id=113667,bonus_id=567,enchant=mark_of_bleeding_
 off_hand=phemos_double_slasher,id=113667,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=2962
-# gear_stamina=4444
-# gear_crit_rating=525
-# gear_haste_rating=204
-# gear_mastery_rating=1963
-# gear_armor=1147
-# gear_bonus_armor=931
-# gear_multistrike_rating=1455
-# gear_versatility_rating=119
+# gear_agility=3092
+# gear_stamina=4640
+# gear_crit_rating=551
+# gear_haste_rating=214
+# gear_mastery_rating=2040
+# gear_armor=1177
+# gear_bonus_armor=976
+# gear_multistrike_rating=1518
+# gear_versatility_rating=125
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

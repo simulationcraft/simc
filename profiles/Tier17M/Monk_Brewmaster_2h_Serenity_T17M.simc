@@ -102,14 +102,14 @@ trinket2=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=567
 main_hand=headlopper_skullscythe,id=119448,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3030
-# gear_stamina=4545
-# gear_crit_rating=709
-# gear_haste_rating=204
-# gear_mastery_rating=2110
-# gear_armor=1147
-# gear_bonus_armor=942
-# gear_multistrike_rating=1187
-# gear_versatility_rating=119
+# gear_agility=3175
+# gear_stamina=4763
+# gear_crit_rating=744
+# gear_haste_rating=214
+# gear_mastery_rating=2201
+# gear_armor=1177
+# gear_bonus_armor=987
+# gear_multistrike_rating=1245
+# gear_versatility_rating=125
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -59,14 +59,14 @@ trinket2=ironspike_chew_toy,id=119192,bonus_id=567
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=4545
-# gear_intellect=3281
-# gear_spirit=1211
-# gear_spell_power=1753
-# gear_crit_rating=1677
-# gear_haste_rating=898
-# gear_mastery_rating=870
-# gear_armor=870
-# gear_multistrike_rating=328
+# gear_stamina=4763
+# gear_intellect=3439
+# gear_spirit=1269
+# gear_spell_power=1837
+# gear_crit_rating=1744
+# gear_haste_rating=943
+# gear_mastery_rating=913
+# gear_armor=900
+# gear_multistrike_rating=344
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

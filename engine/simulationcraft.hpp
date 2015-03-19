@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "610"
-#define SC_MINOR_VERSION "07"
+#define SC_MINOR_VERSION "08"
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
@@ -3595,6 +3595,12 @@ struct item_t
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
 
   std::string to_string();
+  std::string item_stats_str();
+  std::string weapon_stats_str();
+  std::string suffix_stats_str();
+  std::string gem_stats_str();
+  std::string socket_bonus_stats_str();
+  std::string enchant_stats_str();
   bool has_stats();
   bool has_special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
   bool has_use_special_effect()

@@ -97,6 +97,142 @@ const special_effect_t& item_t::special_effect( special_effect_source_e source, 
 
 // item_t::to_string ========================================================
 
+std::string item_t::item_stats_str()
+{
+  std::ostringstream s;
+  if ( parsed.armor > 0 )
+    s << parsed.armor << " Armor, ";
+  else if ( item_database::armor_value( *this ) )
+    s << item_database::armor_value( *this ) << " Armor, ";
+
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
+  {
+    if ( parsed.data.stat_type_e[ i ] <= 0 )
+      continue;
+
+    int v = stat_value( i );
+    if ( v == 0 )
+      continue;
+
+    if ( v > 0 )
+      s << "+";
+
+    s << v << " " << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) ) << ", ";
+  }
+
+  std::string str = s.str();
+  if ( str.size() > 2 )
+  {
+    str.erase( str.end() - 2, str.end() );
+  }
+
+  return str;
+}
+
+std::string item_t::weapon_stats_str()
+{
+  if ( ! weapon() )
+  {
+    return std::string();
+  }
+
+  std::ostringstream s;
+
+  weapon_t* w = weapon();
+  s << w -> min_dmg;
+  s << " - ";
+  s << w -> max_dmg;
+
+  s << ", ";
+  s << w -> swing_time.total_seconds();
+
+  return s.str();
+}
+
+std::string item_t::suffix_stats_str()
+{
+  if ( parsed.suffix_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
+  std::ostringstream s;
+
+  for ( size_t i = 0; i < parsed.suffix_stats.size(); i++ )
+  {
+    s << "+" << parsed.suffix_stats[ i ].value
+      << " " << util::stat_type_abbrev( parsed.suffix_stats[ i ].stat ) << ", ";
+  }
+
+  std::string str = s.str();
+  str.erase( str.end() - 2, str.end() );
+
+  return str;
+}
+
+std::string item_t::gem_stats_str()
+{
+  if ( parsed.gem_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
+  std::ostringstream s;
+
+  for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
+  {
+    s << "+" << parsed.gem_stats[ i ].value
+      << " " << util::stat_type_abbrev( parsed.gem_stats[ i ].stat ) << ", ";
+  }
+
+  std::string str = s.str();
+  str.erase( str.end() - 2, str.end() );
+
+  return str;
+}
+
+std::string item_t::enchant_stats_str()
+{
+  if ( parsed.enchant_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
+  std::ostringstream s;
+
+  for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
+  {
+    s << "+" << parsed.enchant_stats[ i ].value
+      << " " << util::stat_type_abbrev( parsed.enchant_stats[ i ].stat ) << ", ";
+  }
+
+  std::string str = s.str();
+  str.erase( str.end() - 2, str.end() );
+
+  return str;
+}
+
+std::string item_t::socket_bonus_stats_str()
+{
+  if ( parsed.socket_bonus_stats.size() == 0 )
+  {
+    return std::string();
+  }
+
+  std::ostringstream s;
+
+  for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
+  {
+    s << "+" << parsed.socket_bonus_stats[ i ].value
+      << " " << util::stat_type_abbrev( parsed.socket_bonus_stats[ i ].stat ) << ", ";
+  }
+
+  std::string str = s.str();
+  str.erase( str.end() - 2, str.end() );
+
+  return str;
+}
+
 std::string item_t::to_string()
 {
   std::ostringstream s;
@@ -142,69 +278,28 @@ std::string item_t::to_string()
   if ( has_stats() )
   {
     s << " stats={ ";
-
-    if ( parsed.armor > 0 )
-      s << parsed.armor << " Armor, ";
-    else if ( item_database::armor_value( *this ) )
-      s << item_database::armor_value( *this ) << " Armor, ";
-
-    for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
-    {
-      if ( parsed.data.stat_type_e[ i ] <= 0 )
-        continue;
-
-      int v = stat_value( i );
-      if ( v == 0 )
-        continue;
-
-      if ( v > 0 )
-        s << "+";
-
-      s << v << " " << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) ) << ", ";
-    }
-    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
+    s << item_stats_str();
     s << " }";
   }
 
   if ( parsed.suffix_stats.size() > 0 )
   {
     s << " suffix_stats={ ";
-
-    for ( size_t i = 0; i < parsed.suffix_stats.size(); i++ )
-    {
-      s << "+" << parsed.suffix_stats[ i ].value
-        << " " << util::stat_type_abbrev( parsed.suffix_stats[ i ].stat ) << ", ";
-    }
-
-    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
+    s << suffix_stats_str();
     s << " }";
   }
 
   if ( parsed.gem_stats.size() > 0 )
   {
     s << " gems={ ";
-
-    for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
-    {
-      s << "+" << parsed.gem_stats[ i ].value
-        << " " << util::stat_type_abbrev( parsed.gem_stats[ i ].stat ) << ", ";
-    }
-
-    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
+    s << gem_stats_str();
     s << " }";
   }
 
   if ( socket_color_match() && parsed.socket_bonus_stats.size() > 0 )
   {
     s << " socket_bonus={ ";
-
-    for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
-    {
-      s << "+" << parsed.socket_bonus_stats[ i ].value
-        << " " << util::stat_type_abbrev( parsed.socket_bonus_stats[ i ].stat ) << ", ";
-    }
-
-    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
+    s << socket_bonus_stats_str();
     s << " }";
   }
 
@@ -224,14 +319,7 @@ std::string item_t::to_string()
   if ( parsed.enchant_stats.size() > 0 && parsed.encoded_enchant.empty() )
   {
     s << " enchant={ ";
-
-    for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
-    {
-      s << "+" << parsed.enchant_stats[ i ].value << " "
-        << util::stat_type_abbrev( parsed.enchant_stats[ i ].stat ) << ", ";
-    }
-
-    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
+    s << enchant_stats_str();
     s << " }";
   }
   else if ( ! parsed.encoded_enchant.empty() )
