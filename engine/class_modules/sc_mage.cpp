@@ -3898,20 +3898,34 @@ struct prismatic_crystal_t : public mage_spell_t
 
 struct choose_target_t : public action_t
 {
+  enum target_if_mode_e
+  {
+    TARGET_IF_NONE,
+    TARGET_IF_FIRST,
+    TARGET_IF_MIN,
+    TARGET_IF_MAX
+  };
+
   bool check_selected;
   player_t* selected_target;
 
   // Infinite loop protection
   timespan_t last_execute;
 
+  std::string target_if_str;
+  expr_t* target_if_expr;
+  target_if_mode_e target_if_mode;
+
   choose_target_t( mage_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "choose_target", p ),
     check_selected( false ), selected_target( 0 ),
-    last_execute( timespan_t::min() )
+    last_execute( timespan_t::min() ),
+    target_if_expr( 0 ), target_if_mode( TARGET_IF_NONE )
   {
     std::string target_name;
 
     add_option( opt_string( "name", target_name ) );
+    add_option( opt_string( "target_if", target_if_str ) );
     add_option( opt_bool( "check_selected", check_selected ) );
     parse_options( options_str );
 
@@ -3926,13 +3940,112 @@ struct choose_target_t : public action_t
     else
       selected_target = p -> target;
 
-    if ( ! selected_target )
+    if ( ! selected_target && target_if_str.empty() )
       background = true;
 
     trigger_gcd = timespan_t::zero();
 
     harmful = may_miss = may_crit = callbacks = false;
     ignore_false_positive = true;
+
+    std::string::size_type offset = target_if_str.find( ':' );
+    if ( offset != std::string::npos )
+    {
+      std::string target_if_type_str = target_if_str.substr( 0, offset );
+      target_if_str.erase( 0, offset + 1 );
+      if ( util::str_compare_ci( target_if_type_str, "max" ) )
+      {
+        target_if_mode = TARGET_IF_MAX;
+      }
+      else if ( util::str_compare_ci( target_if_type_str, "min" ) )
+      {
+        target_if_mode = TARGET_IF_MIN;
+      }
+      else if ( util::str_compare_ci( target_if_type_str, "first" ) )
+      {
+        target_if_mode = TARGET_IF_FIRST;
+      }
+      else
+      {
+        sim -> errorf( "%s unknown target_if mode '%s' for choose_target. Valid values are 'min', 'max', 'first'.",
+            player -> name(), target_if_type_str.c_str() );
+        background = true;
+      }
+    }
+    else if ( ! target_if_str.empty() )
+    {
+      target_if_mode = TARGET_IF_FIRST;
+    }
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    tl.clear();
+    if ( ! target -> is_sleeping() )
+      tl.push_back( target );
+
+    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> target_non_sleeping_list[ i ];
+
+      if ( t != target )
+        tl.push_back( t );
+    }
+
+    if ( target != p -> pets.prismatic_crystal && ! p -> pets.prismatic_crystal -> is_sleeping() )
+      tl.push_back( p -> pets.prismatic_crystal );
+
+    return tl.size();
+  }
+
+  player_t* select_target_if_target()
+  {
+    if ( target_if_mode == TARGET_IF_NONE )
+    {
+      return 0;
+    }
+
+    player_t* original_target = target;
+    player_t* proposed_target = 0;
+
+    double max_ = -9.99e99;
+    double min_ =  9.99e99;
+    for ( size_t i = 0, end = target_list().size(); i < end; ++i )
+    {
+      target = target_list()[ i ];
+      double v = target_if_expr -> evaluate();
+      if ( target_if_mode == TARGET_IF_FIRST && v != 0 )
+      {
+        proposed_target = target;
+        break;
+      }
+      else if ( target_if_mode == TARGET_IF_MAX && v > max_ )
+      {
+        max_ = v;
+        proposed_target = target;
+      }
+      else if ( target_if_mode == TARGET_IF_MIN && v < min_ )
+      {
+        min_ = v;
+        proposed_target = target;
+      }
+    }
+
+    target = original_target;
+
+    return proposed_target;
+  }
+
+  void init()
+  {
+    action_t::init();
+
+    if ( ! target_if_str.empty() )
+    {
+      target_if_expr = expr_t::parse( this, target_if_str, sim -> optimize_expressions );
+    }
   }
 
   result_e calculate_result( action_state_t* )
@@ -3960,7 +4073,14 @@ struct choose_target_t : public action_t
     if ( sim -> debug )
       sim -> out_debug.printf( "%s swapping target from %s to %s", player -> name(), p -> current_target -> name(), selected_target -> name() );
 
-    p -> current_target = selected_target;
+    if ( target_if_mode != TARGET_IF_NONE )
+    {
+      p -> current_target = select_target_if_target();
+    }
+    else
+    {
+      p -> current_target = selected_target;
+    }
 
     // Invalidate target caches
     for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
@@ -3970,6 +4090,15 @@ struct choose_target_t : public action_t
   bool ready()
   {
     mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( target_if_mode != TARGET_IF_NONE )
+    {
+      selected_target = select_target_if_target();
+      if ( selected_target == 0 )
+      {
+        return false;
+      }
+    }
 
     // Safeguard stupidly against breaking the sim.
     if ( selected_target -> is_sleeping() )
@@ -5620,25 +5749,66 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       expr_t( n ), mage( m ) {}
   };
 
-  if ( util::str_compare_ci( name_str, "current_target" ) )
+  // Current target expression support
+  // "current_target" returns the actor id of the mage's current target
+  // "current_target.<some other expression>" evaluates <some other expression> on the current
+  // target of the mage
+  if ( util::str_in_str_ci( name_str, "current_target" ) )
   {
-    struct current_target_expr_t : public mage_expr_t
+    std::string::size_type offset = name_str.find( '.' );
+    if ( offset != std::string::npos )
     {
-      current_target_expr_t( const std::string& n, mage_t& m ) :
-        mage_expr_t( n, m )
-      { }
-
-      double evaluate()
+      struct current_target_wrapper_expr_t : public target_wrapper_expr_t
       {
-        return mage.current_target ? static_cast<double>( mage.current_target -> actor_index ) : 0;
-      }
-    };
+        mage_t& mage;
 
-    return new current_target_expr_t( name_str, *this );
+        current_target_wrapper_expr_t( action_t& action, const std::string& suffix_expr_str ) :
+          target_wrapper_expr_t( action, "current_target_wrapper_expr_t", suffix_expr_str ),
+          mage( static_cast<mage_t&>( *action.player ) )
+        { }
+
+        player_t* target() const
+        { assert( mage.current_target ); return mage.current_target; }
+      };
+
+      return new current_target_wrapper_expr_t( *a, name_str.substr( offset + 1 ) );
+    }
+    else
+    {
+      struct current_target_expr_t : public mage_expr_t
+      {
+        current_target_expr_t( const std::string& n, mage_t& m ) :
+          mage_expr_t( n, m )
+        { }
+
+        double evaluate()
+        {
+          assert( mage.current_target );
+          return static_cast<double>( mage.current_target -> actor_index );
+        }
+      };
+
+      return new current_target_expr_t( name_str, *this );
+    }
   }
 
+  // Default target expression support
+  // "default_target" returns the actor id of the mage's default target (typically the first enemy
+  // in the sim, e.g. fluffy_pillow)
+  // "default_target.<some other expression>" evaluates <some other expression> on the default
+  // target of the mage
   if ( util::str_compare_ci( name_str, "default_target" ) )
-    return make_ref_expr( name_str, target -> actor_index );
+  {
+    std::string::size_type offset = name_str.find( '.' );
+    if ( offset != std::string::npos )
+    {
+      return target -> create_expression( a, name_str.substr( offset + 1 ) );
+    }
+    else
+    {
+      return make_ref_expr( name_str, target -> actor_index );
+    }
+  }
 
   // Incanters flow direction
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
