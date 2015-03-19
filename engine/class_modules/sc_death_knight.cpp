@@ -446,9 +446,6 @@ public:
     proc_t* ready_blood;
     proc_t* ready_frost;
     proc_t* ready_unholy;
-
-    proc_t* reaping_bug_blood;
-    proc_t* reaping_bug_frost;
   } procs;
 
   real_ppm_t t15_2pc_melee;
@@ -2385,7 +2382,7 @@ struct death_knight_action_t : public Base
 
   // Consume Runes ============================================================
 
-  void consume_runes( const rune_consume_t& use, int blood, int frost, int unholy, bool convert_runes = false )
+  void consume_runes( const rune_consume_t& use, bool convert_runes = false )
   {
     if ( p() -> sim -> log )
     {
@@ -2413,17 +2410,7 @@ struct death_knight_action_t : public Base
       // Not the type it is after consumption
       int consumed_type = p() -> _runes.slot[ i ].type;
 
-      // Consume the rune, and potentially reap it. Reaping requires some trickery. Basically, you
-      // only reap consumed runes that are included in the base cost of the ability that reaps.
-      bool reap_rune = convert_runes;
-      if ( ( rune.is_blood() && ! blood ) ||
-           ( rune.is_frost() && ! frost ) ||
-           ( rune.is_unholy() && ! unholy ) )
-      {
-        reap_rune = false;
-      }
-
-      p() -> _runes.slot[ i ].consume( reap_rune );
+      p() -> _runes.slot[ i ].consume( convert_runes );
 
       if ( p() -> sim -> log )
         p() -> sim -> out_log.printf( "%s consumes rune #%d, type %d", p() -> name(), i, consumed_type );
@@ -2585,7 +2572,7 @@ void death_knight_melee_attack_t::consume_resource()
   base_t::consume_resource();
 
   if ( result_is_hit( execute_state -> result ) || always_consume )
-    consume_runes( use, cost_blood, cost_frost, cost_unholy, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
+    consume_runes( use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
 
   if ( p() -> active_spells.breath_of_sindragosa &&
        p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.breath_of_sindragosa -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
@@ -2651,7 +2638,7 @@ void death_knight_spell_t::consume_resource()
   base_t::consume_resource();
 
   if ( result_is_hit( execute_state -> result ) )
-    consume_runes( use, cost_blood, cost_frost, cost_unholy, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
+    consume_runes( use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
 
   if ( p() -> active_spells.breath_of_sindragosa &&
        p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.breath_of_sindragosa -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
@@ -7039,9 +7026,6 @@ void death_knight_t::init_procs()
   procs.ready_blood              = get_proc( "Blood runes ready" );
   procs.ready_frost              = get_proc( "Frost runes ready" );
   procs.ready_unholy             = get_proc( "Unholy runes ready" );
-
-  procs.reaping_bug_blood        = get_proc( "Reaping bug: Blood" );
-  procs.reaping_bug_frost        = get_proc( "Reaping bug: Frost" );
 }
 
 // death_knight_t::init_resources ===========================================
