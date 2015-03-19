@@ -4073,14 +4073,7 @@ struct choose_target_t : public action_t
     if ( sim -> debug )
       sim -> out_debug.printf( "%s swapping target from %s to %s", player -> name(), p -> current_target -> name(), selected_target -> name() );
 
-    if ( target_if_mode != TARGET_IF_NONE )
-    {
-      p -> current_target = select_target_if_target();
-    }
-    else
-    {
-      p -> current_target = selected_target;
-    }
+    p -> current_target = selected_target;
 
     // Invalidate target caches
     for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
