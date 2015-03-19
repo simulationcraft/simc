@@ -67,7 +67,7 @@ save=Rogue_Combat_T17M.simc
 # Subtlety
 rogue="Rogue_Subtlety_T17M"
 level=100
-race=blood_elf
+race=night_elf
 role=attack
 position=back
 spec=subtlety

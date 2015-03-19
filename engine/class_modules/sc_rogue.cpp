@@ -4885,11 +4885,6 @@ void rogue_t::init_action_list()
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( race == RACE_NIGHT_ELF )
-      {
-        continue;
-      }
-
       if ( racial_actions[i] == "arcane_torrent" )
         def -> add_action( racial_actions[i] + ",if=energy<60&buff.shadow_dance.up" );
       else
