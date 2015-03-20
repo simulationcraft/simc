@@ -5375,10 +5375,7 @@ double player_t::get_position_distance( double m, double v )
   double delta_x = this -> x_position - m;
   double delta_y = this -> y_position - v;
   double sqrtnum = delta_x * delta_x + delta_y * delta_y;
-  if ( sqrtnum == 0 )
-    return 0.0;
-  else
-    return util::approx_sqrt( sqrtnum );
+  return util::approx_sqrt( sqrtnum );
 }
 
 // player_t::get_player_distance ============================================

@@ -236,24 +236,18 @@ std::string& util::glyph_name( std::string& n )
 
 double util::approx_sqrt( double number )
 {
-  if ( number > 0 )
+  if ( number > 0.0 )
   {
-    int64_t root = 0;
-    int64_t bit = 1UL << 30;
-
-    while ( bit > number )  bit >>= 2;
-
-    while ( bit != 0 ) // Adopted from Lord John Carmack. I don't understand this black magic, but it works.
+    float xhalf = 0.5f*static_cast<float>(number);
+    union
     {
-      if ( number >= root + bit )
-      {
-        number -= ( root + bit );
-        root += ( bit << 1 );
-      }
-      root >>= 1;
-      bit >>= 2;
-    }
-    return static_cast<double>( root );
+      float x;
+      int i;
+    } u;
+    u.x = static_cast<float>(number);
+    u.i = 0x5f3759df - ( u.i >> 1 );
+    u.x = u.x * ( 1.5f - xhalf * u.x * u.x );
+    return static_cast<double>(u.x*number);
   }
   return 0.0;
 }
