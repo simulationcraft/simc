@@ -15,6 +15,18 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 
 struct mage_t;
+
+// Forcibly reset mage's current target, if it dies.
+struct current_target_reset_cb_t
+{
+  mage_t* mage;
+
+  current_target_reset_cb_t( mage_t* m ) : mage( m )
+  { }
+
+  void operator()();
+};
+
 namespace actions {
 struct ignite_t;
 } // actions
@@ -431,6 +443,26 @@ public:
 
   std::string       get_potion_action();
 };
+
+inline void current_target_reset_cb_t::operator()()
+{
+  for ( size_t i = 0, end = mage -> sim -> target_non_sleeping_list.size(); i < end; ++i )
+  {
+    // If the mage's current target is still alive, bail out early.
+    if ( mage -> current_target == mage -> sim -> target_non_sleeping_list[ i ] )
+    {
+      return;
+    }
+  }
+
+  if ( mage -> sim -> debug )
+  {
+    mage -> sim -> out_debug.printf( "%s current target %s died. Resetting target to %s.",
+        mage -> name(), mage -> current_target -> name(), mage -> target -> name() );
+  }
+
+  mage -> current_target = mage -> target;
+}
 
 namespace pets {
 
