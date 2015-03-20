@@ -2349,11 +2349,18 @@ struct iteration_data_entry_t
 {
   double   metric;
   uint64_t seed;
-  uint64_t target_health;
+  std::vector <uint64_t> target_health;
 
   iteration_data_entry_t( double m, uint64_t s, uint64_t h ) :
-    metric( m ), seed( s ), target_health( h )
+    metric( m ), seed( s )
+  { target_health.push_back( h ); }
+
+  iteration_data_entry_t( double m, uint64_t s ) :
+    metric( m ), seed( s )
   { }
+
+  void add_health( uint64_t h )
+  { target_health.push_back( h ); }
 };
 
 // Simulation Setup =========================================================
@@ -2731,7 +2738,7 @@ struct sim_t : private sc_thread_t
 
     // Misc stuff needs resolving
     int    bloodlust;
-    double target_health;
+    std::vector<uint64_t> target_health;
   } overrides;
 
   // Auras
