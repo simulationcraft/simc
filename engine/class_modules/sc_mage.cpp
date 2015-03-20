@@ -341,6 +341,37 @@ public:
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_SPELL_HASTE ] = true;
+
+    // Forcibly reset mage's current target, if it dies.
+    struct current_target_reset_cb_t
+    {
+      mage_t* mage;
+
+      current_target_reset_cb_t( mage_t* m ) : mage( m )
+      { }
+
+      void operator()()
+      {
+        for ( size_t i = 0, end = mage -> sim -> target_non_sleeping_list.size(); i < end; ++i )
+        {
+          // If the mage's current target is still alive, bail out early.
+          if ( mage -> current_target == mage -> sim -> target_non_sleeping_list[ i ] )
+          {
+            return;
+          }
+        }
+
+        if ( mage -> sim -> debug )
+        {
+          mage -> sim -> out_debug.printf( "%s current target %s died. Resetting target to %s.",
+              mage -> name(), mage -> current_target -> name(), mage -> target -> name() );
+        }
+
+        mage -> current_target = mage -> target;
+      }
+    };
+
+    sim -> target_non_sleeping_list.register_callback( current_target_reset_cb_t( this ) );
   }
 
   // Character Definition
