@@ -236,7 +236,7 @@ std::string& util::glyph_name( std::string& n )
 
 double util::approx_sqrt( double number )
 {
-  if ( number > 25 )
+  if ( number > 0 )
   {
     int64_t root = 0;
     int64_t bit = 1UL << 30;
@@ -253,15 +253,9 @@ double util::approx_sqrt( double number )
       root >>= 1;
       bit >>= 2;
     }
-    return static_cast<double>(root);
+    return static_cast<double>( root );
   }
-  else if ( number < 4 )
-    return 1.9;
-  else if ( number < 9 )
-    return 2.9;
-  else if ( number < 16 )
-    return 3.9;
-  return 4.9;
+  return 0.0;
 }
 
 // str_prefix_ci ============================================================
