@@ -276,6 +276,7 @@ action_t::action_t( action_e       ty,
   min_gcd( timespan_t() ),
   trigger_gcd( player -> base_gcd ),
   range(),
+  radius(),
   weapon_power_mod(),
   attack_power_mod(),
   spell_power_mod(),
@@ -536,6 +537,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_HEALTH_LEECH:
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
+      radius                  = spelleffect_data.radius_max();
       amount_delta            = spelleffect_data.m_delta();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
@@ -1786,6 +1788,15 @@ bool action_t::ready()
     return false;
   }
 
+  if ( sim -> fancy_target_distance_stuff )
+  {
+    if ( range > 0 )
+    {
+      if ( target -> get_position_distance( player -> x_position, player -> y_position ) > range )
+        return false;
+    }
+  }
+
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
@@ -2764,6 +2775,24 @@ void action_t::schedule_travel( action_state_t* s )
 void action_t::impact( action_state_t* s )
 {
   assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
+
+  if ( sim -> fancy_target_distance_stuff )
+  {
+    if ( radius > 0 || range > 0 )
+    {
+      if ( dot_duration == timespan_t::zero() ) // Dot applications were already checked in ready, no need to check them again.
+      {
+        double distance_from_target = s -> target -> get_position_distance( player -> x_position, player -> y_position );
+        if ( radius > 0 ) // Check radius first.
+        {
+          if ( distance_from_target > radius )
+            return;
+        }
+        else if ( distance_from_target > range )
+          return;
+      }
+    }
+  }
 
   if ( result_is_hit( s -> result ) )
   {

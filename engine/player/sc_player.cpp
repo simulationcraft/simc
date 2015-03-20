@@ -5372,10 +5372,9 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 double player_t::get_position_distance( double m, double v )
 {
-  // Square of Euclidean distance since sqrt() is slow
   double delta_x = this -> x_position - m;
   double delta_y = this -> y_position - v;
-  return delta_x * delta_x + delta_y * delta_y;
+  return std::sqrt( delta_x * delta_x + delta_y * delta_y );
 }
 
 // player_t::get_player_distance ============================================

@@ -2818,6 +2818,7 @@ struct sim_t : private sc_thread_t
   bool maximize_reporting;
   std::string apikey;
   bool ilevel_raid_report;
+  bool fancy_target_distance_stuff;
 
   sim_report_information_t report_information;
 
@@ -5295,6 +5296,7 @@ private:
   {
     if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
     {
+      x_position += current.distance_to_move;
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
       buffs.raid_movement -> expire();
@@ -5303,11 +5305,13 @@ private:
     {
       if ( current.moving_away > 0 )
       {
+        x_position -= yards;
         current.moving_away -= yards;
         current.distance_to_move += yards;
       }
       else
       {
+        x_position += yards;
         current.moving_away = 0;
         current.distance_to_move -= yards;
       }
@@ -5788,6 +5792,7 @@ struct action_t : public noncopyable
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
   double range;
+  double radius;
   double weapon_power_mod;
   struct {
   double direct, tick;
