@@ -381,8 +381,6 @@ public:
         mage -> current_target = mage -> target;
       }
     };
-
-    sim -> target_non_sleeping_list.register_callback( current_target_reset_cb_t( this ) );
   }
 
   // Character Definition
@@ -4885,6 +4883,10 @@ void mage_t::init_stats()
     haste += perks.improved_icy_veins -> effectN( 1 ).percent();
   }
   iv_haste = 1.0 / ( 1.0 + haste );
+
+  // Register target reset callback here (anywhere later on than in constructor) so older GCCs are
+  // happy
+  sim -> target_non_sleeping_list.register_callback( current_target_reset_cb_t( this ) );
 }
 
 // mage_t::init_actions =====================================================
