@@ -1137,7 +1137,7 @@ void enemy_t::init_base_stats()
 
   if ( sim -> overrides.target_health.size() > 0 )
   {
-    initial_health = sim -> overrides.target_health[ enemy_id % sim -> overrides.target_health.size() ];
+    initial_health = static_cast<double>( sim -> overrides.target_health[ enemy_id % sim -> overrides.target_health.size() ] );
   }
   else
   {

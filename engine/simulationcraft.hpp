@@ -1300,6 +1300,7 @@ bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 double floor( double X, unsigned int decplaces = 0 );
 double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
+double approx_sqrt( double X );
 double get_avg_itemlvl( const player_t* p );
 
 std::string& tolower( std::string& str );

@@ -232,6 +232,38 @@ std::string& util::glyph_name( std::string& n )
   return n;
 }
 
+// Approximation of square root ==============================================
+
+double util::approx_sqrt( double number )
+{
+  if ( number > 25 )
+  {
+    int64_t root = 0;
+    int64_t bit = 1UL << 30;
+
+    while ( bit > number )  bit >>= 2;
+
+    while ( bit != 0 ) // Adopted from Lord John Carmack. I don't understand this black magic, but it works.
+    {
+      if ( number >= root + bit )
+      {
+        number -= ( root + bit );
+        root += ( bit << 1 );
+      }
+      root >>= 1;
+      bit >>= 2;
+    }
+    return static_cast<double>(root);
+  }
+  else if ( number < 4 )
+    return 1.9;
+  else if ( number < 9 )
+    return 2.9;
+  else if ( number < 16 )
+    return 3.9;
+  return 4.9;
+}
+
 // str_prefix_ci ============================================================
 
 bool util::str_prefix_ci( const std::string& str,
