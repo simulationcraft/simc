@@ -2774,9 +2774,7 @@ void action_t::schedule_travel( action_state_t* s )
 
 void action_t::impact( action_state_t* s )
 {
-  assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
-
-  if ( sim -> fancy_target_distance_stuff )
+  if ( sim -> fancy_target_distance_stuff && is_aoe() )
   {
     if ( radius > 0 || range > 0 )
     {
@@ -2793,6 +2791,8 @@ void action_t::impact( action_state_t* s )
       }
     }
   }
+
+  assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
 
   if ( result_is_hit( s -> result ) )
   {

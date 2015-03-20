@@ -2946,33 +2946,33 @@ void sim_t::setup( sim_control_t* c )
     threads = 1;
   }
 
-  if( iterations <= 0 ) 
+  if ( iterations <= 0 )
   {
     iterations = 1000000; // limited by relative standard error
 
-    if( target_error <= 0 )
+    if ( target_error <= 0 )
     {
-      if( scaling -> calculate_scale_factors )
+      if ( scaling -> calculate_scale_factors )
       {
-	target_error = 0.05;
+        target_error = 0.05;
       }
       else
       {
-	target_error = 0.2;
+        target_error = 0.2;
       }
     }
-    if( plot -> dps_plot_iterations <= 0 )
+    if ( plot -> dps_plot_iterations <= 0 )
     {
-      if( plot -> dps_plot_target_error <= 0 )
+      if ( plot -> dps_plot_target_error <= 0 )
       {
-	plot -> dps_plot_target_error = 0.5;
+        plot -> dps_plot_target_error = 0.5;
       }
     }
-    if( reforge_plot -> reforge_plot_iterations <= 0 )
+    if ( reforge_plot -> reforge_plot_iterations <= 0 )
     {
-      if( reforge_plot -> reforge_plot_target_error <= 0 )
+      if ( reforge_plot -> reforge_plot_target_error <= 0 )
       {
-	reforge_plot -> reforge_plot_target_error = 0.5;
+        reforge_plot -> reforge_plot_target_error = 0.5;
       }
     }
   }
