@@ -21,8 +21,7 @@ struct current_target_reset_cb_t
 {
   mage_t* mage;
 
-  current_target_reset_cb_t( mage_t* m ) : mage( m )
-  { }
+  current_target_reset_cb_t( player_t* m );
 
   void operator()();
 };
@@ -443,6 +442,10 @@ public:
 
   std::string       get_potion_action();
 };
+
+inline current_target_reset_cb_t::current_target_reset_cb_t( player_t* m ):
+  mage( debug_cast<mage_t*>( m ) )
+{ }
 
 inline void current_target_reset_cb_t::operator()()
 {
