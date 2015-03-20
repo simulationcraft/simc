@@ -118,8 +118,8 @@ int adds_event_t::wave = 0;
 
 struct move_enemy_t : public raid_event_t
 {
-  double y_coord;
   double x_coord;
+  double y_coord;
   std::string name;
   player_t* enemy;
   double original_x;
