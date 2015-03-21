@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
-#include "SC_OptionsTab.hpp"
+#include "sc_OptionsTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #include <QtCore/QDateTime>
 
