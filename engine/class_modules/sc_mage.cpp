@@ -5207,7 +5207,7 @@ void mage_t::apl_fire()
                               "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
-  default_list -> add_action( "call_action_list,name=t17_2pc_combust,if=set_bonus.tier17_2pc&pyro_chain&(active_enemies>1|pet.prismatic_crystal.active)" );
+  default_list -> add_action( "call_action_list,name=t17_2pc_combust,if=set_bonus.tier17_2pc&pyro_chain&(active_enemies>1|(talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains>15))" );
   default_list -> add_action( "call_action_list,name=combust_sequence,if=pyro_chain" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=init_combust,if=!pyro_chain" );
@@ -5240,8 +5240,10 @@ void mage_t::apl_fire()
                               "Combustion sequence initialization\n"
                               "# This sequence lists the requirements for preparing a Combustion combo with each talent choice\n"
                               "# Meteor Combustion" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
-                              "Prismatic Crystal Combustion" );
+  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!set_bonus.tier17_2pc&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
+                              "Prismatic Crystal Combustion without 2T17" );
+  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&set_bonus.tier17_2pc&cooldown.prismatic_crystal.up&cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight)",
+                              "Prismatic Crystal Combustion with 2T17" );
   init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
                               "Unglyphed Combustions between Prismatic Crystals" );
   init_combust -> add_action( "start_pyro_chain,if=!talent.prismatic_crystal.enabled&!talent.meteor.enabled&((cooldown.combustion.remains<gcd.max*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*(gcd.max+talent.kindling.enabled)))",
@@ -5262,7 +5264,7 @@ void mage_t::apl_fire()
                                  "if=prev_gcd.inferno_blast",
                                  "Second pre-combust IB" );
   t17_2pc_combust -> add_action( this, "Inferno Blast",
-                                 "if=charges_fractional>=2-(gcd.max%8)&((buff.pyroblast.down&buff.pyromaniac.down)|(current_target=prismatic_crystal&pet.prismatic_crystal.remains<gcd.max*3))",
+                                 "if=charges_fractional>=2-(gcd.max%8)&((buff.pyroblast.down&buff.pyromaniac.down)|(current_target=prismatic_crystal&pet.prismatic_crystal.remains*2<gcd.max*5))",
                                  "First pre-combust IB" );
   t17_2pc_combust -> add_action( "choose_target,target_if=max:dot.ignite.tick_dmg,if=prev_gcd.inferno_blast",
                                  "Search for enemy with highest ignite for Combustion" );
