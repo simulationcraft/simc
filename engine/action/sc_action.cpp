@@ -858,7 +858,7 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f, tick_mult=%.2f",
-                   player -> name(), name(), target -> name(), amount,
+                   player -> name(), name(), state -> target -> name(), amount,
                    init_tick_amount, base_ta( state ), bonus_ta( state ),
                    spell_tick_power_coefficient( state ), state -> composite_spell_power(),
                    attack_tick_power_coefficient( state ), state -> composite_attack_power(),
