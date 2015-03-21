@@ -7,7 +7,7 @@
 #include "simulationcraftqt.hpp"
 #include "SC_OptionsTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
-#include <qdatetime.h>
+#include <QtCore/QDateTime>
 
 namespace { // unnamed namespace
 
@@ -61,15 +61,10 @@ void appendCheckBox( const QString& label, const QString& option, const QString&
   layout -> addWidget( checkBox );
 }
 
-#if defined SC_WINDOWS
-#define WINDOWS_DEVICES "CON|AUX|PRN|COM1|COM2|COM3|LPT1|LPT2|LPT3|NUL"
-static QRegExp rc(QLatin1String(WINDOWS_DEVICES), Qt::CaseInsensitive);
-#endif
-#define SLASHES "/\\"
-static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'" SLASHES;
-
 QString RemoveBadFileChar( QString& filename )
 {
+  // Purge not allowed Characters.
+  static const char notAllowedChars[] = ",^@={}[]~!?:&*\"|#%<>$\"'();`'/\\";
   if ( filename == "" )
     return filename;
   for ( size_t i = 0; i < sizeof( notAllowedChars ); i++ )
@@ -78,15 +73,136 @@ QString RemoveBadFileChar( QString& filename )
   }
   filename.replace( "..", "" );
   filename.replace( ".html", "" );
+
+
 #if defined SC_WINDOWS
-  bool matchesWinDevice = rc.exactMatch( filename );
+  // Prevent Windows Devices
+  static const char* windowsDevices = "CON|AUX|PRN|COM1|COM2|COM3|LPT1|LPT2|LPT3|NUL";
+  static QRegExp regexWindowsDevice(QLatin1String(windowsDevices), Qt::CaseInsensitive);
+  bool matchesWinDevice = regexWindowsDevice.exactMatch( filename );
   if ( matchesWinDevice )
     filename = "";
 #endif
+
+  // Limit filename length
   if ( filename.length() > 50 ) // The filename limit is much higher, but let's protect people from naming the file an absurdly long name and possibly hitting the 255 limit
     filename.truncate( 50 );
+
   return filename;
 }
+
+/* Decode all options/setting from a string ( loaded from the history ).
+ * Decode / Encode order needs to be equal!
+ *
+ * If no default_value is specified, index 0 is used as default.
+ */
+void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value = QString() )
+{
+  const QString& v = s.value( name ).toString();
+
+  int index = choice -> findText( v );
+  if ( index != -1 )
+    choice -> setCurrentIndex( index );
+  else if ( !default_value.isEmpty() )
+  {
+    bool ok;
+    v.toInt( &ok, 10 );
+    if ( ok )
+      choice -> setCurrentText( v );
+    else
+    {
+      int default_index = choice -> findText( default_value );
+      if ( default_index != -1 )
+        choice -> setCurrentIndex( default_index );
+    }
+  }
+  else
+  {
+    choice -> setCurrentIndex( 0 );
+  }
+}
+
+void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
+{
+  const QString& v = s.value( name ).toString();
+
+  if ( !v.isEmpty() )
+    textbox -> setText( v );
+  else if ( !default_value.isEmpty() )
+    textbox -> setText( default_value );
+}
+
+void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
+{
+  s.beginGroup( groupname );
+  QList<QString> button_names;
+  QList<QAbstractButton*> buttons = bg -> buttons();
+  for( int i = 0; i < buttons.size(); ++i)
+  {
+    button_names.push_back( buttons[ i ] -> text() );
+  }
+  QStringList keys = s.childKeys();
+  for( int i = 0; i < keys.size(); ++i )
+  {
+    int index = button_names.indexOf( keys[ i ] );
+    if ( index != -1 )
+      buttons[ index ] -> setChecked( s.value( keys[ i ] ).toBool() );
+  }
+
+  s.endGroup();
+}
+
+void load_buff_debuff_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
+{
+  s.beginGroup( groupname );
+  QStringList keys = s.childKeys();
+  s.endGroup();
+  if ( keys.isEmpty() )
+  {
+    QList<QAbstractButton*> buttons = bg->buttons();
+    for ( int i = 0; i < buttons.size(); ++i )
+    {
+      // All buttons with index > 0 will be checked, 0 won't.
+      buttons[i] -> setChecked( (i > 0) );
+    }
+  }
+  else
+  {
+    load_button_group( s, groupname, bg );
+  }
+}
+
+void store_button_group( QSettings& s, const QString& name, QButtonGroup* bg )
+{
+  s.beginGroup( name );
+  QList<QAbstractButton*> buttons = bg -> buttons();
+  for ( int i = 0; i < buttons.size(); ++i )
+  {
+    s.setValue( buttons[ i ] -> text(), buttons[ i ] -> isChecked());
+  }
+  s.endGroup();
+}
+
+void load_scaling_groups( QSettings& s, const QString& groupname, QButtonGroup* bg )
+{
+  s.beginGroup( groupname );
+  QStringList keys = s.childKeys();
+  s.endGroup();
+  if ( keys.isEmpty() )
+  {
+    QList<QAbstractButton*> buttons = bg->buttons();
+    for ( int i = 0; i < buttons.size(); ++i )
+    {
+      // All buttons unchecked.
+      buttons[i] -> setChecked( false );
+    }
+  }
+  else
+  {
+    load_button_group( s, groupname, bg );
+  }
+}
+
 } // end unnamed namespace
 
 SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
@@ -525,108 +641,6 @@ void SC_OptionsTab::createReforgePlotsTab()
   addTab( reforgeplotsGroupBoxScrollArea, tr( "Reforge Plots" ) );
 }
 
-/* Decode all options/setting from a string ( loaded from the history ).
- * Decode / Encode order needs to be equal!
- *
- * If no default_value is specified, index 0 is used as default.
- */
-
-void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value = QString() )
-{
-  const QString& v = s.value( name ).toString();
-
-  int index = choice -> findText( v );
-  if ( index != -1 )
-    choice -> setCurrentIndex( index );
-  else if ( !default_value.isEmpty() )
-  {
-    bool ok;
-    v.toInt( &ok, 10 );
-    if ( ok )
-      choice -> setCurrentText( v );
-    else
-    {
-      int default_index = choice -> findText( default_value );
-      if ( default_index != -1 )
-        choice -> setCurrentIndex( default_index );
-    }
-  }
-  else
-  {
-    choice -> setCurrentIndex( 0 );
-  }
-}
-
-void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
-{
-  const QString& v = s.value( name ).toString();
-
-  if ( !v.isEmpty() )
-    textbox -> setText( v );
-  else if ( !default_value.isEmpty() )
-    textbox -> setText( default_value );
-}
-
-void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
-{
-  s.beginGroup( groupname );
-  QList<QString> button_names;
-  QList<QAbstractButton*> buttons = bg -> buttons();
-  for( int i = 0; i < buttons.size(); ++i)
-  {
-    button_names.push_back( buttons[ i ] -> text() );
-  }
-  QStringList keys = s.childKeys();
-  for( int i = 0; i < keys.size(); ++i )
-  {
-    int index = button_names.indexOf( keys[ i ] );
-    if ( index != -1 )
-      buttons[ index ] -> setChecked( s.value( keys[ i ] ).toBool() );
-  }
-
-  s.endGroup();
-}
-
-void load_buff_debuff_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
-{
-  s.beginGroup( groupname );
-  QStringList keys = s.childKeys();
-  s.endGroup();
-  if ( keys.isEmpty() )
-  {
-    QList<QAbstractButton*> buttons = bg->buttons();
-    for ( int i = 0; i < buttons.size(); ++i )
-    {
-      // All buttons with index > 0 will be checked, 0 won't.
-      buttons[i] -> setChecked( (i > 0) );
-    }
-  }
-  else
-  {
-    load_button_group( s, groupname, bg );
-  }
-}
-
-void load_scaling_groups( QSettings& s, const QString& groupname, QButtonGroup* bg )
-{
-  s.beginGroup( groupname );
-  QStringList keys = s.childKeys();
-  s.endGroup();
-  if ( keys.isEmpty() )
-  {
-    QList<QAbstractButton*> buttons = bg->buttons();
-    for ( int i = 0; i < buttons.size(); ++i )
-    {
-      // All buttons unchecked.
-      buttons[i] -> setChecked( false );
-    }
-  }
-  else
-  {
-    load_button_group( s, groupname, bg );
-  }
-}
-
 void SC_OptionsTab::decodeOptions()
 {
   QSettings settings;
@@ -714,19 +728,9 @@ void SC_OptionsTab::decodeOptions()
   settings.endGroup();
 }
 
-void store_button_group( QSettings& s, const QString& name, QButtonGroup* bg )
-{
-  s.beginGroup( name );
-  QList<QAbstractButton*> buttons = bg -> buttons();
-  for ( int i = 0; i < buttons.size(); ++i )
-  {
-    s.setValue( buttons[ i ] -> text(), buttons[ i ] -> isChecked());
-  }
-  s.endGroup();
-}
-
-// Encode all options/setting into a string ( to be able to save it to the history )
-
+/**
+ * Encode all options/setting into a string ( to be able to save it to the history )
+ */
 void SC_OptionsTab::encodeOptions()
 {
   QSettings settings;
@@ -1374,6 +1378,7 @@ void SC_OptionsTab::_optionsChanged()
   emit optionsChanged();
   toggleInterdependentOptions();
 }
+
 /* Reset all settings, with q nice question box asking for confirmation
  */
 void SC_OptionsTab::_resetallSettings()
