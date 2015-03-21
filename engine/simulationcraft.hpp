@@ -6743,8 +6743,8 @@ public:
   real_ppm_t() :
     player( 0 ), freq( 0 ), modifier( 0 ), rppm( 0 ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 2 min out of combat before pull, as that's what blizzard caps it at.
+    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
     scales_with( RPPM_NONE )
   { }
 
@@ -6754,8 +6754,9 @@ public:
     modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
     rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 2 min out of combat before pull, as that's what blizzard caps it at.
+    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ), // Blizz done lied to us, or changed it without telling. After going through a lot of logs,
+                                                                   // it seems that it's actually 3 minutes for the precombat timer.
+    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
     scales_with( s )
   { }
 
