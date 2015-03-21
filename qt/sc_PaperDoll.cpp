@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
-#include "simcpaperdoll.hpp"
+#include "sc_PaperDoll.hpp"
 
 #include <QDebug>
 #include <QDir>

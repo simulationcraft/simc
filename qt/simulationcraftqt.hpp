@@ -30,7 +30,7 @@ class SC_TextEdit;
 class SC_RelativePopup;
 class SC_MainWindowCommandLine;
 #ifdef SC_PAPERDOLL
-#include "simcpaperdoll.hpp"
+#include "sc_PaperDoll.hpp"
 class Paperdoll;
 class PaperdollProfile;
 #endif

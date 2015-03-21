@@ -29,19 +29,19 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="$(IntDir)moc_sc_SpellQueryTab.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="$(IntDir)moc_sc_SimulationThread.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="$(IntDir)moc_sc_SampleProfilesTab.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="$(IntDir)moc_sc_OptionsTab.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="$(IntDir)moc_sc_AutomationTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_SC_SpellQueryTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_SC_OptionsTab.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\qt\util\sc_textedit.cpp">
@@ -65,13 +65,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\qt\sc_window.cpp">
 			
 		</ClCompile>
-		<ClCompile Include="..\qt\sc_spell_query_tab.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_options_tab.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_import.cpp">
+		<ClCompile Include="..\qt\sc_SpellQueryTab.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\qt\sc_SimulationThread.cpp">
@@ -79,6 +73,12 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\qt\sc_SampleProfilesTab.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\qt\sc_OptionsTab.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\qt\sc_ImportThread.cpp">
+			
 		</ClCompile>
 		<ClCompile Include="..\qt\sc_AutomationTab.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -171,6 +171,13 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			<AdditionalInputs>Rem;..\qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
+		<CustomBuild Include="..\qt\sc_SpellQueryTab.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\sc_SpellQueryTab.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
 		<CustomBuild Include="..\qt\sc_SimulationThread.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
@@ -185,25 +192,18 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			<AdditionalInputs>Rem;..\qt\sc_SampleProfilesTab.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
+		<CustomBuild Include="..\qt\sc_OptionsTab.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\sc_OptionsTab.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
 		<CustomBuild Include="..\qt\sc_AutomationTab.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\sc_AutomationTab.hpp;%(AdditionalInputs)</AdditionalInputs>
-			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
-		</CustomBuild>
-		<CustomBuild Include="..\qt\SC_SpellQueryTab.hpp">
-			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
-			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
-			<AdditionalInputs>Rem;..\qt\SC_SpellQueryTab.hpp;%(AdditionalInputs)</AdditionalInputs>
-			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
-		</CustomBuild>
-		<CustomBuild Include="..\qt\SC_OptionsTab.hpp">
-			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
-			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
-			<AdditionalInputs>Rem;..\qt\SC_OptionsTab.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 	</ItemGroup>

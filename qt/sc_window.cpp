@@ -12,7 +12,7 @@
 #include "sc_AutomationTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #ifdef SC_PAPERDOLL
-#include "simcpaperdoll.hpp"
+#include "sc_PaperDoll.hpp"
 #endif
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
