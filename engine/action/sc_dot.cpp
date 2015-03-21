@@ -374,19 +374,30 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct tick_dmg_expr_t : public dot_expr_t
     {
+      action_state_t* s;
+
       tick_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-        dot_expr_t( "dot_tick_dmg", d, a, dynamic ) {}
+        dot_expr_t( "dot_tick_dmg", d, a, dynamic ),
+        s( 0 )
+      { }
+
       virtual double evaluate()
       {
         if ( dot() -> state )
         {
-          double damage = dot() -> state -> result_amount;
-          if ( dot() -> state -> result == RESULT_CRIT )
-            damage /= 1.0 + action -> total_crit_bonus();
-          return damage;
+          if ( ! s )
+          {
+            s = dot() -> current_action -> get_state();
+          }
+          s -> copy_state( dot() -> state );
+          s -> result = RESULT_HIT;
+          return s -> action -> calculate_tick_amount( s, 1.0 );
         }
         return 0.0;
       }
+
+      virtual ~tick_dmg_expr_t()
+      { delete s; }
     };
     return new tick_dmg_expr_t( this, action, dynamic );
   }
@@ -394,16 +405,24 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct crit_dmg_expr_t : public dot_expr_t
     {
+      action_state_t* s;
+
       crit_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-        dot_expr_t( "dot_crit_dmg", d, a, dynamic ) {}
+        dot_expr_t( "dot_crit_dmg", d, a, dynamic ),
+      s( 0 )
+      { }
+
       virtual double evaluate()
       {
         if ( dot() -> state )
         {
-          double damage = dot() -> state -> result_amount;
-          if ( dot() -> state -> result == RESULT_HIT )
-            damage *= 1.0 + action -> total_crit_bonus();
-          return damage;
+          if ( ! s )
+          {
+            s = dot() -> current_action -> get_state();
+          }
+          s -> copy_state( dot() -> state );
+          s -> result = RESULT_CRIT;
+          return s -> action -> calculate_tick_amount( s, 1.0 );
         }
         return 0.0;
       }
