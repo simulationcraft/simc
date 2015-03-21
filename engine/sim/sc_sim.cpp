@@ -3205,5 +3205,5 @@ void sim_t::abort()
   }
 
   errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
-  abort();
+  ::abort();
 }
