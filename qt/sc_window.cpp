@@ -5,8 +5,8 @@
 
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
-#include "SC_OptionsTab.hpp"
-#include "SC_SpellQueryTab.hpp"
+#include "sc_OptionsTab.hpp"
+#include "sc_SpellQueryTab.hpp"
 #include "sc_SimulationThread.hpp"
 #include "sc_SampleProfilesTab.hpp"
 #include "sc_AutomationTab.hpp"
