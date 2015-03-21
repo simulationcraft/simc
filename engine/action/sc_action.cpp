@@ -104,6 +104,20 @@ struct action_execute_event_t : public player_event_t
     // action -> pre_execute_state.
     if ( execute_state )
     {
+      if ( action -> sim -> fancy_target_distance_stuff )
+      {
+        if ( action -> execute_time() != timespan_t::zero() )
+        { // No need to recheck if the execute time was zero.
+          if ( action -> range > 0.0 )
+          {
+            if ( target -> get_position_distance( action -> player -> x_position, action -> player -> y_position ) > action -> range )
+            { // Target is now out of range, we cannot finish the cast.
+              action -> interrupt_action();
+              return;
+            }
+          }
+        }
+      }
       target = execute_state -> target;
       action -> pre_execute_state = execute_state;
       execute_state = 0;
