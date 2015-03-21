@@ -3191,3 +3191,19 @@ sim_ostream_t& sim_ostream_t::printf( const char* fmt, ... )
 
   return *this;
 }
+
+void sim_t::abort()
+{
+  std::stringstream s;
+  for ( size_t i = 0; i < target_list.size(); ++i )
+  {
+    s << std::fixed << target_list[ i ] -> resources.initial[ RESOURCE_HEALTH ];
+    if ( i < target_list.size() - 1 )
+    {
+      s << '/';
+    }
+  }
+
+  errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
+  abort();
+}

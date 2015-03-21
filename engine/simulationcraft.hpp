@@ -2936,6 +2936,9 @@ struct sim_t : private sc_thread_t
   // GUI).
   mutex_t* pause_mutex;
   bool paused;
+
+
+  void abort();
 private:
   void do_pause();
 
