@@ -4042,6 +4042,9 @@ struct choose_target_t : public action_t
     }
   }
 
+  ~choose_target_t()
+  { delete target_if_expr; }
+
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
     mage_t* p = debug_cast<mage_t*>( player );
