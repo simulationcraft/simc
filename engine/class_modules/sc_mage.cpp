@@ -4066,20 +4066,39 @@ struct choose_target_t : public action_t
 
   player_t* select_target_if_target()
   {
-    if ( target_if_mode == TARGET_IF_NONE )
+    if ( target_if_mode == TARGET_IF_NONE || target_list().size() == 1 )
     {
       return 0;
     }
 
-    player_t* original_target = target;
-    player_t* proposed_target = 0;
+    mage_t* p = debug_cast<mage_t*>( player );
 
-    double max_ = -9.99e99;
-    double min_ =  9.99e99;
+    player_t* original_target = target;
+    player_t* proposed_target = p -> current_target;
+
+    target = p -> current_target;
+    double current_target_v = target_if_expr -> evaluate();
+
+    double max_ = current_target_v;
+    double min_ = current_target_v;
     for ( size_t i = 0, end = target_list().size(); i < end; ++i )
     {
       target = target_list()[ i ];
+
+      // No need to check current target
+      if ( target == p -> current_target )
+      {
+        continue;
+      }
+
       double v = target_if_expr -> evaluate();
+
+      // Don't swap to targets that evaluate to identical value than the current target
+      if ( v == current_target_v )
+      {
+        continue;
+      }
+
       if ( target_if_mode == TARGET_IF_FIRST && v != 0 )
       {
         proposed_target = target;
@@ -4123,12 +4142,13 @@ struct choose_target_t : public action_t
     action_t::execute();
 
     mage_t* p = debug_cast<mage_t*>( player );
+    assert( ! target_if_expr || ( selected_target == select_target_if_target() ) );
 
     if ( sim -> current_time() == last_execute )
     {
       sim -> errorf( "%s choose_target infinite loop detected (due to no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> cancel();
+      sim -> abort();
       return;
     }
 
