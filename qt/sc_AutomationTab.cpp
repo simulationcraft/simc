@@ -6,6 +6,7 @@
   This file contains all of the methods required for automated comparison sims
 */
 #include "sc_AutomationTab.hpp"
+#include "simulationcraftqt.hpp"
 
 namespace {
 

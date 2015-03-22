@@ -1,7 +1,5 @@
 #pragma once
-#include <QtWidgets/QtWidgets>
-#include <QtGui/QtGui>
-#include "simulationcraftqt.hpp"
+#include <QtWidgets/QScrollArea>
 
 class QComboBox;
 class QLabel;
