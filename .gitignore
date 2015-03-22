@@ -57,3 +57,4 @@ CMakeCache.txt
 Win32OpenSSL_Light-*
 Win64OpenSSL_Light-*
 casc_extract/cache/
+vs/int_gui/
