@@ -9,6 +9,7 @@
 #include "sc_SpellQueryTab.hpp"
 #include "sc_SimulationThread.hpp"
 #include "sc_SampleProfilesTab.hpp"
+#include "sc_SimulateTab.hpp"
 #include "sc_AutomationTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #ifdef SC_PAPERDOLL

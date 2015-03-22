@@ -1,5 +1,8 @@
-#ifndef SC_OPTIONSTAB_HPP
-#define SC_OPTIONSTAB_HPP
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+#pragma once
 
 #include <QtWidgets/QtWidgets>
 
@@ -101,5 +104,3 @@ signals:
   void armory_region_changed( const QString& );
   void optionsChanged(); // FIXME: hookup to everything
 };
-
-#endif // SC_OPTIONSTAB_HPP
