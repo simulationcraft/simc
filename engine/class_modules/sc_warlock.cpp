@@ -5856,7 +5856,6 @@ void warlock_t::reset()
   rppm_chaotic_infusion.reset();
 }
 
-
 void warlock_t::create_options()
 {
   player_t::create_options();
@@ -5865,7 +5864,6 @@ void warlock_t::create_options()
   add_option( opt_int( "demonic_fury", initial_demonic_fury ) );
   add_option( opt_string( "default_pet", default_pet ) );
 }
-
 
 bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
 {
@@ -5880,7 +5878,6 @@ bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool sav
 
   return true;
 }
-
 
 void warlock_t::copy_from( player_t* source )
 {
