@@ -5307,7 +5307,7 @@ private:
   {
     if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
     {
-      x_position += current.distance_to_move;
+      //x_position += current.distance_to_move; Maybe in wonderland we can track this type of player movement. 
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
       buffs.raid_movement -> expire();
@@ -5316,13 +5316,13 @@ private:
     {
       if ( current.moving_away > 0 )
       {
-        x_position -= yards;
+        //x_position -= yards;
         current.moving_away -= yards;
         current.distance_to_move += yards;
       }
       else
       {
-        x_position += yards;
+        //x_position += yards;
         current.moving_away = 0;
         current.distance_to_move -= yards;
       }
