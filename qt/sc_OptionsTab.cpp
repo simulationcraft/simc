@@ -1035,7 +1035,7 @@ QString SC_OptionsTab::get_globalSettings()
 
   if ( choice.deterministic_rng->currentIndex() == 0 )
   {
-    options += "deterministic_rng=1\n";
+    options += "deterministic=1\n";
   }
 
   return options;
