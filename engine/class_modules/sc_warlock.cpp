@@ -3724,7 +3724,6 @@ struct drain_soul_t: public warlock_spell_t
   }
 };
 
-
 struct dark_intent_t: public warlock_spell_t
 {
   dark_intent_t( warlock_t* p ):
