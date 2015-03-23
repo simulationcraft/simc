@@ -5373,7 +5373,7 @@ void mage_t::apl_fire()
   t17_2pc_combust -> add_action( get_potion_action() );
 
   t17_2pc_combust -> add_action( this, "Inferno Blast",
-                                 "if=prev_gcd.inferno_blast",
+                                 "if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max*3",
                                  "Second pre-combust IB" );
   t17_2pc_combust -> add_action( this, "Inferno Blast",
                                  "if=charges_fractional>=2-(gcd.max%8)&((buff.pyroblast.down&buff.pyromaniac.down)|(current_target=prismatic_crystal&pet.prismatic_crystal.remains*2<gcd.max*5))",
@@ -5381,7 +5381,7 @@ void mage_t::apl_fire()
   t17_2pc_combust -> add_action( "choose_target,target_if=max:dot.ignite.tick_dmg,if=prev_gcd.inferno_blast",
                                  "Search for enemy with highest ignite for Combustion" );
   t17_2pc_combust -> add_action( this, "Pyroblast",
-                                 "if=prev_gcd.inferno_blast&execute_time=gcd.max&dot.ignite.tick_dmg*100*gcd.max<hit_damage*(100+crit_pct_current)*mastery_value",
+                                 "if=prev_gcd.inferno_blast&execute_time=gcd.max&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))*100<hit_damage*(100+crit_pct_current)*mastery_value",
                                  "Failsafe: Pyroblast after double IB if ignite ticks are low" );
   t17_2pc_combust -> add_action( this, "Combustion",
                                  "if=prev_gcd.inferno_blast",
@@ -5431,7 +5431,7 @@ void mage_t::apl_fire()
   combust_sequence -> add_action( this, "Fireball",
                                   "if=!dot.ignite.ticking&!in_flight" );
   combust_sequence -> add_action( this, "Pyroblast",
-                                  "if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-dot.ignite.ticks_remain)<crit_damage*mastery_value" );
+                                  "if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value" );
   combust_sequence -> add_action( this, "Inferno Blast",
                                   "if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd.max*3",
                                   "Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion" );

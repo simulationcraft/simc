@@ -74,13 +74,13 @@ actions.t17_2pc_combust+=/berserking
 actions.t17_2pc_combust+=/arcane_torrent
 actions.t17_2pc_combust+=/potion,name=draenic_intellect
 # Second pre-combust IB
-actions.t17_2pc_combust+=/inferno_blast,if=prev_gcd.inferno_blast
+actions.t17_2pc_combust+=/inferno_blast,if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max*3
 # First pre-combust IB
 actions.t17_2pc_combust+=/inferno_blast,if=charges_fractional>=2-(gcd.max%8)&((buff.pyroblast.down&buff.pyromaniac.down)|(current_target=prismatic_crystal&pet.prismatic_crystal.remains*2<gcd.max*5))
 # Search for enemy with highest ignite for Combustion
 actions.t17_2pc_combust+=/choose_target,target_if=max:dot.ignite.tick_dmg,if=prev_gcd.inferno_blast
 # Failsafe: Pyroblast after double IB if ignite ticks are low
-actions.t17_2pc_combust+=/pyroblast,if=prev_gcd.inferno_blast&execute_time=gcd.max&dot.ignite.tick_dmg*100*gcd.max<hit_damage*(100+crit_pct_current)*mastery_value
+actions.t17_2pc_combust+=/pyroblast,if=prev_gcd.inferno_blast&execute_time=gcd.max&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))*100<hit_damage*(100+crit_pct_current)*mastery_value
 # Combustion; Will only trigger post double IB
 actions.t17_2pc_combust+=/combustion,if=prev_gcd.inferno_blast
 actions.t17_2pc_combust+=/combustion,if=prev_gcd.pyroblast&action.inferno_blast.charges=0
@@ -110,7 +110,7 @@ actions.combust_sequence+=/meteor
 actions.combust_sequence+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.up
 actions.combust_sequence+=/inferno_blast,if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)
 actions.combust_sequence+=/fireball,if=!dot.ignite.ticking&!in_flight
-actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-dot.ignite.ticks_remain)<crit_damage*mastery_value
+actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value
 # Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion
 actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd.max*3
 actions.combust_sequence+=/inferno_blast,if=dot.ignite.tick_dmg*(6-dot.ignite.ticks_remain)<crit_damage*mastery_value
