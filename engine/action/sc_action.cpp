@@ -1981,6 +1981,7 @@ void action_t::reset()
   execute_event = 0;
   travel_events.clear();
   target = default_target;
+  cost_tick_event = 0;
 
   if( sim -> current_iteration == 1 )
   {
@@ -2948,16 +2949,16 @@ void action_t::schedule_cost_tick_event( timespan_t tick_time )
 {
   if ( cost_tick_event )
   {
-    return; // crashes if this line is removed ???
     event_t::cancel( cost_tick_event );
-
-    assert( !cost_tick_event );
   }
 
-  cost_tick_event = new ( *sim )  action_cost_tick_event_t( *this, tick_time );
+  cost_tick_event = new ( *sim ) action_cost_tick_event_t( *this, tick_time );
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "Scheduling action cost tick event. tick_time=%.1f",tick_time.total_seconds() );
+  {
+    sim -> out_debug.printf( "%s scheduling action %s cost tick event. tick_time=%.3f",
+        player -> name(), name(), tick_time.total_seconds() );
+  }
 }
 
 /**
@@ -2966,7 +2967,7 @@ void action_t::schedule_cost_tick_event( timespan_t tick_time )
  */
 bool action_t::consume_cost_per_second( timespan_t tick_time )
 {
-  if ( !get_dot() -> is_ticking() )
+  if ( player -> get_active_dots( internal_id ) == 0 )
   {
     if ( sim -> debug )
       sim -> out_debug.printf( "%s: %s ticking cost ends because dot is no longer ticking.", player -> name(), name() );
@@ -2991,9 +2992,9 @@ bool action_t::consume_cost_per_second( timespan_t tick_time )
     {
       if ( sim -> log )
         sim -> out_log.printf( "%s: %s not enough resource for ticking cost %.1f %s for %s (%.0f). Going to cancel the action.",
-                       player -> name(), name(),
-                       cost, util::resource_type_string( r ),
-                       name(), player -> resources.current[ r ] );
+                               player -> name(), name(),
+                               cost, util::resource_type_string( r ),
+                               name(), player -> resources.current[ r ] );
     }
     double resource_consumed = player -> resource_loss( r, cost, nullptr, this );
     stats -> consume_resource( r, resource_consumed );
@@ -3002,14 +3003,15 @@ bool action_t::consume_cost_per_second( timespan_t tick_time )
       sim -> out_log.printf( "%s: %s consumes ticking cost %.1f (%.1f) %s for %s (%.0f).",
                              player -> name(),
                              name(),
-                     cost, resource_consumed, util::resource_type_string( r ),
-                     name(), player -> resources.current[ r ] );
+                             cost, resource_consumed, util::resource_type_string( r ),
+                             name(), player -> resources.current[ r ] );
 
     if ( ! enough_resource_available )
     {
       cancel_action = true;
     }
   }
+
   if ( cancel_action )
   {
     cancel();
@@ -3030,16 +3032,15 @@ action_cost_tick_event_t::action_cost_tick_event_t( action_t& a, timespan_t time
 
 void action_cost_tick_event_t::execute()
 {
-
   action.cost_tick_event = nullptr;
 
- if ( action.consume_cost_per_second( time_to_tick ) )
- {
-   action.schedule_cost_tick_event();
- }
- else
- {
-   if ( sim().debug )
-     sim().out_debug << "Action cost tick event ended.";
- }
+  if ( action.consume_cost_per_second( time_to_tick ) )
+  {
+    action.schedule_cost_tick_event();
+  }
+  else
+  {
+    if ( sim().debug )
+      sim().out_debug << "Action cost tick event ended.";
+  }
 }
