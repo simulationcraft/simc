@@ -136,6 +136,7 @@ struct stat_buff_t;
 struct stat_pair_t;
 struct travel_event_t;
 struct xml_node_t;
+struct action_cost_tick_event_t;
 class xml_writer_t;
 
 // Enumerations =============================================================
@@ -5830,6 +5831,7 @@ struct action_t : public noncopyable
   cooldown_t* cooldown;
   stats_t* stats;
   event_t* execute_event;
+  action_cost_tick_event_t* cost_tick_event;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
   int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number;
@@ -5877,7 +5879,7 @@ struct action_t : public noncopyable
   void add_option( const option_t& new_option )
   { options.insert( options.begin(), new_option ); }
   virtual double cost() const;
-  virtual double base_cost_per_second( resource_e );
+  virtual double cost_per_second( resource_e );
   virtual timespan_t gcd() const;
   virtual double false_positive_pct() const;
   virtual double false_negative_pct() const;
@@ -6127,6 +6129,8 @@ public:
   bool has_travel_events_for( const player_t* target ) const;
   const std::vector<travel_event_t*>& current_travel_events() const
   { return travel_events; }
+  void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0) );
+  bool consume_cost_per_second( timespan_t tick_time );
 
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
@@ -6534,6 +6538,21 @@ private:
   virtual const char* name() const override
   { return "Dot Tick"; }
   dot_t* dot;
+};
+
+// Action cost Tick Event ===========================================================
+
+struct action_cost_tick_event_t : public event_t
+{
+public:
+  action_cost_tick_event_t( action_t& a, timespan_t time_to_tick );
+
+private:
+  virtual void execute() override;
+  virtual const char* name() const override
+  { return "Action Cost Tick"; }
+  action_t& action;
+  timespan_t time_to_tick;
 };
 
 // DoT End Event ===========================================================

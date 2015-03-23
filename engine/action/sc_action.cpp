@@ -298,6 +298,7 @@ action_t::action_t( action_e       ty,
   base_tick_time( timespan_t::zero() ),
   dot_duration( timespan_t::zero() ),
   base_cooldown_reduction( 1.0 ),
+  cost_tick_event( nullptr ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   target_specific_dot( false ),
@@ -693,7 +694,7 @@ double action_t::cost() const
   return floor( c );
 }
 
-double action_t::base_cost_per_second( resource_e r )
+double action_t::cost_per_second( resource_e r )
 {
   return base_costs_per_second[ r ];
 }
@@ -2943,3 +2944,66 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   }
 }
 
+void action_t::schedule_cost_tick_event( timespan_t tick_time )
+{
+  assert( !cost_tick_event );
+  cost_tick_event = new action_cost_tick_event_t( *this, tick_time );
+}
+
+/**
+ * If the action is still ticking and all resources could be successfully consumed,
+ * return true to indicate continued ticking.
+ */
+bool action_t::consume_cost_per_second( timespan_t tick_time )
+{
+  if ( !get_dot() -> is_ticking() )
+    return false;
+
+  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+  {
+    double cost = cost_per_second( r ) * tick_time.total_seconds();
+    if ( r <= 0.0 )
+      continue;
+
+    if ( ! player -> resource_available( r, cost ) )
+    {
+      if ( sim -> log )
+        sim -> out_log.printf( "%s cannot consume %.1f %s for %s (%.0f) ticking cost", player -> name(),
+                       cost, util::resource_type_string( r ),
+                       name(), player -> resources.current[ r ] );
+      cancel();
+      // TODO: Check if we just cancel the action without consuming the resource, or still consume as much
+      // resource as possible.
+      return false;
+    }
+
+    player -> resource_loss( r, cost, 0, this );
+    stats -> consume_resource( r, cost );
+  }
+
+  return true;
+
+}
+action_cost_tick_event_t::action_cost_tick_event_t( action_t& a, timespan_t time_to_tick ) :
+    event_t( *a.player ),
+    action( a ),
+    time_to_tick( time_to_tick )
+{
+  sim().add_event( this, time_to_tick );
+}
+
+void action_cost_tick_event_t::execute()
+{
+
+  action.cost_tick_event = nullptr;
+
+ if ( action.consume_cost_per_second( time_to_tick ) )
+ {
+   action.schedule_cost_tick_event();
+ }
+ else
+ {
+   if ( sim().debug )
+     sim().out_debug << "Action cost tick event ended.";
+ }
+}
