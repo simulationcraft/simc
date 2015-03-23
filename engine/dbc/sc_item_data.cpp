@@ -5,10 +5,8 @@
 
 #include "simulationcraft.hpp"
 
-#include "sc_item_data.inc"
 #include "sc_item_data2.inc"
 #if SC_USE_PTR
-#include "sc_item_data_ptr.inc"
 #include "sc_item_data_ptr2.inc"
 #endif
 
@@ -276,10 +274,10 @@ const item_data_t* dbc::items( bool ptr )
 {
   ( void )ptr;
 
-  const item_data_t* p = __item_data;
+  const item_data_t* p = __items_noptr();
 #if SC_USE_PTR
   if ( ptr )
-    p = __ptr_item_data;
+    p = __items_ptr();
 #endif
   return p;
 }
@@ -288,10 +286,10 @@ size_t dbc::n_items( bool ptr )
 {
   ( void )ptr;
 
-  size_t n = ITEM_SIZE;
+  size_t n = n_items_noptr();
 #if SC_USE_PTR
   if ( ptr )
-    n = PTR_ITEM_SIZE;
+    n = n_items_ptr();
 #endif
 
   return n;
@@ -371,14 +369,14 @@ const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) co
 void dbc::init_item_data()
 {
   // Create id-indexes
-  item_data_index.init( __item_data, false );
+  item_data_index.init( __items_noptr(), false );
   item_enchantment_data_index.init( __spell_item_ench_data, false );
-  potion_data_index.init( __item_data, false );
+  potion_data_index.init( __items_noptr(), false );
 
 #if SC_USE_PTR
-  item_data_index.init( __ptr_item_data, true );
+  item_data_index.init( __items_ptr(), true );
   item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
-  potion_data_index.init( __item_data, true );
+  potion_data_index.init( __items_ptr(), true );
 #endif
 }
 

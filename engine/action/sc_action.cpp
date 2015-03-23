@@ -104,6 +104,20 @@ struct action_execute_event_t : public player_event_t
     // action -> pre_execute_state.
     if ( execute_state )
     {
+      if ( action -> sim -> fancy_target_distance_stuff )
+      {
+        if ( action -> execute_time() != timespan_t::zero() )
+        { // No need to recheck if the execute time was zero.
+          if ( action -> range > 0.0 )
+          {
+            if ( target -> get_position_distance( action -> player -> x_position, action -> player -> y_position ) > action -> range )
+            { // Target is now out of range, we cannot finish the cast.
+              action -> interrupt_action();
+              return;
+            }
+          }
+        }
+      }
       target = execute_state -> target;
       action -> pre_execute_state = execute_state;
       execute_state = 0;
@@ -276,6 +290,7 @@ action_t::action_t( action_e       ty,
   min_gcd( timespan_t() ),
   trigger_gcd( player -> base_gcd ),
   range(),
+  radius(),
   weapon_power_mod(),
   attack_power_mod(),
   spell_power_mod(),
@@ -283,6 +298,7 @@ action_t::action_t( action_e       ty,
   base_tick_time( timespan_t::zero() ),
   dot_duration( timespan_t::zero() ),
   base_cooldown_reduction( 1.0 ),
+  cost_tick_event( nullptr ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   target_specific_dot( false ),
@@ -354,7 +370,7 @@ action_t::action_t( action_e       ty,
   state_cache = 0;
 
   range::fill( base_costs, 0.0 );
-  range::fill( costs_per_second, 0 );
+  range::fill( base_costs_per_second, 0.0 );
   
   assert( ! name_str.empty() && "Abilities must have valid name_str entries!!" );
 
@@ -509,9 +525,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
 
     if ( pd -> _cost_per_second > 0 )
-      costs_per_second[ pd -> resource() ] = ( int ) pd -> cost_per_second();
+      base_costs_per_second[ pd -> resource() ] = pd -> cost_per_second();
     else
-      costs_per_second[ pd -> resource() ] = ( int ) floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
+      base_costs_per_second[ pd -> resource() ] = floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
   }
 
   for ( size_t i = 1; i <= spell_data.effect_count(); i++ )
@@ -536,6 +552,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_HEALTH_LEECH:
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
+      radius                  = spelleffect_data.radius_max();
       amount_delta            = spelleffect_data.m_delta();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
@@ -675,6 +692,11 @@ double action_t::cost() const
     sim -> out_debug.printf( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
 
   return floor( c );
+}
+
+double action_t::cost_per_second( resource_e r )
+{
+  return base_costs_per_second[ r ];
 }
 
 // action_t::gcd ============================================================
@@ -842,7 +864,7 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f, tick_mult=%.2f",
-                   player -> name(), name(), target -> name(), amount,
+                   player -> name(), name(), state -> target -> name(), amount,
                    init_tick_amount, base_ta( state ), bonus_ta( state ),
                    spell_tick_power_coefficient( state ), state -> composite_spell_power(),
                    attack_tick_power_coefficient( state ), state -> composite_attack_power(),
@@ -1793,6 +1815,15 @@ bool action_t::ready()
     return false;
   }
 
+  if ( sim -> fancy_target_distance_stuff )
+  {
+    if ( range > 0 )
+    {
+      if ( target -> get_position_distance( player -> x_position, player -> y_position ) > range )
+        return false;
+    }
+  }
+
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
@@ -1957,6 +1988,7 @@ void action_t::reset()
   execute_event = 0;
   travel_events.clear();
   target = default_target;
+  cost_tick_event = 0;
 
   if( sim -> current_iteration == 1 )
   {
@@ -2770,6 +2802,24 @@ void action_t::schedule_travel( action_state_t* s )
 
 void action_t::impact( action_state_t* s )
 {
+  if ( sim -> fancy_target_distance_stuff && is_aoe() )
+  {
+    if ( radius > 0 || range > 0 )
+    {
+      if ( dot_duration == timespan_t::zero() ) // Dot applications were already checked in ready, no need to check them again.
+      {
+        double distance_from_target = s -> target -> get_position_distance( player -> x_position, player -> y_position );
+        if ( radius > 0 ) // Check radius first.
+        {
+          if ( distance_from_target > radius )
+            return;
+        }
+        else if ( distance_from_target > range )
+          return;
+      }
+    }
+  }
+
   assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
 
   if ( result_is_hit( s -> result ) )
@@ -2902,3 +2952,102 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   }
 }
 
+void action_t::schedule_cost_tick_event( timespan_t tick_time )
+{
+  if ( cost_tick_event )
+  {
+    event_t::cancel( cost_tick_event );
+  }
+
+  cost_tick_event = new ( *sim ) action_cost_tick_event_t( *this, tick_time );
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s scheduling action %s cost tick event. tick_time=%.3f",
+        player -> name(), name(), tick_time.total_seconds() );
+  }
+}
+
+/**
+ * If the action is still ticking and all resources could be successfully consumed,
+ * return true to indicate continued ticking.
+ */
+bool action_t::consume_cost_per_second( timespan_t tick_time )
+{
+  if ( player -> get_active_dots( internal_id ) == 0 )
+  {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s: %s ticking cost ends because dot is no longer ticking.", player -> name(), name() );
+    return false;
+  }
+
+  // Consume resources
+  /*
+   * Assumption: If not enough resource is available, still consume as much as possible
+   * and cancel action afterwards.
+   * philoptik 2015-03-23
+   */
+  bool cancel_action = false;
+  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+  {
+    double cost = cost_per_second( r ) * tick_time.total_seconds();
+    if ( cost <= 0.0 )
+      continue;
+
+    bool enough_resource_available = player -> resource_available( r, cost );
+    if ( ! enough_resource_available )
+    {
+      if ( sim -> log )
+        sim -> out_log.printf( "%s: %s not enough resource for ticking cost %.1f %s for %s (%.0f). Going to cancel the action.",
+                               player -> name(), name(),
+                               cost, util::resource_type_string( r ),
+                               name(), player -> resources.current[ r ] );
+    }
+    double resource_consumed = player -> resource_loss( r, cost, nullptr, this );
+    stats -> consume_resource( r, resource_consumed );
+
+    if ( sim -> log )
+      sim -> out_log.printf( "%s: %s consumes ticking cost %.1f (%.1f) %s for %s (%.0f).",
+                             player -> name(),
+                             name(),
+                             cost, resource_consumed, util::resource_type_string( r ),
+                             name(), player -> resources.current[ r ] );
+
+    if ( ! enough_resource_available )
+    {
+      cancel_action = true;
+    }
+  }
+
+  if ( cancel_action )
+  {
+    cancel();
+    return false;
+  }
+
+  return true;
+
+}
+
+action_cost_tick_event_t::action_cost_tick_event_t( action_t& a, timespan_t time_to_tick ) :
+    event_t( *a.player ),
+    action( a ),
+    time_to_tick( time_to_tick )
+{
+  sim().add_event( this, time_to_tick );
+}
+
+void action_cost_tick_event_t::execute()
+{
+  action.cost_tick_event = nullptr;
+
+  if ( action.consume_cost_per_second( time_to_tick ) )
+  {
+    action.schedule_cost_tick_event();
+  }
+  else
+  {
+    if ( sim().debug )
+      sim().out_debug << "Action cost tick event ended.";
+  }
+}

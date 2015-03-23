@@ -119,7 +119,7 @@ neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_mastery
 shoulders=arcanoshatter_mantle,id=115551,bonus_id=566
 back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant=gift_of_mastery
 chest=arcanoshatter_robes,id=115550,bonus_id=566
-wrists=bracers_of_darkened_skies,id=119332,bonus_id=566
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
 hands=toothbreaker_grips,id=113876,bonus_id=566
 waist=seeking_ember_girdle,id=113941,bonus_id=566
 legs=arcanoshatter_leggings,id=115554,bonus_id=566
@@ -134,11 +134,11 @@ main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hol
 # gear_stamina=4114
 # gear_intellect=3455
 # gear_spell_power=1596
-# gear_crit_rating=491
-# gear_haste_rating=882
-# gear_mastery_rating=1918
+# gear_crit_rating=578
+# gear_haste_rating=997
+# gear_mastery_rating=1819
 # gear_armor=809
-# gear_multistrike_rating=506
+# gear_multistrike_rating=398
 # gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

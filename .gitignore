@@ -39,6 +39,8 @@ int
 engine/simc_x64
 .cproject
 Makefile
+Makefile.Debug
+Makefile.Release
 simcqt.pro.user
 nppBackup
 build.conf
@@ -57,3 +59,6 @@ CMakeCache.txt
 Win32OpenSSL_Light-*
 Win64OpenSSL_Light-*
 casc_extract/cache/
+vs/int_gui/
+x64/
+x86/

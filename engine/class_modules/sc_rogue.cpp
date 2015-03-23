@@ -4885,11 +4885,6 @@ void rogue_t::init_action_list()
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( race == RACE_NIGHT_ELF )
-      {
-        continue;
-      }
-
       if ( racial_actions[i] == "arcane_torrent" )
         def -> add_action( racial_actions[i] + ",if=energy<60&buff.shadow_dance.up" );
       else
@@ -4930,6 +4925,7 @@ void rogue_t::init_action_list()
     gen -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     gen -> add_action( this, "Ambush" );
     gen -> add_action( this, "Fan of Knives", "if=active_enemies>1", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
+    gen -> add_action( this, "Backstab", "if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up" );
     gen -> add_action( this, "Hemorrhage", "if=(remains<duration*0.3&target.time_to_die>=remains+duration+8&debuff.find_weakness.down)|!ticking|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );

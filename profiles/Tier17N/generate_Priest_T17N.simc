@@ -60,9 +60,9 @@ copy="Priest_Shadow_T17N_AS"
 talents=1133133
 race=worgen
 head=soul_priests_hood,id=115563
-neck=odyssian_choker,id=113833,enchant=gift_of_critical_strike
+neck=choker_of_bloody_flame,id=120077,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561
-back=cloak_of_searing_shadows,id=113847,enchant=gift_of_critical_strike
+back=runescribed_gronncloak,id=120078,enchant=gift_of_critical_strike
 chest=soul_priests_raiment,id=115560
 wrists=bracers_of_spattered_steel,id=113887
 hands=soul_priests_gloves,id=115562

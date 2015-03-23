@@ -3809,17 +3809,6 @@ struct lifebloom_t : public druid_heal_t
   {
     may_crit   = false;
     ignore_false_positive = true;
-
-    // TODO: this can be only cast on one target, unless Tree of Life is up
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const
-  {
-    double ctm = druid_heal_t::composite_target_multiplier( target );
-
-    ctm *= 1.0 + td( target ) -> buffs.lifebloom -> check();
-
-    return ctm;
   }
 
   virtual void impact( action_state_t* state )
@@ -6702,7 +6691,7 @@ void druid_t::apl_restoration()
   default_list -> add_talent( this, "Incarnation" );
   default_list -> add_action( this, "Healing Touch", "if=buff.natures_swiftness.up|buff.omen_of_clarity.up" );
   default_list -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
-  default_list -> add_action( this, "Lifebloom", "if=debuff.lifebloom.stack<3" );
+  default_list -> add_action( this, "Lifebloom", "if=debuff.lifebloom.down" );
   default_list -> add_action( this, "Swiftmend" );
   default_list -> add_action( this, "Healing Touch" );
 }

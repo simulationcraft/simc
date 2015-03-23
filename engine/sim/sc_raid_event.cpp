@@ -116,6 +116,45 @@ struct adds_event_t : public raid_event_t
 // Initialize static add counter
 int adds_event_t::wave = 0;
 
+struct move_enemy_t : public raid_event_t
+{
+  double x_coord;
+  double y_coord;
+  std::string name;
+  player_t* enemy;
+  double original_x;
+  double original_y;
+
+  move_enemy_t( sim_t* s, const std::string& options_str ):
+    raid_event_t( s, "move_enemy" ), x_coord( 0.0 ), y_coord( 0.0 ),
+    name( "" ), enemy( 0 ), original_x( 0.0 ), original_y( 0.0 )
+  {
+    add_option( opt_float( "x", x_coord ) );
+    add_option( opt_float( "y", y_coord ) );
+    add_option( opt_string( "name", name ) );
+    parse_options( options_str );
+
+    enemy = sim -> find_player( name );
+    // If the master is not found, default the master to the first created enemy
+    if ( !enemy ) enemy = sim -> target_list.data().front();
+    assert( enemy );
+  }
+
+  void _start()
+  {
+    original_x = enemy -> x_position;
+    original_y = enemy -> y_position;
+    enemy -> x_position = x_coord;
+    enemy -> y_position = y_coord;
+  }
+
+  void _finish()
+  {
+    enemy -> x_position = original_x;
+    enemy -> y_position = original_y;
+  }
+};
+
 // Casting ==================================================================
 
 struct casting_event_t : public raid_event_t
@@ -915,6 +954,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
                                     const std::string& options_str )
 {
   if ( name == "adds"         ) return new         adds_event_t( sim, options_str );
+  if ( name == "move_enemy"   ) return new         move_enemy_t( sim, options_str );
   if ( name == "casting"      ) return new      casting_event_t( sim, options_str );
   if ( name == "distraction"  ) return new  distraction_event_t( sim, options_str );
   if ( name == "invul"        ) return new invulnerable_event_t( sim, options_str );

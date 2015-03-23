@@ -5865,10 +5865,10 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 double player_t::get_position_distance( double m, double v )
 {
-  // Square of Euclidean distance since sqrt() is slow
   double delta_x = this -> x_position - m;
   double delta_y = this -> y_position - v;
-  return delta_x * delta_x + delta_y * delta_y;
+  double sqrtnum = delta_x * delta_x + delta_y * delta_y;
+  return util::approx_sqrt( sqrtnum );
 }
 
 // player_t::get_player_distance ============================================
@@ -9299,7 +9299,6 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
   add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
-
   // Experimental 6.2
   add_option( opt_bool( "trinket_62_agi_d", trinket_62_agi_d ) );
   add_option( opt_timespan( "trinket_62_agi_d_duration", trinket_62_agi_d_duration ) );
@@ -9453,7 +9452,6 @@ void player_t::analyze( sim_t& s )
   // Stats Analysis =========================================================
   std::vector<stats_t*> tmp_stats_list( stats_list.begin(), stats_list.end() );
 
-
   for ( size_t i = 0; i <  pet_list.size(); ++i )
   {
     pet_t* pet =  pet_list[ i ];
@@ -9532,13 +9530,11 @@ void player_t::analyze( sim_t& s )
     }
   }
 
-
   recreate_talent_str( s.talent_format );
 
   // Error Convergence ======================================================
   player_convergence( s.convergence_scale, s.confidence_estimator,
                       collected_data.dps,  dps_convergence_error,  sim_t::distribution_mean_error( s, collected_data.dps ),  dps_convergence );
-
 }
 
 // Return sample_data reference over which this player gets scaled ( scale factors, reforge plots, etc. )
@@ -9648,7 +9644,6 @@ void player_t::change_position( position_e new_pos )
 
 
 // player_callbacks_t::register_allback =====================================
-
 static void add_callback( std::vector<action_callback_t*>& callbacks, action_callback_t* cb )
 {
   if ( std::find( callbacks.begin(), callbacks.end(), cb ) == callbacks.end() )
@@ -9698,7 +9693,6 @@ void player_callbacks_t::add_proc_callback( proc_types type,
   if ( cb -> listener -> sim -> debug )
     cb -> listener -> sim -> out_debug.printf( "%s", s.str().c_str() );
 }
-
 
 void player_callbacks_t::register_callback( unsigned proc_flags,
                                             unsigned proc_flags2,
@@ -9793,7 +9787,6 @@ void player_callbacks_t::reset()
 
 
 /* Invalidate ALL stats
- */
 void player_stat_cache_t::invalidate_all()
 {
   if ( ! active ) return;
@@ -9826,6 +9819,7 @@ void player_stat_cache_t::invalidate( cache_e c )
 }
 /* Helper function to access attribute cache functions by attribute-enumeration
  */
+ */
 double player_stat_cache_t::get_attribute( attribute_e a ) const
 {
   switch ( a )
@@ -9843,7 +9837,6 @@ double player_stat_cache_t::get_attribute( attribute_e a ) const
 #ifdef SC_STAT_CACHE
 
 // player_stat_cache_t::strength ============================================
-
 double player_stat_cache_t::strength() const
 {
   if ( ! active || ! valid[ CACHE_STRENGTH ] )
@@ -10263,7 +10256,6 @@ double player_stat_cache_t::avoidance() const
 
 
 // player_stat_cache_t::player_multiplier =============================================
-
 double player_stat_cache_t::player_multiplier( school_e s ) const
 {
   if ( ! active || ! player_mult_valid[ s ] )
@@ -10311,7 +10303,6 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
     {
       resource_snapshot[ i ] = p -> resources.current[ i ];
       resource_max_snapshot[ i ] = p -> resources.max[ i ];
-
     }
   }
 }
@@ -10378,7 +10369,6 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
 void player_collected_data_t::reserve_memory( const player_t& p )
 {
   int size = std::min( p.sim -> iterations, 10000 );
-
   fight_length.reserve( size );
   // DMG
   dmg.reserve( size );
@@ -10442,7 +10432,6 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   {
     assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
     assert( resource_timelines[ i ].type != RESOURCE_NONE );
-
     resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
   }
 
@@ -10450,13 +10439,11 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   for ( size_t i = 0; i < stat_timelines.size(); ++i )
   {
     assert( stat_timelines[ i ].type == other.stat_timelines[ i ].type );
-
     stat_timelines[ i ].timeline.merge ( other.stat_timelines[ i ].timeline );
   }
 
   health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
   health_changes_tmi.merged_timeline.merge( other.health_changes_tmi.merged_timeline );
-
   resolve_timeline.merged_timeline.merge( other.resolve_timeline.merged_timeline );
 }
 
@@ -10605,7 +10592,6 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
     print_tmi_debug_csv( &sliding_average_tl, weighted_value, p );
 
   return tmi;
-
 }
 
 void player_collected_data_t::collect_data( const player_t& p )

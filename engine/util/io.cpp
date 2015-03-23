@@ -126,9 +126,19 @@ std::string maybe_latin1_to_utf8( const std::string& str )
   return result;
 }
 
-#ifdef SC_WINDOWS
+#ifdef _MSC_VER
 FILE* fopen( const std::string& filename, const char* mode )
 { return _wfopen( widen( filename ).c_str(), widen( mode ).c_str() ); }
+#elif defined( SC_MINGW )
+FILE* fopen( const std::string& filename, const char* mode )
+{
+  if ( contains_non_ascii( filename ) )
+  {
+    assert( false && "File Names with non-ascii characters cannot be opened when built with MinGW." );
+    return nullptr;
+  }
+  return ::fopen( filename.c_str(), mode );
+}
 #endif
 
 ofstream& ofstream::format( const char* fmt, ... )

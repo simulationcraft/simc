@@ -523,9 +523,9 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = value;
     sim -> overrides.bloodlust = 0;
     if ( util::str_compare_ci( value, "WoD_KillableRaidDummy" ) )
-      sim -> overrides.target_health = 20000000;
+      sim -> overrides.target_health.push_back( 20000000 );
     else
-      sim -> overrides.target_health = 300000000;
+      sim -> overrides.target_health.push_back( 300000000 );
     sim -> enemy_death_pct = 0;
     sim -> allow_potions = false;
     sim -> vary_combat_length = 0;
@@ -627,6 +627,30 @@ bool parse_override_spell_data( sim_t*             sim,
   else
     return false;
 }
+
+// parse_override_target_health =============================================
+
+bool parse_override_target_health( sim_t*             sim,
+                                   const std::string& /* name */,
+                                   const std::string& value )
+{
+  std::vector<std::string> healths = util::string_split( value, "/" );
+
+  for ( size_t i = 0; i < healths.size(); ++i )
+  {
+    std::stringstream s;
+    s << healths[ i ];
+    uint64_t health_number;
+    s >> health_number;
+    if ( health_number > 0 )
+    {
+      sim -> overrides.target_health.push_back( health_number );
+    }
+  }
+
+  return true;
+}
+
 
 // parse_spell_query ========================================================
 
@@ -1028,6 +1052,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   maximize_reporting( false ),
   apikey( "" ),
   ilevel_raid_report( false ),
+  fancy_target_distance_stuff( false ),
   report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
@@ -1503,9 +1528,21 @@ void sim_t::datacollection_end()
   if ( deterministic && report_iteration_data > 0 && current_iteration > 0 && current_time() > timespan_t::zero() )
   {
     // TODO: Metric should be selectable
-    iteration_data.push_back( iteration_data_entry_t( iteration_dmg / current_time().total_seconds(),
-                                                      seed,
-                                                      static_cast< uint64_t >( target -> resources.initial[ RESOURCE_HEALTH ] ) ) );
+    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(), seed );
+    for ( size_t i = 0, end = target_list.size(); i < end; ++i )
+    {
+      const player_t* t = target_list[ i ];
+      // Once we start hitting adds (instead of real enemies), break out as those don't have real
+      // hitpoints.
+      if ( t -> is_add() )
+      {
+        break;
+      }
+
+      entry.add_health( static_cast< uint64_t >( t -> resources.initial[ RESOURCE_HEALTH ] ) );
+    }
+
+    iteration_data.push_back( entry );
   }
 }
 
@@ -2600,7 +2637,7 @@ void sim_t::create_options()
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
   add_option( opt_int( "override.bleeding", overrides.bleeding ) );
   add_option( opt_func( "override.spell_data", parse_override_spell_data ) );
-  add_option( opt_float( "override.target_health", overrides.target_health ) );
+  add_option( opt_func( "override.target_health", parse_override_target_health ) );
   // Lag
   add_option( opt_timespan( "channel_lag", channel_lag ) );
   add_option( opt_timespan( "channel_lag_stddev", channel_lag_stddev ) );
@@ -2646,7 +2683,6 @@ void sim_t::create_options()
   // RNG
   add_option( opt_string( "rng", rng_str ) );
   add_option( opt_bool( "deterministic", deterministic ) );
-  add_option( opt_bool( "deterministic_rng", deterministic ) ); // OBSOLETE!  FIX GUI FIRST!
   add_option( opt_float( "report_iteration_data", report_iteration_data ) );
   add_option( opt_int( "min_report_iteration_data", min_report_iteration_data ) );
   add_option( opt_bool( "average_range", average_range ) );
@@ -2751,6 +2787,7 @@ void sim_t::create_options()
   add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
   add_option( opt_string( "apikey", apikey ) );
   add_option( opt_bool( "ilevel_raid_report", ilevel_raid_report ) );
+  add_option( opt_bool( "fancy_target_distance_stuff", fancy_target_distance_stuff ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );
 }
@@ -2908,33 +2945,33 @@ void sim_t::setup( sim_control_t* c )
     threads = 1;
   }
 
-  if( iterations <= 0 ) 
+  if ( iterations <= 0 )
   {
     iterations = 1000000; // limited by relative standard error
 
-    if( target_error <= 0 )
+    if ( target_error <= 0 )
     {
-      if( scaling -> calculate_scale_factors )
+      if ( scaling -> calculate_scale_factors )
       {
-	target_error = 0.05;
+        target_error = 0.05;
       }
       else
       {
-	target_error = 0.2;
+        target_error = 0.2;
       }
     }
-    if( plot -> dps_plot_iterations <= 0 )
+    if ( plot -> dps_plot_iterations <= 0 )
     {
-      if( plot -> dps_plot_target_error <= 0 )
+      if ( plot -> dps_plot_target_error <= 0 )
       {
-	plot -> dps_plot_target_error = 0.5;
+        plot -> dps_plot_target_error = 0.5;
       }
     }
-    if( reforge_plot -> reforge_plot_iterations <= 0 )
+    if ( reforge_plot -> reforge_plot_iterations <= 0 )
     {
-      if( reforge_plot -> reforge_plot_target_error <= 0 )
+      if ( reforge_plot -> reforge_plot_target_error <= 0 )
       {
-	reforge_plot -> reforge_plot_target_error = 0.5;
+        reforge_plot -> reforge_plot_target_error = 0.5;
       }
     }
   }
@@ -3152,4 +3189,20 @@ sim_ostream_t& sim_ostream_t::printf( const char* fmt, ... )
   _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << buffer << "\n";
 
   return *this;
+}
+
+void sim_t::abort()
+{
+  std::stringstream s;
+  for ( size_t i = 0; i < target_list.size(); ++i )
+  {
+    s << std::fixed << target_list[ i ] -> resources.initial[ RESOURCE_HEALTH ];
+    if ( i < target_list.size() - 1 )
+    {
+      s << '/';
+    }
+  }
+
+  errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
+  ::abort();
 }

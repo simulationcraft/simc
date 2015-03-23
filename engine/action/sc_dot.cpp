@@ -278,10 +278,11 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     other_dot -> extended_time = timespan_t::zero();
     other_dot -> time_to_tick = time_to_tick;
     other_dot -> num_ticks = as<int>( std::ceil( computed_tick_duration / time_to_tick ) );
-    other_dot -> last_tick_factor = std::min( 1.0, computed_tick_duration / time_to_tick );
 
     other_dot -> ticking = true;
     other_dot -> end_event = new ( sim ) dot_end_event_t( other_dot, new_duration );
+
+    other_dot -> last_tick_factor = other_dot -> current_action -> last_tick_factor( other_dot, time_to_tick, computed_tick_duration );
 
     // The clone may happen on tick, or mid tick. If it happens on tick, the
     // source dot will not have a new tick event scheduled yet, so the tick
@@ -375,19 +376,30 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct tick_dmg_expr_t : public dot_expr_t
     {
+      action_state_t* s;
+
       tick_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-        dot_expr_t( "dot_tick_dmg", d, a, dynamic ) {}
+        dot_expr_t( "dot_tick_dmg", d, a, dynamic ),
+        s( 0 )
+      { }
+
       virtual double evaluate()
       {
         if ( dot() -> state )
         {
-          double damage = dot() -> state -> result_amount;
-          if ( dot() -> state -> result == RESULT_CRIT )
-            damage /= 1.0 + action -> total_crit_bonus();
-          return damage;
+          if ( ! s )
+          {
+            s = dot() -> current_action -> get_state();
+          }
+          s -> copy_state( dot() -> state );
+          s -> result = RESULT_HIT;
+          return s -> action -> calculate_tick_amount( s, 1.0 );
         }
         return 0.0;
       }
+
+      virtual ~tick_dmg_expr_t()
+      { delete s; }
     };
     return new tick_dmg_expr_t( this, action, dynamic );
   }
@@ -395,16 +407,24 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct crit_dmg_expr_t : public dot_expr_t
     {
+      action_state_t* s;
+
       crit_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-        dot_expr_t( "dot_crit_dmg", d, a, dynamic ) {}
+        dot_expr_t( "dot_crit_dmg", d, a, dynamic ),
+      s( 0 )
+      { }
+
       virtual double evaluate()
       {
         if ( dot() -> state )
         {
-          double damage = dot() -> state -> result_amount;
-          if ( dot() -> state -> result == RESULT_HIT )
-            damage *= 1.0 + action -> total_crit_bonus();
-          return damage;
+          if ( ! s )
+          {
+            s = dot() -> current_action -> get_state();
+          }
+          s -> copy_state( dot() -> state );
+          s -> result = RESULT_CRIT;
+          return s -> action -> calculate_tick_amount( s, 1.0 );
         }
         return 0.0;
       }
@@ -614,7 +634,9 @@ void dot_t::schedule_tick()
 
   // Recalculate num_ticks:
   num_ticks = current_tick + as<int>(std::ceil( remains() / time_to_tick ));
-  last_tick_factor = std::min( 1.0, remains() / time_to_tick );
+  // NOTE: Last tick factor has to be computed after time_to_tick is set (and after the dot has an
+  // end event).
+  last_tick_factor = current_action -> last_tick_factor( this, time_to_tick, remains() );
 
   tick_event = new ( sim ) dot_tick_event_t( this, time_to_tick );
 
@@ -667,6 +689,11 @@ void dot_t::start( timespan_t duration )
   schedule_tick();
 
   source -> add_active_dot( current_action -> internal_id );
+
+  if ( current_action && current_action -> need_to_trigger_costs_per_second() )
+  {
+    current_action -> schedule_cost_tick_event();
+  }
 
   // Only schedule a tick if thre's enough time to tick at least once.
   // Otherwise, next tick is the last tick, and the end event will handle it

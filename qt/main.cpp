@@ -2,6 +2,7 @@
 #include "simulationcraftqt.hpp"
 #include <QLocale>
 #include <QtWidgets/QApplication>
+#include "sc_SimulateTab.hpp"
 #include <locale>
 #if defined SC_VS
 #include <windows.h>

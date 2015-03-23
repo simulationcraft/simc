@@ -575,43 +575,80 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
     return;
   }
 
+  size_t n_spacer = ( sim -> num_enemies - 1 ) * 10 + ( sim -> num_enemies - 2 ) * 2 + 2;
+  std::string spacer_str_1( n_spacer, '-' ), spacer_str_2( n_spacer, ' ' );
+
   util::fprintf( file, "\nIteration data:\n" );
   if ( sim -> low_iteration_data.size() && sim -> high_iteration_data.size() )
   {
-    util::fprintf( file, ".-----------------------------------------------. .-----------------------------------------------.\n" );
-    util::fprintf( file, "|               Low Iteration Data              | |              High Iteration Data              |\n" );
-    util::fprintf( file, "+-----------+----------------------+------------+ +-----------+----------------------+------------+\n" );
-    util::fprintf( file, "|    Metric |                 Seed |     Health | |    Metric |                 Seed |     Health |\n" );
-    util::fprintf( file, "+-----------+----------------------+------------+ +-----------+----------------------+------------+\n" );
+    util::fprintf( file, ".-----------------------------------------------%s. .-----------------------------------------------%s.\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
+    util::fprintf( file, "| Low Iteration Data                            %s| | High Iteration Data                           %s|\n",
+        spacer_str_2.c_str(), spacer_str_2.c_str() );
+    util::fprintf( file, "+-----------+----------------------+------------%s+ +-----------+----------------------+------------%s+\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
+    util::fprintf( file, "|    Metric |                 Seed |  %sHealth(s) | |    Metric |                 Seed |  %sHealth(s) |\n",
+        spacer_str_2.c_str(), spacer_str_2.c_str() );
+    util::fprintf( file, "+-----------+----------------------+------------%s+ +-----------+----------------------+------------%s+\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
 
     for ( size_t i = 0; i < sim -> low_iteration_data.size(); i++ )
     {
-      util::fprintf( file, "| %9.1f | %20" PRId64 " | %10" PRId64 " | | %9.1f | %20llu | %10" PRId64 " |\n",
+      const iteration_data_entry_t& low_data = sim -> low_iteration_data[ i ];
+      const iteration_data_entry_t& high_data = sim -> high_iteration_data[ i ];
+      std::ostringstream low_health_s, high_health_s;
+      for ( size_t health_idx = 0; health_idx < low_data.target_health.size(); ++health_idx )
+      {
+        low_health_s << std::setw( 10 ) << std::right << low_data.target_health[ health_idx ];
+        high_health_s << std::setw( 10 ) << std::right << high_data.target_health[ health_idx ];
+
+        if ( health_idx < low_data.target_health.size() - 1 )
+        {
+          low_health_s << ", ";
+          high_health_s << ", ";
+        }
+      }
+
+      util::fprintf( file, "| %9.1f | %20" PRId64 " | %s | | %9.1f | %20" PRId64 " | %s |\n",
           sim -> low_iteration_data[ i ].metric,
           sim -> low_iteration_data[ i ].seed,
-          sim -> low_iteration_data[ i ].target_health,
+          low_health_s.str().c_str(),
           sim -> high_iteration_data[ i ].metric,
           sim -> high_iteration_data[ i ].seed,
-          sim -> high_iteration_data[ i ].target_health );
+          high_health_s.str().c_str() );
     }
-    util::fprintf( file, "'-----------+----------------------+------------' '-----------+----------------------+------------'\n" );
+    util::fprintf( file, "'-----------+----------------------+------------%s' '-----------+----------------------+------------%s'\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
   }
   else
   {
-    util::fprintf( file, ".-----------------------------------------------.\n" );
-    util::fprintf( file, "|                 Iteration Data                |\n" );
-    util::fprintf( file, "+-----------+----------------------+------------+\n" );
-    util::fprintf( file, "|    Metric |                 Seed |     Health |\n" );
-    util::fprintf( file, "+-----------+----------------------+------------+\n" );
+
+    util::fprintf( file, ".-----------------------------------------------%s.\n", spacer_str_1.c_str() );
+    util::fprintf( file, "| Iteration Data                                %s|\n", spacer_str_2.c_str() );
+    util::fprintf( file, "+-----------+----------------------+------------%s+\n", spacer_str_1.c_str() );
+    util::fprintf( file, "|    Metric |                 Seed |  %sHealth(s) |\n", spacer_str_2.c_str() );
+    util::fprintf( file, "+-----------+----------------------+------------%s+\n", spacer_str_1.c_str() );
 
     for ( size_t i = 0; i < sim -> iteration_data.size(); i++ )
     {
-      util::fprintf( file, "| %9.1f | %20" PRId64 " | %10" PRId64 " |\n",
+      const iteration_data_entry_t& data = sim -> iteration_data[ i ];
+      std::ostringstream health_s;
+      for ( size_t health_idx = 0; health_idx < data.target_health.size(); ++health_idx )
+      {
+        health_s << std::setw( 10 ) << std::right << data.target_health[ health_idx ];
+
+        if ( health_idx < data.target_health.size() - 1 )
+        {
+          health_s << ", ";
+        }
+      }
+
+      util::fprintf( file, "| %9.1f | %20" PRId64 " | %s |\n",
           sim -> iteration_data[ i ].metric,
           sim -> iteration_data[ i ].seed,
-          sim -> iteration_data[ i ].target_health );
+          health_s.str().c_str() );
     }
-    util::fprintf( file, "'-----------+----------------------+------------'\n" );
+    util::fprintf( file, "'-----------+----------------------+------------%s'\n", spacer_str_1.c_str() );
   }
 }
 

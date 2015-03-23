@@ -60,6 +60,8 @@
  SOURCES += engine/interfaces/sc_bcp_api.cpp
  SOURCES += engine/dbc/sc_spell_info.cpp
  SOURCES += engine/dbc/sc_spell_data.cpp
+ SOURCES += engine/dbc/sc_item_data_import_ptr.cpp
+ SOURCES += engine/dbc/sc_item_data_import_noptr.cpp
  SOURCES += engine/dbc/sc_item_data.cpp
  SOURCES += engine/dbc/sc_data.cpp
  SOURCES += engine/dbc/sc_const_data.cpp

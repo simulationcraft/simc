@@ -2,10 +2,12 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+
 /*
   This file contains all of the methods required for automated comparison sims
 */
 #include "sc_AutomationTab.hpp"
+#include "simulationcraftqt.hpp"
 
 namespace {
 

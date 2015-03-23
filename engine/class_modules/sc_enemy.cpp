@@ -28,6 +28,7 @@ enum tmi_boss_e
 
 struct enemy_t : public player_t
 {
+  size_t enemy_id;
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
   double health_recalculation_dampening_exponent;
@@ -40,6 +41,7 @@ struct enemy_t : public player_t
 
   enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID, player_e type = ENEMY ) :
     player_t( s, type, n, r ),
+    enemy_id( s -> target_list.size() ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
     health_recalculation_dampening_exponent( 1.0 ),
@@ -1133,13 +1135,20 @@ void enemy_t::init_base_stats()
 
   base.attack_crit = 0.05;
 
-  initial_health = ( sim -> overrides.target_health ) ? sim -> overrides.target_health : fixed_health;
+  if ( sim -> overrides.target_health.size() > 0 )
+  {
+    initial_health = static_cast<double>( sim -> overrides.target_health[ enemy_id % sim -> overrides.target_health.size() ] );
+  }
+  else
+  {
+    initial_health = fixed_health;
+  }
 
   if ( this == sim -> target )
   {
-    if ( sim -> overrides.target_health > 0 || fixed_health > 0 ) {
+    if ( sim -> overrides.target_health.size() > 0 || fixed_health > 0 ) {
       if ( sim -> debug )
-        sim -> out_debug << "Setting vary_combat_length forcefully to 0.0 because main target fixed health simulation was detected.";
+        sim -> out_debug << "Setting vary_combat_length forcefully to 0.0 because fixed health simulation was detected.";
 
       sim -> vary_combat_length = 0.0;
     }
@@ -1582,7 +1591,7 @@ void enemy_t::combat_end()
 {
   player_t::combat_end();
 
-  if ( ! sim -> overrides.target_health )
+  if ( ! sim -> overrides.target_health.size() )
     recalculate_health();
 }
 
@@ -1590,7 +1599,7 @@ void enemy_t::demise()
 {
   if ( this == sim -> target )
   {
-    if ( sim -> current_iteration != 0 || sim -> overrides.target_health > 0 || fixed_health > 0 )
+    if ( sim -> current_iteration != 0 || sim -> overrides.target_health.size() > 0 || fixed_health > 0 )
       // For the main target, end simulation on death.
       sim -> cancel_iteration();
   }

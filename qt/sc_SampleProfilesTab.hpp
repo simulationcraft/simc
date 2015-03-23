@@ -1,5 +1,10 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
 #pragma once
 #include "config.hpp"
+
 #include <QtWidgets/QtWidgets>
 #include <QtGui/QtGui>
 

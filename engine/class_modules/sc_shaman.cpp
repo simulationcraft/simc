@@ -2895,10 +2895,6 @@ struct fire_nova_t : public shaman_spell_t
     may_crit = may_miss = callbacks = false;
     aoe = -1;
     uses_unleash_flame = true;
-    if ( player -> wod_hotfix )
-    {
-      hasted_gcd = true; // Hotfix from 2015-02-28
-    }
 
     impact_action = new fire_nova_explosion_t( player );
     uses_eoe = player -> talent.echo_of_the_elements -> ok();

@@ -32,6 +32,7 @@ actions+=/blazing_speed,if=movement.remains>0
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
+actions+=/call_action_list,name=t17_2pc_combust,if=set_bonus.tier17_2pc&pyro_chain&(active_enemies>1|(talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains>15))
 actions+=/call_action_list,name=combust_sequence,if=pyro_chain
 actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active
 actions+=/call_action_list,name=init_combust,if=!pyro_chain
@@ -42,8 +43,12 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=single_target
 
 # Action list while Prismatic Crystal is up
-# Spread Combustion from PC; "active_enemies+1" because PC is not counted
-actions.crystal_sequence=inferno_blast,cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies+1
+actions.crystal_sequence=choose_target,name=prismatic_crystal
+# Spread Combustion from PC
+actions.crystal_sequence+=/inferno_blast,if=dot.combustion.ticking&active_dot.combustion<active_enemies+1
+# Spread Combustion on multitarget fights
+actions.crystal_sequence+=/inferno_blast,cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies
+actions.crystal_sequence+=/blast_wave
 # Use pyros before PC's expiration
 actions.crystal_sequence+=/pyroblast,if=execute_time=gcd.max&pet.prismatic_crystal.remains<gcd.max+travel_time&pet.prismatic_crystal.remains>travel_time
 actions.crystal_sequence+=/call_action_list,name=single_target
@@ -52,14 +57,50 @@ actions.crystal_sequence+=/call_action_list,name=single_target
 # This sequence lists the requirements for preparing a Combustion combo with each talent choice
 # Meteor Combustion
 actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&((cooldown.combustion.remains<gcd.max*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
-# Prismatic Crystal Combustion
-actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
+# Prismatic Crystal Combustion without 2T17
+actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!set_bonus.tier17_2pc&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
+# Prismatic Crystal Combustion with 2T17
+actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&set_bonus.tier17_2pc&cooldown.prismatic_crystal.up&cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight)
+# Unglyphed Combustions between Prismatic Crystals
 actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Kindling or Level 90 Combustion
 actions.init_combust+=/start_pyro_chain,if=!talent.prismatic_crystal.enabled&!talent.meteor.enabled&((cooldown.combustion.remains<gcd.max*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*(gcd.max+talent.kindling.enabled)))
 
+# 2T17 two-target Combustion sequence
+actions.t17_2pc_combust=stop_pyro_chain,if=prev.combustion
+actions.t17_2pc_combust+=/prismatic_crystal
+actions.t17_2pc_combust+=/blood_fury
+actions.t17_2pc_combust+=/berserking
+actions.t17_2pc_combust+=/arcane_torrent
+actions.t17_2pc_combust+=/potion,name=draenic_intellect
+# Second pre-combust IB
+actions.t17_2pc_combust+=/inferno_blast,if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max*3
+# First pre-combust IB
+actions.t17_2pc_combust+=/inferno_blast,if=charges_fractional>=2-(gcd.max%8)&((buff.pyroblast.down&buff.pyromaniac.down)|(current_target=prismatic_crystal&pet.prismatic_crystal.remains*2<gcd.max*5))
+# Search for enemy with highest ignite for Combustion
+actions.t17_2pc_combust+=/choose_target,target_if=max:dot.ignite.tick_dmg,if=prev_gcd.inferno_blast
+# Failsafe: Pyroblast after double IB if ignite ticks are low
+actions.t17_2pc_combust+=/pyroblast,if=prev_gcd.inferno_blast&execute_time=gcd.max&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))*100<hit_damage*(100+crit_pct_current)*mastery_value
+# Combustion; Will only trigger post double IB
+actions.t17_2pc_combust+=/combustion,if=prev_gcd.inferno_blast
+actions.t17_2pc_combust+=/combustion,if=prev_gcd.pyroblast&action.inferno_blast.charges=0
+actions.t17_2pc_combust+=/meteor,if=active_enemies<=2&prev_gcd.pyroblast
+actions.t17_2pc_combust+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
+# Initial Fireball
+actions.t17_2pc_combust+=/fireball,if=!dot.ignite.ticking&!in_flight
+actions.t17_2pc_combust+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.up
+# Conditional second Fireball
+actions.t17_2pc_combust+=/fireball,if=buff.pyroblast.up&buff.heating_up.down&dot.ignite.tick_dmg*100*(execute_time+travel_time)<hit_damage*(100+crit_pct_current)*mastery_value&(!current_target=prismatic_crystal|pet.prismatic_crystal.remains>6)
+# Pyroblast trigger due to Prismatic Crystal's limited duration
+actions.t17_2pc_combust+=/pyroblast,if=current_target=prismatic_crystal&pet.prismatic_crystal.remains<gcd.max*4&execute_time=gcd.max
+# Final Pyroblast spam before double IB
+actions.t17_2pc_combust+=/pyroblast,if=buff.pyroblast.up&action.inferno_blast.charges_fractional>=2-(gcd.max%4)&(current_target!=prismatic_crystal|pet.prismatic_crystal.remains<8)&prev_gcd.pyroblast
+# Failsafe: use IB before combusting anyway if double non-crit happens early
+actions.t17_2pc_combust+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.down&prev_gcd.pyroblast
+actions.t17_2pc_combust+=/fireball
+
 # Combustion Sequence
-actions.combust_sequence=stop_pyro_chain,if=cooldown.combustion.duration-cooldown.combustion.remains<15
+actions.combust_sequence=stop_pyro_chain,if=prev.combustion
 actions.combust_sequence+=/prismatic_crystal
 actions.combust_sequence+=/blood_fury
 actions.combust_sequence+=/berserking
@@ -69,15 +110,16 @@ actions.combust_sequence+=/meteor
 actions.combust_sequence+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.up
 actions.combust_sequence+=/inferno_blast,if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)
 actions.combust_sequence+=/fireball,if=!dot.ignite.ticking&!in_flight
-actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up
+actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value
 # Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion
 actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd.max*3
+actions.combust_sequence+=/inferno_blast,if=dot.ignite.tick_dmg*(6-dot.ignite.ticks_remain)<crit_damage*mastery_value
 actions.combust_sequence+=/combustion
 
 # Active talents usage
 actions.active_talents=meteor,if=active_enemies>=5|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)
 actions.active_talents+=/call_action_list,name=living_bomb,if=talent.living_bomb.enabled
-actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(time_to_die<10|!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|charges=2|current_target=prismatic_crystal)
+actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))
 
 # Living Bomb application
 actions.living_bomb=inferno_blast,cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies
@@ -101,12 +143,14 @@ actions.single_target+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.react
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 # Aggressively use Pyro with 2T17 and IB available
-actions.single_target+=/pyroblast,if=set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>0.85
-actions.single_target+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.up
+actions.single_target+=/pyroblast,if=set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>1-(gcd.max%8)
+# Heating Up conversion to Pyroblast
+actions.single_target+=/inferno_blast,if=(cooldown.combustion.remains%8+charges_fractional>=2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up
 actions.single_target+=/call_action_list,name=active_talents
-actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight
+# Adding Heating Up to Pyroblast
+actions.single_target+=/inferno_blast,if=(cooldown.combustion.remains%8+charges_fractional>=2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight
 # Aggressively use IB with 2T17
-actions.single_target+=/inferno_blast,if=set_bonus.tier17_2pc&charges_fractional>1.85
+actions.single_target+=/inferno_blast,if=set_bonus.tier17_2pc&(cooldown.combustion.remains%8+charges_fractional>2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&charges_fractional>2-(gcd.max%8)
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 

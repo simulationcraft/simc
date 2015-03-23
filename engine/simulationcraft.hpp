@@ -136,6 +136,7 @@ struct stat_buff_t;
 struct stat_pair_t;
 struct travel_event_t;
 struct xml_node_t;
+struct action_cost_tick_event_t;
 class xml_writer_t;
 
 // Enumerations =============================================================
@@ -1300,6 +1301,7 @@ bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 double floor( double X, unsigned int decplaces = 0 );
 double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
+double approx_sqrt( double X );
 double get_avg_itemlvl( const player_t* p );
 
 std::string& tolower( std::string& str );
@@ -2258,6 +2260,21 @@ private:
 
 };
 
+struct target_wrapper_expr_t : public expr_t
+{
+  action_t& action;
+  std::vector<expr_t*> proxy_expr;
+  std::string suffix_expr_str;
+
+  // Inlined
+  target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str );
+  virtual player_t* target() const;
+  double evaluate();
+
+  ~target_wrapper_expr_t()
+  { range::dispose( proxy_expr ); }
+};
+
 // Template to return a function expression
 template <typename F>
 inline expr_t* make_fn_expr( const std::string& name, F f )
@@ -2334,11 +2351,18 @@ struct iteration_data_entry_t
 {
   double   metric;
   uint64_t seed;
-  uint64_t target_health;
+  std::vector <uint64_t> target_health;
 
   iteration_data_entry_t( double m, uint64_t s, uint64_t h ) :
-    metric( m ), seed( s ), target_health( h )
+    metric( m ), seed( s )
+  { target_health.push_back( h ); }
+
+  iteration_data_entry_t( double m, uint64_t s ) :
+    metric( m ), seed( s )
   { }
+
+  void add_health( uint64_t h )
+  { target_health.push_back( h ); }
 };
 
 // Simulation Setup =========================================================
@@ -2716,7 +2740,7 @@ struct sim_t : private sc_thread_t
 
     // Misc stuff needs resolving
     int    bloodlust;
-    double target_health;
+    std::vector<uint64_t> target_health;
   } overrides;
 
   // Auras
@@ -2803,6 +2827,7 @@ struct sim_t : private sc_thread_t
   bool maximize_reporting;
   std::string apikey;
   bool ilevel_raid_report;
+  bool fancy_target_distance_stuff;
 
   sim_report_information_t report_information;
 
@@ -2912,6 +2937,9 @@ struct sim_t : private sc_thread_t
   // GUI).
   mutex_t* pause_mutex;
   bool paused;
+
+
+  void abort();
 private:
   void do_pause();
 
@@ -3129,14 +3157,22 @@ struct event_t
 
   virtual ~event_t() {}
 
+  template<class T>
+  static void cancel( T& e )
+  {
+    event_t* ref = static_cast<event_t*>(e);
+    event_t::cancel( ref );
+    e = nullptr;
+  }
   static void cancel( event_t*& e );
 
   static void* operator new( std::size_t size, sim_t& sim ) { return sim.event_mgr.allocate_event( size ); }
 
   // DO NOT USE ANY OF THE FOLLOWING!
-  static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE!
   static void  operator delete( void*, sim_t& ) { std::terminate(); }                    // DO NOT USE!
   static void  operator delete( void* ) { std::terminate(); }                            // DO NOT USE!
+private:
+  static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE!
 };
 
 // Gear Rating Conversions ==================================================
@@ -4032,7 +4068,7 @@ struct player_processed_report_information_t
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
   std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
   std::string health_change_chart, health_change_sliding_chart;
-  std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_askmrrobot_link;
+  std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
   std::string save_str;
   std::string save_gear_str;
   std::string save_talents_str;
@@ -4387,7 +4423,7 @@ struct player_t : public actor_t
   int          ready_type;
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
-  int          wod_hotfix; // True until the WoD release hotfixes are in teh spell data.
+  int          wod_hotfix; // True until the WoD release hotfixes are in the spell data.
   bool scale_player;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
   double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
@@ -5294,6 +5330,7 @@ private:
   {
     if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
     {
+      //x_position += current.distance_to_move; Maybe in wonderland we can track this type of player movement. 
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
       buffs.raid_movement -> expire();
@@ -5302,11 +5339,13 @@ private:
     {
       if ( current.moving_away > 0 )
       {
+        //x_position -= yards;
         current.moving_away -= yards;
         current.distance_to_move += yards;
       }
       else
       {
+        //x_position += yards;
         current.moving_away = 0;
         current.distance_to_move -= yards;
       }
@@ -5834,6 +5873,7 @@ struct action_t : public noncopyable
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
   double range;
+  double radius;
   double weapon_power_mod;
   struct {
   double direct, tick;
@@ -5843,7 +5883,7 @@ struct action_t : public noncopyable
   timespan_t base_tick_time;
   timespan_t dot_duration;
   std::array< double, RESOURCE_MAX > base_costs;
-  std::array< int, RESOURCE_MAX > costs_per_second;
+  std::array< double, RESOURCE_MAX > base_costs_per_second;
   double base_dd_min, base_dd_max, base_td;
   double base_dd_multiplier, base_td_multiplier;
   double base_multiplier, base_hit, base_crit;
@@ -5860,6 +5900,7 @@ struct action_t : public noncopyable
   cooldown_t* cooldown;
   stats_t* stats;
   event_t* execute_event;
+  action_cost_tick_event_t* cost_tick_event;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
   int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number;
@@ -5907,6 +5948,7 @@ struct action_t : public noncopyable
   void add_option( const option_t& new_option )
   { options.insert( options.begin(), new_option ); }
   virtual double cost() const;
+  virtual double cost_per_second( resource_e );
   virtual timespan_t gcd() const;
   virtual double false_positive_pct() const;
   virtual double false_negative_pct() const;
@@ -5929,6 +5971,7 @@ struct action_t : public noncopyable
   bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
   virtual void   tick( dot_t* d );
+  virtual double last_tick_factor( const dot_t* d, const timespan_t& time_to_tick, const timespan_t& duration ) const;
   virtual void   multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double dmg_multiplier = 1.0 );
   virtual void   multistrike_direct( const action_state_t* state, action_state_t* ms_state );
   virtual void   last_tick( dot_t* d );
@@ -6155,7 +6198,10 @@ public:
   bool has_travel_events_for( const player_t* target ) const;
   const std::vector<travel_event_t*>& current_travel_events() const
   { return travel_events; }
-
+  void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0 ) );
+  bool consume_cost_per_second( timespan_t tick_time );
+  bool need_to_trigger_costs_per_second() const
+  { return std::accumulate( base_costs_per_second.begin(), base_costs_per_second.end(), 0.0 ); }
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
 
@@ -6572,6 +6618,21 @@ private:
   dot_t* dot;
 };
 
+// Action cost Tick Event ===========================================================
+
+struct action_cost_tick_event_t : public event_t
+{
+public:
+  action_cost_tick_event_t( action_t& a, timespan_t time_to_tick );
+
+private:
+  virtual void execute() override;
+  virtual const char* name() const override
+  { return "Action Cost Tick"; }
+  action_t& action;
+  timespan_t time_to_tick;
+};
+
 // DoT End Event ===========================================================
 
 struct dot_end_event_t : public event_t
@@ -6648,6 +6709,9 @@ private:
   friend struct dot_tick_event_t;
   friend struct dot_end_event_t;
 };
+
+inline double action_t::last_tick_factor( const dot_t* /* d */, const timespan_t& time_to_tick, const timespan_t& duration ) const
+{ return std::min( 1.0, duration / time_to_tick ); }
 
 inline dot_tick_event_t::dot_tick_event_t( dot_t* d, timespan_t time_to_tick ) :
     event_t( *d -> source ),
@@ -6781,8 +6845,8 @@ public:
   real_ppm_t() :
     player( 0 ), freq( 0 ), modifier( 0 ), rppm( 0 ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 2 min out of combat before pull, as that's what blizzard caps it at.
+    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
     scales_with( RPPM_NONE )
   { }
 
@@ -6792,8 +6856,9 @@ public:
     modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
     rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 2 min out of combat before pull, as that's what blizzard caps it at.
+    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ), // Blizz done lied to us, or changed it without telling. After going through a lot of logs,
+                                                                   // it seems that it's actually 3 minutes for the precombat timer.
+    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
     scales_with( s )
   { }
 
@@ -7627,6 +7692,31 @@ inline void player_t::do_dynamic_regen()
     }
   }
 }
+
+inline target_wrapper_expr_t::target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str ) :
+  expr_t( name_str ), action( a ), suffix_expr_str( expr_str )
+{
+  proxy_expr.resize( action.sim -> actor_list.size() + 1, 0 );
+}
+
+inline double target_wrapper_expr_t::evaluate()
+{
+  assert( target() );
+
+  size_t actor_index = target() -> actor_index;
+
+  if ( proxy_expr[ actor_index ] == 0 )
+  {
+    proxy_expr[ actor_index ] = target() -> create_expression( &( action ), suffix_expr_str );
+  }
+
+  std::cout << "target_wrapper_expr_t " << name() << " evaluate " << target() -> name() << " " <<  proxy_expr[ actor_index ] -> eval() << std::endl;
+
+  return proxy_expr[ actor_index ] -> eval();
+}
+
+inline player_t* target_wrapper_expr_t::target() const
+{ return action.target; }
 
 /* Simple String to Number function, using stringstream
  * This will NOT translate all numbers in the string to a number,

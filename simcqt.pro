@@ -211,6 +211,6 @@ unix:!mac {
   
 CONFIG(paperdoll) {
   DEFINES += SC_PAPERDOLL
-  HEADERS += qt/simcpaperdoll.hpp
-  SOURCES += qt/simcpaperdoll.cc
+  HEADERS += qt/sc_PaperDoll.hpp
+  SOURCES += qt/sc_PaperDoll.cpp
 }
