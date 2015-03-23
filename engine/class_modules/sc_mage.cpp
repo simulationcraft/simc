@@ -2162,6 +2162,12 @@ struct combustion_t : public mage_spell_t
 
     mage_spell_t::execute();
   }
+
+  double last_tick_factor( const dot_t* /* d */, const timespan_t& /* time_to_tick */,
+                           const timespan_t& /* duration */ ) const
+  {
+    return 1.0;
+  }
 };
 
 // Comet Storm Spell =======================================================
