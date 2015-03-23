@@ -26,6 +26,63 @@ struct current_target_reset_cb_t
   void operator()();
 };
 
+struct state_switch_t
+{
+private:
+  bool state;
+  timespan_t last_enable,
+             last_disable;
+
+public:
+  state_switch_t()
+  {
+    reset();
+  }
+
+  bool enable( timespan_t now )
+  {
+    if ( last_enable == now )
+    {
+      return false;
+    }
+    state = true;
+    last_enable = now;
+    return true;
+  }
+
+  bool disable( timespan_t now )
+  {
+    if ( last_disable == now )
+    {
+      return false;
+    }
+    state = false;
+    last_disable = now;
+    return true;
+  }
+
+  bool on()
+  {
+    return state;
+  }
+
+  timespan_t duration( timespan_t now )
+  {
+    if ( !state )
+    {
+      return timespan_t::zero();
+    }
+    return now - last_enable;
+  }
+
+  void reset()
+  {
+    state        = false;
+    last_enable  = timespan_t::min();
+    last_disable = timespan_t::min();
+  }
+};
+
 namespace actions {
 struct ignite_t;
 } // actions
@@ -83,6 +140,10 @@ public:
   // RPPM objects
   real_ppm_t rppm_pyromaniac; // T17 Fire 4pc
   real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
+
+  // State switches for rotation selection
+  state_switch_t burn_phase;
+  state_switch_t pyro_chain;
 
   // Miscellaneous
   double distance_from_rune,
@@ -176,7 +237,6 @@ public:
     // Minor
     const spell_data_t* arcane_brilliance;
   } glyphs;
-
 
   // Passives
   struct passives_t
@@ -293,18 +353,6 @@ public:
                       * comet_storm;
   } talents;
 
-  struct state_switch_t
-  {
-      bool dump_state;
-      bool burn_rotation;
-      void reset() 
-      { 
-        dump_state = 0;
-        burn_rotation = 0;
-      }
-      state_switch_t() { reset(); }
-  } state_switch;
-
 public:
   int current_arcane_charges;
 
@@ -330,7 +378,6 @@ public:
     procs( procs_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
-    state_switch( state_switch_t() ),
     current_arcane_charges()
   {
     //Active
@@ -4228,15 +4275,10 @@ struct choose_target_t : public action_t
 
 // Combustion Pyroblast Chaining Switch Action ==========================================================
 
-
 struct start_pyro_chain_t : public action_t
 {
-  // Infinite loop protection
-  timespan_t last_execute;
-
   start_pyro_chain_t( mage_t* p, const std::string& options_str ):
-    action_t( ACTION_USE, "start_pyro_chain", p ),
-    last_execute( timespan_t::min() )
+    action_t( ACTION_USE, "start_pyro_chain", p )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
@@ -4248,23 +4290,26 @@ struct start_pyro_chain_t : public action_t
   {
     mage_t* p = debug_cast<mage_t*>( player );
 
-    if ( sim -> current_time() == last_execute )
+    bool success = p -> pyro_chain.enable( sim -> current_time() );
+    if ( !success )
     {
       sim -> errorf( "%s start_pyro_chain infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
       sim -> cancel();
       return;
     }
-
-    last_execute = sim -> current_time();
-
-    p -> state_switch.dump_state = true;
   }
 
-  void reset()
+  bool ready()
   {
-    action_t::reset();
-    last_execute = timespan_t::min();
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( p -> pyro_chain.on() )
+    {
+      return false;
+    }
+
+    return action_t::ready();
   }
 };
 
@@ -4273,29 +4318,45 @@ struct stop_pyro_chain_t : public action_t
   stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
      action_t( ACTION_USE, "stop_pyro_chain", p )
   {
-      parse_options( options_str );
-      trigger_gcd = timespan_t::zero();
-      harmful = false;
-      ignore_false_positive = true;
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    ignore_false_positive = true;
   }
 
   virtual void execute()
   {
-      mage_t* p = debug_cast<mage_t*>( player );
-      p -> state_switch.dump_state = false;
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    bool success = p -> pyro_chain.disable( sim -> current_time() );
+    if ( !success )
+    {
+      sim -> errorf( "%s stop_pyro_chain infinite loop detected (no time passing between executes) at '%s'",
+        p -> name(), signature_str.c_str() );
+      sim -> cancel();
+      return;
+    }
+  }
+
+  bool ready()
+  {
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( !p -> pyro_chain.on() )
+    {
+      return false;
+    }
+
+    return action_t::ready();
   }
 };
 
 // Arcane Mage "Burn" State Switch Action =====================================
 
-struct start_burn_sequence_t : public action_t
+struct start_burn_phase_t : public action_t
 {
-  // Infinite loop protection
-  timespan_t last_execute;
-
-  start_burn_sequence_t( mage_t* p, const std::string& options_str ):
-    action_t( ACTION_USE, "start_burn_sequence", p ),
-    last_execute( timespan_t::min() )
+  start_burn_phase_t( mage_t* p, const std::string& options_str ):
+    action_t( ACTION_USE, "start_burn_phase", p )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
@@ -4307,31 +4368,33 @@ struct start_burn_sequence_t : public action_t
   {
     mage_t* p = debug_cast<mage_t*>( player );
 
-    if ( sim -> current_time() == last_execute )
+    bool success = p -> burn_phase.enable( sim -> current_time() );
+    if ( !success )
     {
-      sim -> errorf( "%s enter_burn_state infinite loop detected (no time passing between executes) at '%s'",
+      sim -> errorf( "%s start_burn_phase infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
       sim -> cancel();
       return;
     }
-
-    last_execute = sim -> current_time();
-
-    p -> state_switch.burn_rotation = true;
-
   }
 
-  void reset()
+  bool ready()
   {
-    action_t::reset();
-    last_execute = timespan_t::min();
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( p -> burn_phase.on() )
+    {
+      return false;
+    }
+
+    return action_t::ready();
   }
 };
 
-struct stop_burn_sequence_t : public action_t
+struct stop_burn_phase_t : public action_t
 {
-  stop_burn_sequence_t( mage_t* p, const std::string& options_str ):
-    action_t( ACTION_USE, "stop_burn_sequence", p )
+  stop_burn_phase_t( mage_t* p, const std::string& options_str ):
+     action_t( ACTION_USE, "stop_burn_phase", p )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
@@ -4341,8 +4404,28 @@ struct stop_burn_sequence_t : public action_t
 
   virtual void execute()
   {
-      mage_t* p = debug_cast<mage_t*>( player );
-      p -> state_switch.burn_rotation = false;
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    bool success = p -> burn_phase.disable( sim -> current_time() );
+    if ( !success )
+    {
+      sim -> errorf( "%s stop_burn_phase infinite loop detected (no time passing between executes) at '%s'",
+        p -> name(), signature_str.c_str() );
+      sim -> cancel();
+      return;
+    }
+  }
+
+  bool ready()
+  {
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( !p -> burn_phase.on() )
+    {
+      return false;
+    }
+
+    return action_t::ready();
   }
 };
 
@@ -4520,8 +4603,8 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "supernova"         ) return new               supernova_t( this, options_str );
 
-  if ( name == "start_burn_sequence"  ) return new        start_burn_sequence_t( this, options_str );
-  if ( name == "stop_burn_sequence"   ) return new        stop_burn_sequence_t(  this, options_str );
+  if ( name == "start_burn_phase"  ) return new        start_burn_phase_t( this, options_str );
+  if ( name == "stop_burn_phase"   ) return new         stop_burn_phase_t( this, options_str );
 
   // Fire
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
@@ -5737,7 +5820,8 @@ void mage_t::reset()
   rppm_pyromaniac.reset();
   rppm_arcane_instability.reset();
   last_bomb_target = 0;
-  state_switch.reset();
+  burn_phase.reset();
+  pyro_chain.reset();
 }
 
 // mage_t::regen  ===========================================================
@@ -6000,31 +6084,70 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   {
     struct pyro_chain_expr_t : public mage_expr_t
     {
-      mage_t* mage;
-      pyro_chain_expr_t( mage_t& m ) : mage_expr_t( "pyro_chain", m ), mage( &m )
+      pyro_chain_expr_t( mage_t& m ) :
+        mage_expr_t( "pyro_chain", m )
       {}
       virtual double evaluate()
-      { return mage -> state_switch.dump_state; }
+      {
+        return mage.pyro_chain.on();
+      }
     };
 
     return new pyro_chain_expr_t( *this );
   }
 
-  // Arcane Burn Flag Expression ===============================================
-  if ( name_str == "burn_rotation" )
+  if ( name_str == "pyro_chain_duration" )
   {
-    struct burn_switch_expr_t : public mage_expr_t
+    struct pyro_chain_duration_expr_t : public mage_expr_t
     {
-      mage_t* mage;
-      burn_switch_expr_t( mage_t& m ) : mage_expr_t( "burn_rotation", m ), mage( &m )
+      pyro_chain_duration_expr_t( mage_t& m ) :
+        mage_expr_t( "pyro_chain_duration", m )
       {}
       virtual double evaluate()
-      { return mage -> state_switch.burn_rotation; }
+      {
+        return mage.pyro_chain.duration( mage.sim -> current_time() )
+                              .total_seconds();
+      }
     };
 
-    return new burn_switch_expr_t( *this );
+    return new pyro_chain_duration_expr_t( *this );
   }
 
+  // Arcane Burn Flag Expression ==============================================
+  if ( name_str == "burn_phase" )
+  {
+    struct burn_phase_expr_t : public mage_expr_t
+    {
+      burn_phase_expr_t( mage_t& m ) :
+        mage_expr_t( "burn_phase", m )
+      {}
+      virtual double evaluate()
+      {
+        return mage.burn_phase.on();
+      }
+    };
+
+    return new burn_phase_expr_t( *this );
+  }
+
+  if ( name_str == "burn_phase_duration" )
+  {
+    struct burn_phase_duration_expr_t : public mage_expr_t
+    {
+      burn_phase_duration_expr_t( mage_t& m ) :
+        mage_expr_t( "burn_phase_duration", m )
+      {}
+      virtual double evaluate()
+      {
+        return mage.burn_phase.duration( mage.sim -> current_time() )
+                              .total_seconds();
+      }
+    };
+
+    return new burn_phase_duration_expr_t( *this );
+  }
+
+  // Icicle Expressions =======================================================
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
   {
     struct sicicles_expr_t : public mage_expr_t
