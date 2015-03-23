@@ -195,7 +195,6 @@ void reforge_plot_t::analyze_stats()
     current_reforge_sim = new sim_t( sim );
     if ( reforge_plot_iterations > 0 )
     {
-      current_reforge_sim -> iterations = reforge_plot_iterations;
       current_reforge_sim -> work_queue -> init( reforge_plot_iterations );
     }
 
