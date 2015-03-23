@@ -635,7 +635,7 @@ void dot_t::schedule_tick()
   num_ticks = current_tick + as<int>(std::ceil( remains() / time_to_tick ));
   // NOTE: Last tick factor has to be computed after time_to_tick is set (and after the dot has an
   // end event).
-  last_tick_factor = current_action -> last_tick_factor( this, remains(), time_to_tick );
+  last_tick_factor = current_action -> last_tick_factor( this, time_to_tick, remains() );
 
   tick_event = new ( sim ) dot_tick_event_t( this, time_to_tick );
 
