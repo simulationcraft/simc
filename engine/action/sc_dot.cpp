@@ -689,6 +689,11 @@ void dot_t::start( timespan_t duration )
 
   source -> add_active_dot( current_action -> internal_id );
 
+  if ( current_action && current_action -> need_to_trigger_costs_per_second() )
+  {
+    current_action -> schedule_cost_tick_event();
+  }
+
   // Only schedule a tick if thre's enough time to tick at least once.
   // Otherwise, next tick is the last tick, and the end event will handle it
   if ( current_duration <= time_to_tick )
