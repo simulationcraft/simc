@@ -235,9 +235,9 @@ actions.cop+=/cascade,if=talent.cascade.enabled&target.distance<=40,moving=1
 actions.cop+=/devouring_plague,moving=1
 
 head=soul_priests_hood,id=115563
-neck=odyssian_choker,id=113833,enchant=gift_of_critical_strike
+neck=choker_of_bloody_flame,id=120077,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561
-back=cloak_of_searing_shadows,id=113847,enchant=gift_of_critical_strike
+back=runescribed_gronncloak,id=120078,enchant=gift_of_critical_strike
 chest=soul_priests_raiment,id=115560
 wrists=bracers_of_spattered_steel,id=113887
 hands=soul_priests_gloves,id=115562
@@ -251,14 +251,14 @@ trinket2=goren_soul_repository,id=119194
 main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=3537
-# gear_intellect=2922
+# gear_stamina=3589
+# gear_intellect=2956
 # gear_spell_power=1389
-# gear_crit_rating=1647
-# gear_haste_rating=312
+# gear_crit_rating=1479
+# gear_haste_rating=429
 # gear_mastery_rating=666
-# gear_armor=721
-# gear_multistrike_rating=542
-# gear_versatility_rating=174
+# gear_armor=727
+# gear_multistrike_rating=561
+# gear_versatility_rating=251
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
