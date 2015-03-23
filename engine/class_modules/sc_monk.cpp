@@ -4255,23 +4255,9 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::tick( dot );
 
-    resource_e resource = current_resource();
-    double resource_per_second = cost_per_second( debug_cast<const cjl_state_t*>( dot -> state ) );
+    if ( rng().roll( proc_driver -> proc_chance() ) )
+      p() -> resource_gain( RESOURCE_CHI, proc_driver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.crackling_jade_lightning, this );
 
-    if ( player -> resources.current[resource] >= resource_per_second )
-    {
-      player -> resource_loss( resource, resource_per_second, 0, this );
-      stats -> consume_resource( resource, resource_per_second );
-      if ( sim -> log )
-        sim -> out_log.printf( "%s consumes %.0f %s for %s (%.0f)", player -> name(),
-        resource_per_second, util::resource_type_string( resource ),
-        name(), player -> resources.current[resource] );
-
-      if ( rng().roll( proc_driver -> proc_chance() ) )
-        p() -> resource_gain( RESOURCE_CHI, proc_driver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.crackling_jade_lightning, this );
-    }
-    else
-      dot -> cancel();
   }
 };
 
