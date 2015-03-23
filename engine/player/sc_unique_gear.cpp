@@ -555,12 +555,14 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect )
 
 void enchant::mark_of_the_frostwolf( special_effect_t& effect )
 {
-  // Custom callback to help the special effect initialization, we can use
-  // generic initialization for the enchant, but the game client data does not
-  // link driver to the procced spell, so we do it here.
-
   effect.type = SPECIAL_EFFECT_EQUIP;
-  effect.trigger_spell_id = 159676;
+
+  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, "mark_of_the_frostwolf" ) );
+  if ( ! buff )
+  {
+    buff = stat_buff_creator_t( effect.player, "mark_of_the_frostwolf", effect.player -> find_spell( 159676 ) );
+  }
+  effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
