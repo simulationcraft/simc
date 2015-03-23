@@ -4233,15 +4233,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
     ss -> lucidity = player -> buffs.courageous_primal_diamond_lucidity -> check() != 0;
   }
 
-  double cost_per_second( const cjl_state_t* state )
-  {
-    resource_e resource = current_resource();
-    if ( resource == RESOURCE_MANA && state -> lucidity )
-      return 0;
-
-    return base_costs_per_second[resource];
-  }
-
   void last_tick( dot_t* dot )
   {
     monk_spell_t::last_tick( dot );

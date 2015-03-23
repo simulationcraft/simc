@@ -2016,7 +2016,6 @@ public:
   void consume_tick_resource( dot_t* d )
   {
     resource_e r = current_resource();
-    resource_consumed = base_costs_per_second[r] * base_tick_time.total_seconds();
 
     player -> resource_loss( r, resource_consumed, 0, this );
 
@@ -3716,11 +3715,6 @@ struct drain_soul_t: public warlock_spell_t
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony, multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption, multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
-
-    if ( d -> current_tick != d -> num_ticks )
-    {
-      consume_tick_resource( d );
-    }
   }
 };
 
