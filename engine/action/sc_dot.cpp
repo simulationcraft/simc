@@ -277,10 +277,11 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     other_dot -> extended_time = timespan_t::zero();
     other_dot -> time_to_tick = time_to_tick;
     other_dot -> num_ticks = as<int>( std::ceil( computed_tick_duration / time_to_tick ) );
-    other_dot -> last_tick_factor = std::min( 1.0, computed_tick_duration / time_to_tick );
 
     other_dot -> ticking = true;
     other_dot -> end_event = new ( sim ) dot_end_event_t( other_dot, new_duration );
+
+    other_dot -> last_tick_factor = other_dot -> current_action -> last_tick_factor( other_dot, time_to_tick, computed_tick_duration );
 
     // The clone may happen on tick, or mid tick. If it happens on tick, the
     // source dot will not have a new tick event scheduled yet, so the tick
@@ -632,7 +633,9 @@ void dot_t::schedule_tick()
 
   // Recalculate num_ticks:
   num_ticks = current_tick + as<int>(std::ceil( remains() / time_to_tick ));
-  last_tick_factor = std::min( 1.0, remains() / time_to_tick );
+  // NOTE: Last tick factor has to be computed after time_to_tick is set (and after the dot has an
+  // end event).
+  last_tick_factor = current_action -> last_tick_factor( this, remains(), time_to_tick );
 
   tick_event = new ( sim ) dot_tick_event_t( this, time_to_tick );
 

@@ -5899,6 +5899,7 @@ struct action_t : public noncopyable
   bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
   virtual void   tick( dot_t* d );
+  virtual double last_tick_factor( const dot_t* d, const timespan_t& time_to_tick, const timespan_t& duration ) const;
   virtual void   multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double dmg_multiplier = 1.0 );
   virtual void   multistrike_direct( const action_state_t* state, action_state_t* ms_state );
   virtual void   last_tick( dot_t* d );
@@ -6610,6 +6611,9 @@ private:
   friend struct dot_tick_event_t;
   friend struct dot_end_event_t;
 };
+
+inline double action_t::last_tick_factor( const dot_t* /* d */, const timespan_t& time_to_tick, const timespan_t& duration ) const
+{ return std::min( 1.0, duration / time_to_tick ); }
 
 inline dot_tick_event_t::dot_tick_event_t( dot_t* d, timespan_t time_to_tick ) :
     event_t( *d -> source ),
