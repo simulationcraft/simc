@@ -2,9 +2,9 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+#pragma once
+#include "config.hpp"
 
-#ifndef SIMCPAPERDOLL_H
-#define SIMCPAPERDOLL_H
 #ifndef SC_PAPERDOLL
 #define SC_PAPERDOLL
 #endif
@@ -490,5 +490,3 @@ private:
   } current_metric;
   QLabel* current_dps;
 };
-
-#endif

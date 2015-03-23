@@ -1,5 +1,9 @@
-#ifndef SC_SPELLQUERYTAB_HPP
-#define SC_SPELLQUERYTAB_HPP
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+#pragma once
+#include "config.hpp"
 
 #include <QtWidgets/QtWidgets>
 
@@ -66,5 +70,3 @@ protected:
   void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value);
   void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value);
 };
-
-#endif // SC_SPELLQUERYTAB_HPP

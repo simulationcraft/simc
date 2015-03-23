@@ -3,11 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #pragma once
+#include "config.hpp"
 
-#include <QtWidgets/QtWidgets>
+#include <QtWidgets/QTabWidget>
 
 class SC_MainWindow;
 class SC_ReforgeButtonGroup;
+class QComboBox;
+class QButtonGroup;
+class QLineEdit;
+class QListWidget;
+class QFormLayout;
 
 // ============================================================================
 // SC_OptionsTabWidget
