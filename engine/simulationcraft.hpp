@@ -3157,6 +3157,13 @@ struct event_t
 
   virtual ~event_t() {}
 
+  template<class T>
+  static void cancel( T& e )
+  {
+    event_t* ref = static_cast<event_t*>(e);
+    event_t::cancel( ref );
+    e = nullptr;
+  }
   static void cancel( event_t*& e );
 
   static void* operator new( std::size_t size, sim_t& sim ) { return sim.event_mgr.allocate_event( size ); }

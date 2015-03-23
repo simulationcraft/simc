@@ -2947,7 +2947,12 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
 void action_t::schedule_cost_tick_event( timespan_t tick_time )
 {
   if ( cost_tick_event )
-    return;
+  {
+    return; // crashes if this line is removed ???
+    event_t::cancel( cost_tick_event );
+
+    assert( !cost_tick_event );
+  }
 
   cost_tick_event = new ( *sim )  action_cost_tick_event_t( *this, tick_time );
 
