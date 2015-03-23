@@ -6140,7 +6140,7 @@ public:
   void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0 ) );
   bool consume_cost_per_second( timespan_t tick_time );
   bool need_to_trigger_costs_per_second() const
-  { return std::accumulate( base_costs_per_second.begin(), base_costs_per_second.end(), 0.0 ); }
+  { return std::accumulate( base_costs_per_second.begin(), base_costs_per_second.end(), 0.0 ) != 0; }
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
 
