@@ -369,7 +369,7 @@ action_t::action_t( action_e       ty,
   state_cache = 0;
 
   range::fill( base_costs, 0.0 );
-  range::fill( costs_per_second, 0 );
+  range::fill( base_costs_per_second, 0.0 );
   
   assert( ! name_str.empty() && "Abilities must have valid name_str entries!!" );
 
@@ -524,9 +524,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
 
     if ( pd -> _cost_per_second > 0 )
-      costs_per_second[ pd -> resource() ] = ( int ) pd -> cost_per_second();
+      base_costs_per_second[ pd -> resource() ] = pd -> cost_per_second();
     else
-      costs_per_second[ pd -> resource() ] = ( int ) floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
+      base_costs_per_second[ pd -> resource() ] = floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
   }
 
   for ( size_t i = 1; i <= spell_data.effect_count(); i++ )
@@ -691,6 +691,11 @@ double action_t::cost() const
     sim -> out_debug.printf( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
 
   return floor( c );
+}
+
+double action_t::base_cost_per_second( resource_e r )
+{
+  return base_costs_per_second[ r ];
 }
 
 // action_t::gcd ============================================================

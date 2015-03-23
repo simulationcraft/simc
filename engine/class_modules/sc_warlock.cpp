@@ -1726,7 +1726,7 @@ public:
     virtual void execute()
     {
       spell -> cost_event = new ( sim() ) cost_event_t( p(), spell, resource );
-      p() -> resource_loss( resource, spell -> costs_per_second[resource], spell -> gain );
+      p() -> resource_loss( resource, spell -> base_costs_per_second[resource], spell -> gain );
     }
   };
 
@@ -2016,7 +2016,7 @@ public:
   void consume_tick_resource( dot_t* d )
   {
     resource_e r = current_resource();
-    resource_consumed = costs_per_second[r] * base_tick_time.total_seconds();
+    resource_consumed = base_costs_per_second[r] * base_tick_time.total_seconds();
 
     player -> resource_loss( r, resource_consumed, 0, this );
 
@@ -4193,7 +4193,7 @@ struct immolation_aura_t: public warlock_spell_t
     dot_duration = data().duration();
     base_tick_time = dot_duration / 10.0;
     tick_action = new immolation_aura_tick_t( p, this );
-    tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = costs_per_second[RESOURCE_DEMONIC_FURY];
+    tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = base_costs_per_second[RESOURCE_DEMONIC_FURY];
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const

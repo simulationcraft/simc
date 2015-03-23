@@ -5813,7 +5813,7 @@ struct action_t : public noncopyable
   timespan_t base_tick_time;
   timespan_t dot_duration;
   std::array< double, RESOURCE_MAX > base_costs;
-  std::array< int, RESOURCE_MAX > costs_per_second;
+  std::array< double, RESOURCE_MAX > base_costs_per_second;
   double base_dd_min, base_dd_max, base_td;
   double base_dd_multiplier, base_td_multiplier;
   double base_multiplier, base_hit, base_crit;
@@ -5877,6 +5877,7 @@ struct action_t : public noncopyable
   void add_option( const option_t& new_option )
   { options.insert( options.begin(), new_option ); }
   virtual double cost() const;
+  virtual double base_cost_per_second( resource_e );
   virtual timespan_t gcd() const;
   virtual double false_positive_pct() const;
   virtual double false_negative_pct() const;

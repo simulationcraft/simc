@@ -4239,7 +4239,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
     if ( resource == RESOURCE_MANA && state -> lucidity )
       return 0;
 
-    return costs_per_second[resource];
+    return base_costs_per_second[resource];
   }
 
   void last_tick( dot_t* dot )
@@ -4509,7 +4509,7 @@ struct soothing_mist_t: public monk_heal_t
 
     // Cost is handled in action_t::tick()
     base_costs[RESOURCE_MANA] = 0.0;
-    costs_per_second[RESOURCE_MANA] = 0;
+    base_costs_per_second[RESOURCE_MANA] = 0.0;
   }
 
   virtual double action_ta_multiplier() const
