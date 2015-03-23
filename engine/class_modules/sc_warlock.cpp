@@ -5565,7 +5565,7 @@ void warlock_t::apl_precombat()
     if ( level == 100 && specialization() == WARLOCK_DEMONOLOGY )
       action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|(buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20";
     else if ( level == 100 )
-      action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react&buff.dark_soul.remains>10|target.time_to_die<=25|buff.dark_soul.remains>10";
+      action_list_str += "/potion,name=draenic_intellect,if=target.time_to_die<=25|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)";
     else if ( level >= 85 && specialization() == WARLOCK_DEMONOLOGY )
       action_list_str += "/potion,name=jade_serpent,if=buff.bloodlust.react|(buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20";
     else if ( level >= 85 )
@@ -5590,7 +5590,7 @@ void warlock_t::apl_precombat()
     action_list_str += "/imp_swarm,if=!talent.demonbolt.enabled&(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3";
   }
   else
-    add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.any.react|trinket.stacking_any.intellect.react>6|target.time_to_die<40))" );
+    add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))" );
 
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
@@ -5603,7 +5603,7 @@ void warlock_t::apl_precombat()
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1";
   }
 
-  action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<20|(buff.dark_soul.remains&target.health.pct<20))";
+  action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))";
 
   add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<9" );
   add_action( "Summon Infernal", "if=!talent.demonic_servitude.enabled&active_enemies>=9" );
@@ -5754,7 +5754,7 @@ void warlock_t::apl_destruction()
   }
   single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=(dot.immolate.duration*0.3)&active_enemies>4";
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=(duration*0.3)";
-  single_target -> action_list_str += "/conflagrate";
+  single_target -> action_list_str += "/conflagrate,if=buff.backdraft.stack=0";
   single_target -> action_list_str += "/incinerate";
 
   aoe -> action_list_str += "/rain_of_fire,if=!talent.charred_remains.enabled&remains<=tick_time";
