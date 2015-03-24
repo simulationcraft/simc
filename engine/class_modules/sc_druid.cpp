@@ -2373,7 +2373,7 @@ struct ferocious_bite_t : public cat_attack_t
     parse_options( options_str );
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
-    max_excess_energy      = data().effectN( 2 ).base_value();
+    max_excess_energy      = -1 * data().effectN( 2 ).base_value();
     special                = true;
     spell_power_mod.direct = 0;
 
