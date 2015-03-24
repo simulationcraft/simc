@@ -3823,6 +3823,7 @@ void hunter_t::init_action_list()
       apl_surv();
       break;
     case HUNTER_BEAST_MASTERY:
+      talent_overrides_str += "steady_focus,if=raid_event.adds.count>=1|enemies>1";
       apl_bm();
       break;
     case HUNTER_MARKSMANSHIP:
@@ -3894,19 +3895,20 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=25" );
 
   default_list -> add_talent( this, "Dire Beast" );
-  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
-  default_list -> add_action( this, "Focus Fire", "if=buff.focus_fire.down&(cooldown.bestial_wrath.remains<1|(talent.stampede.enabled&buff.stampede.remains))" );
+  default_list -> add_action( this, "Focus Fire", "if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)" );
   default_list -> add_action( this, "Bestial Wrath", "if=focus>30&!buff.bestial_wrath.up" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>1&pet.cat.buff.beast_cleave.down" );
+  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>1&pet.cat.buff.beast_cleave.remains<0.5" );
+  default_list -> add_action( this, "Focus Fire", "five_stacks=1,if=buff.focus_fire.down" );
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>5" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5" );
-  default_list -> add_action( this, "Focus Fire", "five_stacks=1" );
-  default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_action( this, "Kill Shot","if=focus.time_to_max>gcd" );
   default_list -> add_talent( this, "Focusing Shot", "if=focus<50" );
-  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&(14+cast_regen)<=focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
+  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
+  default_list -> add_action( this, "Cobra Shot", "if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50", "Prepare for steady focus refresh if it is running out." );
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time" );

@@ -4,6 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 talents=0001333
+talent_override=steady_focus,if=raid_event.adds.count>=1|enemies>1
 spec=beast_mastery
 
 # This default action priority list is automatically created based on your character.
@@ -35,20 +36,22 @@ actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&buff.bestial_w
 actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=25
 actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=25
 actions+=/dire_beast
-actions+=/explosive_trap,if=active_enemies>1
-actions+=/focus_fire,if=buff.focus_fire.down&(cooldown.bestial_wrath.remains<1|(talent.stampede.enabled&buff.stampede.remains))
+actions+=/focus_fire,if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)
 actions+=/bestial_wrath,if=focus>30&!buff.bestial_wrath.up
-actions+=/multishot,if=active_enemies>1&pet.cat.buff.beast_cleave.down
+actions+=/multishot,if=active_enemies>1&pet.cat.buff.beast_cleave.remains<0.5
+actions+=/focus_fire,five_stacks=1,if=buff.focus_fire.down
 actions+=/barrage,if=active_enemies>1
+actions+=/explosive_trap,if=active_enemies>5
 actions+=/multishot,if=active_enemies>5
-actions+=/focus_fire,five_stacks=1
-actions+=/barrage,if=active_enemies>1
 actions+=/kill_command
 actions+=/a_murder_of_crows
 actions+=/kill_shot,if=focus.time_to_max>gcd
 actions+=/focusing_shot,if=focus<50
 # Cast a second shot for steady focus if that won't cap us.
-actions+=/cobra_shot,if=buff.pre_steady_focus.up&(14+cast_regen)<=focus.deficit
+actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit
+actions+=/explosive_trap,if=active_enemies>1
+# Prepare for steady focus refresh if it is running out.
+actions+=/cobra_shot,if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50
 actions+=/glaive_toss
 actions+=/barrage
 actions+=/powershot,if=focus.time_to_max>cast_time
