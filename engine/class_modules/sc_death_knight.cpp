@@ -2574,12 +2574,6 @@ void death_knight_melee_attack_t::consume_resource()
   if ( result_is_hit( execute_state -> result ) || always_consume )
     consume_runes( use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
 
-  if ( p() -> active_spells.breath_of_sindragosa &&
-       p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.breath_of_sindragosa -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
-  {
-    p() -> active_spells.breath_of_sindragosa -> get_dot() -> cancel();
-  }
-
   if ( p() -> active_spells.conversion &&
        p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.conversion -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
   {
@@ -5197,7 +5191,6 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     tick_zero = true;
 
     tick_action = new breath_of_sindragosa_tick_t( p, this );
-    tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = data().powerN( 1 ).cost_per_second();
     school = tick_action -> school;
   }
 

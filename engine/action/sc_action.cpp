@@ -3019,7 +3019,6 @@ bool action_t::consume_cost_per_second( timespan_t tick_time )
   }
 
   return true;
-
 }
 
 action_cost_tick_event_t::action_cost_tick_event_t( action_t& a, timespan_t time_to_tick ) :
