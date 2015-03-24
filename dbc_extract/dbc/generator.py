@@ -1275,7 +1275,7 @@ class SpellDataGenerator(DataGenerator):
          84745,  84746,             # Shallow Insight, Moderate Insight
          138537,                    # Death Knight Tier15 2PC melee pet special attack
          137597,                    # Legendary meta gem Lightning Strike
-         137323, 137288, 137247,    # Healer legendary meta
+         137323, 137247,    # Healer legendary meta
          137331, 137326,
          146137,                    # Cleave
          146071,                    # Multistrike
@@ -1285,7 +1285,6 @@ class SpellDataGenerator(DataGenerator):
          105617,                    # Alchemist's Flask
          137596,                    # Capacitance
          104510, 104423,            # Windsong Mastery / Haste buffs
-         156060, 156055, 173287,    # Hunter Scopes
          177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
          177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
          143924,                    # Leech
@@ -1296,29 +1295,16 @@ class SpellDataGenerator(DataGenerator):
 
         # Warrior:
         (
-            ( 118340, 0 ),          # Impending Victory Heal
             ( 58385,  0 ),          # Glyph of Hamstring
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144442, 0 ),          # T16 Melee 4 pc buff
-            ( 144500, 0 ),          # T16 tank 4pc proc
-            ( 156321, 0 ),          # Shield Charge for Gladiator Stance
-            ( 163558, 0 ),          # Execute off-hand
-            ( 165336, 0 ),          # Arms T17 2 piece
-            ( 165345, 0 ),          # Arms T17 4 piece
-            ( 165337, 0 ),          # Fury T17 2 piece
-            ( 165349, 0 ),          # Fury T17 4 piece
-            ( 165338, 0 ),          # Prot T17 2 piece
-            ( 165351, 0 ),          # Prot T17 4 piece
-
         ),
 
         # Paladin:
         (
             ( 86700, 5 ),           # Ancient Power
             ( 144581, 0 ),          # Blessing of the Guardians (prot T16 2-piece bonus)
-            ( 144595, 0 ),          # Divine Crusader (ret T16 4-piece bonus)
             ( 122287, 0, True ),    # Symbiosis Wrath
-            ( 96172, 0 ),           # Hand of Light damage spell
             ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
             ( 114852, 0, False ),   # Holy Prism false positives for activated
             ( 114871, 0, False ),
@@ -1330,12 +1316,11 @@ class SpellDataGenerator(DataGenerator):
         ),
 
         # Hunter:
-        ( ( 83381, 0 ), # Kill Command base dmg
+        (
           ( 82928, 0 ), # Aimed Shot Master Marksman
           ( 131900, 0 ), # Murder of Crows damage spell
           ( 138374, 5 ), # T15 2pc nuke
           ( 168811, 0 ), # Sniper Training
-          ( 171454, 0 ), # Chimaera Shot - Frost
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 90967, 0 ),  # Kill Command cooldown
           ( 157708, 2 ), # Marks Kill Shot
@@ -1345,9 +1330,6 @@ class SpellDataGenerator(DataGenerator):
         # Rogue:
         (
             ( 121474, 0 ),          # Shadow Blades off hand
-            ( 57841, 0 ),           # Killing Spree assault
-            ( 57842, 0 ),           # Killing Spree Off-Hand assault
-            ( 22482, 0 ),           # Blade Flurry damage spell
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
             ( 86392, 0, False ),    # Main Gauche false positive for activatable
@@ -1363,25 +1345,17 @@ class SpellDataGenerator(DataGenerator):
         # Priest:
         (   (  63619, 5 ), # Shadowfiend "Shadowcrawl"
             (  94472, 0 ), # Atonement Crit
-            (  65081, 0 ), # Body and Soul
             ( 114908, 0, False ), # Spirit Shell absorb
             ( 124464, 0, False ), ( 124465, 0, False ), ( 124467, 0, False ), ( 124468, 0, False ), ( 124469, 0, False ), # Shadow Mastery "duplicate" ticks
-            ( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
+            ( 127627, 3 ),
             ( 127626, 0, False ), # Devouring Plague heal (deactive)
             ( 129197, 3 ), # Mind Flay (Insanity)
             ( 179338, 3 ), # Searing Insanity
-            ( 165628, 0 ), # Item - Priest T17 Shadow 2P Bonus
             ( 165623, 0 ), # Item - Priest T17 Shadow 2P Bonus - dot spell
-
-            ( 165621, 0 ), # Item - Priest T17 Holy 2P Bonus
-            ( 165614, 0 ), # Item - Priest T17 Discipline 2P Bonus
-            ( 167694, 0 ), # Item - Priest T17 Discipline 4P Bonus
-            ( 167684, 0 ), # Item - Priest T17 Holy 4P Bonus
-            ( 165629, 0 ), # Item - Priest T17 Shadow 4P Bonus
         ),
 
         # Death Knight:
-        ( ( 70890, 0 ), # weird Scourge Strike secondary effect
+        (
           ( 51963, 5 ), # gargoyle strike
           ( 66198, 0 ), # Obliterate off-hand
           ( 66196, 0 ), # Frost Strike off-hand
@@ -1390,7 +1364,6 @@ class SpellDataGenerator(DataGenerator):
           ( 113516, 0, True ), # Symbiosis Wild Mushroom: Plague
           ( 52212, 0, False ), # Death and Decay false positive for activatable
           ( 81277, 5 ), ( 81280, 5 ), ( 50453, 5 ), # Bloodworms heal / burst
-          ( 45470, 0 ), # Death Strike heal
           ( 77535, 0 ), # Blood Shield
           ( 116783, 0 ), # Death Siphon heal
           ( 96171, 0 ), # Will of the Necropolish Rune Tap buff
@@ -1399,13 +1372,11 @@ class SpellDataGenerator(DataGenerator):
           ( 144909, 0 ), # T16 dps 4PC frost driver spell
           ( 57330, 0, True ), # Horn of Winter needs to be explicitly put in the general tree, as our (over)zealous filtering thinks it's not an active ability
           ( 47568, 0, True ), # Same goes for Empower Rune Weapon
-          ( 170202, 0 ), # Frost T17 4pc driver
           ( 170205, 0 ), # Frost T17 4pc driver continued ...
         ),
 
         # Shaman:
         ( (  77451, 0 ), (  45284, 0 ), (  45297, 0 ),  #  Overloads
-          ( 114093, 0 ),                                # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
           ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
@@ -1414,7 +1385,6 @@ class SpellDataGenerator(DataGenerator):
           ( 145002, 0, False ),                         # Lightning Elemental nuke
           ( 157348, 5 ), ( 157331, 5 ),                 # Storm elemental spells
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
-          ( 157766, 0 ),                                # Improved Chain Lightning visible buff
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
           ( 170512, 0 ), ( 170523, 0 )                  # Feral Spirit windfury (t17 enhance 4pc set bonus)
@@ -1433,18 +1403,16 @@ class SpellDataGenerator(DataGenerator):
           ( 145264, 0 ),                                          # T16 Frigid Blast
           ( 148022, 0 ),                                          # Icicle
           ( 155152, 5 ),                                          # Prismatic Crystal nuke
-          ( 157978, 0 ), ( 157979, 0 ), ( 157977, 0 ),            # Unstable magic aoe
+          ( 157978, 0 ), ( 157979, 0 ),                           # Unstable magic aoe
         ),
 
         # Warlock:
-        (   (  85692, 5 ),       # doomguard doom bolt
+        (
             ( 115746, 5 ),       # fel imp felbolt
             ( 166864, 5 ),       # inner demon soulfire
             ( 115778, 5 ),       # observer tongue lash
             ( 115748, 5 ),       # shivarra bladedance
-            ( 115770, 5 ),       # shivarra fellash
             ( 115625, 5 ),       # wrathguard mortal cleave
-            ( 115831, 5 ),       # wrathguard wrathstorm
             ( 112092, 0 ),       # glyphed shadow bolt
             ( 112866, 0, True ), # fel imp summon
             ( 112867, 0, True ), # voidlord summon
@@ -1461,27 +1429,22 @@ class SpellDataGenerator(DataGenerator):
             ( 124916, 2, True ), # meta chaos wave
             ( 103964, 2, True ), # meta touch of chaos
             ( 104232, 3, True ), # destruction rain of fire
-            ( 114790, 1 ), ( 87385, 1 ), # soulburn seed of corruption
             ( 131737, 0, False ), ( 131740, 0, False ), ( 132566, 0, False ), ( 131736, 0, False ), # Duplicated Warlock dots
             ( 111859, 0, True ), ( 111895, 0, True ), ( 111897, 0, True ), ( 111896, 0, True ), ( 111898, 2, True ), # Grimoire of Service summons
             ( 103988, 0, False ), # Demo melee
             ( 145075, 0 ),        # T16 2pc destro
             ( 145085, 0 ),        # T16 2pc demo
             ( 145159, 0 ),        # T16 4pc affli soul shard gain
-            ( 145164, 0 ),        # T16 4pc destro ember fire gain
             ( 114654, 0 ),        # Fire and Brimstone nukes
             ( 108686, 0 ),
-            ( 108685, 0 ),
             ( 109468, 0 ),
             ( 104225, 0 ),
             ( 89653, 0 ),         # Drain Life heal
-            ( 157698, 1 ),        # Soulburn: Haunt buff
-            ( 166864, 0 ),        # T17 4 piece Demo spell.
 			( 129476, 0 ),        # Immolation Aura
         ),
 
         # Monk:
-        ( ( 118864, 3 ), # Combo Breaker: Tiger Palm
+        (
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 159407, 3 ), # Combo Breaker: Chi Explosion
           ( 108557, 1, False ), # Brewmaster Jab
@@ -1504,24 +1467,16 @@ class SpellDataGenerator(DataGenerator):
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
-          ( 113769, 5 ),       # Wrath for Treants
           ( 110691, 5 ),       # Wrath for Mirror Images
-          ( 108291, 0 ), ( 108292, 0 ), ( 108293, 0 ), ( 108294, 0 ), # Heart of the Wild
           ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
           ( 150017, 5 ),       # Rake for Treants
           ( 146874, 0 ),       # Feral Rage (T16 4pc feral bonus)
           ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
-	  ( 155580, 0 ),       # Lunar Inspiration
 	  ( 155627, 0 ),       # Lunar Inspiration
 	  ( 155625, 0 ),       # Lunar Inspiration Moonfire
 	  ( 145152, 0 ),       # Bloodtalons buff
 	  ( 135597, 0 ),       # Tooth and Claw absorb buff
 	  ( 155784, 0 ),       # Primal Tenacity buff
-	  ( 165431, 0 ),       # tier17_2pc_melee
-	  ( 165432, 0 ),       # tier17_4pc_melee
-	  ( 166638, 0 ),       # tier17_4pc_melee debuff
-	  ( 166639, 0 ),       # tier17_4pc_melee proc driver
-	  ( 177969, 0 ),       # tier17_4pc_tank buff
 	  ( 137542, 0 ),       # Displacer Beast buff
         ),
     ]
