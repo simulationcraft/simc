@@ -3900,7 +3900,7 @@ struct breath_of_fire_t: public monk_spell_t
       monk_spell_t( "breath_of_fire_dot", &p, p.find_spell( 123725 ) )
     {
       background = true;
-      may_crit = true;
+      tick_may_crit = may_crit = true;
     }
   };
 
@@ -4418,12 +4418,10 @@ TODO: Verify healing values.
 struct expel_harm_heal_t: public monk_heal_t
 {
   attacks::expel_harm_t* attack;
-
   expel_harm_heal_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) )
   {
     parse_options( options_str );
-    may_crit = may_block = false;
 
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     if ( !p.glyph.targeted_expulsion -> ok() )
