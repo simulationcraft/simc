@@ -1627,11 +1627,11 @@ struct execute_off_hand_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
 
-    if ( p -> wod_hotfix )
-    { weapon_multiplier = 3.5; } // Hotfix from 2015-02-27, Fury only.
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
-    { weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent(); }
+    {
+      weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
+    }
 
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
@@ -1650,9 +1650,6 @@ struct execute_t: public warrior_attack_t
 
     sudden_death_rage = 30;
 
-    if ( p -> wod_hotfix && p -> specialization() != WARRIOR_ARMS )
-    { weapon_multiplier = 3.5; } // Hotfix from 2015-02-27, Fury/Prot only.
-
     if ( p -> spec.crazed_berserker -> ok() )
     {
       oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
@@ -1663,8 +1660,6 @@ struct execute_t: public warrior_attack_t
     }
     else if ( p -> specialization() == WARRIOR_ARMS )
     {
-      if ( p -> wod_hotfix )
-      { weapon_multiplier = 1.35; } // Was hotfixed sometime during PTR.
       sudden_death_rage = 10;
     }
 

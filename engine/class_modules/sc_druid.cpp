@@ -2776,10 +2776,7 @@ struct shred_t : public cat_attack_t
 
     if ( stealthed() )
     {
-      if ( p() -> wod_hotfix )
-        m *= 1.2;
-      else
-        m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
+      m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
     }
 
     return m;
@@ -5033,9 +5030,6 @@ struct moonfire_cat_t : public druid_spell_t
     druid_spell_t( "moonfire_cat", player, player -> find_spell( 155625 ) )
   {
     parse_options( options_str );
-
-    if ( p() -> wod_hotfix )
-      base_multiplier *= 1.2;
   }
 
   virtual void impact( action_state_t* s )
