@@ -2383,14 +2383,14 @@ struct ferocious_bite_t : public cat_attack_t
     p -> max_fb_energy = max_excess_energy + cost();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( max_energy && p() -> resources.current[ RESOURCE_ENERGY ] < p() -> max_fb_energy )
       return false;
     return cat_attack_t::ready();
   }
 
-  virtual void execute()
+  void execute()
   {
     // Berserk does affect the additional energy consumption.
     if ( p() -> buff.berserk -> check() )
@@ -2404,7 +2404,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p() -> buff.tier15_4pc_melee -> up() )
       p() -> buff.tier15_4pc_melee -> decrement();
 
-    max_excess_energy = data().effectN( 2 ).base_value();
+    max_excess_energy = -1 * data().effectN( 2 ).base_value();
   }
 
   void impact( action_state_t* state )
