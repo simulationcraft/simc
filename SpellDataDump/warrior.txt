@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
+SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior

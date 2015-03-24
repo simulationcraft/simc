@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
+SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter

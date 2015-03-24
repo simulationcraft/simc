@@ -1,4 +1,4 @@
-SimulationCraft 610-07 for World of Warcraft 6.1.2 PTR (build level 19769)
+SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -4243,7 +4243,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=128666)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Unholy Blight (id=115989) [Spell Family (15)] 
