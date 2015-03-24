@@ -2424,6 +2424,7 @@ struct chi_explosion_t: public monk_melee_attack_t
     spirited_crane_chi_explosion( p -> find_spell( 159620 ) )
   {
     parse_options( options_str );
+    may_block = false;
     sef_ability = SEF_CHI_EXPLOSION;
   }
 
@@ -3139,7 +3140,7 @@ struct touch_of_death_t: public monk_melee_attack_t
       cooldown -> duration += p -> glyph.touch_of_death -> effectN( 1 ).time_value();
       base_costs[RESOURCE_CHI] *= 1.0 + p -> glyph.touch_of_death -> effectN( 2 ).percent();
     }
-    may_crit = may_miss = may_dodge = may_parry = false;
+    may_crit = may_miss = may_dodge = may_parry = may_block = false;
   }
 
   virtual double target_armor( player_t* ) const { return 0; }
@@ -3257,6 +3258,7 @@ struct expel_harm_t: public monk_melee_attack_t
   {
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     background = true;
+    may_crit = may_block = false;
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -3609,16 +3611,30 @@ struct chi_wave_t: public monk_spell_t
 // ==========================================================================
 // Chi Burst
 // ==========================================================================
-// Healing Coefficient = 2.03
+
+struct chi_burst_heal_t: public monk_heal_t
+{
+  chi_burst_heal_t( monk_t& player ):
+    monk_heal_t( "chi_burst_heal", player, player.find_spell( 123986 ) )
+  {
+    background = true;
+    target = p();
+    attack_power_mod.direct = 2.03;
+  }
+};
 
 struct chi_burst_t: public monk_spell_t
 {
+  chi_burst_heal_t* heal;
   chi_burst_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "chi_burst", player, player -> talent.chi_burst )
+    monk_spell_t( "chi_burst", player, player -> talent.chi_burst ),
+    heal( 0 )
   {
     sef_ability = SEF_CHI_BURST;
 
     parse_options( options_str );
+    heal = new chi_burst_heal_t( *player );
+    execute_action = heal;
     aoe = -1;
     interrupt_auto_attack = false;
     attack_power_mod.direct = 2.75; // hardcoded
@@ -3629,13 +3645,28 @@ struct chi_burst_t: public monk_spell_t
 // Chi Torpedo
 // ==========================================================================
 
+struct chi_torpedo_heal_t: public monk_heal_t
+{
+  chi_torpedo_heal_t( monk_t& player ):
+    monk_heal_t( "chi_torpedo_heal", player, player.find_spell( 124040 ) )
+  {
+    background = true;
+    target = p();
+  }
+};
+
 struct chi_torpedo_t: public monk_spell_t
 {
+  chi_torpedo_heal_t* heal;
   chi_torpedo_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
+    monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() ),
+    heal( 0 )
   {
     parse_options( options_str );
     aoe = -1;
+
+    heal = new chi_torpedo_heal_t( *player );
+    execute_action = heal;
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
     cooldown -> duration += p() -> talent.celerity -> effectN( 1 ).time_value();
@@ -3869,6 +3900,7 @@ struct breath_of_fire_t: public monk_spell_t
       monk_spell_t( "breath_of_fire_dot", &p, p.find_spell( 123725 ) )
     {
       background = true;
+      may_crit = true;
     }
   };
 
@@ -4391,6 +4423,7 @@ struct expel_harm_heal_t: public monk_heal_t
     monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) )
   {
     parse_options( options_str );
+    may_crit = may_block = false;
 
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     if ( !p.glyph.targeted_expulsion -> ok() )
@@ -4648,18 +4681,19 @@ struct zen_sphere_t: public monk_heal_t
 
     school = SCHOOL_NATURE;
     attack_power_mod.tick = 0.095;
+    hasted_ticks = false;
 
     cooldown -> duration = data().cooldown();
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
     monk_heal_t::tick( d );
 
     zen_sphere_damage -> execute();
   }
 
-  virtual void last_tick( dot_t* d )
+  void last_tick( dot_t* d )
   {
     monk_heal_t::last_tick( d );
 
@@ -4751,7 +4785,7 @@ struct guard_t: public monk_absorb_t
     monk_absorb_t( "guard", p, p.spec.guard )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = may_crit = false;
     trigger_gcd = timespan_t::zero();
     target = &p;
     cooldown -> duration = data().charge_cooldown();

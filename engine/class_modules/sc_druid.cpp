@@ -2432,7 +2432,7 @@ struct ferocious_bite_t : public cat_attack_t
     }
   }
 
-  virtual void consume_resource()
+  void consume_resource()
   {
     // Ferocious Bite consumes 25+x energy, with 0 <= x <= 25.
     // Consumes the base_cost and handles Omen of Clarity
