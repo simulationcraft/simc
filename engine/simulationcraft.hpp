@@ -2828,6 +2828,7 @@ struct sim_t : private sc_thread_t
   std::string apikey;
   bool ilevel_raid_report;
   bool fancy_target_distance_stuff;
+  double scaling_normalized;
 
   sim_report_information_t report_information;
 

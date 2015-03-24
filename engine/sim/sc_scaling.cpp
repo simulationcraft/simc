@@ -433,7 +433,6 @@ void scaling_t::analyze_lag()
   delta_sim = ref_sim = 0;
 }
 
-
 // scaling_t::normalize =====================================================
 
 void scaling_t::normalize()
@@ -448,6 +447,8 @@ void scaling_t::normalize()
     for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
     {
       double divisor = p -> scaling[ sm ].get_stat( p -> normalize_by() );
+
+      divisor *= ( 1 / sim -> scaling_normalized );
 
       if ( divisor == 0 ) continue;
 

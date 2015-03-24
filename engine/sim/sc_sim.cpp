@@ -1053,6 +1053,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   apikey( "" ),
   ilevel_raid_report( false ),
   fancy_target_distance_stuff( false ),
+  scaling_normalized( 1.0 ),
   report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
@@ -2788,6 +2789,7 @@ void sim_t::create_options()
   add_option( opt_string( "apikey", apikey ) );
   add_option( opt_bool( "ilevel_raid_report", ilevel_raid_report ) );
   add_option( opt_bool( "fancy_target_distance_stuff", fancy_target_distance_stuff ) );
+  add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );
 }
