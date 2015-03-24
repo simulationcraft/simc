@@ -5188,7 +5188,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     parse_options( options_str );
 
     may_miss = may_crit = hasted_ticks = callbacks = false;
-    tick_zero = true;
+    tick_zero = dynamic_tick_action = true;
 
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     school = tick_action -> school;
