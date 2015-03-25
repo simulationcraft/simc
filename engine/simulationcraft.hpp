@@ -6138,9 +6138,9 @@ public:
   bool has_travel_events_for( const player_t* target ) const;
   const std::vector<travel_event_t*>& current_travel_events() const
   { return travel_events; }
-  void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0 ) );
-  bool consume_cost_per_second( timespan_t tick_time );
-  bool need_to_trigger_costs_per_second() const
+  virtual void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0 ) );
+  virtual bool consume_cost_per_second( timespan_t tick_time );
+  virtual bool need_to_trigger_costs_per_second() const
   { return std::accumulate( base_costs_per_second.begin(), base_costs_per_second.end(), 0.0 ) != 0; }
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
