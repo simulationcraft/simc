@@ -1088,13 +1088,19 @@ struct melee_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
+    if ( sudden_death )
+    {
+      if ( s -> result != RESULT_MISS ) // Sudden death procs on everything except a miss.
+      {
+        if ( p() -> rppm.sudden_death -> trigger() )
+        {
+          p() -> buff.sudden_death -> trigger();
+        }
+      }
+    }
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
       trigger_rage_gain( s );
-      if ( sudden_death && p() -> rppm.sudden_death -> trigger() )
-      {
-        p() -> buff.sudden_death -> trigger();
-      }
       if ( p() -> active.enhanced_rend )
       {
         if ( td( s -> target ) -> dots_rend -> is_ticking() )
@@ -1700,7 +1706,7 @@ struct execute_t: public warrior_attack_t
     if ( p() -> buff.tier16_4pc_death_sentence -> up() && target -> health_percentage() < 20 )
       c *= 1.0 + p() -> buff.tier16_4pc_death_sentence -> data().effectN( 2 ).percent();
 
-    if ( p() -> buff.sudden_death -> up() && c > 0.0 )
+    if ( p() -> buff.sudden_death -> check() && c > 0.0 )
     {
       if ( p() -> mastery.weapons_master -> ok() && target -> health_percentage() < 20 )
       {
@@ -4498,7 +4504,7 @@ struct warrior_real_ppm_t: public Base
 struct sudden_death_t: public warrior_real_ppm_t < real_ppm_t >
 {
   sudden_death_t( warrior_t& p ):
-    base_t( p, real_ppm_t( p, 2.5, RPPM_HASTE ) )
+    base_t( p, real_ppm_t( p, p.talents.sudden_death -> real_ppm(), RPPM_HASTE ) )
   {}
 };
 };
