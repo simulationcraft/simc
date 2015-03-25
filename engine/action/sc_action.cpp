@@ -2996,7 +2996,8 @@ bool action_t::consume_cost_per_second( timespan_t tick_time )
                                cost, util::resource_type_string( r ),
                                name(), player -> resources.current[ r ] );
     }
-    double resource_consumed = player -> resource_loss( r, cost, nullptr, this );
+
+    resource_consumed = player -> resource_loss( r, cost, nullptr, this );
     stats -> consume_resource( r, resource_consumed );
 
     if ( sim -> log )
