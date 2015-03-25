@@ -43,6 +43,9 @@ void print_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* 
   if ( s -> num_executes.mean() == 0 && s -> compound_amount == 0 && !sim -> debug )
     return;
 
+  if ( s -> player -> collected_data.fight_length.mean() == 0 )
+    return;
+
   int id = find_id( s );
 
   char format[] =
