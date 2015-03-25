@@ -16,7 +16,7 @@ level=100
 race=blood_elf
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.12..12
+talents=0230023
 spec=windwalker
 glyphs=touch_of_death,blackout_kick
 
@@ -44,7 +44,7 @@ level=100
 race=blood_elf
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.12..12
+talents=0230023
 spec=windwalker
 glyphs=touch_of_death,blackout_kick
 
@@ -72,7 +72,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!.02.011
+talents=0130122
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978
@@ -100,7 +100,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!.02.012
+talents=0130123
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978
@@ -128,7 +128,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!.02.011
+talents=0130122
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978
@@ -155,7 +155,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!.02.012
+talents=0130123
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978

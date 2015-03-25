@@ -241,6 +241,7 @@ public:
     buff_t* energizing_brew;
     buff_t* forceful_winds;
     buff_t* fortifying_brew;
+    buff_t* gift_of_the_serpent;
     buff_t* mana_tea;
     buff_t* power_strikes;
     buff_t* rushing_jade_wind;
@@ -1855,6 +1856,15 @@ public:
     }
   }
 
+  void summon_gots_orb( double spell_proc_rate )
+  {
+    if ( p() -> spec.brewing_mana_tea -> ok() )
+    {
+      double proc_rate = spell_proc_rate * p() -> cache.mastery_value();
+      p() -> buff.gift_of_the_serpent -> trigger( 1, 1, proc_rate );
+    }
+  }
+
   virtual void consume_resource()
   {
     ab::consume_resource();
@@ -2239,6 +2249,65 @@ struct tiger_palm_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
+// Rising Sun Kick
+// ==========================================================================
+
+struct rsk_debuff_t: public monk_melee_attack_t
+{
+  rsk_debuff_t( monk_t* p, const spell_data_t* s ):
+    monk_melee_attack_t( "rsk_debuff", p, s )
+  {
+    dual = true;
+    aoe = -1;
+    weapon_multiplier = 0;
+    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+
+    td( s -> target ) -> debuff.rising_sun_kick -> trigger();
+  }
+};
+
+struct rising_sun_kick_t: public monk_melee_attack_t
+{
+  rsk_debuff_t* rsk_debuff;
+
+  rising_sun_kick_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
+    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
+  {
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
+    parse_options( options_str );
+    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    base_multiplier *= 10.56; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
+    sef_ability = SEF_RISING_SUN_KICK;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+
+    rsk_debuff -> execute();
+  }
+
+  virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
+
+    double savings = base_costs[RESOURCE_CHI] - cost();
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> track_chi_consumption += savings;
+  }
+};
+
+// ==========================================================================
 // Blackout Kick
 // ==========================================================================
 
@@ -2574,65 +2643,6 @@ struct chi_explosion_t: public monk_melee_attack_t
       s -> result_amount = damage;
       monk_melee_attack_t::impact( s );
     }
-  }
-};
-
-// ==========================================================================
-// Rising Sun Kick
-// ==========================================================================
-
-struct rsk_debuff_t: public monk_melee_attack_t
-{
-  rsk_debuff_t( monk_t* p, const spell_data_t* s ):
-    monk_melee_attack_t( "rsk_debuff", p, s )
-  {
-    dual = true;
-    aoe = -1;
-    weapon_multiplier = 0;
-    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    monk_melee_attack_t::impact( s );
-
-    td( s -> target ) -> debuff.rising_sun_kick -> trigger();
-  }
-};
-
-struct rising_sun_kick_t: public monk_melee_attack_t
-{
-  rsk_debuff_t* rsk_debuff;
-
-  rising_sun_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
-    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
-  {
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
-    parse_options( options_str );
-    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-    base_multiplier *= 10.56; // hardcoded into tooltip
-    spell_power_mod.direct = 0.0;
-    sef_ability = SEF_RISING_SUN_KICK;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    monk_melee_attack_t::impact( s );
-
-    rsk_debuff -> execute();
-  }
-
-  virtual void consume_resource()
-  {
-    monk_melee_attack_t::consume_resource();
-
-    double savings = base_costs[RESOURCE_CHI] - cost();
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += savings;
   }
 };
 
@@ -3555,6 +3565,12 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     attack_power_mod.direct = 0.500; // Hard code 09/09/14
     target = player;
   }
+
+  void impact(action_state_t* s)
+  {
+    monk_heal_t::impact( s );
+    summon_gots_orb( 0.25 );
+  }
 };
 
 struct chi_wave_dmg_tick_t: public monk_spell_t
@@ -3620,6 +3636,12 @@ struct chi_burst_heal_t: public monk_heal_t
     background = true;
     target = p();
     attack_power_mod.direct = 2.03;
+  }
+
+  void impact( action_state_t* s )
+  {
+    monk_heal_t::impact( s );
+    summon_gots_orb( 0.20 );
   }
 };
 
@@ -4406,6 +4428,12 @@ struct enveloping_mist_t: public monk_heal_t
 
     return monk_heal_t::execute_time();
   }
+
+  void impact( action_state_t* s )
+  {
+    monk_heal_t::impact( s );
+    summon_gots_orb( 0.25 );
+  }
 };
 
 // ==========================================================================
@@ -4434,6 +4462,12 @@ struct expel_harm_heal_t: public monk_heal_t
       base_costs[RESOURCE_MANA] = 0;
     else
       base_costs[RESOURCE_ENERGY] = 0;
+  }
+
+  void impact( action_state_t* s )
+  {
+    monk_heal_t::impact( s );
+    summon_gots_orb( 1.00 );
   }
 
   virtual void execute()
@@ -4663,6 +4697,12 @@ struct zen_sphere_t: public monk_heal_t
       attack_power_mod.direct = 1.25;
       school = SCHOOL_NATURE;
     }
+
+    void impact( action_state_t* s )
+    {
+      monk_heal_t::impact( s );
+      summon_gots_orb( 0.20 );
+    }
   };
 
   zen_sphere_detonate_heal_t* zen_sphere_detonate_heal;
@@ -4688,6 +4728,7 @@ struct zen_sphere_t: public monk_heal_t
   {
     monk_heal_t::tick( d );
 
+    summon_gots_orb( 0.20 );
     zen_sphere_damage -> execute();
   }
 
@@ -5291,6 +5332,8 @@ void monk_t::create_buffs()
 
   buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) )
     .add_invalidate( CACHE_CRIT );
+
+  buff.gift_of_the_serpent = buff_creator_t( this, "gift_of_the_serpent", find_spell( 119031 ) ).max_stack( 99 );
 
   buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) );
 
@@ -6159,14 +6202,14 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Purifying Brew", "if=stagger.moderate&buff.shuffle.remains>=6" );
   st -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   st -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
-  st -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
-  st -> add_action( this, "Keg Smash", "if=chi.max-chi>=1&!buff.serenity.remains" );
+  st -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi.max-chi>=2&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
+  st -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down" );
   st -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
-  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
-  st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
   st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   st -> add_action( this, "Tiger Palm" );
@@ -6180,15 +6223,14 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   aoe -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
   aoe -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
-  aoe -> add_action( this, "Breath of Fire", "if=(chi>=3|buff.serenity.up)&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=2.4&!talent.chi_explosion.enabled" );
-  aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=1&!buff.serenity.remains" );
-  aoe -> add_action( "rushing_jade_wind,if=chi.max-chi>=1&!buff.serenity.remains&talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
+  aoe -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
+  aoe -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
+  aoe -> add_action( "rushing_jade_wind,if=chi.max-chi>=1&buff.serenity.down" );
   aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down" );
-  aoe -> add_action( this, "Blackout Kick", "if=chi>=4" );
-  aoe -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
-  aoe -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
+  aoe -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
   aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Tiger Palm" );
