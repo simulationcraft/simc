@@ -253,6 +253,7 @@ public:
     buff_t* tiger_strikes;
     buff_t* tigereye_brew;
     buff_t* tigereye_brew_use;
+    buff_t* vital_mists;
 
     buff_t* zen_meditation;
   } buff;
@@ -1876,8 +1877,13 @@ public:
     {
       // Track Chi Consumption
       if ( current_resource() == RESOURCE_CHI )
+      {
         p() -> track_chi_consumption += ab::resource_consumed;
-
+        if ( p() -> spec.brewing_mana_tea -> ok() && p() -> current_stance() == SPIRITED_CRANE )
+        {
+          p() -> buff.vital_mists -> trigger( static_cast<int>( ab::resource_consumed ) );
+        }
+      }
       if ( p() -> spec.brewing_tigereye_brew -> ok() || p() -> spec.brewing_mana_tea -> ok() )
       {
         int chi_to_consume = p() -> spec.brewing_tigereye_brew -> ok() ? p() -> spec.brewing_tigereye_brew -> effectN( 1 ).base_value() : 4;
@@ -4659,7 +4665,19 @@ struct surging_mist_t: public monk_heal_t
     if ( p() -> buff.channeling_soothing_mist -> check() )
       return timespan_t::zero();
 
+    if ( p() -> buff.vital_mists -> up() )
+      et *= p() -> buff.vital_mists -> current_stack * p() -> buff.vital_mists -> data().effectN( 1 ).percent();
+
     return et;
+  }
+
+  virtual double cost() const
+  {
+    double c = monk_heal_t::cost();
+    if ( p() -> buff.vital_mists -> up() )
+      c *= p() -> buff.vital_mists -> current_stack * p() -> buff.vital_mists -> data().effectN( 2 ).percent();
+
+    return c;
   }
 
   virtual void execute()
@@ -4668,6 +4686,9 @@ struct surging_mist_t: public monk_heal_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
+
+    if ( p() -> buff.vital_mists -> up() )
+      p() -> buff.vital_mists -> reset();
   }
 
   virtual void impact( action_state_t* /*s*/ )
@@ -5336,6 +5357,8 @@ void monk_t::create_buffs()
   buff.gift_of_the_serpent = buff_creator_t( this, "gift_of_the_serpent", find_spell( 119031 ) ).max_stack( 99 );
 
   buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) );
+
+  buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
 
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" ).max_stack( 5 );
