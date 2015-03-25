@@ -255,7 +255,6 @@ public:
     melee_attack_t* frozen_power;
     spell_t* frozen_runeblade;
     spell_t* necrotic_plague;
-    spell_t* breath_of_sindragosa;
     spell_t* necrosis;
     heal_t* conversion;
     heal_t* mark_of_sindragosa;
@@ -2633,12 +2632,6 @@ void death_knight_spell_t::consume_resource()
 
   if ( result_is_hit( execute_state -> result ) )
     consume_runes( use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
-
-  if ( p() -> active_spells.breath_of_sindragosa &&
-       p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.breath_of_sindragosa -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
-  {
-    p() -> active_spells.breath_of_sindragosa -> get_dot() -> cancel();
-  }
 }
 
 // death_knight_spell_t::execute() ==========================================
@@ -5144,7 +5137,6 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   {
     aoe = -1;
     background = true;
-    resource_current = RESOURCE_RUNIC_POWER;
   }
 
   void execute()
@@ -5199,6 +5191,13 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     return player -> sim -> expected_iteration_time * 2;
   }
 
+  void cancel()
+  {
+    death_knight_spell_t::cancel();
+    if ( dot_t* d = get_dot( target ) )
+      d -> cancel();
+  }
+
   void execute()
   {
     dot_t* d = get_dot( target );
@@ -5207,16 +5206,8 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
       d -> cancel();
     else
     {
-      p() -> active_spells.breath_of_sindragosa = this;
-      p() -> active_spells.breath_of_sindragosa -> target = target;
       death_knight_spell_t::execute();
     }
-  }
-
-  void last_tick( dot_t* dot )
-  {
-    death_knight_spell_t::last_tick( dot );
-    p() -> active_spells.breath_of_sindragosa = 0;
   }
 
   void init()

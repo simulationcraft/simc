@@ -1088,15 +1088,10 @@ struct melee_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( sudden_death )
+    // Sudden death procs on everything except a miss.
+    if ( sudden_death && s -> result != RESULT_MISS && p() -> rppm.sudden_death -> trigger() )
     {
-      if ( s -> result != RESULT_MISS ) // Sudden death procs on everything except a miss.
-      {
-        if ( p() -> rppm.sudden_death -> trigger() )
-        {
-          p() -> buff.sudden_death -> trigger();
-        }
-      }
+      p() -> buff.sudden_death -> trigger();
     }
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
