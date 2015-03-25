@@ -6797,6 +6797,11 @@ public:
   void set_frequency( double frequency )
   { freq = frequency; rppm = freq * modifier; }
 
+  void set_initial_precombat_time( timespan_t precombat )
+  {
+    initial_precombat_time = precombat;
+  }
+
   double get_frequency() const
   { return freq; }
 

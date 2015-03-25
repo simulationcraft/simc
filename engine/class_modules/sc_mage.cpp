@@ -4797,6 +4797,7 @@ void mage_t::init_spells()
 
   // RPPM
   rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() );
+  rppm_pyromaniac.set_initial_precombat_time( timespan_t::from_seconds( -120 ) );
   rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 }
 
