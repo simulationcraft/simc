@@ -4444,9 +4444,12 @@ struct outbreak_t : public death_knight_spell_t
     {
       p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
 
-      p() -> trigger_runic_empowerment( resource_consumed );
-      p() -> trigger_runic_corruption( resource_consumed );
-      p() -> trigger_blood_charge( resource_consumed );
+      if ( resource_consumed > 0 )
+      {
+        p() -> trigger_runic_empowerment( resource_consumed );
+        p() -> trigger_runic_corruption( resource_consumed );
+        p() -> trigger_blood_charge( resource_consumed );
+      }
     }
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
@@ -5139,19 +5142,6 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     background = true;
   }
 
-  void execute()
-  {
-    death_knight_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> trigger_runic_empowerment( resource_consumed );
-      p() -> trigger_blood_charge( resource_consumed );
-      p() -> trigger_runic_corruption( resource_consumed );
-      p() -> trigger_shadow_infusion( resource_consumed );
-    }
-  }
-
   void impact( action_state_t* s )
   {
     if ( s -> target == target )
@@ -5196,6 +5186,18 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     death_knight_spell_t::cancel();
     if ( dot_t* d = get_dot( target ) )
       d -> cancel();
+  }
+
+  bool consume_cost_per_second( timespan_t tick_time )
+  {
+    bool ret = death_knight_spell_t::consume_cost_per_second( tick_time );
+
+    p() -> trigger_runic_empowerment( resource_consumed );
+    p() -> trigger_blood_charge( resource_consumed );
+    p() -> trigger_runic_corruption( resource_consumed );
+    p() -> trigger_shadow_infusion( resource_consumed );
+
+    return ret;
   }
 
   void execute()
