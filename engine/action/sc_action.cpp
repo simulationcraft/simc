@@ -355,7 +355,7 @@ action_t::action_t( action_e       ty,
   tick_action                    = NULL;
   execute_action                 = NULL;
   impact_action                  = NULL;
-  dynamic_tick_action            = false;
+  dynamic_tick_action            = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
   starved_proc                   = NULL;
   action_skill                   = player -> base.skill;
 
