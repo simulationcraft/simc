@@ -75,5 +75,5 @@ finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multist
 finger2=signet_of_crystalline_barrage,id=113651,bonus_id=567,enchant=gift_of_multistrike
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
 trinket2=quiescent_runestone,id=113859,bonus_id=567
-main_hand=spire_of_tectus,id=113639,bonus_id=567,enchant=mark_of_the_frostwolf
+main_hand=staff_of_the_grand_imperator,id=113857,bonus_id=567,enchant=mark_of_the_frostwolf
 save=Mage_Frost_T17H.simc

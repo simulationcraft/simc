@@ -123,18 +123,19 @@ finger1=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
-main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_the_frostwolf
+main_hand=fang_of_the_earth,id=113934,bonus_id=567,enchant=mark_of_the_frostwolf
+off_hand=enginestokers_lantern,id=113960,bonus_id=567
 
 # Gear Summary
-# gear_ilvl=701.00
-# gear_stamina=4763
-# gear_intellect=3993
-# gear_spell_power=1837
-# gear_crit_rating=1097
-# gear_haste_rating=739
-# gear_mastery_rating=728
+# gear_ilvl=700.94
+# gear_stamina=4759
+# gear_intellect=3989
+# gear_spell_power=1834
+# gear_crit_rating=1191
+# gear_haste_rating=728
+# gear_mastery_rating=505
 # gear_armor=900
-# gear_multistrike_rating=1303
+# gear_multistrike_rating=1435
 # gear_versatility_rating=546
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
