@@ -59,6 +59,7 @@ trinket2=ironspike_chew_toy,id=119192,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_shadowmoon
 
 # Gear Summary
+# gear_ilvl=685.33
 # gear_stamina=4114
 # gear_intellect=2973
 # gear_spirit=1090

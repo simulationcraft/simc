@@ -113,6 +113,7 @@ trinket2=turbulent_emblem,id=114491
 main_hand=steelforged_greataxe,id=116453,bonus_id=76/525,enchant_id=5330
 
 # Gear Summary
+# gear_ilvl=628.53
 # gear_strength=1837
 # gear_stamina=2439
 # gear_crit_rating=914

@@ -145,6 +145,7 @@ trinket2=fires_of_the_sun,id=110011,bonus_id=524
 main_hand=hammer_of_the_soulbinder,id=110046,bonus_id=524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_strength=1960
 # gear_stamina=2465
 # gear_crit_rating=320

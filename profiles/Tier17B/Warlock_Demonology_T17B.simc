@@ -120,6 +120,7 @@ main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=11
 off_hand=caged_living_ooze,id=113879,bonus_id=41/562/565/567,gem_id=115812
 
 # Gear Summary
+# gear_ilvl=706.56
 # gear_stamina=5014
 # gear_intellect=4208
 # gear_spell_power=1940

@@ -80,6 +80,7 @@ trinket2=blood_seal_of_azzakel,id=109995
 main_hand=azzakels_boltslinger,id=110048,enchant=oglethorpes_missile_splitter
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_agility=1907
 # gear_stamina=2465
 # gear_crit_rating=575

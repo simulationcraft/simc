@@ -101,6 +101,7 @@ trinket2=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=567
 main_hand=headlopper_skullscythe,id=119448,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
+# gear_ilvl=701.00
 # gear_agility=3175
 # gear_stamina=4763
 # gear_crit_rating=744

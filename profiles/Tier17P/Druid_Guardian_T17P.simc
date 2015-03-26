@@ -68,6 +68,7 @@ trinket2=enforcers_stun_grenade,id=110017,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5336
 
 # Gear Summary
+# gear_ilvl=629.00
 # gear_agility=1630
 # gear_stamina=2446
 # gear_crit_rating=598

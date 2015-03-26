@@ -251,6 +251,7 @@ trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_stamina=2465
 # gear_intellect=1889
 # gear_spell_power=958

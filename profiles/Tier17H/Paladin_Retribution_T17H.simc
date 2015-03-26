@@ -150,6 +150,7 @@ trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566
 main_hand=thogars_control_rod,id=113953,bonus_id=566,enchant=mark_of_warsong
 
 # Gear Summary
+# gear_ilvl=685.33
 # gear_strength=3454
 # gear_stamina=4114
 # gear_crit_rating=814

@@ -138,6 +138,7 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=567/523/448,gem_id=115809,encha
 off_hand=kromogs_brutal_fist,id=113927,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 
 # Gear Summary
+# gear_ilvl=706.56
 # gear_strength=4161
 # gear_stamina=4946
 # gear_crit_rating=2537

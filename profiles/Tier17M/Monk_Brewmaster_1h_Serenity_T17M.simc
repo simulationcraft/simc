@@ -102,6 +102,7 @@ main_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_blackrock
 off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
+# gear_ilvl=700.94
 # gear_agility=3128
 # gear_stamina=4694
 # gear_crit_rating=739

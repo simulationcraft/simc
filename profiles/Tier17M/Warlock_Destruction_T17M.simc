@@ -104,6 +104,7 @@ trinket2=goren_soul_repository,id=119194,bonus_id=567
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant_id=5384
 
 # Gear Summary
+# gear_ilvl=701.00
 # gear_stamina=4763
 # gear_intellect=3923
 # gear_spell_power=1837

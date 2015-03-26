@@ -101,6 +101,7 @@ main_hand=tharbeks_unholy_charge,id=118725,bonus_id=524,enchant_id=5352
 off_hand=bloodied_hand_of_woe,id=110058,bonus_id=524,enchant_id=5352
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_agility=1778
 # gear_stamina=2428
 # gear_crit_rating=590

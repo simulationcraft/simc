@@ -147,6 +147,7 @@ trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
+# gear_ilvl=701.00
 # gear_agility=4011
 # gear_stamina=4763
 # gear_crit_rating=1564

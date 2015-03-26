@@ -89,6 +89,7 @@ trinket2=gorashans_lodestone_spike,id=109998,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant=mark_of_the_shattered_hand
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_agility=1907
 # gear_stamina=2465
 # gear_crit_rating=1562

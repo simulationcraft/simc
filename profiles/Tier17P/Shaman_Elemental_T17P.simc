@@ -94,6 +94,7 @@ trinket2=fleshrenders_meathook,id=110002,bonus_id=524
 main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_the_frostwolf
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_stamina=2465
 # gear_intellect=1836
 # gear_spell_power=958

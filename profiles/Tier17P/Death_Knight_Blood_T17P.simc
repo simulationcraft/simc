@@ -102,6 +102,7 @@ trinket2=solar_containment_unit,id=110016,bonus_id=524
 main_hand=hammer_of_the_soulbinder,id=110046,bonus_id=524,enchant=rune_of_the_stoneskin_gargoyle
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_strength=1642
 # gear_stamina=2465
 # gear_crit_rating=191

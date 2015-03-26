@@ -150,6 +150,7 @@ trinket2=spores_of_alacrity,id=110014,bonus_id=524
 main_hand=steelforged_greataxe,id=116453,bonus_id=118/525,enchant_id=5331
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_strength=1836
 # gear_stamina=2465
 # gear_crit_rating=403

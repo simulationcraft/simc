@@ -117,6 +117,7 @@ main_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,ench
 off_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
+# gear_ilvl=706.56
 # gear_agility=4107
 # gear_stamina=4946
 # gear_crit_rating=691

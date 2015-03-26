@@ -81,6 +81,7 @@ trinket2=blood_seal_of_azzakel,id=109995
 main_hand=bonetooth_longbow,id=110037,enchant=megawatt_filament
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_agility=1907
 # gear_stamina=2465
 # gear_crit_rating=1308

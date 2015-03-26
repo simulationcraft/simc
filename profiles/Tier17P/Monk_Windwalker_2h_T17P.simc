@@ -145,6 +145,7 @@ trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=turbulent_polearm,id=115324,bonus_id=489,enchant=mark_of_the_frostwolf
 
 # Gear Summary
+# gear_ilvl=630.67
 # gear_agility=1969
 # gear_stamina=2479
 # gear_crit_rating=342

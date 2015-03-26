@@ -68,6 +68,7 @@ trinket2=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=567
 main_hand=earthwarped_bladestaff,id=113640,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
+# gear_ilvl=700.00
 # gear_agility=3133
 # gear_stamina=4700
 # gear_haste_rating=669

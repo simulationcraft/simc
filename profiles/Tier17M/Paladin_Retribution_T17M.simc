@@ -150,6 +150,7 @@ trinket2=horn_of_screaming_spirits,id=119193,bonus_id=567
 main_hand=thogars_control_rod,id=113953,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
+# gear_ilvl=701.00
 # gear_strength=3992
 # gear_stamina=4763
 # gear_crit_rating=1098

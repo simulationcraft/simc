@@ -180,6 +180,7 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=mark_of_blackrock
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
 
 # Gear Summary
+# gear_ilvl=700.00
 # gear_strength=3171
 # gear_stamina=4759
 # gear_crit_rating=844

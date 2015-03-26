@@ -128,6 +128,7 @@ trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_the_frostwolf
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_stamina=2465
 # gear_intellect=1854
 # gear_spell_power=958

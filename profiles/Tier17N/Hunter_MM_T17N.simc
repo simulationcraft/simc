@@ -81,6 +81,7 @@ trinket2=humming_blackiron_trigger,id=113985
 main_hand=mouth_of_the_fury,id=113885,enchant_id=5276
 
 # Gear Summary
+# gear_ilvl=670.67
 # gear_agility=3021
 # gear_stamina=3589
 # gear_crit_rating=1445

@@ -83,6 +83,7 @@ main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
+# gear_ilvl=700.94
 # gear_agility=3894
 # gear_stamina=4694
 # gear_crit_rating=871

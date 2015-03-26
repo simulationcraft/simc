@@ -119,6 +119,7 @@ trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant_id=5384
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_stamina=2465
 # gear_intellect=1960
 # gear_spell_power=958

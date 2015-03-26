@@ -180,6 +180,7 @@ main_hand=steelforged_saber,id=116454,bonus_id=208/525,enchant=mark_of_blackrock
 off_hand=steelforged_shield,id=116647,bonus_id=207/525
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_strength=1641
 # gear_stamina=2462
 # gear_crit_rating=368

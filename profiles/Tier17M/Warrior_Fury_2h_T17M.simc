@@ -138,6 +138,7 @@ main_hand=the_black_hand,id=113979,bonus_id=567,enchant=mark_of_the_thunderlord
 off_hand=the_black_hand,id=113979,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
+# gear_ilvl=700.94
 # gear_strength=4313
 # gear_stamina=5244
 # gear_crit_rating=2148

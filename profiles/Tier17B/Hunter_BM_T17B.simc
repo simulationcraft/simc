@@ -77,6 +77,7 @@ trinket2=humming_blackiron_trigger,id=113985,bonus_id=41/562/565/567,gem_id=1158
 main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5383
 
 # Gear Summary
+# gear_ilvl=706.60
 # gear_agility=4211
 # gear_stamina=5019
 # gear_crit_rating=867

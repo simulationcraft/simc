@@ -111,6 +111,7 @@ trinket2=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115809
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 
 # Gear Summary
+# gear_ilvl=706.60
 # gear_strength=4211
 # gear_stamina=5019
 # gear_crit_rating=2533

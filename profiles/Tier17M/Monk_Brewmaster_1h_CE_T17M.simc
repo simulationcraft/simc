@@ -102,6 +102,7 @@ main_hand=phemos_double_slasher,id=113667,bonus_id=567,enchant=mark_of_bleeding_
 off_hand=phemos_double_slasher,id=113667,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
+# gear_ilvl=699.06
 # gear_agility=3092
 # gear_stamina=4640
 # gear_crit_rating=551

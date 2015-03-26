@@ -173,6 +173,7 @@ trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_the_thunderlord
 
 # Gear Summary
+# gear_ilvl=630.00
 # gear_stamina=2465
 # gear_intellect=1836
 # gear_spell_power=958

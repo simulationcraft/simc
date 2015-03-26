@@ -126,6 +126,7 @@ trinket2=quiescent_runestone,id=113859,bonus_id=566
 main_hand=spire_of_tectus,id=113639,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
+# gear_ilvl=670.67
 # gear_stamina=3589
 # gear_intellect=2987
 # gear_spell_power=1389

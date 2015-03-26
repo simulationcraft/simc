@@ -102,6 +102,7 @@ main_hand=steelforged_hammer,id=116646,bonus_id=54/559,enchant_id=5336
 off_hand=steelforged_hammer,id=116646,bonus_id=54/559,enchant_id=5384
 
 # Gear Summary
+# gear_ilvl=669.38
 # gear_agility=2338
 # gear_stamina=3509
 # gear_crit_rating=681
