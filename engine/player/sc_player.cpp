@@ -2767,7 +2767,8 @@ double player_t::composite_leech() const
 
 double player_t::composite_run_speed() const
 {
-  return composite_speed_rating() / current.rating.speed;
+  // speed DRs using the following formula:
+  return 1.0 / ( 1 / 0.29 + ( current.rating.speed * 100 ) / composite_speed_rating() );
 }
 
 // player_t::composite_avoidance ================================================
