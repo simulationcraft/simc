@@ -109,8 +109,8 @@ actions.single_target+=/call_action_list,name=init_water_jet,if=pet.water_elemen
 actions.single_target+=/frostbolt
 actions.single_target+=/ice_lance,moving=1
 
-head=flareeyed_hood,id=113868,bonus_id=566
-neck=choker_of_bloody_flame,id=120077,bonus_id=566,enchant=gift_of_multistrike
+head=vilebreath_mask,id=113596,bonus_id=567
+neck=odyssian_choker,id=113833,bonus_id=567,enchant=gift_of_multistrike
 shoulders=arcanoshatter_mantle,id=115551,bonus_id=566
 back=runescribed_gronncloak,id=120078,bonus_id=566,enchant=gift_of_multistrike
 chest=arcanoshatter_robes,id=115550,bonus_id=566
@@ -119,21 +119,21 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=566
 waist=deckhands_rope_belt,id=113967,bonus_id=566
 legs=arcanoshatter_leggings,id=115554,bonus_id=566
 feet=inferno_breath_sandals,id=113942,bonus_id=566
-finger1=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_multistrike
-finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistrike
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
-main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_frostwolf
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,bonus_id=566,enchant=gift_of_multistrike
+finger2=signet_of_crystalline_barrage,id=113651,bonus_id=567,enchant=gift_of_multistrike
+trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
+trinket2=quiescent_runestone,id=113859,bonus_id=567
+main_hand=spire_of_tectus,id=113639,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_stamina=4114
-# gear_intellect=3455
+# gear_stamina=4151
+# gear_intellect=3456
 # gear_spell_power=1596
-# gear_crit_rating=953
-# gear_haste_rating=642
-# gear_mastery_rating=620
+# gear_crit_rating=776
+# gear_haste_rating=836
+# gear_mastery_rating=604
 # gear_armor=809
-# gear_multistrike_rating=1170
-# gear_versatility_rating=467
+# gear_multistrike_rating=1918
+# gear_versatility_rating=99
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

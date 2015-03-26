@@ -63,7 +63,6 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=draenic_intellect,if=buff.arcane_power.up&(!talent.prismatic_crystal.enabled|pet.prismatic_crystal.active)
-actions.cooldowns+=/use_item,slot=trinket1
 
 # AoE sequence
 actions.aoe=call_action_list,name=cooldowns
@@ -120,26 +119,26 @@ neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
 shoulders=arcanoshatter_mantle,id=115551
 back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
 chest=arcanoshatter_robes,id=115550
-wrists=bracers_of_enkindled_power,id=113956
+wrists=bracers_of_darkened_skies,id=119332
 hands=arcanoshatter_gloves,id=115552
 waist=seeking_ember_girdle,id=113941
 legs=turret_mechanics_legwraps,id=113970
-feet=cavedwellers_climbers,id=113864
-finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
-finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
-trinket1=shards_of_nothing,id=113835
+feet=destablized_sandals,id=113840,bonus_id=566
+finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
+finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
+trinket1=blackiron_micro_crucible,id=113984
 trinket2=darmacs_unstable_talisman,id=113948
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
 # gear_stamina=3589
-# gear_intellect=2902
+# gear_intellect=3008
 # gear_spell_power=1389
-# gear_crit_rating=659
-# gear_haste_rating=861
-# gear_mastery_rating=1645
+# gear_crit_rating=461
+# gear_haste_rating=894
+# gear_mastery_rating=1714
 # gear_armor=727
-# gear_multistrike_rating=173
+# gear_multistrike_rating=266
 # gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

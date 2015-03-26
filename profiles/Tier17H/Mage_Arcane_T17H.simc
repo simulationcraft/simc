@@ -119,26 +119,26 @@ neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_mastery
 shoulders=arcanoshatter_mantle,id=115551,bonus_id=566
 back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant=gift_of_mastery
 chest=arcanoshatter_robes,id=115550,bonus_id=566
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
-hands=toothbreaker_grips,id=113876,bonus_id=566
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=566
+hands=arcanoshatter_gloves,id=115552,bonus_id=566
 waist=seeking_ember_girdle,id=113941,bonus_id=566
-legs=arcanoshatter_leggings,id=115554,bonus_id=566
-feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
-finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
+legs=turret_mechanics_legwraps,id=113970,bonus_id=566
+feet=destablized_sandals,id=113840,bonus_id=567
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
+trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
+trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
 # gear_stamina=4114
 # gear_intellect=3455
 # gear_spell_power=1596
-# gear_crit_rating=578
-# gear_haste_rating=997
-# gear_mastery_rating=1819
+# gear_crit_rating=530
+# gear_haste_rating=1032
+# gear_mastery_rating=1922
 # gear_armor=809
-# gear_multistrike_rating=398
+# gear_multistrike_rating=307
 # gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

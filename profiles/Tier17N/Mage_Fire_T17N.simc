@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=3003223
+talents=3003322
 glyphs=inferno_blast/combustion/dragons_breath
 spec=fire
 
@@ -165,18 +165,18 @@ waist=seeking_ember_girdle,id=113941
 legs=turret_mechanics_legwraps,id=113970
 feet=cavedwellers_climbers,id=113864
 finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
-finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_critical_strike
-trinket1=blackiron_micro_crucible,id=113984
-trinket2=formidable_orb_of_putrescence,id=114611
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_the_thunderlord
+finger2=kargaths_last_link,id=113604,bonus_id=566,enchant=gift_of_critical_strike
+trinket1=goren_soul_repository,id=119194
+trinket2=blackiron_micro_crucible,id=113984
+main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_stamina=3589
-# gear_intellect=2837
+# gear_intellect=3008
 # gear_spell_power=1389
-# gear_crit_rating=934
-# gear_haste_rating=861
-# gear_mastery_rating=1370
+# gear_crit_rating=1215
+# gear_haste_rating=619
+# gear_mastery_rating=1315
 # gear_armor=727
 # gear_multistrike_rating=173
 # gear_versatility_rating=78
