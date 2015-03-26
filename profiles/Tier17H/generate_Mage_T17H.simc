@@ -71,7 +71,7 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=566
 waist=deckhands_rope_belt,id=113967,bonus_id=566
 legs=arcanoshatter_leggings,id=115554,bonus_id=566
 feet=inferno_breath_sandals,id=113942,bonus_id=566
-finger1=spellbound_solium_band_of_the_kirintor,id=118301,bonus_id=566,enchant=gift_of_multistrike
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistrike
 finger2=signet_of_crystalline_barrage,id=113651,bonus_id=567,enchant=gift_of_multistrike
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
 trinket2=quiescent_runestone,id=113859,bonus_id=567

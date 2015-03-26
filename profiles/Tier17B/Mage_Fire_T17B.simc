@@ -164,23 +164,23 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=42/562/565/567,gem_id=115809
 waist=seeking_ember_girdle,id=113941,bonus_id=42/562/565/567,gem_id=115809
 legs=turret_mechanics_legwraps,id=113970,bonus_id=42/562/565/567,gem_id=115809
 feet=cavedwellers_climbers,id=113864,bonus_id=42/562/565/567,gem_id=115809
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,gem_id=115809,enchant=gift_of_critical_strike
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=42/562/565/567,gem_id=115809,enchant=gift_of_critical_strike
+finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=42/562/565/567,gem_id=115809,enchant=gift_of_critical_strike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
 trinket1=goren_soul_repository,id=119194,bonus_id=42/562/565/567,gem_id=115809
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115809
 main_hand=blackhand_doomstaff,id=113988,bonus_id=42/562/565/567,gem_id=115809,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=708.60
-# gear_stamina=5128
-# gear_intellect=4283
+# gear_ilvl=706.60
+# gear_stamina=5019
+# gear_intellect=4211
 # gear_spell_power=1943
-# gear_crit_rating=2205
-# gear_haste_rating=991
-# gear_mastery_rating=1904
+# gear_crit_rating=2155
+# gear_haste_rating=998
+# gear_mastery_rating=1849
 # gear_armor=943
 # gear_multistrike_rating=243
-# gear_versatility_rating=152
-# gear_speed_rating=2139
+# gear_versatility_rating=108
+# gear_speed_rating=2082
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

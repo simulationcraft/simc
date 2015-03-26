@@ -119,22 +119,22 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=566
 waist=deckhands_rope_belt,id=113967,bonus_id=566
 legs=arcanoshatter_leggings,id=115554,bonus_id=566
 feet=inferno_breath_sandals,id=113942,bonus_id=566
-finger1=spellbound_solium_band_of_the_kirintor,id=118301,bonus_id=566,enchant=gift_of_multistrike
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistrike
 finger2=signet_of_crystalline_barrage,id=113651,bonus_id=567,enchant=gift_of_multistrike
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
 trinket2=quiescent_runestone,id=113859,bonus_id=567
 main_hand=spire_of_tectus,id=113639,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=686.33
-# gear_stamina=4151
-# gear_intellect=3456
+# gear_ilvl=685.33
+# gear_stamina=4114
+# gear_intellect=3431
 # gear_spell_power=1596
 # gear_crit_rating=776
 # gear_haste_rating=836
-# gear_mastery_rating=604
+# gear_mastery_rating=585
 # gear_armor=809
 # gear_multistrike_rating=1918
-# gear_versatility_rating=99
+# gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

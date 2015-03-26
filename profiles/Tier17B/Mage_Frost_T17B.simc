@@ -120,22 +120,22 @@ waist=deckhands_rope_belt,id=113967,bonus_id=42/562/565/567,gem_id=115813
 legs=arcanoshatter_leggings,id=115554,bonus_id=42/562/565/567,gem_id=115813
 feet=inferno_breath_sandals,id=113942,bonus_id=42/562/565/567,gem_id=115813
 finger1=epicenter_loop,id=113947,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
-finger2=spellbound_solium_band_of_the_kirintor,id=118301,gem_id=115813,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115813
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115813
 main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115813,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=704.93
-# gear_stamina=4954
-# gear_intellect=4168
+# gear_ilvl=706.60
+# gear_stamina=5019
+# gear_intellect=4211
 # gear_spell_power=1943
 # gear_crit_rating=1019
 # gear_haste_rating=761
-# gear_mastery_rating=981
+# gear_mastery_rating=1014
 # gear_armor=943
-# gear_multistrike_rating=2143
-# gear_versatility_rating=441
+# gear_multistrike_rating=2093
+# gear_versatility_rating=463
 # gear_speed_rating=2082
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

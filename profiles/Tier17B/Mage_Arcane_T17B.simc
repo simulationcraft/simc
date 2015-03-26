@@ -125,22 +125,22 @@ waist=seeking_ember_girdle,id=113941,bonus_id=42/562/565/567,gem_id=115812
 legs=arcanoshatter_leggings,id=115554,bonus_id=42/562/565/567,gem_id=115812
 feet=cavedwellers_climbers,id=113864,bonus_id=42/562/565/567,gem_id=115812
 finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=42/562/565/567,gem_id=115812,enchant=gift_of_mastery
-finger2=spellbound_solium_band_of_the_kirintor,id=118301,gem_id=115812,enchant=gift_of_mastery
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115812
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115812
 main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=704.93
-# gear_stamina=4954
-# gear_intellect=4168
+# gear_ilvl=706.60
+# gear_stamina=5019
+# gear_intellect=4211
 # gear_spell_power=1943
 # gear_crit_rating=702
 # gear_haste_rating=1211
-# gear_mastery_rating=2876
+# gear_mastery_rating=2859
 # gear_armor=943
 # gear_multistrike_rating=486
-# gear_versatility_rating=86
+# gear_versatility_rating=108
 # gear_speed_rating=2082
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
