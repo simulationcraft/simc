@@ -1847,8 +1847,10 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t*, p
 
     os.format( "%s", util::stat_type_abbrev( scaling_stats[ i ] ) );
   }
+  os << "</table>\n";
   if ( !ri.gear_weights_pawn_string[ sm ].empty() )
   {
+    os << "<table class=\"sc mt\">\n";
     os.format(
       "<tr class\"left\">\n"
       "<th>Pawn string</th>\n"
@@ -1858,9 +1860,8 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t*, p
       "</tr>\n",
       colspan,
       ri.gear_weights_pawn_string[ sm ].c_str() );
+    os << "</table>\n";
   }
-  os << "</table>\n";
-
 }
 
 

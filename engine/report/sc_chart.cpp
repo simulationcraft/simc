@@ -2333,57 +2333,57 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
 
 // chart::gear_weights_pawn =================================================
 
-std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( player_t* p)
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( player_t* p )
 {
   std::array<std::string, SCALE_METRIC_MAX> sa;
-  
+
   for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
   {
-	bool first = true;
-	std::string s = "( Pawn: v1: \"";
-	s += p -> name();
-	s += "\": ";
-	
-	
-	bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
-	for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-	{
-	  double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
-	  if ( value == 0 ) continue;
-	  
-	  const char* name = 0;
-	  switch ( i )
-	  {
-      case STAT_STRENGTH:           name = "Strength";      break;
-      case STAT_AGILITY:            name = "Agility";		break;
-      case STAT_STAMINA:            name = "Stamina";		break;
-      case STAT_INTELLECT:          name = "Intellect";		break;
-      case STAT_SPIRIT:             name = "Spirit";		break;
-      case STAT_SPELL_POWER:        name = "SpellPower";	break;
-      case STAT_ATTACK_POWER:       name = "Ap";			break;
-      case STAT_CRIT_RATING:        name = "CritRating";	break;
-      case STAT_HASTE_RATING:       name = "HasteRating";	break;
-      case STAT_ARMOR:              name = "Armor";			break;
-      case STAT_BONUS_ARMOR:        name = "BonusArmor";	break;
-      case STAT_MASTERY_RATING:     name = "MasteryRating"; break;
-      case STAT_VERSATILITY_RATING: name = "Versatility";	break;
-      case STAT_MULTISTRIKE_RATING: name = "Multistrike";	break;
-	  case STAT_WEAPON_DPS:         name = "Dps";           break;
-	  default: break;
-	  }
-	  
-	  if ( name )
-	  {
-		if ( !first )
-		{
-		  s += ",";
-		}
-		first = false;
-		str::format( s, " %s=%.*f", name, p -> sim -> report_precision, value );
-	  }
-	}
-	s += " )";
-	sa[ sm ] = s;
+    bool first = true;
+    std::string s = "( Pawn: v1: \"";
+    s += p -> name();
+    s += "\": ";
+
+
+    bool positive_normalizing_value = p -> scaling[sm].get_stat( p -> normalize_by() ) >= 0;
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    {
+      double value = positive_normalizing_value ? p -> scaling[sm].get_stat( i ) : -p -> scaling[sm].get_stat( i );
+      if ( value == 0 ) continue;
+
+      const char* name = 0;
+      switch ( i )
+      {
+      case STAT_STRENGTH:           name = "Strength";break;
+      case STAT_AGILITY:            name = "Agility";break;
+      case STAT_STAMINA:            name = "Stamina";break;
+      case STAT_INTELLECT:          name = "Intellect";break;
+      case STAT_SPIRIT:             name = "Spirit";break;
+      case STAT_SPELL_POWER:        name = "SpellPower";break;
+      case STAT_ATTACK_POWER:       name = "Ap";break;
+      case STAT_CRIT_RATING:        name = "CritRating";break;
+      case STAT_HASTE_RATING:       name = "HasteRating";break;
+      case STAT_ARMOR:              name = "Armor";break;
+      case STAT_BONUS_ARMOR:        name = "BonusArmor";break;
+      case STAT_MASTERY_RATING:     name = "MasteryRating";break;
+      case STAT_VERSATILITY_RATING: name = "Versatility";break;
+      case STAT_MULTISTRIKE_RATING: name = "Multistrike";break;
+      case STAT_WEAPON_DPS:         name = "Dps";break;
+      default: break;
+      }
+
+      if ( name )
+      {
+        if ( !first )
+        {
+          s += ",";
+        }
+        first = false;
+        str::format( s, " %s=%.*f", name, p -> sim -> report_precision, value );
+      }
+    }
+    s += " )";
+    sa[sm] = s;
   }
 
   return sa;
