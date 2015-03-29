@@ -5344,7 +5344,7 @@ void paladin_t::generate_action_prio_list_ret()
   cleave -> add_action( this, "Divine Storm", "if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)&!talent.final_verdict.enabled" );
 
   cleave -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4&holy_power<5&talent.seraphim.enabled" );
-  cleave -> add_action( this, "Hammer of the Righteous", ",if=active_enemies>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))" );
+  cleave -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))" );
   cleave -> add_action( this, "Crusader Strike", "if=holy_power<5&talent.seraphim.enabled" );
   cleave -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
