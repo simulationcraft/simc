@@ -4840,15 +4840,15 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=adrenaline_rush,if=cooldown.killing_spree.remains>10" );
     def -> add_action( "call_action_list,name=killing_spree,if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
 
-    ks -> add_action( this, "Killing Spree", "if=time_to_die>=44" );
-    ks -> add_action( this, "Killing Spree", "if=time_to_die<44&buff.archmages_greater_incandescence_agi.react&buff.archmages_greater_incandescence_agi.remains>=buff.killing_spree.duration" );
-    ks -> add_action( this, "Killing Spree", "if=time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration" );
-    ks -> add_action( this, "Killing Spree", "if=time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration" );
-    ks -> add_action( this, "Killing Spree", "if=time_to_die<=buff.killing_spree.duration*1.5" );
+    ks -> add_action( this, "Killing Spree", "if=target.time_to_die>=44" );
+    ks -> add_action( this, "Killing Spree", "if=target.time_to_die<44&buff.archmages_greater_incandescence_agi.react&buff.archmages_greater_incandescence_agi.remains>=buff.killing_spree.duration" );
+    ks -> add_action( this, "Killing Spree", "if=target.time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration" );
+    ks -> add_action( this, "Killing Spree", "if=target.time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration" );
+    ks -> add_action( this, "Killing Spree", "if=target.time_to_die<=buff.killing_spree.duration*1.5" );
 
-    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die>=44" );
-    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die<44&(buff.archmages_greater_incandescence_agi.react|trinket.proc.any.react|trinket.stacking_proc.any.react)" );
-    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die<=buff.adrenaline_rush.duration*1.5" );
+    ar -> add_action( this, "Adrenaline Rush", "if=target.time_to_die>=44" );
+    ar -> add_action( this, "Adrenaline Rush", "if=target.time_to_die<44&(buff.archmages_greater_incandescence_agi.react|trinket.proc.any.react|trinket.stacking_proc.any.react)" );
+    ar -> add_action( this, "Adrenaline Rush", "if=target.time_to_die<=buff.adrenaline_rush.duration*1.5" );
 
     def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)" );
 

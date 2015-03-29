@@ -5159,7 +5159,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
-  default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.35*spell_haste|cooldown.evocation.remains<=(mana.pct-30)*0.3*spell_haste|(buff.arcane_power.up&cooldown.evocation.remains<=(mana.pct-30)*0.4*spell_haste)" );
+  default_list -> add_action( "call_action_list,name=burn,if=target.time_to_die<mana.pct*0.35*spell_haste|cooldown.evocation.remains<=(mana.pct-30)*0.3*spell_haste|(buff.arcane_power.up&cooldown.evocation.remains<=(mana.pct-30)*0.4*spell_haste)" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
 
@@ -5233,7 +5233,7 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Arcane Missiles",
                       "if=set_bonus.tier17_4pc&buff.arcane_instability.react&buff.arcane_instability.remains<action.arcane_blast.execute_time" );
   burn -> add_talent( this, "Supernova",
-                      "if=time_to_die<8|charges=2" );
+                      "if=target.time_to_die<8|charges=2" );
   burn -> add_talent( this, "Nether Tempest",
                       "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   burn -> add_talent( this, "Arcane Orb",
@@ -5251,13 +5251,13 @@ void mage_t::apl_arcane()
   burn -> add_action( "call_action_list,name=conserve,if=prev_gcd.evocation",
                       "APL hack for evocation interrupt" );
   burn -> add_action( this, "Evocation",
-                      "interrupt_if=mana.pct>92,if=time_to_die>10&mana.pct<30+2.5*active_enemies*(9-active_enemies)" );
+                      "interrupt_if=mana.pct>92,if=target.time_to_die>10&mana.pct<30+2.5*active_enemies*(9-active_enemies)" );
   burn -> add_action( this, "Presence of Mind",
                       "if=!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up" );
   burn -> add_action( this, "Arcane Blast" );
 
 
-  conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15))",
+  conserve -> add_action( "call_action_list,name=cooldowns,if=target.time_to_die<30|(buff.arcane_charge.stack=4&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15))",
                           "Low mana usage, \"Conserve\" sequence" );
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<action.arcane_blast.execute_time)" );
@@ -5266,7 +5266,7 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Nether Tempest",
                           "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   conserve -> add_talent( this, "Supernova",
-                          "if=time_to_die<8|(charges=2&(buff.arcane_power.up|!cooldown.arcane_power.up)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8))" );
+                          "if=target.time_to_die<8|(charges=2&(buff.arcane_power.up|!cooldown.arcane_power.up)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8))" );
   conserve -> add_talent( this, "Arcane Orb",
                           "if=buff.arcane_charge.stack<2" );
   conserve -> add_action( this, "Presence of Mind",
@@ -5447,14 +5447,14 @@ void mage_t::apl_fire()
                                 "Active talents usage" );
   active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled" );
   active_talents -> add_talent( this, "Blast Wave",
-                                "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))" );
+                                "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))" );
 
 
   living_bomb -> add_action( this, "Inferno Blast",
                              "cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies",
                              "Living Bomb application" );
   living_bomb -> add_talent( this, "Living Bomb",
-                             "cycle_targets=1,if=target!=prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.time_to_die>remains+12" );
+                             "cycle_targets=1,if=target!=prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.target.time_to_die>remains+12" );
 
 
   aoe -> add_action( this, "Inferno Blast",
@@ -5536,7 +5536,7 @@ void mage_t::apl_frost()
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
-  default_list -> add_action( "call_action_list,name=cooldowns,if=time_to_die<24" );
+  default_list -> add_action( "call_action_list,name=cooldowns,if=target.time_to_die<24" );
   default_list -> add_action( "water_jet,if=time<1&active_enemies<4&!(talent.ice_nova.enabled&talent.prismatic_crystal.enabled)",
                               "Water jet on pull for non IN+PC talent combos" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
@@ -5629,7 +5629,7 @@ void mage_t::apl_frost()
                                "if=remains<action.ice_lance.travel_time&(buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&(talent.thermal_void.enabled|buff.fingers_of_frost.remains<gcd.max*2)))",
                                "Single target routine; Rough summary: IN2 > FoF2 > CmS > IN > BF > FoF" );
   single_target -> add_talent( this, "Ice Nova",
-                               "if=time_to_die<10|(charges=2&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))" );
+                               "if=target.time_to_die<10|(charges=2&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&dot.frozen_orb.ticking)" );
   single_target -> add_talent( this, "Comet Storm" );
