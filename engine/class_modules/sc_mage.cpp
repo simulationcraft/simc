@@ -5329,7 +5329,7 @@ void mage_t::apl_fire()
                               "Utilize level 90 active talents while avoiding pyro munching" );
   default_list -> add_talent( this, "Mirror Image",
                               "if=!(buff.heating_up.up&action.fireball.in_flight)" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>10" );
   default_list -> add_action( "call_action_list,name=single_target");
 
 
