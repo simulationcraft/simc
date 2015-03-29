@@ -5385,10 +5385,10 @@ void mage_t::apl_fire()
                                  "if=prev_gcd.inferno_blast&execute_time=gcd.max&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))*100<hit_damage*(100+crit_pct_current)*mastery_value",
                                  "Failsafe: Pyroblast after double IB if ignite ticks are low" );
   t17_2pc_combust -> add_action( this, "Combustion",
-                                 "if=prev_gcd.inferno_blast",
+                                 "if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max",
                                  "Combustion; Will only trigger post double IB" );
   t17_2pc_combust -> add_action( this, "Combustion",
-                                 "if=prev_gcd.pyroblast&action.inferno_blast.charges=0" );
+                                 "if=prev_gcd.pyroblast&action.inferno_blast.charges=0&pyro_chain_duration>gcd.max" );
   t17_2pc_combust -> add_talent( this, "Meteor",
                                  "if=active_enemies<=2&prev_gcd.pyroblast" );
   t17_2pc_combust -> add_action( this, "Pyroblast",
@@ -5424,7 +5424,8 @@ void mage_t::apl_fire()
     combust_sequence -> add_action( item_actions[i] );
   combust_sequence -> add_action( get_potion_action() );
 
-  combust_sequence -> add_talent( this, "Meteor" );
+  combust_sequence -> add_talent( this, "Meteor",
+                                  "if=active_enemies<=2" );
   combust_sequence -> add_action( this, "Pyroblast",
                                   "if=set_bonus.tier17_4pc&buff.pyromaniac.up" );
   combust_sequence -> add_action( this, "Inferno Blast",
@@ -5442,7 +5443,7 @@ void mage_t::apl_fire()
 
 
   active_talents -> add_talent( this, "Meteor",
-                                "if=active_enemies>=5|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)",
+                                "if=active_enemies>=3|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)",
                                 "Active talents usage" );
   active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled" );
   active_talents -> add_talent( this, "Blast Wave",

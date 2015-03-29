@@ -82,8 +82,8 @@ actions.t17_2pc_combust+=/choose_target,target_if=max:dot.ignite.tick_dmg,if=pre
 # Failsafe: Pyroblast after double IB if ignite ticks are low
 actions.t17_2pc_combust+=/pyroblast,if=prev_gcd.inferno_blast&execute_time=gcd.max&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))*100<hit_damage*(100+crit_pct_current)*mastery_value
 # Combustion; Will only trigger post double IB
-actions.t17_2pc_combust+=/combustion,if=prev_gcd.inferno_blast
-actions.t17_2pc_combust+=/combustion,if=prev_gcd.pyroblast&action.inferno_blast.charges=0
+actions.t17_2pc_combust+=/combustion,if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max
+actions.t17_2pc_combust+=/combustion,if=prev_gcd.pyroblast&action.inferno_blast.charges=0&pyro_chain_duration>gcd.max
 actions.t17_2pc_combust+=/meteor,if=active_enemies<=2&prev_gcd.pyroblast
 actions.t17_2pc_combust+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 # Initial Fireball
@@ -106,7 +106,7 @@ actions.combust_sequence+=/blood_fury
 actions.combust_sequence+=/berserking
 actions.combust_sequence+=/arcane_torrent
 actions.combust_sequence+=/potion,name=draenic_intellect
-actions.combust_sequence+=/meteor
+actions.combust_sequence+=/meteor,if=active_enemies<=2
 actions.combust_sequence+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.up
 actions.combust_sequence+=/inferno_blast,if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)
 actions.combust_sequence+=/fireball,if=!dot.ignite.ticking&!in_flight
@@ -117,7 +117,7 @@ actions.combust_sequence+=/inferno_blast,if=dot.ignite.tick_dmg*(6-dot.ignite.ti
 actions.combust_sequence+=/combustion
 
 # Active talents usage
-actions.active_talents=meteor,if=active_enemies>=5|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)
+actions.active_talents=meteor,if=active_enemies>=3|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)
 actions.active_talents+=/call_action_list,name=living_bomb,if=talent.living_bomb.enabled
 actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))
 
