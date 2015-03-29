@@ -824,7 +824,7 @@ void raid_event_t::schedule()
       raid_event( re )
     {
       sim().add_event( this, time );
-      re -> set_next( time );
+      re -> set_next( s.current_time() + time );
     }
     virtual const char* name() const override
     { return raid_event -> name(); }
@@ -843,7 +843,7 @@ void raid_event_t::schedule()
       raid_event( re )
     {
       sim().add_event( this, time );
-      re -> set_next( time );
+      re -> set_next( s.current_time() + time );
     }
     virtual const char* name() const override
     { return raid_event -> name(); }
