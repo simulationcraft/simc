@@ -7312,7 +7312,10 @@ double death_knight_t::composite_leech() const
   double leech = player_t::composite_leech();
 
   // TODO: Additive or multiplicative?
-  leech += buffs.lichborne -> data().effectN( 1 ).percent();
+  if ( buffs.lichborne -> up() )
+  {
+    leech += buffs.lichborne -> data().effectN( 1 ).percent();
+  }
 
   return leech;
 }
