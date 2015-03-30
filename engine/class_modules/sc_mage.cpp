@@ -5449,7 +5449,7 @@ void mage_t::apl_fire()
   active_talents -> add_talent( this, "Meteor",
                                 "if=active_enemies>=3|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)",
                                 "Active talents usage" );
-  active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled" );
+  active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled&(active_enemies>1|raid_event.adds.in<10)" );
   active_talents -> add_talent( this, "Blast Wave",
                                 "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))" );
 
