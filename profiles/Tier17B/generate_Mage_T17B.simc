@@ -29,7 +29,8 @@ finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=42/562/565/567,gem_id=115812,
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115812
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115812
-main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_bleeding_hollow
+main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_bleeding_hollow
+off_hand=caged_living_ooze,id=113879,bonus_id=42/562/565/567,gem_id=115812
 save=Mage_Arcane_T17B.simc
 
 mage=Mage_Fire_T17B
@@ -75,5 +76,6 @@ finger1=epicenter_loop,id=113947,bonus_id=42/562/565/567,gem_id=115813,enchant=g
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115813
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115813
-main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115813,enchant=mark_of_the_frostwolf
+main_hand=fang_of_the_earth,id=113934,bonus_id=42/562/565/567,gem_id=115813,enchant=mark_of_the_frostwolf
+off_hand=enginestokers_lantern,id=113960,bonus_id=42/562/565/567,gem_id=115813
 save=Mage_Frost_T17B.simc

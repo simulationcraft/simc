@@ -132,19 +132,20 @@ finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=42/562/565/567,gem_id=115812,
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115812
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115812
-main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_bleeding_hollow
+main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_bleeding_hollow
+off_hand=caged_living_ooze,id=113879,bonus_id=42/562/565/567,gem_id=115812
 
 # Gear Summary
-# gear_ilvl=706.60
-# gear_stamina=5019
-# gear_intellect=4211
-# gear_spell_power=1943
+# gear_ilvl=706.56
+# gear_stamina=5014
+# gear_intellect=4208
+# gear_spell_power=1940
 # gear_crit_rating=596
-# gear_haste_rating=1071
-# gear_mastery_rating=2930
+# gear_haste_rating=936
+# gear_mastery_rating=2972
 # gear_armor=943
 # gear_multistrike_rating=667
-# gear_versatility_rating=108
-# gear_speed_rating=2082
+# gear_versatility_rating=241
+# gear_speed_rating=2080
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
