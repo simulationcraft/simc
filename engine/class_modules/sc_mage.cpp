@@ -5551,22 +5551,23 @@ void mage_t::apl_frost()
   crystal_sequence -> add_talent( this, "Frost Bomb",
                                   "if=active_enemies=1&current_target!=prismatic_crystal&remains<10",
                                   "Actions while Prismatic Crystal is active" );
+  crystal_sequence -> add_talent( this, "Prismatic Crystal" );
   crystal_sequence -> add_action( this, "Frozen Orb" );
   crystal_sequence -> add_action( "call_action_list,name=cooldowns" );
-  crystal_sequence -> add_talent( this, "Prismatic Crystal" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
                                   "if=talent.prismatic_crystal.enabled&current_target=prismatic_crystal&active_enemies>1&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&active_dot.frozen_orb>=1)" );
   crystal_sequence -> add_talent( this, "Ice Nova",
-                                  "if=charges=2" );
-  crystal_sequence -> add_action( this, "Frostfire Bolt",
-                                  "if=buff.brain_freeze.react" );
+                                  "if=charges=2|pet.prismatic_crystal.remains<gcd.max" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react" );
+  crystal_sequence -> add_action( this, "Frostfire Bolt",
+                                  "if=buff.brain_freeze.react" );
   crystal_sequence -> add_talent( this, "Ice Nova" );
   crystal_sequence -> add_action( this, "Blizzard",
                                  "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2),if=active_enemies>=5" );
+  crystal_sequence -> add_action( "choose_target,if=pet.prismatic_crystal.remains<action.frostbolt.cast_time+action.frostbolt.travel_time" );
   crystal_sequence -> add_action( this, "Frostbolt" );
 
 
@@ -5588,7 +5589,7 @@ void mage_t::apl_frost()
                                 "Water Jet initialization" );
   init_water_jet -> add_action( this, "Ice Lance",
                                 "if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.water_jet.up" );
-  init_water_jet -> add_action( "water_jet,if=prev_gcd.frostbolt" );
+  init_water_jet -> add_action( "water_jet,if=prev_gcd.frostbolt|action.frostbolt.travel_time<spell_haste" );
   init_water_jet -> add_action( this, "Frostbolt" );
 
 
