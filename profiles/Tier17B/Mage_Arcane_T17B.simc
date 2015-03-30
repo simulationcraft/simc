@@ -123,7 +123,7 @@ neck=gruuls_lip_ring,id=113872,bonus_id=42/562/565/567,gem_id=115812,enchant=gif
 shoulders=arcanoshatter_mantle,id=115551,bonus_id=42/562/565/567,gem_id=115812
 back=runefrenzy_greatcloak,id=113937,bonus_id=42/562/565/567,gem_id=115812,enchant=gift_of_mastery
 chest=arcanoshatter_robes,id=115550,bonus_id=42/562/565/567,gem_id=115812
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=42/562/565/567,gem_id=115812
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=42/562/565/567,gem_id=115813
 hands=toothbreaker_grips,id=113876,bonus_id=42/562/565/567,gem_id=115812
 waist=seeking_ember_girdle,id=113941,bonus_id=42/562/565/567,gem_id=115812
 legs=arcanoshatter_leggings,id=115554,bonus_id=42/562/565/567,gem_id=115812
@@ -139,11 +139,11 @@ main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115812,enc
 # gear_stamina=5019
 # gear_intellect=4211
 # gear_spell_power=1943
-# gear_crit_rating=702
-# gear_haste_rating=1211
-# gear_mastery_rating=2859
+# gear_crit_rating=596
+# gear_haste_rating=1071
+# gear_mastery_rating=2930
 # gear_armor=943
-# gear_multistrike_rating=486
+# gear_multistrike_rating=667
 # gear_versatility_rating=108
 # gear_speed_rating=2082
 # set_bonus=tier17_2pc=1
