@@ -6192,8 +6192,17 @@ struct use_item_t : public action_t
 
     // Parse Special Effect
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    buff = e.create_buff();
-    action = e.create_action();
+    buff = buff_t::find( player, e.name() );
+    if ( ! buff )
+    {
+      buff = e.create_buff();
+    }
+
+    action = player -> find_action( e.name() );
+    if ( ! action )
+    {
+      action = e.create_action();
+    }
 
     if ( ! buff && ! action )
     {
