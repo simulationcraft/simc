@@ -1,9 +1,9 @@
 deathknight="Death_Knight_Unholy_T17H"
 level=100
-race=orc
+race=blood_elf
 role=attack
 position=back
-talents=2001002
+talents=2001003
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -28,6 +28,7 @@ actions.precombat+=/raise_dead
 
 actions=auto_attack
 actions+=/deaths_advance,if=movement.remains>2
+actions+=/run_action_list,name=bos,if=talent.breath_of_sindragosa.enabled
 actions+=/antimagic_shell,damage=100000
 actions+=/blood_fury
 actions+=/berserking
@@ -40,8 +41,6 @@ actions+=/run_action_list,name=single_target,if=(!talent.necrotic_plague.enabled
 actions.aoe=unholy_blight
 actions.aoe+=/call_action_list,name=spread,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking|(!dot.necrotic_plague.ticking&talent.necrotic_plague.enabled)
 actions.aoe+=/defile
-actions.aoe+=/breath_of_sindragosa,if=runic_power>75
-actions.aoe+=/run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking
 actions.aoe+=/blood_boil,if=blood=2|(frost=2&death=2)
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
@@ -68,13 +67,8 @@ actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&disease
 actions.single_target+=/unholy_blight,if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1
 actions.single_target+=/death_coil,if=runic_power>90
 actions.single_target+=/soul_reaper,if=(target.health.pct-3*(target.health.pct%target.time_to_die))<=45
-actions.single_target+=/breath_of_sindragosa,if=runic_power>75
-actions.single_target+=/run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking
-actions.single_target+=/death_and_decay,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
-actions.single_target+=/scourge_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
-actions.single_target+=/festering_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<76&talent.breath_of_sindragosa.enabled
 actions.single_target+=/blood_tap,if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0
-actions.single_target+=/death_and_decay,if=unholy=2
+actions.single_target+=/death_and_decay,if=(!talent.unholy_blight.enabled|!talent.necrotic_plague.enabled)&unholy=2
 actions.single_target+=/defile,if=unholy=2
 actions.single_target+=/plague_strike,if=!disease.min_ticking&unholy=2
 actions.single_target+=/scourge_strike,if=unholy=2
@@ -90,9 +84,9 @@ actions.single_target+=/blood_boil,if=((Blood-death)>1)
 actions.single_target+=/festering_strike,if=((Frost-death)>1)
 actions.single_target+=/blood_tap,if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0
 actions.single_target+=/summon_gargoyle
-actions.single_target+=/death_and_decay
+actions.single_target+=/death_and_decay,if=(!talent.unholy_blight.enabled|!talent.necrotic_plague.enabled)
 actions.single_target+=/defile
-actions.single_target+=/blood_tap,if=cooldown.defile.remains=0
+actions.single_target+=/blood_tap,if=talent.defile.enabled&cooldown.defile.remains=0
 actions.single_target+=/plague_strike,if=!disease.min_ticking
 actions.single_target+=/dark_transformation
 actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1))
@@ -108,22 +102,48 @@ actions.single_target+=/blood_boil,if=cooldown.empower_rune_weapon.remains=0
 actions.single_target+=/icy_touch,if=cooldown.empower_rune_weapon.remains=0
 actions.single_target+=/empower_rune_weapon,if=blood<1&unholy<1&frost<1
 
-actions.bos_st=death_and_decay,if=runic_power<88
-actions.bos_st+=/festering_strike,if=runic_power<77
-actions.bos_st+=/scourge_strike,if=runic_power<88
-actions.bos_st+=/blood_tap,if=buff.blood_charge.stack>=5
-actions.bos_st+=/plague_leech
-actions.bos_st+=/empower_rune_weapon
-actions.bos_st+=/death_coil,if=buff.sudden_doom.react
+actions.bos=antimagic_shell,damage=100000,if=(dot.breath_of_sindragosa.ticking&runic_power<25)|cooldown.breath_of_sindragosa.remains>40
+actions.bos+=/blood_fury,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/berserking
+actions.bos+=/use_item,slot=trinket2,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/potion,name=draenic_strength,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/run_action_list,name=bos_st
 
-actions.bos_aoe=death_and_decay,if=runic_power<88
-actions.bos_aoe+=/blood_boil,if=runic_power<88
-actions.bos_aoe+=/scourge_strike,if=runic_power<88&unholy=1
-actions.bos_aoe+=/icy_touch,if=runic_power<88
-actions.bos_aoe+=/blood_tap,if=buff.blood_charge.stack>=5
-actions.bos_aoe+=/plague_leech
-actions.bos_aoe+=/empower_rune_weapon
-actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
+actions.bos_st=plague_leech,if=((cooldown.outbreak.remains<1)|disease.min_remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))
+actions.bos_st+=/soul_reaper,if=(target.health.pct-3*(target.health.pct%target.time_to_die))<=45
+actions.bos_st+=/blood_tap,if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0
+actions.bos_st+=/breath_of_sindragosa,if=runic_power>75
+actions.bos_st+=/run_action_list,name=bos_active,if=dot.breath_of_sindragosa.ticking
+actions.bos_st+=/summon_gargoyle
+actions.bos_st+=/unholy_blight,if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)
+actions.bos_st+=/outbreak,cycle_targets=1,if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)
+actions.bos_st+=/plague_strike,if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)
+actions.bos_st+=/blood_boil,cycle_targets=1,if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)
+actions.bos_st+=/death_and_decay,if=active_enemies>1&unholy>1
+actions.bos_st+=/festering_strike,if=blood>1&frost>1
+actions.bos_st+=/scourge_strike,if=((unholy>1|death>1)&active_enemies<=3)|(unholy>1&active_enemies>=4)
+actions.bos_st+=/death_and_decay,if=active_enemies>1
+actions.bos_st+=/blood_boil,if=active_enemies>=4&(blood=2|(frost=2&death=2))
+actions.bos_st+=/dark_transformation
+actions.bos_st+=/blood_tap,if=buff.blood_charge.stack>10
+actions.bos_st+=/blood_boil,if=active_enemies>=4
+actions.bos_st+=/death_coil,if=(buff.sudden_doom.react|runic_power>80)&(buff.blood_charge.stack<=10)
+actions.bos_st+=/scourge_strike,if=cooldown.breath_of_sindragosa.remains>6|runic_power<75
+actions.bos_st+=/festering_strike,if=cooldown.breath_of_sindragosa.remains>6|runic_power<75
+actions.bos_st+=/death_coil,if=cooldown.breath_of_sindragosa.remains>20
+actions.bos_st+=/plague_leech
+
+actions.bos_active=plague_strike,if=!disease.ticking
+actions.bos_active+=/blood_boil,cycle_targets=1,if=(active_enemies>=2&!(dot.blood_plague.ticking|dot.frost_fever.ticking))|active_enemies>=4&(runic_power<88&runic_power>30)
+actions.bos_active+=/scourge_strike,if=active_enemies<=3&(runic_power<88&runic_power>30)
+actions.bos_active+=/festering_strike,if=runic_power<77
+actions.bos_active+=/blood_boil,if=active_enemies>=4
+actions.bos_active+=/scourge_strike,if=active_enemies<=3
+actions.bos_active+=/blood_tap,if=buff.blood_charge.stack>=5
+actions.bos_active+=/arcane_torrent,if=runic_power<70
+actions.bos_active+=/plague_leech
+actions.bos_active+=/empower_rune_weapon,if=runic_power<60
+actions.bos_active+=/death_coil,if=buff.sudden_doom.react
 
 actions.spread=blood_boil,cycle_targets=1,if=!disease.min_ticking
 actions.spread+=/outbreak,if=!disease.min_ticking

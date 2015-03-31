@@ -12,11 +12,11 @@
 
 deathknight="Death_Knight_Unholy_T17N"
 level=100
-race=orc
+race=blood_elf
 spec=unholy
 role=attack
 position=back
-talents=2001002
+talents=2001003
 glyphs=
 head=ogreskull_boneplate_greathelm,id=115539
 neck=thogars_serrated_chain,id=113959,enchant=gift_of_multistrike

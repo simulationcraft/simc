@@ -7,11 +7,11 @@
 
 deathknight="Death_Knight_Unholy_T17P"
 level=100
-race=orc
+race=blood_elf
 spec=unholy
 role=attack
 position=back
-talents=2003002
+talents=2001003
 glyphs=
 head=rivet-sealed_casque,id=109989,bonus_id=524
 neck=bloodmist_pendant,id=109962,bonus_id=524,enchant=gift_of_multistrike
