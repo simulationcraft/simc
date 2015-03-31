@@ -1533,8 +1533,17 @@ void action_t::assess_damage( dmg_e    type,
     player -> priority_iteration_dmg += s -> result_amount;
   }
 
-  if ( s -> result_amount > 0 && composite_leech( s ) > 0 )
-    player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech, s -> action );
+  // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
+  // break in the future if we ever decide to not separate heal and damage assessing.
+  double leech_pct = 0;
+  if ( ( s -> result_type == DMG_DIRECT || s -> result_type == DMG_OVER_TIME ) &&
+       s -> result_amount > 0 &&
+       ( leech_pct = composite_leech( s ) ) > 0 )
+  {
+    double leech_amount = leech_pct * s -> result_amount;
+    player -> spell.leech -> base_dd_min = player -> spell.leech -> base_dd_max = leech_amount;
+    player -> spell.leech -> schedule_execute();
+  }
 
   // New callback system; proc spells on impact. 
 

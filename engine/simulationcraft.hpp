@@ -4762,6 +4762,11 @@ struct player_t : public actor_t
     gain_t* leech;
   } gains;
 
+  struct spells_t
+  {
+    action_t* leech;
+  } spell;
+
   struct procs_t
   {
     proc_t* hat_donor;

@@ -1521,6 +1521,21 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         a -> composite_speed_rating() );
       j++;
     }
+    if ( buffed_stats.leech > 0 )
+    {
+      os.format(
+        "<tr%s>\n"
+        "<th class=\"left\">Leech</th>\n"
+        "<td class=\"right\">%.2f%%</td>\n"
+        "<td class=\"right\">%.2f%%</td>\n"
+        "<td class=\"right\">%.0f</td>\n"
+        "</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.leech,
+        100 * a -> composite_leech(),
+        a -> composite_leech_rating() );
+      j++;
+    }
     if ( a -> primary_role() == ROLE_TANK )
     {
       if ( buffed_stats.avoidance > 0 )
