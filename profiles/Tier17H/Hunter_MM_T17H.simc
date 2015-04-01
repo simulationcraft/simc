@@ -23,7 +23,7 @@ actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/glaive_toss
-actions.precombat+=/focusing_shot,if=!talent.glaive_toss.enabled
+actions.precombat+=/focusing_shot
 
 # Executed every time the actor is available.
 

@@ -66,7 +66,7 @@ race=blood_elf
 spec=survival
 position=ranged_back
 role=attack
-talents=0003313
+talents=0003323
 head=rylakstalkers_headguard,id=115545,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant_id=5320
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
@@ -79,7 +79,7 @@ legs=legguards_of_the_stampede,id=113944,bonus_id=567
 feet=treads_of_the_veteran_smith,id=119339,bonus_id=567
 finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant_id=5327
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5327
-trinket1=scales_of_doom,id=113612,bonus_id=567
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
 main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=567,enchant_id=5275
 save=Hunter_SV_T17M.simc

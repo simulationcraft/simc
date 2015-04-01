@@ -23,27 +23,31 @@ actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/glaive_toss
-actions.precombat+=/focusing_shot,if=!talent.glaive_toss.enabled
+actions.precombat+=/explosive_shot
+actions.precombat+=/focusing_shot
 
 # Executed every time the actor is available.
 
 actions=auto_shot
-actions+=/use_item,name=gorashans_lodestone_spike
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
+actions+=/use_item,name=gorashans_lodestone_spike
 actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=25
 actions+=/call_action_list,name=aoe,if=active_enemies>1
-actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=25
 actions+=/a_murder_of_crows
-actions+=/black_arrow,if=!ticking
+actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=45
+actions+=/black_arrow
+actions+=/arcane_shot,if=(trinket.stat.any.up&trinket.stat.any.remains<4)|dot.serpent_sting.remains<=3
 actions+=/explosive_shot
 actions+=/dire_beast
-actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=3|target.time_to_die<4.5
-actions+=/explosive_trap
-# Cast a second shot for steady focus if that won't cap us.
-actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit
-actions+=/arcane_shot,if=focus>=80|talent.focusing_shot.enabled
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35|target.time_to_die<4.5
+actions+=/glaive_toss
+actions+=/powershot
+actions+=/barrage
+actions+=/explosive_trap,if=!trinket.stat.any.up
+actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80
+actions+=/arcane_shot,if=focus>=70|talent.focusing_shot.enabled
 actions+=/focusing_shot
 actions+=/cobra_shot
 
