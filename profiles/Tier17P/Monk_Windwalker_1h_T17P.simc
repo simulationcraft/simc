@@ -50,7 +50,7 @@ actions+=/hurricane_strike,if=energy.time_to_max>cast_time&buff.tiger_power.rema
 actions+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen<50
 actions+=/call_action_list,name=st,if=active_enemies<3&(level<100|!talent.chi_explosion.enabled)
 actions+=/call_action_list,name=st_chix,if=active_enemies=1&talent.chi_explosion.enabled
-actions+=/call_action_list,name=cleave_chix,if=(active_enemies=2|active_enemies=3)&talent.chi_explosion.enabled
+actions+=/call_action_list,name=cleave_chix,if=(active_enemies=2|active_enemies=3&!talent.rushing_jade_wind.enabled)&talent.chi_explosion.enabled
 actions+=/call_action_list,name=aoe_norjw,if=active_enemies>=3&!talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled
 actions+=/call_action_list,name=aoe_norjw_chix,if=active_enemies>=4&!talent.rushing_jade_wind.enabled&talent.chi_explosion.enabled
 actions+=/call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled
