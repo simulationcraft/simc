@@ -1102,7 +1102,7 @@ void set_bonus::t17_lfr_4pc_agimelee( special_effect_t& effect )
     t17_lfr_4pc_agi_melee_nuke_t( player_t* p ) :
       melee_attack_t( "converging_spikes", p, p -> find_spell( 179132 ) )
     {
-      background = true;
+      background = proc = may_crit = true;
       callbacks = false;
     }
   };
