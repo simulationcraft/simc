@@ -188,6 +188,7 @@ public:
   double    blood_charge_counter;
   double    shadow_infusion_counter;
   double    fallen_crusader, fallen_crusader_rppm;
+  double    antimagic_shell_absorbed;
 
   stats_t*  antimagic_shell;
 
@@ -242,6 +243,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* antimagic_shell;
     cooldown_t* bone_shield_icd;
     cooldown_t* vampiric_blood;
   } cooldown;
@@ -460,6 +462,7 @@ public:
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     antimagic_shell( 0 ),
+    antimagic_shell_absorbed( 0.0 ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
@@ -477,6 +480,7 @@ public:
     range::fill( pets.army_ghoul, nullptr );
     base.distance = 0;
 
+    cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 1.0 );
 
@@ -5223,6 +5227,32 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 
 // Anti-magic Shell =========================================================
 
+struct antimagic_shell_buff_t : public buff_t
+{
+  antimagic_shell_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "antimagic_shell", p -> find_class_spell( "Anti-Magic Shell" ) )
+                              .cd( timespan_t::zero() ) )
+  { }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    p -> antimagic_shell_absorbed = 0.0;
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    if ( p -> antimagic_shell_absorbed >= 0.0 && p -> glyph.regenerative_magic -> ok() )
+    {
+      double cd_reduction = -20 + ( 20.0 * p -> antimagic_shell_absorbed / ( p -> resources.max[RESOURCE_HEALTH] * 0.4 ) );
+      p -> cooldown.antimagic_shell -> adjust( timespan_t::from_seconds( cd_reduction ) );
+    }
+  }
+};
+
 struct antimagic_shell_t : public death_knight_spell_t
 {
   double interval;
@@ -5234,6 +5264,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     death_knight_spell_t( "antimagic_shell", p, p -> find_class_spell( "Anti-Magic Shell" ) ),
     interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
+    cooldown = p -> cooldown.antimagic_shell;
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
     target = player;
@@ -6873,8 +6904,8 @@ void death_knight_t::create_buffs()
   buffs.blood_shield        = new blood_shield_buff_t( this );
   buffs.rune_tap            = buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) -> effectN( 1 ).trigger() );
 
-  buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
-                              .cd( timespan_t::zero() );
+  buffs.antimagic_shell     = new antimagic_shell_buff_t( this );
+
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
@@ -7060,6 +7091,7 @@ void death_knight_t::reset()
   runic_power_decay_rate = 1; // 1 RP per second decay
   blood_charge_counter = 0;
   shadow_infusion_counter = 0;
+  antimagic_shell_absorbed = 0.0;
 
   t15_2pc_melee.reset();
 
@@ -7122,6 +7154,16 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
     if ( buffs.antimagic_shell -> up() )
     {
       double absorbed = s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent();
+      antimagic_shell_absorbed += absorbed;
+
+      double max_hp_absorb = resources.max[RESOURCE_HEALTH] * 0.4;
+
+      if ( antimagic_shell_absorbed > max_hp_absorb )
+      {
+        absorbed = antimagic_shell_absorbed - max_hp_absorb;
+        antimagic_shell_absorbed = -1.0; // Set to -1.0 so expire_override knows that we don't need to reduce cooldown from regenerative magic. 
+        buffs.antimagic_shell -> expire();
+      }
 
       double generated = absorbed / resources.max[RESOURCE_HEALTH];
 
