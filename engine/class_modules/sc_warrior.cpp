@@ -54,8 +54,6 @@ public:
     action_t* bloodbath_dot;
     action_t* deep_wounds;
     action_t* enhanced_rend;
-    action_t* rallying_cry_heal;
-    action_t* second_wind;
     attack_t* sweeping_strikes;
     attack_t* aoe_sweeping_strikes;
     heal_t* t16_2pc;
@@ -77,11 +75,12 @@ public:
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
+    buff_t* debuffs_slam;
     buff_t* enraged_regeneration;
     buff_t* gladiator_stance;
     buff_t* ravager;
     buff_t* ravager_protection;
-    buff_t* debuffs_slam;
+    buff_t* second_wind;
     buff_t* sudden_death;
     // Glyphs
     buff_t* enraged_speed;
@@ -383,8 +382,6 @@ public:
     active.bloodbath_dot      = 0;
     active.blood_craze        = 0;
     active.deep_wounds        = 0;
-    active.rallying_cry_heal  = 0;
-    active.second_wind        = 0;
     active.sweeping_strikes   = 0;
     active.aoe_sweeping_strikes = 0;
     active.enhanced_rend      = 0;
@@ -455,6 +452,7 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_player_critical_damage_multiplier() const;
+  virtual double    composite_leech() const;
   virtual void      teleport( double yards, timespan_t duration );
   virtual void      trigger_movement( double distance, movement_direction_e direction );
   virtual void      interrupt();
@@ -601,6 +599,13 @@ public:
         }
       }
       p() -> stance_dance = false; // Reset variable.
+    }
+    if ( p() -> talents.second_wind -> ok() )
+    {
+      if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 && !p() -> buff.second_wind -> check() )
+        p() -> buff.second_wind -> trigger();
+      else
+        p() -> buff.second_wind -> expire();
     }
     ab::execute();
   }
@@ -987,25 +992,6 @@ void warrior_attack_t::impact( action_state_t* s )
     {
       if ( p() -> buff.bloodbath -> up() && special )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
-
-      if ( p() -> active.second_wind )
-      {
-        if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 )
-        {
-          p() -> active.second_wind -> base_dd_min = s -> result_amount;
-          p() -> active.second_wind -> base_dd_max = s -> result_amount;
-          p() -> active.second_wind -> execute();
-        }
-      }
-      if ( p() -> active.rallying_cry_heal )
-      {
-        if ( p() -> buff.rallying_cry -> up() )
-        {
-          p() -> active.rallying_cry_heal -> base_dd_min = s -> result_amount;
-          p() -> active.rallying_cry_heal -> base_dd_max = s -> result_amount;
-          p() -> active.rallying_cry_heal -> execute();
-        }
-      }
     }
   }
 }
@@ -2370,28 +2356,6 @@ struct blood_craze_t: public residual_action::residual_periodic_action_t < warri
   }
 };
 
-// Second Wind ==============================================================
-
-struct second_wind_t: public warrior_heal_t
-{
-  double heal_pct;
-  second_wind_t( warrior_t* p ):
-    warrior_heal_t( "second_wind", p, p -> talents.second_wind )
-  {
-    callbacks = false;
-    background = true;
-    heal_pct = data().effectN( 1 ).percent();
-  }
-
-  void execute()
-  {
-    base_dd_max *= heal_pct;
-    base_dd_min *= heal_pct;
-
-    warrior_heal_t::execute();
-  }
-};
-
 // Enraged Regeneration ===============================================
 
 struct enraged_regeneration_t: public warrior_heal_t
@@ -3240,25 +3204,6 @@ struct last_stand_t: public warrior_spell_t
 
 // Rallying Cry ===============================================================
 
-struct rallying_cry_heal_t: public warrior_heal_t
-{
-  double percent;
-  rallying_cry_heal_t( warrior_t* p ):
-    warrior_heal_t( "glyph_of_rallying_cry", p, p -> glyphs.rallying_cry )
-  {
-    percent = data().effectN( 1 ).percent();
-    background = true;
-  }
-
-  void execute()
-  {
-    base_dd_max *= percent; //Heals for 20% of original damage
-    base_dd_min *= percent;
-
-    warrior_heal_t::execute();
-  }
-};
-
 struct rallying_cry_t: public warrior_spell_t
 {
   rallying_cry_t( warrior_t* p, const std::string& options_str ):
@@ -3937,8 +3882,6 @@ void warrior_t::init_spells()
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
   if ( perk.enhanced_rend -> ok() ) active.enhanced_rend = new enhanced_rend_t( this );
-  if ( glyphs.rallying_cry -> ok() ) active.rallying_cry_heal = new rallying_cry_heal_t( this );
-  if ( talents.second_wind -> ok() ) active.second_wind = new second_wind_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
 
@@ -4666,7 +4609,8 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   rallying_cry_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
+    base_t( p, buff_creator_t( &p, n, s )
+    .add_invalidate( CACHE_LEECH ) ), health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
@@ -4838,6 +4782,10 @@ void warrior_t::create_buffs()
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption -> effectN( 1 ).trigger() )
     .default_value( glyphs.rude_interruption -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  
+  buff.second_wind = buff_creator_t( this, "second_wind", talents.second_wind )
+    .duration( timespan_t::zero() )
+    .add_invalidate( CACHE_LEECH );
 
   buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", specialization() == WARRIOR_PROTECTION ? find_spell( 112048 ) : spec.shield_barrier )
     .source( get_stats( "shield_barrier" ) );
@@ -5461,6 +5409,21 @@ double warrior_t::composite_player_critical_damage_multiplier() const
 double warrior_t::composite_spell_crit() const
 {
   return composite_melee_crit();
+}
+
+// warrior_t::composite_leech ==============================================
+
+double warrior_t::composite_leech() const
+{
+  double cl = player_t::composite_leech();
+
+  if ( buff.rallying_cry -> check() && glyphs.rallying_cry -> ok() )
+    cl += glyphs.rallying_cry -> effectN( 1 ).percent();
+
+  if ( buff.second_wind -> check() )
+    cl += talents.second_wind -> effectN( 1 ).percent();
+
+  return cl;
 }
 
 // warrior_t::temporary_movement_modifier ==================================
