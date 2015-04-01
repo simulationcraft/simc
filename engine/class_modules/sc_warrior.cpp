@@ -4021,7 +4021,16 @@ void warrior_t::apl_precombat()
     else if ( gladiator )
     {
       if ( level > 90 )
-        food_action += "pickled_eel";
+      {
+        if ( gladiator )
+        {
+          food_action += "pickled_eel";
+        }
+        else
+        {
+          food_action += "sleeper_sushi";
+        }
+      }
       else
         food_action += "chun_tian_spring_rolls";
     }
