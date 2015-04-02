@@ -6252,11 +6252,6 @@ struct use_item_t : public action_t
       lockout( buff -> buff_duration );
   }
 
-  virtual void reset()
-  {
-    action_t::reset();
-  }
-
   virtual bool ready()
   {
     if ( ! item ) return false;
@@ -6269,6 +6264,51 @@ struct use_item_t : public action_t
     }
 
     return action_t::ready();
+  }
+
+  expr_t* create_special_effect_expr( const std::vector<std::string>& data_str_split )
+  {
+    struct use_item_buff_type_expr_t : public expr_t
+    {
+      double v;
+
+      use_item_buff_type_expr_t( bool state ) :
+        expr_t( "use_item_buff_type" ),
+        v( state ? 1.0 : 0 )
+      { }
+
+      bool is_constant( double* )
+      { return true; }
+
+      double evaluate()
+      { return v; }
+    };
+
+    if ( data_str_split.size() != 2 || ! util::str_compare_ci( data_str_split[ 0 ], "use_buff" ) )
+    {
+      return 0;
+    }
+
+    stat_e stat = util::parse_stat_type( data_str_split[ 1 ] );
+    if ( stat == STAT_NONE )
+    {
+      return 0;
+    }
+
+    const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+
+    return new use_item_buff_type_expr_t( e.stat_type() == stat );
+  }
+
+  expr_t* create_expression( const std::string& name_str )
+  {
+    std::vector<std::string> split = util::string_split( name_str, "." );
+    if ( expr_t* e = create_special_effect_expr( split ) )
+    {
+      return e;
+    }
+
+    return action_t::create_expression( name_str );
   }
 };
 
