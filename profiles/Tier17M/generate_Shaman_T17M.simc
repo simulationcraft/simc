@@ -18,10 +18,10 @@ spec=elemental
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=0001011
+talents=0003011
 glyphs=chain_lightning
 head=windspeakers_faceguard,id=115579,bonus_id=567
-neck=odyssian_choker,id=113833,bonus_id=567,enchant=gift_of_multistrike
+neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_multistrike
 shoulders=windspeakers_mantle,id=115576,bonus_id=567
 back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_multistrike
 chest=windspeakers_tunic,id=115577,bonus_id=567
@@ -34,10 +34,8 @@ finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mul
 finger2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
-main_hand=koloch_na_the_blood_feast,id=113973,bonus_id=567,enchant=mark_of_the_frostwolf
+main_hand=Franzoks_headsmasher,id=113904,bonus_id=567,enchant=mark_of_the_frostwolf
 off_hand=enginestokers_lantern,id=113960,bonus_id=567
-
-
 save=Shaman_Elemental_T17M.simc
 
 

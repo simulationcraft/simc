@@ -4,7 +4,7 @@ race=dwarf
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=0001011
+talents=0003011
 glyphs=chain_lightning
 spec=elemental
 
@@ -53,12 +53,6 @@ actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendanc
 actions.single+=/unleash_flame,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/flame_shock,if=dot.flame_shock.remains<=9
 actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)
-actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down
-actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=1.3*(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)
-actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)
-actions.single+=/earthquake,if=talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=((1.3*1.875)+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down
-actions.single+=/earthquake,if=talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=1.3*((1.3*1.875)+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)
-actions.single+=/earthquake,if=talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=((1.3*1.875)+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)
 actions.single+=/elemental_blast
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
@@ -78,7 +72,7 @@ actions.aoe+=/chain_lightning,if=active_enemies>=2
 actions.aoe+=/lightning_bolt
 
 head=windspeakers_faceguard,id=115579,bonus_id=566
-neck=odyssian_choker,id=113833,bonus_id=566,enchant=gift_of_multistrike
+neck=choker_of_bloody_flame,id=120077,bonus_id=566,enchant=gift_of_multistrike
 shoulders=windspeakers_mantle,id=115576,bonus_id=566
 back=runescribed_gronncloak,id=120078,bonus_id=566,enchant=gift_of_multistrike
 chest=windspeakers_tunic,id=115577,bonus_id=566
@@ -91,19 +85,19 @@ finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multist
 finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
-main_hand=koloch_na_the_blood_feast,id=113973,bonus_id=566,enchant=mark_of_the_frostwolf
+main_hand=franzoks_headsmasher,id=113904,bonus_id=566,enchant=mark_of_the_frostwolf
 off_hand=enginestokers_lantern,id=113960,bonus_id=566
 
 # Gear Summary
-# gear_ilvl=684.38
-# gear_stamina=4079
-# gear_intellect=3431
+# gear_ilvl=685.31
+# gear_stamina=4110
+# gear_intellect=3452
 # gear_spell_power=1595
-# gear_crit_rating=574
-# gear_haste_rating=499
+# gear_crit_rating=402
+# gear_haste_rating=689
 # gear_mastery_rating=875
 # gear_armor=1401
-# gear_multistrike_rating=1709
-# gear_versatility_rating=197
+# gear_multistrike_rating=1622
+# gear_versatility_rating=286
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
