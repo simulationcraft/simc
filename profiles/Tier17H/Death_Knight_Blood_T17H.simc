@@ -22,17 +22,18 @@ actions.precombat+=/horn_of_winter
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_armor
 actions.precombat+=/bone_shield
+actions.precombat+=/army_of_the_dead
 
 # Executed every time the actor is available.
 
 actions=auto_attack
+actions+=/potion,name=draenic_armor,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
 # if=time>10
 actions+=/blood_fury
 # if=time>10
 actions+=/berserking
 # if=time>10
 actions+=/arcane_torrent
-actions+=/potion,name=draenic_armor,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
 actions+=/antimagic_shell
 actions+=/conversion,if=!buff.conversion.up&runic_power>50&health.pct<90
 actions+=/lichborne,if=health.pct<90

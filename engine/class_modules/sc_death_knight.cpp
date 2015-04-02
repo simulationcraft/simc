@@ -6134,28 +6134,38 @@ void death_knight_t::init_spells()
 
 // death_knight_t::default_apl_blood ========================================
 
-// FIXME: Add talent support
-
 void death_knight_t::default_apl_blood()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
-  action_priority_list_t* bt       = get_action_priority_list( "bt"   );
-  action_priority_list_t* re       = get_action_priority_list( "re"   );
-  action_priority_list_t* rc       = get_action_priority_list( "rc"   );
-  action_priority_list_t* nrt       = get_action_priority_list( "nrt"   );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* bt = get_action_priority_list( "bt" );
+  action_priority_list_t* re = get_action_priority_list( "re" );
+  action_priority_list_t* rc = get_action_priority_list( "rc" );
+  action_priority_list_t* nrt = get_action_priority_list( "nrt" );
+  action_priority_list_t* bos = get_action_priority_list( "bos" );
+  action_priority_list_t* cdbos = get_action_priority_list( "cdbos" );
+  action_priority_list_t* last = get_action_priority_list( "last" );
+  action_priority_list_t* nbos = get_action_priority_list( "nbos" );
 
 
-  std::string srpct     = sets.has_set_bonus( SET_MELEE, T15, B4 ) ? "45" : "35";
+  std::string srpct = sets.has_set_bonus( SET_MELEE, T15, B4 ) ? "45" : "35";
   std::string flask_str = "flask,type=";
-  std::string food_str  = "food,type=";
+  std::string food_str = "food,type=";
   std::string potion_str = "potion,name=";
 
-  if ( primary_role() == ROLE_TANK )
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     potion_str += ( level > 90 ) ? "draenic_armor" : ( level >= 85 ) ? "mountains" : "earthen";
-    flask_str += ( level > 90 ) ? "greater_draenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
-    food_str += ( level > 90 ) ? "whiptail_fillet" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
+    if ( talent.breath_of_sindragosa -> ok() )
+    {
+      flask_str += "greater_draenic_strength_flask";
+      food_str += "salty_squid_roll";
+    }
+    else
+    {
+      flask_str += ( level > 90 ) ? "greater_draenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
+      food_str += ( level > 90 ) ? "whiptail_fillet" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
+    }
   }
   else
   {
@@ -6180,24 +6190,22 @@ void death_knight_t::default_apl_blood()
     precombat -> add_action( potion_str );
 
   precombat -> add_action( this, "Bone Shield" );
+  precombat -> add_action( this, "Army of the Dead" );
 
   // Action list proper
 
   def -> add_action( "auto_attack" );
 
-  for ( size_t i = 0; i < get_profession_actions().size(); i++ )
-    def -> add_action( get_profession_actions()[ i ], "if=time>10" );
-
-  for ( size_t i = 0; i < get_racial_actions().size(); i++ )
-    def -> add_action( get_racial_actions()[ i ], "if=time>10" );
-
-  for ( size_t i = 0; i < get_item_actions().size(); i++ )
-    def -> add_action( get_item_actions()[ i ], "if=time>10" );
-
-  if ( primary_role() == ROLE_TANK )
+  if ( !talent.breath_of_sindragosa -> ok() )
   {
     if ( sim -> allow_potions && level >= 80 )
       def -> add_action( potion_str + ",if=buff.potion.down&buff.blood_shield.down&!unholy&!frost" );
+
+    for ( size_t i = 0; i < get_racial_actions().size(); i++ )
+      def -> add_action( get_racial_actions()[i], "if=time>10" );
+
+    for ( size_t i = 0; i < get_item_actions().size(); i++ )
+      def -> add_action( get_item_actions()[i], "if=time>10" );
 
     def -> add_action( this, "Anti-Magic Shell" );
     def -> add_talent( this, "Conversion", "if=!buff.conversion.up&runic_power>50&health.pct<90" );
@@ -6253,32 +6261,124 @@ void death_knight_t::default_apl_blood()
   }
   else
   {
-    precombat -> add_action( this, "Army of the Dead" );
-
+    size_t num_items = items.size();
+    for ( size_t i = 0; i < get_racial_actions().size(); i++ )
+    {
+      if ( get_racial_actions()[i] == "blood_fury" )
+        def -> add_action( get_racial_actions()[i] + ",if=target.time_to_die>120|buff.draenic_armor_potion.remains<=buff.blood_fury.duration" );
+      else if ( get_racial_actions()[i] == "berserking" )
+        def -> add_action( get_racial_actions()[i] + ",if=buff.dancing_rune_weapon.up" );
+    }
+    def -> add_action( this, "Dancing Rune Weapon", "if=target.time_to_die>90|buff.draenic_armor_potion.remains<=buff.dancing_rune_weapon.duration" );
     if ( sim -> allow_potions && level >= 80 )
-      def -> add_action( potion_str + ",if=buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( potion_str + ",if=target.time_to_die<(buff.draenic_armor_potion.duration+13)" );
+    for ( size_t i = 0; i < num_items; i++ )
+    {
+      if ( items[i].name_str == "tablet_of_turnbuckle_teamwork" || items[i].name_str == "vial_of_convulsive_shadows" )
+        def -> add_action( "use_item,name=" + items[i].name_str + ",if=target.time_to_die>120|buff.draenic_armor_potion.remains<21" );
+      else if ( items[i].name_str == "blast_furnace_door" )
+      {
+        def -> add_action( "blood_fury,if=buff.blast_furnace.up" );
+        def -> add_action( this, "Dancing Rune Weapon", "if=target.time_to_die<90&buff.blast_furnace.up" );
+        def -> add_action( potion_str + ",if=buff.blast_furnace.up&dot.soul_reaper.ticking&target.time_to_die<120" );
+      }
+      else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      {
+        def -> add_action( "use_item,name=" + items[i].name_str );
+      }
+    }
+    def -> add_action( this, "Bone Shield", "if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.rune_tap.down" );
+    def -> add_talent( this, "Lichborne", "if=health.pct<30" );
+    def -> add_action( this, "Vampiric Blood", "if=health.pct<40" );
+    def -> add_action( this, "Icebound Fortitude" ,"if=health.pct<30&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.rune_tap.down" );
+    def -> add_talent( this, "Death Pact", "if=health.pct<30" );
+    def -> add_action( "run_action_list,name=last,if=target.time_to_die<8|target.time_to_die<13&cooldown.empower_rune_weapon.remains<4" );
+    def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
+    def -> add_action( "run_action_list,name=nbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains<4" );
+    def -> add_action( "run_action_list,name=cdbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains>=4" );
 
-    def -> add_action( this, "Anti-Magic Shell" );
-    def -> add_action( this, "Bone Shield", "if=buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down" );
-    def -> add_action( this, "Vampiric Blood", "if=health.pct<50" );
-    def -> add_action( this, "Icebound Fortitude", "if=health.pct<30&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down" );
-    def -> add_action( this, "Rune Tap", "if=health.pct<90" );
-    def -> add_action( this, "Dancing Rune Weapon" );
-    def -> add_action( this, "Death Coil", "if=runic_power>80" );
-    def -> add_talent( this, "Death Pact", "if=health.pct<50" );
-    def -> add_action( this, "Outbreak", "if=buff.dancing_rune_weapon.up" );
-    def -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
-    def -> add_action( this, "Plague Strike", "if=!disease.ticking" );
-    def -> add_action( this, "Icy Touch", "if=!disease.ticking" );
-    def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct );
-    def -> add_action( this, "Death Strike" );
-    def -> add_talent( this, "Blood Tap" );
-    def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
+    bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=11" );
+    bos -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<35&runic_power>5" );
+    bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=9&runic_power>80&(blood.frac>1.8|frost.frac>1.8|unholy.frac>1.8)" );
+    bos -> add_action( this, "Death Coil", "if=runic_power>80&(blood.frac>1.8|frost.frac>1.8|unholy.frac>1.8)" );
+    for ( size_t i = 0; i < num_items; i++ )
+    {
+      if ( items[i].name_str == "vial_of_convulsive_shadows" )
+      {
+        bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=9&runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)" );
+        bos -> add_action( this, "Death Coil", "if=runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)" );
+      }
+      else if ( items[i].name_str == "forgemasters_insignia" )
+      {
+        bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=9&runic_power>85&buff.forgemasters_vigor.remains>3" );
+        bos -> add_action( this, "Death Coil", "if=runic_power>85&buff.forgemasters_vigor.remains>3" );
+      }
+    }
+    bos -> add_action( this, "Outbreak", "if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&runic_power>21" );
+    bos -> add_action( this, "Chains of Ice", "if=!dot.frost_fever.ticking&glyph.icy_runes.enabled&runic_power<90" );
+    bos -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking&runic_power>5" );
+    bos -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking&runic_power>5" );
+    bos -> add_action( this, "Death Strike", "if=runic_power<16" );
+    bos -> add_talent( this, "Blood Tap", "if=runic_power<16" );
+    bos -> add_action( this, "Blood Boil", "if=runic_power<16&runic_power>5&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)" );
+    bos -> add_action( "arcane_torrent,if=runic_power<16" );
+    bos -> add_action( this, "Chains of Ice", "if=runic_power<16&glyph.icy_runes.enabled" );
+    bos -> add_action( this, "Blood Boil", "if=runic_power<16&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)" );
+    bos -> add_action( this, "Icy Touch", "if=runic_power<16" );
+    bos -> add_action( this, "Plague Strike", "if=runic_power<16" );
+    bos -> add_action( this, "Rune Tap", "if=runic_power<16&blood>=1&blood.death=0&frost=0&unholy=0&buff.crimson_scourge.up" );
+    bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<16&blood=0&frost=0&unholy=0" );
+    bos -> add_action( this, "Death Strike", "if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8|buff.blood_charge.stack>=11)" );
+    bos -> add_talent( this, "Blood Tap", "if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)" );
+    bos -> add_action( this, "Blood Boil", "if=(blood>=1&blood.death=0&target.health.pct-3*(target.health.pct%target.time_to_die)>35|blood=2&blood.death<2)&buff.crimson_scourge.down" );
+    bos -> add_action( this, "Anti-Magic Shell", "if=runic_power<65" );
+    bos -> add_talent( this, "Plague Leech", "if=runic_power<65" );
+    bos -> add_action( this, "Outbreak", "if=!dot.blood_plague.ticking" );
+    bos -> add_action( this, "Outbreak", "if=pet.dancing_rune_weapon.active&!pet.dancing_rune_weapon.dot.blood_plague.ticking" );
+    bos -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
+    bos -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.up" );
+
+    cdbos -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35" );
+    cdbos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=10" );
+    cdbos -> add_action( this, "Death Coil", "if=runic_power>65" );
+    cdbos -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking&unholy=2" );
+    cdbos -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking&frost=2" );
+    cdbos -> add_action( this, "Death Strike", "if=unholy=2|frost=2|blood=2&blood.death>=1" );
+    cdbos -> add_action( this, "Blood Boil", "if=blood=2&blood.death<2" );
+    cdbos -> add_action( this, "Outbreak", "if=!dot.blood_plague.ticking" );
+    cdbos -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
+    cdbos -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
+    cdbos -> add_action( this, "Outbreak", "if=pet.dancing_rune_weapon.active&!pet.dancing_rune_weapon.dot.blood_plague.ticking" );
+    cdbos -> add_action( this, "Blood Boil", "if=((dot.frost_fever.remains<4&dot.frost_fever.ticking)|(dot.blood_plague.remains<4&dot.blood_plague.ticking))" );
+    cdbos -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
+    cdbos -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.up" );
+    cdbos -> add_action( this, "Death Coil", "if=runic_power>45" );
+    cdbos -> add_talent( this, "Blood Tap" );
+    cdbos -> add_action( this, "Death Strike" );
+    cdbos -> add_action( this, "Blood Boil", "if=blood>=1&blood.death=0" );
+    cdbos -> add_action( this, "Death Coil" );
+
+    last -> add_action( this, "Anti-Magic Shell", "if=runic_power<90" );
+    last -> add_talent( this, "Blood Tap" );
+    last -> add_action( this, "Soul Reaper", "if=target.time_to_die>7" );
+    last -> add_action( this, "Death Coil", "if=runic_power>80" );
+    last -> add_action( this, "Death Strike" );
+    last -> add_action( this, "Blood Boil", "if=blood=2|target.time_to_die<=7" );
+    last -> add_action( this, "Death Coil", "if=runic_power>75|target.time_to_die<4|!dot.breath_of_sindragosa.ticking" );
+    last -> add_action( this, "Plague Strike", "if=target.time_to_die<2|cooldown.empower_rune_weapon.remains<2" );
+    last -> add_action( this, "Icy Touch", "if=target.time_to_die<2|cooldown.empower_rune_weapon.remains<2" );
+    last -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost&runic_power<76|target.time_to_die<5" );
+    last -> add_talent( this, "Plague Leech" );
+
+    nbos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=80" );
+    nbos -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35" );
+    nbos -> add_action( this, "Chains of Ice", "if=!dot.frost_fever.ticking&glyph.icy_runes.enabled" );
+    nbos -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
+    nbos -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
+    nbos -> add_action( this, "Death Strike", "if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)&runic_power<80" );
+    nbos -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
+    nbos -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.up|(blood=2&runic_power<80&blood.death<2)" );
   }
-
-  // FIMXME Needs support for T5 other than RC. Severely reduces TMI right now.
-  // if ( talent.blood_tap -> ok() )
-  // action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
 }
 
 // death_knight_t::init_actions =============================================
