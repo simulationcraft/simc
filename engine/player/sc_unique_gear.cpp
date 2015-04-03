@@ -518,8 +518,14 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect )
     { stat_buff_t::expire_override( expiration_stacks, remaining_duration ); extensions = 0; }
   };
 
+  buff_t* b = buff_t::find( effect.player, effect.name() );
+  if ( ! b )
+  {
+    b = new mott_buff_t( effect.item, effect.name(), 3 );
+  }
+
   // Max extensions is hardcoded, no spell data to fetch it
-  effect.custom_buff = new mott_buff_t( effect.item, effect.name(), 3 );
+  effect.custom_buff = b;
 
   // Setup another proc callback, that uses the same driver as the proc that
   // triggers the buff, however it only procs on crits. This callback will
@@ -534,13 +540,25 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect )
   effect2 -> cooldown_ = timespan_t::zero();
   effect2 -> proc_flags2_ = PF2_CRIT;
 
-  effect.item -> player -> special_effects.push_back( effect2 );
+  // Inject the crit driver into the item special effects, so it is conceptually in the "right
+  // place". Rather ugly, but this works, better would probably be just to make
+  // special_effect_t::item pointer not const, but that is a more extensive change.
+  item_t& item = const_cast<item_t&>( *effect.item );
+  item.parsed.special_effects.push_back( effect2 );
 
   struct mott_crit_callback_t : public dbc_proc_callback_t
   {
     mott_crit_callback_t( const item_t* item, const special_effect_t& effect ) :
       dbc_proc_callback_t( item, effect )
     { }
+
+    void trigger( action_t* a, void* call_data )
+    {
+      if ( proc_buff -> check() )
+      {
+        dbc_proc_callback_t::trigger( a, call_data );
+      }
+    }
 
     void execute( action_t*, action_state_t* )
     {
@@ -550,7 +568,7 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect )
   };
 
   new dbc_proc_callback_t( effect.item, effect );
-  new mott_crit_callback_t( effect.item, *effect.item -> player -> special_effects.back() );
+  new mott_crit_callback_t( effect.item, *effect.item -> parsed.special_effects.back() );
 }
 
 void enchant::mark_of_the_frostwolf( special_effect_t& effect )
@@ -588,9 +606,16 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect )
     { return 0.0; }
   };
 
-  action_t* bleed = effect.item -> player -> create_proc_action( "shattered_bleed" );
+  action_t* bleed = effect.player -> find_action( "shattered_bleed" );
   if ( ! bleed )
+  {
+    bleed = effect.item -> player -> create_proc_action( "shattered_bleed" );
+  }
+
+  if ( ! bleed )
+  {
     bleed = new bleed_attack_t( effect.item -> player, effect );
+  }
 
   effect.execute_action = bleed;
 
@@ -637,10 +662,14 @@ void enchant::dancing_steel( special_effect_t& effect )
 
   double value = spell -> effectN( 1 ).average( effect.item -> player );
 
-  stat_buff_t* buff  = stat_buff_creator_t( effect.item -> player, tokenized_name( spell ) + suffix( effect.item ), spell )
+  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, effect.name() ) );
+  if ( ! buff )
+  {
+    buff = stat_buff_creator_t( effect.item -> player, effect.name(), spell )
                        .activated( false )
                        .add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
                        .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
+  }
 
   effect.custom_buff = buff;
 
@@ -2319,6 +2348,28 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   return ret;
 }
 
+// Second phase initialization, creates the proc callback object for generic on-equip special
+// effects, or calls the custom initialization function given in the first phase initialization.
+void unique_gear::initialize_special_effect_2( special_effect_t* effect )
+{
+  if ( effect -> type == SPECIAL_EFFECT_CUSTOM )
+  {
+    assert( effect -> custom_init );
+    effect -> custom_init( *effect );
+  }
+  else if ( effect -> type == SPECIAL_EFFECT_EQUIP )
+  {
+    if ( effect -> item )
+    {
+      new dbc_proc_callback_t( effect -> item, *effect );
+    }
+    else
+    {
+      new dbc_proc_callback_t( effect -> player, *effect );
+    }
+  }
+}
+
 const special_effect_db_item_t& unique_gear::find_special_effect_db_item( const special_effect_db_item_t* start, unsigned n, unsigned spell_id )
 {
   for ( size_t i = 0; i < n; i++ )
@@ -2349,13 +2400,7 @@ void unique_gear::init( player_t* p )
       if ( p -> sim -> debug )
         p -> sim -> out_debug.printf( "Initializing item-based special effect %s", effect -> to_string().c_str() );
 
-      if ( effect -> type == SPECIAL_EFFECT_CUSTOM )
-      {
-        assert( effect -> custom_init );
-        effect -> custom_init( *effect );
-      }
-      else if ( effect -> type == SPECIAL_EFFECT_EQUIP )
-        new dbc_proc_callback_t( item, *effect );
+      initialize_special_effect_2( effect );
     }
   }
 
@@ -2366,13 +2411,7 @@ void unique_gear::init( player_t* p )
     if ( p -> sim -> debug )
       p -> sim -> out_debug.printf( "Initializing generic special effect %s", effect -> to_string().c_str() );
 
-    if ( effect -> type == SPECIAL_EFFECT_CUSTOM )
-    {
-      assert( effect -> custom_init );
-      effect -> custom_init( *effect );
-    }
-    else if ( effect -> type == SPECIAL_EFFECT_EQUIP )
-      new dbc_proc_callback_t( p, *effect );
+    initialize_special_effect_2( effect );
   }
 }
 

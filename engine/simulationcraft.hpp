@@ -7301,6 +7301,7 @@ void init( player_t* );
 
 const special_effect_db_item_t& find_special_effect_db_item( const special_effect_db_item_t* start, unsigned n, unsigned spell_id );
 bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );
+void initialize_special_effect_2( special_effect_t* effect ); // Second phase initialization
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
