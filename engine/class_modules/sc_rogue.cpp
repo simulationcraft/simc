@@ -5859,6 +5859,11 @@ void rogue_t::swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool 
     return;
   }
 
+  if ( ! weapon_data[ slot ].item_data[ to_weapon ] )
+  {
+    return;
+  }
+
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s performing weapon swap from %s to %s",
