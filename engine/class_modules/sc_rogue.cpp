@@ -453,6 +453,7 @@ struct rogue_t : public player_t
   virtual void      init_resources( bool force );
   virtual bool      init_items();
   virtual void      init_special_effects();
+  virtual void      init_finished();
   virtual void      create_buffs();
   virtual void      create_options();
   virtual void      init_action_list();
@@ -3216,15 +3217,6 @@ struct weapon_swap_t : public action_t
     }
   }
 
-  // Speed up weapon swapping by finding things for us during init-time
-  void init()
-  {
-    action_t::init();
-
-    rogue -> weapon_data[ WEAPON_MAIN_HAND ].initialize();
-    rogue -> weapon_data[ WEAPON_OFF_HAND ].initialize();
-  }
-
   result_e calculate_result( action_state_t* )
   { return RESULT_HIT; }
 
@@ -5834,6 +5826,16 @@ void rogue_t::init_special_effects()
       unique_gear::initialize_special_effect_2( effect );
     }
   }
+}
+
+// rogue_t::init_finished ===================================================
+
+void rogue_t::init_finished()
+{
+  player_t::init_finished();
+
+  weapon_data[ WEAPON_MAIN_HAND ].initialize();
+  weapon_data[ WEAPON_OFF_HAND ].initialize();
 }
 
 // rogue_t::reset ===========================================================
