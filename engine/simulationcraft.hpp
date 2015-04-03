@@ -3584,14 +3584,14 @@ struct item_t
   bool parse_options();
   inventory_type inv_type() const;
 
-  bool is_matching_type();
-  bool is_valid_type();
+  bool is_matching_type() const;
+  bool is_valid_type() const;
   bool socket_color_match() const;
 
   unsigned item_level() const;
   unsigned upgrade_level() const;
-  stat_e stat( size_t idx );
-  int stat_value( size_t idx );
+  stat_e stat( size_t idx ) const;
+  int stat_value( size_t idx ) const;
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item();
@@ -3633,19 +3633,19 @@ struct item_t
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
 
-  std::string to_string();
-  std::string item_stats_str();
-  std::string weapon_stats_str();
-  std::string suffix_stats_str();
-  std::string gem_stats_str();
-  std::string socket_bonus_stats_str();
-  std::string enchant_stats_str();
-  bool has_stats();
-  bool has_special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
-  bool has_use_special_effect()
+  std::string to_string() const;
+  std::string item_stats_str() const;
+  std::string weapon_stats_str() const;
+  std::string suffix_stats_str() const;
+  std::string gem_stats_str() const;
+  std::string socket_bonus_stats_str() const;
+  std::string enchant_stats_str() const;
+  bool has_stats() const;
+  bool has_special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
+  bool has_use_special_effect() const
   { return has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ); }
 
-  const special_effect_t& special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
+  const special_effect_t& special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
 };
 
 
@@ -6821,6 +6821,12 @@ public:
   double get_rppm() const
   { return rppm; }
 
+  void set_last_trigger_attempt( const timespan_t& ts )
+  { last_trigger_attempt = ts; }
+
+  void set_last_trigger_success( const timespan_t& ts )
+  { last_successful_trigger = ts; }
+
   void reset()
   {
     last_trigger_attempt = timespan_t::from_seconds( -10.0 );
@@ -7205,7 +7211,7 @@ bool     initialize_item_sources( item_t& item, std::vector<std::string>& source
 
 int      random_suffix_type( item_t& item );
 int      random_suffix_type( const item_data_t* );
-uint32_t armor_value(        item_t& item );
+uint32_t armor_value(        const item_t& item );
 uint32_t armor_value(        const item_data_t*, const dbc_t&, unsigned item_level = 0 );
 // Uses weapon's own (upgraded) ilevel to calculate the damage
 uint32_t weapon_dmg_min(     item_t& item );

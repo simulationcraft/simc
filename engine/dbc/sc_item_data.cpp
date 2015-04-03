@@ -823,7 +823,7 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
 
 // item_database_t::armor_value =============================================
 
-uint32_t item_database::armor_value( item_t& item )
+uint32_t item_database::armor_value( const item_t& item )
 {
   return armor_value( &item.parsed.data, item.player -> dbc, item.item_level() );
 }
