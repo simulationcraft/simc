@@ -49,6 +49,48 @@ enum ability_type_e {
   ABILITY_MAX
 };
 
+enum current_weapon_e
+{
+  WEAPON_PRIMARY = 0u,
+  WEAPON_SECONDARY
+};
+
+enum weapon_slot_e
+{
+  WEAPON_MAIN_HAND = 0u,
+  WEAPON_OFF_HAND
+};
+
+struct weapon_info_t
+{
+  // State of the hand, i.e., primary or secondary weapon currently equipped
+  current_weapon_e     current_weapon;
+  // Pointers to item data
+  const item_t*        item_data[ 2 ];
+  // Computed weapon data
+  weapon_t             weapon_data[ 2 ];
+  // Computed stats data
+  gear_stats_t         stats_data[ 2 ];
+  // Callbacks, associated with special effects on each weapons
+  std::vector<dbc_proc_callback_t*> cb_data[ 2 ];
+
+  // Item data storage for secondary weapons
+  item_t               secondary_weapon_data;
+
+  // Protect against multiple initialization since the init is done in an action_t object.
+  bool                 initialized;
+
+  // Track secondary weapon uptime through a buff
+  buff_t*              secondary_weapon_uptime;
+
+  weapon_slot_e slot() const;
+  void initialize();
+  void reset();
+
+  // Enable/disable callbacks on the primary/secondary weapons.
+  void callback_state( current_weapon_e weapon, bool state );
+};
+
 struct shadow_reflect_event_t : public player_event_t
 {
   int combo_points;
@@ -132,6 +174,9 @@ struct rogue_t : public player_t
 
   // Data collection
   luxurious_sample_data_t* dfa_mh, *dfa_oh;
+
+  // Experimental weapon swapping
+  weapon_info_t weapon_data[ 2 ];
 
   // Buffs
   struct buffs_t
@@ -406,7 +451,10 @@ struct rogue_t : public player_t
   virtual void      init_procs();
   virtual void      init_scaling();
   virtual void      init_resources( bool force );
+  virtual bool      init_items();
+  virtual void      init_special_effects();
   virtual void      create_buffs();
+  virtual void      create_options();
   virtual void      init_action_list();
   virtual void      register_callbacks();
   virtual void      reset();
@@ -468,6 +516,8 @@ struct rogue_t : public player_t
 
   static const actions::rogue_attack_t* cast_attack( const action_t* action )
   { return debug_cast<const actions::rogue_attack_t*>( action ); }
+
+  void swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool in_combat = true );
 };
 
 inline bool rogue_td_t::sanguinary_veins()
@@ -3107,6 +3157,124 @@ struct honor_among_thieves_t : public action_t
 };
 
 // ==========================================================================
+// Experimental weapon swapping 
+// ==========================================================================
+
+struct weapon_swap_t : public action_t
+{
+  enum swap_slot_e
+  {
+    SWAP_MAIN_HAND,
+    SWAP_OFF_HAND,
+    SWAP_BOTH
+  };
+
+  std::string slot_str, swap_to_str;
+
+  swap_slot_e swap_type;
+  current_weapon_e swap_to_type;
+  rogue_t* rogue;
+
+  weapon_swap_t( rogue_t* rogue_, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "weapon_swap", rogue_ ),
+    swap_type( SWAP_MAIN_HAND ), swap_to_type( WEAPON_SECONDARY ),
+    rogue( rogue_ )
+  {
+    may_miss = may_crit = may_dodge = may_parry = may_glance = callbacks = harmful = false;
+
+    add_option( opt_string( "slot", slot_str ) );
+    add_option( opt_string( "swap_to", swap_to_str ) );
+
+    parse_options( options_str );
+
+    if ( slot_str.empty() )
+    {
+      background = true;
+    }
+    else if ( util::str_compare_ci( slot_str, "main" ) ||
+              util::str_compare_ci( slot_str, "main_hand" ) )
+    {
+      swap_type = SWAP_MAIN_HAND;
+    }
+    else if ( util::str_compare_ci( slot_str, "off" ) ||
+              util::str_compare_ci( slot_str, "off_hand" ) )
+    {
+      swap_type = SWAP_OFF_HAND;
+    }
+    else if ( util::str_compare_ci( slot_str, "both" ) )
+    {
+      swap_type = SWAP_BOTH;
+    }
+
+    if ( util::str_compare_ci( swap_to_str, "primary" ) )
+    {
+      swap_to_type = WEAPON_PRIMARY;
+    }
+    else if ( util::str_compare_ci( swap_to_str, "secondary" ) )
+    {
+      swap_to_type = WEAPON_SECONDARY;
+    }
+  }
+
+  // Speed up weapon swapping by finding things for us during init-time
+  void init()
+  {
+    action_t::init();
+
+    rogue -> weapon_data[ WEAPON_MAIN_HAND ].initialize();
+    rogue -> weapon_data[ WEAPON_OFF_HAND ].initialize();
+  }
+
+  result_e calculate_result( action_state_t* )
+  { return RESULT_HIT; }
+
+  block_result_e calculate_block_result( action_state_t* )
+  { return BLOCK_RESULT_UNBLOCKED; }
+
+  void execute()
+  {
+    action_t::execute();
+
+    if ( swap_type == SWAP_MAIN_HAND )
+    {
+      rogue -> swap_weapon( WEAPON_MAIN_HAND, swap_to_type );
+    }
+    else if ( swap_type == SWAP_OFF_HAND )
+    {
+      rogue -> swap_weapon( WEAPON_OFF_HAND, swap_to_type );
+    }
+    else if ( swap_type == SWAP_BOTH )
+    {
+      rogue -> swap_weapon( WEAPON_MAIN_HAND, swap_to_type );
+      rogue -> swap_weapon( WEAPON_OFF_HAND, swap_to_type );
+    }
+  }
+
+  bool ready()
+  {
+    if ( swap_type == SWAP_MAIN_HAND &&
+         rogue -> weapon_data[ WEAPON_MAIN_HAND ].current_weapon == swap_to_type )
+    {
+      return false;
+    }
+    else if ( swap_type == SWAP_OFF_HAND &&
+              rogue -> weapon_data[ WEAPON_OFF_HAND ].current_weapon == swap_to_type )
+    {
+      return false;
+    }
+    else if ( swap_type == SWAP_BOTH && 
+              rogue -> weapon_data[ WEAPON_MAIN_HAND ].current_weapon == swap_to_type &&
+              rogue -> weapon_data[ WEAPON_OFF_HAND ].current_weapon == swap_to_type )
+    {
+      return false;
+    }
+
+    return action_t::ready();
+  }
+
+};
+
+// ==========================================================================
 // Rogue Secondary Abilities
 // ==========================================================================
 
@@ -3168,6 +3336,140 @@ struct blade_flurry_attack_t : public rogue_attack_t
 };
 
 } // end namespace actions
+
+weapon_slot_e weapon_info_t::slot() const
+{
+  if ( item_data[ WEAPON_PRIMARY ] -> slot == SLOT_MAIN_HAND )
+  {
+    return WEAPON_MAIN_HAND;
+  }
+  else
+  {
+    return WEAPON_OFF_HAND;
+  }
+}
+
+void weapon_info_t::callback_state( current_weapon_e weapon, bool state )
+{
+  sim_t* sim = item_data[ WEAPON_PRIMARY ] -> sim;
+
+  for ( size_t i = 0, end = cb_data[ weapon ].size(); i < end; ++i )
+  {
+    if ( state )
+    {
+      cb_data[ weapon ][ i ] -> activate();
+      if ( cb_data[ weapon ][ i ] -> effect.rppm() > 0 )
+      {
+        cb_data[ weapon ][ i ] -> rppm.set_last_trigger_success( sim -> current_time() );
+        cb_data[ weapon ][ i ] -> rppm.set_last_trigger_attempt( sim -> current_time() );
+      }
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s enabling callback %s on item %s",
+            item_data[ WEAPON_PRIMARY ] -> player -> name(),
+            cb_data[ weapon ][ i ] -> effect.name().c_str(),
+            item_data[ weapon ] -> name() );
+      }
+    }
+    else
+    {
+      cb_data[ weapon ][ i ] -> deactivate();
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s disabling callback %s on item %s",
+            item_data[ WEAPON_PRIMARY ] -> player -> name(),
+            cb_data[ weapon ][ i ] -> effect.name().c_str(),
+            item_data[ weapon ] -> name() );
+      }
+    }
+  }
+}
+
+void weapon_info_t::initialize()
+{
+  if ( initialized )
+  {
+    return;
+  }
+
+  rogue_t* rogue = debug_cast<rogue_t*>( item_data[ WEAPON_PRIMARY ] -> player );
+
+  // Compute stats and initialize the callback data for the weapon. This needs to be done
+  // reasonably late (currently in weapon_swap_t action init) to ensure that everything has been
+  // initialized.
+  if ( item_data[ WEAPON_PRIMARY ] )
+  {
+    // Find primary weapon callbacks from the actor list of all callbacks
+    for ( size_t i = 0; i < item_data[ WEAPON_PRIMARY ] -> parsed.special_effects.size(); ++i )
+    {
+      special_effect_t* effect = item_data[ WEAPON_PRIMARY ] -> parsed.special_effects[ i ];
+
+      for ( size_t j = 0; j < rogue -> callbacks.all_callbacks.size(); ++j )
+      {
+        dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( rogue -> callbacks.all_callbacks[ j ] );
+
+        if ( &( cb -> effect ) == effect )
+        {
+          cb_data[ WEAPON_PRIMARY ].push_back( cb );
+        }
+      }
+    }
+
+    // Pre-compute primary weapon stats
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    {
+      stats_data[ WEAPON_PRIMARY ].add_stat( rogue -> convert_hybrid_stat( i ),
+                                             item_data[ WEAPON_PRIMARY ] -> stats.get_stat( i ) );
+    }
+  }
+
+  if ( item_data[ WEAPON_SECONDARY ] )
+  {
+    // Find secondary weapon callbacks from the actor list of all callbacks
+    for ( size_t i = 0; i < item_data[ WEAPON_SECONDARY ] -> parsed.special_effects.size(); ++i )
+    {
+      special_effect_t* effect = item_data[ WEAPON_SECONDARY ] -> parsed.special_effects[ i ];
+
+      for ( size_t j = 0; j < rogue -> callbacks.all_callbacks.size(); ++j )
+      {
+        dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( rogue -> callbacks.all_callbacks[ j ] );
+
+        if ( &( cb -> effect ) == effect )
+        {
+          cb_data[ WEAPON_SECONDARY ].push_back( cb );
+        }
+      }
+    }
+
+    // Pre-compute secondary weapon stats
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    {
+      stats_data[ WEAPON_SECONDARY ].add_stat( rogue -> convert_hybrid_stat( i ),
+                                               item_data[ WEAPON_SECONDARY ] -> stats.get_stat( i ) );
+    }
+
+    if ( item_data[ WEAPON_SECONDARY ] )
+    {
+      std::string prefix = slot() == WEAPON_MAIN_HAND ? "_mh" : "_oh";
+
+      secondary_weapon_uptime = buff_creator_t( rogue, "secondary_weapon" + prefix );
+    }
+  }
+
+  initialized = true;
+}
+
+void weapon_info_t::reset()
+{
+  rogue_t* rogue = debug_cast<rogue_t*>( item_data[ WEAPON_PRIMARY ] -> player );
+
+  // Reset swaps back to primary weapon for the slot
+  rogue -> swap_weapon( slot(), WEAPON_PRIMARY, false );
+
+  // .. and always deactivates secondary weapon callback(s).
+  callback_state( WEAPON_SECONDARY, false );
+}
 
 // Due to how our DOT system functions, at the time when last_tick() is called
 // for Deadly Poison, is_ticking() for the dot object will still return true.
@@ -4995,6 +5297,8 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
 
+  if ( name == "swap_weapon"         ) return new weapon_swap_t        ( this, options_str );
+
   return player_t::create_action( name, options_str );
 }
 
@@ -5411,6 +5715,127 @@ void rogue_t::register_callbacks()
   player_t::register_callbacks();
 }
 
+// rogue_t::create_options ==================================================
+
+static bool do_parse_secondary_weapon( rogue_t* rogue,
+                                       const std::string& value,
+                                       slot_e slot )
+{
+  switch ( slot )
+  {
+    case SLOT_MAIN_HAND:
+      rogue -> weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data = item_t( rogue, value );
+      rogue -> weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.slot = slot;
+      break;
+    case SLOT_OFF_HAND:
+      rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data = item_t( rogue, value );
+      rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.slot = slot;
+      break;
+    default:
+      break;
+  }
+
+  return true;
+}
+
+static bool parse_offhand_secondary( sim_t* sim,
+                                     const std::string& /* name */,
+                                     const std::string& value )
+{
+  rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
+  return do_parse_secondary_weapon( rogue, value, SLOT_OFF_HAND );
+}
+
+static bool parse_mainhand_secondary( sim_t* sim,
+                                      const std::string& /* name */,
+                                      const std::string& value )
+{
+  rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
+  return do_parse_secondary_weapon( rogue, value, SLOT_MAIN_HAND );
+}
+
+void rogue_t::create_options()
+{
+  add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
+  add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
+
+  player_t::create_options();
+}
+
+// rogue_t::init_items ======================================================
+
+bool rogue_t::init_items()
+{
+  bool ret = player_t::init_items();
+  if ( ! ret )
+  {
+    return ret;
+  }
+
+  // Initialize weapon swapping data structures for primary weapons here
+  weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_PRIMARY ] = main_hand_weapon;
+  weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_PRIMARY ] = &( items[ SLOT_MAIN_HAND ] );
+  weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ] = off_hand_weapon;
+  weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_PRIMARY ] = &( items[ SLOT_OFF_HAND ] );
+
+  if ( ! weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str.empty() )
+  {
+    ret = weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.init();
+    if ( ! ret )
+    {
+      return false;
+    }
+    weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_SECONDARY ] = main_hand_weapon;
+    weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] = &( weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data );
+
+    // Restore primary main hand weapon after secondary weapon init
+    main_hand_weapon = weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_PRIMARY ];
+  }
+
+  if ( ! weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str.empty() )
+  {
+    ret = weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.init();
+    if ( ! ret )
+    {
+      return false;
+    }
+    weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_SECONDARY ] = off_hand_weapon;
+    weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] = &( weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data );
+
+    // Restore primary off hand weapon after secondary weapon init
+    main_hand_weapon = weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ];
+  }
+
+  return ret;
+}
+
+// rogue_t::init_special_effects ============================================
+
+void rogue_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  if ( weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] )
+  {
+    for ( size_t i = 0, end = weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] -> parsed.special_effects.size();
+          i < end; ++i )
+    {
+      special_effect_t* effect = weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] -> parsed.special_effects[ i ];
+      unique_gear::initialize_special_effect_2( effect );
+    }
+  }
+
+  if ( weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] )
+  {
+    for ( size_t i = 0, end = weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] -> parsed.special_effects.size();
+          i < end; ++i )
+    {
+      special_effect_t* effect = weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] -> parsed.special_effects[ i ];
+      unique_gear::initialize_special_effect_2( effect );
+    }
+  }
+}
+
 // rogue_t::reset ===========================================================
 
 void rogue_t::reset()
@@ -5420,6 +5845,66 @@ void rogue_t::reset()
   poisoned_enemies = 0;
 
   event_t::cancel( event_premeditation );
+
+  weapon_data[ WEAPON_MAIN_HAND ].reset();
+  weapon_data[ WEAPON_OFF_HAND ].reset();
+}
+
+void rogue_t::swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool in_combat )
+{
+  if ( weapon_data[ slot ].current_weapon == to_weapon )
+  {
+    return;
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s performing weapon swap from %s to %s",
+        name(), weapon_data[ slot ].item_data[ ! to_weapon ] -> name(),
+        weapon_data[ slot ].item_data[ to_weapon ] -> name() );
+  }
+
+  // First, swap stats on actor, but only if it is in combat. Outside of combat (basically
+  // during iteration reset) there is no need to adjust actor stats, as they are always reset to
+  // the primary weapons.
+  for ( stat_e i = STAT_NONE; in_combat && i < STAT_MAX; i++ )
+  {
+    stat_loss( i, weapon_data[ slot ].stats_data[ ! to_weapon ].get_stat( i ) );
+    stat_gain( i, weapon_data[ slot ].stats_data[ to_weapon ].get_stat( i ) );
+  }
+
+  weapon_t* target_weapon = &( slot == WEAPON_MAIN_HAND ? main_hand_weapon : off_hand_weapon );
+  action_t* target_action = slot == WEAPON_MAIN_HAND ? main_hand_attack : off_hand_attack;
+
+  // Swap the actor weapon object
+  *target_weapon = weapon_data[ slot ].weapon_data[ to_weapon ];
+  target_action -> base_execute_time = target_weapon -> swing_time;
+
+  // Enable new weapon callback(s)
+  weapon_data[ slot ].callback_state( to_weapon, true );
+
+  // Disable old weapon callback(s)
+  weapon_data[ slot ].callback_state( static_cast<current_weapon_e>( ! to_weapon ), false );
+
+  // Reset swing timer of the weapon
+  if ( target_action -> execute_event )
+  {
+    event_t::cancel( target_action -> execute_event );
+    target_action -> schedule_execute();
+  }
+
+  // Track uptime
+  if ( to_weapon == WEAPON_PRIMARY )
+  {
+    weapon_data[ slot ].secondary_weapon_uptime -> expire();
+  }
+  else
+  {
+    weapon_data[ slot ].secondary_weapon_uptime -> trigger();
+  }
+
+  // Set the current weapon wielding state for the slot
+  weapon_data[ slot ].current_weapon = to_weapon;
 }
 
 // rogue_t::arise ===========================================================

@@ -1802,6 +1802,7 @@ bool sim_t::init_actors()
   range::for_each( actor_list, std::mem_fn( &player_t::init_benefits ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_rng ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_stats ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_finished ) );
 
   // check that we have at least one active player
   if ( ! check_actors() )
