@@ -1870,45 +1870,45 @@ public:
   {
     double total_dmg = 0;
     // Main Hand
-    if ( mh && mh -> type != WEAPON_NONE && weapon_multiplier > 0 )
+    if ( mh && mh -> type != WEAPON_NONE && this -> weapon_multiplier > 0 )
     {
       assert( mh -> slot != SLOT_OFF_HAND );
-      double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
+      double dmg = this -> sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
       dmg /= mh -> swing_time.total_seconds();
       total_dmg += dmg;
 
-      if ( sim -> debug )
+      if ( this -> sim -> debug )
       {
-        sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                                 player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
+        this -> sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                                this -> player -> name(), this -> name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
       }
     }
 
     // Off Hand
-    if ( oh && oh -> type != WEAPON_NONE && weapon_multiplier > 0 )
+    if ( oh && oh -> type != WEAPON_NONE && this -> weapon_multiplier > 0 )
     {
       assert( oh -> slot == SLOT_OFF_HAND );
-      double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
+      double dmg = this -> sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
       dmg /= oh -> swing_time.total_seconds();
       // OH penalty
       dmg *= 0.5;
 
       total_dmg += dmg;
 
-      if ( sim -> debug )
+      if ( this -> sim -> debug )
       {
-        sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                                 player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
+        this -> sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                                 this -> player -> name(), this -> name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
       }
     }
 
-    if ( player -> dual_wield() )
+    if ( this -> player -> dual_wield() )
       total_dmg *= 0.857143;
 
     if ( !mh && !oh )
       total_dmg += base_t::calculate_weapon_damage( ap );
     else
-      total_dmg += weapon_power_mod * ap;
+      total_dmg += this -> weapon_power_mod * ap;
 
     return total_dmg;
   }
