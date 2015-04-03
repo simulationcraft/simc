@@ -289,6 +289,11 @@ int special_effect_t::max_stack() const
 
 stat_buff_t* special_effect_t::initialize_stat_buff() const
 {
+  if ( buff_t* b = buff_t::find( player, name() ) )
+  {
+    return debug_cast<stat_buff_t*>( b );
+  }
+
   stat_buff_creator_t creator( player, name(), spell_data_t::nil(),
                                source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
 
@@ -343,6 +348,11 @@ bool special_effect_t::is_absorb_buff() const
 
 absorb_buff_t* special_effect_t::initialize_absorb_buff() const
 {
+  if ( buff_t* b = buff_t::find( player, name() ) )
+  {
+    return debug_cast<absorb_buff_t*>( b );
+  }
+
   absorb_buff_creator_t creator( player, name(), spell_data_t::nil(),
                                source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
 
