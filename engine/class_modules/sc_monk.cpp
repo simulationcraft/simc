@@ -1866,6 +1866,53 @@ public:
     }
   }
 
+  double monk_weapon_damage( double ap, weapon_t* mh, weapon_t* oh )
+  {
+    double total_dmg = 0;
+    // Main Hand
+    if ( mh && mh -> type != WEAPON_NONE && weapon_multiplier > 0 )
+    {
+      assert( mh -> slot != SLOT_OFF_HAND );
+      double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
+      dmg /= mh -> swing_time.total_seconds();
+      total_dmg += dmg;
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                                 player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
+      }
+    }
+
+    // Off Hand
+    if ( oh && oh -> type != WEAPON_NONE && weapon_multiplier > 0 )
+    {
+      assert( oh -> slot == SLOT_OFF_HAND );
+      double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
+      dmg /= oh -> swing_time.total_seconds();
+      // OH penalty
+      dmg *= 0.5;
+
+      total_dmg += dmg;
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                                 player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
+      }
+    }
+
+    if ( player -> dual_wield() )
+      total_dmg *= 0.857143;
+
+    if ( !mh && !oh )
+      total_dmg += base_t::calculate_weapon_damage( ap );
+    else
+      total_dmg += weapon_power_mod * ap;
+
+    return total_dmg;
+  }
+
   virtual void consume_resource()
   {
     ab::consume_resource();
@@ -1917,22 +1964,6 @@ public:
 
   virtual void execute()
   {
-    /* String look ups during runtime, but it's mistweaver... soo.... commented out.
-    if ( p() -> buff.channeling_soothing_mist -> check()
-    && p() -> executing
-    && !( p() -> executing -> name_str == "enveloping_mist" || p() -> executing -> name_str == "surging_mist" ) )
-    {
-    for ( size_t i = 0, actors = p() -> sim -> player_non_sleeping_list.size(); i < actors; ++i )
-    {
-    player_t* t = p() -> sim -> player_non_sleeping_list[i];
-    if ( td( t ) -> dots.soothing_mist -> is_ticking() )
-    {
-    td( t ) -> dots.soothing_mist -> cancel();
-    p() -> buff.channeling_soothing_mist -> expire();
-    break;
-    }
-    }
-    }*/
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
@@ -2045,49 +2076,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   // Both MH and OH are directly weaved into one damage number
   virtual double calculate_weapon_damage( double ap )
   {
-    double total_dmg = 0;
-    // Main Hand
-    if ( mh && mh -> type != WEAPON_NONE && weapon_multiplier > 0 )
-    {
-      assert( mh -> slot != SLOT_OFF_HAND );
-      double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
-      dmg /= mh -> swing_time.total_seconds();
-      total_dmg += dmg;
-
-      if ( sim->debug )
-      {
-        sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                                 player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
-      }
-    }
-
-    // Off Hand
-    if ( oh && oh -> type != WEAPON_NONE && weapon_multiplier > 0 )
-    {
-      assert( oh -> slot == SLOT_OFF_HAND );
-      double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
-      dmg /= oh -> swing_time.total_seconds();
-      // OH penalty
-      dmg *= 0.5;
-
-      total_dmg += dmg;
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                                 player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
-      }
-    }
-
-    if ( player -> dual_wield() )
-      total_dmg *= 0.857143;
-
-    if ( !mh && !oh )
-      total_dmg += base_t::calculate_weapon_damage( ap );
-    else
-      total_dmg += weapon_power_mod * ap;
-
-    return total_dmg;
+    return monk_weapon_damage( ap, mh, oh );
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -4468,6 +4457,26 @@ struct expel_harm_heal_t: public monk_heal_t
       base_costs[RESOURCE_MANA] = 0;
     else
       base_costs[RESOURCE_ENERGY] = 0;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    weapon_t mh = p() -> main_hand_weapon;
+    weapon_t oh = p() -> off_hand_weapon;
+    double ap = 0;
+    double weapon_damage = 0;
+
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+      ap = p() -> composite_spell_power( SCHOOL_MAX );
+    else
+      ap = p() -> composite_melee_attack_power();
+      
+/*    weapon_damage = monk_weapon_damage( ap, &mh, &oh );
+    am *= weapon_damage;
+*/
+    return am;
   }
 
   void impact( action_state_t* s )
