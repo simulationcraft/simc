@@ -512,8 +512,9 @@ bool item_t::parse_options()
   {
     opts::parse( sim, option_name_str, options, remainder );
   }
-  catch( ... )
+  catch ( const std::exception& e )
   {
+    sim -> errorf( "%s item '%s': Unable to parse item options str '%s': %s", player -> name(), name(), options_str.c_str(), e.what() );
     return false;
   }
 
