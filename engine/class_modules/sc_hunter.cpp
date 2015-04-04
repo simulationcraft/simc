@@ -3995,16 +3995,19 @@ void hunter_t::apl_surv()
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=45" );
   default_list -> add_action( this, "Black Arrow" );
-  default_list -> add_action( this, "Arcane Shot", "if=(trinket.stat.any.up&trinket.stat.any.remains<4)|dot.serpent_sting.remains<=3" );
+  default_list -> add_action( this, "Arcane Shot", "if=(trinket.proc.any.react&trinket.proc.any.remains<4)|dot.serpent_sting.remains<=3" );
   default_list -> add_action( this, "Explosive Shot" );
+  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up" );
   default_list -> add_talent( this, "Dire Beast" );
-  default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35|target.time_to_die<4.5" );
+  default_list -> add_action( this, "Arcane Shot", "if=(buff.thrill_of_the_hunt.react&focus>35)|target.time_to_die<4.5" );
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot" );
   default_list -> add_talent( this, "Barrage" );
-  default_list -> add_action( this, "Explosive Trap", "if=!trinket.stat.any.up" );
-  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80" );
-  default_list -> add_action( this, "Arcane Shot", "if=focus>=70|talent.focusing_shot.enabled" );
+  default_list -> add_action( this, "Explosive Trap", "if=!trinket.proc.any.react&!trinket.stacking_proc.any.react" );
+  default_list -> add_action( this, "Arcane Shot", "if=talent.steady_focus.enabled&!talent.focusing_shot.enabled&focus.deficit<action.cobra_shot.cast_regen*2+28" );
+  default_list -> add_action( this, "Cobra Shot", "if=talent.steady_focus.enabled&buff.steady_focus.remains<5" );
+  default_list -> add_talent( this, "Focusing Shot", "if=talent.steady_focus.enabled&buff.steady_focus.remains<=cast_time&focus.deficit>cast_regen" );
+  default_list -> add_action( this, "Arcane Shot", "if=focus>=70|talent.focusing_shot.enabled|(talent.steady_focus.enabled&focus>=50)" );
   default_list -> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot" );
