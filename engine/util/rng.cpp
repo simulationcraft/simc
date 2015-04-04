@@ -460,6 +460,26 @@ struct rng_sfmt_t : public rng_t
   }
 
   /**
+   * This function generates and returns unsigned 32-bit integer.
+   * This is slower than SFMT, only for convenience usage.
+   * dsfmt_init_gen_rand() or dsfmt_init_by_array() must be called
+   * before this function.
+   * @param dsfmt dsfmt internal state date
+   * @return double precision floating point pseudorandom number
+   */
+  uint32_t dsfmt_genrand_uint32(dsfmt_t *dsfmt) {
+      uint32_t r;
+      uint64_t *psfmt64 = &dsfmt->status[0].u[0];
+
+      if (dsfmt->idx >= DSFMT_N64) {
+          dsfmt_gen_rand_all(dsfmt);
+          dsfmt->idx = 0;
+      }
+      r = psfmt64[dsfmt->idx++] & 0xffffffffU;
+      return r;
+  }
+
+  /**
    * This function initializes the internal state array with a 32-bit
    * integer seed.
    * @param dsfmt dsfmt state vector.
@@ -527,6 +547,19 @@ struct rng_sfmt_t : public rng_t
   { 
     return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; 
   }
+
+  /**
+   * Special implementation because dsfmt only allows 32bit seed
+   */
+  virtual uint64_t reseed() override
+  {
+    uint64_t s = dsfmt_genrand_uint32( &dsfmt_global_data );
+    seed( s );
+    gauss_pair_value = 0;
+    gauss_pair_use = false;
+    return s;
+  }
+
 };
 
 // ==========================================================================

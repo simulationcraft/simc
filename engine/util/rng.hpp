@@ -53,7 +53,7 @@ struct rng_t
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
   
   // Reseed using current state.  Helpful for replaying from a specific point.
-  uint64_t reseed();
+  virtual uint64_t reseed();
 
   // Convenience timespan_t helper functions
   timespan_t range( timespan_t min, timespan_t max )
