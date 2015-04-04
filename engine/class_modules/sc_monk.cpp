@@ -4394,8 +4394,10 @@ TODO: Verify healing values.
 struct expel_harm_heal_t: public monk_heal_t
 {
   attacks::expel_harm_t* attack;
+  action_t* action;
   expel_harm_heal_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) )
+    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) ),
+    action( 0 )
   {
     parse_options( options_str );
 
@@ -4405,6 +4407,8 @@ struct expel_harm_heal_t: public monk_heal_t
     base_multiplier = 7.5;
 
     attack = new attacks::expel_harm_t( &p );
+
+    action = this;
 
     if ( p.specialization() == MONK_MISTWEAVER )
       base_costs[RESOURCE_MANA] = 0;
@@ -4418,15 +4422,10 @@ struct expel_harm_heal_t: public monk_heal_t
 
     weapon_t mh = p() -> main_hand_weapon;
     weapon_t oh = p() -> off_hand_weapon;
-    double ap = 0;
-
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      ap = p() -> composite_spell_power( SCHOOL_MAX );
-    else
-      ap = p() -> composite_melee_attack_power();
       
-//    double weapon_damage = monk_util::monk_weapon_damage( this, &( mh ), &( oh ), weapon_power_mod, ap );
-//    am *= weapon_damage;
+    double weapon_damage = monk_util::monk_weapon_damage( action, &( mh ), &( oh ), weapon_power_mod, 
+      (p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
+    am *= weapon_damage;
 
     return am;
   }
