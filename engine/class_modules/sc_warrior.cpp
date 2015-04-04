@@ -1225,6 +1225,8 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
+    range = data().effectN( 1 ).radius_max();
+    radius = range;
     weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
   }
 
@@ -1253,7 +1255,8 @@ struct bladestorm_t: public warrior_attack_t
 
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
-    
+    range = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
+    radius = range;
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
 
@@ -2207,6 +2210,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
+    radius = 10; // Meat cleaver RBs have a 10 yard radius. Not found in spell data. 
   }
 
   void execute()
@@ -2877,6 +2881,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     aoe = -1;
     range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
     range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
+    radius = range;
     weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
   }
@@ -2905,6 +2910,7 @@ struct whirlwind_t: public warrior_attack_t
 
     range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
     range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
+    radius = range;
     if ( p -> specialization() == WARRIOR_FURY )
     {
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
