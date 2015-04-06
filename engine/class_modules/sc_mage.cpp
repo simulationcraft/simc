@@ -5312,6 +5312,7 @@ void mage_t::apl_fire()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
 
+  default_list -> add_action( "stop_pyro_chain,if=prev.combustion" );
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Blink",
@@ -5367,16 +5368,13 @@ void mage_t::apl_fire()
                               "Kindling or Level 90 Combustion" );
 
 
-  t17_2pc_combust -> add_action( "stop_pyro_chain,if=prev.combustion",
+  t17_2pc_combust -> add_talent( this, "Prismatic Crystal", "",
                                  "2T17 two-target Combustion sequence" );
-  t17_2pc_combust -> add_talent( this, "Prismatic Crystal" );
-
   for( size_t i = 0; i < racial_actions.size(); i++ )
     t17_2pc_combust -> add_action( racial_actions[i] );
   for( size_t i = 0; i < item_actions.size(); i++ )
     t17_2pc_combust -> add_action( item_actions[i] );
   t17_2pc_combust -> add_action( get_potion_action() );
-
   t17_2pc_combust -> add_action( this, "Inferno Blast",
                                  "if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max*3",
                                  "Second pre-combust IB" );
@@ -5418,16 +5416,13 @@ void mage_t::apl_fire()
   t17_2pc_combust -> add_action( this, "Fireball" );
 
 
-  combust_sequence -> add_action( "stop_pyro_chain,if=prev.combustion",
+  combust_sequence -> add_talent( this, "Prismatic Crystal", "",
                                   "Combustion Sequence" );
-  combust_sequence -> add_talent( this, "Prismatic Crystal" );
-
   for( size_t i = 0; i < racial_actions.size(); i++ )
     combust_sequence -> add_action( racial_actions[i] );
   for( size_t i = 0; i < item_actions.size(); i++ )
     combust_sequence -> add_action( item_actions[i] );
   combust_sequence -> add_action( get_potion_action() );
-
   combust_sequence -> add_talent( this, "Meteor",
                                   "if=active_enemies<=2" );
   combust_sequence -> add_action( this, "Pyroblast",

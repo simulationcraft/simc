@@ -26,7 +26,8 @@ actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
 
-actions=counterspell,if=target.debuff.casting.react
+actions=stop_pyro_chain,if=prev.combustion
+actions+=/counterspell,if=target.debuff.casting.react
 actions+=/blink,if=movement.distance>10
 actions+=/blazing_speed,if=movement.remains>0
 actions+=/time_warp,if=target.health.pct<25|time>5
@@ -67,8 +68,7 @@ actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!gly
 actions.init_combust+=/start_pyro_chain,if=!talent.prismatic_crystal.enabled&!talent.meteor.enabled&((cooldown.combustion.remains<gcd.max*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*(gcd.max+talent.kindling.enabled)))
 
 # 2T17 two-target Combustion sequence
-actions.t17_2pc_combust=stop_pyro_chain,if=prev.combustion
-actions.t17_2pc_combust+=/prismatic_crystal
+actions.t17_2pc_combust=prismatic_crystal
 actions.t17_2pc_combust+=/blood_fury
 actions.t17_2pc_combust+=/berserking
 actions.t17_2pc_combust+=/arcane_torrent
@@ -101,8 +101,7 @@ actions.t17_2pc_combust+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.d
 actions.t17_2pc_combust+=/fireball
 
 # Combustion Sequence
-actions.combust_sequence=stop_pyro_chain,if=prev.combustion
-actions.combust_sequence+=/prismatic_crystal
+actions.combust_sequence=prismatic_crystal
 actions.combust_sequence+=/blood_fury
 actions.combust_sequence+=/berserking
 actions.combust_sequence+=/arcane_torrent
