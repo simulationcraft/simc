@@ -456,6 +456,7 @@ struct rogue_t : public player_t
   virtual void      init_finished();
   virtual void      create_buffs();
   virtual void      create_options();
+  virtual void      copy_from( player_t* source );
   virtual void      init_action_list();
   virtual void      register_callbacks();
   virtual void      reset();
@@ -5752,6 +5753,25 @@ void rogue_t::create_options()
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
 
   player_t::create_options();
+}
+
+// rogue_t::copy_from =======================================================
+
+void rogue_t::copy_from( player_t* source )
+{
+  rogue_t* rogue = static_cast<rogue_t*>( source );
+  player_t::copy_from( source );
+  if ( ! rogue -> weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str.empty() )
+  {
+    weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str = \
+      rogue -> weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str;
+  }
+
+  if ( ! rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str.empty() )
+  {
+    weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str = \
+      rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str;
+  }
 }
 
 // rogue_t::init_items ======================================================
