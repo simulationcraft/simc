@@ -83,6 +83,12 @@ struct weapon_info_t
   // Track secondary weapon uptime through a buff
   buff_t*              secondary_weapon_uptime;
 
+  weapon_info_t() :
+    current_weapon( WEAPON_PRIMARY ), initialized( false ), secondary_weapon_uptime( 0 )
+  {
+    range::fill( item_data, 0 );
+  }
+
   weapon_slot_e slot() const;
   void initialize();
   void reset();
@@ -5560,7 +5566,7 @@ void rogue_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = items[ SLOT_OFF_HAND ].active();
   scales_with[ STAT_STRENGTH              ] = false;
 
   // Break out early if scaling is disabled on this player, or there's no
