@@ -8551,10 +8551,14 @@ void player_t::copy_from( player_t* source )
   use_apl = source -> use_apl;
 
   meta_gem = source -> meta_gem;
-  for ( size_t i = 0; i < items.size(); i++ )
+  for ( size_t i = 0; i < source -> items.size(); i++ )
   {
-    items[ i ] = source -> items[ i ];
-    items[ i ].player = this;
+    if ( source -> items[ i ].options_str.empty() )
+    {
+      continue;
+    }
+
+    items[ i ].options_str = source -> items[ i ].options_str;
   }
 
   sets = source -> sets;
