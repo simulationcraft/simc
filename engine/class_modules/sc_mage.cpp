@@ -5453,7 +5453,7 @@ void mage_t::apl_fire()
                              "cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies",
                              "Living Bomb application" );
   living_bomb -> add_talent( this, "Living Bomb",
-                             "cycle_targets=1,if=target!=prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.target.time_to_die>remains+12" );
+                             "cycle_targets=1,if=target!=prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.time_to_die>remains+12" );
 
 
   aoe -> add_action( this, "Inferno Blast",
