@@ -6732,7 +6732,9 @@ inline void dot_end_event_t::execute()
   // rescheduling of the dot-end-event occurs between the second to last and last ticks. That will
   // in turn flip the order of the dot-tick-event and dot-end-event.
   else
+  {
     assert( dot -> tick_event && dot -> time_to_tick == dot -> tick_event -> remains() );
+  }
 
   // Aand sanity check that the dot has consumed all ticks just in case.
   assert( dot -> current_tick == dot -> num_ticks );
