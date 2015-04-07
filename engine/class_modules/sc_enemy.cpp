@@ -289,10 +289,8 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 
   virtual void schedule_execute( action_state_t* s )
   {
-    s -> action -> background = true;
     // first, execute on the primary target
     child_action_type_t::schedule_execute( s );
-    s -> action -> background = false; // Sorry Jesus
 
     // if we're hitting more than one target, handle the children
     if ( num_attacks > 1 )
