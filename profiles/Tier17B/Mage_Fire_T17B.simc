@@ -26,7 +26,7 @@ actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
 
-actions=stop_pyro_chain,if=prev.combustion
+actions=stop_pyro_chain,if=prev_off_gcd.combustion
 actions+=/counterspell,if=target.debuff.casting.react
 actions+=/blink,if=movement.distance>10
 actions+=/blazing_speed,if=movement.remains>0

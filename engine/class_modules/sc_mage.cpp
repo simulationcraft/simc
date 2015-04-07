@@ -5312,7 +5312,7 @@ void mage_t::apl_fire()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
 
-  default_list -> add_action( "stop_pyro_chain,if=prev.combustion" );
+  default_list -> add_action( "stop_pyro_chain,if=prev_off_gcd.combustion" );
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Blink",
@@ -5527,7 +5527,7 @@ void mage_t::apl_frost()
                               "if=movement.remains>0" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
-  default_list -> add_action( "call_action_list,name=water_jet,if=prev.water_jet|debuff.water_jet.remains>0" );
+  default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
   default_list -> add_talent( this, "Mirror Image" );
   default_list -> add_talent( this, "Ice Floes",
                               "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.frostbolt.cast_time)" );
@@ -5589,7 +5589,7 @@ void mage_t::apl_frost()
 
 
   water_jet -> add_action( this, "Frostbolt",
-                           "if=prev.water_jet",
+                           "if=prev_off_gcd.water_jet",
                            "Water Jet sequence" );
   water_jet -> add_action( this, "Ice Lance",
                            "if=buff.fingers_of_frost.react=2&action.frostbolt.in_flight" );
