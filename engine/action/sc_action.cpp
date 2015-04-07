@@ -2441,7 +2441,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           {
             for ( size_t i = 0; i < action.player -> off_gcdactions.size(); i++ )
             {
-              if ( action.player -> off_gcdactions[i] -> id == previously_off_gcd -> id )
+              if ( action.player -> off_gcdactions[i] -> internal_id == previously_off_gcd -> internal_id )
                 return true;
             }
           }
