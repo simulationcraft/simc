@@ -1008,7 +1008,7 @@ void print_html_gear( report::sc_html_stream& os, player_t* p )
     "<th>Slot</th>\n"
     "<th>Average Item Level: %.2f</th>\n"
     "</tr>\n",
-     util::get_avg_itemlvl( p ) );
+     util::round( util::get_avg_itemlvl( p ) ), 2 );
 
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {

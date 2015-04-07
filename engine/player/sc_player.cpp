@@ -8436,7 +8436,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     }
 
     profile_str += "\n# Gear Summary" + term;
-    double avg_ilvl = util::get_avg_itemlvl( this );
+    double avg_ilvl = util::round( util::get_avg_itemlvl( this ), 2 );
     profile_str += "# gear_ilvl=" + util::to_string( avg_ilvl, 2 ) + term;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
