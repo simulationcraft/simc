@@ -2402,7 +2402,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         virtual double evaluate()
         {
           if ( action.player -> last_foreground_action )
-            return action.player -> last_foreground_action -> id == prev -> id;
+            return action.player -> last_foreground_action -> internal_id == prev -> internal_id;
           return false;
         }
       };
@@ -2420,7 +2420,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         virtual double evaluate()
         {
           if ( action.player -> last_gcd_action )
-            return action.player -> last_gcd_action -> id == previously_used -> id;
+            return action.player -> last_gcd_action -> internal_id == previously_used -> internal_id;
           return false;
         }
       };
