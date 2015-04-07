@@ -5561,7 +5561,51 @@ void rogue_t::init_scaling()
   player_t::init_scaling();
 
   scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
-  scales_with[STAT_STRENGTH] = false;
+  scales_with[ STAT_STRENGTH              ] = false;
+
+  // Break out early if scaling is disabled on this player, or there's no
+  // scaling stat
+  if ( ! scale_player || sim -> scaling -> scale_stat == STAT_NONE )
+  {
+    return;
+  }
+
+  // If weapon swapping is used, adjust the weapon_t object damage values in the weapon state
+  // information if this simulator is scaling the corresponding weapon DPS (main or offhand). This
+  // is necessary, as weapon swapping overwrites player_t::main_hand_weapon and
+  // player_t::ofF_hand_weapon, which is where player_t::init_scaling originally injects the
+  // increased scaling value.
+  if ( sim -> scaling -> scale_stat == STAT_WEAPON_DPS &&
+       weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.active() )
+  {
+    double v = sim -> scaling -> scale_value;
+    double pvalue = weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_PRIMARY ].swing_time.total_seconds() * v;
+    double svalue = weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_SECONDARY ].swing_time.total_seconds() * v;
+
+    weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_PRIMARY ].damage += pvalue;
+    weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_PRIMARY ].min_dmg += pvalue;
+    weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_PRIMARY ].max_dmg += pvalue;
+
+    weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_SECONDARY ].damage += svalue;
+    weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_SECONDARY ].min_dmg += svalue;
+    weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_SECONDARY ].max_dmg += svalue;
+  }
+
+  if ( sim -> scaling -> scale_stat == STAT_WEAPON_OFFHAND_DPS &&
+       weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.active() )
+  {
+    double v = sim -> scaling -> scale_value;
+    double pvalue = weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ].swing_time.total_seconds() * v;
+    double svalue = weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_SECONDARY ].swing_time.total_seconds() * v;
+
+    weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ].damage += pvalue;
+    weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ].min_dmg += pvalue;
+    weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ].max_dmg += pvalue;
+
+    weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_SECONDARY ].damage += svalue;
+    weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_SECONDARY ].min_dmg += svalue;
+    weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_SECONDARY ].max_dmg += svalue;
+  }
 }
 
 // rogue_t::init_resources =================================================
