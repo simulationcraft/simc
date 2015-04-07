@@ -457,6 +457,7 @@ struct rogue_t : public player_t
   virtual void      create_buffs();
   virtual void      create_options();
   virtual void      copy_from( player_t* source );
+  virtual bool      create_profile( std::string& profile_str, save_e stype, bool save_html );
   virtual void      init_action_list();
   virtual void      register_callbacks();
   virtual void      reset();
@@ -5772,6 +5773,57 @@ void rogue_t::copy_from( player_t* source )
     weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str = \
       rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str;
   }
+}
+
+// rogue_t::create_profile  =================================================
+
+bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
+{
+  player_t::create_profile( profile_str, stype, save_html );
+
+  // Break out early if we are not saving everything, or gear
+  if ( stype != SAVE_ALL && stype != SAVE_GEAR )
+  {
+    return true;
+  }
+
+  std::string term = save_html ? "<br />\n" : "\n";
+
+  if ( weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.active() ||
+       weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.active() )
+  {
+    profile_str += term;
+    profile_str += "# Secondary weapons used in conjunction with weapon swapping are defined below.";
+    profile_str += term;
+  }
+
+  if ( weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.active() )
+  {
+    profile_str += "main_hand_secondary=";
+    profile_str += weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.encoded_item() + term;
+    if ( sim -> save_gear_comments &&
+         ! weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.encoded_comment().empty() )
+    {
+      profile_str += "# ";
+      profile_str += weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.encoded_comment();
+      profile_str += term;
+    }
+  }
+
+  if ( weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.active() )
+  {
+    profile_str += "off_hand_secondary=";
+    profile_str += weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.encoded_item() + term;
+    if ( sim -> save_gear_comments &&
+         ! weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.encoded_comment().empty() )
+    {
+      profile_str += "# ";
+      profile_str += weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.encoded_comment();
+      profile_str += term;
+    }
+  }
+
+  return true;
 }
 
 // rogue_t::init_items ======================================================
