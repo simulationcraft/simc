@@ -4675,7 +4675,11 @@ action_t* mage_t::create_action( const std::string& name,
 
 void mage_t::create_pets()
 {
-  pets.water_elemental = new pets::water_elemental_pet_t( sim, this ); 
+  if ( specialization() == MAGE_FROST )
+  {
+    pets.water_elemental = new pets::water_elemental_pet_t( sim, this );
+  }
+
   pets.prismatic_crystal = new pets::prismatic_crystal_t( sim, this );
 
   for ( unsigned i = 0; i < sizeof_array( pets.mirror_images ); i++ )
