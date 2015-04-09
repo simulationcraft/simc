@@ -282,6 +282,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     else
       num_attacks = static_cast<size_t>( aoe_tanks );
 
+    this -> interrupt_auto_attack = false;
     // if there are no valid targets, disable
     if ( ch_list.size() < 1 )
       this -> background = true;
