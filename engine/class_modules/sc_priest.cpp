@@ -4548,6 +4548,13 @@ struct penance_heal_t : public priest_heal_t
       school = SCHOOL_HOLY;
       stats = player.get_stats( "penance_heal", this );
     }
+
+    virtual void init() override
+    {
+      priest_heal_t::init();
+
+      snapshot_flags |= STATE_MUL_TA;
+    }
   };
 
   penance_heal_t( priest_t& p, const std::string& options_str ) :
@@ -6557,9 +6564,9 @@ void priest_t::apl_disc_heal()
   def -> add_action( "penance_heal,if=buff.borrowed_time.up" );
   def -> add_action( "penance_heal" );
   def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
-  def -> add_action( this, "Heal", "if=buff.power_infusion.up|mana.pct>20" );
   def -> add_action( "prayer_of_mending" );
   def -> add_talent( this, "Clarity of Will" );
+  def -> add_action( this, "Heal", "if=buff.power_infusion.up|mana.pct>20" );
   def -> add_action( "heal" );
 }
 
