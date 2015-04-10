@@ -1140,6 +1140,7 @@ player_t* bcp_api::download_player_html( sim_t*             sim,
   std::string battlenet = "http://" + region + ".battle.net/";
 
   player.url = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
+  player.cleanurl = player.url;
   player.origin = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
 
   player.region = region;
