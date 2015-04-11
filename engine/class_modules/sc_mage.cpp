@@ -3000,7 +3000,6 @@ struct frozen_orb_t : public mage_spell_t
     add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
-    
   }
 
   void tick( dot_t* d )
@@ -3012,7 +3011,6 @@ struct frozen_orb_t : public mage_spell_t
     frozen_orb_bolt -> target = d -> target;
     frozen_orb_bolt -> execute();
     }
-
   }
 
   virtual void execute()
@@ -4824,7 +4822,7 @@ void mage_t::init_base_stats()
   base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.018;
 
   // Reduce fire mage distance to avoid proc munching at high haste. Or reduce distance if we're using Prismatic Crystal
-  if ( specialization() == MAGE_FIRE || talents.prismatic_crystal )
+  if ( specialization() == MAGE_FIRE || talents.prismatic_crystal  -> ok() )
     base.distance = 20;
 
   if ( race == RACE_ORC )
