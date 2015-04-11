@@ -4193,7 +4193,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
   double cost() const
   {
-    if ( p() -> current_stance == WISE_SERPENT )
+    if ( p() -> current_stance() == WISE_SERPENT )
       return 0;
     return monk_spell_t::cost();
   }
@@ -4220,7 +4220,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::tick( dot );
 
-    if ( p() -> current_stance == SPIRITED_CRANE )
+    if ( p() -> current_stance() == SPIRITED_CRANE )
       p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.crackling_jade_lightning, this );
   }
 };
