@@ -3000,14 +3000,19 @@ struct frozen_orb_t : public mage_spell_t
     add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
+    
   }
 
   void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
-
+    // "travel time" reduction of ticks based on distance from target - set on the side of less ticks lost.
+    if ( d -> current_tick <= ( d -> num_ticks - util::round( ( ( player -> current.distance - 16.0 ) / 16.0 ), 0 ) ) )
+    {
     frozen_orb_bolt -> target = d -> target;
     frozen_orb_bolt -> execute();
+    }
+
   }
 
   virtual void execute()
@@ -4818,8 +4823,8 @@ void mage_t::init_base_stats()
 
   base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.018;
 
-  // Reduce fire mage distance to avoid proc munching at high haste
-  if ( specialization() == MAGE_FIRE )
+  // Reduce fire mage distance to avoid proc munching at high haste. Or reduce distance if we're using Prismatic Crystal
+  if ( specialization() == MAGE_FIRE || talents.prismatic_crystal )
     base.distance = 20;
 
   if ( race == RACE_ORC )
@@ -5893,9 +5898,6 @@ void mage_t::arise()
 
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
-
-  if ( talents.prismatic_crystal -> ok() )
-    base.distance = 20;
 
   if ( perks.enhanced_frostbolt -> ok() && specialization() == MAGE_FROST )
     buffs.enhanced_frostbolt -> trigger();
