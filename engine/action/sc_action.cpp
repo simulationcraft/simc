@@ -1408,12 +1408,14 @@ void action_t::tick( dot_t* d )
 // action_t::multistrike_tick ===============================================
 
 // Generate a periodic multistrike
-void action_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double /* tick_multiplier */ )
+void action_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double tick_multiplier )
 {
   ms_state -> result_raw = source_state -> result_raw * composite_multistrike_multiplier( source_state );
   double total = ms_state -> result_raw;
   if ( ms_state -> result == RESULT_MULTISTRIKE_CRIT )
     total *= ( 1.0 + total_crit_bonus() );
+  // Also apply last_tick_factor properly
+  total *= tick_multiplier;
 
   ms_state -> result_total = ms_state -> result_amount = total;
 }
