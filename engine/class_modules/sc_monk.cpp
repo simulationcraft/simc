@@ -4180,40 +4180,8 @@ struct purifying_brew_t: public monk_spell_t
 
 struct crackling_jade_lightning_t: public monk_spell_t
 {
-  // Crackling Jade Spirit needs to bypass all mana costs for the duration
-  // of the channel, if Lucidity is up when the spell is cast. Thus,
-  // we need custom state to go around the channeling cost per second.
-  struct cjl_state_t: public action_state_t
-  {
-    bool lucidity;
-
-    cjl_state_t( crackling_jade_lightning_t* cjl, player_t* target ):
-      action_state_t( cjl, target ), lucidity( false )
-    { }
-
-    std::ostringstream& debug_str( std::ostringstream& s )
-    {
-      action_state_t::debug_str( s ) << " lucidity=" << lucidity; return s;
-    }
-
-    void initialize()
-    {
-      action_state_t::initialize(); lucidity = false;
-    }
-
-    void copy_state( const action_state_t* o )
-    {
-      action_state_t::copy_state( o );
-      const cjl_state_t* ss = debug_cast<const cjl_state_t*>( o );
-      lucidity = ss -> lucidity;
-    }
-  };
-
-  const spell_data_t* proc_driver;
-
   crackling_jade_lightning_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "crackling_jade_lightning", &p, p.find_class_spell( "Crackling Jade Lightning" ) ),
-    proc_driver( p.find_spell( 123332 ) )
+    monk_spell_t( "crackling_jade_lightning", &p, p.find_class_spell( "Crackling Jade Lightning" ) )
   {
     parse_options( options_str );
 
@@ -4223,16 +4191,11 @@ struct crackling_jade_lightning_t: public monk_spell_t
     procs_courageous_primal_diamond = false;
   }
 
-  action_state_t* new_state()
+  double cost() const
   {
-    return new cjl_state_t( this, target );
-  }
-
-  void snapshot_state( action_state_t* state, dmg_e rt )
-  {
-    monk_spell_t::snapshot_state( state, rt );
-    cjl_state_t* ss = debug_cast<cjl_state_t*>( state );
-    ss -> lucidity = player -> buffs.courageous_primal_diamond_lucidity -> check() != 0;
+    if ( p() -> current_stance == WISE_SERPENT )
+      return 0;
+    return monk_spell_t::cost();
   }
 
   void last_tick( dot_t* dot )
@@ -4257,9 +4220,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::tick( dot );
 
-    if ( rng().roll( proc_driver -> proc_chance() ) )
-      p() -> resource_gain( RESOURCE_CHI, proc_driver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.crackling_jade_lightning, this );
-
+    if ( p() -> current_stance == SPIRITED_CRANE )
+      p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.crackling_jade_lightning, this );
   }
 };
 
