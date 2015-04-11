@@ -5262,7 +5262,7 @@ void mage_t::apl_arcane()
   burn -> add_talent( this, "Supernova",
                       "if=mana.pct>70&mana.pct<96" );
   burn -> add_action( this, "Evocation",
-                      "interrupt_if=mana.pct>92,if=target.time_to_die>10&mana.pct<30+2.5*active_enemies*(9-active_enemies)" );
+                      "interrupt_if=mana.pct>100-10%spell_haste,if=target.time_to_die>10&mana.pct<30+2.5*active_enemies*(9-active_enemies)" );
   burn -> add_action( this, "Presence of Mind",
                       "if=!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up" );
   burn -> add_action( this, "Arcane Blast" );
