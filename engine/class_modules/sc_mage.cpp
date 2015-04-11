@@ -5108,7 +5108,10 @@ void mage_t::apl_precombat()
   else if ( specialization() == MAGE_FIRE )
     precombat -> add_action( this, "Pyroblast" );
   else
-    precombat -> add_action( this, "Frostbolt" );
+  {
+    precombat -> add_action( this, "Frostbolt", "if=!talent.frost_bomb.enabled" );
+    precombat -> add_talent( this, "Frost Bomb" );
+  }
 }
 
 
@@ -5604,7 +5607,6 @@ void mage_t::apl_frost()
                            "if=debuff.water_jet.remains>cast_time+travel_time" );
   water_jet -> add_action( this, "Ice Lance",
                            "if=prev_gcd.frostbolt" );
-  water_jet -> add_action( "call_action_list,name=single_target" );
 
 
   aoe -> add_action( "call_action_list,name=cooldowns",
@@ -5649,9 +5651,9 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Frostbolt",
                                "if=set_bonus.tier17_2pc&buff.ice_shard.up&!(talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<10)",
                                "Camp procs and spam Frostbolt while 4T17 buff is up" );
+  single_target -> add_action( "call_action_list,name=init_water_jet,if=pet.water_elemental.cooldown.water_jet.remains<=gcd.max*(buff.fingers_of_frost.react+talent.frost_bomb.enabled)&!dot.frozen_orb.ticking" );
   single_target -> add_action( this, "Ice Lance",
                                "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
-  single_target -> add_action( "call_action_list,name=init_water_jet,if=pet.water_elemental.cooldown.water_jet.remains<=gcd.max*(buff.fingers_of_frost.react+talent.frost_bomb.enabled)&!dot.frozen_orb.ticking" );
   single_target -> add_action( this, "Frostbolt" );
   single_target -> add_action( this, "Ice Lance", "moving=1" );
 
