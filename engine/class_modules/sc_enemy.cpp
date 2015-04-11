@@ -339,12 +339,10 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     base_t( name, player ), first( false )
   {
     school = SCHOOL_PHYSICAL;
-    may_crit = true;
-    background = true;
     trigger_gcd = timespan_t::zero();
     base_dd_min = 26000;
     base_execute_time = timespan_t::from_seconds( 1.5 );
-    repeating = true;
+    may_crit = background = auto_attack = repeating = true;
 
     parse_options( options_str );
   }
