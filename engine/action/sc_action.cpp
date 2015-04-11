@@ -1397,7 +1397,7 @@ void action_t::tick( dot_t* d )
     if ( sim -> debug )
       d -> state -> debug();
 
-    schedule_multistrike( d -> state, amount_type( d -> state, true ) );
+    schedule_multistrike( d -> state, amount_type( d -> state, true ), d -> get_last_tick_factor() );
   }
 
   if ( ! periodic_hit ) stats -> add_tick( d -> time_to_tick, d -> state -> target );
