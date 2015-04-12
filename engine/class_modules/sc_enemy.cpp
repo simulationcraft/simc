@@ -342,7 +342,8 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     trigger_gcd = timespan_t::zero();
     base_dd_min = 26000;
     base_execute_time = timespan_t::from_seconds( 1.5 );
-    may_crit = background = auto_attack = repeating = true;
+    may_crit = background = repeating = true;
+    special = false;
 
     parse_options( options_str );
   }

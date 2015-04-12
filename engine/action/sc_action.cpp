@@ -1453,13 +1453,8 @@ void action_t::update_resolve( dmg_e type,
 
     // bool for auto attack, to make code easier to read
     bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) 
-      || ( player -> off_hand_attack && s -> action == player -> off_hand_attack );
-    if ( !is_auto_attack ) // Due to how sc_enemy is setup with enemy attacks on multiple tanks, there are some enemy autoattacks that will not properly flag is_auto_attack.
-    {                      // This adds another check to make sure.
-      attack_t* a = dynamic_cast<attack_t*>( s -> action );
-      if ( a )
-        is_auto_attack = a -> auto_attack;
-    }
+      || ( player -> off_hand_attack && s -> action == player -> off_hand_attack ) ||
+      !s -> action -> special;
 
     // Resolve is only updated on damage taken events. The one exception is auto-attacks, which grant Resolve even on a dodge/parry.
     // If this is a miss that isn't an auto-attack, we can bail out early (and not recalculate)
