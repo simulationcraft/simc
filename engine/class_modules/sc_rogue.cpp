@@ -173,6 +173,15 @@ struct rogue_t : public player_t
   action_t* active_main_gauche;
   action_t* active_venomous_wound;
 
+  // Sinister calling
+  struct sc_t
+  {
+    action_t* rupture;
+    action_t* garrote;
+    action_t* crimson_tempest;
+    action_t* hemorrhage;
+  } sc;
+
   // Autoattacks
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
@@ -812,7 +821,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  void trigger_sinister_calling( dot_t* dot, bool may_crit = false, int may_multistrike = -1 );
+  void trigger_sinister_calling( dot_t* dot, action_t* sc );
 };
 
 // ==========================================================================
@@ -3335,6 +3344,42 @@ struct blade_flurry_attack_t : public rogue_attack_t
   }
 };
 
+struct sinister_calling_proc_t : public rogue_attack_t
+{
+  std::string base_name;
+
+  sinister_calling_proc_t( rogue_t* r, const std::string& name, const spell_data_t* data ) :
+    rogue_attack_t( name + "_sc", r, data ), base_name( name )
+  {
+    background = proc = true;
+    callbacks = false;
+    weapon_multiplier = 0;
+    weapon_power_mod = 0;
+  }
+
+  void init()
+  {
+    rogue_attack_t::init();
+
+    if ( action_t* a = player -> find_action( base_name ) )
+    {
+      a -> add_child( this );
+
+      // Setup the damage resolution characteristics
+      if ( a -> tick_may_crit )
+      {
+        may_crit = true;
+      }
+    }
+
+    snapshot_flags = STATE_CRIT | STATE_TGT_CRIT;
+    update_flags = 0;
+  }
+
+  double target_armor( player_t* ) const
+  { return 0; }
+};
+
 } // end namespace actions
 
 weapon_slot_e weapon_info_t::slot() const
@@ -3517,39 +3562,28 @@ void rogue_t::trigger_auto_attack( const action_state_t* state )
   auto_attack -> execute();
 }
 
-inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot, bool may_cr, int may_ms )
+inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot, action_t* sc_action )
 {
-  int may_multistrike_ = may_multistrike;
-  may_multistrike = may_ms;
-  bool tick_may_crit_ = tick_may_crit;
-  tick_may_crit = may_cr;
+  // Increase tick count by one so that the dot state stays intact.
   dot -> current_tick++;
-  dot -> tick();
-  tick_may_crit = tick_may_crit_;
-  may_multistrike = may_multistrike_;
+
+  // Perform the extra tick with current actor snapshotted values to determine the correct "base"
+  // damage .. however, grab the number of combo points not from current CP but rather the CP of the
+  // ongoing dot.
+  action_state_t* s = dot -> current_action -> get_state();
+  dot -> current_action -> snapshot_state( s, DMG_OVER_TIME );
+  cast_state( s ) -> cp = cast_state( dot -> state ) -> cp;
+  calculate_tick_amount( s, dot -> last_tick_factor );
 
   // Advances the time, so calculate new time to tick, num ticks, last tick factor
   if ( dot -> remains() > dot -> time_to_tick )
   {
     timespan_t remains = dot -> end_event -> remains() - dot -> time_to_tick;
-    timespan_t tick_remains = dot -> tick_event ? dot -> tick_event -> remains() : timespan_t::zero();
-
-    event_t::cancel( dot -> tick_event );
-
-    // Only start a new tick event, if there are still over one tick left.
-    if ( tick_remains > timespan_t::zero() && remains > tick_remains )
-      dot -> tick_event = new ( *sim ) dot_tick_event_t( dot, tick_remains );
-    // No tick event started, this is the last tick. Recalculate last tick
-    // factor, should be 100% for Rogues always, since the dots do not scale
-    // with haste
-    else
-      dot -> last_tick_factor = std::min( 1.0, ( dot -> time_to_tick - tick_remains + remains ) / dot -> time_to_tick );
-
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s sinister_calling %s, remains=%.3f tick_remains=%.3f new_remains=%.3f last_tick_factor=%.f",
-          player -> name(), dot -> current_action -> name(), dot -> remains().total_seconds(), tick_remains.total_seconds(),
-          remains.total_seconds(), dot -> last_tick_factor );
+      sim -> out_debug.printf( "%s sinister_calling %s, remains=%.3f new_remains=%.3f",
+          player -> name(), dot -> current_action -> name(), dot -> remains().total_seconds(),
+          remains.total_seconds() );
     }
 
     // Restart a new end-event, now one tick closer
@@ -3559,6 +3593,13 @@ inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot, bool 
   // Last ongoing tick, expire the dot early
   else
     dot -> last_tick();
+
+  // Execute the sinister calling proxy action, it will perform independent result calcuation.
+  sc_action -> target = dot -> target;
+  sc_action -> base_dd_min = sc_action -> base_dd_max = s -> result_raw;
+  sc_action -> schedule_execute();
+
+  action_state_t::release( s );
 }
 
 void rogue_t::trigger_sinister_calling( const action_state_t* state )
@@ -3571,16 +3612,16 @@ void rogue_t::trigger_sinister_calling( const action_state_t* state )
 
   rogue_td_t* tdata = get_target_data( state -> target );
   if ( tdata -> dots.rupture -> is_ticking() )
-    cast_attack( tdata -> dots.rupture -> current_action ) -> trigger_sinister_calling( tdata -> dots.rupture, true );
+    cast_attack( tdata -> dots.rupture -> current_action ) -> trigger_sinister_calling( tdata -> dots.rupture, sc.rupture );
 
   if ( tdata -> dots.garrote -> is_ticking() )
-    cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote, true );
+    cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote, sc.garrote );
 
   if ( tdata -> dots.hemorrhage -> is_ticking() )
-    cast_attack( tdata -> dots.hemorrhage -> current_action ) -> trigger_sinister_calling( tdata -> dots.hemorrhage, true );
+    cast_attack( tdata -> dots.hemorrhage -> current_action ) -> trigger_sinister_calling( tdata -> dots.hemorrhage, sc.hemorrhage );
 
   if ( tdata -> dots.crimson_tempest -> is_ticking() )
-    cast_attack( tdata -> dots.crimson_tempest -> current_action ) -> trigger_sinister_calling( tdata -> dots.crimson_tempest );
+    cast_attack( tdata -> dots.crimson_tempest -> current_action ) -> trigger_sinister_calling( tdata -> dots.crimson_tempest, sc.crimson_tempest );
 }
 
 void rogue_t::trigger_seal_fate( const action_state_t* state )
@@ -5445,6 +5486,14 @@ void rogue_t::init_spells()
 
   if ( spec.blade_flurry -> ok() )
     active_blade_flurry = new blade_flurry_attack_t( this );
+
+  if ( spec.sinister_calling -> ok() )
+  {
+    sc.rupture = new sinister_calling_proc_t( this, "rupture", find_spell( 168963 ) );
+    sc.hemorrhage = new sinister_calling_proc_t( this, "hemorrhage", find_spell( 168908 ) );
+    sc.garrote = new sinister_calling_proc_t( this, "garrote", find_spell( 168971 ) );
+    sc.crimson_tempest = new sinister_calling_proc_t( this, "crimson_tempest", find_spell( 168952 ) );
+  }
 }
 
 // rogue_t::init_gains ======================================================
