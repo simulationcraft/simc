@@ -4207,7 +4207,8 @@ struct choose_target_t : public action_t
     {
       sim -> errorf( "%s choose_target infinite loop detected (due to no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> abort();
+      sim -> cancel_iteration();
+      sim -> cancel();
       return;
     }
 
@@ -4298,7 +4299,8 @@ struct start_pyro_chain_t : public action_t
     {
       sim -> errorf( "%s start_pyro_chain infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> abort();
+      sim -> cancel_iteration();
+      sim -> cancel();
       return;
     }
   }
@@ -4336,7 +4338,8 @@ struct stop_pyro_chain_t : public action_t
     {
       sim -> errorf( "%s stop_pyro_chain infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> abort();
+      sim -> cancel_iteration();
+      sim -> cancel();
       return;
     }
   }
@@ -4376,7 +4379,8 @@ struct start_burn_phase_t : public action_t
     {
       sim -> errorf( "%s start_burn_phase infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> abort();
+      sim -> cancel_iteration();
+      sim -> cancel();
       return;
     }
   }
@@ -4414,7 +4418,8 @@ struct stop_burn_phase_t : public action_t
     {
       sim -> errorf( "%s stop_burn_phase infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> abort();
+      sim -> cancel_iteration();
+      sim -> cancel();
       return;
     }
   }
@@ -5962,6 +5967,7 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
         if ( visited_apls_ & call -> alist -> internal_id_mask )
         {
           sim -> errorf( "%s action list in infinite loop", name() );
+          sim -> cancel_iteration();
           sim -> cancel();
           return 0;
         }
