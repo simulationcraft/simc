@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=1133132
+talents=1123232
 glyphs=mind_flay/fade/sha
 spec=shadow
 
@@ -235,31 +235,33 @@ actions.cop+=/cascade,if=talent.cascade.enabled&target.distance<=40,moving=1
 actions.cop+=/devouring_plague,moving=1
 
 head=soul_priests_hood,id=115563
-neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike
-shoulders=earthripple_shoulderpads,id=113928
-back=runefrenzy_greatcloak,id=113937,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560
+neck=whispering_taladite_pendant,id=115801,bonus_id=19/527,enchant=gift_of_haste
+shoulders=soul_priests_shoulderguards,id=115561
+back=runescribed_gronncloak,id=120078,enchant=gift_of_haste
+chest=ebonflame_robes,id=120375
 wrists=bracers_of_enkindled_power,id=113956
 hands=soul_priests_gloves,id=115562
-waist=seeking_ember_girdle,id=113941
+waist=hexweave_belt,id=114816,bonus_id=19/527
 legs=soul_priests_leggings,id=115564
-feet=cavedwellers_climbers,id=113864
-finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_critical_strike
-finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
+feet=ebonflame_sandals,id=120378
+finger1=whispering_taladite_ring,id=115798,bonus_id=19/527,enchant=gift_of_haste
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_haste
 trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_the_thunderlord
+main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_warsong
+off_hand=enginestokers_lantern,id=113960
 
 # Gear Summary
-# gear_ilvl=670.67
-# gear_stamina=3589
-# gear_intellect=2956
-# gear_spell_power=1389
-# gear_crit_rating=935
-# gear_haste_rating=1156
-# gear_mastery_rating=1119
-# gear_armor=727
-# gear_multistrike_rating=130
+# gear_ilvl=669.38
+# gear_stamina=3528
+# gear_intellect=2917
+# gear_spell_power=1392
+# gear_crit_rating=657
+# gear_haste_rating=1543
+# gear_mastery_rating=385
+# gear_armor=714
+# gear_multistrike_rating=689
 # gear_versatility_rating=78
+# set_bonus=tier17lfr_2pc=1
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

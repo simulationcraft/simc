@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=1133132
+talents=1123232
 glyphs=mind_flay/fade/sha
 spec=shadow
 
@@ -235,31 +235,32 @@ actions.cop+=/cascade,if=talent.cascade.enabled&target.distance<=40,moving=1
 actions.cop+=/devouring_plague,moving=1
 
 head=soul_priests_hood,id=115563,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_critical_strike
-shoulders=earthripple_shoulderpads,id=113928,bonus_id=567
-back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560,bonus_id=567
+neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_haste
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567
+back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_haste
+chest=eyecatching_gilded_robe,id=113898,bonus_id=567
 wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
 hands=soul_priests_gloves,id=115562,bonus_id=567
-waist=seeking_ember_girdle,id=113941,bonus_id=567
+waist=deckhands_rope_belt,id=113967,bonus_id=567
 legs=soul_priests_leggings,id=115564,bonus_id=567
-feet=cavedwellers_climbers,id=113864,bonus_id=567
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_critical_strike
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
+feet=inferno_breath_sandals,id=113942,bonus_id=567
+finger1=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_haste
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=goren_soul_repository,id=119194,bonus_id=567
-main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_the_thunderlord
+main_hand=franzoks_headsmasher,id=113904,bonus_id=567,enchant=mark_of_warsong
+off_hand=enginestokers_lantern,id=113960,bonus_id=567
 
 # Gear Summary
-# gear_ilvl=701.00
-# gear_stamina=4763
-# gear_intellect=3923
-# gear_spell_power=1837
-# gear_crit_rating=1149
-# gear_haste_rating=1532
-# gear_mastery_rating=1486
+# gear_ilvl=700.94
+# gear_stamina=4759
+# gear_intellect=3919
+# gear_spell_power=1834
+# gear_crit_rating=1049
+# gear_haste_rating=1602
+# gear_mastery_rating=370
 # gear_armor=900
-# gear_multistrike_rating=172
-# gear_versatility_rating=108
+# gear_multistrike_rating=1043
+# gear_versatility_rating=338
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

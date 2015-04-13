@@ -249,18 +249,19 @@ finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_cri
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448/42,gem_id=115809
 trinket2=goren_soul_repository,id=119194,bonus_id=567/523/448/42,gem_id=115809
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567/523/448/42,gem_id=115809,enchant=mark_of_the_thunderlord
+off_hand=enginestokers_lantern,id=113960,bonus_id=567/523/448/42,gem_id=115811
 
 # Gear Summary
-# gear_ilvl=706.60
-# gear_stamina=5019
-# gear_intellect=4137
+# gear_ilvl=706.56
+# gear_stamina=5305
+# gear_intellect=4328
 # gear_spell_power=1943
 # gear_crit_rating=2510
-# gear_haste_rating=869
+# gear_haste_rating=1025
 # gear_mastery_rating=1052
 # gear_armor=943
-# gear_multistrike_rating=683
+# gear_multistrike_rating=823
 # gear_versatility_rating=217
-# gear_speed_rating=2082
+# gear_speed_rating=2191
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

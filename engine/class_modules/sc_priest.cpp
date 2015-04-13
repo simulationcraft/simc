@@ -3582,6 +3582,7 @@ struct smite_t : public priest_spell_t
 
 // Cascade Spell
 
+// TODO: Have Cascade pick the next target per bounce based on current distance instead of feeding it a list of all available targets.
 template <class Base>
 struct cascade_base_t : public Base
 {
@@ -3593,9 +3594,11 @@ public:
   struct cascade_state_t : action_state_t
   {
     int jump_counter;
+    player_t* source_target;
 
     cascade_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      jump_counter( 0 )
+      jump_counter( 0 ),
+      source_target( nullptr )
     { }
   };
 
@@ -3678,6 +3681,7 @@ public:
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
           cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
           s -> target = t;
+          s -> source_target = currentTarget;
           s -> n_targets = 1;
           s -> chain_target = 0;
           s -> jump_counter = cs -> jump_counter + 1;
@@ -3700,17 +3704,28 @@ public:
     }
   }
 
-  virtual double composite_target_da_multiplier( player_t* t ) const override
+  virtual double calculate_direct_amount( action_state_t* s )
   {
-    double ctdm = ab::composite_target_da_multiplier( t );
+    cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
+    double cda = action_t::calculate_direct_amount( s );
 
-    double distance = ab::player -> current.distance;
+    double distance;
+
+    if ( cs -> source_target == nullptr ) //Initial bounce
+    {
+      distance = abs( cs -> action -> player -> current.distance - cs -> target -> current.distance );
+    }
+    else
+    {
+      distance = abs( cs -> source_target -> current.distance - cs -> target -> current.distance );
+    }
+
     if ( distance >= 30.0 )
-      return ctdm;
+      return cda;
 
     // Source: Ghostcrawler 20/06/2012; http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
     // 40% damage at 0 yards, 100% at 30, scaling linearly
-    return ctdm * ( 0.4 + 0.6 * distance / 30.0 );
+    return cda * ( 0.4 + 0.6 * distance / 30.0 );
   }
 };
 
@@ -3789,19 +3804,19 @@ public:
   }
   virtual ~halo_base_t() {}
 
-  virtual double composite_target_da_multiplier( player_t* t ) const override
+  virtual double calculate_direct_amount( action_state_t* s )
   {
-    double ctdm = ab::composite_target_da_multiplier( t );
+    double cda = action_t::calculate_direct_amount( s );
 
     // Source: Ghostcrawler 20/06/2012
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
 
-    double distance = ab::player -> current.distance; // Replace with whatever we measure distance
+    double distance = abs( s -> action -> player -> current.distance - s -> target -> current.distance); // Distance from the caster to the target
 
     //double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
     double mult = 0.5 * exp( -0.00995 * pow( distance / 2 - 12.5, 4 ) ) + 0.1 + 0.015 * distance;
 
-    return ctdm * mult;
+    return cda * mult;
   }
 };
 
