@@ -173,15 +173,6 @@ struct rogue_t : public player_t
   action_t* active_main_gauche;
   action_t* active_venomous_wound;
 
-  // Sinister calling
-  struct sc_t
-  {
-    action_t* rupture;
-    action_t* garrote;
-    action_t* crimson_tempest;
-    action_t* hemorrhage;
-  } sc;
-
   // Autoattacks
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
@@ -614,6 +605,9 @@ struct rogue_attack_t : public melee_attack_t
   // Relentless strikes things
   bool proc_relentless_strikes_;
 
+  // Sinister calling proc action
+  rogue_attack_t* sc_action;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
@@ -625,7 +619,8 @@ struct rogue_attack_t : public melee_attack_t
     ability_type( ABILITY_NONE ),
     proc_ruthlessness_cp_( data().affected_by( p -> spell.ruthlessness_cp_driver -> effectN( 1 ) ) ),
     proc_ruthlessness_energy_( data().affected_by( p -> spell.ruthlessness_driver -> effectN( 2 ) ) ),
-    proc_relentless_strikes_( data().affected_by( p -> spec.relentless_strikes -> effectN( 1 ) ) )
+    proc_relentless_strikes_( data().affected_by( p -> spec.relentless_strikes -> effectN( 1 ) ) ),
+    sc_action( 0 )
   {
     parse_options( options );
 
@@ -821,7 +816,10 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  void trigger_sinister_calling( dot_t* dot, action_t* sc );
+  // Sinister calling related functionality
+  void trigger_sinister_calling( dot_t* dot );
+  virtual void initialize_sinister_calling( unsigned spell_id );
+  virtual double sinister_calling_damage( const dot_t* d ) const;
 };
 
 // ==========================================================================
@@ -950,7 +948,6 @@ struct deadly_poison_t : public rogue_poison_t
     {
       may_crit       = false;
       harmful        = true;
-      tick_may_crit  = true;
       dot_behavior   = DOT_REFRESH;
     }
 
@@ -2062,10 +2059,27 @@ struct crimson_tempest_t : public rogue_attack_t
       residual_periodic_action_t<rogue_attack_t>( "crimson_tempest", p, p -> find_spell( 122233 ) )
     {
       dual = true;
+
+      initialize_sinister_calling( 168952 );
     }
 
     action_state_t* new_state()
     { return new residual_periodic_state_t( this, target ); }
+
+    // Sinister Calling procs for Crimson Tempest don't need to snapshot anything, the damage is
+    // going to be current pooled tick amount.
+    double sinister_calling_damage( const dot_t* d ) const
+    {
+      return debug_cast<const residual_periodic_state_t*>( d -> state ) -> tick_amount;
+    }
+
+    void initialize_sinister_calling( unsigned spell_id )
+    {
+      residual_periodic_action_t<rogue_attack_t>::initialize_sinister_calling( spell_id );
+
+      // Crimson tempest dot does not crit/ms, so the Sinister Calling proc will not either
+      sc_action -> may_crit = sc_action -> tick_may_crit = false;
+    }
   };
 
   crimson_tempest_dot_t* ct_dot;
@@ -2117,6 +2131,8 @@ struct garrote_t : public rogue_attack_t
   {
     may_crit          = false;
     requires_stealth  = true;
+
+    initialize_sinister_calling( 168971 );
   }
 
   void impact( action_state_t* state )
@@ -2141,8 +2157,8 @@ struct hemorrhage_t : public rogue_attack_t
     ability_type = HEMORRHAGE;
     dot_behavior = DOT_REFRESH;
     weapon = &( p -> main_hand_weapon );
-    tick_may_crit = true;
-    may_multistrike = true;
+
+    initialize_sinister_calling( 168908 );
   }
 
   double action_da_multiplier() const
@@ -2519,9 +2535,10 @@ struct rupture_t : public rogue_attack_t
     ability_type          = RUPTURE;
     may_crit              = false;
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     base_multiplier      *= 1.0 + p -> spec.sanguinary_vein -> effectN( 1 ).percent();
+
+    initialize_sinister_calling( 168963 );
   }
 
   timespan_t gcd() const
@@ -2935,7 +2952,9 @@ struct death_from_above_driver_t : public rogue_attack_t
       eviscerate -> execute();
     }
     else
+    {
       assert( 0 );
+    }
 
     p() -> buffs.death_from_above -> expire();
   }
@@ -3344,12 +3363,12 @@ struct blade_flurry_attack_t : public rogue_attack_t
   }
 };
 
+// Sinister Calling proc for subtlety
+
 struct sinister_calling_proc_t : public rogue_attack_t
 {
-  std::string base_name;
-
-  sinister_calling_proc_t( rogue_t* r, const std::string& name, const spell_data_t* data ) :
-    rogue_attack_t( name + "_sc", r, data ), base_name( name )
+  sinister_calling_proc_t( rogue_t* r, const std::string& name, unsigned spell_id ) :
+    rogue_attack_t( name + "_sc", r, r -> find_spell( spell_id ) )
   {
     background = proc = true;
     callbacks = false;
@@ -3361,17 +3380,8 @@ struct sinister_calling_proc_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    if ( action_t* a = player -> find_action( base_name ) )
-    {
-      a -> add_child( this );
-
-      // Setup the damage resolution characteristics
-      if ( a -> tick_may_crit )
-      {
-        may_crit = true;
-      }
-    }
-
+    // Raw damage value comes from the source action, nothing else is applied here. Crit is
+    // snapshotted to figure out a result.
     snapshot_flags = STATE_CRIT | STATE_TGT_CRIT;
     update_flags = 0;
   }
@@ -3562,18 +3572,51 @@ void rogue_t::trigger_auto_attack( const action_state_t* state )
   auto_attack -> execute();
 }
 
-inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot, action_t* sc_action )
+void actions::rogue_attack_t::initialize_sinister_calling( unsigned spell_id )
+{
+  if ( ! p() -> spec.sinister_calling -> ok() )
+  {
+    return;
+  }
+
+  action_t* a = p() -> find_action( name_str + "_sc" );
+  if ( ! a )
+  {
+    sc_action = new sinister_calling_proc_t( p(), name_str, spell_id );
+  }
+  else
+  {
+    sc_action = debug_cast<rogue_attack_t*>( a );
+  }
+
+  add_child( sc_action );
+}
+
+inline double actions::rogue_attack_t::sinister_calling_damage( const dot_t* d ) const
+{
+  // Perform the extra tick with current actor snapshotted values to determine the correct "base"
+  // damage .. however, grab the number of combo points not from current CP but rather the CP of the
+  // ongoing dot.
+  action_state_t* s = d -> current_action -> get_state();
+  d -> current_action -> snapshot_state( s, DMG_OVER_TIME );
+  cast_state( s ) -> cp = cast_state( d -> state ) -> cp;
+  d -> current_action -> calculate_tick_amount( s, d -> last_tick_factor );
+
+  double damage = s -> result_raw;
+  action_state_t::release( s );
+
+  return damage;
+}
+
+inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
 {
   // Increase tick count by one so that the dot state stays intact.
   dot -> current_tick++;
 
-  // Perform the extra tick with current actor snapshotted values to determine the correct "base"
-  // damage .. however, grab the number of combo points not from current CP but rather the CP of the
-  // ongoing dot.
-  action_state_t* s = dot -> current_action -> get_state();
-  dot -> current_action -> snapshot_state( s, DMG_OVER_TIME );
-  cast_state( s ) -> cp = cast_state( dot -> state ) -> cp;
-  calculate_tick_amount( s, dot -> last_tick_factor );
+  // Execute the sinister calling proxy action, it will perform independent result calcuation.
+  sc_action -> target = dot -> target;
+  sc_action -> base_dd_min = sc_action -> base_dd_max = sinister_calling_damage( dot );
+  sc_action -> schedule_execute();
 
   // Advances the time, so calculate new time to tick, num ticks, last tick factor
   if ( dot -> remains() > dot -> time_to_tick )
@@ -3593,13 +3636,6 @@ inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot, actio
   // Last ongoing tick, expire the dot early
   else
     dot -> last_tick();
-
-  // Execute the sinister calling proxy action, it will perform independent result calcuation.
-  sc_action -> target = dot -> target;
-  sc_action -> base_dd_min = sc_action -> base_dd_max = s -> result_raw;
-  sc_action -> schedule_execute();
-
-  action_state_t::release( s );
 }
 
 void rogue_t::trigger_sinister_calling( const action_state_t* state )
@@ -3612,16 +3648,24 @@ void rogue_t::trigger_sinister_calling( const action_state_t* state )
 
   rogue_td_t* tdata = get_target_data( state -> target );
   if ( tdata -> dots.rupture -> is_ticking() )
-    cast_attack( tdata -> dots.rupture -> current_action ) -> trigger_sinister_calling( tdata -> dots.rupture, sc.rupture );
+  {
+    cast_attack( tdata -> dots.rupture -> current_action ) -> trigger_sinister_calling( tdata -> dots.rupture );
+  }
 
   if ( tdata -> dots.garrote -> is_ticking() )
-    cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote, sc.garrote );
+  {
+    cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote );
+  }
 
   if ( tdata -> dots.hemorrhage -> is_ticking() )
-    cast_attack( tdata -> dots.hemorrhage -> current_action ) -> trigger_sinister_calling( tdata -> dots.hemorrhage, sc.hemorrhage );
+  {
+    cast_attack( tdata -> dots.hemorrhage -> current_action ) -> trigger_sinister_calling( tdata -> dots.hemorrhage );
+  }
 
   if ( tdata -> dots.crimson_tempest -> is_ticking() )
-    cast_attack( tdata -> dots.crimson_tempest -> current_action ) -> trigger_sinister_calling( tdata -> dots.crimson_tempest, sc.crimson_tempest );
+  {
+    cast_attack( tdata -> dots.crimson_tempest -> current_action ) -> trigger_sinister_calling( tdata -> dots.crimson_tempest );
+  }
 }
 
 void rogue_t::trigger_seal_fate( const action_state_t* state )
@@ -4331,7 +4375,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs( debuffs_t() )
 {
 
-  dots.crimson_tempest  = target -> get_dot( "crimson_tempest_dot", source );
+  dots.crimson_tempest  = target -> get_dot( "crimson_tempest", source );
   dots.deadly_poison    = target -> get_dot( "deadly_poison_dot", source );
   dots.garrote          = target -> get_dot( "garrote", source );
   dots.rupture          = target -> get_dot( "rupture", source );
@@ -4575,8 +4619,6 @@ struct shadow_reflection_pet_t : public pet_t
     sr_hemorrhage_t( shadow_reflection_pet_t* p ):
       shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) )
     {
-      tick_may_crit = true;
-      may_multistrike = true;
       dot_behavior = DOT_REFRESH;
     }
   };
@@ -4660,7 +4702,6 @@ struct shadow_reflection_pet_t : public pet_t
     {
       base_costs[ RESOURCE_COMBO_POINT ] = 1;
       may_crit              = false;
-      tick_may_crit         = true;
       dot_behavior          = DOT_REFRESH;
       weapon_multiplier = 0.0;
     }
@@ -5486,14 +5527,6 @@ void rogue_t::init_spells()
 
   if ( spec.blade_flurry -> ok() )
     active_blade_flurry = new blade_flurry_attack_t( this );
-
-  if ( spec.sinister_calling -> ok() )
-  {
-    sc.rupture = new sinister_calling_proc_t( this, "rupture", find_spell( 168963 ) );
-    sc.hemorrhage = new sinister_calling_proc_t( this, "hemorrhage", find_spell( 168908 ) );
-    sc.garrote = new sinister_calling_proc_t( this, "garrote", find_spell( 168971 ) );
-    sc.crimson_tempest = new sinister_calling_proc_t( this, "crimson_tempest", find_spell( 168952 ) );
-  }
 }
 
 // rogue_t::init_gains ======================================================
