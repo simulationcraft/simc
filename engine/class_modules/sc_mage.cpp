@@ -4298,7 +4298,7 @@ struct start_pyro_chain_t : public action_t
     {
       sim -> errorf( "%s start_pyro_chain infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> cancel();
+      sim -> abort();
       return;
     }
   }
@@ -4336,7 +4336,7 @@ struct stop_pyro_chain_t : public action_t
     {
       sim -> errorf( "%s stop_pyro_chain infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> cancel();
+      sim -> abort();
       return;
     }
   }
@@ -4376,7 +4376,7 @@ struct start_burn_phase_t : public action_t
     {
       sim -> errorf( "%s start_burn_phase infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> cancel();
+      sim -> abort();
       return;
     }
   }
@@ -4414,7 +4414,7 @@ struct stop_burn_phase_t : public action_t
     {
       sim -> errorf( "%s stop_burn_phase infinite loop detected (no time passing between executes) at '%s'",
         p -> name(), signature_str.c_str() );
-      sim -> cancel();
+      sim -> abort();
       return;
     }
   }
