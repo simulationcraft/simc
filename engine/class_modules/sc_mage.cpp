@@ -1066,7 +1066,7 @@ public:
   {
     timespan_t t = spell_t::execute_time();
 
-    if ( ! channeled && pom_enabled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> check() )
+    if ( ! channeled && pom_enabled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> up() )
       return timespan_t::zero();
     return t;
   }
@@ -1111,7 +1111,7 @@ public:
     {
       assert( pom_enabled );
       pom_enabled = false;
-      if ( execute_time() > timespan_t::zero() && p() -> buffs.presence_of_mind -> up() )
+      if ( execute_time() > timespan_t::zero() && p() -> buffs.presence_of_mind -> check() )
       {
         hasted_by_pom = true;
       }
@@ -1121,7 +1121,6 @@ public:
 
   virtual bool usable_moving() const
   {
-    // TODO: Ice Floes now affects all spells, not just mage spells
     if ( p() -> buffs.ice_floes -> check() )
       return true;
 
@@ -1652,7 +1651,7 @@ struct arcane_blast_t : public mage_spell_t
                   p() -> perks.enhanced_arcane_blast -> effectN( 1 ).percent();
     }
 
-    if ( p() -> buffs.arcane_affinity -> check() )
+    if ( p() -> buffs.arcane_affinity -> up() )
     {
       t *= 1.0 + p() -> buffs.arcane_affinity -> data().effectN( 1 ).percent();
     }
@@ -1795,7 +1794,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     // 4T17 : Increase the number of missiles by reducing base_tick_time
     base_tick_time = missiles_tick_time;
-    if ( p() -> buffs.arcane_instability -> check() )
+    if ( p() -> buffs.arcane_instability -> up() )
     {
       base_tick_time *= 1 + p() -> buffs.arcane_instability
                                 -> data().effectN( 1 ).percent() ;
@@ -1804,7 +1803,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     mage_spell_t::execute();
 
-    if ( p() -> buffs.arcane_power -> up() && p() -> talents.overpowered -> ok() )
+    if ( p() -> buffs.arcane_power -> check() && p() -> talents.overpowered -> ok() )
       p() -> buffs.arcane_power -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.overpowered -> effectN( 1 ).base_value() ) );
 
     p() -> buffs.arcane_missiles -> up();
@@ -1821,7 +1820,7 @@ struct arcane_missiles_t : public mage_spell_t
     }
   }
 
-  virtual void last_tick (dot_t * d)
+  virtual void last_tick ( dot_t * d)
   {
     mage_spell_t::last_tick( d );
 
@@ -2660,7 +2659,7 @@ struct frostbolt_t : public mage_spell_t
   {
     timespan_t cast = mage_spell_t::execute_time();
 
-    if ( p() -> buffs.enhanced_frostbolt -> check() )
+    if ( p() -> buffs.enhanced_frostbolt -> up() )
       cast *= 1.0 + p() -> perks.enhanced_frostbolt -> effectN( 1 ).time_value().total_seconds() /
                   base_execute_time.total_seconds();
     if ( p() -> buffs.ice_shard -> up() )
@@ -2672,7 +2671,7 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> buffs.enhanced_frostbolt -> up() )
+    if ( p() -> buffs.enhanced_frostbolt -> check() )
     {
       p() -> buffs.enhanced_frostbolt -> expire();
       last_enhanced_frostbolt = sim -> current_time();
@@ -2818,7 +2817,7 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void execute()
   {
     // Brain Freeze treats the target as frozen
-    frozen = p() -> buffs.brain_freeze -> check() != 0;
+    frozen = p() -> buffs.brain_freeze -> up() != 0;
     mage_spell_t::execute();
 
 
@@ -3102,11 +3101,11 @@ struct ice_lance_t : public mage_spell_t
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
-    frozen = p() -> buffs.fingers_of_frost -> check() != 0;
+    frozen = p() -> buffs.fingers_of_frost -> up() != 0;
 
     mage_spell_t::execute();
 
-    if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
+    if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> check() )
     {
       p() -> buffs.icy_veins -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.thermal_void -> effectN( 1 ).base_value() ) );
     }
@@ -3153,7 +3152,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( td( s -> target ) -> debuffs.frost_bomb -> up() &&
+    if ( td( s -> target ) -> debuffs.frost_bomb -> check() &&
          frozen && result_is_hit( s -> result ) )
     {
       frost_bomb_explosion -> target = s -> target;
@@ -3742,7 +3741,7 @@ struct pyroblast_t : public mage_spell_t
 
     c += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent();
 
-    if ( p() -> buffs.fiery_adept -> check() || p() -> buffs.pyromaniac -> check() )
+    if ( p() -> buffs.fiery_adept -> up() || p() -> buffs.pyromaniac -> up() )
       c += 1.0;
 
     return c;
@@ -3938,7 +3937,7 @@ struct time_warp_t : public mage_spell_t
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[ i ];
-      if ( p -> buffs.exhaustion -> check() || p -> is_pet() )
+      if ( p -> buffs.exhaustion -> up() || p -> is_pet() )
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
@@ -5712,7 +5711,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == MAGE_ARCANE )
   {
-    if ( buffs.arcane_power -> check() )
+    if ( buffs.arcane_power -> up() )
     {
       double v = buffs.arcane_power -> value();
       if ( sets.has_set_bonus( SET_CASTER, T14, B4 ) )
