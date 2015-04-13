@@ -2029,7 +2029,17 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   // Both MH and OH are directly weaved into one damage number
   virtual double calculate_weapon_damage( double ap )
   {
-    return monk_util::monk_weapon_damage( this, mh, oh, weapon_power_mod, ap );
+    // Use monk specific weapon damage calculation if mh or oh (monk specific weapons) are
+    // specificed.
+    if ( mh || oh )
+    {
+      return monk_util::monk_weapon_damage( this, mh, oh, weapon_power_mod, ap );
+    }
+    // Otherwise, use normal weapon damage calculation. It's only used for auto-attacks currently.
+    else
+    {
+      return melee_attack_t::calculate_weapon_damage( ap );
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
