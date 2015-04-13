@@ -33,6 +33,7 @@ finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mas
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448/42,gem_id=115812
 trinket2=goren_soul_repository,id=119194,bonus_id=567/523/448/42,gem_id=115812
 main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448/42,gem_id=115812,enchant=mark_of_bleeding_hollow
+off_hand=
 save=Priest_Shadow_T17B_COP.simc
 
 copy="Priest_Shadow_T17B_VE"
@@ -72,6 +73,7 @@ finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_cri
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448/42,gem_id=115809
 trinket2=goren_soul_repository,id=119194,bonus_id=567/523/448/42,gem_id=115809
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567/523/448/42,gem_id=115809,enchant=mark_of_the_thunderlord
+off_hand=
 save=Priest_Shadow_T17B_AS.simc
 
 # Holy Heal
@@ -98,6 +100,7 @@ finger2=spellbound_runic_band_of_infinite_preservation,id=118309,enchant=gift_of
 trinket1=autorepairing_autoclave,id=113986,bonus_id=567/523/448/42,gem_id=115813
 trinket2=ironspike_chew_toy,id=119192,bonus_id=567/523/448/42,gem_id=115813
 main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448/42,gem_id=115813,enchant=mark_of_shadowmoon
+off_hand=
 save=Priest_Holy_T17B_Heal.simc
 
 # Holy DMG
@@ -151,6 +154,7 @@ finger2=firemenders_smoldering_signet,id=113957,bonus_id=567/523/448/42,gem_id=1
 trinket1=autorepairing_autoclave,id=113986,bonus_id=567/523/448/42,gem_id=115809
 trinket2=ironspike_chew_toy,id=119192,bonus_id=567/523/448/42,gem_id=115809
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567/523/448/42,gem_id=115809,enchant=mark_of_shadowmoon
+off_hand=
 save=Priest_Discipline_T17B_Heal.simc
 
 # Discipline Dmg

@@ -34,6 +34,7 @@ finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow
+off_hand=
 save=Priest_Shadow_T17H_COP.simc
 
 copy="Priest_Shadow_T17H_VE"
@@ -75,6 +76,7 @@ finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
+off_hand=
 save=Priest_Shadow_T17H_AS.simc
 
 # Holy Heal
@@ -101,6 +103,7 @@ finger2=spellbound_solium_band_of_the_immortal_spirit,id=118304,enchant=gift_of_
 trinket1=autorepairing_autoclave,id=113986,bonus_id=566
 trinket2=ironspike_chew_toy,id=119192,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_shadowmoon
+off_hand=
 save=Priest_Holy_T17H_Heal.simc
 
 # Holy DMG
@@ -154,6 +157,7 @@ finger2=firemenders_smoldering_signet,id=113957,bonus_id=566,enchant=gift_of_cri
 trinket1=autorepairing_autoclave,id=113986,bonus_id=566
 trinket2=ironspike_chew_toy,id=119192,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_shadowmoon
+off_hand=
 save=Priest_Discipline_T17H_Heal.simc
 
 # Discipline Dmg

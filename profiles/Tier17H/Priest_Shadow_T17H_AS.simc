@@ -249,18 +249,17 @@ finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
-off_hand=enginestokers_lantern,id=113960,bonus_id=566
 
 # Gear Summary
-# gear_ilvl=685.31
-# gear_stamina=4349
-# gear_intellect=3551
+# gear_ilvl=685.33
+# gear_stamina=4114
+# gear_intellect=3394
 # gear_spell_power=1596
 # gear_crit_rating=1659
-# gear_haste_rating=580
+# gear_haste_rating=493
 # gear_mastery_rating=758
 # gear_armor=809
-# gear_multistrike_rating=762
+# gear_multistrike_rating=647
 # gear_versatility_rating=286
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
