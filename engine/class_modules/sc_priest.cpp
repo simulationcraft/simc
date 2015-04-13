@@ -3713,11 +3713,11 @@ public:
 
     if ( cs -> source_target == nullptr ) //Initial bounce
     {
-      distance = abs( cs -> action -> player -> current.distance - cs -> target -> current.distance );
+      distance = std::fabs( cs -> action -> player -> current.distance - cs -> target -> current.distance );
     }
     else
     {
-      distance = abs( cs -> source_target -> current.distance - cs -> target -> current.distance );
+      distance = std::fabs( cs -> source_target -> current.distance - cs -> target -> current.distance );
     }
 
     if ( distance >= 30.0 )
@@ -3811,7 +3811,7 @@ public:
     // Source: Ghostcrawler 20/06/2012
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
 
-    double distance = abs( s -> action -> player -> current.distance - s -> target -> current.distance); // Distance from the caster to the target
+    double distance = std::fabs( s -> action -> player -> current.distance - s -> target -> current.distance); // Distance from the caster to the target
 
     //double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
     double mult = 0.5 * exp( -0.00995 * pow( distance / 2 - 12.5, 4 ) ) + 0.1 + 0.015 * distance;
