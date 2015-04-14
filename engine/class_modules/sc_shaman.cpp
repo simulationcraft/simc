@@ -6363,48 +6363,35 @@ private:
 
 // SHAMAN MODULE INTERFACE ==================================================
 
+static void do_trinket_init( shaman_t*                player,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
+       player -> specialization() != spec )
+  {
+    return;
+  }
+
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
 // Elemental T18 (WoD 6.2) trinket effect
 static void elemental_bellows( special_effect_t& effect )
 {
   shaman_t* s = debug_cast<shaman_t*>( effect.player );
-
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft.
-  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  // Ensure correct specialization
-  if ( s -> specialization() != SHAMAN_ELEMENTAL )
-  {
-    return;
-  }
-
-  // Enable Elemental Bellows
-  s -> elemental_bellows = &( effect );
+  do_trinket_init( s, SHAMAN_ELEMENTAL, s -> elemental_bellows, effect );
 }
 
 // Enhancement T18 (WoD 6.2) trinket effect
 static void furious_winds( special_effect_t& effect )
 {
   shaman_t* s = debug_cast<shaman_t*>( effect.player );
-
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft.
-  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  // Ensure correct specialization
-  if ( s -> specialization() != SHAMAN_ENHANCEMENT )
-  {
-    return;
-  }
-
-  // Enable Furious Winds
-  s -> furious_winds = &( effect );
+  do_trinket_init( s, SHAMAN_ENHANCEMENT, s -> furious_winds, effect );
 }
 
 struct shaman_module_t : public module_t
@@ -6437,8 +6424,8 @@ struct shaman_module_t : public module_t
 
   virtual void static_init() const
   {
-    unique_gear::register_special_effect( 184919, ::elemental_bellows );
-    unique_gear::register_special_effect( 184920, ::furious_winds     );
+    unique_gear::register_special_effect( 184919, elemental_bellows );
+    unique_gear::register_special_effect( 184920, furious_winds     );
   }
 
   virtual void combat_begin( sim_t* ) const {}
