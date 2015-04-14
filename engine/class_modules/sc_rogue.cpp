@@ -184,6 +184,11 @@ struct rogue_t : public player_t
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
 
+  // Tier 18 (WoD 6.2) trinket effects
+  const special_effect_t* toxic_mutilator;
+  const special_effect_t* eviscerating_blade;
+  const special_effect_t* from_the_shadows;
+
   // Buffs
   struct buffs_t
   {
@@ -423,6 +428,9 @@ struct rogue_t : public player_t
     active_venomous_wound( 0 ),
     auto_attack( 0 ), melee_main_hand( 0 ), melee_off_hand( 0 ),
     dfa_mh( 0 ), dfa_oh( 0 ),
+    toxic_mutilator( 0 ),
+    eviscerating_blade( 0 ),
+    from_the_shadows( 0 ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -459,6 +467,7 @@ struct rogue_t : public player_t
   virtual void      init_resources( bool force );
   virtual bool      init_items();
   virtual void      init_special_effects();
+  virtual bool      init_special_effect( special_effect_t&, unsigned );
   virtual void      init_finished();
   virtual void      create_buffs();
   virtual void      create_options();
@@ -1581,6 +1590,13 @@ struct ambush_t : public rogue_attack_t
     ability_type      = AMBUSH;
     requires_position = POSITION_BACK;
     requires_stealth  = true;
+
+    // Tier 18 (WoD 6.2) Subtlety trinket effect
+    if ( p -> from_the_shadows )
+    {
+      const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
+      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0;
+    }
   }
 
   double action_multiplier() const
@@ -1736,10 +1752,21 @@ struct blade_flurry_t : public rogue_attack_t
 
 struct dispatch_t : public rogue_attack_t
 {
+  double toxic_mutilator_crit_chance;
+
   dispatch_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "dispatch", p, p -> find_class_spell( "Dispatch" ), options_str )
+    rogue_attack_t( "dispatch", p, p -> find_class_spell( "Dispatch" ), options_str ),
+    toxic_mutilator_crit_chance( 0 )
   {
     ability_type = DISPATCH;
+
+    // Tier 18 (WoD 6.2) trinket effect for Assassination
+    if ( p -> toxic_mutilator )
+    {
+      const spell_data_t* data = p -> find_spell( p -> toxic_mutilator -> spell_id );
+      toxic_mutilator_crit_chance = data -> effectN( 1 ).average( p -> toxic_mutilator -> item );
+      toxic_mutilator_crit_chance /= 100.0;
+    }
 
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER )
     {
@@ -1786,6 +1813,11 @@ struct dispatch_t : public rogue_attack_t
     // Shadow Reflection benefits from the owner's Enhanced Vendetta
     if ( p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    if ( p() -> buffs.envenom -> check() )
+    {
+      c += toxic_mutilator_crit_chance;
+    }
 
     return c;
   }
@@ -1939,6 +1971,16 @@ struct eviscerate_t : public rogue_attack_t
     attack_power_mod.direct = 0.577;
     // Hard-coded tooltip.
     attack_power_mod.direct *= 0.88;
+
+    // Tier 18 (WoD 6.2) Combat trinket effect
+    // TODO: Eviscerate actually changes spells to 185187
+    if ( p -> eviscerating_blade )
+    {
+      const spell_data_t* data = p -> find_spell( p -> eviscerating_blade -> spell_id );
+      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0;
+
+      range += data -> effectN( 1 ).base_value();
+    }
   }
 
   timespan_t gcd() const
@@ -2135,6 +2177,13 @@ struct garrote_t : public rogue_attack_t
     may_crit          = false;
     requires_stealth  = true;
 
+    // Tier 18 (WoD 6.2) Subtlety trinket effect
+    if ( p -> from_the_shadows )
+    {
+      const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
+      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0;
+    }
+
     initialize_sinister_calling( 168971 );
   }
 
@@ -2328,14 +2377,23 @@ struct mutilate_t : public rogue_attack_t
 {
   rogue_attack_t* mh_strike;
   rogue_attack_t* oh_strike;
+  double toxic_mutilator_crit_chance;
 
   mutilate_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "mutilate", p, p -> find_class_spell( "Mutilate" ), options_str ),
-    mh_strike( 0 ), oh_strike( 0 )
+    mh_strike( 0 ), oh_strike( 0 ), toxic_mutilator_crit_chance( 0 )
   {
     ability_type = MUTILATE;
     may_crit = false;
     snapshot_flags |= STATE_MUL_DA;
+
+    // Tier 18 (WoD 6.2) trinket effect for Assassination
+    if ( p -> toxic_mutilator )
+    {
+      const spell_data_t* data = p -> find_spell( p -> toxic_mutilator -> spell_id );
+      toxic_mutilator_crit_chance = data -> effectN( 1 ).average( p -> toxic_mutilator -> item );
+      toxic_mutilator_crit_chance /= 100.0;
+    }
 
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
          p ->  off_hand_weapon.type != WEAPON_DAGGER )
@@ -2383,6 +2441,11 @@ struct mutilate_t : public rogue_attack_t
     // Shadow Reflection benefits from the owner's Enhanced Vendetta
     if ( p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    if ( p() -> buffs.envenom -> check() )
+    {
+      c += toxic_mutilator_crit_chance;
+    }
 
     return c;
   }
@@ -6034,6 +6097,93 @@ void rogue_t::init_special_effects()
     }
   }
 }
+
+// rogue_t::init_special_effect =============================================
+
+static void toxic_mutilator( special_effect_t& effect )
+{
+  rogue_t* r = debug_cast<rogue_t*>( effect.player );
+
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  if ( r -> specialization() != ROGUE_ASSASSINATION )
+  {
+    return;
+  }
+
+  r -> toxic_mutilator = &( effect );
+}
+
+static void eviscerating_blade( special_effect_t& effect )
+{
+  rogue_t* r = debug_cast<rogue_t*>( effect.player );
+
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  if ( r -> specialization() != ROGUE_COMBAT )
+  {
+    return;
+  }
+
+  r -> eviscerating_blade = &( effect );
+}
+
+static void from_the_shadows( special_effect_t& effect )
+{
+  rogue_t* r = debug_cast<rogue_t*>( effect.player );
+
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  if ( r -> specialization() != ROGUE_SUBTLETY )
+  {
+    return;
+  }
+
+  r -> from_the_shadows = &( effect );
+}
+
+// Static array to hold the special effect initialization callbacks
+static unique_gear::special_effect_db_item_t __special_effect_db[] =
+{
+  { 184916, 0,             toxic_mutilator },
+  { 184917, 0,          eviscerating_blade },
+  { 184918, 0,            from_the_shadows },
+  // Last entry must be all zeroes
+  {      0, 0,                           0 },
+};
+
+// Override special effect generation so that we can add WoD 6.2 spec specific trinket information
+// during init. The actual effect is implemented inside the class module.
+bool rogue_t::init_special_effect( special_effect_t& effect,
+                                             unsigned spell_id )
+{
+  using namespace unique_gear;
+
+  bool ret = false;
+  const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db,
+                                                                        (int)sizeof_array( __special_effect_db ),
+                                                                        spell_id );
+
+  ret = dbitem.spell_id == spell_id;
+  if ( ret )
+  {
+    effect.custom_init = dbitem.custom_cb;
+    effect.type = SPECIAL_EFFECT_CUSTOM;
+  }
+
+  return ret;
+}
+
+
 
 // rogue_t::init_finished ===================================================
 
