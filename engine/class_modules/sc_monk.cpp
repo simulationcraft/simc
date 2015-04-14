@@ -518,7 +518,10 @@ public:
     user_options( options_t() ),
     light_stagger_threshold( 0 ),
     moderate_stagger_threshold( 0.035 ),
-    heavy_stagger_threshold( 0.065 )
+    heavy_stagger_threshold( 0.065 ),
+    eluding_movements( 0 ),
+    soothing_breeze( 0 ),
+    furious_sun( 0 )
   {
     // actives
     _active_stance = FIERCE_TIGER;
@@ -561,6 +564,7 @@ public:
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
+  virtual bool      init_special_effect(special_effect_t&, unsigned);
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      interrupt();
@@ -618,6 +622,11 @@ public:
   const double heavy_stagger_threshold;
   double  clear_stagger();
   bool  has_stagger();
+
+  // Tier 18 (WoD 6.2) trinket effects
+  const special_effect_t* eluding_movements;
+  const special_effect_t* soothing_breeze;
+  const special_effect_t* furious_sun;
 };
 
 // ==========================================================================
@@ -6846,6 +6855,41 @@ private:
 
 // MONK MODULE INTERFACE ====================================================
 
+static void do_trinket_init( monk_t*                  player,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
+       player -> specialization() != spec )
+  {
+    return;
+  }
+
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
+static void eluding_movements( special_effect_t& effect )
+{
+  monk_t* monk = debug_cast<monk_t*>( effect.player );
+  do_trinket_init( monk, MONK_BREWMASTER, monk -> eluding_movements, effect );
+}
+
+static void soothing_breeze( special_effect_t& effect )
+{
+  monk_t* monk = debug_cast<monk_t*>( effect.player );
+  do_trinket_init( monk, MONK_MISTWEAVER, monk -> soothing_breeze, effect );
+}
+
+static void furious_sun( special_effect_t& effect )
+{
+  monk_t* monk = debug_cast<monk_t*>( effect.player );
+  do_trinket_init( monk, MONK_WINDWALKER, monk -> furious_sun, effect );
+}
+
 struct monk_module_t: public module_t
 {
   monk_module_t(): module_t( MONK ) {}
@@ -6857,6 +6901,14 @@ struct monk_module_t: public module_t
     return p;
   }
   virtual bool valid() const { return true; }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184906, eluding_movements );
+    unique_gear::register_special_effect( 184907, soothing_breeze );
+    unique_gear::register_special_effect( 184908, furious_sun );
+  }
+
   virtual void init( sim_t* sim ) const
   {
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
