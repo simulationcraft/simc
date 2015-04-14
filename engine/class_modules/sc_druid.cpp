@@ -1971,7 +1971,7 @@ public:
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
 
-    if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+    if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) + ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) ? 0.02 : 0 ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
       if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
         ab::p() -> buff.feral_fury -> trigger();
   }
@@ -2207,6 +2207,9 @@ public:
       p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, eff_cost );
 
       p() -> buff.omen_of_clarity -> expire();
+
+      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
+        p() -> resource_gain( RESOURCE_ENERGY, eff_cost, p() -> gain.omen_of_clarity );
     }
   }
 
@@ -3347,7 +3350,7 @@ struct thrash_bear_t : public bear_attack_t
 
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
-    if ( p -> wod_hotfix )
+    if ( player -> wod_hotfix )
       base_multiplier *= 1.1;
   }
 
@@ -6993,8 +6996,8 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent();
-
+    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + 0.35 + glyph.ursols_defense -> effectN( 1 ).percent();
+  
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
 
@@ -7542,8 +7545,8 @@ void druid_t::assess_damage( school_e school,
 
   if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
-    // Track buff benefit
-    buff.savage_defense -> up();
+    if ( buff.savage_defense -> up() & ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL ) )
+      s -> result_amount *= 1.0 + -0.20;
 
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
       s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();

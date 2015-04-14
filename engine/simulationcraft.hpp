@@ -594,7 +594,7 @@ enum set_bonus_type_e
   SET_BONUS_NONE = -1,
 
   // Actual tier support in SIMC
-  PVP, T17LFR, GLAIVES, T13, T14, T15, T16, T17,
+  PVP, T17LFR, GLAIVES, T13, T14, T15, T16, T17, T18,
 
   SET_BONUS_MAX
 };
@@ -3788,6 +3788,7 @@ struct set_bonus_t
       case PVP:
       case T17LFR:
       case T17:
+      case T18:
         break;
       default:
         assert( 0 && "Attempt to access role-based set bonus through specialization." );
