@@ -6377,55 +6377,35 @@ private:
 
 // ROGUE MODULE INTERFACE ===================================================
 
+static void do_trinket_init( rogue_t*                 r,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() || r -> specialization() != spec )
+  {
+    return;
+  }
+
+  ptr = &( effect );
+}
+
 static void toxic_mutilator( special_effect_t& effect )
 {
-  rogue_t* r = debug_cast<rogue_t*>( effect.player );
-
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  if ( r -> specialization() != ROGUE_ASSASSINATION )
-  {
-    return;
-  }
-
-  r -> toxic_mutilator = &( effect );
+  rogue_t* rogue = debug_cast<rogue_t*>( effect.player );
+  do_trinket_init( rogue, ROGUE_ASSASSINATION, rogue -> toxic_mutilator, effect );
 }
 
 static void eviscerating_blade( special_effect_t& effect )
 {
-  rogue_t* r = debug_cast<rogue_t*>( effect.player );
-
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  if ( r -> specialization() != ROGUE_COMBAT )
-  {
-    return;
-  }
-
-  r -> eviscerating_blade = &( effect );
+  rogue_t* rogue = debug_cast<rogue_t*>( effect.player );
+  do_trinket_init( rogue, ROGUE_COMBAT, rogue -> eviscerating_blade, effect );
 }
 
 static void from_the_shadows( special_effect_t& effect )
 {
-  rogue_t* r = debug_cast<rogue_t*>( effect.player );
-
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  if ( r -> specialization() != ROGUE_SUBTLETY )
-  {
-    return;
-  }
-
-  r -> from_the_shadows = &( effect );
+  rogue_t* rogue = debug_cast<rogue_t*>( effect.player );
+  do_trinket_init( rogue, ROGUE_SUBTLETY, rogue -> from_the_shadows, effect );
 }
 
 struct rogue_module_t : public module_t
