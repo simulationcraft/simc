@@ -100,6 +100,7 @@ public:
     buff_t* resolute_spirit; // t16 4pc heal spirit shell
     buff_t* clear_thoughts; //t17 4pc disc
     buff_t* shadow_power; //WoD Shadow 2pc PvP
+    buff_t* reperation; // T18 Disc 2p
   } buffs;
 
   // Talents
@@ -3401,6 +3402,18 @@ struct penance_t : public priest_spell_t
       if ( atonement )
         atonement -> stats = player -> get_stats( "atonement_penance" );
     }
+
+    virtual void impact( action_state_t* state ) override
+    {
+      priest_spell_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        // TODO: Check if this is the correct place & check for triggering.
+        // 2015-04-14: Your Penance [...] each time it deals damage or heals.
+        priest.buffs.reperation -> trigger();
+      }
+    }
   };
 
   penance_t( priest_t& p, const std::string& options_str ) :
@@ -4570,6 +4583,18 @@ struct penance_heal_t : public priest_heal_t
 
       snapshot_flags |= STATE_MUL_TA;
     }
+
+    virtual void impact( action_state_t* state ) override
+    {
+      priest_heal_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        // TODO: Check if this is the correct place & check for triggering.
+        // 2015-04-14: Your Penance [...] each time it deals damage or heals.
+        priest.buffs.reperation -> trigger();
+      }
+    }
   };
 
   penance_heal_t( priest_t& p, const std::string& options_str ) :
@@ -5545,6 +5570,11 @@ double priest_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.focused_will -> check() * perks.enhanced_focused_will -> effectN( 1 ).percent();
   }
 
+  if ( buffs.reperation -> check() )
+  {
+    m *= 1.0 + buffs.reperation -> data().effectN( 1 ).percent() * buffs.reperation -> check();
+  }
+
   return m;
 }
 
@@ -5571,6 +5601,11 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
     m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 1 ).percent();
   }
 
+  if ( buffs.reperation -> check() )
+  {
+    m *= 1.0 + buffs.reperation -> data().effectN( 1 ).percent() * buffs.reperation -> check();
+  }
+
   return m;
 }
 
@@ -5584,6 +5619,12 @@ double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) c
   if ( buffs.saving_grace_penalty -> check() )
   {
     m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 2 ).percent();
+  }
+
+  if ( buffs.reperation -> check() )
+  {
+    // TODO: check assumption that it increases absorb as well.
+    m *= 1.0 + buffs.reperation -> data().effectN( 1 ).percent() * buffs.reperation -> check();
   }
 
   return m;
@@ -6115,6 +6156,12 @@ void priest_t::create_buffs()
                        .spell( find_spell( 171150 ) )
                        .chance( sets.has_set_bonus( PRIEST_SHADOW, PVP, B2 ) )
                        .add_invalidate( CACHE_VERSATILITY );
+
+  buffs.reperation = buff_creator_t( this, "reperation" )
+                     .spell( find_spell( 186478 ) )
+                     .chance( sets.has_set_bonus( PRIEST_DISCIPLINE, T18, B2 ) )
+                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   //Glyphs
   buffs.glyph_of_levitate = buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )
