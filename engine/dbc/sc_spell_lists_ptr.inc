@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19802
+// Class based active abilities, wow build 19890
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -190,11 +190,10 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Hunter
   {
-    // General tree, 32 abilities
+    // General tree, 31 abilities
     {
         3044, // Arcane Shot
         5118, // Aspect of the Cheetah
-      172106, // Aspect of the Fox
        13159, // Aspect of the Pack
         1462, // Beast Lore
          883, // Call Pet 1
@@ -620,9 +619,8 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Mage
   {
-    // General tree, 16 abilities
+    // General tree, 15 abilities
     {
-      159916, // Amplify Magic
       120145, // Ancient Teleport: Dalaran
         1459, // Arcane Brilliance
         1953, // Blink
@@ -1005,7 +1003,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19802
+// Talent tree specialization abilities, wow build 19890
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1946,7 +1944,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19802
+// Class mastery abilities, wow build 19890
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2169,7 +2167,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19802
+// Racial abilities, wow build 19890
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2892,7 +2890,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19802
+// Glyph spells for classes, wow build 19890
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3195,7 +3193,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Death Knight
   {
-    // Major Glyphs (27 spells)
+    // Major Glyphs (26 spells)
     {
       159415, // Glyph of Absorb Magic
        58623, // Glyph of Anti-Magic Shell
@@ -3209,7 +3207,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       159421, // Glyph of Empowerment
        58671, // Glyph of Enduring Infection
        58673, // Glyph of Icebound Fortitude
-      159418, // Glyph of Icy Runes
        58631, // Glyph of Icy Touch
        58686, // Glyph of Mind Freeze
        59332, // Glyph of Outbreak
@@ -3289,8 +3286,9 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        55451, // Glyph of Wind Shear
            0,
     },
-    // Minor Glyphs (17 spells)
+    // Minor Glyphs (18 spells)
     {
+      186198, // Glyph of Ascendance
       147787, // Glyph of Astral Fixation
        58058, // Glyph of Astral Recall
        63279, // Glyph of Deluge
@@ -3501,7 +3499,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       171752, // Savagery
            0,
     },
-    // Minor Glyphs (16 spells)
+    // Minor Glyphs (15 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
@@ -3509,7 +3507,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       146656, // Glyph of One With Nature
       114301, // Glyph of Stars
       159456, // Glyph of Travel
-      146655, // Glyph of Untamed Stars
       107059, // Glyph of the Chameleon
       131113, // Glyph of the Cheetah
       164997, // Glyph of the Flapping Owl
@@ -3532,7 +3529,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19802
+// Tier item set bonuses for class, wow build 19890
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3957,79 +3954,79 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
 
 #define PTR_SET_BONUS_DATA_SIZE (382)
 
-// Set bonus data, wow build 19802
+// Set bonus data, wow build 19890
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
-  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 111239, 111240, 111241, 111242, 111243,  0 } },
-  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    0,   73, 165670, { 111239, 111240, 111241, 111242, 111243,  0 } },
-  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    2,   71, 165636, { 111239, 111240, 111241, 111242, 111243,  0 } },
-  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    2,   72, 165639, { 111239, 111240, 111241, 111242, 111243,  0 } },
-  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    2,   72, 165670, { 111239, 111240, 111241, 111242, 111243,  0 } },
-  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    2,   71, 165670, { 111239, 111240, 111241, 111242, 111243,  0 } },
-  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    0,   66, 165905, { 111169, 111170, 111171, 111172, 111173,  0 } },
-  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    0,   66, 171427, { 111169, 111170, 111171, 111172, 111173,  0 } },
-  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    1,   65, 170860, { 111169, 111170, 111171, 111172, 111173,  0 } },
-  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    1,   65, 180766, { 111169, 111170, 111171, 111172, 111173,  0 } },
-  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    2,   70, 165886, { 111169, 111170, 111171, 111172, 111173,  0 } },
-  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    2,   70, 165895, { 111169, 111170, 111171, 111172, 111173,  0 } },
-  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  255, 166005, { 111112, 111113, 111114, 111115, 111116,  0 } },
-  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  253, 166005, { 111112, 111113, 111114, 111115, 111116,  0 } },
-  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  254, 166005, { 111112, 111113, 111114, 111115, 111116,  0 } },
-  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  253, 171478, { 111112, 111113, 111114, 111115, 111116,  0 } },
-  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  254, 170884, { 111112, 111113, 111114, 111115, 111116,  0 } },
-  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  255, 166012, { 111112, 111113, 111114, 111115, 111116,  0 } },
-  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  259, 165995, { 111188, 111189, 111190, 111191, 111192,  0 } },
-  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  261, 165995, { 111188, 111189, 111190, 111191, 111192,  0 } },
-  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  260, 165995, { 111188, 111189, 111190, 111191, 111192,  0 } },
-  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  259, 170883, { 111188, 111189, 111190, 111191, 111192,  0 } },
-  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  261, 170877, { 111188, 111189, 111190, 111191, 111192,  0 } },
-  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  260, 182303, { 111188, 111189, 111190, 111191, 111192,  0 } },
-  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    1,  256, 171124, { 111183, 111184, 111185, 111186, 111187,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    0,   73, 165670, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    2,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    2,   72, 165639, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    2,   72, 165670, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    2,   71, 165670, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    0,   66, 165905, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    0,   66, 171427, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    1,   65, 170860, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    1,   65, 180766, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    2,   70, 165886, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    2,   70, 165895, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  255, 166005, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  253, 166005, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  254, 166005, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  253, 171478, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  254, 170884, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  255, 166012, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  259, 165995, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  261, 165995, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  260, 165995, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  259, 170883, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  261, 170877, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  260, 182303, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    1,  256, 171124, { 127065, 127077, 127088, 127099, 127110,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
-  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    1,  257, 171158, { 111183, 111184, 111185, 111186, 111187,  0 } },
-  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    1,  256, 171141, { 111183, 111184, 111185, 111186, 111187,  0 } },
-  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    1,  257, 171142, { 111183, 111184, 111185, 111186, 111187,  0 } },
-  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    3,  258, 171146, { 111183, 111184, 111185, 111186, 111187,  0 } },
-  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    3,  258, 171151, { 111183, 111184, 111185, 111186, 111187,  0 } },
-  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    0,  250, 166020, { 111102, 111103, 111104, 111105, 111106,  0 } },
-  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    0,  250, 171456, { 111102, 111103, 111104, 111105, 111106,  0 } },
-  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    2,  252, 166020, { 111102, 111103, 111104, 111105, 111106,  0 } },
-  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    2,  251, 166020, { 111102, 111103, 111104, 111105, 111106,  0 } },
-  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    2,  251, 166056, { 111102, 111103, 111104, 111105, 111106,  0 } },
-  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    2,  252, 166061, { 111102, 111103, 111104, 111105, 111106,  0 } },
-  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    1,  264, 171381, { 111193, 111194, 111195, 111196, 111197,  0 } },
-  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    1,  264, 166063, { 111193, 111194, 111195, 111196, 111197,  0 } },
-  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    2,  263, 166103, { 111193, 111194, 111195, 111196, 111197,  0 } },
-  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    2,  263, 171121, { 111193, 111194, 111195, 111196, 111197,  0 } },
-  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    3,  262, 166096, { 111193, 111194, 111195, 111196, 111197,  0 } },
-  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    3,  262, 171109, { 111193, 111194, 111195, 111196, 111197,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   62, 171349, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   63, 165977, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   64, 180721, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   62, 171351, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   63, 171169, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   64, 180741, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  265, 171377, { 111234, 111235, 111236, 111237, 111238,  0 } },
-  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  266, 171393, { 111234, 111235, 111236, 111237, 111238,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    1,  257, 171158, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    1,  256, 171141, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    1,  257, 171142, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    3,  258, 171146, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    3,  258, 171151, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    0,  250, 166020, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    0,  250, 171456, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    2,  252, 166020, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    2,  251, 166020, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    2,  251, 166056, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    2,  252, 166061, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    1,  264, 171381, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    1,  264, 166063, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    2,  263, 166103, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    2,  263, 171121, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    3,  262, 166096, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    3,  262, 171109, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   62, 171349, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   63, 165977, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   64, 180721, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   62, 171351, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   63, 171169, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   64, 180741, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  265, 171377, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  266, 171393, { 127066, 127080, 127091, 127102, 127113,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
-  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  267, 171383, { 111234, 111235, 111236, 111237, 111238,  0 } },
-  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  265, 171379, { 111234, 111235, 111236, 111237, 111238,  0 } },
-  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  266, 165967, { 111234, 111235, 111236, 111237, 111238,  0 } },
-  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  267, 165970, { 111234, 111235, 111236, 111237, 111238,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    0,  268, 165691, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    0,  268, 171445, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    1,  270, 170799, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    1,  270, 165697, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    2,  269, 180743, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    2,  269, 181742, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    0,  104, 171408, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    0,  104, 171489, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    1,  105, 170853, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    1,  105, 165707, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    2,  103, 170848, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    2,  103, 165698, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    3,  102, 165701, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    3,  102, 180717, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  267, 171383, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  265, 171379, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  266, 165967, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  267, 165970, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    0,  268, 165691, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    0,  268, 171445, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    1,  270, 170799, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    1,  270, 165697, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    2,  269, 180743, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    2,  269, 181742, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    0,  104, 171408, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    0,  104, 171489, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    1,  105, 170853, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    1,  105, 165707, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    2,  103, 170848, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    2,  103, 165698, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    3,  102, 165701, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    3,  102, 180717, { 127063, 127072, 127083, 127094, 127105,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   1,              {   0 },    0,   73, 179142, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   1,              {   0 },    0,   73, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   1,              {   0 },    2,   71, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
@@ -4361,7 +4358,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 
 #define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19802
+// Perk specialization abilities, wow build 19890
 static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
@@ -4669,8 +4666,8 @@ static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19802
-static glyph_property_data_t __ptr_glyph_property_data[485] = {
+// Glyph properties, wow build 19890
+static glyph_property_data_t __ptr_glyph_property_data[484] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -4679,7 +4676,6 @@ static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {   171, 116218 },
   {   172,  17076 },
   {   173,  54825 },
-  {   175, 146655 },
   {   176, 114333 },
   {   177,  54831 },
   {   178, 116216 },
@@ -5071,7 +5067,6 @@ static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {  1104, 148475 },
   {  1109, 159415 },
   {  1110, 159416 },
-  {  1111, 159418 },
   {  1112, 159421 },
   {  1114, 159427 },
   {  1115, 159428 },
@@ -5155,6 +5150,7 @@ static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {  1211, 171921 },
   {  1212, 173182 },
   {  1213, 164997 },
+  {  1215, 186198 },
   {     0,      0 }
 };
 
