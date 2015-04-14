@@ -5900,7 +5900,7 @@ void monk_t::assess_damage(school_e school,
       buff.guard -> up();
 
     // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
-    // currently giving this a 10% chance to reset, but the user can determin how often to reset this.
+    // currently giving this a 10% chance to reset, but the user can determin how often to reset this. 
     double desperate_measures = ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).percent() : 0.35);
     if ( health_percentage() < desperate_measures )
     {
