@@ -7541,7 +7541,7 @@ void druid_t::assess_damage( school_e school,
 
   if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
-    if ( maybe_ptr( dbc.ptr ) && buff.savage_defense -> up() & ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL ) }
+    if ( maybe_ptr( dbc.ptr ) && buff.savage_defense -> up() & ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL ) )
       s -> result_amount *= 1.0 + find_spell( 132402 ) -> effectN( 4 ).percent();
 
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
