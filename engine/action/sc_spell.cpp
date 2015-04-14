@@ -683,7 +683,7 @@ void absorb_t::impact( action_state_t* s )
 
 // absorb_t::assess_damage ==================================================
 
-void absorb_t::assess_damage( dmg_e  /* heal_type */, // commented to remove compiler warning, uncomment if needed
+void absorb_t::assess_damage( dmg_e  heal_type , // commented to remove compiler warning, uncomment if needed
                               action_state_t* s )
 {
   //s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
@@ -711,7 +711,7 @@ void absorb_t::assess_damage( dmg_e  /* heal_type */, // commented to remove com
                      util::result_type_string( s -> result ) );
   }
 
-  //stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
+  stats -> add_result( 0.0, s -> result_total, ABSORB, s -> result, s -> block_result, s -> target );
 }
 
 void absorb_t::multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )

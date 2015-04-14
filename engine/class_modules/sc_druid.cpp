@@ -338,6 +338,7 @@ public:
     gain_t* tigers_fury;
     gain_t* tier15_2pc_melee;
     gain_t* tier17_2pc_melee;
+    gain_t* tier18_4pc_melee;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -1971,7 +1972,11 @@ public:
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
 
-    if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) + ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) ? 0.02 : 0 ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+    double chance = ab::weapon -> proc_chance_on_swing( 3.5 );
+    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
+      chance += ab::p() -> find_spell( 185805 ) -> effectN( 1 ).percent();
+
+    if ( ab::rng().roll( chance ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
       if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
         ab::p() -> buff.feral_fury -> trigger();
   }
@@ -2209,7 +2214,7 @@ public:
       p() -> buff.omen_of_clarity -> expire();
 
       if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, eff_cost, p() -> gain.omen_of_clarity );
+        p() -> resource_gain( RESOURCE_ENERGY, eff_cost * p() -> find_spell( 185811 ) -> effectN( 1 ).percent(), p() -> gain.tier18_4pc_melee );
     }
   }
 
@@ -2525,9 +2530,6 @@ struct rake_t : public cat_attack_t
     ir_counter -> add_buff( p -> buffs.shadowmeld );
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
-
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1.1;
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2639,9 +2641,6 @@ struct rip_t : public cat_attack_t
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
-
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1.1;
   }
 
   action_state_t* new_state()
@@ -2880,9 +2879,6 @@ struct thrash_cat_t : public cat_attack_t
     spell_power_mod.direct = 0;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
-
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1.1;
   }
 
   // Treat direct damage as "bleed"
@@ -3349,9 +3345,6 @@ struct thrash_bear_t : public bear_attack_t
     base_multiplier *= 4.0;
 
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-
-    if ( player -> wod_hotfix )
-      base_multiplier *= 1.1;
   }
 
   virtual void impact( action_state_t* s )
@@ -6154,6 +6147,8 @@ void druid_t::init_base_stats()
   if ( specialization() != DRUID_BALANCE )
   {
     resources.base[RESOURCE_ENERGY] = 100;
+    if ( sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
+      resources.base[RESOURCE_ENERGY] += find_spell( 185805 ) -> effectN( 2 ).resource( RESOURCE_ENERGY );
     resources.base[RESOURCE_RAGE] = 100;
     resources.base[RESOURCE_COMBO_POINT] = 5;
   }
@@ -6768,6 +6763,7 @@ void druid_t::init_gains()
   gain.swipe                 = get_gain( "swipe"                 );
   gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
   gain.tier17_2pc_melee      = get_gain( "tier17_2pc_melee"      );
+  gain.tier18_4pc_melee      = get_gain( "tier18_4pc_melee"      );
   gain.tier17_2pc_tank       = get_gain( "tier17_2pc_tank"       );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
@@ -6996,8 +6992,8 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + 0.35 + glyph.ursols_defense -> effectN( 1 ).percent();
-  
+    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent() + wod_hotfix ? 0.35 : 0;
+
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
 
@@ -7546,7 +7542,7 @@ void druid_t::assess_damage( school_e school,
   if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
     if ( buff.savage_defense -> up() & ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL ) )
-      s -> result_amount *= 1.0 + -0.20;
+      s -> result_amount *= 1.0 + find_spell( 132402 ) -> effectN( 4 ).percent();
 
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
       s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();
