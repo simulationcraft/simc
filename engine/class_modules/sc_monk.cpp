@@ -5901,14 +5901,15 @@ void monk_t::assess_damage(school_e school,
 
     // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
     // currently giving this a 10% chance to reset, but the user can determin how often to reset this.
-    if ( health_percentage() < 35 )
+    double desperate_measures = ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).percent() : 0.35);
+    if ( health_percentage() < desperate_measures )
     {
       bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : 0.10 );
       if ( eh_reset )
         cooldown.expel_harm -> reset( true );
     }
 
-    if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
+    if ( s -> result == RESULT_DODGE && sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
       resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
   }
 
@@ -6507,7 +6508,7 @@ double monk_t::stagger_pct()
   {
     stagger += static_stance_data( STURDY_OX ).effectN( 8 ).percent();
 
-    if ( buff.shuffle -> check() )
+    if ( !maybe_ptr( dbc.ptr ) && buff.shuffle -> check() )
       stagger += buff.shuffle -> data().effectN( 2 ).percent();
 
     if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
