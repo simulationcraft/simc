@@ -1295,7 +1295,7 @@ void enemy_t::init_action_list()
           if ( !sim -> player_list[ i ] -> is_pet() && sim -> player_list[ i ] -> primary_role() == ROLE_HEAL )
             ++healers;
 
-        double hps_per_healer = 50000;
+        double hps_per_healer = 90000;
         double swing_speed = 2.0;
         action_list_str += "/auto_attack,damage=" + util::to_string( hps_per_healer * healers * swing_speed * level / 100.0 ) + ",attack_speed=" + util::to_string(swing_speed) + ",target=" + sim -> heal_target -> name_str;
       }
