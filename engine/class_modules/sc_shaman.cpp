@@ -145,6 +145,10 @@ public:
   // Totems
   shaman_totem_pet_t* totems[ TOTEM_MAX ];
 
+  // Tier 18 (WoD 6.2) class specific trinket effects
+  const special_effect_t* elemental_bellows;
+  const special_effect_t* furious_winds;
+
   // Constants
   struct
   {
@@ -389,6 +393,8 @@ public:
     guardian_fire_elemental( nullptr ),
     pet_earth_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
+    elemental_bellows( 0 ),
+    furious_winds( 0 ),
     constant(),
     buff(),
     cooldown(),
@@ -399,7 +405,6 @@ public:
     talent(),
     glyph(),
     spell(),
-    // TODO: Check in 6.1
     rppm_echo_of_the_elements( *this, 0, RPPM_HASTE )
   {
     for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
@@ -441,7 +446,7 @@ public:
   // triggers
   void trigger_molten_earth( const action_state_t* );
   void trigger_fulmination_stack( const action_state_t* );
-  void trigger_maelstrom_weapon( const action_state_t* );
+  void trigger_maelstrom_weapon( const action_state_t*, double override_chance = 0.0 );
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_improved_lava_lash( const action_state_t* );
@@ -461,6 +466,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_action_list();
+  virtual bool      init_special_effect( special_effect_t&, unsigned );
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
   virtual double    temporary_movement_modifier() const;
@@ -1821,8 +1827,10 @@ struct ancestral_awakening_t : public shaman_heal_t
 
 struct windfury_weapon_melee_attack_t : public shaman_attack_t
 {
+  double furious_winds_chance;
+
   windfury_weapon_melee_attack_t( const std::string& n, shaman_t* player, weapon_t* w ) :
-    shaman_attack_t( n, player, player -> dbc.spell( 25504 ) )
+    shaman_attack_t( n, player, player -> dbc.spell( 25504 ) ), furious_winds_chance( 0 )
   {
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
@@ -1831,6 +1839,27 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
+
+    // Enhancement Tier 18 (WoD 6.2) trinket effect
+    if ( player -> furious_winds )
+    {
+      const spell_data_t* data = player -> find_spell( player -> furious_winds -> spell_id );
+      double damage_value = data -> effectN( 1 ).average( player -> furious_winds -> item );
+
+      furious_winds_chance = data -> effectN( 2 ).average( player -> furious_winds -> item );
+
+      base_multiplier *= 1.0 + damage_value;
+    }
+  }
+
+  void impact( action_state_t* state )
+  {
+    shaman_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      p() -> trigger_maelstrom_weapon( state, furious_winds_chance );
+    }
   }
 };
 
@@ -3501,6 +3530,18 @@ struct flame_shock_t : public shaman_spell_t
     uses_elemental_fusion = true;
     uses_unleash_flame    = true; // Disabled in spell data for some weird reason
     track_cd_waste        = false;
+
+    // Elemental Tier 18 (WoD 6.2) trinket effect is in use, adjust Flame Shock based on spell data
+    // of the special effect.
+    if ( player -> elemental_bellows )
+    {
+      const spell_data_t* data = player -> find_spell( player -> elemental_bellows -> spell_id );
+      double damage_value = data -> effectN( 1 ).average( player -> elemental_bellows -> item );
+      double duration_value = data -> effectN( 3 ).average( player -> elemental_bellows -> item );
+
+      base_multiplier *= 1.0 + damage_value;
+      dot_duration *= 1.0 + duration_value;
+    }
   }
 
   void execute()
@@ -4811,19 +4852,6 @@ void shaman_t::init_spells()
   constant.speed_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
   constant.haste_ancestral_swiftness  = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
 
-  if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
-    action_lightning_strike = new t15_2pc_caster_t( this );
-
-  if ( mastery.molten_earth -> ok() )
-    molten_earth = new molten_earth_driver_t( this );
-
-  if ( specialization() == SHAMAN_ENHANCEMENT )
-  {
-    windfury = new windfury_weapon_melee_attack_t( "windfury_attack", this, &( main_hand_weapon ) );
-    flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
-    action_improved_lava_lash = new improved_lava_lash_t( this );
-  }
-
   player_t::init_spells();
 }
 
@@ -4968,11 +4996,11 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
+void shaman_t::trigger_maelstrom_weapon( const action_state_t* state, double override_chance )
 {
   assert( debug_cast< shaman_attack_t* >( state -> action ) != 0 && "Maelstrom Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
-  if ( ! attack -> may_proc_maelstrom )
+  if ( ! attack -> may_proc_maelstrom && ! override_chance )
     return;
 
   if ( ! attack -> weapon )
@@ -4981,7 +5009,15 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
   if ( ! spec.maelstrom_weapon -> ok() )
     return;
 
-  double chance = attack -> weapon -> proc_chance_on_swing( 8.0 );
+  double chance = 0;
+  if ( override_chance > 0 )
+  {
+    chance = override_chance;
+  }
+  else
+  {
+    chance = attack -> weapon -> proc_chance_on_swing( 8.0 );
+  }
 
   //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
   //  chance *= 1.2;
@@ -5307,6 +5343,24 @@ void shaman_t::init_action_list()
     return;
   }
 
+  // After error checks, initialize secondary actions for various things
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    windfury = new windfury_weapon_melee_attack_t( "windfury_attack", this, &( main_hand_weapon ) );
+    flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
+    action_improved_lava_lash = new improved_lava_lash_t( this );
+  }
+
+  if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
+  {
+    action_lightning_strike = new t15_2pc_caster_t( this );
+  }
+
+  if ( mastery.molten_earth -> ok() )
+  {
+    molten_earth = new molten_earth_driver_t( this );
+  }
+
   if ( ! action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -5593,6 +5647,71 @@ void shaman_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+// shaman_t::init_special_effect =============================================================
+
+// Elemental T18 (WoD 6.2) trinket effect
+static void elemental_bellows( special_effect_t& effect )
+{
+  shaman_t* s = debug_cast<shaman_t*>( effect.player );
+
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft.
+  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  // Enable Elemental Bellows
+  s -> elemental_bellows = &( effect );
+}
+
+// Enhancement T18 (WoD 6.2) trinket effect
+static void furious_winds( special_effect_t& effect )
+{
+  shaman_t* s = debug_cast<shaman_t*>( effect.player );
+
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft.
+  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  // Enable Furious Winds
+  s -> furious_winds = &( effect );
+}
+
+// Static array to hold the special effect initialization callbacks
+static unique_gear::special_effect_db_item_t __special_effect_db[] =
+{
+  { 184919, 0,           elemental_bellows },
+  { 184920, 0,               furious_winds },
+  // Last entry must be all zeroes
+  {      0, 0,                           0 },
+};
+
+// Override special effect generation so that we can add WoD 6.2 spec specific trinket information
+// during init. The actual effect is implemented inside the class module.
+bool shaman_t::init_special_effect( special_effect_t& effect,
+                                             unsigned spell_id )
+{
+  using namespace unique_gear;
+
+  bool ret = false;
+  const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db,
+                                                                        (int)sizeof_array( __special_effect_db ),
+                                                                        spell_id );
+
+  ret = dbitem.spell_id == spell_id;
+  if ( ret )
+  {
+    effect.custom_init = dbitem.custom_cb;
+    effect.type = SPECIAL_EFFECT_CUSTOM;
+  }
+
+  return ret;
 }
 
 // shaman_t::moving =========================================================
