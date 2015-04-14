@@ -6206,18 +6206,18 @@ struct use_item_t : public action_t
         action = e.create_action();
       }
 
-      if ( ! buff && ! action )
-      {
-        sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
-        background = true;
-        return;
-      }
-
       stats = player ->  get_stats( name_str, this );
 
       cooldown = player -> get_cooldown( e.cooldown_name() );
       cooldown -> duration = e.cooldown();
       trigger_gcd = timespan_t::zero();
+    }
+
+    if ( ! buff && ! action )
+    {
+      sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
+      background = true;
+      return;
     }
   }
 

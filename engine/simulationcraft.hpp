@@ -4863,7 +4863,7 @@ struct player_t : public actor_t
   // Class specific hook for first-phase initializing special effects. Returns true if the class-specific hook initialized something, false otherwise.
   virtual bool init_special_effect( special_effect_t& /* effect */, unsigned /* spell_id */ ) { return false; }
 
-  bool init_actions();
+  virtual bool init_actions();
 
   virtual void reset();
   virtual void combat_begin();
