@@ -5663,6 +5663,12 @@ static void elemental_bellows( special_effect_t& effect )
     return;
   }
 
+  // Ensure correct specialization
+  if ( s -> specialization() != SHAMAN_ELEMENTAL )
+  {
+    return;
+  }
+
   // Enable Elemental Bellows
   s -> elemental_bellows = &( effect );
 }
@@ -5675,6 +5681,12 @@ static void furious_winds( special_effect_t& effect )
   // Ensure we have the spell data. This will prevent the trinket effect from working on live
   // Simulationcraft.
   if ( ! s -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  // Ensure correct specialization
+  if ( s -> specialization() != SHAMAN_ENHANCEMENT )
   {
     return;
   }
