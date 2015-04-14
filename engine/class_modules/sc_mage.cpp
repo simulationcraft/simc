@@ -138,8 +138,13 @@ public:
   player_t* last_bomb_target;
 
   // RPPM objects
-  real_ppm_t rppm_pyromaniac; // T17 Fire 4pc
+  real_ppm_t rppm_pyromaniac;         // T17 Fire 4pc
   real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
+
+  // Tier 18 (WoD 6.2) trinket effects
+  const special_effect_t* wild_arcanist; // Arcane
+  const special_effect_t* pyrosurge;     // Fire
+  const special_effect_t* shatterlance;  // Frost
 
   // State switches for rotation selection
   state_switch_t burn_phase;
@@ -192,7 +197,8 @@ public:
           * enhanced_frostbolt,    // Perk
           * frozen_thoughts,       // T16 2pc Frost
           * ice_shard,             // T17 2pc Frost
-          * frost_t17_4pc;         // T17 4pc Frost
+          * frost_t17_4pc,         // T17 4pc Frost
+          * shatterlance;          // T18 (WoD 6.2) Frost Trinket
 
     // Talents
     buff_t* blazing_speed,
@@ -1578,11 +1584,20 @@ struct arcane_barrage_t : public mage_spell_t
 
 struct arcane_blast_t : public mage_spell_t
 {
+  double wild_arcanist_effect;
+
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
+    mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) ),
+    wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
 
+    if ( p -> wild_arcanist )
+    {
+      const spell_data_t* data = p -> find_spell ( p -> wild_arcanist -> spell_id );
+      wild_arcanist_effect = std::fabs( data -> effectN( 1 ).average( p -> wild_arcanist -> item ) );
+      wild_arcanist_effect /= 100.0;
+    }
   }
 
   virtual double cost() const
@@ -1638,6 +1653,11 @@ struct arcane_blast_t : public mage_spell_t
                 ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
                             -> effectN( 1 ).percent() );
 
+    if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
+    {
+      am *= 1.0 + wild_arcanist_effect;
+    }
+
     return am;
   }
 
@@ -1654,6 +1674,23 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> buffs.arcane_affinity -> up() )
     {
       t *= 1.0 + p() -> buffs.arcane_affinity -> data().effectN( 1 ).percent();
+    }
+
+    if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
+    {
+      t *= 1.0 - wild_arcanist_effect;
+    }
+
+    return t;
+  }
+
+  virtual timespan_t gcd() const
+  {
+    timespan_t t = mage_spell_t::gcd();
+
+    if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
+    {
+      t *= 1.0 - wild_arcanist_effect;
     }
 
     return t;
@@ -1783,6 +1820,12 @@ struct arcane_missiles_t : public mage_spell_t
     }
 
     return am;
+  }
+
+  // Flag Arcane Missiles as direct damage for triggering effects
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  {
+    return DMG_DIRECT;
   }
 
   virtual void execute()
@@ -2695,6 +2738,11 @@ struct frostbolt_t : public mage_spell_t
           -> trigger( 1, buff_t::DEFAULT_VALUE(),
                       p() -> spec.brain_freeze -> effectN( 1 ).percent() +
                       bf_multistrike_bonus );
+
+      if ( p() -> shatterlance )
+      {
+        p() -> buffs.shatterlance -> trigger();
+      }
     }
 
     p() -> buffs.frozen_thoughts -> expire();
@@ -3084,9 +3132,12 @@ struct ice_lance_t : public mage_spell_t
   int frozen_orb_action_id;
   frost_bomb_explosion_t* frost_bomb_explosion;
 
+  double shatterlance_effect;
+
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    frost_bomb_explosion( new frost_bomb_explosion_t( p ) )
+    frost_bomb_explosion( new frost_bomb_explosion_t( p ) ),
+    shatterlance_effect( 0.0 )
   {
     parse_options( options_str );
 
@@ -3095,6 +3146,13 @@ struct ice_lance_t : public mage_spell_t
       aoe = 1 + p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
       base_aoe_multiplier = p -> glyphs.splitting_ice
                               -> effectN( 2 ).percent();
+    }
+
+    if ( p -> shatterlance )
+    {
+      const spell_data_t* data = p -> find_spell( p -> shatterlance -> spell_id );
+      shatterlance_effect = data -> effectN( 1 ).average( p -> shatterlance -> item );
+      shatterlance_effect /= 100.0;
     }
   }
 
@@ -3191,6 +3249,11 @@ struct ice_lance_t : public mage_spell_t
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
+    if ( p() -> buffs.shatterlance -> up() )
+    {
+      am *= 1.0 + shatterlance_effect;
+    }
+
     return am;
   }
 };
@@ -3248,9 +3311,14 @@ struct icy_veins_t : public mage_spell_t
 struct inferno_blast_t : public mage_spell_t
 {
   int max_spread_targets;
+
+  double pyrosurge_chance;
+  flamestrike_t* pyrosurge_flamestrike;
+
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "inferno_blast", p,
-                  p -> find_class_spell( "Inferno Blast" ) )
+                  p -> find_class_spell( "Inferno Blast" ) ),
+    pyrosurge_chance( 0.0 )
   {
     parse_options( options_str );
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
@@ -3272,6 +3340,17 @@ struct inferno_blast_t : public mage_spell_t
     {
       max_spread_targets += p -> perks.improved_inferno_blast
                               -> effectN( 1 ).base_value();
+    }
+
+    if ( p -> pyrosurge )
+    {
+      const spell_data_t* data = p -> find_spell( p -> pyrosurge -> spell_id );
+      pyrosurge_chance = data -> effectN( 1 ).average( p -> pyrosurge -> item );
+      pyrosurge_chance /= 100.0;
+
+      pyrosurge_flamestrike = new flamestrike_t( p, options_str );
+      pyrosurge_flamestrike -> background = true;
+      pyrosurge_flamestrike -> callbacks = false;
     }
   }
 
@@ -3347,6 +3426,12 @@ struct inferno_blast_t : public mage_spell_t
         }
 
         spread_remaining--;
+      }
+
+      if ( p() -> pyrosurge && p() -> rng().roll( pyrosurge_chance ) )
+      {
+        pyrosurge_flamestrike -> target = s -> target;
+        pyrosurge_flamestrike -> execute();
       }
 
       trigger_hot_streak( s );
@@ -4950,6 +5035,10 @@ void mage_t::create_buffs()
                                   .quiet( true )
                                   .tick_callback( frost_t17_4pc_fof_gain );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
+  buffs.shatterlance          = buff_creator_t( this, "shatterlance")
+                                  .duration( timespan_t::from_seconds( 0.9 ) )
+                                  .cd( timespan_t::zero() )
+                                  .chance( 1.0 );
 
   // Talents
   buffs.blazing_speed         = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
@@ -6348,6 +6437,38 @@ private:
 
 // MAGE MODULE INTERFACE ====================================================
 
+static void do_trinket_init( mage_t*                  p,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  if ( !p -> find_spell( effect.spell_id ) -> ok() ||
+       p -> specialization() != spec )
+  {
+    return;
+  }
+
+  ptr = &( effect );
+}
+
+static void wild_arcanist( special_effect_t& effect )
+{
+  mage_t* p = debug_cast<mage_t*>( effect.player );
+  do_trinket_init( p, MAGE_ARCANE, p -> wild_arcanist, effect );
+}
+
+static void pyrosurge( special_effect_t& effect )
+{
+  mage_t* p = debug_cast<mage_t*>( effect.player );
+  do_trinket_init( p, MAGE_FIRE, p -> pyrosurge, effect );
+}
+
+static void shatterlance( special_effect_t& effect )
+{
+  mage_t* p = debug_cast<mage_t*>( effect.player );
+  do_trinket_init( p, MAGE_FROST, p -> shatterlance, effect );
+}
+
 struct mage_module_t : public module_t
 {
   mage_module_t() : module_t( MAGE ) {}
@@ -6358,6 +6479,14 @@ struct mage_module_t : public module_t
     p -> report_extension = std::shared_ptr<player_report_extension_t>( new mage_report_t( *p ) );
     return p;
   }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184903, wild_arcanist );
+    unique_gear::register_special_effect( 184904, pyrosurge     );
+    unique_gear::register_special_effect( 184905, shatterlance  );
+  }
+
   virtual bool valid() const { return true; }
   virtual void init        ( sim_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
