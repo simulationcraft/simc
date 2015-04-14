@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
+SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -17,7 +17,7 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 252 | Scaled Value: 2.52 (avg=0) | SP Coefficient: 1.00000
 #3 (id=32)       : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Backstab the target, causing $sw2 Physical damage.  Must not be in front of the target.  Awards $s3 combo $lpoint:points;.
@@ -72,7 +72,7 @@ Spell Level      : 48
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 18 seconds
-Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), From the Shadows (184918), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -169,7 +169,7 @@ Effects          :
 #2 (id=536)      : Add Combo Points (80)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=101522)   : Weapon Damage% (31)
-                   Base Value: 160 | Scaled Value: 1.6 (avg=0)
+                   Base Value: 176 | Scaled Value: 1.76 (avg=0)
 Description      : An instant strike that causes $sw3 Physical damage.$?s79327[  Awards $s2 combo $lpoint:points;.][]
 
 Name             : Kick (id=1766) [Spell Family (8)] 
@@ -311,6 +311,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=138233)   : Trigger Spell: (18461) (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 18461
+#3 (id=271221)   : Add Combo Points (80)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Allows you to vanish from sight, entering an improved stealth mode for $11327d.  For the first $11327d after vanishing, damage and harmful effects received will not break stealth.  Also breaks movement impairing effects.
 Tooltip          : Improved stealth.
 
@@ -425,7 +427,7 @@ Resource         : 35 Energy
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Ruthlessness (174597), Cold Blood (182304)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Ruthlessness (174597), Cold Blood (182304), Eviscerating Blade (184917), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -437,12 +439,12 @@ Effects          :
 #1 (id=622)      : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 Description      : Finishing move that causes damage per combo point:
-   1 point  : ${($AP*0.577)*$<mult>*(1+$@versadmg)} damage
-   2 points: ${($AP*0.577)*$<mult>*(1+$@versadmg)*2} damage
-   3 points: ${($AP*0.577)*$<mult>*(1+$@versadmg)*3} damage
-   4 points: ${($AP*0.577)*$<mult>*(1+$@versadmg)*4} damage
-   5 points: ${($AP*0.577)*$<mult>*(1+$@versadmg)*5} damage
-Variables        : $mult=$?s16511[${(((100+$76808m1))*0.88/100)}][${1.00*0.88}]
+   1 point  : ${($AP*0.559)*$<mult>*(1+$@versadmg)} damage
+   2 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*2} damage
+   3 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*3} damage
+   4 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*4} damage
+   5 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*5} damage
+Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00*0.88}]
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
@@ -688,7 +690,7 @@ Effects          :
 #1 (id=1920)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 (avg=0)
+                   Base Value: 273 | Scaled Value: 2.73 (avg=0)
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
@@ -709,7 +711,7 @@ Effects          :
 #1 (id=2076)     : Weapon Damage% (31)
                    Base Value: 10 | Scaled Value: 0.1 (avg=0)
 #2 (id=128897)   : Dispel (38)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 9
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9
 Description      : Deals $sw1 Physical damage, applying a concentrated form of your active Non-Lethal poison, and dispelling an Enrage effect from the target.
 
 See individual Non-Lethal poisons for their concentrated effects.
@@ -785,7 +787,7 @@ Resource         : 60 Energy
 Spell Level      : 6
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Cold Blood (170882), Cold Blood (182304)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Cold Blood (170882), Cold Blood (182304), From the Shadows (184918), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -913,6 +915,8 @@ Effects          :
 #3 (id=165715)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 21
                    Affected Spells: Sinister Strike (1752), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Revealing Strike (84617), Rupture (168963)
+#4 (id=271239)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
 Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.  While Adrenaline Rush is active, the global cooldown on most of your Energy consumers is reduced by ${$m3/-1000}.1 sec
 Tooltip          : Energy regeneration increased by $s1%.
 Attack speed increased by $s2%.$?$w3!=0[
@@ -1278,7 +1282,7 @@ Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25)
 #2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 (avg=0)
+                   Base Value: 273 | Scaled Value: 2.73 (avg=0)
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Passive] 
@@ -1370,7 +1374,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 (avg=0) | Value Range: 90000001 | Misc Value: 127
+                   Base Value: 145000000 | Scaled Value: 1.45e+008 | Misc Value: 127
 Description      : Fatal attacks instead reduce you to 7% of your maximum health.  For $45182d afterward, you take $45182s1% reduced damage.  Cannot trigger more often than once per 90 seconds.
 
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
@@ -1396,7 +1400,7 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Empowered Envenom (157569), Enhanced Vendetta (158108), Death from Above (163786), Cold Blood (170882)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Empowered Envenom (157569), Enhanced Vendetta (158108), Death from Above (163786), Cold Blood (170882), Toxic Mutilator (184916)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x..x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1416,17 +1420,20 @@ Effects          :
 #4 (id=220587)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240)
-Description      : Finishing move that deals instant Nature damage$?s157513[][, refreshes the duration of Slice and Dice if it is active,] and increases your poison application chance  by $s2%.  Damage and duration increased per combo point.
+#5 (id=268531)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7
+                   Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240)
+Description      : Finishing move that deals instant Nature damage$?s157513[][, refreshes the duration of Slice and Dice if it is active,] and increases your poison application chance by $s2%. Damage and duration increased per combo point.
 
-   1 point  : ${$<mult>*$AP*0.306+($m1*1)} damage, 2 sec
-   2 points: ${$<mult>*$AP*0.306*2+($m1*2)} damage, 3 sec
-   3 points: ${$<mult>*$AP*0.306*3+($m1*3)} damage, 4 sec
-   4 points: ${$<mult>*$AP*0.306*4+($m1*4)} damage, 5 sec
-   5 points: ${$<mult>*$AP*0.306*5+($m1*5)} damage, 6 sec  
+   1 point  : ${$<mult>*$AP*0.417+($m1*1)} damage, 2 sec
+   2 points: ${$<mult>*$AP*0.417*2+($m1*2)} damage, 3 sec
+   3 points: ${$<mult>*$AP*0.417*3+($m1*3)} damage, 4 sec
+   4 points: ${$<mult>*$AP*0.417*4+($m1*4)} damage, 5 sec
+   5 points: ${$<mult>*$AP*0.417*5+($m1*5)} damage, 6 sec  
 
 Replaces Eviscerate. 
 Tooltip          : Poison application chance increased by $s2%.
-Variables        : $mult2=$?s84601[${1.1*1.05*(1+$@versadmg)}][${1.00*1.05*(1+$@versadmg)}]
+Variables        : $mult2=$?s84601[${1.1*(1+$@versadmg)}][${1.00*1.05*(1+$@versadmg)}]
 $mult=$?s76803[${$<mult2>*((100+$76803m1)/100)}][$<mult2>*${1.00}]
 
 Name             : Interrupt (id=32747) 
@@ -1585,9 +1592,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Step through the shadows to a visible enemy within 10 yards, attacking 7 times over $d for $57841sw3 Physical damage with your main-hand and $57842sw3 Physical damage with your off-hand.
 
-While Blade Flurry is active, each Killing Spree attack will teleport to and damage a different nearby enemy target.
-
-The Rogue cannot be targeted or disabled while Killing Spree is active.
+While Blade Flurry is active, each Killing Spree attack will teleport to and damage a different nearby enemy target.
 Tooltip          : Attacking an enemy every $t1 sec.
 Damage dealt increased by $61851s3%.
 
@@ -2410,24 +2415,6 @@ Effects          :
 #1 (id=55365)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Killing Spree (id=61851) [Spell Family (8), Hidden] 
-Class            : Rogue
-Duration         : 3 seconds
-Affecting spells : Glyph of Killing Spree (63252)
-Attributes       : ....x..x x....... x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ xx...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7), Disable player procs (112), Disable target procs (113)
-Effects          :
-#1 (id=55781)    : Unknown effect type (93)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=55782)    : Apply Aura (6) | Unknown effect sub type (147)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
-Description      : Step through the shadows from enemy to enemy within 10 yards, attacking an enemy every .5 secs with both weapons until 5 assaults are made.  Can hit the same target multiple times.  Cannot hit invisible or stealthed targets.
-
 Name             : Glyph of Vendetta (Assassination) (id=63249) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2458,7 +2445,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57366)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Killing Spree (61851)
 Description      : Your Killing Spree returns you to your starting location when the effect ends.
 
 Name             : Glyph of Stealth (id=63253) [Spell Family (8), Passive, Hidden] 
@@ -2769,10 +2755,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68026)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 10737
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Misc Value: 10737
 #2 (id=92121)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200
-Description      : Your main-hand attacks have a $s1% chance to trigger an attack with your off-hand that deals $86392s2% weapon damage.
+                   Base Value: 220 | Scaled Value: 220
+Description      : Your main-hand attacks have a ${$m1}.1% chance to trigger an attack with your off-hand that deals $86392s2% weapon damage.
 
 Name             : Mastery: Executioner (id=76808) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
@@ -2786,15 +2772,15 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68029)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000
                    Affected Spells: Rupture (1943), Eviscerate (2098), Deadly Throw (26679), Envenom (32645), Crimson Tempest (121411), Death from Above (152150), Rupture (168963)
 #2 (id=87762)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | Misc Value: 22
                    Affected Spells: Rupture (1943), Eviscerate (2098), Deadly Throw (26679), Envenom (32645), Crimson Tempest (121411), Rupture (168963)
 #3 (id=92120)    : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 3
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | Misc Value: 3
                    Affected Spells: Slice and Dice (5171)
-Description      : Increases the damage done by your finishing moves, and the effectiveness of your Slice and Dice, by $76808s1%.
+Description      : Increases the damage done by your finishing moves, and the effectiveness of your Slice and Dice, by ${$76808m1}.1%.
 
 Name             : Elusiveness (Passive Talent) (id=79008) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -2889,7 +2875,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68395)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22
                    Affected Spells: Rupture (1943), Rupture (168963)
 #2 (id=167162)   : Apply Aura (6) | Proc Trigger Spell: Sanguinary Vein (42)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 18 | Trigger Spell: 124271
@@ -3917,7 +3903,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=180658)   : Weapon Damage% (31)
-                   Base Value: 65 | Scaled Value: 0.65 (avg=0)
+                   Base Value: 100 | Scaled Value: 1 (avg=0)
 Description      : $@spelldesc114014
 
 Name             : Shuriken Toss (id=137586) [Spell Family (8)] 
@@ -4843,7 +4829,7 @@ Name             : Garrote (id=168971) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 48
 Range            : 5 yards
-Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), From the Shadows (184918), 
 Attributes       : ....x... ........ x.x..... ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... .x....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

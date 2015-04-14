@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
+SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -459,7 +459,7 @@ Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Glyph of Flash of Light (54957), Supplication (94686), Saint's Vigor (105742), Sanctuary (105805), Holy Insight (112859), Selfless Healer (114250), Lucidity (137288), Beacon of Faith (156910), Beacon of Insight (157007)
+Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Glyph of Flash of Light (54957), Supplication (94686), Saint's Vigor (105742), Sanctuary (105805), Holy Insight (112859), Selfless Healer (114250), Lucidity (137288), Beacon of Faith (156910), Beacon of Insight (157007), Magnifying Light (185100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2672,9 +2672,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68009)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.12000 | Misc Value: 2
 #2 (id=92088)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 225 | Scaled Value: 225
+                   Base Value: 212 | Scaled Value: 212
 Description      : Your Crusader Strike, Hammer of the Righteous, Hammer of Wrath, Templar's Verdict, Divine Storm, and their multistrikes deal ${$76672m1}.1% additional damage as Holy damage.
 
 Name             : Consecration (id=81297) [Spell Family (10)] 
@@ -2741,7 +2741,7 @@ Spell Level      : 54
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Beacon of Light (53563), Infusion of Light (54149), Glyph of Flash of Light (54957), Saint's Vigor (105742), Holy Insight (112859), Lucidity (137288), Unyielding Faith (144624), Beacon of Faith (156910), Beacon of Insight (157007)
+Affecting spells : Beacon of Light (53563), Infusion of Light (54149), Glyph of Flash of Light (54957), Saint's Vigor (105742), Holy Insight (112859), Lucidity (137288), Unyielding Faith (144624), Beacon of Faith (156910), Beacon of Insight (157007), Magnifying Light (185100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
+SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -855,7 +855,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 126
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 126
 #2 (id=40864)    : Apply Aura (6) | Unknown effect sub type (267)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 126
 Description      : Surrounds the Death Knight in an Anti-Magic Shell for $d, absorbing $s1% of all magical damage and preventing application of harmful magical effects. $?s159415[][Damage absorbed generates Runic Power.]
@@ -941,7 +941,7 @@ Effects          :
 #1 (id=41120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=41121)    : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15 (avg=0)
+                   Base Value: 258 | Scaled Value: 2.58 (avg=0)
 Description      : A brutal attack that deals $sw1 Physical damage and has a $59057h% chance to cause your next Howling Blast or Icy Touch to consume no runes.
 
 Name             : Dancing Rune Weapon (id=49028) [Spell Family (15)] 
@@ -1010,7 +1010,7 @@ Effects          :
 #1 (id=41258)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=41259)    : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8 (avg=0)
+                   Base Value: 96 | Scaled Value: 0.96 (avg=0)
 Description      : Instantly strike the enemy, causing $sw1 Frost damage.
 
 Name             : Howling Blast (id=49184) [Spell Family (15)] 
@@ -1031,7 +1031,7 @@ Effects          :
 #1 (id=41295)    : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #2 (id=41296)    : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.96300 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.15560 | Radius: 0 - 10 yards
 Description      : Blast the target with a frigid wind, dealing $s2 Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within $A2 yards, infecting all targets with Frost Fever.
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -1437,7 +1437,6 @@ The Rune spent on this ability will become a Death Rune when it activates. Death
 Name             : Icy Talons (id=50887) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 Spell Level      : 55
-Affecting spells : Razorice (51714), Reaping (56835), Glyph of Icy Touch (58631), Freezing Fog (59052), Biting Cold (166057)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1605,10 +1604,10 @@ Attributes       : ........ ........ ..x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=44095)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 16
-                   Affected Spells: Icy Touch (45477), Chains of Ice (45524), Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Chilblains (50435), Icy Talons (50887), Frost Fever (55095), Frost Strike Off-Hand (66196), Death Siphon (108196)
+                   Affected Spells: Icy Touch (45477), Chains of Ice (45524), Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Chilblains (50435), Frost Fever (55095), Frost Strike Off-Hand (66196), Death Siphon (108196)
 #2 (id=205722)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16
-                   Affected Spells: Icy Touch (45477), Chains of Ice (45524), Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Chilblains (50435), Icy Talons (50887), Frost Fever (55095), Frost Strike Off-Hand (66196), Death Siphon (108196)
+                   Affected Spells: Icy Touch (45477), Chains of Ice (45524), Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Chilblains (50435), Frost Fever (55095), Frost Strike Off-Hand (66196), Death Siphon (108196)
 Description      : $@spelldesc53343
 Tooltip          : Frost damage taken from the Death Knight's abilities increased by $s1%.
 
@@ -1998,7 +1997,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=261561)   : Apply Aura (6) | Unknown effect sub type (481)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Icy Touch (45477), Blood Boil (50842), Icy Talons (50887), Festering Strike (85948)
+                   Affected Spells: Icy Touch (45477), Blood Boil (50842), Festering Strike (85948)
 Description      : Whenever you hit with Pestilence, Festering Strike, or Icy Touch, the Runes spent will become Death Runes when they activate. Death Runes count as a Blood, Frost or Unholy Rune.
 
 Name             : Horn of Winter (id=57330) [Spell Family (15)] 
@@ -2107,7 +2106,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=52035)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23
-                   Affected Spells: Icy Touch (45477), Icy Talons (50887)
+                   Affected Spells: Icy Touch (45477)
 Description      : Your Icy Touch dispels one helpful Magic effect from the target.
 
 Name             : Glyph of Pillar of Frost (Frost) (id=58635) [Spell Family (15), Passive, Hidden] 
@@ -2569,10 +2568,10 @@ Attributes       : ........ ........ x....... x..x....   ........ ..x..... .....
 Effects          :
 #1 (id=52485)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Icy Touch (45477), Howling Blast (49184), Icy Talons (50887)
+                   Affected Spells: Icy Touch (45477), Howling Blast (49184)
 #2 (id=219498)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Icy Touch (45477), Howling Blast (49184), Icy Talons (50887)
+                   Affected Spells: Icy Touch (45477), Howling Blast (49184)
 Description      : Your next Icy Touch or Howling Blast will consume no runes.
 Tooltip          : Your next Icy Touch or Howling Blast will consume no runes and generate no Runic Power.
 
@@ -3141,7 +3140,7 @@ Effects          :
 #1 (id=60368)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=60369)    : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8 (avg=0)
+                   Base Value: 96 | Scaled Value: 0.96 (avg=0)
 Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
 
 Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Family (15)] 
@@ -3159,7 +3158,7 @@ Effects          :
 #1 (id=60372)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=60373)    : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15 (avg=0)
+                   Base Value: 258 | Scaled Value: 2.58 (avg=0)
 Description      : A brutal attack with your off-hand weapon that deals $sw2 Physical damage. 
 
 Name             : Plague Strike Off-Hand (id=66216) [Scaling Spell (1), Spell Family (15)] 
@@ -5385,37 +5384,6 @@ Effects          :
                    Affected Spells: Chains of Ice (45524)
 Description      : The Runes you spend on Chains of Ice will become Death Runes when they activate.  Death Runes count as any type of rune.
 
-Name             : Glyph of Icy Runes (id=159418) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... x....... ........ 
-                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=223295)   : Apply Aura (6) | Proc Trigger Spell: Glyph of Icy Runes (42)
-                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 159419
-Description      : You gain an additional ${$159419m1/10} Runic Power when you use Chains of Ice.
-
-Name             : Glyph of Icy Runes (id=159419) 
-Class            : Death Knight
-Spell Level      : 68
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=223296)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: runic_power
-Description      : $@spelldesc159418
-
 Name             : Glyph of Empowerment (Frost, Unholy) (id=159421) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5522,18 +5490,6 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=223929)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1110
-
-Name             : Icy Runes (id=159808) 
-Class            : Death Knight
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=223930)   : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1111
 
 Name             : Empowerment (Frost, Unholy) (id=159809) 
 Class            : Death Knight
@@ -5830,7 +5786,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=239121)   : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | AP Coefficient: 0.20000
+                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | AP Coefficient: 0.16600
 Description      : $@spelldesc165395
 
 Name             : Frozen Runeblade (id=170202) [Spell Family (15)] 

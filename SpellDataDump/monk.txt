@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
+SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -693,7 +693,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=186903)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Kick with a blast of Chi energy, dealing ${6.4*$<low>} to ${6.4*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
+Description      : Kick with a blast of Chi energy, dealing ${4.48*$<low>} to ${4.48*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
 
 Also deals ${4.9645*$<low>} to ${4.9645*$<high>} damage to up to $116645s4 additional nearby targets][].$?s128595[
 
@@ -728,12 +728,12 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108870)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.70000
 #2 (id=152982)   : Trigger Spell: Tiger Power (64)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 125359
 #3 (id=184683)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Attack with the palm of your hand, dealing ${3*$<low>} to ${3*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
+Description      : Attack with the palm of your hand, dealing ${2.52*$<low>} to ${2.52*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -868,7 +868,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards
 #6 (id=214834)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Charging Ox Wave (123687), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Charging Ox Wave (123687), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032), Rising Sun Kick (185099)
 #7 (id=257979)   : Apply Aura (6) | Unknown effect sub type (395)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2763
 Description      : Increases all damage dealt by $s3%.
@@ -908,8 +908,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
-#1 (id=118198)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1
+#1 (id=118198)   : Trigger Spell: Rising Sun Kick (64)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 185099
 Description      : You kick upwards, dealing ${10.56*$<low>} to ${10.56*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -1027,7 +1027,7 @@ Class            : Monk
 Spell Level      : 5
 Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
-Affecting spells : Rapid Rolling (147364), Enhanced Roll (157361), 
+Affecting spells : Rapid Rolling (147364)
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1082,7 +1082,7 @@ Class            : Monk
 Spell Level      : 75
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
-Affecting spells : Rapid Rolling (147364), Enhanced Roll (157361), 
+Affecting spells : Rapid Rolling (147364)
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
                  : ........ ........ .....x.. ........   ........ .x...... ........ ........ 
@@ -1151,19 +1151,19 @@ Effects          :
 #7 (id=153830)   : Apply Aura (6) | Unknown effect sub type (197)
                    Base Value: -6 | Scaled Value: -6
 #8 (id=157383)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 10 | Scaled Value: 10
 #9 (id=157505)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 #10 (id=214843)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Charging Ox Wave (123687), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Charging Ox Wave (123687), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032), Rising Sun Kick (185099)
 #11 (id=218370)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3
                    Affected Spells: Elusive Brew (115308)
 #12 (id=235531)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #13 (id=255479)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1
+                   Base Value: 125 | Scaled Value: 125 | Misc Value: 1
 Description      : Increases armor by $s13%, increases Stamina by $s5%, reduces magic damage taken by $m4%, and improves the functionality of Jab, Fortifying Brew, Tiger Palm, Blackout Kick, and Expel Harm.
 
 While in this stance, you will Stagger damage taken.
@@ -1592,15 +1592,14 @@ Effects          :
 #2 (id=171370)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : $@spelltooltip117967
-Tooltip          : Increases your parry chance by $s1%.
-Increases your Stagger amount by an additional $s2%.
+Tooltip          : Increases your parry chance by $s1%.
 
 Name             : Elusive Brew (Active Mitigation) (id=115308) [Scaling Spell (5), Spell Family (53)] 
 Class            : Brewmaster Monk
 Spell Level      : 36
 Duration         : 1 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Sturdy Ox (115069), Item - Monk T14 Brewmaster 2P Bonus (123157)
+Affecting spells : Stance of the Sturdy Ox (115069), Item - Monk T14 Brewmaster 2P Bonus (123157), Eluding Movements (184906)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1612,6 +1611,8 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | Misc Value: 4
 #2 (id=251580)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 4
+#3 (id=269051)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
 Description      : Consumes all stacks of Elusive Brew to increase your chance to dodge melee and ranged attacks by $s1% for $d per stack.
 
 Your autoattack critical strikes grant up to $m2 stacks of Elusive Brew, which can stack up to $128939u times.
@@ -1812,7 +1813,7 @@ Requires Black Ox Statue to be active.
 Name             : Provoke (id=115546) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 14
-Range            : 40 yards
+Range            : 30 yards
 Cooldown         : 8 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x.x..... ........ 
@@ -2200,9 +2201,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=131900)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 0x7f | Misc Value 2: 0x1b
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Misc Value 2: 0x1b
 #2 (id=198411)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 127
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127
 #3 (id=251578)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 127 | Misc Value 2: 0x1b
 Description      : Consumes up to $123980m2 stacks of Tigereye Brew to increase damage and healing done by $m1% per stack for $d.
@@ -2566,7 +2567,7 @@ Also increases your Stagger amount by $m1% while active.
 Tiger Palm no longer costs Chi.
 
 |CFFFFFFFFBlackout Kick|R
-After you Blackout Kick, you gain Shuffle, increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d.
+After you Blackout Kick, you gain Shuffle, increasing your parry chance by $115307s1% for $115307d.
 
 Name             : Chi Torpedo (id=117993) [Spell Family (53)] 
 Class            : Monk
@@ -2944,7 +2945,7 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=139665)   : Apply Aura (6) | Proc Trigger Spell: Tiger Strikes (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 120273
-Description      : Your successful autoattacks and their multistrikes have a $?a140729|?a108977[${$h/8*5}][$h]% chance to increase your multistrike chance by $120273s1% for $120273d.$?s115070[
+Description      : Your successful autoattacks have a $?a140729|?a108977[${$h/8*5}][$h]% chance to increase your multistrike chance by $120273s1% for $120273d.$?s115070[
 
 Inactive while in Stance of the Wise Serpent.][]
 
@@ -2959,7 +2960,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=139666)   : Apply Aura (6) | Modify Multistrike% (441)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 40 | Scaled Value: 40
 Description      : $@spelldesc120272
 Tooltip          : Multistrike chance increased by $s1%.
 
@@ -4945,7 +4946,7 @@ Attributes       : ....x... ........ ........ ........   ........ .xx..... .....
 Effects          :
 #1 (id=167487)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (107270), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Touch of Death (115080), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Torpedo (117993), Flying Serpent Kick (123586), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157680), Chi Explosion (157681), Chi Explosion (159620), Zen Sphere (182032), Chi Explosion (182078)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (107270), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Touch of Death (115080), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Torpedo (117993), Flying Serpent Kick (123586), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157680), Chi Explosion (157681), Chi Explosion (159620), Zen Sphere (182032), Chi Explosion (182078), Rising Sun Kick (185099)
 Description      : $@spelldesc107428
 Tooltip          : Damage taken from abilities dealt by the Monk increased by $w1%.
 
@@ -5678,8 +5679,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210678)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : You enter an elevated state of mental and physical serenity for $d. While in this state, all Chi consumptions are instantly refilled.
+                   Base Value: 5 | Scaled Value: 5
+Description      : You enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, all Chi consumptions are instantly refilled.
 Tooltip          : All Chi consumptions are instantly refilled.
 
 Name             : Chi Explosion (id=152174) [Spell Family (53)] 
@@ -5696,9 +5697,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210679)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000
 #2 (id=219865)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 8 yards
 Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
 
 1+ Chi: Deals Nature damage to an enemy equal to $s1 plus $s1 per Chi consumed.
@@ -5727,7 +5728,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=220666)   : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
-Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*2.5*$<low>} to ${15*2.5*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
+Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*1.75*$<low>} to ${15*1.75*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
 Tooltip          : Unleashing kicks rapidly, and immune to movement impairing and loss of control effects.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -5782,7 +5783,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=214460)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 917504
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Blackout Kick (128531), Rising Sun Kick (130320), Chi Explosion (157680)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Blackout Kick (128531), Rising Sun Kick (130320), Chi Explosion (157680), Rising Sun Kick (185099)
 #2 (id=239975)   : Apply Aura (6) | Unknown effect sub type (404)
                    Base Value: 100 | Scaled Value: 100
 Description      : Haste effects lower the global cooldown of your spells and abilities.
@@ -5814,15 +5815,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=219433)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
+#1 (id=219433)   : Apply Aura (6) | Dummy (4)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 1
-                   Affected Spells: Roll (109132), Chi Torpedo (115008)
-#2 (id=219434)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+#2 (id=219434)   : Apply Aura (6) | Dummy (4)
                    Base Value: 95 | Scaled Value: 95 | Misc Value: 3
-                   Affected Spells: Roll (109132), Chi Torpedo (115008)
-#3 (id=219435)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+#3 (id=219435)   : Apply Aura (6) | Dummy (4)
                    Base Value: 95 | Scaled Value: 95 | Misc Value: 23
-                   Affected Spells: Roll (109132), Chi Torpedo (115008)
 Description      : Your $?s115008[Chi Torpedo][Roll] now travels the same distance in $s1% less time.
 
 Name             : Improved Breath of Fire (id=157362) [Spell Family (53), Passive] 
@@ -6794,7 +6792,7 @@ Effects          :
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611)
 #4 (id=253772)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (130320)
+                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (130320), Rising Sun Kick (185099)
 Description      : Your Renewing Mist spell now has ${1+$m1} charges and its healing is increased by $s3%.
 
 Your Rising Sun Kick spell now has ${1+$m2} charges and its damage is increased by $s4%.
@@ -6913,5 +6911,21 @@ Effects          :
 #2 (id=263272)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.70000 | Radius: 0 - 8 yards
 Description      : $@spelldesc157675
+
+Name             : Rising Sun Kick (id=185099) [Spell Family (53)] 
+Class            : Monk
+Spell Level      : 56
+Range            : 5 yards
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Focus and Harmony (154555), Pool of Mists (173841)
+Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+Effects          :
+#1 (id=268390)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc107428
 
 

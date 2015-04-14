@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
+SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -17,7 +17,7 @@ Attributes       : ....x... ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43)       : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f
 #2 (id=217521)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127
 #3 (id=217522)   : Apply Aura (6) | Unknown effect sub type (213)
@@ -1483,6 +1483,14 @@ Effects          :
                    Affected Spells: Wild Strike (100130)
 #3 (id=158698)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 100130
+#4 (id=270038)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 17
+#5 (id=270039)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7
+                   Affected Spells: Wild Strike (100130)
+#6 (id=270040)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Damage (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15
+                   Affected Spells: Wild Strike (100130)
 Description      : Your Bloodthirst hits have a $46915s1% chance of granting $46915s2 charges of Wild Strike that cost no Rage.
 Tooltip          : Wild Strike costs no Rage.
 
@@ -3293,7 +3301,7 @@ Resource         : 20 Rage
 Spell Level      : 81
 Duration         : 6 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Headlong Rush (158836), 
+Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Headlong Rush (158836), Shield Mastery (184927)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3303,6 +3311,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=124622)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127
+#2 (id=268764)   : Apply Aura (6) | Modify Base Resistance (142)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1
+#3 (id=270033)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
 Description      : Raise your shield, absorbing $<barrier> damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $barrier=${$AP*1.4*(1+$@versadmg)}
@@ -4024,7 +4036,7 @@ Name             : Shield Block (id=132404) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 18
 Duration         : 6 seconds
-Affecting spells : Heavy Repercussions (169680)
+Affecting spells : Heavy Repercussions (169680), Shield Mastery (184927)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4037,6 +4049,11 @@ Effects          :
 #2 (id=171377)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Shield Slam (23922)
+#3 (id=268763)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
+                   Affected Spells: Shield Slam (23922)
+#4 (id=270030)   : Apply Aura (6) | Modify Power Cost% (72)
+                   Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc2565
 Tooltip          : Block chance increased by $s1%.
 
@@ -4258,24 +4275,6 @@ Effects          :
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (168874)
 Description      : $@spelldesc144441
 Tooltip          : $?$w2>=0[Execute is available!][Your next Execute has no Rage cost.]
-
-Name             : Reckless Defense (id=144500) [Spell Family (4)] 
-Class            : Warrior
-Duration         : 10 seconds
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
-                 : ........ ......x. ........ ........   ........ ........ ........ ..x..... 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ......x. 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ..x..... 
-Effects          :
-#1 (id=194104)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30
-Description      : Anger flows through you after Demoralizing Shout fades, allowing you to generate Rage from incoming damage.
-Tooltip          : Gaining Rage from damage taken.
 
 Name             : Storm Bolt Off-Hand (id=145585) [Spell Family (4)] 
 Class            : Warrior
@@ -4713,9 +4712,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33 | Misc Value 2: 0x1
 #5 (id=244197)   : Apply Aura (6) | Unknown effect sub type (470)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+#6 (id=266057)   : Apply Aura (6) | Unknown effect sub type (405)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 33554432
 Description      : A dauntless combat stance.
 
-Increases physical damage dealt by $s1%, and replaces your Shield Block with Shield Charge.
+Increases physical damage dealt by $s1%, increases Mastery by $s6%, and replaces your Shield Block with Shield Charge.
 
 You cannot change into or out of this stance during combat.
 Tooltip          : An offensive stance that trades all defensive prowess for increased damage dealing.
@@ -5311,126 +5312,6 @@ Effects          :
                    Base Value: 350 | Scaled Value: 3.5 (avg=0)
 Description      : $@spelldesc5308
 
-Name             : Item - Warrior T17 Arms 2P Bonus (id=165336) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233360)   : Apply Aura (6) | Proc Trigger Spell: Colossus Smash (42)
-                   Base Value: 5000 | Scaled Value: 5000 | Trigger Spell: 169587
-#2 (id=240433)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Colossus Smash (86346), Colossus Smash (108126), Colossus Smash (167105)
-Description      : Colossus Smash now generates ${$169587m1/10} Rage.
-
-Name             : Item - Warrior T17 Fury 2P Bonus (id=165337) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Proc Chance      : 20%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233361)   : Apply Aura (6) | Proc Trigger Spell: Enrage (42)
-                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 12880
-Description      : Raging Blow critical strikes have a $h% chance to activate Enrage.
-
-Name             : Item - Warrior T17 Protection 2P Bonus (id=165338) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Proc Chance      : 8%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233362)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
-Description      : Shield Slam has a $h% chance to automatically cast $?s152276[Shield Block or Shield Charge][Shield Block].
-
-Name             : Item - Warrior T17 Arms 4P Bonus (id=165345) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Proc Chance      : 40%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233373)   : Apply Aura (6) | Proc Trigger Spell: Deadly Calm (42)
-                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 166587
-Description      : Colossus Smash has a $h% chance to reduce the cooldown of Mortal Strike by $166587s1% for $166587d.
-
-Name             : Item - Warrior T17 Fury 4P Bonus (id=165349) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Proc Chance      : 101%
-Proc Flags       : ........ ..x..... ........ ........ 
-                 : AOE Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233378)   : Apply Aura (6) | Proc Trigger Spell: Rampage Driver (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 165350
-Description      : While Recklessness is active,  your attack speed and critical strike chance increase by $166588s1% every second.
-
-Name             : Rampage Driver (id=165350) [Spell Family (4), Hidden] 
-Class            : Warrior
-Duration         : 10 seconds
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=233380)   : Apply Aura (6) | Periodic Trigger Spell: Rampage every 1 seconds (23)
-                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 166588
-Description      : $@spelldesc165349
-
-Name             : Item - Warrior T17 Protection 4P Bonus (id=165351) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233381)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
-#2 (id=240579)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
-                   Affected Spells: Shield Charge (169667)
-Description      : $?s152276[While Shield Block is active, your shield block value is increased by $169688s1%. Shield Charge increases the damage of Heroic Strike, Slam, and Revenge by an additional $s2%][While Shield Block is active, your shield block value is increased by $169688s1%].
-
 Name             : Weapon Mastery (id=165365) [Passive] 
 Class            : Arms Warrior
 Spell Level      : 90
@@ -5489,41 +5370,6 @@ Attributes       : ......xx ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=234650)   : Apply Aura (6) | Periodic Dummy: every 0.1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
-
-Name             : Deadly Calm (id=166587) [Spell Family (4)] 
-Class            : Warrior
-Duration         : 10 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=235405)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 11
-                   Affected Spells: Mortal Strike (12294)
-Description      : $@spelldesc165345
-Tooltip          : Cooldown of Mortal Strike reduced by $s1%.
-
-Name             : Rampage (id=166588) [Spell Family (4)] 
-Class            : Warrior
-Duration         : 5 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=235406)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 6 | Scaled Value: 6
-#2 (id=235407)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 6 | Scaled Value: 6
-Description      : $@spelldesc165349
-Tooltip          : Increases attack speed and critical strike chance by $s1%.
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
 Class            : Arms Warrior
@@ -5627,25 +5473,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $sw2 Physical damage.
 
-Name             : Colossus Smash (id=169587) [Spell Family (4)] 
-Class            : Warrior
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=240430)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: rage
-Description      : $@spelldesc165336
-
 Name             : Shield Charge (id=169667) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 18
 Range            : 10 yards
 Duration         : 7 seconds
-Affecting spells : Item - Warrior T17 Protection 4P Bonus (165351), Heavy Repercussions (169680)
+Affecting spells : Item - Warrior T17 Protection 4P Bonus (165351), Heavy Repercussions (169680), Shield Mastery (184927), 
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5761,21 +5594,6 @@ Effects          :
                    Affected Spells: Heroic Strike (78), Ignite Weapon (156288)
 Tooltip          : Heroic Strike cost reduced by ${$m1/-10}.
 
-Name             : Shield Mastery (id=169688) [Spell Family (4)] 
-Class            : Warrior
-Duration         : Aura (infinite)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=240576)   : Apply Aura (6) | Unknown effect sub type (150)
-                   Base Value: 5 | Scaled Value: 5
-Description      : $@spelldesc165338
-Tooltip          : Your blocks are $s1% more effective.
-
 Name             : Enhanced Rend (id=174736) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
@@ -5816,7 +5634,7 @@ Resource         : 20 Rage
 Spell Level      : 81
 Duration         : 6 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Headlong Rush (158836), 
+Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Headlong Rush (158836), Shield Mastery (184927)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

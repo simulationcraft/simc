@@ -1,5 +1,5 @@
 cd ..
-set ptr="ptr=0"
+set ptr="ptr=1"
 set classes=warrior,hunter,monk,paladin,rogue,shaman,mage,warlock,druid,deathknight,priest
 
 for %%i in (%classes%) do (

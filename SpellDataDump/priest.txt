@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
+SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -226,7 +226,7 @@ Spell Level      : 34
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Grace (47517), Serendipity (63735), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Lucidity (137323), Enhanced Leap of Faith (157146)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Grace (47517), Serendipity (63735), Chakra: Sanctuary (81206), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -474,7 +474,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Glyph of Mind Spike (81292), Mind Spike (87178), Shadowy Insight (124430), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Clarity of Power (155246), Glyph of Mind Harvest (162532), Mind Blast (165201)
+Affecting spells : Mastery: Mental Anguish (77486), Glyph of Mind Spike (81292), Mind Spike (87178), Shadowy Insight (124430), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Clarity of Power (155246), Glyph of Mind Harvest (162532), Mind Blast (165201), Mental Fatigue (185104)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -639,7 +639,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Insanity (132573), Lucidity (137323), Enhanced Mind Flay (157223)
+Affecting spells : Mastery: Mental Anguish (77486), Insanity (132573), Lucidity (137323), Enhanced Mind Flay (157223), Mental Fatigue (185104)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -768,7 +768,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 (avg=0) | Value Range: 90000001 | SP Coefficient: 1.00000 | Misc Value: 127
+                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127
 Description      : Upon death, the Priest becomes the Spirit of Redemption for $27827d.  The Spirit of Redemption cannot move, attack, be attacked, or be targeted by any spells or effects.  While in this form the Priest can cast any healing spell free of cost.  When the effect ends, the Priest dies.
 
 Name             : Elusiveness (Racial Passive) (id=21009) [Passive] 
@@ -1518,6 +1518,7 @@ Tooltip          : Causing shadow damage to all targets within $49821a1 yards.
 Name             : Mind Sear (id=49821) [Spell Family (6)] 
 Class            : Priest
 Spell Level      : 1
+Affecting spells : Mental Fatigue (185104)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2561,7 +2562,7 @@ Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Surge of Darkness (87160), Lucidity (137323), Empowered Shadows (145180)
+Affecting spells : Mastery: Mental Anguish (77486), Surge of Darkness (87160), Lucidity (137323), Empowered Shadows (145180), Mental Fatigue (185104)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2626,12 +2627,12 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68105)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.81000
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Mind Spike (73510), Insanity (129197)
 #2 (id=224463)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.81000 | Misc Value: 22
                    Affected Spells: Mind Flay (15407), Insanity (129197)
-Description      : Increases the damage of Mind Blast, Mind Spike, and Mind Flay by $m1%.
+Description      : Increases the damage of Mind Blast, Mind Spike, and Mind Flay by ${$m1}.1%.
 
 Name             : Echo of Light (id=77489) [Spell Family (6)] 
 Class            : Priest
@@ -2675,7 +2676,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Enhanced Chakras (157206)
+Affecting spells : Enhanced Chakras (157206), Complete Healing (184914), 
 Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...... ........ 
                  : ....x... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2684,19 +2685,26 @@ Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68666)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
-#2 (id=68667)    : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 11
-#3 (id=91128)    : Apply Aura (6) | Unknown effect sub type (332)
+#2 (id=68667)    : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 88685 | Scaled Value: 88685
                    Affected Spells: Holy Word: Chastise (88625)
-Description      : Each heal cast while this Chakra is active reduces the remaining cooldown of your Circle of Healing spell by ${$m2/1000} sec.
+#3 (id=91128)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10
+                   Affected Spells: Heal (2060)
+#4 (id=268397)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
+                   Affected Spells: Heal (2060)
+#5 (id=268398)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Heal (2060)
+Description      : Each heal cast while this Chakra is active reduces the remaining cooldown of your Circle of Healing spell by ${$m1/1000} sec.
 
 Transforms your Holy Word: Chastise spell into Holy Word: Sanctuary.
 
 |CFFFFFFFFHoly Word: Sanctuary|R
 Blesses the ground with Divine light, healing all within it for $88686s1 every $88685t2 sec for $88685d. Only one Sanctuary can be active at any one time. 40 sec cooldown.
-Tooltip          : Heals cast reduce the cooldown of your Circle of Healing spell by ${$m2/1000}.1 sec.
+Tooltip          : Heals cast reduce the cooldown of your Circle of Healing spell by ${$m1/1000}.1 sec.
 
 Name             : Chakra: Serenity (id=81208) [Spell Family (6)] 
 Class            : Holy Priest
@@ -4405,7 +4413,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=161075)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
-Description      : Your Shadowform extends to your non-combat pets.
+Description      : Your Shadowform extends to your mount and non-combat pets.
 
 Name             : Shadowy Friends (Shadow) (id=126797) 
 Class            : Priest
@@ -4484,7 +4492,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #2 (id=162274)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
-Description      : Launch a Shadowy bolt that grows in power with distance, damaging an enemy for up to $127628M1, and then bouncing to additional enemies $s1 times.  Each time it bounces, it splits into $s2 bolts, never damaging the same target twice.
+Description      : Launch a Shadowy bolt that grows in power with distance, damaging an enemy for up to $127628M1, and then bouncing to additional enemies $s1 times. Each time it bounces, it splits into $s2 bolts.
 
 Name             : Insanity (id=129197) [Spell Family (6)] 
 Class            : Priest
@@ -4493,7 +4501,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Insanity (132573), Lucidity (137323), Enhanced Mind Flay (157223)
+Affecting spells : Mastery: Mental Anguish (77486), Insanity (132573), Lucidity (137323), Enhanced Mind Flay (157223), Mental Fatigue (185104)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5773,75 +5781,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1792
 Description      : Increases the critical effect chance of Prayer of Healing by $s1%, and causes you to gain $s2% more of the Critical Strike stat from all sources.
 
-Name             : Item - Priest T17 Discipline 2P Bonus (id=165614) [Spell Family (6), Passive, Hidden] 
-Class            : Priest
-Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x.x..x.. ........ 
-                 : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233809)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1
-                   Affected Spells: Penance (47758)
-#2 (id=257450)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
-Description      : Penance channels for 1 additional second and generates $s2 $Lstack:stacks; of Evangelism.
-
-Name             : Item - Priest T17 Holy 2P Bonus (id=165621) [Spell Family (6), Passive, Hidden] 
-Class            : Priest
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233816)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 37
-                   Affected Spells: Prayer of Mending (41635)
-Description      : Prayer of Mending jumps to $s1 additional targets.
-
-Name             : Item - Priest T17 Shadow 2P Bonus (id=165628) [Spell Family (6), Passive, Hidden] 
-Class            : Priest
-Proc Chance      : 101%
-Proc Flags       : ........ ....x... x.x..... ........ 
-                 : AOE Hostile Spell, Hostile Spell, Periodic
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233824)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500
-Description      : Consuming Shadow Orbs reduces the cooldown of Mind Blast by ${$m1/1000}.1 sec per Shadow Orb consumed.
-
-Name             : Item - Priest T17 Shadow 4P Bonus (id=165629) [Spell Family (6), Passive, Hidden] 
-Class            : Priest
-Proc Chance      : 101%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=233825)   : Apply Aura (6) | Proc Trigger Spell: Mental Instinct (42)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 167254
-Description      : Each time Devouring Plague deals damage over time, your haste increases by $167254s1% for $167254d, stacking up to $167254u times.
-
 Name             : Balance (id=166163) [Passive, Hidden] 
 Class            : Balance Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
@@ -5855,73 +5794,6 @@ Attributes       : ......xx ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=234650)   : Apply Aura (6) | Periodic Dummy: every 0.1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
-
-Name             : Mental Instinct (id=167254) [Spell Family (6)] 
-Class            : Priest
-Duration         : 4 seconds
-Stacks           : 12 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=236476)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 1 | Scaled Value: 1
-Description      : $@spelldesc165629
-Tooltip          : Haste increased by $s1%.
-
-Name             : Item - Priest T17 Holy 4P Bonus (id=167684) [Spell Family (6), Passive, Hidden] 
-Class            : Priest
-Proc Chance      : 20%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=237301)   : Apply Aura (6) | Proc Trigger Spell: Serendipity (42)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 63735
-Description      : When Prayer of Mending heals a target, you have a $h% chance to gain a stack of Serendipity.
-
-Name             : Item - Priest T17 Discipline 4P Bonus (id=167694) [Spell Family (6), Passive, Hidden] 
-Class            : Priest
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=237312)   : Apply Aura (6) | Proc Trigger Spell: Clear Thoughts (42)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 167695
-Description      : When you activate Archangel, the mana cost of Prayer of Healing is reduced by $167695s1% for $167695d.
-
-Name             : Clear Thoughts (id=167695) [Spell Family (6)] 
-Class            : Priest
-Duration         : 6 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=237313)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14
-                   Affected Spells: Prayer of Healing (596)
-Description      : $@spelldesc167694
-Tooltip          : Mana cost of Prayer of Healing reduced $s1%.
 
 Name             : Glyph of Purification (Discipline, Holy) (id=171921) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -6000,6 +5872,7 @@ Description      : Choose a level 90 talent.
 Name             : Searing Insanity (id=179337) [Spell Family (6)] 
 Class            : Priest
 Spell Level      : 1
+Affecting spells : Mental Fatigue (185104)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

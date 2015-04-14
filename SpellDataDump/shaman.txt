@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.1.2 Live (build level 19802)
+SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -543,7 +543,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Glyph of Shocks (159649)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Glyph of Shocks (159649), Elemental Bellows (184919), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -688,27 +688,6 @@ Effects          :
 #2 (id=254093)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Summons a Fire Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster for $d that causes $8187s1 Fire damage to creatures within $8187A1 yards every $t2 seconds.
-
-Name             : Windfury Weapon (Weapon Imbue) (id=8232) [Scaling Spell (-1), Spell Family (11)] 
-Class            : Shaman
-Resource         : 8.2% Base Mana (2623 @Level 100)
-Spell Level      : 30
-GCD              : 1.5 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326)
-Attributes       : ........ .x...... x.x..... ........   ........ ........ .x...... ........ 
-                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3379)     : Unknown effect type (54)
-                   Base Value: 1800 | Scaled Value: 1800
-#2 (id=3380)     : Dummy (3)
-                   Base Value: 46 | Scaled Value: 1305 (avg=5)
-Description      : Imbue the Shaman's weapon with wind.  Each hit has a $33757h% chance of triggering three extra attacks dealing $25504sw2 Physical damage. Lasts 60 minutes.$?s73680[
-
-Unleashing this enchantment increases the Shaman's melee attack speed for the next 6 swings or until $73681d have elapsed.][]
 
 Name             : Fire Nova (id=8349) [Scaling Spell (9), Spell Family (11)] 
 Class            : Shaman
@@ -1007,6 +986,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Windfury Attack (id=25504) [Spell Family (11)] 
 Class            : Shaman
 Range            : 100 yards
+Affecting spells : Furious Winds (184920)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1097,7 +1077,7 @@ Effects          :
                    Base Value: 130 | Scaled Value: 130 | Misc Value: 126 | Misc Value 2: 0x1
 #2 (id=138751)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 14
-                   Affected Spells: Lightning Shield (324), Purge (370), Fire Nova (1535), Earth Elemental Totem (2062), Earthbind Totem (2484), Ghost Wolf (2645), Bloodlust (2825), Fire Elemental Totem (2894), Searing Totem (3599), Healing Stream Totem (5394), Tremor Totem (8143), Grounding Totem (8177), Magma Totem (8190), Windfury Weapon (8232), Lightning Shield (26364), Heroism (32182), Earthgrab Totem (51485), Feral Spirit (51533), Cleanse Spirit (51886), Wind Shear (57994), Spirit Walk (58875), Unleash Elements (73680), Spiritwalker's Grace (79206), Timewalker (105877), Capacitor Totem (108269), Stone Bulwark Totem (108270), Windwalk Totem (108273), Healing Tide Totem (108280), Ascendance (114049), Ascendance (114050), Cloudburst Totem (157153)
+                   Affected Spells: Lightning Shield (324), Purge (370), Fire Nova (1535), Earth Elemental Totem (2062), Earthbind Totem (2484), Ghost Wolf (2645), Bloodlust (2825), Fire Elemental Totem (2894), Searing Totem (3599), Healing Stream Totem (5394), Tremor Totem (8143), Grounding Totem (8177), Magma Totem (8190), Lightning Shield (26364), Heroism (32182), Earthgrab Totem (51485), Feral Spirit (51533), Cleanse Spirit (51886), Wind Shear (57994), Spirit Walk (58875), Unleash Elements (73680), Spiritwalker's Grace (79206), Timewalker (105877), Capacitor Totem (108269), Stone Bulwark Totem (108270), Windwalk Totem (108273), Healing Tide Totem (108280), Ascendance (114049), Ascendance (114050), Cloudburst Totem (157153)
 #3 (id=183482)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -90 | Scaled Value: -90 | Misc Value: 14
                    Affected Spells: Earth Shock (8042), Flame Shock (8050), Frost Shock (8056)
@@ -1254,23 +1234,6 @@ Description      : Increases your melee attack power by $s1 and your spell power
 Tooltip          : Melee attack power increased by $s1.
 Spell power increased by $s2.
 
-Name             : Windfury Attack (id=33750) [Spell Family (11)] 
-Class            : Shaman
-Range            : 100 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
-Effects          :
-#1 (id=23633)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=211034)   : Weapon Damage% (31)
-                   Base Value: 40 | Scaled Value: 0.4 (avg=0)
-Description      : $@spelldesc8232
-
 Name             : Windfury (id=33757) [Spell Family (11), Passive, Hidden] 
 Class            : Enhancement Shaman
 Spell Level      : 30
@@ -1286,7 +1249,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=23634)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 46 | Scaled Value: 550 (avg=0) | Points Per Level: 7.2
+                   Base Value: 0 | Scaled Value: 0
 Description      : Each of your main-hand attacks has a $33757h% chance of triggering three extra attacks dealing $25504s2% weapon damage.
 
 Name             : Angered Earth (id=36213) [Spell Family (11)] 
@@ -2709,9 +2672,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000
 #3 (id=55129)    : None (0)
                    Base Value: 25 | Scaled Value: 25
-Description      : Heals a friendly target for $s1 and an additional $o2 over $d. Your Chain Heal spell is $s3% more effective when the primary target is affected by your Riptide.
-Tooltip          : Heals $w2 every $t2 seconds.  
-Increases caster's Chain Heal by $s3%.
+Description      : Heals a friendly target for $s1 and an additional $o2 over $d.
+Tooltip          : Heals $w2 every $t2 seconds.
 
 Name             : Mechanized Snow Goggles (id=61482) 
 Class            : Hunter, Shaman
@@ -5932,7 +5894,7 @@ Effects          :
 #2 (id=238536)   : Apply Aura (6) | Modify Multistrike% (441)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=238537)   : Apply Aura (6) | Unknown effect sub type (440)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 20 | Scaled Value: 20
 Description      : You have a $s2% increased chance to multistrike.
 
 Your multistrikes deal $s3% increased damage.
@@ -6294,5 +6256,32 @@ Effects          :
 #1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
+
+Name             : Glyph of Ascendance (id=186198) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=271086)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
+Description      : Your Ascendance form now appears as an elementally enhanced version of your normal humanoid form.
+
+Name             : Ascendance (id=186217) 
+Class            : Shaman
+Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=271109)   : Unknown effect type (74)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1215
+Description      : $@spelldesc63279
 
 
