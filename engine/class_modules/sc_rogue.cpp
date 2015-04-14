@@ -467,7 +467,6 @@ struct rogue_t : public player_t
   virtual void      init_resources( bool force );
   virtual bool      init_items();
   virtual void      init_special_effects();
-  virtual bool      init_special_effect( special_effect_t&, unsigned );
   virtual void      init_finished();
   virtual void      create_buffs();
   virtual void      create_options();
@@ -6098,93 +6097,6 @@ void rogue_t::init_special_effects()
   }
 }
 
-// rogue_t::init_special_effect =============================================
-
-static void toxic_mutilator( special_effect_t& effect )
-{
-  rogue_t* r = debug_cast<rogue_t*>( effect.player );
-
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  if ( r -> specialization() != ROGUE_ASSASSINATION )
-  {
-    return;
-  }
-
-  r -> toxic_mutilator = &( effect );
-}
-
-static void eviscerating_blade( special_effect_t& effect )
-{
-  rogue_t* r = debug_cast<rogue_t*>( effect.player );
-
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  if ( r -> specialization() != ROGUE_COMBAT )
-  {
-    return;
-  }
-
-  r -> eviscerating_blade = &( effect );
-}
-
-static void from_the_shadows( special_effect_t& effect )
-{
-  rogue_t* r = debug_cast<rogue_t*>( effect.player );
-
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  if ( r -> specialization() != ROGUE_SUBTLETY )
-  {
-    return;
-  }
-
-  r -> from_the_shadows = &( effect );
-}
-
-// Static array to hold the special effect initialization callbacks
-static unique_gear::special_effect_db_item_t __special_effect_db[] =
-{
-  { 184916, 0,             toxic_mutilator },
-  { 184917, 0,          eviscerating_blade },
-  { 184918, 0,            from_the_shadows },
-  // Last entry must be all zeroes
-  {      0, 0,                           0 },
-};
-
-// Override special effect generation so that we can add WoD 6.2 spec specific trinket information
-// during init. The actual effect is implemented inside the class module.
-bool rogue_t::init_special_effect( special_effect_t& effect,
-                                             unsigned spell_id )
-{
-  using namespace unique_gear;
-
-  bool ret = false;
-  const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db,
-                                                                        (int)sizeof_array( __special_effect_db ),
-                                                                        spell_id );
-
-  ret = dbitem.spell_id == spell_id;
-  if ( ret )
-  {
-    effect.custom_init = dbitem.custom_cb;
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-  }
-
-  return ret;
-}
-
-
-
 // rogue_t::init_finished ===================================================
 
 void rogue_t::init_finished()
@@ -6465,6 +6377,57 @@ private:
 
 // ROGUE MODULE INTERFACE ===================================================
 
+static void toxic_mutilator( special_effect_t& effect )
+{
+  rogue_t* r = debug_cast<rogue_t*>( effect.player );
+
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  if ( r -> specialization() != ROGUE_ASSASSINATION )
+  {
+    return;
+  }
+
+  r -> toxic_mutilator = &( effect );
+}
+
+static void eviscerating_blade( special_effect_t& effect )
+{
+  rogue_t* r = debug_cast<rogue_t*>( effect.player );
+
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  if ( r -> specialization() != ROGUE_COMBAT )
+  {
+    return;
+  }
+
+  r -> eviscerating_blade = &( effect );
+}
+
+static void from_the_shadows( special_effect_t& effect )
+{
+  rogue_t* r = debug_cast<rogue_t*>( effect.player );
+
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  if ( r -> specialization() != ROGUE_SUBTLETY )
+  {
+    return;
+  }
+
+  r -> from_the_shadows = &( effect );
+}
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -6478,6 +6441,13 @@ struct rogue_module_t : public module_t
 
   virtual bool valid() const
   { return true; }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184916, toxic_mutilator    );
+    unique_gear::register_special_effect( 184917, eviscerating_blade );
+    unique_gear::register_special_effect( 184918, from_the_shadows   );
+  }
 
   virtual void init( sim_t* ) const
   { }

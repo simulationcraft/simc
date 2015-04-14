@@ -494,7 +494,6 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_action_list();
-  virtual bool      init_special_effect( special_effect_t&, unsigned );
   virtual void      init_rng();
   virtual void      init_base_stats();
   virtual void      init_scaling();
@@ -5629,6 +5628,132 @@ struct frozen_runeblade_buff_t : public buff_t
 
 } // UNNAMED NAMESPACE
 
+// Runeforges ==============================================================
+
+void runeforge::razorice_attack( special_effect_t& effect )
+{
+  struct razorice_attack_t : public death_knight_melee_attack_t
+  {
+    razorice_attack_t( death_knight_t* player, const std::string& name ) :
+      death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
+    {
+      school      = SCHOOL_FROST;
+      may_miss    = callbacks = false;
+      background  = proc = true;
+
+      weapon_multiplier += player -> perk.improved_runeforges -> effectN( 1 ).percent();
+      weapon = &( player -> main_hand_weapon );
+      /*
+      if ( item.slot == SLOT_OFF_HAND )
+        weapon = &( player -> off_hand_weapon );
+      else if ( item.slot == SLOT_MAIN_HAND )
+        weapon = &( player -> main_hand_weapon );
+      */
+    }
+
+    // No double dipping to Frost Vulnerability
+    double composite_target_multiplier( player_t* t ) const
+    {
+      double m = death_knight_melee_attack_t::composite_target_multiplier( t );
+
+      m /= 1.0 + td( t ) -> debuffs_razorice -> check() *
+            td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
+  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( effect.item -> player ), effect.name() );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+void runeforge::razorice_debuff( special_effect_t& effect )
+{
+  struct razorice_callback_t : public dbc_proc_callback_t
+  {
+    razorice_callback_t( const special_effect_t& effect ) :
+     dbc_proc_callback_t( effect.item, effect )
+    { }
+
+    void execute( action_t* a, action_state_t* state )
+    {
+      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> trigger();
+      if ( a -> sim -> current_time() < timespan_t::from_seconds( 0.01 ) )
+        debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> constant = false;
+    }
+  };
+
+  new razorice_callback_t( effect );
+}
+
+void runeforge::fallen_crusader( special_effect_t& effect )
+{
+  // Fallen Crusader buff is shared between mh/oh
+  buff_t* b = buff_t::find( effect.item -> player, "unholy_strength" );
+  if ( ! b )
+    return;
+
+  action_t* heal = effect.item -> player -> find_action( "unholy_strength" );
+  if ( ! heal )
+  {
+    struct fallen_crusader_heal_t : public death_knight_heal_t
+    {
+      fallen_crusader_heal_t( death_knight_t* dk, const spell_data_t* data ) :
+        death_knight_heal_t( "unholy_strength", dk, data )
+      {
+        background = true;
+        target = player;
+        callbacks = may_crit = false;
+        may_multistrike = 0;
+        pct_heal = data -> effectN( 2 ).percent();
+        pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
+      }
+
+      // Procs by default target the target of the action that procced them.
+      void execute()
+      {
+        target = player;
+
+        death_knight_heal_t::execute();
+      }
+    };
+
+    heal = new fallen_crusader_heal_t( debug_cast< death_knight_t* >( effect.item -> player ), &b -> data() );
+  }
+
+  const death_knight_t* dk = debug_cast<const death_knight_t*>( effect.item -> player );
+
+  effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
+  // TODO: Check in 6.1
+  effect.rppm_scale = RPPM_HASTE;
+  effect.custom_buff = b;
+  effect.execute_action = heal;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+void runeforge::stoneskin_gargoyle( special_effect_t& effect )
+{
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
+}
+
+void runeforge::spellshattering( special_effect_t& effect )
+{
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  p -> runeforge.rune_of_spellshattering -> default_chance = 1.0;
+}
+
+void runeforge::spellbreaking( special_effect_t& effect )
+{
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  if ( effect.item -> slot == SLOT_MAIN_HAND )
+    p -> runeforge.rune_of_spellbreaking -> default_chance = 1.0;
+  else if ( effect.item -> slot == SLOT_OFF_HAND )
+    p -> runeforge.rune_of_spellbreaking_oh -> default_chance = 1.0;
+}
+
 void death_knight_t::trigger_runic_corruption( double rpcost )
 {
   if ( ! rng().roll( talent.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 ) )
@@ -6773,164 +6898,6 @@ void death_knight_t::init_action_list()
   }
   use_default_action_list = true;
   player_t::init_action_list();
-}
-
-// Runeforges
-
-void runeforge::razorice_attack( special_effect_t& effect )
-{
-  struct razorice_attack_t : public death_knight_melee_attack_t
-  {
-    razorice_attack_t( death_knight_t* player, const std::string& name ) :
-      death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
-    {
-      school      = SCHOOL_FROST;
-      may_miss    = callbacks = false;
-      background  = proc = true;
-
-      weapon_multiplier += player -> perk.improved_runeforges -> effectN( 1 ).percent();
-      weapon = &( player -> main_hand_weapon );
-      /*
-      if ( item.slot == SLOT_OFF_HAND )
-        weapon = &( player -> off_hand_weapon );
-      else if ( item.slot == SLOT_MAIN_HAND )
-        weapon = &( player -> main_hand_weapon );
-      */
-    }
-
-    // No double dipping to Frost Vulnerability
-    double composite_target_multiplier( player_t* t ) const
-    {
-      double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-      m /= 1.0 + td( t ) -> debuffs_razorice -> check() *
-            td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
-
-      return m;
-    }
-  };
-
-  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( effect.item -> player ), effect.name() );
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
-void runeforge::razorice_debuff( special_effect_t& effect )
-{
-  struct razorice_callback_t : public dbc_proc_callback_t
-  {
-    razorice_callback_t( const special_effect_t& effect ) :
-     dbc_proc_callback_t( effect.item, effect )
-    { }
-
-    void execute( action_t* a, action_state_t* state )
-    {
-      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> trigger();
-      if ( a -> sim -> current_time() < timespan_t::from_seconds( 0.01 ) )
-        debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> constant = false;
-    }
-  };
-
-  new razorice_callback_t( effect );
-}
-
-void runeforge::fallen_crusader( special_effect_t& effect )
-{
-  // Fallen Crusader buff is shared between mh/oh
-  buff_t* b = buff_t::find( effect.item -> player, "unholy_strength" );
-  if ( ! b )
-    return;
-
-  action_t* heal = effect.item -> player -> find_action( "unholy_strength" );
-  if ( ! heal )
-  {
-    struct fallen_crusader_heal_t : public death_knight_heal_t
-    {
-      fallen_crusader_heal_t( death_knight_t* dk, const spell_data_t* data ) :
-        death_knight_heal_t( "unholy_strength", dk, data )
-      {
-        background = true;
-        target = player;
-        callbacks = may_crit = false;
-        may_multistrike = 0;
-        pct_heal = data -> effectN( 2 ).percent();
-        pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
-      }
-
-      // Procs by default target the target of the action that procced them.
-      void execute()
-      {
-        target = player;
-
-        death_knight_heal_t::execute();
-      }
-    };
-
-    heal = new fallen_crusader_heal_t( debug_cast< death_knight_t* >( effect.item -> player ), &b -> data() );
-  }
-
-  const death_knight_t* dk = debug_cast<const death_knight_t*>( effect.item -> player );
-
-  effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
-  // TODO: Check in 6.1
-  effect.rppm_scale = RPPM_HASTE;
-  effect.custom_buff = b;
-  effect.execute_action = heal;
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
-void runeforge::stoneskin_gargoyle( special_effect_t& effect )
-{
-  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
-  p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
-}
-
-void runeforge::spellshattering( special_effect_t& effect )
-{
-  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
-  p -> runeforge.rune_of_spellshattering -> default_chance = 1.0;
-}
-
-void runeforge::spellbreaking( special_effect_t& effect )
-{
-  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
-  if ( effect.item -> slot == SLOT_MAIN_HAND )
-    p -> runeforge.rune_of_spellbreaking -> default_chance = 1.0;
-  else if ( effect.item -> slot == SLOT_OFF_HAND )
-    p -> runeforge.rune_of_spellbreaking_oh -> default_chance = 1.0;
-}
-
-bool death_knight_t::init_special_effect( special_effect_t& effect,
-                                          unsigned spell_id )
-{
-  static unique_gear::special_effect_db_item_t __runeforge_db[] =
-  {
-    {  50401, 0,    runeforge::razorice_attack },
-    {  51714, 0,    runeforge::razorice_debuff },
-    { 166441, 0,    runeforge::fallen_crusader },
-    {  62157, 0, runeforge::stoneskin_gargoyle },
-    {  53362, 0,    runeforge::spellshattering }, // Damage taken, we don't use the silence reduction
-    {  54449, 0,      runeforge::spellbreaking }, // Damage taken, we don't use the silence reduction
-
-    // Last entry must be all zeroes
-    {     0, 0,                             0 },
-  };
-
-  bool ret = false;
-  const special_effect_db_item_t& dbitem = find_special_effect_db_item( __runeforge_db,
-                                                                        (int)sizeof_array( __runeforge_db ),
-                                                                        spell_id );
-
-  // All runeforges defined here will be custom callbacks
-  ret = dbitem.spell_id == spell_id;
-  if ( ret )
-  {
-    effect.custom_init = dbitem.custom_cb;
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-  }
-
-  return ret;
 }
 
 // death_knight_t::init_scaling =============================================
@@ -8222,6 +8189,17 @@ struct death_knight_module_t : public module_t
     p -> report_extension = std::shared_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
     return p;
   }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect(  50401,    runeforge::razorice_attack );
+    unique_gear::register_special_effect(  51714,    runeforge::razorice_debuff );
+    unique_gear::register_special_effect( 166441,    runeforge::fallen_crusader );
+    unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
+    unique_gear::register_special_effect(  53362,    runeforge::spellshattering ); // Damage taken
+    unique_gear::register_special_effect(  54449,      runeforge::spellbreaking ); // Damage taken
+  }
+
   virtual void init( sim_t* ) const {}
   virtual bool valid() const { return true; }
   virtual void combat_begin( sim_t* ) const {}

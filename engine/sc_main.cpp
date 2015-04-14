@@ -162,6 +162,7 @@ int sim_t::main( const std::vector<std::string>& args )
   cache_initializer_t cache_init( get_cache_directory() + "/simc_cache.dat" );
   dbc_initializer_t dbc_init;
   module_t::init();
+  unique_gear::register_special_effects();
 
   sim_control_t control;
 

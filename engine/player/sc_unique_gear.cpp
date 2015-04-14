@@ -15,7 +15,7 @@ namespace { // UNNAMED NAMESPACE
  * Forward declarations so we can reorganize the file a bit more sanely.
  */
 
-namespace enchant
+namespace enchants
 {
   void mark_of_bleeding_hollow( special_effect_t& );
   void megawatt_filament( special_effect_t& );
@@ -147,242 +147,9 @@ std::string tokenized_name( const spell_data_t* data )
   return s;
 }
 
-/**
- * Master list of special effects in Simulationcraft.
- *
- * This list currently contains custom procs and procs where game client data
- * is either incorrect (so we can override values), or incomplete (so we can
- * help the automatic creation process on the simc side).
- *
- * Each line in the array corresponds to a specific spell (a proc driver spell,
- * or an "on use" spell) in World of Warcraft. There are several sources for
- * special effects:
- * 1) Items (Use, Equip, Chance on hit)
- * 2) Enchants, and profession specific enchants
- * 3) Engineering special effects (tinkers, ranged enchants)
- * 4) Gems
- * 
- * Blizzard does not discriminate between the different types, nor do we
- * anymore. Each spell can be mapped to a special effect in the simc client.
- * Each special effect is fed to a new proc callback object
- * (dbc_proc_callback_t) that handles the initialization of the proc, and in
- * generic proc cases, the initialization of the buffs/actions.
- *
- * Each entry contains three fields:
- * 1) The spell ID of the effect. You can find these from third party websites
- *    by clicking on the generated link in item tooltip.
- * 2) Currently a c-string of "additional options" given for a special effect.
- *    This includes the forementioned fixes of incorrect values, and "help" to
- *    drive the automatic special effect generation process. Case insensitive.
- * 3) A callback to a custom initialization function. The function is of the
- *    form: void custom_function_of_awesome( special_effect_t& effect,
- *                                           const item_t& item,
- *                                           const special_effect_db_item_t& dbitem )
- *    Where 'effect' is the effect being created, 'item' is the item that has 
- *    the special effect, and 'dbitem' is the database entry itself.
- *
- * Now, special effect creation in this new system is currently a two phase
- * process. First, the special_effect_t struct for the special effect is filled
- * with enough information to initialize the proc (for generic procs, a driver
- * spell id is sufficient), and any options given in this list (through the
- * additional options). For custom special effects, the first phase simply
- * creates a stub special_effect_t object, and no game client data is processed
- * at this time.
- *
- * The second phase of the creation process is responsible for instantiating
- * the necessary action_callback_t object (simc procs), and whatever buffs, or
- * actions are required for the proc. This is also when custom callbacks get
- * called.
- *
- * Note: The special effect initialization process is now unified for all types
- * of special effects, we no longer discriminate between item, enchant, tinker,
- * or gem based special effects.
- *
- * Note2: Enchants, addons, and possibly gems will have a separate translation
- * table in sc_enchant.cpp that maps "user given" names of enchants
- * (enchant=dancing_steel), to in game data, so we can properly initialize the
- * correct spells here. Most of the enchants etc., are automatically
- * identified.  The table will only have the "non standard" user strings we
- * currently use, and whatever else we will use in the future.
- */
-static const special_effect_db_item_t __special_effect_db[] = {
-  /**
-   * TRINKET-PROC-TYPE-TODO:
-   * - Alacrity of Xuen (procs on damage or landing an ability?)
-   * - Evil Eye of Galakras (damage/landing?)
-   * - Kadris Toxic Totem (damage/landing?)
-   * - Frenzied Crystal of Rage (damage/landing?)
-   * - Fusion-Fire Core (damage/landing?)
-   * - Talisman of Bloodlust (damage/landing?)
-   * - Primordius' Talisman of Rage (damage/landing?)
-   * - Fabled Feather of Ji-Kun (damage/landing?)
-   */
-
-  /**
-   * Items
-   */
-
-  /* Warlords of Draenor 6.0 */
-  { 177085, 0,                     item::blackiron_micro_crucible }, /* Blackiron Micro Crucible */
-  { 177071, 0,                    item::humming_blackiron_trigger }, /* Humming Blackiron Trigger */
-  { 177104, 0,                   item::battering_talisman_trigger }, /* Battering Talisman Trigger */
-  { 177098, 0,                        item::forgemasters_insignia }, /* Forgemaster's Insignia */
-  { 177090, 0,                      item::autorepairing_autoclave }, /* Forgemaster's Insignia */
-  { 177171, 0,                        item::spellbound_runic_band }, /* 700 ilevel proc-ring */
-  { 177163, 0,                       item::spellbound_solium_band }, /* 690 ilevel proc-ring */
-
-  /* Mists of Pandaria: 5.4 */
-  { 146195, 0,                               item::flurry_of_xuen }, /* Melee legendary cloak */
-  { 146197, 0,                             item::essence_of_yulon }, /* Caster legendary cloak */
-  { 146193, 0,                          item::endurance_of_niuzao }, /* Tank legendary cloak */
-
-  { 146219, "ProcOn/Hit",                                       0 }, /* Yu'lon's Bite */
-  { 146251, "ProcOn/Hit",                                       0 }, /* Thok's Tail Tip (Str proc) */
-
-  { 145955, 0,                                    item::readiness },
-  { 146019, 0,                                    item::readiness },
-  { 146025, 0,                                    item::readiness },
-  { 146051, 0,                                item::amplification },
-  { 146136, 0,                                       item::cleave },
-
-  { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
-  { 146286, 0,                  item::skeers_bloodsoaked_talisman }, /* Skeer's Bloodsoaked Talisman */
-  { 146315, 0,                    item::prismatic_prison_of_pride }, /* Prismatic Prison needs role-specific disable */
-  { 146047, 0,               item::purified_bindings_of_immerseus }, /* Purified Bindings needs role-specific disable */
-  { 146251, 0,                               item::thoks_tail_tip }, /* Thok's Tail Tip needs role-specific disable */
-
-  /* Mists of Pandaria: 5.2 */
-  { 139116, 0,                        item::rune_of_reorigination }, /* Rune of Reorigination */
-  { 138957, 0,                            item::spark_of_zandalar }, /* Spark of Zandalar */
-  { 138964, 0,                   item::unerring_vision_of_leishen }, /* Unerring Vision of Lei Shen */
-
-  { 138728, "Reverse",                                          0 }, /* Steadfast Talisman of the Shado-Pan Assault */
-  { 139171, "ProcOn/Crit_RPPMAttackCrit",                       0 }, /* Gaze of the Twins */
-  { 138757, "1Tick_138737Trigger",                              0 }, /* Renataki's Soul Charm */
-  { 138790, "ProcOn/Hit_1Tick_138788Trigger",                   0 }, /* Wushoolay's Final Choice */
-  { 138758, "1Tick_138760Trigger",                              0 }, /* Fabled Feather of Ji-Kun */
-  { 139134, "ProcOn/Crit_RPPMSpellCrit",                        0 }, /* Cha-Ye's Essence of Brilliance */
-
-  { 138865, "ProcOn/Dodge",                                     0 }, /* Delicate Vial of the Sanguinaire */
-  // TODO: Ji-Kun's rising winds (heal action support)
-  // TODO: Soul barrier (absorb with individual absorb event cap)
-  // TODO: Rook's unlucky Talisman (aoe damage reduction)
-
-  /* Mists of Pandaria: 5.0 */
-  { 126650, "ProcOn/Hit",                                       0 }, /* Terror in the Mists */
-  { 126658, "ProcOn/Hit",                                       0 }, /* Darkmist Vortex */
-
-  /* Mists of Pandaria: Dungeon */
-  { 126473, "ProcOn/Hit",                                       0 }, /* Vision of the Predator */
-  { 126516, "ProcOn/Hit",                                       0 }, /* Carbonic Carbuncle */
-  { 126482, "ProcOn/Hit",                                       0 }, /* Windswept Pages */
-  { 126490, "ProcOn/Crit",                                      0 }, /* Searing Words */
-
-  /* Mists of Pandaria: Player versus Player */
-  { 138701, "ProcOn/Hit",                                       0 }, /* Brutal Talisman of the Shado-Pan Assault */
-  { 138700, "ProcOn/Hit",                                       0 }, /* Vicious Talisman of the Shado-Pan Assault */
-
-  { 126706, "ProcOn/Hit",                                       0 }, /* Gladiator's Insignia of Dominance */
-
-  /* Mists of Pandaria: Darkmoon Faire */
-  { 128990, "ProcOn/Hit",                                       0 }, /* Relic of Yu'lon */
-  { 128445, "ProcOn/Crit",                                      0 }, /* Relic of Xuen (agi) */
-
-  // Misc
-  { 71892,  0,                                  item::heartpierce },
-  { 71880,  0,                                  item::heartpierce },
-
-  /**
-   * Enchants
-   */
-
-  /* Warlords of Draenor */
-  { 159239, 0,                enchant::mark_of_the_shattered_hand },
-  { 159243, 0,                   enchant::mark_of_the_thunderlord },
-  { 159682, 0,                           enchant::mark_of_warsong },
-  { 159683, 0,                     enchant::mark_of_the_frostwolf },
-  { 159684, 0,                        enchant::mark_of_shadowmoon },
-  { 159685, 0,                         enchant::mark_of_blackrock },
-  { 156059, 0,                         enchant::megawatt_filament },
-  { 156052, 0,              enchant::oglethorpes_missile_splitter },
-  { 173286, 0,                        enchant::hemets_heartseeker },
-  { 173321, 0,                   enchant::mark_of_bleeding_hollow },
-
-  /* Mists of Pandaria */
-  { 118333, 0,                             enchant::dancing_steel },
-  { 142531, 0,                             enchant::dancing_steel }, /* Bloody Dancing Steel */
-  { 120033, 0,                               enchant::jade_spirit },
-  { 141178, 0,                               enchant::jade_spirit },
-  { 104561, 0,                                  enchant::windsong },
-  { 104428, "rppmhaste",                                        0 }, /* Elemental Force */
-  { 104441, 0,                               enchant::rivers_song },
-  { 118314, 0,                                  enchant::colossus },
-
-  /* Cataclysm */
-  {  94747, 0,                           enchant::hurricane_spell },
-  {  74221, "1PPM",                                             0 }, /* Hurricane Weapon */
-  {  74245, "1PPM",                                             0 }, /* Landslide */
-  {  94746, 0,                                                  0 }, /* Power Torrent */
-
-  /* Wrath of the Lich King */
-  {  59620, "1PPM",                                             0 }, /* Berserking */
-  {  42976, 0,                               enchant::executioner },
-
-  /* The Burning Crusade */
-  {  28093, "1PPM",                                             0 }, /* Mongoose */
-
-  /* Engineering enchants */
-  { 177708, "1PPM_109092Trigger",                               0 }, /* Mirror Scope */
-  { 177707, "1PPM_109085Trigger",                               0 }, /* Lord Blastingtons Scope of Doom */
-  {  95713, "1PPM_95712Trigger",                                0 }, /* Gnomish XRay */
-  {  99622, "1PPM_99621Trigger",                                0 }, /* Flintlocks Woodchucker */
-
-  /* Profession perks */
-  { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
-  { 157136, 0,             profession::draenor_philosophers_stone }, /* Draenor Philosopher's Stone (stat proc) */
-  {  55004, 0,                           profession::nitro_boosts },
-
-  /**
-   * Gems
-   */
-
-  {  39958, "0.2PPM", 0 }, /* Thundering Skyfire */ // TODO: check why 20% PPM and not 100% from spell data?
-  {  55380, "0.2PPM", 0 }, /* Thundering Skyfire */ /* Can use same callback for both */ // TODO: check why 20% PPM and not 100% from spell data?
-  { 137592, 0,                               gem::sinister_primal }, /* Caster Legendary Gem */
-  { 137594, 0,                            gem::indomitable_primal }, /* Tank Legendary Gem */
-  { 137595, 0,                             gem::capacitive_primal }, /* Melee Legendary Gem */
-  { 137248, 0,                             gem::courageous_primal }, /* Healer Legendary Gem */
-
-  /* Generic special effects begin here                                      */
-
-  /* T17 LFR set bonuses */
-  { 179108, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Cloth DPS */
-  { 179107, 0,                 set_bonus::t17_lfr_4pc_clothcaster },
-  { 179110, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Cloth Healer */
-  { 179114, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Melee */
-  { 179115, 0,                    set_bonus::t17_lfr_4pc_leamelee },
-  { 179117, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Caster */
-  { 179118, 0,                   set_bonus::t17_lfr_4pc_leacaster },
-  { 179121, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Healer */
-  { 179127, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Tank */
-  { 179130, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Mail Agility */
-  { 179131, 0,                    set_bonus::t17_lfr_4pc_agimelee },
-  { 179133, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Mail Caster */
-  { 179134, 0,                  set_bonus::t17_lfr_4pc_mailcaster },
-  { 179137, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Mail Healer */
-  { 179139, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Plate Melee */
-  { 179140, 0,                  set_bonus::t17_lfr_4pc_platemelee },
-  { 179142, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Plate Tank */
-  { 179145, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Plate Healer */
-
-  /* Always NULL terminate, last entry will be used as a "not found" value */
-  {      0, 0,                                                  0 }
-};
-
-
 // Enchants ================================================================
 
-void enchant::mark_of_bleeding_hollow( special_effect_t& effect )
+void enchants::mark_of_bleeding_hollow( special_effect_t& effect )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -394,7 +161,7 @@ void enchant::mark_of_bleeding_hollow( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::megawatt_filament( special_effect_t& effect )
+void enchants::megawatt_filament( special_effect_t& effect )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -406,7 +173,7 @@ void enchant::megawatt_filament( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::oglethorpes_missile_splitter( special_effect_t& effect )
+void enchants::oglethorpes_missile_splitter( special_effect_t& effect )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -418,7 +185,7 @@ void enchant::oglethorpes_missile_splitter( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::hemets_heartseeker( special_effect_t& effect )
+void enchants::hemets_heartseeker( special_effect_t& effect )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -430,7 +197,7 @@ void enchant::hemets_heartseeker( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::mark_of_shadowmoon( special_effect_t& effect )
+void enchants::mark_of_shadowmoon( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_EQUIP;
 
@@ -452,7 +219,7 @@ void enchant::mark_of_shadowmoon( special_effect_t& effect )
   new mos_proc_callback_t( effect.item, effect );
 }
 
-void enchant::mark_of_blackrock( special_effect_t& effect )
+void enchants::mark_of_blackrock( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_EQUIP;
 
@@ -474,7 +241,7 @@ void enchant::mark_of_blackrock( special_effect_t& effect )
   new mob_proc_callback_t( effect.item, effect );
 }
 
-void enchant::mark_of_warsong( special_effect_t& effect )
+void enchants::mark_of_warsong( special_effect_t& effect )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -487,7 +254,7 @@ void enchant::mark_of_warsong( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::mark_of_the_thunderlord( special_effect_t& effect )
+void enchants::mark_of_the_thunderlord( special_effect_t& effect )
 {
   struct mott_buff_t : public stat_buff_t
   {
@@ -571,7 +338,7 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect )
   new mott_crit_callback_t( effect.item, *effect.item -> parsed.special_effects.back() );
 }
 
-void enchant::mark_of_the_frostwolf( special_effect_t& effect )
+void enchants::mark_of_the_frostwolf( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_EQUIP;
 
@@ -585,7 +352,7 @@ void enchant::mark_of_the_frostwolf( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::mark_of_the_shattered_hand( special_effect_t& effect )
+void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
 {
   effect.rppm_scale = RPPM_HASTE;
   effect.trigger_spell_id = 159238;
@@ -622,7 +389,7 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::colossus( special_effect_t& effect )
+void enchants::colossus( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.item -> player-> find_spell( 116631 );
 
@@ -639,7 +406,7 @@ void enchant::colossus( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::rivers_song( special_effect_t& effect )
+void enchants::rivers_song( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.item -> player -> find_spell( 116660 );
 
@@ -655,7 +422,7 @@ void enchant::rivers_song( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-void enchant::dancing_steel( special_effect_t& effect )
+void enchants::dancing_steel( special_effect_t& effect )
 {
   // Account for Bloody Dancing Steel and Dancing Steel buffs
   const spell_data_t* spell = effect.item -> player -> find_spell( effect.spell_id == 142531 ? 142530 : 120032 );
@@ -687,7 +454,7 @@ struct jade_spirit_check_func
   }
 };
 
-void enchant::jade_spirit( special_effect_t& effect )
+void enchants::jade_spirit( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.item -> player -> find_spell( 104993 );
 
@@ -741,7 +508,7 @@ struct windsong_callback_t : public dbc_proc_callback_t
   }
 };
 
-void enchant::windsong( special_effect_t& effect )
+void enchants::windsong( special_effect_t& effect )
 {
   const spell_data_t* mastery = effect.item -> player -> find_spell( 104510 );
   const spell_data_t* haste = effect.item -> player -> find_spell( 104423 );
@@ -779,7 +546,7 @@ struct hurricane_spell_proc_t : public dbc_proc_callback_t
   }
 };
 
-void enchant::hurricane_spell( special_effect_t& effect )
+void enchants::hurricane_spell( special_effect_t& effect )
 {
   int n_hurricane_enchants = 0;
 
@@ -810,7 +577,7 @@ void enchant::hurricane_spell( special_effect_t& effect )
 
 }
 
-void enchant::executioner( special_effect_t& effect )
+void enchants::executioner( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.item -> player -> find_spell( effect.spell_id );
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, tokenized_name( spell ) ) );
@@ -2295,7 +2062,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   // first. If that returns false (nothing done), move to generic init
   if ( ! p -> init_special_effect( effect, spell_id ) )
   {
-    const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db, (int)sizeof_array( __special_effect_db ), spell_id );
+    const special_effect_db_item_t& dbitem = find_special_effect_db_item( spell_id );
 
     // Figure out first phase options from our special effect database
     if ( dbitem.spell_id == spell_id )
@@ -2309,7 +2076,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
       }
 
       // Parse auxilary effect options before doing spell data based parsing
-      if ( dbitem.encoded_options != 0 )
+      if ( ! dbitem.encoded_options.empty() )
       {
         std::string encoded_options = dbitem.encoded_options;
         for ( size_t i = 0; i < encoded_options.length(); i++ )
@@ -2368,18 +2135,6 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
       new dbc_proc_callback_t( effect -> player, *effect );
     }
   }
-}
-
-const special_effect_db_item_t& unique_gear::find_special_effect_db_item( const special_effect_db_item_t* start, unsigned n, unsigned spell_id )
-{
-  for ( size_t i = 0; i < n; i++ )
-  {
-    const special_effect_db_item_t* dbitem = start + i;
-    if ( dbitem -> spell_id == spell_id )
-      return *dbitem;
-  }
-
-  return *( start + ( n - 1 ) );
 }
 
 // ==========================================================================
@@ -2787,3 +2542,262 @@ const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned s
 
   return 0;
 }
+
+namespace unique_gear
+{
+std::vector<special_effect_db_item_t> __special_effect_db;
+static const special_effect_db_item_t __null_db_item;
+}
+
+const special_effect_db_item_t& unique_gear::find_special_effect_db_item( unsigned spell_id )
+{
+  for ( size_t i = 0, end = __special_effect_db.size(); i < end; ++i )
+  {
+    if ( __special_effect_db[ i ].spell_id == spell_id )
+    {
+      return __special_effect_db[ i ];
+    }
+  }
+
+  return __null_db_item;
+}
+
+void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t callback )
+{
+  if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
+  {
+    return;
+  }
+
+  special_effect_db_item_t dbitem;
+  dbitem.spell_id = spell_id;
+  dbitem.custom_cb = callback;
+
+  __special_effect_db.push_back( dbitem );
+}
+
+void unique_gear::register_special_effect( unsigned spell_id, const std::string& encoded_str )
+{
+  if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
+  {
+    return;
+  }
+
+  special_effect_db_item_t dbitem;
+  dbitem.spell_id = spell_id;
+  dbitem.encoded_options = encoded_str;
+
+  __special_effect_db.push_back( dbitem );
+}
+
+/**
+ * Master list of special effects in Simulationcraft.
+ *
+ * This list currently contains custom procs and procs where game client data
+ * is either incorrect (so we can override values), or incomplete (so we can
+ * help the automatic creation process on the simc side).
+ *
+ * Each line in the array corresponds to a specific spell (a proc driver spell,
+ * or an "on use" spell) in World of Warcraft. There are several sources for
+ * special effects:
+ * 1) Items (Use, Equip, Chance on hit)
+ * 2) Enchants, and profession specific enchants
+ * 3) Engineering special effects (tinkers, ranged enchants)
+ * 4) Gems
+ * 
+ * Blizzard does not discriminate between the different types, nor do we
+ * anymore. Each spell can be mapped to a special effect in the simc client.
+ * Each special effect is fed to a new proc callback object
+ * (dbc_proc_callback_t) that handles the initialization of the proc, and in
+ * generic proc cases, the initialization of the buffs/actions.
+ *
+ * Each entry contains three fields:
+ * 1) The spell ID of the effect. You can find these from third party websites
+ *    by clicking on the generated link in item tooltip.
+ * 2) Currently a c-string of "additional options" given for a special effect.
+ *    This includes the forementioned fixes of incorrect values, and "help" to
+ *    drive the automatic special effect generation process. Case insensitive.
+ * 3) A callback to a custom initialization function. The function is of the
+ *    form: void custom_function_of_awesome( special_effect_t& effect,
+ *                                           const item_t& item,
+ *                                           const special_effect_db_item_t& dbitem )
+ *    Where 'effect' is the effect being created, 'item' is the item that has 
+ *    the special effect, and 'dbitem' is the database entry itself.
+ *
+ * Now, special effect creation in this new system is currently a two phase
+ * process. First, the special_effect_t struct for the special effect is filled
+ * with enough information to initialize the proc (for generic procs, a driver
+ * spell id is sufficient), and any options given in this list (through the
+ * additional options). For custom special effects, the first phase simply
+ * creates a stub special_effect_t object, and no game client data is processed
+ * at this time.
+ *
+ * The second phase of the creation process is responsible for instantiating
+ * the necessary action_callback_t object (simc procs), and whatever buffs, or
+ * actions are required for the proc. This is also when custom callbacks get
+ * called.
+ *
+ * Note: The special effect initialization process is now unified for all types
+ * of special effects, we no longer discriminate between item, enchant, tinker,
+ * or gem based special effects.
+ *
+ * Note2: Enchants, addons, and possibly gems will have a separate translation
+ * table in sc_enchant.cpp that maps "user given" names of enchants
+ * (enchant=dancing_steel), to in game data, so we can properly initialize the
+ * correct spells here. Most of the enchants etc., are automatically
+ * identified.  The table will only have the "non standard" user strings we
+ * currently use, and whatever else we will use in the future.
+ */
+void unique_gear::register_special_effects()
+{
+  /* Warlords of Draenor 6.0 */
+  register_special_effect( 177085, item::blackiron_micro_crucible       );
+  register_special_effect( 177071, item::humming_blackiron_trigger      );
+  register_special_effect( 177104, item::battering_talisman_trigger     );
+  register_special_effect( 177098, item::forgemasters_insignia          );
+  register_special_effect( 177090, item::autorepairing_autoclave        );
+  register_special_effect( 177171, item::spellbound_runic_band          );
+  register_special_effect( 177163, item::spellbound_solium_band         );
+
+  /* Mists of Pandaria: 5.4 */
+  register_special_effect( 146195, item::flurry_of_xuen                 );
+  register_special_effect( 146197, item::essence_of_yulon               );
+  register_special_effect( 146193, item::endurance_of_niuzao            );
+
+  register_special_effect( 146219, "ProcOn/Hit"                         ); /* Yu'lon's Bite */
+  register_special_effect( 146251, "ProcOn/Hit"                         ); /* Thok's Tail Tip (Str proc) */
+
+  register_special_effect( 145955, item::readiness                      );
+  register_special_effect( 146019, item::readiness                      );
+  register_special_effect( 146025, item::readiness                      );
+  register_special_effect( 146051, item::amplification                  );
+  register_special_effect( 146136, item::cleave                         );
+
+  register_special_effect( 146183, item::black_blood_of_yshaarj         );
+  register_special_effect( 146286, item::skeers_bloodsoaked_talisman    );
+  register_special_effect( 146315, item::prismatic_prison_of_pride      );
+  register_special_effect( 146047, item::purified_bindings_of_immerseus );
+  register_special_effect( 146251, item::thoks_tail_tip                 );
+
+  /* Mists of Pandaria: 5.2 */
+  register_special_effect( 139116, item::rune_of_reorigination          );
+  register_special_effect( 138957, item::spark_of_zandalar              );
+  register_special_effect( 138964, item::unerring_vision_of_leishen     );
+
+  register_special_effect( 138728, "Reverse"                            ); /* Steadfast Talisman of the Shado-Pan Assault */
+  register_special_effect( 139171, "ProcOn/Crit_RPPMAttackCrit"         ); /* Gaze of the Twins */
+  register_special_effect( 138757, "1Tick_138737Trigger"                ); /* Renataki's Soul Charm */
+  register_special_effect( 138790, "ProcOn/Hit_1Tick_138788Trigger"     ); /* Wushoolay's Final Choice */
+  register_special_effect( 138758, "1Tick_138760Trigger"                ); /* Fabled Feather of Ji-Kun */
+  register_special_effect( 139134, "ProcOn/Crit_RPPMSpellCrit"          ); /* Cha-Ye's Essence of Brilliance */
+
+  register_special_effect( 138865, "ProcOn/Dodge"                       ); /* Delicate Vial of the Sanguinaire */
+
+  /* Mists of Pandaria: 5.0 */
+  register_special_effect( 126650, "ProcOn/Hit"                         ); /* Terror in the Mists */
+  register_special_effect( 126658, "ProcOn/Hit"                         ); /* Darkmist Vortex */
+
+  /* Mists of Pandaria: Dungeon */
+  register_special_effect( 126473, "ProcOn/Hit"                         ); /* Vision of the Predator */
+  register_special_effect( 126516, "ProcOn/Hit"                         ); /* Carbonic Carbuncle */
+  register_special_effect( 126482, "ProcOn/Hit"                         ); /* Windswept Pages */
+  register_special_effect( 126490, "ProcOn/Crit"                        ); /* Searing Words */
+
+  /* Mists of Pandaria: Player versus Player */
+  register_special_effect( 138701, "ProcOn/Hit"                         ); /* Brutal Talisman of the Shado-Pan Assault */
+  register_special_effect( 138700, "ProcOn/Hit"                         ); /* Vicious Talisman of the Shado-Pan Assault */
+
+  register_special_effect( 126706, "ProcOn/Hit"                         ); /* Gladiator's Insignia of Dominance */
+
+  /* Mists of Pandaria: Darkmoon Faire */
+  register_special_effect( 128990, "ProcOn/Hit"                         ); /* Relic of Yu'lon */
+  register_special_effect( 128445, "ProcOn/Crit"                        ); /* Relic of Xuen (agi) */
+
+  // Misc
+  register_special_effect( 71892,  item::heartpierce                    );
+  register_special_effect( 71880,  item::heartpierce                    );
+
+  /**
+   * Enchants
+   */
+
+  /* Warlords of Draenor */
+  register_special_effect( 159239, enchants::mark_of_the_shattered_hand );
+  register_special_effect( 159243, enchants::mark_of_the_thunderlord    );
+  register_special_effect( 159682, enchants::mark_of_warsong            );
+  register_special_effect( 159683, enchants::mark_of_the_frostwolf      );
+  register_special_effect( 159684, enchants::mark_of_shadowmoon         );
+  register_special_effect( 159685, enchants::mark_of_blackrock          );
+  register_special_effect( 156059, enchants::megawatt_filament          );
+  register_special_effect( 156052, enchants::oglethorpes_missile_splitter );
+  register_special_effect( 173286, enchants::hemets_heartseeker         );
+  register_special_effect( 173321, enchants::mark_of_bleeding_hollow    );
+
+  /* Mists of Pandaria */
+  register_special_effect( 118333, enchants::dancing_steel              );
+  register_special_effect( 142531, enchants::dancing_steel              ); /* Bloody Dancing Steel */
+  register_special_effect( 120033, enchants::jade_spirit                );
+  register_special_effect( 141178, enchants::jade_spirit                );
+  register_special_effect( 104561, enchants::windsong                   );
+  register_special_effect( 104428, "rppmhaste"                          ); /* Elemental Force */
+  register_special_effect( 104441, enchants::rivers_song                );
+  register_special_effect( 118314, enchants::colossus                   );
+
+  /* Cataclysm */
+  register_special_effect(  94747, enchants::hurricane_spell            );
+  register_special_effect(  74221, "1PPM"                               ); /* Hurricane Weapon */
+  register_special_effect(  74245, "1PPM"                               ); /* Landslide */
+
+  /* Wrath of the Lich King */
+  register_special_effect(  59620, "1PPM"                               ); /* Berserking */
+  register_special_effect(  42976, enchants::executioner                );
+
+  /* The Burning Crusade */
+  register_special_effect(  28093, "1PPM"                               ); /* Mongoose */
+
+  /* Engineering enchants */
+  register_special_effect( 177708, "1PPM_109092Trigger"                 ); /* Mirror Scope */
+  register_special_effect( 177707, "1PPM_109085Trigger"                 ); /* Lord Blastingtons Scope of Doom */
+  register_special_effect(  95713, "1PPM_95712Trigger"                  ); /* Gnomish XRay */
+  register_special_effect(  99622, "1PPM_99621Trigger"                  ); /* Flintlocks Woodchucker */
+
+  /* Profession perks */
+  register_special_effect( 105574, profession::zen_alchemist_stone      ); /* Zen Alchemist Stone (stat proc) */
+  register_special_effect( 157136, profession::draenor_philosophers_stone ); /* Draenor Philosopher's Stone (stat proc) */
+  register_special_effect(  55004, profession::nitro_boosts             );
+
+  /**
+   * Gems
+   */
+
+  // TODO: check why 20% PPM and not 100% from spell data?
+  register_special_effect(  39958, "0.2PPM"                             ); /* Thundering Skyfire */
+  register_special_effect(  55380, "0.2PPM"                             ); /* Thundering Skyfire */
+  register_special_effect( 137592, gem::sinister_primal                 ); /* Caster Legendary Gem */
+  register_special_effect( 137594, gem::indomitable_primal              ); /* Tank Legendary Gem */
+  register_special_effect( 137595, gem::capacitive_primal               ); /* Melee Legendary Gem */
+  register_special_effect( 137248, gem::courageous_primal               ); /* Healer Legendary Gem */
+
+  /* Generic special effects begin here */
+
+  /* T17 LFR set bonuses */
+  register_special_effect( 179108, set_bonus::t17_lfr_passive_stat      ); /* 2P Cloth DPS */
+  register_special_effect( 179107, set_bonus::t17_lfr_4pc_clothcaster   );
+  register_special_effect( 179110, set_bonus::t17_lfr_passive_stat      ); /* 2P Cloth Healer */
+  register_special_effect( 179114, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Melee */
+  register_special_effect( 179115, set_bonus::t17_lfr_4pc_leamelee      );
+  register_special_effect( 179117, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Caster */
+  register_special_effect( 179118, set_bonus::t17_lfr_4pc_leacaster     );
+  register_special_effect( 179121, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Healer */
+  register_special_effect( 179127, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Tank */
+  register_special_effect( 179130, set_bonus::t17_lfr_passive_stat      ); /* 2P Mail Agility */
+  register_special_effect( 179131, set_bonus::t17_lfr_4pc_agimelee      );
+  register_special_effect( 179133, set_bonus::t17_lfr_passive_stat      ); /* 2P Mail Caster */
+  register_special_effect( 179134, set_bonus::t17_lfr_4pc_mailcaster    );
+  register_special_effect( 179137, set_bonus::t17_lfr_passive_stat      ); /* 2P Mail Healer */
+  register_special_effect( 179139, set_bonus::t17_lfr_passive_stat      ); /* 2P Plate Melee */
+  register_special_effect( 179140, set_bonus::t17_lfr_4pc_platemelee    );
+  register_special_effect( 179142, set_bonus::t17_lfr_passive_stat      ); /* 2P Plate Tank */
+  register_special_effect( 179145, set_bonus::t17_lfr_passive_stat      ); /* 2P Plate Healer */
+}
+

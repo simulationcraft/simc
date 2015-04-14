@@ -2962,6 +2962,7 @@ struct module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const = 0;
   virtual bool valid() const = 0;
   virtual void init( sim_t* ) const = 0;
+  virtual void static_init() const { }
   virtual void combat_begin( sim_t* ) const = 0;
   virtual void combat_end( sim_t* ) const = 0;
 
@@ -3010,7 +3011,13 @@ struct module_t
   static void init()
   {
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ )
-      get( i );
+    {
+      const module_t* m = get( i );
+      if ( m )
+      {
+        m -> static_init();
+      }
+    }
   }
 };
 
@@ -7304,17 +7311,26 @@ namespace enchant
 
 namespace unique_gear
 {
+  typedef void (*custom_cb_t)( special_effect_t& );
   struct special_effect_db_item_t
   {
     unsigned    spell_id;
-    const char* encoded_options;
+    std::string encoded_options;
     //const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
-    void (*custom_cb)( special_effect_t& );
+    custom_cb_t custom_cb;
+
+    special_effect_db_item_t() :
+      spell_id( 0 ), encoded_options(), custom_cb( 0 )
+    { }
   };
+
+void register_special_effects();
+void register_special_effect( unsigned spell_id, const std::string& encoded_str );
+void register_special_effect( unsigned spell_id, custom_cb_t callback );
 
 void init( player_t* );
 
-const special_effect_db_item_t& find_special_effect_db_item( const special_effect_db_item_t* start, unsigned n, unsigned spell_id );
+const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
 bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );
 void initialize_special_effect_2( special_effect_t* effect ); // Second phase initialization
 

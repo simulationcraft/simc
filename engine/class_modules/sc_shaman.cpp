@@ -466,7 +466,6 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_action_list();
-  virtual bool      init_special_effect( special_effect_t&, unsigned );
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
   virtual double    temporary_movement_modifier() const;
@@ -5649,83 +5648,6 @@ void shaman_t::init_action_list()
   player_t::init_action_list();
 }
 
-// shaman_t::init_special_effect =============================================================
-
-// Elemental T18 (WoD 6.2) trinket effect
-static void elemental_bellows( special_effect_t& effect )
-{
-  shaman_t* s = debug_cast<shaman_t*>( effect.player );
-
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft.
-  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  // Ensure correct specialization
-  if ( s -> specialization() != SHAMAN_ELEMENTAL )
-  {
-    return;
-  }
-
-  // Enable Elemental Bellows
-  s -> elemental_bellows = &( effect );
-}
-
-// Enhancement T18 (WoD 6.2) trinket effect
-static void furious_winds( special_effect_t& effect )
-{
-  shaman_t* s = debug_cast<shaman_t*>( effect.player );
-
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft.
-  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
-  {
-    return;
-  }
-
-  // Ensure correct specialization
-  if ( s -> specialization() != SHAMAN_ENHANCEMENT )
-  {
-    return;
-  }
-
-  // Enable Furious Winds
-  s -> furious_winds = &( effect );
-}
-
-// Static array to hold the special effect initialization callbacks
-static unique_gear::special_effect_db_item_t __special_effect_db[] =
-{
-  { 184919, 0,           elemental_bellows },
-  { 184920, 0,               furious_winds },
-  // Last entry must be all zeroes
-  {      0, 0,                           0 },
-};
-
-// Override special effect generation so that we can add WoD 6.2 spec specific trinket information
-// during init. The actual effect is implemented inside the class module.
-bool shaman_t::init_special_effect( special_effect_t& effect,
-                                             unsigned spell_id )
-{
-  using namespace unique_gear;
-
-  bool ret = false;
-  const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db,
-                                                                        (int)sizeof_array( __special_effect_db ),
-                                                                        spell_id );
-
-  ret = dbitem.spell_id == spell_id;
-  if ( ret )
-  {
-    effect.custom_init = dbitem.custom_cb;
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-  }
-
-  return ret;
-}
-
 // shaman_t::moving =========================================================
 
 void shaman_t::moving()
@@ -6441,6 +6363,50 @@ private:
 
 // SHAMAN MODULE INTERFACE ==================================================
 
+// Elemental T18 (WoD 6.2) trinket effect
+static void elemental_bellows( special_effect_t& effect )
+{
+  shaman_t* s = debug_cast<shaman_t*>( effect.player );
+
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft.
+  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  // Ensure correct specialization
+  if ( s -> specialization() != SHAMAN_ELEMENTAL )
+  {
+    return;
+  }
+
+  // Enable Elemental Bellows
+  s -> elemental_bellows = &( effect );
+}
+
+// Enhancement T18 (WoD 6.2) trinket effect
+static void furious_winds( special_effect_t& effect )
+{
+  shaman_t* s = debug_cast<shaman_t*>( effect.player );
+
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft.
+  if ( ! s -> find_spell( effect.spell_id ) -> ok() )
+  {
+    return;
+  }
+
+  // Ensure correct specialization
+  if ( s -> specialization() != SHAMAN_ENHANCEMENT )
+  {
+    return;
+  }
+
+  // Enable Furious Winds
+  s -> furious_winds = &( effect );
+}
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
@@ -6468,6 +6434,13 @@ struct shaman_module_t : public module_t
                               .quiet( true );
     }
   }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184919, ::elemental_bellows );
+    unique_gear::register_special_effect( 184920, ::furious_winds     );
+  }
+
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };
