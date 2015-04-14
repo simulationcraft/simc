@@ -149,7 +149,7 @@ struct runes_t
 // Death Knight
 // ==========================================================================
 
-struct death_knight_td_t : public actor_pair_t
+struct death_knight_td_t : public actor_target_data_t
 {
   dot_t* dots_blood_plague;
   dot_t* dots_breath_of_sindragosa;
@@ -189,6 +189,13 @@ public:
   double    shadow_infusion_counter;
   double    fallen_crusader, fallen_crusader_rppm;
   double    antimagic_shell_absorbed;
+
+  // Trinket 6.2
+  bool      trinket_62;
+  double    trinket_62_frost_multiplier;
+  double    trinket_62_unholy_procrate;
+
+  spell_t*  wandering_plague;
 
   stats_t*  antimagic_shell;
 
@@ -462,6 +469,11 @@ public:
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     antimagic_shell_absorbed( 0.0 ),
+    // Trinket 6.2
+    trinket_62( false ),
+    trinket_62_frost_multiplier( 0.25 ),
+    trinket_62_unholy_procrate( 0.3 ),
+    wandering_plague( 0 ),
     antimagic_shell( 0 ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -572,7 +584,7 @@ public:
 
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
-  actor_pair_t( target, death_knight )
+  actor_target_data_t( target, death_knight )
 {
   dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
   dots_breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
@@ -1173,7 +1185,7 @@ namespace pets {
 // Dancing Rune Weapon
 // ==========================================================================
 
-struct dancing_rune_weapon_td_t : public actor_pair_t
+struct dancing_rune_weapon_td_t : public actor_target_data_t
 {
   dot_t* dots_blood_plague;
   dot_t* dots_frost_fever;
@@ -1654,7 +1666,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 };
 
 dancing_rune_weapon_td_t::dancing_rune_weapon_td_t( player_t* target, dancing_rune_weapon_pet_t* drw ) :
-  actor_pair_t( target, drw )
+  actor_target_data_t( target, drw )
 {
   dots_blood_plague    = target -> get_dot( "blood_plague",        drw );
   dots_frost_fever     = target -> get_dot( "frost_fever",         drw );
@@ -2883,6 +2895,29 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
 // Blood Plague =============================================================
 
+struct wandering_plague_t : public death_knight_spell_t
+{
+  wandering_plague_t( death_knight_t* p ) :
+    death_knight_spell_t( "wandering_plague", p )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = split_aoe_damage = true;
+    callbacks = may_miss = may_crit = false;
+
+    aoe = -1;
+  }
+
+  void init()
+  {
+    death_knight_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
+// Blood Plague =============================================================
+
 struct blood_plague_t : public death_knight_spell_t
 {
   blood_plague_t( death_knight_t* p ) :
@@ -2900,6 +2935,20 @@ struct blood_plague_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    death_knight_spell_t::assess_damage( type, s );
+
+    if ( s -> result_amount > 0 &&
+         p() -> trinket_62 &&
+         p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
+    {
+      p() -> wandering_plague -> target = s -> target;
+      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = s -> result_amount;
+      p() -> wandering_plague -> execute();
+    }
   }
 
   // WODO-TOD: Crit suppression hijinks?
@@ -2927,6 +2976,20 @@ struct frost_fever_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier *= 1.0 + p -> find_spell( 58671 ) -> effectN( 1 ).percent();
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    death_knight_spell_t::assess_damage( type, s );
+
+    if ( s -> result_amount > 0 &&
+         p() -> trinket_62 &&
+         p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
+    {
+      p() -> wandering_plague -> target = s -> target;
+      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = s -> result_amount;
+      p() -> wandering_plague -> execute();
+    }
   }
 
   virtual double composite_crit() const
@@ -2998,6 +3061,20 @@ struct necrotic_plague_t : public death_knight_spell_t
         sim -> out_debug.printf( "%s %s stack %d",
             player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
       new ( *sim ) np_spread_event_t<death_knight_td_t>( dot );
+    }
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    death_knight_spell_t::assess_damage( type, s );
+
+    if ( s -> result_amount > 0 &&
+         p() -> trinket_62 &&
+         p() -> wandering_plague && rng().roll( p() -> trinket_62_unholy_procrate ) )
+    {
+      p() -> wandering_plague -> target = s -> target;
+      p() -> wandering_plague -> base_dd_min = p() -> wandering_plague -> base_dd_max = s -> result_amount;
+      p() -> wandering_plague -> execute();
     }
   }
 
@@ -4324,15 +4401,67 @@ struct mind_freeze_t : public death_knight_spell_t
 
 // Obliterate ===============================================================
 
+
+struct trinket_62_obliterate_attack_t : public death_knight_melee_attack_t
+{
+  trinket_62_obliterate_attack_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* spell ) :
+    death_knight_melee_attack_t( name, p, spell )
+  {
+    school = SCHOOL_FROST;
+    background = special = true;
+    callbacks = false;
+    weapon = w;
+    rp_gain = 0;
+    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+  }
+
+  double action_multiplier() const
+  {
+    double m = death_knight_melee_attack_t::action_multiplier();
+
+    return m * p() -> trinket_62_frost_multiplier;
+  }
+
+  double composite_crit() const
+  {
+    double cc = death_knight_melee_attack_t::composite_crit();
+
+    cc += p() -> buffs.killing_machine -> value();
+
+    return cc;
+  }
+};
+
 struct obliterate_offhand_t : public death_knight_melee_attack_t
 {
+  trinket_62_obliterate_attack_t* trinket62_attack;
+
   obliterate_offhand_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "obliterate_offhand", p, p -> find_spell( 66198 ) )
+    death_knight_melee_attack_t( "obliterate_offhand", p, p -> find_spell( 66198 ) ),
+    trinket62_attack( 0 )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+
+    if ( p -> trinket_62 )
+    {
+      trinket62_attack = new trinket_62_obliterate_attack_t( p, "obliterate_offhand_frost", &( p -> off_hand_weapon ), &data() );
+    }
+  }
+
+  void execute()
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && trinket62_attack )
+    {
+      trinket62_attack -> target = execute_state -> target;
+      trinket62_attack -> execute();
+    }
   }
 
   virtual double composite_crit() const
@@ -4348,9 +4477,11 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 struct obliterate_t : public death_knight_melee_attack_t
 {
   obliterate_offhand_t* oh_attack;
+  trinket_62_obliterate_attack_t* trinket62_attack;
 
   obliterate_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ), oh_attack( 0 )
+    death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ),
+    oh_attack( 0 ), trinket62_attack( 0 )
   {
     parse_options( options_str );
     special = true;
@@ -4366,6 +4497,11 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
       weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+
+    if ( p -> trinket_62 )
+    {
+      trinket62_attack = new trinket_62_obliterate_attack_t( p, "obliterate_frost", &( p -> main_hand_weapon ), &data() );
+    }
   }
 
   virtual void execute()
@@ -4374,6 +4510,12 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      if ( trinket62_attack )
+      {
+        trinket62_attack -> target = execute_state -> target;
+        trinket62_attack -> execute();
+      }
+
       if ( oh_attack )
         oh_attack -> execute();
 
@@ -6130,6 +6272,11 @@ void death_knight_t::init_spells()
 
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
   fallen_crusader += perk.improved_runeforges -> effectN( 2 ).percent();
+
+  if ( trinket_62 && specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    wandering_plague = new wandering_plague_t( this );
+  }
 }
 
 // death_knight_t::default_apl_blood ========================================
@@ -7677,7 +7824,9 @@ void death_knight_t::create_options()
 
   add_option( opt_float( "fallen_crusader_str", fallen_crusader ) );
   add_option( opt_float( "fallen_crusader_rppm", fallen_crusader_rppm ) );
-
+  add_option( opt_bool( "trinket_62", trinket_62 ) );
+  add_option( opt_float( "trinket_62_frost_multiplier", trinket_62_frost_multiplier ) );
+  add_option( opt_float( "trinket_62_unholy_procrate", trinket_62_unholy_procrate ) );
 }
 
 // death_knight_t::convert_hybrid_stat ==============================================

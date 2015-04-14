@@ -15,13 +15,12 @@ struct warrior_t;
 
 enum warrior_stance { STANCE_BATTLE = 2, STANCE_DEFENSE = 4, STANCE_GLADIATOR = 8 };
 
-struct warrior_td_t: public actor_pair_t
+struct warrior_td_t: public actor_target_data_t
 {
   dot_t* dots_bloodbath;
   dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
   dot_t* dots_rend;
-
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_charge;
   buff_t* debuffs_demoralizing_shout;
@@ -46,6 +45,9 @@ public:
                      // When the player sets this to true, it will prevent stance_dance from being set to true.
                      // This will allow full control over stance swapping.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
+  bool fury_trinket;
+  bool arms_trinket;
+  bool prot_trinket;
 
   // Active
   struct active_t
@@ -63,6 +65,7 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* fury_trinket;
     // All Warriors
     buff_t* battle_stance;
     buff_t* berserker_rage;
@@ -239,6 +242,7 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* arms_trinket;
     proc_t* bloodsurge_wasted;
     proc_t* delayed_auto_attack;
 
@@ -420,6 +424,8 @@ public:
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
 
+    fury_trinket = arms_trinket = prot_trinket = false;
+
     regen_type = REGEN_DISABLED;
   }
 
@@ -438,6 +444,7 @@ public:
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_melee_haste() const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
   virtual double    composite_block_reduction() const;
@@ -1082,6 +1089,18 @@ struct melee_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
       trigger_rage_gain( s );
+      if ( p() -> arms_trinket )
+      {
+        if ( rng().roll( 0.35 ) )
+        {
+          p() -> cooldown.colossus_smash -> reset( true );
+          p() -> proc.arms_trinket -> occur();
+        }
+      }
+      if ( p() -> fury_trinket )
+      {
+        p() -> buff.fury_trinket -> trigger( 1 );
+      }
       if ( p() -> active.enhanced_rend )
       {
         if ( td( s -> target ) -> dots_rend -> is_ticking() )
@@ -1254,7 +1273,7 @@ struct bladestorm_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     channeled = tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    callbacks = interrupt_auto_attack = hasted_ticks = false;
     range = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
     radius = range;
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
@@ -1483,8 +1502,10 @@ struct charge_t: public warrior_attack_t
 
 struct colossus_smash_t: public warrior_attack_t
 {
+  bool was_colossus_smash_up;
   colossus_smash_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash )
+    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash ),
+    was_colossus_smash_up( false )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE;
@@ -1492,9 +1513,17 @@ struct colossus_smash_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
   }
+  void reset()
+  {
+    warrior_attack_t::reset();
+    was_colossus_smash_up = false;
+  }
 
   double target_armor( player_t* t ) const
   {
+    if ( was_colossus_smash_up )
+      return warrior_attack_t::target_armor( t );
+    else
       return attack_t::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
   } // If they ever bring back a resetting colossus smash, this will need to be adjusted.
 
@@ -1504,6 +1533,10 @@ struct colossus_smash_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      if ( td( execute_state -> target ) -> debuffs_colossus_smash -> check() )
+        was_colossus_smash_up = true;
+      else
+        was_colossus_smash_up = false;
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
       p() -> buff.colossus_smash -> trigger();
 
@@ -4458,6 +4491,7 @@ struct sudden_death_t: public warrior_real_ppm_t < real_ppm_t >
     base_t( p, real_ppm_t( p, p.talents.sudden_death -> real_ppm(), RPPM_HASTE ) )
   {}
 };
+
 };
 
 // =========================================================================
@@ -4465,7 +4499,6 @@ struct sudden_death_t: public warrior_real_ppm_t < real_ppm_t >
 // =========================================================================
 
 // Defensive Stance Rage Gain ==============================================
-
 static void defensive_stance( buff_t* buff, int, int )
 {
   warrior_t* p = debug_cast<warrior_t*>( buff -> player );
@@ -4677,7 +4710,7 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 // ==========================================================================
 
 warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
-actor_pair_t( target, &p ), warrior( p )
+  actor_target_data_t( target, &p ), warrior( p )
 {
   using namespace buffs;
 
@@ -4704,6 +4737,11 @@ void warrior_t::create_buffs()
   player_t::create_buffs();
 
   using namespace buffs;
+
+  buff.fury_trinket = buff_creator_t( this, "fury_trinket" )
+    .duration( timespan_t::from_seconds( 10.0 ) )
+    .max_stack( 10 )
+    .add_invalidate( CACHE_HASTE );
 
   buff.debuffs_slam = buff_creator_t( this, "slam", talents.slam )
     .can_cancel( false );
@@ -4801,7 +4839,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() + prot_trinket ? 0.2 : 0.0 )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -4917,6 +4955,7 @@ void warrior_t::init_procs()
 
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
   proc.t17_2pc_arms            = get_proc( "t17_2pc_arms" );
+  proc.arms_trinket            = get_proc( "arms_trinket" );
 }
 
 // warrior_t::init_rng ========================================================
@@ -5196,7 +5235,16 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
+double warrior_t::composite_melee_haste() const
+{
+  double a = player_t::composite_melee_haste();
 
+  a *= 1.0 / ( 1.0 + ( 0.025 * buff.fury_trinket -> current_stack ) );
+
+  return a;
+}
+
+// warrior_t::composite_armor_multiplier ======================================
 
 double warrior_t::composite_armor_multiplier() const
 {
@@ -5205,6 +5253,11 @@ double warrior_t::composite_armor_multiplier() const
   if ( active.stance == STANCE_DEFENSE )
   {
     a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
+  }
+  if ( prot_trinket )
+  {
+    if ( buff.shield_barrier -> current_value > 0 )
+      a *= 1.2;
   }
 
   return a;
@@ -5565,6 +5618,12 @@ void warrior_t::assess_damage( school_e school,
                              gain.drawn_sword_glyph );
   }
 
+  if ( prot_trinket )
+  {
+    if ( school != SCHOOL_PHYSICAL && buff.shield_block -> check() )
+      s -> result_amount *= 0.8;
+  }
+
   player_t::assess_damage( school, dtype, s );
 
   if ( ( s -> result == RESULT_HIT || s -> result == RESULT_CRIT || s -> result == RESULT_GLANCE ) && buff.tier16_reckless_defense -> up() )
@@ -5601,6 +5660,9 @@ void warrior_t::create_options()
   add_option( opt_int( "initial_rage", initial_rage ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
+  add_option( opt_bool( "fury_trinket", fury_trinket ) );
+  add_option( opt_bool( "arms_trinket", arms_trinket ) );
+  add_option( opt_bool( "prot_trinket", prot_trinket ) );
 }
 
 // Mark of the Shattered Hand ===============================================
@@ -5661,6 +5723,10 @@ void warrior_t::copy_from( player_t* source )
   initial_rage = p -> initial_rage;
   warrior_fixed_time = p -> warrior_fixed_time;
   player_override_stance_dance = p -> player_override_stance_dance;
+
+  fury_trinket = p -> fury_trinket;
+  arms_trinket = p -> arms_trinket;
+  prot_trinket = p -> prot_trinket;
 }
 
 // warrior_t::stance_swap ==================================================

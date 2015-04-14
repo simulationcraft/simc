@@ -96,7 +96,7 @@ typedef std::pair< double, stats_t* > icicle_data_t;
 // Icicle container object, stored in a list to launch icicles at unsuspecting enemies!
 typedef std::pair< timespan_t, icicle_data_t > icicle_tuple_t;
 
-struct mage_td_t : public actor_pair_t
+struct mage_td_t : public actor_target_data_t
 {
   struct dots_t
   {
@@ -151,6 +151,11 @@ public:
          iv_haste,
          pet_multiplier;
 
+  // 6.2 trinkets
+  bool arcane_trinket,
+       fire_trinket,
+       frost_trinket;
+
   // Benefits
   struct benefits_t
   {
@@ -192,7 +197,8 @@ public:
           * enhanced_frostbolt,    // Perk
           * frozen_thoughts,       // T16 2pc Frost
           * ice_shard,             // T17 2pc Frost
-          * frost_t17_4pc;         // T17 4pc Frost
+          * frost_t17_4pc,         // T17 4pc Frost
+          * frost_trinket;         // 6.2 Frost Trinket
 
     // Talents
     buff_t* blazing_speed,
@@ -434,6 +440,7 @@ public:
   virtual void      init_spells();
   virtual void      init_base_stats();
   virtual void      create_buffs();
+  virtual void      create_options();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
@@ -441,6 +448,7 @@ public:
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t* create_proc_action( const std::string& name );
   virtual void      create_pets();
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const { return ROLE_SPELL; }
@@ -520,7 +528,7 @@ namespace pets {
 
 struct water_elemental_pet_t;
 
-struct water_elemental_pet_td_t: public actor_pair_t
+struct water_elemental_pet_td_t: public actor_target_data_t
 {
   buff_t* water_jet;
 public:
@@ -707,7 +715,7 @@ struct water_elemental_pet_t : public pet_t
 };
 
 water_elemental_pet_td_t::water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly ) :
-  actor_pair_t( target, welly )
+  actor_target_data_t( target, welly )
 {
   water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) ).cd( timespan_t::zero() );
 }
@@ -1363,6 +1371,7 @@ struct icicle_t : public mage_spell_t
     may_crit = false;
     may_multistrike = 0;
     proc = background = true;
+    callbacks = false;
 
     if ( p -> glyphs.splitting_ice -> ok() )
     {
@@ -1582,7 +1591,6 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-
   }
 
   virtual double cost() const
@@ -1654,6 +1662,23 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> buffs.arcane_affinity -> up() )
     {
       t *= 1.0 + p() -> buffs.arcane_affinity -> data().effectN( 1 ).percent();
+    }
+
+    if ( p() -> arcane_trinket && p() -> buffs.arcane_power -> check() )
+    {
+      t *= 1.0 - 0.4;
+    }
+
+    return t;
+  }
+
+  virtual timespan_t gcd() const
+  {
+    timespan_t t = mage_spell_t::gcd();
+
+    if ( p() -> arcane_trinket && p() -> buffs.arcane_power -> check() )
+    {
+      t *= 1.0 - 0.4;
     }
 
     return t;
@@ -1783,6 +1808,12 @@ struct arcane_missiles_t : public mage_spell_t
     }
 
     return am;
+  }
+
+  // Flag Arcane Missiles as direct damage for triggering effects
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  {
+    return DMG_DIRECT;
   }
 
   virtual void execute()
@@ -2030,6 +2061,7 @@ struct blizzard_shard_t : public mage_spell_t
   {
     aoe = -1;
     background = true;
+    callbacks = false;
   }
 
   virtual void impact( action_state_t* s )
@@ -2564,6 +2596,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
     parse_effect_data( data().effectN( 1 ) );
     base_aoe_multiplier *= data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
     background = true;
+    callbacks = false;
   }
 
   virtual resource_e current_resource() const
@@ -2695,6 +2728,10 @@ struct frostbolt_t : public mage_spell_t
           -> trigger( 1, buff_t::DEFAULT_VALUE(),
                       p() -> spec.brain_freeze -> effectN( 1 ).percent() +
                       bf_multistrike_bonus );
+      if ( p() -> frost_trinket )
+      {
+        p() -> buffs.frost_trinket -> trigger();
+      }
     }
 
     p() -> buffs.frozen_thoughts -> expire();
@@ -3098,6 +3135,13 @@ struct ice_lance_t : public mage_spell_t
     }
   }
 
+  // If splitting ice is used, only the primary target of ice lance is allowed to proc things, and
+  // the splinters are considered a proc.
+  virtual bool impact_callbacks( const action_state_t* impact_state ) const
+  {
+    return impact_state -> chain_target == 0;
+  }
+
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
@@ -3126,6 +3170,7 @@ struct ice_lance_t : public mage_spell_t
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
+    p() -> buffs.frost_trinket -> expire();
     p() -> trigger_icicle( execute_state, true, target );
   }
 
@@ -3191,6 +3236,12 @@ struct ice_lance_t : public mage_spell_t
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
+    // 6.2 Frost trinket: Increase damage by 60% if preceded by Frostbolt
+    if ( p() -> buffs.frost_trinket -> up() )
+    {
+      am *= 1.0 + 0.6;
+    }
+
     return am;
   }
 };
@@ -3248,12 +3299,18 @@ struct icy_veins_t : public mage_spell_t
 struct inferno_blast_t : public mage_spell_t
 {
   int max_spread_targets;
+  flamestrike_t* trinket_flamestrike;
+
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "inferno_blast", p,
                   p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( options_str );
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
+
+    trinket_flamestrike = new flamestrike_t( p, options_str );
+    trinket_flamestrike -> background = true;
+    trinket_flamestrike -> callbacks = false;
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
@@ -3348,6 +3405,14 @@ struct inferno_blast_t : public mage_spell_t
 
         spread_remaining--;
       }
+
+      // 6.2 Fire trinket: 60% proc instant Flamestrike
+      if ( p() -> fire_trinket && p() -> rng().roll( 0.6 ) )
+      {
+        trinket_flamestrike -> target = s -> target;
+        trinket_flamestrike -> execute();
+      }
+
 
       trigger_hot_streak( s );
 
@@ -3552,6 +3617,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
   {
     aoe = -1;
     background = true;
+    callbacks = false;
   }
 
   virtual resource_e current_resource() const
@@ -4508,6 +4574,46 @@ struct water_jet_t : public action_t
   }
 };
 
+struct blacklight_proc_t : public mage_spell_t
+{
+  blacklight_proc_t( mage_t* player ) :
+    mage_spell_t( "blacklight", player )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = true;
+    callbacks = false;
+
+    // Mage specific control
+    may_proc_missiles = false;
+    consumes_ice_floes = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_int_c_damage;
+
+    aoe = -1;
+  }
+};
+
+struct mark_of_doom_proc_t : public mage_spell_t
+{
+  mark_of_doom_proc_t( mage_t* player ) :
+    mage_spell_t( "mark_of_doom", player )
+  {
+    school = SCHOOL_SHADOW;
+
+    background = true;
+    callbacks = false;
+
+    // Mage specific control
+    may_proc_missiles = false;
+    consumes_ice_floes = false;
+
+    base_dd_min = base_dd_max = player -> trinket_62_int_d_damage;
+
+    aoe = -1;
+  }
+};
+
 } // namespace actions
 
 namespace events {
@@ -4569,7 +4675,7 @@ struct icicle_event_t : public event_t
 // mage_td_t ================================================================
 
 mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
-  actor_pair_t( target, mage ),
+  actor_target_data_t( target, mage ),
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
@@ -4676,6 +4782,16 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "prismatic_crystal" ) return new       prismatic_crystal_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// mage_t::create_proc_action ===============================================
+
+action_t* mage_t::create_proc_action( const std::string& name )
+{
+  if ( util::str_compare_ci( name, "blacklight" ) ) return new actions::blacklight_proc_t( this );
+  if ( util::str_compare_ci( name, "mark_of_doom" ) ) return new actions::mark_of_doom_proc_t( this );
+
+  return 0;
 }
 
 // mage_t::create_pets ======================================================
@@ -4950,6 +5066,11 @@ void mage_t::create_buffs()
                                   .quiet( true )
                                   .tick_callback( frost_t17_4pc_fof_gain );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
+  buffs.frost_trinket         = buff_creator_t( this, "frost_trinket")
+                                  .duration( timespan_t::from_seconds( 0.9 ) )
+                                  .cd( timespan_t::zero() )
+                                  .chance( 1.0 );
+
 
   // Talents
   buffs.blazing_speed         = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
@@ -4959,6 +5080,17 @@ void mage_t::create_buffs()
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+}
+
+// mage_t::create_options =====================================================
+
+void mage_t::create_options()
+{
+  player_t::create_options();
+
+  add_option( opt_bool( "arcane_trinket", arcane_trinket ) );
+  add_option( opt_bool( "fire_trinket", fire_trinket ) );
+  add_option( opt_bool( "frost_trinket", frost_trinket ) );
 }
 
 // mage_t::init_gains =======================================================
@@ -5650,6 +5782,8 @@ void mage_t::apl_frost()
                                "if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time&(buff.incanters_flow.stack>3|!talent.ice_nova.enabled)))&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))" );
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react" );
+  single_target -> add_action( this, "Frostbolt",
+                               "if=spec_trinket&buff.fingers_of_frost.react&!in_flight" );
   single_target -> add_action( this, "Ice Lance",
                                "if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Frostbolt",
@@ -6204,6 +6338,33 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     };
 
     return new icicles_expr_t( *this );
+  }
+
+  if ( util::str_compare_ci( name_str, "spec_trinket" ) )
+  {
+    struct spec_trinket_expr_t : public mage_expr_t
+    {
+      spec_trinket_expr_t( mage_t& m ) : mage_expr_t( "spec_trinket", m )
+      { }
+
+      double evaluate()
+      {
+        if ( mage.specialization() == MAGE_ARCANE )
+        {
+          return static_cast<double>( mage.arcane_trinket );
+        }
+        else if ( mage.specialization() == MAGE_FIRE )
+        {
+          return static_cast<double>( mage.fire_trinket );
+        }
+        else
+        {
+          return static_cast<double>( mage.frost_trinket );
+        }
+      }
+    };
+
+    return new spec_trinket_expr_t( *this );
   }
 
   // Fallback for string based lookup to "target name" expression. Bad things
