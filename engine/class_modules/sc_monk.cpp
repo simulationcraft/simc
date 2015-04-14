@@ -564,7 +564,6 @@ public:
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual bool      init_special_effect(special_effect_t&, unsigned);
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      interrupt();
@@ -5215,7 +5214,7 @@ void monk_t::init_base_stats()
     base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
-  resources.base[RESOURCE_ENERGY] = 100 + ( ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( SET_MELEE, T18, B4 ) ) ? sets.set( SET_MELEE, T18, B4 ) -> effectN( 2 ).base_value() : 0 );
+  resources.base[RESOURCE_ENERGY] = 100 + ( ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) ) ? sets.set( SET_MELEE, T18, B4 ) -> effectN( 2 ).base_value() : 0 );
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
