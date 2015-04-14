@@ -6192,30 +6192,33 @@ struct use_item_t : public action_t
 
     // Parse Special Effect
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    buff = buff_t::find( player, e.name() );
-    if ( ! buff )
+    if ( e.type == SPECIAL_EFFECT_USE )
     {
-      buff = e.create_buff();
+      buff = buff_t::find( player, e.name() );
+      if ( ! buff )
+      {
+        buff = e.create_buff();
+      }
+
+      action = player -> find_action( e.name() );
+      if ( ! action )
+      {
+        action = e.create_action();
+      }
+
+      if ( ! buff && ! action )
+      {
+        sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
+        background = true;
+        return;
+      }
+
+      stats = player ->  get_stats( name_str, this );
+
+      cooldown = player -> get_cooldown( e.cooldown_name() );
+      cooldown -> duration = e.cooldown();
+      trigger_gcd = timespan_t::zero();
     }
-
-    action = player -> find_action( e.name() );
-    if ( ! action )
-    {
-      action = e.create_action();
-    }
-
-    if ( ! buff && ! action )
-    {
-      sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
-      background = true;
-      return;
-    }
-
-    stats = player ->  get_stats( name_str, this );
-
-    cooldown = player -> get_cooldown( e.cooldown_name() );
-    cooldown -> duration = e.cooldown();
-    trigger_gcd = timespan_t::zero();
   }
 
   void lockout( timespan_t duration )
