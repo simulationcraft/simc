@@ -2522,6 +2522,9 @@ struct rake_t : public cat_attack_t
     ir_counter -> add_buff( p -> buffs.shadowmeld );
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.1;
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2633,6 +2636,9 @@ struct rip_t : public cat_attack_t
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.1;
   }
 
   action_state_t* new_state()
@@ -2871,6 +2877,9 @@ struct thrash_cat_t : public cat_attack_t
     spell_power_mod.direct = 0;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.1;
   }
 
   // Treat direct damage as "bleed"
@@ -3337,6 +3346,9 @@ struct thrash_bear_t : public bear_attack_t
     base_multiplier *= 4.0;
 
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.1;
   }
 
   virtual void impact( action_state_t* s )
