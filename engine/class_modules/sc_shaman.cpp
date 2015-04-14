@@ -1844,9 +1844,9 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
     if ( player -> furious_winds )
     {
       const spell_data_t* data = player -> find_spell( player -> furious_winds -> spell_id );
-      double damage_value = data -> effectN( 1 ).average( player -> furious_winds -> item );
+      double damage_value = data -> effectN( 1 ).average( player -> furious_winds -> item ) / 100.0;
 
-      furious_winds_chance = data -> effectN( 2 ).average( player -> furious_winds -> item );
+      furious_winds_chance = data -> effectN( 2 ).average( player -> furious_winds -> item ) / 100.0;
 
       base_multiplier *= 1.0 + damage_value;
     }
@@ -3536,8 +3536,8 @@ struct flame_shock_t : public shaman_spell_t
     if ( player -> elemental_bellows )
     {
       const spell_data_t* data = player -> find_spell( player -> elemental_bellows -> spell_id );
-      double damage_value = data -> effectN( 1 ).average( player -> elemental_bellows -> item );
-      double duration_value = data -> effectN( 3 ).average( player -> elemental_bellows -> item );
+      double damage_value = data -> effectN( 1 ).average( player -> elemental_bellows -> item ) / 100.0;
+      double duration_value = data -> effectN( 3 ).average( player -> elemental_bellows -> item ) / 100.0;
 
       base_multiplier *= 1.0 + damage_value;
       dot_duration *= 1.0 + duration_value;
