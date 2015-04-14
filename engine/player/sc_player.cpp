@@ -545,45 +545,7 @@ player_t::player_t( sim_t*             s,
   regen_caches( CACHE_MAX ),
   dynamic_regen_pets( false ),
   visited_apls_( 0 ),
-  action_list_id_( 0 ),
-
-  // Trinket 6.2 stuff
-  trinket_62_agi_d( false ),
-  trinket_62_agi_d_duration( timespan_t::from_seconds( 10.0 ) ),
-  trinket_62_agi_d_rppm( 1.0 ),
-  trinket_62_agi_d_multiplier( 1.194 ),
-
-  trinket_62_agi_c( false ),
-  trinket_62_agi_c_speed( timespan_t::from_seconds( 2.0 ) ),
-  trinket_62_agi_c_ap_coeff( 1.0 ),
-  trinket_62_agi_c_weapon_pct( 0.5 ),
-  trinket_62_agi_c_duration( timespan_t::from_seconds( 20 ) ),
-  trinket_62_agi_c_tick_time( timespan_t::from_seconds( 1.0 ) ),
-  trinket_62_agi_c_cooldown( timespan_t::from_seconds( 120.0 ) ),
-
-  trinket_62_agi_value( 379 ),
-
-  trinket_62_int_c( false ),
-  trinket_62_int_c_damage( 12767 ),
-  trinket_62_int_c_rppm( 5.0 ),
-
-  trinket_62_int_d( false ),
-  trinket_62_int_d_duration( timespan_t::from_seconds( 10 ) ),
-  trinket_62_int_d_damage( 5587 ),
-  trinket_62_int_d_rppm( 1.5 ),
-
-  trinket_62_int_value( 379 ),
-
-  trinket_62_str_c( false ),
-  trinket_62_str_c_damage( 40394 ),
-  trinket_62_str_c_rppm( 3.0 ),
-
-  trinket_62_str_d( false ),
-  trinket_62_str_d_damage( 2655 ),
-  trinket_62_str_d_period( timespan_t::from_seconds( 3.0 ) ),
-  trinket_62_str_d_duration( timespan_t::from_seconds( 15.0 ) ),
-
-  trinket_62_str_value( 379 )
+  action_list_id_( 0 )
 {
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
@@ -1099,36 +1061,6 @@ bool player_t::init_items()
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
 
-  if ( trinket_62_agi_c )
-  {
-    gear.add_stat( STAT_AGILITY, trinket_62_agi_value );
-  }
-
-  if ( trinket_62_agi_d )
-  {
-    gear.add_stat( STAT_AGILITY, trinket_62_agi_value );
-  }
-
-  if ( trinket_62_int_c )
-  {
-    gear.add_stat( STAT_INTELLECT, trinket_62_int_value );
-  }
-
-  if ( trinket_62_int_d )
-  {
-    gear.add_stat( STAT_INTELLECT, trinket_62_int_value );
-  }
-
-  if ( trinket_62_str_c )
-  {
-    gear.add_stat( STAT_STRENGTH, trinket_62_str_value );
-  }
-
-  if ( trinket_62_str_d )
-  {
-    gear.add_stat( STAT_STRENGTH, trinket_62_str_value );
-  }
-
   return true;
 }
 
@@ -1253,351 +1185,6 @@ void player_t::init_weapon( weapon_t& w )
 
 // player_t::init_special_effects ===============================================
 
-// Custom callback that accumulates damage to the spirit shift buff
-struct agi_d_damage_driver_cb_t : public dbc_proc_callback_t
-{
-  double stored_value;
-
-  agi_d_damage_driver_cb_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect ), stored_value( 0 )
-  { }
-
-  void reset()
-  {
-    dbc_proc_callback_t::reset();
-
-    stored_value = 0;
-  }
-
-  void activate()
-  {
-    if ( ! active )
-    {
-      stored_value = 0;
-    }
-
-    dbc_proc_callback_t::activate();
-  }
-
-  void execute( action_t* /* a */, action_state_t* trigger_state )
-  {
-    if ( listener -> sim -> debug )
-    {
-      listener -> sim -> out_debug.printf( "%s spirit_shift accumulates %.0f damage.", listener -> name(), trigger_state -> result_amount );
-    }
-    stored_value += trigger_state -> result_amount;
-  }
-};
-
-struct agi_d_explosion_t : public spell_t
-{
-  agi_d_explosion_t( player_t* player ) :
-    spell_t( "spirit_shift", player )
-  {
-    background = split_aoe_damage = true;
-
-    callbacks = may_crit = false;
-
-    school = SCHOOL_ARCANE;
-    aoe = -1;
-  }
-
-  void init()
-  {
-    spell_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-};
-
-struct agi_d_buff_t : public buff_t
-{
-  // Explosion here
-  spell_t* explosion;
-  agi_d_damage_driver_cb_t* cb;
-
-  agi_d_buff_t( player_t* player ) :
-    buff_t( buff_creator_t( player, "spirit_shift" ).duration( player -> trinket_62_agi_d_duration ).chance( 1.0 ) ),
-    cb( 0 )
-  {
-    explosion = new agi_d_explosion_t( player );
-    player -> buffs.agi_d = this;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( cb -> stored_value > 0 && ! player -> is_sleeping() )
-    {
-      explosion -> base_dd_min = explosion -> base_dd_max = cb -> stored_value * player -> trinket_62_agi_d_multiplier;
-      explosion -> execute();
-    }
-
-    cb -> deactivate();
-  }
-
-  void execute( int stacks, double value, timespan_t duration )
-  {
-    buff_t::execute( stacks, value, duration );
-
-    cb -> activate();
-  }
-
-  void reset()
-  {
-    buff_t::reset();
-
-    cb -> deactivate();
-  }
-};
-
-struct trinket_62_int_c_damage_t : public spell_t
-{
-  trinket_62_int_c_damage_t( player_t* player ) :
-    spell_t( "blacklight", player )
-  {
-    school = SCHOOL_SHADOW;
-
-    background = may_crit = true;
-    callbacks = false;
-
-    base_dd_min = base_dd_max = player -> trinket_62_int_c_damage;
-
-    aoe = -1;
-  }
-};
-
-struct trinket_62_int_d_damage_t : public spell_t
-{
-  trinket_62_int_d_damage_t( player_t* player ) :
-    spell_t( "mark_of_doom", player )
-  {
-    school = SCHOOL_SHADOW;
-
-    background = may_crit = true;
-    callbacks = false;
-
-    base_dd_min = base_dd_max = player -> trinket_62_int_d_damage;
-
-    aoe = -1;
-  }
-};
-
-struct trinket_62_int_d_driver_t : public dbc_proc_callback_t
-{
-  trinket_62_int_d_driver_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect )
-  { }
-
-  void execute( action_t* /* a */, action_state_t* trigger_state )
-  {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    assert( td );
-
-    td -> debuff_mark_of_doom -> trigger();
-  }
-};
-
-struct trinket_62_int_d_damage_driver_t : public dbc_proc_callback_t
-{
-  action_t* damage;
-  player_t* target;
-
-  trinket_62_int_d_damage_driver_t( const special_effect_t& effect, action_t* d, player_t* t ) :
-    dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
-  { }
-
-  void trigger( action_t* a, void* call_data )
-  {
-    const action_state_t* s = static_cast<const action_state_t*>( call_data );
-    if ( s -> target != target )
-    {
-      return;
-    }
-
-    dbc_proc_callback_t::trigger( a, call_data );
-  }
-
-  void execute( action_t* /* a */, action_state_t* trigger_state )
-  {
-    damage -> target = trigger_state -> target;
-    damage -> execute();
-  }
-};
-
-struct trinket_62_int_d_debuff_t : public debuff_t
-{
-  trinket_62_int_d_damage_driver_t* driver_cb;
-  action_t* damage_spell;
-  special_effect_t* effect;
-
-  trinket_62_int_d_debuff_t( actor_pair_t* p ) :
-    debuff_t( buff_creator_t( *p, "mark_of_doom" ).duration( p -> source -> trinket_62_int_d_duration ).activated( false ) ),
-    damage_spell( p -> source -> find_action( "mark_of_doom" ) )
-  {
-    effect = new special_effect_t( p -> source );
-    effect -> name_str = "mark_of_doom_damage_driver";
-    effect -> proc_chance_ = 1.0;
-    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL;
-    effect -> proc_flags2_ = PF2_ALL_HIT;
-    p -> source -> special_effects.push_back( effect );
-
-    driver_cb = new trinket_62_int_d_damage_driver_t( *effect, damage_spell, p -> target );
-    driver_cb -> initialize();
-    driver_cb -> deactivate();
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    debuff_t::expire_override( expiration_stacks, remaining_duration );
-
-    driver_cb -> deactivate();
-  }
-
-  void execute( int stacks, double value, timespan_t duration )
-  {
-    debuff_t::execute( stacks, value, duration );
-
-    driver_cb -> activate();
-  }
-
-  void reset()
-  {
-    debuff_t::reset();
-
-    driver_cb -> deactivate();
-  }
-};
-
-struct trinket_62_str_c_damage_t : public melee_attack_t
-{
-  trinket_62_str_c_damage_t( player_t* player ) :
-    melee_attack_t( "fel_cleave", player )
-  {
-    school = SCHOOL_PHYSICAL;
-
-    background = special = may_crit = true;
-    callbacks = false;
-
-    base_dd_min = base_dd_max = player -> trinket_62_str_c_damage;
-
-    aoe = -1;
-  }
-};
-
-struct trinket_62_str_d_damage_t : public melee_attack_t
-{
-  trinket_62_str_d_damage_t( player_t* player ) :
-    melee_attack_t( "fel_burn", player )
-  {
-    school = SCHOOL_FIRE;
-
-    background = special = tick_may_crit = true;
-    may_crit = callbacks = false;
-
-    dot_duration = player -> trinket_62_str_d_duration;
-    base_tick_time = player -> trinket_62_str_d_period;
-
-    base_td = player -> trinket_62_str_d_damage / ( dot_duration / base_tick_time );
-    weapon_multiplier = 0;
-  }
-
-  double composite_target_multiplier( player_t* target ) const
-  {
-    double m = melee_attack_t::composite_target_multiplier( target );
-
-    const actor_target_data_t* td = player -> get_target_data( target );
-
-    m *= td -> debuff_fel_burn -> check();
-
-    return m;
-  }
-};
-
-struct trinket_62_str_d_cb_t : public dbc_proc_callback_t
-{
-  trinket_62_str_d_damage_t* damage_spell;
-
-  trinket_62_str_d_cb_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect ),
-    damage_spell( new trinket_62_str_d_damage_t( effect.player ) )
-  {
-  }
-
-  void execute( action_t* /* a */, action_state_t* trigger_state )
-  {
-    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
-    if ( ! td -> debuff_fel_burn -> up() )
-    {
-      damage_spell -> target = trigger_state -> target;
-      damage_spell -> execute();
-    }
-
-    td -> debuff_fel_burn -> trigger();
-  }
-};
-
-static void initialize_trinket62_agi_d_2( special_effect_t& effect )
-{
-  agi_d_damage_driver_cb_t* damage_cb = new agi_d_damage_driver_cb_t( effect );
-  static_cast<agi_d_buff_t*>( effect.custom_buff ) -> cb = damage_cb;
-}
-
-static void initialize_trinket62_agi_d( special_effect_t& effect )
-{
-  effect.custom_buff = new agi_d_buff_t( effect.player );
-
-  special_effect_t damage_effect( effect.player );
-  damage_effect.name_str = "spirit_shift_damage";
-  damage_effect.type = SPECIAL_EFFECT_CUSTOM;
-  damage_effect.proc_chance_ = 1.0;
-  damage_effect.proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
-  damage_effect.proc_flags2_ = PF2_ALL_HIT | PF2_ALL_MULTISTRIKE;
-  damage_effect.custom_buff = effect.custom_buff;
-  damage_effect.custom_init = initialize_trinket62_agi_d_2;
-
-  effect.player -> special_effects.push_back( new special_effect_t( damage_effect ) );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-static void initialize_trinket62_int_c( special_effect_t& effect )
-{
-  action_t* action = effect.player -> create_proc_action( "blacklight" );
-  if ( ! action )
-  {
-    action = new trinket_62_int_c_damage_t( effect.player );
-  }
-
-  effect.execute_action = action;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-static void initialize_trinket62_int_d( special_effect_t& effect )
-{
-  new trinket_62_int_d_driver_t( effect );
-}
-
-static void initialize_trinket62_str_c( special_effect_t& effect )
-{
-  action_t* a = effect.player -> create_proc_action( "fel_cleave" );
-  if ( ! a )
-  {
-    a = new trinket_62_str_c_damage_t( effect.player );
-  }
-
-  effect.execute_action = a;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-static void initialize_trinket62_str_d( special_effect_t& effect )
-{
-  new trinket_62_str_d_cb_t( effect );
-}
-
 void player_t::init_special_effects()
 {
   if ( is_pet() || is_enemy() )
@@ -1634,87 +1221,6 @@ void player_t::init_special_effects()
     {
       continue;
     }
-
-    special_effects.push_back( new special_effect_t( effect ) );
-  }
-
-  // Trinket 6.2 stuff
-  if ( trinket_62_agi_d )
-  {
-    // Then we make a callback thingy for the driver that puts up the buff
-    special_effect_t effect( this );
-    effect.name_str = "spirit_shift_driver";
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-    effect.ppm_ = -1.0 * trinket_62_agi_d_rppm;
-    effect.custom_init = initialize_trinket62_agi_d;
-    effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
-    effect.cooldown_ = trinket_62_agi_d_duration;
-
-    special_effects.push_back( new special_effect_t( effect ) );
-  }
-
-  if ( trinket_62_int_c )
-  {
-    special_effect_t effect( this );
-    effect.name_str = "blacklight_driver";
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-    effect.ppm_ = -1.0 * trinket_62_int_c_rppm;
-    if ( specialization() == MAGE_ARCANE )
-    {
-      effect.ppm_ *= 0.6;
-    }
-    effect.rppm_scale = RPPM_HASTE;
-    effect.custom_init = initialize_trinket62_int_c;
-    effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
-
-    special_effects.push_back( new special_effect_t( effect ) );
-  }
-
-  if ( trinket_62_int_d )
-  {
-    action_t* action = create_proc_action( "mark_of_doom" );
-    if ( ! action )
-    {
-      action = new trinket_62_int_d_damage_t( this );
-    }
-    (void) action;
-
-    special_effect_t effect( this );
-    effect.name_str = "mark_of_doom_driver";
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-    effect.ppm_ = -1.0 * trinket_62_int_d_rppm;
-    if ( specialization() == MAGE_ARCANE )
-    {
-      effect.ppm_ *= 0.6;
-    }
-    effect.custom_init = initialize_trinket62_int_d;
-    effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL;
-    effect.proc_flags2_ = PF2_ALL_HIT;
-
-    special_effects.push_back( new special_effect_t( effect ) );
-  }
-
-  if ( trinket_62_str_c )
-  {
-    special_effect_t effect( this );
-    effect.name_str = "fel_cleave_driver";
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-    effect.ppm_ = -1.0 * trinket_62_str_c_rppm;
-    effect.rppm_scale = RPPM_HASTE;
-    effect.custom_init = initialize_trinket62_str_c;
-    effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
-
-    special_effects.push_back( new special_effect_t( effect ) );
-  }
-
-  if ( trinket_62_str_d )
-  {
-    special_effect_t effect( this );
-    effect.name_str = "fel_burn_driver";
-    effect.type = SPECIAL_EFFECT_CUSTOM;
-    effect.proc_chance_ = 1.0;
-    effect.custom_init = initialize_trinket62_str_d;
-    effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
 
     special_effects.push_back( new special_effect_t( effect ) );
   }
@@ -2778,6 +2284,7 @@ void player_t::create_buffs()
 
   debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
                                     .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+
 }
 
 // player_t::find_item ======================================================
@@ -7035,119 +6542,6 @@ struct pool_resource_t : public action_t
   }
 };
 
-struct trinket_62_agi_c_pet_t : public pet_t
-{
-  struct bladestorm_tick_t : public melee_attack_t
-  {
-    bladestorm_tick_t( pet_t* p ) :
-      melee_attack_t( "bladestorm_tick", p )
-    {
-      school = SCHOOL_PHYSICAL;
-
-      background = special = may_crit = true;
-      callbacks = false;
-      aoe = -1;
-
-      weapon_multiplier = p -> owner -> trinket_62_agi_c_weapon_pct;
-
-      weapon = &( p -> main_hand_weapon );
-    }
-
-    void init()
-    {
-      melee_attack_t::init();
-
-      pet_t* main_pet = player -> cast_pet() -> owner -> trinket_62_agi_c_pets[ 0 ];
-      if ( player != main_pet )
-      {
-        stats = main_pet -> find_action( "bladestorm_tick" ) -> stats;
-      }
-    }
-  };
-
-  struct bladestorm_t : public melee_attack_t
-  {
-    bladestorm_t( pet_t* p ) :
-      melee_attack_t( "bladestorm", p )
-    {
-      base_tick_time = p -> owner -> trinket_62_agi_c_tick_time;
-      dot_duration = p -> owner -> trinket_62_agi_c_duration * 3;
-      callbacks = may_miss = false;
-      channeled = true;
-
-      tick_action = new bladestorm_tick_t( p );
-    }
-
-    void init()
-    {
-      melee_attack_t::init();
-
-      pet_t* main_pet = player -> cast_pet() -> owner -> trinket_62_agi_c_pets[ 0 ];
-      if ( player != main_pet )
-      {
-        stats = main_pet -> find_action( "bladestorm" ) -> stats;
-      }
-    }
-  };
-
-  trinket_62_agi_c_pet_t( player_t* owner ) :
-    pet_t( owner -> sim, owner, "agi_c_pet", true, true )
-  {
-    main_hand_weapon.type = WEAPON_BEAST;
-    main_hand_weapon.swing_time = owner -> trinket_62_agi_c_speed;
-
-    owner_coeff.ap_from_ap = owner -> trinket_62_agi_c_ap_coeff;
-  }
-
-  void init_action_list()
-  {
-    action_list_str = "bladestorm";
-
-    pet_t::init_action_list();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str )
-  {
-    if ( name == "bladestorm" ) return new bladestorm_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-};
-
-struct trinket_62_agi_c_summon_t : public action_t
-{
-  trinket_62_agi_c_summon_t( player_t* player, const std::string& opts ) :
-    action_t( ACTION_USE, "agi_c_trinket", player )
-  {
-    cooldown -> duration = player -> trinket_62_agi_c_cooldown;
-    parse_options( opts );
-  }
-
-  void execute()
-  {
-    if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-
-    for ( size_t i = 0; i < sizeof_array( player -> trinket_62_agi_c_pets ); ++i )
-    {
-      player -> trinket_62_agi_c_pets[ i ] -> summon( player -> trinket_62_agi_c_duration );
-    }
-
-    update_ready();
-  }
-
-  bool ready()
-  {
-    if ( ! player -> trinket_62_agi_c )
-    {
-      return false;
-    }
-
-    return action_t::ready();
-  }
-};
 
 } // UNNAMED NAMESPACE
 
@@ -7179,22 +6573,8 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
   if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
   //if ( name == "variable"           ) return new           variable_t( this, options_str );
-  if ( name == "trinket_62_agi_c" ) return new trinket_62_agi_c_summon_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
-}
-
-// player_t::create_pets ====================================================
-
-void player_t::create_pets()
-{
-  if ( trinket_62_agi_c )
-  {
-    for ( size_t i = 0; i < sizeof_array( trinket_62_agi_c_pets ); ++i )
-    {
-      trinket_62_agi_c_pets[ i ] = new trinket_62_agi_c_pet_t( this );
-    }
-  }
 }
 
 // player_t::parse_talents_numbers ==========================================
@@ -9193,223 +8573,186 @@ void player_t::add_option( const option_t& opt )
 void player_t::create_options()
 {
   add_option( opt_string( "name", name_str ) );
-  add_option( opt_func( "origin", parse_origin ) );
-  add_option( opt_string( "region", region_str ) );
-  add_option( opt_string( "server", server_str ) );
-  add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
-  add_option( opt_string( "id", id_str ) );
-  add_option( opt_func( "talents", parse_talent_url ) );
-  add_option( opt_func( "talent_override", parse_talent_override ) );
-  add_option( opt_string( "glyphs", glyphs_str ) );
-  add_option( opt_string( "race", race_str ) );
-  add_option( opt_func( "timeofday", parse_timeofday ) );
-  add_option( opt_int( "level", level, 0, MAX_LEVEL ) );
-  add_option( opt_bool( "ready_trigger", ready_type ) );
-  add_option( opt_func( "role", parse_role_string ) );
-  add_option( opt_string( "target", target_str ) );
-  add_option( opt_float( "skill", base.skill, 0, 1.0 ) );
-  add_option( opt_float( "distance", base.distance, 0, std::numeric_limits<double>::max() ) );
-  add_option( opt_string( "position", position_str ) );
-  add_option( opt_string( "professions", professions_str ) );
-  add_option( opt_string( "actions", action_list_str ) );
-  add_option( opt_append( "actions+", action_list_str ) );
-  add_option( opt_map( "actions.", alist_map ) );
-  add_option( opt_string( "action_list", choose_action_list ) );
-  add_option( opt_bool( "sleeping", initial.sleeping ) );
-  add_option( opt_bool( "quiet", quiet ) );
-  add_option( opt_string( "save", report_information.save_str ) );
-  add_option( opt_string( "save_gear", report_information.save_gear_str ) );
-  add_option( opt_string( "save_talents", report_information.save_talents_str ) );
-  add_option( opt_string( "save_actions", report_information.save_actions_str ) );
-  add_option( opt_string( "comment", report_information.comment_str ) );
-  add_option( opt_bool( "bugs", bugs ) );
-  add_option( opt_int( "wod_hotfix", wod_hotfix ) );
-  add_option( opt_func( "world_lag", parse_world_lag ) );
-  add_option( opt_func( "world_lag_stddev", parse_world_lag_stddev ) );
-  add_option( opt_func( "brain_lag", parse_brain_lag ) );
-  add_option( opt_func( "brain_lag_stddev", parse_brain_lag_stddev ) );
-  add_option( opt_bool( "scale_player", scale_player ) );
-  add_option( opt_string( "tmi_output", tmi_debug_file_str ) );
-  add_option( opt_float( "tmi_window", tmi_window, 0, std::numeric_limits<double>::max() ) );
-  add_option( opt_func( "spec", parse_specialization ) );
-  add_option( opt_func( "specialization", parse_specialization ) );
-  add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
+    add_option( opt_func( "origin", parse_origin ) );
+    add_option( opt_string( "region", region_str ) );
+    add_option( opt_string( "server", server_str ) );
+    add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
+    add_option( opt_string( "id", id_str ) );
+    add_option( opt_func( "talents", parse_talent_url ) );
+    add_option( opt_func( "talent_override", parse_talent_override ) );
+    add_option( opt_string( "glyphs", glyphs_str ) );
+    add_option( opt_string( "race", race_str ) );
+    add_option( opt_func( "timeofday", parse_timeofday ) );
+    add_option( opt_int( "level", level, 0, MAX_LEVEL ) );
+    add_option( opt_bool( "ready_trigger", ready_type ) );
+    add_option( opt_func( "role", parse_role_string ) );
+    add_option( opt_string( "target", target_str ) );
+    add_option( opt_float( "skill", base.skill, 0, 1.0 ) );
+    add_option( opt_float( "distance", base.distance, 0, std::numeric_limits<double>::max() ) );
+    add_option( opt_string( "position", position_str ) );
+    add_option( opt_string( "professions", professions_str ) );
+    add_option( opt_string( "actions", action_list_str ) );
+    add_option( opt_append( "actions+", action_list_str ) );
+    add_option( opt_map( "actions.", alist_map ) );
+    add_option( opt_string( "action_list", choose_action_list ) );
+    add_option( opt_bool( "sleeping", initial.sleeping ) );
+    add_option( opt_bool( "quiet", quiet ) );
+    add_option( opt_string( "save", report_information.save_str ) );
+    add_option( opt_string( "save_gear", report_information.save_gear_str ) );
+    add_option( opt_string( "save_talents", report_information.save_talents_str ) );
+    add_option( opt_string( "save_actions", report_information.save_actions_str ) );
+    add_option( opt_string( "comment", report_information.comment_str ) );
+    add_option( opt_bool( "bugs", bugs ) );
+    add_option( opt_int( "wod_hotfix", wod_hotfix ) );
+    add_option( opt_func( "world_lag", parse_world_lag ) );
+    add_option( opt_func( "world_lag_stddev", parse_world_lag_stddev ) );
+    add_option( opt_func( "brain_lag", parse_brain_lag ) );
+    add_option( opt_func( "brain_lag_stddev", parse_brain_lag_stddev ) );
+    add_option( opt_bool( "scale_player", scale_player ) );
+    add_option( opt_string( "tmi_output", tmi_debug_file_str ) );
+    add_option( opt_float( "tmi_window", tmi_window, 0, std::numeric_limits<double>::max() ) );
+    add_option( opt_func( "spec", parse_specialization ) );
+    add_option( opt_func( "specialization", parse_specialization ) );
+    add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
 
-  // Items
-  add_option( opt_string( "meta_gem",  meta_gem_str ) );
-  add_option( opt_string( "items",     items_str ) );
-  add_option( opt_append( "items+",    items_str ) );
-  add_option( opt_string( "head",      items[ SLOT_HEAD      ].options_str ) );
-  add_option( opt_string( "neck",      items[ SLOT_NECK      ].options_str ) );
-  add_option( opt_string( "shoulders", items[ SLOT_SHOULDERS ].options_str ) );
-  add_option( opt_string( "shoulder",  items[ SLOT_SHOULDERS ].options_str ) );
-  add_option( opt_string( "shirt",     items[ SLOT_SHIRT     ].options_str ) );
-  add_option( opt_string( "chest",     items[ SLOT_CHEST     ].options_str ) );
-  add_option( opt_string( "waist",     items[ SLOT_WAIST     ].options_str ) );
-  add_option( opt_string( "legs",      items[ SLOT_LEGS      ].options_str ) );
-  add_option( opt_string( "leg",       items[ SLOT_LEGS      ].options_str ) );
-  add_option( opt_string( "feet",      items[ SLOT_FEET      ].options_str ) );
-  add_option( opt_string( "foot",      items[ SLOT_FEET      ].options_str ) );
-  add_option( opt_string( "wrists",    items[ SLOT_WRISTS    ].options_str ) );
-  add_option( opt_string( "wrist",     items[ SLOT_WRISTS    ].options_str ) );
-  add_option( opt_string( "hands",     items[ SLOT_HANDS     ].options_str ) );
-  add_option( opt_string( "hand",      items[ SLOT_HANDS     ].options_str ) );
-  add_option( opt_string( "finger1",   items[ SLOT_FINGER_1  ].options_str ) );
-  add_option( opt_string( "finger2",   items[ SLOT_FINGER_2  ].options_str ) );
-  add_option( opt_string( "ring1",     items[ SLOT_FINGER_1  ].options_str ) );
-  add_option( opt_string( "ring2",     items[ SLOT_FINGER_2  ].options_str ) );
-  add_option( opt_string( "trinket1",  items[ SLOT_TRINKET_1 ].options_str ) );
-  add_option( opt_string( "trinket2",  items[ SLOT_TRINKET_2 ].options_str ) );
-  add_option( opt_string( "back",      items[ SLOT_BACK      ].options_str ) );
-  add_option( opt_string( "main_hand", items[ SLOT_MAIN_HAND ].options_str ) );
-  add_option( opt_string( "off_hand",  items[ SLOT_OFF_HAND  ].options_str ) );
-  add_option( opt_string( "tabard",    items[ SLOT_TABARD    ].options_str ) );
+    // Items
+    add_option( opt_string( "meta_gem",  meta_gem_str ) );
+    add_option( opt_string( "items",     items_str ) );
+    add_option( opt_append( "items+",    items_str ) );
+    add_option( opt_string( "head",      items[ SLOT_HEAD      ].options_str ) );
+    add_option( opt_string( "neck",      items[ SLOT_NECK      ].options_str ) );
+    add_option( opt_string( "shoulders", items[ SLOT_SHOULDERS ].options_str ) );
+    add_option( opt_string( "shoulder",  items[ SLOT_SHOULDERS ].options_str ) );
+    add_option( opt_string( "shirt",     items[ SLOT_SHIRT     ].options_str ) );
+    add_option( opt_string( "chest",     items[ SLOT_CHEST     ].options_str ) );
+    add_option( opt_string( "waist",     items[ SLOT_WAIST     ].options_str ) );
+    add_option( opt_string( "legs",      items[ SLOT_LEGS      ].options_str ) );
+    add_option( opt_string( "leg",       items[ SLOT_LEGS      ].options_str ) );
+    add_option( opt_string( "feet",      items[ SLOT_FEET      ].options_str ) );
+    add_option( opt_string( "foot",      items[ SLOT_FEET      ].options_str ) );
+    add_option( opt_string( "wrists",    items[ SLOT_WRISTS    ].options_str ) );
+    add_option( opt_string( "wrist",     items[ SLOT_WRISTS    ].options_str ) );
+    add_option( opt_string( "hands",     items[ SLOT_HANDS     ].options_str ) );
+    add_option( opt_string( "hand",      items[ SLOT_HANDS     ].options_str ) );
+    add_option( opt_string( "finger1",   items[ SLOT_FINGER_1  ].options_str ) );
+    add_option( opt_string( "finger2",   items[ SLOT_FINGER_2  ].options_str ) );
+    add_option( opt_string( "ring1",     items[ SLOT_FINGER_1  ].options_str ) );
+    add_option( opt_string( "ring2",     items[ SLOT_FINGER_2  ].options_str ) );
+    add_option( opt_string( "trinket1",  items[ SLOT_TRINKET_1 ].options_str ) );
+    add_option( opt_string( "trinket2",  items[ SLOT_TRINKET_2 ].options_str ) );
+    add_option( opt_string( "back",      items[ SLOT_BACK      ].options_str ) );
+    add_option( opt_string( "main_hand", items[ SLOT_MAIN_HAND ].options_str ) );
+    add_option( opt_string( "off_hand",  items[ SLOT_OFF_HAND  ].options_str ) );
+    add_option( opt_string( "tabard",    items[ SLOT_TABARD    ].options_str ) );
 
-  // Set Bonus
-  add_option( opt_int( "tier13_2pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier13_4pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B4 ].overridden ) );
-  add_option( opt_int( "tier13_2pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B2 ].overridden ) );
-  add_option( opt_int( "tier13_4pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B4 ].overridden ) );
-  add_option( opt_int( "tier13_2pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B2 ].overridden ) );
-  add_option( opt_int( "tier13_4pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B4 ].overridden ) );
-  add_option( opt_int( "tier13_2pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier13_4pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B4 ].overridden ) );
-  add_option( opt_int( "tier14_2pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier14_4pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B4 ].overridden ) );
-  add_option( opt_int( "tier14_2pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B2 ].overridden ) );
-  add_option( opt_int( "tier14_4pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B4 ].overridden ) );
-  add_option( opt_int( "tier14_2pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B2 ].overridden ) );
-  add_option( opt_int( "tier14_4pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B4 ].overridden ) );
-  add_option( opt_int( "tier14_2pc_heal",   sets.set_bonus_spec_data[ T14 ][ SET_HEALER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier14_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
-  add_option( opt_int( "tier15_2pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier15_4pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B4 ].overridden ) );
-  add_option( opt_int( "tier15_2pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B2 ].overridden ) );
-  add_option( opt_int( "tier15_4pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B4 ].overridden ) );
-  add_option( opt_int( "tier15_2pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B2 ].overridden ) );
-  add_option( opt_int( "tier15_4pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B4 ].overridden ) );
-  add_option( opt_int( "tier15_2pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier15_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
-  add_option( opt_int( "tier16_2pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier16_4pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B4 ].overridden ) );
-  add_option( opt_int( "tier16_2pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B2 ].overridden ) );
-  add_option( opt_int( "tier16_4pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B4 ].overridden ) );
-  add_option( opt_int( "tier16_2pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B2 ].overridden ) );
-  add_option( opt_int( "tier16_4pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B4 ].overridden ) );
-  add_option( opt_int( "tier16_2pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B2 ].overridden ) );
-  add_option( opt_int( "tier16_4pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B4 ].overridden ) );
-  add_option( opt_func( "set_bonus",         parse_set_bonus                ) );
+    // Set Bonus
+    add_option( opt_int( "tier13_2pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier13_2pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier13_2pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier13_2pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_heal",   sets.set_bonus_spec_data[ T14 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_func( "set_bonus",         parse_set_bonus                ) );
 
-  // Gear Stats
-  add_option( opt_float( "gear_strength",         gear.attribute[ ATTR_STRENGTH  ] ) );
-  add_option( opt_float( "gear_agility",          gear.attribute[ ATTR_AGILITY   ] ) );
-  add_option( opt_float( "gear_stamina",          gear.attribute[ ATTR_STAMINA   ] ) );
-  add_option( opt_float( "gear_intellect",        gear.attribute[ ATTR_INTELLECT ] ) );
-  add_option( opt_float( "gear_spirit",           gear.attribute[ ATTR_SPIRIT    ] ) );
-  add_option( opt_float( "gear_spell_power",      gear.spell_power ) );
-  add_option( opt_float( "gear_attack_power",     gear.attack_power ) );
-  add_option( opt_float( "gear_expertise_rating", gear.expertise_rating ) );
-  add_option( opt_float( "gear_haste_rating",     gear.haste_rating ) );
-  add_option( opt_float( "gear_hit_rating",       gear.hit_rating ) );
-  add_option( opt_float( "gear_crit_rating",      gear.crit_rating ) );
-  add_option( opt_float( "gear_parry_rating",     gear.parry_rating ) );
-  add_option( opt_float( "gear_dodge_rating",     gear.dodge_rating ) );
-  add_option( opt_float( "gear_health",           gear.resource[ RESOURCE_HEALTH ] ) );
-  add_option( opt_float( "gear_mana",             gear.resource[ RESOURCE_MANA   ] ) );
-  add_option( opt_float( "gear_rage",             gear.resource[ RESOURCE_RAGE   ] ) );
-  add_option( opt_float( "gear_energy",           gear.resource[ RESOURCE_ENERGY ] ) );
-  add_option( opt_float( "gear_focus",            gear.resource[ RESOURCE_FOCUS  ] ) );
-  add_option( opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ) );
-  add_option( opt_float( "gear_armor",            gear.armor ) );
-  add_option( opt_float( "gear_mastery_rating",   gear.mastery_rating ) );
-  add_option( opt_float( "gear_multistrike_rating", gear.multistrike_rating ) );
-  add_option( opt_float( "gear_readiness_rating", gear.readiness_rating ) );
-  add_option( opt_float( "gear_versatility_rating", gear.versatility_rating ) );
-  add_option( opt_float( "gear_bonus_armor",      gear.bonus_armor ) );
-  add_option( opt_float( "gear_leech_rating",     gear.leech_rating ) );
-  add_option( opt_float( "gear_run_speed_rating", gear.speed_rating ) );
+    // Gear Stats
+    add_option( opt_float( "gear_strength",         gear.attribute[ ATTR_STRENGTH  ] ) );
+    add_option( opt_float( "gear_agility",          gear.attribute[ ATTR_AGILITY   ] ) );
+    add_option( opt_float( "gear_stamina",          gear.attribute[ ATTR_STAMINA   ] ) );
+    add_option( opt_float( "gear_intellect",        gear.attribute[ ATTR_INTELLECT ] ) );
+    add_option( opt_float( "gear_spirit",           gear.attribute[ ATTR_SPIRIT    ] ) );
+    add_option( opt_float( "gear_spell_power",      gear.spell_power ) );
+    add_option( opt_float( "gear_attack_power",     gear.attack_power ) );
+    add_option( opt_float( "gear_expertise_rating", gear.expertise_rating ) );
+    add_option( opt_float( "gear_haste_rating",     gear.haste_rating ) );
+    add_option( opt_float( "gear_hit_rating",       gear.hit_rating ) );
+    add_option( opt_float( "gear_crit_rating",      gear.crit_rating ) );
+    add_option( opt_float( "gear_parry_rating",     gear.parry_rating ) );
+    add_option( opt_float( "gear_dodge_rating",     gear.dodge_rating ) );
+    add_option( opt_float( "gear_health",           gear.resource[ RESOURCE_HEALTH ] ) );
+    add_option( opt_float( "gear_mana",             gear.resource[ RESOURCE_MANA   ] ) );
+    add_option( opt_float( "gear_rage",             gear.resource[ RESOURCE_RAGE   ] ) );
+    add_option( opt_float( "gear_energy",           gear.resource[ RESOURCE_ENERGY ] ) );
+    add_option( opt_float( "gear_focus",            gear.resource[ RESOURCE_FOCUS  ] ) );
+    add_option( opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ) );
+    add_option( opt_float( "gear_armor",            gear.armor ) );
+    add_option( opt_float( "gear_mastery_rating",   gear.mastery_rating ) );
+    add_option( opt_float( "gear_multistrike_rating", gear.multistrike_rating ) );
+    add_option( opt_float( "gear_readiness_rating", gear.readiness_rating ) );
+    add_option( opt_float( "gear_versatility_rating", gear.versatility_rating ) );
+    add_option( opt_float( "gear_bonus_armor",      gear.bonus_armor ) );
+    add_option( opt_float( "gear_leech_rating",     gear.leech_rating ) );
+    add_option( opt_float( "gear_run_speed_rating", gear.speed_rating ) );
 
-  // Stat Enchants
-  add_option( opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ) );
-  add_option( opt_float( "enchant_agility",          enchant.attribute[ ATTR_AGILITY   ] ) );
-  add_option( opt_float( "enchant_stamina",          enchant.attribute[ ATTR_STAMINA   ] ) );
-  add_option( opt_float( "enchant_intellect",        enchant.attribute[ ATTR_INTELLECT ] ) );
-  add_option( opt_float( "enchant_spirit",           enchant.attribute[ ATTR_SPIRIT    ] ) );
-  add_option( opt_float( "enchant_spell_power",      enchant.spell_power ) );
-  add_option( opt_float( "enchant_attack_power",     enchant.attack_power ) );
-  add_option( opt_float( "enchant_expertise_rating", enchant.expertise_rating ) );
-  add_option( opt_float( "enchant_armor",            enchant.armor ) );
-  add_option( opt_float( "enchant_haste_rating",     enchant.haste_rating ) );
-  add_option( opt_float( "enchant_hit_rating",       enchant.hit_rating ) );
-  add_option( opt_float( "enchant_crit_rating",      enchant.crit_rating ) );
-  add_option( opt_float( "enchant_mastery_rating",   enchant.mastery_rating ) );
-  add_option( opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ) );
-  add_option( opt_float( "enchant_readiness_rating", enchant.readiness_rating ) );
-  add_option( opt_float( "enchant_versatility_rating", enchant.versatility_rating ) );
-  add_option( opt_float( "enchant_bonus_armor",      enchant.bonus_armor ) );
-  add_option( opt_float( "enchant_leech_rating",     enchant.leech_rating ) );
-  add_option( opt_float( "enchant_run_speed_rating", enchant.speed_rating ) );
-  add_option( opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ) );
-  add_option( opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ) );
-  add_option( opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ) );
-  add_option( opt_float( "enchant_energy",           enchant.resource[ RESOURCE_ENERGY ] ) );
-  add_option( opt_float( "enchant_focus",            enchant.resource[ RESOURCE_FOCUS  ] ) );
-  add_option( opt_float( "enchant_runic",            enchant.resource[ RESOURCE_RUNIC_POWER  ] ) );
+    // Stat Enchants
+    add_option( opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ) );
+    add_option( opt_float( "enchant_agility",          enchant.attribute[ ATTR_AGILITY   ] ) );
+    add_option( opt_float( "enchant_stamina",          enchant.attribute[ ATTR_STAMINA   ] ) );
+    add_option( opt_float( "enchant_intellect",        enchant.attribute[ ATTR_INTELLECT ] ) );
+    add_option( opt_float( "enchant_spirit",           enchant.attribute[ ATTR_SPIRIT    ] ) );
+    add_option( opt_float( "enchant_spell_power",      enchant.spell_power ) );
+    add_option( opt_float( "enchant_attack_power",     enchant.attack_power ) );
+    add_option( opt_float( "enchant_expertise_rating", enchant.expertise_rating ) );
+    add_option( opt_float( "enchant_armor",            enchant.armor ) );
+    add_option( opt_float( "enchant_haste_rating",     enchant.haste_rating ) );
+    add_option( opt_float( "enchant_hit_rating",       enchant.hit_rating ) );
+    add_option( opt_float( "enchant_crit_rating",      enchant.crit_rating ) );
+    add_option( opt_float( "enchant_mastery_rating",   enchant.mastery_rating ) );
+    add_option( opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ) );
+    add_option( opt_float( "enchant_readiness_rating", enchant.readiness_rating ) );
+    add_option( opt_float( "enchant_versatility_rating", enchant.versatility_rating ) );
+    add_option( opt_float( "enchant_bonus_armor",      enchant.bonus_armor ) );
+    add_option( opt_float( "enchant_leech_rating",     enchant.leech_rating ) );
+    add_option( opt_float( "enchant_run_speed_rating", enchant.speed_rating ) );
+    add_option( opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ) );
+    add_option( opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ) );
+    add_option( opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ) );
+    add_option( opt_float( "enchant_energy",           enchant.resource[ RESOURCE_ENERGY ] ) );
+    add_option( opt_float( "enchant_focus",            enchant.resource[ RESOURCE_FOCUS  ] ) );
+    add_option( opt_float( "enchant_runic",            enchant.resource[ RESOURCE_RUNIC_POWER  ] ) );
 
-  // Regen
-  add_option( opt_bool( "infinite_energy", resources.infinite_resource[ RESOURCE_ENERGY ] ) );
-  add_option( opt_bool( "infinite_focus",  resources.infinite_resource[ RESOURCE_FOCUS  ] ) );
-  add_option( opt_bool( "infinite_health", resources.infinite_resource[ RESOURCE_HEALTH ] ) );
-  add_option( opt_bool( "infinite_mana",   resources.infinite_resource[ RESOURCE_MANA   ] ) );
-  add_option( opt_bool( "infinite_rage",   resources.infinite_resource[ RESOURCE_RAGE   ] ) );
-  add_option( opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ) );
+    // Regen
+    add_option( opt_bool( "infinite_energy", resources.infinite_resource[ RESOURCE_ENERGY ] ) );
+    add_option( opt_bool( "infinite_focus",  resources.infinite_resource[ RESOURCE_FOCUS  ] ) );
+    add_option( opt_bool( "infinite_health", resources.infinite_resource[ RESOURCE_HEALTH ] ) );
+    add_option( opt_bool( "infinite_mana",   resources.infinite_resource[ RESOURCE_MANA   ] ) );
+    add_option( opt_bool( "infinite_rage",   resources.infinite_resource[ RESOURCE_RAGE   ] ) );
+    add_option( opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ) );
 
-  // Misc
-  add_option( opt_string( "skip_actions", action_list_skip ) );
-  add_option( opt_string( "modify_action", modify_action ) );
-  add_option( opt_string( "use_apl", use_apl ) );
-  add_option( opt_timespan( "reaction_time_mean", reaction_mean ) );
-  add_option( opt_timespan( "reaction_time_stddev", reaction_stddev ) );
-  add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
-  add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
-  add_option( opt_bool( "stat_cache", cache.active ) );
-  // Experimental 6.2
-  add_option( opt_bool( "trinket_62_agi_d", trinket_62_agi_d ) );
-  add_option( opt_timespan( "trinket_62_agi_d_duration", trinket_62_agi_d_duration ) );
-  add_option( opt_float( "trinket_62_agi_d_rppm", trinket_62_agi_d_rppm ) );
-  add_option( opt_float( "trinket_62_agi_d_multiplier", trinket_62_agi_d_multiplier ) );
-
-  add_option( opt_bool( "trinket_62_agi_c", trinket_62_agi_c ) );
-  add_option( opt_timespan( "trinket_62_agi_c_duration", trinket_62_agi_c_duration ) );
-  add_option( opt_timespan( "trinket_62_agi_c_cooldown", trinket_62_agi_c_cooldown ) );
-  add_option( opt_timespan( "trinket_62_agi_c_swing_time", trinket_62_agi_c_speed ) );
-  add_option( opt_timespan( "trinket_62_agi_c_tick_time", trinket_62_agi_c_tick_time ) );
-  add_option( opt_float( "trinket_62_agi_c_ap_coeff", trinket_62_agi_c_ap_coeff ) );
-  add_option( opt_float( "trinket_62_agi_c_weapon_pct", trinket_62_agi_c_weapon_pct ) );
-
-  add_option( opt_float( "trinket_62_agi_value", trinket_62_agi_value ) );
-
-  add_option( opt_bool( "trinket_62_int_c", trinket_62_int_c ) );
-  add_option( opt_float( "trinket_62_int_c_damage", trinket_62_int_c_damage ) );
-  add_option( opt_float( "trinket_62_int_c_rppm", trinket_62_int_c_rppm ) );
-
-  add_option( opt_bool( "trinket_62_int_d", trinket_62_int_d ) );
-  add_option( opt_timespan( "trinket_62_int_d_duration", trinket_62_int_d_duration ) );
-  add_option( opt_float( "trinket_62_int_d_damage", trinket_62_int_d_damage ) );
-  add_option( opt_float( "trinket_62_int_d_rppm", trinket_62_int_d_rppm ) );
-
-  add_option( opt_float( "trinket_62_int_value", trinket_62_int_value ) );
-
-  add_option( opt_bool( "trinket_62_str_c", trinket_62_str_c ) );
-  add_option( opt_float( "trinket_62_str_c_damage", trinket_62_str_c_damage ) );
-  add_option( opt_float( "trinket_62_str_c_rppm", trinket_62_str_c_rppm ) );
-
-  add_option( opt_bool( "trinket_62_str_d", trinket_62_str_d ) );
-  add_option( opt_float( "trinket_62_str_d_damage", trinket_62_str_d_damage ) );
-  add_option( opt_timespan( "trinket_62_str_d_period", trinket_62_str_d_period ) );
-  add_option( opt_timespan( "trinket_62_str_d_duration", trinket_62_str_d_duration ) );
-
-  add_option( opt_float( "trinket_62_str_value", trinket_62_str_value ) );
+    // Misc
+    add_option( opt_string( "skip_actions", action_list_skip ) );
+    add_option( opt_string( "modify_action", modify_action ) );
+    add_option( opt_string( "use_apl", use_apl ) );
+    add_option( opt_timespan( "reaction_time_mean", reaction_mean ) );
+    add_option( opt_timespan( "reaction_time_stddev", reaction_stddev ) );
+    add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
+    add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
+    add_option( opt_bool( "stat_cache", cache.active ) );
 }
 
 // player_t::create =========================================================
@@ -9716,8 +9059,8 @@ void player_t::change_position( position_e new_pos )
 
 // Player Callbacks
 
+// player_callbacks_t::register_callback =====================================
 
-// player_callbacks_t::register_allback =====================================
 static void add_callback( std::vector<action_callback_t*>& callbacks, action_callback_t* cb )
 {
   if ( std::find( callbacks.begin(), callbacks.end(), cb ) == callbacks.end() )
@@ -9859,7 +9202,8 @@ void player_callbacks_t::reset()
   action_callback_t::reset( all_callbacks );
 }
 
-
+/* Invalidate ALL stats
+ */
 void player_stat_cache_t::invalidate_all()
 {
   if ( ! active ) return;
@@ -9870,6 +9214,8 @@ void player_stat_cache_t::invalidate_all()
   range::fill( player_heal_mult_valid, false );
 }
 
+/* Invalidate ALL stats
+ */
 void player_stat_cache_t::invalidate( cache_e c )
 {
   switch ( c )
@@ -9888,6 +9234,7 @@ void player_stat_cache_t::invalidate( cache_e c )
       break;
   }
 }
+
 /* Helper function to access attribute cache functions by attribute-enumeration
  */
 double player_stat_cache_t::get_attribute( attribute_e a ) const
@@ -9905,8 +9252,8 @@ double player_stat_cache_t::get_attribute( attribute_e a ) const
 }
 
 #ifdef SC_STAT_CACHE
-
 // player_stat_cache_t::strength ============================================
+
 double player_stat_cache_t::strength() const
 {
   if ( ! active || ! valid[ CACHE_STRENGTH ] )
@@ -10324,8 +9671,8 @@ double player_stat_cache_t::avoidance() const
   return _avoidance;
 }
 
-
 // player_stat_cache_t::player_multiplier =============================================
+
 double player_stat_cache_t::player_multiplier( school_e s ) const
 {
   if ( ! active || ! player_mult_valid[ s ] )
@@ -11243,23 +10590,3 @@ player_t* player_t::actor_by_name_str( const std::string& name ) const
 
   return 0;
 }
-
-actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
-  actor_pair_t( target, source ),
-  debuff_mark_of_doom( 0 )
-{
-  if ( source -> trinket_62_int_d )
-  {
-    debuff_mark_of_doom = new trinket_62_int_d_debuff_t( this );
-  }
-
-  if ( source -> trinket_62_str_d )
-  {
-    debuff_fel_burn = buff_creator_t( *this, "fel_burn" )
-                      .refresh_behavior( BUFF_REFRESH_DISABLED )
-                      .max_stack( 50 )
-                      .duration( source -> trinket_62_str_d_duration );
-    dot_fel_burn    = target -> get_dot( "fel_burn", source );
-  }
-}
-

@@ -4396,18 +4396,6 @@ struct action_variable_t
   { current_value_ = default_; }
 };
 
-struct actor_target_data_t : public actor_pair_t
-{
-  // Int-D trinket
-  debuff_t* debuff_mark_of_doom;
-
-  // Str-D trinket
-  debuff_t* debuff_fel_burn;
-  dot_t*    dot_fel_burn;
-
-  actor_target_data_t( player_t* target, player_t* source );
-};
-
 struct player_t : public actor_t
 {
   static const int default_level = 100;
@@ -4743,9 +4731,6 @@ struct player_t : public actor_t
     buff_t* surge_of_energy;
     buff_t* natures_fury;
     buff_t* brute_strength;
-
-    // 6.2 trinket proxy stuff
-    buff_t* agi_d;
   } buffs;
 
   struct debuffs_t
@@ -5123,7 +5108,7 @@ struct player_t : public actor_t
   virtual void copy_from( player_t* source );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual void      create_pets();
+  virtual void      create_pets() { }
   virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
@@ -5180,7 +5165,8 @@ struct player_t : public actor_t
   double      get_player_distance( player_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
-  virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const;
+  virtual actor_pair_t* get_target_data( player_t* /* target */ ) const
+  { return nullptr; }
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}
@@ -5390,53 +5376,6 @@ public:
   // Figure out another actor, by name. Prioritizes pets > harmful targets >
   // other players. Used by "actor.<name>" expression currently.
   virtual player_t* actor_by_name_str( const std::string& ) const;
-
-  // Patch 6.2 trinket related stuff
-
-  // Agility D
-  bool trinket_62_agi_d;
-  timespan_t trinket_62_agi_d_duration;
-  double trinket_62_agi_d_rppm;
-  double trinket_62_agi_d_multiplier;
-
-  // Agility C
-  bool trinket_62_agi_c;
-  timespan_t trinket_62_agi_c_speed;
-  double trinket_62_agi_c_ap_coeff;
-  double trinket_62_agi_c_weapon_pct;
-  timespan_t trinket_62_agi_c_duration;
-  timespan_t trinket_62_agi_c_tick_time;
-  timespan_t trinket_62_agi_c_cooldown;
-
-  double trinket_62_agi_value;
-
-  // Intellect C
-  bool trinket_62_int_c;
-  double trinket_62_int_c_damage;
-  double trinket_62_int_c_rppm;
-
-  // Intellect D
-  bool trinket_62_int_d;
-  timespan_t trinket_62_int_d_duration;
-  double trinket_62_int_d_damage;
-  double trinket_62_int_d_rppm;
-
-  double trinket_62_int_value;
-
-  // Strength C
-  bool trinket_62_str_c;
-  double trinket_62_str_c_damage;
-  double trinket_62_str_c_rppm;
-
-  // Strength D
-  bool trinket_62_str_d;
-  double trinket_62_str_d_damage;
-  timespan_t trinket_62_str_d_period;
-  timespan_t trinket_62_str_d_duration;
-
-  double trinket_62_str_value;
-
-  pet_t* trinket_62_agi_c_pets[ 4 ];
 };
 
 // Target Specific ==========================================================
@@ -6237,9 +6176,6 @@ public:
   virtual void do_teleport( action_state_t* );
 
   virtual timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const;
-
-  virtual bool impact_callbacks( const action_state_t* /* impact_state */ ) const
-  { return callbacks; }
 };
 
 struct call_action_list_t : public action_t
@@ -6574,11 +6510,6 @@ struct strict_sequence_t : public action_t
   void interrupt_action();
   void schedule_execute( action_state_t* execute_state = 0 );
 };
-
-inline actor_target_data_t* player_t::get_target_data( player_t* ) const
-{
-  return nullptr;
-}
 
 // Primary proc type of the result (direct (aoe) damage/heal, periodic
 // damage/heal)
@@ -7261,6 +7192,23 @@ struct multistrike_execute_event_t : public event_t
         state -> action -> assess_damage( state -> result_type, state );
       else
         state -> action -> impact( state );
+
+      // Multistrike callbacks, if there are any
+      if ( state -> action -> callbacks )
+      {
+        proc_types pt = state -> proc_type();
+        proc_types2 pt2 = state -> execute_proc_type2();
+        if ( pt2 == PROC2_LANDED )
+          pt2 = state -> impact_proc_type2();
+
+        // "On an execute result"
+        if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+        {
+          action_callback_t::trigger( state -> action -> player -> callbacks.procs[ pt ][ pt2 ],
+                                      state -> action,
+                                      state );
+        }
+      }
     }
 
     action_state_t::release( state );

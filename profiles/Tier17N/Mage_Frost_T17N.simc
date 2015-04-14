@@ -102,7 +102,6 @@ actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react=2|(buff.fingers
 actions.single_target+=/comet_storm
 actions.single_target+=/ice_nova,if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time&(buff.incanters_flow.stack>3|!talent.ice_nova.enabled)))&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))
 actions.single_target+=/frostfire_bolt,if=buff.brain_freeze.react
-actions.single_target+=/frostbolt,if=spec_trinket&buff.fingers_of_frost.react&!in_flight
 actions.single_target+=/ice_lance,if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)
 # Camp procs and spam Frostbolt while 4T17 buff is up
 actions.single_target+=/frostbolt,if=set_bonus.tier17_2pc&buff.ice_shard.up&!(talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<10)

@@ -30,7 +30,7 @@ struct shaman_t;
 enum totem_e { TOTEM_NONE = 0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 enum imbue_e { IMBUE_NONE = 0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, FROSTBRAND_IMBUE, EARTHLIVING_IMBUE };
 
-#define MAX_MAELSTROM_STACK ( 10 )
+#define MAX_MAELSTROM_STACK ( 5 )
 
 struct shaman_attack_t;
 struct shaman_spell_t;
@@ -40,7 +40,7 @@ struct totem_pulse_event_t;
 struct totem_pulse_action_t;
 struct maelstrom_weapon_buff_t;
 
-struct shaman_td_t : public actor_target_data_t
+struct shaman_td_t : public actor_pair_t
 {
   struct dots
   {
@@ -122,14 +122,6 @@ public:
   // Options
   timespan_t uf_expiration_delay;
   timespan_t uf_expiration_delay_stddev;
-
-  bool trinket_62;
-  // Enhance 6.2 trinket tweak values
-  double wf_damage_increase;
-  double wf_mw_procrate;
-  // Elemental 6.2 trinket tweak values
-  double fs_damage_multiplier;
-  double fs_duration_multiplier;
 
   // Active
   action_t* active_lightning_charge;
@@ -389,11 +381,6 @@ public:
     player_t( sim, SHAMAN, name, r ),
     ls_reset( timespan_t::zero() ), lava_surge_during_lvb( false ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    trinket_62( false ),
-    wf_damage_increase( 4.0 ),
-    wf_mw_procrate( 0.5 ),
-    fs_damage_multiplier( 1.0 ),
-    fs_duration_multiplier( 1.0 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
     action_improved_lava_lash( nullptr ),
@@ -454,7 +441,7 @@ public:
   // triggers
   void trigger_molten_earth( const action_state_t* );
   void trigger_fulmination_stack( const action_state_t* );
-  void trigger_maelstrom_weapon( const action_state_t*, double override_chance = 0 );
+  void trigger_maelstrom_weapon( const action_state_t* );
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_improved_lava_lash( const action_state_t* );
@@ -546,7 +533,7 @@ counter_t::counter_t( shaman_t* p ) :
 }
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
-  actor_target_data_t( target, p )
+  actor_pair_t( target, p )
 {
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
@@ -950,8 +937,7 @@ public:
          ab::instant_eligibility() &&
          ! p -> buff.ancestral_swiftness -> check() )
     {
-      size_t stacks = std::min( 5, p -> buff.maelstrom_weapon -> check() );
-      m *= 1.0 + stacks * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
+      m *= 1.0 + p -> buff.maelstrom_weapon -> check() * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
     }
 
     return m;
@@ -1693,7 +1679,6 @@ struct lightning_charge_t : public shaman_spell_t
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
     background       = true;
     may_crit         = true;
-    proc             = true;
 
     if ( player -> spec.fulmination -> ok() )
       id = player -> spec.fulmination -> id();
@@ -1846,21 +1831,6 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
-
-    if ( player -> trinket_62 )
-    {
-      weapon_multiplier *= 1.0 + player -> wf_damage_increase;
-    }
-  }
-
-  void impact( action_state_t* state )
-  {
-    shaman_attack_t::impact( state );
-
-    if ( p() -> trinket_62 && result_is_hit( state -> result ) )
-    {
-      p() -> trigger_maelstrom_weapon( state, p() -> wf_mw_procrate );
-    }
   }
 };
 
@@ -2048,7 +2018,7 @@ void shaman_spell_base_t<Base>::execute()
   if ( eligible_for_instant && ! as_cast && p -> specialization() == SHAMAN_ENHANCEMENT )
   {
     maelstrom_weapon_executed[ p -> buff.maelstrom_weapon -> check() ] -> add( 1 );
-    p -> buff.maelstrom_weapon -> decrement ( 5 );
+    p -> buff.maelstrom_weapon -> expire();
   }
 
   p -> buff.spiritwalkers_grace -> up();
@@ -3531,12 +3501,6 @@ struct flame_shock_t : public shaman_spell_t
     uses_elemental_fusion = true;
     uses_unleash_flame    = true; // Disabled in spell data for some weird reason
     track_cd_waste        = false;
-
-    if ( player -> trinket_62 && player -> specialization() == SHAMAN_ELEMENTAL )
-    {
-      base_multiplier *= 1.0 + player -> fs_damage_multiplier;
-      dot_duration *= 1.0 + player -> fs_duration_multiplier;
-    }
   }
 
   void execute()
@@ -4558,11 +4522,6 @@ void shaman_t::create_options()
 
   add_option( opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ) );
   add_option( opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ) );
-  add_option( opt_bool( "trinket_62", trinket_62 ) );
-  add_option( opt_float( "trinket_62_enh_wf_damage", wf_damage_increase ) );
-  add_option( opt_float( "trinket_62_enh_wf_mw_procrate", wf_mw_procrate ) );
-  add_option( opt_float( "trinket_62_ele_fs_damage_multiplier", fs_damage_multiplier ) );
-  add_option( opt_float( "trinket_62_ele_fs_duration_multiplier", fs_duration_multiplier ) );
 }
 
 // shaman_t::create_action  =================================================
@@ -4654,8 +4613,6 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
-  player_t::create_pets();
-
   pet_fire_elemental       = create_pet( "fire_elemental_pet"       );
   guardian_fire_elemental  = create_pet( "fire_elemental_guardian"  );
   pet_storm_elemental      = create_pet( "storm_elemental_pet"      );
@@ -5011,11 +4968,11 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_maelstrom_weapon( const action_state_t* state, double override_chance )
+void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
 {
   assert( debug_cast< shaman_attack_t* >( state -> action ) != 0 && "Maelstrom Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
-  if ( ! attack -> may_proc_maelstrom && override_chance <= 0 )
+  if ( ! attack -> may_proc_maelstrom )
     return;
 
   if ( ! attack -> weapon )
@@ -5024,15 +4981,7 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state, double ove
   if ( ! spec.maelstrom_weapon -> ok() )
     return;
 
-  double chance = 0;
-  if ( override_chance > 0 )
-  {
-    chance = override_chance;
-  }
-  else
-  {
-    chance = attack -> weapon -> proc_chance_on_swing( 8.0 );
-  }
+  double chance = attack -> weapon -> proc_chance_on_swing( 8.0 );
 
   //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
   //  chance *= 1.2;
