@@ -2077,8 +2077,11 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       residual_periodic_action_t<rogue_attack_t>::initialize_sinister_calling( spell_id );
 
-      // Crimson tempest dot does not crit/ms, so the Sinister Calling proc will not either
-      sc_action -> may_crit = sc_action -> tick_may_crit = false;
+      if ( sc_action )
+      {
+        // Crimson tempest dot does not crit/ms, so the Sinister Calling proc will not either
+        sc_action -> may_crit = sc_action -> tick_may_crit = false;
+      }
     }
   };
 
