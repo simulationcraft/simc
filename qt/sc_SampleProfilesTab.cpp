@@ -45,8 +45,8 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
 
     QTreeWidgetItem* playerItems[PLAYER_MAX];
     range::fill( playerItems, 0 );
-    QTreeWidgetItem* rootItems[PLAYER_MAX][TIER_MAX];
-    for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
+    std::array<std::array<QTreeWidgetItem*, TIER_MAX>,PLAYER_MAX> rootItems;
+    for ( size_t i = 0u; i < rootItems.size(); ++i )
     {
       range::fill( rootItems[i], nullptr );
     }
@@ -114,6 +114,8 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
           }
 
           QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[k] << profile );
+		  assert(rootItems[player][tier]);
+		  assert(item);
           rootItems[player][tier] -> addChild( item );
         }
       }
