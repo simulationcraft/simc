@@ -2159,6 +2159,8 @@ struct tiger_palm_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 3;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier = 2.52; // hardcoded into tooltip
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
@@ -2351,7 +2353,9 @@ struct blackout_kick_t: public monk_melee_attack_t
       background = true;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 6.4; // hardcoded into tooltip
+    base_multiplier = 6.4; // hardcoded into tooltip
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier = 4.48; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
@@ -2917,6 +2921,8 @@ struct hurricane_strike_t: public monk_melee_attack_t
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
     base_multiplier = 2.5;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier = 1.75; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
@@ -3006,7 +3012,9 @@ struct melee_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) && p() -> current_stance() != WISE_SERPENT )
+    if ( maybe_ptr( p() -> dbc.ptr ) && result_is_hit( s -> result ) && p() -> current_stance() != WISE_SERPENT )
+      p() -> buff.tiger_strikes -> trigger();
+    else if ( result_is_hit_or_multistrike( s -> result ) && p() -> current_stance() != WISE_SERPENT )
       p() -> buff.tiger_strikes -> trigger();
 
     if ( p() -> spec.brewing_elusive_brew -> ok() )
@@ -5280,7 +5288,9 @@ void monk_t::create_buffs()
 
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic );
 
-  buff.serenity = buff_creator_t( this, "serenity", talent.serenity );
+  timespan_t serentiy_duration = ( maybe_ptr( dbc.ptr ) && specialization() == MONK_BREWMASTER ? timespan_t::from_seconds( talent.serenity -> effectN( 1 ).base_value() ) : talent.serenity -> duration() );
+  buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
+    .duration( serentiy_duration );
 
   buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) )
     .duration( timespan_t::from_minutes( 60 ) );
