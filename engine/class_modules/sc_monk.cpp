@@ -410,6 +410,7 @@ public:
     const spell_data_t* energizing_brew;
     const spell_data_t* fists_of_fury;
     const spell_data_t* flying_serpent_kick;
+    const spell_data_t* rising_sun_kick_trinket;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* tigereye_brew;
     const spell_data_t* touch_of_karma;
@@ -2032,14 +2033,10 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     // Use monk specific weapon damage calculation if mh or oh (monk specific weapons) are
     // specificed.
     if ( mh || oh )
-    {
       return monk_util::monk_weapon_damage( this, mh, oh, weapon_power_mod, ap );
-    }
     // Otherwise, use normal weapon damage calculation. It's only used for auto-attacks currently.
     else
-    {
       return melee_attack_t::calculate_weapon_damage( ap );
-    }
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -2097,7 +2094,10 @@ struct jab_t: public monk_melee_attack_t
 
   double combo_breaker_chance()
   {
-    return p() -> spec.combo_breaker -> effectN( 1 ).percent();
+    double cb_chance = p() -> spec.combo_breaker -> effectN( 1 ).percent();
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( SET_MELEE, T18, B4 ) )
+      cb_chance += p() -> sets.set( SET_MELEE, T18, B4 ) -> effectN( 1 ).percent();
+    return cb_chance;
   }
 
   virtual void execute()
@@ -2246,6 +2246,39 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     base_multiplier *= 10.56; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK;
+  }
+
+  double combo_breaker_chance()
+  {
+    double cb_chance = 0;
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( SET_MELEE, T18, B2 ) )
+      cb_chance += p() -> sets.set( SET_MELEE, T18, B2 ) -> effectN( 1 ).percent();
+    return cb_chance;
+  }
+
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    double cb_chance = combo_breaker_chance();
+    if ( cb_chance > 0 )
+    {
+      if ( p() -> talent.chi_explosion -> ok() )
+      {
+        if ( p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+          p() -> proc.combo_breaker_ce -> occur();
+     }
+      else
+      {
+        if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+          p() -> proc.combo_breaker_bok -> occur();
+      }
+      if ( p() -> buff.combo_breaker_tp -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+        p() -> proc.combo_breaker_tp -> occur();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -5059,6 +5092,7 @@ void monk_t::init_spells()
   spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
   spec.battle_trance                 = find_specialization_spell( "Battle Trance" );
   spec.windflurry                    = find_specialization_spell( "Windflurry" );
+  spec.rising_sun_kick_trinket       = find_spell( 185099 );
 
   // Brewmaster Passives
   spec.brewmaster_training           = find_specialization_spell( "Brewmaster Training" );
@@ -5164,7 +5198,7 @@ void monk_t::init_base_stats()
     base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
-  resources.base[RESOURCE_ENERGY] = 100;
+  resources.base[RESOURCE_ENERGY] = 100 + ( ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( SET_MELEE, T18, B4 ) ) ? sets.set( SET_MELEE, T18, B4 ) -> effectN( 2 ).base_value() : 0 );
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
