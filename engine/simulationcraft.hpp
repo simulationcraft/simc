@@ -5216,7 +5216,7 @@ struct player_t : public actor_t
   position_e position() const
   { return current.position; }
 
-  virtual action_t* create_proc_action( const std::string& /* name */ )
+  virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& /* effect */ )
   { return nullptr; }
   virtual bool requires_data_collection() const
   { return active_during_iteration; }

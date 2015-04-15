@@ -484,7 +484,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual action_t* create_proc_action( const std::string& /* name */ );
+  virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual expr_t* create_expression( action_t*, const std::string& name );
@@ -4618,7 +4618,7 @@ action_t* shaman_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-action_t* shaman_t::create_proc_action( const std::string& name )
+action_t* shaman_t::create_proc_action( const std::string& name, const special_effect_t& effect )
 {
   if ( util::str_compare_ci( name, "flurry_of_xuen" ) ) return new shaman_flurry_of_xuen_t( this );
 

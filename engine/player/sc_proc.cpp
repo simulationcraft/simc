@@ -510,6 +510,12 @@ struct proc_resource_t : public spell_t
 }
 action_t* special_effect_t::create_action() const
 {
+  action_t* a = player -> create_proc_action( name(), *this );
+  if ( a )
+  {
+    return a;
+  }
+
   switch ( action_type() )
   {
   case SPECIAL_EFFECT_ACTION_CUSTOM:
