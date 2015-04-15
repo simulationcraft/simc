@@ -48,6 +48,12 @@ public:
   bool fury_trinket;
   bool arms_trinket;
   bool prot_trinket;
+  bool fury_t18_2p;
+  bool fury_t18_4p;
+  bool arms_t18_2p;
+  bool arms_t18_4p;
+  bool prot_t18_2p;
+  bool prot_t18_4p;
 
   // Active
   struct active_t
@@ -198,6 +204,12 @@ public:
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
     const spell_data_t* t17_prot_2p;
+    const spell_data_t* t18_fury_2p;
+    const spell_data_t* t18_fury_4p;
+    const spell_data_t* t18_arms_2p;
+    const spell_data_t* t18_arms_4p;
+    const spell_data_t* t18_prot_2p;
+    const spell_data_t* t18_prot_4p;
   } spell;
 
   // Glyphs
@@ -425,6 +437,7 @@ public:
     base.distance = 5.0;
 
     fury_trinket = arms_trinket = prot_trinket = false;
+    fury_t18_2p = fury_t18_4p = arms_t18_2p = arms_t18_4p = prot_t18_2p = prot_t18_4p = false;
 
     regen_type = REGEN_DISABLED;
   }
@@ -3025,7 +3038,7 @@ struct wild_strike_t: public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> buff.bloodsurge -> up() )
+    if ( p() -> buff.bloodsurge -> check() )
       c = 0; // No spell data at the moment.
 
     return c;
@@ -3035,7 +3048,39 @@ struct wild_strike_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( execute_state -> result == RESULT_CRIT && p() -> fury_t18_4p )
+      p() -> cooldown.recklessness -> adjust( timespan_t::from_millis( -1 * p() -> spell.t18_fury_4p -> effectN( 1 ).base_value() ) );
+
     p() -> buff.bloodsurge -> decrement();
+  }
+
+  void impact( action_state_t* s )
+  {
+    if ( !result_is_multistrike( s -> result ) )
+    {
+      if ( s -> result == RESULT_CRIT && p() -> fury_t18_2p && p() -> buff.bloodsurge -> check() )
+        s -> result_amount *= 1.0 + p() -> spell.t18_fury_2p -> effectN( 2 ).percent();
+    }
+    warrior_attack_t::impact( s );
+  }
+
+  double composite_crit() const
+  {
+    double c = warrior_attack_t::composite_crit();
+
+    if ( p() -> fury_t18_2p && p() -> buff.bloodsurge -> check() )
+    {
+      c += p() -> spell.t18_fury_2p -> effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+
+  int schedule_multistrike( action_state_t* s, dmg_e type, double tick_multiplier )
+  {
+    if ( s -> result == RESULT_CRIT && p() -> fury_t18_2p && p() -> buff.bloodsurge -> check() )
+      s -> result_amount *= 1.0 + p() -> spell.t18_fury_2p -> effectN( 2 ).percent();
+    return warrior_attack_t::schedule_multistrike( s, type, tick_multiplier );
   }
 
   bool ready()
@@ -3923,6 +3968,13 @@ void warrior_t::init_spells()
   if ( perk.enhanced_rend -> ok() ) active.enhanced_rend = new enhanced_rend_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
+
+  spell.t18_arms_2p = find_spell( 185800 );
+  spell.t18_arms_4p = find_spell( 185804 );
+  spell.t18_fury_2p = find_spell( 185798 );
+  spell.t18_fury_4p = find_spell( 185799 );
+  spell.t18_prot_2p = find_spell( 185796 );
+  spell.t18_prot_4p = find_spell( 185797 );
 
   if ( !talents.gladiators_resolve -> ok() )
     gladiator = false;
@@ -5660,9 +5712,12 @@ void warrior_t::create_options()
   add_option( opt_int( "initial_rage", initial_rage ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
-  add_option( opt_bool( "fury_trinket", fury_trinket ) );
-  add_option( opt_bool( "arms_trinket", arms_trinket ) );
-  add_option( opt_bool( "prot_trinket", prot_trinket ) );
+  add_option( opt_bool( "fury_t18_2p", fury_t18_2p ) );
+  add_option( opt_bool( "fury_t18_4p", fury_t18_4p ) );
+  add_option( opt_bool( "arms_t18_2p", arms_t18_2p ) );
+  add_option( opt_bool( "arms_t18_4p", arms_t18_4p ) );
+  add_option( opt_bool( "prot_t18_2p", prot_t18_2p ) );
+  add_option( opt_bool( "prot_t18_4p", prot_t18_4p ) );
 }
 
 // Mark of the Shattered Hand ===============================================
@@ -5727,6 +5782,12 @@ void warrior_t::copy_from( player_t* source )
   fury_trinket = p -> fury_trinket;
   arms_trinket = p -> arms_trinket;
   prot_trinket = p -> prot_trinket;
+  fury_t18_2p = p -> fury_t18_2p;
+  fury_t18_4p = p -> fury_t18_4p;
+  arms_t18_2p = p -> arms_t18_2p;
+  arms_t18_4p = p -> arms_t18_4p;
+  prot_t18_2p = p -> prot_t18_2p;
+  prot_t18_4p = p -> prot_t18_4p;
 }
 
 // warrior_t::stance_swap ==================================================
