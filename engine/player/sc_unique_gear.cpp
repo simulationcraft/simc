@@ -69,6 +69,9 @@ namespace item
   void autorepairing_autoclave( special_effect_t& );
   void spellbound_runic_band( special_effect_t& );
   void spellbound_solium_band( special_effect_t& );
+
+  /* Warlords of Draenor 6.2 (WIP) */
+  void int_dps_trinket_4( special_effect_t& );
 }
 
 namespace gem
@@ -2038,6 +2041,138 @@ void item::heartpierce( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item -> player, effect );
 }
 
+// Int DPS 4 trinket aoe effect, emits from the Mark of Doomed target
+struct doom_nova_t : public spell_t
+{
+  doom_nova_t( const special_effect_t& effect ) :
+    spell_t( "doom_nova", effect.player, effect.player -> find_spell( 184075 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+
+    aoe = -1;
+  }
+};
+
+// Callback driver that executes the Doom Nova on the enemy when the Mark of Doom
+// debuff is up.
+struct mark_of_doom_damage_driver_t : public dbc_proc_callback_t
+{
+  action_t* damage;
+  player_t* target;
+
+  mark_of_doom_damage_driver_t( const special_effect_t& effect, action_t* d, player_t* t ) :
+    dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
+  { }
+
+  void trigger( action_t* a, void* call_data )
+  {
+    const action_state_t* s = static_cast<const action_state_t*>( call_data );
+    if ( s -> target != target )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state )
+  {
+    damage -> target = trigger_state -> target;
+    damage -> execute();
+  }
+};
+
+// Specialized Mark of Doom debuff, enables/disables mark_of_doom_driver_t (above) when the debuff
+// goes up/down.
+struct mark_of_doom_t : public debuff_t
+{
+  mark_of_doom_damage_driver_t* driver_cb;
+  action_t* damage_spell;
+  special_effect_t* effect;
+
+  mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger() ).activated( false ) ),
+    damage_spell( p.source -> find_action( "doom_nova" ) )
+  {
+    if ( ! damage_spell )
+    {
+      damage_spell = p.source -> create_proc_action( "doom_nova", source_effect );
+    }
+
+    if ( ! damage_spell )
+    {
+      damage_spell = new doom_nova_t( source_effect );
+    }
+
+    damage_spell -> init();
+
+    // Special effect to drive the AOE damage callback
+    effect = new special_effect_t( p.source );
+    effect -> name_str = "mark_of_doom_damage_driver";
+    effect -> proc_chance_ = 1.0;
+    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL;
+    effect -> proc_flags2_ = PF2_ALL_HIT;
+    p.source -> special_effects.push_back( effect );
+
+    // And create, initialized and deactivate the callback
+    driver_cb = new mark_of_doom_damage_driver_t( *effect, damage_spell, p.target );
+    driver_cb -> initialize();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+
+    driver_cb -> deactivate();
+  }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    debuff_t::execute( stacks, value, duration );
+
+    driver_cb -> activate();
+  }
+
+  void reset()
+  {
+    debuff_t::reset();
+
+    driver_cb -> deactivate();
+  }
+};
+
+// Int DPS 4 trinket base driver, handles the proccing (triggering) of Mark of Doom on targets
+struct int_dps_trinket_4_driver_t : public dbc_proc_callback_t
+{
+  int_dps_trinket_4_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state )
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+    // Runtime creation of the debuff, don't try this at home kids. Things should go okay .. though.
+    if ( ! td -> debuff.mark_of_doom )
+    {
+      td -> debuff.mark_of_doom = new mark_of_doom_t( actor_pair_t( trigger_state -> target, listener ), effect );
+      td -> debuff.mark_of_doom -> reset();
+    }
+
+    td -> debuff.mark_of_doom -> trigger();
+  }
+};
+
+void item::int_dps_trinket_4( special_effect_t& effect )
+{
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new int_dps_trinket_4_driver_t( effect );
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -2650,6 +2785,9 @@ void unique_gear::register_special_effect( unsigned spell_id, const std::string&
  */
 void unique_gear::register_special_effects()
 {
+  /* Warlords of Draenor 6.2 */
+  register_special_effect( 184066, item::int_dps_trinket_4              );
+
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );
   register_special_effect( 177071, item::humming_blackiron_trigger      );

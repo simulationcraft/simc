@@ -4409,6 +4409,7 @@ struct actor_target_data_t : public actor_pair_t
 {
   struct atd_debuff_t
   {
+    debuff_t* mark_of_doom;
   } debuff;
 
   struct atd_dot_t
@@ -7732,7 +7733,7 @@ inline player_t* target_wrapper_expr_t::target() const
 { return action.target; }
 
 inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
-  actor_pair_t( target, source )
+  actor_pair_t( target, source ), debuff( atd_debuff_t() ), dot( atd_dot_t() )
 { }
 
 
