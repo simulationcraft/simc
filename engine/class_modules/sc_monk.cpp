@@ -3140,8 +3140,11 @@ struct melee_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && result_is_hit( s -> result ) && p() -> current_stance() != WISE_SERPENT )
-      p() -> buff.tiger_strikes -> trigger();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( result_is_hit( s -> result ) && p() -> current_stance() != WISE_SERPENT )
+        p() -> buff.tiger_strikes -> trigger();
+    }
     else if ( result_is_hit_or_multistrike( s -> result ) && p() -> current_stance() != WISE_SERPENT )
       p() -> buff.tiger_strikes -> trigger();
 
