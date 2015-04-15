@@ -2239,13 +2239,48 @@ struct rsk_debuff_t: public monk_melee_attack_t
   }
 };
 
-struct rising_sun_kick_t: public monk_melee_attack_t
+struct rising_sun_kick_proc_t : public monk_melee_attack_t
 {
   rsk_debuff_t* rsk_debuff;
 
+  rising_sun_kick_proc_t( monk_t* p, const spell_data_t* s ) :
+    monk_melee_attack_t( "rising_sun_kick_trinket", p, s ),
+    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
+  {
+    cooldown -> duration = timespan_t::from_millis( 250 );
+    background = true;
+    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
+    mh = &( player->main_hand_weapon );
+    oh = &( player->off_hand_weapon );
+    base_multiplier *= 10.56; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
+    sef_ability = SEF_RISING_SUN_KICK;
+    min_gcd = timespan_t::from_millis( 250 );
+    trigger_gcd = timespan_t::from_millis( 250 );
+  }
+
+  virtual void impact(action_state_t* s)
+  {
+    monk_melee_attack_t::impact(s);
+
+    rsk_debuff -> execute();
+  }
+
+  virtual double cost() const
+  {
+    return 0;
+  }
+};
+
+struct rising_sun_kick_t: public monk_melee_attack_t
+{
+  rsk_debuff_t* rsk_debuff;
+  rising_sun_kick_proc_t* rsk_proc;
+
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
-    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
+    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) ),
+    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
@@ -2305,6 +2340,17 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     double savings = base_costs[RESOURCE_CHI] - cost();
     if ( result_is_hit( execute_state -> result ) )
       p() -> track_chi_consumption += savings;
+
+    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
+    // of the special effect.
+    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    {
+      const spell_data_t* data = p() -> furious_sun -> driver();
+      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+
+      if ( rng().roll( proc_chance ) )
+        rsk_proc -> execute();
+    }
   }
 };
 
@@ -2333,6 +2379,8 @@ struct heal_blackout_kick_t: public monk_heal_t
 
 struct blackout_kick_t: public monk_melee_attack_t
 {
+  rising_sun_kick_proc_t* rsk_proc;
+
   void trigger_blackout_kick_dot( blackout_kick_t* s, player_t* t, double dmg )
   {
     monk_t* p = s -> p();
@@ -2354,7 +2402,8 @@ struct blackout_kick_t: public monk_melee_attack_t
   }
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
+    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) ),
+    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
     parse_options( options_str );
     if ( p -> talent.chi_explosion -> ok() )
@@ -2436,6 +2485,17 @@ struct blackout_kick_t: public monk_melee_attack_t
       p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.combo_breaker_bok -> expire();
     }
+
+    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
+    // of the special effect.
+    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    {
+      const spell_data_t* data = p() -> furious_sun -> driver();
+      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
+
+      if ( rng().roll( proc_chance ) )
+        rsk_proc -> execute();
+    }
   }
 };
 
@@ -2488,12 +2548,15 @@ struct dot_chi_explosion_t: public residual_action::residual_periodic_action_t <
 
 struct chi_explosion_t: public monk_melee_attack_t
 {
+  rising_sun_kick_proc_t* rsk_proc;
   const spell_data_t* windwalker_chi_explosion_dot;
   const spell_data_t* spirited_crane_chi_explosion;
+
   chi_explosion_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion ),
     windwalker_chi_explosion_dot( p -> find_spell( 157680 ) ),
-    spirited_crane_chi_explosion( p -> find_spell( 159620 ) )
+    spirited_crane_chi_explosion( p -> find_spell( 159620 ) ),
+    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
     parse_options( options_str );
     may_block = false;
@@ -2573,6 +2636,23 @@ struct chi_explosion_t: public monk_melee_attack_t
     {
       if ( resource_consumed >= 3 )
         trigger_brew( 1 );
+
+      // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
+      // of the special effect.
+      if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+      {
+        const spell_data_t* data = p() -> furious_sun -> driver();
+        double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
+        // Chi Explosion's proc chance is reduced in half
+        proc_chance *= 0.50;
+
+        // Each chi spent has a chance of proccing a Rising Sun Kick. Plausible to see up to 4 RSK procs; though doubtful
+        for ( int i = 1; i <= resource_consumed; i++ )
+        {
+          if ( rng().roll( proc_chance ) )
+            rsk_proc -> execute();
+        }
+      }
     }
     else if ( p() -> current_stance() == SPIRITED_CRANE )
     {
@@ -2858,8 +2938,11 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
 
 struct fists_of_fury_t: public monk_melee_attack_t
 {
+  rising_sun_kick_proc_t* rsk_proc;
+
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury )
+    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury ),
+    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
     parse_options( options_str );
 
@@ -2892,6 +2975,21 @@ struct fists_of_fury_t: public monk_melee_attack_t
         trigger_brew( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() );
     }
   }
+
+  virtual void last_tick( dot_t* dot )
+  {
+    monk_melee_attack_t::last_tick( dot );
+    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
+    // of the special effect.
+    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    {
+      const spell_data_t* data = p() -> furious_sun -> driver();
+      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
+
+      if ( rng().roll( proc_chance ) )
+        rsk_proc -> execute();
+    }
+  }
 };
 
 // ==========================================================================
@@ -2917,8 +3015,11 @@ struct hurricane_strike_tick_t: public monk_melee_attack_t
 
 struct hurricane_strike_t: public monk_melee_attack_t
 {
+  rising_sun_kick_proc_t* rsk_proc;
+
   hurricane_strike_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike )
+    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike ),
+    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
     sef_ability = SEF_HURRICANE_STRIKE;
 
@@ -2940,6 +3041,25 @@ struct hurricane_strike_t: public monk_melee_attack_t
   {
     timespan_t tt = tick_time( s -> haste );
     return tt * 15;
+  }
+
+  virtual void last_tick(dot_t* dot)
+  {
+    monk_melee_attack_t::last_tick(dot); 
+    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    {
+      const spell_data_t* data = p() -> furious_sun -> driver();
+      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+      // Hurricane Strike's proc chance is reduced in half
+      proc_chance *= 0.50;
+
+      // Each chi spent has a chance of proccing a Rising Sun Kick. Plausible to see up to 3 RSK procs; though highly unlikely
+      for ( int i = 1; i <= base_costs[RESOURCE_CHI]; i++ )
+      {
+        if ( rng().roll( proc_chance ) )
+          rsk_proc -> execute();
+      }
+    }
   }
 
   void consume_resource()
