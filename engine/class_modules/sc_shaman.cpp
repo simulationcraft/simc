@@ -4618,7 +4618,7 @@ action_t* shaman_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-action_t* shaman_t::create_proc_action( const std::string& name, const special_effect_t& effect )
+action_t* shaman_t::create_proc_action( const std::string& name, const special_effect_t& )
 {
   if ( util::str_compare_ci( name, "flurry_of_xuen" ) ) return new shaman_flurry_of_xuen_t( this );
 

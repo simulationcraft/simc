@@ -684,7 +684,7 @@ public:
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
-  virtual action_t* create_proc_action( const std::string& name );
+  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& );
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
   virtual void      recalculate_resource_max( resource_e r );
   virtual void      copy_from( player_t* source );
@@ -7385,7 +7385,7 @@ void druid_t::copy_from( player_t* source )
 
 // druid_t::create_proc_action =============================================
 
-action_t* druid_t::create_proc_action( const std::string& name )
+action_t* druid_t::create_proc_action( const std::string& name, const special_effect_t& )
 {
   if ( name == "shattered_bleed" && specialization() == DRUID_FERAL )
     return new cat_attacks::shattered_bleed_t( this );
