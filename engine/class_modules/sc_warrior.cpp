@@ -3054,14 +3054,14 @@ struct wild_strike_t: public warrior_attack_t
     p() -> buff.bloodsurge -> decrement();
   }
 
-  void impact( action_state_t* s )
+  double total_crit_bonus() const
   {
-    if ( !result_is_multistrike( s -> result ) )
-    {
-      if ( s -> result == RESULT_CRIT && p() -> fury_t18_2p && p() -> buff.bloodsurge -> check() )
-        s -> result_amount *= 1.0 + p() -> spell.t18_fury_2p -> effectN( 2 ).percent();
-    }
-    warrior_attack_t::impact( s );
+    double bonus = warrior_attack_t::total_crit_bonus();
+
+    if ( p() -> fury_t18_4p && p() -> buff.bloodsurge -> check() )
+      bonus *= 1.0 + p() -> spell.t18_fury_2p -> effectN( 2 ).percent();
+
+    return bonus;
   }
 
   double composite_crit() const
@@ -3074,13 +3074,6 @@ struct wild_strike_t: public warrior_attack_t
     }
 
     return c;
-  }
-
-  int schedule_multistrike( action_state_t* s, dmg_e type, double tick_multiplier )
-  {
-    if ( s -> result == RESULT_CRIT && p() -> fury_t18_2p && p() -> buff.bloodsurge -> check() )
-      s -> result_amount *= 1.0 + p() -> spell.t18_fury_2p -> effectN( 2 ).percent();
-    return warrior_attack_t::schedule_multistrike( s, type, tick_multiplier );
   }
 
   bool ready()
