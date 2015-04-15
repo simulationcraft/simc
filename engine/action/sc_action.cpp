@@ -106,7 +106,7 @@ struct action_execute_event_t : public player_event_t
     {
       if ( action -> sim -> fancy_target_distance_stuff )
       {
-        if ( action -> execute_time() != timespan_t::zero() )
+        if ( action -> time_to_execute > timespan_t::zero() )
         { // No need to recheck if the execute time was zero.
           if ( action -> range > 0.0 )
           {
@@ -2812,15 +2812,14 @@ void action_t::impact( action_state_t* s )
   {
     if ( radius > 0 || range > 0 )
     {
-      if ( dot_duration == timespan_t::zero() ) // Dot applications were already checked in ready, no need to check them again.
+      if ( target != s -> target ) // No need to check the actions original target.
       {
-        double distance_from_target = s -> target -> get_position_distance( player -> x_position, player -> y_position );
-        if ( radius > 0 ) // Check radius first.
+        if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
         {
-          if ( distance_from_target > radius )
+          if ( s -> target -> get_position_distance( target -> x_position, target -> y_position ) > radius )
             return;
-        }
-        else if ( distance_from_target > range )
+        } // If they do not have a radius, they are likely based on the distance from the player.
+        else if  ( s -> target -> get_position_distance( player -> x_position, player -> y_position ) > radius )
           return;
       }
     }
