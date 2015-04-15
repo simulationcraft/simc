@@ -1298,6 +1298,12 @@ class SpellDataGenerator(DataGenerator):
             ( 58385,  0 ),          # Glyph of Hamstring
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144442, 0 ),          # T16 Melee 4 pc buff
+			( 185799, 0 ),          # T18 Fury 4P
+			( 185800, 0 ),          # T18 Arms 2P
+			( 185804, 0 ),          # T18 Arms 4P
+			( 185798, 0 ),          # T18 Fury 2P
+			( 185797, 0 ),          # T18 Protection 4P
+			( 185796, 0 ),          # T18 Protection 2P
         ),
 
         # Paladin:
