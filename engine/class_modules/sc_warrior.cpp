@@ -5712,6 +5712,9 @@ void warrior_t::create_options()
   add_option( opt_int( "initial_rage", initial_rage ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
+  add_option( opt_bool( "fury_trinket", fury_trinket ) );
+  add_option( opt_bool( "arms_trinket", arms_trinket ) );
+  add_option( opt_bool( "prot_trinket", prot_trinket ) );
   add_option( opt_bool( "fury_t18_2p", fury_t18_2p ) );
   add_option( opt_bool( "fury_t18_4p", fury_t18_4p ) );
   add_option( opt_bool( "arms_t18_2p", arms_t18_2p ) );
