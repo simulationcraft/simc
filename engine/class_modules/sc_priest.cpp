@@ -15,7 +15,7 @@ namespace actions { namespace spells { struct shadowy_apparition_spell_t; } }
 /* Priest target data
  * Contains target specific things
  */
-struct priest_td_t : public actor_pair_t
+struct priest_td_t : public actor_target_data_t
 {
 public:
   struct dots_t
@@ -5113,7 +5113,7 @@ struct spirit_shell_t : public priest_buff_t<buff_t>
 // ==========================================================================
 
 priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
-  actor_pair_t( target, &p ),
+  actor_target_data_t( target, &p ),
   dots(),
   buffs(),
   glyph_of_mind_harvest_consumed( false ),

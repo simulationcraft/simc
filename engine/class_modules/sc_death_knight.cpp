@@ -149,7 +149,7 @@ struct runes_t
 // Death Knight
 // ==========================================================================
 
-struct death_knight_td_t : public actor_pair_t
+struct death_knight_td_t : public actor_target_data_t
 {
   dot_t* dots_blood_plague;
   dot_t* dots_breath_of_sindragosa;
@@ -580,7 +580,7 @@ public:
 
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
-  actor_pair_t( target, death_knight )
+  actor_target_data_t( target, death_knight )
 {
   dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
   dots_breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
@@ -1181,7 +1181,7 @@ namespace pets {
 // Dancing Rune Weapon
 // ==========================================================================
 
-struct dancing_rune_weapon_td_t : public actor_pair_t
+struct dancing_rune_weapon_td_t : public actor_target_data_t
 {
   dot_t* dots_blood_plague;
   dot_t* dots_frost_fever;
@@ -1662,7 +1662,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 };
 
 dancing_rune_weapon_td_t::dancing_rune_weapon_td_t( player_t* target, dancing_rune_weapon_pet_t* drw ) :
-  actor_pair_t( target, drw )
+  actor_target_data_t( target, drw )
 {
   dots_blood_plague    = target -> get_dot( "blood_plague",        drw );
   dots_frost_fever     = target -> get_dot( "frost_fever",         drw );

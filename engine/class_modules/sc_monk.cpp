@@ -170,7 +170,7 @@ double monk_weapon_damage( action_t* action,
 }
 } // Namespace 'monk_util' ends
 
-struct monk_td_t: public actor_pair_t
+struct monk_td_t: public actor_target_data_t
 {
 public:
 
@@ -659,12 +659,12 @@ struct jade_serpent_statue_t: public statue_t
 
 struct storm_earth_and_fire_pet_t : public pet_t
 {
-  struct sef_td_t: public actor_pair_t
+  struct sef_td_t: public actor_target_data_t
   {
     debuff_t* rising_sun_kick;
 
     sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) :
-      actor_pair_t( target, source ),
+      actor_target_data_t( target, source ),
       rising_sun_kick( buff_creator_t( *this, "rising_sun_kick" ).spell( source -> find_spell( 130320 ) ) )
     { }
   };
@@ -5052,7 +5052,7 @@ namespace buffs
 // ==========================================================================
 
 monk_td_t::monk_td_t( player_t* target, monk_t* p ):
-actor_pair_t( target, p ),
+actor_target_data_t( target, p ),
 dots( dots_t() ),
 debuff( buffs_t() ),
 monk( *p )

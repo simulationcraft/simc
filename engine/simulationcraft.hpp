@@ -4405,6 +4405,19 @@ struct action_variable_t
   { current_value_ = default_; }
 };
 
+struct actor_target_data_t : public actor_pair_t
+{
+  struct atd_debuff_t
+  {
+  } debuff;
+
+  struct atd_dot_t
+  {
+  } dot;
+
+  actor_target_data_t( player_t* target, player_t* source );
+};
+
 struct player_t : public actor_t
 {
   static const int default_level = 100;
@@ -5174,7 +5187,7 @@ struct player_t : public actor_t
   double      get_player_distance( player_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
-  virtual actor_pair_t* get_target_data( player_t* /* target */ ) const
+  virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
 
   // Opportunity to perform any stat fixups before analysis
@@ -7717,6 +7730,11 @@ inline double target_wrapper_expr_t::evaluate()
 
 inline player_t* target_wrapper_expr_t::target() const
 { return action.target; }
+
+inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
+  actor_pair_t( target, source )
+{ }
+
 
 /* Simple String to Number function, using stringstream
  * This will NOT translate all numbers in the string to a number,
