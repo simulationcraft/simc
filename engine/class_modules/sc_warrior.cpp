@@ -467,7 +467,7 @@ public:
   virtual void      moving();
   virtual void      init_rng();
   virtual void      create_options();
-  virtual action_t* create_proc_action( const std::string& name );
+  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
   virtual void      invalidate_cache( cache_e );
   virtual double    temporary_movement_modifier() const;
@@ -4839,7 +4839,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() + prot_trinket ? 0.2 : 0.0 )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() + ( prot_trinket ? 0.2 : 0.0 ) )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -5695,7 +5695,7 @@ struct warrior_shattered_bleed_t: public warrior_attack_t
 
 // warrior_t::create_proc_action =============================================
 
-action_t* warrior_t::create_proc_action( const std::string& name )
+action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& )
 {
   if ( name == "shattered_bleed" ) return new warrior_shattered_bleed_t(this);
 
