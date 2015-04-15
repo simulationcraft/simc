@@ -3103,7 +3103,7 @@ void player_t::invalidate_cache( cache_e c )
 {
   if ( ! cache.active ) return;
 
-  if ( sim -> log ) sim -> out_log.printf( "%s invalidates %s", name(), util::cache_type_string( c ) );
+  if ( sim -> debug ) sim -> out_debug.printf( "%s invalidates %s", name(), util::cache_type_string( c ) );
 
   // Special linked invalidations
   switch ( c )
