@@ -3753,9 +3753,10 @@ struct set_bonus_t
     const spell_data_t* spell;
     const item_set_bonus_t* bonus;
     int overridden;
+    bool enabled;
 
     set_bonus_data_t() :
-      spell( spell_data_t::not_found() ), bonus( 0 ), overridden( -1 )
+      spell( spell_data_t::not_found() ), bonus( 0 ), overridden( -1 ), enabled( false )
     { }
   };
 
@@ -3823,11 +3824,11 @@ struct set_bonus_t
 
   // Fast accessor for checking whether a set bonus is enabled
   bool has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
-  { return set( spec, set_bonus, bonus ) != spell_data_t::not_found(); }
+  { return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].enabled; }
 
   // Fast accessor for checking whether a set bonus is enabled
   bool has_set_bonus( set_role_e role, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
-  { return set( role, set_bonus, bonus ) != spell_data_t::not_found(); }
+  { return set_bonus_spec_data[ set_bonus ][ role ][ bonus ].enabled; }
 
   bool parse_set_bonus_option( const std::string& opt_str, set_bonus_type_e& set_bonus, set_role_e& role, set_bonus_e& bonus );
   std::string to_string() const;

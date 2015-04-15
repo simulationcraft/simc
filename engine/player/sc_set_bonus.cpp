@@ -197,18 +197,20 @@ void set_bonus_t::initialize()
         {
           if ( data.bonus -> bonus == 2 )
           {
-            if ( !actor -> sim -> disable_2_set_bonus )
+            if ( ! actor -> sim -> disable_2_set_bonus )
               data.spell = actor -> find_spell( data.bonus -> spell_id );
           }
           else if ( data.bonus -> bonus == 4 )
           {
-            if ( !actor -> sim -> disable_4_set_bonus )
+            if ( ! actor -> sim -> disable_4_set_bonus )
               data.spell = actor -> find_spell( data.bonus -> spell_id );
           }
           else
           {
             data.spell = actor -> find_spell( data.bonus -> spell_id );
           }
+
+          data.enabled = true;
         }
       }
     }
