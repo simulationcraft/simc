@@ -1684,6 +1684,7 @@ struct lightning_charge_t : public shaman_spell_t
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
     background       = true;
     may_crit         = true;
+    callbacks        = false;
 
     if ( player -> spec.fulmination -> ok() )
       id = player -> spec.fulmination -> id();
