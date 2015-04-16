@@ -873,6 +873,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
       may_multistrike = 1; // Yep. It can multistrike.
       aoe = 1;
+      range = 5.0;
       school = SCHOOL_PHYSICAL;
       weapon = &p -> main_hand_weapon;
       weapon_multiplier = 0.5;
@@ -890,10 +891,8 @@ static void trigger_sweeping_strikes( action_state_t* s )
         {
           if ( sim -> fancy_target_distance_stuff )
           {
-            if ( sim -> target_non_sleeping_list[i] -> get_position_distance( player -> x_position, player -> y_position ) )
-            {
+            if ( sim -> target_non_sleeping_list[i] -> get_position_distance( player -> x_position, player -> y_position ) < range )
               tl.push_back( sim -> target_non_sleeping_list[i] );
-            }
           }
           else
           {
@@ -907,7 +906,8 @@ static void trigger_sweeping_strikes( action_state_t* s )
 
     void execute()
     {
-      target_cache.is_valid = false;
+      if ( available_targets( target_cache.list ) <= 0 )
+        return;
       warrior_attack_t::execute();
       if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
         p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
@@ -937,8 +937,8 @@ static void trigger_sweeping_strikes( action_state_t* s )
 
     void execute()
     {
-      target_cache.is_valid = false;
-
+      if ( available_targets( target_cache.list ) <= 0 )
+        return;
       base_dd_max *= pct_damage; //Deals 50% of original damage
       base_dd_min *= pct_damage;
 
@@ -958,10 +958,8 @@ static void trigger_sweeping_strikes( action_state_t* s )
         {
           if ( sim -> fancy_target_distance_stuff )
           {
-            if ( sim -> target_non_sleeping_list[i] -> get_position_distance( player -> x_position, player -> y_position ) )
-            {
+            if ( sim -> target_non_sleeping_list[i] -> get_position_distance( player -> x_position, player -> y_position ) < range )
               tl.push_back( sim -> target_non_sleeping_list[i] );
-            }
           }
           else
           {
@@ -969,6 +967,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
           }
         }
       }
+
       return tl.size();
     }
   };
