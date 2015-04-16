@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -156,7 +156,7 @@ Resource         : 50 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Vendetta (79140), Sinister Strike Enabler (79327), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Cold Blood (182304)
+Affecting spells : Adrenaline Rush (13750), Vendetta (79140), Sinister Strike Enabler (79327), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Cold Blood (182304), Adrenaline Rush (186286)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -298,7 +298,7 @@ Name             : Vanish (id=1856) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 34
 Cooldown         : 120 seconds
-Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638)
+Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638), Item - Rogue T18 Subtlety 2P Bonus (186278)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -339,7 +339,7 @@ Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Ruthlessness (174597), Adrenaline Rush (186286)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -427,7 +427,7 @@ Resource         : 35 Energy
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Ruthlessness (174597), Cold Blood (182304), Eviscerating Blade (184917), 
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Ruthlessness (174597), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -612,7 +612,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Sanguinary Vein (124271), Improved Slice and Dice (157513), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Sanguinary Vein (124271), Improved Slice and Dice (157513), Ruthlessness (174597), Adrenaline Rush (186286)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -875,7 +875,7 @@ Name             : Vanish (id=11327) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 24
 Duration         : 3 seconds
-Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638)
+Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638), Item - Rogue T18 Subtlety 2P Bonus (186278)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -900,7 +900,7 @@ Class            : Combat Rogue
 Spell Level      : 40
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865)
+Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Item - Rogue T18 Combat 4P Bonus (186288)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1590,7 +1590,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards
 #4 (id=221814)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
-Description      : Step through the shadows to a visible enemy within 10 yards, attacking 7 times over $d for $57841sw3 Physical damage with your main-hand and $57842sw3 Physical damage with your off-hand.
+Description      : Step through the shadows to a visible enemy within 10 yards, attacking 7 times over $d for $57841sw3 Physical damage with your main-hand and $57842sw3 Physical damage with your off-hand. While this effect is active, you are immune to roots and snares.
 
 While Blade Flurry is active, each Killing Spree attack will teleport to and damage a different nearby enemy target.
 Tooltip          : Attacking an enemy every $t1 sec.
@@ -2415,6 +2415,24 @@ Effects          :
 #1 (id=55365)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
+Name             : Killing Spree (id=61851) [Spell Family (8), Hidden] 
+Class            : Rogue
+Duration         : 3 seconds
+Affecting spells : Glyph of Killing Spree (63252)
+Attributes       : ....x..x x....... x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ xx...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=55781)    : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=55782)    : Apply Aura (6) | Unknown effect sub type (147)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2053
+Description      : Step through the shadows from enemy to enemy within 10 yards, attacking an enemy every .5 secs with both weapons until 5 assaults are made.  Can hit the same target multiple times.  Cannot hit invisible or stealthed targets.
+
 Name             : Glyph of Vendetta (Assassination) (id=63249) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2445,6 +2463,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57366)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Killing Spree (61851)
 Description      : Your Killing Spree returns you to your starting location when the effect ends.
 
 Name             : Glyph of Stealth (id=63253) [Spell Family (8), Passive, Hidden] 
@@ -2964,7 +2983,7 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
-Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Item - Rogue T17 Combat 2P Bonus (165480), Cold Blood (182304)
+Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Item - Rogue T17 Combat 2P Bonus (165480), Cold Blood (182304), Adrenaline Rush (186286)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3281,7 +3300,7 @@ Resource         : 30 Energy
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Envenom (32645), Vendetta (79140), Blindside (121153), Sanguinary Vein (124271), Silent Blades (145193), Enhanced Vendetta (158108), Cold Blood (170882)
+Affecting spells : Envenom (32645), Vendetta (79140), Blindside (121153), Sanguinary Vein (124271), Silent Blades (145193), Enhanced Vendetta (158108), Cold Blood (170882), Item - Rogue T18 Assassination 4P Bonus (186277)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4813,7 +4832,7 @@ Name             : Rupture (id=168963) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 46
 Range            : 5 yards
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Ruthlessness (174597), Adrenaline Rush (186286)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ .x...... 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 

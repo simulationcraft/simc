@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -693,9 +693,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=186903)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Kick with a blast of Chi energy, dealing ${4.48*$<low>} to ${4.48*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
+Description      : Kick with a blast of Chi energy, dealing ${6.08*$<low>} to ${6.08*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
 
-Also deals ${4.9645*$<low>} to ${4.9645*$<high>} damage to up to $116645s4 additional nearby targets][].$?s128595[
+Also deals ${6.08*$<low>} to ${6.08*$<high>} damage to up to $116645s4 additional nearby targets][].$?s128595[
 
 If behind the target, you deal an additional $m2% damage over $128531d. If in front of the target, you are instantly healed for $m2% of the damage done.][]$?s154436[
 
@@ -728,12 +728,12 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108870)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.70000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.95000
 #2 (id=152982)   : Trigger Spell: Tiger Power (64)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 125359
 #3 (id=184683)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Attack with the palm of your hand, dealing ${2.52*$<low>} to ${2.52*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
+Description      : Attack with the palm of your hand, dealing ${3.42*$<low>} to ${3.42*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -910,7 +910,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=118198)   : Trigger Spell: Rising Sun Kick (64)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 185099
-Description      : You kick upwards, dealing ${10.56*$<low>} to ${10.56*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
+Description      : You kick upwards, dealing ${10.0*$<low>} to ${10.0*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
@@ -1064,7 +1064,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 117418
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0
-Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*7.755*$<low>+5*7.755*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
+Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*7.367*$<low>+5*7.367*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
 Tooltip          : $w2 damage every $t2 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -1151,7 +1151,7 @@ Effects          :
 #7 (id=153830)   : Apply Aura (6) | Unknown effect sub type (197)
                    Base Value: -6 | Scaled Value: -6
 #8 (id=157383)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 20 | Scaled Value: 20
 #9 (id=157505)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 #10 (id=214843)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
@@ -1202,7 +1202,7 @@ Resource         : 2% Base Mana (3200 @Level 100) w/ Stance of the Spirited Cran
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Desperate Measures (126060), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Glyph of Expel Harm (159487)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Desperate Measures (126060), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Glyph of Expel Harm (159487), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1348,7 +1348,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Charges          : 1 (8 seconds cooldown)
-Affecting spells : Thunder Focus Tea (116680), Lucidity (137331), Improved Renewing Mist (157398), Pool of Mists (173841)
+Affecting spells : Thunder Focus Tea (116680), Lucidity (137331), Improved Renewing Mist (157398), Pool of Mists (173841), Extend Life (185158)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1409,7 +1409,7 @@ Range            : 40 yards
 GCD              : 0.5 seconds
 Duration         : 8 seconds
 Cooldown         : 1 seconds
-Affecting spells : Enveloping Mist (132120), Lucidity (137331)
+Affecting spells : Enveloping Mist (132120), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ x....... ........   ..x...x. ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1624,7 +1624,7 @@ Resource         : 4.37% Base Mana (6992 @Level 100)
 Spell Level      : 78
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Lucidity (137331)
+Affecting spells : Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1779,7 +1779,7 @@ Spell Level      : 64
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Affecting spells : Guard (115295), Lucidity (137331)
+Affecting spells : Guard (115295), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2085,6 +2085,7 @@ Resource         : 2 Chi
 Spell Level      : 62
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
+Affecting spells : Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2133,7 +2134,7 @@ Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Vital Mists (118674), Glyph of Surging Mist (120483), Item - Monk T14 Mistweaver 2P Bonus (123152), Lucidity (137331)
+Affecting spells : Vital Mists (118674), Glyph of Surging Mist (120483), Item - Monk T14 Mistweaver 2P Bonus (123152), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2201,7 +2202,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=131900)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Misc Value 2: 0x1b
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 0x7f | Misc Value 2: 0x1b
 #2 (id=198411)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127
 #3 (id=251578)   : Apply Aura (6) | Dummy (4)
@@ -2386,7 +2387,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680), Brewmaster Training (117967)
+Affecting spells : Thunder Focus Tea (116680), Brewmaster Training (117967), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2425,6 +2426,7 @@ Name             : Spinning Crane Kick (id=117640) [Scaling Spell (5), Spell Fam
 Class            : Monk
 Spell Level      : 1
 Cast Time        : 3 seconds
+Affecting spells : Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ..x..... 
@@ -2637,6 +2639,7 @@ Stacks           : 5 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
+Affecting spells : Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2774,7 +2777,7 @@ Name             : Renewing Mist (id=119611) [Scaling Spell (5), Spell Family (5
 Class            : Monk
 Range            : 50000 yards
 Duration         : 18 seconds
-Affecting spells : Lucidity (137331), Improved Renewing Mist (157398), Pool of Mists (173841)
+Affecting spells : Lucidity (137331), Improved Renewing Mist (157398), Pool of Mists (173841), Extend Life (185158)
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -3222,7 +3225,7 @@ Description      : Heals you for $s1% of your maximum health when a damaging att
 
 Name             : Healing Elixirs (id=122281) [Spell Family (53)] 
 Class            : Monk
-Affecting spells : Guard (115295)
+Affecting spells : Guard (115295), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3324,7 +3327,7 @@ Spell Level      : 34
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Vital Mists (118674), Glyph of Surging Mist (120483), Item - Monk T14 Mistweaver 2P Bonus (123152), Lucidity (137331)
+Affecting spells : Vital Mists (118674), Glyph of Surging Mist (120483), Item - Monk T14 Mistweaver 2P Bonus (123152), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3655,7 +3658,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3711,7 +3714,7 @@ Name             : Chi Torpedo (id=124040) [Scaling Spell (5), Spell Family (53)
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Guard (115295)
+Affecting spells : Guard (115295), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : .......x ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3726,7 +3729,7 @@ Description      : $@spelldesc115008
 Name             : Gift of the Serpent (id=124041) [Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
-Affecting spells : Guard (115295), Lucidity (137331)
+Affecting spells : Guard (115295), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -3749,7 +3752,7 @@ Cooldown         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3770,7 +3773,7 @@ Name             : Zen Sphere (id=124098) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Extend Life (185158)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ .x...... ......x.   ........ ........ ........ .x....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3786,7 +3789,7 @@ Name             : Zen Sphere: Detonate (id=124101) [Scaling Spell (5), Spell Fa
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3968,7 +3971,7 @@ Description      : $@spelldesc124502
 Name             : Gift of the Ox (id=124507) [Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
-Affecting spells : Guard (115295)
+Affecting spells : Guard (115295), Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -3988,7 +3991,7 @@ Spell Level      : 16
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Item - Monk T14 Mistweaver 4P Bonus (123153)
+Affecting spells : Item - Monk T14 Mistweaver 4P Bonus (123153), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4062,7 +4065,7 @@ Name             : Zen Sphere: Detonate (id=125033) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4539,7 +4542,7 @@ Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (132120), Lucidity (137331)
+Affecting spells : Enveloping Mist (132120), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ x....... ........   ..x...x. ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4559,7 +4562,7 @@ Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1 seconds
 Proc Chance      : 20%
-Affecting spells : Enveloping Mist (132120), Lucidity (137331)
+Affecting spells : Enveloping Mist (132120), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4969,7 +4972,7 @@ Name             : Chi Burst (id=130654) [Scaling Spell (5), Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -5015,7 +5018,7 @@ Range            : 100 yards
 Cast Time        : 2 seconds
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Item - Monk T14 Mistweaver 4P Bonus (123153)
+Affecting spells : Item - Monk T14 Mistweaver 4P Bonus (123153), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..xx.... ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -5036,7 +5039,7 @@ Name             : Chi Wave (id=132463) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Guard (115295), Brewmaster Training (117967), Storm, Earth, and Fire (137639), 
+Affecting spells : Guard (115295), Brewmaster Training (117967), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -5111,7 +5114,7 @@ Tooltip          : Your next Brew or Tea will also heal you for $s1% of your tot
 Name             : Gift of the Serpent (id=135920) [Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
-Affecting spells : Guard (115295), Lucidity (137331)
+Affecting spells : Guard (115295), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -5629,7 +5632,7 @@ Class            : Monk
 Spell Level      : 64
 Range            : 40 yards
 Duration         : 60 seconds
-Affecting spells : Guard (115295), Lucidity (137331)
+Affecting spells : Guard (115295), Lucidity (137331), Extend Life (185158)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5654,7 +5657,7 @@ Name             : Chi Burst (id=148135) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 30
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -5688,7 +5691,7 @@ Class            : Monk
 Resource         : 1 Chi
 Range            : 30 yards
 GCD              : 1 seconds
-Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5697,9 +5700,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210679)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.47500
 #2 (id=219865)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.47500 | Radius: 0 - 8 yards
 Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
 
 1+ Chi: Deals Nature damage to an enemy equal to $s1 plus $s1 per Chi consumed.
@@ -5728,7 +5731,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=220666)   : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
-Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*1.75*$<low>} to ${15*1.75*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
+Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*2.375*$<low>} to ${15*2.375*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
 Tooltip          : Unleashing kicks rapidly, and immune to movement impairing and loss of control effects.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -6018,7 +6021,7 @@ Resource         : 1 Chi
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6044,7 +6047,7 @@ Class            : Monk
 Resource         : 1 Chi
 Range            : 40 yards
 GCD              : 1 seconds
-Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6090,7 +6093,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
                  : ........ x......x ........ ........   ........ ........ ........ ........ 
@@ -6374,7 +6377,7 @@ Class            : Monk
 Resource         : 1 Chi
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6525,6 +6528,7 @@ Name             : Rushing Jade Wind (id=162530) [Scaling Spell (5), Spell Famil
 Class            : Monk
 Spell Level      : 1
 Cast Time        : 3 seconds
+Affecting spells : Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ..x..... 
@@ -6608,7 +6612,7 @@ Effects          :
 Name             : Healing Sphere (id=163212) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
-Affecting spells : Guard (115295), Lucidity (137331)
+Affecting spells : Guard (115295), Lucidity (137331), Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -6830,7 +6834,7 @@ Description      : Choose a level 60 talent.
 Name             : Gift of the Ox (id=178173) [Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
-Affecting spells : Guard (115295)
+Affecting spells : Guard (115295), Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -6877,7 +6881,7 @@ Name             : Zen Sphere (id=182032) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Extend Life (185158)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ .x...... ......x.   ........ ........ ........ .x....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -6898,7 +6902,7 @@ Name             : Chi Explosion (id=182078) [Spell Family (53)]
 Class            : Monk
 Range            : 40 yards
 Cast Time        : 1.5 seconds
-Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

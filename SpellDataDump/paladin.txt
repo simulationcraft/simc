@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -980,12 +980,12 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21471)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 0x7e | Radius: 40 yards
+                   Base Value: -20 | Scaled Value: -20 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 40 yards
 #2 (id=118420)   : Trigger Spell: Devotion Aura (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 64364
-Description      : Inspire $?s146955[yourself][all party and raid members within $a1 yards], granting $?s146955[you][them] immunity to Silence and Interrupt effects and reducing all magic damage taken by $s1%. Lasts $d.
+Description      : Inspire $?s146955[yourself][all party and raid members within $a1 yards], granting $?s146955[you][them] immunity to Silence and Interrupt effects and reducing all damage taken by $s1%. Lasts $d.
 Tooltip          : Immune to Silence and Interrupt effects.
-Magic damage taken reduced by $s1%.
+Damage taken reduced by $s1%.
 
 Name             : Avenging Wrath (id=31842) [Spell Family (10)] 
 Class            : Holy Paladin

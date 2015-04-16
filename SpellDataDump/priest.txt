@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -295,7 +295,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=881)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.64000
 #2 (id=222398)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=240281)   : Dummy (3)
@@ -1405,6 +1405,7 @@ Class            : Priest
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
+Affecting spells : Reperation (186478)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1422,6 +1423,7 @@ Class            : Priest
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
+Affecting spells : Reperation (186478)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2627,10 +2629,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68105)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.81000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Mind Spike (73510), Insanity (129197)
 #2 (id=224463)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.81000 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500 | Misc Value: 22
                    Affected Spells: Mind Flay (15407), Insanity (129197)
 Description      : Increases the damage of Mind Blast, Mind Spike, and Mind Flay by ${$m1}.1%.
 

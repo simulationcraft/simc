@@ -1,4 +1,4 @@
-SimulationCraft 612-01 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -832,6 +832,7 @@ Class            : Druid
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
+Affecting spells : Item - Druid T18 Feral 2P Bonus (185805), Item - Druid T18 Guardian 2P Bonus (185813), 
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1452,7 +1453,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Harmony (100977), Ironbark (102342), Tricks of Time (105864), Glyph of Blooming (121840), Lucidity (137247)
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Harmony (100977), Ironbark (102342), Tricks of Time (105864), Glyph of Blooming (121840), Lucidity (137247), Item - Druid T18 Restoration 4P Bonus (185397)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. .....x.. ........ ........ 
@@ -1474,7 +1475,7 @@ Name             : Lifebloom (id=33778) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 64
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Harmony (100977), Ironbark (102342), Tricks of Time (105864), Glyph of Blooming (121840), Lucidity (137247)
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Harmony (100977), Ironbark (102342), Tricks of Time (105864), Glyph of Blooming (121840), Lucidity (137247), Item - Druid T18 Restoration 4P Bonus (185397)
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2192,6 +2193,19 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=47752)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 173
+
+Name             : Untamed Stars (id=54871) 
+Class            : Druid
+Spell Level      : 75
+Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=47754)    : Unknown effect type (74)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175
 
 Name             : The Orca (id=54872) 
 Class            : Druid
@@ -4414,7 +4428,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126851)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Radius: 0 - 40 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Radius: 0 - 40 yards
 Description      : Heals one of the most injured nearby friendly targets for ${$m1*0.333/1.1}.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
@@ -5072,6 +5086,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
+Affecting spells : Item - Druid T18 Feral 2P Bonus (185805), Item - Druid T18 Guardian 2P Bonus (185813), 
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5491,6 +5506,20 @@ Effects          :
                    Affected Spells: Wild Mushroom (145205)
 Description      : Your Wild Mushroom spell can now be placed on the ground instead of underneath a target.
 
+Name             : Glyph of Untamed Stars (Balance) (id=146655) [Spell Family (7), Passive, Hidden] 
+Class            : Druid
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=198235)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
+Description      : Your Starfall and Sunfall now hit all enemies within $50286a yards.
+
 Name             : Glyph of One With Nature (id=146656) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5792,6 +5821,7 @@ Class            : Druid
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 7 seconds
+Affecting spells : Item - Druid T18 Feral 2P Bonus (185805), Item - Druid T18 Guardian 2P Bonus (185813), 
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

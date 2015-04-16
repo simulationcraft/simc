@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19890
+// Class based active abilities, wow build 19906
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1003,7 +1003,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19890
+// Talent tree specialization abilities, wow build 19906
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1944,7 +1944,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19890
+// Class mastery abilities, wow build 19906
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2167,7 +2167,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19890
+// Racial abilities, wow build 19906
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2890,7 +2890,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19890
+// Glyph spells for classes, wow build 19906
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3499,7 +3499,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       171752, // Savagery
            0,
     },
-    // Minor Glyphs (15 spells)
+    // Minor Glyphs (16 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
@@ -3507,6 +3507,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       146656, // Glyph of One With Nature
       114301, // Glyph of Stars
       159456, // Glyph of Travel
+      146655, // Glyph of Untamed Stars
       107059, // Glyph of the Chameleon
       131113, // Glyph of the Cheetah
       164997, // Glyph of the Flapping Owl
@@ -3529,7 +3530,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19890
+// Tier item set bonuses for class, wow build 19906
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3952,9 +3953,9 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
   },
 };
 
-#define PTR_SET_BONUS_DATA_SIZE (382)
+#define PTR_SET_BONUS_DATA_SIZE (442)
 
-// Set bonus data, wow build 19890
+// Set bonus data, wow build 19906
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4354,11 +4355,73 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    2,  103, 165432, { 115540, 115541, 115542, 115543, 115544,  0 } },
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    3,  102, 165433, { 115540, 115541, 115542, 115543, 115544,  0 } },
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    3,  102, 166677, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "6.2 Raid Set Tier 17 - Warrior"             ,     "tier18",      8,  1258,   18,   2,   1,              {   0 },    0,   73, 185796, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "6.2 Raid Set Tier 17 - Warrior"             ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    0,   73, 185797, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "6.2 Raid Set Tier 17 - Warrior"             ,     "tier18",      8,  1258,   18,   2,   1,              {   0 },    2,   71, 185800, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "6.2 Raid Set Tier 17 - Warrior"             ,     "tier18",      8,  1258,   18,   2,   1,              {   0 },    2,   72, 185798, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "6.2 Raid Set Tier 17 - Warrior"             ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    2,   71, 185804, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "6.2 Raid Set Tier 17 - Warrior"             ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    2,   72, 185799, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "6.2 Raid Set Tier 17 - Paladin"             ,     "tier18",      8,  1254,   18,   2,   2,              {  65 },    1,   -1, 185545, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "6.2 Raid Set Tier 17 - Paladin"             ,     "tier18",      8,  1254,   18,   2,   2,              {  65 },    1,   -1, 185675, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "6.2 Raid Set Tier 17 - Paladin"             ,     "tier18",      8,  1254,   18,   2,   2,              {  65 },    1,   -1, 185581, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "6.2 Raid Set Tier 17 - Paladin"             ,     "tier18",      8,  1254,   18,   4,   2,              {  65 },    1,   -1, 185571, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "6.2 Raid Set Tier 17 - Paladin"             ,     "tier18",      8,  1254,   18,   4,   2,              {  65 },    1,   -1, 185677, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "6.2 Raid Set Tier 17 - Paladin"             ,     "tier18",      8,  1254,   18,   4,   2,              {  65 },    1,   -1, 185648, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "6.2 Raid Set Tier 17 - Hunter"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  253, 165517, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "6.2 Raid Set Tier 17 - Hunter"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  254, 165519, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "6.2 Raid Set Tier 17 - Hunter"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  255, 165544, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "6.2 Raid Set Tier 17 - Hunter"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  253, 165518, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "6.2 Raid Set Tier 17 - Hunter"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  254, 165525, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "6.2 Raid Set Tier 17 - Hunter"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  255, 165545, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "6.2 Raid Set Tier 18 - Rogue"               ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  259, 186182, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "6.2 Raid Set Tier 18 - Rogue"               ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  260, 186285, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "6.2 Raid Set Tier 18 - Rogue"               ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  261, 186278, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "6.2 Raid Set Tier 18 - Rogue"               ,     "tier18",      8,  1256,   18,   4,   4,              {   0 },    2,  259, 186277, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "6.2 Raid Set Tier 18 - Rogue"               ,     "tier18",      8,  1256,   18,   4,   4,              {   0 },    2,  260, 186288, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "6.2 Raid Set Tier 18 - Rogue"               ,     "tier18",      8,  1256,   18,   4,   4,              {   0 },    2,  261, 186279, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "6.2 Raid Set Tier 18 - Priest"              ,     "tier18",      8,  1255,   18,   2,   5,              {   0 },    1,  256, 186477, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "6.2 Raid Set Tier 18 - Priest"              ,     "tier18",      8,  1255,   18,   2,   5,              {   0 },    1,  257, 186298, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "6.2 Raid Set Tier 18 - Priest"              ,     "tier18",      8,  1255,   18,   4,   5,              {   0 },    1,  256, 186492, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "6.2 Raid Set Tier 18 - Priest"              ,     "tier18",      8,  1255,   18,   4,   5,              {   0 },    1,  257, 186378, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "6.2 Raid Set Tier 18 - Priest"              ,     "tier18",      8,  1255,   18,   2,   5,              {   0 },    3,  258, 186980, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "6.2 Raid Set Tier 18 - Priest"              ,     "tier18",      8,  1255,   18,   4,   5,              {   0 },    3,  258, 186981, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "6.2 Raid Set Tier 17 - Shaman"              ,     "tier18",      8,  1257,   18,   2,   7,              {   0 },    1,  264, 185873, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "6.2 Raid Set Tier 17 - Shaman"              ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    1,  264, 185874, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "6.2 Raid Set Tier 17 - Shaman"              ,     "tier18",      8,  1257,   18,   2,   7,              {   0 },    2,  263, 185871, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "6.2 Raid Set Tier 17 - Shaman"              ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    2,  263, 185872, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "6.2 Raid Set Tier 17 - Shaman"              ,     "tier18",      8,  1257,   18,   2,   7,              {   0 },    3,  262, 185880, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "6.2 Raid Set Tier 17 - Shaman"              ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    3,  262, 185881, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "6.2 Raid Set Tier 17 - Mage"                ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   62, 186165, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "6.2 Raid Set Tier 17 - Mage"                ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   63, 186167, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "6.2 Raid Set Tier 17 - Mage"                ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   64, 185969, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "6.2 Raid Set Tier 17 - Mage"                ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   62, 186166, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "6.2 Raid Set Tier 17 - Mage"                ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   63, 186168, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "6.2 Raid Set Tier 17 - Mage"                ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   63, 185971, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "6.2 Raid Set Tier 17 - Warlock"             ,     "tier18",      8,  1259,   18,   2,   9,              {   0 },    3,  265, 185882, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "6.2 Raid Set Tier 17 - Warlock"             ,     "tier18",      8,  1259,   18,   2,   9,              {   0 },    3,  266, 185884, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "6.2 Raid Set Tier 17 - Warlock"             ,     "tier18",      8,  1259,   18,   2,   9,              {   0 },    3,  267, 185965, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "6.2 Raid Set Tier 17 - Warlock"             ,     "tier18",      8,  1259,   18,   4,   9,              {   0 },    3,  265, 185883, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "6.2 Raid Set Tier 17 - Warlock"             ,     "tier18",      8,  1259,   18,   4,   9,              {   0 },    3,  266, 185964, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "6.2 Raid Set Tier 17 - Warlock"             ,     "tier18",      8,  1259,   18,   4,   9,              {   0 },    3,  267, 185967, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "6.2 Raid Set Tier 17 - Monk"                ,     "tier18",      8,  1252,   18,   2,  10,              {   0 },    0,  268, 185398, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "6.2 Raid Set Tier 17 - Monk"                ,     "tier18",      8,  1252,   18,   4,  10,              {   0 },    0,  268, 185399, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "6.2 Raid Set Tier 17 - Monk"                ,     "tier18",      8,  1252,   18,   2,  10,              {   0 },    1,  270, 185126, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "6.2 Raid Set Tier 17 - Monk"                ,     "tier18",      8,  1252,   18,   4,  10,              {   0 },    1,  270, 185258, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "6.2 Raid Set Tier 17 - Monk"                ,     "tier18",      8,  1252,   18,   2,  10,              {   0 },    2,  269, 185542, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "6.2 Raid Set Tier 17 - Monk"                ,     "tier18",      8,  1252,   18,   4,  10,              {   0 },    2,  269, 185543, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "6.2 Raid Set Tier 17 - Druid"               ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    0,  104, 185813, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "6.2 Raid Set Tier 17 - Druid"               ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    0,  104, 185814, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "6.2 Raid Set Tier 17 - Druid"               ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    1,  105, 185294, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "6.2 Raid Set Tier 17 - Druid"               ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    1,  105, 185397, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "6.2 Raid Set Tier 17 - Druid"               ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    2,  103, 185805, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "6.2 Raid Set Tier 17 - Druid"               ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    2,  103, 185811, { 124246, 124255, 124261, 124267, 124272,  0 } },
 };
 
 #define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19890
+// Perk specialization abilities, wow build 19906
 static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
@@ -4666,8 +4729,8 @@ static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19890
-static glyph_property_data_t __ptr_glyph_property_data[484] = {
+// Glyph properties, wow build 19906
+static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -4676,6 +4739,7 @@ static glyph_property_data_t __ptr_glyph_property_data[484] = {
   {   171, 116218 },
   {   172,  17076 },
   {   173,  54825 },
+  {   175, 146655 },
   {   176, 114333 },
   {   177,  54831 },
   {   178, 116216 },
