@@ -887,7 +887,19 @@ static void trigger_sweeping_strikes( action_state_t* s )
       for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
       {
         if ( sim -> target_non_sleeping_list[i] != target )
-          tl.push_back( sim -> target_non_sleeping_list[i] );
+        {
+          if ( sim -> fancy_target_distance_stuff )
+          {
+            if ( sim -> target_non_sleeping_list[i] -> get_position_distance( player -> x_position, player -> y_position ) )
+            {
+              tl.push_back( sim -> target_non_sleeping_list[i] );
+            }
+          }
+          else
+          {
+            tl.push_back( sim -> target_non_sleeping_list[i] );
+          }
+        }
       }
 
       return tl.size();
@@ -895,6 +907,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
 
     void execute()
     {
+      target_cache.is_valid = false;
       warrior_attack_t::execute();
       if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
         p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
@@ -910,6 +923,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
       may_multistrike = 1;
       aoe = 1;
+      range = 5.0;
       weapon_multiplier = 0;
       base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
@@ -923,6 +937,8 @@ static void trigger_sweeping_strikes( action_state_t* s )
 
     void execute()
     {
+      target_cache.is_valid = false;
+
       base_dd_max *= pct_damage; //Deals 50% of original damage
       base_dd_min *= pct_damage;
 
@@ -939,9 +955,20 @@ static void trigger_sweeping_strikes( action_state_t* s )
       for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
       {
         if ( sim -> target_non_sleeping_list[i] != target )
-          tl.push_back( sim -> target_non_sleeping_list[i] );
+        {
+          if ( sim -> fancy_target_distance_stuff )
+          {
+            if ( sim -> target_non_sleeping_list[i] -> get_position_distance( player -> x_position, player -> y_position ) )
+            {
+              tl.push_back( sim -> target_non_sleeping_list[i] );
+            }
+          }
+          else
+          {
+            tl.push_back( sim -> target_non_sleeping_list[i] );
+          }
+        }
       }
-
       return tl.size();
     }
   };
@@ -1258,7 +1285,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     dual = true;
     aoe = -1;
     range = data().effectN( 1 ).radius_max();
-    radius = range;
+    radius = -1;
     weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
   }
 
@@ -1288,7 +1315,7 @@ struct bladestorm_t: public warrior_attack_t
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
     range = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
-    radius = range;
+    radius = -1;
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
 
@@ -1642,6 +1669,7 @@ struct dragon_roar_t: public warrior_attack_t
     aoe = -1;
     may_dodge = may_parry = may_block = false;
     range = p -> find_spell( 118000 ) -> effectN( 1 ).radius_max();
+    radius = -1.0;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -2256,7 +2284,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    radius = 10; // Meat cleaver RBs have a 10 yard radius. Not found in spell data. 
+    range = 10; // Meat cleaver RBs have a 10 yard range. Not found in spell data. 
   }
 
   void execute()
@@ -2757,6 +2785,7 @@ struct shockwave_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
     range = data().effectN( 2 ).radius_max();
+    radius = -1.0;
     aoe = -1;
   }
 
@@ -2840,6 +2869,7 @@ struct thunder_clap_t: public warrior_attack_t
     aoe = -1;
     may_dodge = may_parry = may_block = false;
     range = data().effectN( 2 ).radius_max();
+    radius = -1.0;
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
@@ -2927,7 +2957,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     aoe = -1;
     range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
     range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
-    radius = range;
+    radius = -1;
     weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
   }
@@ -2956,7 +2986,7 @@ struct whirlwind_t: public warrior_attack_t
 
     range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
     range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
-    radius = range;
+    radius = -1.0;
     if ( p -> specialization() == WARRIOR_FURY )
     {
       if ( p -> off_hand_weapon.type != WEAPON_NONE )

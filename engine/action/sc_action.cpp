@@ -1045,8 +1045,8 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
     player_t* t = sim -> target_non_sleeping_list[ i ];
 
     if ( t -> is_enemy() && ( t != target ) )
-      tl.push_back( t );
-  }
+            tl.push_back( t );
+        }
 
   if ( sim -> debug )
   {
@@ -2812,16 +2812,13 @@ void action_t::impact( action_state_t* s )
   {
     if ( radius > 0 || range > 0 )
     {
-      if ( target != s -> target ) // No need to check the actions original target.
+      if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
       {
-        if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
-        {
-          if ( s -> target -> get_position_distance( target -> x_position, target -> y_position ) > radius )
-            return;
-        } // If they do not have a radius, they are likely based on the distance from the player.
-        else if  ( s -> target -> get_position_distance( player -> x_position, player -> y_position ) > radius )
+        if ( target -> get_position_distance( s -> target -> x_position, s -> target -> y_position ) > radius )
           return;
-      }
+      } // If they do not have a radius, they are likely based on the distance from the player.
+      else if ( s -> target -> get_position_distance( player -> x_position, player -> y_position ) > range )
+        return;
     }
   }
 
