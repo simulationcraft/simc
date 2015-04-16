@@ -72,6 +72,7 @@ namespace item
 
   /* Warlords of Draenor 6.2 (WIP) */
   void int_dps_trinket_4( special_effect_t& );
+  void int_dps_trinket_3( special_effect_t& );
 }
 
 namespace gem
@@ -2173,6 +2174,39 @@ void item::int_dps_trinket_4( special_effect_t& effect )
   new int_dps_trinket_4_driver_t( effect );
 }
 
+struct darklight_ray_t : public spell_t
+{
+  darklight_ray_t( const special_effect_t& effect ) :
+    spell_t( "darklight_ray", effect.player, effect.player -> find_spell( 183950 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+
+    aoe = -1;
+  }
+};
+
+void item::int_dps_trinket_3( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "darklight_ray" );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "darklight_ray", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new darklight_ray_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_= PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -2787,6 +2821,7 @@ void unique_gear::register_special_effects()
 {
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184066, item::int_dps_trinket_4              );
+  register_special_effect( 183951, item::int_dps_trinket_3              );
 
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );
