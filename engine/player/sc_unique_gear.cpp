@@ -2098,18 +2098,6 @@ struct mark_of_doom_t : public debuff_t
     debuff_t( buff_creator_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger() ).activated( false ) ),
     damage_spell( p.source -> find_action( "doom_nova" ) )
   {
-    if ( ! damage_spell )
-    {
-      damage_spell = p.source -> create_proc_action( "doom_nova", source_effect );
-    }
-
-    if ( ! damage_spell )
-    {
-      damage_spell = new doom_nova_t( source_effect );
-    }
-
-    damage_spell -> init();
-
     // Special effect to drive the AOE damage callback
     effect = new special_effect_t( p.source );
     effect -> name_str = "mark_of_doom_damage_driver";
@@ -2151,6 +2139,23 @@ struct int_dps_trinket_4_driver_t : public dbc_proc_callback_t
   int_dps_trinket_4_driver_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.player, effect )
   { }
+
+  void initialize()
+  {
+    dbc_proc_callback_t::initialize();
+
+    action_t* damage_spell = listener -> find_action( "doom_nova" );
+
+    if ( ! damage_spell )
+    {
+      damage_spell = listener -> create_proc_action( "doom_nova", effect );
+    }
+
+    if ( ! damage_spell )
+    {
+      damage_spell = new doom_nova_t( effect );
+    }
+  }
 
   void execute( action_t* /* a */, action_state_t* trigger_state )
   {

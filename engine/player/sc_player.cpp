@@ -2175,6 +2175,13 @@ bool player_t::init_actions()
   return true;
 }
 
+// player_t::init_finished ==================================================
+
+void player_t::init_finished()
+{
+  range::for_each( action_list, std::mem_fn( &action_t::init_finished ) );
+}
+
 // player_t::create_buffs ===================================================
 
 void player_t::create_buffs()
@@ -5929,14 +5936,49 @@ struct restore_mana_t : public action_t
 struct snapshot_stats_t : public action_t
 {
   bool completed;
+  spell_t*  proxy_spell;
+  attack_t* proxy_attack;
+  role_e role;
 
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "snapshot_stats", player ),
-    completed( false )
+    completed( false ), proxy_spell( 0 ), proxy_attack( 0 ),
+    role( player -> primary_role() )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     harmful = false;
+
+    if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
+    {
+      proxy_spell = new spell_t( "snapshot_spell", player );
+      proxy_spell -> background = true;
+      proxy_spell -> callbacks = false;
+    }
+
+    if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
+    {
+      proxy_attack = new melee_attack_t( "snapshot_attack", player );
+      proxy_attack -> background = true;
+      proxy_attack -> callbacks = false;
+    }
+  }
+
+  void init_finished()
+  {
+    action_t::init_finished();
+
+    player_t* p = player;
+    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    {
+      pet_t* pet = p -> pet_list[ i ];
+      action_t* pet_snapshot = pet -> find_action( "snapshot_stats" );
+      if ( ! pet_snapshot )
+      {
+        pet_snapshot = pet -> create_action( "snapshot_stats", "" );
+        pet_snapshot -> init();
+      }
+    }
   }
 
   virtual void execute()
@@ -5991,7 +6033,6 @@ struct snapshot_stats_t : public action_t
     buffed_stats.block        = p -> cache.block();
     buffed_stats.crit         = p -> cache.crit_avoidance();
 
-    role_e role = p -> primary_role();
     double spell_hit_extra = 0, attack_hit_extra = 0, expertise_extra = 0;
 
     // The code below is not properly handling the case where the player has
@@ -6010,29 +6051,23 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
-      spell_t* spell = new spell_t( "snapshot_spell", p  );
-      spell -> background = true;
-      spell -> init();
-      double chance = spell -> miss_chance( spell -> composite_hit(), sim -> target );
+      double chance = proxy_spell -> miss_chance( proxy_spell -> composite_hit(), sim -> target );
       if ( chance < 0 ) spell_hit_extra = -chance * p -> current_rating().spell_hit;
     }
 
     if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
     {
-      attack_t* attack = new melee_attack_t( "snapshot_attack", p );
-      attack -> background = true;
-      attack -> init();
-      double chance = attack -> miss_chance( attack -> composite_hit(), sim -> target );
+      double chance = proxy_attack -> miss_chance( proxy_attack -> composite_hit(), sim -> target );
       if ( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> current_rating().attack_hit;
-      if ( p -> position() != POSITION_FRONT  )
+      if ( p -> position() != POSITION_FRONT )
       {
-        chance = attack -> dodge_chance( p -> cache.attack_expertise(), sim -> target );
+        chance = proxy_attack -> dodge_chance( p -> cache.attack_expertise(), sim -> target );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
-      else if ( p ->position() == POSITION_FRONT )
+      else if ( p -> position() == POSITION_FRONT )
       {
-        chance = attack -> parry_chance( p -> cache.attack_expertise(), sim -> target );
+        chance = proxy_attack -> parry_chance( p -> cache.attack_expertise(), sim -> target );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
     }
@@ -6044,8 +6079,10 @@ struct snapshot_stats_t : public action_t
     {
       pet_t* pet = p -> pet_list[ i ];
       action_t* pet_snapshot = pet -> find_action( "snapshot_stats" );
-      if ( ! pet_snapshot ) pet_snapshot = pet -> create_action( "snapshot_stats", "" );
-      pet_snapshot -> execute();
+      if ( pet_snapshot )
+      {
+        pet_snapshot -> execute();
+      }
     }
   }
 

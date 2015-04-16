@@ -384,6 +384,12 @@ action_t::action_t( action_e       ty,
 
   util::tokenize( name_str );
 
+  if ( sim -> initialized )
+  {
+    sim -> errorf( "Player %s action %s created after simulator initialization.",
+        player -> name(), name() );
+  }
+
   if ( sim -> current_iteration > 0 )
   {
     sim -> errorf( "Player %s creating action %s ouside of the first iteration", player -> name(), name() );

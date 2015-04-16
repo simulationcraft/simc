@@ -1821,7 +1821,6 @@ bool sim_t::init_actors()
   range::for_each( actor_list, std::mem_fn( &player_t::init_benefits ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_rng ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_stats ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_finished ) );
 
   // check that we have at least one active player
   if ( ! check_actors() )
@@ -2016,8 +2015,6 @@ bool sim_t::init()
 
   simulation_length.reserve( std::min( iterations, 10000 ) );
 
-  initialized = true;
-
   for ( size_t i = 0, end = player_list.size(); i < end; i++ )
   {
     if ( player_list[ i ] -> regen_type == REGEN_STATIC )
@@ -2026,6 +2023,13 @@ bool sim_t::init()
       break;
     }
   }
+
+  if ( ! canceled )
+  {
+    range::for_each( actor_list, std::mem_fn( &player_t::init_finished ) );
+  }
+
+  initialized = true;
 
   return canceled ? false : true;
 }

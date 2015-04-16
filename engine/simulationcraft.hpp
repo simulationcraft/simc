@@ -4873,7 +4873,7 @@ struct player_t : public actor_t
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
-  virtual void init_finished() {}
+  virtual void init_finished();
   virtual void register_callbacks();
   // Class specific hook for first-phase initializing special effects. Returns true if the class-specific hook initialized something, false otherwise.
   virtual bool init_special_effect( special_effect_t& /* effect */, unsigned /* spell_id */ ) { return false; }
@@ -5960,6 +5960,7 @@ struct action_t : public noncopyable
   virtual bool   usable_moving() const;
   virtual bool   ready();
   virtual void   init();
+  virtual void   init_finished() {}
   virtual void   init_target_cache();
   virtual void   reset();
   virtual void   cancel();
@@ -6990,7 +6991,7 @@ struct dbc_proc_callback_t : public action_callback_t
     proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
   { }
 
-  void initialize();
+  virtual void initialize();
 
   void reset()
   {
