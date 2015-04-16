@@ -2168,7 +2168,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier = 3;
     if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 2.52; // hardcoded into tooltip
+      base_multiplier = 2.85; // hardcoded into tooltip
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
@@ -2253,6 +2253,8 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     mh = &( player->main_hand_weapon );
     oh = &( player->off_hand_weapon );
     base_multiplier *= 10.56; // hardcoded into tooltip
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier = 10.032; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK;
     min_gcd = timespan_t::from_millis( 250 );
@@ -2289,6 +2291,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 10.56; // hardcoded into tooltip
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier = 10.032; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK;
   }
@@ -2412,7 +2416,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier = 6.4; // hardcoded into tooltip
     if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 4.48; // hardcoded into tooltip
+      base_multiplier = 6.08; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
@@ -2954,6 +2958,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
     interrupt_auto_attack = true;
 
     base_multiplier *= 7.755; // hardcoded into tooltip
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier = 7.3625; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
@@ -3031,7 +3037,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
     base_tick_time = dot_duration / 15;
     base_multiplier = 2.5;
     if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 1.75; // hardcoded into tooltip
+      base_multiplier = 2.375; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
