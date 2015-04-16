@@ -104,20 +104,6 @@ struct action_execute_event_t : public player_event_t
     // action -> pre_execute_state.
     if ( execute_state )
     {
-      if ( action -> sim -> fancy_target_distance_stuff )
-      {
-        if ( action -> time_to_execute > timespan_t::zero() )
-        { // No need to recheck if the execute time was zero.
-          if ( action -> range > 0.0 )
-          {
-            if ( target -> get_position_distance( action -> player -> x_position, action -> player -> y_position ) > action -> range )
-            { // Target is now out of range, we cannot finish the cast.
-              action -> interrupt_action();
-              return;
-            }
-          }
-        }
-      }
       target = execute_state -> target;
       action -> pre_execute_state = execute_state;
       execute_state = 0;
@@ -131,8 +117,29 @@ struct action_execute_event_t : public player_event_t
       action -> pre_execute_state = 0;
     }
 
-    if ( ! target -> is_sleeping() )
+    if ( !target -> is_sleeping() )
+    {
+      if ( action -> sim -> fancy_target_distance_stuff )
+      {
+        if ( action -> sim -> log )
+        {
+          action -> sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, target: %s - location: x=%.3f,y=%.3f",
+            action -> player -> name(), name(), action -> range, action -> radius, action -> player -> x_position, action -> player -> y_position, action -> target -> name(), action -> target -> x_position, target -> y_position );
+        }
+        if ( action -> time_to_execute > timespan_t::zero() )
+        { // No need to recheck if the execute time was zero.
+          if ( action -> range > 0.0 )
+          {
+            if ( target -> get_position_distance( action -> player -> x_position, action -> player -> y_position ) > action -> range )
+            { // Target is now out of range, we cannot finish the cast.
+              action -> interrupt_action();
+              return;
+            }
+          }
+        }
+      }
       action -> execute();
+    }
 
     assert( ! action -> pre_execute_state );
 
@@ -308,6 +315,7 @@ action_t::action_t( action_e       ty,
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
+  radius                         = -1.0;
 
   amount_delta                   = 0.0;
   base_dd_min                    = 0.0;
@@ -552,7 +560,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_HEALTH_LEECH:
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
-      radius                  = spelleffect_data.radius_max();
+      radius           = spelleffect_data.radius_max();
       amount_delta            = spelleffect_data.m_delta();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
@@ -564,11 +572,13 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
       weapon = &( player -> main_hand_weapon );
+      radius           = spelleffect_data.radius_max();
       break;
 
     case E_WEAPON_PERCENT_DAMAGE:
       weapon = &( player -> main_hand_weapon );
       weapon_multiplier = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
+      radius           = spelleffect_data.radius_max();
       break;
 
       // Dot
@@ -581,6 +591,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_HEAL:
           spell_power_mod.tick  = spelleffect_data.sp_coeff();
           attack_power_mod.tick = spelleffect_data.ap_coeff();
+          radius           = spelleffect_data.radius_max();
           base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
@@ -602,6 +613,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           amount_delta            = spelleffect_data.m_delta();
           base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
           base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
+          radius           = spelleffect_data.radius_max();
           break;
         case A_ADD_FLAT_MODIFIER:
           switch ( spelleffect_data.misc_value1() )
@@ -2806,25 +2818,32 @@ void action_t::schedule_travel( action_state_t* s )
   do_schedule_travel( s, time_to_travel );
 }
 
+bool action_t::fancy_target_stuff_impact( action_state_t* s )
+{
+  if ( sim -> log )
+  {
+    sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
+      player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, s -> target -> name(), s -> target -> x_position, s -> target -> y_position );
+  }
+  if ( radius > 0 || range > 0 )
+  {
+    if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
+    {
+      if ( target -> get_position_distance( s -> target -> x_position, s -> target -> y_position ) > radius )
+        return false;
+    } // If they do not have a radius, they are likely based on the distance from the player.
+    else if ( s -> target -> get_position_distance( player -> x_position, player -> y_position ) > range )
+      return false;
+  }
+  return true;
+}
+
 void action_t::impact( action_state_t* s )
 {
   if ( sim -> fancy_target_distance_stuff && is_aoe() )
   {
-    if ( sim -> log )
-    {
-      sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
-        player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, s -> target -> name(), s -> target -> x_position, s -> target -> y_position );
-    }
-    if ( radius > 0 || range > 0 )
-    {
-      if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
-      {
-        if ( target -> get_position_distance( s -> target -> x_position, s -> target -> y_position ) > radius )
-          return;
-      } // If they do not have a radius, they are likely based on the distance from the player.
-      else if ( s -> target -> get_position_distance( player -> x_position, player -> y_position ) > range )
-        return;
-    }
+    if ( !fancy_target_stuff_impact( s ) )
+      return;
   }
 
   assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );

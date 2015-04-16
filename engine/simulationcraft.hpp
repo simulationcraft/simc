@@ -6051,6 +6051,7 @@ private:
 public:
   virtual void do_schedule_travel( action_state_t*, const timespan_t& );
   virtual void schedule_travel( action_state_t* );
+  virtual bool fancy_target_stuff_impact( action_state_t* ); // I swear I'll rename this one day.
   virtual void impact( action_state_t* );
   virtual void trigger_dot( action_state_t* );
 

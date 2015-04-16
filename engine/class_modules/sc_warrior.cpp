@@ -1284,7 +1284,7 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    range = data().effectN( 1 ).radius_max();
+    range = radius;
     radius = -1;
     weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
   }
@@ -1314,8 +1314,7 @@ struct bladestorm_t: public warrior_attack_t
 
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
-    range = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
-    radius = -1;
+
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
 
@@ -2784,7 +2783,7 @@ struct shockwave_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
-    range = data().effectN( 2 ).radius_max();
+    range = radius;
     radius = -1.0;
     aoe = -1;
   }
@@ -2868,7 +2867,7 @@ struct thunder_clap_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    range = data().effectN( 2 ).radius_max();
+    range = radius;
     radius = -1.0;
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
@@ -2955,7 +2954,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
+    range = radius;
     range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     radius = -1;
     weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
@@ -2984,7 +2983,7 @@ struct whirlwind_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     aoe = -1;
 
-    range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
+    range = radius;
     range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     radius = -1.0;
     if ( p -> specialization() == WARRIOR_FURY )

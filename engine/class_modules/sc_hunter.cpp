@@ -2047,6 +2047,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
 struct glaive_toss_strike_t: public ranged_attack_t
 {
+  double primary_target_multiplier;
   // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt)
   // TotH should be triggered by the glaive toss itself.
   glaive_toss_strike_t( hunter_t* player, const std::string& name, int id ):
@@ -2059,14 +2060,23 @@ struct glaive_toss_strike_t: public ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
-    radius = 5.0;
+    primary_target_multiplier = player -> talents.glaive_toss -> effectN( 1 ).base_value();
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  bool fancy_target_stuff_impact( action_state_t* s )
+  {
+    if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
+      ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
+      return true;
+
+    return false;
+  }
+
+  double composite_target_multiplier( player_t* target ) const
   {
     double m = ranged_attack_t::composite_target_multiplier( target );
     if ( target == this -> target )
-      m *= static_cast<hunter_t*>( player ) -> talents.glaive_toss -> effectN( 1 ).base_value();
+      m *= primary_target_multiplier;
     return m;
   }
 };
@@ -2085,6 +2095,15 @@ struct glaive_rebound_t: public ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
+  }
+
+  bool fancy_target_stuff_impact( action_state_t* s )
+  {
+    if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
+      ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
+      return true;
+
+    return false;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
@@ -2342,10 +2361,13 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
     hasted_ticks = false;
-    dot_duration  = p() -> find_spell( 13812 ) -> duration();
-    base_tick_time = p() -> find_spell( 13812 ) -> effectN( 2 ).period();
+    const spell_data_t* damage = p() -> find_spell( 13812 );
+    dot_duration  = damage -> duration();
+    base_tick_time = damage -> effectN( 2 ).period();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-    attack_power_mod.direct = p() -> find_spell( 13812 ) -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = damage -> effectN( 1 ).ap_coeff();
+    radius = damage -> effectN( 1 ).radius_max();
+    range = 40.0;
 
     // BUG in game it uses the direct damage AP mltiplier for ticks as well.
     attack_power_mod.tick = attack_power_mod.direct;
