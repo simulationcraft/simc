@@ -2810,6 +2810,11 @@ void action_t::impact( action_state_t* s )
 {
   if ( sim -> fancy_target_distance_stuff && is_aoe() )
   {
+    if ( sim -> log )
+    {
+      sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
+        player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name_str, target -> x_position, target -> y_position, s -> target -> name_str, s -> target -> x_position, s -> target -> y_position );
+    }
     if ( radius > 0 || range > 0 )
     {
       if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.

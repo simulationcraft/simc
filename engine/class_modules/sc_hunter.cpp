@@ -1100,6 +1100,8 @@ static bool trigger_beast_cleave( action_state_t* s )
       background = true;
       school = SCHOOL_PHYSICAL;
       aoe = -1;
+      range = -1.0;
+      radius = 10.0;
       // The starting damage includes all the buffs
       weapon_multiplier = 0;
     }
