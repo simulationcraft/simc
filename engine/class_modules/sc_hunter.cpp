@@ -2057,6 +2057,7 @@ struct glaive_toss_strike_t: public ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
+    radius = 5.0;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -2360,6 +2361,9 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, s )
   {
     dual = true;
+    aoe = 2;
+    radius = 5.0;
+    range = -1.0; // Range check is done in parent.
   }
 
   virtual double action_multiplier() const
@@ -2383,19 +2387,17 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
     callbacks = false;
     may_multistrike = 0;
-    aoe = 2;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
     add_child( frost );
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
     add_child( nature );
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-   
     starved_proc = player -> get_proc( "starved: chimaera_shot" );
   }
 
-  virtual void impact( action_state_t* s )
+  void execute()
   {
-    hunter_ranged_attack_t::impact( s );
+    hunter_ranged_attack_t::execute();
 
     if ( rng().roll( 0.5 ) ) // Chimaera shot has a 50/50 chance to roll frost or nature damage... for the flavorz.
       frost -> execute();
