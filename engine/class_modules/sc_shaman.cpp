@@ -928,7 +928,11 @@ public:
       if ( p -> buff.ancestral_swiftness -> up() )
         t *= 1.0 + p -> buff.ancestral_swiftness -> data().effectN( 1 ).percent();
       else
-        t *= 1.0 + p -> buff.maelstrom_weapon -> stack() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent();
+      {
+        size_t max_stack = std::min( static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() ),
+                                     p -> buff.maelstrom_weapon -> data().max_stacks() );
+        t *= 1.0 + max_stack * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent();
+      }
     }
 
     return t;
@@ -943,7 +947,9 @@ public:
          ab::instant_eligibility() &&
          ! p -> buff.ancestral_swiftness -> check() )
     {
-      m *= 1.0 + p -> buff.maelstrom_weapon -> check() * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
+      size_t max_stack = std::min( static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() ),
+                                   p -> buff.maelstrom_weapon -> data().max_stacks() );
+      m *= 1.0 + max_stack * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
     }
 
     return m;
