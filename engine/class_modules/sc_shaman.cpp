@@ -30,8 +30,6 @@ struct shaman_t;
 enum totem_e { TOTEM_NONE = 0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 enum imbue_e { IMBUE_NONE = 0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, FROSTBRAND_IMBUE, EARTHLIVING_IMBUE };
 
-#define MAX_MAELSTROM_STACK ( 5 )
-
 struct shaman_attack_t;
 struct shaman_spell_t;
 struct shaman_heal_t;
@@ -556,7 +554,9 @@ struct maelstrom_weapon_buff_t : public buff_t
   std::vector<shaman_attack_t*> trigger_actions;
 
   maelstrom_weapon_buff_t( shaman_t* player ) :
-    buff_t( buff_creator_t( player, 53817, "maelstrom_weapon" ) )
+    buff_t( buff_creator_t( player, 53817, "maelstrom_weapon" )
+            .max_stack( player -> find_spell( 53817 ) -> max_stacks() + 
+                        player -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).base_value() ) )
   { activated = false; }
 
   using buff_t::trigger;
@@ -895,7 +895,8 @@ public:
   {
     ab::init();
 
-    for ( size_t i = 0; i < MAX_MAELSTROM_STACK + 2; i++ )
+    size_t n_mwstack = static_cast<size_t>( ab::p() -> buff.maelstrom_weapon -> max_stack() + 2 );
+    for ( size_t i = 0; i < n_mwstack; i++ )
     {
       maelstrom_weapon_cast.push_back( new counter_t( ab::p() ) );
       maelstrom_weapon_executed.push_back( new counter_t( ab::p() ) );
@@ -2047,7 +2048,7 @@ void shaman_spell_base_t<Base>::execute()
   if ( eligible_for_instant && ! as_cast && p -> specialization() == SHAMAN_ENHANCEMENT )
   {
     maelstrom_weapon_executed[ p -> buff.maelstrom_weapon -> check() ] -> add( 1 );
-    p -> buff.maelstrom_weapon -> expire();
+    p -> buff.maelstrom_weapon -> decrement( p -> buff.maelstrom_weapon -> data().max_stacks() );
   }
 
   p -> buff.spiritwalkers_grace -> up();
@@ -6088,11 +6089,19 @@ public:
 
   void mwuse_table_header( report::sc_html_stream& os )
   {
+    const shaman_t& s = static_cast<const shaman_t&>( p );
+    size_t n_mwstack = s.buff.maelstrom_weapon -> max_stack();
     os << "<table class=\"sc\" style=\"float: left;\">\n"
          << "<tr style=\"vertical-align: bottom;\">\n"
            << "<th rowspan=\"2\">Ability</th>\n"
-           << "<th rowspan=\"2\">Event</th>\n"
-           << "<th rowspan=\"2\">0</th rowspan=\"2\"><th rowspan=\"2\">1</th><th rowspan=\"2\">2</th><th rowspan=\"2\">3</th><th rowspan=\"2\">4</th><th rowspan=\"2\">5</th><th colspan=\"2\">Total</th>\n"
+           << "<th rowspan=\"2\">Event</th>\n";
+
+    for ( size_t i = 0; i <= n_mwstack; ++i )
+    {
+      os   << "<th rowspan=\"2\">" << i << "</th>\n";
+    }
+
+    os     << "<th colspan=\"2\">Total</th>\n"
          << "</tr>\n"
          << "<tr><th>casts</th><th>charges</th></tr>\n";
   }
@@ -6181,8 +6190,10 @@ public:
 
   void mwuse_table_contents( report::sc_html_stream& os )
   {
-    std::vector<double> total_mw_cast( MAX_MAELSTROM_STACK + 2 );
-    std::vector<double> total_mw_executed( MAX_MAELSTROM_STACK + 2 );
+    const shaman_t& s = static_cast<const shaman_t&>( p );
+    size_t n_mwstack = s.buff.maelstrom_weapon -> max_stack();
+    std::vector<double> total_mw_cast( n_mwstack + 2 );
+    std::vector<double> total_mw_executed( n_mwstack + 2 );
     int n = 0;
     std::string row_class_str = "";
 
@@ -6193,10 +6204,10 @@ public:
         for ( size_t j = 0, end2 = s -> maelstrom_weapon_cast.size() - 1; j < end2; j++ )
         {
           total_mw_cast[ j ] += s -> maelstrom_weapon_cast[ j ] -> mean();
-          total_mw_cast[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_cast[ j ] -> mean();
+          total_mw_cast[ n_mwstack + 1 ] += s -> maelstrom_weapon_cast[ j ] -> mean();
 
           total_mw_executed[ j ] += s -> maelstrom_weapon_executed[ j ] -> mean();
-          total_mw_executed[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_executed[ j ] -> mean();
+          total_mw_executed[ n_mwstack + 1 ] += s -> maelstrom_weapon_executed[ j ] -> mean();
         }
       }
     }
@@ -6204,8 +6215,8 @@ public:
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
       stats_t* stats = p.stats_list[ i ];
-      std::vector<double> n_cast( MAX_MAELSTROM_STACK + 2 );
-      std::vector<double> n_executed( MAX_MAELSTROM_STACK + 2 );
+      std::vector<double> n_cast( n_mwstack + 2 );
+      std::vector<double> n_executed( n_mwstack + 2 );
       double n_cast_charges = 0, n_executed_charges = 0;
       bool has_data = false;
 
@@ -6219,12 +6230,12 @@ public:
               has_data = true;
 
             n_cast[ k ] += s -> maelstrom_weapon_cast[ k ] -> mean();
-            n_cast[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_cast[ k ] -> mean();
+            n_cast[ n_mwstack + 1 ] += s -> maelstrom_weapon_cast[ k ] -> mean();
 
             n_cast_charges += s -> maelstrom_weapon_cast[ k ] -> mean() * k;
 
             n_executed[ k ] += s -> maelstrom_weapon_executed[ k ] -> mean();
-            n_executed[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_executed[ k ] -> mean();
+            n_executed[ n_mwstack + 1 ] += s -> maelstrom_weapon_executed[ k ] -> mean();
 
             n_executed_charges += s -> maelstrom_weapon_executed[ k ] -> mean() * k;
           }
@@ -6252,7 +6263,7 @@ public:
         {
           double pct = 0;
           if ( total_mw_cast[ j ] > 0 )
-            pct = 100.0 * n_cast[ j ] / n_cast[ MAX_MAELSTROM_STACK + 1 ];
+            pct = 100.0 * n_cast[ j ] / n_cast[ n_mwstack + 1 ];
 
           if ( j < end2 - 1 )
             os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ), util::round( pct, 1 ) );
@@ -6273,7 +6284,7 @@ public:
         {
           double pct = 0;
           if ( total_mw_executed[ j ] > 0 )
-            pct = 100.0 * n_executed[ j ] / n_executed[ MAX_MAELSTROM_STACK + 1 ];
+            pct = 100.0 * n_executed[ j ] / n_executed[ n_mwstack + 1 ];
 
           if ( j < end2 - 1 )
             os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1 ), util::round( pct, 1 ) );
