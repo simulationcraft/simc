@@ -119,25 +119,6 @@ struct action_execute_event_t : public player_event_t
 
     if ( !target -> is_sleeping() )
     {
-      if ( action -> sim -> fancy_target_distance_stuff )
-      {
-        if ( action -> sim -> log )
-        {
-          action -> sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, target: %s - location: x=%.3f,y=%.3f",
-            action -> player -> name(), name(), action -> range, action -> radius, action -> player -> x_position, action -> player -> y_position, action -> target -> name(), action -> target -> x_position, target -> y_position );
-        }
-        if ( action -> time_to_execute > timespan_t::zero() )
-        { // No need to recheck if the execute time was zero.
-          if ( action -> range > 0.0 )
-          {
-            if ( target -> get_position_distance( action -> player -> x_position, action -> player -> y_position ) > action -> range )
-            { // Target is now out of range, we cannot finish the cast.
-              action -> interrupt_action();
-              return;
-            }
-          }
-        }
-      }
       action -> execute();
     }
 
@@ -1151,6 +1132,29 @@ block_result_e action_t::calculate_block_result( action_state_t* s )
   return block_result;
 }
 
+bool action_t::fancy_target_stuff_execute()
+{
+  if ( sim -> fancy_target_distance_stuff )
+  {
+    if ( sim -> log )
+    {
+      sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, target: %s - location: x=%.3f,y=%.3f",
+        player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position );
+    }
+    if ( time_to_execute > timespan_t::zero() )
+    { // No need to recheck if the execute time was zero.
+      if ( range > 0.0 )
+      {
+        if ( target -> get_position_distance( player -> x_position, player -> y_position ) > range )
+        { // Target is now out of range, we cannot finish the cast.
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
 // action_t::execute ========================================================
 
 void action_t::execute()
@@ -1170,6 +1174,9 @@ void action_t::execute()
   }
 
   if ( n_targets() == 0 && target -> is_sleeping() )
+    return;
+
+  if ( !fancy_target_stuff_execute() )
     return;
 
   if ( sim -> log && ! dual )
