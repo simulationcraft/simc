@@ -140,6 +140,12 @@ struct move_enemy_t : public raid_event_t
     assert( enemy );
   }
 
+  void reset()
+  {
+    enemy -> x_position = 0;
+    enemy -> y_position = 0;
+  }
+
   void _start()
   {
     original_x = enemy -> x_position;
@@ -150,8 +156,8 @@ struct move_enemy_t : public raid_event_t
 
   void _finish()
   {
-    enemy -> x_position = original_x;
-    enemy -> y_position = original_y;
+    enemy -> x_position = 0;
+    enemy -> y_position = 0;
   }
 };
 

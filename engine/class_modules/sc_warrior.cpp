@@ -873,7 +873,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
       background = true;
       may_multistrike = 1; // Yep. It can multistrike.
-      aoe =1;
+      aoe = 1;
       school = SCHOOL_PHYSICAL;
       weapon = &p -> main_hand_weapon;
       weapon_multiplier = 0.5;
@@ -888,25 +888,40 @@ static void trigger_sweeping_strikes( action_state_t* s )
       for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
       {
         if ( sim -> target_non_sleeping_list[i] != target )
-        {
-          if ( sim -> fancy_target_distance_stuff )
-          {
-            if ( sim -> target_non_sleeping_list[i] -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
-              tl.push_back( sim -> target_non_sleeping_list[i] );
-          }
-          else
-          {
-            tl.push_back( sim -> target_non_sleeping_list[i] );
-          }
-        }
+          tl.push_back( sim -> target_non_sleeping_list[i] );
       }
 
       return tl.size();
     }
 
+    std::vector< player_t* >& target_list() const
+    {
+      target_cache.list.clear();
+      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[i];
+        if ( t != target )
+        {
+          if ( sim -> fancy_target_distance_stuff )
+          {
+            if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
+            {
+              target_cache.list.push_back( t );
+            }
+          }
+          else
+          {
+            target_cache.list.push_back( t );
+          }
+        }
+      }
+      return target_cache.list;
+    }
+
     void execute()
     {
-      warrior_attack_t::execute();
+      target_cache.is_valid = false;
+      attack_t::execute();
       if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
         p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
     }
@@ -920,8 +935,8 @@ static void trigger_sweeping_strikes( action_state_t* s )
     {
       may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
       background = true;
-      may_multistrike = 1;
       aoe = 1;
+      may_multistrike = 1;
       weapon_multiplier = 0;
       base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
@@ -933,21 +948,34 @@ static void trigger_sweeping_strikes( action_state_t* s )
       return 1; // No double dipping
     }
 
+    size_t available_targets( std::vector< player_t* >& tl ) const
+    {
+      tl.clear();
+
+      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+      {
+        if ( sim -> target_non_sleeping_list[i] != target )
+          tl.push_back( sim -> target_non_sleeping_list[i] );
+      }
+
+      return tl.size();
+    }
+
     void execute()
     {
       base_dd_max *= pct_damage; //Deals 50% of original damage
       base_dd_min *= pct_damage;
+      target_cache.is_valid = false;
 
-      warrior_attack_t::execute();
+      attack_t::execute();
 
       if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
         p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
     }
 
-    size_t available_targets( std::vector< player_t* >& tl ) const
+    std::vector< player_t* >& target_list() const
     {
-      tl.clear();
-
+      target_cache.list.clear();
       for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
       {
         player_t* t = sim -> target_non_sleeping_list[i];
@@ -956,16 +984,18 @@ static void trigger_sweeping_strikes( action_state_t* s )
           if ( sim -> fancy_target_distance_stuff )
           {
             if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
-              tl.push_back( t );
+            {
+              target_cache.list.push_back( t );
+            }
           }
           else
           {
-            tl.push_back( t );
+            target_cache.list.push_back( t );
           }
         }
       }
 
-      return tl.size();
+      return target_cache.list;
     }
   };
 
@@ -995,27 +1025,15 @@ static void trigger_sweeping_strikes( action_state_t* s )
     p -> active.aoe_sweeping_strikes -> init();
   }
 
-  if ( p -> active.sweeping_strikes -> target != s -> target )
-    p -> active.sweeping_strikes -> target_cache.is_valid = false;
-
   if ( !s -> action -> is_aoe() )
   {
     p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
     p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
-    if ( p -> active.sweeping_strikes -> target_list().size() > 0 )
-    {
-      p -> active.sweeping_strikes -> target = p -> active.sweeping_strikes -> target_list().front();
-      p -> active.sweeping_strikes -> execute();
-    }
+    p -> active.sweeping_strikes -> execute();
   }
   else
   {
-    // aoe abilities proc a sweeping strike that deals half the damage of a autoattack
-    if ( p -> active.sweeping_strikes -> target_list().size() > 0 )
-    {
-      p -> active.aoe_sweeping_strikes -> target = p -> active.aoe_sweeping_strikes -> target_list().front();
-      p -> active.aoe_sweeping_strikes -> execute();
-    }
+    p -> active.aoe_sweeping_strikes -> execute();
   }
 
   return;
