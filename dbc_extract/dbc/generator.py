@@ -3432,6 +3432,13 @@ class SetBonusListGenerator(DataGenerator):
         self.set_bonus_to_spec_map = {
         }
 
+        # And override some values, keyed on setbonusspellid ids
+        self.override_data = {
+            3491: {
+                'spec_id': 64
+            }
+        }
+
         DataGenerator.__init__(self, options)
 
     @staticmethod
@@ -3572,11 +3579,14 @@ class SetBonusListGenerator(DataGenerator):
                 entry['role'] = bonus_data['derived_role']
                 entry['spec'] = -1
             else:
-                if set_spell_data.unk_wod_1:
-                    spec_data = self._chrspecialization_db[set_spell_data.unk_wod_1]
+                # Go through override data here
+                spec_id = self.override_data.get(id, {}).get('spec_id', set_spell_data.unk_wod_1)
+
+                if spec_id > 0:
+                    spec_data = self._chrspecialization_db[spec_id]
                     entry['class'] = spec_data.class_id
-                    entry['role'] = self.role_map.get(set_spell_data.unk_wod_1, spec_data.spec_type)
-                    entry['spec'] = set_spell_data.unk_wod_1
+                    entry['role'] = self.role_map.get(spec_id, spec_data.spec_type)
+                    entry['spec'] = spec_id
                 else:
                     entry['class'] = -1
                     entry['role'] = -1
