@@ -399,6 +399,7 @@ public:
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
     const spell_data_t* uplift;
+    const spell_data_t* extend_life;
 
     // Windwalker
     const spell_data_t* afterlife;
@@ -2168,7 +2169,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier = 3;
     if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 2.85; // hardcoded into tooltip
+      base_multiplier = 3.42; // hardcoded into tooltip
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
@@ -2254,7 +2255,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     oh = &( player->off_hand_weapon );
     base_multiplier *= 10.56; // hardcoded into tooltip
     if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 10.032; // hardcoded into tooltip
+      base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK;
     min_gcd = timespan_t::from_millis( 250 );
@@ -2292,7 +2293,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 10.56; // hardcoded into tooltip
     if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 10.032; // hardcoded into tooltip
+      base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK;
   }
@@ -2959,7 +2960,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     base_multiplier *= 7.755; // hardcoded into tooltip
     if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 7.3625; // hardcoded into tooltip
+      base_multiplier = 7.367; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
@@ -5279,6 +5280,7 @@ void monk_t::init_spells()
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
   spec.enveloping_mist               = find_specialization_spell( "Enveloping Mist" );
   spec.jade_mists                    = find_specialization_spell( "Jade Mists" );
+  spec.extend_life                   = find_spell( 185158 ); // Tier 18 bonus
 
   // Stance
   stance_data.fierce_tiger           = find_class_spell( "Stance of the Fierce Tiger" );
