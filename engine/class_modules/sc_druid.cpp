@@ -1972,13 +1972,14 @@ public:
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
 
-    double chance = ab::weapon -> proc_chance_on_swing( 3.5 );
-    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
-      chance += ab::p() -> find_spell( 185805 ) -> effectN( 1 ).percent();
-
-    if ( ab::rng().roll( chance ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
-      if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
+    // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+    if ( ab::p() -> buff.omen_of_clarity -> trigger( 1,
+             buff_t::DEFAULT_VALUE(),
+             ab::weapon -> proc_chance_on_swing( 3.5 ) + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent(),
+             ab::p() -> buff.omen_of_clarity -> buff_duration ) ) {
+      if ( ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
         ab::p() -> buff.feral_fury -> trigger();
+    }
   }
 
 };
@@ -2211,10 +2212,10 @@ public:
       double eff_cost = base_t::cost() * ( 1.0 + p() -> buff.berserk -> check() * p() -> spell.berserk_cat -> effectN( 1 ).percent() );
       p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, eff_cost );
 
-      p() -> buff.omen_of_clarity -> expire();
+      p() -> buff.omen_of_clarity -> decrement();
 
       if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, eff_cost * p() -> find_spell( 185811 ) -> effectN( 1 ).percent(), p() -> gain.tier18_4pc_melee );
+        p() -> resource_gain( RESOURCE_ENERGY, eff_cost * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(), p() -> gain.tier18_4pc_melee );
     }
   }
 
@@ -6135,9 +6136,9 @@ void druid_t::init_base_stats()
   // Set base distance based on spec
   base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
 
-  if ( specialization () == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
+  if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
     base.attack_power_per_agility  = 1.0;
-  if ( specialization () == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+  if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
     base.spell_power_per_intellect = 1.0;
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
@@ -6146,14 +6147,12 @@ void druid_t::init_base_stats()
 
   if ( specialization() != DRUID_BALANCE )
   {
-    resources.base[RESOURCE_ENERGY] = 100;
-    if ( sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
-      resources.base[RESOURCE_ENERGY] += find_spell( 185805 ) -> effectN( 2 ).resource( RESOURCE_ENERGY );
-    resources.base[RESOURCE_RAGE] = 100;
-    resources.base[RESOURCE_COMBO_POINT] = 5;
+    resources.base[ RESOURCE_ENERGY      ] = 100 + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY );
+    resources.base[ RESOURCE_RAGE        ] = 100;
+    resources.base[ RESOURCE_COMBO_POINT ] = 5;
   }
   else
-    resources.base[RESOURCE_ECLIPSE] = 105;
+    resources.base[ RESOURCE_ECLIPSE     ] = 105;
 
   base_energy_regen_per_second = 10;
 
