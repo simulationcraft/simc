@@ -2418,11 +2418,19 @@ struct stormstrike_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
-      int bonus = p() -> sets.set( SET_MELEE, T15, B2 ) -> effectN( 1 ).base_value();
+      if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
+      {
+        int bonus = p() -> sets.set( SET_MELEE, T15, B2 ) -> effectN( 1 ).base_value();
+        p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
+      }
 
-      p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
+      if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
+      {
+        int bonus = p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).base_value();
+        p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
+      }
     }
 
     if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
