@@ -491,16 +491,16 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
         for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
           {
-            if ( s -> scaling -> scaling.get_stat( i ) > 1.0e5 )
+            if ( s -> scaling -> value.get_stat( i ) > 1.0e5 )
               os.format(
                 "<td>%.*e</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling -> scaling.get_stat( i ) );
+                s -> scaling -> value.get_stat( i ) );
             else
               os.format(
                 "<td>%.*f</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling -> scaling.get_stat( i ) );
+                s -> scaling -> value.get_stat( i ) );
           }
         os << "</tr>\n";
         os << "<tr>\n"
@@ -532,12 +532,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
               os.format(
                 "<td>%.*e</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling -> scaling_error.get_stat( i ) );
+                s -> scaling -> error.get_stat( i ) );
             else
               os.format(
                 "<td>%.*f</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling -> scaling_error.get_stat( i ) );
+                s -> scaling -> error.get_stat( i ) );
           }
         os << "</tr>\n";
         os << "</table>\n";
