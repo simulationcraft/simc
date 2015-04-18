@@ -9,17 +9,14 @@
 # * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
 
 optimal_raid=1
-tmi_boss=TMI_Standard_Boss_T17H
-# Raid Tier17N
+# Raid Tier17H
 
 Death_Knight_Frost_1h_T17H.simc
 Death_Knight_Frost_2h_T17H.simc
 Death_Knight_Unholy_T17H.simc
-Death_Knight_Blood_T17H.simc
 
 Druid_Feral_T17H.simc
 Druid_Balance_T17H.simc
-Druid_Guardian_T17H.simc
 
 Hunter_BM_T17H.simc
 Hunter_MM_T17H.simc
@@ -29,18 +26,11 @@ Mage_Arcane_T17H.simc
 Mage_Fire_T17H.simc
 Mage_Frost_T17H.simc
 
-Monk_Brewmaster_1h_Serenity_T17H.simc
-Monk_Brewmaster_2h_Serenity_T17H.simc
 Monk_Windwalker_1h_T17H.simc
 Monk_Windwalker_2h_T17H.simc
 
-Paladin_Protection_T17H.simc
 Paladin_Retribution_T17H.simc
 
-#Priest_Discipline_T17H_Heal.simc
-#Priest_Discipline_T17H_Dmg.simc
-#Priest_Holy_T17H_Heal.simc
-#Priest_Holy_T17H_Dmg.simc
 Priest_Shadow_T17H_COP.simc
 Priest_Shadow_T17H_VE.simc
 Priest_Shadow_T17H_AS.simc
@@ -59,5 +49,4 @@ Warlock_Demonology_T17H.simc
 Warrior_Arms_T17H.simc
 Warrior_Fury_1h_T17H.simc
 Warrior_Fury_2h_T17H.simc
-Warrior_Protection_T17H.simc
 Warrior_Gladiator_T17H.simc
