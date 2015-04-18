@@ -116,7 +116,7 @@ int main( int argc, char *argv[] )
     QString path_to_locale = SC_PATHS::getDataPath() + "/locale";
 
     QString qm_file = QString( "sc_" ) + lang;
-    qDebug() << "qm file: " << qm_file;
+    qDebug() << "Trying to load local file from: " << path_to_locale << "/" << qm_file;
     myappTranslator.load( qm_file, path_to_locale );
     qDebug() << "translator: " << myappTranslator.isEmpty();
   }
