@@ -1167,7 +1167,10 @@ struct melee_t: public warrior_attack_t
             p() -> proc.arms_trinket -> occur();
           }
         }
-        p() -> buff.fury_trinket -> trigger( 1 );
+        if ( p() -> fury_trinket )
+        {
+          p() -> buff.fury_trinket -> trigger( 1 );
+        }
       }
     }
   }
@@ -4874,18 +4877,6 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
-  if ( fury_trinket )
-  {
-    buff.fury_trinket = buff_creator_t( this, "berserkers_fury", fury_trinket -> driver() -> effectN( 1 ).trigger() )
-      .default_value( fury_trinket -> driver() -> effectN( 1 ).average( fury_trinket -> item ) / 100.0 )
-      .add_invalidate( CACHE_HASTE );
-  }
-  else
-  {
-    buff.fury_trinket = buff_creator_t( this, "berserkers_fury" )
-      .chance( 0.0 );
-  }
-
   buff.debuffs_slam = buff_creator_t( this, "slam", talents.slam )
     .can_cancel( false );
 
@@ -5387,7 +5378,7 @@ double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
 
-  if ( buff.fury_trinket -> check() )
+  if ( fury_trinket )
   {
     a *= 1.0 / ( 1.0 + ( buff.fury_trinket -> current_stack * buff.fury_trinket -> default_value ) );
   }
@@ -5854,7 +5845,7 @@ struct warrior_shattered_bleed_t: public warrior_attack_t
   }
 };
 
-// warrior_t::create_proc_action =============================================
+
 
 action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& )
 {
@@ -6007,6 +5998,10 @@ static void fury_trinket( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, WARRIOR_FURY, s -> fury_trinket, effect );
+  
+  s -> buff.fury_trinket = buff_creator_t( s, "berserkers_fury", s -> fury_trinket -> driver() -> effectN( 1 ).trigger() )
+      .default_value( s -> fury_trinket -> driver() -> effectN( 1 ).average( s -> fury_trinket -> item ) / 10000.0 )
+      .add_invalidate( CACHE_HASTE );
 }
 
 static void arms_trinket( special_effect_t& effect )
