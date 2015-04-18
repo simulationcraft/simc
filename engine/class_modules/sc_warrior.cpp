@@ -157,6 +157,7 @@ public:
     cooldown_t* recklessness;
     // Arms only
     cooldown_t* colossus_smash;
+    cooldown_t* mortal_strike;
     // Prot Only
     cooldown_t* demoralizing_shout;
     cooldown_t* last_stand;
@@ -416,6 +417,7 @@ public:
     cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
     cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
     cooldown.last_stand               = get_cooldown( "last_stand" );
+    cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
     cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
     cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
     cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
@@ -2249,7 +2251,7 @@ struct mortal_strike_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
-
+    cooldown = p -> cooldown.mortal_strike;
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
@@ -2529,6 +2531,10 @@ struct rend_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
+    if ( p -> arms_t18_4p )
+    {
+      base_tick_time *= 1.0 - p -> spell.t18_arms_4p -> effectN( 1 ).percent();
+    }
     add_child( burst );
   }
 
@@ -2546,6 +2552,12 @@ struct rend_t: public warrior_attack_t
   void tick( dot_t* d )
   {
     warrior_attack_t::tick( d );
+    if ( p() -> arms_t18_2p )
+    {
+      if ( rng().roll( p() -> spell.t18_arms_2p -> effectN( 1).percent() ) )
+        p() -> cooldown.mortal_strike -> reset( true );
+    }
+
     if ( p() -> talents.taste_for_blood -> ok() )
     {
       p() -> resource_gain( RESOURCE_RAGE,
@@ -3465,7 +3477,17 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
 
   double cost() const
   {
-    return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
+    double cost;
+    if ( p() -> buff.shield_block -> check() && p() -> prot_t18_2p )
+    {
+      if ( p() -> prot_t18_4p )
+        cost = std::min( 22.5, std::max( p() -> resources.current[RESOURCE_RAGE], 7.5 ) );
+      else
+        cost = std::min( 30.0, std::max( p() -> resources.current[RESOURCE_RAGE], 10.0 ) );
+    }
+    else
+      cost = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
+    return cost;
   }
 
   void impact( action_state_t* s )
@@ -3475,7 +3497,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     double amount;
 
     amount = s -> result_amount;
-    amount *= cost() / 20;
+    amount *= cost() / ( ( p() -> buff.shield_block -> check() && p() -> prot_t18_2p ) ? ( p() -> prot_t18_4p ? 7.5 : 10 ) : 20 );
     if ( !p() -> buff.shield_barrier -> check() ||
          ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < amount ) )
     {
