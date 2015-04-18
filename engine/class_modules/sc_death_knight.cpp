@@ -6643,6 +6643,7 @@ void death_knight_t::init_action_list()
   std::string soul_reaper_pct = (perk.improved_soul_reaper -> ok() || sets.has_set_bonus( SET_MELEE, T15, B4 )) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str = "food,type=";
+  std::string food_haste = "food,type=buttered_sturgeon";
   std::string food_mastery = "food,type=sleeper_sushi";
   std::string food_ms = "food,type=salty_squid_roll";
   std::string potion_str = "potion,name=";
@@ -6663,11 +6664,16 @@ void death_knight_t::init_action_list()
   if ( sim -> allow_food && level >= 80 && level <= 90 )
     precombat -> add_action( food_str );
 
-  if ( sim -> allow_food && level > 90 && main_hand_weapon.group() == WEAPON_2H )
+  if ( sim -> allow_food && level > 90 && tree == DEATH_KNIGHT_UNHOLY )
     precombat -> add_action( food_ms );
 
-  if ( sim -> allow_food && level > 90 && tree == DEATH_KNIGHT_FROST && main_hand_weapon.group() != WEAPON_2H )
-    precombat -> add_action( food_mastery );
+  if ( sim -> allow_food && level > 90 && tree == DEATH_KNIGHT_FROST )
+  {
+    if ( main_hand_weapon.group() == WEAPON_2H )
+      precombat -> add_action( food_haste );
+    else
+      precombat -> add_action( food_mastery );
+  }
 
   precombat -> add_action( this, "Horn of Winter" );
   if ( specialization() == DEATH_KNIGHT_FROST )
