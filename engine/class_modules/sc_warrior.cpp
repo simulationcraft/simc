@@ -35,6 +35,7 @@ struct warrior_t: public player_t
 public:
   event_t* heroic_charge;
   int initial_rage;
+  bool non_dps_mechanics;
   bool warrior_fixed_time;
   player_t* last_target_charged;
   bool stance_dance; // This is just a small optimization, if stance swapping is never required (99% of simulations),
@@ -429,6 +430,7 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
+    non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = true;
     last_target_charged = 0;
     stance_dance = false;
@@ -466,6 +468,7 @@ public:
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_attack_power() const;
+  virtual double    composite_mastery() const;
   virtual double    composite_crit_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_melee_speed() const;
@@ -620,12 +623,15 @@ public:
       }
       p() -> stance_dance = false; // Reset variable.
     }
-    if ( p() -> talents.second_wind -> ok() )
+    if ( p() -> non_dps_mechanics )
     {
-      if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 && !p() -> buff.second_wind -> check() )
-        p() -> buff.second_wind -> trigger();
-      else
-        p() -> buff.second_wind -> expire();
+      if ( p() -> talents.second_wind -> ok() )
+      {
+        if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 && !p() -> buff.second_wind -> check() )
+          p() -> buff.second_wind -> trigger();
+        else
+          p() -> buff.second_wind -> expire();
+      }
     }
     ab::execute();
   }
@@ -1176,15 +1182,18 @@ struct melee_t: public warrior_attack_t
       }
     }
 
-    if ( p() -> active.blood_craze )
+    if ( p() -> non_dps_mechanics )
     {
-      if ( result_is_multistrike( s -> result ) )
+      if ( p() -> active.blood_craze )
       {
-        p() -> buff.blood_craze -> trigger();
-        residual_action::trigger(
-          p() -> active.blood_craze, // ignite spell
-          p(), // target
-          p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
+        if ( result_is_multistrike( s -> result ) )
+        {
+          p() -> buff.blood_craze -> trigger();
+          residual_action::trigger(
+            p() -> active.blood_craze, // ignite spell
+            p(), // target
+            p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
+        }
       }
     }
   }
@@ -1425,7 +1434,10 @@ struct bloodthirst_t: public warrior_attack_t
       cooldown -> duration = timespan_t::zero();
 
     weapon = &( p -> main_hand_weapon );
-    bloodthirst_heal = new bloodthirst_heal_t( p );
+    if ( p -> non_dps_mechanics )
+    {
+      bloodthirst_heal = new bloodthirst_heal_t( p );
+    }
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
@@ -1452,7 +1464,10 @@ struct bloodthirst_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      bloodthirst_heal -> execute();
+      if ( bloodthirst_heal )
+      {
+        bloodthirst_heal -> execute();
+      }
 
       if ( execute_state -> result == RESULT_CRIT )
         p() -> enrage();
@@ -1498,7 +1513,7 @@ struct charge_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    ignore_false_positive = use_off_gcd = true;
+    ignore_false_positive = true;
     rage_gain += p -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE );
 
     range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
@@ -2058,12 +2073,15 @@ struct impending_victory_heal_t: public warrior_heal_t
 struct impending_victory_t: public warrior_attack_t
 {
   impending_victory_heal_t* impending_victory_heal;
-
   impending_victory_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "impending_victory", p, p -> talents.impending_victory ),
-    impending_victory_heal( new impending_victory_heal_t( p ) )
+    impending_victory_heal( 0 )
   {
     parse_options( options_str );
+    if ( p -> non_dps_mechanics )
+    {
+      impending_victory_heal = new impending_victory_heal_t( p );
+    }
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     parse_effect_data( data().effectN( 2 ) ); //Both spell effects list an ap coefficient, #2 is correct.
   }
@@ -2072,7 +2090,10 @@ struct impending_victory_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    impending_victory_heal -> execute();
+    if ( impending_victory_heal )
+    {
+      impending_victory_heal -> execute();
+    }
 
     p() -> buff.tier15_2pc_tank -> decrement();
   }
@@ -2184,7 +2205,6 @@ struct heroic_charge_t: public warrior_attack_t
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
     trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
     ignore_false_positive = true;
     callbacks = may_crit = false;
   }
@@ -3538,7 +3558,6 @@ struct shield_charge_t: public warrior_spell_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
     movement_directionality = MOVEMENT_OMNI;
-    use_off_gcd = true;
 
     shield_charge_cd = p -> get_cooldown( "shield_charge_cd" );
     shield_charge_cd -> duration = timespan_t::from_seconds( 1.5 );
@@ -3682,7 +3701,7 @@ struct stance_t: public warrior_spell_t
     else
       cooldown -> duration = ( timespan_t::from_seconds( swap ) );
 
-    ignore_false_positive = use_off_gcd = true;
+    ignore_false_positive = true;
     callbacks = harmful = false;
   }
 
@@ -4733,7 +4752,8 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true )
     .can_cancel( false )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .add_invalidate( CACHE_MASTERY ) )
   {}
 
   void execute( int a, double b, timespan_t t )
@@ -5141,6 +5161,9 @@ void warrior_t::init_action_list()
     }
   }
 
+  if ( !gladiator ) // Tanks need heals activated. 
+    non_dps_mechanics = true;
+
   apl_precombat();
 
   switch ( specialization() )
@@ -5334,6 +5357,8 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
+// warrior_t::composite_melee_haste ===========================================
+
 double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
@@ -5372,6 +5397,18 @@ double warrior_t::composite_melee_expertise( weapon_t* ) const
     e += spec.unwavering_sentinel -> effectN( 5 ).percent();
 
   return e;
+}
+
+// warrior_t::composite_mastery =============================================
+
+double warrior_t::composite_mastery() const
+{
+  double mast = player_t::composite_mastery();
+
+  if ( maybe_ptr( dbc.ptr ) && active.stance == STANCE_GLADIATOR )
+    mast *= 1.0 + buff.gladiator_stance -> data().effectN( 6 ).percent();
+
+  return mast;
 }
 
 // warrior_t::composite_rating_multiplier =====================================
@@ -5757,6 +5794,7 @@ void warrior_t::create_options()
   player_t::create_options();
 
   add_option( opt_int( "initial_rage", initial_rage ) );
+  add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
   add_option( opt_bool( "fury_trinket", fury_trinket ) );
@@ -5826,6 +5864,7 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
+  non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
   player_override_stance_dance = p -> player_override_stance_dance;
 

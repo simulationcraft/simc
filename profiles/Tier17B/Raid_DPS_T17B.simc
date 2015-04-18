@@ -1,0 +1,52 @@
+# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
+
+optimal_raid=1
+# Raid Tier17B
+
+#Death_Knight_Frost_1h_T17B.simc
+#Death_Knight_Frost_2h_T17B.simc
+#Death_Knight_Unholy_T17B.simc
+
+Druid_Feral_T17B.simc
+Druid_Balance_T17B.simc
+Druid_Guardian_T17B.simc
+
+#Hunter_BM_T17B.simc
+#Hunter_MM_T17B.simc
+#Hunter_SV_T17B.simc
+
+Mage_Arcane_T17B.simc
+Mage_Fire_T17B.simc
+Mage_Frost_T17B.simc
+
+#Monk_Windwalker_1h_T17B.simc
+#Monk_Windwalker_2h_T17B.simc
+
+#Paladin_Retribution_T17B.simc
+
+Priest_Shadow_T17B_COP.simc
+Priest_Shadow_T17B_VE.simc
+Priest_Shadow_T17B_AS.simc
+
+#Rogue_Assassination_T17B.simc
+#Rogue_Combat_T17B.simc
+#Rogue_Subtlety_T17B.simc
+
+Shaman_Elemental_T17B.simc
+Shaman_Enhancement_T17B.simc
+
+#Warlock_Affliction_T17B.simc
+#Warlock_Destruction_T17B.simc
+#Warlock_Demonology_T17B.simc
+
+Warrior_Arms_T17B.simc
+Warrior_Fury_1h_T17B.simc
+Warrior_Fury_2h_T17B.simc
+Warrior_Gladiator_T17B.simc

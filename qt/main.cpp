@@ -73,6 +73,7 @@ int main( int argc, char *argv[] )
 
   dbc::init();
   module_t::init();
+  unique_gear::register_special_effects();
 
 #if defined SC_WINDOWS
   if ( QSysInfo::WindowsVersion == QSysInfo::WV_WINDOWS7 )

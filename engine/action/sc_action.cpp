@@ -2026,6 +2026,9 @@ void action_t::reset()
     if( if_expr ) if_expr = if_expr -> optimize();
     if( interrupt_if_expr ) interrupt_if_expr = interrupt_if_expr -> optimize();
     if( early_chain_if_expr ) early_chain_if_expr = early_chain_if_expr -> optimize();
+
+    if( if_expr && if_expr -> always_false() )
+	background = true;
   }
 }
 

@@ -1,12 +1,12 @@
 # TxM
 # Tier x Mythic
-# * Ilvl Cap: 695
+# * Ilvl Cap: 700
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Thunderforged/Warforged)
 # * No Legendaries
 # * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 710 Legendary Ring can be used. (accessibility)
+# * EXCEPTION: 715 Legendary Ring can be used. (accessibility)
 
 # talent_format=numbers
 # Guardian Druid T17M
