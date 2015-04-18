@@ -105,10 +105,11 @@ int main( int argc, char *argv[] )
   QString lang;
   QSettings settings;
   lang = settings.value( "options/gui_localization", "auto" ).toString();
+  qDebug() << "[Localization]: Seleced gui language: " << lang;
   if ( lang == "auto" )
   {
     lang = QLocale::system().name().split('_').at(1).toLower();
-    qDebug() << "QLocale system language: " << lang;
+    qDebug() << "[Localization]: QLocale system language: " << lang;
   }
   QTranslator myappTranslator;
   if ( !lang.isEmpty() && !lang.startsWith( "en" ) )
@@ -116,9 +117,13 @@ int main( int argc, char *argv[] )
     QString path_to_locale = SC_PATHS::getDataPath() + "/locale";
 
     QString qm_file = QString( "sc_" ) + lang;
-    qDebug() << "Trying to load local file from: " << path_to_locale << "/" << qm_file;
+    qDebug() << "[Localization]: Trying to load local file from: " << path_to_locale << "/" << qm_file << ".qm";
     myappTranslator.load( qm_file, path_to_locale );
-    qDebug() << "translator: " << myappTranslator.isEmpty();
+    qDebug() << "[Localization]: Loaded translator isEmpty(): " << myappTranslator.isEmpty();
+  }
+  else
+  {
+    qDebug() << "[Localization]: No specific translator chosen, using English.";
   }
   a.installTranslator( &myappTranslator );
 
