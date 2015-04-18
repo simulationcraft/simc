@@ -466,6 +466,7 @@ public:
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_attack_power() const;
+  virtual double    composite_mastery() const;
   virtual double    composite_crit_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_melee_speed() const;
@@ -4733,7 +4734,8 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true )
     .can_cancel( false )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .add_invalidate( CACHE_MASTERY ) )
   {}
 
   void execute( int a, double b, timespan_t t )
@@ -5372,6 +5374,18 @@ double warrior_t::composite_melee_expertise( weapon_t* ) const
     e += spec.unwavering_sentinel -> effectN( 5 ).percent();
 
   return e;
+}
+
+// warrior_t::composite_mastery =============================================
+
+double warrior_t::composite_mastery() const
+{
+  double mast = player_t::composite_mastery();
+
+  if ( maybe_ptr( dbc.ptr ) && active.stance == STANCE_GLADIATOR )
+    mast *= 1.0 + buff.gladiator_stance -> data().effectN( 6 ).percent();
+
+  return mast;
 }
 
 // warrior_t::composite_rating_multiplier =====================================
