@@ -46,9 +46,7 @@ public:
                      // When the player sets this to true, it will prevent stance_dance from being set to true.
                      // This will allow full control over stance swapping.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
-  bool fury_trinket;
-  bool arms_trinket;
-  bool prot_trinket;
+
   bool fury_t18_2p;
   bool fury_t18_4p;
   bool arms_t18_2p;
@@ -56,6 +54,10 @@ public:
   bool prot_t18_2p;
   bool prot_t18_4p;
 
+    // Tier 18 (WoD 6.2) class specific trinket effects
+  const special_effect_t* fury_trinket;
+  const special_effect_t* arms_trinket;
+  const special_effect_t* prot_trinket;
   // Active
   struct active_t
   {
@@ -440,8 +442,11 @@ public:
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
 
-    fury_trinket = arms_trinket = prot_trinket = false;
     fury_t18_2p = fury_t18_4p = arms_t18_2p = arms_t18_4p = prot_t18_2p = prot_t18_4p = false;
+
+    fury_trinket = 0;
+    arms_trinket = 0;
+    prot_trinket = 0;
 
     regen_type = REGEN_DISABLED;
   }
@@ -1081,14 +1086,15 @@ void warrior_attack_t::impact( action_state_t* s )
 struct melee_t: public warrior_attack_t
 {
   bool mh_lost_melee_contact, oh_lost_melee_contact, sudden_death;
-  double base_rage_generation, arms_battle_stance, arms_defensive_stance, battle_stance;
+  double base_rage_generation, arms_battle_stance, arms_defensive_stance, battle_stance, arms_trinket_chance;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
     sudden_death( false ),
     base_rage_generation( 1.75 ),
     arms_battle_stance( 3.40 ), arms_defensive_stance( 1.60 ),
-    battle_stance( 2.00 )
+    battle_stance( 2.00 ),
+    arms_trinket_chance ( 0 )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
@@ -1098,6 +1104,12 @@ struct melee_t: public warrior_attack_t
       base_hit -= 0.19;
     if ( p -> talents.sudden_death -> ok() )
       sudden_death = true;
+
+    if ( p -> arms_trinket )
+    {
+      const spell_data_t* data = p -> arms_trinket -> driver();
+      arms_trinket_chance = data -> effectN( 1 ).average( p -> arms_trinket -> item ) / 100.0;
+    }
   }
 
   void reset()
@@ -1147,42 +1159,38 @@ struct melee_t: public warrior_attack_t
     else
     {
       warrior_attack_t::execute();
+      // Sudden death procs on everything except a miss.
+      if ( sudden_death && execute_state -> result != RESULT_MISS && p() -> rppm.sudden_death -> trigger() )
+      {
+        p() -> buff.sudden_death -> trigger();
+      }
+      if ( result_is_hit( execute_state -> result ) )
+      {
+        trigger_rage_gain( execute_state );
+        if ( p() -> active.enhanced_rend )
+        {
+          if ( td( execute_state -> target ) -> dots_rend -> is_ticking() )
+          {
+            p() -> active.enhanced_rend -> target = execute_state -> target;
+            p() -> active.enhanced_rend -> execute();
+          }
+        }
+        if ( arms_trinket_chance > 0 )
+        {
+          if ( rng().roll( arms_trinket_chance ) )
+          {
+            p() -> cooldown.colossus_smash -> reset( true );
+            p() -> proc.arms_trinket -> occur();
+          }
+        }
+        p() -> buff.fury_trinket -> trigger( 1 );
+      }
     }
   }
 
   void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
-
-    // Sudden death procs on everything except a miss.
-    if ( sudden_death && s -> result != RESULT_MISS && p() -> rppm.sudden_death -> trigger() )
-    {
-      p() -> buff.sudden_death -> trigger();
-    }
-    if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
-    {
-      trigger_rage_gain( s );
-      if ( p() -> arms_trinket )
-      {
-        if ( rng().roll( 0.35 ) )
-        {
-          p() -> cooldown.colossus_smash -> reset( true );
-          p() -> proc.arms_trinket -> occur();
-        }
-      }
-      if ( p() -> fury_trinket )
-      {
-        p() -> buff.fury_trinket -> trigger( 1 );
-      }
-      if ( p() -> active.enhanced_rend )
-      {
-        if ( td( s -> target ) -> dots_rend -> is_ticking() )
-        {
-          p() -> active.enhanced_rend -> target = s -> target;
-          p() -> active.enhanced_rend -> execute();
-        }
-      }
-    }
 
     if ( p() -> non_dps_mechanics )
     {
@@ -4879,9 +4887,8 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
-  buff.fury_trinket = buff_creator_t( this, "fury_trinket" )
-    .duration( timespan_t::from_seconds( 10.0 ) )
-    .max_stack( 10 )
+  buff.fury_trinket = buff_creator_t( this, "berserkers_fury", fury_trinket -> driver() -> effectN( 1 ).trigger() )
+    .default_value( fury_trinket -> driver() -> effectN( 1 ).average( fury_trinket -> item ) / 100.0 )
     .add_invalidate( CACHE_HASTE );
 
   buff.debuffs_slam = buff_creator_t( this, "slam", talents.slam )
@@ -4980,7 +4987,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() + ( prot_trinket ? 0.2 : 0.0 ) )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() + ( prot_trinket ? prot_trinket -> driver() -> effectN( 3 ).average( prot_trinket -> item ) : 0.0 ) )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -5385,7 +5392,7 @@ double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
 
-  a *= 1.0 / ( 1.0 + ( 0.025 * buff.fury_trinket -> current_stack ) );
+  a *= 1.0 / ( 1.0 + ( buff.fury_trinket -> current_stack * buff.fury_trinket -> default_value ) );
 
   return a;
 }
@@ -5403,7 +5410,7 @@ double warrior_t::composite_armor_multiplier() const
   if ( prot_trinket )
   {
     if ( buff.shield_barrier -> current_value > 0 )
-      a *= 1.2;
+      a *= 1.0 + prot_trinket -> driver() -> effectN( 2 ).average( prot_trinket -> item ) / 100.0;
   }
 
   return a;
@@ -5779,7 +5786,7 @@ void warrior_t::assess_damage( school_e school,
   if ( prot_trinket )
   {
     if ( school != SCHOOL_PHYSICAL && buff.shield_block -> check() )
-      s -> result_amount *= 0.8;
+      s -> result_amount *= 1.0 + ( prot_trinket -> driver() -> effectN( 1 ).average( prot_trinket -> item ) / 100.0 );
   }
 
   player_t::assess_damage( school, dtype, s );
@@ -5819,9 +5826,6 @@ void warrior_t::create_options()
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
-  add_option( opt_bool( "fury_trinket", fury_trinket ) );
-  add_option( opt_bool( "arms_trinket", arms_trinket ) );
-  add_option( opt_bool( "prot_trinket", prot_trinket ) );
   add_option( opt_bool( "fury_t18_2p", fury_t18_2p ) );
   add_option( opt_bool( "fury_t18_4p", fury_t18_4p ) );
   add_option( opt_bool( "arms_t18_2p", arms_t18_2p ) );
@@ -5890,9 +5894,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_fixed_time = p -> warrior_fixed_time;
   player_override_stance_dance = p -> player_override_stance_dance;
 
-  fury_trinket = p -> fury_trinket;
-  arms_trinket = p -> arms_trinket;
-  prot_trinket = p -> prot_trinket;
   fury_t18_2p = p -> fury_t18_2p;
   fury_t18_4p = p -> fury_t18_4p;
   arms_t18_2p = p -> arms_t18_2p;
@@ -6001,6 +6002,41 @@ private:
   warrior_t& p;
 };
 
+static void do_trinket_init( warrior_t*                player,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
+       player -> specialization() != spec )
+  {
+    return;
+  }
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
+static void fury_trinket( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>( effect.player );
+  do_trinket_init( s, WARRIOR_FURY, s -> fury_trinket, effect );
+}
+
+static void arms_trinket( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>( effect.player );
+  do_trinket_init( s, WARRIOR_ARMS, s -> arms_trinket, effect );
+}
+
+static void prot_trinket( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>( effect.player );
+  do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
+}
+
+
 // WARRIOR MODULE INTERFACE =================================================
 
 struct warrior_module_t: public module_t
@@ -6025,8 +6061,14 @@ struct warrior_module_t: public module_t
     }*/
   }
 
-  virtual void combat_begin( sim_t* ) const {}
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184926, fury_trinket );
+    unique_gear::register_special_effect( 184925, arms_trinket );
+    unique_gear::register_special_effect( 184927, prot_trinket );
+  }
 
+  virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };
 } // UNNAMED NAMESPACE
