@@ -35,7 +35,7 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 "%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=WebKit-PGO /p:platform=x64 /nr:true
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocopy locale\ %install%\locale sc_de.qm sc_zh.qm
+robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy %qt_dir%\ %install%\ icudtl.dat
@@ -58,7 +58,7 @@ set qt_dir=C:\Qt\Qt5.4.1\5.4\msvc2013
 "%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=WebKit /p:platform=win32 /nr:true /m:8
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocopy locale\ %install%\locale sc_de.qm sc_zh.qm
+robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy %qt_dir%\ %install%\ icudtl.dat
