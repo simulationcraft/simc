@@ -68,6 +68,11 @@ public:
   attack_t* action_lightning_arrow_arcane_shot;
   attack_t* action_lightning_arrow_multi_shot;
 
+  // Tier 18 (WoD 6.2) trinket effects
+  const special_effect_t* beastlord;
+  const special_effect_t* longview;
+  const special_effect_t* blackness;
+
   // Buffs
   struct buffs_t
   {
@@ -298,6 +303,9 @@ public:
     action_lightning_arrow_aimed_shot(),
     action_lightning_arrow_arcane_shot(),
     action_lightning_arrow_multi_shot(),
+    beastlord();
+    longview();
+    blackness();
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -404,6 +412,37 @@ public:
     buffs.pre_steady_focus -> expire();
   }
 };
+
+static void do_trinket_init( hunter_t*                 r,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() || r -> specialization() != spec )
+  {
+    return;
+  }
+
+  ptr = &( effect );
+}
+
+static void beastlord( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  do_trinket_init( hunter, HUNTER_BEAST_MASTERY, hunter -> beastlord, effect );
+}
+
+static void longview( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  do_trinket_init( hunter, HUNTER_MARKSMANSHIP, hunter -> longview, effect );
+}
+
+static void blackness( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  do_trinket_init( hunter, HUNTER_SURVIVAL, hunter -> blackness, effect );
+}
 
 // Template for common hunter action code. See priest_action_t.
 template <class Base>
@@ -4578,6 +4617,14 @@ struct hunter_module_t: public module_t
   }
 
   virtual bool valid() const { return true; }
+  
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184900, beastlord);
+    unique_gear::register_special_effect( 184901, longview );
+    unique_gear::register_special_effect( 184902, blackness);
+  }
+
   virtual void init( sim_t* sim ) const
   {
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
