@@ -2023,12 +2023,22 @@ void action_t::reset()
 
   if( sim -> current_iteration == 1 )
   {
-    if( if_expr ) if_expr = if_expr -> optimize();
+    if( if_expr )
+    {
+      if_expr = if_expr -> optimize();
+      if ( sim -> optimize_expressions && if_expr -> always_false() )
+      {
+        std::vector<action_t*>::iterator i = std::find( action_list -> foreground_action_list.begin(),
+                                                        action_list -> foreground_action_list.end(),
+                                                        this );
+        if ( i != action_list -> foreground_action_list.end() )
+        {
+          action_list -> foreground_action_list.erase( i );
+        }
+      }
+    }
     if( interrupt_if_expr ) interrupt_if_expr = interrupt_if_expr -> optimize();
     if( early_chain_if_expr ) early_chain_if_expr = early_chain_if_expr -> optimize();
-
-    if( if_expr && if_expr -> always_false() )
-	background = true;
   }
 }
 
