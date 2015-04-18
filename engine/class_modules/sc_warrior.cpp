@@ -5716,7 +5716,7 @@ void warrior_t::assess_damage( school_e school,
   {
     if ( active.stance == STANCE_DEFENSE )
       s -> result_amount *= 1.0 + ( buff.defensive_stance -> data().effectN( 1 ).percent() +
-      talents.gladiators_resolve -> effectN( 2 ).percent() );
+      talents.gladiators_resolve -> effectN( 2 ).percent() + ( maybe_ptr( dbc.ptr ) ? perk.improved_defensive_stance -> effectN( 2 ).percent(): 0 ) );
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 
