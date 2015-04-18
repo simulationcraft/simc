@@ -47,13 +47,6 @@ public:
                      // This will allow full control over stance swapping.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
 
-  bool fury_t18_2p;
-  bool fury_t18_4p;
-  bool arms_t18_2p;
-  bool arms_t18_4p;
-  bool prot_t18_2p;
-  bool prot_t18_4p;
-
     // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* fury_trinket;
   const special_effect_t* arms_trinket;
@@ -208,12 +201,6 @@ public:
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
     const spell_data_t* t17_prot_2p;
-    const spell_data_t* t18_fury_2p;
-    const spell_data_t* t18_fury_4p;
-    const spell_data_t* t18_arms_2p;
-    const spell_data_t* t18_arms_4p;
-    const spell_data_t* t18_prot_2p;
-    const spell_data_t* t18_prot_4p;
   } spell;
 
   // Glyphs
@@ -442,12 +429,9 @@ public:
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
 
-    fury_t18_2p = fury_t18_4p = arms_t18_2p = arms_t18_4p = prot_t18_2p = prot_t18_4p = false;
-
     fury_trinket = 0;
     arms_trinket = 0;
     prot_trinket = 0;
-
     regen_type = REGEN_DISABLED;
   }
 
@@ -2531,18 +2515,18 @@ struct rend_burst_t: public warrior_attack_t
 struct rend_t: public warrior_attack_t
 {
   rend_burst_t* burst;
+  double t18_2pc_chance;
   rend_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "rend", p, p -> spec.rend ),
-    burst( new rend_burst_t( p ) )
+    burst( new rend_burst_t( p ) ),
+    t18_2pc_chance( 0 )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
-    if ( p -> arms_t18_4p )
-    {
-      base_tick_time *= 1.0 - p -> spell.t18_arms_4p -> effectN( 1 ).percent();
-    }
+    base_tick_time *= 1.0 - p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
+    t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
     add_child( burst );
   }
 
@@ -2560,9 +2544,9 @@ struct rend_t: public warrior_attack_t
   void tick( dot_t* d )
   {
     warrior_attack_t::tick( d );
-    if ( p() -> arms_t18_2p )
+    if ( t18_2pc_chance > 0 )
     {
-      if ( rng().roll( p() -> spell.t18_arms_2p -> effectN( 1).percent() ) )
+      if ( rng().roll( t18_2pc_chance ) )
         p() -> cooldown.mortal_strike -> reset( true );
     }
 
@@ -3142,8 +3126,8 @@ struct wild_strike_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( execute_state -> result == RESULT_CRIT && p() -> fury_t18_4p )
-      p() -> cooldown.recklessness -> adjust( timespan_t::from_millis( -1 * p() -> spell.t18_fury_4p -> effectN( 1 ).base_value() ) );
+    if ( execute_state -> result == RESULT_CRIT && p() -> sets.has_set_bonus( WARRIOR_FURY, T18, B4 ) )
+      p() -> cooldown.recklessness -> adjust( timespan_t::from_millis( -1 * p() -> sets.set( WARRIOR_FURY, T18, B4 ) -> effectN( 1 ).base_value() ) );
 
     p() -> buff.bloodsurge -> decrement();
   }
@@ -3152,8 +3136,8 @@ struct wild_strike_t: public warrior_attack_t
   {
     double bonus = warrior_attack_t::total_crit_bonus();
 
-    if ( p() -> fury_t18_4p && p() -> buff.bloodsurge -> check() )
-      bonus *= 1.0 + p() -> spell.t18_fury_2p -> effectN( 2 ).percent();
+    if ( p() -> buff.bloodsurge -> check() )
+      bonus *= 1.0 + p() -> sets.set( WARRIOR_FURY, T18, B2 ) -> effectN( 2 ).percent();
 
     return bonus;
   }
@@ -3162,9 +3146,9 @@ struct wild_strike_t: public warrior_attack_t
   {
     double c = warrior_attack_t::composite_crit();
 
-    if ( p() -> fury_t18_2p && p() -> buff.bloodsurge -> check() )
+    if ( p() -> buff.bloodsurge -> check() )
     {
-      c += p() -> spell.t18_fury_2p -> effectN( 1 ).percent();
+      c += p() -> sets.set( WARRIOR_FURY, T18, B2 ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3470,9 +3454,10 @@ struct recklessness_t: public warrior_spell_t
 
 struct shield_barrier_t: public warrior_action_t < absorb_t >
 {
+  double t18_max_cost, t18_min_cost;
   shield_barrier_t( warrior_t* p, const std::string& options_str ):
     base_t( "shield_barrier", p, p -> specialization() == WARRIOR_PROTECTION ?
-    p -> find_spell( 112048 ) : p -> spec.shield_barrier )
+    p -> find_spell( 112048 ) : p -> spec.shield_barrier ), t18_max_cost( 60.0 ), t18_min_cost( 20.0 )
   {
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -3481,20 +3466,29 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     range = -1;
     target = player;
     attack_power_mod.direct = 1.4; // No spell data.
+    if ( p -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B2 ) )
+    {
+      t18_max_cost *= 0.5; // No spell data for this atm.
+      t18_min_cost *= 0.5;
+      if ( p -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) )
+      {
+        t18_max_cost *= 0.75;
+        t18_min_cost *= 0.75;
+      }
+    }
   }
 
   double cost() const
   {
     double cost;
-    if ( p() -> buff.shield_block -> check() && p() -> prot_t18_2p )
+    if ( p() -> buff.shield_block -> check() )
     {
-      if ( p() -> prot_t18_4p )
-        cost = std::min( 22.5, std::max( p() -> resources.current[RESOURCE_RAGE], 7.5 ) );
-      else
-        cost = std::min( 30.0, std::max( p() -> resources.current[RESOURCE_RAGE], 10.0 ) );
+      cost = std::min( t18_max_cost, std::max( p() -> resources.current[RESOURCE_RAGE], t18_min_cost ) );
     }
     else
+    {
       cost = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
+    }
     return cost;
   }
 
@@ -3505,7 +3499,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     double amount;
 
     amount = s -> result_amount;
-    amount *= cost() / ( ( p() -> buff.shield_block -> check() && p() -> prot_t18_2p ) ? ( p() -> prot_t18_4p ? 7.5 : 10 ) : 20 );
+    amount *= cost() / ( p() -> buff.shield_block -> check() ? t18_min_cost : 20.0 );
     if ( !p() -> buff.shield_barrier -> check() ||
          ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < amount ) )
     {
@@ -4064,13 +4058,6 @@ void warrior_t::init_spells()
   if ( perk.enhanced_rend -> ok() ) active.enhanced_rend = new enhanced_rend_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
-
-  spell.t18_arms_2p = find_spell( 185800 );
-  spell.t18_arms_4p = find_spell( 185804 );
-  spell.t18_fury_2p = find_spell( 185798 );
-  spell.t18_fury_4p = find_spell( 185799 );
-  spell.t18_prot_2p = find_spell( 185796 );
-  spell.t18_prot_4p = find_spell( 185797 );
 
   if ( !talents.gladiators_resolve -> ok() )
     gladiator = false;
@@ -4887,9 +4874,17 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
-  buff.fury_trinket = buff_creator_t( this, "berserkers_fury", fury_trinket -> driver() -> effectN( 1 ).trigger() )
-    .default_value( fury_trinket -> driver() -> effectN( 1 ).average( fury_trinket -> item ) / 100.0 )
-    .add_invalidate( CACHE_HASTE );
+  if ( fury_trinket )
+  {
+    buff.fury_trinket = buff_creator_t( this, "berserkers_fury", fury_trinket -> driver() -> effectN( 1 ).trigger() )
+      .default_value( fury_trinket -> driver() -> effectN( 1 ).average( fury_trinket -> item ) / 100.0 )
+      .add_invalidate( CACHE_HASTE );
+  }
+  else
+  {
+    buff.fury_trinket = buff_creator_t( this, "berserkers_fury" )
+      .chance( 0.0 );
+  }
 
   buff.debuffs_slam = buff_creator_t( this, "slam", talents.slam )
     .can_cancel( false );
@@ -5392,7 +5387,10 @@ double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
 
-  a *= 1.0 / ( 1.0 + ( buff.fury_trinket -> current_stack * buff.fury_trinket -> default_value ) );
+  if ( buff.fury_trinket -> check() )
+  {
+    a *= 1.0 / ( 1.0 + ( buff.fury_trinket -> current_stack * buff.fury_trinket -> default_value ) );
+  }
 
   return a;
 }
@@ -5826,12 +5824,6 @@ void warrior_t::create_options()
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
-  add_option( opt_bool( "fury_t18_2p", fury_t18_2p ) );
-  add_option( opt_bool( "fury_t18_4p", fury_t18_4p ) );
-  add_option( opt_bool( "arms_t18_2p", arms_t18_2p ) );
-  add_option( opt_bool( "arms_t18_4p", arms_t18_4p ) );
-  add_option( opt_bool( "prot_t18_2p", prot_t18_2p ) );
-  add_option( opt_bool( "prot_t18_4p", prot_t18_4p ) );
 }
 
 // Mark of the Shattered Hand ===============================================
@@ -5893,13 +5885,6 @@ void warrior_t::copy_from( player_t* source )
   non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
   player_override_stance_dance = p -> player_override_stance_dance;
-
-  fury_t18_2p = p -> fury_t18_2p;
-  fury_t18_4p = p -> fury_t18_4p;
-  arms_t18_2p = p -> arms_t18_2p;
-  arms_t18_4p = p -> arms_t18_4p;
-  prot_t18_2p = p -> prot_t18_2p;
-  prot_t18_4p = p -> prot_t18_4p;
 }
 
 // warrior_t::stance_swap ==================================================
