@@ -5661,9 +5661,12 @@ public:
 
   std::string timeline_aps_chart;
 
-  // Scale factor container
-  gear_stats_t scaling;
-  gear_stats_t scaling_error;
+  struct stats_scaling_t {
+    // Scale factor container
+    gear_stats_t scaling;
+    gear_stats_t scaling_error;
+  };
+  std::shared_ptr<stats_scaling_t> scaling;
 
   stats_t( const std::string& name, player_t* );
 

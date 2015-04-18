@@ -466,7 +466,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
 
       os << "</table>\n";
 
-      if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
+      if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() && s -> scaling )
       {
         int colspan = 0;
         os << "<table class=\"details\">\n";
@@ -491,16 +491,16 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
         for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
           {
-            if ( s -> scaling.get_stat( i ) > 1.0e5 )
+            if ( s -> scaling -> scaling.get_stat( i ) > 1.0e5 )
               os.format(
                 "<td>%.*e</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling.get_stat( i ) );
+                s -> scaling -> scaling.get_stat( i ) );
             else
               os.format(
                 "<td>%.*f</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling.get_stat( i ) );
+                s -> scaling -> scaling.get_stat( i ) );
           }
         os << "</tr>\n";
         os << "<tr>\n"
@@ -532,12 +532,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
               os.format(
                 "<td>%.*e</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling_error.get_stat( i ) );
+                s -> scaling -> scaling_error.get_stat( i ) );
             else
               os.format(
                 "<td>%.*f</td>\n",
                 p -> sim -> report_precision,
-                s -> scaling_error.get_stat( i ) );
+                s -> scaling -> scaling_error.get_stat( i ) );
           }
         os << "</tr>\n";
         os << "</table>\n";

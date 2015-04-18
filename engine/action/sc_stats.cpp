@@ -40,7 +40,9 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   resource_portion(), apr(), rpe(),
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
-  total_time( timespan_t::zero() )
+  total_time( timespan_t::zero() ),
+  timeline_aps_chart(),
+  scaling()
 {
   int size = std::min( sim.iterations, 10000 );
   actual_amount.reserve( size );

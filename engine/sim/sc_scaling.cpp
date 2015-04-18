@@ -363,10 +363,13 @@ void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, p
     stats_t* delta_s = delta_p -> find_stats( s -> name_str );
     assert( ref_s && delta_s );
     double score = ( delta_s -> portion_aps.mean() - ref_s -> portion_aps.mean() ) / delta;
-    s -> scaling.set_stat( stat, score );
+    if ( !s -> scaling ) {
+      s -> scaling = std::shared_ptr<stats_t::stats_scaling_t>( new stats_t::stats_scaling_t() );
+    }
+    s -> scaling -> scaling.set_stat( stat, score );
     double x = p -> sim -> confidence_estimator;
     double error = fabs( sqrt ( delta_s -> portion_aps.mean_std_dev * x * delta_s -> portion_aps.mean_std_dev * x + ref_s -> portion_aps.mean_std_dev * x * ref_s -> portion_aps.mean_std_dev * x ) / delta );
-    s -> scaling_error.set_stat( stat, error );
+    s -> scaling -> scaling_error.set_stat( stat, error );
   }
 }
 
