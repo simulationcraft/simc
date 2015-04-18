@@ -2553,9 +2553,9 @@ struct dot_chi_explosion_t: public residual_action::residual_periodic_action_t <
 
 struct chi_explosion_t: public monk_melee_attack_t
 {
-  rising_sun_kick_proc_t* rsk_proc;
   const spell_data_t* windwalker_chi_explosion_dot;
   const spell_data_t* spirited_crane_chi_explosion;
+  rising_sun_kick_proc_t* rsk_proc;
 
   chi_explosion_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion ),
@@ -4911,7 +4911,8 @@ struct healing_elixirs_t: public monk_heal_t
   healing_elixirs_t( monk_t& p ):
     monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
   {
-    harmful = may_crit = may_multistrike = false;
+    harmful = may_crit = false;
+    may_multistrike = 0;
     trigger_gcd = timespan_t::zero();
     pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
     cooldown -> duration = data().effectN( 1 ).period();

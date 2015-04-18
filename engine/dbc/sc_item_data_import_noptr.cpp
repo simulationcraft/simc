@@ -3,8 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+/**
+ * Separated to reduce compile memory onsumption.
+ */
 
+#include "simulationcraft.hpp"
 #include "sc_item_data.inc"
 
 item_data_t* dbc::__items_noptr()

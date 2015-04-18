@@ -3,8 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+/**
+ * Separated to reduce compile memory onsumption.
+ */
 
+#include "simulationcraft.hpp"
 #if SC_USE_PTR
 #include "sc_item_data_ptr.inc"
 
