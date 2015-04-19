@@ -8,7 +8,9 @@
 :: QT 5.4.1, or whatever version we are currently using
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
 :: OpenSSL - https://slproweb.com/products/Win32OpenSSL.html - Optional, the program will work fine even without these. The only time it will matter is if the person attempts to load a https website inside the gui, which is probably never going to happen.
-
+@echo off
+set /p ask=Build with PGO data? Only applies to 64-bit installation. (y/n)
+@echo on
 set simcversion=612-02
 :: For bumping the minor version, just change the above line. 
 set simcfiles=E:\Simulationcraft\
@@ -49,7 +51,8 @@ rd %install% /s /q
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configuration=WebKit /p:platform=x64 /nr:true
+if %ask%==y "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configuration=WebKit-PGO /p:platform=x64 /nr:true
+if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configuration=WebKit /p:platform=x64 /nr:true
 
 robocopy "%redist%x64\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\lib\locale sc_de.qm sc_zh.qm sc_it.qm
