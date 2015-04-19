@@ -556,7 +556,7 @@ public:
     {
       const spell_data_t* data = p() -> find_spell( p() -> blackness -> spell_id );
       double chance = data -> effectN( 1 ).average( p() -> blackness -> item ) / 100.0;
-      if ( rng().roll( chance ) )
+      if ( ab::rng().roll( chance ) )
       {
         p() -> cooldowns.black_arrow -> reset( true );
         p() -> procs.black_arrow_trinket_reset -> occur();
