@@ -3648,10 +3648,9 @@ struct presence_of_mind_t : public mage_spell_t
 //Mage T18 2pc Fire Set Bonus
 struct conjure_phoenix_t : public mage_spell_t
 {
-  conjure_phoenix_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "conjure_phoenix", p, p -> find_spell( "Conjure Phoenix" ) )
+  conjure_phoenix_t( mage_t* p ) :
+    mage_spell_t( "conjure_phoenix", p, p -> find_spell( 186181 ) )
   {
-    parse_options( options_str );
     background = true;
   }
 
@@ -3676,7 +3675,8 @@ struct pyroblast_t : public mage_spell_t
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
-    is_hot_streak( false ), dot_is_hot_streak( false )
+    is_hot_streak( false ), dot_is_hot_streak( false ),
+    conjure_phoenix( new conjure_phoenix_t( p ) )
   {
     parse_options( options_str );
     dot_behavior = DOT_REFRESH;
@@ -3766,9 +3766,6 @@ struct pyroblast_t : public mage_spell_t
     {
        conjure_phoenix -> schedule_execute();
     }
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "T18 2pc chance %d ", p() -> sets.set( MAGE_FIRE, T18, B2 ) -> proc_chance() );
 
   }
 
