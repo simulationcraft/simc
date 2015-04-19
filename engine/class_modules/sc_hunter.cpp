@@ -4099,7 +4099,7 @@ void hunter_t::apl_surv()
 
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=45" );
-  default_list -> add_action( this, "Black Arrow" );
+  default_list -> add_action( this, "Black Arrow", "if=remains<gcd*1.5" );
   default_list -> add_action( this, "Arcane Shot", "if=(trinket.proc.any.react&trinket.proc.any.remains<4)|dot.serpent_sting.remains<=3" );
   default_list -> add_action( this, "Explosive Shot" );
   default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up" );
