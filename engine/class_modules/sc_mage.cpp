@@ -85,6 +85,7 @@ public:
 
 namespace actions {
 struct ignite_t;
+struct unstable_magic_explosion_t;
 } // actions
 
 namespace pets {
@@ -134,7 +135,7 @@ public:
 
   // Active
   actions::ignite_t* active_ignite;
-  action_t* unstable_magic_explosion;
+  actions::unstable_magic_explosion_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
   // RPPM objects
@@ -368,6 +369,7 @@ public:
     icicle( 0 ),
     icicle_event( 0 ),
     active_ignite( 0 ),
+    unstable_magic_explosion( 0 ),
     last_bomb_target( 0 ),
     rppm_pyromaniac( *this, 0, RPPM_NONE ),
     rppm_arcane_instability( *this, 0, RPPM_NONE ),
@@ -389,9 +391,6 @@ public:
     talents( talents_list_t() ),
     current_arcane_charges()
   {
-    //Active
-    unstable_magic_explosion = 0;
-
     // Cooldowns
     cooldowns.combustion         = get_cooldown( "combustion"         );
     cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
@@ -1032,10 +1031,12 @@ struct mage_spell_t : public spell_t
 {
   bool frozen, may_proc_missiles, consumes_ice_floes;
   bool hasted_by_pom; // True if the spells time_to_execute was set to zero exactly because of Presence of Mind
+
 private:
-  bool pom_enabled;
   // Helper variable to disable the functionality of PoM in mage_spell_t::execute_time(),
   // to check if the spell would be instant or not without PoM.
+  bool pom_enabled;
+
 public:
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
@@ -1071,6 +1072,7 @@ public:
 
     return c;
   }
+
   virtual timespan_t execute_time() const
   {
     timespan_t t = spell_t::execute_time();
@@ -1079,7 +1081,7 @@ public:
       return timespan_t::zero();
     return t;
   }
-  // Ensures mastery for Arcane is only added to spells which call mage_spell_t, so things like the Legendary Cloak do not get modified. Added 4/15/2014
+
   virtual double action_multiplier() const
   {
     double am=spell_t::action_multiplier();
@@ -1090,7 +1092,7 @@ public:
     }
     return am;
   }
-  //
+
   virtual void schedule_execute( action_state_t* state = 0 )
   {
     // If there is no state to schedule, make one and put the actor's current
@@ -1299,6 +1301,7 @@ public:
   }
 
   void trigger_ignite( action_state_t* state );
+  void trigger_unstable_magic( action_state_t* state );
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
@@ -1457,90 +1460,6 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
   if ( ! p.active_ignite ) return;
   double amount = state -> result_amount * p.cache.mastery_value();
   trigger( p.active_ignite, state -> target, amount );
-}
-
-// Unstable Magic Trigger ====================================================
-
-static void trigger_unstable_magic( action_state_t* s )
-{
-  struct unstable_magic_explosion_t : public mage_spell_t
-  {
-    unstable_magic_explosion_t( mage_t* p ) :
-      mage_spell_t( "unstable_magic_explosion", p,
-                    p -> talents.unstable_magic )
-    {
-      may_miss = may_dodge = may_parry = may_crit = may_block = false;
-      may_multistrike = callbacks = false;
-      aoe = -1;
-      base_costs[ RESOURCE_MANA ] = 0;
-      trigger_gcd = timespan_t::zero();
-    }
-
-    double composite_target_multiplier( player_t* target ) const
-    {
-      // For now, PC doubledips on UM
-      if ( target == p() -> pets.prismatic_crystal )
-        return p() -> pets.prismatic_crystal
-                   -> composite_player_vulnerability( school );
-
-      return 1.0;
-    }
-
-    virtual void init()
-    {
-      mage_spell_t::init();
-      // disable the snapshot_flags for all multipliers
-      snapshot_flags &= STATE_NO_MULTIPLIER;
-      snapshot_flags |= STATE_TGT_MUL_DA;
-    }
-
-    virtual void execute()
-    {
-      base_dd_max *= data().effectN( 4 ).percent();
-      base_dd_min *= data().effectN( 4 ).percent();
-
-      mage_spell_t::execute();
-    }
-  };
-
-  mage_t* p = debug_cast<mage_t*>( s -> action -> player );
-
-  if ( !p -> unstable_magic_explosion )
-  {
-    p -> unstable_magic_explosion = new unstable_magic_explosion_t( p );
-    p -> unstable_magic_explosion -> init();
-  }
-
-  double um_proc_rate;
-  switch ( p -> specialization() )
-  {
-    case MAGE_ARCANE:
-      um_proc_rate = p -> unstable_magic_explosion
-                       -> data().effectN( 1 ).percent();
-      break;
-    case MAGE_FROST:
-      um_proc_rate = p -> unstable_magic_explosion
-                       -> data().effectN( 2 ).percent();
-      break;
-    case MAGE_FIRE:
-      um_proc_rate = p -> unstable_magic_explosion
-                       -> data().effectN( 3 ).percent();
-      break;
-    default:
-      um_proc_rate = p -> unstable_magic_explosion
-                       -> data().effectN( 3 ).percent();
-      break;
-  }
-
-  if ( p -> rng().roll( um_proc_rate ) )
-  {
-    p -> unstable_magic_explosion -> target = s -> target;
-    p -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
-    p -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
-    p -> unstable_magic_explosion -> execute();
-  }
-
-  return;
 }
 
 // Arcane Barrage Spell =====================================================
@@ -4054,7 +3973,6 @@ struct summon_water_elemental_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    consumes_ice_floes = false;
     ignore_false_positive = true;
     trigger_gcd = timespan_t::zero();
   }
@@ -4524,6 +4442,79 @@ struct stop_burn_phase_t : public action_t
   }
 };
 
+// Unstable Magic =============================================================
+
+struct unstable_magic_explosion_t : public mage_spell_t
+{
+  unstable_magic_explosion_t( mage_t* p ) :
+    mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
+  {
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    may_multistrike = callbacks = false;
+    aoe = -1;
+    base_costs[ RESOURCE_MANA ] = 0;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  double composite_target_multiplier( player_t* target ) const
+  {
+    // For now, PC doubledips on UM
+    if ( target == p() -> pets.prismatic_crystal )
+      return p() -> pets.prismatic_crystal
+                 -> composite_player_vulnerability( school );
+
+    return 1.0;
+  }
+
+  virtual void init()
+  {
+    mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  virtual void execute()
+  {
+    base_dd_max *= data().effectN( 4 ).percent();
+    base_dd_min *= data().effectN( 4 ).percent();
+
+    mage_spell_t::execute();
+  }
+};
+
+void mage_spell_t::trigger_unstable_magic( action_state_t* s )
+{
+  double um_proc_rate;
+  switch ( p() -> specialization() )
+  {
+    case MAGE_ARCANE:
+      um_proc_rate = p() -> unstable_magic_explosion
+                       -> data().effectN( 1 ).percent();
+      break;
+    case MAGE_FROST:
+      um_proc_rate = p() -> unstable_magic_explosion
+                       -> data().effectN( 2 ).percent();
+      break;
+    case MAGE_FIRE:
+      um_proc_rate = p() -> unstable_magic_explosion
+                       -> data().effectN( 3 ).percent();
+      break;
+    default:
+      um_proc_rate = p() -> unstable_magic_explosion
+                       -> data().effectN( 3 ).percent();
+      break;
+  }
+
+  if ( p() -> rng().roll( um_proc_rate ) )
+  {
+    p() -> unstable_magic_explosion -> target = s -> target;
+    p() -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
+    p() -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p() -> unstable_magic_explosion -> execute();
+  }
+}
+
 // Proxy cast Water Jet Action ================================================
 
 struct water_jet_t : public action_t
@@ -4891,8 +4882,12 @@ void mage_t::init_spells()
   glyphs.splitting_ice      = find_glyph_spell( "Glyph of Splitting Ice"      );
 
   // Active spells
-  if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
-  if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
+  if ( spec.ignite -> ok()  )
+    active_ignite = new actions::ignite_t( this );
+  if ( spec.icicles -> ok() )
+    icicle = new actions::icicle_t( this );
+  if ( talents.unstable_magic )
+    unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
 
   // RPPM
   rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() );
