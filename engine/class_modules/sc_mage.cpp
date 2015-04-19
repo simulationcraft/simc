@@ -3645,10 +3645,34 @@ struct presence_of_mind_t : public mage_spell_t
 
 // Pyroblast Spell ==========================================================
 
+//Mage T18 2pc Fire Set Bonus
+struct conjure_phoenix_t : public mage_spell_t
+{
+  conjure_phoenix_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "conjure_phoenix", p, p -> find_spell( "Conjure Phoenix" ) )
+  {
+    parse_options( options_str );
+    background = true;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+   // TODO: Add phoenix pet once we know what it is, additionally add the T18 4pc buff that goes along with it.
+   // p() -> pets.conjure_phoenix -> summon(); 
+   // p() -> buffs.phoenix_buff_placeholder
+  }
+
+};
+
+
+
 struct pyroblast_t : public mage_spell_t
 {
   bool is_hot_streak,
        dot_is_hot_streak;
+
+  conjure_phoenix_t* conjure_phoenix;
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
@@ -3656,6 +3680,11 @@ struct pyroblast_t : public mage_spell_t
   {
     parse_options( options_str );
     dot_behavior = DOT_REFRESH;
+
+    if ( p -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) )
+    {
+      add_child( conjure_phoenix );
+    }
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -3731,6 +3760,16 @@ struct pyroblast_t : public mage_spell_t
     {
       trigger_ignite( s );
     }
+
+    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) &&
+         rng().roll( p() -> sets.set( MAGE_FIRE, T18, B2 ) -> proc_chance() ) )
+    {
+       conjure_phoenix -> schedule_execute();
+    }
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "T18 2pc chance %d ", p() -> sets.set( MAGE_FIRE, T18, B2 ) -> proc_chance() );
+
   }
 
   virtual double composite_crit_multiplier() const
