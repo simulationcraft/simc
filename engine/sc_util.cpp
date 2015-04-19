@@ -3089,6 +3089,8 @@ void util::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
   stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block rating" );
   stat_search( encoding_str, splits, STAT_BONUS_ARMOR,      "bonus armor rating" );
+  stat_search( encoding_str, splits, STAT_MULTISTRIKE_RATING, "ms" );
+  stat_search( encoding_str, splits, STAT_MULTISTRIKE_RATING, "multistrike" );
   stat_search( encoding_str, splits, STAT_MULTISTRIKE_RATING, "multistrike rating" );
   // WOD-TODO: hybrid primary stats?
 }
