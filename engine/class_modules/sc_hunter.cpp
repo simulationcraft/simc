@@ -103,6 +103,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* explosive_shot;
+    cooldown_t* black_arrow;
     cooldown_t* bestial_wrath;
     cooldown_t* kill_shot_reset;
     cooldown_t* rapid_fire;
@@ -139,6 +140,7 @@ public:
     proc_t* tier16_2pc_melee;
     proc_t* tier16_4pc_melee;
     proc_t* tier17_2pc_bm;
+    proc_t* black_arrow_trinket_reset;
   } procs;
 
   real_ppm_t ppm_tier15_2pc_melee;
@@ -303,9 +305,9 @@ public:
     action_lightning_arrow_aimed_shot(),
     action_lightning_arrow_arcane_shot(),
     action_lightning_arrow_multi_shot(),
-    beastlord();
-    longview();
-    blackness();
+    beastlord( 0 ),
+    longview( 0 ),
+    blackness( 0 ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -322,6 +324,7 @@ public:
   {
     // Cooldowns
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
+    cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.kill_shot_reset = get_cooldown( "kill_shot_reset" );
     cooldowns.kill_shot_reset -> duration = find_spell( 90967 ) -> duration();
@@ -547,6 +550,19 @@ public:
     return ab::create_expression( name );
   }
 
+  void trigger_blackness()
+  {
+    if ( p() -> blackness && p() -> specialization() == HUNTER_SURVIVAL )
+    {
+      const spell_data_t* data = p() -> find_spell( p() -> blackness -> spell_id );
+      double chance = data -> effectN( 1 ).average( p() -> blackness -> item ) / 100.0;
+      if ( rng().roll( chance ) )
+      {
+        p() -> cooldowns.black_arrow -> reset( true );
+        p() -> procs.black_arrow_trinket_reset -> occur();
+      }
+    }
+  }
 
 // thrill_of_the_hunt support ===============================================
 
@@ -845,9 +861,10 @@ public:
   {
     base_t::create_buffs();
 
-    buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
+    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> buff_duration += owner -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
+    buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
     buffs.frenzy            = buff_creator_t( this, 19615, "frenzy" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() );
 
@@ -867,6 +884,20 @@ public:
     buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
       .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  virtual void init_special_effects()
+  {
+    base_t::init_special_effects();
+    hunter_t* hunter = debug_cast<hunter_t*>( owner );
+    const special_effect_t* bl = hunter -> beastlord;
+    if ( bl )
+    {
+      const spell_data_t* data = hunter -> find_spell( bl -> spell_id );
+      buffs.bestial_wrath -> buff_duration += timespan_t::from_seconds( data -> effectN( 1 ).base_value() );
+      double increase = data -> effectN( 2 ).average( bl -> item ) + data -> effectN( 3 ).average( bl -> item );
+      buffs.bestial_wrath -> default_value += increase / 100.0;
+    }
   }
 
   virtual void init_gains()
@@ -1006,7 +1037,7 @@ public:
     double m = base_t::composite_player_multiplier( school );
 
     if ( !buffs.stampede -> check() && buffs.bestial_wrath -> up() )
-      m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
+      m *= 1.0 + buffs.bestial_wrath -> current_value;
 
     if ( o() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
@@ -2708,6 +2739,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_arcane_shot, p() -> action_lightning_arrow_arcane_shot );
+
+    trigger_blackness();
   }
 
   virtual void impact( action_state_t* s )
@@ -2766,6 +2799,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
+    trigger_blackness();
 
     pets::hunter_main_pet_t* pet = p() -> active.pet;
     if ( pet && p() -> specs.beast_cleave -> ok() )
@@ -3697,6 +3731,8 @@ void hunter_t::create_buffs()
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 7 ).percent();
+
 
   buffs.bestial_wrath -> buff_duration += sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
@@ -3806,6 +3842,7 @@ void hunter_t::init_procs()
   procs.tier16_2pc_melee             = get_proc( "tier16_2pc_melee" );
   procs.tier16_4pc_melee             = get_proc( "tier16_4pc_melee" );
   procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
+  procs.black_arrow_trinket_reset    = get_proc( "black_arrow_trinket_reset" );
 }
 
 // hunter_t::init_rng =======================================================
@@ -4291,11 +4328,19 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   }
 
   if ( buffs.bestial_wrath -> up() )
-    m *= 1.0 + buffs.bestial_wrath -> data().effectN( 7 ).percent();
+    m *= 1.0 + buffs.bestial_wrath -> current_value;
 
   if ( buffs.sniper_training -> up() )
   {
     m *= 1.0 + cache.mastery_value();
+  }
+
+  if ( longview && specialization() == HUNTER_MARKSMANSHIP )
+  {
+    const spell_data_t* data = find_spell( longview -> spell_id ); 
+    double factor = data -> effectN( 1 ).average( longview -> item ) / 100.0 / 100.0;
+    m *= 1.0 + base.distance * factor;
+  //  m *= 1.0 + base.distance * 0.0025;
   }
 
   if ( sets.has_set_bonus( SET_MELEE, T16, B4 ) )
