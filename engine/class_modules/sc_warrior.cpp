@@ -4973,7 +4973,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() + ( prot_trinket ? prot_trinket -> driver() -> effectN( 3 ).average( prot_trinket -> item ) : 0.0 ) )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -5999,9 +5999,12 @@ static void fury_trinket( special_effect_t& effect )
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, WARRIOR_FURY, s -> fury_trinket, effect );
   
-  s -> buff.fury_trinket = buff_creator_t( s, "berserkers_fury", s -> fury_trinket -> driver() -> effectN( 1 ).trigger() )
+  if ( s -> fury_trinket )
+  {
+    s -> buff.fury_trinket = buff_creator_t( s, "berserkers_fury", s -> fury_trinket -> driver() -> effectN( 1 ).trigger() )
       .default_value( s -> fury_trinket -> driver() -> effectN( 1 ).average( s -> fury_trinket -> item ) / 10000.0 )
       .add_invalidate( CACHE_HASTE );
+  }
 }
 
 static void arms_trinket( special_effect_t& effect )
@@ -6014,6 +6017,10 @@ static void prot_trinket( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
+  if ( s -> prot_trinket )
+  {
+    s -> buff.shield_charge -> default_value +=  ( s -> prot_trinket -> driver() -> effectN( 3 ).average( s -> prot_trinket -> item ) / 10000.0 );
+  }
 }
 
 
