@@ -1863,7 +1863,7 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
   {
     shaman_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) && furious_winds_chance > 0 )
     {
       p() -> trigger_maelstrom_weapon( state, furious_winds_chance );
     }
