@@ -59,7 +59,8 @@ if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configurati
 
 robocopy "%redist%x64\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\lib\locale sc_de.qm sc_zh.qm sc_it.qm
-robocopy %qt_dir%msvc2013_64\bin\ %install%\lib\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
+robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Core.dll
+robocopy %qt_dir%msvc2013_64\bin\ %install%\lib\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy %qt_dir%msvc2013_64\ %install%\lib\ icudtl.dat
 robocopy %qt_dir%msvc2013_64\plugins\platforms %install%\lib\platforms\ qwindows.dll
@@ -80,7 +81,8 @@ set install=simc-%simcversion%-win32
 
 robocopy "%redist%x86\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\lib\locale sc_de.qm sc_zh.qm sc_it.qm
-robocopy %qt_dir%msvc2013\bin\ %install%\lib\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
+robocopy %qt_dir%msvc2013\bin\ %install%\ Qt5Core.dll
+robocopy %qt_dir%msvc2013\bin\ %install%\lib\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy %qt_dir%msvc2013\ %install%\lib\ icudtl.dat
 robocopy %qt_dir%msvc2013\plugins\platforms %install%\lib\platforms\ qwindows.dll
