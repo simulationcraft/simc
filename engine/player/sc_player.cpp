@@ -6182,7 +6182,7 @@ struct use_item_t : public action_t
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 )
+    item( 0 ), action( 0 ), buff( 0 )
   {
     std::string item_name, item_slot;
 
