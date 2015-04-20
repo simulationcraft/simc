@@ -8,11 +8,14 @@
 :: QT 5.4.1, or whatever version we are currently using
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
 :: OpenSSL - https://slproweb.com/products/Win32OpenSSL.html - Optional, the program will work fine even without these. The only time it will matter is if the person attempts to load a https website inside the gui, which is probably never going to happen.
+
 @echo off
-set /p ask=Build with PGO data? Only applies to 64-bit installation. (y/n)
+:: Building with PGO data will add 10-15 minutes to compile.
+set /p ask=Build with PGO data? Only applies to 64-bit installation.  (y/n)
 @echo on
+
 set simcversion=612-02
-:: For bumping the minor version, just change the above line. 
+:: For bumping the minor version, just change the above line. Make sure to also change setup32.iss and setup64.iss as well. 
 set simcfiles=E:\Simulationcraft\
 :: Location of source files
 set ssllocation32=C:\OpenSSL-Win32\bin
