@@ -58,15 +58,15 @@ if %ask%==y "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configurati
 if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configuration=WebEngine /p:platform=x64 /nr:true
 
 robocopy "%redist%x64\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocopy locale\ %install%\lib\locale sc_de.qm sc_zh.qm sc_it.qm
+robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Core.dll
-robocopy %qt_dir%msvc2013_64\bin\ %install%\lib\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll
+robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
-robocopy %qt_dir%msvc2013_64\ %install%\lib\ icudtl.dat
-robocopy %qt_dir%msvc2013_64\plugins\platforms %install%\lib\platforms\ qwindows.dll
-robocopy %qt_dir%msvc2013_64\plugins\imageformats %install%\lib\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
+robocopy %qt_dir%msvc2013_64\ %install%\ icudtl.dat
+robocopy %qt_dir%msvc2013_64\plugins\platforms %install%\platforms\ qwindows.dll
+robocopy %qt_dir%msvc2013_64\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
-robocopy %ssllocation64% %install%\lib\ libeay32.dll ssleay32.dll 
+robocopy %ssllocation64% %install%\ libeay32.dll ssleay32.dll 
 robocopy Profiles\ %install%\profiles\ *.* /S
 
 cd winreleasescripts
@@ -80,15 +80,15 @@ set install=simc-%simcversion%-win32
 "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configuration=WebEngine /p:platform=win32 /nr:true /m:8
 
 robocopy "%redist%x86\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocopy locale\ %install%\lib\locale sc_de.qm sc_zh.qm sc_it.qm
+robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Core.dll
-robocopy %qt_dir%msvc2013\bin\ %install%\lib\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll
+robocopy %qt_dir%msvc2013\bin\ %install%\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
-robocopy %qt_dir%msvc2013\ %install%\lib\ icudtl.dat
-robocopy %qt_dir%msvc2013\plugins\platforms %install%\lib\platforms\ qwindows.dll
-robocopy %qt_dir%msvc2013\plugins\imageformats %install%\lib\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
+robocopy %qt_dir%msvc2013\ %install%\ icudtl.dat
+robocopy %qt_dir%msvc2013\plugins\platforms %install%\platforms\ qwindows.dll
+robocopy %qt_dir%msvc2013\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
-robocopy %ssllocation32% %install%\lib\ libeay32.dll ssleay32.dll 
+robocopy %ssllocation32% %install%\ libeay32.dll ssleay32.dll 
 robocopy Profiles\ %install%\profiles\ *.* /S
 
 cd winreleasescripts
