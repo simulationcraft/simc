@@ -1544,7 +1544,7 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_READINESS_RATING: return "Readiness";
 
     case STAT_LEECH_RATING: return "Leech";
-    case STAT_SPEED_RATING: return "Speed";
+    case STAT_SPEED_RATING: return "RunSpeed";
     case STAT_AVOIDANCE_RATING: return "Avoidance";
 
     case STAT_ALL: return "All";
@@ -1601,7 +1601,7 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_VERSATILITY_RATING: return "versatility";
 
     case STAT_LEECH_RATING: return "lifesteal";
-    case STAT_SPEED_RATING: return "speed";
+    case STAT_SPEED_RATING: return "speedbonus";
     case STAT_AVOIDANCE_RATING: return "avoidance";
 
     case STAT_MAX: return "__all";
