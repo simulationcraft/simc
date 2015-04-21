@@ -157,6 +157,9 @@ public:
          iv_haste,
          pet_multiplier;
 
+  // Enhanced Frostbolt
+  timespan_t last_enhanced_frostbolt;
+
   // Benefits
   struct benefits_t
   {
@@ -375,6 +378,7 @@ public:
     distance_from_rune( 0.0 ),
     iv_haste( 1.0 ),
     pet_multiplier( 1.0 ),
+    last_enhanced_frostbolt( timespan_t::min() ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -2568,8 +2572,7 @@ struct frost_bomb_t : public mage_spell_t
 struct frostbolt_t : public mage_spell_t
 {
   double bf_multistrike_bonus;
-  timespan_t enhanced_frostbolt_duration,
-             last_enhanced_frostbolt;
+  timespan_t enhanced_frostbolt_duration;
   // Icicle stats variable to parent icicle damage to Frostbolt, instead of
   // clumping FB/FFB icicle damage together in reports.
   stats_t* icicle;
@@ -2591,8 +2594,7 @@ struct frostbolt_t : public mage_spell_t
   {
     if ( p() -> perks.enhanced_frostbolt -> ok() &&
          !p() -> buffs.enhanced_frostbolt -> check() &&
-         sim -> current_time() > ( last_enhanced_frostbolt +
-         enhanced_frostbolt_duration ) )
+         sim -> current_time() > p() -> last_enhanced_frostbolt + enhanced_frostbolt_duration )
     {
       p() -> buffs.enhanced_frostbolt -> trigger();
     }
@@ -2629,7 +2631,7 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> buffs.enhanced_frostbolt -> check() )
     {
       p() -> buffs.enhanced_frostbolt -> expire();
-      last_enhanced_frostbolt = sim -> current_time();
+      p() -> last_enhanced_frostbolt = sim -> current_time();
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2702,12 +2704,6 @@ struct frostbolt_t : public mage_spell_t
     }
 
     return am;
-  }
-
-  void reset()
-  {
-    action_t::reset();
-    last_enhanced_frostbolt = timespan_t::min();
   }
 };
 
@@ -5950,11 +5946,14 @@ void mage_t::reset()
 
   icicles.clear();
   event_t::cancel( icicle_event );
-  rppm_pyromaniac.reset();
-  rppm_arcane_instability.reset();
   last_bomb_target = 0;
+  last_enhanced_frostbolt = timespan_t::min();
+
   burn_phase.reset();
   pyro_chain.reset();
+
+  rppm_pyromaniac.reset();
+  rppm_arcane_instability.reset();
 }
 
 // mage_t::regen  ===========================================================
