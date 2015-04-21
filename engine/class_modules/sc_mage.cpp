@@ -157,9 +157,6 @@ public:
          iv_haste,
          pet_multiplier;
 
-  // Enhanced Frostbolt
-  timespan_t last_enhanced_frostbolt;
-
   // Benefits
   struct benefits_t
   {
@@ -378,7 +375,6 @@ public:
     distance_from_rune( 0.0 ),
     iv_haste( 1.0 ),
     pet_multiplier( 1.0 ),
-    last_enhanced_frostbolt( timespan_t::min() ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -2573,6 +2569,7 @@ struct frostbolt_t : public mage_spell_t
 {
   double bf_multistrike_bonus;
   timespan_t enhanced_frostbolt_duration;
+  cooldown_t* enhanced_frostbolt_cooldown;
   // Icicle stats variable to parent icicle damage to Frostbolt, instead of
   // clumping FB/FFB icicle damage together in reports.
   stats_t* icicle;
@@ -2588,13 +2585,14 @@ struct frostbolt_t : public mage_spell_t
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
+
+    enhanced_frostbolt_cooldown = p -> get_cooldown( "enhanced_frostbolt" );
   }
 
   virtual void schedule_execute( action_state_t* execute_state )
   {
     if ( p() -> perks.enhanced_frostbolt -> ok() &&
-         !p() -> buffs.enhanced_frostbolt -> check() &&
-         sim -> current_time() > p() -> last_enhanced_frostbolt + enhanced_frostbolt_duration )
+         enhanced_frostbolt_cooldown -> up() )
     {
       p() -> buffs.enhanced_frostbolt -> trigger();
     }
@@ -2616,7 +2614,7 @@ struct frostbolt_t : public mage_spell_t
   {
     timespan_t cast = mage_spell_t::execute_time();
 
-    if ( p() -> buffs.enhanced_frostbolt -> up() )
+    if ( p() -> buffs.enhanced_frostbolt -> check() )
       cast *= 1.0 + p() -> perks.enhanced_frostbolt -> effectN( 1 ).time_value().total_seconds() /
                   base_execute_time.total_seconds();
     if ( p() -> buffs.ice_shard -> up() )
@@ -2628,10 +2626,10 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> buffs.enhanced_frostbolt -> check() )
+    if ( p() -> buffs.enhanced_frostbolt -> up() )
     {
       p() -> buffs.enhanced_frostbolt -> expire();
-      p() -> last_enhanced_frostbolt = sim -> current_time();
+      enhanced_frostbolt_cooldown -> start( enhanced_frostbolt_duration );
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -5941,7 +5939,6 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   last_bomb_target = 0;
-  last_enhanced_frostbolt = timespan_t::min();
 
   burn_phase.reset();
   pyro_chain.reset();
@@ -6013,9 +6010,6 @@ void mage_t::arise()
 
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
-
-  if ( perks.enhanced_frostbolt -> ok() && specialization() == MAGE_FROST )
-    buffs.enhanced_frostbolt -> trigger();
 
   if ( passives.molten_armor -> ok() )
     buffs.molten_armor -> trigger();
