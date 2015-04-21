@@ -3515,6 +3515,7 @@ struct item_t
   // from user options, or a data source such as the Blizzard API, or Wowhead
   struct parsed_input_t
   {
+    unsigned                 item_level;
     int                      upgrade_level;
     int                      suffix_id;
     unsigned                 enchant_id;
@@ -3534,7 +3535,7 @@ struct item_t
     std::vector<std::string> source_list;
 
     parsed_input_t() :
-      upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
+      item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
       armor( 0 ), data()
     {
       range::fill( data.stat_type_e, -1 );

@@ -402,6 +402,10 @@ unsigned item_t::item_level() const
 {
   if ( sim -> scale_to_itemlevel > 0 )
     return sim -> scale_to_itemlevel;
+  else if ( parsed.item_level > 0 )
+  {
+    return parsed.item_level;
+  }
   else
     return parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() );
 }
@@ -962,7 +966,7 @@ bool item_t::init()
   if ( ! decode_ilevel()                           ) return false;
   if ( ! decode_armor_type()                       ) return false;
 
-  if ( parsed.upgrade_level > 0 && ( ! parsed.data.quality || ! parsed.data.level ) )
+  if ( parsed.upgrade_level > 0 && ( ! parsed.data.quality || ( ! parsed.data.level && ! parsed.item_level ) ) )
     sim -> errorf( "Player %s upgrading item %s at slot %s without quality or ilevel, upgrading will not work\n",
                    player -> name(), name(), slot_name() );
 
@@ -1074,8 +1078,8 @@ bool item_t::decode_ilevel()
 {
   if ( ! option_ilevel_str.empty() )
   {
-    parsed.data.level = util::to_unsigned( option_ilevel_str );
-    if ( parsed.data.level == 0 )
+    parsed.item_level = util::to_unsigned( option_ilevel_str );
+    if ( parsed.item_level == 0 )
       return false;
   }
 
