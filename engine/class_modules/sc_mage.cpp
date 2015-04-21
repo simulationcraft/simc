@@ -2987,11 +2987,10 @@ struct frozen_orb_t : public mage_spell_t
 
 struct ice_floes_t : public mage_spell_t
 {
-  timespan_t next_ready;
+  cooldown_t* icd;
 
   ice_floes_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "ice_floes", p, p -> talents.ice_floes ),
-    next_ready( timespan_t::min() )
+    mage_spell_t( "ice_floes", p, p -> talents.ice_floes )
   {
     parse_options( options_str );
     may_miss = may_crit = harmful = false;
@@ -3000,11 +2999,13 @@ struct ice_floes_t : public mage_spell_t
 
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
+
+    icd = p -> get_cooldown( "ice_floes_icd" );
   }
 
   bool ready()
   {
-    if ( sim -> current_time() < next_ready )
+    if ( icd -> down() )
     {
       return false;
     }
@@ -3016,16 +3017,9 @@ struct ice_floes_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    next_ready = sim -> current_time() + data().internal_cooldown();
+    icd -> start( data().internal_cooldown() );
 
     p() -> buffs.ice_floes -> trigger( 1 );
-  }
-
-  void reset()
-  {
-    mage_spell_t::reset();
-
-    next_ready = timespan_t::min();
   }
 };
 
