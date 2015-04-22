@@ -498,20 +498,27 @@ public:
 
   struct spells_t
   {
+    // Cat
     const spell_data_t* ferocious_bite; 
-    const spell_data_t* bear_form; // Bear form passive buff
-    const spell_data_t* bear_form2; // Bear form skill
-    const spell_data_t* berserk_bear; // Berserk bear mangler
     const spell_data_t* berserk_cat; // Berserk cat resource cost reducer
     const spell_data_t* cat_form; // Cat form bonuses
     const spell_data_t* cat_form_speed;
-    const spell_data_t* frenzied_regeneration;
-    const spell_data_t* mangle; // Mangle cooldown reset
-    const spell_data_t* moonkin_form; // Moonkin form bonuses
     const spell_data_t* primal_fury; // Primal fury gain
-    const spell_data_t* regrowth; // Old GoRegrowth
-    const spell_data_t* survival_instincts; // Survival instincts aura
     const spell_data_t* gushing_wound; // Feral t17 4pc driver
+    const spell_data_t* survival_instincts; // Survival instincts aura
+
+    // Bear
+    const spell_data_t* bear_form_skill; // Bear form skill
+    const spell_data_t* bear_form_passive; // Bear form passive buff
+    const spell_data_t* berserk_bear; // Berserk bear mangler
+    const spell_data_t* frenzied_regeneration;
+    const spell_data_t* guardian_passive; // Special guardian modifiers
+
+    // Moonkin
+    const spell_data_t* moonkin_form; // Moonkin form bonuses
+
+    // Resto
+    const spell_data_t* regrowth; // Old GoRegrowth
   } spell;
 
   // Talents
@@ -3343,8 +3350,9 @@ struct thrash_bear_t : public bear_attack_t
     dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
 
-    // 9/28/2014: Damage multiplier to fix damage inconsistency vs in-game.
-    base_multiplier *= 4.0;
+    // Apply hidden passive damage multiplier
+    base_dd_multiplier *= 1.0 + player -> spell.guardian_passive -> effectN( 6 ).percent();
+    base_td_multiplier *= 1.0 + player -> spell.guardian_passive -> effectN( 7 ).percent();
 
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
@@ -6052,23 +6060,26 @@ void druid_t::init_spells()
 
   // Spells
   spell.ferocious_bite                  = find_class_spell( "Ferocious Bite"              ) -> ok() ? find_spell( 22568  ) : spell_data_t::not_found(); // Get spell data for max_fb_energy calculation.
-  spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
-  spell.bear_form2                      = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 5487   ) : spell_data_t::not_found(); // Bear form skill
+  spell.bear_form_passive               = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
+  spell.bear_form_skill                 = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 5487   ) : spell_data_t::not_found(); // Bear form skill
   spell.berserk_bear                    = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 50334  ) : spell_data_t::not_found(); // Berserk bear mangler
   spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
-  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025 )   : spell_data_t::not_found();
+  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
   spell.cat_form_speed                  = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
 
   if ( specialization() == DRUID_FERAL )
+  {
     spell.primal_fury = find_spell( 16953 );
-  else if ( specialization() == DRUID_GUARDIAN )
-    spell.primal_fury = find_spell( 16959 );
-
-  if ( specialization() == DRUID_FERAL )
     spell.gushing_wound = find_spell( 165432 );
+  }
+  else if ( specialization() == DRUID_GUARDIAN )
+  {
+    spell.primal_fury = find_spell( 16959 );
+    spell.guardian_passive = find_spell( 106734 ); // Guardian-only modifiers
+  }
 
   // Perks
 
@@ -6993,7 +7004,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 + spell.bear_form2 -> effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent() + maybe_ptr( dbc.ptr ) ? 0.35 : 0;
+    a *= 1.0 + spell.bear_form_skill -> effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent() + ( maybe_ptr( dbc.ptr ) ? spec.survival_of_the_fittest -> effectN( 2 ).percent() : 0 );
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
@@ -7163,7 +7174,7 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     case ATTR_STAMINA:
       if( buff.bear_form -> check() )
-        m *= 1.0 + spell.bear_form -> effectN( 2 ).percent() + perk.empowered_bear_form -> effectN( 1 ).percent();
+        m *= 1.0 + spell.bear_form_passive -> effectN( 2 ).percent() + perk.empowered_bear_form -> effectN( 1 ).percent();
       break;
     default:
       break;
@@ -7543,7 +7554,7 @@ void druid_t::assess_damage( school_e school,
   if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
     if ( buff.savage_defense -> up() && maybe_ptr( dbc.ptr ) && dbc::is_school( SCHOOL_PHYSICAL, school ) )
-      s -> result_amount *= 1.0 + find_spell( 132402 ) -> effectN( 4 ).percent();
+      s -> result_amount *= 1.0 + buff.savage_defense -> data().effectN( 4 ).percent();
 
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
       s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();
