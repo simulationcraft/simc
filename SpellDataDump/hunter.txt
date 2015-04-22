@@ -3231,9 +3231,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=67988)    : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.68000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
 #2 (id=90635)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 268 | Scaled Value: 268
+                   Base Value: 225 | Scaled Value: 225
 #3 (id=171318)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900)
@@ -3251,13 +3251,13 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=67991)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 0x7e
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.19000 | Misc Value: 0x7e
 #2 (id=90637)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 119 | Scaled Value: 119
 #3 (id=99207)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.19000
                    Affected Spells: Explosive Trap (13812)
-Description      : Increases all magical damage you deal by $s1%.
+Description      : Increases all magical damage you deal by ${$m1}.1%.
 
 Name             : Mastery: Sniper Training (id=76659) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter

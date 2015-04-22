@@ -668,7 +668,7 @@ Description      : Causes $s1 Holy damage $?s105424[and generates 1 Holy Power]?
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
 Class            : Holy Paladin
-Resource         : 7.35% Base Mana (2352 @Level 100)
+Resource         : 11% Base Mana (3520 @Level 100)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds

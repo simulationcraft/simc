@@ -71,7 +71,7 @@ Effects          :
 #1 (id=75)       : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 #2 (id=76)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.48900
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.93600
 #3 (id=257164)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0
 Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
@@ -1504,7 +1504,7 @@ Effects          :
 #1 (id=36562)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40
 #2 (id=36563)    : School Damage: frostfire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.34800
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.75200
 Description      : Launches a bolt of frostfire at the enemy, causing $?a57761[${$m2*1.25} to ${$M2*1.25}][$s2] Frostfire damage and slowing the target's movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
