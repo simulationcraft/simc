@@ -568,6 +568,11 @@ struct water_elemental_pet_t : public pet_t
     {
       parse_options( options_str );
       channeled = tick_may_crit = true;
+
+      if ( p -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
+      {
+        dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
+      }
     }
 
     water_elemental_pet_td_t* td( player_t* t ) const
@@ -582,6 +587,11 @@ struct water_elemental_pet_t : public pet_t
     void execute()
     {
       spell_t::execute();
+
+      if ( p() -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B2 ) )
+      {
+        p() -> o() -> buffs.brain_freeze -> trigger( 1 );
+      }
 
       // If this is a queued execute, disable queued status
       if ( ! autocast && queued )
@@ -598,7 +608,7 @@ struct water_elemental_pet_t : public pet_t
 
       p() -> o() -> get_target_data( s -> target ) -> debuffs.water_jet
           -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
-                     data().duration() * p() -> composite_spell_haste());
+                     dot_duration * p() -> composite_spell_haste());
     }
 
     virtual void last_tick( dot_t* d )
@@ -5032,7 +5042,9 @@ void mage_t::create_buffs()
 
   // Frost
   buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 57761 ) );
-  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) );
+  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
+                                  .max_stack( find_spell( 44544 ) -> max_stacks() +
+                                              ( sets.has_set_bonus( MAGE_FROST, T18, B4 )? find_spell( 185971 ) -> effectN( 2 ).base_value() : 0 ) );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins             = buff_creator_t( this, "icy_veins", find_spell( 12472 ) );
