@@ -233,6 +233,9 @@ public:
     buff_t* frozen_runeblade;
     buff_t* lichborne;
     buff_t* death_dealer; // WoD PVP Unholy 4 piece set bonus
+
+    // Frost T18 2pc buffs TODO: Frost Strike bonus
+    buff_t* obliteration;
   } buffs;
 
   struct runeforge_t
@@ -556,6 +559,7 @@ public:
   void      trigger_necrosis( const action_state_t* );
   void      trigger_t17_4pc_frost( const action_state_t* );
   void      trigger_t17_4pc_unholy( const action_state_t* );
+  void      trigger_t18_2pc_frost( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   double    ready_runes_count( rune_type rt, bool include_death, bool require_death, bool fractional ) const;
   double    runes_count( rune_type rt, bool include_death, bool require_death ) const;
@@ -3205,6 +3209,10 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     {
       trigger_t16_2pc_tank();
       p() -> buffs.scent_of_blood -> trigger();
+      if ( player -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T18, B2 ) )
+      {
+        p() -> buffs.scent_of_blood -> trigger();
+      }
     }
   }
 
@@ -3739,7 +3747,13 @@ struct death_coil_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_coil -> execute();
 
-    p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
+    double dc_rpcost = base_costs[ RESOURCE_RUNIC_POWER ];
+    if ( player -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B2 ) )
+    {
+      dc_rpcost += base_costs[ RESOURCE_RUNIC_POWER ];
+    }
+
+    p() -> trigger_shadow_infusion( dc_rpcost );
     if ( p() -> specialization() == DEATH_KNIGHT_BLOOD )
       p() -> buffs.shadow_of_death -> trigger();
 
@@ -3854,7 +3868,13 @@ struct death_strike_heal_t : public death_knight_heal_t
   {
     death_knight_heal_t::consume_resource();
 
-    p() -> buffs.scent_of_blood -> expire();
+    double sob_consume_stacks = static_cast<double>( p() -> buffs.scent_of_blood -> check() );
+    if ( player -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T18, B4 ) )
+    {
+      sob_consume_stacks = util::round( sob_consume_stacks / 2.0, 0 );
+    }
+
+    p() -> buffs.scent_of_blood -> decrement( sob_consume_stacks );
   }
 
   void trigger_blood_shield( action_state_t* state )
@@ -4103,6 +4123,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
       p() -> trigger_blood_charge( resource_consumed );
       p() -> trigger_runic_corruption( resource_consumed );
       p() -> trigger_plaguebearer( execute_state );
+      p() -> trigger_t18_2pc_frost( execute_state );
     }
   }
 
@@ -4492,6 +4513,8 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       p() -> buffs.killing_machine -> expire();
     }
+
+    p() -> trigger_t18_2pc_frost( execute_state );
   }
 
   virtual void impact( action_state_t* s )
@@ -4759,6 +4782,10 @@ struct blood_boil_t : public death_knight_spell_t
       spread -> schedule_execute();
 
       p() -> buffs.scent_of_blood -> trigger();
+      if ( player -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T18, B2 ) )
+      {
+        p() -> buffs.scent_of_blood -> trigger();
+      }
     }
   }
 
@@ -6163,6 +6190,11 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 2 ).percent() );
 
+  if ( buffs.obliteration -> up() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
+  }
+
   return haste;
 }
 
@@ -6177,6 +6209,11 @@ double death_knight_t::composite_spell_haste() const
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
 
   haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 2 ).percent() );
+
+  if ( buffs.obliteration -> up() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
+  }
 
   return haste;
 }
@@ -7129,6 +7166,7 @@ void death_knight_t::create_buffs()
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
                               .cd( timespan_t::zero() );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
+                              .max_stack( 1 + sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).base_value() )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
@@ -7149,6 +7187,8 @@ void death_knight_t::create_buffs()
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", find_spell( 50421 ) )
+                              .max_stack( find_spell( 50421 ) -> max_stacks() +
+                                          sets.set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 1 ).base_value() )
                               .chance( spec.scent_of_blood -> ok() );
   // Trick simulator into recalculating health when this buff goes up/down.
   buffs.shadow_of_death     = new shadow_of_death_t( this );
@@ -7193,6 +7233,9 @@ void death_knight_t::create_buffs()
   buffs.death_dealer = buff_creator_t( this, "death_dealer", find_spell( 166062 ) )
                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                        .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, PVP, B4 ) );
+
+  buffs.obliteration = buff_creator_t( this, "obliteration", find_spell( 187893 ) )
+                      .chance( sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B2 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7912,6 +7955,10 @@ void death_knight_t::trigger_shadow_infusion( double rpcost )
     shadow_infusion_counter--;
   }
 
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s generates %f shadow infusion stacks, %u stacks, %f charges remaining",
+        name(), multiplier, stacks, shadow_infusion_counter );
+
   if ( stacks > 0 )
     buffs.shadow_infusion -> trigger( stacks );
 }
@@ -8016,6 +8063,33 @@ void death_knight_t::trigger_t17_4pc_unholy( const action_state_t* )
 
   if ( sim -> debug )
     log_rune_status( this, true );
+}
+
+void death_knight_t::trigger_t18_2pc_frost( const action_state_t* state )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B2 ) )
+  {
+    return;
+  }
+
+  if ( state -> result != RESULT_CRIT )
+  {
+    return;
+  }
+
+  if ( state -> action -> id != 49020 && state -> action -> id != 49143 )
+  {
+    return;
+  }
+
+  // Obliterate
+  if ( state -> action -> id == 49020 )
+  {
+    buffs.obliteration -> trigger();
+  }
+  else
+  {
+  }
 }
 
 // death_knight_t::trigger_plaguebearer =====================================
