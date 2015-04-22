@@ -676,7 +676,7 @@ bool parse_spell_query( sim_t*             sim,
   {
     std::string lvl_offset_str = value.substr( lvl_offset + 1 );
     int sq_lvl = strtol( lvl_offset_str.c_str(), 0, 10 );
-    if ( sq_lvl < 1 || sq_lvl > MAX_LEVEL )
+    if ( sq_lvl < 1 )
       return 0;
 
     sim -> spell_query_level = as< unsigned >( sq_lvl );

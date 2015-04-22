@@ -434,14 +434,24 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   s << "                   Base Value: " << e -> base_value();
   s << " | Scaled Value: ";
 
-  double v_min = dbc.effect_min( e -> id(), level );
-  double v_max = dbc.effect_max( e -> id(), level );
+  if ( level <= MAX_LEVEL )
+  {
+    double v_min = dbc.effect_min( e -> id(), level );
+    double v_max = dbc.effect_max( e -> id(), level );
 
-  s << v_min;
-  if ( v_min != v_max )
-    s << " - " << v_max;
+    s << v_min;
+    if ( v_min != v_max )
+      s << " - " << v_max;
+  }
+  else
+  {
+    const random_prop_data_t& ilevel_data = dbc.random_property( level );
+    double item_budget = ilevel_data.p_epic[ 0 ];
 
-  if ( v_min != e -> base_value() && v_max != e -> base_value() )
+    s << item_budget * e -> m_average();
+  }
+
+  if ( e -> m_average() != 0 || e -> m_delta() != 0 )
   {
     s << " (avg=" << e -> m_average();
     if ( e -> m_delta() != 0 )
@@ -449,10 +459,13 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << ")";
   }
 
-  if ( e -> m_unk() )
+  if ( level <= MAX_LEVEL )
   {
-    s << " | Bonus Value: " << dbc.effect_bonus( e -> id(), level );
-    s << " (" << e -> m_unk() << ")";
+    if ( e -> m_unk() )
+    {
+      s << " | Bonus Value: " << dbc.effect_bonus( e -> id(), level );
+      s << " (" << e -> m_unk() << ")";
+    }
   }
 
   if ( e -> real_ppl() != 0 )
@@ -1084,25 +1097,41 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   }
   node -> add_parm( "base_value", e -> base_value() );
 
-  double v_min = dbc.effect_min( e -> id(), level );
-  double v_max = dbc.effect_max( e -> id(), level );
-  node -> add_parm( "scaled_value", v_min  );
-  if ( v_min != v_max )
+  if ( level <= MAX_LEVEL )
   {
-    node -> add_parm( "scaled_value_max", v_max );
+    double v_min = dbc.effect_min( e -> id(), level );
+    double v_max = dbc.effect_max( e -> id(), level );
+    node -> add_parm( "scaled_value", v_min  );
+    if ( v_min != v_max )
+    {
+      node -> add_parm( "scaled_value_max", v_max );
+    }
+  }
+  else
+  {
+    const random_prop_data_t& ilevel_data = dbc.random_property( level );
+    double item_budget = ilevel_data.p_epic[ 0 ];
+
+    node -> add_parm( "scaled_value", item_budget * e -> m_average() );
   }
 
-  if ( v_min != e -> base_value() && v_max != e -> base_value() )
+  if ( e -> m_average() != 0 )
   {
     node -> add_parm( "multiplier_average", e -> m_average() );
-    if ( e -> m_delta() != 0 )
-      node -> add_parm( "multiplier_delta", e -> m_delta() );
   }
 
-  if ( e -> m_unk() )
+  if ( e -> m_delta() != 0 )
   {
-    node -> add_parm( "bonus_value", dbc.effect_bonus( e -> id(), level ) );
-    node -> add_parm( "bonus_value_multiplier", e -> m_unk() );
+    node -> add_parm( "multiplier_delta", e -> m_delta() );
+  }
+
+  if ( level <= MAX_LEVEL )
+  {
+    if ( e -> m_unk() )
+    {
+      node -> add_parm( "bonus_value", dbc.effect_bonus( e -> id(), level ) );
+      node -> add_parm( "bonus_value_multiplier", e -> m_unk() );
+    }
   }
 
   if ( e -> real_ppl() != 0 )
