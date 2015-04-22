@@ -499,7 +499,8 @@ public:
   struct spells_t
   {
     const spell_data_t* ferocious_bite; 
-    const spell_data_t* bear_form; // Bear form bonuses
+    const spell_data_t* bear_form; // Bear form passive buff
+    const spell_data_t* bear_form2; // Bear form skill
     const spell_data_t* berserk_bear; // Berserk bear mangler
     const spell_data_t* berserk_cat; // Berserk cat resource cost reducer
     const spell_data_t* cat_form; // Cat form bonuses
@@ -6052,6 +6053,7 @@ void druid_t::init_spells()
   // Spells
   spell.ferocious_bite                  = find_class_spell( "Ferocious Bite"              ) -> ok() ? find_spell( 22568  ) : spell_data_t::not_found(); // Get spell data for max_fb_energy calculation.
   spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
+  spell.bear_form2                      = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 5487   ) : spell_data_t::not_found(); // Bear form skill
   spell.berserk_bear                    = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 50334  ) : spell_data_t::not_found(); // Berserk bear mangler
   spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
   spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025 )   : spell_data_t::not_found();
@@ -6991,7 +6993,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent() + wod_hotfix ? 0.35 : 0;
+    a *= 1.0 + spell.bear_form2 -> effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent() + maybe_ptr( dbc.ptr ) ? 0.35 : 0;
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
