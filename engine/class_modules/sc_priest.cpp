@@ -34,6 +34,7 @@ public:
     absorb_buff_t* divine_aegis;
     absorb_buff_t* spirit_shell;
     buff_t* holy_word_serenity;
+    buff_t* mental_fatigue;
   } buffs;
 
   bool glyph_of_mind_harvest_consumed;
@@ -1567,11 +1568,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   atonement_heal_t* atonement;
   bool can_trigger_atonement;
+  bool is_mind_spell; // TODO: activate on relevant spells, see spell query affected list.
 
   priest_spell_t( const std::string& n, priest_t& player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
-    atonement( nullptr ), can_trigger_atonement( false )
+    atonement( nullptr ), can_trigger_atonement( false ), is_mind_spell( false )
   {
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
@@ -1583,6 +1585,22 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( can_trigger_atonement )
       atonement = new atonement_heal_t( "atonement_" + name_str, priest );
+  }
+
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double am = base_t::composite_target_multiplier( t );
+
+    if ( is_mind_spell )
+    {
+      priest_td_t& td = get_td( t );
+      if ( td.buffs.mental_fatigue -> check() )
+      {
+        am *= 1.0 + td.buffs.mental_fatigue -> check() * td.buffs.mental_fatigue -> data().effectN( 1 ).percent();
+      }
+    }
+
+    return am;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3115,6 +3133,8 @@ struct mind_flay_base_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
     priest.buffs.glyph_of_mind_flay -> trigger();
+
+    // TODO: apply mental_fatigue on damage.
   }
 };
 
@@ -5204,6 +5224,9 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                              .cd( timespan_t::zero() )
                              .activated( false );
 
+  buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue" )
+                         .spell( p.find_spell( 185104 ) );
+
   target -> callbacks_on_demise.push_back( std::bind( &priest_td_t::target_demise, this ) );
 }
 
@@ -7106,7 +7129,7 @@ struct priest_module_t : public module_t
       p -> buffs.weakened_soul    = new buffs::weakened_soul_t( p );
     }
   }
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     items::init();
   }
