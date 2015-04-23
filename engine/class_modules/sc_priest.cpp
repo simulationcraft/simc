@@ -2162,6 +2162,7 @@ struct mind_blast_t : public priest_spell_t
   {
     parse_options( options_str );
     instant_multistrike = 0;
+    is_mind_spell = true;
 
     // Glyph of Mind Harvest
     if ( priest.glyphs.mind_harvest -> ok() )
@@ -2327,6 +2328,7 @@ struct mind_spike_t : public priest_spell_t
   {
     parse_options( options_str );
     instant_multistrike = 0;
+    is_mind_spell = true;
   }
 
   virtual action_state_t* new_state() override
@@ -2562,6 +2564,7 @@ struct mind_sear_base_t : public priest_spell_t
     dynamic_tick_action = true;
     tick_zero    = false;
     instant_multistrike = 0;
+    is_mind_spell = true;
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( insanity ? "Searing Insanity" : "Mind Sear" ) );
   }
@@ -3110,6 +3113,7 @@ struct mind_flay_base_t : public priest_spell_t
     channeled    = true;
     hasted_ticks = false;
     use_off_gcd  = true;
+    is_mind_spell = true;
 
     if ( priest.perks.enhanced_mind_flay -> ok() )
     {
@@ -3134,7 +3138,15 @@ struct mind_flay_base_t : public priest_spell_t
     priest_spell_t::tick( d );
     priest.buffs.glyph_of_mind_flay -> trigger();
 
-    // TODO: apply mental_fatigue on damage.
+    if ( priest.active_items.mental_fatigue )
+    {
+      if ( d -> state && result_is_hit( d -> state -> result ))
+      {
+        // Assumes trigger on hit, not on damage
+        priest_td_t& td = get_td( d -> state -> target );
+        td.buffs.mental_fatigue -> trigger();
+      }
+    }
   }
 };
 
