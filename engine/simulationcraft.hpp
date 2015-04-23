@@ -4755,6 +4755,8 @@ struct player_t : public actor_t
     buff_t* surge_of_energy;
     buff_t* natures_fury;
     buff_t* brute_strength;
+
+    buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
   } buffs;
 
   struct debuffs_t

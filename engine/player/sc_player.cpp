@@ -5057,6 +5057,9 @@ void player_t::target_mitigation( school_e school,
   if ( buffs.pain_supression && buffs.pain_supression -> up() )
     s -> result_amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
 
+  if ( buffs.naarus_discipline && buffs.naarus_discipline -> up() )
+    s -> result_amount *= 1.0 + buffs.naarus_discipline -> data().effectN( 1 ).percent();
+
   if ( buffs.stoneform && buffs.stoneform -> up() )
     s -> result_amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
 

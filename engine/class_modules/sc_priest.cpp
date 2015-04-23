@@ -289,6 +289,13 @@ public:
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
   } active_spells;
 
+  struct
+  {
+    const special_effect_t* naarus_discipline;
+    const special_effect_t* complete_healing;
+    const special_effect_t* mental_fatigue;
+  } active_items;
+
   // Pets
   struct
   {
@@ -1437,6 +1444,17 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     priest.buffs.surge_of_light -> up();
     priest.buffs.surge_of_light -> expire();
+  }
+
+  /**
+   * 124519-boss-13-priest-trinket Discipline
+   */
+  void trigger_naarus_discipline( const action_state_t* s )
+  {
+    if ( priest.active_items.naarus_discipline )
+    {
+      s -> target -> buffs.naarus_discipline -> trigger();
+    }
   }
 };
 
@@ -5107,6 +5125,52 @@ struct spirit_shell_t : public priest_buff_t<buff_t>
 
 } // end namespace buffs
 
+namespace items {
+
+
+void do_trinket_init( priest_t*                player,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
+       player -> specialization() != spec )
+  {
+    return;
+  }
+
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
+void discipline_trinket( special_effect_t& effect )
+{
+  priest_t* s = debug_cast<priest_t*>( effect.player );
+  do_trinket_init( s, PRIEST_DISCIPLINE, s -> active_items.naarus_discipline, effect );
+}
+
+void holy_trinket( special_effect_t& effect )
+{
+  priest_t* s = debug_cast<priest_t*>( effect.player );
+  do_trinket_init( s, PRIEST_HOLY, s -> active_items.complete_healing, effect );
+}
+
+void shadow_trinket( special_effect_t& effect )
+{
+  priest_t* s = debug_cast<priest_t*>( effect.player );
+  do_trinket_init( s, PRIEST_SHADOW, s -> active_items.mental_fatigue, effect );
+}
+
+void init()
+{
+  unique_gear::register_special_effect( 184912, discipline_trinket );
+  unique_gear::register_special_effect( 184914, holy_trinket );
+  unique_gear::register_special_effect( 184915, shadow_trinket );
+}
+
+} // items
 
 // ==========================================================================
 // Priest Targetdata Definitions
@@ -7038,8 +7102,13 @@ struct priest_module_t : public module_t
       player_t* p = sim -> actor_list[ i ];
       p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
       p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
+      p -> buffs.naarus_discipline  = buff_creator_t( p, "naarus_discipline", p -> find_spell( 185103 ) );
       p -> buffs.weakened_soul    = new buffs::weakened_soul_t( p );
     }
+  }
+  virtual void static_init() const
+  {
+    items::init();
   }
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
