@@ -6019,7 +6019,7 @@ static void prot_trinket( special_effect_t& effect )
   do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
   if ( s -> prot_trinket )
   {
-    s -> buff.shield_charge -> default_value +=  ( s -> prot_trinket -> driver() -> effectN( 3 ).average( s -> prot_trinket -> item ) / 1000.0 );
+    s -> buff.shield_charge -> default_value +=  ( s -> prot_trinket -> driver() -> effectN( 3 ).average( s -> prot_trinket -> item ) / 100.0 );
   }
 }
 

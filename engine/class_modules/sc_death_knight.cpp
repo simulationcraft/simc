@@ -3874,7 +3874,7 @@ struct death_strike_heal_t : public death_knight_heal_t
       sob_consume_stacks = util::round( sob_consume_stacks / 2.0, 0 );
     }
 
-    p() -> buffs.scent_of_blood -> decrement( sob_consume_stacks );
+    p() -> buffs.scent_of_blood -> decrement( static_cast<int>( sob_consume_stacks ) );
   }
 
   void trigger_blood_shield( action_state_t* state )
