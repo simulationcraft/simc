@@ -679,6 +679,12 @@ bool parse_spell_query( sim_t*             sim,
     if ( sq_lvl < 1 )
       return 0;
 
+    if ( sq_lvl > MAX_ILEVEL )
+    {
+      sim -> errorf( "Maximum item level supported in Simulationcraft is %u.", MAX_ILEVEL );
+      return 0;
+    }
+
     sim -> spell_query_level = as< unsigned >( sq_lvl );
 
     sq_str = sq_str.substr( 0, lvl_offset );

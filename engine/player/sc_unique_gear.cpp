@@ -2156,7 +2156,6 @@ struct str_dps_trinket_4_damage_t : public melee_attack_t
     may_crit = callbacks = false;
     base_td = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
-    update_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_VERSATILITY;
   }
 
   double composite_target_multiplier( player_t* target ) const

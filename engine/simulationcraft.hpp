@@ -1430,6 +1430,10 @@ option_t opt_deprecated( const std::string& n, const std::string& new_option );
 #define MAX_SCALING_LEVEL (105)
 #endif
 
+#ifndef MAX_ILEVEL
+#define MAX_ILEVEL (1000)
+#endif
+
 // Include DBC Module
 #include "dbc/dbc.hpp"
 
