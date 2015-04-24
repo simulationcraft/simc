@@ -374,6 +374,7 @@ void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
       hasted_ticks = false; background = true; callbacks = false; special = true;
       may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
       tick_may_crit = false;
+      update_flags += STATE_MUL_TA | STATE_VERSATILITY;
     }
 
     double target_armor( player_t* ) const
@@ -2156,6 +2157,7 @@ struct str_dps_trinket_4_damage_t : public melee_attack_t
     may_crit = callbacks = false;
     base_td = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
+    update_flags += STATE_MUL_TA | STATE_VERSATILITY;
   }
 
   double composite_target_multiplier( player_t* target ) const
@@ -2246,6 +2248,7 @@ void item::str_dps_trinket_3( special_effect_t& effect )
   effect.execute_action = action;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.rppm_scale = RPPM_HASTE;
+  effect.execute_action -> snapshot_flags += STATE_TGT_MUL_DA | STATE_MUL_DA | STATE_VERSATILITY;
 
   new dbc_proc_callback_t( effect.player, effect );
 }

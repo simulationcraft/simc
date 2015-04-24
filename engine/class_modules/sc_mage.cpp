@@ -5174,15 +5174,15 @@ bool mage_t::has_t18_class_trinket() const
 {
   if ( specialization() == MAGE_ARCANE )
   {
-    return wild_arcanist;
+    return wild_arcanist != 0;
   }
   else if ( specialization() == MAGE_FIRE )
   {
-    return pyrosurge;
+    return pyrosurge != 0;
   }
   else if ( specialization() == MAGE_FROST )
   {
-    return shatterlance;
+    return shatterlance != 0;
   }
 
   return false;
