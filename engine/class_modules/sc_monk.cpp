@@ -2104,8 +2104,8 @@ struct jab_t: public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = p() -> spec.combo_breaker -> effectN( 1 ).percent();
-//    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( SET_MELEE, T18, B4 ) )
-//      cb_chance += p() -> sets.set( SET_MELEE, T18, B4 ) -> effectN( 1 ).percent();
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
+      cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 1 ).percent();
     return cb_chance;
   }
 
@@ -2301,8 +2301,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = 0;
-//    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( SET_MELEE, T18, B2 ) )
-//      cb_chance += p() -> sets.set( SET_MELEE, T18, B2 ) -> effectN( 1 ).percent();
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+      cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
     return cb_chance;
   }
 
@@ -2320,7 +2320,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       {
         if ( p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
           p() -> proc.combo_breaker_ce -> occur();
-     }
+      }
       else
       {
         if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
@@ -5346,7 +5346,7 @@ void monk_t::init_base_stats()
     base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
-  resources.base[RESOURCE_ENERGY] = 100;// + ( ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) ) ? sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 2 ).base_value() : 0 );
+  resources.base[RESOURCE_ENERGY] = 100 + ( ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) ) ? sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 2 ).base_value() : 0 );
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
@@ -6041,7 +6041,7 @@ void monk_t::assess_damage(school_e school,
 
     // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
     // currently giving this a 10% chance to reset, but the user can determin how often to reset this. 
-    double desperate_measures = 35;//( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35);
+    double desperate_measures = ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35);
     if ( health_percentage() < desperate_measures )
     {
       bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : 0.10 );
