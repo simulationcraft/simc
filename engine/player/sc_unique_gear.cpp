@@ -73,7 +73,7 @@ namespace item
   /* Warlords of Draenor 6.2 (WIP) */
   void int_dps_trinket_4( special_effect_t& );
   void int_dps_trinket_3( special_effect_t& );
-  //void insatiable_hunger( special_effect_t& );
+  void insatiable_hunger( special_effect_t& );
   void str_dps_trinket_3( special_effect_t& );
   void str_dps_trinket_4( special_effect_t& );
 }
@@ -2250,6 +2250,89 @@ void item::str_dps_trinket_3( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct hammering_blows_buff_t : public stat_buff_t
+{
+  struct enable_event_t : public event_t
+  {
+    dbc_proc_callback_t* driver;
+
+    enable_event_t( dbc_proc_callback_t* cb ) :
+      event_t( *cb -> listener ), driver( cb )
+    { add_event( timespan_t::zero() ); }
+
+    const char* name() const
+    { return "hammering_blows_enable_event"; }
+
+    void execute()
+    {
+      driver -> activate();
+    }
+  };
+
+  dbc_proc_callback_t* stack_driver;
+
+  hammering_blows_buff_t( const special_effect_t& source_effect ) :
+    stat_buff_t( stat_buff_creator_t( source_effect.player, "hammering_blows",
+                 source_effect.trigger(), source_effect.item )
+                 .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+    stack_driver( 0 )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    bool state_change = current_stack == 0;
+    stat_buff_t::execute( stacks, value, duration );
+
+    if ( state_change )
+    {
+      new ( *sim ) enable_event_t( stack_driver );
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    stat_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    stack_driver -> deactivate();
+  }
+
+  void reset()
+  {
+    stat_buff_t::reset();
+
+    stack_driver -> deactivate();
+  }
+};
+
+// Secondary initialization for the stack-gain driver for insatiable hunger
+static void insatiable_hunger_2( special_effect_t& effect )
+{
+  effect.proc_chance_ = 1.0;
+  effect.custom_buff = buff_t::find( effect.player, "hammering_blows" );
+
+  hammering_blows_buff_t* b = static_cast<hammering_blows_buff_t*>( effect.custom_buff );
+
+  b -> stack_driver = new dbc_proc_callback_t( effect.player, effect );
+}
+
+void item::insatiable_hunger( special_effect_t& effect )
+{
+  // Setup a secondary driver when the buff is up to generate stacks to it
+  special_effect_t* effect_driver = new special_effect_t( effect.player );
+  effect_driver -> type = SPECIAL_EFFECT_CUSTOM;
+  effect_driver -> name_str = "hammering_blows_driver";
+  effect_driver -> spell_id = effect.trigger() -> id();
+  effect_driver -> custom_init = insatiable_hunger_2;
+
+  // And make it a player-special effect for now
+  effect.player -> special_effects.push_back( effect_driver );
+
+  // Instatiate the actual buff
+  effect.custom_buff = new hammering_blows_buff_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Int DPS 4 trinket base driver, handles the proccing (triggering) of Mark of Doom on targets
 struct int_dps_trinket_4_driver_t : public dbc_proc_callback_t
 {
@@ -2944,7 +3027,7 @@ void unique_gear::register_special_effects()
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184066, item::int_dps_trinket_4              );
   register_special_effect( 183951, item::int_dps_trinket_3              );
-  //register_special_effect( 183942, item::insatiable_hunger              );
+  register_special_effect( 183942, item::insatiable_hunger              );
   register_special_effect( 184249, item::str_dps_trinket_3              );
   register_special_effect( 184257, item::str_dps_trinket_4              );
 
