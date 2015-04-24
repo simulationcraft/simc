@@ -489,6 +489,7 @@ public:
   void              apl_default();
   virtual void      init_action_list();
 
+  virtual bool      has_t18_class_trinket() const;
   std::string       get_potion_action();
 };
 
@@ -5164,6 +5165,27 @@ void mage_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+
+// mage_t::has_t18_class_trinket ==============================================
+
+bool mage_t::has_t18_class_trinket() const
+{
+  if ( specialization() == MAGE_ARCANE )
+  {
+    return wild_arcanist;
+  }
+  else if ( specialization() == MAGE_FIRE )
+  {
+    return pyrosurge;
+  }
+  else if ( specialization() == MAGE_FROST )
+  {
+    return shatterlance;
+  }
+
+  return false;
 }
 
 
