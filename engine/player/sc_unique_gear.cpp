@@ -73,6 +73,10 @@ namespace item
   /* Warlords of Draenor 6.2 (WIP) */
   void int_dps_trinket_4( special_effect_t& );
   void int_dps_trinket_3( special_effect_t& );
+  //void str_dps_trinket_1( special_effect_t& );
+  //void str_dps_trinket_2( special_effect_t& );
+  //void str_dps_trinket_3( special_effect_t& );
+  void str_dps_trinket_4( special_effect_t& );
 }
 
 namespace gem
@@ -2133,6 +2137,82 @@ struct mark_of_doom_t : public debuff_t
   }
 };
 
+struct fel_burn_t : public debuff_t
+{
+  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "fel_burn", source_effect.driver()  )
+    .refresh_behavior( BUFF_REFRESH_DISABLED )
+    .max_stack( 50 )
+    .duration( timespan_t::from_seconds( 15.0 ) ) )
+  {
+  }
+};
+
+struct str_dps_trinket_4_damage_t : public melee_attack_t
+{
+  str_dps_trinket_4_damage_t( const special_effect_t& effect  ) :
+    melee_attack_t( "fel_burn", effect.player )
+  {
+    background = special = tick_may_crit = true;
+    may_crit = callbacks = false;
+    const spell_data_t* damage_spell;
+    damage_spell = player -> find_spell( 184256 );
+    parse_effect_data( damage_spell -> effectN( 1 ) );
+    dot_duration = damage_spell -> duration();
+    base_td = damage_spell -> effectN( 1 ).average( effect.item );
+    weapon_multiplier = 0;
+  }
+
+  double composite_target_multiplier( player_t* target ) const
+  {
+    double m = melee_attack_t::composite_target_multiplier( target );
+
+    const actor_target_data_t* td = player -> get_target_data( target );
+
+    m *= td -> debuff.fel_burn -> current_stack;
+
+    return m;
+  }
+};
+
+struct str_dps_trinket_4_cb_t : public dbc_proc_callback_t
+{
+  str_dps_trinket_4_damage_t* damage_spell;
+  str_dps_trinket_4_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ),
+    damage_spell( new str_dps_trinket_4_damage_t( effect ) )
+  {
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state )
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+    if ( !td -> debuff.fel_burn )
+    {
+      td -> debuff.fel_burn = new fel_burn_t( actor_pair_t( trigger_state -> target, listener ), effect );
+      td -> debuff.fel_burn -> reset();
+    }
+    if ( ! td -> debuff.fel_burn -> up() )
+    {
+      td -> debuff.fel_burn -> trigger( 1 );
+      damage_spell -> target = trigger_state -> target;
+      damage_spell -> execute();
+    }
+    else
+    {
+      td -> debuff.fel_burn -> trigger( 1 );
+    }
+  }
+};
+
+void item::str_dps_trinket_4( special_effect_t& effect )
+{
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new str_dps_trinket_4_cb_t( effect );
+}
+
 // Int DPS 4 trinket base driver, handles the proccing (triggering) of Mark of Doom on targets
 struct int_dps_trinket_4_driver_t : public dbc_proc_callback_t
 {
@@ -2827,6 +2907,7 @@ void unique_gear::register_special_effects()
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184066, item::int_dps_trinket_4              );
   register_special_effect( 183951, item::int_dps_trinket_3              );
+  register_special_effect( 184257, item::str_dps_trinket_4              );
 
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );

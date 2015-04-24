@@ -4411,6 +4411,7 @@ struct actor_target_data_t : public actor_pair_t
   struct atd_debuff_t
   {
     debuff_t* mark_of_doom;
+    debuff_t* fel_burn;
   } debuff;
 
   struct atd_dot_t
