@@ -125,7 +125,7 @@ legs=arcanoshatter_leggings,id=115554,bonus_id=567
 feet=inferno_breath_sandals,id=113942,bonus_id=567
 finger1=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
-trinket1=,id=124516
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
 main_hand=fang_of_the_earth,id=113934,bonus_id=567,enchant=mark_of_the_frostwolf
 off_hand=enginestokers_lantern,id=113960,bonus_id=567
