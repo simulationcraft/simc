@@ -5845,12 +5845,37 @@ struct warrior_shattered_bleed_t: public warrior_attack_t
   }
 };
 
+struct warrior_fel_burn_t : public warrior_attack_t
+{
+  warrior_fel_burn_t( warrior_t*p, const special_effect_t& effect  ) :
+    warrior_attack_t( "fel_burn", p, p -> find_spell( 184256 ) )
+  {
+    background = special = tick_may_crit = true;
+    may_crit = callbacks = false;
+    const spell_data_t* damage_spell;
+    damage_spell = p -> find_spell( 184256 );
+    parse_effect_data( damage_spell -> effectN( 1 ) );
+    dot_duration = damage_spell -> duration();
+    base_td = damage_spell -> effectN( 1 ).average( effect.item );
+    weapon_multiplier = 0;
+  }
 
+  double composite_target_multiplier( player_t* target ) const
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
 
-action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& )
+    const actor_target_data_t* td = p() -> get_target_data( target );
+
+    m *= td -> debuff.fel_burn -> current_stack;
+
+    return m;
+  }
+};
+
+action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t&effect )
 {
   if ( name == "shattered_bleed" ) return new warrior_shattered_bleed_t(this);
-
+  if ( name == "fel_burn" )        return new warrior_fel_burn_t( this, effect );
   return 0;
 }
 

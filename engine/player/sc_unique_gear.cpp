@@ -2151,15 +2151,11 @@ struct fel_burn_t : public debuff_t
 struct str_dps_trinket_4_damage_t : public melee_attack_t
 {
   str_dps_trinket_4_damage_t( const special_effect_t& effect  ) :
-    melee_attack_t( "fel_burn", effect.player )
+    melee_attack_t( "fel_burn", effect.player, effect.player -> find_spell( 184256 ) )
   {
     background = special = tick_may_crit = true;
     may_crit = callbacks = false;
-    const spell_data_t* damage_spell;
-    damage_spell = player -> find_spell( 184256 );
-    parse_effect_data( damage_spell -> effectN( 1 ) );
-    dot_duration = damage_spell -> duration();
-    base_td = damage_spell -> effectN( 1 ).average( effect.item );
+    base_td = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
   }
 
@@ -2177,11 +2173,20 @@ struct str_dps_trinket_4_damage_t : public melee_attack_t
 
 struct str_dps_trinket_4_cb_t : public dbc_proc_callback_t
 {
-  str_dps_trinket_4_damage_t* damage_spell;
-  str_dps_trinket_4_cb_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect ),
-    damage_spell( new str_dps_trinket_4_damage_t( effect ) )
+  action_t* burn;
+  str_dps_trinket_4_cb_t( const special_effect_t& effect ):
+    dbc_proc_callback_t( effect.player, effect )
   {
+    burn = effect.player -> find_action( "fel_burn" );
+    if ( !burn )
+    {
+      burn = effect.item -> player -> create_proc_action( "fel_burn", effect );
+    }
+
+    if ( !burn )
+    {
+      burn = new str_dps_trinket_4_damage_t( effect );
+    }
   }
 
   void execute( action_t* /* a */, action_state_t* trigger_state )
@@ -2196,8 +2201,8 @@ struct str_dps_trinket_4_cb_t : public dbc_proc_callback_t
     if ( ! td -> debuff.fel_burn -> up() )
     {
       td -> debuff.fel_burn -> trigger( 1 );
-      damage_spell -> target = trigger_state -> target;
-      damage_spell -> execute();
+      burn -> target = trigger_state -> target;
+      burn -> execute();
     }
     else
     {
