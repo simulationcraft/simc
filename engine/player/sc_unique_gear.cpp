@@ -73,9 +73,8 @@ namespace item
   /* Warlords of Draenor 6.2 (WIP) */
   void int_dps_trinket_4( special_effect_t& );
   void int_dps_trinket_3( special_effect_t& );
-  //void str_dps_trinket_1( special_effect_t& );
-  //void str_dps_trinket_2( special_effect_t& );
-  //void str_dps_trinket_3( special_effect_t& );
+  //void insatiable_hunger( special_effect_t& );
+  void str_dps_trinket_3( special_effect_t& );
   void str_dps_trinket_4( special_effect_t& );
 }
 
@@ -2218,6 +2217,39 @@ void item::str_dps_trinket_4( special_effect_t& effect )
   new str_dps_trinket_4_cb_t( effect );
 }
 
+struct str_dps_trinket_3_damage_t : public melee_attack_t
+{
+  str_dps_trinket_3_damage_t( const special_effect_t& effect  ) :
+    melee_attack_t( "fel_cleave", effect.player, effect.driver() -> effectN( 1 ).trigger() )
+  {
+    background = special = may_crit = true;
+    base_td = data().effectN( 1 ).average( effect.item );
+    weapon_multiplier = 0;
+    aoe = -1;
+  }
+};
+
+void item::str_dps_trinket_3( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "fel_cleave" );
+
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "fel_cleave", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new str_dps_trinket_3_damage_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_= PF2_ALL_HIT;
+  effect.rppm_scale = RPPM_HASTE;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Int DPS 4 trinket base driver, handles the proccing (triggering) of Mark of Doom on targets
 struct int_dps_trinket_4_driver_t : public dbc_proc_callback_t
 {
@@ -2912,6 +2944,8 @@ void unique_gear::register_special_effects()
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184066, item::int_dps_trinket_4              );
   register_special_effect( 183951, item::int_dps_trinket_3              );
+  //register_special_effect( 183942, item::insatiable_hunger              );
+  register_special_effect( 184249, item::str_dps_trinket_3              );
   register_special_effect( 184257, item::str_dps_trinket_4              );
 
   /* Warlords of Draenor 6.0 */
