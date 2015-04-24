@@ -4595,6 +4595,10 @@ struct water_jet_t : public action_t
 
     // and schedule a new one immediately.
     m -> pets.water_elemental -> schedule_ready();
+    if ( m -> sets.has_set_bonus( MAGE_FROST, T18, B2 ) )
+    {
+      m -> buffs.brain_freeze -> trigger();
+    }
   }
 
   bool ready()
