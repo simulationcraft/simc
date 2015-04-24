@@ -5817,74 +5817,8 @@ void warrior_t::create_options()
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
 }
 
-// Mark of the Shattered Hand ===============================================
-
-struct warrior_shattered_bleed_t: public warrior_attack_t
-{
-  warrior_shattered_bleed_t( warrior_t* p ):
-    warrior_attack_t( "shattered_bleed", p, p -> find_spell( 159238 ) )
-  {
-    dot_behavior = DOT_REFRESH;
-    may_miss = may_block = may_dodge = may_parry = callbacks = hasted_ticks = false;
-    may_crit = background = special = true;
-    tick_may_crit = false;
-  }
-
-  double target_armor( player_t* ) const
-  {
-    return 0.0;
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
-  {
-    timespan_t new_duration = std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration;
-    timespan_t period_mod = new_duration % base_tick_time;
-    new_duration += (base_tick_time - period_mod);
-
-    return new_duration;
-  }
-};
-
-struct warrior_fel_burn_t : public warrior_attack_t
-{
-  warrior_fel_burn_t( warrior_t*p, const special_effect_t& effect  ) :
-    warrior_attack_t( "fel_burn", p, p -> find_spell( 184256 ) )
-  {
-    background = special = tick_may_crit = true;
-    may_crit = callbacks = false;
-    base_td = data().effectN( 1 ).average( effect.item );
-    weapon_multiplier = 0;
-  }
-
-  double composite_target_multiplier( player_t* target ) const
-  {
-    double m = warrior_attack_t::composite_target_multiplier( target );
-
-    const actor_target_data_t* td = p() -> get_target_data( target );
-
-    m *= td -> debuff.fel_burn -> current_stack;
-
-    return m;
-  }
-};
-
-struct warrior_fel_cleave_t : public warrior_attack_t
-{
-  warrior_fel_cleave_t( warrior_t*p, const special_effect_t& effect ) :
-    warrior_attack_t( "fel_cleave", p, p -> find_spell( 184248 ) )
-  {
-    background = special = may_crit = true;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-    weapon_multiplier = 0;
-    aoe = -1;
-  }
-};
-
 action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t&effect )
 {
-  if ( name == "shattered_bleed" ) return new warrior_shattered_bleed_t(this);
-  if ( name == "fel_burn" )        return new warrior_fel_burn_t( this, effect );
-  if ( name == "fel_cleave" )      return new warrior_fel_cleave_t( this, effect );
   return 0;
 }
 
