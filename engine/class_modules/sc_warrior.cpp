@@ -5874,7 +5874,7 @@ struct warrior_fel_cleave_t : public warrior_attack_t
     warrior_attack_t( "fel_cleave", p, p -> find_spell( 184248 ) )
   {
     background = special = may_crit = true;
-    base_td = data().effectN( 1 ).average( effect.item );
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
     aoe = -1;
   }

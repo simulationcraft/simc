@@ -2217,34 +2217,34 @@ void item::str_dps_trinket_4( special_effect_t& effect )
   new str_dps_trinket_4_cb_t( effect );
 }
 
-struct str_dps_trinket_3_damage_t : public melee_attack_t
-{
-  str_dps_trinket_3_damage_t( const special_effect_t& effect  ) :
-    melee_attack_t( "fel_cleave", effect.player, effect.driver() -> effectN( 1 ).trigger() )
-  {
-    background = special = may_crit = true;
-    base_td = data().effectN( 1 ).average( effect.item );
-    weapon_multiplier = 0;
-    aoe = -1;
-  }
-};
-
 void item::str_dps_trinket_3( special_effect_t& effect )
 {
+  struct str_dps_trinket_3_damage_t: public melee_attack_t
+  {
+    str_dps_trinket_3_damage_t( const special_effect_t& effect ):
+      melee_attack_t( "fel_cleave", effect.player, effect.driver() -> effectN( 1 ).trigger() )
+    {
+      background = special = may_crit = true;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+      weapon_multiplier = 0;
+      aoe = -1;
+    }
+  };
+
   action_t* action = effect.player -> find_action( "fel_cleave" );
 
-  if ( ! action )
+  if ( !action )
   {
     action = effect.player -> create_proc_action( "fel_cleave", effect );
   }
 
-  if ( ! action )
+  if ( !action )
   {
     action = new str_dps_trinket_3_damage_t( effect );
   }
 
   effect.execute_action = action;
-  effect.proc_flags2_= PF2_ALL_HIT;
+  effect.proc_flags2_ = PF2_ALL_HIT;
   effect.rppm_scale = RPPM_HASTE;
 
   new dbc_proc_callback_t( effect.player, effect );
