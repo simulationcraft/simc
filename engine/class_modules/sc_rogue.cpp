@@ -5457,6 +5457,8 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
   else if ( util::str_compare_ci( name_str, "anticipation_charges" ) )
     return make_ref_expr( name_str, buffs.anticipation -> current_stack );
+  else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
+    return make_ref_expr( name_str, poisoned_enemies );
 
   return player_t::create_expression( a, name_str );
 }
