@@ -2305,6 +2305,15 @@ item_t* player_t::find_item( const std::string& str )
   return 0;
 }
 
+// player_t::has_t18_class_trinket ============================================
+
+bool player_t::has_t18_class_trinket() const
+{
+  // Class modules should override this with their individual trinket detection
+  return false;
+}
+
+
 // player_t::energy_regen_per_second ========================================
 
 double player_t::energy_regen_per_second() const
@@ -7581,6 +7590,21 @@ expr_t* player_t::create_expression( action_t* a,
     return new time_to_bloodlust_expr_t( this, expression_str );
   }
 
+  // T18 Hellfire Citadel class trinket
+  if ( expression_str == "t18_class_trinket" )
+  {
+    struct t18_class_trinket_expr_t : public player_expr_t
+    {
+      t18_class_trinket_expr_t( player_t& p ) :
+        player_expr_t( "t18_class_trinket", p ) {}
+      virtual double evaluate()
+      {
+        return player.has_t18_class_trinket();
+      }
+    };
+    return new t18_class_trinket_expr_t( *this );
+  }
+
   // incoming_damage_X expressions
   if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) )
   {
@@ -7864,7 +7888,7 @@ expr_t* player_t::create_expression( action_t* a,
 
     return new use_apl_expr_t( this, splits[ 1 ], use_apl );
   }
-  
+
 
   else if ( splits.size() == 3 )
   {

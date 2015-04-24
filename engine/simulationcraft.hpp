@@ -5164,6 +5164,8 @@ struct player_t : public actor_t
   bool      has_shield_equipped() const
   { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD; }
 
+  // T18 Hellfire Citadel class trinket detection
+  virtual bool has_t18_class_trinket() const;
 
   action_priority_list_t* find_action_priority_list( const std::string& name );
   void                    clear_action_priority_lists() const;
