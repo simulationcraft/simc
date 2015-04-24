@@ -495,6 +495,7 @@ public:
 
   virtual void     datacollection_begin();
   virtual void     datacollection_end();
+  virtual bool     has_t18_class_trinket() const;
 
   target_specific_t<shaman_td_t*> target_data;
 
@@ -6018,6 +6019,18 @@ void shaman_t::datacollection_end()
   }
 
   player_t::datacollection_end();
+}
+
+// shaman_t::has_t18_class_trinket ==========================================
+
+bool shaman_t::has_t18_class_trinket() const
+{
+  switch ( specialization() )
+  {
+    case SHAMAN_ENHANCEMENT: return furious_winds != 0;
+    case SHAMAN_ELEMENTAL:   return elemental_bellows != 0;
+    default:                 return false;
+  }
 }
 
 // shaman_t::primary_role ===================================================
