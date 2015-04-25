@@ -45,7 +45,7 @@ namespace buffs {
 struct heart_of_the_wild_buff_t;
 }
 namespace spells {
-struct starfall_t;
+struct starshards_t;
 }
 
 struct druid_td_t : public actor_target_data_t
@@ -214,7 +214,7 @@ public:
     gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
     natures_vigil_proc_t* natures_vigil;
-    spells::starfall_t*   starfall;
+    spells::starshards_t* starshards;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
   } active;
@@ -5425,7 +5425,7 @@ struct starfall_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    hasted_ticks = false;
+    hasted_ticks = may_crit = false;
     may_multistrike = 0;
     spell_power_mod.tick = spell_power_mod.direct = 0;
     cooldown = player -> cooldown.starfallsurge;
@@ -5458,6 +5458,32 @@ struct starfall_t : public druid_spell_t
 
     return druid_spell_t::ready();
   }
+};
+
+struct starshards_t : public starfall_t
+{
+  starshards_t( druid_t* player ) :
+    starfall_t( player, std::string( "" ) )
+  {
+    background = true;
+    target = sim -> target;
+  }
+
+  // Grant a free charge to be used for the starfall
+  void execute() override
+  {
+    if ( cooldown -> current_charge == 0 )
+      cooldown -> reset( false );
+
+    starfall_t::execute();
+
+    if ( cooldown -> current_charge > 0 )
+      cooldown -> reset( false );
+  }
+  
+  // Ignore starfall_cd
+  bool ready() override
+  { return druid_spell_t::ready(); }
 };
 
 // Starsurge Spell ==========================================================
@@ -5495,17 +5521,7 @@ struct starsurge_t : public druid_spell_t
     if ( p() -> starshards && rng().roll( starshards_chance ) )
     {
       p() -> proc.starshards -> occur();
-
-      // Add a charge first, if needed, to avoid an assert
-      if ( p() -> active.starfall -> cooldown -> current_charge == 0 )
-        p() -> active.starfall -> cooldown -> reset( false );
-
-      p() -> active.starfall -> target = sim -> target;
-      p() -> active.starfall -> execute();
-
-      // Add a charge to replace the one we spent
-      if ( p() -> active.starfall -> cooldown -> current_charge > 0 )
-        p() -> active.starfall -> cooldown -> reset( false );
+      p() -> active.starshards -> execute();
     }
   }
 };
@@ -6110,7 +6126,7 @@ void druid_t::init_spells()
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new gushing_wound_t( this );
   if ( specialization() == DRUID_BALANCE )
-    active.starfall = new spells::starfall_t( this, std::string( "" ) );
+    active.starshards         = new spells::starshards_t( this );
 
   // Spells
   spell.ferocious_bite                  = find_class_spell( "Ferocious Bite"              ) -> ok() ? find_spell( 22568  ) : spell_data_t::not_found(); // Get spell data for max_fb_energy calculation.
