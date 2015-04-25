@@ -7079,11 +7079,8 @@ private:
     if ( triggered && proc_action &&
          ( ! proc_buff || proc_buff -> check() == proc_buff -> max_stack() ) )
     {
-      action_state_t* proc_state = proc_action -> get_state();
-      proc_state -> target = state -> target;
       proc_action -> target = state -> target;
-      proc_action -> snapshot_state( proc_state, proc_action -> type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
-      proc_action -> schedule_execute( proc_state );
+      proc_action -> schedule_execute();
 
       // Decide whether to expire the buff even with 1 max stack
       if ( proc_buff && proc_buff -> max_stack() > 1 )
