@@ -45,7 +45,7 @@ namespace buffs {
 struct heart_of_the_wild_buff_t;
 }
 namespace spells {
-struct starfall_t;
+struct starshards_t;
 }
 
 struct druid_td_t : public actor_target_data_t
@@ -214,7 +214,7 @@ public:
     gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
     natures_vigil_proc_t* natures_vigil;
-    spells::starfall_t*   starfall;
+    spells::starshards_t* starshards;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
   } active;
@@ -474,7 +474,6 @@ public:
     const spell_data_t* lunar_guidance;
     const spell_data_t* moonkin_form;
     const spell_data_t* shooting_stars;
-    const spell_data_t* starfall;
     const spell_data_t* starfire;
     const spell_data_t* starsurge;
     const spell_data_t* sunfire;
@@ -527,6 +526,7 @@ public:
 
     // Moonkin
     const spell_data_t* moonkin_form; // Moonkin form bonuses
+    const spell_data_t* starfall_aura;
 
     // Resto
     const spell_data_t* regrowth; // Old GoRegrowth
@@ -1531,6 +1531,7 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    tick_behavior = BUFF_TICK_NONE;
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -5404,76 +5405,82 @@ struct starfire_t : public druid_spell_t
 
 // Starfall Spell ===========================================================
 
-struct starfall_pulse_t : public druid_spell_t
-{
-  starfall_pulse_t( druid_t* player, const std::string& name ) :
-    druid_spell_t( name, player, player -> find_spell( 50288 ) )
-  {
-    direct_tick = true;
-    aoe = -1;
-  }
-};
-
 struct starfall_t : public druid_spell_t
 {
-  spell_t* starfall;
-  cooldown_t* starfall_cd;
+  struct starfall_pulse_t : public druid_spell_t
+  {
+    starfall_pulse_t( druid_t* player, const std::string& name ) :
+      druid_spell_t( name, player, player -> find_spell( 50288 ) )
+    {
+      direct_tick = true;
+      aoe = -1;
+    }
+  };
+
+  spell_t* pulse;
+
   starfall_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) ),
-    starfall( new starfall_pulse_t( player, "starfall_pulse" ) ),
-    starfall_cd( 0 )
+    pulse( new starfall_pulse_t( player, "starfall_pulse" ) )
   {
     parse_options( options_str );
 
-    hasted_ticks = false;
+    if ( maybe_ptr ( player -> dbc.ptr ) )
+    {
+      const spell_data_t* aura_spell = player -> find_spell( data().effectN( 1 ).trigger_spell_id() );
+    
+      dot_duration   = aura_spell -> duration();
+      base_tick_time = aura_spell -> effectN( 1 ).period();
+    }
+    dot_behavior   = DOT_REFRESH;
+    hasted_ticks = may_crit = false;
     may_multistrike = 0;
     spell_power_mod.tick = spell_power_mod.direct = 0;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
-    add_child( starfall );
-    starfall_cd = player -> get_cooldown( "starfall_cd" );
-    starfall_cd -> duration = timespan_t::from_seconds( 10 );
+    add_child( pulse );
   }
 
-  starfall_t( druid_t* player ):
-    druid_spell_t( "starfall", player, player -> find_spell( 48505 ) ),
-    starfall( new starfall_pulse_t( player, "starfall_pulse" ) ),
-    starfall_cd( 0 )
-  {
-    hasted_ticks = false;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    dot_duration = timespan_t::from_seconds( 10.0 );
-    may_multistrike = 0;
-    spell_power_mod.tick = spell_power_mod.direct = 0;
-    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
-    add_child( starfall );
-    starfall_cd = player -> get_cooldown( "starfall_cd" );
-    starfall_cd -> duration = timespan_t::from_seconds( 10 );
-  }
-
-  void tick( dot_t*d )
+  void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
+
+    // Only ticks while in moonkin form.
     if ( p() -> buff.moonkin_form -> check() )
-    { // Only ticks while in moonkin form.
-      starfall -> execute();
+    {
+      pulse -> execute();
     }
   }
 
-  void execute()
+  void execute() override
   {
-    p() -> buff.starfall -> trigger();
     druid_spell_t::execute();
-    starfall_cd -> start();
+
+    p() -> buff.starfall -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
-    if ( !starfall_cd -> up() )
+    if ( p() -> buff.starfall -> check() )
       return false;
 
     return druid_spell_t::ready();
   }
+};
+
+struct starshards_t : public starfall_t
+{
+  starshards_t( druid_t* player ) :
+    starfall_t( player, std::string( "" ) )
+  {
+    background = true;
+    target = sim -> target;
+    cooldown = player -> get_cooldown( "starshards" );
+  }
+  
+  // Allow the action to execute even when Starfall is already active.
+  bool ready() override
+  { return druid_spell_t::ready(); }
 };
 
 // Starsurge Spell ==========================================================
@@ -5511,9 +5518,7 @@ struct starsurge_t : public druid_spell_t
     if ( p() -> starshards && rng().roll( starshards_chance ) )
     {
       p() -> proc.starshards -> occur();
-
-      p() -> active.starfall -> target = sim -> target;
-      p() -> active.starfall -> execute();
+      p() -> active.starshards -> execute();
     }
   }
 };
@@ -6011,7 +6016,6 @@ void druid_t::init_spells()
   spec.lunar_guidance          = find_specialization_spell( "Lunar Guidance" );
   spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
-  spec.starfall                = find_specialization_spell( "Starfall" );
   spec.starfire                = find_specialization_spell( "Starfire" );
   spec.starsurge               = find_specialization_spell( "Starsurge" );
   spec.sunfire                 = find_specialization_spell( "Sunfire" );
@@ -6118,7 +6122,7 @@ void druid_t::init_spells()
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new gushing_wound_t( this );
   if ( specialization() == DRUID_BALANCE )
-    active.starfall = new spells::starfall_t( this );
+    active.starshards         = new spells::starshards_t( this );
 
   // Spells
   spell.ferocious_bite                  = find_class_spell( "Ferocious Bite"              ) -> ok() ? find_spell( 22568  ) : spell_data_t::not_found(); // Get spell data for max_fb_energy calculation.
@@ -6131,6 +6135,10 @@ void druid_t::init_spells()
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
+  if ( maybe_ptr( dbc.ptr ) )
+    spell.starfall_aura                 = find_class_spell( "Starfall"                    ) -> ok() ? find_spell( 184989 ) : spell_data_t::not_found();
+  else
+    spell.starfall_aura                 = find_class_spell( "Starfall"                    ) -> ok() ? find_spell( 48505  ) : spell_data_t::not_found();
 
   if ( specialization() == DRUID_FERAL )
   {
@@ -6332,7 +6340,8 @@ void druid_t::create_buffs()
 
   buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) );
 
-  buff.starfall                  = buff_creator_t( this, "starfall", spec.starfall  );
+  buff.starfall                  = buff_creator_t( this, "starfall", spell.starfall_aura )
+                                   .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
