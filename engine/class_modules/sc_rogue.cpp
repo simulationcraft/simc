@@ -3316,6 +3316,26 @@ struct weapon_swap_t : public action_t
     {
       swap_to_type = WEAPON_SECONDARY;
     }
+
+    if ( swap_type != SWAP_BOTH )
+    {
+      if ( ! rogue -> weapon_data[ swap_type ].item_data[ swap_to_type ] )
+      {
+        background = true;
+        sim -> errorf( "Player %s weapon_swap: No weapon info for %s/%s",
+            player -> name(), slot_str.c_str(), swap_to_str.c_str() );
+      }
+    }
+    else
+    {
+      if ( ! rogue -> weapon_data[ WEAPON_MAIN_HAND ].item_data[ swap_to_type ] ||
+           ! rogue -> weapon_data[ WEAPON_OFF_HAND ].item_data[ swap_to_type ] )
+      {
+        background = true;
+        sim -> errorf( "Player %s weapon_swap: No weapon info for %s/%s",
+            player -> name(), slot_str.c_str(), swap_to_str.c_str() );
+      }
+    }
   }
 
   result_e calculate_result( action_state_t* )
