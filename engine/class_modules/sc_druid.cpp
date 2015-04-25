@@ -44,6 +44,9 @@ struct yseras_gift_t;
 namespace buffs {
 struct heart_of_the_wild_buff_t;
 }
+namespace spells {
+struct starfall_t;
+}
 
 struct druid_td_t : public actor_target_data_t
 {
@@ -211,6 +214,7 @@ public:
     gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
     natures_vigil_proc_t* natures_vigil;
+    spells::starfall_t*   starfall;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
   } active;
@@ -229,6 +233,12 @@ public:
   melee_attack_t* bear_melee_attack;
 
   double equipped_weapon_dps;
+
+  // T18 (WoD 6.2) class specific trinket effects
+  const special_effect_t* starshards;
+  const special_effect_t* wildcat_celerity;
+  const special_effect_t* stalwart_guardian;
+  const special_effect_t* flourish;
 
   // Buffs
   struct buffs_t
@@ -425,6 +435,7 @@ public:
     proc_t* primal_fury;
     proc_t* shooting_stars;
     proc_t* shooting_stars_wasted;
+    proc_t* starshards;
     proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
     proc_t* tooth_and_claw;
@@ -594,6 +605,10 @@ public:
     t16_2pc_sun_bolt( nullptr ),
     active( active_actions_t() ),
     caster_form_weapon(),
+    starshards(),
+    wildcat_celerity(),
+    stalwart_guardian(),
+    flourish(),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -704,6 +719,7 @@ public:
   void              apl_guardian();
   void              apl_restoration();
   virtual void      init_action_list();
+  virtual bool      has_t18_class_trinket() const;
 
   target_specific_t<druid_td_t*> target_data;
 
@@ -1431,8 +1447,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
   berserk_buff_t( druid_t& p ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "berserk", p.find_specialization_spell( "Berserk" ) )
       .cd( timespan_t::from_seconds( 0.0 ) ) // Cooldown handled by ability
-    )
-  {}
+    ) {}
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -1440,6 +1455,11 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
 
     if ( druid.perk.enhanced_berserk -> ok() )
       player -> resources.max[ RESOURCE_ENERGY ] += druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
+    
+    /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Berserk duration
+       based on spell data of the special effect. */
+    if ( druid.wildcat_celerity )
+      duration *= 1.0 + druid.wildcat_celerity -> driver() -> effectN( 1 ).average( druid.wildcat_celerity -> item ) / 100.0;
 
     return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
@@ -5444,8 +5464,11 @@ struct starfall_t : public druid_spell_t
 
 struct starsurge_t : public druid_spell_t
 {
+  double starshards_chance;
+
   starsurge_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starsurge", player, player -> spec.starsurge )
+    druid_spell_t( "starsurge", player, player -> spec.starsurge ),
+    starshards_chance( 0.0 )
   {
     parse_options( options_str );
 
@@ -5455,15 +5478,35 @@ struct starsurge_t : public druid_spell_t
     base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
     cooldown = player -> cooldown.starfallsurge;
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
+
+    if ( player -> starshards )
+      starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
   }
 
   void execute()
   {
     druid_spell_t::execute();
+
     if ( p() -> eclipse_amount < 0 )
       p() -> buff.solar_empowerment -> trigger( 3 );
     else
       p() -> buff.lunar_empowerment -> trigger( 2 );
+
+    if ( p() -> starshards && rng().roll( starshards_chance ) )
+    {
+      p() -> proc.starshards -> occur();
+
+      // Add a charge first, if needed, to avoid an assert
+      if ( p() -> active.starfall -> cooldown -> current_charge == 0 )
+        p() -> active.starfall -> cooldown -> reset( false );
+
+      p() -> active.starfall -> target = sim -> target;
+      p() -> active.starfall -> execute();
+
+      // Add a charge to replace the one we spent
+      if ( p() -> active.starfall -> cooldown -> current_charge > 0 )
+        p() -> active.starfall -> cooldown -> reset( false );
+    }
   }
 };
 
@@ -5551,17 +5594,25 @@ struct survival_instincts_t : public druid_spell_t
 
 struct tigers_fury_t : public druid_spell_t
 {
+  timespan_t duration;
+
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
+    druid_spell_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
+    duration( p -> buff.tigers_fury -> buff_duration )
   {
     harmful = false;
+    
+    /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
+       based on spell data of the special effect. */
+    if ( p -> wildcat_celerity )
+      duration *= 1.0 + p -> wildcat_celerity -> driver() -> effectN( 1 ).average( p -> wildcat_celerity -> item ) / 100.0;
   }
 
   void execute()
   {
     druid_spell_t::execute();
 
-    p() -> buff.tigers_fury -> trigger();
+    p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
     p() -> resource_gain( RESOURCE_ENERGY,
                           data().effectN( 2 ).resource( RESOURCE_ENERGY ),
@@ -6058,6 +6109,8 @@ void druid_t::init_spells()
     active.yseras_gift        = new yseras_gift_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new gushing_wound_t( this );
+  if ( specialization() == DRUID_BALANCE )
+    active.starfall = new spells::starfall_t( this, std::string( "" ) );
 
   // Spells
   spell.ferocious_bite                  = find_class_spell( "Ferocious Bite"              ) -> ok() ? find_spell( 22568  ) : spell_data_t::not_found(); // Get spell data for max_fb_energy calculation.
@@ -6276,9 +6329,7 @@ void druid_t::create_buffs()
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() )
-                               .chance( 1.0 )
-                               .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() );
+                               .cd( timespan_t::zero() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() - glyph.savagery -> effectN( 2 ).percent() )
                                .duration( find_spell( glyph.savagery -> effectN( 1 ).trigger_spell_id() ) -> duration() )
@@ -6789,6 +6840,7 @@ void druid_t::init_procs()
   proc.primal_fury              = get_proc( "primal_fury"            );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
   proc.shooting_stars           = get_proc( "Shooting Stars"         );
+  proc.starshards               = get_proc( "Starshards"             );
   proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
   proc.tooth_and_claw           = get_proc( "tooth_and_claw"         );
@@ -6842,6 +6894,20 @@ void druid_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+// druid_t::has_t18_class_trinket ===========================================
+
+bool druid_t::has_t18_class_trinket() const
+{
+  switch( specialization() )
+  {
+    case DRUID_BALANCE:     return starshards != 0;
+    case DRUID_FERAL:       return wildcat_celerity != 0;
+    case DRUID_GUARDIAN:    return stalwart_guardian != 0;
+    case DRUID_RESTORATION: return flourish != 0;
+    default:                return false;
+  }
 }
 
 // druid_t::reset ===========================================================
@@ -8015,6 +8081,51 @@ private:
 
 // DRUID MODULE INTERFACE ===================================================
 
+static void do_trinket_init( druid_t*                player,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
+       player -> specialization() != spec )
+  {
+    return;
+  }
+
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
+// Balance T18 (WoD 6.2) trinket effect
+static void starshards( special_effect_t& effect )
+{
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_BALANCE, s -> starshards, effect );
+}
+
+// Feral T18 (WoD 6.2) trinket effect
+static void wildcat_celerity( special_effect_t& effect )
+{
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_FERAL, s -> wildcat_celerity, effect );
+}
+
+// Guardian T18 (WoD 6.2) trinket effect
+static void stalwart_guardian( special_effect_t& effect )
+{
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_GUARDIAN, s -> stalwart_guardian, effect );
+}
+
+// Restoration T18 (WoD 6.2) trinket effect
+static void flourish( special_effect_t& effect )
+{
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_RESTORATION, s -> flourish, effect );
+}
+
 struct druid_module_t : public module_t
 {
   druid_module_t() : module_t( DRUID ) {}
@@ -8036,6 +8147,15 @@ struct druid_module_t : public module_t
                                           .duration( timespan_t::from_seconds( 8.0 ) );
     }
   }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184876, starshards );
+    unique_gear::register_special_effect( 184877, wildcat_celerity );
+    unique_gear::register_special_effect( 184878, stalwart_guardian );
+    unique_gear::register_special_effect( 184879, flourish );
+  }
+
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };
