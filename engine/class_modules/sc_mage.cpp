@@ -445,6 +445,7 @@ public:
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& effect );
   virtual void      create_pets();
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const { return ROLE_SPELL; }
@@ -4633,6 +4634,44 @@ struct water_jet_t : public action_t
   }
 };
 
+// Override T18 trinket procs so they are affected by mage multipliers
+
+struct darklight_ray_t : public mage_spell_t
+{
+  darklight_ray_t( mage_t* p, const special_effect_t& effect ) :
+    mage_spell_t( "darklight_ray", p, p -> find_spell( 183950 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+
+    // Mage specific control
+    may_proc_missiles = false;
+    consumes_ice_floes = false;
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+
+    aoe = -1;
+  }
+};
+
+struct doom_nova_t : public mage_spell_t
+{
+  doom_nova_t( mage_t* p, const special_effect_t& effect ) :
+    mage_spell_t( "doom_nova", p, p -> find_spell( 184075 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+
+    // Mage specific control
+    may_proc_missiles = false;
+    consumes_ice_floes = false;
+
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+
+    aoe = -1;
+  }
+};
+
 } // namespace actions
 
 namespace events {
@@ -4802,6 +4841,17 @@ action_t* mage_t::create_action( const std::string& name,
 
   return player_t::create_action( name, options_str );
 }
+
+// mage_t::create_proc_action ===============================================
+
+action_t* mage_t::create_proc_action( const std::string& name, const special_effect_t& effect )
+{
+  if ( util::str_compare_ci( name, "darklight_ray" ) ) return new actions::darklight_ray_t( this, effect );
+  if ( util::str_compare_ci( name, "doom_nova" ) )     return new     actions::doom_nova_t( this, effect );
+
+  return 0;
+}
+
 
 // mage_t::create_pets ======================================================
 
