@@ -476,6 +476,7 @@ public:
     const spell_data_t* thick_hide; // Hidden passive for innate DR, expertise, and crit reduction
     const spell_data_t* tooth_and_claw;
     const spell_data_t* ursa_major;
+    const spell_data_t* guardian_passive; // Hidden guardian modifiers
 
     // Restoration
     // Done
@@ -512,7 +513,6 @@ public:
     const spell_data_t* bear_form_passive; // Bear form passive buff
     const spell_data_t* berserk_bear; // Berserk bear mangler
     const spell_data_t* frenzied_regeneration;
-    const spell_data_t* guardian_passive; // Special guardian modifiers
 
     // Moonkin
     const spell_data_t* moonkin_form; // Moonkin form bonuses
@@ -3351,8 +3351,8 @@ struct thrash_bear_t : public bear_attack_t
     spell_power_mod.direct = 0;
 
     // Apply hidden passive damage multiplier
-    base_dd_multiplier *= 1.0 + player -> spell.guardian_passive -> effectN( 6 ).percent();
-    base_td_multiplier *= 1.0 + player -> spell.guardian_passive -> effectN( 7 ).percent();
+    base_dd_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 6 ).percent();
+    base_td_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 7 ).percent();
 
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
@@ -5975,6 +5975,7 @@ void druid_t::init_spells()
   spec.thick_hide              = find_specialization_spell( "Thick Hide" );
   spec.tooth_and_claw          = find_specialization_spell( "Tooth and Claw" );
   spec.ursa_major              = find_specialization_spell( "Ursa Major" );
+  spec.guardian_passive        = find_specialization_spell( "Guardian Overrides Passive" );
 
   // Restoration
   spec.lifebloom               = find_specialization_spell( "Lifebloom" );
@@ -6078,7 +6079,6 @@ void druid_t::init_spells()
   else if ( specialization() == DRUID_GUARDIAN )
   {
     spell.primal_fury = find_spell( 16959 );
-    spell.guardian_passive = find_spell( 106734 ); // Guardian-only modifiers
   }
 
   // Perks
