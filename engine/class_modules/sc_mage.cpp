@@ -1571,6 +1571,14 @@ struct arcane_blast_t : public mage_spell_t
     {
       p() -> buffs.arcane_instability -> trigger();
     }
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
+         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> effectN( 2 ).percent() ) )
+    {
+      p() -> cooldowns.presence_of_mind -> adjust( timespan_t::from_seconds( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> effectN( 1 ).base_value() / 1000 ) );
+    }
+
+
   }
 
   virtual double action_multiplier() const
@@ -3635,6 +3643,12 @@ struct presence_of_mind_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.presence_of_mind -> trigger();
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+    {
+      // TODO: T18 4pc Arcane Placeholder. Add in the random time anomoly pets that this summons
+      //p() -> pets.random_time_anomoly_pet -> summon();
+    }
   }
 };
 
@@ -4595,10 +4609,6 @@ struct water_jet_t : public action_t
 
     // and schedule a new one immediately.
     m -> pets.water_elemental -> schedule_ready();
-    if ( m -> sets.has_set_bonus( MAGE_FROST, T18, B2 ) )
-    {
-      m -> buffs.brain_freeze -> trigger();
-    }
   }
 
   bool ready()
