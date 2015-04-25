@@ -581,6 +581,7 @@ public:
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s );
   virtual void      invalidate_cache( cache_e );
   virtual void      init_action_list();
+  virtual bool      has_t18_class_trinket() const;
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual monk_td_t* get_target_data( player_t* target ) const
   {
@@ -2350,8 +2351,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     // of the special effect.
     if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
     {
-      const spell_data_t* data = p() -> furious_sun -> driver();
-      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
@@ -2495,8 +2495,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     // of the special effect.
     if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
     {
-      const spell_data_t* data = p() -> furious_sun -> driver();
-      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
@@ -2646,8 +2645,7 @@ struct chi_explosion_t: public monk_melee_attack_t
       // of the special effect.
       if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
       {
-        const spell_data_t* data = p() -> furious_sun -> driver();
-        double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
+        double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
         // Chi Explosion's proc chance is reduced in half
         proc_chance *= 0.50;
 
@@ -2990,8 +2988,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // of the special effect.
     if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
     {
-      const spell_data_t* data = p() -> furious_sun -> driver();
-      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
@@ -3055,8 +3052,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
     monk_melee_attack_t::last_tick(dot); 
     if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
     {
-      const spell_data_t* data = p() -> furious_sun -> driver();
-      double proc_chance = data -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
       // Hurricane Strike's proc chance is reduced in half
       proc_chance *= 0.50;
 
@@ -5550,6 +5546,19 @@ void monk_t::init_procs()
   proc.tigereye_brew_wasted = get_proc( "tigereye_brew_wasted" );
 }
 
+// druid_t::has_t18_class_trinket ===========================================
+
+bool monk_t::has_t18_class_trinket() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:   return eluding_movements != 0;
+    case MONK_MISTWEAVER:   return soothing_breeze != 0;
+    case MONK_WINDWALKER:   return furious_sun != 0;
+    default:                return false;
+  }
+}
+
 // monk_t::reset ============================================================
 
 void monk_t::reset()
@@ -6039,12 +6048,25 @@ void monk_t::assess_damage(school_e school,
     else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
       buff.guard -> up();
 
+    // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, adjust Elusive Brew proc chance based on spell data of the special effect.
+    if ( maybe_ptr( dbc.ptr ) && eluding_movements )
+    {
+      double bm_trinket_proc = eluding_movements -> driver() -> effectN( 1 ).average( eluding_movements -> item );
+
+      if ( health_percentage() < bm_trinket_proc )
+      {
+//        TODO: Figure out how to get trigger_brew to work from here
+        if ( rng().roll( bm_trinket_proc / 100 ) )
+          buff.elusive_brew_stacks -> trigger( 1 );
+      }
+    }
+
     // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
     // currently giving this a 10% chance to reset, but the user can determin how often to reset this. 
     double desperate_measures = ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35);
     if ( health_percentage() < desperate_measures )
     {
-      bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : 0.10 );
+      bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : desperate_measures / 100 );
       if ( eh_reset )
         cooldown.expel_harm -> reset( true );
     }
