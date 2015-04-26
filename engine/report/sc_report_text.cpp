@@ -610,7 +610,7 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
         }
       }
 
-      util::fprintf( file, "| %9.1f | %20" PRId64 " | %s | | %9.1f | %20" PRId64 " | %s |\n",
+      util::fprintf( file, "| %9.1f | %20llu | %s | | %9.1f | %20llu | %s |\n",
           sim -> low_iteration_data[ i ].metric,
           sim -> low_iteration_data[ i ].seed,
           low_health_s.str().c_str(),
@@ -644,7 +644,7 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
         }
       }
 
-      util::fprintf( file, "| %9.1f | %20" PRId64 " | %s |\n",
+      util::fprintf( file, "| %9.1f | %20llu | %s |\n",
           sim -> iteration_data[ i ].metric,
           sim -> iteration_data[ i ].seed,
           health_s.str().c_str() );

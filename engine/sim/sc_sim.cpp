@@ -18,6 +18,17 @@ bool iteration_data_cmp( const iteration_data_entry_t& a,
   {
     return true;
   }
+  else if ( a.metric == b.metric )
+  {
+    if ( a.seed != b.seed )
+    {
+      return a.seed > b.seed;
+    }
+    else
+    {
+      return &a > &b;
+    }
+  }
 
   return false;
 }
@@ -28,6 +39,17 @@ bool iteration_data_cmp_r( const iteration_data_entry_t& a,
   if ( a.metric > b.metric )
   {
     return false;
+  }
+  else if ( a.metric == b.metric )
+  {
+    if ( a.seed != b.seed )
+    {
+      return a.seed > b.seed;
+    }
+    else
+    {
+      return &a > &b;
+    }
   }
 
   return true;
@@ -1563,12 +1585,13 @@ void sim_t::datacollection_end()
     if ( std::find_if( iteration_data.begin(), iteration_data.end(),
                        seed_predicate_t( seed ) ) != iteration_data.end() )
     {
-      errorf( "[Thread-%d] Duplicate seed " PRIu64 " found on iteration %u, skipping ...",
+      errorf( "[Thread-%d] Duplicate seed %llu found on iteration %u, skipping ...",
           thread_index, seed, current_iteration );
-      return;
     }
-
-    iteration_data.push_back( entry );
+    else
+    {
+      iteration_data.push_back( entry );
+    }
   }
 }
 
