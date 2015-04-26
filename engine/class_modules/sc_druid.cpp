@@ -39,6 +39,7 @@ struct cenarion_ward_hot_t;
 struct gushing_wound_t;
 struct leader_of_the_pack_t;
 struct natures_vigil_proc_t;
+struct stalwart_guardian_t;
 struct ursocs_vigor_t;
 struct yseras_gift_t;
 namespace buffs {
@@ -214,6 +215,7 @@ public:
     gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
     natures_vigil_proc_t* natures_vigil;
+    stalwart_guardian_t*  stalwart_guardian;
     spells::starshards_t* starshards;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
@@ -353,6 +355,8 @@ public:
     // Guardian (Bear)
     gain_t* bear_form;
     gain_t* frenzied_regeneration;
+    gain_t* primal_tenacity;
+    gain_t* stalwart_guardian;
     gain_t* tier17_2pc_tank;
   } gain;
 
@@ -855,6 +859,67 @@ struct natures_vigil_proc_t : public spell_t
     heal -> base_dd_min = heal -> base_dd_max = amount;
     heal -> fromDmg = harmful;
     heal -> execute();
+  }
+};
+
+// Stalwart Guardian ( 6.2 T18 Guardian Trinket) =========================
+
+struct stalwart_guardian_t : public absorb_t
+{
+  double incoming_damage;
+  double absorb_limit;
+  double absorb_size;
+
+  stalwart_guardian_t( druid_t* p ) :
+    absorb_t( "stalwart_guardian", p, /* p -> find_spell( 185321 ) ? p -> find_spell( 185321 ) : */ spell_data_t::nil() ),
+    incoming_damage( 0 ), absorb_limit( 0 ), absorb_size( 0 )
+  {
+    background = true;
+    may_crit = false;
+    may_multistrike = 0;
+    target = p;
+  }
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  void init() override
+  {
+    if ( p() -> stalwart_guardian )
+    {
+      const spell_data_t* trinket = p() -> stalwart_guardian -> driver();
+      attack_power_mod.direct     = trinket -> effectN( 1 ).average( p() -> stalwart_guardian -> item ) / 100.0;
+      absorb_limit                = trinket -> effectN( 2 ).percent();
+    }
+
+    absorb_t::init();
+  }
+
+  void execute() override
+  {
+    assert( p() -> stalwart_guardian );
+
+    absorb_t::execute();
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s %s absorbs %.2f", player -> name(), name(), execute_state -> result_amount );
+
+    stats -> add_result( execute_state -> result_amount,
+      execute_state -> result_amount,
+      ABSORB,
+      execute_state -> result,
+      execute_state -> block_result,
+      execute_state -> target );
+
+    p() -> gain.stalwart_guardian -> add( RESOURCE_HEALTH,
+      execute_state -> result_amount,
+      execute_state -> result_total - execute_state -> result_amount );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    s -> result_amount = std::min( s -> result_total, absorb_limit * incoming_damage );
+    absorb_size = s -> result_amount;
   }
 };
 
@@ -6123,6 +6188,8 @@ void druid_t::init_spells()
     active.gushing_wound      = new gushing_wound_t( this );
   if ( specialization() == DRUID_BALANCE )
     active.starshards         = new spells::starshards_t( this );
+  if ( specialization() == DRUID_GUARDIAN )
+    active.stalwart_guardian  = new stalwart_guardian_t( this );
 
   // Spells
   spell.ferocious_bite                  = find_class_spell( "Ferocious Bite"              ) -> ok() ? find_spell( 22568  ) : spell_data_t::not_found(); // Get spell data for max_fb_energy calculation.
@@ -6369,7 +6436,7 @@ void druid_t::create_buffs()
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
                                .school( SCHOOL_PHYSICAL )
                                .source( get_stats( "primal_tenacity" ) )
-                               .gain( get_gain( "primal_tenacity" ) );
+                               .gain( gain.primal_tenacity );
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -6837,9 +6904,11 @@ void druid_t::init_gains()
   gain.moonfire              = get_gain( "moonfire"              );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
+  gain.primal_tenacity       = get_gain( "primal_tenacity"       );
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
+  gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
   gain.swipe                 = get_gain( "swipe"                 );
   gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
   gain.tier17_2pc_melee      = get_gain( "tier17_2pc_melee"      );
@@ -7648,6 +7717,15 @@ void druid_t::assess_damage( school_e school,
 
   if ( buff.moonkin_form -> up() && s -> result_amount > 0 && s -> action -> aoe == 0 )
     buff.empowered_moonkin -> trigger();
+
+  if ( stalwart_guardian && s -> result_mitigated > 0 )
+  {
+    active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
+    active.stalwart_guardian -> execute();
+
+    s -> result_absorbed -= active.stalwart_guardian -> absorb_size;
+    s -> result_amount   -= active.stalwart_guardian -> absorb_size;
+  }
 
   player_t::assess_damage( school, dtype, s );
 

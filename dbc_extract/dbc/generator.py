@@ -1485,6 +1485,7 @@ class SpellDataGenerator(DataGenerator):
 	  ( 135597, 0 ),       # Tooth and Claw absorb buff
 	  ( 155784, 0 ),       # Primal Tenacity buff
 	  ( 137542, 0 ),       # Displacer Beast buff
+	  ( 185321, 0 ),       # Stalwart Guardian buff (T18 trinket)
         ),
     ]
 
