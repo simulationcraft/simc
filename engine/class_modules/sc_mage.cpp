@@ -2535,10 +2535,12 @@ struct frost_bomb_explosion_t : public mage_spell_t
   frost_bomb_explosion_t( mage_t* p ) :
     mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
   {
+    background = true;
+    callbacks = false;
+
     aoe = -1;
     parse_effect_data( data().effectN( 1 ) );
     base_aoe_multiplier *= data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
-    background = true;
   }
 
   virtual resource_e current_resource() const
