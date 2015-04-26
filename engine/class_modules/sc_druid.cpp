@@ -899,6 +899,8 @@ struct stalwart_guardian_t : public absorb_t
     }
 
     absorb_t::init();
+
+    snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility.
   }
 
   void execute() override
