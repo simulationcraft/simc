@@ -2012,6 +2012,12 @@ struct blizzard_shard_t : public mage_spell_t
     background = true;
   }
 
+  // Override damage type because Blizzard is considered a DOT
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  {
+    return DMG_OVER_TIME;
+  }
+
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
