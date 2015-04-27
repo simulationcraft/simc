@@ -10,20 +10,21 @@ namespace { // UNNAMED NAMESPACE
 // Druid
 // ==========================================================================
 
- /* WoD -- TODO:
+ /* WoD 6.2 -- TODO:
 
     = Feral =
 
     = Balance =
+    APL adjustments for set bonuses & trinket
 
     = Guardian =
-    Damage check
+    FR rage refund
     PvP bonuses
     Add SD time @ max charges statistic
     Tooth & Claw in multi-tank sims
 
     = Restoration =
-    Err'thing
+    Basically everything
 
     = To add to wiki = 
     New Options :
