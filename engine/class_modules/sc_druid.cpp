@@ -6670,16 +6670,9 @@ void druid_t::apl_feral()
   finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|!talent.bloodtalons.enabled)&target.time_to_die-remains>18" );
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    finish -> add_action( this, "Savage Roar", "if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
-    finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
-  }
-  else
-  {
-    finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
-    finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
-  }
+  finish -> add_action( this, "Savage Roar", "if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
+  finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
+
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
 
