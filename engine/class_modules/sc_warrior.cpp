@@ -5817,7 +5817,7 @@ void warrior_t::create_options()
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
 }
 
-action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t&effect )
+action_t* warrior_t::create_proc_action( const std::string& /*name*/, const special_effect_t& /*effect*/ )
 {
   return 0;
 }

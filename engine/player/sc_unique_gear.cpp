@@ -2495,7 +2495,7 @@ struct agi_dps_trinket_3_buff_t : public buff_t
 
   agi_dps_trinket_3_buff_t( player_t* player, special_effect_t& effect ) :
     buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ) ) ),
-    cb( 0 ), explosion( new agi_dps_trinket_3_explosion_t( player, effect ) )
+    explosion( new agi_dps_trinket_3_explosion_t( player, effect ) ), cb( 0 )
   {
     player -> buffs.spirit_shift = this;
   }
