@@ -2471,9 +2471,6 @@ struct agi_dps_trinket_3_explosion_t : public spell_t
     callbacks = false;
     aoe = -1;
 
-    school = SCHOOL_SHADOW;
-    may_miss = may_crit = false;
-
     explosion_multiplier = 1.0 + player -> find_spell( effect.spell_id ) -> effectN( 1 ).average( effect.item ) / 10000.0;
   }
 
