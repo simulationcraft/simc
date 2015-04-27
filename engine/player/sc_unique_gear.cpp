@@ -17,23 +17,28 @@ namespace { // UNNAMED NAMESPACE
 
 namespace enchants
 {
-  void mark_of_bleeding_hollow( special_effect_t& );
-  void megawatt_filament( special_effect_t& );
-  void oglethorpes_missile_splitter( special_effect_t& );
+  /* Legacy Enchants */
+  void executioner( special_effect_t& );
+  void hurricane_spell( special_effect_t& );
+
+  /* Mists of Pandaria */
+  void dancing_steel( special_effect_t& );
+  void jade_spirit( special_effect_t& );
+  void windsong( special_effect_t& );
+  void rivers_song( special_effect_t& );
+  void colossus( special_effect_t& );
+
+  /* Warlords of Draenor */
   void hemets_heartseeker( special_effect_t& );
+  void mark_of_bleeding_hollow( special_effect_t& );
   void mark_of_the_thunderlord( special_effect_t& );
   void mark_of_the_shattered_hand( special_effect_t& );
   void mark_of_the_frostwolf( special_effect_t& );
   void mark_of_shadowmoon( special_effect_t& );
   void mark_of_blackrock( special_effect_t& );
   void mark_of_warsong( special_effect_t& );
-  void dancing_steel( special_effect_t& );
-  void jade_spirit( special_effect_t& );
-  void windsong( special_effect_t& );
-  void rivers_song( special_effect_t& );
-  void colossus( special_effect_t& );
-  void executioner( special_effect_t& );
-  void hurricane_spell( special_effect_t& );
+  void megawatt_filament( special_effect_t& );
+  void oglethorpes_missile_splitter( special_effect_t& );
 }
 
 namespace profession
@@ -45,56 +50,60 @@ namespace profession
 
 namespace item
 {
-  void flurry_of_xuen( special_effect_t& );
-  void essence_of_yulon( special_effect_t& );
-  void endurance_of_niuzao( special_effect_t& );
-  void skeers_bloodsoaked_talisman( special_effect_t& );
-  void black_blood_of_yshaarj( special_effect_t& );
+  void heartpierce( special_effect_t& );
+
+  /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
   void spark_of_zandalar( special_effect_t& );
   void unerring_vision_of_leishen( special_effect_t& );
-  void readiness( special_effect_t& );
+
+  /* Mists of Pandaria 5.4 */
   void amplification( special_effect_t& );
+  void black_blood_of_yshaarj( special_effect_t& );
+  void cleave( special_effect_t& );
+  void endurance_of_niuzao( special_effect_t& );
+  void essence_of_yulon( special_effect_t& );
+  void flurry_of_xuen( special_effect_t& );
   void prismatic_prison_of_pride( special_effect_t& );
   void purified_bindings_of_immerseus( special_effect_t& );
+  void readiness( special_effect_t& );
+  void skeers_bloodsoaked_talisman( special_effect_t& );
   void thoks_tail_tip( special_effect_t& );
-  void cleave( special_effect_t& );
-  void heartpierce( special_effect_t& );
 
-  /* Warlards of Draenor 6.0 */
-  void blackiron_micro_crucible( special_effect_t& );
-  void humming_blackiron_trigger( special_effect_t& );
-  void battering_talisman_trigger( special_effect_t& );
-  void forgemasters_insignia( special_effect_t& );
+  /* Warlords of Draenor 6.0 */
   void autorepairing_autoclave( special_effect_t& );
+  void battering_talisman_trigger( special_effect_t& );
+  void blackiron_micro_crucible( special_effect_t& );
+  void forgemasters_insignia( special_effect_t& );
+  void humming_blackiron_trigger( special_effect_t& );
   void spellbound_runic_band( special_effect_t& );
   void spellbound_solium_band( special_effect_t& );
 
-  /* Warlords of Draenor 6.2 (WIP) */
-  void int_dps_trinket_4( special_effect_t& );
-  void int_dps_trinket_3( special_effect_t& );
+  /* Warlords of Draenor 6.2 */
   void insatiable_hunger( special_effect_t& );
+  void int_dps_trinket_3( special_effect_t& );
+  void int_dps_trinket_4( special_effect_t& );
   void str_dps_trinket_3( special_effect_t& );
   void str_dps_trinket_4( special_effect_t& );
 }
 
 namespace gem
 {
-  void sinister_primal( special_effect_t& );
-  void indomitable_primal( special_effect_t& );
   void capacitive_primal( special_effect_t& );
   void courageous_primal( special_effect_t& );
+  void indomitable_primal( special_effect_t& );
+  void sinister_primal( special_effect_t& );
 }
 
 namespace set_bonus
 {
-  void t17_lfr_passive_stat( special_effect_t& );
   void t17_lfr_4pc_agimelee( special_effect_t& );
+  void t17_lfr_4pc_clothcaster( special_effect_t& );
   void t17_lfr_4pc_leamelee( special_effect_t& );
   void t17_lfr_4pc_leacaster( special_effect_t& );
   void t17_lfr_4pc_mailcaster( special_effect_t& );
   void t17_lfr_4pc_platemelee( special_effect_t& );
-  void t17_lfr_4pc_clothcaster( special_effect_t& );
+  void t17_lfr_passive_stat( special_effect_t& );
 }
 
 /**
