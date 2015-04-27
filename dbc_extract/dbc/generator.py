@@ -1275,7 +1275,7 @@ class SpellDataGenerator(DataGenerator):
          84745,  84746,             # Shallow Insight, Moderate Insight
          138537,                    # Death Knight Tier15 2PC melee pet special attack
          137597,                    # Legendary meta gem Lightning Strike
-         137323, 137247,    # Healer legendary meta
+         137323, 137247,            # Healer legendary meta
          137331, 137326,
          146137,                    # Cleave
          146071,                    # Multistrike
@@ -1291,7 +1291,8 @@ class SpellDataGenerator(DataGenerator):
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
          179154, 179155, 179156, 179157, # T17 LFR cloth dps set bonus nukes
-         183950,                    # Darklight Ray (WoD 6.2 Int DPS trinket 3 damage spell)
+         183950,                    # Darklight Ray (WoD 6.2 Int DPS Trinket 3 damage spell)
+	 184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
         ),
 
         # Warrior:
