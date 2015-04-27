@@ -388,9 +388,9 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
   else if ( util::str_compare_ci( split[ bonus_offset ], "4pc" ) )
     bonus = B4;
 
-  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc.ptr ) ); bonus_idx++ )
+  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( SC_USE_PTR ); bonus_idx++ )
   {
-    const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc.ptr ) )[ bonus_idx ];
+    const item_set_bonus_t& bonus = dbc::set_bonus( SC_USE_PTR )[ bonus_idx ];
     if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor -> type ) )
       continue;
 
