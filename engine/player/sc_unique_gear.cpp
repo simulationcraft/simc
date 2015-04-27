@@ -80,6 +80,7 @@ namespace item
   void spellbound_solium_band( special_effect_t& );
 
   /* Warlords of Draenor 6.2 */
+  void agi_dps_trinket_3( special_effect_t& );
   void insatiable_hunger( special_effect_t& );
   void int_dps_trinket_3( special_effect_t& );
   void int_dps_trinket_4( special_effect_t& );
@@ -2421,6 +2422,137 @@ void item::int_dps_trinket_3( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Agi DPS Trinket 3
+
+struct agi_dps_trinket_3_cb_t : public dbc_proc_callback_t
+{
+  double stored_value;
+
+  agi_dps_trinket_3_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ), stored_value( 0 )
+  { }
+
+  void reset()
+  {
+    dbc_proc_callback_t::reset();
+
+    stored_value = 0;
+  }
+
+  void activate()
+  {
+    if ( ! active )
+    {
+      stored_value = 0;
+    }
+
+    dbc_proc_callback_t::activate();
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state )
+  {
+    if ( listener -> sim -> debug )
+    {
+      listener -> sim -> out_debug.printf( "%s spirit_shift accumulates %.0f damage.", listener -> name(), trigger_state -> result_amount );
+    }
+    stored_value += trigger_state -> result_amount;
+  }
+};
+
+struct agi_dps_trinket_3_explosion_t : public spell_t
+{
+  double explosion_multiplier;
+
+  agi_dps_trinket_3_explosion_t( player_t* player, special_effect_t& effect ) :
+    spell_t( "spirit_eruption", player, /* player -> find_spell( 184559 ) ? player -> find_spell( 184559 ) : */ spell_data_t::nil() ),
+    explosion_multiplier( 0 )
+  {
+    background = split_aoe_damage = true;
+    callbacks = false;
+    aoe = -1;
+
+    school = SCHOOL_SHADOW;
+    may_miss = may_crit = false;
+
+    explosion_multiplier = 1.0 + player -> find_spell( effect.spell_id ) -> effectN( 1 ).average( effect.item ) / 10000.0;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  virtual double calculate_direct_amount( action_state_t* s ) override
+  {
+    return spell_t::calculate_direct_amount( s ) * explosion_multiplier;
+  }
+};
+
+struct agi_dps_trinket_3_buff_t : public buff_t
+{
+  // Explosion here
+  spell_t* explosion;
+  agi_dps_trinket_3_cb_t* cb;
+
+  agi_dps_trinket_3_buff_t( player_t* player, special_effect_t& effect ) :
+    buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ) ) ),
+    cb( 0 ), explosion( new agi_dps_trinket_3_explosion_t( player, effect ) )
+  {}
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( cb -> stored_value > 0 && ! player -> is_sleeping() )
+    {
+      explosion -> base_dd_min = explosion -> base_dd_max = cb -> stored_value;
+      explosion -> execute();
+    }
+
+    cb -> deactivate();
+  }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    cb -> activate();
+  }
+
+  void reset()
+  {
+    buff_t::reset();
+
+    cb -> deactivate();
+  }
+};
+
+static void initialize_agi_dps_trinket_3( special_effect_t& effect )
+{
+  agi_dps_trinket_3_cb_t* damage_cb = new agi_dps_trinket_3_cb_t( effect );
+  static_cast<agi_dps_trinket_3_buff_t*>( effect.custom_buff ) -> cb = damage_cb;
+}
+
+void item::agi_dps_trinket_3( special_effect_t& effect )
+{
+  effect.custom_buff = new agi_dps_trinket_3_buff_t( effect.player, effect );
+
+  special_effect_t damage_effect( effect.player );
+  damage_effect.name_str = "spirit_eruption";
+  damage_effect.type = SPECIAL_EFFECT_CUSTOM;
+  damage_effect.proc_chance_ = 1.0;
+  damage_effect.proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
+  damage_effect.proc_flags2_ = PF2_ALL_HIT | PF2_ALL_MULTISTRIKE;
+  damage_effect.custom_buff = effect.custom_buff;
+  damage_effect.custom_init = initialize_agi_dps_trinket_3;
+
+  effect.player -> special_effects.push_back( new special_effect_t( damage_effect ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -3034,9 +3166,10 @@ void unique_gear::register_special_effect( unsigned spell_id, const std::string&
 void unique_gear::register_special_effects()
 {
   /* Warlords of Draenor 6.2 */
+  register_special_effect( 184291, item::agi_dps_trinket_3              );
+  register_special_effect( 183942, item::insatiable_hunger              );
   register_special_effect( 184066, item::int_dps_trinket_4              );
   register_special_effect( 183951, item::int_dps_trinket_3              );
-  register_special_effect( 183942, item::insatiable_hunger              );
   register_special_effect( 184249, item::str_dps_trinket_3              );
   register_special_effect( 184257, item::str_dps_trinket_4              );
 
