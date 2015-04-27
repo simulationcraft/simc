@@ -878,7 +878,7 @@ struct stalwart_guardian_t : public absorb_t
   double absorb_size;
 
   stalwart_guardian_t( druid_t* p ) :
-    absorb_t( "stalwart_guardian", p, /* p -> find_spell( 185321 ) ? p -> find_spell( 185321 ) : */ spell_data_t::nil() ),
+    absorb_t( "stalwart_guardian", p, p -> find_spell( 185321 ) ),
     incoming_damage( 0 ), absorb_limit( 0 ), absorb_size( 0 )
   {
     background = true;
