@@ -4056,6 +4056,7 @@ struct breath_of_fire_t: public monk_spell_t
     {
       background = true;
       tick_may_crit = may_crit = true;
+      hasted_ticks = false;
     }
   };
 
