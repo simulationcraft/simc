@@ -1532,7 +1532,7 @@ void action_t::assess_damage( dmg_e    type,
   if ( sim -> debug )
     s -> debug();
 
-  if ( ! player -> buffs.spirit_shift | ! player -> buffs.spirit_shift -> check() )
+  if ( ! player -> buffs.spirit_shift || ! player -> buffs.spirit_shift -> check() )
   {
     if ( type == DMG_DIRECT )
     {

@@ -5438,7 +5438,8 @@ void monk_t::create_buffs()
   buff.elusive_brew_stacks = buff_creator_t( this, "elusive_brew_stacks", find_spell( 128939 ) );
 
   buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated", spec.elusive_brew )
-    .add_invalidate( CACHE_DODGE );
+    .add_invalidate( CACHE_DODGE )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.guard = absorb_buff_creator_t( this, "guard", spec.guard )
     .source( get_stats( "guard" ) )
@@ -5692,6 +5693,11 @@ double monk_t::composite_player_multiplier( school_e school ) const
       m *= passives.storm_earth_and_fire -> effectN( 2 ).percent();
   }
 
+  // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
+  if ( maybe_ptr( dbc.ptr ) && eluding_movements )
+  {
+    m *= 1.0 + ( eluding_movements -> driver() -> effectN( 2 ).average( eluding_movements -> item ) / 100 );
+  }
   return m;
 }
 
@@ -6056,7 +6062,7 @@ void monk_t::assess_damage(school_e school,
       if ( health_percentage() < bm_trinket_proc )
       {
 //        TODO: Figure out how to get trigger_brew to work from here
-        if ( rng().roll( bm_trinket_proc / 100 ) )
+        if ( rng().roll( ( bm_trinket_proc / 100 ) / 2 ) )
           buff.elusive_brew_stacks -> trigger( 1 );
       }
     }
@@ -6066,7 +6072,7 @@ void monk_t::assess_damage(school_e school,
     double desperate_measures = ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35);
     if ( health_percentage() < desperate_measures )
     {
-      bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : desperate_measures / 100 );
+      bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : 0.10 );
       if ( eh_reset )
         cooldown.expel_harm -> reset( true );
     }
