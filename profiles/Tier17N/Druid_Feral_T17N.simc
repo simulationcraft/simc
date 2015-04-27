@@ -35,14 +35,15 @@ actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
 actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
-actions+=/berserk,sync=tigers_fury,if=buff.king_of_the_jungle.up|!talent.incarnation.enabled
+actions+=/berserk,if=((!t18_class_trinket&buff.tigers_fury.up)|(t18_class_trinket&energy.time_to_max<2))&(buff.king_of_the_jungle.up|!talent.incarnation_king_of_the_jungle.enabled)
 actions+=/use_item,slot=trinket1,if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.king_of_the_jungle.up&time<10)
 actions+=/potion,name=draenic_agility,if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
-actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80
-actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
+actions+=/tigers_fury,if=(!t18_class_trinket|cooldown.berserk.remains)&((!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80)
+actions+=/incarnation,if=!t18_class_trinket&cooldown.berserk.remains<10&energy.time_to_max>1
+actions+=/incarnation,if=t18_class_trinket&cooldown.berserk.remains<1&energy.time_to_max<3
 actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
@@ -52,6 +53,7 @@ actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)
 actions+=/call_action_list,name=finisher,if=combo_points=5
 actions+=/savage_roar,if=buff.savage_roar.remains<gcd
+actions+=/pool_resource,if=t18_class_trinket&!buff.omen_of_clarity.react&cooldown.berserk.remains*energy.regen+energy<energy.max
 actions+=/call_action_list,name=maintain,if=combo_points<5
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2

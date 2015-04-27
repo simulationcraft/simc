@@ -6639,7 +6639,7 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
-  def -> add_action( this, "Berserk", "sync=tigers_fury,if=buff.king_of_the_jungle.up|!talent.incarnation.enabled" );
+  def -> add_action( this, "Berserk", "if=((!t18_class_trinket&buff.tigers_fury.up)|(t18_class_trinket&energy.time_to_max<2))&(buff.king_of_the_jungle.up|!talent.incarnation_king_of_the_jungle.enabled)" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
   {
@@ -6652,8 +6652,9 @@ void druid_t::apl_feral()
   {
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
   }
-  def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80" );
-  def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
+  def -> add_action( this, "Tiger's Fury", "if=(!t18_class_trinket|cooldown.berserk.remains)&((!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80)" );
+  def -> add_action( "incarnation,if=!t18_class_trinket&cooldown.berserk.remains<10&energy.time_to_max>1" );
+  def -> add_action( "incarnation,if=t18_class_trinket&cooldown.berserk.remains<1&energy.time_to_max<3" );
   if ( race == RACE_NIGHT_ELF )
   {
     def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up" );
@@ -6664,6 +6665,13 @@ void druid_t::apl_feral()
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)" );
+  def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
+  def -> add_action( "pool_resource,if=t18_class_trinket&!buff.omen_of_clarity.react&cooldown.berserk.remains*energy.regen+energy<energy.max" );
+  def -> add_action( "call_action_list,name=maintain,if=combo_points<5" );
+  def -> add_action( "pool_resource,for_next=1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2" );
+  def -> add_action( "call_action_list,name=generator,if=combo_points<5" );
 
   // Finishers  
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)" );
@@ -6673,24 +6681,15 @@ void druid_t::apl_feral()
   finish -> add_action( this, "Savage Roar", "if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
-  def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
-  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
-
   // DoT Maintenance
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
   maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&active_enemies<=5&target.time_to_die-remains>tick_time*5" );
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
 
-  def -> add_action( "call_action_list,name=maintain,if=combo_points<5" );
-  def -> add_action( "pool_resource,for_next=1" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2" );
-
   // Generators
   generate -> add_action( this, "Swipe", "if=active_enemies>=3" );
   generate -> add_action( this, "Shred", "if=active_enemies<3" );
-
-  def -> add_action( "call_action_list,name=generator,if=combo_points<5" );
 }
 
 // Balance Combat Action Priority List ==============================
