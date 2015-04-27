@@ -2464,7 +2464,7 @@ struct agi_dps_trinket_3_explosion_t : public spell_t
   double explosion_multiplier;
 
   agi_dps_trinket_3_explosion_t( player_t* player, special_effect_t& effect ) :
-    spell_t( "spirit_eruption", player, /* player -> find_spell( 184559 ) ? player -> find_spell( 184559 ) : */ spell_data_t::nil() ),
+    spell_t( "spirit_eruption", player, player -> find_spell( 184559 ) ),
     explosion_multiplier( 0 )
   {
     background = split_aoe_damage = true;
@@ -2499,7 +2499,9 @@ struct agi_dps_trinket_3_buff_t : public buff_t
   agi_dps_trinket_3_buff_t( player_t* player, special_effect_t& effect ) :
     buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ) ) ),
     cb( 0 ), explosion( new agi_dps_trinket_3_explosion_t( player, effect ) )
-  {}
+  {
+    player -> buffs.spirit_shift = this;
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
@@ -2540,7 +2542,7 @@ void item::agi_dps_trinket_3( special_effect_t& effect )
   effect.custom_buff = new agi_dps_trinket_3_buff_t( effect.player, effect );
 
   special_effect_t damage_effect( effect.player );
-  damage_effect.name_str = "spirit_eruption";
+  damage_effect.name_str = "spirit_shift";
   damage_effect.type = SPECIAL_EFFECT_CUSTOM;
   damage_effect.proc_chance_ = 1.0;
   damage_effect.proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;

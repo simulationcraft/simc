@@ -1532,49 +1532,52 @@ void action_t::assess_damage( dmg_e    type,
   if ( sim -> debug )
     s -> debug();
 
-  if ( type == DMG_DIRECT )
+  if ( ! player -> buffs.spirit_shift | ! player -> buffs.spirit_shift -> check() )
   {
-    if ( sim -> log )
+    if ( type == DMG_DIRECT )
     {
-      sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     s -> target -> name(), s -> result_amount,
-                     util::school_type_string( get_school() ),
-                     util::result_type_string( s -> result ) );
+      if ( sim -> log )
+      {
+        sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
+    }
+    else // DMG_OVER_TIME
+    {
+      if ( sim -> log )
+      {
+        dot_t* dot = get_dot( s -> target );
+        sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       dot -> current_tick, dot -> num_ticks,
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
+    }
+
+    if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
+    {
+      player -> priority_iteration_dmg += s -> result_amount;
+    }
+
+    // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
+    // break in the future if we ever decide to not separate heal and damage assessing.
+    double leech_pct = 0;
+    if ( ( s -> result_type == DMG_DIRECT || s -> result_type == DMG_OVER_TIME ) &&
+         s -> result_amount > 0 &&
+         ( leech_pct = composite_leech( s ) ) > 0 )
+    {
+      double leech_amount = leech_pct * s -> result_amount;
+      player -> spell.leech -> base_dd_min = player -> spell.leech -> base_dd_max = leech_amount;
+      player -> spell.leech -> schedule_execute();
     }
   }
-  else // DMG_OVER_TIME
-  {
-    if ( sim -> log )
-    {
-      dot_t* dot = get_dot( s -> target );
-      sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     dot -> current_tick, dot -> num_ticks,
-                     s -> target -> name(), s -> result_amount,
-                     util::school_type_string( get_school() ),
-                     util::result_type_string( s -> result ) );
-    }
-  }
 
-  if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
-  {
-    player -> priority_iteration_dmg += s -> result_amount;
-  }
-
-  // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
-  // break in the future if we ever decide to not separate heal and damage assessing.
-  double leech_pct = 0;
-  if ( ( s -> result_type == DMG_DIRECT || s -> result_type == DMG_OVER_TIME ) &&
-       s -> result_amount > 0 &&
-       ( leech_pct = composite_leech( s ) ) > 0 )
-  {
-    double leech_amount = leech_pct * s -> result_amount;
-    player -> spell.leech -> base_dd_min = player -> spell.leech -> base_dd_max = leech_amount;
-    player -> spell.leech -> schedule_execute();
-  }
-
-  // New callback system; proc spells on impact. 
+  // New callback system; proc spells on impact.
 
   if ( callbacks )
   {
@@ -1584,7 +1587,10 @@ void action_t::assess_damage( dmg_e    type,
       action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
   }
 
-  record_data( s );
+  if ( ! player -> buffs.spirit_shift || ! player -> buffs.spirit_shift -> check() )
+  {
+    record_data( s );
+  }
 }
 
 // action_t::record_data ====================================================
