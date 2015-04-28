@@ -2011,7 +2011,7 @@ public:
    */
   int stack()
   {
-    double cs = current_stack;
+    int cs = current_stack;
     if ( cs > 0 )
     {
       up_count++;

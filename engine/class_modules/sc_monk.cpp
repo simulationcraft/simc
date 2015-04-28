@@ -462,9 +462,10 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* expel_harm;
+    cooldown_t* guard;
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
-    cooldown_t* expel_harm;
     cooldown_t* touch_of_death;
   } cooldown;
 
@@ -526,9 +527,10 @@ public:
   {
     // actives
     _active_stance = FIERCE_TIGER;
+    cooldown.expel_harm       = get_cooldown( "expel_harm" );
+    cooldown.guard            = get_cooldown( "guard" );
     cooldown.healing_elixirs  = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere   = get_cooldown( "healing_sphere" );
-    cooldown.expel_harm       = get_cooldown( "expel_harm" );
     cooldown.touch_of_death   = get_cooldown( "touch_of_death" );
 
     regen_type = REGEN_DYNAMIC;
@@ -2030,7 +2032,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double a = base_t::target_armor( t );
 
     if ( p() -> buff.tiger_power -> up() )
-      a *= 1.0 - p() -> buff.tiger_power -> check() * p() -> buff.tiger_power -> data().effectN( 1 ).percent();
+      a *= 1.0 - p() -> buff.tiger_power -> default_value;
 
     return a;
   }
@@ -2138,7 +2140,7 @@ struct jab_t: public monk_melee_attack_t
     if ( p() -> buff.power_strikes -> up() )
     {
       if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
-        chi_gain += p() -> buff.power_strikes -> data().effectN( 1 ).base_value();
+        chi_gain += p() -> buff.power_strikes -> default_value;
       else
         p() -> buff.chi_sphere -> trigger();
 
@@ -2783,7 +2785,7 @@ struct tick_action_t : public monk_melee_attack_t
       if ( p() -> resources.current[ RESOURCE_CHI ] < p() -> resources.max[ RESOURCE_CHI ] )
       {
         p() -> resource_gain( RESOURCE_CHI,
-                              p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
+                              p() -> buff.power_strikes -> default_value,
                               0,
                               this );
       }
@@ -3159,7 +3161,7 @@ struct melee_t: public monk_melee_attack_t
         if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
           trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
         else
-          trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon -> swing_time.total_seconds() / 3.6);
+          trigger_brew( p() -> buff.elusive_brew_activated -> data().effectN( 2 ).base_value() * weapon -> swing_time.total_seconds() / 3.6);
       }
       // TODO: Add BLOCK_RESULT_MULTISTRIKE and BLOCK_RESULT_MULTISTRIKE_CRIT
       if ( result_is_multistrike( s -> result ) )
@@ -3431,13 +3433,15 @@ struct expel_harm_t: public monk_melee_attack_t
     {
       if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
         p() -> resource_gain( RESOURCE_CHI,
-        p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
+        p() -> buff.power_strikes -> default_value,
         0, this );
       else
         p() -> buff.chi_sphere -> trigger();
 
       p() -> buff.power_strikes -> expire();
     }
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) && p() -> cooldown.guard -> down() )
+      p() -> cooldown.guard -> duration - p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value();
   }
 
   double trigger_attack()
@@ -3584,7 +3588,7 @@ struct tigereye_brew_t: public monk_spell_t
         p() -> active_actions.healing_elixir -> execute();
     }
 
-    double teb_stacks_used = std::min( p() -> buff.tigereye_brew -> stack(), p() -> buff.tigereye_brew_use -> max_stack() );
+    int teb_stacks_used = std::min( p() -> buff.tigereye_brew -> stack(), p() -> buff.tigereye_brew_use -> max_stack() );
 
     p() -> buff.tigereye_brew_use -> trigger( teb_stacks_used );
     p() -> buff.tigereye_brew -> decrement( teb_stacks_used );
@@ -4426,7 +4430,7 @@ struct dampen_harm_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p() -> buff.dampen_harm -> trigger( data().initial_stacks() );
+    p() -> buff.dampen_harm -> trigger( data().max_stacks() );
   }
 };
 
@@ -5399,26 +5403,28 @@ void monk_t::create_buffs()
   // General
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
 
-  buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
+  buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() )
+    .default_value( talent.power_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
 
-  double ts_proc_chance = spec.tiger_strikes -> proc_chance() * ( ( main_hand_weapon.group() == WEAPON_1H && specialization() != MONK_MISTWEAVER ) ? 0.5 : 1 ); // Tooltips are wrong....
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
-    .chance( ts_proc_chance )
+    .default_value(spec.tiger_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( spec.tiger_strikes -> proc_chance() * ( ( main_hand_weapon.group() == WEAPON_1H && specialization() != MONK_MISTWEAVER ) ? 0.5 : 1 ) ) // Tooltips are wrong....
     .refresh_behavior( BUFF_REFRESH_DURATION )
     .cd( timespan_t::from_seconds( 0.2 ) )
     .add_invalidate( CACHE_MULTISTRIKE );
 
   buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
+    .default_value( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() );
 
   buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm )
-    .cd( timespan_t::zero() )
-    .max_stack( 3 );
+    .cd( timespan_t::zero() );
 
-  buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic );
+  buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
+    .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
     .duration( maybe_ptr( dbc.ptr ) && specialization() == MONK_BREWMASTER ? timespan_t::from_seconds( talent.serenity -> effectN( 1 ).base_value() ) : talent.serenity -> duration() );
@@ -5428,11 +5434,13 @@ void monk_t::create_buffs()
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
+    .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.elusive_brew_stacks = buff_creator_t( this, "elusive_brew_stacks", find_spell( 128939 ) );
 
   buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated", spec.elusive_brew )
+    .default_value( spec.elusive_brew -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_DODGE )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -5441,16 +5449,16 @@ void monk_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.shuffle = buff_creator_t( this, "shuffle", passives.shuffle )
-    .duration( talent.chi_explosion -> ok() ? timespan_t::from_millis( 10 ) : passives.shuffle -> duration())
+    .duration( talent.chi_explosion -> ok() ? timespan_t::from_millis( 10 ) : passives.shuffle -> duration() )
     .refresh_behavior( BUFF_REFRESH_EXTEND )
     .add_invalidate( CACHE_PARRY );
 
   // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
   double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
-  // Players don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
+  // Players generally don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
   // Defaulting to 60% pickup, but users can adjust as needed
   goto_chance *= ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 );
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ) //, find_spell( 124503 ) Until the Spell ID is regenerated, I'll keep this like this
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" , find_spell( 124503 ) )
     .chance( goto_chance )
     .duration( timespan_t::from_seconds( 30 ) )
     .refresh_behavior( BUFF_REFRESH_NONE )
@@ -5462,25 +5470,26 @@ void monk_t::create_buffs()
   buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) )
     .add_invalidate( CACHE_CRIT );
 
-  buff.gift_of_the_serpent = buff_creator_t( this, "gift_of_the_serpent", find_spell( 119031 ) ).max_stack( 99 );
+  buff.gift_of_the_serpent = buff_creator_t( this, "gift_of_the_serpent", find_spell( 119031 ) )
+    .max_stack( 99 );
 
   buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) );
 
   buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
 
   // Windwalker
-  buff.chi_sphere = buff_creator_t( this, "chi_sphere" ).max_stack( 5 );
+  buff.chi_sphere = buff_creator_t( this, "chi_sphere" )
+    .max_stack( 5 );
 
-  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_class_spell( "Combo Breaker: Blackout Kick" ) );
+  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
 
-  buff.combo_breaker_tp = buff_creator_t( this, "combo_breaker_tp", find_class_spell( "Combo Breaker: Tiger Palm" ) );
+  buff.combo_breaker_tp = buff_creator_t( this, "combo_breaker_tp", find_spell( 118864 ) );
 
-  buff.combo_breaker_ce = buff_creator_t( this, "combo_breaker_ce", find_class_spell( "Combo Breaker: Chi Explosion" ) );
+  buff.combo_breaker_ce = buff_creator_t( this, "combo_breaker_ce", find_spell( 159407 ) );
 
   buff.energizing_brew = buff_creator_t( this, "energizing_brew", spec.energizing_brew )
     .duration( spec.energizing_brew -> duration() + 
       ( sets.has_set_bonus( SET_MELEE, T14, B4 ) ? sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() ) )
-    .max_stack( 1 )
     .tick_callback( energizing_brew_energize );
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
@@ -5488,7 +5497,7 @@ void monk_t::create_buffs()
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew )
     .default_value( spec.tigereye_brew -> effectN( 1 ).percent() + 
       ( sets.has_set_bonus( SET_MELEE, T15, B4 ) ? sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000 : 0 ) ) // t154pc)
-    .max_stack( spec.brewing_tigereye_brew -> effectN( 2 ).base_value() )
+    .max_stack( specialization() == MONK_WINDWALKER ? spec.brewing_tigereye_brew -> effectN( 2 ).base_value() : 1 )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
@@ -5498,7 +5507,7 @@ void monk_t::create_buffs()
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.forceful_winds )
     .default_value( passives.forceful_winds -> effectN( 1 ).percent() )
-    .max_stack( spec.brewing_tigereye_brew -> effectN( 2 ).base_value() );
+    .max_stack( specialization() == MONK_WINDWALKER ? spec.brewing_tigereye_brew -> effectN( 2 ).base_value() : 1 );
 }
 
 // monk_t::init_gains =======================================================
@@ -5751,7 +5760,7 @@ double monk_t::composite_melee_attack_power() const
 
   double ap = player_t::composite_melee_attack_power();
 
-  ap += buff.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+  ap += buff.bladed_armor -> default_value * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
@@ -5789,7 +5798,7 @@ double monk_t::composite_dodge() const
 
   if ( buff.elusive_brew_activated -> check() )
   {
-    d += buff.elusive_brew_activated -> data().effectN( 1 ).percent();
+    d += buff.elusive_brew_activated -> default_value;
     d += sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
   }
 
@@ -5838,7 +5847,7 @@ double monk_t::composite_multistrike() const
   double m = player_t::composite_multistrike();
 
   if ( buff.tiger_strikes -> check() )
-    m += buff.tiger_strikes -> data().effectN( 1 ).percent();
+    m += buff.tiger_strikes -> default_value;
 
   return m;
 }
@@ -6123,7 +6132,7 @@ void monk_t::target_mitigation( school_e school,
 
   // Diffuse Magic
   if ( buff.diffuse_magic -> up() && school != SCHOOL_PHYSICAL )
-    s -> result_amount *= 1.0 + buff.diffuse_magic -> data().effectN( 1 ).percent(); // Stored as -90%
+    s -> result_amount *= 1.0 + buff.diffuse_magic -> default_value; // Stored as -90%
 
   // Fortifying Brew
   if ( buff.fortifying_brew -> up() )
