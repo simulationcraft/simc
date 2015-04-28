@@ -1999,7 +1999,8 @@ public:
   int             check() const { return current_stack; }
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  virtual double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  virtual double  value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  virtual double  stack_value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack * current_value; }
   timespan_t remains() const;
   timespan_t elapsed( const timespan_t& t ) const { return t - last_start; }
   bool   remains_gt( timespan_t time ) const;
