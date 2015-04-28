@@ -199,6 +199,7 @@ public:
   double time_to_next_lunar; // Amount of seconds until eclipse energy reaches 100 (Lunar Eclipse)
   double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
   bool alternate_stellar_flare; // Player request.
+  bool predatory_swiftness_bug; // Trigger a PS when combat begins.
   bool stellar_flare_cast; //Hacky way of not consuming lunar/solar peak.
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
@@ -607,6 +608,7 @@ public:
     time_to_next_lunar( 10 ),
     time_to_next_solar( 30 ),
     alternate_stellar_flare( 0 ),
+    predatory_swiftness_bug( 0 ),
     stellar_flare_cast( 0 ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
@@ -7071,6 +7073,9 @@ void druid_t::combat_begin()
   // Apply Bladed Armor buff 
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
+
+  if ( predatory_swiftness_bug && glyph.savage_roar -> ok() )
+    buff.predatory_swiftness -> trigger();
 }
 
 // druid_t::invalidate_cache ================================================
@@ -7500,6 +7505,7 @@ void druid_t::create_options()
   player_t::create_options();
 
   add_option( opt_bool( "alternate_stellar_flare", alternate_stellar_flare ) );
+  add_option( opt_bool( "predatory_swiftness_bug", predatory_swiftness_bug ) );
 }
 
 // druid_t::copy_from =======================================================
