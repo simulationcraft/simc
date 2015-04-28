@@ -17,7 +17,7 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 252 | Scaled Value: 2.52 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 252 | Scaled Value: 2.52 | SP Coefficient: 1.00000
 #3 (id=32)       : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Backstab the target, causing $sw2 Physical damage.  Must not be in front of the target.  Awards $s3 combo $lpoint:points;.
@@ -169,7 +169,7 @@ Effects          :
 #2 (id=536)      : Add Combo Points (80)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=101522)   : Weapon Damage% (31)
-                   Base Value: 176 | Scaled Value: 1.76 (avg=0)
+                   Base Value: 176 | Scaled Value: 1.76
 Description      : An instant strike that causes $sw3 Physical damage.$?s79327[  Awards $s2 combo $lpoint:points;.][]
 
 Name             : Kick (id=1766) [Spell Family (8)] 
@@ -212,7 +212,7 @@ Attributes       : ....x... ...x.... x.x.x... ........   ........ ........ ..x..
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=538)      : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42000
+                   Base Value: 0 | Scaled Value: 0 (avg=0.104) | AP Coefficient: 0.42000
 #2 (id=169690)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42000 | Misc Value: 0x7f
 Description      : Gouges the eyes of an enemy target, incapacitating the opponent for $d.$?s56809[][  Target must be facing you.]  Any subsequent damage will cause the target to recover immediately.
@@ -239,7 +239,7 @@ Effects          :
 #1 (id=541)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2
 #2 (id=542)      : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 515 (avg=0) | Points Per Level: 5
+                   Base Value: 40 | Scaled Value: 515 | Points Per Level: 5
 #3 (id=543)      : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=165804)   : Apply Aura (6) | Dummy (4)
@@ -266,7 +266,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=553)      : Open Lock (33)
-                   Base Value: 120 | Scaled Value: 500 (avg=0) | Points Per Level: 5 | Misc Value: 1
+                   Base Value: 120 | Scaled Value: 500 | Points Per Level: 5 | Misc Value: 1
 Description      : Allows opening of locked chests and doors that require a skill level of up to ${$PL*5}.
 
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
@@ -690,7 +690,7 @@ Effects          :
 #1 (id=1920)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 273 | Scaled Value: 2.73 (avg=0)
+                   Base Value: 273 | Scaled Value: 2.73
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
@@ -709,7 +709,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2076)     : Weapon Damage% (31)
-                   Base Value: 10 | Scaled Value: 0.1 (avg=0)
+                   Base Value: 10 | Scaled Value: 0.1
 #2 (id=128897)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9
 Description      : Deals $sw1 Physical damage, applying a concentrated form of your active Non-Lethal poison, and dispelling an Enrage effect from the target.
@@ -798,7 +798,7 @@ Effects          :
 #1 (id=3612)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=3613)     : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 315 | Scaled Value: 3.15 | SP Coefficient: 1.00000
 #3 (id=3614)     : Add Combo Points (80)
                    Base Value: 2 | Scaled Value: 2
 Description      : Ambush the target, causing $sw2 Physical damage to the target (damage increased 40% if a dagger is equipped)$?s138106[ and causes you to appear behind the target][].  Awards $s3 combo $lpoint:points;.$?s91023[  For the next $91021d, your attacks bypass up to $91021s1% of that enemy's armor.][]
@@ -1115,7 +1115,7 @@ Effects          :
 #1 (id=8231)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=8232)     : Weapon Damage% (31)
-                   Base Value: 65 | Scaled Value: 0.65 (avg=0)
+                   Base Value: 65 | Scaled Value: 0.65
 #3 (id=8233)     : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #4 (id=134070)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
@@ -1282,7 +1282,7 @@ Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25)
 #2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 273 | Scaled Value: 2.73 (avg=0)
+                   Base Value: 273 | Scaled Value: 2.73
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Passive] 
@@ -2141,7 +2141,7 @@ Effects          :
 #2 (id=51140)    : Trigger Spell: Killing Spree Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 57842
 #3 (id=211058)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 100 | Scaled Value: 1
 Description      : $@spelldesc51690
 
 Name             : Killing Spree Off-Hand (id=57842) [Spell Family (8)] 
@@ -2159,7 +2159,7 @@ Effects          :
 #1 (id=51141)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=211071)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 100 | Scaled Value: 1
 Description      : $@spelldesc51690
 
 Name             : Tricks of the Trade (id=57933) [Spell Family (8)] 
@@ -2956,7 +2956,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=81807)    : Parry (22)
-                   Base Value: 0 | Scaled Value: 1 - 6 (avg=0) | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
+                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Assassin's Resolve (id=84601) [Spell Family (8), Passive] 
@@ -2992,7 +2992,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=85480)    : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
+                   Base Value: 120 | Scaled Value: 1.2
 #2 (id=85481)    : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=85482)    : Apply Aura (6) | Dummy (4)
@@ -3070,7 +3070,7 @@ Effects          :
 #1 (id=87938)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=101077)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4 (avg=0)
+                   Base Value: 140 | Scaled Value: 1.4
 Description      : A vicious attack that deals $86392sw2 Physical damage with your off-hand.
 
 Name             : Smoke Bomb (id=88611) [Spell Family (8)] 
@@ -3311,7 +3311,7 @@ Effects          :
 #1 (id=123503)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=123504)   : Weapon Damage% (31)
-                   Base Value: 330 | Scaled Value: 3.3 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 330 | Scaled Value: 3.3 | SP Coefficient: 1.00000
 #3 (id=123505)   : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Exploits the vulnerability of foes with less than 35% health, causing $sw2 Physical damage to the target. Awards $s3 combo $lpoint:points;.
@@ -3384,7 +3384,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126788)   : School Damage: nature (2)
-                   Base Value: -1 | Scaled Value: 0 (avg=0) | Value Range: 1 | AP Coefficient: 0.12870
+                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.12870
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (8), Spell Family (8)] 
@@ -3402,7 +3402,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127100)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 1.20000
 #2 (id=127665)   : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000
 Description      : A ranged attack dealing $s1 Physical damage to an enemy target. If the enemy is farther than 10 yards away, your autoattacks gain a 30 yard range for $137586d. Awards $s2 combo $lpoint:points;. 
@@ -3511,7 +3511,7 @@ Attributes       : ...x.... ........ ........ ........   .....x.. ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129946)   : Apply Aura (6) | Stealth (16)
-                   Base Value: 380 | Scaled Value: 500 (avg=0) | Points Per Level: 5 | Radius: 20 yards
+                   Base Value: 380 | Scaled Value: 500 | Points Per Level: 5 | Radius: 20 yards
 Description      : Extend a cloak that wraps party and raid members within $115834A1 yards in shadows, concealing them from sight.
 Tooltip          : Concealed in shadows.
 
@@ -3618,7 +3618,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150471)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 1 - 5 (avg=0) | Value Range: 5 | SP Coefficient: 1.00000 | Points Per Combo Point: 5 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 1 - 5 | Value Range: 5 | SP Coefficient: 1.00000 | Points Per Combo Point: 5 | Radius: 0 - 10 yards
 #2 (id=255402)   : Dummy (3)
                    Base Value: 240 | Scaled Value: 240
 Description      : Finishing move that slashes at the flesh of all enemies within $A1 yards, dealing Physical damage and causing victims to bleed for an additional $s2% of the initial damage over $122233d:
@@ -3644,7 +3644,7 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=152884)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000
+                   Base Value: 0 | Scaled Value: 0 (avg=0.2, dl=0.15) | AP Coefficient: 0.10000
 Description      : Hurl a dagger at an enemy target.
 
 Name             : Crimson Tempest (id=122233) [Spell Family (8)] 
@@ -3922,7 +3922,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=180658)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 100 | Scaled Value: 1
 Description      : $@spelldesc114014
 
 Name             : Shuriken Toss (id=137586) [Spell Family (8)] 
@@ -4492,7 +4492,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219773)   : School Damage: nature (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | AP Coefficient: 0.26400
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | AP Coefficient: 0.26400
 Description      : $@spelldesc157584
 
 Name             : Enhanced Blade Flurry (id=157615) [Spell Family (8), Passive] 

@@ -20,7 +20,7 @@ Effects          :
 #1 (id=86)       : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4277 | Misc Value 2: 0x41 | Radius: 100 yards
 #2 (id=87)       : Apply Aura (6) | Invisibility Detection (19)
-                   Base Value: 0 | Scaled Value: 390 (avg=0) | Points Per Level: 5
+                   Base Value: 0 | Scaled Value: 390 | Points Per Level: 5
 Description      : Summons an Eye of Kilrogg and binds your vision to it.  The eye $?s58081[flies very quickly][is stealthed and moves quickly] but is very fragile.$?s58081[
 
 If you cast Demonic Circle: Summon while controlling an Eye of Kilrogg, the circle will appear where the eye is located.][]
@@ -515,7 +515,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1298)     : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000
+                   Base Value: 0 | Scaled Value: 0 (avg=0.3) | SP Coefficient: 0.30000
 #2 (id=113764)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=134299)   : Trigger Spell w/ Value: Demonic Synergy (142)
@@ -776,7 +776,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2449)     : Apply Aura (6) | Unknown effect sub type (407)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 (avg=0.784) | SP Coefficient: 1.00000
 #2 (id=2450)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=149417)   : Trigger Missiles (32)
@@ -1435,7 +1435,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=19741)    : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 100 | Scaled Value: 1
 Description      : Charge an enemy, instantly causing $30153m1% weapon damage and increasing the $?s108499[Wrathguard][Felguard]'s movement speed by $30151s3% for $30151d.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -1460,7 +1460,7 @@ Effects          :
 #1 (id=175537)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=19796)    : Weapon Damage% (31)
-                   Base Value: 130 | Scaled Value: 1.3 (avg=0) | Radius: 0 - 6 yards
+                   Base Value: 130 | Scaled Value: 1.3 | Radius: 0 - 6 yards
 #3 (id=113762)   : Trigger Spell w/ Value: Demonic Synergy (142)
                    Base Value: 12 | Scaled Value: 12 | Trigger Spell: 104330
 #4 (id=135920)   : Apply Aura (6) | Unknown effect sub type (118)
@@ -2955,7 +2955,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=92651)    : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 8 yards
 #2 (id=92652)    : None (0)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc89751
@@ -4150,7 +4150,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124148)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 100 (avg=0) | Points Per Level: 1 | SP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7
+                   Base Value: 0 | Scaled Value: 100 | Points Per Level: 1 | SP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7
 Description      : Summons a meteor from the Twisting Nether, causing $22703s1 Fire damage and stunning all enemy targets in the area for $20310d.  An Infernal rises from the crater, under the command of the caster for $111685d.
 
 The Infernal deals strong area of effect damage, and will be drawn to attack targets near the impact point.
@@ -4455,7 +4455,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=125569)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 100 (avg=0) | Points Per Level: 1 | SP Coefficient: 1.00000 | Misc Value: 58997 | Misc Value 2: 0xcf5
+                   Base Value: 0 | Scaled Value: 100 | Points Per Level: 1 | SP Coefficient: 1.00000 | Misc Value: 58997 | Misc Value 2: 0xcf5
 Description      : Summons a meteor from the Twisting Nether, causing $22703s1 Fire damage and stunning all enemy targets in the area for $20310d.  An Abyssal rises from the crater, under the command of the caster for $111685d.
 
 The Abyssal deals strong area of effect damage, and will be drawn to attack targets afflicted by your Bane of Agony or Bane of Doom spells.
@@ -4744,7 +4744,7 @@ Effects          :
 #2 (id=128247)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 0 (avg=0.21)
 #3 (id=154323)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 (avg=1.26)
 Description      : $@spelldesc27243
 Tooltip          : Causes $w1 Shadow damage every $t1 sec. After taking $w3 damage from the caster or dying, Seed of Corruption deals Shadow damage to the caster's enemies within $27285a1 yards.
 
@@ -4883,7 +4883,7 @@ Effects          :
 #1 (id=177232)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=129529)   : Weapon Damage% (31)
-                   Base Value: 195 | Scaled Value: 1.95 (avg=0) | Radius: 0 - 6 yards
+                   Base Value: 195 | Scaled Value: 1.95 | Radius: 0 - 6 yards
 #3 (id=129530)   : Trigger Spell w/ Value: Demonic Synergy (142)
                    Base Value: 12 | Scaled Value: 12 | Trigger Spell: 104330
 #4 (id=218348)   : Apply Aura (6) | Unknown effect sub type (118)
@@ -5013,7 +5013,7 @@ Effects          :
 #1 (id=129866)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=129867)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000
+                   Base Value: 0 | Scaled Value: 0 (avg=0.14) | SP Coefficient: 0.14000
 Description      : Blasts the enemy with lasers, dealing $s2 Shadow damage. 
 
 If used on a casting target, it will counter the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
@@ -5057,7 +5057,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129943)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 150 | Scaled Value: 1.5 | Radius: 0 - 8 yards
 #2 (id=129944)   : None (0)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc115831

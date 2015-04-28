@@ -307,7 +307,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=635)      : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.78900
+                   Base Value: 0 | Scaled Value: 0 (avg=1.012, dl=0.17) | SP Coefficient: 0.78900
 Description      : Blasts the enemy for $s1 Fire damage.
 
 Name             : Counterspell (id=2139) [Spell Family (3)] 
@@ -1151,7 +1151,7 @@ Effects          :
 #1 (id=22383)    : Unknown effect type (176)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=22384)    : Apply Aura (6) | Invisibility (18)
-                   Base Value: 340 | Scaled Value: 560 (avg=0) | Points Per Level: 5
+                   Base Value: 340 | Scaled Value: 560 | Points Per Level: 5
 #3 (id=22385)    : Apply Aura (6) | Unknown effect sub type (335)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc66
@@ -2945,7 +2945,7 @@ Effects          :
 #1 (id=123204)   : Unknown effect type (176)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=123205)   : Apply Aura (6) | Invisibility (18)
-                   Base Value: 340 | Scaled Value: 560 (avg=0) | Points Per Level: 5
+                   Base Value: 340 | Scaled Value: 560 | Points Per Level: 5
 #3 (id=123206)   : Apply Aura (6) | Unknown effect sub type (335)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc110959

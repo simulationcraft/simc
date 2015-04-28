@@ -194,7 +194,7 @@ Attributes       : ........ ........ x.x.x... ........   x.x..... .....x.. .x...
                  : Channeled (34)
 Effects          :
 #1 (id=247)      : Apply Aura (6) | Possess (2)
-                   Base Value: 4 | Scaled Value: 103 (avg=0) | Points Per Level: 1 | Radius: 100 yards
+                   Base Value: 4 | Scaled Value: 103 | Points Per Level: 1 | Radius: 100 yards
 #2 (id=248)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : Controls a mind up to level $s1 for $d.  Does not work versus Mechanical beings. This spell shares diminishing returns with other incapacitating effects.
@@ -1136,7 +1136,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 51 (avg=0) | Points Per Level: 1 | SP Coefficient: 2.21666 | Radius: 0 - 30 yards
+                   Base Value: 1 | Scaled Value: 51 | Points Per Level: 1 | SP Coefficient: 2.21666 | Radius: 0 - 30 yards
 Description      : Heals up to $?s55675[6][5] injured allies within $A1 yards of the target for $s1.
 
 Name             : Vampiric Touch (id=34914) [Spell Family (6)] 
@@ -1530,7 +1530,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=41944)    : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 (avg=0) | Value Range: 1 | SP Coefficient: 0.25000 | Radius: 10 yards
+                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.25000 | Radius: 10 yards
 Description      : Causes an explosion of shadow magic around the target, causing $49821s1 Shadow damage every $48045T1 sec for $48045d to all enemies within $49821a1 yards around the target.
 Tooltip          : Causing shadow damage to all targets within $a1 yards.
 
@@ -3186,7 +3186,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=99434)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 100 (avg=0) | Points Per Level: 1 | Radius: 0 - 100 yards
+                   Base Value: 1 | Scaled Value: 100 | Points Per Level: 1 | Radius: 0 - 100 yards
 Description      : $@spelldesc81749
 
 Name             : Rapid Renewal (id=95649) [Spell Family (6), Passive] 
@@ -4513,7 +4513,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=165362)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 0.33000
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | SP Coefficient: 0.33000
 #2 (id=183258)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]
@@ -5310,7 +5310,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=222500)   : Apply Aura (6) | Unknown effect sub type (379)
-                   Base Value: 100 | Scaled Value: 0 (avg=0) | Points Per Level: -10
+                   Base Value: 100 | Scaled Value: 0 | Points Per Level: -10
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
@@ -5884,7 +5884,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=257696)   : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 (avg=0) | Value Range: 1 | SP Coefficient: 0.50000 | Radius: 10 yards
+                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.50000 | Radius: 10 yards
 Description      : Causes an explosion of shadow magic around the target, causing $49821s1 Shadow damage every $48045T1 sec for $48045d to all enemies within $49821a1 yards around the target.
 Tooltip          : Causing shadow damage to all targets within $a1 yards.
 

@@ -12,7 +12,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=69)       : Block (23)
-                   Base Value: 0 | Scaled Value: 1 - 6 (avg=0) | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
+                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to block enemy melee and ranged attacks.
 
 Name             : Divine Protection (id=498) [Spell Family (10)] 
@@ -618,7 +618,7 @@ Effects          :
 #1 (id=11243)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 #2 (id=186978)   : Weapon Damage% (31)
-                   Base Value: 12 | Scaled Value: 0.12 (avg=0)
+                   Base Value: 12 | Scaled Value: 0.12
 #3 (id=186979)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : Fills you with Holy Light, causing melee attacks to deal $20170sw2 additional Holy damage and reduce the target's movement speed by $20170s1% for $20170d.
@@ -1105,7 +1105,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.68000
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.68000
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -1166,7 +1166,7 @@ Effects          :
 #1 (id=25579)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=25580)    : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
+                   Base Value: 120 | Scaled Value: 1.2
 #3 (id=91108)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power
 Description      : $?s85673|s85256[An instant strike that causes $sw2 Physical damage and grants 1 Holy Power.][An instant strike that causes $sw2 Physical damage.]
@@ -1224,7 +1224,7 @@ Attributes       : ........ ........ x.x..... ........   ...x.... ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=34171)    : Weapon Damage% (31)
-                   Base Value: 12 | Scaled Value: 0.12 (avg=0)
+                   Base Value: 12 | Scaled Value: 0.12
 #2 (id=131737)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : Fills you with Holy Light, causing melee attacks to deal $42463sw1 additional Holy damage and apply Censure to the target.
@@ -1305,7 +1305,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=157591)   : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 0 - 8 yards
 #2 (id=171269)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 Description      : Deals $sw1 Holy damage to all enemies within $A1 yards. $?s63220[Using Divine Storm will also heal you for $115515s1% of your maximum health.][]
@@ -1470,7 +1470,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46252)    : Weapon Damage% (31)
-                   Base Value: 42 | Scaled Value: 0.42 (avg=0)
+                   Base Value: 42 | Scaled Value: 0.42
 #2 (id=171314)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=90538)    : Energize Power (30)
@@ -2731,7 +2731,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=81805)    : Parry (22)
-                   Base Value: 0 | Scaled Value: 1 - 6 (avg=0) | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
+                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Holy Light (id=82326) [Spell Family (10)] 
@@ -2771,7 +2771,7 @@ Effects          :
 #1 (id=81810)    : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #2 (id=110901)   : Direct Heal (10)
-                   Base Value: 51 | Scaled Value: 52 - 63 (avg=0) | Value Range: 12 | SP Coefficient: 1.51319 | Radius: 0 - 10 yards
+                   Base Value: 51 | Scaled Value: 52 - 63 | Value Range: 12 | SP Coefficient: 1.51319 | Radius: 0 - 10 yards
 #3 (id=264355)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0
 Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and up to 6 allies within $A2 yards for half that amount. Grants 1 Holy Power.
@@ -2846,7 +2846,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=86389)    : Weapon Damage% (31)
-                   Base Value: 240 | Scaled Value: 2.4 (avg=0)
+                   Base Value: 240 | Scaled Value: 2.4
 #2 (id=131736)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 Description      : A powerful weapon strike that deals $sw1 Physical damage.
@@ -3150,7 +3150,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=90535)    : Weapon Damage% (31)
-                   Base Value: 24 | Scaled Value: 0.24 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 24 | Scaled Value: 0.24 | Radius: 0 - 8 yards
 #2 (id=171313)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 Description      : $@spelldesc35395
@@ -3299,7 +3299,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=99108)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05390
+                   Base Value: 0 | Scaled Value: 0 (avg=2.721, dl=0.14) | SP Coefficient: 0.05390
 Description      : Casting a targeted heal on any target, except yourself, also heals you for $s1.
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
@@ -3404,7 +3404,7 @@ Attributes       : ........ ........ ..x..x.. ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=109840)   : Weapon Damage% (31)
-                   Base Value: 12 | Scaled Value: 0.12 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 12 | Scaled Value: 0.12 | Radius: 0 - 8 yards
 #2 (id=136531)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 Description      : Fills you with Holy Light, causing melee attacks to deal $101423sw1 Holy damage to all targets within $101423A1 yards.
@@ -3886,9 +3886,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=128371)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 3.00000
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | SP Coefficient: 3.00000
 #2 (id=128372)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 3.00000 | Radius: 0 - 15 yards
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | SP Coefficient: 3.00000 | Radius: 0 - 15 yards
 #3 (id=128388)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards
 Description      : $@spelldesc114165
@@ -3992,7 +3992,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ ...x.
                  : Not a proc (105)
 Effects          :
 #1 (id=128470)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 0.86000 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | SP Coefficient: 0.86000 | Radius: 0 - 10 yards
 #2 (id=185691)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 10 yards
 Description      : $@spelldesc114158
@@ -4264,7 +4264,7 @@ Attributes       : ........ ........ x.x..... ........   ...x.... ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=134518)   : Weapon Damage% (31)
-                   Base Value: 10 | Scaled Value: 0.1 (avg=0)
+                   Base Value: 10 | Scaled Value: 0.1
 #2 (id=134519)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : Fills you with Holy Light, causing melee attacks to deal $sw1 additional Holy damage.
@@ -5291,7 +5291,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218849)   : Weapon Damage% (31)
-                   Base Value: 240 | Scaled Value: 2.4 (avg=0)
+                   Base Value: 240 | Scaled Value: 2.4
 #2 (id=218850)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=243842)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -5528,7 +5528,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=222500)   : Apply Aura (6) | Unknown effect sub type (379)
-                   Base Value: 100 | Scaled Value: 0 (avg=0) | Points Per Level: -10
+                   Base Value: 100 | Scaled Value: 0 | Points Per Level: -10
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 

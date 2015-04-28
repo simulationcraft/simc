@@ -12,7 +12,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=69)       : Block (23)
-                   Base Value: 0 | Scaled Value: 1 - 6 (avg=0) | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
+                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to block enemy melee and ranged attacks.
 
 Name             : Lightning Shield (id=324) [Spell Family (11)] 
@@ -224,7 +224,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=614)      : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 15430 | Misc Value 2: 0x51 | Radius: 5 yards
+                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Misc Value: 15430 | Misc Value 2: 0x51 | Radius: 5 yards
 Description      : Summons an Earth Totem with $?s63298[${$m1+$63298m1*$MHP/100}][$s1] health at the feet of the caster, calling forth a Greater Earth Elemental to protect the caster and $ghis:her; allies.  Lasts $d.
 
 Name             : Earthbind Totem (Earth Totem) (id=2484) [Spell Family (11)] 
@@ -314,7 +314,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=876)      : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 15439 | Misc Value 2: 0x3f | Radius: 5 yards
+                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Misc Value: 15439 | Misc Value 2: 0x3f | Radius: 5 yards
 Description      : Summons a Fire Totem with $?s63298[${$m1+$63298m1*$MHP/100}][$s1] health at the feet of the caster, calling forth a Greater Fire Elemental to rain destruction on the caster's enemies.  Lasts $d.
 
 Name             : Heavy Linen Bandage (id=3276) 
@@ -726,7 +726,7 @@ Attributes       : ......xx x....... ..x..... ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=4387)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 326 | Scaled Value: 2036 (avg=0) | Points Per Level: 19
+                   Base Value: 326 | Scaled Value: 2036 | Points Per Level: 19
 #2 (id=4388)     : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 126
 #3 (id=4389)     : Apply Aura (6) | Dummy (4)
@@ -998,7 +998,7 @@ Effects          :
 #1 (id=15497)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=211033)   : Weapon Damage% (31)
-                   Base Value: 40 | Scaled Value: 0.4 (avg=0)
+                   Base Value: 40 | Scaled Value: 0.4
 Description      : Each of your main-hand weapon attacks has a $33757h% chance of triggering three extra attacks dealing $25504sw2 Physical damage.
 
 Name             : Lightning Shield (id=26364) [Scaling Spell (9), Spell Family (11)] 
@@ -1164,7 +1164,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 400 | Scaled Value: 4 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 400 | Scaled Value: 4 | SP Coefficient: 1.00000
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1182,7 +1182,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 400 | Scaled Value: 4 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 400 | Scaled Value: 4 | SP Coefficient: 1.00000
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1266,7 +1266,7 @@ Effects          :
 #1 (id=26531)    : Unknown effect type (114)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 15 yards
 #2 (id=26532)    : Threat (63)
-                   Base Value: 1100 | Scaled Value: 1950 (avg=0) | Points Per Level: 25 | Radius: 0 - 15 yards
+                   Base Value: 1100 | Scaled Value: 1950 | Points Per Level: 25 | Radius: 0 - 15 yards
 Description      : Taunts and causes additional high threat to all enemies within $A1 yards.
 
 Name             : Surestrike Goggles v2.0 (id=41314) 
@@ -1382,7 +1382,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
 Effects          :
 #1 (id=43815)    : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 271 - 273 (avg=0) | Points Per Level: 3 | Value Range: 3 | SP Coefficient: 0.34828 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 271 - 273 | Points Per Level: 3 | Value Range: 3 | SP Coefficient: 0.34828 | Radius: 0 - 10 yards
 #2 (id=43816)    : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards
 #3 (id=43817)    : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -1451,7 +1451,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Disable player procs (112)
 Effects          :
 #1 (id=43866)    : Parry (22)
-                   Base Value: 0 | Scaled Value: 1 - 6 (avg=0) | Value Range: 6 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000
 #2 (id=100581)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 100 | Scaled Value: 100
 
@@ -1572,7 +1572,7 @@ Attributes       : ........ ...x.... x.x..... ........   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Proc Trigger Spell: Water Shield (42)
-                   Base Value: 40 | Scaled Value: 280 (avg=0) | Points Per Level: 3 | SP Coefficient: 1.00000 | Trigger Spell: 52128
+                   Base Value: 40 | Scaled Value: 280 | Points Per Level: 3 | SP Coefficient: 1.00000 | Trigger Spell: 52128
 #2 (id=44555)    : Apply Aura (6) | Modify Power Regeneration (85)
                    Base Value: 10 | Scaled Value: 326.25 (avg=1.25)
 Description      : The caster is surrounded by globes of water, granting $52127s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $52128s1 mana. This effect can only occur once every few seconds. Lasts $52127d.
@@ -2626,7 +2626,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=53784)    : Weapon Damage% (31)
-                   Base Value: 575 | Scaled Value: 5.75 (avg=0)
+                   Base Value: 575 | Scaled Value: 5.75
 #2 (id=53785)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=134467)   : Normalized Weapon Damage (121)
@@ -3213,7 +3213,7 @@ Effects          :
 #1 (id=67005)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=217829)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 100 | Scaled Value: 1
 Description      : An instant weapon strike that causes $sw2 Physical damage.
 
 Name             : Healing Rain (id=73920) [Spell Family (11)] 
@@ -4024,7 +4024,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127188)   : School Damage: fire (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | SP Coefficient: 0.80500 | Chain Multiplier: 1.1
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 0.80500 | Chain Multiplier: 1.1
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Damage is increased by $s2% after each jump. Affects up to $x1 total targets.
@@ -4041,7 +4041,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=127209)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 100 | Scaled Value: 1
 Description      : A massive gust of air that deals $sw1 Physical damage.
 
 Name             : Windlash Off-Hand (id=114093) [Spell Family (11)] 
@@ -4056,7 +4056,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=127218)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 100 | Scaled Value: 1
 Description      : A massive gust of air that deals $sw1 Physical damage.
 
 Name             : Stone Bulwark Totem Passive (id=114889) [Passive] 
@@ -4192,7 +4192,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 400 | Scaled Value: 4 (avg=0)
+                   Base Value: 400 | Scaled Value: 4
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4211,7 +4211,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 400 | Scaled Value: 4 (avg=0)
+                   Base Value: 400 | Scaled Value: 4
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4312,7 +4312,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=133506)   : School Damage: fire (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards
 Description      : Inflicts Fire damage to nearby enemies.
 
 Name             : Immolate (id=118297) 
@@ -5146,7 +5146,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210798)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 77934 | Misc Value 2: 0x53 | Radius: 5 yards
+                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Misc Value: 77934 | Misc Value 2: 0x53 | Radius: 5 yards
 Description      : Summons an Air Totem with $s1 health at the feet of the caster, calling forth a Greater Storm Elemental to hurl gusts of wind at the caster's enemies. Each gust of wind does damage to the enemy, and then heals all allies within 15 yards for 100% of the damage dealt, split evenly. Lasts $d.
 
 Name             : Elemental Fusion (id=152257) [Passive] 
@@ -5477,7 +5477,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=222500)   : Apply Aura (6) | Unknown effect sub type (379)
-                   Base Value: 100 | Scaled Value: 0 (avg=0) | Points Per Level: -10
+                   Base Value: 100 | Scaled Value: 0 | Points Per Level: -10
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
