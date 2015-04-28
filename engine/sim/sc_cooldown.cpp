@@ -50,7 +50,10 @@ struct recharge_event_t : event_t
         cooldown_ -> recharge_event ? cooldown_ -> recharge_event -> occurs().total_seconds() : 0,
         cooldown_ -> ready.total_seconds() );
 
-    action_ -> player -> trigger_ready();
+    if ( action_ )
+    {
+      action_ -> player -> trigger_ready();
+    }
   }
 };
 
