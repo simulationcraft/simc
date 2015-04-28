@@ -1647,14 +1647,14 @@ struct omen_of_clarity_buff_t : public druid_buff_t<buff_t>
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     if ( ! druid.buff.omen_of_clarity -> check() )
-      druid.max_fb_energy -= druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + ( druid.buff.berserk -> check() ? druid.spell.berserk_cat -> effectN( 1 ).percent() : 0.0 ) );
+      druid.max_fb_energy -= druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + druid.buff.berserk -> check() * druid.spell.berserk_cat -> effectN( 1 ).percent() );
 
     return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    druid.max_fb_energy += druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + ( druid.buff.berserk -> check() ? druid.spell.berserk_cat -> effectN( 1 ).percent() : 0.0 ) );
+    druid.max_fb_energy += druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + druid.buff.berserk -> check() * druid.spell.berserk_cat -> effectN( 1 ).percent() );
 
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
   }
@@ -3853,7 +3853,7 @@ struct lifebloom_bloom_t : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    ctm *= 1.0 + td( target ) -> buffs.lifebloom -> check();
+    ctm *= td( target ) -> buffs.lifebloom -> check();
 
     return ctm;
   }
