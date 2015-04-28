@@ -1472,7 +1472,6 @@ Description      : Places an Anti-Magic Zone for $d that reduces spell damage ta
 Name             : Killing Machine (id=51124) [Spell Family (15)] 
 Class            : Death Knight
 Duration         : 10 seconds
-Affecting spells : Item - Death Knight T18 Frost 4P Bonus (187870)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5787,7 +5786,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=239121)   : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | AP Coefficient: 0.16600
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | AP Coefficient: 0.18400
 Description      : $@spelldesc165395
 
 Name             : Frozen Runeblade (id=170202) [Spell Family (15)] 

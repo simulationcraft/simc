@@ -342,7 +342,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Freezing Trap (1499), Multi-Shot (2643), Arcane Shot (3044), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Tranquilizing Shot (19801), Distracting Shot (20736), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Bullheaded (63896), Cobra Shot (77767), Focus Fire (82692), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571), Powershot (181741)
+                   Affected Spells: Freezing Trap (1499), Multi-Shot (2643), Arcane Shot (3044), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Tranquilizing Shot (19801), Distracting Shot (20736), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Bullheaded (63896), Cobra Shot (77767), Focus Fire (82692), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571), Powershot (181741), Item - Hunter T18 Survival 2P Bonus (188198)
 Description      : Place an ice trap that freezes the first enemy that approaches, incapacitating them for $3355d.  Any damage caused will break the ice. Only one target can be Freezing Trapped at a time. Trap will exist for $d.
 Tooltip          : Incapacitated.
 
@@ -1840,7 +1840,7 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15
 #3 (id=98141)    : Apply Aura (6) | Unknown effect sub type (353)
                    Base Value: 1 | Scaled Value: 1
-                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Aspect of the Cheetah (5118), Feign Death (5384), Aspect of the Pack (13159), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Kill Shot (157708), Tenacity (159735), Duality (159736), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Netherwinds (160452), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571), Powershot (181741), Rapid Fire (188202)
+                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Aspect of the Cheetah (5118), Feign Death (5384), Aspect of the Pack (13159), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Kill Shot (157708), Tenacity (159735), Duality (159736), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Netherwinds (160452), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571), Powershot (181741), Item - Hunter T18 Survival 2P Bonus (188198), Rapid Fire (188202)
 #4 (id=202220)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
 Description      : You blend into your surroundings, causing you and your pet to be untargetable by ranged attacks $?s148475[ and reduces your spell damage taken by $148475s1%][]. Also reduces the range at which enemy creatures can detect you, and provides stealth while stationary.
@@ -3039,7 +3039,7 @@ Effects          :
                    Affected Spells: Freezing Trap (3355), Ice Trap (13810)
 #2 (id=57615)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
-                   Affected Spells: Black Arrow (3674), Explosive Trap (13812)
+                   Affected Spells: Black Arrow (3674), Explosive Trap (13812), Item - Hunter T18 Survival 2P Bonus (188198)
 #3 (id=57616)    : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 8
 Description      : Provides benefits to each Trap:
@@ -3401,7 +3401,7 @@ Class            : Beast Mastery Hunter, Monk
 Spell Level      : 32
 GCD              : 1 seconds
 Duration         : 20 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T18 Beast Mastery 2P Bonus (188200)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4400,7 +4400,7 @@ Effects          :
                    Base Value: 425 | Scaled Value: 500 | Points Per Level: 5
 #2 (id=137570)   : Apply Aura (6) | Unknown effect sub type (353)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Kill Shot (157708), Tenacity (159735), Duality (159736), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Netherwinds (160452), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571), Powershot (181741), Rapid Fire (188202)
+                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Kill Shot (157708), Tenacity (159735), Duality (159736), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Netherwinds (160452), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571), Powershot (181741), Item - Hunter T18 Survival 2P Bonus (188198), Rapid Fire (188202)
 #3 (id=137571)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : You blend into your surroundings, causing you and your pet to be untargetable by ranged attacks. Also reduces the range at which enemy creatures can detect you, provides stealth, and reduces movement speed by $s3%.
@@ -5383,10 +5383,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Arcane Shot (3044), Black Arrow (3674), Aimed Shot (19434), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Cobra Shot (77767), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457)
+                   Affected Spells: Arcane Shot (3044), Black Arrow (3674), Aimed Shot (19434), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Cobra Shot (77767), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Item - Hunter T18 Survival 2P Bonus (188198)
 #2 (id=244426)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
-                   Affected Spells: Arcane Shot (3044), Black Arrow (3674), Aimed Shot (19434), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Cobra Shot (77767), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457)
+                   Affected Spells: Arcane Shot (3044), Black Arrow (3674), Aimed Shot (19434), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Cobra Shot (77767), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Item - Hunter T18 Survival 2P Bonus (188198)
 Description      : While you don't have a pet active, your damage dealt with Auto Shot, $?s53209[Steady Shot, Aimed Shot, Chimaera Shot, and Kill Shot][Arcane Shot, Cobra Shot, Black Arrow, and Explosive Shot] is increased by $s1% and you are able to provide one of several beneficial effects to your party and raid.
 Tooltip          : Damage dealt with Auto Shot, $?s53209[Steady Shot, Aimed Shot, Chimaera Shot, and Kill Shot][Arcane Shot, Cobra Shot, Black Arrow, and Explosive Shot] increased by $w1%.
 
@@ -6492,35 +6492,6 @@ Tooltip          : Damage dealt increased by $w1%.
 Critical strike damage increased by $w2%.
 Shot range increased by $w3%.
 
-Name             : Lock and Load (id=168980) [Spell Family (9)] 
-Class            : Hunter
-Duration         : 15 seconds
-Stacks           : 2 initial, 2 maximum
-Proc Chance      : 100%
-Proc Flags       : ......x. x...x... x.x..x.. ........ 
-                 : White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
-Attributes       : ....x... ........ ..x..... ...x....   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : x.....x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=239435)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Explosive Shot (53301)
-#2 (id=239436)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Explosive Shot (53301)
-#3 (id=239437)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Explosive Shot (53301)
-#4 (id=239438)   : Apply Aura (6) | Unknown effect sub type (408)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 53301
-                   Affected Spells: Explosive Shot (53301)
-Description      : $@spelldesc3674
-Tooltip          : Your Explosive Shot triggers no cooldown.
-
 Name             : Poisoned Ammo (id=170661) [Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 1
@@ -6706,7 +6677,7 @@ Effects          :
 
 Name             : Item - Hunter T18 Marksmanship 2P Bonus (id=188190) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
-Proc Chance      : 101%
+Proc Chance      : 40%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -6719,7 +6690,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=274633)   : Apply Aura (6) | Proc Trigger Spell: Rapid Fire (42)
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 188202
-Description      : When you critically hit with Chimera Shot, you gain Rapid Fire for $d.
+Description      : When you critically hit with Chimera Shot, you have a $h% chance to gain Rapid Fire for $d.
 
 Name             : Item - Hunter T18 Marksmanship 4P Bonus (id=188191) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -6734,18 +6705,19 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=274634)   : Apply Aura (6) | Add Flat Modifier: Spell Cast Time (107)
-                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 10
+#1 (id=274634)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10
                    Affected Spells: Aimed Shot (19434)
 #2 (id=274635)   : None (0)
                    Base Value: 1 | Scaled Value: 1
-Description      : The cast time of your Aimed Shot is reduced by $m2 sec.
+Description      : The cast time of your Aimed Shot is reduced by $m2%.
 
 Name             : Item - Hunter T18 Survival 2P Bonus (id=188198) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Mastery (63458), Camouflage (119450), Lone Wolf (155228), Guide: Sharpshooting (178549)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6754,15 +6726,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=274646)   : Apply Aura (6) | Proc Trigger Spell: Lock and Load (42)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 168980
-Description      : Your Black Arrow increases all elemental damage done to the target by $m1% for $d.
+#1 (id=274646)   : Apply Aura (6) | Proc Trigger Spell: Black Decay (42)
+                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 188400
+Description      : Your Black Arrow increases all elemental damage done to the target by $188400m1% for $188400d.
 
 Name             : Item - Hunter T18 Survival 4P Bonus (id=188199) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
-Proc Chance      : 101%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
+Proc Chance      : 100%
+Proc Flags       : ........ x....... ........ ........ 
+                 : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6788,15 +6760,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=274648)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000
-Description      : Arcane Shot increases the duration of your Focus Fire by $m1 sec.
+#1 (id=274648)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1
+                   Affected Spells: Focus Fire (82692)
+Description      : Arcane Shot increases the duration of your Focus Fire by ${$m1/1000} sec.
 
 Name             : Item - Hunter T18 Beast Mastery 4P Bonus (id=188201) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
-Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : AOE Heal, Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6806,7 +6776,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=274649)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2000 | Scaled Value: 2000
+                   Base Value: 1 | Scaled Value: 1
 Description      : Your Focus Fire effect also summons a Fel Boar to assist you. The Fel Boar lasts while Focus Fire is active.
 
 Name             : Rapid Fire (id=188202) [Spell Family (9)] 
@@ -6825,5 +6795,23 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40
 Description      : Increases haste by $s1% for $d.
 Tooltip          : Increases haste by $w1%.
+
+Name             : Black Decay (id=188400) [Spell Family (9)] 
+Class            : Hunter
+Spell Level      : 1
+Range            : 50000 yards
+Velocity         : 25 yards/sec
+Duration         : 15 seconds
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ x...x... ........   ..x..... ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=274986)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7e
+Description      : $@spelldesc188198
+Tooltip          : Increases magic damage taken by $m1%.
 
 

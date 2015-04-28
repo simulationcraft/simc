@@ -3301,7 +3301,7 @@ Resource         : 20 Rage
 Spell Level      : 81
 Duration         : 6 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Headlong Rush (158836), Shield Mastery (184927)
+Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Shield Block (132404), Headlong Rush (158836), Shield Mastery (184927)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4052,8 +4052,9 @@ Effects          :
 #3 (id=268763)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
                    Affected Spells: Shield Slam (23922)
-#4 (id=270030)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: 0 | Scaled Value: 0
+#4 (id=276058)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
+                   Affected Spells: Shield Barrier (112048), Shield Barrier (174926)
 Description      : $@spelldesc2565
 Tooltip          : Block chance increased by $s1%.
 
@@ -5637,7 +5638,7 @@ Resource         : 20 Rage
 Spell Level      : 81
 Duration         : 6 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Headlong Rush (158836), Shield Mastery (184927)
+Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Shield Block (132404), Headlong Rush (158836), Shield Mastery (184927)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
