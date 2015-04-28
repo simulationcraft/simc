@@ -3566,11 +3566,12 @@ struct tigereye_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
   }
 
-  double value()
+  virtual bool ready()
   {
-    double value = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-    value += p() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
-    return value;
+    if ( !p() -> buff.tigereye_brew -> check() )
+      return false;
+
+    return monk_spell_t::ready();
   }
 
   virtual void execute()
@@ -3583,19 +3584,13 @@ struct tigereye_brew_t: public monk_spell_t
         p() -> active_actions.healing_elixir -> execute();
     }
 
-    int max_stacks_consumable = p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value();
-    double teb_stacks_used = std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
-    // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
-    double use_value = value() * teb_stacks_used;
+    double teb_stacks_used = std::min( p() -> buff.tigereye_brew -> stack(), p() -> buff.tigereye_brew_use -> max_stack() );
 
-    p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
-    p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
+    p() -> buff.tigereye_brew_use -> trigger( teb_stacks_used );
+    p() -> buff.tigereye_brew -> decrement( teb_stacks_used );
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
-    {
-      double fw_use_value = teb_stacks_used * p() -> passives.forceful_winds -> effectN( 1 ).percent();
-      p() -> buff.forceful_winds -> trigger( 1, fw_use_value );
-    }
+      p() -> buff.forceful_winds -> trigger( teb_stacks_used );
   }
 };
 
@@ -5425,9 +5420,8 @@ void monk_t::create_buffs()
 
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic );
 
-  timespan_t serentiy_duration = ( maybe_ptr( dbc.ptr ) && specialization() == MONK_BREWMASTER ? timespan_t::from_seconds( talent.serenity -> effectN( 1 ).base_value() ) : talent.serenity -> duration() );
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .duration( serentiy_duration );
+    .duration( maybe_ptr( dbc.ptr ) && specialization() == MONK_BREWMASTER ? timespan_t::from_seconds( talent.serenity -> effectN( 1 ).base_value() ) : talent.serenity -> duration() );
 
   buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) )
     .duration( timespan_t::from_minutes( 60 ) );
@@ -5484,21 +5478,27 @@ void monk_t::create_buffs()
   buff.combo_breaker_ce = buff_creator_t( this, "combo_breaker_ce", find_class_spell( "Combo Breaker: Chi Explosion" ) );
 
   buff.energizing_brew = buff_creator_t( this, "energizing_brew", spec.energizing_brew )
+    .duration( spec.energizing_brew -> duration() + 
+      ( sets.has_set_bonus( SET_MELEE, T14, B4 ) ? sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() ) )
     .max_stack( 1 )
     .tick_callback( energizing_brew_energize );
 
-  buff.energizing_brew -> buff_duration += sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value(); //verify working
-
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
     .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
-  buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.tigereye_brew_use -> buff_duration += sets.set( MONK_WINDWALKER, PVP, B4 ) -> effectN( 1 ).time_value();
+  buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew )
+    .default_value( spec.tigereye_brew -> effectN( 1 ).percent() + 
+      ( sets.has_set_bonus( SET_MELEE, T15, B4 ) ? sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000 : 0 ) ) // t154pc)
+    .max_stack( spec.brewing_tigereye_brew -> effectN( 2 ).base_value() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.forceful_winds );
+  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.forceful_winds )
+    .default_value( passives.forceful_winds -> effectN( 1 ).percent() )
+    .max_stack( spec.brewing_tigereye_brew -> effectN( 2 ).base_value() );
 }
 
 // monk_t::init_gains =======================================================
@@ -5684,7 +5684,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent();
 
-  m *= 1.0 + buff.tigereye_brew_use -> value();
+  m *= 1.0 + buff.tigereye_brew_use -> stack_value();
 
   if ( buff.storm_earth_and_fire -> up() )
   {
@@ -5725,6 +5725,8 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
+
+  m *= 1.0 + buff.tigereye_brew_use -> stack_value();
 
   return m;
 }
@@ -5847,7 +5849,7 @@ double monk_t::composite_player_multistrike_damage_multiplier() const
 {
   double m = player_t::composite_player_multistrike_damage_multiplier();
   if ( buff.forceful_winds -> up() )
-    m *= 1 + buff.forceful_winds -> value();
+    m *= 1 + buff.forceful_winds -> stack_value();
 
   return m;
 }
