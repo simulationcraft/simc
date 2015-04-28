@@ -2044,7 +2044,7 @@ public:
   /**
    * Get current buff value  multiplied by current stacks + benefit tracking.
    */
-  virtual double stack_value()
+  double stack_value()
   {
     return current_stack * value();
   }
@@ -2129,7 +2129,7 @@ struct stat_buff_t : public buff_t
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
-  virtual double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return stats[ 0 ].current_value; }
+  virtual double value() override{ stack(); return stats[ 0 ].current_value; }
 
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
