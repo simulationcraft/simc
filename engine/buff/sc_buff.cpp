@@ -903,7 +903,23 @@ void buff_t::bump( int stacks, double value )
         stack_react_time[ i ] = react;
         if ( player && player -> ready_type == READY_TRIGGER )
         {
-          stack_react_ready_triggers[ i ] = new ( *sim ) react_ready_trigger_t( this, i, total_reaction_time );
+          if ( ! stack_react_ready_triggers[ i ] )
+          {
+            stack_react_ready_triggers[ i ] = new ( *sim ) react_ready_trigger_t( this, i, total_reaction_time );
+          }
+          else
+          {
+            timespan_t next_react = sim -> current_time() + total_reaction_time;
+            if ( next_react > stack_react_ready_triggers[ i ] -> occurs() )
+            {
+              stack_react_ready_triggers[ i ] -> reschedule( next_react );
+            }
+            else if ( next_react < stack_react_ready_triggers[ i ] -> occurs() )
+            {
+              event_t::cancel( stack_react_ready_triggers[ i ] );
+              stack_react_ready_triggers[ i ] = new ( *sim ) react_ready_trigger_t( this, i, total_reaction_time );
+            }
+          }
         }
       }
     }
@@ -911,7 +927,7 @@ void buff_t::bump( int stacks, double value )
     if ( current_stack > simulation_max_stack )
       simulation_max_stack = current_stack;
   }
-  else 
+  else
   {
     overflow_count++;
     overflow_total += stacks;

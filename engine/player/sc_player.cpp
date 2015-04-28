@@ -43,7 +43,11 @@ struct player_ready_event_t : public player_event_t
                       p() -> name(), x.total_seconds(),
                       p() -> resources.current[ p() -> primary_resource() ] );
       }
-      else p() -> started_waiting = sim().current_time();
+      else
+      {
+        p() -> started_waiting = sim().current_time();
+        p() -> min_threshold_trigger();
+      }
     }
   }
 };
@@ -68,6 +72,27 @@ struct demise_event_t : public player_event_t
   virtual void execute()
   {
     p() -> demise();
+  }
+};
+
+// Trigger a wakeup based on a resource treshold. Only used by trigger_ready=1 actors
+struct resource_threshold_event_t : public event_t
+{
+  player_t* player;
+
+  resource_threshold_event_t( player_t* p, const timespan_t& delay ) :
+    event_t( *p ), player( p )
+  {
+    add_event( delay );
+  }
+
+  const char* name() const override
+  { return "Resource-Threshold"; }
+
+  void execute()
+  {
+    player -> trigger_ready();
+    player -> resource_threshold_trigger = 0;
   }
 };
 
@@ -2180,6 +2205,129 @@ bool player_t::init_actions()
 void player_t::init_finished()
 {
   range::for_each( action_list, std::mem_fn( &action_t::init_finished ) );
+
+  // Naive recording of minimum energy thresholds for the actor.
+  // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
+  for ( size_t i = 0; i < action_list.size(); ++i )
+  {
+    if ( ! action_list[ i ] -> background && action_list[ i ] -> base_costs[ primary_resource() ] > 0 )
+    {
+      if ( std::find( resource_thresholds.begin(), resource_thresholds.end(),
+            action_list[ i ] -> base_costs[ primary_resource() ] ) == resource_thresholds.end() )
+      {
+        resource_thresholds.push_back( action_list[ i ] -> base_costs[ primary_resource() ] );
+      }
+    }
+  }
+
+  std::sort( resource_thresholds.begin(), resource_thresholds.end() );
+}
+
+// player_t::min_threshold_trigger ==========================================
+
+// Add a wake-up call at the next resource threshold level, compared to the current resource status
+// of the actor
+void player_t::min_threshold_trigger()
+{
+  if ( ready_type == READY_POLL )
+  {
+    return;
+  }
+
+  if ( resource_thresholds.size() == 0 )
+  {
+    return;
+  }
+
+  resource_e pres = primary_resource();
+  if ( pres != RESOURCE_MANA && pres != RESOURCE_ENERGY && pres != RESOURCE_FOCUS )
+  {
+    return;
+  }
+
+  size_t i = 0, end = resource_thresholds.size();
+  double threshold = 0;
+  for ( ; i < end; ++i )
+  {
+    if ( resources.current[ pres ] < resource_thresholds[ i ] )
+    {
+      threshold = resource_thresholds[ i ];
+      break;
+    }
+  }
+
+  timespan_t time_to_threshold = timespan_t::zero();
+  if ( i < resource_thresholds.size() )
+  {
+    double rps = 0;
+    switch ( pres )
+    {
+      case RESOURCE_MANA:
+        rps = mana_regen_per_second();
+        break;
+      case RESOURCE_ENERGY:
+        rps = energy_regen_per_second();
+        break;
+      case RESOURCE_FOCUS:
+        rps = focus_regen_per_second();
+        break;
+      default:
+        break;
+    }
+
+    if ( rps > 0 )
+    {
+      double diff = threshold - resources.current[ pres ];
+      time_to_threshold = timespan_t::from_seconds( diff / rps );
+    }
+  }
+
+  // If time to threshold is zero, there's no need to reset anything
+  if ( time_to_threshold <= timespan_t::zero() )
+  {
+    return;
+  }
+
+  timespan_t occurs = sim -> current_time() + time_to_threshold;
+  if ( resource_threshold_trigger )
+  {
+    // We should never ever be doing threshold-based wake up calls if there already is a
+    // Player-ready event.
+    assert( ! readying );
+
+    if ( occurs > resource_threshold_trigger -> occurs() )
+    {
+      resource_threshold_trigger -> reschedule( time_to_threshold );
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "Player %s rescheduling Resource-Threshold event: threshold=%.1f delay=%.3f",
+            name(), threshold, time_to_threshold.total_seconds() );
+      }
+    }
+    else if ( occurs < resource_threshold_trigger -> occurs() )
+    {
+      event_t::cancel( resource_threshold_trigger );
+      resource_threshold_trigger = new ( *sim ) resource_threshold_event_t( this, time_to_threshold );
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "Player %s recreating Resource-Threshold event: threshold=%.1f delay=%.3f",
+            name(), threshold, time_to_threshold.total_seconds() );
+      }
+    }
+  }
+  else
+  {
+    // We should never ever be doing threshold-based wake up calls if there already is a
+    // Player-ready event.
+    assert( ! readying );
+
+    resource_threshold_trigger = new ( *sim )  resource_threshold_event_t( this, time_to_threshold );
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "Player %s scheduling new Resource-Threshold event: threshold=%.1f delay=%.3f",
+          name(), threshold, time_to_threshold.total_seconds() );
+    }
+  }
 }
 
 // player_t::create_buffs ===================================================
@@ -3749,6 +3897,8 @@ void player_t::reset()
   item_cooldown.reset( false );
 
   incoming_damage.clear();
+
+  resource_threshold_trigger = 0;
 
   for( size_t i = 0, end = variables.size(); i < end; i++ )
     variables[ i ].reset();

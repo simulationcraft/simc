@@ -6293,15 +6293,22 @@ void rogue_t::regen( timespan_t periodicity )
 
 timespan_t rogue_t::available() const
 {
-  double energy = resources.current[ RESOURCE_ENERGY ];
+  if ( ready_type != READY_POLL )
+  {
+    return player_t::available();
+  }
+  else
+  {
+    double energy = resources.current[ RESOURCE_ENERGY ];
 
-  if ( energy > 25 )
-    return timespan_t::from_seconds( 0.1 );
+    if ( energy > 25 )
+      return timespan_t::from_seconds( 0.1 );
 
-  return std::max(
-           timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
-           timespan_t::from_seconds( 0.1 )
-         );
+    return std::max(
+             timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( 0.1 )
+           );
+  }
 }
 
 // rogue_t::convert_hybrid_stat ==============================================

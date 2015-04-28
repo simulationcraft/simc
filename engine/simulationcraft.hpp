@@ -5413,6 +5413,11 @@ public:
   // Figure out another actor, by name. Prioritizes pets > harmful targets >
   // other players. Used by "actor.<name>" expression currently.
   virtual player_t* actor_by_name_str( const std::string& ) const;
+
+  // Wicked resource threshold trigger-ready stuff .. work in progress
+  event_t* resource_threshold_trigger;
+  std::vector<double> resource_thresholds;
+  void min_threshold_trigger();
 };
 
 // Target Specific ==========================================================
