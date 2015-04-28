@@ -1940,10 +1940,10 @@ void action_t::init()
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
   if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY | STATE_TGT_ARMOR;
 
   if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY | STATE_TGT_ARMOR;
 
   // Tick actions use tick multipliers, so snapshot them too if direct
   // multipliers are snapshot for "base" ability
@@ -2786,6 +2786,9 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
 
   if ( flags & STATE_TGT_MITG_TA )
     state -> target_mitigation_ta_multiplier = composite_target_mitigation( state -> target, get_school() );
+
+  if ( flags & STATE_TGT_ARMOR )
+    state -> target_armor = target_armor( state -> target );
 
   if ( flags & STATE_RESOLVE )
     state -> resolve = composite_resolve( state );

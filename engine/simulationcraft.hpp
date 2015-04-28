@@ -1019,13 +1019,14 @@ enum snapshot_state_e
 
   STATE_TGT_MITG_DA    = 0x010000,
   STATE_TGT_MITG_TA    = 0x020000,
+  STATE_TGT_ARMOR      = 0x040000,
 
   // No multiplier herlper, use in action_t::init() (after parent init) by
   // issuing snapshot_flags &= STATE_NO_MULTIPLIER (and/or update_flags &=
   // STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including
   // versatility, resolve, and any/all persistent multipliers the action would
   // use.
-  STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_RESOLVE )
+  STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_RESOLVE | STATE_TGT_ARMOR )
 };
 
 enum ready_e
@@ -5734,6 +5735,7 @@ struct action_state_t : public noncopyable
   // Target mitigation multipliers
   double          target_mitigation_da_multiplier;
   double          target_mitigation_ta_multiplier;
+  double          target_armor;
 
   static void release( action_state_t*& s );
   static std::string flags_to_str( unsigned flags );
@@ -5770,6 +5772,9 @@ struct action_state_t : public noncopyable
 
   virtual double composite_target_mitigation_ta_multiplier() const
   { return target_mitigation_ta_multiplier; }
+
+  virtual double composite_target_armor() const
+  { return target_armor; }
 
   // Inlined
   virtual proc_types proc_type() const;

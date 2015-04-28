@@ -1578,10 +1578,8 @@ struct charge_t: public warrior_attack_t
 
 struct colossus_smash_t: public warrior_attack_t
 {
-  bool was_colossus_smash_up;
   colossus_smash_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash ),
-    was_colossus_smash_up( false )
+    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE;
@@ -1589,19 +1587,6 @@ struct colossus_smash_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
   }
-  void reset()
-  {
-    warrior_attack_t::reset();
-    was_colossus_smash_up = false;
-  }
-
-  double target_armor( player_t* t ) const
-  {
-    if ( was_colossus_smash_up )
-      return warrior_attack_t::target_armor( t );
-    else
-      return attack_t::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
-  } // If they ever bring back a resetting colossus smash, this will need to be adjusted.
 
   void execute()
   {
@@ -1609,10 +1594,6 @@ struct colossus_smash_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( td( execute_state -> target ) -> debuffs_colossus_smash -> check() )
-        was_colossus_smash_up = true;
-      else
-        was_colossus_smash_up = false;
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
       p() -> buff.colossus_smash -> trigger();
 

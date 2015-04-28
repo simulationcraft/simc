@@ -5097,7 +5097,7 @@ void player_t::target_mitigation( school_e school,
     // Armor
     if ( s -> action )
     {
-      double armor =  s -> action -> target_armor( this );
+      double armor = s -> target_armor;
       double resist = armor / ( armor + s -> action -> player -> current.armor_coeff );
       resist = clamp( resist, 0.0, 0.85 );
       s -> result_amount *= 1.0 - resist;

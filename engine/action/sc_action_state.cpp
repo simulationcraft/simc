@@ -94,6 +94,7 @@ void action_state_t::copy_state( const action_state_t* o )
 
   target_mitigation_da_multiplier = o -> target_mitigation_da_multiplier;
   target_mitigation_ta_multiplier = o -> target_mitigation_ta_multiplier;
+  target_armor = o -> target_armor;
 }
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
@@ -106,7 +107,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   attack_power( 0 ), spell_power( 0 ),
   resolve( 1.0 ), versatility( 1.0 ), da_multiplier( 1.0 ), ta_multiplier( 1.0 ), persistent_multiplier( 1.0 ),
   target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
-  target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 )
+  target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 ), target_armor( 1.0 )
 {
   assert( target );
 }
@@ -176,6 +177,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << " tgt_mitg_da_mul=" << target_mitigation_da_multiplier;
   s << " tgt_mitg_ta_mul=" << target_mitigation_ta_multiplier;
+  s << " target_armor=" << target_armor;
 
   s.precision( ss );
 
@@ -254,6 +256,7 @@ std::string action_state_t::flags_to_str( unsigned flags )
 
   concat_flag_str( str, "TGT_MIT_DA", STATE_TGT_MITG_DA,    flags );
   concat_flag_str( str, "TGT_MIT_TA", STATE_TGT_MITG_TA,    flags );
+  concat_flag_str( str, "TGT_ARMOR",  STATE_TGT_ARMOR,      flags );
 
   return str;
 }
