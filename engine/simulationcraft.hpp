@@ -1994,13 +1994,61 @@ protected:
 public:
   const spell_data_t& data() const { return *s_data; }
 
-  // Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
-  // Use up() where the presence of the buff affects the action mechanics.
-  int             check() const { return current_stack; }
-  inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
-  inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  virtual double  value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
-  virtual double  stack_value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack * current_value; }
+  /**
+   * Get current number of stacks, no benefit tracking.
+   * Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
+   * Use up() where the presence of the buff affects the action mechanics.
+   */
+  int check() const
+  {
+    return current_stack;
+  }
+
+  /**
+   * Get current number of stacks + benefit tracking.
+   * Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
+   * Use up()/down where the presence of the buff affects the action mechanics.
+   */
+  int stack()
+  {
+    double cs = current_stack;
+    if ( cs > 0 )
+    {
+      up_count++;
+    }
+    else
+    {
+      down_count++;
+    }
+    return cs;
+  }
+
+  /**
+   * Check if buff is up
+   * Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
+   * Use up()/down where the presence of the buff affects the action mechanics.
+   */
+  bool up()
+  {
+    return stack() > 0;
+  }
+
+  /**
+   * Get current buff value + benefit tracking.
+   */
+  virtual double value()
+  {
+    stack();
+    return current_value;
+  }
+  /**
+   * Get current buff value  multiplied by current stacks + benefit tracking.
+   */
+  virtual double stack_value()
+  {
+    return current_stack * value();
+  }
+
   timespan_t remains() const;
   timespan_t elapsed( const timespan_t& t ) const { return t - last_start; }
   bool   remains_gt( timespan_t time ) const;
