@@ -1574,10 +1574,11 @@ struct arcane_blast_t : public mage_spell_t
       p() -> buffs.arcane_instability -> trigger();
     }
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
-         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> effectN( 2 ).percent() ) )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
     {
-      p() -> cooldowns.presence_of_mind -> adjust( timespan_t::from_seconds( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> effectN( 1 ).base_value() / 1000 ) );
+      p() -> cooldowns.presence_of_mind
+          -> adjust( p() -> sets.set( MAGE_ARCANE, T18, B2 )
+                         -> effectN( 1 ).time_value() );
     }
 
 
@@ -2928,7 +2929,15 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p() -> buffs.brain_freeze -> up() )
     {
-      am *= 1.0 + p() -> spec.brain_freeze -> effectN( 3 ).percent();
+      double bf_multiplier = p() -> spec.brain_freeze -> effectN( 3 ).percent();
+
+      if ( p() -> sets.has_set_bonus( MAGE_FROST, T18, B2 ) )
+      {
+        bf_multiplier += p() -> sets.set( MAGE_FROST, T18, B2 )
+                             -> effectN( 2 ).percent();
+      }
+
+      am *= 1.0 + bf_multiplier;
     }
 
     return am;
