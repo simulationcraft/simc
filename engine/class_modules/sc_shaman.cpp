@@ -557,7 +557,7 @@ struct maelstrom_weapon_buff_t : public buff_t
   maelstrom_weapon_buff_t( shaman_t* player ) :
     buff_t( buff_creator_t( player, 53817, "maelstrom_weapon" )
             .max_stack( player -> find_spell( 53817 ) -> max_stacks() + 
-                        player -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).base_value() ) )
+                        player -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 2 ).base_value() ) )
   { activated = false; }
 
   using buff_t::trigger;
@@ -950,7 +950,10 @@ public:
     {
       size_t max_stack = std::min( static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() ),
                                    p -> buff.maelstrom_weapon -> data().max_stacks() );
-      m *= 1.0 + max_stack * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
+      double v = p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
+      v += p -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).percent();
+
+      m *= 1.0 + max_stack * v;
     }
 
     return m;
