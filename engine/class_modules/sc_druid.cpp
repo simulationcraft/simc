@@ -7404,7 +7404,7 @@ double druid_t::composite_dodge() const
   if ( buff.savage_defense -> check() )
     d += buff.savage_defense -> default_value;
 
-  if ( talent.guardian_of_elune -> ok() )
+  if ( maybe_ptr( dbc.ptr ) && talent.guardian_of_elune -> ok() )
     d += talent.guardian_of_elune -> effectN( 5 ).percent();
 
   return d;
