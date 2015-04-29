@@ -187,7 +187,7 @@ public:
           * improved_scorch,       // Perk
           * fiery_adept,           // T16 4pc Fire
           * pyromaniac,            // T17 4pc Fire
-          * icarus_upriging;       // T18 
+          * icarus_uprising;       // T18 4pc Fire
 
     stat_buff_t* potent_flames;    // T16 2pc Fire
 
@@ -3676,7 +3676,7 @@ struct presence_of_mind_t : public mage_spell_t
 //Mage T18 2pc Fire Set Bonus
 struct conjure_phoenix_t : public mage_spell_t
 {
-  conjure_phoenix_t( mage_t* p) :
+  conjure_phoenix_t( mage_t* p ) :
     mage_spell_t( "conjure_phoenix", p, p -> find_spell( 186181 ) )
   {
     background = true;
@@ -3686,7 +3686,7 @@ struct conjure_phoenix_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p() -> buffs.icarus_upriging -> trigger();
+    p() -> buffs.icarus_uprising -> trigger();
   }
 
 };
@@ -5111,7 +5111,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_CRIT );
   buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_spell( 48108 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
-  buffs.icarus_upriging       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+  buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
   buffs.improved_scorch       = buff_creator_t( this, "improved_scorch", find_spell( 157633 ) )
                                   .default_value( perks.improved_scorch -> effectN( 1 ).percent() );
@@ -5966,9 +5967,8 @@ double mage_t::composite_player_multiplier( school_e school ) const
     cache.player_mult_valid[ school ] = false;
   }
 
-  if ( buffs.icarus_upriging -> check() )
-    m *= 1.0 + buffs.icarus_upriging -> data().effectN( 2 ).percent();
-
+  if ( buffs.icarus_uprising -> check() )
+    m *= 1.0 + buffs.icarus_uprising -> data().effectN( 2 ).percent();
 
   return m;
 }
@@ -6039,8 +6039,8 @@ double mage_t::composite_spell_haste() const
     h *= iv_haste;
   }
 
-  if ( buffs.icarus_upriging -> check() )
-    h *= 1.0 + buffs.icarus_upriging -> data().effectN( 1 ).percent();
+  if ( buffs.icarus_uprising -> check() )
+    h /= 1.0 + buffs.icarus_uprising -> data().effectN( 1 ).percent();
 
   return h;
 }
