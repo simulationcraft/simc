@@ -3441,7 +3441,7 @@ struct expel_harm_t: public monk_melee_attack_t
       p() -> buff.power_strikes -> expire();
     }
     if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) && p() -> cooldown.guard -> down() )
-      p() -> cooldown.guard -> duration - p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value();
+      p() -> cooldown.guard -> duration + p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value(); // T18 set bonus is saved as "-5000"
   }
 
   double trigger_attack()
