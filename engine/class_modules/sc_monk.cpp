@@ -5490,6 +5490,7 @@ void monk_t::create_buffs()
   buff.energizing_brew = buff_creator_t( this, "energizing_brew", spec.energizing_brew )
     .duration( spec.energizing_brew -> duration() + 
       ( sets.has_set_bonus( SET_MELEE, T14, B4 ) ? sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() ) )
+    .max_stack( 1 )
     .tick_callback( energizing_brew_energize );
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
