@@ -186,7 +186,8 @@ public:
           * enhanced_pyrotechnics, // Perk
           * improved_scorch,       // Perk
           * fiery_adept,           // T16 4pc Fire
-          * pyromaniac;            // T17 4pc Fire
+          * pyromaniac,            // T17 4pc Fire
+          * icarus_upriging;       // T18 
 
     stat_buff_t* potent_flames;    // T16 2pc Fire
 
@@ -2762,8 +2763,8 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
-      add_child( frigid_blast );
       frigid_blast = new frigid_blast_t( p );
+      add_child( frigid_blast );
     }
 
     if ( p -> specialization() == MAGE_FROST )
@@ -3666,7 +3667,7 @@ struct presence_of_mind_t : public mage_spell_t
 //Mage T18 2pc Fire Set Bonus
 struct conjure_phoenix_t : public mage_spell_t
 {
-  conjure_phoenix_t( mage_t* p ) :
+  conjure_phoenix_t( mage_t* p) :
     mage_spell_t( "conjure_phoenix", p, p -> find_spell( 186181 ) )
   {
     background = true;
@@ -3675,14 +3676,11 @@ struct conjure_phoenix_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-   // TODO: Add phoenix pet once we know what it is, additionally add the T18 4pc buff that goes along with it.
-   // p() -> pets.conjure_phoenix -> summon();
-   // p() -> buffs.phoenix_buff_placeholder
+
+    p() -> buffs.icarus_upriging -> trigger();
   }
 
 };
-
-
 
 struct pyroblast_t : public mage_spell_t
 {
@@ -3701,8 +3699,8 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) )
     {
-      add_child( conjure_phoenix );
       conjure_phoenix = new conjure_phoenix_t( p );
+      add_child( conjure_phoenix );
     }
   }
 
@@ -5104,6 +5102,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_CRIT );
   buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_spell( 48108 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
+  buffs.icarus_upriging       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                  .add_invalidate( CACHE_SPELL_HASTE );
   buffs.improved_scorch       = buff_creator_t( this, "improved_scorch", find_spell( 157633 ) )
                                   .default_value( perks.improved_scorch -> effectN( 1 ).percent() );
   buffs.potent_flames         = stat_buff_creator_t( this, "potent_flames", find_spell( 145254 ) )
@@ -5957,6 +5957,10 @@ double mage_t::composite_player_multiplier( school_e school ) const
     cache.player_mult_valid[ school ] = false;
   }
 
+  if ( buffs.icarus_upriging -> check() )
+    m *= 1.0 + buffs.icarus_upriging -> data().effectN( 2 ).percent();
+
+
   return m;
 }
 
@@ -6025,6 +6029,9 @@ double mage_t::composite_spell_haste() const
   {
     h *= iv_haste;
   }
+
+  if ( buffs.icarus_upriging -> check() )
+    h *= 1.0 + buffs.icarus_upriging -> data().effectN( 1 ).percent();
 
   return h;
 }
