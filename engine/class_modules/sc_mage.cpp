@@ -3686,7 +3686,8 @@ struct conjure_phoenix_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p() -> buffs.icarus_uprising -> trigger();
+    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T18, B4 ) )
+      p() -> buffs.icarus_uprising -> trigger();
   }
 
 };
