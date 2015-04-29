@@ -241,6 +241,7 @@ struct rogue_t : public player_t
     buff_t* enhanced_vendetta;
     buff_t* shadow_strikes;
     buff_t* crimson_poison;
+    buff_t* deadly_shadows;
   } buffs;
 
   // Cooldowns
@@ -252,6 +253,7 @@ struct rogue_t : public player_t
     cooldown_t* ruthlessness;
     cooldown_t* seal_fate;
     cooldown_t* sprint;
+    cooldown_t* vanish;
   } cooldowns;
 
   // Gains
@@ -452,6 +454,7 @@ struct rogue_t : public player_t
     cooldowns.killing_spree       = get_cooldown( "killing_spree"       );
     cooldowns.ruthlessness        = get_cooldown( "ruthlessness"        );
     cooldowns.sprint              = get_cooldown( "sprint"              );
+    cooldowns.vanish              = get_cooldown( "vanish"              );
 
     base.distance = 3;
     regen_type = REGEN_DYNAMIC;
@@ -2079,6 +2082,13 @@ struct eviscerate_t : public rogue_attack_t
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
+    {
+      timespan_t v = timespan_t::from_seconds( -p() -> sets.set( ROGUE_SUBTLETY, T18, B4 ) -> effectN( 1 ).base_value() );
+      v *= cast_state( state ) -> cp;
+      p() -> cooldowns.vanish -> adjust( v, false );
+    }
   }
 };
 
@@ -2946,6 +2956,8 @@ struct vanish_t : public rogue_attack_t
 
     cooldown -> duration += p -> perk.enhanced_vanish -> effectN( 1 ).time_value();
     cooldown -> duration += p -> glyph.disappearance -> effectN( 1 ).time_value();
+
+    adds_combo_points = p -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value();
   }
 
   void execute()
@@ -2960,6 +2972,8 @@ struct vanish_t : public rogue_attack_t
 
     if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
       event_t::cancel( p() -> off_hand_attack -> execute_event );
+
+    p() -> buffs.deadly_shadows -> trigger();
   }
 };
 
@@ -5174,6 +5188,11 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + sets.set( ROGUE_COMBAT, T18, B4 ) -> effectN( 1 ).percent();
     }
+
+    if ( buffs.deadly_shadows -> up() )
+    {
+      m *= 1.0 + buffs.deadly_shadows -> data().effectN( 1 ).percent();
+    }
   }
 
   return m;
@@ -5992,6 +6011,10 @@ void rogue_t::create_buffs()
   buffs.shadowstep        = buff_creator_t( this, "shadowstep", talent.shadowstep )
     .cd( timespan_t::zero() );
   buffs.crimson_poison    = buff_creator_t( this, "crimson_poison", find_spell( 157562 ) );
+
+  buffs.deadly_shadows = buff_creator_t( this, "deadly_shadows", find_spell( 188700 ) )
+                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                         .chance( sets.has_set_bonus( ROGUE_SUBTLETY, T18, B2 ) );
 }
 
 void rogue_t::register_callbacks()
