@@ -284,13 +284,13 @@ public:
     buff_t* berserk;
     buff_t* bloodtalons;
     buff_t* claws_of_shirvallah;
-    buff_t* feral_fury;
-    buff_t* feral_rage;
     buff_t* king_of_the_jungle;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
     buff_t* tigers_fury;
-    buff_t* tier15_4pc_melee;
+    buff_t* feral_tier15_4pc;
+    buff_t* feral_tier16_2pc;
+    buff_t* feral_tier16_4pc;
 
     // Guardian
     buff_t* barkskin;
@@ -301,11 +301,11 @@ public:
     buff_t* savage_defense;
     buff_t* son_of_ursoc;
     buff_t* survival_instincts;
-    buff_t* tier15_2pc_tank;
-    buff_t* tier17_4pc_tank;
     buff_t* tooth_and_claw;
     buff_t* tooth_and_claw_absorb;
     buff_t* ursa_major;
+    buff_t* guardian_tier15_2pc;
+    buff_t* guardian_tier17_4pc;
 
     // Restoration
     buff_t* natures_swiftness;
@@ -345,7 +345,6 @@ public:
 
     // Feral (Cat)
     gain_t* energy_refund;
-    gain_t* feral_rage; // tier16_4pc_melee
     gain_t* glyph_ferocious_bite;
     gain_t* leader_of_the_pack;
     gain_t* moonfire;
@@ -353,17 +352,19 @@ public:
     gain_t* shred;
     gain_t* swipe;
     gain_t* tigers_fury;
-    gain_t* tier15_2pc_melee;
-    gain_t* tier17_2pc_melee;
-    gain_t* tier18_4pc_melee;
+    gain_t* feral_tier15_2pc;
+    gain_t* feral_tier16_4pc;
+    gain_t* feral_tier17_2pc;
+    gain_t* feral_tier18_4pc;
 
     // Guardian (Bear)
     gain_t* bear_form;
     gain_t* frenzied_regeneration;
     gain_t* primal_tenacity;
     gain_t* stalwart_guardian;
-    gain_t* tier17_2pc_tank;
     gain_t* tooth_and_claw;
+    gain_t* guardian_tier17_2pc;
+    gain_t* guardian_tier18_2pc;
   } gain;
 
   // Perks
@@ -801,7 +802,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
     if ( trigger_t17_2p )
       p() -> resource_gain( RESOURCE_ENERGY,
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
-                            p() -> gain.tier17_2pc_melee );
+                            p() -> gain.feral_tier17_2pc );
   }
 };
 
@@ -2038,7 +2039,7 @@ public:
              ab::weapon -> proc_chance_on_swing( 3.5 ) + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent(),
              ab::p() -> buff.omen_of_clarity -> buff_duration ) ) {
       if ( ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
-        ab::p() -> buff.feral_fury -> trigger();
+        ab::p() -> buff.feral_tier16_2pc -> trigger();
     }
   }
 
@@ -2196,13 +2197,13 @@ public:
           rng().roll( cost() * 0.15 ) )
       {
         p() -> proc.tier15_2pc_melee -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.tier15_2pc_melee );
+        p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.feral_tier15_2pc );
       }
 
-      if ( p() -> buff.feral_rage -> up() ) // tier16_4pc_melee
+      if ( p() -> buff.feral_tier16_4pc -> up() )
       {
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> buff.feral_rage -> data().effectN( 1 ).base_value(), p() -> gain.feral_rage );
-        p() -> buff.feral_rage -> expire();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> buff.feral_tier16_4pc -> data().effectN( 1 ).base_value(), p() -> gain.feral_tier16_4pc );
+        p() -> buff.feral_tier16_4pc -> expire();
       }
     }
 
@@ -2275,7 +2276,7 @@ public:
       p() -> buff.omen_of_clarity -> decrement();
 
       if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, eff_cost * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(), p() -> gain.tier18_4pc_melee );
+        p() -> resource_gain( RESOURCE_ENERGY, eff_cost * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(), p() -> gain.feral_tier18_4pc );
     }
   }
 
@@ -2330,7 +2331,7 @@ public:
     if ( trigger_t17_2p )
       p() -> resource_gain( RESOURCE_ENERGY,
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
-                            p() -> gain.tier17_2pc_melee );
+                            p() -> gain.feral_tier17_2pc );
   }
 }; // end druid_cat_attack_t
 
@@ -2470,8 +2471,8 @@ struct ferocious_bite_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      p() -> buff.tier15_4pc_melee -> decrement();
+    if ( p() -> buff.feral_tier15_4pc -> up() )
+      p() -> buff.feral_tier15_4pc -> decrement();
 
     max_excess_energy = -1 * data().effectN( 2 ).base_value();
   }
@@ -2534,8 +2535,8 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double c = cat_attack_t::composite_crit();
 
-    if ( p() -> buff.tier15_4pc_melee -> check() )
-      c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
+    if ( p() -> buff.feral_tier15_4pc -> check() )
+      c += p() -> buff.feral_tier15_4pc -> data().effectN( 1 ).percent();
 
     return c;
   }
@@ -2787,7 +2788,8 @@ struct shred_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p() -> buff.tier15_4pc_melee -> decrement();
+    if ( p() -> buff.feral_tier15_4pc -> up() )
+      p() -> buff.feral_tier15_4pc -> decrement();
 
     // Track buff benefits
     p() -> buff.king_of_the_jungle -> up();
@@ -2820,8 +2822,8 @@ struct shred_t : public cat_attack_t
   {
     double c = cat_attack_t::composite_crit();
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
+    if ( p() -> buff.feral_tier15_4pc -> up() )
+      c += p() -> buff.feral_tier15_4pc -> data().effectN( 1 ).percent();
 
     return c;
   }
@@ -2840,8 +2842,8 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( p() -> buff.feral_fury -> up() )
-      m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+    if ( p() -> buff.feral_tier16_2pc -> up() )
+      m *= 1.0 + p() -> buff.feral_tier16_2pc -> data().effectN( 1 ).percent();
 
     if ( stealthed() )
     {
@@ -2891,18 +2893,18 @@ public:
       }
     }
 
-    p() -> buff.feral_fury -> up();
+    p() -> buff.feral_tier16_2pc -> up();
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      p() -> buff.tier15_4pc_melee -> decrement();
+    if ( p() -> buff.feral_tier15_4pc -> up() )
+      p() -> buff.feral_tier15_4pc -> decrement();
   }
 
   double action_multiplier() const
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( p() -> buff.feral_fury -> check() )
-      m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+    if ( p() -> buff.feral_tier16_2pc -> check() )
+      m *= 1.0 + p() -> buff.feral_tier16_2pc -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -2921,8 +2923,8 @@ public:
   {
     double c = cat_attack_t::composite_crit();
 
-    if ( p() -> buff.tier15_4pc_melee -> check() )
-      c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
+    if ( p() -> buff.feral_tier15_4pc -> check() )
+      c += p() -> buff.feral_tier15_4pc -> data().effectN( 1 ).percent();
 
     return c;
   }
@@ -3270,7 +3272,7 @@ struct maul_t : public bear_attack_t
     virtual void impact( action_state_t* s )
     {
       if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
-        p() -> buff.tier17_4pc_tank -> increment();
+        p() -> buff.guardian_tier17_4pc -> increment();
 
       p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount + p() -> buff.tooth_and_claw_absorb -> current_value );
     }
@@ -3339,7 +3341,7 @@ struct maul_t : public bear_attack_t
       if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
       {
         // Treat the savings like a rage gain for tracking purposes.
-        p() -> gain.tier17_2pc_tank -> add( RESOURCE_RAGE, cost_reduction );
+        p() -> gain.guardian_tier17_2pc -> add( RESOURCE_RAGE, cost_reduction );
       }
       absorb -> execute();
     }
@@ -3633,11 +3635,20 @@ void druid_heal_t::init_living_seed()
 
 struct frenzied_regeneration_t : public druid_heal_t
 {
-  double maximum_rage_cost;
+private:
+  double max_rage_cost() const
+  {
+    if ( p() -> buff.savage_defense -> check() )
+      return base_max_rage_cost * ( 1.0 - p() -> sets.set( DRUID_GUARDIAN, T18, B4 ) -> effectN( 1 ).percent() );
+    else
+      return base_max_rage_cost;
+  }
+public:
+  double base_max_rage_cost;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
-    maximum_rage_cost( 0.0 )
+    base_max_rage_cost( 0.0 )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -3645,7 +3656,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     may_multistrike = 0;
     target = p;
 
-    maximum_rage_cost = data().effectN( 2 ).base_value();
+    base_max_rage_cost = data().effectN( 2 ).base_value();
 
     triggers_natures_vigil = false;
 
@@ -3655,18 +3666,23 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   virtual double cost() const
   {
-    const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
-                                                maximum_rage_cost );
+    const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] =
+      std::min( p() -> resources.current[ RESOURCE_RAGE ], max_rage_cost() );
 
     return druid_heal_t::cost();
+  }
+
+  virtual void consume_resource() override
+  {
+    druid_heal_t::consume_resource();
   }
 
   virtual double action_multiplier() const
   {
     double am = druid_heal_t::action_multiplier();
 
-    am *= cost() / 60.0;
-    am *= 1.0 + p() -> buff.tier17_4pc_tank -> default_value * p() -> buff.tier17_4pc_tank -> current_stack;
+    am *= cost() / max_rage_cost();
+    am *= 1.0 + p() -> buff.guardian_tier17_4pc -> default_value * p() -> buff.guardian_tier17_4pc -> current_stack;
 
     return am;
   }
@@ -3674,12 +3690,12 @@ struct frenzied_regeneration_t : public druid_heal_t
   virtual void execute()
   {
     // Benefit tracking
-    p() -> buff.tier17_4pc_tank -> up();
+    p() -> buff.guardian_tier17_4pc -> up();
 
     druid_heal_t::execute();
 
-    p() -> buff.tier15_2pc_tank -> expire();
-    p() -> buff.tier17_4pc_tank -> expire();
+    p() -> buff.guardian_tier15_2pc -> expire();
+    p() -> buff.guardian_tier17_4pc -> expire();
 
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
@@ -5668,10 +5684,10 @@ struct tigers_fury_t : public druid_spell_t
       p() -> buff.omen_of_clarity -> trigger();
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
-      p() -> buff.tier15_4pc_melee -> trigger( 3 );
+      p() -> buff.feral_tier15_4pc -> trigger( 3 );
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
-      p() -> buff.feral_rage -> trigger();
+      p() -> buff.feral_tier16_4pc -> trigger();
   }
 };
 
@@ -6388,9 +6404,9 @@ void druid_t::create_buffs()
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
-  buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
-  buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
-  buff.feral_rage            = buff_creator_t( this, "feral_rage", find_spell( 146874 ) ); // tier16_4pc_melee
+  buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) );
+  buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) ); // tier16_2pc_melee
+  buff.feral_tier16_4pc      = buff_creator_t( this, "feral_tier16_4pc", find_spell( 146874 ) ); // tier16_4pc_melee
 
   // Guardian
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
@@ -6415,12 +6431,12 @@ void druid_t::create_buffs()
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() )
                                .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() );
-  buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
-  buff.tier17_4pc_tank       = buff_creator_t( this, "tier17_4pc_tank", find_spell( 177969 ) ) // FIXME: Remove fallback values after spell is in spell data.
-                               .chance( find_spell( 177969 ) ? find_spell( 177969 ) -> proc_chance() : 1.0 )
-                               .duration( find_spell( 177969 ) ? find_spell( 177969 ) -> duration() : timespan_t::from_seconds( 10.0 ) )
-                               .max_stack( find_spell( 177969 ) ? find_spell( 177969 ) -> max_stacks() : 3 )
-                               .default_value( find_spell( 177969 ) ? find_spell( 177969 ) -> effectN( 1 ).percent() : 0.10 );
+  buff.guardian_tier15_2pc   = buff_creator_t( this, "guardian_tier15_2pc", find_spell( 138217 ) );
+  buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) ) // FIXME: Remove fallback values after spell is in spell data.
+                               .chance( find_spell( 177969 ) -> proc_chance() )
+                               .duration( find_spell( 177969 ) -> duration() )
+                               .max_stack( find_spell( 177969 ) -> max_stacks() )
+                               .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) )
                                .max_stack( find_spell( 135286 ) -> _max_stack + perk.enhanced_tooth_and_claw -> effectN( 1 ).base_value() );
   buff.tooth_and_claw_absorb = buff_creator_t( this, "tooth_and_claw_absorb", find_spell( 135597 ) );
@@ -6864,7 +6880,6 @@ void druid_t::init_gains()
 
   gain.bear_form             = get_gain( "bear_form"             );
   gain.energy_refund         = get_gain( "energy_refund"         );
-  gain.feral_rage            = get_gain( "feral_rage"            );
   gain.frenzied_regeneration = get_gain( "frenzied_regeneration" );
   gain.glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
   gain.leader_of_the_pack    = get_gain( "leader_of_the_pack"    );
@@ -6877,12 +6892,15 @@ void druid_t::init_gains()
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
   gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
   gain.swipe                 = get_gain( "swipe"                 );
-  gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
-  gain.tier17_2pc_melee      = get_gain( "tier17_2pc_melee"      );
-  gain.tier18_4pc_melee      = get_gain( "tier18_4pc_melee"      );
-  gain.tier17_2pc_tank       = get_gain( "tier17_2pc_tank"       );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
   gain.tooth_and_claw        = get_gain( "tooth_and_claw"        );
+  
+  gain.feral_tier15_2pc      = get_gain( "feral_tier15_2pc"      );
+  gain.feral_tier16_4pc      = get_gain( "feral_tier16_4pc"      );
+  gain.feral_tier17_2pc      = get_gain( "feral_tier17_2pc"      );
+  gain.feral_tier18_4pc      = get_gain( "feral_tier18_4pc"      );
+  gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
+  gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
 }
 
 // druid_t::init_procs ======================================================
@@ -7665,7 +7683,7 @@ void druid_t::assess_damage( school_e school,
       pt_pre_amount = buff.primal_tenacity -> value();
 
   if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
-    buff.tier15_2pc_tank -> trigger();
+    buff.guardian_tier15_2pc -> trigger();
 
   if ( buff.barkskin -> up() )
     s -> result_amount *= 1.0 + buff.barkskin -> default_value;
@@ -7791,7 +7809,20 @@ void druid_t::assess_heal( school_e school,
                            action_state_t* s )
 {
   s -> result_total *= 1.0 + buff.frenzied_regeneration -> check();
+
   s -> result_total *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
+
+  if ( sets.has_set_bonus( DRUID_GUARDIAN, T18, B2 ) && buff.savage_defense -> check() )
+  {
+    double pct = sets.set( DRUID_GUARDIAN, T18, B2 ) -> effectN( 1 ).percent();
+
+    // Trigger a gain so we can track how much the set bonus helped.
+    // The gain is 100% overflow so it doesn't distort charts.
+    gain.guardian_tier18_2pc -> add( RESOURCE_HEALTH, 0, s -> result_total * pct );
+
+    s -> result_total *= 1.0 + pct;
+  }
+
   player_t::assess_heal( school, dmg_type, s );
 }
 
