@@ -363,6 +363,11 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
 void buff_t::add_invalidate( cache_e c )
 {
+  if ( c == CACHE_NONE )
+  {
+    return;
+  }
+
   if ( range::find( invalidate_list, c ) == invalidate_list.end() ) // avoid duplication
   {
     invalidate_list.push_back( c );

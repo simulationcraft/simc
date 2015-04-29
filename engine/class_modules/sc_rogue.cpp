@@ -335,6 +335,7 @@ struct rogue_t : public player_t
     const spell_data_t* tier13_4pc;
     const spell_data_t* tier15_4pc;
     const spell_data_t* venom_rush;
+    const spell_data_t* tier18_2pc_combat_ar;
   } spell;
 
   // Talents
@@ -5168,6 +5169,11 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
     }
+
+    if ( sets.has_set_bonus( ROGUE_COMBAT, T18, B4 ) && buffs.adrenaline_rush -> up() )
+    {
+      m *= 1.0 + sets.set( ROGUE_COMBAT, T18, B4 ) -> effectN( 1 ).percent();
+    }
   }
 
   return m;
@@ -5597,6 +5603,7 @@ void rogue_t::init_spells()
   spell.tier13_4pc          = find_spell( 105865 );
   spell.tier15_4pc          = find_spell( 138151 );
   spell.venom_rush          = find_spell( 156719 );
+  spell.tier18_2pc_combat_ar= find_spell( 186286 );
 
   // Glyphs
   glyph.disappearance       = find_glyph_spell( "Glyph of Disappearance" );
@@ -5837,6 +5844,20 @@ static void energetic_recovery( buff_t* buff, int, int )
                         p -> gains.energetic_recovery );
 }
 
+static void combat_t18_2pc_bonus( buff_t* buff, int, int )
+{
+  double proc_chance = buff -> player -> sets.set( ROGUE_COMBAT, T18, B2 ) -> proc_chance();
+  rogue_t* p = debug_cast<rogue_t*>( buff -> player );
+
+  if ( p -> buffs.adrenaline_rush -> remains() > p -> spell.tier18_2pc_combat_ar -> duration() )
+  {
+    return;
+  }
+
+  p -> buffs.adrenaline_rush -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance,
+      p -> spell.tier18_2pc_combat_ar -> duration() );
+}
+
 void rogue_t::create_buffs()
 {
   // Handle the Legendary here, as it's called after init_items()
@@ -5866,7 +5887,8 @@ void rogue_t::create_buffs()
                               .duration( find_class_spell( "Adrenaline Rush" ) -> duration() + sets.set( SET_MELEE, T13, B4 ) -> effectN( 2 ).time_value() )
                               .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
                               .affects_regen( true )
-                              .add_invalidate( CACHE_ATTACK_SPEED );
+                              .add_invalidate( CACHE_ATTACK_SPEED )
+                              .add_invalidate( sets.has_set_bonus( ROGUE_COMBAT, T18, B4 ) ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
   buffs.blindside           = buff_creator_t( this, "blindside", spec.blindside -> effectN( 1 ).trigger() )
                               .chance( spec.blindside -> proc_chance() );
   buffs.feint               = buff_creator_t( this, "feint", find_class_spell( "Feint" ) )
@@ -5914,13 +5936,29 @@ void rogue_t::create_buffs()
                              .duration( timespan_t::min() )
                              .period( timespan_t::zero() )
                              .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
-                             .duration( perk.improved_slice_and_dice -> ok() ? timespan_t::zero() : timespan_t::min() )
-                             .tick_behavior( specialization() == ROGUE_SUBTLETY ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
-                             .tick_callback( specialization() == ROGUE_SUBTLETY ? &energetic_recovery : 0 )
-                             .period( specialization() == ROGUE_SUBTLETY ? find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() : timespan_t::zero() )
-                             .refresh_behavior( BUFF_REFRESH_PANDEMIC )
-                             .add_invalidate( CACHE_ATTACK_SPEED );
+
+  buff_creator_t snd_creator = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
+                               .duration( perk.improved_slice_and_dice -> ok() ? timespan_t::zero() : timespan_t::min() )
+                               .tick_behavior( BUFF_TICK_NONE )
+                               .period( timespan_t::zero() )
+                               .refresh_behavior( BUFF_REFRESH_PANDEMIC )
+                               .add_invalidate( CACHE_ATTACK_SPEED );
+
+  if ( spec.energetic_recovery -> ok() )
+  {
+    snd_creator.period( find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() );
+    snd_creator.tick_behavior( BUFF_TICK_REFRESH );
+    snd_creator.tick_callback( &energetic_recovery );
+  }
+  // Presume that combat re-uses the ticker for the T18 2pc set bonus
+  else if ( sets.has_set_bonus( ROGUE_COMBAT, T18, B2 ) )
+  {
+    snd_creator.period( find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() );
+    snd_creator.tick_behavior( BUFF_TICK_REFRESH );
+    snd_creator.tick_callback( &combat_t18_2pc_bonus );
+  }
+
+  buffs.slice_and_dice = snd_creator;
 
   // Legendary buffs
   buffs.fof_p1            = stat_buff_creator_t( this, "suffering", find_spell( 109959 ) )
