@@ -258,6 +258,7 @@ public:
     buff_t* cenarion_ward;
     buff_t* dream_of_cenarius;
     buff_t* frenzied_regeneration;
+    buff_t* incarnation;
     buff_t* natures_vigil;
     buff_t* omen_of_clarity;
     buff_t* prowl;
@@ -269,7 +270,6 @@ public:
     buff_t* astral_insight;
     buff_t* astral_showers;
     buff_t* celestial_alignment;
-    buff_t* chosen_of_elune;
     buff_t* empowered_moonkin;
     buff_t* hurricane;
     buff_t* lunar_empowerment;
@@ -284,7 +284,6 @@ public:
     buff_t* berserk;
     buff_t* bloodtalons;
     buff_t* claws_of_shirvallah;
-    buff_t* king_of_the_jungle;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
     buff_t* tigers_fury;
@@ -299,7 +298,6 @@ public:
     absorb_buff_t* primal_tenacity;
     buff_t* pulverize;
     buff_t* savage_defense;
-    buff_t* son_of_ursoc;
     buff_t* survival_instincts;
     buff_t* tooth_and_claw;
     buff_t* tooth_and_claw_absorb;
@@ -314,7 +312,6 @@ public:
     // NYI / Needs checking
     buff_t* harmony;
     buff_t* wild_mushroom;
-    buff_t* tree_of_life;
     buffs::heart_of_the_wild_buff_t* heart_of_the_wild;
   } buff;
 
@@ -2163,7 +2160,7 @@ public:
   {
     // Make sure we call all three methods for accurate benefit tracking.
     bool prowl = p() -> buff.prowl -> up(),
-           inc = p() -> buff.king_of_the_jungle -> up();
+           inc = p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_FERAL;
 
     return prowl || inc;
   }
@@ -2596,7 +2593,7 @@ struct rake_t : public cat_attack_t
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
 
     ir_counter = new snapshot_counter_t( p, p -> buff.prowl );
-    ir_counter -> add_buff( p -> buff.king_of_the_jungle );
+    ir_counter -> add_buff( p -> buff.incarnation );
     ir_counter -> add_buff( p -> buffs.shadowmeld );
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
@@ -2648,7 +2645,8 @@ struct rake_t : public cat_attack_t
     cat_attack_t::execute();
 
     // Track buff benefits
-    p() -> buff.king_of_the_jungle -> up();
+    if ( p() -> specialization() == DRUID_FERAL )
+      p() -> buff.incarnation -> up();
   }
 
   virtual void tick( dot_t* d )
@@ -2800,7 +2798,8 @@ struct shred_t : public cat_attack_t
       p() -> buff.feral_tier15_4pc -> decrement();
 
     // Track buff benefits
-    p() -> buff.king_of_the_jungle -> up();
+    if ( p() -> specialization() == DRUID_FERAL )
+      p() -> buff.incarnation -> up();
   }
 
   virtual void impact( action_state_t* s )
@@ -3227,7 +3226,7 @@ struct mangle_t : public bear_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
-    if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
+    if ( p() -> buff.berserk -> check() || ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN ) )
       cd = timespan_t::zero();
 
     bear_attack_t::update_ready( cd );
@@ -3334,7 +3333,7 @@ struct maul_t : public bear_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
-    if ( p() -> buff.son_of_ursoc -> check() )
+    if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN )
       cd = timespan_t::zero();
 
     bear_attack_t::update_ready( cd );
@@ -3557,8 +3556,8 @@ public:
   {
     double adm = base_t::action_da_multiplier();
 
-    if ( p() -> buff.tree_of_life -> up() )
-      adm *= 1.0 + p() -> buff.tree_of_life -> data().effectN( 1 ).percent();
+    if ( p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_RESTORATION )
+      adm *= 1.0 + p() -> buff.incarnation -> data().effectN( 1 ).percent();
 
     if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
       adm *= 1.0 + p() -> buff.natures_swiftness -> data().effectN( 2 ).percent();
@@ -3573,8 +3572,8 @@ public:
   {
     double adm = base_t::action_ta_multiplier();
 
-    if ( p() -> buff.tree_of_life -> up() )
-      adm += p() -> buff.tree_of_life -> data().effectN( 2 ).percent();
+    if ( p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_RESTORATION )
+      adm += p() -> buff.incarnation -> data().effectN( 2 ).percent();
 
     if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
       adm += p() -> buff.natures_swiftness -> data().effectN( 3 ).percent();
@@ -4007,7 +4006,7 @@ struct regrowth_t : public druid_heal_t
 
   virtual timespan_t execute_time() const
   {
-    if ( p() -> buff.tree_of_life -> check() )
+    if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_RESTORATION )
       return timespan_t::zero();
 
     return druid_heal_t::execute_time();
@@ -4175,7 +4174,7 @@ struct wild_growth_t : public druid_heal_t
   virtual void execute()
   {
     int save = aoe;
-    if ( p() -> buff.tree_of_life -> check() )
+    if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_RESTORATION )
       aoe += 2;
 
     druid_heal_t::execute();
@@ -4588,7 +4587,9 @@ struct faerie_fire_t : public druid_spell_t
   {
     timespan_t cd = cooldown -> duration;
 
-    if ( ! ( ( p() -> buff.bear_form -> check() && ! p() -> perk.enhanced_faerie_fire -> ok() && ! p() -> buff.son_of_ursoc -> check() ) || p() -> buff.cat_form -> check() ) )
+    if ( ! ( ( p() -> buff.bear_form -> check() && ! p() -> perk.enhanced_faerie_fire -> ok() &&
+               ! p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN )
+            || p() -> buff.cat_form -> check() ) )
       cd = timespan_t::zero();
 
     druid_spell_t::update_ready( cd );
@@ -4668,7 +4669,7 @@ struct growl_t: public druid_spell_t
   {
     timespan_t cd = cooldown -> duration;
 
-    if ( p() -> buff.son_of_ursoc -> check() )
+    if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN )
       cd = timespan_t::zero();
 
     druid_spell_t::update_ready( cd );
@@ -4767,10 +4768,16 @@ struct hurricane_t : public druid_spell_t
 
 // Incarnation ==============================================================
 
-struct incarnation_moonkin_t : public druid_spell_t
+struct incarnation_t : public druid_spell_t
 {
-  incarnation_moonkin_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> talent.incarnation_chosen )
+  incarnation_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "incarnation", p,
+      p -> specialization() == DRUID_BALANCE     ? p -> talent.incarnation_chosen :
+      p -> specialization() == DRUID_FERAL       ? p -> talent.incarnation_king   :
+      p -> specialization() == DRUID_GUARDIAN    ? p -> talent.incarnation_son    :
+      p -> specialization() == DRUID_RESTORATION ? p -> talent.incarnation_tree   :
+      spell_data_t::nil()
+    )
   {
     parse_options( options_str );
     harmful = false;
@@ -4780,68 +4787,23 @@ struct incarnation_moonkin_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.chosen_of_elune -> trigger();
-  }
-};
+    p() -> buff.incarnation -> trigger();
 
-struct incarnation_cat_t : public druid_spell_t
-{
-  incarnation_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> talent.incarnation_king )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute()
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.king_of_the_jungle -> trigger(); 
-
-    // Waste 1 second of the buff if its used prior to combat.
-    if ( ! p() -> in_combat )
-      p() -> buff.king_of_the_jungle -> extend_duration( p(), timespan_t::from_seconds( -1.0 ) );
-  }
-};
-
-struct incarnation_resto_t : public druid_spell_t
-{
-  incarnation_resto_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> talent.incarnation_tree )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute()
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.tree_of_life -> trigger();
-  }
-};
-
-struct incarnation_bear_t : public druid_spell_t
-{
-  incarnation_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> talent.incarnation_son )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute()
-  {
-    druid_spell_t::execute();
-
-    p() -> cooldown.mangle -> reset( false );
-    p() -> cooldown.growl  -> reset( false );
-    p() -> cooldown.maul   -> reset( false );
-    if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
-      p() -> cooldown.faerie_fire -> reset( false ); 
-
-    p() -> buff.son_of_ursoc -> trigger(); 
+    switch ( p() -> specialization() )
+    {
+    case DRUID_FERAL:
+      // Waste 1 second of the buff if its used prior to combat.
+      if ( ! p() -> in_combat )
+        p() -> buff.incarnation -> extend_duration( p(), timespan_t::from_seconds( -1.0 ) );
+      break;
+    case DRUID_GUARDIAN:
+      p() -> cooldown.mangle -> reset( false );
+      p() -> cooldown.growl  -> reset( false );
+      p() -> cooldown.maul   -> reset( false );
+      if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
+        p() -> cooldown.faerie_fire -> reset( false ); 
+      break;
+    }
   }
 };
 
@@ -5260,7 +5222,7 @@ struct prowl_t : public druid_spell_t
     if ( p() -> buff.prowl -> check() )
       return false;
 
-    if ( p() -> in_combat && ! p() -> buff.king_of_the_jungle -> check() )
+    if ( p() -> in_combat && ! ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_FERAL ) )
       return false;
 
     return druid_spell_t::ready();
@@ -5994,20 +5956,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
   if ( name == "wild_mushroom"          ) return new          wild_mushroom_t( this, options_str );
   if ( name == "wrath"                  ) return new                  wrath_t( this, options_str );
-  if ( name == "incarnation"            )
-    switch( specialization() )
-  {
-    case DRUID_FERAL:
-      return new incarnation_cat_t( this, options_str ); break;
-    case DRUID_GUARDIAN:
-      return new incarnation_bear_t( this, options_str ); break;
-    case DRUID_BALANCE:
-      return new incarnation_moonkin_t( this, options_str ); break;
-    case DRUID_RESTORATION:
-      return new incarnation_resto_t( this, options_str ); break;
-    default:
-      break;
-  }
+  if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -6348,16 +6297,19 @@ void druid_t::create_buffs()
 
   buff.cenarion_ward = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
 
-  buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune" , talent.incarnation_chosen )
-                            .default_value( talent.incarnation_chosen -> effectN( 1 ).percent() )
-                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation_king );
-
-  buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , talent.incarnation_son );
-
-  buff.tree_of_life       = buff_creator_t( this, "tree_of_life"      , talent.incarnation_tree )
-                            .duration( timespan_t::from_seconds( 30 ) );
+  switch ( specialization() ) {
+    case DRUID_BALANCE:     buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_chosen )
+                             .default_value( talent.incarnation_chosen -> effectN( 1 ).percent() )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                            break;
+    case DRUID_FERAL:       buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_king );
+                            break;
+    case DRUID_GUARDIAN:    buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_son );
+                            break;
+    case DRUID_RESTORATION: buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_tree )
+                             .duration( timespan_t::from_seconds( 30 ) );
+                            break;
+  }
 
   if ( specialization() == DRUID_GUARDIAN )
     buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", talent.dream_of_cenarius )
@@ -6666,11 +6618,11 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
-  def -> add_action( this, "Berserk", "if=((!t18_class_trinket&buff.tigers_fury.up)|(t18_class_trinket&energy.time_to_max<2))&(buff.king_of_the_jungle.up|!talent.incarnation_king_of_the_jungle.enabled)" );
+  def -> add_action( this, "Berserk", "if=((!t18_class_trinket&buff.tigers_fury.up)|(t18_class_trinket&energy.time_to_max<2))&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
   {
-    def -> add_action( item_actions[ i ] + ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.king_of_the_jungle.up&time<10)" );
+    def -> add_action( item_actions[ i ] + ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)" );
   }
   if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40" );
@@ -6684,7 +6636,7 @@ void druid_t::apl_feral()
   def -> add_action( "incarnation,if=t18_class_trinket&cooldown.berserk.remains<1&energy.time_to_max<3" );
   if ( race == RACE_NIGHT_ELF )
   {
-    def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up" );
+    def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.incarnation.up" );
   }
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
@@ -7177,8 +7129,8 @@ double druid_t::composite_player_multiplier( school_e school ) const
     {
       if ( buff.moonkin_form -> check() )
         m *= 1.0 + spell.moonkin_form -> effectN( 2 ).percent();
-      if ( buff.chosen_of_elune -> check() )
-        m *= 1.0 + buff.chosen_of_elune -> default_value;
+      if ( buff.incarnation -> check() && specialization() == DRUID_BALANCE )
+        m *= 1.0 + buff.incarnation -> default_value;
     }
   }
 
