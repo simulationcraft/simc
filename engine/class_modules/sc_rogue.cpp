@@ -1751,13 +1751,26 @@ struct blade_flurry_t : public rogue_attack_t
 
 struct dispatch_t : public rogue_attack_t
 {
+  struct t18_dispatch_t : public melee_attack_t
+  {
+    t18_dispatch_t( rogue_t* p ) :
+      melee_attack_t( "dispatch_t18", p, p -> find_spell( 186183 ) )
+    {
+      callbacks = false;
+      background = true;
+    }
+  };
+
   double toxic_mutilator_crit_chance;
+  t18_dispatch_t* t18_dispatch;
 
   dispatch_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "dispatch", p, p -> find_class_spell( "Dispatch" ), options_str ),
-    toxic_mutilator_crit_chance( 0 )
+    toxic_mutilator_crit_chance( 0 ), t18_dispatch( 0 )
   {
     ability_type = DISPATCH;
+
+    adds_combo_points += p -> sets.set( ROGUE_ASSASSINATION, T18, B4 ) -> effectN( 1 ).base_value();
 
     // Tier 18 (WoD 6.2) trinket effect for Assassination
     if ( p -> toxic_mutilator )
@@ -1771,6 +1784,12 @@ struct dispatch_t : public rogue_attack_t
     {
       sim -> errorf( "Trying to use %s without a dagger in main-hand", name() );
       background = true;
+    }
+
+    if ( ! background && p -> sets.has_set_bonus( ROGUE_ASSASSINATION, T18, B2 ) )
+    {
+      t18_dispatch = new t18_dispatch_t( p );
+      add_child( t18_dispatch );
     }
   }
 
@@ -1803,6 +1822,20 @@ struct dispatch_t : public rogue_attack_t
                             p() -> gains.t17_2pc_assassination,
                             this );
     p() -> buffs.enhanced_vendetta -> expire();
+  }
+
+  void impact( action_state_t* state )
+  {
+    rogue_attack_t::impact( state );
+
+    if ( t18_dispatch && result_is_hit( state -> result ) )
+    {
+      double v = state -> result_amount;
+      v *= p() -> sets.set( ROGUE_ASSASSINATION, T18, B2 ) -> effectN( 1 ).percent();
+      t18_dispatch -> target = state -> target;
+      t18_dispatch -> base_dd_min = t18_dispatch -> base_dd_max = v;
+      t18_dispatch -> execute();
+    }
   }
 
   double composite_crit() const

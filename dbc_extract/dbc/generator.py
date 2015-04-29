@@ -1348,6 +1348,7 @@ class SpellDataGenerator(DataGenerator):
             ( 168963, 0 ),          # Sinister Calling: Rupture
             ( 115189, 0 ),          # Anticipation buff
             ( 157562, 0 ),          # Crimson Poison (Enhanced Crimson Tempest perk)
+            ( 186183, 0 ),          # Assassination T18 2PC Nature Damage component
         ),
 
         # Priest:
