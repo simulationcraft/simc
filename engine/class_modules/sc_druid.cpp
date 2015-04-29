@@ -443,6 +443,8 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* omen_of_clarity;
+    proc_t* omen_of_clarity_wasted;
     proc_t* primal_fury;
     proc_t* shooting_stars;
     proc_t* shooting_stars_wasted;
@@ -2033,11 +2035,17 @@ public:
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
 
+    double chance = ab::weapon -> proc_chance_on_swing( 3.5 ) *
+                    ( 1.0 + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent() );
+    int active = ab::p() -> buff.omen_of_clarity -> check();
+
     // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
-    if ( ab::p() -> buff.omen_of_clarity -> trigger( 1,
-             buff_t::DEFAULT_VALUE(),
-             ab::weapon -> proc_chance_on_swing( 3.5 ) + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent(),
-             ab::p() -> buff.omen_of_clarity -> buff_duration ) ) {
+    if ( ab::p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), chance, ab::p() -> buff.omen_of_clarity -> buff_duration ) ) {
+      ab::p() -> proc.omen_of_clarity -> occur();
+      
+      if ( active )
+        ab::p() -> proc.omen_of_clarity_wasted -> occur();
+
       if ( ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
         ab::p() -> buff.feral_tier16_2pc -> trigger();
     }
@@ -6697,8 +6705,8 @@ void druid_t::apl_feral()
   finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|!talent.bloodtalons.enabled)&target.time_to_die-remains>18" );
-  finish -> add_action( this, "Savage Roar", "if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
-  finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=((energy>60&set_bonus.tier18_4pc)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
+  finish -> add_action( this, "Savage Roar", "if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
+  finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3" );
 
   // DoT Maintenance
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
@@ -6909,17 +6917,19 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.primal_fury              = get_proc( "primal_fury"            );
+  proc.omen_of_clarity          = get_proc( "omen_of_clarity"                           );
+  proc.omen_of_clarity_wasted   = get_proc( "omen_of_clarity_wasted"                    );
+  proc.primal_fury              = get_proc( "primal_fury"                               );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
-  proc.shooting_stars           = get_proc( "Shooting Stars"         );
-  proc.starshards               = get_proc( "Starshards"             );
-  proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
-  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
-  proc.tooth_and_claw           = get_proc( "tooth_and_claw"         );
-  proc.tooth_and_claw_wasted    = get_proc( "tooth_and_claw_wasted"  );
-  proc.ursa_major               = get_proc( "ursa_major"             );
-  proc.wrong_eclipse_wrath      = get_proc( "wrong_eclipse_wrath"    );
-  proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
+  proc.shooting_stars           = get_proc( "Shooting Stars"                            );
+  proc.starshards               = get_proc( "Starshards"                                );
+  proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"                          );
+  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"                          );
+  proc.tooth_and_claw           = get_proc( "tooth_and_claw"                            );
+  proc.tooth_and_claw_wasted    = get_proc( "tooth_and_claw_wasted"                     );
+  proc.ursa_major               = get_proc( "ursa_major"                                );
+  proc.wrong_eclipse_wrath      = get_proc( "wrong_eclipse_wrath"                       );
+  proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire"                    );
 }
 
 // druid_t::init_resources ===========================================
