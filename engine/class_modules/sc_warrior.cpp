@@ -874,7 +874,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       school = SCHOOL_PHYSICAL;
       weapon = &p -> main_hand_weapon;
       weapon_multiplier = 0.5;
-      base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
+      base_costs[RESOURCE_RAGE] = 0; // Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
     }
 
@@ -998,9 +998,6 @@ static void trigger_sweeping_strikes( action_state_t* s )
 
   warrior_t* p = debug_cast<warrior_t*>( s -> action -> player );
 
-  if ( s -> action -> id == p -> spec.sweeping_strikes -> id() )
-    return;
-
   if ( s -> action -> result_is_miss( s -> result ) )
     return;
 
@@ -1078,7 +1075,7 @@ struct melee_t: public warrior_attack_t
     base_rage_generation( 1.75 ),
     arms_battle_stance( 3.40 ), arms_defensive_stance( 1.60 ),
     battle_stance( 2.00 ),
-    arms_trinket_chance ( 0 )
+    arms_trinket_chance( 0 )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
@@ -1640,6 +1637,7 @@ struct devastate_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
+    execute_action = p -> active.deep_wounds;
   }
 
   void execute()
@@ -1650,11 +1648,7 @@ struct devastate_t: public warrior_attack_t
     {
       if ( p() -> buff.sword_and_board -> trigger() )
         p() -> cooldown.shield_slam -> reset( true );
-      if ( p() -> active.deep_wounds )
-      {
-        p() -> active.deep_wounds -> target = execute_state -> target;
-        p() -> active.deep_wounds -> execute();
-      }
+
       if ( p() -> talents.unyielding_strikes -> ok() )
       {
         if ( p() -> buff.unyielding_strikes -> current_stack != p() -> buff.unyielding_strikes -> max_stack() )
@@ -2902,23 +2896,10 @@ struct thunder_clap_t: public warrior_attack_t
     may_dodge = may_parry = may_block = false;
     range = radius;
     radius = -1.0;
+    impact_action = p -> active.deep_wounds;
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
-  }
-
-  void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-
-    if ( p() -> active.deep_wounds )
-    {
-      if ( result_is_hit( s -> result ) )
-      {
-        p() -> active.deep_wounds -> target = s -> target;
-        p() -> active.deep_wounds -> execute();
-      }
-    }
   }
 
   double cost() const
@@ -2955,16 +2936,14 @@ struct victory_rush_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-
+    if ( p -> non_dps_mechanics )
+      execute_action = victory_rush_heal;
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }
 
   void execute()
   {
     warrior_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-      victory_rush_heal -> execute();
 
     p() -> buff.tier15_2pc_tank -> decrement();
   }

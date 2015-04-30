@@ -5892,18 +5892,18 @@ struct action_t : public noncopyable
 
   school_e school; // What type of damage - Fire, Physical, etc.
   uint32_t id;
-  unsigned internal_id;
+  unsigned internal_id; // Every action -- even actions without spelldata -- is given an internal_id
   resource_e resource_current;
   int aoe; // Number of targets the action will impact. -1 = no target limit.
   int pre_combat, may_multistrike;
   int instant_multistrike; // -1 = autodetect (NYI), 0 = multistrikes have a delay, 1 = multistrikes occur immediately
   bool dual; // true if this action should not be counted for executes.
   bool callbacks; // When set to false, action will not trigger trinkets, enchants, rppm.
-  bool special, channeled, sequence;
+  bool special, channeled, sequence; // Special - Not an autoattack
   bool quiet; // When set to true, action will not show up in raid report or count towards executes.
   bool background; // Background actions cannot be executed via action list, but can be triggered by other actions. Background actions do not count for executes.
   bool use_off_gcd; // When set to true, will check every 100 ms to see if this action needs to be used, rather than waiting until the next gcd.
-  bool interrupt_auto_attack; // true if channeled action does not reschedule autoattacks.
+  bool interrupt_auto_attack; // true if channeled action does not reschedule autoattacks, used on abilities such as bladestorm.
   bool ignore_false_positive; // Used for actions that will do awful things to the sim when a "false positive" skill roll happens.
   double action_skill; // Skill is now done per ability, with the default being set to the player option.
   bool direct_tick; // Used with DoT Drivers, tells simc that the direct hit is actually a tick.
@@ -5916,15 +5916,15 @@ struct action_t : public noncopyable
   timespan_t ability_lag, ability_lag_stddev;
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
-  double range;
-  double radius;
+  double range; // This is how far away the target can be from the player, and still be hit or targeted.
+  double radius; // This is how far away the target can be from the original target, while still being hit.
   double weapon_power_mod;
   struct {
   double direct, tick;
   } attack_power_mod, spell_power_mod;
   double amount_delta;
-  timespan_t base_execute_time;
-  timespan_t base_tick_time;
+  timespan_t base_execute_time; // Unbuffed cast time
+  timespan_t base_tick_time; // Unbuffed tick time
   timespan_t dot_duration;
   std::array< double, RESOURCE_MAX > base_costs;
   std::array< double, RESOURCE_MAX > base_costs_per_second;
@@ -5938,7 +5938,7 @@ struct action_t : public noncopyable
   double weapon_multiplier;
   double base_add_multiplier;
   double base_aoe_multiplier; // Static reduction of damage for AoE
-  bool split_aoe_damage;
+  bool split_aoe_damage; // Split damage evenly between targets
   bool normalize_weapon_speed;
   double base_cooldown_reduction;
   cooldown_t* cooldown;
@@ -5965,9 +5965,9 @@ struct action_t : public noncopyable
   target_specific_t<dot_t*> target_specific_dot;
   action_priority_list_t* action_list;
   //std::string action_list;
-  action_t* tick_action;
-  action_t* execute_action;
-  action_t* impact_action;
+  action_t* tick_action; // This action will execute every tick
+  action_t* execute_action; // This action will execute every execute
+  action_t* impact_action; // This action will execute every impact - Useful for AoE debuffs
   bool dynamic_tick_action; // Used with tick_action, tells tick_action to update state on every tick.
   proc_t* starved_proc;
   int64_t total_executions;
