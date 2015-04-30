@@ -4211,7 +4211,7 @@ void warrior_t::apl_fury()
 
   default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
+  default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down|(prev_gcd.bloodthirst&buff.raging_blow.stack<2)" );
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
 
@@ -4234,7 +4234,7 @@ void warrior_t::apl_fury()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( "call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
+  default_list -> add_action( "run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
   default_list -> add_action( this, "Recklessness", "if=(((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|cooldown.recklessness.remains>60|target.time_to_die<30" );
@@ -4338,7 +4338,7 @@ void warrior_t::apl_arms()
 
   default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
+  default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
 
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
@@ -4520,7 +4520,7 @@ void warrior_t::apl_glad()
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
+  default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_talent( this, "Avatar" );
   default_list -> add_talent( this, "Bloodbath" );
 

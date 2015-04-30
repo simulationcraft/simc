@@ -31,7 +31,7 @@ actions.precombat+=/potion,name=draenic_armor
 actions=charge
 actions+=/auto_attack
 # This is mostly to prevent cooldowns from being accidentally used during movement.
-actions+=/call_action_list,name=movement,if=movement.distance>5
+actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/avatar
 actions+=/bloodbath
 actions+=/use_item,name=vial_of_convulsive_shadows,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
