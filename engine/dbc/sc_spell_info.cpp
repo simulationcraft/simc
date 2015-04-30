@@ -336,7 +336,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
        tmp_buffer2[64];
 
   snprintf( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id() );
-  snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index() + 1, 14, tmp_buffer2 );
+  snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", (int16_t)e -> index() + 1, 14, tmp_buffer2 );
   s << tmp_buffer;
 
   if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
