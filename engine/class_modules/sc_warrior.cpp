@@ -862,140 +862,6 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < war
 
 static void trigger_sweeping_strikes( action_state_t* s )
 {
-  struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
-  {
-    sweeping_strikes_aoe_attack_t( warrior_t* p ):
-      warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
-    {
-      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
-      background = true;
-      may_multistrike = 1; // Yep. It can multistrike.
-      aoe = 1;
-      school = SCHOOL_PHYSICAL;
-      weapon = &p -> main_hand_weapon;
-      weapon_multiplier = 0.5;
-      base_costs[RESOURCE_RAGE] = 0; // Resource consumption already accounted for in the buff application.
-      cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
-    }
-
-    size_t available_targets( std::vector< player_t* >& tl ) const
-    {
-      tl.clear();
-
-      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
-      {
-        if ( sim -> target_non_sleeping_list[i] != target )
-          tl.push_back( sim -> target_non_sleeping_list[i] );
-      }
-
-      return tl.size();
-    }
-
-    std::vector< player_t* >& target_list() const
-    {
-      target_cache.list.clear();
-      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
-      {
-        player_t* t = sim -> target_non_sleeping_list[i];
-        if ( t != target )
-        {
-          if ( sim -> fancy_target_distance_stuff )
-          {
-            if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
-            {
-              target_cache.list.push_back( t );
-            }
-          }
-          else
-          {
-            target_cache.list.push_back( t );
-          }
-        }
-      }
-      return target_cache.list;
-    }
-
-    void execute()
-    {
-      target_cache.is_valid = false;
-      attack_t::execute();
-      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
-    }
-  };
-
-  struct sweeping_strikes_attack_t: public warrior_attack_t
-  {
-    double pct_damage;
-    sweeping_strikes_attack_t( warrior_t* p ):
-      warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
-    {
-      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
-      background = true;
-      aoe = 1;
-      may_multistrike = 1;
-      weapon_multiplier = 0;
-      base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
-      cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
-      pct_damage = data().effectN( 1 ).percent();
-    }
-
-    double composite_player_multiplier() const
-    {
-      return 1; // No double dipping
-    }
-
-    size_t available_targets( std::vector< player_t* >& tl ) const
-    {
-      tl.clear();
-
-      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
-      {
-        if ( sim -> target_non_sleeping_list[i] != target )
-          tl.push_back( sim -> target_non_sleeping_list[i] );
-      }
-
-      return tl.size();
-    }
-
-    void execute()
-    {
-      base_dd_max *= pct_damage; //Deals 50% of original damage
-      base_dd_min *= pct_damage;
-      target_cache.is_valid = false;
-
-      attack_t::execute();
-
-      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
-    }
-
-    std::vector< player_t* >& target_list() const
-    {
-      target_cache.list.clear();
-      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
-      {
-        player_t* t = sim -> target_non_sleeping_list[i];
-        if ( t != target )
-        {
-          if ( sim -> fancy_target_distance_stuff )
-          {
-            if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
-            {
-              target_cache.list.push_back( t );
-            }
-          }
-          else
-          {
-            target_cache.list.push_back( t );
-          }
-        }
-      }
-
-      return target_cache.list;
-    }
-  };
-
   warrior_t* p = debug_cast<warrior_t*>( s -> action -> player );
 
   if ( s -> action -> result_is_miss( s -> result ) )
@@ -1007,18 +873,6 @@ static void trigger_sweeping_strikes( action_state_t* s )
   if ( s -> result_total <= 0 )
     return;
 
-  if ( !p -> active.sweeping_strikes )
-  {
-    p -> active.sweeping_strikes = new sweeping_strikes_attack_t( p );
-    p -> active.sweeping_strikes -> init();
-  }
-
-  if ( !p -> active.aoe_sweeping_strikes )
-  {
-    p -> active.aoe_sweeping_strikes = new sweeping_strikes_aoe_attack_t( p );
-    p -> active.aoe_sweeping_strikes -> init();
-  }
-
   if ( !s -> action -> is_aoe() )
   {
     p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
@@ -1029,8 +883,6 @@ static void trigger_sweeping_strikes( action_state_t* s )
   {
     p -> active.aoe_sweeping_strikes -> execute();
   }
-
-  return;
 }
 
 // ==========================================================================
@@ -1061,6 +913,140 @@ void warrior_attack_t::impact( action_state_t* s )
     }
   }
 }
+
+struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
+{
+  sweeping_strikes_aoe_attack_t( warrior_t* p ):
+    warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
+  {
+    may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+    background = true;
+    may_multistrike = 1; // Yep. It can multistrike.
+    aoe = 1;
+    school = SCHOOL_PHYSICAL;
+    weapon = &p -> main_hand_weapon;
+    weapon_multiplier = 0.5;
+    base_costs[RESOURCE_RAGE] = 0; // Resource consumption already accounted for in the buff application.
+    cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    {
+      if ( sim -> target_non_sleeping_list[i] != target )
+        tl.push_back( sim -> target_non_sleeping_list[i] );
+    }
+
+    return tl.size();
+  }
+
+  std::vector< player_t* >& target_list() const
+  {
+    target_cache.list.clear();
+    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    {
+      player_t* t = sim -> target_non_sleeping_list[i];
+      if ( t != target )
+      {
+        if ( sim -> fancy_target_distance_stuff )
+        {
+          if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
+          {
+            target_cache.list.push_back( t );
+          }
+        }
+        else
+        {
+          target_cache.list.push_back( t );
+        }
+      }
+    }
+    return target_cache.list;
+  }
+
+  void execute()
+  {
+    target_cache.is_valid = false;
+    attack_t::execute();
+    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
+  }
+};
+
+struct sweeping_strikes_attack_t: public warrior_attack_t
+{
+  double pct_damage;
+  sweeping_strikes_attack_t( warrior_t* p ):
+    warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
+  {
+    may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+    background = true;
+    aoe = 1;
+    may_multistrike = 1;
+    weapon_multiplier = 0;
+    base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
+    cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
+    pct_damage = data().effectN( 1 ).percent();
+  }
+
+  double composite_player_multiplier() const
+  {
+    return 1; // No double dipping
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    {
+      if ( sim -> target_non_sleeping_list[i] != target )
+        tl.push_back( sim -> target_non_sleeping_list[i] );
+    }
+
+    return tl.size();
+  }
+
+  void execute()
+  {
+    base_dd_max *= pct_damage; //Deals 50% of original damage
+    base_dd_min *= pct_damage;
+    target_cache.is_valid = false;
+
+    attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
+  }
+
+  std::vector< player_t* >& target_list() const
+  {
+    target_cache.list.clear();
+    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    {
+      player_t* t = sim -> target_non_sleeping_list[i];
+      if ( t != target )
+      {
+        if ( sim -> fancy_target_distance_stuff )
+        {
+          if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
+          {
+            target_cache.list.push_back( t );
+          }
+        }
+        else
+        {
+          target_cache.list.push_back( t );
+        }
+      }
+    }
+
+    return target_cache.list;
+  }
+};
 
 // Melee Attack =============================================================
 
@@ -4021,6 +4007,11 @@ void warrior_t::init_spells()
   if ( perk.enhanced_rend -> ok() ) active.enhanced_rend = new enhanced_rend_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
+  if ( spec.sweeping_strikes -> ok() )
+  {
+    active.sweeping_strikes = new sweeping_strikes_attack_t( this );
+    active.aoe_sweeping_strikes = new sweeping_strikes_aoe_attack_t( this );
+  }
 
   if ( !talents.gladiators_resolve -> ok() )
     gladiator = false;
