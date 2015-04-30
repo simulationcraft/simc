@@ -7707,14 +7707,14 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
 // druid_t::assess_damage_imminent ==========================================
 
 // Handle absorbs.
-// TODO: What is the priority of all these things?
 
 void druid_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
 {
   if ( ! ( s -> result == RESULT_MISS || s -> result == RESULT_DODGE ) )
   {
     // Apply Tooth and Claw
-    if ( dbc::is_school( SCHOOL_PHYSICAL, school ) && buff.tooth_and_claw_absorb -> up() )
+    // 4/30/2015: Tooth and Claw takes place after PT 
+    if ( ! s -> action -> special && dbc::is_school( SCHOOL_PHYSICAL, school ) && buff.tooth_and_claw_absorb -> up() )
     {
       double effective = std::min( buff.tooth_and_claw_absorb -> current_value, s -> result_absorbed );
       double wasted = std::max( 0.0, buff.tooth_and_claw_absorb -> current_value - s -> result_absorbed );
@@ -7738,6 +7738,7 @@ void druid_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s 
     }
 
     // Apply Stalwart Guardian -- Guardian T18 trinket
+    // TODO: Does this go before or after PT?
     if ( stalwart_guardian )
     {
       active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
