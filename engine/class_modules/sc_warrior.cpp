@@ -1623,7 +1623,7 @@ struct devastate_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
-    execute_action = p -> active.deep_wounds;
+    impact_action = p -> active.deep_wounds;
   }
 
   void execute()
