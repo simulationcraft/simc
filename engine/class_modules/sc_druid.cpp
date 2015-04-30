@@ -716,7 +716,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual double    mana_regen_per_second() const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
-  virtual void      assess_damage_imminent_preabsorb( school_e, dmg_e, action_state_t* );
+  virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
   virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
@@ -7695,7 +7695,7 @@ void druid_t::assess_damage( school_e school,
 
 // Trigger effects based on being hit or taking damage.
 
-void druid_t::assess_damage_imminent_preabsorb( school_e, dmg_e, action_state_t* s )
+void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s )
 {
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
     active.cenarion_ward_hot -> execute();
