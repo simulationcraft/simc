@@ -7743,6 +7743,9 @@ expr_t* player_t::create_expression( action_t* a,
   // T18 Hellfire Citadel class trinket
   if ( expression_str == "t18_class_trinket" )
   {
+    if ( sim -> optimize_expressions )
+      return expr_t::create_constant( expression_str, ( this -> has_t18_class_trinket() ) ? 1.0 : 0.0 );
+
     struct t18_class_trinket_expr_t : public player_expr_t
     {
       t18_class_trinket_expr_t( player_t& p ) :
