@@ -70,13 +70,13 @@ Warlock_Demonology_T17M.simc
 Warrior_Arms_T17M.simc
 talent_override=taste_for_blood
 talent_override=bladestorm
-talent_override=ravager
+talent_override=anger_management
 Warrior_Fury_1h_T17M.simc
 talent_override=bladestorm
-talent_override=ravager
+talent_override=anger_management
 Warrior_Fury_2h_T17M.simc
 talent_override=bladestorm
-talent_override=ravager
+talent_override=anger_management
 Warrior_Protection_T17M.simc
 Warrior_Gladiator_T17M.simc
 talent_override=bladestorm
