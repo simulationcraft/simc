@@ -47,7 +47,7 @@ public:
                      // This will allow full control over stance swapping.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
 
-    // Tier 18 (WoD 6.2) class specific trinket effects
+  // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* fury_trinket;
   const special_effect_t* arms_trinket;
   const special_effect_t* prot_trinket;
@@ -375,6 +375,7 @@ public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( 0 ),
+    active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -385,16 +386,6 @@ public:
     spec( spec_t() ),
     talents( talents_t() )
   {
-    // Active
-    active.bloodbath_dot      = 0;
-    active.blood_craze        = 0;
-    active.deep_wounds        = 0;
-    active.sweeping_strikes   = 0;
-    active.aoe_sweeping_strikes = 0;
-    active.enhanced_rend      = 0;
-    active.t16_2pc            = 0;
-    active.stance             = STANCE_BATTLE;
-
     // Cooldowns
     cooldown.avatar                   = get_cooldown( "avatar" );
     cooldown.bladestorm               = get_cooldown( "bladestorm" );
@@ -4001,6 +3992,15 @@ void warrior_t::init_spells()
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
 
   // Active spells
+  active.bloodbath_dot      = 0;
+  active.blood_craze        = 0;
+  active.deep_wounds        = 0;
+  active.sweeping_strikes   = 0;
+  active.aoe_sweeping_strikes = 0;
+  active.enhanced_rend      = 0;
+  active.t16_2pc            = 0;
+  active.stance             = STANCE_BATTLE;
+
   if ( spec.blood_craze -> ok() ) active.blood_craze = new blood_craze_t( this );
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
@@ -5127,7 +5127,7 @@ void warrior_t::init_action_list()
     }
   }
 
-  if ( !gladiator ) // Tanks need heals activated. 
+  if ( !gladiator && specialization() == WARRIOR_PROTECTION ) // Tanks need heals activated. 
     non_dps_mechanics = true;
 
   apl_precombat();
@@ -5169,7 +5169,7 @@ void warrior_t::arise()
   else if ( active.stance == STANCE_DEFENSE )
     buff.defensive_stance -> trigger();
 
-  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility && level >= 80 ) // Currently it is impossible to remove this.
+  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility && level >= 80 ) // Currently it is impossible to remove this aura in game.
     sim -> auras.versatility -> trigger();
 }
 
@@ -5938,7 +5938,7 @@ static void prot_trinket( special_effect_t& effect )
   do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
   if ( s -> prot_trinket )
   {
-    s -> buff.shield_charge -> default_value +=  ( s -> prot_trinket -> driver() -> effectN( 3 ).average( s -> prot_trinket -> item ) / 100.0 );
+    s -> buff.shield_charge -> default_value += ( s -> prot_trinket -> driver() -> effectN( 3 ).average( s -> prot_trinket -> item ) / 100.0 );
   }
 }
 

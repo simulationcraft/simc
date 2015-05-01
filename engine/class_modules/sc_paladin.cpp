@@ -6,7 +6,6 @@
   TODO:
   -Bunch of Holy Stuff (search for TODO)
   -Remove unnecessary Harsh Words code for prot post-6.1
-  -Confirm AGI/INT mail and AGI/STR gear behavior
   -Test if Grand Crusader can proc from misses
 */
 #include "simulationcraft.hpp"
@@ -6496,7 +6495,6 @@ void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s 
 void paladin_t::create_options()
 {
   player_t::create_options();
-
 }
 
 // paladin_t::combat_begin ==================================================
