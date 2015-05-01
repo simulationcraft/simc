@@ -5368,6 +5368,7 @@ void mage_t::apl_arcane()
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"          );
 
+  action_priority_list_t* movement            = get_action_priority_list( "movement"         );
   action_priority_list_t* init_burn           = get_action_priority_list( "init_burn"        );
   action_priority_list_t* init_crystal        = get_action_priority_list( "init_crystal"     );
   action_priority_list_t* crystal_sequence    = get_action_priority_list( "crystal_sequence" );
@@ -5380,16 +5381,11 @@ void mage_t::apl_arcane()
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
-  default_list -> add_action( this, "Blink",
-                              "if=movement.distance>10" );
-  default_list -> add_talent( this, "Blazing Speed",
-                              "if=movement.remains>0" );
   default_list -> add_talent( this, "Cold Snap",
                               "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
-  default_list -> add_talent( this, "Ice Floes",
-                              "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<2*spell_haste)" );
+  default_list -> add_action( "call_action_list,name=movement,if=raid_event.movement.exists" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<2*spell_haste" );
   default_list -> add_talent( this, "Mirror Image" );
@@ -5399,6 +5395,14 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=init_burn,if=!burn_phase" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
   default_list -> add_action( "call_action_list,name=conserve" );
+
+
+  movement -> add_action( this, "Blink",
+                          "if=movement.distance>10" );
+  movement -> add_talent( this, "Blazing Speed",
+                          "if=movement.remains>0" );
+  movement -> add_talent( this, "Ice Floes",
+                          "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<2*spell_haste)" );
 
 
   init_burn -> add_action( "start_burn_phase,if=buff.arcane_charge.stack>=4&(cooldown.prismatic_crystal.up|!talent.prismatic_crystal.enabled)&(cooldown.arcane_power.up|(glyph.arcane_power.enabled&cooldown.arcane_power.remains>60))&(cooldown.evocation.remains-2*buff.arcane_missiles.stack*spell_haste-gcd.max*talent.prismatic_crystal.enabled)*0.75*(1-0.1*(cooldown.arcane_power.remains<5))*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)<mana.pct-20-2.5*active_enemies*(9-active_enemies)+(cooldown.evocation.remains*1.8%spell_haste)",
@@ -5540,6 +5544,7 @@ void mage_t::apl_fire()
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"           );
 
+  action_priority_list_t* movement            = get_action_priority_list( "movement"         );
   action_priority_list_t* crystal_sequence    = get_action_priority_list( "crystal_sequence"  );
   action_priority_list_t* init_combust        = get_action_priority_list( "init_combust"      );
   action_priority_list_t* t17_2pc_combust     = get_action_priority_list( "t17_2pc_combust"   );
@@ -5553,14 +5558,9 @@ void mage_t::apl_fire()
   default_list -> add_action( "stop_pyro_chain,if=prev_off_gcd.combustion" );
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Blink",
-                              "if=movement.distance>10" );
-  default_list -> add_talent( this, "Blazing Speed",
-                              "if=movement.remains>0" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
-  default_list -> add_talent( this, "Ice Floes",
-                              "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)" );
+  default_list -> add_action( "call_action_list,name=movement,if=raid_event.movement.exists" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_action( "call_action_list,name=t17_2pc_combust,if=set_bonus.tier17_2pc&pyro_chain&(active_enemies>1|(talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains>15))" );
@@ -5574,6 +5574,14 @@ void mage_t::apl_fire()
                               "if=!(buff.heating_up.up&action.fireball.in_flight)" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>10" );
   default_list -> add_action( "call_action_list,name=single_target");
+
+
+  movement -> add_action( this, "Blink",
+                          "if=movement.distance>10" );
+  movement -> add_talent( this, "Blazing Speed",
+                          "if=movement.remains>0" );
+  movement -> add_talent( this, "Ice Floes",
+                          "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)" );
 
 
   // TODO: Add multi LB explosions on multitarget fights.
@@ -5749,6 +5757,7 @@ void mage_t::apl_frost()
 
   action_priority_list_t* default_list      = get_action_priority_list( "default"          );
 
+  action_priority_list_t* movement            = get_action_priority_list( "movement"         );
   action_priority_list_t* crystal_sequence  = get_action_priority_list( "crystal_sequence" );
   action_priority_list_t* cooldowns         = get_action_priority_list( "cooldowns"        );
   action_priority_list_t* init_water_jet    = get_action_priority_list( "init_water_jet"   );
@@ -5759,16 +5768,11 @@ void mage_t::apl_frost()
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Blink",
-                              "if=movement.distance>10" );
-  default_list -> add_talent( this, "Blazing Speed",
-                              "if=movement.remains>0" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
+  default_list -> add_action( "call_action_list,name=movement,if=raid_event.movement.exists" );
   default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
   default_list -> add_talent( this, "Mirror Image" );
-  default_list -> add_talent( this, "Ice Floes",
-                              "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.frostbolt.cast_time)" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power",
@@ -5779,6 +5783,14 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target" );
+
+
+  movement -> add_action( this, "Blink",
+                          "if=movement.distance>10" );
+  movement -> add_talent( this, "Blazing Speed",
+                          "if=movement.remains>0" );
+  movement -> add_talent( this, "Ice Floes",
+                          "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.frostbolt.cast_time)" );
 
 
   crystal_sequence -> add_talent( this, "Frost Bomb",

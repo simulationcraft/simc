@@ -28,11 +28,9 @@ actions.precombat+=/arcane_blast
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max
-actions+=/blink,if=movement.distance>10
-actions+=/blazing_speed,if=movement.remains>0
 actions+=/cold_snap,if=health.pct<30
 actions+=/time_warp,if=target.health.pct<25|time>5
-actions+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<2*spell_haste)
+actions+=/call_action_list,name=movement,if=raid_event.movement.exists
 actions+=/rune_of_power,if=buff.rune_of_power.remains<2*spell_haste
 actions+=/mirror_image
 actions+=/cold_snap,if=buff.presence_of_mind.down&cooldown.presence_of_mind.remains>75
@@ -40,6 +38,10 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=init_burn,if=!burn_phase
 actions+=/call_action_list,name=burn,if=burn_phase
 actions+=/call_action_list,name=conserve
+
+actions.movement=blink,if=movement.distance>10
+actions.movement+=/blazing_speed,if=movement.remains>0
+actions.movement+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<2*spell_haste)
 
 # Regular burn with evocation
 actions.init_burn=start_burn_phase,if=buff.arcane_charge.stack>=4&(cooldown.prismatic_crystal.up|!talent.prismatic_crystal.enabled)&(cooldown.arcane_power.up|(glyph.arcane_power.enabled&cooldown.arcane_power.remains>60))&(cooldown.evocation.remains-2*buff.arcane_missiles.stack*spell_haste-gcd.max*talent.prismatic_crystal.enabled)*0.75*(1-0.1*(cooldown.arcane_power.remains<5))*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)<mana.pct-20-2.5*active_enemies*(9-active_enemies)+(cooldown.evocation.remains*1.8%spell_haste)
