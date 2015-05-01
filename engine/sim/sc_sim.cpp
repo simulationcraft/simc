@@ -2594,6 +2594,9 @@ expr_t* sim_t::create_expression( action_t* a,
     std::string type = splits[ 1 ];
     std::string filter = splits[ 2 ];
 
+    if ( optimize_expressions && util::str_compare_ci( filter, "exists" ) )
+      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type, filter ) );
+
     struct raid_event_expr_t : public expr_t
     {
       sim_t* s;
