@@ -386,31 +386,6 @@ public:
     spec( spec_t() ),
     talents( talents_t() )
   {
-    // Cooldowns
-    cooldown.avatar                   = get_cooldown( "avatar" );
-    cooldown.bladestorm               = get_cooldown( "bladestorm" );
-    cooldown.bloodbath                = get_cooldown( "bloodbath" );
-    cooldown.charge                   = get_cooldown( "charge" );
-    cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
-    cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
-    cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
-    cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
-    cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
-    cooldown.last_stand               = get_cooldown( "last_stand" );
-    cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
-    cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
-    cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
-    cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
-    cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
-    cooldown.recklessness             = get_cooldown( "recklessness" );
-    cooldown.revenge                  = get_cooldown( "revenge" );
-    cooldown.shield_slam              = get_cooldown( "shield_slam" );
-    cooldown.shield_wall              = get_cooldown( "shield_wall" );
-    cooldown.shockwave                = get_cooldown( "shockwave" );
-    cooldown.stance_swap              = get_cooldown( "stance_swap" );
-    cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
-    cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
-
     initial_rage = 0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = true;
@@ -4012,6 +3987,31 @@ void warrior_t::init_spells()
     active.sweeping_strikes = new sweeping_strikes_attack_t( this );
     active.aoe_sweeping_strikes = new sweeping_strikes_aoe_attack_t( this );
   }
+
+    // Cooldowns
+    cooldown.avatar                   = get_cooldown( "avatar" );
+    cooldown.bladestorm               = get_cooldown( "bladestorm" );
+    cooldown.bloodbath                = get_cooldown( "bloodbath" );
+    cooldown.charge                   = get_cooldown( "charge" );
+    cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
+    cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
+    cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
+    cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
+    cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
+    cooldown.last_stand               = get_cooldown( "last_stand" );
+    cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
+    cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
+    cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
+    cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
+    cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
+    cooldown.recklessness             = get_cooldown( "recklessness" );
+    cooldown.revenge                  = get_cooldown( "revenge" );
+    cooldown.shield_slam              = get_cooldown( "shield_slam" );
+    cooldown.shield_wall              = get_cooldown( "shield_wall" );
+    cooldown.shockwave                = get_cooldown( "shockwave" );
+    cooldown.stance_swap              = get_cooldown( "stance_swap" );
+    cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
+    cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
   if ( !talents.gladiators_resolve -> ok() )
     gladiator = false;
