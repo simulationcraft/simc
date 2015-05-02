@@ -80,6 +80,7 @@ namespace item
   void spellbound_solium_band( special_effect_t& );
 
   /* Warlords of Draenor 6.2 */
+  void agi_dps_trinket_2( special_effect_t& );
   void agi_dps_trinket_3( special_effect_t& );
   void insatiable_hunger( special_effect_t& );
   void int_dps_trinket_3( special_effect_t& );
@@ -2552,6 +2553,146 @@ void item::agi_dps_trinket_3( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct bladestorm_tick_t : public melee_attack_t
+{
+  bladestorm_tick_t( pet_t* p ) :
+    melee_attack_t( "bladestorm_tick", p )
+  {
+    school = SCHOOL_PHYSICAL;
+
+    background = special = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+
+    weapon_multiplier = 0.25; // TODO: DBC
+
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  bool init_finished()
+  {
+    // Find first blademaster pet, it'll be the first trinket-created pet
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "blademaster" );
+    if ( player != main_pet )
+    {
+      stats = main_pet -> find_action( "bladestorm_tick" ) -> stats;
+    }
+
+    return melee_attack_t::init_finished();
+  }
+};
+
+struct bladestorm_t : public melee_attack_t
+{
+  bladestorm_t( pet_t* p ) :
+    melee_attack_t( "bladestorm", p )
+  {
+    // TODO: DBC
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    // Long enough to just constantly keep channeling this for the duration of the summon
+    dot_duration = timespan_t::from_seconds( 60.0 );
+    callbacks = may_miss = false;
+    channeled = true;
+
+    tick_action = new bladestorm_tick_t( p );
+  }
+
+  bool init_finished()
+  {
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "blademaster" );
+    if ( player != main_pet )
+    {
+      stats = main_pet -> find_action( "bladestorm" ) -> stats;
+    }
+
+    return melee_attack_t::init_finished();
+  }
+};
+
+struct blademaster_pet_t : public pet_t
+{
+  blademaster_pet_t( player_t* owner ) :
+    pet_t( owner -> sim, owner, "blademaster", true, true )
+  {
+    main_hand_weapon.type = WEAPON_BEAST;
+    // TODO: Verify in-game
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+
+    // TODO: Verify in-game
+    owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list()
+  {
+    action_list_str = "bladestorm";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "bladestorm" ) return new bladestorm_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+struct burning_mirror_t : public spell_t
+{
+  size_t n_mirrors;
+  std::vector<blademaster_pet_t*> pets;
+  const spell_data_t* summon_spell;
+
+  burning_mirror_t( const special_effect_t& effect ) :
+    spell_t( "burning_mirror", effect.player, effect.driver() ),
+    n_mirrors( static_cast<size_t>( effect.driver() -> effectN( 1 ).base_value() ) ),
+    summon_spell( effect.player -> find_spell( 184271 ) )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = harmful = false;
+
+    if ( effect.player -> specialization() == HUNTER_BEAST_MASTERY )
+    {
+      n_mirrors /= 2;
+    }
+
+    for ( size_t i = 0; i < n_mirrors; ++i )
+    {
+      pets.push_back( new blademaster_pet_t( effect.player ) );
+    }
+  }
+
+  void execute()
+  {
+    spell_t::execute();
+
+    for ( size_t i = 0; i < n_mirrors; ++i )
+    {
+      pets[ i ] -> summon( summon_spell -> duration() );
+    }
+  }
+};
+
+void item::agi_dps_trinket_2( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "burning_mirror" );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "burning_mirror", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new burning_mirror_t( effect );
+  }
+
+  effect.execute_action = action;
+  // Changing the special effect type to _USE (from _CUSTOM) is necessary so use_item_t action can
+  // properly detect the special effect.
+  effect.type = SPECIAL_EFFECT_USE;
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -3165,6 +3306,7 @@ void unique_gear::register_special_effect( unsigned spell_id, const std::string&
 void unique_gear::register_special_effects()
 {
   /* Warlords of Draenor 6.2 */
+  register_special_effect( 184270, item::agi_dps_trinket_2              );
   register_special_effect( 184291, item::agi_dps_trinket_3              );
   register_special_effect( 183942, item::insatiable_hunger              );
   register_special_effect( 184066, item::int_dps_trinket_4              );
