@@ -7290,23 +7290,6 @@ struct multistrike_execute_event_t : public event_t
         state -> action -> assess_damage( state -> result_type, state );
       else
         state -> action -> impact( state );
-
-      // Multistrike callbacks, if there are any
-      if ( state -> action -> callbacks )
-      {
-        proc_types pt = state -> proc_type();
-        proc_types2 pt2 = state -> execute_proc_type2();
-        if ( pt2 == PROC2_LANDED )
-          pt2 = state -> impact_proc_type2();
-
-        // "On an execute result"
-        if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-        {
-          action_callback_t::trigger( state -> action -> player -> callbacks.procs[ pt ][ pt2 ],
-                                      state -> action,
-                                      state );
-        }
-      }
     }
 
     action_state_t::release( state );
