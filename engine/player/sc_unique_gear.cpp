@@ -2553,10 +2553,10 @@ void item::agi_dps_trinket_3( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-struct bladestorm_tick_t : public melee_attack_t
+struct felstorm_tick_t : public melee_attack_t
 {
-  bladestorm_tick_t( pet_t* p ) :
-    melee_attack_t( "bladestorm_tick", p )
+  felstorm_tick_t( pet_t* p ) :
+    melee_attack_t( "felstorm_tick", p, p -> find_spell( 184280 ) )
   {
     school = SCHOOL_PHYSICAL;
 
@@ -2564,45 +2564,39 @@ struct bladestorm_tick_t : public melee_attack_t
     callbacks = false;
     aoe = -1;
 
-    weapon_multiplier = 0.25; // TODO: DBC
-
     weapon = &( p -> main_hand_weapon );
   }
 
   bool init_finished()
   {
     // Find first blademaster pet, it'll be the first trinket-created pet
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "blademaster" );
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "mirror_image_(trinket)" );
     if ( player != main_pet )
     {
-      stats = main_pet -> find_action( "bladestorm_tick" ) -> stats;
+      stats = main_pet -> find_action( "felstorm_tick" ) -> stats;
     }
 
     return melee_attack_t::init_finished();
   }
 };
 
-struct bladestorm_t : public melee_attack_t
+struct felstorm_t : public melee_attack_t
 {
-  bladestorm_t( pet_t* p ) :
-    melee_attack_t( "bladestorm", p )
+  felstorm_t( pet_t* p ) :
+    melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
   {
-    // TODO: DBC
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    // Long enough to just constantly keep channeling this for the duration of the summon
-    dot_duration = timespan_t::from_seconds( 60.0 );
     callbacks = may_miss = false;
     channeled = true;
 
-    tick_action = new bladestorm_tick_t( p );
+    tick_action = new felstorm_tick_t( p );
   }
 
   bool init_finished()
   {
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "blademaster" );
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "mirror_image_(trinket)" );
     if ( player != main_pet )
     {
-      stats = main_pet -> find_action( "bladestorm" ) -> stats;
+      stats = main_pet -> find_action( "felstorm" ) -> stats;
     }
 
     return melee_attack_t::init_finished();
@@ -2612,19 +2606,19 @@ struct bladestorm_t : public melee_attack_t
 struct blademaster_pet_t : public pet_t
 {
   blademaster_pet_t( player_t* owner ) :
-    pet_t( owner -> sim, owner, "blademaster", true, true )
+    pet_t( owner -> sim, owner, "mirror_image_(trinket)", true, true )
   {
     main_hand_weapon.type = WEAPON_BEAST;
     // TODO: Verify in-game
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
-    // TODO: Verify in-game
+    // TODO: Verify in-game, this is also likely the thing that scales the pets
     owner_coeff.ap_from_ap = 1.0;
   }
 
   void init_action_list()
   {
-    action_list_str = "bladestorm";
+    action_list_str = "felstorm";
 
     pet_t::init_action_list();
   }
@@ -2632,7 +2626,7 @@ struct blademaster_pet_t : public pet_t
   action_t* create_action( const std::string& name,
                            const std::string& options_str )
   {
-    if ( name == "bladestorm" ) return new bladestorm_t( this );
+    if ( name == "felstorm" ) return new felstorm_t( this );
 
     return pet_t::create_action( name, options_str );
   }

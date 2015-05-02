@@ -1292,7 +1292,8 @@ class SpellDataGenerator(DataGenerator):
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
          179154, 179155, 179156, 179157, # T17 LFR cloth dps set bonus nukes
          183950,                    # Darklight Ray (WoD 6.2 Int DPS Trinket 3 damage spell)
-	 184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
+         184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
+         184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
         ),
 
         # Warrior:
