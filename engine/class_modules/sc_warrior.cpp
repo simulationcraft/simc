@@ -1057,7 +1057,7 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < war
     dual = true;
   }
 
-  void trigger_bloodbath_dot( player_t* t, double dmg ) // Bloodbath doesn't trigger itself.
+  void trigger_bloodbath_dot( player_t*, double ) // Bloodbath doesn't trigger itself.
   {}
 };
 
@@ -2382,7 +2382,7 @@ struct ravager_tick_t: public warrior_attack_t
     dual = true;
   }
 
-  void trigger_sweeping_strikes( action_state_t* s ) // Ravager doesn't proc Sweeping Strikes. Check after each patch because this could change without Blizzard telling us.
+  void trigger_sweeping_strikes( action_state_t* ) // Ravager doesn't proc Sweeping Strikes. Check after each patch because this could change without Blizzard telling us.
   {}
 };
 
