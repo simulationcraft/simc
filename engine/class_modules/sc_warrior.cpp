@@ -775,16 +775,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     special = true;
   }
 
-  virtual void execute()
+  virtual void assess_damage( dmg_e type, action_state_t* s )
   {
-    base_t::execute();
-    if ( p() -> buff.sweeping_strikes -> up() )
-      trigger_sweeping_strikes( execute_state );
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    base_t::impact( s );
+    base_t::assess_damage( type, s );
 
     if ( s -> result_amount > 0 )
     {
@@ -794,6 +787,13 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
           trigger_bloodbath_dot( s -> target, s -> result_amount );
       }
     }
+  }
+
+  virtual void execute()
+  {
+    base_t::execute();
+    if ( p() -> buff.sweeping_strikes -> up() )
+      trigger_sweeping_strikes( execute_state );
   }
 
   virtual double calculate_weapon_damage( double attack_power )
@@ -815,7 +815,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     return dmg;
   }
 
-  void trigger_bloodbath_dot( player_t* t, double dmg )
+  virtual void trigger_bloodbath_dot( player_t* t, double dmg )
   {
     residual_action::trigger(
       p() -> active.bloodbath_dot, // ignite spell
@@ -823,7 +823,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
   }
 
-  void trigger_sweeping_strikes( action_state_t* s )
+  virtual void trigger_sweeping_strikes( action_state_t* s )
   {
     warrior_t* p = debug_cast<warrior_t*>( s -> action -> player );
 
@@ -996,6 +996,9 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < war
   {
     dual = true;
   }
+
+  void trigger_bloodbath_dot( player_t* t, double dmg ) // Bloodbath doesn't trigger itself.
+  {}
 };
 
 // Melee Attack =============================================================
@@ -1553,6 +1556,7 @@ struct deep_wounds_t: public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
+    dot_behavior = DOT_REFRESH;
   }
 };
 
@@ -1570,8 +1574,7 @@ struct demoralizing_shout: public warrior_attack_t
   void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
+    td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
   }
 };
 
@@ -2337,6 +2340,9 @@ struct ravager_tick_t: public warrior_attack_t
     aoe = -1;
     dual = true;
   }
+
+  void trigger_sweeping_strikes( action_state_t* s ) // Ravager doesn't proc Sweeping Strikes. Check after each patch because this could change without Blizzard telling us.
+  {}
 };
 
 struct ravager_t: public warrior_attack_t
