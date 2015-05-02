@@ -769,15 +769,32 @@ struct warrior_heal_t: public warrior_action_t < heal_t >
 struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 {
   warrior_attack_t( const std::string& n, warrior_t* p,
-                    const spell_data_t* s = spell_data_t::nil() ):
-                    base_t( n, p, s )
+    const spell_data_t* s = spell_data_t::nil() ):
+    base_t( n, p, s )
   {
     special = true;
   }
 
-  virtual void   execute();
+  virtual void execute()
+  {
+    base_t::execute();
+    if ( p() -> buff.sweeping_strikes -> up() )
+      trigger_sweeping_strikes( execute_state );
+  }
 
-  virtual void   impact( action_state_t* s );
+  virtual void impact( action_state_t* s )
+  {
+    base_t::impact( s );
+
+    if ( s -> result_amount > 0 )
+    {
+      if ( result_is_hit_or_multistrike( s -> result ) )
+      {
+        if ( p() -> buff.bloodbath -> up() && special )
+          trigger_bloodbath_dot( s -> target, s -> result_amount );
+      }
+    }
+  }
 
   virtual double calculate_weapon_damage( double attack_power )
   {
@@ -792,13 +809,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       dmg *= 1.0 + p() -> spec.crazed_berserker -> effectN( 2 ).percent();
 
       if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-           p() -> off_hand_weapon.group() == WEAPON_1H )
-           dmg *= 1.0 + p() -> spec.singleminded_fury -> effectN( 2 ).percent();
+        p() -> off_hand_weapon.group() == WEAPON_1H )
+        dmg *= 1.0 + p() -> spec.singleminded_fury -> effectN( 2 ).percent();
     }
     return dmg;
   }
-
-  // helper functions
 
   void trigger_bloodbath_dot( player_t* t, double dmg )
   {
@@ -807,78 +822,34 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       t, // target
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
   }
-};
 
-// trigger_bloodbath ========================================================
-
-struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
-{
-  bloodbath_dot_t( warrior_t* p ):
-    base_t( "bloodbath", p, p -> find_spell( 113344 ) )
+  void trigger_sweeping_strikes( action_state_t* s )
   {
-    dual = true;
-  }
-};
+    warrior_t* p = debug_cast<warrior_t*>( s -> action -> player );
 
-// ==========================================================================
-// Static Functions
-// ==========================================================================
+    if ( s -> action -> result_is_miss( s -> result ) )
+      return;
 
-// trigger_sweeping_strikes =================================================
+    if ( s -> action -> sim -> active_enemies == 1 )
+      return;
 
-static void trigger_sweeping_strikes( action_state_t* s )
-{
-  warrior_t* p = debug_cast<warrior_t*>( s -> action -> player );
+    if ( s -> result_total <= 0 )
+      return;
 
-  if ( s -> action -> result_is_miss( s -> result ) )
-    return;
-
-  if ( s -> action -> sim -> active_enemies == 1 )
-    return;
-
-  if ( s -> result_total <= 0 )
-    return;
-
-  if ( !s -> action -> is_aoe() )
-  {
-    p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
-    p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
-    p -> active.sweeping_strikes -> execute();
-  }
-  else
-  {
-    p -> active.aoe_sweeping_strikes -> execute();
-  }
-}
-
-// ==========================================================================
-// Warrior Attacks
-// ==========================================================================
-
-// warrior_attack_t::execute ================================================
-
-void warrior_attack_t::execute()
-{
-  base_t::execute();
-  if ( p() -> buff.sweeping_strikes -> up() )
-    trigger_sweeping_strikes( execute_state );
-  }
-
-// warrior_attack_t::impact =================================================
-
-void warrior_attack_t::impact( action_state_t* s )
-{
-  base_t::impact( s );
-
-  if ( s -> result_amount > 0 )
-  {
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( !s -> action -> is_aoe() )
     {
-      if ( p() -> buff.bloodbath -> up() && special )
-        trigger_bloodbath_dot( s -> target, s -> result_amount );
+      p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
+      p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
+      p -> active.sweeping_strikes -> execute();
+    }
+    else
+    {
+      p -> active.aoe_sweeping_strikes -> execute();
     }
   }
-}
+};
+
+// AoE Sweeping Strikes Attack ==============================================
 
 struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
 {
@@ -941,6 +912,8 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
       p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
   }
 };
+
+// Sweeping Strikes Attack ======================================================
 
 struct sweeping_strikes_attack_t: public warrior_attack_t
 {
@@ -1011,6 +984,17 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
     }
 
     return target_cache.list;
+  }
+};
+
+// Bloodbath Dot ============================================================
+
+struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
+{
+  bloodbath_dot_t( warrior_t* p ):
+    base_t( "bloodbath", p, p -> find_spell( 113344 ) )
+  {
+    dual = true;
   }
 };
 
@@ -1557,6 +1541,18 @@ struct colossus_smash_t: public warrior_attack_t
           p() -> proc.t17_2pc_arms -> occur();
       }
     }
+  }
+};
+
+// Deep Wounds ==============================================================
+
+struct deep_wounds_t: public warrior_attack_t
+{
+  deep_wounds_t( warrior_t* p ):
+    warrior_attack_t( "deep_wounds", p, p -> spec.deep_wounds -> effectN( 2 ).trigger() )
+  {
+    background = tick_may_crit = true;
+    hasted_ticks = false;
   }
 };
 
@@ -2331,6 +2327,51 @@ struct raging_blow_t: public warrior_attack_t
   }
 };
 
+// Ravager ==============================================================
+
+struct ravager_tick_t: public warrior_attack_t
+{
+  ravager_tick_t( warrior_t* p, const std::string& name ):
+    warrior_attack_t( name, p, p -> find_spell( 156287 ) )
+  {
+    aoe = -1;
+    dual = true;
+  }
+};
+
+struct ravager_t: public warrior_attack_t
+{
+  ravager_tick_t* ravager;
+  ravager_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "ravager", p, p -> talents.ravager ),
+    ravager( new ravager_tick_t( p, "ravager_tick" ) )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    hasted_ticks = callbacks = false;
+    dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
+    attack_power_mod.direct = attack_power_mod.tick = 0;
+    add_child( ravager );
+  }
+
+  void execute()
+  {
+    if ( p() -> specialization() == WARRIOR_PROTECTION )
+      p() -> buff.ravager_protection -> trigger();
+    else
+      p() -> buff.ravager -> trigger();
+
+    warrior_attack_t::execute();
+  }
+
+  void tick( dot_t*d )
+  {
+    ravager -> execute();
+    warrior_attack_t::tick( d );
+  }
+};
+
 // Revenge ==================================================================
 
 struct revenge_t: public warrior_attack_t
@@ -2427,6 +2468,20 @@ struct enraged_regeneration_t: public warrior_heal_t
 };
 
 // Rend ==============================================================
+
+struct enhanced_rend_t: public warrior_attack_t
+{
+  enhanced_rend_t( warrior_t* p ):
+    warrior_attack_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
+  {
+    background = true;
+  }
+
+  double target_armor( player_t* ) const
+  {
+    return 0.0;
+  }
+};
 
 struct rend_burst_t: public warrior_attack_t
 {
@@ -3197,18 +3252,6 @@ struct commanding_shout_t: public warrior_spell_t
   }
 };
 
-// Deep Wounds ==============================================================
-
-struct deep_wounds_t: public warrior_spell_t
-{
-  deep_wounds_t( warrior_t* p ):
-    warrior_spell_t( "deep_wounds", p, p -> spec.deep_wounds -> effectN( 2 ).trigger() )
-  {
-    background = tick_may_crit = true;
-    hasted_ticks = false;
-  }
-};
-
 // Die By the Sword  ==============================================================
 
 struct die_by_the_sword_t: public warrior_spell_t
@@ -3233,22 +3276,6 @@ struct die_by_the_sword_t: public warrior_spell_t
       return false;
 
     return warrior_spell_t::ready();
-  }
-};
-
-// Enhanced Rend ==============================================================
-
-struct enhanced_rend_t: public warrior_spell_t
-{
-  enhanced_rend_t( warrior_t* p ):
-    warrior_spell_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
-  {
-    may_crit = background = true;
-  }
-
-  double target_armor( player_t* ) const
-  {
-    return 0.0;
   }
 };
 
@@ -3288,51 +3315,6 @@ struct rallying_cry_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
     p() -> buff.rallying_cry -> trigger();
-  }
-};
-
-// Ravager ==============================================================
-
-struct ravager_tick_t: public warrior_spell_t
-{
-  ravager_tick_t( warrior_t* p, const std::string& name ):
-    warrior_spell_t( name, p, p -> find_spell( 156287 ) )
-  {
-    aoe = -1;
-    dual = may_crit = true;
-  }
-};
-
-struct ravager_t: public warrior_spell_t
-{
-  spell_t* ravager;
-  ravager_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "ravager", p, p -> talents.ravager ),
-    ravager( new ravager_tick_t( p, "ravager_tick" ) )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    hasted_ticks = callbacks = false;
-    dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
-    attack_power_mod.direct = attack_power_mod.tick = 0;
-    add_child( ravager );
-  }
-
-  void execute()
-  {
-    if ( p() -> specialization() == WARRIOR_PROTECTION )
-      p() -> buff.ravager_protection -> trigger();
-    else
-      p() -> buff.ravager -> trigger();
-
-    warrior_spell_t::execute();
-  }
-
-  void tick( dot_t*d )
-  {
-    ravager -> execute();
-    warrior_spell_t::tick( d );
   }
 };
 
