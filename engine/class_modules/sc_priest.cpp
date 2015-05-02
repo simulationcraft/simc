@@ -1454,7 +1454,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     if ( priest.active_items.naarus_discipline )
     {
-      s -> target -> buffs.naarus_discipline -> trigger();
+      const item_t* item = priest.active_items.naarus_discipline -> item;
+      double stacks = 1;
+      double value = priest.active_items.naarus_discipline -> trigger() -> effectN( 1 ).average( item ) / 100.0;
+      s -> target -> buffs.naarus_discipline -> trigger( stacks, value );
     }
   }
 };
@@ -1596,7 +1599,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest_td_t& td = get_td( t );
       if ( td.buffs.mental_fatigue -> check() )
       {
-        am *= 1.0 + td.buffs.mental_fatigue -> check() * td.buffs.mental_fatigue -> data().effectN( 1 ).percent();
+        assert( priest.active_items.mental_fatigue );
+        const item_t* item = priest.active_items.mental_fatigue -> item;
+        am *= 1.0 + td.buffs.mental_fatigue -> check() * td.buffs.mental_fatigue -> data().effectN( 1 ).average( item ) / 100.0;
       }
     }
 
@@ -4252,6 +4257,8 @@ struct flash_heal_t : public priest_heal_t
 
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
+
+    trigger_naarus_discipline( s );
   }
 
   virtual timespan_t execute_time() const override
@@ -4323,6 +4330,8 @@ struct _heal_t : public priest_heal_t
 
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
+
+    trigger_naarus_discipline( s );
   }
 
   virtual double action_multiplier() const override
@@ -4330,6 +4339,12 @@ struct _heal_t : public priest_heal_t
     double am = priest_heal_t::action_multiplier();
 
     am *= 1.0 + priest.sets.set( SET_HEALER, T16, B2 ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
+
+    if ( priest.active_items.complete_healing && priest.buffs.chakra_sanctuary -> check() )
+    {
+      const item_t* item = priest.active_items.complete_healing -> item;
+      am *= 1.0 + priest.active_items.complete_healing -> driver() -> effectN( 3 ).average( item ) / 100.0;
+    }
 
     return am;
   }
@@ -4341,6 +4356,12 @@ struct _heal_t : public priest_heal_t
     if ( priest.buffs.serendipity -> check() )
       c *= 1.0 + priest.buffs.serendipity -> check() * priest.buffs.serendipity -> data().effectN( 2 ).percent();
 
+    if ( priest.active_items.complete_healing && priest.buffs.chakra_sanctuary -> check() )
+    {
+      const item_t* item = priest.active_items.complete_healing -> item;
+      c *= 1.0 + priest.active_items.complete_healing -> driver() -> effectN( 1 ).average( item ) / 100.0;
+    }
+
     return c;
   }
 
@@ -4350,6 +4371,13 @@ struct _heal_t : public priest_heal_t
 
     if ( priest.buffs.serendipity -> check() )
       et *= 1.0 + priest.buffs.serendipity -> check() * priest.buffs.serendipity -> data().effectN( 1 ).percent();
+
+
+    if ( priest.active_items.complete_healing && priest.buffs.chakra_sanctuary -> check() )
+    {
+      const item_t* item = priest.active_items.complete_healing -> item;
+      et *= 1.0 + priest.active_items.complete_healing -> driver() -> effectN( 1 ).average( item ) / 100.0;
+    }
 
     return et;
   }
@@ -4644,6 +4672,8 @@ struct penance_heal_t : public priest_heal_t
         // 2015-04-14: Your Penance [...] each time it deals damage or heals.
         priest.buffs.reperation -> trigger();
       }
+
+      trigger_naarus_discipline( state );
     }
   };
 
@@ -4779,6 +4809,12 @@ struct prayer_of_healing_t : public priest_heal_t
     trigger_divine_insight();
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    trigger_naarus_discipline( s );
+  }
   virtual double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
