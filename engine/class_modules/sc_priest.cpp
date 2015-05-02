@@ -2060,6 +2060,7 @@ struct summon_shadowfiend_t : public summon_pet_t
     summoning_duration = data().duration();
     cooldown = p.cooldowns.shadowfiend;
     cooldown -> duration = data().cooldown();
+    cooldown -> duration += priest.sets.set(PRIEST_SHADOW, T18, B2 ) -> effectN( 1 ).time_value();
   }
 };
 
@@ -2074,6 +2075,7 @@ struct summon_mindbender_t : public summon_pet_t
     summoning_duration = data().duration();
     cooldown = p.cooldowns.mindbender;
     cooldown -> duration = data().cooldown();
+    cooldown -> duration += priest.sets.set(PRIEST_SHADOW, T18, B2 ) -> effectN( 2 ).time_value();
   }
 };
 
