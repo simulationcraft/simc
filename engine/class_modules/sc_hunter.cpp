@@ -1658,9 +1658,6 @@ struct dire_critter_t: public hunter_pet_t
     melee_t( dire_critter_t& p ):
       base_t( "dire_beast_melee", p )
     {
-      if ( p.o() -> pet_dire_beasts[0] )
-        stats = p.o() -> pet_dire_beasts[0] -> get_stats( "dire_beast_melee" );
-
       weapon = &( player -> main_hand_weapon );
       weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
@@ -1675,6 +1672,14 @@ struct dire_critter_t: public hunter_pet_t
       special = false;
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
       base_multiplier *= 1.15; // Hotfix
+    }
+
+    bool init_finished()
+    {
+      if ( p() -> o() -> pet_dire_beasts[ 0 ] )
+        stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
+
+      return hunter_pet_action_t<dire_critter_t, melee_attack_t>::init_finished();
     }
 
     virtual void impact( action_state_t* s )
@@ -3187,10 +3192,14 @@ struct dire_beast_t: public hunter_spell_t
     school = SCHOOL_PHYSICAL;
   }
 
-  virtual void init()
+  bool init_finished()
   {
-    hunter_spell_t::init();
-    stats -> add_child( p() -> pet_dire_beasts[0] -> get_stats( "dire_beast_melee" ) );
+    if ( p() -> pet_dire_beasts[ 0 ] )
+    {
+      stats -> add_child( p() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" ) );
+    }
+
+    return hunter_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -3323,11 +3332,17 @@ struct kill_command_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = false;
+  }
+
+  bool init_finished()
+  {
     for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
     {
       pet_t* pet = p() -> pet_list[i];
       stats -> add_child( pet -> get_stats( "kill_command" ) );
     }
+
+    return hunter_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -3388,6 +3403,7 @@ struct rapid_fire_t: public hunter_spell_t
 
 struct summon_pet_t: public hunter_spell_t
 {
+  std::string pet_name;
   pet_t* pet;
   summon_pet_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "summon_pet", player ),
@@ -3396,13 +3412,23 @@ struct summon_pet_t: public hunter_spell_t
     harmful = false;
     callbacks = false;
     ignore_false_positive = true;
-    std::string pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
-    pet = p() -> find_pet( pet_name );
-    if ( !pet && !player -> talents.lone_wolf -> ok() )
+    pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
+  }
+
+  bool init_finished()
+  {
+    if ( ! pet )
+    {
+      pet = player -> find_pet( pet_name );
+    }
+
+    if ( ! pet && ! p() -> talents.lone_wolf -> ok() )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", p() -> name(), pet_name.c_str() );
       sim -> cancel();
     }
+
+    return hunter_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -3545,13 +3571,20 @@ void hunter_t::create_pets()
   create_pet( "chimaera", "chimaera" );
   create_pet( "wind_serpent", "wind_serpent" );
 
-  for ( size_t i = 0; i < pet_dire_beasts.size(); ++i )
+  if ( talents.dire_beast -> ok() )
   {
-    pet_dire_beasts[i] = new pets::dire_critter_t( *this, i + 1 );
+    for ( size_t i = 0; i < pet_dire_beasts.size(); ++i )
+    {
+      pet_dire_beasts[i] = new pets::dire_critter_t( *this, i + 1 );
+    }
   }
-  for ( int i = 0; i < 10; i++ )
+
+  if ( sets.has_set_bonus( SET_MELEE, T15, B2 ) )
   {
-    thunderhawk[i] = new pets::tier15_thunderhawk_t( *this );
+    for ( int i = 0; i < 10; i++ )
+    {
+      thunderhawk[i] = new pets::tier15_thunderhawk_t( *this );
+    }
   }
 }
 
@@ -4670,16 +4703,13 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184902, blackness);
   }
 
-  virtual void init( sim_t* sim ) const
+  virtual void init( player_t* p ) const
   {
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[i];
-
-      p -> buffs.aspect_of_the_pack    = buff_creator_t( p, "aspect_of_the_pack", p -> find_class_spell( "Aspect of the Pack" ) );
-      p -> buffs.aspect_of_the_fox     = buff_creator_t( p, "aspect_of_the_fox", p -> find_spell( 172106 ) )
-        .cd( timespan_t::zero() );
-    }
+    p -> buffs.aspect_of_the_pack = buff_creator_t( p, "aspect_of_the_pack",
+                                                    p -> find_class_spell( "Aspect of the Pack" ) );
+    p -> buffs.aspect_of_the_fox  = buff_creator_t( p, "aspect_of_the_fox",
+                                    p -> find_spell( 172106 ) )
+      .cd( timespan_t::zero() );
   }
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}

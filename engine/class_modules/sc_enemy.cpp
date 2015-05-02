@@ -1649,7 +1649,7 @@ struct enemy_module_t : public module_t
     return p;
   }
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {}
+  virtual void init        ( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };
@@ -1666,7 +1666,7 @@ struct heal_enemy_module_t : public module_t
     return p;
   }
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {}
+  virtual void init        ( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };
@@ -1683,7 +1683,7 @@ struct tmi_enemy_module_t : public module_t
     return p;
   }
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {}
+  virtual void init        ( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };
@@ -1700,7 +1700,7 @@ struct tank_dummy_enemy_module_t : public module_t
     return p;
   }
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {}
+  virtual void init        ( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };

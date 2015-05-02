@@ -1582,7 +1582,9 @@ struct divine_shield_t : public paladin_spell_t
     }
 
     // trigger forbearance
-    p() -> debuffs.forbearance -> trigger();
+    timespan_t duration = p() -> debuffs.forbearance -> data().duration();
+    duration += p() -> perk.improved_forbearance -> effectN( 1 ).time_value();
+    p() -> debuffs.forbearance -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration  );
   }
 
   virtual bool ready()
@@ -5724,13 +5726,6 @@ void paladin_t::init_spells()
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
 
-  const spell_data_t* temp_forbearance = find_spell( 25771 );
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[ i ];
-    p -> debuffs.forbearance -> buff_duration = temp_forbearance -> duration() + timespan_t::from_millis( perk.improved_forbearance -> effectN( 1 ).base_value() );
-  }
-  
   rppm_defender_of_the_light.set_frequency( sets.set( PALADIN_PROTECTION, T17, B4 ) -> real_ppm() );
 
   // Holy Mastery uses effect#2 by default
@@ -6715,16 +6710,12 @@ struct paladin_module_t : public module_t
 
   virtual bool valid() const { return true; }
 
-  virtual void init( sim_t* sim ) const
+  virtual void init( player_t* p ) const
   {
-    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[i];
-      p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
-      p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
-      p -> buffs.devotion_aura            = buff_creator_t( p, "devotion_aura", p -> find_spell( 31821 ) );
-      p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
-    }
+    p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
+    p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
+    p -> buffs.devotion_aura            = buff_creator_t( p, "devotion_aura", p -> find_spell( 31821 ) );
+    p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
   }
 
   virtual void combat_begin( sim_t* ) const {}

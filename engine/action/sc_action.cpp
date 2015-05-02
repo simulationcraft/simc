@@ -1906,21 +1906,6 @@ void action_t::init()
     sim -> errorf( "Player %s trying to use both cycle_targets and a numerical target for action %s - defaulting to cycle_targets\n", player -> name(), name() );
   }
 
-  if ( ! if_expr_str.empty() )
-  {
-    if_expr = expr_t::parse( this, if_expr_str, sim -> optimize_expressions );
-  }
-
-  if ( ! interrupt_if_expr_str.empty() )
-  {
-    interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str, sim -> optimize_expressions );
-  }
-
-  if ( ! early_chain_if_expr_str.empty() )
-  {
-    early_chain_if_expr = expr_t::parse( this, early_chain_if_expr_str, sim -> optimize_expressions );
-  }
-
   if ( tick_action )
   {
     tick_action -> direct_tick = true;
@@ -2008,6 +1993,31 @@ void action_t::init()
 
   // Setup default target in init
   default_target = target;
+}
+
+bool action_t::init_finished()
+{
+  bool ret = true;
+
+  if ( ! if_expr_str.empty() &&
+       ( if_expr = expr_t::parse( this, if_expr_str, sim -> optimize_expressions ) ) == 0 )
+  {
+    ret = false;
+  }
+
+  if ( ! interrupt_if_expr_str.empty() &&
+       ( interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str, sim -> optimize_expressions ) ) == 0 )
+  {
+    ret = false;
+  }
+
+  if ( ! early_chain_if_expr_str.empty() &&
+       ( early_chain_if_expr = expr_t::parse( this, early_chain_if_expr_str, sim -> optimize_expressions ) ) == 0 )
+  {
+    ret = false;
+  }
+
+  return ret;
 }
 
 void action_t::init_target_cache()

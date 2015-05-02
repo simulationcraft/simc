@@ -131,7 +131,7 @@ public:
   spell_t*  molten_earth;
 
   // Pets
-  pet_t* pet_feral_spirit[4];
+  std::vector<pet_t*> pet_feral_spirit;
   pet_t* pet_fire_elemental;
   pet_t* guardian_fire_elemental;
   pet_t* pet_storm_elemental;
@@ -405,11 +405,8 @@ public:
     spell(),
     rppm_echo_of_the_elements( *this, 0, RPPM_HASTE )
   {
-    for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
-      pet_feral_spirit[ i ] = 0;
-
-    // Totem tracking
-    for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
+    range::fill( pet_feral_spirit, 0 );
+    range::fill( totems, 0 );
 
     // Cooldowns
     cooldown.ancestral_swiftness  = get_cooldown( "ancestral_swiftness"   );
@@ -3272,7 +3269,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     int n = 0;
-    for ( size_t i = 0; i < sizeof_array( p() -> pet_feral_spirit ) && n < data().effectN( 1 ).base_value(); i++ )
+    for ( size_t i = 0; i < p() -> pet_feral_spirit.size() && n < data().effectN( 1 ).base_value(); i++ )
     {
       if ( ! p() -> pet_feral_spirit[ i ] -> is_sleeping() )
         continue;
@@ -3812,28 +3809,6 @@ struct healing_rain_t : public shaman_heal_t
 // Shaman Totem System
 // ==========================================================================
 
-struct totem_active_expr_t : public expr_t
-{
-  pet_t& pet;
-  totem_active_expr_t( pet_t& p ) :
-    expr_t( "totem_active" ), pet( p ) { }
-  virtual double evaluate() { return ! pet.is_sleeping(); }
-};
-
-struct totem_remains_expr_t : public expr_t
-{
-  pet_t& pet;
-  totem_remains_expr_t( pet_t& p ) :
-    expr_t( "totem_remains" ), pet( p ) { }
-  virtual double evaluate()
-  {
-    if ( pet.is_sleeping() || ! pet.expiration )
-      return 0.0;
-
-    return pet.expiration -> remains().total_seconds();
-  }
-};
-
 struct shaman_totem_pet_t : public pet_t
 {
   totem_e               totem_type;
@@ -3844,6 +3819,7 @@ struct shaman_totem_pet_t : public pet_t
   timespan_t            pulse_amplitude;
 
   // Summon related functionality
+  std::string           pet_name;
   pet_t*                summon_pet;
 
   // Liquid Magma 
@@ -3854,13 +3830,24 @@ struct shaman_totem_pet_t : public pet_t
     pet_t( p -> sim, p, n, true ),
     totem_type( tt ),
     pulse_action( 0 ), pulse_event( 0 ), pulse_amplitude( timespan_t::zero() ),
-    summon_pet( 0 ), liquid_magma( 0 ), liquid_magma_action( 0 )
+    summon_pet( 0 ),
+    liquid_magma( 0 ), liquid_magma_action( 0 )
   {
     regen_type = REGEN_DISABLED;
   }
 
   virtual void summon( timespan_t = timespan_t::zero() );
   virtual void dismiss();
+
+  bool init_finished()
+  {
+    if ( ! pet_name.empty() )
+    {
+      summon_pet = owner -> find_pet( pet_name );
+    }
+
+    return pet_t::init_finished();
+  }
 
   shaman_t* o()
   { return debug_cast< shaman_t* >( owner ); }
@@ -3882,11 +3869,7 @@ struct shaman_totem_pet_t : public pet_t
 
   virtual expr_t* create_expression( action_t* a, const std::string& name )
   {
-    if ( util::str_compare_ci( name, "active" ) )
-      return new totem_active_expr_t( *this );
-    else if ( util::str_compare_ci( name, "remains" ) )
-      return new totem_remains_expr_t( *this );
-    else if ( util::str_compare_ci( name, "duration" ) )
+    if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, duration );
 
     return pet_t::create_expression( a, name );
@@ -3916,9 +3899,14 @@ struct shaman_totem_t : public shaman_spell_t
   {
     totem = true;
     harmful = callbacks = may_miss = may_crit = uses_unleash_flame = false;
-    totem_pet      = dynamic_cast< shaman_totem_pet_t* >( player -> find_pet( name() ) );
-    assert( totem_pet != 0 );
     ignore_false_positive = true;
+  }
+
+  bool init_finished()
+  {
+    totem_pet = debug_cast< shaman_totem_pet_t* >( player -> find_pet( name() ) );
+
+    return shaman_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -3929,14 +3917,27 @@ struct shaman_totem_t : public shaman_spell_t
 
   virtual expr_t* create_expression( const std::string& name )
   {
+    // Redirect active/remains to "pet.<totem name>.active/remains" so things work ok with the
+    // pet initialization order shenanigans. Otherwise, at this point in time (when
+    // create_expression is called), the pets don't actually exist yet.
     if ( util::str_compare_ci( name, "active" ) )
-      return new totem_active_expr_t( *totem_pet );
+      return player -> create_expression( this, "pet." + name_str + ".active" );
     else if ( util::str_compare_ci( name, "remains" ) )
-      return new totem_remains_expr_t( *totem_pet );
+      return player -> create_expression( this, "pet." + name_str + ".remains" );
     else if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, totem_duration );
 
     return shaman_spell_t::create_expression( name );
+  }
+
+  bool ready()
+  {
+    if ( ! totem_pet )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -4105,17 +4106,11 @@ struct earth_elemental_totem_t : public shaman_totem_pet_t
 {
   earth_elemental_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "earth_elemental_totem", TOTEM_EARTH )
-  { }
-
-  void init_spells()
   {
     if ( o() -> talent.primal_elementalist -> ok() )
-      summon_pet = o() -> find_pet( "primal_earth_elemental" );
+      pet_name = "primal_earth_elemental";
     else
-      summon_pet = o() -> find_pet( "greater_earth_elemental" );
-    assert( summon_pet != 0 );
-
-    shaman_totem_pet_t::init_spells();
+      pet_name = "greater_earth_elemental";
   }
 };
 
@@ -4143,17 +4138,11 @@ struct fire_elemental_totem_t : public shaman_totem_pet_t
 {
   fire_elemental_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "fire_elemental_totem", TOTEM_FIRE )
-  { }
-
-  void init_spells()
   {
     if ( o() -> talent.primal_elementalist -> ok() )
-      summon_pet = o() -> find_pet( "primal_fire_elemental" );
+      pet_name = "primal_fire_elemental";
     else
-      summon_pet = o() -> find_pet( "greater_fire_elemental" );
-    assert( summon_pet != 0 );
-
-    shaman_totem_pet_t::init_spells();
+      pet_name = "greater_fire_elemental";
   }
 };
 
@@ -4184,17 +4173,11 @@ struct storm_elemental_totem_t : public shaman_totem_pet_t
 {
   storm_elemental_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "storm_elemental_totem", TOTEM_AIR )
-  { }
-
-  void init_spells()
   {
     if ( o() -> talent.primal_elementalist -> ok() )
-      summon_pet = o() -> find_pet( "primal_storm_elemental" );
+      pet_name = "primal_storm_elemental";
     else
-      summon_pet = o() -> find_pet( "greater_storm_elemental" );
-    assert( summon_pet != 0 );
-
-    shaman_totem_pet_t::init_spells();
+      pet_name = "greater_storm_elemental";
   }
 };
 
@@ -4673,32 +4656,92 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
-  pet_fire_elemental       = create_pet( "fire_elemental_pet"       );
-  guardian_fire_elemental  = create_pet( "fire_elemental_guardian"  );
-  pet_storm_elemental      = create_pet( "storm_elemental_pet"      );
-  guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
-  pet_earth_elemental      = create_pet( "earth_elemental_pet"      );
-  guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
-  guardian_lightning_elemental = new lightning_elemental_t( this );
+  if ( talent.primal_elementalist -> ok() )
+  {
+    if ( find_action( "fire_elemental_totem" )  )
+    {
+      pet_fire_elemental = create_pet( "fire_elemental_pet" );
+    }
+
+    if ( find_action( "earth_elemental_totem" ) )
+    {
+      pet_earth_elemental = create_pet( "earth_elemental_pet" );
+    }
+
+    if ( talent.storm_elemental_totem -> ok() && find_action( "storm_elemental_totem" ) )
+    {
+      pet_storm_elemental = create_pet( "storm_elemental_pet" );
+    }
+  }
+  else
+  {
+    if ( find_action( "fire_elemental_totem" ) )
+    {
+      guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
+    }
+
+    if ( find_action( "earth_elemental_totem" ) )
+    {
+      guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
+    }
+
+    if ( talent.storm_elemental_totem -> ok() && find_action( "storm_elemental_totem" ) )
+    {
+      guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
+    }
+  }
+
+  if ( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
+  {
+    guardian_lightning_elemental = new lightning_elemental_t( this );
+  }
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
-    for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
-      pet_feral_spirit[ i ] = new feral_spirit_pet_t( this );
+    const spell_data_t* fs_data = find_specialization_spell( "Feral Spirit" );
+    size_t n_feral_spirits = static_cast<size_t>( fs_data -> effectN( 1 ).base_value() );
+    // Add two extra potential pets for the T15 4pc set bonus
+    if ( sets.has_set_bonus( SET_MELEE, T15, B4 ) )
+    {
+      n_feral_spirits += 2;
+    }
+
+    for ( size_t i = 0; i < n_feral_spirits; i++ )
+    {
+      pet_feral_spirit.push_back( new feral_spirit_pet_t( this ) );
+    }
   }
 
-  create_pet( "earth_elemental_totem" );
-  create_pet( "fire_elemental_totem"  );
-  create_pet( "storm_elemental_totem" );
-  create_pet( "magma_totem"           );
-  create_pet( "searing_totem"         );
+  if ( find_action( "earth_elemental_totem" ) )
+  {
+    create_pet( "earth_elemental_totem" );
+  }
+
+  if ( find_action( "fire_elemental_totem" ) )
+  {
+    create_pet( "fire_elemental_totem"  );
+  }
+
+  if ( talent.storm_elemental_totem -> ok() && find_action( "storm_elemental_totem" ) )
+  {
+    create_pet( "storm_elemental_totem" );
+  }
+
+  if ( find_action( "magma_totem" ) )
+  {
+    create_pet( "magma_totem" );
+  }
+
+  if ( find_action( "searing_totem" ) )
+  {
+    create_pet( "searing_totem" );
+  }
 }
 
 // shaman_t::create_expression ==============================================
 
 expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 {
-
   std::vector<std::string> splits = util::string_split( name, "." );
 
   // totem.<kind>.<op>
@@ -6447,21 +6490,17 @@ struct shaman_module_t : public module_t
     return p;
   }
   virtual bool valid() const { return true; }
-  virtual void init( sim_t* sim ) const
+  virtual void init( player_t* p ) const
   {
-    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[i];
-      p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
-                              .max_stack( 1 );
+    p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
+                            .max_stack( 1 );
 
-      p -> buffs.earth_shield = buff_creator_t( p, "earth_shield", p -> find_spell( 974 ) )
-                                .cd( timespan_t::from_seconds( 2.0 ) );
+    p -> buffs.earth_shield = buff_creator_t( p, "earth_shield", p -> find_spell( 974 ) )
+                              .cd( timespan_t::from_seconds( 2.0 ) );
 
-      p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
-                              .max_stack( 1 )
-                              .quiet( true );
-    }
+    p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
+                            .max_stack( 1 )
+                            .quiet( true );
   }
 
   virtual void static_init() const

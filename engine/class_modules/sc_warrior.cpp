@@ -5888,15 +5888,6 @@ struct warrior_module_t: public module_t
 
   virtual bool valid() const { return true; }
 
-  virtual void init( sim_t* /* sim */ ) const
-  {
-    /*
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-    {
-    player_t* p = sim -> actor_list[i];
-    }*/
-  }
-
   virtual void static_init() const
   {
     unique_gear::register_special_effect( 184926, fury_trinket );
@@ -5904,6 +5895,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184927, prot_trinket );
   }
 
+  virtual void init( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };

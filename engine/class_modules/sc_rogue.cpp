@@ -471,7 +471,7 @@ struct rogue_t : public player_t
   virtual void      init_resources( bool force );
   virtual bool      init_items();
   virtual void      init_special_effects();
-  virtual void      init_finished();
+  virtual bool      init_finished();
   virtual void      create_buffs();
   virtual void      create_options();
   virtual void      copy_from( player_t* source );
@@ -6215,12 +6215,12 @@ void rogue_t::init_special_effects()
 
 // rogue_t::init_finished ===================================================
 
-void rogue_t::init_finished()
+bool rogue_t::init_finished()
 {
-  player_t::init_finished();
-
   weapon_data[ WEAPON_MAIN_HAND ].initialize();
   weapon_data[ WEAPON_OFF_HAND ].initialize();
+
+  return player_t::init_finished();
 }
 
 // rogue_t::reset ===========================================================
@@ -6433,7 +6433,10 @@ stat_e rogue_t::convert_hybrid_stat( stat_e s ) const
 
 void rogue_t::create_pets()
 {
-  shadow_reflection = new shadow_reflection_pet_t( this );
+  if ( talent.shadow_reflection -> ok() && find_action( "shadow_reflection" ) )
+  {
+    shadow_reflection = new shadow_reflection_pet_t( this );
+  }
 }
 
 /* Report Extension Class
@@ -6552,11 +6555,8 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 184918, from_the_shadows   );
   }
 
-  virtual void init( sim_t* ) const
-  { }
-
+  virtual void init( player_t* ) const { }
   virtual void combat_begin( sim_t* ) const {}
-
   virtual void combat_end( sim_t* ) const {}
 };
 

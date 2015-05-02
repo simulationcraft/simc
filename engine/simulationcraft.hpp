@@ -2957,6 +2957,8 @@ struct sim_t : private sc_thread_t
   bool      check_actors();
   bool      init_parties();
   bool      init_actors();
+  bool      init_actor( player_t* );
+  bool      init_actor_pets();
  private:
   bool      init_items();
   bool      init_actions();
@@ -3015,7 +3017,7 @@ struct module_t
   virtual ~module_t() {}
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const = 0;
   virtual bool valid() const = 0;
-  virtual void init( sim_t* ) const = 0;
+  virtual void init( player_t* ) const = 0;
   virtual void static_init() const { }
   virtual void combat_begin( sim_t* ) const = 0;
   virtual void combat_end( sim_t* ) const = 0;
@@ -4933,12 +4935,12 @@ struct player_t : public actor_t
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
-  virtual void init_finished();
   virtual void register_callbacks();
   // Class specific hook for first-phase initializing special effects. Returns true if the class-specific hook initialized something, false otherwise.
   virtual bool init_special_effect( special_effect_t& /* effect */, unsigned /* spell_id */ ) { return false; }
 
   virtual bool init_actions();
+  virtual bool init_finished();
 
   virtual void reset();
   virtual void combat_begin();
@@ -6033,7 +6035,7 @@ struct action_t : public noncopyable
   virtual bool   usable_moving() const;
   virtual bool   ready();
   virtual void   init();
-  virtual void   init_finished() {}
+  virtual bool   init_finished();
   virtual void   init_target_cache();
   virtual void   reset();
   virtual void   cancel();

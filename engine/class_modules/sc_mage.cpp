@@ -740,11 +740,16 @@ struct mirror_image_pet_t : public pet_t
       spell_t( n, p, s )
     {
       may_crit = true;
+    }
 
-      if ( p -> o() -> pets.mirror_images[ 0 ] )
+    bool init_finished()
+    {
+      if ( p() -> o() -> pets.mirror_images[ 0 ] )
       {
-        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( n );
+        stats = p() -> o() -> pets.mirror_images[ 0 ] -> get_stats( name_str );
       }
+
+      return spell_t::init_finished();
     }
 
     mirror_image_pet_t* p() const
@@ -1326,7 +1331,8 @@ public:
         tl.push_back( t );
     }
 
-    if ( target != p() -> pets.prismatic_crystal &&
+    if ( p() -> pets.prismatic_crystal &&
+         target != p() -> pets.prismatic_crystal &&
          ! p() -> pets.prismatic_crystal -> is_sleeping() )
       tl.push_back( p() -> pets.prismatic_crystal );
 
@@ -1341,12 +1347,15 @@ public:
     spell_t::record_data( data );
   }
 
-  void init()
+  bool init_finished()
   {
-    spell_t::init();
-
     pets::prismatic_crystal_t* pc = debug_cast<pets::prismatic_crystal_t*>( p() -> pets.prismatic_crystal );
-    pc -> add_proxy_stats( this );
+    if ( pc )
+    {
+      pc -> add_proxy_stats( this );
+    }
+
+    return spell_t::init_finished();
   }
 };
 
@@ -3543,17 +3552,22 @@ struct mirror_image_t : public mage_spell_t
     harmful = false;
   }
 
-  virtual void init()
+  bool init_finished()
   {
-    mage_spell_t::init();
-
     for ( unsigned i = 0; i < sizeof_array( p() -> pets.mirror_images ); i++ )
     {
+      if ( ! p() -> pets.mirror_images[ i ] )
+      {
+        continue;
+      }
+
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "arcane_blast" ) );
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "fire_blast" ) );
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "fireball" ) );
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "frostbolt" ) );
     }
+
+    return mage_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -4100,6 +4114,7 @@ struct choose_target_t : public action_t
   // Infinite loop protection
   timespan_t last_execute;
 
+  std::string target_name;
   std::string target_if_str;
   expr_t* target_if_expr;
   target_if_mode_e target_if_mode;
@@ -4110,26 +4125,10 @@ struct choose_target_t : public action_t
     last_execute( timespan_t::min() ),
     target_if_expr( 0 ), target_if_mode( TARGET_IF_NONE )
   {
-    std::string target_name;
-
     add_option( opt_string( "name", target_name ) );
     add_option( opt_string( "target_if", target_if_str ) );
     add_option( opt_bool( "check_selected", check_selected ) );
     parse_options( options_str );
-
-    if ( ! target_name.empty() && ! util::str_compare_ci( target_name, "default" ) )
-    {
-      player_t* target = p -> actor_by_name_str( target_name );
-      if ( ! target )
-        sim -> errorf( "%s unable to find target named '%s'", p -> name(), target_name.c_str() );
-      else
-        selected_target = target;
-    }
-    else
-      selected_target = p -> target;
-
-    if ( ! selected_target && target_if_str.empty() )
-      background = true;
 
     trigger_gcd = timespan_t::zero();
 
@@ -4164,6 +4163,21 @@ struct choose_target_t : public action_t
     {
       target_if_mode = TARGET_IF_FIRST;
     }
+  }
+
+  bool init_finished()
+  {
+    if ( ! target_name.empty() && ! util::str_compare_ci( target_name, "default" ) )
+    {
+      selected_target = player -> actor_by_name_str( target_name );
+    }
+    else
+      selected_target = player -> target;
+
+    if ( ! selected_target && target_if_str.empty() )
+      background = true;
+
+    return action_t::init_finished();
   }
 
   ~choose_target_t()
@@ -4267,6 +4281,12 @@ struct choose_target_t : public action_t
   void execute()
   {
     action_t::execute();
+
+    // Don't do anything if selected target is sleeping
+    if ( ! selected_target || selected_target -> is_sleeping() )
+    {
+      return;
+    }
 
     mage_t* p = debug_cast<mage_t*>( player );
     assert( ! target_if_expr || ( selected_target == select_target_if_target() ) );
@@ -4873,19 +4893,25 @@ action_t* mage_t::create_proc_action( const std::string& name, const special_eff
 
 void mage_t::create_pets()
 {
-  if ( specialization() == MAGE_FROST )
+  if ( specialization() == MAGE_FROST && find_action( "water_elemental" ) )
   {
     pets.water_elemental = new pets::water_elemental_pet_t( sim, this );
   }
 
-  pets.prismatic_crystal = new pets::prismatic_crystal_t( sim, this );
-
-  for ( unsigned i = 0; i < sizeof_array( pets.mirror_images ); i++ )
+  if ( talents.prismatic_crystal -> ok() && find_action( "prismatic_crystal" ) )
   {
-    pets.mirror_images[ i ] = new pets::mirror_image_pet_t( sim, this );
-    if ( i > 0 )
+    pets.prismatic_crystal = new pets::prismatic_crystal_t( sim, this );
+  }
+
+  if ( talents.mirror_image -> ok() && find_action( "mirror_image" ) )
+  {
+    for ( unsigned i = 0; i < sizeof_array( pets.mirror_images ); i++ )
     {
-      pets.mirror_images[ i ] -> quiet = 1;
+      pets.mirror_images[ i ] = new pets::mirror_image_pet_t( sim, this );
+      if ( i > 0 )
+      {
+        pets.mirror_images[ i ] -> quiet = 1;
+      }
     }
   }
 }
@@ -5482,7 +5508,7 @@ void mage_t::apl_arcane()
   burn -> add_talent( this, "Supernova",
                       "if=target.time_to_die<8|charges=2" );
   burn -> add_talent( this, "Nether Tempest",
-                      "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
+                      "cycle_targets=1,if=target!=pet.prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   burn -> add_talent( this, "Arcane Orb",
                       "if=buff.arcane_charge.stack<4" );
   burn -> add_action( this, "Arcane Barrage",
@@ -5510,7 +5536,7 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Arcane Missiles",
                           "if=set_bonus.tier17_4pc&buff.arcane_instability.react&buff.arcane_instability.remains<action.arcane_blast.execute_time" );
   conserve -> add_talent( this, "Nether Tempest",
-                          "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
+                          "cycle_targets=1,if=target!=pet.prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   conserve -> add_talent( this, "Supernova",
                           "if=target.time_to_die<8|(charges=2&(buff.arcane_power.up|!cooldown.arcane_power.up)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8))" );
   conserve -> add_talent( this, "Arcane Orb",
@@ -5524,9 +5550,9 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_charge.stack=4&(!talent.overpowered.enabled|cooldown.arcane_power.remains>10*spell_haste)" );
   conserve -> add_talent( this, "Supernova",
-                          "if=mana.pct<96&(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|(charges=1&cooldown.arcane_power.remains>recharge_time))&(!talent.prismatic_crystal.enabled|current_target=prismatic_crystal|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8))" );
+                          "if=mana.pct<96&(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|(charges=1&cooldown.arcane_power.remains>recharge_time))&(!talent.prismatic_crystal.enabled|current_target=pet.prismatic_crystal|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8))" );
   conserve -> add_talent( this, "Nether Tempest",
-                          "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<(10-3*talent.arcane_orb.enabled)*spell_haste))" );
+                          "cycle_targets=1,if=target!=pet.prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<(10-3*talent.arcane_orb.enabled)*spell_haste))" );
   conserve -> add_action( this, "Arcane Barrage",
                           "if=buff.arcane_charge.stack=4" );
   conserve -> add_action( this, "Presence of Mind",
@@ -5625,7 +5651,7 @@ void mage_t::apl_fire()
                                  "if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max*3",
                                  "Second pre-combust IB" );
   t17_2pc_combust -> add_action( this, "Inferno Blast",
-                                 "if=charges_fractional>=2-(gcd.max%8)&((buff.pyroblast.down&buff.pyromaniac.down)|(current_target=prismatic_crystal&pet.prismatic_crystal.remains*2<gcd.max*5))",
+                                 "if=charges_fractional>=2-(gcd.max%8)&((buff.pyroblast.down&buff.pyromaniac.down)|(current_target=pet.prismatic_crystal&pet.prismatic_crystal.remains*2<gcd.max*5))",
                                  "First pre-combust IB" );
   t17_2pc_combust -> add_action( "choose_target,target_if=max:dot.ignite.tick_dmg,if=prev_gcd.inferno_blast",
                                  "Search for enemy with highest ignite for Combustion" );
@@ -5647,13 +5673,13 @@ void mage_t::apl_fire()
   t17_2pc_combust -> add_action( this, "Pyroblast",
                                  "if=set_bonus.tier17_4pc&buff.pyromaniac.up" );
   t17_2pc_combust -> add_action( this, "Fireball",
-                                 "if=buff.pyroblast.up&buff.heating_up.down&dot.ignite.tick_dmg*100*(execute_time+travel_time)<hit_damage*(100+crit_pct_current)*mastery_value&(!current_target=prismatic_crystal|pet.prismatic_crystal.remains>6)",
+                                 "if=buff.pyroblast.up&buff.heating_up.down&dot.ignite.tick_dmg*100*(execute_time+travel_time)<hit_damage*(100+crit_pct_current)*mastery_value&(!current_target=pet.prismatic_crystal|pet.prismatic_crystal.remains>6)",
                                  "Conditional second Fireball" );
   t17_2pc_combust -> add_action( this, "Pyroblast",
-                                 "if=current_target=prismatic_crystal&pet.prismatic_crystal.remains<gcd.max*4&execute_time=gcd.max",
+                                 "if=current_target=pet.prismatic_crystal&pet.prismatic_crystal.remains<gcd.max*4&execute_time=gcd.max",
                                  "Pyroblast trigger due to Prismatic Crystal's limited duration" );
   t17_2pc_combust -> add_action( this, "Pyroblast",
-                                 "if=buff.pyroblast.up&action.inferno_blast.charges_fractional>=2-(gcd.max%4)&(current_target!=prismatic_crystal|pet.prismatic_crystal.remains<8)&prev_gcd.pyroblast",
+                                 "if=buff.pyroblast.up&action.inferno_blast.charges_fractional>=2-(gcd.max%4)&(current_target!=pet.prismatic_crystal|pet.prismatic_crystal.remains<8)&prev_gcd.pyroblast",
                                  "Final Pyroblast spam before double IB" );
 
   t17_2pc_combust -> add_action( this, "Inferno Blast",
@@ -5699,7 +5725,7 @@ void mage_t::apl_fire()
                              "cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies",
                              "Living Bomb application" );
   living_bomb -> add_talent( this, "Living Bomb",
-                             "cycle_targets=1,if=target!=prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.time_to_die>remains+12" );
+                             "cycle_targets=1,if=target!=pet.prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.time_to_die>remains+12" );
 
 
   aoe -> add_action( this, "Inferno Blast",
@@ -5794,13 +5820,13 @@ void mage_t::apl_frost()
 
 
   crystal_sequence -> add_talent( this, "Frost Bomb",
-                                  "if=active_enemies=1&current_target!=prismatic_crystal&remains<10",
+                                  "if=active_enemies=1&current_target!=pet.prismatic_crystal&remains<10",
                                   "Actions while Prismatic Crystal is active" );
   crystal_sequence -> add_talent( this, "Prismatic Crystal" );
   crystal_sequence -> add_action( this, "Frozen Orb" );
   crystal_sequence -> add_action( "call_action_list,name=cooldowns" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
-                                  "if=talent.prismatic_crystal.enabled&current_target=prismatic_crystal&active_enemies>1&!ticking" );
+                                  "if=talent.prismatic_crystal.enabled&current_target=pet.prismatic_crystal&active_enemies>1&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&active_dot.frozen_orb>=1)" );
   crystal_sequence -> add_talent( this, "Ice Nova",
@@ -6451,13 +6477,6 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     return new icicles_expr_t( *this );
   }
 
-  // Fallback for string based lookup to "target name" expression. Bad things
-  // will happen if you name your target a valid expression in the sim, but who
-  // would do that anyhow.
-  player_t* p = actor_by_name_str( name_str );
-  if ( p )
-    return make_ref_expr( name_str, p -> actor_index );
-
   return player_t::create_expression( a, name_str );
 }
 
@@ -6644,7 +6663,7 @@ struct mage_module_t : public module_t
   }
 
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {}
+  virtual void init        ( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };

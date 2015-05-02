@@ -1330,36 +1330,43 @@ struct execute_pet_action_t : public action_t
   pet_t* pet;
   std::string action_str;
 
-  execute_pet_action_t( player_t* player, pet_t* p, const std::string& as, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "execute_" + p -> name_str + "_" + as, player ),
-    pet_action( 0 ), pet( p ), action_str( as )
+  std::string pet_name;
+
+  execute_pet_action_t( player_t* player, const std::string& name, const std::string& as, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "execute_" + name + "_" + as, player ),
+    pet_action( 0 ), action_str( as ), pet_name( name )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void reset()
+  bool init_finished()
   {
-    action_t::reset();
-
-    if ( sim -> current_iteration == 0 )
+    pet = player -> find_pet( pet_name );
+    // No pet found, finish init early, the action will never be ready() and never executed.
+    if ( ! pet )
     {
-      for ( size_t i = 0; i < pet -> action_list.size(); ++i )
-      {
-        action_t* a = pet -> action_list[ i ];
-        if ( a -> name_str == action_str )
-        {
-          a -> background = true;
-          pet_action = a;
-        }
-      }
+      return true;
+    }
 
-      if ( ! pet_action )
+    for ( size_t i = 0; i < pet -> action_list.size(); ++i )
+    {
+      action_t* a = pet -> action_list[ i ];
+      if ( a -> name_str == action_str )
       {
-        sim -> errorf( "Player %s refers to unknown action %s for pet %s\n",
-                       player -> name(), action_str.c_str(), pet -> name() );
+        a -> background = true;
+        pet_action = a;
       }
     }
+
+    if ( ! pet_action )
+    {
+      sim -> errorf( "Player %s refers to unknown action %s for pet %s\n",
+                     player -> name(), action_str.c_str(), pet -> name() );
+      return false;
+    }
+
+    return action_t::init_finished();
   }
 
   virtual void execute()
@@ -1369,6 +1376,11 @@ struct execute_pet_action_t : public action_t
 
   virtual bool ready()
   {
+    if ( ! pet )
+    {
+      return false;
+    }
+
     if ( ! pet_action )
       return false;
 
@@ -2085,16 +2097,7 @@ bool player_t::init_actions()
 
         util::tokenize( pet_action );
 
-        pet_t* pet = find_pet( pet_name );
-        if ( pet )
-        {
-          a =  new execute_pet_action_t( this, pet, pet_action, action_options );
-        }
-        else
-        {
-          sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n",
-                         name(), pet_name.c_str(), action_str.c_str() );
-        }
+        a = new execute_pet_action_t( this, pet_name, pet_action, action_options );
       }
       else
       {
@@ -2202,9 +2205,17 @@ bool player_t::init_actions()
 
 // player_t::init_finished ==================================================
 
-void player_t::init_finished()
+bool player_t::init_finished()
 {
-  range::for_each( action_list, std::mem_fn( &action_t::init_finished ) );
+  bool ret = true;
+
+  for ( size_t i = 0, end = action_list.size(); i < end; ++i )
+  {
+    if ( ! action_list[ i ] -> init_finished() )
+    {
+      ret = false;
+    }
+  }
 
   // Naive recording of minimum energy thresholds for the actor.
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
@@ -2221,6 +2232,8 @@ void player_t::init_finished()
   }
 
   std::sort( resource_thresholds.begin(), resource_thresholds.end() );
+
+  return ret;
 }
 
 // player_t::min_threshold_trigger ==========================================
@@ -6126,10 +6139,8 @@ struct snapshot_stats_t : public action_t
     }
   }
 
-  void init_finished()
+  bool init_finished()
   {
-    action_t::init_finished();
-
     player_t* p = player;
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     {
@@ -6141,6 +6152,8 @@ struct snapshot_stats_t : public action_t
         pet_snapshot -> init();
       }
     }
+
+    return action_t::init_finished();
   }
 
   virtual void execute()
@@ -7872,11 +7885,11 @@ expr_t* player_t::create_expression( action_t* a,
   }
 
   // pet
-  if ( splits[ 0 ] == "pet" && splits.size() >= 3 )
+  if ( splits[ 0 ] == "pet" )
   {
     struct pet_expr_t : public expr_t
     {
-      pet_t& pet;
+      const pet_t& pet;
       pet_expr_t( const std::string& name, pet_t& p ) :
         expr_t( name ), pet( p ) {}
     };
@@ -7884,37 +7897,51 @@ expr_t* player_t::create_expression( action_t* a,
     pet_t* pet = find_pet( splits[ 1 ] );
     if ( ! pet )
     {
-      // FIXME: report pet not found?
-      return 0;
+      return expr_t::create_constant( "pet_not_found_expr", 0 );
     }
 
-    if ( splits[ 2 ] == "active" )
+    if ( splits.size() == 2 )
     {
-      struct pet_active_expr_t : public pet_expr_t
-      {
-        pet_active_expr_t( pet_t& p ) : pet_expr_t( "pet_active", p ) {}
-        virtual double evaluate() { return ! pet.current.sleeping; }
-      };
-      return new pet_active_expr_t( *pet );
+      return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet -> actor_index ) );
     }
-
-    else if ( splits[ 2 ] == "remains" )
+    // pet.foo.blah
+    else
     {
-      struct pet_remains_expr_t : public pet_expr_t
+      if ( splits[ 2 ] == "active" )
       {
-        pet_remains_expr_t( pet_t& p ) : pet_expr_t( "pet_remains", p ) {}
-        virtual double evaluate()
+        struct pet_active_expr_t : public pet_expr_t
         {
-          if ( pet.expiration && pet.expiration-> remains() > timespan_t::zero() )
-            return pet.expiration -> remains().total_seconds();
-          else
-            return 0;
-        }
-      };
-      return new pet_remains_expr_t( *pet );
-    }
+          pet_active_expr_t( pet_t* p ) : pet_expr_t( "pet_active", *p )
+          { }
 
-    return pet -> create_expression( a, expression_str.substr( splits[ 1 ].length() + 5 ) );
+          double evaluate()
+          { return ! pet.is_sleeping(); }
+        };
+
+        return new pet_active_expr_t( pet );
+      }
+      else if ( splits[ 2 ] == "remains" )
+      {
+        struct pet_remains_expr_t : public pet_expr_t
+        {
+          pet_remains_expr_t( pet_t* p ) : pet_expr_t( "pet_remains", *p )
+          { }
+
+          double evaluate()
+          {
+            if ( pet.expiration && pet.expiration -> remains() > timespan_t::zero() )
+              return pet.expiration -> remains().total_seconds();
+            else
+              return 0;
+          }
+        };
+        return new pet_remains_expr_t( pet );
+      }
+      else
+      {
+        return pet -> create_expression( a, expression_str.substr( splits[ 1 ].length() + 5 ) );
+      }
+    }
   }
 
   // owner

@@ -5013,7 +5013,7 @@ struct unholy_presence_t : public presence_t
 struct deaths_advance_t: public death_knight_spell_t
 {
   deaths_advance_t( death_knight_t* p, const std::string& options_str ):
-    death_knight_spell_t( "raise_dead", p, p -> talent.deaths_advance )
+    death_knight_spell_t( "deaths_advance", p, p -> talent.deaths_advance )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -6149,18 +6149,35 @@ void death_knight_t::create_pets()
 {
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    pets.gargoyle             = create_pet( "gargoyle" );
-    pets.ghoul_pet            = create_pet( "ghoul_pet" );
+    if ( find_action( "summon_gargoyle" ) )
+    {
+      pets.gargoyle = create_pet( "gargoyle" );
+    }
+
+    if ( find_action( "raise_dead" ) )
+    {
+      pets.ghoul_pet = create_pet( "ghoul_pet" );
+    }
   }
 
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  if ( find_action( "dancing_rune_weapon" ) && specialization() == DEATH_KNIGHT_BLOOD )
+  {
     pets.dancing_rune_weapon = new pets::dancing_rune_weapon_pet_t( sim, this );
+  }
 
-  for ( int i = 0; i < 8; i++ )
-    pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
+  if ( find_action( "army_of_the_dead" ) )
+  {
+    for ( int i = 0; i < 8; i++ )
+    {
+      pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
+    }
+  }
 
-  for ( int i = 0; i < 10; i++ )
-    pets.fallen_zandalari[ i ] = new pets::fallen_zandalari_t( this );
+  if ( sets.has_set_bonus( SET_MELEE, T17, B2 ) )
+  {
+    for ( int i = 0; i < 10; i++ )
+      pets.fallen_zandalari[ i ] = new pets::fallen_zandalari_t( this );
+  }
 }
 
 // death_knight_t::create_pet ===============================================
@@ -8441,7 +8458,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 184898,           frozen_obliteration );
   }
 
-  virtual void init( sim_t* ) const {}
+  virtual void init( player_t* ) const {}
   virtual bool valid() const { return true; }
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}

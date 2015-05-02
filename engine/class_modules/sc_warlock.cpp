@@ -71,6 +71,8 @@ public:
     pet_t* inner_demon;
   } pets;
 
+  std::vector<std::string> pet_name_list;
+
   // Talents
   struct talents_t
   {
@@ -4488,19 +4490,20 @@ struct soul_swap_t: public warlock_spell_t
 struct summon_pet_t: public warlock_spell_t
 {
   timespan_t summoning_duration;
+  std::string pet_name;
   pets::warlock_pet_t* pet;
 
 private:
-  void _init_summon_pet_t( std::string pet_name )
+  void _init_summon_pet_t()
   {
+    util::tokenize( pet_name );
     harmful = false;
 
-    util::tokenize( pet_name );
-
-    pet = dynamic_cast<pets::warlock_pet_t*>( player -> find_pet( pet_name ) );
-    if ( ! pet )
+    if ( data().ok() &&
+         std::find( p() -> pet_name_list.begin(), p() -> pet_name_list.end(), pet_name ) ==
+         p() -> pet_name_list.end() )
     {
-      sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
+      p() -> pet_name_list.push_back( pet_name );
     }
   }
 
@@ -4508,25 +4511,31 @@ public:
   summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" ):
     warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ),
     summoning_duration( timespan_t::zero() ),
-    pet( 0 )
+    pet_name( sname.empty() ? n : sname ), pet( 0 )
   {
-    _init_summon_pet_t( n );
+    _init_summon_pet_t();
   }
 
   summon_pet_t( const std::string& n, warlock_t* p, int id ):
     warlock_spell_t( n, p, p -> find_spell( id ) ),
     summoning_duration( timespan_t::zero() ),
-    pet( 0 )
+    pet_name( n ), pet( 0 )
   {
-    _init_summon_pet_t( n );
+    _init_summon_pet_t();
   }
 
   summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd ):
     warlock_spell_t( n, p, sd ),
     summoning_duration( timespan_t::zero() ),
-    pet( 0 )
+    pet_name( n ), pet( 0 )
   {
-    _init_summon_pet_t( n );
+    _init_summon_pet_t();
+  }
+
+  bool init_finished()
+  {
+    pet = debug_cast<pets::warlock_pet_t*>( player -> find_pet( pet_name ) );
+    return warlock_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -4534,6 +4543,16 @@ public:
     pet -> summon( summoning_duration );
 
     warlock_spell_t::execute();
+  }
+
+  bool ready()
+  {
+    if ( ! pet )
+    {
+      return false;
+    }
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -4726,7 +4745,16 @@ struct summon_doomguard_t: public warlock_spell_t
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p, data().effectN( 2 ).trigger() );
     summon_doomguard2 -> stats = stats;
-    summon_doomguard2 -> pet -> summon_stats = stats;
+  }
+
+  bool init_finished()
+  {
+    if ( summon_doomguard2 -> pet )
+    {
+      summon_doomguard2 -> pet -> summon_stats = stats;
+    }
+
+    return warlock_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -4822,8 +4850,14 @@ struct grimoire_of_service_t: public summon_pet_t
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
     summoning_duration = data().duration();
+  }
+
+  bool init_finished()
+  {
     if ( pet )
       pet -> summon_stats = stats;
+
+    return summon_pet_t::init_finished();
   }
 };
 
@@ -5188,27 +5222,13 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
 
 void warlock_t::create_pets()
 {
-  create_pet( "felhunter"  );
-  create_pet( "imp"        );
-  create_pet( "succubus"   );
-  create_pet( "voidwalker" );
-  create_pet( "infernal"   );
-  create_pet( "doomguard"  );
-
-  create_pet( "observer"    );
-  create_pet( "fel_imp"     );
-  create_pet( "shivarra"    );
-  create_pet( "voidlord"    );
-  create_pet( "abyssal"     );
-  create_pet( "terrorguard" );
+  for ( size_t i = 0; i < pet_name_list.size(); ++i )
+  {
+    create_pet( pet_name_list[ i ] );
+  }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    create_pet( "felguard"   );
-    create_pet( "wrathguard" );
-    create_pet( "doomguard"  );
-    create_pet( "service_felguard" );
-
     for ( size_t i = 0; i < pets.wild_imps.size(); i++ )
     {
       pets.wild_imps[ i ] = new pets::wild_imp_pet_t( sim, this );
@@ -5216,16 +5236,11 @@ void warlock_t::create_pets()
         pets.wild_imps[ i ] -> quiet = 1;
     }
 
-    if ( level >= 100 )
+    if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B2 ) )
+    {
       pets.inner_demon = new pets::inner_demon_t( this );
+    }
   }
-
-  create_pet( "service_felhunter"  );
-  create_pet( "service_imp"        );
-  create_pet( "service_succubus"   );
-  create_pet( "service_voidwalker" );
-  create_pet( "service_doomguard"  );
-  create_pet( "service_infernal"   );
 }
 
 void warlock_t::init_spells()
@@ -6052,7 +6067,7 @@ struct warlock_module_t: public module_t
     return p;
   }
   virtual bool valid() const { return true; }
-  virtual void init( sim_t* ) const {}
+  virtual void init( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };

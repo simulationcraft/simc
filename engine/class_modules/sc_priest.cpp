@@ -2024,21 +2024,24 @@ struct spirit_shell_t : public priest_spell_t
 struct summon_pet_t : public priest_spell_t
 {
   timespan_t summoning_duration;
+  std::string pet_name;
   pet_t* pet;
 
 public:
   summon_pet_t( const std::string& n, priest_t& p, const spell_data_t* sd = spell_data_t::nil() ) :
     priest_spell_t( n, p, sd ),
     summoning_duration ( timespan_t::zero() ),
-    pet( p.find_pet( n ) )
+    pet_name( n ),
+    pet( 0 )
   {
     harmful = false;
+  }
 
-    if ( ! pet )
-    {
-      sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), n.c_str() );
-      background = true;
-    }
+  bool init_finished()
+  {
+    pet = player -> find_pet( pet_name );
+
+    return priest_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -2046,6 +2049,16 @@ public:
     pet -> summon( summoning_duration );
 
     priest_spell_t::execute();
+  }
+
+  bool ready()
+  {
+    if ( ! pet )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -4618,7 +4631,7 @@ struct lightwell_t : public priest_spell_t
   lightwell_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "lightwell", p, p.find_class_spell( "Lightwell" ) ),
     consume_interval( timespan_t::from_seconds( 10 ) ),
-    lightwell_renew_cd( priest.pets.lightwell -> get_cooldown( "lightwell_renew" ) )
+    lightwell_renew_cd( 0 )
   {
     add_option( opt_timespan( "consume_interval", consume_interval ) );
     parse_options( options_str );
@@ -4628,6 +4641,13 @@ struct lightwell_t : public priest_spell_t
     castable_in_shadowform = false;
 
     assert( consume_interval > timespan_t::zero() && consume_interval < cooldown -> duration );
+  }
+
+  bool init_finished()
+  {
+    lightwell_renew_cd = priest.pets.lightwell -> get_cooldown( "lightwell_renew" );
+
+    return priest_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -5933,8 +5953,16 @@ void priest_t::create_pets()
 {
   base_t::create_pets();
 
-  pets.shadowfiend      = create_pet( "shadowfiend" );
-  pets.mindbender       = create_pet( "mindbender"  );
+  if ( find_action( "shadowfiend" ) && ! talents.mindbender -> ok() )
+  {
+    pets.shadowfiend      = create_pet( "shadowfiend" );
+  }
+
+  if ( ( find_action( "mindbender" ) || find_action( "shadowfiend" ) ) &&
+       talents.mindbender -> ok() )
+  {
+    pets.mindbender       = create_pet( "mindbender"  );
+  }
 
   if ( find_class_spell( "Lightwell" ) -> ok() )
     pets.lightwell        = create_pet( "lightwell"   );
@@ -7168,16 +7196,12 @@ struct priest_module_t : public module_t
     return p;
   }
   virtual bool valid() const override { return true; }
-  virtual void init( sim_t* sim ) const override
+  virtual void init( player_t* p ) const override
   {
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[ i ];
-      p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
-      p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
-      p -> buffs.naarus_discipline  = buff_creator_t( p, "naarus_discipline", p -> find_spell( 185103 ) );
-      p -> buffs.weakened_soul    = new buffs::weakened_soul_t( p );
-    }
+    p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
+    p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
+    p -> buffs.naarus_discipline  = buff_creator_t( p, "naarus_discipline", p -> find_spell( 185103 ) );
+    p -> buffs.weakened_soul    = new buffs::weakened_soul_t( p );
   }
   virtual void static_init() const override
   {

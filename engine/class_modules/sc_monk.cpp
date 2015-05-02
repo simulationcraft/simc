@@ -3853,18 +3853,26 @@ struct serenity_t: public monk_spell_t
 struct summon_pet_t: public monk_spell_t
 {
   timespan_t summoning_duration;
+  std::string pet_name;
   pet_t* pet;
 
 public:
-  summon_pet_t( const std::string& n, const std::string& pet_name, monk_t* p, const spell_data_t* sd = spell_data_t::nil() ):
+  summon_pet_t( const std::string& n, const std::string& pname, monk_t* p, const spell_data_t* sd = spell_data_t::nil() ):
     monk_spell_t( n, p, sd ),
-    summoning_duration( timespan_t::zero() ),
-    pet( p -> find_pet( pet_name ) )
+    summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( 0 )
   {
     harmful = false;
+  }
 
-    if ( !pet )
-      sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
+  bool init_finished()
+  {
+    pet = player -> find_pet( pet_name );
+    if ( ! pet )
+    {
+      background = true;
+    }
+
+    return monk_spell_t::init_finished();
   }
 
   virtual void execute()
@@ -3872,6 +3880,15 @@ public:
     pet -> summon( summoning_duration );
 
     monk_spell_t::execute();
+  }
+
+  bool ready()
+  {
+    if ( ! pet )
+    {
+      return false;
+    }
+    return monk_spell_t::ready();
   }
 };
 
@@ -5150,9 +5167,12 @@ void monk_t::create_pets()
 {
   base_t::create_pets();
 
-  create_pet( "xuen_the_white_tiger" );
+  if ( talent.invoke_xuen -> ok() && find_action( "invoke_xuen" ) )
+  {
+    create_pet( "xuen_the_white_tiger" );
+  }
 
-  if ( specialization() == MONK_WINDWALKER )
+  if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
     pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
     pet.sef[ SEF_STORM ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
@@ -7082,14 +7102,11 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 184908, furious_sun );
   }
 
-  virtual void init( sim_t* sim ) const
+  virtual void init( player_t* p ) const
   {
-    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[i];
-      p -> buffs.fierce_tiger_movement_aura = buff_creator_t( p, "fierce_tiger_movement_aura", p -> find_spell( 103985 ) )
-        .duration( timespan_t::from_seconds( 0 ) );
-    }
+    p -> buffs.fierce_tiger_movement_aura = buff_creator_t( p, "fierce_tiger_movement_aura",
+                                                            p -> find_spell( 103985 ) )
+      .duration( timespan_t::from_seconds( 0 ) );
   }
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}

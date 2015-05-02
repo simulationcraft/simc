@@ -1426,7 +1426,7 @@ void sim_t::combat_begin()
           for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
           {
             player_t* p = sim.player_non_sleeping_list[ i ];
-            if ( p -> buffs.exhaustion -> check() || p -> is_pet() )
+            if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
               continue;
 
             p -> buffs.bloodlust -> trigger();
@@ -1773,83 +1773,53 @@ bool sim_t::init_actions()
 }
 
 // sim_t::init_actors =======================================================
-// This method handles the bulk of player initialization. Order is pretty
-// critical here. Called in sim_t::init()
 
 bool sim_t::init_actors()
 {
-
-  // create actor entries for pets
   if ( debug )
-    out_debug.printf( "Creating Pets." );
-
-  for ( size_t i = 0; i < actor_list.size(); i++ )
   {
-    player_t* p = actor_list[i];
-    p -> create_pets();
+    out_debug.printf( "Initializing Enemies." );
   }
 
-  // initialize class/enemy modules
-  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  bool actor_init = true;
+  for ( size_t i = 0; i < target_list.size(); ++i )
   {
-    const module_t* m = module_t::get( i );
-    if ( m ) m -> init( this );
+    if ( ! init_actor( target_list[ i ] ) )
+    {
+      actor_init = false;
+    }
+  }
+
+  if ( actor_init == false )
+  {
+    return actor_init;
   }
 
   if ( debug )
     out_debug.printf( "Initializing Players." );
 
-  // call each actor's init() function; mostly does APL stuff, see player_t::init()
-  for ( size_t i = 0; i < actor_list.size(); i++ )
-  {
-    player_t* p = actor_list[ i ];
-    if ( default_actions && ! p -> is_pet() )
-    {
-      p -> clear_action_priority_lists();
-      p -> action_list_str.clear();
-    };
-    p -> init();
-    p -> initialized = true;
-  }
-
   if ( wowhead_tooltips == -1 )
     wowhead_tooltips = player_no_pet_list.size() <= 10;
 
-  // This next section handles all the ugly details of initialization. Ideally, each of these
-  // init_* methods will eventually return a bool to indicate success or failure, from which
-  // we can either continue or halt initialization.
-  // For now, we're only enforcing this condition for the particular init_* methods that can
-  // lead to a sim -> cancel() result ( player_t::init_items() and player_t::init_actions() ).
+  actor_init = true;
+  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+  {
+    if ( ! init_actor( player_no_pet_list[ i ] ) )
+    {
+      actor_init = false;
+    }
+  }
 
-  // Determine Spec, Talents, Professions, Glyphs
-  range::for_each( actor_list, std::mem_fn( &player_t::init_target ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_character_properties ) );
+  if ( ! actor_init )
+  {
+    return actor_init;
+  }
 
-  // Initialize each actor's items, construct gear information & stats
-  if ( ! init_items() )
+  // create actor entries for pets
+  if ( ! init_actor_pets() )
+  {
     return false;
-
-  // Initialize spells, base/initial stats, defense, buffs, scaling, special effects
-  range::for_each( actor_list, std::mem_fn( &player_t::init_spells ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_base_stats ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_initial_stats ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_defense ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
-  range::for_each( actor_list, std::mem_fn( &player_t::init_scaling ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_special_effects ) ); // Must be before init_actions
-  range::for_each( actor_list, std::mem_fn( &player_t::register_callbacks ) ); // Must be before init_actions
-
-  // Initialize each actor's actions
-  if ( ! init_actions() )
-    return false;
-
-  // Initialize gains, procs, uptimes, benefits, rng, stats
-  range::for_each( actor_list, std::mem_fn( &player_t::init_gains ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_procs ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_uptimes ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_benefits ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_rng ) );
-  range::for_each( actor_list, std::mem_fn( &player_t::init_stats ) );
+  }
 
   // check that we have at least one active player
   if ( ! check_actors() )
@@ -1858,19 +1828,113 @@ bool sim_t::init_actors()
   // organize parties if necessary
   if ( ! init_parties() )
     return false;
-/*
-  // Callbacks
-  if ( debug )
-    out_debug.printf( "Registering Callbacks." );
 
-  for ( size_t i = 0; i < actor_list.size(); i++ )
-  {
-    player_t* p = actor_list[ i ];
-    p -> register_callbacks();
-  }
-*/
   // If we make it here, everything initialized properly and we can return true to sim_t::init()
   return true;
+}
+
+// sim_t::init_actor ========================================================
+
+// This method handles the bulk of player initialization. Order is pretty
+// critical here. Called in sim_t::init()
+bool sim_t::init_actor( player_t* p )
+{
+  bool ret = true;
+
+  // initialize class/enemy modules
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  {
+    const module_t* m = module_t::get( i );
+    if ( m ) m -> init( p );
+  }
+
+  if ( default_actions && ! p -> is_pet() )
+  {
+    p -> clear_action_priority_lists();
+    p -> action_list_str.clear();
+  };
+
+  p -> init();
+  p -> initialized = true;
+
+  // This next section handles all the ugly details of initialization. Ideally, each of these
+  // init_* methods will eventually return a bool to indicate success or failure, from which
+  // we can either continue or halt initialization.
+  // For now, we're only enforcing this condition for the particular init_* methods that can
+  // lead to a sim -> cancel() result ( player_t::init_items() and player_t::init_actions() ).
+
+  p -> init_target();
+  p -> init_character_properties();
+
+  // Initialize each actor's items, construct gear information & stats
+  if ( ! p -> init_items() )
+  {
+    ret = false;
+  }
+
+  p -> init_spells();
+  p -> init_base_stats();
+  p -> init_initial_stats();
+  p -> init_defense();
+  p -> create_buffs();
+  p -> init_scaling();
+
+  // Procs must be initialized before actions
+  p -> init_special_effects();
+  p -> register_callbacks();
+
+  if ( ! p -> init_actions() )
+  {
+    ret = false;
+  }
+
+  p -> init_gains();
+  p -> init_procs();
+  p -> init_uptimes();
+  p -> init_benefits();
+  p -> init_rng();
+  p -> init_stats();
+
+  return ret;
+}
+
+// sim_t::init_actor_pets ===================================================
+
+bool sim_t::init_actor_pets()
+{
+  bool actor_init = true;
+
+  if ( debug )
+    out_debug.printf( "Creating and initializing pets." );
+
+  for ( size_t i = 0, end = target_list.size(); i < end; ++i )
+  {
+    player_t* p = target_list[ i ];
+
+    for ( size_t pet_idx = 0, pet_end = p -> pet_list.size(); pet_idx < pet_end; ++pet_idx )
+    {
+      if ( ! init_actor( p -> pet_list[ pet_idx ] ) )
+      {
+        actor_init = false;
+      }
+    }
+  }
+
+  for ( size_t i = 0, end = player_no_pet_list.size(); i < end; ++i )
+  {
+    player_t* p = player_no_pet_list[ i ];
+
+    p -> create_pets();
+    for ( size_t pet_idx = 0, pet_end = p -> pet_list.size(); pet_idx < pet_end; ++pet_idx )
+    {
+      if ( ! init_actor( p -> pet_list[ pet_idx ] ) )
+      {
+        actor_init = false;
+      }
+    }
+  }
+
+  return actor_init;
 }
 
 // sim_t::init ==============================================================
@@ -2053,9 +2117,25 @@ bool sim_t::init()
     }
   }
 
+  // We are committed to simulating something. Tell actors that the sim init is now complete if they
+  // need to do something.
   if ( ! canceled )
   {
-    range::for_each( actor_list, std::mem_fn( &player_t::init_finished ) );
+    bool ret = true;
+
+    for ( size_t i = 0, end = actor_list.size(); i < end; ++i )
+    {
+
+      if ( ! actor_list[ i ] -> init_finished() )
+      {
+        ret = false;
+      }
+    }
+
+    if ( ! ret )
+    {
+      return false;
+    }
   }
 
   initialized = true;

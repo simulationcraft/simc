@@ -5979,20 +5979,25 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
 void druid_t::create_pets()
 {
-  if ( specialization() == DRUID_BALANCE )
+  player_t::create_pets();
+
+  if ( talent.force_of_nature -> ok() && find_action( "force_of_nature" ) )
   {
-    for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
-      pet_force_of_nature[ i ] = new pets::force_of_nature_balance_t( sim, this );
-  }
-  else if ( specialization() == DRUID_FERAL )
-  {
-    for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
-      pet_force_of_nature[ i ] = new pets::force_of_nature_feral_t( sim, this );
-  }
-  else if ( specialization() == DRUID_GUARDIAN )
-  {
-    for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
-      pet_force_of_nature[ i ] = new pets::force_of_nature_guardian_t( sim, this );
+    if ( specialization() == DRUID_BALANCE )
+    {
+      for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
+        pet_force_of_nature[ i ] = new pets::force_of_nature_balance_t( sim, this );
+    }
+    else if ( specialization() == DRUID_FERAL )
+    {
+      for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
+        pet_force_of_nature[ i ] = new pets::force_of_nature_feral_t( sim, this );
+    }
+    else if ( specialization() == DRUID_GUARDIAN )
+    {
+      for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
+        pet_force_of_nature[ i ] = new pets::force_of_nature_guardian_t( sim, this );
+    }
   }
 }
 
@@ -8259,15 +8264,11 @@ struct druid_module_t : public module_t
     return p;
   }
   virtual bool valid() const { return true; }
-  virtual void init( sim_t* sim ) const
+  virtual void init( player_t* p ) const
   {
-    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[ i ];
-      p -> buffs.stampeding_roar        = buff_creator_t( p, "stampeding_roar", p -> find_spell( 77764 ) )
-                                          .max_stack( 1 )
-                                          .duration( timespan_t::from_seconds( 8.0 ) );
-    }
+    p -> buffs.stampeding_roar = buff_creator_t( p, "stampeding_roar", p -> find_spell( 77764 ) )
+                                 .max_stack( 1 )
+                                 .duration( timespan_t::from_seconds( 8.0 ) );
   }
 
   virtual void static_init() const
