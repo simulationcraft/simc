@@ -35,8 +35,7 @@ struct warrior_t: public player_t
 public:
   event_t* heroic_charge;
   int initial_rage;
-  bool non_dps_mechanics;
-  bool warrior_fixed_time;
+  bool non_dps_mechanics, warrior_fixed_time;
   player_t* last_target_charged;
   bool stance_dance; // This is just a small optimization, if stance swapping is never required (99% of simulations),
                      // then there's no reason to waste cpu cycles checking stance states inside of base_t::execute()
@@ -51,6 +50,7 @@ public:
   const special_effect_t* fury_trinket;
   const special_effect_t* arms_trinket;
   const special_effect_t* prot_trinket;
+
   // Active
   struct active_t
   {
@@ -460,10 +460,6 @@ public:
   virtual void       assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void       copy_from( player_t* source );
 
-  // Custom Warrior Functions
-  void enrage();
-  void stance_swap();
-
   target_specific_t<warrior_td_t*> target_data;
 
   virtual warrior_td_t* get_target_data( player_t* target ) const
@@ -485,15 +481,11 @@ template <class Base>
 struct warrior_action_t: public Base
 {
   int stancemask;
-  bool headlongrush;
-  bool headlongrushgcd;
-  bool recklessness;
-  bool weapons_master;
+  bool headlongrush, headlongrushgcd, recklessness, weapons_master;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
   typedef warrior_action_t base_t;
-
   warrior_action_t( const std::string& n, warrior_t* player,
                     const spell_data_t* s = spell_data_t::nil() ):
                     ab( n, player, s ),
@@ -565,14 +557,14 @@ public:
         case STANCE_DEFENSE:
         { // If the player is currently in defensive stance, should not be in defensive stance, and the ability can be used in battle stance
           if ( p() -> specialization() != WARRIOR_PROTECTION && ( ( stancemask & STANCE_BATTLE ) != 0 ) )
-            p() -> stance_swap(); // Swap back. The stance isn't actually swapped for about 0.2-0.3~ seconds in game, which is modeled here by not officially swapping stances
+            stance_swap(); // Swap back. The stance isn't actually swapped for about 0.2-0.3~ seconds in game, which is modeled here by not officially swapping stances
           break;                  // until the buff has been applied, and the buff has a 0.25~ second delay.
         }
         case STANCE_BATTLE:
         { // If player is in battle stance, is a tank, can use the ability in defensive stance, and is really reallly a tank 
           // and not some strange person trying to dps in battle stance without gladiator's resolve :p
           if ( p() -> specialization() == WARRIOR_PROTECTION && ( ( stancemask & STANCE_DEFENSE ) != 0 ) && p() -> primary_role() == ROLE_TANK )
-            p() -> stance_swap(); // Swap back to defensive stance.
+            stance_swap(); // Swap back to defensive stance.
           break;
         }
         default:break;
@@ -634,7 +626,7 @@ public:
     {
       if ( p() -> cooldown.stance_swap -> up() && !p() -> player_override_stance_dance )
       {
-        p() -> stance_swap(); // Force the stance swap, the sim will try to use it again in 0.1 seconds.
+        stance_swap(); // Force the stance swap, the sim will try to use it again in 0.1 seconds.
       }
       return false;
     }
@@ -746,14 +738,77 @@ public:
       }
     }
   }
+
+  void enrage()
+  {
+    // Crit BT/Devastate/Block give rage, and refresh enrage
+    // Additionally, BT crits grant 1 charge of Raging Blow
+    if ( p() -> specialization() == WARRIOR_FURY )
+      p() -> buff.raging_blow -> trigger();
+
+    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
+    p() -> buff.enrage -> trigger();
+    p() -> buff.enraged_speed -> trigger();
+  }
+
+  void stance_swap()
+  {
+    // Blizzard has automated stance swapping with defensive and battle stance. This function will swap to the stance automatically if
+    // The ability that we are trying to use is not usable in the current stance.
+    if ( p() -> talents.gladiators_resolve -> ok() && p() -> in_combat ) // Cannot swap stances with gladiator's resolve in combat.
+      return;
+
+    warrior_stance swap;
+
+    switch ( p() -> active.stance )
+    {
+    case STANCE_BATTLE:
+    {
+      p() -> buff.battle_stance -> expire();
+      swap = STANCE_DEFENSE;
+      break;
+    }
+    case STANCE_DEFENSE:
+    {
+      p() -> buff.defensive_stance -> expire();
+      swap = STANCE_BATTLE;
+      p() -> recalculate_resource_max( RESOURCE_HEALTH );
+      break;
+    }
+    case STANCE_GLADIATOR:
+    {
+      p() -> buff.gladiator_stance -> expire();
+      swap = STANCE_GLADIATOR;
+      break;
+    }
+    default: swap = p() -> active.stance; break;
+    }
+
+    switch ( swap )
+    {
+    case STANCE_BATTLE: p() -> buff.battle_stance -> trigger(); break;
+    case STANCE_DEFENSE:
+    {
+      p() -> buff.defensive_stance -> trigger();
+      p() -> recalculate_resource_max( RESOURCE_HEALTH );
+      break;
+    }
+    case STANCE_GLADIATOR: p() -> buff.gladiator_stance -> trigger(); break;
+    }
+    if ( p() -> in_combat )
+    {
+      p() -> cooldown.stance_swap -> start();
+      p() -> cooldown.stance_swap -> adjust( -1 * p() -> cooldown.stance_swap -> duration * ( 1.0 - p() -> cache.attack_haste() ) ); // Yeah.... it's hasted by headlong rush.
+      if ( !p() -> player_override_stance_dance )
+      {
+        p() -> stance_dance = true; // Invalidate stance dancing, so that the simulation will try and swap back.
+      } // Only if the user doesn't override it. If overridden, the player will have to force it back to the original stance.
+    }
+  }
 };
 
-// ==========================================================================
-// Warrior Heals
-// ==========================================================================
-
 struct warrior_heal_t: public warrior_action_t < heal_t >
-{
+{ // Main Warrior Heal Class
   warrior_heal_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s )
   {
@@ -762,12 +817,17 @@ struct warrior_heal_t: public warrior_action_t < heal_t >
   }
 };
 
-// ==========================================================================
-// Warrior Attack
-// ==========================================================================
+struct warrior_spell_t: public warrior_action_t < spell_t >
+{ // Main Warrior Spell Class - Used for spells that deal no damage, usually buffs.
+  warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ):
+    base_t( n, p, s )
+  {
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+  }
+};
 
 struct warrior_attack_t: public warrior_action_t < melee_attack_t >
-{
+{ // Main Warrior Attack Class
   warrior_attack_t( const std::string& n, warrior_t* p,
     const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s )
@@ -1188,7 +1248,6 @@ struct auto_attack_t: public warrior_attack_t
     warrior_attack_t( "auto_attack", p )
   {
     parse_options( options_str );
-    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     ignore_false_positive = true;
     range = 5;
@@ -1277,8 +1336,6 @@ struct bladestorm_t: public warrior_attack_t
     bladestorm_oh( 0 )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
 
@@ -1403,7 +1460,7 @@ struct bloodthirst_t: public warrior_attack_t
       }
 
       if ( execute_state -> result == RESULT_CRIT )
-        p() -> enrage();
+        enrage();
 
       int bloodsurge = 0;
 
@@ -1433,19 +1490,15 @@ struct bloodthirst_t: public warrior_attack_t
 struct charge_t: public warrior_attack_t
 {
   bool first_charge;
-  double movement_speed_increase;
-  double min_range;
-  double rage_gain;
+  double movement_speed_increase, min_range, rage_gain;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
     first_charge( true ), 
     movement_speed_increase( 5.0 ),
-
     min_range( data().min_range() ),
     rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     ignore_false_positive = true;
     rage_gain += p -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE );
 
@@ -1496,7 +1549,7 @@ struct charge_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( first_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
+    if ( first_charge ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
 
     if ( p() -> current.distance_to_move < min_range ) // Cannot charge if too close to the target.
@@ -1568,7 +1621,6 @@ struct demoralizing_shout: public warrior_attack_t
     warrior_attack_t( "demoralizing_shout", p, p -> spec.demoralizing_shout )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
   void impact( action_state_t* s )
@@ -1586,7 +1638,6 @@ struct devastate_t: public warrior_attack_t
     warrior_attack_t( "devastate", p, p -> spec.devastate )
   {
     parse_options( options_str );
-    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
     impact_action = p -> active.deep_wounds;
   }
@@ -1607,7 +1658,7 @@ struct devastate_t: public warrior_attack_t
       }
 
       if ( execute_state -> result == RESULT_CRIT )
-        p() -> enrage();
+        enrage();
     }
   }
 
@@ -1632,7 +1683,6 @@ struct dragon_roar_t: public warrior_attack_t
     may_dodge = may_parry = may_block = false;
     range = p -> find_spell( 118000 ) -> effectN( 1 ).radius_max();
     radius = -1.0;
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
   double target_armor( player_t* ) const { return 0; }
@@ -1671,7 +1721,6 @@ struct execute_t: public warrior_attack_t
     warrior_attack_t( "execute", p, p -> spec.execute )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
 
     sudden_death_rage = 30;
@@ -1786,7 +1835,6 @@ struct hamstring_t: public warrior_attack_t
     warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
   }
 };
@@ -1800,7 +1848,6 @@ struct heroic_strike_t: public warrior_attack_t
     warrior_attack_t( "heroic_strike", p, p -> find_class_spell( "Heroic Strike" ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     weapon = &( player -> main_hand_weapon );
 
@@ -1878,7 +1925,6 @@ struct heroic_throw_t: public warrior_attack_t
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
     if ( p -> perk.improved_heroic_throw -> ok() )
       cooldown -> duration = timespan_t::zero();
@@ -1907,7 +1953,6 @@ struct heroic_leap_t: public warrior_attack_t
     heroic_leap_damage( p -> find_spell( 52174 ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     ignore_false_positive = true;
     aoe = -1;
     may_dodge = may_parry = may_miss = may_block = false;
@@ -2005,7 +2050,6 @@ struct impending_victory_t: public warrior_attack_t
     {
       impending_victory_heal = new impending_victory_heal_t( p );
     }
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     parse_effect_data( data().effectN( 2 ) ); //Both spell effects list an ap coefficient, #2 is correct.
   }
 
@@ -2036,7 +2080,6 @@ struct intervene_t: public warrior_attack_t
     movement_speed_increase( 5.0 )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
   }
@@ -2125,7 +2168,6 @@ struct heroic_charge_t: public warrior_attack_t
     warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
   {
     parse_options( options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
@@ -2229,7 +2271,6 @@ struct pummel_t: public warrior_attack_t
     warrior_attack_t( "pummel", p, p -> find_class_spell( "Pummel" ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     ignore_false_positive = true;
 
     may_miss = may_block = may_dodge = may_parry = callbacks = false;
@@ -2269,7 +2310,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     { // Can proc off MH/OH individually from each meat cleaver hit.
       if ( rng().roll( p() -> sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
       {
-        p() -> enrage();
+        enrage();
         p() -> proc.t17_2pc_fury -> occur();
       }
     }
@@ -2354,7 +2395,6 @@ struct ravager_t: public warrior_attack_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     hasted_ticks = callbacks = false;
     dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
     attack_power_mod.direct = attack_power_mod.tick = 0;
@@ -2457,11 +2497,9 @@ struct enraged_regeneration_t: public warrior_heal_t
     warrior_heal_t( "enraged_regeneration", p, p -> talents.enraged_regeneration )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     dot_duration = data().duration();
     range = -1;
     base_tick_time = data().effectN( 2 ).period();
-
     pct_heal = data().effectN( 1 ).percent();
     tick_pct_heal = data().effectN( 2 ).percent();
   }
@@ -2670,7 +2708,6 @@ struct shield_slam_t: public warrior_attack_t
     shield_block_2pc( new shield_block_2pc_t( p ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
     attack_power_mod.direct = 0.366; // Low level value for shield slam.
@@ -2745,7 +2782,7 @@ struct shield_slam_t: public warrior_attack_t
 
       if ( execute_state -> result == RESULT_CRIT )
       {
-        p() -> enrage();
+        enrage();
         p() -> buff.ultimatum -> trigger();
       }
     }
@@ -2821,7 +2858,6 @@ struct shockwave_t: public warrior_attack_t
     warrior_attack_t( "shockwave", p, p -> talents.shockwave )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
     range = radius;
     radius = -1.0;
@@ -2866,7 +2902,6 @@ struct storm_bolt_t: public warrior_attack_t
     oh_attack( 0 )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
     // Assuming that our target is stun immune
     weapon_multiplier *= 4.00;
@@ -2904,7 +2939,6 @@ struct thunder_clap_t: public warrior_attack_t
     warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     aoe = -1;
     may_dodge = may_parry = may_block = false;
     range = radius;
@@ -2948,7 +2982,6 @@ struct victory_rush_t: public warrior_attack_t
     victory_rush_heal( new victory_rush_heal_t( p ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     if ( p -> non_dps_mechanics )
       execute_action = victory_rush_heal;
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
@@ -3143,15 +3176,6 @@ struct wild_strike_t: public warrior_attack_t
 // Warrior Spells
 // ==========================================================================
 
-struct warrior_spell_t: public warrior_action_t < spell_t >
-{
-  warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ):
-    base_t( n, p, s )
-  {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-  }
-};
-
 // Avatar ===================================================================
 
 struct avatar_t: public warrior_spell_t
@@ -3160,7 +3184,6 @@ struct avatar_t: public warrior_spell_t
     warrior_spell_t( "avatar", p, p -> talents.avatar )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
   void execute()
@@ -3180,7 +3203,6 @@ struct battle_shout_t: public warrior_spell_t
   {
     parse_options( options_str );
     range = -1;
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
     ignore_false_positive = true;
   }
@@ -3203,7 +3225,6 @@ struct berserker_rage_t: public warrior_spell_t
   {
     parse_options( options_str );
     range = -1; // Just in case anyone wants to use berserker rage + enraged speed glyph to get somewhere a little faster... I guess.
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
   void execute()
@@ -3212,7 +3233,7 @@ struct berserker_rage_t: public warrior_spell_t
 
     p() -> buff.berserker_rage -> trigger();
     if ( p() -> specialization() != WARRIOR_ARMS )
-      p() -> enrage();
+      enrage();
   }
 };
 
@@ -3224,7 +3245,6 @@ struct bloodbath_t: public warrior_spell_t
     warrior_spell_t( "bloodbath", p, p -> talents.bloodbath )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
   void execute()
@@ -3244,7 +3264,6 @@ struct commanding_shout_t: public warrior_spell_t
   {
     parse_options( options_str );
     range = -1;
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
     ignore_false_positive = true;
   }
@@ -3293,7 +3312,6 @@ struct last_stand_t: public warrior_spell_t
     warrior_spell_t( "last_stand", p, p -> spec.last_stand )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).time_value();
   }
@@ -3314,7 +3332,6 @@ struct rallying_cry_t: public warrior_spell_t
   {
     parse_options( options_str );
     range = -1;
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
   void execute()
@@ -3533,7 +3550,6 @@ struct shield_wall_t: public warrior_spell_t
     warrior_spell_t( "shield_wall", p, p -> find_class_spell( "Shield Wall" ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     harmful = false;
     range = -1;
     cooldown -> duration = data().cooldown();
@@ -3560,7 +3576,6 @@ struct spell_reflection_t: public warrior_spell_t
     warrior_spell_t( "spell_reflection", p, p -> find_class_spell( "Spell Reflection" ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
 
@@ -3572,7 +3587,6 @@ struct mass_spell_reflection_t: public warrior_spell_t
     warrior_spell_t( "spell_reflection", p, p -> talents.mass_spell_reflection )
   {
     parse_options( options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
   }
 };
 
@@ -3595,7 +3609,6 @@ struct stance_t: public warrior_spell_t
     add_option( opt_float( "swap", swap ) );
     parse_options( options_str );
     range = -1;
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
 
     if ( p -> specialization() != WARRIOR_PROTECTION )
       starting_stance = STANCE_BATTLE;
@@ -3749,7 +3762,6 @@ struct vigilance_t: public warrior_spell_t
     warrior_spell_t( "vigilance", p, p -> talents.vigilance )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
 
@@ -4576,7 +4588,7 @@ struct sudden_death_t: public warrior_real_ppm_t < real_ppm_t >
 
 // Defensive Stance Rage Gain ==============================================
 
-static void defensive_stance( buff_t* buff, int, int )
+void defensive_stance( buff_t* buff, int, int )
 {
   warrior_t* p = debug_cast<warrior_t*>( buff -> player );
 
@@ -4586,7 +4598,7 @@ static void defensive_stance( buff_t* buff, int, int )
 
 // Fury T17 4 piece ========================================================
 
-static void tier17_4pc_fury( buff_t* buff, int, int )
+void tier17_4pc_fury( buff_t* buff, int, int )
 {
   warrior_t* p = debug_cast<warrior_t*>( buff -> player );
 
@@ -4604,7 +4616,6 @@ struct warrior_buff_t: public Base
 {
 public:
   typedef warrior_buff_t base_t;
-
   warrior_buff_t( warrior_td_t& p, const buff_creator_basics_t& params ):
     Base( params ), warrior( p.warrior )
   {}
@@ -5046,7 +5057,8 @@ void warrior_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[RESOURCE_RAGE] = 0;
+  resources.current[RESOURCE_RAGE] = 0; // By default, simc sets all resources to full. However, Warriors cannot reliably start combat with more than 0 rage.
+                                        // This will also ensure that the 20-35 rage from Charge is not overwritten.
 }
 
 // warrior_t::init_actions ==================================================
@@ -5186,10 +5198,11 @@ void warrior_t::combat_begin()
       }
     }
   }
-  player_t::combat_begin();
 
   if ( initial_rage > 0 )
     resources.current[RESOURCE_RAGE] = initial_rage; // User specified rage.
+
+  player_t::combat_begin();
 
   if ( specialization() == WARRIOR_PROTECTION )
     resolve_manager.start();
@@ -5205,6 +5218,10 @@ void warrior_t::reset()
   if ( gladiator )
   {
     active.stance = STANCE_GLADIATOR;
+  }
+  else if ( specialization() == WARRIOR_PROTECTION )
+  {
+    active.stance = STANCE_DEFENSE;
   }
 
   heroic_charge = 0;
@@ -5259,14 +5276,14 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buff.avatar -> up() )
+  if ( buff.avatar -> check() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
 
   if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier -> ok() )
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
 
   // --- Enrages ---
-  if ( buff.enrage -> up() )
+  if ( buff.enrage -> check() )
   {
     m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
 
@@ -5279,7 +5296,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
 
   // --- Buffs / Procs ---
-  if ( buff.rude_interruption -> up() )
+  if ( buff.rude_interruption -> check() )
     m *= 1.0 + buff.rude_interruption -> value();
 
   if ( active.stance == STANCE_GLADIATOR )
@@ -5417,7 +5434,7 @@ double warrior_t::composite_block() const
   b += perk.improved_block -> effectN( 1 ).percent();
 
   // shield block adds 100% block chance
-  if ( buff.shield_block -> up() )
+  if ( buff.shield_block -> check() )
     b += buff.shield_block -> data().effectN( 1 ).percent();
 
   return b;
@@ -5430,7 +5447,7 @@ double warrior_t::composite_block_reduction() const
   double br = player_t::composite_block_reduction();
 
   // Prot T17 4-pc increases block value by 5% while shield block is active (additive)
-  if ( buff.shield_block -> up() )
+  if ( buff.shield_block -> check() )
   {
     if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
       br += spell.t17_prot_2p -> effectN( 1 ).percent();
@@ -5469,10 +5486,10 @@ double warrior_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
 
-  if ( buff.ravager_protection -> up() )
+  if ( buff.ravager_protection -> check() )
     parry += talents.ravager -> effectN( 1 ).percent();
 
-  if ( buff.die_by_the_sword -> up() )
+  if ( buff.die_by_the_sword -> check() )
     parry += spec.die_by_the_sword -> effectN( 1 ).percent();
 
   return parry;
@@ -5520,7 +5537,7 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  if ( buff.tier17_4pc_fury -> up() )
+  if ( buff.tier17_4pc_fury -> check() )
   {
     s /= 1.0 + buff.tier17_4pc_fury -> current_stack *
       sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
@@ -5535,7 +5552,7 @@ double warrior_t::composite_melee_crit() const
 {
   double c = player_t::composite_melee_crit();
 
-  if ( buff.tier17_4pc_fury -> up() )
+  if ( buff.tier17_4pc_fury -> check() )
   {
     c += buff.tier17_4pc_fury -> current_stack *
       sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
@@ -5783,80 +5800,6 @@ void warrior_t::copy_from( player_t* source )
   non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
   player_override_stance_dance = p -> player_override_stance_dance;
-}
-
-// warrior_t::stance_swap ==================================================
-
-void warrior_t::stance_swap()
-{
-  // Blizzard has automated stance swapping with defensive and battle stance. This function will swap to the stance automatically if
-  // The ability that we are trying to use is not usable in the current stance.
-  if ( talents.gladiators_resolve -> ok() && in_combat ) // Cannot swap stances with gladiator's resolve in combat.
-    return;
-
-  warrior_stance swap;
-
-  switch ( active.stance )
-  {
-  case STANCE_BATTLE:
-  {
-    buff.battle_stance -> expire();
-    swap = STANCE_DEFENSE;
-    break;
-  }
-  case STANCE_DEFENSE:
-  {
-    buff.defensive_stance -> expire();
-    swap = STANCE_BATTLE;
-    recalculate_resource_max( RESOURCE_HEALTH );
-    break;
-  }
-  case STANCE_GLADIATOR:
-  {
-    buff.gladiator_stance -> expire();
-    swap = STANCE_GLADIATOR;
-    break;
-  }
-  default: swap = active.stance; break;
-  }
-
-  switch ( swap )
-  {
-  case STANCE_BATTLE: buff.battle_stance -> trigger(); break;
-  case STANCE_DEFENSE:
-  {
-    buff.defensive_stance -> trigger();
-    recalculate_resource_max( RESOURCE_HEALTH );
-    break;
-  }
-  case STANCE_GLADIATOR: buff.gladiator_stance -> trigger(); break;
-  }
-  if ( in_combat )
-  {
-    cooldown.stance_swap -> start();
-    cooldown.stance_swap -> adjust( -1 * cooldown.stance_swap -> duration * ( 1.0 - cache.attack_haste() ) ); // Yeah.... it's hasted by headlong rush.
-    if ( !player_override_stance_dance )
-    {
-      stance_dance = true; // Invalidate stance dancing, so that the simulation will try and swap back.
-    } // Only if the user doesn't override it. If overridden, the player will have to force it back to the original stance.
-  }
-}
-
-// warrior_t::enrage ========================================================
-
-void warrior_t::enrage()
-{
-  // Crit BT/Devastate/Block give rage, and refresh enrage
-  // Additionally, BT crits grant 1 charge of Raging Blow
-
-  if ( specialization() == WARRIOR_FURY )
-    buff.raging_blow -> trigger();
-
-  resource_gain( RESOURCE_RAGE,
-                 buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
-                 gain.enrage );
-  buff.enrage -> trigger();
-  buff.enraged_speed -> trigger();
 }
 
 /* Report Extension Class
