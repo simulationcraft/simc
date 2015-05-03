@@ -3603,6 +3603,7 @@ struct chaos_wave_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
 
+    p() -> buffs.molten_core -> trigger();
     p() -> trigger_demonology_t17_2pc( execute_state );
   }
 
