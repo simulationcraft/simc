@@ -3560,16 +3560,31 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
 
 void hunter_t::create_pets()
 {
-  create_pet( "cat", "cat" );
-  create_pet( "devilsaur", "devilsaur" );
-  create_pet( "raptor", "raptor" );
-  create_pet( "hyena", "hyena" );
-  create_pet( "wolf", "wolf" );
-  create_pet( "wasp", "wasp" );
-  create_pet( "t17_pet_2", "wolf" );
-  create_pet( "t17_pet_1", "wolf" );
-  create_pet( "chimaera", "chimaera" );
-  create_pet( "wind_serpent", "wind_serpent" );
+  size_t create_pets = 1;
+  if ( talents.stampede -> ok() ) // We only need to create 1 main pet if we are not using the stampede talent.
+    create_pets += 4;
+  for ( size_t i = 0; i < create_pets; i++ )
+  {
+    if ( glyphs.stampede -> ok() && talents.stampede -> ok() )
+      create_pet( summon_pet_str + ( i > 0 ? std::to_string( i ) : "" ), summon_pet_str );
+    else if ( !talents.stampede -> ok() )
+      create_pet( summon_pet_str, summon_pet_str );
+    else
+    {
+      create_pet( "raptor", "raptor" );
+      create_pet( "wolf", "wolf" );
+      create_pet( "hyena", "hyena" );
+      create_pet( "devilsaur", "devilsaur" );
+      create_pet( "cat", "cat" );
+      break;
+    }
+  }
+
+  if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
+  {
+    create_pet( "t17_pet_2", "wolf" );
+    create_pet( "t17_pet_1", "wolf" );
+  }
 
   if ( talents.dire_beast -> ok() )
   {
