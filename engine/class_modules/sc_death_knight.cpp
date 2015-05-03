@@ -6705,9 +6705,11 @@ void death_knight_t::init_action_list()
   food_str += (level >= 85) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 
   if ( tree == DEATH_KNIGHT_UNHOLY )
-    flask_str += (level > 90) ? "greater_draenic_strength_flask" : ((level >= 85) ? "winters_bite" : "titanic_strength");
-  else
-    flask_str += (level > 90) ? "greater_draenic_strength_flask" : ((level >= 85) ? "winters_bite" : "titanic_strength");
+  {
+    talent_overrides_str += "unholy_blight,if=raid_event.adds.count>=1|enemies>1/"
+                            "necrotic_plague,if=raid_event.adds.count>=1|enemies>1";
+  }
+  flask_str += (level > 90) ? "greater_draenic_strength_flask" : ((level >= 85) ? "winters_bite" : "titanic_strength");
 
   if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY )
     // Precombat actions
@@ -6746,9 +6748,7 @@ void death_knight_t::init_action_list()
   def -> add_action( "auto_attack" );
   def -> add_talent( this, "Death's Advance", "if=movement.remains>2" );
 
-  if ( specialization() == DEATH_KNIGHT_UNHOLY )
-  def -> add_action( "run_action_list,name=bos,if=talent.breath_of_sindragosa.enabled" );
-  def -> add_action( this, "Anti-Magic Shell", "damage=100000" );
+  def -> add_action( this, "Anti-Magic Shell", "damage=100000,if=((dot.breath_of_sindragosa.ticking&runic_power<25)|cooldown.breath_of_sindragosa.remains>40)|!talent.breath_of_sindragosa.enabled" );
 
   switch ( specialization() )
   {
@@ -6917,142 +6917,96 @@ void death_knight_t::init_action_list()
   }
   case DEATH_KNIGHT_UNHOLY:
   {
+    size_t num_items = items.size();
     precombat -> add_action( this, "Raise Dead" );
 
     for ( size_t i = 0; i < get_racial_actions().size(); i++ )
-      def -> add_action( get_racial_actions()[i] );
+      def -> add_action( get_racial_actions()[i] + ",if=!talent.breath_of_sindragosa.enabled" );
     for ( size_t i = 0; i < get_item_actions().size(); i++ )
-      def -> add_action( get_item_actions()[i] );
+      def -> add_action( get_item_actions()[i] + ",if=!talent.breath_of_sindragosa.enabled" );
     if ( sim -> allow_potions && level >= 80 )
-      def -> add_action( potion_str + ",if=buff.dark_transformation.up&target.time_to_die<=60" );
+    {
+      for ( size_t i = 0; i < num_items; i++ )
+      {
+        if ( items[i].name_str == "vial_of_convulsive_shadows" )
+        {
+          def -> add_action( potion_str + ",if=(buff.convulsive_shadows.up&target.health.pct<45)&!talent.breath_of_sindragosa.enabled" );
+          break;
+        }
+      }
+      def -> add_action( potion_str + ",if=(buff.dark_transformation.up&target.time_to_die<=60)&!talent.breath_of_sindragosa.enabled" );
+    }
+
+    action_priority_list_t* unholy = get_action_priority_list( "unholy" );
+    def -> add_action( "run_action_list,name=unholy" );
 
     // Breath of Sindragosa specific APLs
     action_priority_list_t* bos = get_action_priority_list( "bos" );
-    bos -> add_action( this, "Anti-Magic Shell", "damage=100000,if=(dot.breath_of_sindragosa.ticking&runic_power<25)|cooldown.breath_of_sindragosa.remains>40" );
-    bos -> add_action( "blood_fury,if=dot.breath_of_sindragosa.ticking" );
-    bos -> add_action( "berserking" );
 
+    unholy -> add_talent( this, "Plague Leech", "if=((cooldown.outbreak.remains<1)|disease.min_remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))" );
+    unholy -> add_action( this, "Soul Reaper", "if=(target.health.pct-3*(target.health.pct%target.time_to_die))<=45" );
+    unholy -> add_talent( this, "Blood Tap", "if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0" );
+    unholy -> add_action( this, "Summon Gargoyle" );
+    unholy -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75" );
+    unholy -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
+    unholy -> add_talent( this, "Unholy Blight", "if=!disease.min_ticking" );
+    unholy -> add_action( this, "Outbreak", "cycle_targets=1,if=(active_enemies>=1&!talent.necrotic_plague.enabled)&(!(dot.blood_plague.ticking|dot.frost_fever.ticking))" );
+    unholy -> add_action( this, "Plague Strike", "if=(!talent.necrotic_plague.enabled&!(dot.blood_plague.ticking|dot.frost_fever.ticking))|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)" );
+    unholy -> add_action( this, "Blood Boil", "cycle_targets=1,if=(active_enemies>1&!talent.necrotic_plague.enabled)&(!(dot.blood_plague.ticking|dot.frost_fever.ticking))" );
+    unholy -> add_action( this, "Death and Decay", "if=active_enemies>1&unholy>1" );
+    unholy -> add_talent( this, "Defile", "if=unholy=2" );
+    unholy -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
+    unholy -> add_action( this, "Scourge Strike", "if=unholy=2" );
+    unholy -> add_action( this, "Festering Strike", "if=talent.necrotic_plague.enabled&talent.unholy_blight.enabled&dot.necrotic_plague.remains<cooldown.unholy_blight.remains%2" );
+    unholy -> add_action( this, "Dark Transformation" );
+    unholy -> add_action( this, "Festering Strike", "if=blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0))" );
+    unholy -> add_action( this, "Festering Strike", "if=(blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0))" );
+    unholy -> add_action( this, "Blood Boil", "cycle_targets=1,if=(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)&active_enemies>1" );
+    unholy -> add_talent( this, "Defile", "if=blood=2|frost=2" );
+    unholy -> add_action( this, "Death and Decay", "if=active_enemies>1" );
+    unholy -> add_talent( this, "Defile" );
+    unholy -> add_action( this, "Blood Boil", "if=talent.breath_of_sindragosa.enabled&((active_enemies>=4&(blood=2|(frost=2&death=2)))&(cooldown.breath_of_sindragosa.remains>6|runic_power<75))" );
+    unholy -> add_action( this, "Blood Boil", "if=!talent.breath_of_sindragosa.enabled&(active_enemies>=4&(blood=2|(frost=2&death=2)))" );
+    unholy -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
+    unholy -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&debuff.necrotic_plague.stack<=14" );
+    unholy -> add_action( this, "Death Coil", "if=(buff.sudden_doom.react|runic_power>80)&(buff.blood_charge.stack<=10)" );
+    unholy -> add_action( this, "Blood Boil", "if=(active_enemies>=4&(cooldown.breath_of_sindragosa.remains>6|runic_power<75))|(!talent.breath_of_sindragosa.enabled&active_enemies>=4)" );
+    unholy -> add_action( this, "Scourge Strike", "if=(cooldown.breath_of_sindragosa.remains>6|runic_power<75|unholy=2)|!talent.breath_of_sindragosa.enabled" );
+    unholy -> add_action( this, "Festering Strike", "if=(cooldown.breath_of_sindragosa.remains>6|runic_power<75)|!talent.breath_of_sindragosa.enabled" );
+    unholy -> add_action( this, "Death Coil", "if=(cooldown.breath_of_sindragosa.remains>20)|!talent.breath_of_sindragosa.enabled" );
+    unholy -> add_talent( this, "Plague Leech" );
+    unholy -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
+
+    for ( size_t i = 0; i < get_racial_actions().size(); i++ )
+    {
+      if ( get_racial_actions()[i] != "arcane_torrent" )
+        bos -> add_action( get_racial_actions()[i] + ",if=dot.breath_of_sindragosa.ticking" );
+    }
     for ( size_t i = 0; i < get_item_actions().size(); i++ )
       bos -> add_action( get_item_actions()[i] + ",if=dot.breath_of_sindragosa.ticking" );
-
     if ( sim -> allow_potions && level >= 80 )
       bos -> add_action( potion_str + ",if=dot.breath_of_sindragosa.ticking" );
 
-    bos -> add_action( "run_action_list,name=bos_st" );
-
-    action_priority_list_t* bos_st = get_action_priority_list( "bos_st" );
-    bos_st -> add_talent( this, "Plague Leech", "if=((cooldown.outbreak.remains<1)|disease.min_remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))");
-    bos_st -> add_action( this, "Soul Reaper", "if=(target.health.pct-3*(target.health.pct%target.time_to_die))<=" + soul_reaper_pct );
-    bos_st -> add_talent( this, "Blood Tap", "if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=" + soul_reaper_pct + ")&cooldown.soul_reaper.remains=0" );
-    bos_st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75" );
-    bos_st -> add_action( "run_action_list,name=bos_active,if=dot.breath_of_sindragosa.ticking" );
-    bos_st -> add_action( this, "Summon Gargoyle" );
-    bos_st -> add_talent( this, "Unholy Blight", "if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)" );
-    bos_st -> add_action( this, "Outbreak", "cycle_targets=1,if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)" );
-    bos_st -> add_action( this, "Plague Strike", "if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)" );
-    bos_st -> add_action( this, "Blood Boil", "cycle_targets=1,if=!(dot.blood_plague.ticking|dot.frost_fever.ticking)");
-    bos_st -> add_action( this, "Death and Decay", "if=active_enemies>1&unholy>1" );
-    bos_st -> add_action( this, "Festering Strike", "if=blood>1&frost>1" );
-    bos_st -> add_action( this, "Scourge Strike", "if=((unholy>1|death>1)&active_enemies<=3)|(unholy>1&active_enemies>=4)" );
-    bos_st -> add_action( this, "Death and Decay", "if=active_enemies>1");
-    bos_st -> add_action( this, "Blood Boil", "if=active_enemies>=4&(blood=2|(frost=2&death=2))" );
-    bos_st -> add_action( this, "Dark Transformation" );
-    bos_st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
-    bos_st -> add_action( this, "Blood Boil", "if=active_enemies>=4" );
-    bos_st -> add_action( this, "Death Coil", "if=(buff.sudden_doom.react|runic_power>80)&(buff.blood_charge.stack<=10)" );
-    bos_st -> add_action( this, "Scourge Strike", "if=cooldown.breath_of_sindragosa.remains>6|runic_power<75" );
-    bos_st -> add_action( this, "Festering Strike", "if=cooldown.breath_of_sindragosa.remains>6|runic_power<75" );
-    bos_st -> add_action( this, "Death Coil", "if=cooldown.breath_of_sindragosa.remains>20" );
-    bos_st -> add_talent( this, "Plague Leech" );
-
-    action_priority_list_t* bos_active = get_action_priority_list( "bos_active" );
-    bos_active -> add_action( this, "Plague Strike", "if=!disease.ticking" );
-    bos_active -> add_action( this, "Blood Boil", "cycle_targets=1,if=(active_enemies>=2&!(dot.blood_plague.ticking|dot.frost_fever.ticking))|active_enemies>=4&(runic_power<88&runic_power>30)" );
-    bos_active -> add_action( this, "Scourge Strike", "if=active_enemies<=3&(runic_power<88&runic_power>30)" );
-    bos_active -> add_action( this, "Festering Strike", "if=runic_power<77" );
-    bos_active -> add_action( this, "Blood Boil", "if=active_enemies>=4");
-    bos_active -> add_action( this, "Scourge Strike", "if=active_enemies<=3" );
-    bos_active -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5" );
-    bos_active -> add_action( "arcane_torrent,if=runic_power<70" );
-    bos_active -> add_talent( this, "Plague Leech" );
-    bos_active -> add_action( this, "Empower Rune Weapon", "if=runic_power<60" );
-    bos_active -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
-
-    action_priority_list_t* spread = get_action_priority_list( "spread" );
-    spread -> add_action( this, "Blood Boil", "cycle_targets=1,if=!disease.min_ticking" );
-    spread -> add_action( this, "Outbreak", "if=!disease.min_ticking" );
-    spread -> add_action( this, "Plague Strike", "if=!disease.min_ticking" );
-
-    //decide between single_target and aoe rotation
-    def -> add_action( "run_action_list,name=aoe,if=(!talent.necrotic_plague.enabled&active_enemies>=2)|active_enemies>=4" );
-    def -> add_action( "run_action_list,name=single_target,if=(!talent.necrotic_plague.enabled&active_enemies<2)|active_enemies<4" );
-    // Plague Leech
-    st -> add_talent( this, "Plague Leech", "if=(cooldown.outbreak.remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))" );
-    st -> add_talent( this, "Plague Leech", "if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<3" );
-    st -> add_talent( this, "Plague Leech", "if=disease.min_remains<1" );
-    st -> add_action( this, "Outbreak", "if=!disease.min_ticking" );
-    st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&disease.min_remains<3" );
-    st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1" );
-    st -> add_action( this, "Death Coil", "if=runic_power>90" );
-    // Soul Reaper
-    st -> add_action( this, "Soul Reaper", "if=(target.health.pct-3*(target.health.pct%target.time_to_die))<=" + soul_reaper_pct );
-    st -> add_talent( this, "Blood Tap", "if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=" + soul_reaper_pct + ")&cooldown.soul_reaper.remains=0" );
-    st -> add_action( this, "Death and Decay", "if=(!talent.unholy_blight.enabled|!talent.necrotic_plague.enabled)&unholy=2" );
-    st -> add_talent( this, "Defile", "if=unholy=2" );
-    st -> add_action( this, "Plague Strike", "if=!disease.min_ticking&unholy=2" );
-    st -> add_action( this, "Scourge Strike", "if=unholy=2" );
-    st -> add_action( this, "Death Coil", "if=runic_power>80" );
-    st -> add_action( this, "Festering Strike", "if=talent.necrotic_plague.enabled&talent.unholy_blight.enabled&dot.necrotic_plague.remains<cooldown.unholy_blight.remains%2" );
-    st -> add_action( this, "Festering Strike", "if=blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0))" );
-    st -> add_action( this, "Festering Strike", "if=(blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0))" );
-    st -> add_talent( this, "Defile", "if=blood=2|frost=2" );
-    st -> add_action( this, "Plague Strike", "if=!disease.min_ticking&(blood=2|frost=2)" );
-    st -> add_action( this, "Scourge Strike", "if=blood=2|frost=2" );
-    st -> add_action( this, "Festering Strike", "if=((Blood-death)>1)" );
-    st -> add_action( this, "Blood Boil", "if=((Blood-death)>1)" );
-    st -> add_action( this, "Festering Strike", "if=((Frost-death)>1)" );
-    st -> add_talent( this, "Blood Tap", "if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0" );
-    st -> add_action( this, "Summon Gargoyle" );
-    st -> add_action( this, "Death and Decay", "if=(!talent.unholy_blight.enabled|!talent.necrotic_plague.enabled)" );
-    st -> add_talent( this, "Defile" );
-    st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
-    st -> add_action( this, "Plague Strike", "if=!disease.min_ticking" );
-    st -> add_action( this, "Dark Transformation" );
-    st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1))" );
-    st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1)" );
-    st -> add_action( this, "Scourge Strike", "if=!((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)|(Unholy>=2)" );
-    st -> add_talent( this, "Blood Tap" );
-    st -> add_action( this, "Festering Strike", "if=!((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)|(((Frost-death)>0)&((Blood-death)>0))" );
-    st -> add_action( this, "Death Coil" );
-    st -> add_talent( this, "Plague Leech" );
-    st -> add_action( this, "Scourge Strike", "if=cooldown.empower_rune_weapon.remains=0" );
-    st -> add_action( this, "Festering Strike", "if=cooldown.empower_rune_weapon.remains=0" );
-    st -> add_action( this, "Blood Boil", "if=cooldown.empower_rune_weapon.remains=0" );
-    st -> add_action( this, "Icy Touch", "if=cooldown.empower_rune_weapon.remains=0" );
-    st -> add_action( this, "Empower Rune Weapon", "if=blood<1&unholy<1&frost<1" );
-
-    //AoE
-    aoe -> add_talent( this, "Unholy Blight" );
-    aoe -> add_action( "call_action_list,name=spread,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking|(!dot.necrotic_plague.ticking&talent.necrotic_plague.enabled)" );
-    // AoE defile
-    aoe -> add_talent( this, "Defile" );
-    aoe -> add_action( this, "Blood Boil", "if=blood=2|(frost=2&death=2)" );
-    aoe -> add_action( this, "Summon Gargoyle" );
-    aoe -> add_action( this, "Dark Transformation" );
-    aoe -> add_talent( this, "Blood Tap", "if=level<=90&buff.shadow_infusion.stack=5" );
-    aoe -> add_talent( this, "Defile" );
-    aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
-    aoe -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-    aoe -> add_action( this, "Scourge Strike", "if=unholy=2" );
-    aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
-    aoe -> add_action( this, "Death Coil", "if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1)" );
-    aoe -> add_action( this, "Blood Boil" );
-    aoe -> add_action( this, "Icy Touch" );
-    aoe -> add_action( this, "Scourge Strike", "if=unholy=1" );
-    aoe -> add_action( this, "Death Coil" );
-    aoe -> add_talent( this, "Blood Tap" );
-    aoe -> add_talent( this, "Plague Leech" );
-    aoe -> add_action( this, "Empower Rune Weapon" );
+    bos -> add_talent( this, "Unholy Blight","if=!disease.ticking" );
+    bos -> add_action( this, "Plague Strike", "if=!disease.ticking" );
+    bos -> add_action( this, "Blood Boil", "cycle_targets=1,if=(active_enemies>=2&!(dot.blood_plague.ticking|dot.frost_fever.ticking))|active_enemies>=4&(runic_power<88&runic_power>30)" );
+    bos -> add_action( this, "Death and Decay", "if=active_enemies>=2&(runic_power<88&runic_power>30)" );
+    bos -> add_action( this, "Festering Strike", "if=(blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0)))&runic_power<80" );
+    bos -> add_action( this, "Festering Strike", "if=((blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0)))&runic_power<80" );
+    for ( size_t i = 0; i < get_racial_actions().size(); i++ )
+    {
+      if ( get_racial_actions()[i] == "arcane_torrent" )
+        bos -> add_action( get_racial_actions()[i] + ",if=runic_power<70" );
+    }
+    bos -> add_action( this, "Scourge Strike", "if=active_enemies<=3&(runic_power<88&runic_power>30)" );
+    bos -> add_action( this, "Blood Boil", "if=active_enemies>=4&(runic_power<88&runic_power>30)" );
+    bos -> add_action( this, "Festering Strike", "if=runic_power<77" );
+    bos -> add_action( this, "Scourge Strike", "if=(active_enemies>=4&(runic_power<88&runic_power>30))|active_enemies<=3" );
+    bos -> add_action( this, "Dark Transformation" );
+    bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5" );
+    bos -> add_talent( this, "Plague Leech" );
+    bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<60" );
+    bos -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
     break;
   }
   default: break;

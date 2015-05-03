@@ -28,7 +28,7 @@ actions.precombat+=/pillar_of_frost
 
 actions=auto_attack
 actions+=/deaths_advance,if=movement.remains>2
-actions+=/antimagic_shell,damage=100000
+actions+=/antimagic_shell,damage=100000,if=((dot.breath_of_sindragosa.ticking&runic_power<25)|cooldown.breath_of_sindragosa.remains>40)|!talent.breath_of_sindragosa.enabled
 actions+=/pillar_of_frost
 actions+=/potion,name=draenic_strength,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
 actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.potion.up
