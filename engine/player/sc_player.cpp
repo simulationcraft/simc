@@ -4163,13 +4163,13 @@ void player_t::demise()
   for ( size_t i = 0; i < pet_list.size(); ++i )
     pet_list[ i ] -> demise();
 
+  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
+  {
+    callbacks_on_demise[i]();
+  }
+
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> cancel();
-
-  for( size_t i = 0; i < callbacks_on_demise.size(); ++i )
-  {
-    callbacks_on_demise[ i ]();
-  }
 }
 
 // player_t::interrupt ======================================================

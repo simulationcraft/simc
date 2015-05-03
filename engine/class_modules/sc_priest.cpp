@@ -58,7 +58,6 @@ public:
   // Buffs
   struct
   {
-
     // Talents
     buff_t* glyph_of_levitate;
     buff_t* power_infusion;

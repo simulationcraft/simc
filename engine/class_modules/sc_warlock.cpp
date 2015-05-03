@@ -44,7 +44,8 @@ struct warlock_td_t: public actor_target_data_t
   int agony_stack;
   double soc_trigger, soulburn_soc_trigger;
 
-  warlock_td_t( player_t* target, warlock_t* source );
+  warlock_t& warlock;
+  warlock_td_t( player_t* target, warlock_t& p );
 
   void reset()
   {
@@ -53,6 +54,8 @@ struct warlock_td_t: public actor_target_data_t
     soc_trigger = 0;
     soulburn_soc_trigger = 0;
   }
+
+  void target_demise();
 };
 
 struct warlock_t: public player_t
@@ -305,6 +308,7 @@ public:
     gain_t* siphon_life;
     gain_t* seed_of_corruption;
     gain_t* haunt_tier16_4pc;
+    gain_t* shard_target_death;
   } gains;
 
   // Procs
@@ -424,7 +428,7 @@ public:
     warlock_td_t*& td = target_data[target];
     if ( ! td )
     {
-      td = new warlock_td_t( target, const_cast<warlock_t*>( this ) );
+      td = new warlock_td_t( target, const_cast<warlock_t&>( *this ) );
     }
     return td;
   }
@@ -4880,27 +4884,43 @@ struct mannoroths_fury_t: public warlock_spell_t
 
 } // end actions namespace
 
-warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ):
-actor_target_data_t( target, p ),
+warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
+actor_target_data_t( target, &p ),
+warlock( p ),
 ds_started_below_20( false ),
 agony_stack( 1 ),
 soc_trigger( 0 ),
 soulburn_soc_trigger( 0 )
 {
-  dots_corruption = target -> get_dot( "corruption", p );
-  dots_unstable_affliction = target -> get_dot( "unstable_affliction", p );
-  dots_agony = target -> get_dot( "agony", p );
-  dots_doom = target -> get_dot( "doom", p );
-  dots_immolate = target -> get_dot( "immolate", p );
-  dots_shadowflame = target -> get_dot( "shadowflame", p );
-  dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", p );
-  dots_soulburn_seed_of_corruption = target -> get_dot( "soulburn_seed_of_corruption", p );
-  dots_haunt = target -> get_dot( "haunt", p );
+  dots_corruption = target -> get_dot( "corruption", &p );
+  dots_unstable_affliction = target -> get_dot( "unstable_affliction", &p );
+  dots_agony = target -> get_dot( "agony", &p );
+  dots_doom = target -> get_dot( "doom", &p );
+  dots_drain_soul = target -> get_dot( "drain_soul", &p );
+  dots_immolate = target -> get_dot( "immolate", &p );
+  dots_shadowflame = target -> get_dot( "shadowflame", &p );
+  dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", &p );
+  dots_soulburn_seed_of_corruption = target -> get_dot( "soulburn_seed_of_corruption", &p );
+  dots_haunt = target -> get_dot( "haunt", &p );
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+
+  target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
+}
+
+void warlock_td_t::target_demise()
+{
+  if ( dots_drain_soul )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a shard by channeling drain soul during this.", target -> name(), warlock.name() );
+    }
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.shard_target_death );
+  }
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
@@ -5521,6 +5541,7 @@ void warlock_t::init_gains()
   gains.siphon_life = get_gain( "siphon_life" );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
   gains.haunt_tier16_4pc = get_gain( "haunt_tier16_4pc" );
+  gains.shard_target_death = get_gain( "shard_target_death" );
 }
 
 // warlock_t::init_procs ===============================================
