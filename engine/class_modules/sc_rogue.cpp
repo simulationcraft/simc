@@ -1888,7 +1888,7 @@ struct envenom_t : public rogue_attack_t
     ability_type = ENVENOM;
     weapon = &( p -> main_hand_weapon );
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    attack_power_mod.direct       = 0.306;
+    attack_power_mod.direct = maybe_ptr( p -> dbc.ptr ) ? 0.417 : 0.306;
     dot_duration = timespan_t::zero();
     weapon_multiplier = weapon_power_mod = 0.0;
     base_multiplier *= 1.05; // Hard-coded tooltip.
@@ -2004,7 +2004,7 @@ struct eviscerate_t : public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
 
-    attack_power_mod.direct = 0.577;
+    attack_power_mod.direct = maybe_ptr( p -> dbc.ptr ) ? 0.559 : 0.577;
     // Hard-coded tooltip.
     attack_power_mod.direct *= 0.88;
 
