@@ -5776,8 +5776,25 @@ void warrior_t::create_options()
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
 }
 
-action_t* warrior_t::create_proc_action( const std::string& /*name*/, const special_effect_t& /*effect*/ )
+// Discordant Chorus Trinket - T18 ================================================
+
+  struct fel_cleave_t: public warrior_attack_t
+  {
+    fel_cleave_t( warrior_t* p, const special_effect_t& effect ):
+      warrior_attack_t( "fel_cleave", p, p -> find_spell( 184248 ) )
+    {
+      background = special = may_crit = true;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+      range = radius;
+      radius = -1;
+      weapon_multiplier = 0;
+      aoe = -1;
+    }
+  };
+
+action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& effect )
 {
+  if ( util::str_compare_ci( name, "fel_cleave" ) ) return new fel_cleave_t( this, effect ); // This must be added here so that it takes the armor reduction from colossus smash into account.
   return 0;
 }
 

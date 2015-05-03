@@ -2230,9 +2230,9 @@ void item::str_dps_trinket_4( special_effect_t& effect )
 
 void item::str_dps_trinket_3( special_effect_t& effect )
 {
-  struct str_dps_trinket_3_damage_t: public melee_attack_t
+  struct fel_cleave_t: public melee_attack_t
   {
-    str_dps_trinket_3_damage_t( const special_effect_t& effect ):
+    fel_cleave_t( const special_effect_t& effect ):
       melee_attack_t( "fel_cleave", effect.player, effect.driver() -> effectN( 1 ).trigger() )
     {
       background = special = may_crit = true;
@@ -2251,7 +2251,7 @@ void item::str_dps_trinket_3( special_effect_t& effect )
 
   if ( !action )
   {
-    action = new str_dps_trinket_3_damage_t( effect );
+    action = new fel_cleave_t( effect );
   }
 
   effect.execute_action = action;
