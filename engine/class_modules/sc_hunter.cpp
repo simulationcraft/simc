@@ -1154,42 +1154,42 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
   }
 };
 
-// Beast Cleave
+// Beast Cleave ==============================================================
+
+struct beast_cleave_attack_t: public hunter_main_pet_attack_t
+{
+  beast_cleave_attack_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ) )
+  {
+    may_miss = false;
+    may_crit = false;
+    proc = false;
+    callbacks = false;
+    background = true;
+    school = SCHOOL_PHYSICAL;
+    aoe = -1;
+    range = -1.0;
+    radius = 10.0;
+    // The starting damage includes all the buffs
+    weapon_multiplier = 0;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> actor_list[i];
+      if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+        tl.push_back( t );
+    }
+    return tl.size();
+  }
+};
 
 static bool trigger_beast_cleave( action_state_t* s )
 {
-  struct beast_cleave_attack_t: public hunter_main_pet_attack_t
-  {
-    beast_cleave_attack_t( hunter_main_pet_t* p ):
-      hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ) )
-    {
-      may_miss = false;
-      may_crit = false;
-      proc = false;
-      callbacks = false;
-      background = true;
-      school = SCHOOL_PHYSICAL;
-      aoe = -1;
-      range = -1.0;
-      radius = 10.0;
-      // The starting damage includes all the buffs
-      weapon_multiplier = 0;
-    }
-
-    size_t available_targets( std::vector< player_t* >& tl ) const
-    {
-      tl.clear();
-
-      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-      {
-        player_t* t = sim -> actor_list[i];
-        if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
-          tl.push_back( t );
-      }
-      return tl.size();
-    }
-  };
-
   if ( !s -> action -> result_is_hit_or_multistrike( s -> result )  )
     return false;
 
@@ -1200,12 +1200,6 @@ static bool trigger_beast_cleave( action_state_t* s )
 
   if ( !p -> buffs.beast_cleave -> check() )
     return false;
-
-  if ( !p -> active.beast_cleave )
-  {
-    p -> active.beast_cleave = new beast_cleave_attack_t( p );
-    p -> active.beast_cleave -> init();
-  }
 
   double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
 
@@ -1644,6 +1638,10 @@ void hunter_main_pet_t::init_spells()
   specs.wild_hunt = find_spell( 62762 );
   specs.combat_experience = find_specialization_spell( "Combat Experience" );
   specs.adaptation_combat_experience = find_spell( 156843 );
+  if ( o() -> specs.beast_cleave -> ok() )
+  {
+    active.beast_cleave = new actions::beast_cleave_attack_t( this );
+  }
 }
 
 // ==========================================================================
