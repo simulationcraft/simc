@@ -4199,8 +4199,11 @@ struct choose_target_t : public action_t
         tl.push_back( t );
     }
 
-    if ( target != p -> pets.prismatic_crystal && ! p -> pets.prismatic_crystal -> is_sleeping() )
-      tl.push_back( p -> pets.prismatic_crystal );
+    if ( p -> pets.prismatic_crystal )
+    {
+      if ( target != p -> pets.prismatic_crystal && !p -> pets.prismatic_crystal -> is_sleeping() )
+        tl.push_back( p -> pets.prismatic_crystal );
+    }
 
     return tl.size();
   }
