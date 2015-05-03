@@ -146,7 +146,10 @@ void plot_t::analyze_stats()
       if ( j != 0 )
       {
         delta_sim = new sim_t( sim );
-        if ( dps_plot_iterations   > 0 ) delta_sim -> iterations   = dps_plot_iterations;
+        if ( dps_plot_iterations > 0 )
+        {
+          delta_sim -> work_queue -> init( dps_plot_iterations );
+        }
         if ( dps_plot_target_error > 0 ) delta_sim -> target_error = dps_plot_target_error;
         delta_sim -> enchant.add_stat( i, j * dps_plot_step );
         if ( sim -> report_progress )
