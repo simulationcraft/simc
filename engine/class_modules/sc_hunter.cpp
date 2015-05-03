@@ -3566,7 +3566,7 @@ void hunter_t::create_pets()
   for ( size_t i = 0; i < create_pets; i++ )
   {
     if ( glyphs.stampede -> ok() && talents.stampede -> ok() )
-      create_pet( summon_pet_str + ( i > 0 ? std::to_string( i ) : "" ), summon_pet_str );
+      create_pet( summon_pet_str + ( i > 0 ? util::to_string( i ) : "" ), summon_pet_str );
     else if ( !talents.stampede -> ok() )
       create_pet( summon_pet_str, summon_pet_str );
     else
