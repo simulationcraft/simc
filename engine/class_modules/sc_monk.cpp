@@ -4093,7 +4093,10 @@ struct breath_of_fire_t: public monk_spell_t
     monk_td_t& td = *this -> td( s -> target );
     // Improved Breath of Fire
     if ( ( td.debuff.dizzying_haze -> up() ) || p() -> perk.improved_breath_of_fire -> ok() )
+    {
+      dot_action -> target = s -> target;
       dot_action -> execute();
+    }
   }
 };
 
