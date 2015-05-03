@@ -101,6 +101,7 @@ public:
     buff_t* clear_thoughts; //t17 4pc disc
     buff_t* shadow_power; //WoD Shadow 2pc PvP
     buff_t* reperation; // T18 Disc 2p
+    buff_t* mind_harvest; // T18 Shadow 4pc
   } buffs;
 
   // Talents
@@ -419,6 +420,7 @@ public:
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_melee_crit() const override;
+  virtual double    composite_multistrike() const override;
   virtual double    composite_player_multistrike_damage_multiplier() const override;
   virtual double    composite_player_multistrike_healing_multiplier() const override;
   virtual double    spirit() const;
@@ -664,6 +666,14 @@ struct mindbender_pet_t : public base_fiend_pet_t
   {
     double m  = mindbender_spell -> effectN( 2 ).percent();
     return m / 100;
+  }
+
+  virtual void demise() override
+  {
+    base_fiend_pet_t::demise();
+
+    // T18 Shadow 4pc
+    o().buffs.mind_harvest -> trigger();
   }
 };
 
@@ -5681,6 +5691,18 @@ double priest_t::composite_melee_crit() const
   return cmc;
 }
 
+double priest_t::composite_multistrike() const
+{
+  double cm = base_t::composite_multistrike();
+
+  if ( buffs.mind_harvest -> check() )
+  {
+    cm += buffs.mind_harvest -> data().effectN( 1 ).percent();
+  }
+
+  return cm;
+}
+
 // Multistrike Effect Multipliers ====================
 
 double priest_t::composite_player_multistrike_damage_multiplier() const
@@ -6326,6 +6348,11 @@ void priest_t::create_buffs()
                      .chance( sets.has_set_bonus( PRIEST_DISCIPLINE, T18, B2 ) )
                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                      .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+  buffs.mind_harvest = buff_creator_t( this, "mind_harvest" )
+                       .spell( find_spell( 188779 ) )
+                       .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) )
+                       .add_invalidate( CACHE_MULTISTRIKE );
 
   //Glyphs
   buffs.glyph_of_levitate = buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )

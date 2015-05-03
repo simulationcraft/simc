@@ -1362,6 +1362,7 @@ class SpellDataGenerator(DataGenerator):
             ( 129197, 3 ), # Mind Flay (Insanity)
             ( 179338, 3 ), # Searing Insanity
             ( 165623, 0 ), # Item - Priest T17 Shadow 2P Bonus - dot spell
+            ( 188779, 0 ), # Item - Priest T18 Shadow 4P Bonus - dot spell
         ),
 
         # Death Knight:
