@@ -7897,7 +7897,7 @@ expr_t* player_t::create_expression( action_t* a,
     pet_t* pet = find_pet( splits[ 1 ] );
     if ( ! pet )
     {
-      return expr_t::create_constant( "pet_not_found_expr", 0 );
+      return expr_t::create_constant( "pet_not_found_expr", -1.0 );
     }
 
     if ( splits.size() == 2 )
