@@ -1457,7 +1457,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       const item_t* item = priest.active_items.naarus_discipline -> item;
       double stacks = 1;
       double value = priest.active_items.naarus_discipline -> trigger() -> effectN( 1 ).average( item ) / 100.0;
-      s -> target -> buffs.naarus_discipline -> trigger( stacks, value );
+      s -> target -> buffs.naarus_discipline -> trigger( static_cast<int>(stacks), value );
     }
   }
 };
