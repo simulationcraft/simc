@@ -140,6 +140,17 @@ struct move_enemy_t : public raid_event_t
     assert( enemy );
   }
 
+  void regenerate_cache()
+  {
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    {
+      player_t* p = affected_players[i];
+      // Invalidate target caches
+      for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
+        p -> action_list[i] -> target_cache.is_valid = false; //Regenerate  Cache.
+    }
+  }
+
   void reset()
   {
     enemy -> x_position = 0;
@@ -152,12 +163,14 @@ struct move_enemy_t : public raid_event_t
     original_y = enemy -> y_position;
     enemy -> x_position = x_coord;
     enemy -> y_position = y_coord;
+    regenerate_cache();
   }
 
   void _finish()
   {
     enemy -> x_position = 0;
     enemy -> y_position = 0;
+    regenerate_cache();
   }
 };
 

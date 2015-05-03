@@ -1319,17 +1319,7 @@ public:
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
-    tl.clear();
-    if ( ! target -> is_sleeping() )
-      tl.push_back( target );
-
-    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> target_non_sleeping_list[ i ];
-
-      if ( t -> is_enemy() && ( t != target ) )
-        tl.push_back( t );
-    }
+    spell_t::available_targets( tl );
 
     if ( p() -> pets.prismatic_crystal &&
          target != p() -> pets.prismatic_crystal &&
@@ -2554,6 +2544,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
   {
     background = true;
     callbacks = false;
+    radius = data().effectN( 2 ).radius_max();
 
     aoe = -1;
     parse_effect_data( data().effectN( 1 ) );
@@ -4186,18 +4177,7 @@ struct choose_target_t : public action_t
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
     mage_t* p = debug_cast<mage_t*>( player );
-
-    tl.clear();
-    if ( ! target -> is_sleeping() )
-      tl.push_back( target );
-
-    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> target_non_sleeping_list[ i ];
-
-      if ( t != target )
-        tl.push_back( t );
-    }
+    action_t::available_targets( tl );
 
     if ( p -> pets.prismatic_crystal )
     {

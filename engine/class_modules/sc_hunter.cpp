@@ -1958,6 +1958,7 @@ struct auto_shot_t: public ranged_t
   {
     school = SCHOOL_PHYSICAL;
     lone_wolf = true;
+    range = 40.0;
   }
 };
 

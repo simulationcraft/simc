@@ -2101,6 +2101,8 @@ struct fan_of_knives_t: public rogue_attack_t
   {
     ability_type = FAN_OF_KNIVES;
     weapon = &( player -> main_hand_weapon );
+    range = radius;
+    radius = -1.0;
     weapon_multiplier = 0;
     aoe = -1;
     adds_combo_points = 1;
@@ -3466,6 +3468,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
     aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     weapon = &p -> main_hand_weapon;
     weapon_multiplier = 0;
+    range = 5;
     if ( p -> perk.enhanced_blade_flurry -> ok() )
       aoe = -1;
 
@@ -3482,14 +3485,15 @@ struct blade_flurry_attack_t : public rogue_attack_t
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
-    tl.clear();
+    rogue_attack_t::available_targets( tl );
 
-    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+    for ( size_t i = 0; i < tl.size(); i++ )
     {
-      player_t* t = sim -> target_non_sleeping_list[ i ];
-
-      if ( t -> is_enemy() && t != target )
-        tl.push_back( t );
+      if ( tl[i] == target ) // Cannot hit the original target.
+      {
+        tl.erase( tl.begin() + i );
+        break;
+      }
     }
 
     return tl.size();

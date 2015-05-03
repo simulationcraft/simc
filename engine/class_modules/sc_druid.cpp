@@ -5433,6 +5433,7 @@ struct starfall_t : public druid_spell_t
     {
       direct_tick = true;
       aoe = -1;
+      range = 40;
     }
   };
 
@@ -5494,6 +5495,7 @@ struct starshards_t : public starfall_t
   {
     background = true;
     target = sim -> target;
+    range = 40;
     cooldown = player -> get_cooldown( "starshards" );
   }
   

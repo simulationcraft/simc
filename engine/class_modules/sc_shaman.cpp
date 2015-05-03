@@ -2674,6 +2674,7 @@ struct chain_lightning_t : public shaman_spell_t
     base_multiplier      *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+    radius = 10.0;
   }
 
   action_state_t* new_state()
@@ -2890,12 +2891,12 @@ struct fire_nova_explosion_t : public shaman_spell_t
   // Fire nova does not damage the main target.
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
-    tl.clear();
+    shaman_spell_t::available_targets( tl );
 
-    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    for ( size_t i = 0; i < tl.size(); i++ )
     {
-      if ( sim -> target_non_sleeping_list[ i ] != target )
-        tl.push_back( sim -> target_non_sleeping_list[ i ] );
+      if ( tl[i] == target ) // Cannot hit the original target.
+        tl.erase( tl.begin() + i );
     }
 
     return tl.size();

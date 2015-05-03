@@ -1041,11 +1041,34 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 
   for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
   {
-    player_t* t = sim -> target_non_sleeping_list[ i ];
+    player_t* t = sim -> target_non_sleeping_list[i];
 
     if ( t -> is_enemy() && ( t != target ) )
+    {
+      if ( sim -> fancy_target_distance_stuff )
+      {
+        if ( sim -> log )
+        {
+          sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
+            player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, t -> name(), t -> x_position, t -> y_position );
+        }
+        if ( radius > 0 || range > 0 )
+        {
+          if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
+          {
+            if ( target -> get_position_distance( t -> x_position, t -> y_position ) <= radius )
+              tl.push_back( t );
+          } // If they do not have a radius, they are likely based on the distance from the player.
+          else if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= range )
             tl.push_back( t );
         }
+      }
+      else
+      {
+        tl.push_back( t );
+      }
+    }
+  }
 
   if ( sim -> debug )
   {
@@ -2866,29 +2889,14 @@ void action_t::schedule_travel( action_state_t* s )
   do_schedule_travel( s, time_to_travel );
 }
 
-bool action_t::fancy_target_stuff_impact( action_state_t* s )
+bool action_t::fancy_target_stuff_impact( action_state_t* s ) // This is for abilities with unusual mechanics, such as glaive toss. 
 {
-  if ( sim -> log )
-  {
-    sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
-      player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, s -> target -> name(), s -> target -> x_position, s -> target -> y_position );
-  }
-  if ( radius > 0 || range > 0 )
-  {
-    if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
-    {
-      if ( target -> get_position_distance( s -> target -> x_position, s -> target -> y_position ) > radius )
-        return false;
-    } // If they do not have a radius, they are likely based on the distance from the player.
-    else if ( s -> target -> get_position_distance( player -> x_position, player -> y_position ) > range )
-      return false;
-  }
   return true;
 }
 
 void action_t::impact( action_state_t* s )
 {
-  if ( sim -> fancy_target_distance_stuff && is_aoe() )
+  if ( sim -> fancy_target_distance_stuff )
   {
     if ( !fancy_target_stuff_impact( s ) )
       return;

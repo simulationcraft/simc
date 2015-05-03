@@ -920,6 +920,7 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
     background = true;
     may_multistrike = 1; // Yep. It can multistrike.
     aoe = 1;
+    range = 5;
     school = SCHOOL_PHYSICAL;
     weapon = &p -> main_hand_weapon;
     weapon_multiplier = 0.5;
@@ -929,47 +930,30 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
-    tl.clear();
+    warrior_attack_t::available_targets( tl );
 
-    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    for ( size_t i = 0; i < tl.size(); i++ )
     {
-      if ( sim -> target_non_sleeping_list[i] != target )
-        tl.push_back( sim -> target_non_sleeping_list[i] );
+      if ( tl[i] == target ) // Cannot hit the original target.
+      {
+        tl.erase( tl.begin() + i );
+        break;
+      }
     }
 
     return tl.size();
   }
 
-  std::vector< player_t* >& target_list() const
-  {
-    target_cache.list.clear();
-    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
-    {
-      player_t* t = sim -> target_non_sleeping_list[i];
-      if ( t != target )
-      {
-        if ( sim -> fancy_target_distance_stuff )
-        {
-          if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
-          {
-            target_cache.list.push_back( t );
-          }
-        }
-        else
-        {
-          target_cache.list.push_back( t );
-        }
-      }
-    }
-    return target_cache.list;
-  }
-
   void execute()
   {
-    target_cache.is_valid = false;
-    attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
+    target_list();
+    if ( target_cache.list.size() > 0 )
+    {
+      attack_t::execute();
+
+      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
+    }
   }
 };
 
@@ -986,6 +970,7 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
     aoe = 1;
     may_multistrike = 1;
     weapon_multiplier = 0;
+    range = 5;
     base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
     cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
     pct_damage = data().effectN( 1 ).percent();
@@ -998,12 +983,15 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
-    tl.clear();
+    warrior_attack_t::available_targets( tl );
 
-    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    for ( size_t i = 0; i < tl.size(); i++ )
     {
-      if ( sim -> target_non_sleeping_list[i] != target )
-        tl.push_back( sim -> target_non_sleeping_list[i] );
+      if ( tl[i] == target ) // Cannot hit the original target.
+      {
+        tl.erase( tl.begin() + i );
+        break;
+      }
     }
 
     return tl.size();
@@ -1013,37 +1001,14 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
   {
     base_dd_max *= pct_damage; //Deals 50% of original damage
     base_dd_min *= pct_damage;
-    target_cache.is_valid = false;
-
-    attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
-  }
-
-  std::vector< player_t* >& target_list() const
-  {
-    target_cache.list.clear();
-    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
+    target_list();
+    if ( target_cache.list.size() > 0 )
     {
-      player_t* t = sim -> target_non_sleeping_list[i];
-      if ( t != target )
-      {
-        if ( sim -> fancy_target_distance_stuff )
-        {
-          if ( t -> get_position_distance( player -> x_position, player -> y_position ) < 5 )
-          {
-            target_cache.list.push_back( t );
-          }
-        }
-        else
-        {
-          target_cache.list.push_back( t );
-        }
-      }
-    }
+      attack_t::execute();
 
-    return target_cache.list;
+      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
+    }
   }
 };
 
@@ -5571,7 +5536,7 @@ double warrior_t::composite_player_critical_damage_multiplier() const
   double cdm = player_t::composite_player_critical_damage_multiplier();
 
   if ( buff.recklessness -> check() )
-    cdm += ( buff.recklessness -> data().effectN( 2 ).percent() * ( 1.0 + glyphs.recklessness -> effectN( 1 ).percent() ) );
+    cdm *= 1.0 + ( buff.recklessness -> data().effectN( 2 ).percent() * ( 1.0 + glyphs.recklessness -> effectN( 1 ).percent() ) );
 
   return cdm;
 }

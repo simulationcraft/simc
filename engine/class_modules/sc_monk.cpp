@@ -2753,6 +2753,7 @@ struct tick_action_t : public monk_melee_attack_t
     aoe = -1;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
+    range = 10.0;
 
     // Reset some variables to ensure proper execution
     dot_duration = timespan_t::zero();
