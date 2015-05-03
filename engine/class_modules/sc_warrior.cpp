@@ -4513,8 +4513,20 @@ void warrior_t::apl_glad()
   default_list -> add_action( "shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2" );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
-  default_list -> add_action( this, "Heroic Strike", "if=(buff.shield_charge.up|(buff.unyielding_strikes.up&rage>=80-buff.unyielding_strikes.stack*10))&target.health.pct>20" );
-  default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|rage>=rage.max-20|buff.unyielding_strikes.stack>4|target.time_to_die<10" );
+  /*
+  actions+=/heroic_strike,if=buff.unyielding_strikes.up&rage>=92-buff.unyielding_strikes.stack*12&target.health.pct>20
+actions+=/heroic_strike,if=buff.shield_charge.up&target.health.pct>20
+actions+=/heroic_strike,if=buff.shield_charge.up&target.health.pct<20&buff.unyielding_strikes.stack>3
+actions+=/heroic_strike,if=buff.ultimatum.up
+actions+=/heroic_strike,if=rage>=rage.max-20
+actions+=/heroic_strike,if=buff.unyielding_strikes.stack>4
+actions+=/heroic_strike,if=target.time_to_die<10
+  */
+  default_list -> add_action( this, "Heroic Strike", "if=buff.unyielding_strikes.up&rage>=92-buff.unyielding_strikes.stack*12&target.health.pct>20" );
+  default_list -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up&target.health.pct>20" );
+  default_list -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up&target.health.pct<20&buff.unyielding_strikes.stack>3" );
+  default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(rage>=rage.max-20)" );
+  default_list -> add_action( this, "Heroic Strike", "if=target.time_to_die<10|buff.unyielding_strikes.stack>4" );
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
 
@@ -4533,8 +4545,8 @@ void warrior_t::apl_glad()
   gladiator -> add_action( this, "Revenge" );
   gladiator -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   gladiator -> add_talent( this, "Storm Bolt" );
-  gladiator -> add_talent( this, "Dragon Roar", "if=buff.unyielding_strikes.stack>=4&buff.unyielding_strikes.stack<6" );
-  gladiator -> add_action( this, "Execute", "if=rage>60&target.health.pct<20" );
+  gladiator -> add_talent( this, "Dragon Roar", "if=buff.unyielding_strikes.stack=5" );
+  gladiator -> add_action( this, "Execute", "if=rage>=50" );
   gladiator -> add_action( this, "Devastate" );
 
   gladiator_aoe -> add_action( this, "Revenge" );
