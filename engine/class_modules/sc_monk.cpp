@@ -1203,7 +1203,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "fists_of_fury", player, player -> o() -> find_specialization_spell( "Fists of Fury" ) )
     {
-      channeled = tick_zero = interrupt_auto_attack = true;
+      channeled = tick_zero = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
@@ -2957,7 +2957,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    interrupt_auto_attack = true;
 
     base_multiplier *= 7.755; // hardcoded into tooltip
     if ( maybe_ptr( p -> dbc.ptr ) )
