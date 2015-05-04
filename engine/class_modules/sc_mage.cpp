@@ -3461,6 +3461,16 @@ struct living_bomb_t : public mage_spell_t
 
 // Implementation details from Celestalon:
 // http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post301
+// Meteor is split over a number of spell IDs, some of which don't seem to be
+// used for anything useful:
+// - Meteor (id=153561) is the talent spell, the driver
+// - Meteor (id=153564) is the initial impact damage
+// - Meteor Burn (id=155158) is the ground effect tick damage
+// - Meteor Burn (id=175396) provides the tooltip's burn duration (8 seconds),
+//   but doesn't match in game where we only see 7 ticks over 7 seconds.
+// - Meteor (id=177345) contains the time between cast and impact
+// None of these specify the 1 second falling duration given by Celestalon, so
+// we're forced to hardcode it.
 
 struct meteor_burn_t : public mage_spell_t
 {
@@ -3469,6 +3479,9 @@ struct meteor_burn_t : public mage_spell_t
   {
     background = true;
 
+    // Meteor is observed to have 7 ticks over 7 seconds in game. This
+    // correlates well with the ground tick effect, 155158's duration (10 sec)
+    // minus Meteor's initial travel time, 177345's duration (3 seconds)
     dot_duration = data().duration() - p -> find_spell( 177345 ) -> duration();
     hasted_ticks = false;
   }
