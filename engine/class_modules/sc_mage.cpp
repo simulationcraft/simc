@@ -3459,38 +3459,56 @@ struct living_bomb_t : public mage_spell_t
 
 // Meteor Spell ========================================================
 
+// Implementation details from Celestalon:
+// http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post301
+
+struct meteor_burn_t : public mage_spell_t
+{
+  meteor_burn_t( mage_t* p ) :
+    mage_spell_t( "meteor_burn", p, p -> find_spell( 155158 ) )
+  {
+    background = true;
+
+    dot_duration = data().duration() - p -> find_spell( 177345 ) -> duration();
+    hasted_ticks = false;
+  }
+};
+
 struct meteor_impact_t : public mage_spell_t
 {
-  int targets_hit;
-  meteor_impact_t( mage_t* p, int targets ) :
-    mage_spell_t( "meteor_burn", p )
+  meteor_burn_t* meteor_burn;
+
+  meteor_impact_t( mage_t* p, mage_spell_t* meteor, int targets ) :
+    mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) ),
+    meteor_burn( new meteor_burn_t( p ) )
   {
-    // Sp_Coeff is stored in 153564 for the impact
-    parse_spell_data( *p -> dbc.spell( 155158 ) );
+    background = true;
 
-    spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
+    aoe = targets;
+    split_aoe_damage = true;
 
-    dot_duration = timespan_t::from_seconds( 7.0 );
-    hasted_ticks = may_miss = false;
-    targets_hit = targets;
-    may_crit = tick_may_crit = split_aoe_damage = dual = true;
-    school = SCHOOL_FIRE;
-  }
-
-  void execute()
-  {
-    aoe = targets_hit;
-    mage_spell_t::execute();
+    meteor -> add_child( meteor_burn );
   }
 
   virtual timespan_t travel_time() const
-  { return timespan_t::from_seconds( 1.0 ); }
+  {
+    return timespan_t::from_seconds( 1.0 );
+  }
 
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    if ( result_is_hit_or_multistrike( s -> result) )
+
+    if ( result_is_hit( s -> result ) )
+    {
+      meteor_burn -> target = s -> target;
+      meteor_burn -> execute();
+    }
+
+    if ( result_is_hit_or_multistrike( s -> result ) )
+    {
       trigger_ignite( s );
+    }
   }
 };
 
@@ -3498,10 +3516,12 @@ struct meteor_t : public mage_spell_t
 {
   int targets;
   meteor_impact_t* meteor_impact;
+  timespan_t meteor_delay;
   meteor_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
     targets( -1 ),
-    meteor_impact( new meteor_impact_t( p, targets ) )
+    meteor_impact( new meteor_impact_t( p, this, targets ) ),
+    meteor_delay( p -> find_spell( 177345 ) -> duration() )
   {
     add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
@@ -3509,24 +3529,23 @@ struct meteor_t : public mage_spell_t
     callbacks = false;
     may_multistrike = 0;
     add_child( meteor_impact );
-    dot_duration = timespan_t::zero();
     school = SCHOOL_FIRE;
   }
 
-  // Meteor has a weird travel time. Implementation details are from Celestalon
-  // http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post301
-  // TODO: Fix stat timing
   virtual timespan_t travel_time() const
   {
-    double impact_time = 3.0 * p() ->  composite_spell_haste();
-    double projectile_spawn = std::max( 0.0, impact_time - 1.0 );
+    timespan_t impact_time = meteor_delay * p() ->  composite_spell_haste();
+    timespan_t meteor_spawn = std::max( timespan_t::zero(),
+                                        impact_time - timespan_t::from_seconds( 1.0 ) );
 
-    return timespan_t::from_seconds( projectile_spawn );
+    return meteor_spawn;
   }
 
   void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
+
+    meteor_impact -> target = s -> target;
     meteor_impact -> execute();
   }
 };
