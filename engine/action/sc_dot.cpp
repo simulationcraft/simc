@@ -594,6 +594,15 @@ void dot_t::tick_zero()
  */
 void dot_t::tick()
 {
+  if ( current_action -> channeled && current_action -> interrupt_auto_attack )
+  { // Channeled dots that interrupt auto attacks will also be interrupted by the target running out of range.
+    // This should capture most dot driver spells that require a target in range, such as mind sear, while avoiding abilities like bladestorm that do not.
+    if ( !current_action -> fancy_target_stuff_execute() )
+    {
+      current_action -> reset();
+      return;
+    }
+  }
   if ( sim.debug )
     sim.out_debug.printf( "%s ticks (%d of %d). last_start=%.4f, dur=%.4f tt=%.4f",
                           name(), current_tick, num_ticks, last_start.total_seconds(),
