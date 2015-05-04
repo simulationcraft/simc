@@ -4815,7 +4815,7 @@ struct player_t : public actor_t
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
-    buff_t* spirit_shift; // Agi DPS Trinket 3
+    buff_t* spirit_shift; // Soul Capacitor trinket
   } buffs;
 
   struct debuffs_t
