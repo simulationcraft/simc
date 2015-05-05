@@ -4152,6 +4152,7 @@ struct choose_target_t : public action_t
     add_option( opt_bool( "check_selected", check_selected ) );
     parse_options( options_str );
 
+    radius = range = -1.0;
     trigger_gcd = timespan_t::zero();
 
     harmful = may_miss = may_crit = callbacks = false;

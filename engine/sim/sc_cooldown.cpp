@@ -337,7 +337,6 @@ void cooldown_t::set_recharge_multiplier( double v )
 
 expr_t* cooldown_t::create_expression( action_t*, const std::string& name_str )
 {
-
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );
   else if ( name_str == "duration" )

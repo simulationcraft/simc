@@ -1068,7 +1068,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
             tl.push_back( t );
         }
 
-      }
+        }
       else
       {
         tl.push_back( t );
@@ -2524,12 +2524,12 @@ expr_t* action_t::create_expression( const std::string& name_str )
       };
       return new active_enemies_t( this, splits[1] );
     }
-    if ( splits[ 0 ] == "prev" )
+    if ( splits[0] == "prev" )
     {
-      struct prev_expr_t : public action_expr_t
+      struct prev_expr_t: public action_expr_t
       {
         action_t* prev;
-        prev_expr_t( action_t& a, const std::string& prev_action ) : action_expr_t( "prev", a ),
+        prev_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev", a ),
           prev( a.player -> find_action( prev_action ) )
         {}
         virtual double evaluate()
@@ -2539,7 +2539,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
         }
       };
-      return new prev_expr_t( *this, splits[ 1 ] );
+      return new prev_expr_t( *this, splits[1] );
     }
     else if ( splits[0] == "prev_gcd" )
     {
@@ -2583,7 +2583,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       };
       return new prev_gcd_expr_t( *this, splits[1] );
     }
-    else if ( splits[ 0 ] == "gcd" )
+    else if ( splits[0] == "gcd" )
     {
       if ( splits[1] == "max" )
       {
@@ -2624,6 +2624,32 @@ expr_t* action_t::create_expression( const std::string& name_str )
         };
         return new gcd_remains_expr_t( *this );
       }
+    }
+    else if ( splits[0] == "spell_targets" )
+    {
+      struct spell_targets_t: public expr_t
+      {
+        action_t* spell;
+        spell_targets_t( action_t& a, const std::string& spell_name ): expr_t( "spell_targets" )
+        {
+          spell = a.player -> find_action( spell_name );
+          if ( !spell )
+          {
+            spell = a.player -> create_action( spell_name, "" );
+            spell -> init();
+          }
+        }
+        double evaluate()
+        {
+          if ( spell )
+          {
+            spell -> target_list();
+            return static_cast<double>( spell -> target_list().size() );
+          }
+          return 0;
+        }
+      };
+      return new spell_targets_t( *this, splits[1] );
     }
   }
 

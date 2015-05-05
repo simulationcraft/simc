@@ -6166,6 +6166,8 @@ public:
   { return base_dd_adder; }
   virtual double bonus_ta( const action_state_t* ) const
   { return base_ta_adder; }
+  virtual double range_() const { return range; }
+  virtual double radius_() const { return radius; }
 
   virtual double action_multiplier() const { return base_multiplier; }
   virtual double action_da_multiplier() const { return base_dd_multiplier; }
