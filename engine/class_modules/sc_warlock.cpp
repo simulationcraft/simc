@@ -39,6 +39,7 @@ struct warlock_td_t: public actor_target_data_t
 
   buff_t* debuffs_haunt;
   buff_t* debuffs_shadowflame;
+  buff_t* debuffs_flamelicked;
 
   bool ds_started_below_20;
   int agony_stack;
@@ -75,6 +76,11 @@ public:
   } pets;
 
   std::vector<std::string> pet_name_list;
+
+  // Tier 18 (WoD 6.2) trinket effects
+  const special_effect_t* affliction_trinket;
+  const special_effect_t* demonology_trinket;
+  const special_effect_t* destruction_trinket;
 
   // Talents
   struct talents_t
@@ -286,6 +292,8 @@ public:
     buff_t* tier16_2pc_empowered_grasp;
     buff_t* tier16_2pc_fiery_wrath;
 
+
+
   } buffs;
 
   // Gains
@@ -317,6 +325,7 @@ public:
     proc_t* wild_imp;
     proc_t* t17_2pc_demo;
     proc_t* havoc_waste;
+    proc_t* fragment_wild_imp;
   } procs;
 
   struct spells_t
@@ -443,6 +452,40 @@ private:
   void apl_destruction();
   void apl_global_filler();
 };
+
+static void do_trinket_init(  warlock_t*               player,
+                              specialization_e         spec,
+                              const special_effect_t*& ptr,
+                              const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( !player -> find_spell( effect.spell_id ) -> ok() ||
+    player -> specialization() != spec )
+  {
+    return;
+  }
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
+static void affliction_trinket( special_effect_t& effect )
+{
+  warlock_t* warlock = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( warlock, WARLOCK_AFFLICTION, warlock -> affliction_trinket, effect );
+}
+
+static void demonology_trinket( special_effect_t& effect )
+{
+  warlock_t* warlock = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( warlock, WARLOCK_DEMONOLOGY, warlock -> demonology_trinket, effect );
+}
+
+static void destruction_trinket( special_effect_t& effect )
+{
+  warlock_t* warlock = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( warlock, WARLOCK_DESTRUCTION, warlock -> destruction_trinket, effect);
+}
 
 void parse_spell_coefficient( action_t& a )
 {
@@ -2181,6 +2224,16 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
+
+    if ( p -> affliction_trinket )
+    {
+      const spell_data_t* data = p -> affliction_trinket -> driver();
+      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
+      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
+
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
+    }
   }
 
   virtual void last_tick( dot_t* d )
@@ -2377,8 +2430,11 @@ struct hand_of_guldan_t: public warlock_spell_t
 {
   shadowflame_t* shadowflame;
 
+  double demonology_trinket_chance;
+
   hand_of_guldan_t( warlock_t* p ):
-    warlock_spell_t( p, "Hand of Gul'dan" )
+    warlock_spell_t( p, "Hand of Gul'dan" ),
+    demonology_trinket_chance( 0.0 )
   {
     aoe = -1;
 
@@ -2389,6 +2445,13 @@ struct hand_of_guldan_t: public warlock_spell_t
     add_child( shadowflame );
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
+
+    if ( p -> demonology_trinket && p -> specialization() == WARLOCK_DEMONOLOGY )
+    {
+      const spell_data_t* data = p -> find_spell( p -> demonology_trinket -> spell_id );
+      demonology_trinket_chance = data -> effectN( 1 ).average( p -> demonology_trinket -> item );
+      demonology_trinket_chance /= 100.0;
+    }
   }
 
   virtual timespan_t travel_time() const
@@ -2410,6 +2473,16 @@ struct hand_of_guldan_t: public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> trigger_demonology_t17_2pc( execute_state );
+
+    if ( p() -> demonology_trinket && p() -> rng().roll( demonology_trinket_chance ) )
+    {
+      trigger_wild_imp( p() );
+      trigger_wild_imp( p() );
+      trigger_wild_imp( p() );
+      p() -> procs.fragment_wild_imp -> occur();
+      p() -> procs.fragment_wild_imp -> occur();
+      p() -> procs.fragment_wild_imp -> occur();
+    }
   }
 
   virtual bool ready()
@@ -2581,6 +2654,16 @@ struct corruption_t: public warlock_spell_t
     dot_duration = data().effectN( 1 ).trigger() -> duration();
     spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
+
+    if ( p -> affliction_trinket )
+    {
+      const spell_data_t* data = p -> affliction_trinket ->  driver();
+      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
+      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
+
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
+    }
   }
 
   timespan_t travel_time() const
@@ -2739,6 +2822,16 @@ struct unstable_affliction_t: public warlock_spell_t
     may_crit = false;
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
+
+    if ( p -> affliction_trinket )
+    {
+      const spell_data_t* data = p -> affliction_trinket -> driver();
+      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
+      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
+
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
+    }
   }
 
   virtual double action_multiplier() const
@@ -4947,7 +5040,10 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     initial_demonic_fury( 200 ),
     default_pet( "" ),
     ember_react( ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max() ),
-    shard_react( timespan_t::zero() )
+    shard_react( timespan_t::zero() ),
+    affliction_trinket( 0 ),
+    demonology_trinket( 0 ),
+    destruction_trinket( 0 )
 {
   base.distance = 40;
 
@@ -5553,6 +5649,7 @@ void warlock_t::init_procs()
   procs.wild_imp = get_proc( "wild_imp" );
   procs.t17_2pc_demo = get_proc( "t17_2pc_demo" );
   procs.havoc_waste = get_proc( "Havoc: Buff expiration" );
+  procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
 }
 
 void warlock_t::apl_precombat()
@@ -6088,6 +6185,14 @@ struct warlock_module_t: public module_t
     p -> report_extension = std::shared_ptr<player_report_extension_t>( new warlock_report_t( *p ) );
     return p;
   }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184922, affliction_trinket);
+    unique_gear::register_special_effect( 184923, demonology_trinket);
+    unique_gear::register_special_effect( 184924, destruction_trinket);
+  }
+
   virtual bool valid() const { return true; }
   virtual void init( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
