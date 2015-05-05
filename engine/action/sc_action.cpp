@@ -2633,11 +2633,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
         spell_targets_t( action_t& a, const std::string& spell_name ): expr_t( "spell_targets" )
         {
           spell = a.player -> find_action( spell_name );
-          if ( !spell )
-          {
-            spell = a.player -> create_action( spell_name, "" );
-            spell -> init();
-          }
         }
         double evaluate()
         {
