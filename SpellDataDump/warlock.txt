@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -45,7 +45,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 146739
 #2 (id=198373)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
-Description      : Corrupts the target, causing $146739o1 Shadow damage over $146739d$?a104315[, and generating $m2 Demonic Fury each time it deals damage.]?s108558[
+Description      : Corrupts the target, causing $146739o1 Shadow damage over $146739d$?a104315[, and generating $m2 Demonic Fury each time it deals damage.]?s108558[.
 
 Your most recently applied Corruption has a ${$108558m1/10}.1% chance to generate a Soul Shard each time it deals damage.][.]$?s103958[
 
@@ -783,7 +783,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 108396
 #4 (id=200196)   : Apply Aura (6) | Unknown effect sub type (191)
                    Base Value: 7 | Scaled Value: 7
-Description      : Horrifies an enemy target into fleeing, incapacitating them for $6789d, and restores $108396s1% of the caster's maximum health.
+Description      : Horrifies an enemy target into fleeing, incapacitating them for $6789d and healing you for ${$108396m1*$MHP/100}.
 Tooltip          : Incapacitated.
 
 Name             : Lash of Pain (Basic Attack) (id=7814) [Scaling Spell (10), Spell Family (57)] 
@@ -1372,7 +1372,7 @@ Effects          :
 #1 (id=19677)    : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.33600
 Description      : Causes $o1 damage over $d.  If dispelled, the dispeller suffers ${$m1*8} instant Shadow damage and is silenced for $31117d. This damage is always a critical strike.
-Tooltip          : Suffering $w2 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 If dispelled, will cause ${$m1*8} damage to the dispeller, will always critically strike, and silence them for $31117d.
 
 Name             : Summon Felguard (Summon) (id=30146) [Spell Family (5)] 
@@ -3756,7 +3756,7 @@ Description      : Sacrifice your demon to gain one of its abilities, and to inc
 Also $?s108415[increases your maximum health by $s3%, and ][]causes you to regenerate $s2% of maximum health every $t2 sec.
 
 Lasts $d or until you summon a demon.
-Tooltip          : $?s30108[Increases Drain Soul, Haunt, and Drain Life damage by $s4%.][Increases Incinerate, Chaos Bolt, and Shadowburn damage by $s4%. Does not apply to spells affected by Fire and Brimstone.]$?s108415[
+Tooltip          : $?s30108[Increases Drain Soul, Haunt, and Drain Life damage done by $s4%.][Increases Incinerate, Chaos Bolt, and Shadowburn damage done by $s4%. Does not apply to spells affected by Fire and Brimstone.]$?s108415[
 Maximum health increased by $s3%.][]
 Restores $s2% of maximum health every $t2 sec.
 
@@ -4832,7 +4832,7 @@ Effects          :
 #1 (id=128962)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 Description      : Discharges void energy at an attacker, dealing $s1 Shadow damage
-Tooltip          : Deals $s1 Shadow damage when struck.
+Tooltip          : Deals Shadow damage when struck.
 
 Name             : Glyph of Demonic Training (Voidwalker) (id=115408) [Passive, Hidden] 
 Class            : Warlock
@@ -5347,7 +5347,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8
 #2 (id=238061)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
-Description      : Your Shadow Bolt and Soul Fire on targets below $m2% health reduce the cast time and mana cost of your next Soul Fire by $122355s1%. Hand of Gul'dan damage over time and Wild Imp Firebolt damage have an $m1% chance to trigger this effect at any health level. Chaos Wave damage will always trigger this effect.
+Description      : Your Shadow Bolt and Soul Fire on targets below $m2% health reduce the cast time, mana cost, and Demonic Fury cost of your next Soul Fire by $122355s1%. Hand of Gul'dan damage over time and Wild Imp Firebolt damage have an $m1% chance to trigger this effect at any health level. Chaos Wave damage will always trigger this effect.
 
 Name             : Molten Core (id=122355) [Spell Family (5)] 
 Class            : Warlock
@@ -6108,7 +6108,7 @@ Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26208
 Description      : $@spelldesc172
-Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Glyph of Havoc (Destruction) (id=146962) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock

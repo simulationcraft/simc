@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -603,7 +603,7 @@ Class            : Beast Mastery Hunter, Monk
 Spell Level      : 32
 GCD              : 1 seconds
 Duration         : 20 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T18 Beast Mastery 2P Bonus (188200)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -619,8 +619,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Your pet's Basic Attacks have a $19623s2% chance to trigger Frenzy, granting $19623s1% increased attack speed for $19615d, stacking up to $19615u times.
 
-Focus Fire consumes all your pet's Frenzy, restoring $s2 Focus to your pet and increasing your haste by $s1% per Frenzy application consumed. Lasts for $d.
-Tooltip          : Haste increased by $w1%.
+Focus Fire consumes all your pet's Frenzy, restoring $s2 Focus to your pet$?s157705[, granting $157705s1% increased attack power,][] and increasing your haste by $s1% per Frenzy application consumed. Lasts for $d.
+Tooltip          : Haste increased by $w1%$?$w3>0[ and attack power increased by $w3%][].
 
 Name             : Kindred Spirits (id=88680) [Spell Family (9), Passive, Hidden] 
 Class            : Monk
@@ -693,7 +693,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=186903)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Kick with a blast of Chi energy, dealing ${6.08*$<low>} to ${6.08*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
+Description      : Kick with a blast of Chi energy, dealing ${6.08*$<low>} to ${6.08*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
 
 Also deals ${6.08*$<low>} to ${6.08*$<high>} damage to up to $116645s4 additional nearby targets][].$?s128595[
 
@@ -810,7 +810,7 @@ Effects          :
 Description      : You spin while kicking in the air, $?a115070&s116645[healing up to 6 allies within $117640A1 yards for ${4*$117640m1} over $d.][dealing ${(4*0.9*$<low>+4*0.9*$<high>)/2} damage over $d to enemies within $107270A1 yards.] Generates $129881m1 Chi if it strikes 3 or more targets.$?c1[
 
 Channeling Spinning Crane Kick does not prevent avoiding attacks.][]
-Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec$?$w3>0[, and healing nearby injured allies for $117640m1 every $101546t1 sec] and ][.]
+Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec$?$w3>0[ and healing nearby injured allies for $117640m1 every $101546t1 sec][.]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
@@ -1216,7 +1216,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
 Description      : Heal yourself for ${7.5*$<low>} to ${7.5*$<high>}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
 
-This ability has no cooldown while below 35% health in Stance of the Sturdy Ox.][]
+This ability has no cooldown while below $115612m2% health in Stance of the Sturdy Ox.][]
 Variables        : $stnc=$?a115070[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
@@ -1835,6 +1835,7 @@ Spell Level      : 12
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Affecting spells : Item - Monk T18 Brewmaster 2P Bonus (185398)
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1845,6 +1846,8 @@ Attributes       : ....x.xx x....... ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=129505)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
+#2 (id=276716)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35
 
 Name             : Mastery: Bottled Fury (id=115636) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
@@ -1897,7 +1900,7 @@ Effects          :
 #3 (id=164984)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123761
 Description      : $@spelldesc115294
-Tooltip          : Use Mana Tea to consume charges to gain 4% mana per sec.
+Tooltip          : Use Mana Tea to consume charges to gain mana.
 
 Name             : Mana Tea Driver <DND> (id=115869) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
@@ -2746,7 +2749,7 @@ Duration         : 2 seconds
 Cooldown         : 30 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2948,7 +2951,7 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=139665)   : Apply Aura (6) | Proc Trigger Spell: Tiger Strikes (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 120273
-Description      : Your successful autoattacks have a $?a140729|?a108977[${$h/8*5}][$h]% chance to increase your multistrike chance by $120273s1% for $120273d.$?s115070[
+Description      : Your successful autoattacks have a $?a140729|?a108977[${$h/2}][$h]% chance to increase your multistrike chance by $120273s1% for $120273d.$?s115070[
 
 Inactive while in Stance of the Wise Serpent.][]
 
@@ -4877,7 +4880,7 @@ Effects          :
 #2 (id=164982)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115308
 Description      : $@spelldesc128938
-Tooltip          : Use Elusive Brew to consume charges to gain $115308s1% dodge for $115308d per charge.
+Tooltip          : Use Elusive Brew to consume charges to gain $115308s~1% dodge for $115308d per charge.
 
 Name             : Arcane Torrent (Racial) (id=129597) 
 Class            : Monk
@@ -6123,6 +6126,20 @@ Effects          :
 #1 (id=219869)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3220 | Radius: 0 - 6 yards
 Description      : $@spelldesc157675
+
+Name             : Improved Focus Fire (id=157705) [Spell Family (9), Passive] 
+Class            : Hunter, Monk
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=219905)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8
+Description      : Focus Fire now also grants $s1% increase to attack power per Frenzy stack consumed.
 
 Name             : Hurricane Strike (id=158221) 
 Class            : Monk

@@ -2498,22 +2498,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
         double evaluate()
         {
-          if ( action -> target_cache.is_valid )
+          num_targets = 0;
+          for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
           {
-            return num_targets;
+            player_t* t = action -> player -> sim -> target_non_sleeping_list[i];
+            if ( action -> player -> get_position_distance( t -> x_position, t -> y_position ) <= yards_from_player )
+              num_targets++;
           }
-          else
-          {
-            action -> target_list();
-            num_targets = 0;
-            for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
-            {
-              player_t* t = action -> player -> sim -> target_non_sleeping_list[i];
-              if ( action -> player -> get_position_distance( t -> x_position, t -> y_position ) <= yards_from_player )
-                num_targets++;
-            }
-            return num_targets;
-          }
+          return num_targets;
         }
 
         void reset()

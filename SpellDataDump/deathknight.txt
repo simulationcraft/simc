@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -4940,6 +4940,7 @@ Great Stamina|r
 Name             : Breath of Sindragosa (id=152279) 
 Class            : Death Knight
 Resource         : 15 Runic Power per second
+Resource         : 20 Runic Power per second w/ Blood Rites (id=50034)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

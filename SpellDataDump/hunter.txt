@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -3401,7 +3401,7 @@ Class            : Beast Mastery Hunter, Monk
 Spell Level      : 32
 GCD              : 1 seconds
 Duration         : 20 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T18 Beast Mastery 2P Bonus (188200)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3417,8 +3417,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Your pet's Basic Attacks have a $19623s2% chance to trigger Frenzy, granting $19623s1% increased attack speed for $19615d, stacking up to $19615u times.
 
-Focus Fire consumes all your pet's Frenzy, restoring $s2 Focus to your pet and increasing your haste by $s1% per Frenzy application consumed. Lasts for $d.
-Tooltip          : Haste increased by $w1%.
+Focus Fire consumes all your pet's Frenzy, restoring $s2 Focus to your pet$?s157705[, granting $157705s1% increased attack power,][] and increasing your haste by $s1% per Frenzy application consumed. Lasts for $d.
+Tooltip          : Haste increased by $w1%$?$w3>0[ and attack power increased by $w3%][].
 
 Name             : Bombardment (id=82921) [Spell Family (9)] 
 Class            : Hunter
@@ -3685,7 +3685,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=1.1)
 #2 (id=93521)    : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 1 | Scaled Value: 0 (avg=0.423)
-Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.35)*3)} plus an additional ${$m2+(($RAP*0.35)*2)} over $d.
+Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.6)*3*1.0504)} plus an additional ${$m2+(($RAP*0.6)*2*1.0504)} over $d.
 Tooltip          : Heals $w2 every $t2 sec for $d.
 
 Name             : Qiraji Fortitude (Exotic Ability) (id=90364) [Spell Family (9)] 
@@ -5423,7 +5423,7 @@ Effects          :
 Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Improved Focus Fire (id=157705) [Spell Family (9), Passive] 
-Class            : Hunter
+Class            : Hunter, Monk
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6618,7 +6618,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=254506)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Using $?s163485[Focusing Shot]?s77767[Cobra Shot twice in a row][Steady Shot twice in a row] increases Focus Regeneration for you and your pet by $177668s1% for $177668d.
+Description      : Using $?s163485|s152245[Focusing Shot]?s77767[Cobra Shot twice in a row][Steady Shot twice in a row] increases Focus Regeneration for you and your pet by $177668s1% for $177668d.
 
 Name             : Steady Focus (id=177668) [Spell Family (9)] 
 Class            : Hunter
@@ -6690,7 +6690,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=274633)   : Apply Aura (6) | Proc Trigger Spell: Rapid Fire (42)
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 188202
-Description      : When you critically hit with Chimera Shot, you have a $h% chance to gain Rapid Fire for $d.
+Description      : When you critically hit with Chimera Shot, you have a $h% chance to gain Rapid Fire for $188202d.
 
 Name             : Item - Hunter T18 Marksmanship 4P Bonus (id=188191) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -6760,10 +6760,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=274648)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+#1 (id=274648)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1
-                   Affected Spells: Focus Fire (82692)
-Description      : Arcane Shot increases the duration of your Focus Fire by ${$m1/1000} sec.
+Description      : Arcane Shot and Multi-Shot increase the duration of your Focus Fire by ${$m1/1000} sec.
 
 Name             : Item - Hunter T18 Beast Mastery 4P Bonus (id=188201) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -6777,7 +6776,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=274649)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
-Description      : Your Focus Fire effect also summons a Fel Boar to assist you. The Fel Boar lasts while Focus Fire is active.
+Description      : Your Focus Fire effect also summons a Fel Boar to assist you. The Fel Boar lasts for the duration of Focus Fire.
 
 Name             : Rapid Fire (id=188202) [Spell Family (9)] 
 Class            : Hunter

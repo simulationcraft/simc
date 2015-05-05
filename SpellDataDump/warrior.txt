@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -736,7 +736,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719), Mortal Strike and Bloodthirst Damage Up (60174), Mastery: Weapons Master (76838), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Vicious Strike (165638), Deadly Calm (166587)
+Affecting spells : Recklessness (1719), Mortal Strike and Bloodthirst Damage Up (60174), Mastery: Weapons Master (76838), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336), Vicious Strike (165638), Deadly Calm (166587)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2908,7 +2908,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 20 seconds
-Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
+Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4588,7 +4588,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #4 (id=254765)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Throw a whirling axe at the target location that inflicts $156287s1 damage to enemies within $156287A1 yards every $t3 sec. Lasts $s4 sec.$?s23922[
+Description      : Throw a whirling weapon at the target location that inflicts $156287s1 damage to enemies within $156287A1 yards every $t3 sec. Lasts $s4 sec.$?s23922[
 
 Also increases your chance to parry by $s1% for $d.][]
 Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is currently active.]
@@ -4741,8 +4741,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .xx..... .....
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=217568)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=242676)   : Trigger Spell (64)
                    Base Value: 0 | Scaled Value: 0
 Description      : Raise your shield and charge a short distance to your target, increasing the damage of Shield Slam, Revenge, and Heroic Strike by $169667s1% for $169667d.
 
@@ -5383,7 +5381,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 20 seconds
-Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
+Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

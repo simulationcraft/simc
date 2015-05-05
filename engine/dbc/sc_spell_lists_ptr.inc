@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19953
+// Class based active abilities, wow build 19973
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1003,7 +1003,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19953
+// Talent tree specialization abilities, wow build 19973
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1944,7 +1944,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19953
+// Class mastery abilities, wow build 19973
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2167,7 +2167,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19953
+// Racial abilities, wow build 19973
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2890,7 +2890,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19953
+// Glyph spells for classes, wow build 19973
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3530,7 +3530,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19953
+// Tier item set bonuses for class, wow build 19973
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3955,7 +3955,7 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
 
 #define PTR_SET_BONUS_DATA_SIZE (450)
 
-// Set bonus data, wow build 19953
+// Set bonus data, wow build 19973
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4013,7 +4013,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  267, 171383, { 127066, 127080, 127091, 127102, 127113,  0 } },
   { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  265, 171379, { 127066, 127080, 127091, 127102, 127113,  0 } },
   { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  266, 165967, { 127066, 127080, 127091, 127102, 127113,  0 } },
-  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  267, 165970, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  267, 189209, { 127066, 127080, 127091, 127102, 127113,  0 } },
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    0,  268, 165691, { 127051, 127075, 127086, 127097, 127108,  0 } },
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    0,  268, 171445, { 127051, 127075, 127086, 127097, 127108,  0 } },
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    1,  270, 170799, { 127051, 127075, 127086, 127097, 127108,  0 } },
@@ -4361,18 +4361,18 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   2,   1,              {   0 },    2,   72, 185798, { 124319, 124329, 124334, 124340, 124346,  0 } },
   { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    2,   71, 185804, { 124319, 124329, 124334, 124340, 124346,  0 } },
   { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    2,   72, 185799, { 124319, 124329, 124334, 124340, 124346,  0 } },
-  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {  65 },    1,   -1, 185545, { 124318, 124328, 124333, 124339, 124345,  0 } },
-  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {  65 },    1,   -1, 185675, { 124318, 124328, 124333, 124339, 124345,  0 } },
-  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {  65 },    1,   -1, 185581, { 124318, 124328, 124333, 124339, 124345,  0 } },
-  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {  65 },    1,   -1, 185571, { 124318, 124328, 124333, 124339, 124345,  0 } },
-  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {  65 },    1,   -1, 185677, { 124318, 124328, 124333, 124339, 124345,  0 } },
-  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {  65 },    1,   -1, 185648, { 124318, 124328, 124333, 124339, 124345,  0 } },
-  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  253, 165517, { 124284, 124292, 124296, 124301, 124307,  0 } },
-  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  254, 165519, { 124284, 124292, 124296, 124301, 124307,  0 } },
-  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  255, 165544, { 124284, 124292, 124296, 124301, 124307,  0 } },
-  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  253, 165518, { 124284, 124292, 124296, 124301, 124307,  0 } },
-  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  254, 165525, { 124284, 124292, 124296, 124301, 124307,  0 } },
-  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  255, 165545, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {   0 },    0,   66, 185675, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {   0 },    0,   66, 185677, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {   0 },    1,   65, 185545, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {   0 },    1,   65, 185571, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {   0 },    2,   70, 185581, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {   0 },    2,   70, 185648, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  253, 188200, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  254, 188190, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  255, 188198, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  253, 188201, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  254, 188191, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  255, 188199, { 124284, 124292, 124296, 124301, 124307,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  259, 186182, { 124248, 124257, 124263, 124269, 124274,  0 } },
   { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  260, 186285, { 124248, 124257, 124263, 124269, 124274,  0 } },
@@ -4429,7 +4429,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 
 #define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19953
+// Perk specialization abilities, wow build 19973
 static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
@@ -4737,7 +4737,7 @@ static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19953
+// Glyph properties, wow build 19973
 static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {   162,  54811 },
   {   163,  54812 },

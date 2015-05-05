@@ -1328,12 +1328,6 @@ class SpellDataGenerator(DataGenerator):
           ( 90967, 0 ),  # Kill Command cooldown
           ( 157708, 2 ), # Marks Kill Shot
           ( 178875, 0 ), # BM T17 4P 
-		  ( 188200, 0 ), # BM T18 2P
-		  ( 188201, 0 ), # BM T18 4P
-		  ( 188198, 0 ), # SV T18 2P
-		  ( 188199, 0 ), # SV T18 4P
-		  ( 188190, 0 ), # MM T18 2P
-		  ( 188191, 0 ), # MM T18 4P
         ),
 
         # Rogue:
@@ -1362,7 +1356,6 @@ class SpellDataGenerator(DataGenerator):
             ( 129197, 3 ), # Mind Flay (Insanity)
             ( 179338, 3 ), # Searing Insanity
             ( 165623, 0 ), # Item - Priest T17 Shadow 2P Bonus - dot spell
-            ( 188779, 0 ), # Item - Priest T18 Shadow 4P Bonus - dot spell
         ),
 
         # Death Knight:

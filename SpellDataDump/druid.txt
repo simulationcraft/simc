@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -1532,7 +1532,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=23736)    : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1964 | Misc Value 2: 0xc19
-Description      : Summons a Treant which will immediately root your current target for $113770d.  The Treant will cast Wrath at that target for $113769s1 Nature damage every 2 sec.  Lasts $d.  Maximum 3 charges.
+Description      : Summons a Treant which will immediately root your current target for $113770d.  The Treant will cast Wrath at that target for ${$113769m1*0.9*0.91} Nature damage every 2 sec.  Lasts $d.  Maximum 3 charges.
 
 Name             : Nurturing Instinct (id=33873) [Spell Family (7), Passive] 
 Class            : Feral Guardian Druid
@@ -1602,20 +1602,6 @@ Effects          :
 #3 (id=216151)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage
 Description      : Mangle the target for $sw2 Physical damage, $?s48484[reducing the target's movement speed by $58180s1% for $58180d, and][] generating ${$m3/10} Rage.
-
-Name             : Flight Form (Passive) (Passive) (id=33948) [Spell Family (7), Passive] 
-Class            : Druid
-Spell Level      : 58
-Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=23873)    : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 100 | Scaled Value: 100
 
 Name             : Force of Nature (id=37846) 
 Class            : Druid
@@ -2200,7 +2186,7 @@ Class            : Druid
 Spell Level      : 75
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3249,7 +3235,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=97908)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.571, dl=0.2)
-Description      : A Solar spell that burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d$?s33605[to the primary target and all enemies within $164815A2 yards][].
+Description      : A Solar spell that burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d$?s33605[ to the primary target and all enemies within $164815A2 yards][].
 
 Upon reaching 100 Solar Energy, your next Sunfire within $171744d will deal $171744s1% additional initial damage.
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
@@ -3731,7 +3717,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=111576)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 54983 | Misc Value 2: 0xc19
-Description      : Summons a Treant which will immediately cast Swiftmend on your current target.  The Treant will cast Healing Touch on that target or a nearby ally periodically, healing for ${$113828m1/1.1*0.333}.  Lasts $d.  Maximum 3 charges. 
+Description      : Summons a Treant which will immediately cast Swiftmend on your current target.  The Treant will cast Healing Touch on that target or a nearby ally periodically, healing for ${$113828m1/1.1*0.9}.  Lasts $d.  Maximum 3 charges. 
 
 Name             : Force of Nature (Feral, Talent) (id=102703) [Scaling Spell (2), Spell Family (7)] 
 Class            : Druid
@@ -4373,7 +4359,7 @@ Effects          :
 #1 (id=126594)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 9
 
-Name             : Wrath (id=113769) [Scaling Spell (2), Spell Family (7)] 
+Name             : Wrath (id=113769) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
@@ -4389,8 +4375,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126770)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.875, dl=0.12) | SP Coefficient: 0.23500
-Description      : Causes $s1 Nature damage to the target. 
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.23500
+Description      : Causes ${$m1*0.9*0.91} Nature damage to the target. 
 
 Name             : Entangling Roots (id=113770) [Spell Family (7)] 
 Class            : Druid
@@ -4430,7 +4416,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=126851)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Radius: 0 - 40 yards
-Description      : Heals one of the most injured nearby friendly targets for ${$m1*0.333/1.1}.
+Description      : Heals one of the most injured nearby friendly targets for ${$m1*0.9/1.1}.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5886,7 +5872,7 @@ Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.51700
 Description      : $@spelldesc1822
-Tooltip          : Bleeding for $w2 damage every $t2 seconds.
+Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
 Name             : Mastery: Primal Tenacity (id=155783) [Spell Family (7), Passive] 
 Class            : Guardian Druid
@@ -7184,11 +7170,11 @@ Attributes       : ....x... .......x x.x..... ....x...   ........ ..x..... x....
 Effects          :
 #1 (id=234328)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 29 | Misc Value 2: 0x6
-Description      : Shapeshift into flight form, increasing movement speed by $33948s2% and allowing you to fly.  Cannot use in combat. 
+Description      : Shapeshift into flight form, increasing movement speed and allowing you to fly.  Cannot use in combat. 
 
 The act of shapeshifting frees the caster of movement impairing effects.
 Tooltip          : Immune to Polymorph effects.
-Movement speed increased by $33948s2% and allows you to fly.
+Movement speed increased and allows you to fly.
 
 Name             : Mana Attunement (Passive) (id=166142) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Guardian Druid

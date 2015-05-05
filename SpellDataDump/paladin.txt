@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19890)
+SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -532,7 +532,9 @@ Attributes       : ........ ........ x.x..... x..x...x   ........ ..x..... .x...
 Effects          :
 #1 (id=11233)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Fills you with Holy Light, causing melee attacks to deal $101423sw1 Holy damage to all targets within $101423A1 yards.
+Description      : Fills you with Holy Light, causing melee attacks to deal $101423sw1 Holy damage to all targets within $101423A1 yards.
+
+Replaces Seal of Command.
 Tooltip          : Melee attacks cause Holy damage against all targets within $101423A1 yards.
 Variables        : $sop1=$?s20224[${105}][${100}]
 $sop2=$?s20225[${110}][${$<sop1>}]
@@ -664,7 +666,7 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=11347)    : School Damage: holy (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.57600 | AP Coefficient: 0.69600
-Description      : Causes $s1 Holy damage $?s105424[and generates 1 Holy Power]?s85256[and generates 1 Holy Power][].  Requires an active Seal to cast.
+Description      : Causes $s1 Holy damage$?s105424[ and generates 1 Holy Power]?s85256[ and generates 1 Holy Power][].  Requires an active Seal to cast.
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
 Class            : Holy Paladin
@@ -939,8 +941,6 @@ Effects          :
                    Base Value: 31804 | Scaled Value: 31804
 Description      : Fills you with Holy Light, causing melee attacks to deal $42463sw1 additional Holy damage and apply Censure to the target.
 
-Replaces Seal of Command.
-
 |CFFFFFFFFCensure|R
 
 $@spelldesc31803
@@ -1062,7 +1062,7 @@ Name             : Avenging Wrath (id=31884) [Spell Family (10)]
 Class            : Retribution Paladin
 Spell Level      : 72
 Duration         : 20 seconds
-Cooldown         : 120 seconds
+Charges          : 1 (120 seconds cooldown)
 Affecting spells : Sanctified Wrath (53376)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1308,7 +1308,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 0.8 | Radius: 0 - 8 yards
 #2 (id=171269)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
-Description      : Deals $sw1 Holy damage to all enemies within $A1 yards. $?s63220[Using Divine Storm will also heal you for $115515s1% of your maximum health.][]
+Description      : Deals $sw1 Holy damage to all enemies within $A1 yards. $?s63220[Using Divine Storm will also heal you for ${$115515m1/100*$MHP}.][]
 
 Name             : Sword of Light (id=53503) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
@@ -2431,8 +2431,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57321)    : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
-                   Affected Spells: Templar's Verdict (85256), Final Verdict (157048)
-Description      : Your Divine Storm also heals you for $115515s1% of your maximum health.
+Description      : Your Divine Storm also heals you for ${$115515m1/100*$MHP}.
 
 Name             : Glyph of Holy Shock (Holy) (id=63224) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -2837,7 +2836,7 @@ Resource         : 3 Holy Power
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Divine Storm (63220), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108)
+Affecting spells : Sanctity of Battle (25956), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3700,7 +3699,7 @@ Effects          :
 Description      : $@spelldesc114916
 
 |CFFFFFFFFStay of Execution|R
-On a friendly target, the falling hammer heals for ${$SPH*$114917m2/1000+26.72716306*$114917m1} over $114917d. This healing is a large burst at first, and then decreases over time.
+On a friendly target, the falling hammer heals for ${$114917m1*27.906} over $114917d. This healing is a large burst at first, and then decreases over time.
 
 Name             : Light's Hammer (id=114158) [Spell Family (10)] 
 Class            : Paladin
@@ -3941,7 +3940,7 @@ Description      : A hammer slowly falls from the sky, causing ${$SPH*$114916m2/
 Tooltip          : Suffering increasing Holy damage every $t1 sec.
 A large burst of damage will occur upon impact or when dispelled.
 
-Name             : Stay of Execution (id=114917) [Scaling Spell (6), Spell Family (10)] 
+Name             : Stay of Execution (id=114917) [Spell Family (10)] 
 Class            : Paladin
 Spell Level      : 1
 Range            : 50000 yards
@@ -3955,10 +3954,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128468)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.426)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.59400
 #2 (id=163021)   : Dummy (3)
-                   Base Value: 13484 | Scaled Value: 13484
-Description      : A hammer slowly falls from the sky, causing ${$SPH*$114917m2/1000+26.72716306*$114917m1} healing over $114917d. This healing is a large burst at first, and then decreases over time.
+                   Base Value: 594 | Scaled Value: 594
+Description      : A hammer slowly falls from the sky, causing ${$114917m1*27.906} healing over $114917d. This healing is a large burst at first, and then decreases over time.
 Tooltip          : Healing every $t1 sec, decreasing over time.
 
 Name             : Light's Hammer (id=114918) [Spell Family (10), Passive] 
@@ -5282,7 +5281,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Sanctity of Battle (25956), Glyph of Divine Storm (63220), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108)
+Affecting spells : Sanctity of Battle (25956), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
