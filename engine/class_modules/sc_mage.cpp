@@ -3250,10 +3250,8 @@ struct icy_veins_t : public mage_spell_t
 struct inferno_blast_t : public mage_spell_t
 {
   int max_spread_targets;
-
   double pyrosurge_chance;
   flamestrike_t* pyrosurge_flamestrike;
-
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "inferno_blast", p,
                   p -> find_class_spell( "Inferno Blast" ) ),
@@ -3261,7 +3259,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     parse_options( options_str );
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
-
+    radius = 10;
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
       cooldown -> charges = data().charges() +
@@ -3416,6 +3414,7 @@ struct living_bomb_explosion_t : public mage_spell_t
     mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
   {
     aoe = -1;
+    radius = 10;
     background = true;
   }
 

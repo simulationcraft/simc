@@ -898,13 +898,29 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
     if ( !s -> action -> is_aoe() )
     {
-      p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
-      p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
-      p -> active.sweeping_strikes -> execute();
+      if ( p -> active.sweeping_strikes -> target != s -> target )
+        p -> active.sweeping_strikes -> target_cache.is_valid = false;
+
+      p -> active.sweeping_strikes -> target = s -> target;
+      p -> active.sweeping_strikes -> target_list();
+      if ( p -> active.sweeping_strikes -> target_cache.list.size() > 0 )
+      {
+        p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
+        p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
+        p -> active.sweeping_strikes -> execute();
+      }
     }
     else
     {
-      p -> active.aoe_sweeping_strikes -> execute();
+      if ( p -> active.aoe_sweeping_strikes -> target != s -> target )
+        p -> active.aoe_sweeping_strikes -> target_cache.is_valid = false;
+
+      p -> active.aoe_sweeping_strikes -> target = s -> target;
+      p -> active.aoe_sweeping_strikes -> target_list();
+      if ( p -> active.aoe_sweeping_strikes -> target_cache.list.size() > 0 )
+      {
+        p -> active.aoe_sweeping_strikes -> execute();
+      }
     }
   }
 };
@@ -920,7 +936,7 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
     background = true;
     may_multistrike = 1; // Yep. It can multistrike.
     aoe = 1;
-    range = 5;
+    radius = 5;
     school = SCHOOL_PHYSICAL;
     weapon = &p -> main_hand_weapon;
     weapon_multiplier = 0.5;
@@ -940,20 +956,15 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
         break;
       }
     }
-
     return tl.size();
   }
 
   void execute()
   {
-    target_list();
-    if ( target_cache.list.size() > 0 )
-    {
-      attack_t::execute();
+    attack_t::execute();
 
-      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
-    }
+    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
   }
 };
 
@@ -970,7 +981,7 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
     aoe = 1;
     may_multistrike = 1;
     weapon_multiplier = 0;
-    range = 5;
+    radius = 5;
     base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
     cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
     pct_damage = data().effectN( 1 ).percent();
@@ -993,7 +1004,6 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
         break;
       }
     }
-
     return tl.size();
   }
 
@@ -1001,14 +1011,10 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
   {
     base_dd_max *= pct_damage; //Deals 50% of original damage
     base_dd_min *= pct_damage;
-    target_list();
-    if ( target_cache.list.size() > 0 )
-    {
-      attack_t::execute();
+    attack_t::execute();
 
-      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
-    }
+    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
   }
 };
 
@@ -1275,8 +1281,6 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    range = radius;
-    radius = -1;
     weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
   }
 
@@ -1646,8 +1650,6 @@ struct dragon_roar_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    range = p -> find_spell( 118000 ) -> effectN( 1 ).radius_max();
-    radius = -1.0;
   }
 
   double target_armor( player_t* ) const { return 0; }
@@ -2257,7 +2259,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    range = 10; // Meat cleaver RBs have a 10 yard range. Not found in spell data. 
+    radius = 10; // Meat cleaver RBs have a 10 yard range. Not found in spell data. 
   }
 
   void execute()
@@ -2824,8 +2826,6 @@ struct shockwave_t: public warrior_attack_t
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
-    range = radius;
-    radius = -1.0;
     aoe = -1;
   }
 
@@ -2906,8 +2906,6 @@ struct thunder_clap_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    range = radius;
-    radius = -1.0;
     impact_action = p -> active.deep_wounds;
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
@@ -2977,9 +2975,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    range = radius;
-    range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
-    radius = -1;
+    radius += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
   }
@@ -3006,9 +3002,7 @@ struct whirlwind_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     aoe = -1;
 
-    range = radius;
-    range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
-    radius = -1.0;
+    radius += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     if ( p -> specialization() == WARRIOR_FURY )
     {
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -5750,8 +5744,6 @@ void warrior_t::create_options()
     {
       background = special = may_crit = true;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-      range = radius;
-      radius = -1;
       weapon_multiplier = 0;
       aoe = -1;
     }

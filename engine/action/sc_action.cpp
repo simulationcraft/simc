@@ -1052,16 +1052,22 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
           sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
             player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, t -> name(), t -> x_position, t -> y_position );
         }
-        if ( radius > 0 || range > 0 )
+        if ( radius > 0 )
         {
-          if ( radius > 0 ) // Check radius first, typically anything that has a radius (with a few exceptions) deal damage based on the original target.
+          if ( range > 0 ) // Abilities with range/radius radiate from the target.
           {
             if ( target -> get_position_distance( t -> x_position, t -> y_position ) <= radius )
               tl.push_back( t );
-          } // If they do not have a radius, they are likely based on the distance from the player.
-          else if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= range )
+          } // If they do not have a range, they are likely based on the distance from the player.
+          else if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= radius )
             tl.push_back( t );
         }
+        else if ( range > 0 ) // If they only have a range, then they are a single target ability.
+        {
+          if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= range )
+            tl.push_back( t );
+        }
+
       }
       else
       {

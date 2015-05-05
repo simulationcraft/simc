@@ -1176,38 +1176,44 @@ struct beast_cleave_attack_t: public hunter_main_pet_attack_t
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
-    tl.clear();
+    hunter_main_pet_attack_t::available_targets( tl );
 
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    for ( size_t i = 0; i < tl.size(); i++ )
     {
-      player_t* t = sim -> actor_list[i];
-      if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
-        tl.push_back( t );
+      if ( tl[i] == target ) // Cannot hit the original target.
+      {
+        tl.erase( tl.begin() + i );
+        break;
+      }
     }
+
     return tl.size();
   }
 };
 
-static bool trigger_beast_cleave( action_state_t* s )
+static void trigger_beast_cleave( action_state_t* s )
 {
-  if ( !s -> action -> result_is_hit_or_multistrike( s -> result )  )
-    return false;
+  if ( !s -> action -> result_is_hit_or_multistrike( s -> result ) )
+    return;
 
   if ( s -> action -> sim -> active_enemies == 1 )
-    return false;
+    return;
 
   hunter_main_pet_t* p = debug_cast<hunter_main_pet_t*>( s -> action -> player );
 
   if ( !p -> buffs.beast_cleave -> check() )
-    return false;
+    return;
 
-  double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
+  p -> active.beast_cleave -> target = s -> target;
+  p -> active.beast_cleave -> target_list();
+  if ( p -> active.beast_cleave -> target_cache.list.size() > 0 )
+  {
+    double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
 
-  p -> active.beast_cleave -> base_dd_min = cleave;
-  p -> active.beast_cleave -> base_dd_max = cleave;
-  p -> active.beast_cleave -> execute();
-
-  return true;
+    p -> active.beast_cleave -> base_dd_min = cleave;
+    p -> active.beast_cleave -> base_dd_max = cleave;
+    p -> active.beast_cleave -> execute();
+  }
 }
 
 // Pet Melee ================================================================
@@ -2219,7 +2225,7 @@ struct glaive_t: public ranged_attack_t
     starved_proc = player -> get_proc( "starved: glaive_toss" );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     ranged_attack_t::impact( s );
 
@@ -2236,7 +2242,7 @@ struct glaive_t: public ranged_attack_t
     }
   }
 
-  virtual void record_data( action_state_t* ) override
+  void record_data( action_state_t* ) override
   {
     // suppress reporting impact of the driver
   }
@@ -2461,7 +2467,6 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     dual = true;
     aoe = 2;
     radius = 5.0;
-    range = -1.0; // Range check is done in parent.
   }
 
   virtual double action_multiplier() const
@@ -3069,6 +3074,7 @@ struct barrage_t: public hunter_spell_t
       base_execute_time = weapon -> swing_time;
       aoe = -1;
       base_aoe_multiplier = 0.5;
+      radius = 40;
     }
   };
 

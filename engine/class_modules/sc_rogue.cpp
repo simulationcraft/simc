@@ -2101,8 +2101,6 @@ struct fan_of_knives_t: public rogue_attack_t
   {
     ability_type = FAN_OF_KNIVES;
     weapon = &( player -> main_hand_weapon );
-    range = radius;
-    radius = -1.0;
     weapon_multiplier = 0;
     aoe = -1;
     adds_combo_points = 1;
@@ -3468,7 +3466,8 @@ struct blade_flurry_attack_t : public rogue_attack_t
     aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     weapon = &p -> main_hand_weapon;
     weapon_multiplier = 0;
-    range = 5;
+    radius = 5;
+    range = -1.0;
     if ( p -> perk.enhanced_blade_flurry -> ok() )
       aoe = -1;
 
@@ -3495,7 +3494,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
         break;
       }
     }
-
     return tl.size();
   }
 };
@@ -4021,10 +4019,15 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( active_blade_flurry -> target != state -> target )
     active_blade_flurry -> target_cache.is_valid = false;
   active_blade_flurry -> target = state -> target;
-  // Note, unmitigated damage
-  active_blade_flurry -> base_dd_min = state -> result_total;
-  active_blade_flurry -> base_dd_max = state -> result_total;
-  active_blade_flurry -> schedule_execute();
+
+  active_blade_flurry -> target_list();
+  if ( active_blade_flurry -> target_cache.list.size() > 0 )
+  {
+    // Note, unmitigated damage
+    active_blade_flurry -> base_dd_min = state -> result_total;
+    active_blade_flurry -> base_dd_max = state -> result_total;
+    active_blade_flurry -> schedule_execute();
+  }
 }
 
 void rogue_t::trigger_shadow_reflection( const action_state_t* state )

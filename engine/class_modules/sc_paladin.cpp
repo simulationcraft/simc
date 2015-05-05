@@ -3967,7 +3967,6 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
 struct judgment_t : public paladin_melee_attack_t
 {
   uthers_insight_t* uthers_insight;
-
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
@@ -3980,10 +3979,7 @@ struct judgment_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
 
     // Special melee attack that can only miss
-    may_glance                   = false;
-    may_block                    = false;
-    may_parry                    = false;
-    may_dodge                    = false;
+    may_glance = may_block = may_parry = may_dodge = false;
 
     // Only triggers Seal of Truth
     trigger_seal_of_truth        = true;

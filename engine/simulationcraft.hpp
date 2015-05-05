@@ -5919,7 +5919,7 @@ struct action_t : public noncopyable
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
   double range; // This is how far away the target can be from the player, and still be hit or targeted.
-  double radius; // This is how far away the target can be from the original target, while still being hit.
+  double radius; // This is used for AoE abilities to show their area of influence. Typically anything that has a radius, but not a range, is based on the players location. 
   double weapon_power_mod;
   struct {
   double direct, tick;

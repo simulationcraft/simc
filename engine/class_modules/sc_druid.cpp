@@ -4559,7 +4559,7 @@ struct displacer_beast_t : public druid_spell_t
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
-    base_teleport_distance = p -> talent.displacer_beast -> effectN( 1 ).radius();
+    base_teleport_distance = radius;
     movement_directionality = MOVEMENT_OMNI;
   }
 
@@ -5433,7 +5433,7 @@ struct starfall_t : public druid_spell_t
     {
       direct_tick = true;
       aoe = -1;
-      range = 40;
+      radius = 40;
     }
   };
 
@@ -5495,7 +5495,7 @@ struct starshards_t : public starfall_t
   {
     background = true;
     target = sim -> target;
-    range = 40;
+    radius = 40;
     cooldown = player -> get_cooldown( "starshards" );
   }
   

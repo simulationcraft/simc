@@ -135,9 +135,10 @@ struct move_enemy_t : public raid_event_t
     parse_options( options_str );
 
     enemy = sim -> find_player( name );
-    // If the master is not found, default the master to the first created enemy
-    if ( !enemy ) enemy = sim -> target_list.data().front();
-    assert( enemy );
+    if ( !enemy )
+    {
+      sim -> out_debug.printf( "Move enemy event cannot be created, there is no enemy named %s.", name.c_str() );
+    }
   }
 
   void regenerate_cache()
@@ -153,24 +154,33 @@ struct move_enemy_t : public raid_event_t
 
   void reset()
   {
-    enemy -> x_position = 0;
-    enemy -> y_position = 0;
+    if ( enemy )
+    {
+      enemy -> x_position = 0;
+      enemy -> y_position = 0;
+    }
   }
 
   void _start()
   {
-    original_x = enemy -> x_position;
-    original_y = enemy -> y_position;
-    enemy -> x_position = x_coord;
-    enemy -> y_position = y_coord;
-    regenerate_cache();
+    if ( enemy )
+    {
+      original_x = enemy -> x_position;
+      original_y = enemy -> y_position;
+      enemy -> x_position = x_coord;
+      enemy -> y_position = y_coord;
+      regenerate_cache();
+    }
   }
 
   void _finish()
   {
-    enemy -> x_position = 0;
-    enemy -> y_position = 0;
-    regenerate_cache();
+    if ( enemy )
+    {
+      enemy -> x_position = 0;
+      enemy -> y_position = 0;
+      regenerate_cache();
+    }
   }
 };
 
