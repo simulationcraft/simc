@@ -2475,6 +2475,49 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 2 )
   {
+    if ( splits[0] == "active_enemies_within" )
+    {
+      struct active_enemies_t: public expr_t
+      {
+        action_t* action;
+        const std::string& yards;
+        double yards_from_player;
+        int num_targets;
+        active_enemies_t( action_t* p, const std::string& r ):
+          expr_t( "active_enemies_within" ), action( p ), yards( r )
+        {
+          yards_from_player = util::str_to_num<int>( yards );
+          num_targets = 0;
+        }
+
+        double evaluate()
+        {
+          if ( action -> target_cache.is_valid )
+          {
+            return num_targets;
+          }
+          else
+          {
+            action -> target_list();
+            num_targets = 0;
+            for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+            {
+              player_t* t = action -> player -> sim -> target_non_sleeping_list[i];
+              if ( action -> player -> get_position_distance( t -> x_position, t -> y_position ) <= yards_from_player )
+                num_targets++;
+            }
+            return num_targets;
+          }
+        }
+
+        void reset()
+        {
+          active_enemies_t::reset();
+          num_targets = 0;
+        }
+      };
+      return new active_enemies_t( this, splits[1] );
+    }
     if ( splits[ 0 ] == "prev" )
     {
       struct prev_expr_t : public action_expr_t

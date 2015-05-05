@@ -7807,33 +7807,6 @@ expr_t* player_t::create_expression( action_t* a,
 
   // everything from here on requires splits
   std::vector<std::string> splits = util::string_split( expression_str, "." );
-
-  if ( splits[0] == "active_enemies_within" )
-  {
-    struct active_enemies_t: public expr_t
-    {
-      player_t& player;
-      const std::string& yards;
-      double yards_from_player;
-      active_enemies_t( player_t& p, const std::string& r ):
-        expr_t( "role" ), player( p ), yards( r )
-      {
-        yards_from_player = util::str_to_num<int>( yards );
-      }
-      virtual double evaluate()
-      {
-        int num_targets = 0;
-        for ( size_t i = 0, actors = player.sim -> target_non_sleeping_list.size(); i < actors; i++ )
-        {
-          player_t* t = player.sim -> target_non_sleeping_list[i];
-          if ( player.get_position_distance( t -> x_position, t -> y_position ) <= yards_from_player )
-            num_targets++;
-        }
-        return num_targets;
-      }
-    };
-    return new active_enemies_t( *this, splits[1] );
-  }
   // player variables
   if ( splits[ 0 ] == "variable" && splits.size() == 2 )
   {
