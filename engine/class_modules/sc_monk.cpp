@@ -1986,7 +1986,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = base_t::composite_target_multiplier( t );
-    double d_rsk = td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
+    double d_rsk = td( t ) -> debuff.rising_sun_kick -> default_value;
 
     // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
     if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
@@ -2063,7 +2063,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = base_t::composite_target_multiplier( t );
-    double d_rsk = td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
+    double d_rsk = td( t ) -> debuff.rising_sun_kick -> default_value;
 
     // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
     if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
@@ -5098,9 +5098,14 @@ dots( dots_t() ),
 debuff( buffs_t() ),
 monk( *p )
 {
-  debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_spell( 130320 ) );
-  debuff.dizzying_haze = buff_creator_t( *this, "dizzying_haze" ).spell( p -> find_spell( 123727 ) );
-  debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" ).cd( timespan_t::zero() );
+  debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" )
+    .spell( p -> find_spell( 130320 ) )
+    .default_value( p -> find_spell( 130320 ) -> effectN( 1 ).percent() );
+  debuff.dizzying_haze = buff_creator_t( *this, "dizzying_haze" )
+    .spell( p -> find_spell( 116330 ) )
+    .default_value( p -> find_spell( 116330 ) -> effectN( 1 ).percent() );
+  debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
+    .cd( timespan_t::zero() );
 
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
