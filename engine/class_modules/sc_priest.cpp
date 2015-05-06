@@ -618,6 +618,14 @@ struct base_fiend_pet_t : public priest_pet_t
     }
   }
 
+  virtual void demise() override
+  {
+    priest_pet_t::demise();
+
+    // T18 Shadow 4pc
+    o().buffs.mind_harvest -> trigger();
+  }
+
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override;
 };
@@ -666,14 +674,6 @@ struct mindbender_pet_t : public base_fiend_pet_t
   {
     double m  = mindbender_spell -> effectN( 2 ).percent();
     return m / 100;
-  }
-
-  virtual void demise() override
-  {
-    base_fiend_pet_t::demise();
-
-    // T18 Shadow 4pc
-    o().buffs.mind_harvest -> trigger();
   }
 };
 
