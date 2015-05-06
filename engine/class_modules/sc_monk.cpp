@@ -1988,7 +1988,8 @@ struct monk_spell_t: public monk_action_t < spell_t >
     double m = base_t::composite_target_multiplier( t );
     double d_rsk = td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
-    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+    // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
       d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
@@ -2064,7 +2065,8 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double m = base_t::composite_target_multiplier( t );
     double d_rsk = td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
-    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+    // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
       d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
