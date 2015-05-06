@@ -2050,7 +2050,8 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   virtual double calculate_weapon_damage( double ap )
   {
     // For use with the spell Expel Harm since Weapon Power Mod does not seem to be available for spells
-    p() -> weapon_power_mod = weapon_power_mod;
+    if (p() -> weapon_power_mod == 0)
+      p() -> weapon_power_mod = weapon_power_mod;
     // Use monk specific weapon damage calculation if mh or oh (monk specific weapons) are
     // specificed.
     if ( mh || oh )
@@ -2184,7 +2185,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 3;
+    base_multiplier = 3.6;
     if ( maybe_ptr( p -> dbc.ptr ) )
       base_multiplier = 3.42; // hardcoded into tooltip
     if ( p -> specialization() == MONK_MISTWEAVER )
@@ -4604,7 +4605,7 @@ struct expel_harm_heal_t: public monk_heal_t
     weapon_t mh = p() -> main_hand_weapon;
     weapon_t oh = p() -> off_hand_weapon;
       
-    double weapon_damage = monk_util::monk_weapon_damage( action, &( mh ), &( oh ), weapon_power_mod, 
+    double weapon_damage = monk_util::monk_weapon_damage( action, &( mh ), &( oh ), p() -> weapon_power_mod, 
       (p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
     am *= weapon_damage;
 
