@@ -2521,7 +2521,7 @@ struct rend_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
-    base_tick_time *= 1.0 - p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
+    base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
     t18_4pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
     add_child( burst );
   }
@@ -3095,7 +3095,7 @@ struct wild_strike_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( execute_state -> result == RESULT_CRIT && p() -> sets.has_set_bonus( WARRIOR_FURY, T18, B4 ) )
-      p() -> cooldown.recklessness -> adjust( timespan_t::from_millis( -1 * p() -> sets.set( WARRIOR_FURY, T18, B4 ) -> effectN( 1 ).base_value() ) );
+      p() -> cooldown.recklessness -> adjust( timespan_t::from_millis( p() -> sets.set( WARRIOR_FURY, T18, B4 ) -> effectN( 1 ).base_value() ) );
 
     p() -> buff.bloodsurge -> decrement();
   }
