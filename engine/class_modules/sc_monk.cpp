@@ -521,6 +521,7 @@ public:
     light_stagger_threshold( 0 ),
     moderate_stagger_threshold( 0.035 ),
     heavy_stagger_threshold( 0.065 ),
+    weapon_power_mod( 0 ),
     eluding_movements( 0 ),
     soothing_breeze( 0 ),
     furious_sun( 0 )
@@ -623,6 +624,7 @@ public:
   const double light_stagger_threshold;
   const double moderate_stagger_threshold;
   const double heavy_stagger_threshold;
+  double weapon_power_mod;
   double  clear_stagger();
   bool  has_stagger();
 
@@ -1984,9 +1986,13 @@ struct monk_spell_t: public monk_action_t < spell_t >
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = base_t::composite_target_multiplier( t );
+    double d_rsk = td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
-    if ( td( t ) -> debuff.rising_sun_kick -> check() )
-      m *= 1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
+    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+      d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
+
+    if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
+      m *= 1.0 + d_rsk;
 
     return m;
   }
@@ -2042,6 +2048,8 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   // Both MH and OH are directly weaved into one damage number
   virtual double calculate_weapon_damage( double ap )
   {
+    // For use with the spell Expel Harm since Weapon Power Mod does not seem to be available for spells
+    p() -> weapon_power_mod = weapon_power_mod;
     // Use monk specific weapon damage calculation if mh or oh (monk specific weapons) are
     // specificed.
     if ( mh || oh )
@@ -2054,9 +2062,13 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = base_t::composite_target_multiplier( t );
+    double d_rsk = td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
+
+    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+      d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
-      m *= 1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
+      m *= 1.0 + d_rsk;
 
     return m;
   }
