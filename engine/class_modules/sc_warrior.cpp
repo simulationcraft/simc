@@ -1234,7 +1234,7 @@ struct auto_attack_t: public warrior_attack_t
     }
     else
     {
-      p -> main_hand_attack = new melee_t( "auto_attack", p );
+      p -> main_hand_attack = new melee_t( "auto_attack_mh", p );
       p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
       p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
     }

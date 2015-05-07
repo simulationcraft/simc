@@ -2038,6 +2038,15 @@ public:
       return spell_t::current_resource();
   }
 
+  virtual double composite_target_crit( player_t* target ) const
+  {
+    double c = spell_t::composite_target_crit( target );
+    if ( p() -> destruction_trinket && td( target ) -> debuffs_flamelicked )
+      c += td( target ) -> debuffs_flamelicked -> current_stack * td( target ) -> debuffs_flamelicked -> default_value;
+
+    return c;
+  }
+
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
   {
     if ( ( ( td -> dots_seed_of_corruption -> current_action && id == td -> dots_seed_of_corruption -> current_action -> id )
@@ -3190,8 +3199,15 @@ struct conflagrate_t: public warlock_spell_t
 
 struct incinerate_t: public warlock_spell_t
 {
+  struct flamelicked_t : public debuff_t
+  {
+    flamelicked_t( const actor_pair_t& p, warlock_t* player ):
+    debuff_t( buff_creator_t( p, "flamelicked", player -> destruction_trinket -> driver() -> effectN( 1 ).trigger() )
+    .default_value( player -> destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( player -> destruction_trinket -> item ) / 100.0 ) )
+    {
+    }
+  };
   incinerate_t* fnb;
-
   // Normal incinerate
   incinerate_t( warlock_t* p ):
     warlock_spell_t( p, "Incinerate" ),
@@ -3289,6 +3305,22 @@ struct incinerate_t: public warlock_spell_t
         trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
     }
     warlock_spell_t::schedule_travel( s );
+  }
+
+  void execute()
+  {
+    warlock_spell_t::execute();
+    if ( p() -> destruction_trinket )
+    {
+      warlock_td_t* td = p() -> get_target_data( execute_state -> target );
+      assert( td );
+      if ( !td -> debuffs_flamelicked )
+      {
+        td -> debuffs_flamelicked = new flamelicked_t( actor_pair_t( target, p() ), p() );
+        td -> debuffs_flamelicked -> reset();
+      }
+      td -> debuffs_flamelicked -> trigger( 1 );
+    }
   }
 
   void impact( action_state_t* s )
@@ -5000,6 +5032,7 @@ soulburn_soc_trigger( 0 )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_flamelicked = 0; // Created during runtime. 
 
   target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
 }
