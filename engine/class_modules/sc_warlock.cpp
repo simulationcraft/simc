@@ -5018,8 +5018,8 @@ soulburn_soc_trigger( 0 )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_flamelicked = buff_creator_t( *this, "flamelicked", p.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
-        .default_value( p.destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( p.destruction_trinket -> item ) / 100.0 );
+  debuffs_flamelicked = buff_creator_t( *this, "flamelicked", warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
+        .default_value( warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( warlock.destruction_trinket -> item ) / 100.0 );
 
   target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
 }
