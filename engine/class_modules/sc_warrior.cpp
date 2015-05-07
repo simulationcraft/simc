@@ -190,6 +190,7 @@ public:
     gain_t* tier16_2pc_melee;
     gain_t* tier16_4pc_tank;
     gain_t* tier17_4pc_arms;
+    gain_t* tier18_2pc_gladiator;
   } gain;
 
   // Spells
@@ -747,6 +748,10 @@ public:
       p() -> buff.raging_blow -> trigger();
 
     p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
+    if ( p() -> active.stance == STANCE_GLADIATOR && maybe_ptr( p() -> dbc.ptr ) )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 2 ).base_value(), p() -> gain.tier18_2pc_gladiator );
+    }
     p() -> buff.enrage -> trigger();
     p() -> buff.enraged_speed -> trigger();
   }
@@ -1543,7 +1548,8 @@ struct colossus_smash_t: public warrior_attack_t
     stancemask = STANCE_BATTLE;
 
     weapon = &( player -> main_hand_weapon );
-    base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
+    if ( !maybe_ptr( p -> dbc.ptr ) )
+      base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
   }
 
   void execute()
@@ -1555,10 +1561,13 @@ struct colossus_smash_t: public warrior_attack_t
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
       p() -> buff.colossus_smash -> trigger();
 
-      if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
+      if ( !maybe_ptr( p() -> dbc.ptr ) )
       {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-        p() -> gain.tier17_4pc_arms );
+        if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+            p() -> gain.tier17_4pc_arms );
+        }
       }
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) )
       {
@@ -2185,6 +2194,8 @@ struct mortal_strike_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   void execute()
@@ -3482,6 +3493,9 @@ struct shield_charge_t: public warrior_spell_t
       p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
     else
       p() -> buff.shield_charge -> trigger();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) )
+      enrage();
 
     shield_charge_cd -> start();
   }
@@ -4974,6 +4988,7 @@ void warrior_t::init_gains()
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee" );
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank" );
   gain.tier17_4pc_arms        = get_gain( "tier17_4pc_arms" );
+  gain.tier18_2pc_gladiator   = get_gain( "tier18_2pc_gladiator" );
 }
 
 // warrior_t::init_position ====================================================
