@@ -131,6 +131,7 @@ double monk_weapon_damage( action_t* action,
   {
     assert( mh -> slot != SLOT_OFF_HAND );
     double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
+      
     dmg /= mh -> swing_time.total_seconds();
     total_dmg += dmg;
 
@@ -148,6 +149,7 @@ double monk_weapon_damage( action_t* action,
   {
     assert( oh -> slot == SLOT_OFF_HAND );
     double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
+      
     dmg /= oh -> swing_time.total_seconds();
     // OH penalty
     dmg *= 0.5;
@@ -4569,9 +4571,6 @@ struct enveloping_mist_t: public monk_heal_t
 // ==========================================================================
 // Expel Harm (Heal)
 // ==========================================================================
-/*
-TODO: Verify healing values.
-*/
 
 struct expel_harm_heal_t: public monk_heal_t
 {
@@ -4588,28 +4587,18 @@ struct expel_harm_heal_t: public monk_heal_t
       target = &p;
     base_multiplier = 7.5;
 
+    may_crit = may_multistrike = true;
+
     attack = new attacks::expel_harm_t( &p );
 
     action = this;
+
+    base_dd_min = base_dd_max = 1;
 
     if ( p.specialization() == MONK_MISTWEAVER )
       base_costs[RESOURCE_MANA] = 0;
     else
       base_costs[RESOURCE_ENERGY] = 0;
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    weapon_t mh = p() -> main_hand_weapon;
-    weapon_t oh = p() -> off_hand_weapon;
-      
-    double weapon_damage = monk_util::monk_weapon_damage( action, &( mh ), &( oh ), p() -> weapon_power_mod, 
-      (p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
-    am *= weapon_damage;
-
-    return am;
   }
 
   void impact( action_state_t* s )
