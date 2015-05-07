@@ -4997,11 +4997,11 @@ struct mannoroths_fury_t: public warlock_spell_t
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
 actor_target_data_t( target, &p ),
-warlock( p ),
 ds_started_below_20( false ),
 agony_stack( 1 ),
 soc_trigger( 0 ),
-soulburn_soc_trigger( 0 )
+soulburn_soc_trigger( 0 ),
+warlock( p )
 {
   dots_corruption = target -> get_dot( "corruption", &p );
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", &p );
