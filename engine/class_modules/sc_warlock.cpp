@@ -3316,7 +3316,7 @@ struct incinerate_t: public warlock_spell_t
       assert( td );
       if ( !td -> debuffs_flamelicked )
       {
-        td -> debuffs_flamelicked = new flamelicked_t( actor_pair_t( target, p() ), p() );
+        td -> debuffs_flamelicked = new flamelicked_t( actor_pair_t( execute_state -> target, p() ), p() );
         td -> debuffs_flamelicked -> reset();
       }
       td -> debuffs_flamelicked -> trigger( 1 );
