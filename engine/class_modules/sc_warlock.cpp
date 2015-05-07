@@ -77,11 +77,6 @@ public:
 
   std::vector<std::string> pet_name_list;
 
-  // Tier 18 (WoD 6.2) trinket effects
-  const special_effect_t* affliction_trinket;
-  const special_effect_t* demonology_trinket;
-  const special_effect_t* destruction_trinket;
-
   // Talents
   struct talents_t
   {
@@ -291,9 +286,6 @@ public:
     buff_t* tier16_2pc_destructive_influence;
     buff_t* tier16_2pc_empowered_grasp;
     buff_t* tier16_2pc_fiery_wrath;
-
-
-
   } buffs;
 
   // Gains
@@ -386,6 +378,11 @@ public:
   std::string default_pet;
 
   timespan_t ember_react, shard_react;
+
+    // Tier 18 (WoD 6.2) trinket effects
+  const special_effect_t* affliction_trinket;
+  const special_effect_t* demonology_trinket;
+  const special_effect_t* destruction_trinket;
 
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
@@ -5018,8 +5015,11 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_flamelicked = buff_creator_t( *this, "flamelicked", warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
-        .default_value( warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( warlock.destruction_trinket -> item ) / 100.0 );
+  if ( warlock.destruction_trinket )
+  {
+    debuffs_flamelicked = buff_creator_t( *this, "flamelicked", warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
+      .default_value( warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( warlock.destruction_trinket -> item ) / 100.0 );
+  }
 
   target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
 }
