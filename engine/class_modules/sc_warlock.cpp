@@ -2041,8 +2041,8 @@ public:
   virtual double composite_target_crit( player_t* target ) const
   {
     double c = spell_t::composite_target_crit( target );
-    if ( p() -> destruction_trinket && td( target ) -> debuffs_flamelicked )
-      c += td( target ) -> debuffs_flamelicked -> current_stack * td( target ) -> debuffs_flamelicked -> default_value;
+    if ( p() -> destruction_trinket )
+      c += td( target ) -> debuffs_flamelicked -> stack_value();
 
     return c;
   }
@@ -3199,14 +3199,6 @@ struct conflagrate_t: public warlock_spell_t
 
 struct incinerate_t: public warlock_spell_t
 {
-  struct flamelicked_t : public debuff_t
-  {
-    flamelicked_t( const actor_pair_t& p, warlock_t* player ):
-    debuff_t( buff_creator_t( p, "flamelicked", player -> destruction_trinket -> driver() -> effectN( 1 ).trigger() )
-    .default_value( player -> destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( player -> destruction_trinket -> item ) / 100.0 ) )
-    {
-    }
-  };
   incinerate_t* fnb;
   // Normal incinerate
   incinerate_t( warlock_t* p ):
@@ -3313,12 +3305,6 @@ struct incinerate_t: public warlock_spell_t
     if ( p() -> destruction_trinket )
     {
       warlock_td_t* td = p() -> get_target_data( execute_state -> target );
-      assert( td );
-      if ( !td -> debuffs_flamelicked )
-      {
-        td -> debuffs_flamelicked = new flamelicked_t( actor_pair_t( execute_state -> target, p() ), p() );
-        td -> debuffs_flamelicked -> reset();
-      }
       td -> debuffs_flamelicked -> trigger( 1 );
     }
   }
@@ -5032,7 +5018,8 @@ soulburn_soc_trigger( 0 )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_flamelicked = 0; // Created during runtime. 
+  debuffs_flamelicked = buff_creator_t( *this, "flamelicked", p.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
+        .default_value( p.destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( p.destruction_trinket -> item ) / 100.0 );
 
   target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
 }
