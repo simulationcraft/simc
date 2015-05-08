@@ -3860,6 +3860,15 @@ struct drain_soul_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
+    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) && p() -> buffs.dark_soul -> check() && td( p() -> target ) -> debuffs_haunt -> check() )
+    {
+      td( p() -> target ) -> debuffs_haunt -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, td( p() -> target ) -> dots_haunt -> remains() );
+    }
+
+    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) && rng().roll( p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() ) && p() -> buffs.dark_soul -> check() )
+      p() -> buffs.dark_soul -> extend_duration( p(), p() -> sets.set ( WARLOCK_AFFLICTION, T18, B2 ) -> effectN( 1 ).time_value()  );
+
+
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
     double multiplier = data().effectN( 3 ).percent();
