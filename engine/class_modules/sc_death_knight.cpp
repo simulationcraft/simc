@@ -3917,7 +3917,7 @@ struct death_strike_heal_t : public death_knight_heal_t
     double sob_consume_stacks = static_cast<double>( p() -> buffs.scent_of_blood -> check() );
     if ( player -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T18, B4 ) )
     {
-      sob_consume_stacks = util::round( sob_consume_stacks / 2.0, 0 );
+      sob_consume_stacks = util::round( sob_consume_stacks * player -> sets.set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).percent(), 0 );
     }
 
     p() -> buffs.scent_of_blood -> decrement( static_cast<int>( sob_consume_stacks ) );
