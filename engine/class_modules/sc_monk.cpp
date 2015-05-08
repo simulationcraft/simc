@@ -3410,49 +3410,6 @@ struct touch_of_karma_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Expel Harm
-// ==========================================================================
-
-struct expel_harm_t: public monk_melee_attack_t
-{
-  double result_total;
-  expel_harm_t( monk_t* p ):
-    monk_melee_attack_t( "expel_harm", p, p -> spec.expel_harm_damage )
-  {
-    stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
-    background = true;
-    may_crit = may_block = false;
-
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-
-    base_multiplier = 7.5; // hardcoded into tooltip
-    base_multiplier *= p -> spec.expel_harm_damage -> effectN( 2 ).percent(); // 33% of the heal is done as damage
-
-    spell_power_mod.direct = 0.0;
-  }
-
-  void execute()
-  {
-    monk_melee_attack_t::execute();
-
-  }
-
-  double trigger_attack()
-  {
-    execute();
-    return result_total;
-  }
-
-  void impact( action_state_t* s )
-  {
-    monk_melee_attack_t::impact( s );
-
-    result_total = s -> result_total;
-  }
-};
-
-// ==========================================================================
 // Provoke
 // ==========================================================================
 
@@ -4546,14 +4503,27 @@ struct enveloping_mist_t: public monk_heal_t
 };
 
 // ==========================================================================
-// Expel Harm (Heal)
+// Expel Harm
 // ==========================================================================
 
-struct expel_harm_heal_t: public monk_heal_t
+struct expel_harm_damage_t : public monk_spell_t
 {
-  attacks::expel_harm_t* attack;
+  expel_harm_damage_t(monk_t* p) :
+    monk_spell_t( "expel_harm", p, p -> spec.expel_harm_damage )
+  {
+    background = true;
+    may_crit = false;
+    base_multiplier = p -> spec.expel_harm_damage -> effectN( 2 ).percent();
+    trigger_gcd = timespan_t::zero();
+  }
+};
+
+struct expel_harm_heal_t : public monk_heal_t
+{
+  expel_harm_damage_t* damage;
   expel_harm_heal_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) )
+    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) ),
+    damage( new expel_harm_damage_t( &p ) )
   {
     parse_options( options_str );
 
@@ -4566,8 +4536,6 @@ struct expel_harm_heal_t: public monk_heal_t
 
     may_crit = may_multistrike = true;
     base_dd_min = base_dd_max = 1;
-
-    attack = new attacks::expel_harm_t( &p );
   }
 
   void init()
@@ -4591,12 +4559,13 @@ struct expel_harm_heal_t: public monk_heal_t
   {
     monk_heal_t::impact( s );
     summon_gots_orb( 1.00 );
+
+    damage -> base_dd_min = damage -> base_dd_max = s -> result_total;
+    damage -> execute();
   }
 
   virtual void execute()
   {
-    attack -> execute();
-
     weapon_t mh = p() -> main_hand_weapon;
     weapon_t oh = p() -> off_hand_weapon;
 
