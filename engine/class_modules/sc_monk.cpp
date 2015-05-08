@@ -2014,8 +2014,8 @@ struct monk_heal_t: public monk_action_t < heal_t >
   {
     double m = base_t::composite_target_multiplier( target );
 
-    if ( p() -> buff.guard -> up() && player == target )
-      m *= 1.0 + p() -> spec.guard -> effectN( 2 ).percent();
+      if ( p() -> buff.guard -> up() )
+        m *= 1.0 + p() -> spec.guard -> effectN( 2 ).percent();
 
     return m;
   }
@@ -4575,30 +4575,26 @@ struct enveloping_mist_t: public monk_heal_t
 struct expel_harm_heal_t: public monk_heal_t
 {
   attacks::expel_harm_t* attack;
-  action_t* action;
   expel_harm_heal_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) ),
-    action( 0 )
+    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) )
   {
     parse_options( options_str );
 
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
-    if ( !p.glyph.targeted_expulsion -> ok() )
-      target = &p;
+
     base_multiplier = 7.5;
-
     may_crit = may_multistrike = true;
-
-    attack = new attacks::expel_harm_t( &p );
-
-    action = this;
-
     base_dd_min = base_dd_max = 1;
 
-    if ( p.specialization() == MONK_MISTWEAVER )
-      base_costs[RESOURCE_MANA] = 0;
-    else
-      base_costs[RESOURCE_ENERGY] = 0;
+    attack = new attacks::expel_harm_t(&p);
+  }
+
+  void init()
+  {
+    monk_heal_t::init();
+
+    if ( p() -> specialization() == MONK_BREWMASTER )
+      snapshot_flags |= STATE_RESOLVE;
   }
 
   void impact( action_state_t* s )
@@ -4609,7 +4605,13 @@ struct expel_harm_heal_t: public monk_heal_t
 
   virtual void execute()
   {
-    base_dd_min = base_dd_max = attack -> trigger_attack();
+    attack -> execute();
+
+    weapon_t mh = p() -> main_hand_weapon;
+    weapon_t oh = p() -> off_hand_weapon;
+
+    base_dd_min = base_dd_max = monk_util::monk_weapon_damage( this, &( mh ), &( oh ), p() -> weapon_power_mod,
+      ( p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
 
     monk_heal_t::execute();
 
