@@ -361,6 +361,7 @@ public:
     const spell_data_t* way_of_the_monk_aa_speed;
     const spell_data_t* zen_meditaiton;
     const spell_data_t* fortifying_brew;
+    const spell_data_t* expel_harm_damage;
     // Brewmaster
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
@@ -2014,8 +2015,8 @@ struct monk_heal_t: public monk_action_t < heal_t >
   {
     double m = base_t::composite_target_multiplier( target );
 
-      if ( p() -> buff.guard -> up() )
-        m *= 1.0 + p() -> spec.guard -> effectN( 2 ).percent();
+    if ( p() -> buff.guard -> up() && player == target )
+      m *= 1.0 + p() -> spec.guard -> effectN( 2 ).percent();
 
     return m;
   }
@@ -3416,7 +3417,7 @@ struct expel_harm_t: public monk_melee_attack_t
 {
   double result_total;
   expel_harm_t( monk_t* p ):
-    monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
+    monk_melee_attack_t( "expel_harm", p, p -> spec.expel_harm_damage )
   {
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     background = true;
@@ -3426,39 +3427,15 @@ struct expel_harm_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 7.5; // hardcoded into tooltip
-    base_multiplier *= p -> find_spell( 115129 ) -> effectN( 2 ).percent(); // 33% of the heal is done as damage
+    base_multiplier *= p -> spec.expel_harm_damage -> effectN( 2 ).percent(); // 33% of the heal is done as damage
 
-    if ( p -> glyph.targeted_expulsion -> ok() )
-      base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
     spell_power_mod.direct = 0.0;
-  }
-
-  virtual double cost() const
-  {
-    double c = monk_melee_attack_t::cost();
-    if ( player -> health_percentage() < 35 && p() -> glyph.expel_harm -> ok() )
-      c += p() -> glyph.expel_harm -> effectN( 1 ).base_value();
-
-    return c;
   }
 
   void execute()
   {
     monk_melee_attack_t::execute();
 
-    if ( p() -> buff.power_strikes -> up() )
-    {
-      if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
-        p() -> resource_gain( RESOURCE_CHI,
-        p() -> buff.power_strikes -> default_value,
-        0, this );
-      else
-        p() -> buff.chi_sphere -> trigger();
-
-      p() -> buff.power_strikes -> expire();
-    }
-    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) && p() -> cooldown.guard -> down() )
-      p() -> cooldown.guard -> duration + p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value(); // T18 set bonus is saved as "-5000"
   }
 
   double trigger_attack()
@@ -4583,10 +4560,14 @@ struct expel_harm_heal_t: public monk_heal_t
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
 
     base_multiplier = 7.5;
+
+    if ( p.glyph.targeted_expulsion -> ok() )
+      base_multiplier *= 1.0 - p.glyph.targeted_expulsion -> effectN( 2 ).percent();
+
     may_crit = may_multistrike = true;
     base_dd_min = base_dd_max = 1;
 
-    attack = new attacks::expel_harm_t(&p);
+    attack = new attacks::expel_harm_t( &p );
   }
 
   void init()
@@ -4595,6 +4576,15 @@ struct expel_harm_heal_t: public monk_heal_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
       snapshot_flags |= STATE_RESOLVE;
+  }
+
+  virtual double cost() const
+  {
+    double c = monk_heal_t::cost();
+    if ( player -> health_percentage() < 35 && p() -> glyph.expel_harm -> ok() )
+      c += p() -> glyph.expel_harm -> effectN( 1 ).base_value();
+
+    return c;
   }
 
   void impact( action_state_t* s )
@@ -4626,6 +4616,23 @@ struct expel_harm_heal_t: public monk_heal_t
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
     }
+
+    // Power Strike manipulation
+    if ( p() -> buff.power_strikes -> up() )
+    {
+      if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
+        p() -> resource_gain( RESOURCE_CHI,
+        p() -> buff.power_strikes -> default_value,
+        0, this );
+      else
+        p() -> buff.chi_sphere -> trigger();
+
+      p() -> buff.power_strikes -> expire();
+    }
+
+    // Every time you use Expel Harm, the remaining cooldown of your Guard is reduced by 5 sec.
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) && p() -> cooldown.guard -> down() )
+      p() -> cooldown.guard -> duration + p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value(); // T18 set bonus is saved as "-5000"
   }
 };
 
@@ -5254,6 +5261,7 @@ void monk_t::init_spells()
   spec.way_of_the_monk_aa_damage     = find_spell( 108977 );
   spec.way_of_the_monk_aa_speed      = find_spell( 140737 );
   spec.fortifying_brew               = find_class_spell( "Fortifying Brew" );
+  spec.expel_harm_damage             = find_spell( 115129 );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew         = find_specialization_spell( "Brewing: Tigereye Brew" );
