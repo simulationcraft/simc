@@ -1377,6 +1377,7 @@ class SpellDataGenerator(DataGenerator):
           ( 57330, 0, True ), # Horn of Winter needs to be explicitly put in the general tree, as our (over)zealous filtering thinks it's not an active ability
           ( 47568, 0, True ), # Same goes for Empower Rune Weapon
           ( 170205, 0 ), # Frost T17 4pc driver continued ...
+          ( 187981, 0 ), ( 187970, 0 ), # T18 4pc unholy relevant spells
         ),
 
         # Shaman:

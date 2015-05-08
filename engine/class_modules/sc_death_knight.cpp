@@ -22,6 +22,7 @@ struct death_knight_t;
 
 namespace pets {
 struct dancing_rune_weapon_pet_t;
+struct ghoul_pet_t;
 }
 
 namespace runeforge
@@ -236,6 +237,9 @@ public:
 
     // Frost T18 2pc buffs TODO: Frost Strike bonus
     buff_t* obliteration;
+
+    // Unholy T18 4pc buff
+    buff_t* crazed_monstrosity;
   } buffs;
 
   struct runeforge_t
@@ -438,7 +442,7 @@ public:
     std::array< pet_t*, 8 > army_ghoul;
     std::array< pet_t*, 10 > fallen_zandalari;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
-    pet_t* ghoul_pet;
+    pets::ghoul_pet_t* ghoul_pet;
     pet_t* gargoyle;
   } pets;
 
@@ -542,7 +546,6 @@ public:
   virtual void      combat_begin();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual expr_t*   create_expression( action_t*, const std::string& name );
-  virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      create_options();
   virtual resource_e primary_resource() const { return RESOURCE_RUNIC_POWER; }
@@ -1916,6 +1919,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct ghoul_pet_t : public death_knight_pet_t
 {
+  // Unholy T18 4pc buff
+  buff_t* crazed_monstrosity;
+
   ghoul_pet_t( sim_t* sim, death_knight_t* owner, const std::string& name, bool guardian ) :
     death_knight_pet_t( sim, owner, name, guardian )
   {
@@ -2066,6 +2072,15 @@ struct ghoul_pet_t : public death_knight_pet_t
     return pet_t::create_action( name, options_str );
   }
 
+  void create_buffs()
+  {
+    pet_t::create_buffs();
+
+    crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187970 ) )
+                         .duration( find_spell( 187981 ) -> duration() ) // Grab duration from the player's spell
+                         .chance( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
+  }
+
   timespan_t available() const
   {
     double energy = resources.current[ RESOURCE_ENERGY ];
@@ -2078,6 +2093,30 @@ struct ghoul_pet_t : public death_knight_pet_t
              timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
              timespan_t::from_seconds( 0.1 )
            );
+  }
+
+  double composite_melee_speed() const
+  {
+    double s = pet_t::composite_melee_speed();
+
+    if ( crazed_monstrosity -> up() )
+    {
+      s *= 1.0 / ( 1.0 + crazed_monstrosity -> data().effectN( 3 ).percent() );
+    }
+
+    return s;
+  }
+
+  double composite_player_multiplier( school_e school ) const
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    if ( crazed_monstrosity -> up() )
+    {
+      m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -3542,12 +3581,19 @@ struct dark_transformation_t : public death_knight_spell_t
     p() -> buffs.shadow_infusion -> expire();
     p() -> trigger_t17_4pc_unholy( execute_state );
     p() -> buffs.death_dealer -> trigger();
+    p() -> buffs.crazed_monstrosity -> trigger();
+    p() -> pets.ghoul_pet -> crazed_monstrosity -> trigger();
   }
 
   virtual bool ready()
   {
     if ( p() -> buffs.shadow_infusion -> check() != p() -> buffs.shadow_infusion -> max_stack() )
       return false;
+
+    if ( p() -> pets.ghoul_pet -> is_sleeping() )
+    {
+      return false;
+    }
 
     return death_knight_spell_t::ready();
   }
@@ -6151,12 +6197,12 @@ void death_knight_t::create_pets()
   {
     if ( find_action( "summon_gargoyle" ) )
     {
-      pets.gargoyle = create_pet( "gargoyle" );
+      pets.gargoyle = new pets::gargoyle_pet_t( sim, this );
     }
 
     if ( find_action( "raise_dead" ) )
     {
-      pets.ghoul_pet = create_pet( "ghoul_pet" );
+      pets.ghoul_pet = new pets::ghoul_pet_t( sim, this, "ghoul", false );
     }
   }
 
@@ -6178,21 +6224,6 @@ void death_knight_t::create_pets()
     for ( int i = 0; i < 10; i++ )
       pets.fallen_zandalari[ i ] = new pets::fallen_zandalari_t( this );
   }
-}
-
-// death_knight_t::create_pet ===============================================
-
-pet_t* death_knight_t::create_pet( const std::string& pet_name,
-                                   const std::string& /* pet_type */ )
-{
-  pet_t* p = find_pet( pet_name );
-
-  if ( p ) return p;
-
-  if ( pet_name == "gargoyle"       ) return new pets::gargoyle_pet_t( sim, this );
-  if ( pet_name == "ghoul_pet"      ) return new pets::ghoul_pet_t   ( sim, this, "ghoul", false );
-
-  return 0;
 }
 
 // death_knight_t::composite_attack_haste() =================================
@@ -7207,6 +7238,10 @@ void death_knight_t::create_buffs()
 
   buffs.obliteration = buff_creator_t( this, "obliteration", find_spell( 187893 ) )
                       .chance( sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B2 ) );
+  buffs.crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187981 ) )
+                             .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
+                             .add_invalidate( CACHE_ATTACK_SPEED )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7662,6 +7697,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + spec.improved_blood_presence -> effectN( 2 ).percent();
 
+  if ( buffs.crazed_monstrosity -> up() )
+  {
+    m *= 1.0 / ( 1.0 + buffs.crazed_monstrosity -> data().effectN( 1 ).percent() );
+  }
+
   return m;
 }
 
@@ -7692,6 +7732,11 @@ double death_knight_t::composite_melee_speed() const
   double haste = player_t::composite_melee_speed();
 
   haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 1 ).percent() );
+
+  if ( buffs.crazed_monstrosity -> up() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.crazed_monstrosity -> data().effectN( 2 ).percent() );
+  }
 
   return haste;
 }
