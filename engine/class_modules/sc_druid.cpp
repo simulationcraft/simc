@@ -2692,6 +2692,7 @@ struct rake_t : public cat_attack_t
 
   virtual void execute()
   {
+    // 05/05/2015: Triggers regardless of action outcome
     if ( p() -> glyph.savage_roar -> ok() && prowling() )
       trigger_glyph_of_savage_roar();
 
@@ -2845,6 +2846,7 @@ struct shred_t : public cat_attack_t
 
   virtual void execute()
   {
+    // 05/05/2015: Triggers regardless of action outcome
     if ( p() -> glyph.savage_roar -> ok() && stealthed() )
       trigger_glyph_of_savage_roar();
 
