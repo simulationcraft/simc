@@ -4163,7 +4163,11 @@ struct frost_strike_t : public death_knight_melee_attack_t
       if ( p() -> buffs.killing_machine -> check() )
         p() -> procs.fs_killing_machine -> occur();
 
-      p() -> buffs.killing_machine -> expire();
+      if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
+           ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) )
+      {
+        p() -> buffs.killing_machine -> expire();
+      }
 
       p() -> trigger_runic_empowerment( resource_consumed );
       p() -> trigger_blood_charge( resource_consumed );
@@ -4557,7 +4561,11 @@ struct obliterate_t : public death_knight_melee_attack_t
         fo -> execute();
       }
 
-      p() -> buffs.killing_machine -> expire();
+      if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
+           ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) )
+      {
+        p() -> buffs.killing_machine -> expire();
+      }
     }
 
     p() -> trigger_t18_2pc_frost( execute_state );
@@ -7168,7 +7176,6 @@ void death_knight_t::create_buffs()
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
                               .cd( timespan_t::zero() );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
-                              .max_stack( 1 + sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).base_value() )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
