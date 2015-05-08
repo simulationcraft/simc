@@ -3451,6 +3451,12 @@ struct chaos_bolt_t: public warlock_spell_t
     havoc_consume = 3;
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
+
+    if ( p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B2 ) )
+    {
+      base_multiplier *=  1 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+      base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
+    }
   }
 
   chaos_bolt_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
@@ -3460,6 +3466,12 @@ struct chaos_bolt_t: public warlock_spell_t
     aoe = -1;
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
+
+    if ( p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B2 ) )
+    {
+      base_multiplier *= 1 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+      base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
+    }
 
     stats = p -> get_stats( "chaos_bolt_fnb", this );
     gain = p -> get_gain( "chaos_bolt_fnb" );
@@ -3494,6 +3506,12 @@ struct chaos_bolt_t: public warlock_spell_t
 
     if ( p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 2 ).percent();
+
+    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B4 ) )
+    {
+      if ( rng().roll( p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent() ) )
+        c = 0.0;
+    }
 
     return c;
   }
