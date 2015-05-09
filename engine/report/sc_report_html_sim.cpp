@@ -326,6 +326,8 @@ void print_html_contents( report::sc_html_stream& os, const sim_t* sim )
     {
       os << "<li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
       ci++;
+      os << "<li><a href=\"#apm-summary\">Actions per Minute Summary</a></li>\n";
+      ci++;
       if ( sim -> scaling -> has_scale_factors() )
       {
         os << "<li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
@@ -683,12 +685,13 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
         (int)i, ri.dtps_charts[i].c_str() );
     }
   }
+
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
-    os.format(  "<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", ( int )i, ( int )i );
+    os.format( "<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", (int)i, (int)i );
     os.format(
       "<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
-      ( int )i, ri.hps_charts[ i ].c_str() );
+      (int)i, ri.hps_charts[i].c_str() );
   }
 
   for ( size_t i = 0; i < ri.tmi_charts.size(); i++ )
@@ -698,15 +701,6 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
     os.format(
       "<img id='TMIIMG%d' src=\"%s\" alt=\"TMI Chart\" />\n",
       ( int )i, ri.tmi_charts[ i ].c_str() );
-  }
-
-  for ( size_t i = 0; i < ri.apm_charts.size(); i++ )
-  {
-    os.format(
-      "<map id='APMMAP%d' name='APMMAP%d'></map>\n", (int)i, (int)i );
-    os.format(
-      "<img id='APMIMG%d' src=\"%s\" alt=\"APM Chart\" />\n",
-      (int)i, ri.apm_charts[i].c_str() );
   }
 
   // RNG chart
@@ -733,6 +727,28 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
      << "</div>\n"
      << "</div>\n\n";
 
+  os << "<div id=\"apm-summary\" class=\"section section-open\">\n\n";
+  os << "<h2 class=\"toggle open\">Actions per Minute Summary</h2>\n";
+  os << "<div class=\"toggle-content hide\">\n";
+  os << "<ul class=\"params\">\n";
+
+  // Left side charts: dps, raid events
+  os << "<div class=\"charts charts-left\">\n";
+
+  for ( size_t i = 0; i < ri.apm_charts.size(); i++ )
+  {
+    os.format(
+      "<map id='APMMAP%d' name='APMMAP%d'></map>\n", (int)i, (int)i );
+    os.format(
+      "<img id='APMIMG%d' src=\"%s\" alt=\"APM Chart\" />\n",
+      (int)i, ri.apm_charts[i].c_str() );
+  }
+  os << "</div>\n";
+  os << "</ul>\n";
+
+  os << "<div class=\"clear\"></div>\n"
+     << "</div>\n"
+     << "</div>\n\n";
 }
 
 // print_html_raid_imagemaps ================================================
