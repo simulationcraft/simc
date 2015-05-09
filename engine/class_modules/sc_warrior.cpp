@@ -1306,7 +1306,7 @@ struct bladestorm_t: public warrior_attack_t
   attack_t* bladestorm_oh;
   bladestorm_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bladestorm", p, p -> talents.bladestorm ),
-    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm" ) ),
+    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
     bladestorm_oh( 0 )
   {
     parse_options( options_str );
@@ -2309,7 +2309,7 @@ struct raging_blow_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
-    mh_attack = new raging_blow_attack_t( p, "raging_blow", data().effectN( 1 ).trigger() );
+    mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", data().effectN( 1 ).trigger() );
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
 
