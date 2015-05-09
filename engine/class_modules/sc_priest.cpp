@@ -381,6 +381,7 @@ public:
     benefits(),
     procs(),
     active_spells(),
+    active_items(),
     pets(),
     options(),
     glyphs()
@@ -391,8 +392,6 @@ public:
     create_gains();
     create_procs();
     create_benefits();
-
-    memset( &active_items, 0, sizeof( active_items ) );
 
     regen_type = REGEN_DYNAMIC;
   }
