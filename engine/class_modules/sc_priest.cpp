@@ -3167,11 +3167,14 @@ struct mind_flay_base_t: public priest_spell_t
     priest_spell_t::tick( d );
     priest.buffs.glyph_of_mind_flay -> trigger();
 
-    if ( d -> state && result_is_hit( d -> state -> result ) )
+    if ( priest.active_items.mental_fatigue )
     {
-      // Assumes trigger on hit, not on damage
-      priest_td_t& td = get_td( d -> state -> target );
-      td.buffs.mental_fatigue -> trigger();
+      if ( d -> state && result_is_hit( d -> state -> result ) )
+      {
+        // Assumes trigger on hit, not on damage
+        priest_td_t& td = get_td( d -> state -> target );
+        td.buffs.mental_fatigue -> trigger();
+      }
     }
   }
 };
