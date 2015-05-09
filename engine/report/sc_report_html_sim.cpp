@@ -727,8 +727,8 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
      << "</div>\n"
      << "</div>\n\n";
 
-  os << "<div id=\"apm-summary\" class=\"section section-open\">\n\n";
-  os << "<h2 class=\"toggle open\">Actions per Minute Summary</h2>\n";
+  os << "<div id=\"apm-summary\" class=\"section grouped-first\">\n\n";
+  os << "<h2 class=\"toggle\">Actions per Minute Summary</h2>\n";
   os << "<div class=\"toggle-content hide\">\n";
   os << "<ul class=\"params\">\n";
 
