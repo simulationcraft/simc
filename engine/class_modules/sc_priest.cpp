@@ -392,6 +392,8 @@ public:
     create_procs();
     create_benefits();
 
+    memset( &active_items, 0, sizeof( active_items ) );
+
     regen_type = REGEN_DYNAMIC;
   }
 
@@ -1606,7 +1608,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( is_mind_spell )
     {
       priest_td_t& td = get_td( t );
-      if ( td.buffs.mental_fatigue -> check() )
+      if ( priest.active_items.mental_fatigue )
       {
         am *= 1.0 + td.buffs.mental_fatigue -> stack_value();
       }
