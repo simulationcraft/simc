@@ -2251,7 +2251,7 @@ struct pummel_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
 
-    may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    may_miss = may_block = may_dodge = may_parry = false;
   }
 
   void execute()
@@ -5313,7 +5313,7 @@ double warrior_t::composite_melee_haste() const
 
   if ( fury_trinket )
   {
-    a *= 1.0 / ( 1.0 + ( buff.fury_trinket -> current_stack * buff.fury_trinket -> default_value ) );
+    a *= 1.0 / ( 1.0 + buff.fury_trinket -> stack_value() );
   }
 
   return a;

@@ -81,6 +81,9 @@ public:
   heal_t*   active_shining_protector_proc;
   player_t* last_judgement_target;
 
+  const special_effect_t* retribution_trinket;
+  player_t* last_retribution_trinket_target;
+
   struct active_actions_t
   {
     hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
@@ -134,7 +137,6 @@ public:
     buff_t* tier15_2pc_melee;     // t15_2pc_melee
     buff_t* tier15_4pc_melee;     // t15_4pc_melee
     buff_t* shield_of_glory;      // t15_2pc_tank
-    buff_t* favor_of_the_kings;   // t16_4pc_heal
     buff_t* warrior_of_the_light; // t16_2pc_melee
     buff_t* divine_crusader;      // t16_4pc_melee
     buff_t* bastion_of_power;     // t16_4pc_tank
@@ -143,6 +145,9 @@ public:
     buff_t* faith_barricade;      // t17_2pc_tank
     buff_t* defender_of_the_light; // t17_4pc_tank
     buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
+    buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
+    buff_t* wings_of_liberty_driver;
+    buff_t* retribution_trinket; // 6.2 Spec-Specific Trinket
   } buffs;
   
   // Gains
@@ -330,7 +335,6 @@ public:
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
-    last_judgement_target(),
     active( active_actions_t() ),
     buffs( buffs_t() ),
     gains( gains_t() ),
@@ -349,6 +353,9 @@ public:
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 )
   {
+    last_judgement_target = 0;
+    last_retribution_trinket_target = 0;
+    retribution_trinket = 0;
     active_beacon_of_light             = 0;
     active_censure                     = 0;
     active_enlightened_judgments       = 0;
@@ -463,6 +470,13 @@ public:
 // containing ones that require action_t definitions to function properly.
 
 namespace buffs {
+
+void wings_of_liberty( buff_t* buff, int, int )
+{
+  paladin_t* p = debug_cast<paladin_t*>( buff -> player );
+
+  p -> buffs.wings_of_liberty -> trigger( 1 );
+}
 
 struct ardent_defender_buff_t : public buff_t
 {
@@ -1064,17 +1078,15 @@ struct avenging_wrath_t : public paladin_heal_t
     : paladin_heal_t( "avenging_wrath", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) )
   {
     parse_options( options_str );
-
-    cooldown -> duration += p -> passives.sword_of_light -> effectN( 7 ).time_value();
-
-    // T16 Holy 4PC reduces AW cooldown by 60s
-    cooldown -> duration -= timespan_t::from_millis( p -> sets.set( SET_HEALER, T16, B2 ) -> effectN( 1 ).base_value() );
-
-    cooldown -> duration *= ( 1.0 + p -> glyphs.merciful_wrath -> effectN( 5 ).percent() );
-
     // disable for protection
     if ( p -> specialization() == PALADIN_PROTECTION )
       background = true;
+    else if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      cooldown -> duration = data().charge_cooldown();
+      cooldown -> charges = data().charges();
+      cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
+    }
 
     harmful = false;
     trigger_gcd = timespan_t::zero();
@@ -1108,8 +1120,15 @@ struct avenging_wrath_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
-    if ( p() -> sets.has_set_bonus( SET_HEALER, T16, B4 ) )
-      p() -> buffs.favor_of_the_kings -> trigger();
+    p() -> buffs.wings_of_liberty_driver -> trigger();
+  }
+
+  bool ready()
+  {
+    if ( p() -> buffs.avenging_wrath -> check() )
+      return false;
+    else
+      return paladin_heal_t::ready();
   }
 };
 
@@ -3377,7 +3396,6 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     {
       base_multiplier *= 1.0 + p -> passives.sword_of_light_value -> effectN( 1 ).percent();
     }
-
   }
 
   virtual timespan_t gcd() const
@@ -3395,6 +3413,28 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     }
     else
       return base_t::gcd();
+  }
+
+  void retribution_trinket_trigger()
+  {
+    if ( p() -> retribution_trinket )
+    {
+      if ( p() -> last_retribution_trinket_target ) // Check if we have used this on a target before.
+      {
+        if ( p() -> last_retribution_trinket_target == execute_state -> target )
+          p() -> buffs.retribution_trinket -> trigger( 1 ); // If it's the same target, it's all good.
+        else
+        {
+          p() -> buffs.retribution_trinket -> expire();
+          p() -> last_retribution_trinket_target = execute_state -> target;
+        }
+      }
+      else
+      {
+        p() -> buffs.retribution_trinket -> trigger( 1 );
+        p() -> last_retribution_trinket_target = execute_state -> target;
+      }
+    }
   }
 
   virtual void execute()
@@ -3452,7 +3492,7 @@ struct melee_t : public paladin_melee_attack_t
       return timespan_t::zero();
     else
       return paladin_melee_attack_t::execute_time();
-  } 
+  }
 
   virtual void execute()
   {
@@ -3513,7 +3553,6 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 struct crusader_strike_t : public paladin_melee_attack_t
 {
   const spell_data_t* sword_of_light;
-
   crusader_strike_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
@@ -3532,7 +3571,13 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
   }
 
-  virtual double action_multiplier() const
+  void execute()
+  {
+    paladin_melee_attack_t::execute();
+    retribution_trinket_trigger();
+  }
+
+  double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3545,7 +3590,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
 
@@ -3704,6 +3749,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     aoe       = -1;
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
   }
+
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
@@ -3713,27 +3759,25 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
-
     return am;
   }
 
-  // HotR AoE does not hit the main target
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
-    tl.clear();
+    paladin_melee_attack_t::available_targets( tl );
 
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    for ( size_t i = 0; i < tl.size(); i++ )
     {
-      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
-             sim -> actor_list[ i ] -> is_enemy() &&
-             sim -> actor_list[ i ] != target )
-        tl.push_back( sim -> actor_list[ i ] );
+      if ( tl[i] == target ) // Cannot hit the original target.
+      {
+        tl.erase( tl.begin() + i );
+        break;
+      }
     }
-
     return tl.size();
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
 
@@ -3745,26 +3789,54 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t* hotr_aoe;
-
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true ) 
   {
     parse_options( options_str );
-
     // link with Crusader Strike's cooldown
     cooldown = p -> get_cooldown( "crusader_strike" );
     cooldown -> duration = data().cooldown();
-    
     // HotR triggers all seals
     trigger_seal = true;
-
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
-
     // Attach AoE proc as a child
     add_child( hotr_aoe );
   }
 
-  virtual double action_multiplier() const
+  void execute()
+  {
+    paladin_melee_attack_t::execute();
+
+    retribution_trinket_trigger();
+
+    // Special things that happen when HotR connects
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      // Holy Power gains, only relevant if HoTR connects
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
+
+      // If Holy Avenger active, grant 2 more
+      if ( p() -> buffs.holy_avenger -> check() )
+      {
+        //apply gain, record as due to Holy Avenger
+        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
+      }
+      // Grand Crusader
+      p() -> trigger_grand_crusader();
+
+      if ( hotr_aoe -> target != execute_state -> target )
+        hotr_aoe -> target_cache.is_valid = false;
+
+      hotr_aoe -> target = execute_state -> target;
+      hotr_aoe -> target_list();
+
+      if ( hotr_aoe -> target_cache.list.size() > 0 )
+        hotr_aoe -> execute();
+    }
+  }
+
+  double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3777,30 +3849,9 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
-
-    // Special things that happen when HotR connects
-    if ( result_is_hit( s -> result ) )
-    {
-      // Holy Power gains, only relevant if CS connects
-      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
-
-      // If Holy Avenger active, grant 2 more
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        //apply gain, record as due to Holy Avenger
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
-      }
-      // trigger the AoE if there are any other targets to hit
-      if ( available_targets( target_list() ) > 1 )
-        hotr_aoe -> schedule_execute();
-
-      // Grand Crusader
-      p() -> trigger_grand_crusader();
-    }
     if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
@@ -4749,6 +4800,7 @@ void paladin_t::reset()
   player_t::reset();
 
   last_judgement_target = 0;
+  last_retribution_trinket_target = 0;
   active_seal = SEAL_NONE;
   bok_up      = false;
   bom_up      = false;
@@ -4908,7 +4960,6 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
-  buffs.favor_of_the_kings     = buff_creator_t( this, "favor_of_the_kings", find_spell( 144622 ) );
   buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
   buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4931,6 +4982,13 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                                  .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, PVP, B4 ) )
                                  .duration( timespan_t::from_seconds( 4 ) );
+  buffs.wings_of_liberty       = buff_creator_t( this, "wings_of_liberty", find_spell( 185655 ) -> effectN( 1 ).trigger() )
+                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                 .default_value( find_spell( 185655 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.wings_of_liberty_driver = buff_creator_t( this, "wings_of_liberty_driver", find_spell( 185655 ) )
+                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
+                                 .quiet( true )
+                                 .tick_callback( buffs::wings_of_liberty );
 }
 
 // ==========================================================================
@@ -5952,17 +6010,12 @@ double paladin_t::composite_spell_haste() const
 double paladin_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
-
   return m;
 }
 
 double paladin_t::composite_mastery_rating() const
 {
   double m = player_t::composite_mastery_rating();
-
-  if ( buffs.favor_of_the_kings -> check() )
-    m += buffs.favor_of_the_kings -> data().effectN( 1 ).base_value();
-
   return m;
 }
 
@@ -5994,6 +6047,10 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+
+  m *= 1.0 + buffs.wings_of_liberty -> stack_value();
+  if ( retribution_trinket )
+    m *= 1.0 + buffs.retribution_trinket -> stack_value();
 
   // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
@@ -6691,6 +6748,35 @@ private:
   paladin_t& p;
 };
 
+static void do_trinket_init( paladin_t*                player,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
+       player -> specialization() != spec )
+  {
+    return;
+  }
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
+static void retribution_trinket( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> retribution_trinket, effect );
+  
+  if ( s -> retribution_trinket )
+  {
+    s -> buffs.retribution_trinket = buff_creator_t( s, "focus_of_vengeance", s -> retribution_trinket -> driver() -> effectN( 1 ).trigger() )
+      .default_value( s -> retribution_trinket -> driver() -> effectN( 1 ).average( s -> retribution_trinket -> item ) / 10000.0 )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+}
+
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -6705,6 +6791,11 @@ struct paladin_module_t : public module_t
   }
 
   virtual bool valid() const { return true; }
+
+  virtual void static_init() const
+  {
+    unique_gear::register_special_effect( 184911, retribution_trinket );
+  }
 
   virtual void init( player_t* p ) const
   {
