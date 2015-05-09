@@ -49,7 +49,7 @@ set filename=%install%-%mydate%-%revision%
 call start winscp /command "open downloads" "put %download%\%filename%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
 
 ::WebEngine compilation.
-set install=simc-%simcversion%-win64
+set install=simc-%simcversion%-win64-webengine
 rd %install% /s /q
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
@@ -76,7 +76,7 @@ call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversi
 7z a -r %install% %install% -mx9 -md=32m
 call start winscp /command "open downloads" "put %download%\%install%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
 
-set install=simc-%simcversion%-win32
+set install=simc-%simcversion%-win32-webengine
 "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configuration=WebEngine /p:platform=win32 /nr:true /m:8
 
 robocopy "%redist%x86\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll

@@ -1608,9 +1608,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest_td_t& td = get_td( t );
       if ( td.buffs.mental_fatigue -> check() )
       {
-        assert( priest.active_items.mental_fatigue );
-        const item_t* item = priest.active_items.mental_fatigue -> item;
-        am *= 1.0 + td.buffs.mental_fatigue -> check() * td.buffs.mental_fatigue -> data().effectN( 1 ).average( item ) / 100.0;
+        am *= 1.0 + td.buffs.mental_fatigue -> stack_value();
       }
     }
 
@@ -3131,17 +3129,17 @@ struct devouring_plague_t : public priest_spell_t
 
 // Mind Flay Spell ==========================================================
 template <bool insanity = false>
-struct mind_flay_base_t : public priest_spell_t
+struct mind_flay_base_t: public priest_spell_t
 {
-  mind_flay_base_t( priest_t& p, const std::string& options_str, const std::string& name = "mind_flay" ) :
+  mind_flay_base_t( priest_t& p, const std::string& options_str, const std::string& name = "mind_flay" ):
     priest_spell_t( name, p, p.find_class_spell( insanity ? "Insanity" : "Mind Flay" ) )
   {
     parse_options( options_str );
 
-    may_crit     = false;
-    channeled    = true;
+    may_crit = false;
+    channeled = true;
     hasted_ticks = false;
-    use_off_gcd  = true;
+    use_off_gcd = true;
     is_mind_spell = true;
 
     if ( priest.perks.enhanced_mind_flay -> ok() )
@@ -3167,14 +3165,11 @@ struct mind_flay_base_t : public priest_spell_t
     priest_spell_t::tick( d );
     priest.buffs.glyph_of_mind_flay -> trigger();
 
-    if ( priest.active_items.mental_fatigue )
+    if ( d -> state && result_is_hit( d -> state -> result ) )
     {
-      if ( d -> state && result_is_hit( d -> state -> result ))
-      {
-        // Assumes trigger on hit, not on damage
-        priest_td_t& td = get_td( d -> state -> target );
-        td.buffs.mental_fatigue -> trigger();
-      }
+      // Assumes trigger on hit, not on damage
+      priest_td_t& td = get_td( d -> state -> target );
+      td.buffs.mental_fatigue -> trigger();
     }
   }
 };
@@ -5303,8 +5298,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                              .cd( timespan_t::zero() )
                              .activated( false );
 
-  buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue" )
-                         .spell( p.find_spell( 185104 ) );
+  if ( priest.active_items.mental_fatigue )
+  {
+    buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue", priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() )
+      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) / 100.0 );
+  }
 
   target -> callbacks_on_demise.push_back( std::bind( &priest_td_t::target_demise, this ) );
 }
