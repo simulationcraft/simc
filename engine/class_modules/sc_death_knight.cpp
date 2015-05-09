@@ -4163,8 +4163,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
       if ( p() -> buffs.killing_machine -> check() )
         p() -> procs.fs_killing_machine -> occur();
 
-      if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
-           ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) )
+      if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) || 
+           ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
+             ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
       {
         p() -> buffs.killing_machine -> expire();
       }
@@ -4561,8 +4562,9 @@ struct obliterate_t : public death_knight_melee_attack_t
         fo -> execute();
       }
 
-      if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
-           ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) )
+      if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) || 
+           ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
+             ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
       {
         p() -> buffs.killing_machine -> expire();
       }
