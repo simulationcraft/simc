@@ -82,7 +82,7 @@ set install=simc-%simcversion%-win32
 robocopy "%redist%x86\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Core.dll
-robocopy %qt_dir%msvc2013\bin\ %install%\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll Qt5WebChannel.dll Qt5Positioning.dll
+robocopy %qt_dir%msvc2013\bin\ %install%\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt54.dll icuin54.dll icuuc54.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll Qt5WebChannel.dll Qt5Positioning.dll
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy %qt_dir%msvc2013\ %install%\ icudtl.dat
 robocopy %qt_dir%msvc2013\plugins\platforms %install%\platforms\ qwindows.dll
