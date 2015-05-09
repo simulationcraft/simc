@@ -2163,6 +2163,17 @@ struct compare_priority_dps
   }
 };
 
+// compare_apm ==============================================================
+
+struct compare_apm
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return ( l -> collected_data.fight_length.mean() ? 60.0 * l -> collected_data.executed_foreground_actions.mean() / l -> collected_data.fight_length.mean() : 0 ) >
+      ( r -> collected_data.fight_length.mean() ? 60.0 * r -> collected_data.executed_foreground_actions.mean() / r -> collected_data.fight_length.mean() : 0 );
+  }
+};
+
 // compare_hps ==============================================================
 
 struct compare_hps
@@ -2242,6 +2253,7 @@ void sim_t::analyze()
   range::sort( players_by_dtps, compare_dtps() );
   range::sort( players_by_tmi,  compare_tmi() );
   range::sort( players_by_name, compare_name() );
+  range::sort( players_by_apm, compare_apm() );
   range::sort( targets_by_name, compare_name() );
 
   analyze_iteration_data();

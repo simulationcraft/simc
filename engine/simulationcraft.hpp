@@ -2604,7 +2604,7 @@ private:
 struct sim_report_information_t
 {
   bool charts_generated;
-  std::vector<std::string> dps_charts, priority_dps_charts, hps_charts, dtps_charts, tmi_charts, gear_charts, dpet_charts;
+  std::vector<std::string> dps_charts, priority_dps_charts, hps_charts, dtps_charts, tmi_charts, gear_charts, dpet_charts, apm_charts;
   std::string timeline_chart, downtime_chart;
   sim_report_information_t() { charts_generated = false; }
 };
@@ -2851,6 +2851,7 @@ struct sim_t : private sc_thread_t
   std::vector<player_t*> players_by_dtps;
   std::vector<player_t*> players_by_tmi;
   std::vector<player_t*> players_by_name;
+  std::vector<player_t*> players_by_apm;
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
   std::map<double, std::vector<double> > divisor_timeline_cache;

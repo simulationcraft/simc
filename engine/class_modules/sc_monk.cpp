@@ -4886,6 +4886,7 @@ struct gift_of_the_ox_t: public monk_heal_t
   {
     parse_options( options_str );
     harmful = false;
+    background = true;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -4910,6 +4911,7 @@ struct healing_elixirs_t: public monk_heal_t
     monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
   {
     harmful = may_crit = false;
+    background = true;
     may_multistrike = 0;
     trigger_gcd = timespan_t::zero();
     pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
@@ -4928,6 +4930,7 @@ struct healing_sphere_t: public monk_heal_t
     monk_heal_t( "healing_sphere", p, p.spec.healing_sphere )
   {
     harmful = false;
+    background = true;
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( p.glyph.fortuitous_spheres -> effectN( 2 ).base_value() );
   }

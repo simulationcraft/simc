@@ -1072,6 +1072,7 @@ void report::generate_sim_report_information( sim_t* s , sim_report_information_
   chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps_plus_aps, "hps" );
   chart::raid_aps     ( ri.dtps_charts, s, s -> players_by_dtps, "dtps" );
   chart::raid_aps     ( ri.tmi_charts, s, s -> players_by_tmi, "tmi" );
+  chart::raid_aps     ( ri.apm_charts, s, s -> players_by_apm, "apm" );
   chart::raid_dpet    ( ri.dpet_charts, s );
   chart::raid_gear    ( ri.gear_charts, s, s -> print_styles );
   ri.timeline_chart = chart::distribution( s -> print_styles,

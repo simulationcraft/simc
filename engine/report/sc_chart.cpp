@@ -757,6 +757,11 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     max_aps = players_by_aps[ players_by_aps.size() - 1 ] -> collected_data.theck_meloree_index.mean() / 1000.0;
     title_str = "TMI";
   }
+  else if ( type == "apm" )
+  {
+    max_aps = players_by_aps[ 0 ] -> collected_data.fight_length.mean() ? 60.0 * players_by_aps[ 0 ] -> collected_data.executed_foreground_actions.mean() / players_by_aps[ 0 ] -> collected_data.fight_length.mean() : 0;
+    title_str = "Actions per Minute";
+  }
 
   std::string s = std::string();
   bool first = true;
@@ -807,6 +812,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       else if ( type == "hps" )  { player_mean = p -> collected_data.hps.mean() + p -> collected_data.aps.mean(); }
       else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
       else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
+      else if ( type == "apm" ) { player_mean = p -> collected_data.fight_length.mean() ? 60.0 * p -> collected_data.executed_foreground_actions.mean() / p -> collected_data.fight_length.mean() : 0; }
       str::format( s, "%s%.0f", ( i ? "|" : "" ), player_mean ); 
     }
     s += amp;
@@ -831,6 +837,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       else if ( type == "hps" )  { player_mean = p -> collected_data.hps.mean() + p -> collected_data.aps.mean(); }
       else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
       else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
+      else if ( type == "apm" ) { player_mean = p -> collected_data.fight_length.mean() ? 60.0 * p -> collected_data.executed_foreground_actions.mean() / p -> collected_data.fight_length.mean() : 0; }
       std::string tmi_letter = ( type == "tmi" ) ? "k" : "";
       str::format( s, "%st++%.0f%s++%s,%s,%d,0,15", ( i ? "|" : "" ), player_mean, tmi_letter.c_str(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); 
     }

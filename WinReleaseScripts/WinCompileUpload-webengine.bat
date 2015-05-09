@@ -21,7 +21,7 @@ set simcfiles=E:\Simulationcraft\
 set ssllocation32=C:\OpenSSL-Win32\bin
 set ssllocation64=C:\OpenSSL-Win64\bin
 :: Location of openssl32/64
-set qt_dir=C:\Qt\Qt5.4.1\5.4\
+set qt_dir=C:\Qt\Qt5.5.0\5.5\
 :: Location of QT
 set redist=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\
 :: This is a really standard location for VS2013, but change it if you installed it somewhere else.

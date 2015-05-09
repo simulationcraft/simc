@@ -700,6 +700,15 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
       ( int )i, ri.tmi_charts[ i ].c_str() );
   }
 
+  for ( size_t i = 0; i < ri.apm_charts.size(); i++ )
+  {
+    os.format(
+      "<map id='APMMAP%d' name='APMMAP%d'></map>\n", (int)i, (int)i );
+    os.format(
+      "<img id='APMIMG%d' src=\"%s\" alt=\"APM Chart\" />\n",
+      (int)i, ri.apm_charts[i].c_str() );
+  }
+
   // RNG chart
   if ( sim -> report_rng )
   {
@@ -737,6 +746,8 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
     player_list = sim -> players_by_priority_dps;
   else if ( dps == 3 )
     player_list = sim -> players_by_hps;
+  else if ( dps == 4 )
+    player_list = sim -> players_by_apm;
 
   size_t start = num * MAX_PLAYERS_PER_CHART;
   size_t end = start + MAX_PLAYERS_PER_CHART;
@@ -750,6 +761,8 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
     { player_list.resize( i ); break; }
     else if ( dps == 3 && p -> collected_data.hps.mean() <= 0 )
     { player_list.resize( i ); break; }
+    else if ( dps == 4 && ( p -> collected_data.fight_length.mean() ? 60.0 * p -> collected_data.executed_foreground_actions.mean() / p -> collected_data.fight_length.mean() : 0 ) <= 0 )
+    { player_list.resize( i ); break; }
   }
 
   if ( end > player_list.size() ) end = player_list.size();
@@ -762,8 +775,8 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
   }
   os << "];\n";
 
-  std::string imgid = str::format( "%sIMG%u", ( dps == 1 ) ? "DPS" : ( ( dps == 2 ) ? "PRIORITYDPS" : "HPS" ), as<unsigned>( num ) );
-  std::string mapid = str::format( "%sMAP%u", ( dps == 1 ) ? "DPS" : ( ( dps == 2 ) ? "PRIORITYDPS" : "HPS" ), as<unsigned>( num ) );
+  std::string imgid = str::format( "%sIMG%u", ( dps == 1 ) ? "DPS" : ( ( dps == 2 ) ? "PRIORITYDPS" : ( ( dps == 3 ) ? "HPS" : "APM" ) ), as<unsigned>( num ) );
+  std::string mapid = str::format( "%sMAP%u", ( dps == 1 ) ? "DPS" : ( ( dps == 2 ) ? "PRIORITYDPS" : ( ( dps == 3 ) ? "HPS" : "APM" ) ), as<unsigned>( num ) );
 
   os.format(
     "u = document.getElementById('%s').src;\n"
@@ -781,7 +794,6 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
 
 void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
-
   os << "<script type=\"text/javascript\">\n"
      << "var $j = jQuery.noConflict();\n"
      << "function getMap(url, names, mapWrite) {\n"
@@ -813,6 +825,10 @@ void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_repo
     print_html_raid_imagemap( os, sim, i, 3 );
   }
 
+  for ( size_t i = 0; i < ri.apm_charts.size(); i++ )
+  {
+    print_html_raid_imagemap( os, sim, i, 4 );
+  }
   os << "</script>\n";
 }
 
