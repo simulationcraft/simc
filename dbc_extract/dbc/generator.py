@@ -1484,6 +1484,7 @@ class SpellDataGenerator(DataGenerator):
 	  ( 155784, 0 ),       # Primal Tenacity buff
 	  ( 137542, 0 ),       # Displacer Beast buff
 	  ( 185321, 0 ),       # Stalwart Guardian buff (T18 trinket)
+	  ( 188046, 0 ),       # T18 2P Faerie casts this spell
         ),
     ]
 
