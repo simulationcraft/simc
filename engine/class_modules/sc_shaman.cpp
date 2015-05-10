@@ -5362,6 +5362,7 @@ void shaman_t::create_buffs()
   buff.t18_4pc_elemental        = buff_creator_t( this, "lightning_vortex", find_spell( 189063 ) )
     .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
     .reverse( true )
+    .add_invalidate( CACHE_HASTE )
     .default_value( find_spell( 189063 ) -> effectN( 2 ).percent() )
     .max_stack( 5 ); // Shows 3 stacks in spelldata, but the wording makes it seem that it is actually 5.
 
