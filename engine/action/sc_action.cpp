@@ -1206,7 +1206,10 @@ void action_t::execute()
     return;
 
   if ( !fancy_target_stuff_execute() )
+  {
+    cancel();
     return;
+  }
 
   if ( sim -> log && ! dual )
   {
