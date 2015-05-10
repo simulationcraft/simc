@@ -1091,7 +1091,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   maximize_reporting( false ),
   apikey( "" ),
   ilevel_raid_report( false ),
-  fancy_target_distance_stuff( false ),
+  fancy_target_distance_stuff( true ),
   scaling_normalized( 1.0 ),
   report_information(),
   // Multi-Threading
