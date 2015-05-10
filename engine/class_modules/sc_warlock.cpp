@@ -318,6 +318,7 @@ public:
     proc_t* t17_2pc_demo;
     proc_t* havoc_waste;
     proc_t* fragment_wild_imp;
+    proc_t* t18_4pc_destruction;
   } procs;
 
   struct spells_t
@@ -3452,11 +3453,8 @@ struct chaos_bolt_t: public warlock_spell_t
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
 
-    if ( p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B2 ) )
-    {
-      base_multiplier *=  1 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
-      base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
-    }
+    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+    base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
   }
 
   chaos_bolt_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
@@ -3467,11 +3465,8 @@ struct chaos_bolt_t: public warlock_spell_t
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
 
-    if ( p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B2 ) )
-    {
-      base_multiplier *= 1 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
-      base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
-    }
+    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+    base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
 
     stats = p -> get_stats( "chaos_bolt_fnb", this );
     gain = p -> get_gain( "chaos_bolt_fnb" );
@@ -3487,17 +3482,32 @@ struct chaos_bolt_t: public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  virtual double composite_crit() const
+  void consume_resource()
+  {
+    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B4 ) )
+    {
+      if ( rng().roll( p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent() ) )
+      {
+        if ( use_backdraft() ) // Since we are skipping consume_resource, we still need to consume the backdraft.
+          p() -> buffs.backdraft -> decrement( backdraft_consume );
+        p() -> procs.t18_4pc_destruction -> occur();
+        return;
+      }
+    }
+    warlock_spell_t::consume_resource();
+  }
+
+  double composite_crit() const
   {
     return 1.0;
   }
 
-  virtual double composite_target_crit( player_t* ) const
+  double composite_target_crit( player_t* ) const
   {
     return 0.0;
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = warlock_spell_t::cost();
 
@@ -3507,16 +3517,10 @@ struct chaos_bolt_t: public warlock_spell_t
     if ( p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 2 ).percent();
 
-    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B4 ) )
-    {
-      if ( rng().roll( p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent() ) )
-        c = 0.0;
-    }
-
     return c;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3537,7 +3541,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return m;
   }
 
-  virtual void execute()
+  void execute()
   {
     warlock_spell_t::execute();
 
@@ -5697,6 +5701,7 @@ void warlock_t::init_procs()
   procs.t17_2pc_demo = get_proc( "t17_2pc_demo" );
   procs.havoc_waste = get_proc( "Havoc: Buff expiration" );
   procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
+  procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
 }
 
 void warlock_t::apl_precombat()
