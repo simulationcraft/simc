@@ -2532,8 +2532,8 @@ struct rend_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
-    base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
-    t18_4pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
+    base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
+    t18_4pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
     add_child( burst );
   }
 
