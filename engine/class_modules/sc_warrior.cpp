@@ -2522,18 +2522,18 @@ struct rend_burst_t: public warrior_attack_t
 struct rend_t: public warrior_attack_t
 {
   rend_burst_t* burst;
-  double t18_4pc_chance;
+  double t18_2pc_chance;
   rend_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "rend", p, p -> spec.rend ),
     burst( new rend_burst_t( p ) ),
-    t18_4pc_chance( 0 )
+    t18_2pc_chance( 0 )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
     base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
-    t18_4pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
+    t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();
     add_child( burst );
   }
 
@@ -2551,9 +2551,9 @@ struct rend_t: public warrior_attack_t
   void tick( dot_t* d )
   {
     warrior_attack_t::tick( d );
-    if ( t18_4pc_chance > 0 )
+    if ( t18_2pc_chance > 0 )
     {
-      if ( rng().roll( t18_4pc_chance ) )
+      if ( rng().roll( t18_2pc_chance ) )
         p() -> cooldown.mortal_strike -> reset( true );
     }
 
