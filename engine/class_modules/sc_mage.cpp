@@ -1524,7 +1524,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p -> wild_arcanist )
     {
-      const spell_data_t* data = p -> find_spell ( p -> wild_arcanist -> spell_id );
+      const spell_data_t* data = p -> wild_arcanist -> driver();
       wild_arcanist_effect = std::fabs( data -> effectN( 1 ).average( p -> wild_arcanist -> item ) );
       wild_arcanist_effect /= 100.0;
     }
@@ -3084,7 +3084,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p -> shatterlance )
     {
-      const spell_data_t* data = p -> find_spell( p -> shatterlance -> spell_id );
+      const spell_data_t* data = p -> shatterlance -> driver();
       shatterlance_effect = data -> effectN( 1 ).average( p -> shatterlance -> item );
       shatterlance_effect /= 100.0;
     }
@@ -3281,7 +3281,7 @@ struct inferno_blast_t : public mage_spell_t
 
     if ( p -> pyrosurge )
     {
-      const spell_data_t* data = p -> find_spell( p -> pyrosurge -> spell_id );
+      const spell_data_t* data = p -> pyrosurge -> driver();
       pyrosurge_chance = data -> effectN( 1 ).average( p -> pyrosurge -> item );
       pyrosurge_chance /= 100.0;
 
@@ -6049,8 +6049,6 @@ void mage_t::invalidate_cache( cache_e c )
 double mage_t::composite_spell_crit() const
 {
   double c = player_t::composite_spell_crit();
-
-  // These also increase the water elementals crit chance
 
   if ( buffs.molten_armor -> up() )
   {
