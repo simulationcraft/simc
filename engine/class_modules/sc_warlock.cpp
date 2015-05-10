@@ -286,6 +286,7 @@ public:
     buff_t* tier16_2pc_destructive_influence;
     buff_t* tier16_2pc_empowered_grasp;
     buff_t* tier16_2pc_fiery_wrath;
+    buff_t* tier18_2pc_demonology;
   } buffs;
 
   // Gains
@@ -1124,6 +1125,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   {
     double mastery = o() -> cache.mastery();
     m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+    m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
   }
 
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
@@ -3358,6 +3360,7 @@ struct soul_fire_t: public warlock_spell_t
 
   virtual void execute()
   {
+    p() -> buffs.tier18_2pc_demonology -> trigger();
     if ( meta_spell && p() -> buffs.metamorphosis -> check() )
     {
       meta_spell -> time_to_execute = time_to_execute;
@@ -5658,6 +5661,8 @@ void warlock_t::create_buffs()
     .duration( timespan_t::from_seconds( 10 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .default_value( find_spell( 145085 ) -> effectN( 1 ).percent() );
+  buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 void warlock_t::init_rng()

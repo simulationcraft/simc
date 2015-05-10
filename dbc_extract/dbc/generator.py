@@ -1446,6 +1446,9 @@ class SpellDataGenerator(DataGenerator):
             ( 104225, 0 ),
             ( 89653, 0 ),         # Drain Life heal
 			( 129476, 0 ),        # Immolation Aura
+			( 189297, 0 ),        # Demonology Warlock T18 4P Pet
+			( 189298, 0 ),        # Demonology Warlock T18 4P Pet
+			( 189296, 0 ),        # Demonology Warlock T18 4P Pet
         ),
 
         # Monk:
