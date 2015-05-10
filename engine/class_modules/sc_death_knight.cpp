@@ -5360,6 +5360,15 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     school = tick_action -> school;
+
+    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
+    {
+      const spellpower_data_t& power = data().powerN( idx );
+      if ( power.aura_id() == 0 || p -> dbc.spec_by_spell( power.aura_id() ) == p -> specialization() )
+      {
+        base_costs[ power.resource() ] = power.cost_per_second();
+      }
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const
