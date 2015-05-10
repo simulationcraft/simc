@@ -7695,4 +7695,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc184878
 
+Name             : Fey Missile (id=188046) 
+Class            : Druid
+Spell Level      : 1
+Range            : 40 yards
+Cast Time        : 2 seconds
+GCD              : 0.5 seconds
+Velocity         : 16 yards/sec
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=274309)   : School Damage: spellstorm (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90700
+Description      : @spelldesc187875
+
 
