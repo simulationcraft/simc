@@ -2951,7 +2951,7 @@ void action_t::schedule_travel( action_state_t* s )
   do_schedule_travel( s, time_to_travel );
 }
 
-bool action_t::fancy_target_stuff_impact( action_state_t* s ) // This is for abilities with unusual mechanics, such as glaive toss. 
+bool action_t::fancy_target_stuff_impact( action_state_t* /*s*/ ) // This is for abilities with unusual mechanics, such as glaive toss. 
 {
   return true;
 }

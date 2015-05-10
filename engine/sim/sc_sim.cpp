@@ -1057,7 +1057,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   requires_regen_event( false ), enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), scale_to_itemlevel( -1 ),
-  disable_set_bonuses( false ), disable_2_set_bonus( false ), disable_4_set_bonus( false ), disable_2_set( -1 ), disable_4_set( -1 ), enable_2_set( -1 ), enable_4_set( -1 ),
+  disable_set_bonuses( false ), disable_2_set_bonus( false ), disable_4_set_bonus( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ), equalize_plot_weights( false ),
   active_enemies( 0 ), active_allies( 0 ),
   _rng( 0 ), seed( 0 ), deterministic( false ),
@@ -2858,10 +2858,10 @@ void sim_t::create_options()
   add_option( opt_bool( "disable_set_bonuses", disable_set_bonuses ) );
   add_option( opt_bool( "disable_2_set_bonus", disable_2_set_bonus ) );
   add_option( opt_bool( "disable_4_set_bonus", disable_4_set_bonus ) );
-  add_option( opt_int( "disable_2_set", disable_2_set ) );
-  add_option( opt_int( "disable_4_set", disable_4_set ) );
-  add_option( opt_int( "enable_2_set", enable_2_set ) );
-  add_option( opt_int( "enable_4_set", enable_4_set ) );
+  add_option( opt_uint( "disable_2_set", disable_2_set ) );
+  add_option( opt_uint( "disable_4_set", disable_4_set ) );
+  add_option( opt_uint( "enable_2_set", enable_2_set ) );
+  add_option( opt_uint( "enable_4_set", enable_4_set ) );
   add_option( opt_bool( "pvp", pvp_crit ) );
   add_option( opt_bool( "equalize_plot_weights", equalize_plot_weights ) );
   add_option( opt_int( "desired_targets", desired_targets ) );

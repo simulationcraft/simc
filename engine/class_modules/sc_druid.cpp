@@ -4859,6 +4859,8 @@ struct incarnation_t : public druid_spell_t
       if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
         p() -> cooldown.faerie_fire -> reset( false ); 
       break;
+    default:
+      break;
     }
   }
 };
@@ -6444,6 +6446,8 @@ void druid_t::create_buffs()
     case DRUID_RESTORATION: buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_tree )
                              .duration( timespan_t::from_seconds( 30 ) );
                             break;
+    default:
+      break;
   }
 
   if ( specialization() == DRUID_GUARDIAN )

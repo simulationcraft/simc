@@ -4534,7 +4534,8 @@ struct expel_harm_heal_t : public monk_heal_t
     if ( p.glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p.glyph.targeted_expulsion -> effectN( 2 ).percent();
 
-    may_crit = may_multistrike = true;
+    may_crit = true;
+    may_multistrike = 1;
     base_dd_min = base_dd_max = 1;
   }
 
