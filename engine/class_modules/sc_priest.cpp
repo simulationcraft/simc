@@ -6610,7 +6610,7 @@ void priest_t::apl_shadow()
   default_list -> add_action( "call_action_list,name=decision" );
 
   // Choose which APL to use based on talents and fight conditions.
-  decision -> add_action( "call_action_list,name=main,if=!talent.clarity_of_power.enabled&!talent.void_entropy.enabled" );
+  decision -> add_action( "call_action_list,name=main,if=(!talent.clarity_of_power.enabled&!talent.void_entropy.enabled)|(talent.clarity_of_power.enabled&buff.bloodlust.up&buff.power_infusion.up)" );
   decision -> add_action( "call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&!talent.auspicious_spirits.enabled" );
   decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled&!talent.insanity.enabled" );
   decision -> add_action( "call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=6" );
@@ -6658,6 +6658,7 @@ void priest_t::apl_shadow()
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
   main -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1" );
   main -> add_action( "mind_sear,chain=1,if=active_enemies>=4,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5)" );
+  main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.9)&target.time_to_die>(18*0.75)&active_enemies>=3&miss_react,cycle_targets=1,max_cycle_targets=7" );
   main -> add_action( "shadow_word_pain,if=shadow_orb>=2&ticks_remain<=3&target.time_to_die>(18*0.75)&talent.insanity.enabled" );
   main -> add_action( "vampiric_touch,if=shadow_orb>=2&ticks_remain<=3.5&target.time_to_die>(15*0.75+cast_time)&talent.insanity.enabled" );
   main -> add_action( "mind_flay,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5)" );
@@ -6677,10 +6678,11 @@ void priest_t::apl_shadow()
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10&active_enemies>2,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<15&active_enemies>3,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20&active_enemies>4,cycle_targets=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies>1,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&(dot.void_entropy.remains|target.time_to_die<=60)&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&(dot.void_entropy.remains|target.time_to_die<=60)&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies>1,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb>=3&dot.void_entropy.ticking&active_enemies=1&buff.mental_instinct.remains<(gcd*1.4)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   vent -> add_action( "mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
+  vent -> add_action( "devouring_plague,if=shadow_orb>=3&target.time_to_die<=gcd*4&active_enemies=1" );
   vent -> add_action( "shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
   vent -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&active_enemies>=4" );
   vent -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1" );
