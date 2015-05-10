@@ -1081,7 +1081,7 @@ struct avenging_wrath_t : public paladin_heal_t
     // disable for protection
     if ( p -> specialization() == PALADIN_PROTECTION )
       background = true;
-    else if ( p -> specialization() == PALADIN_RETRIBUTION )
+    else if ( p -> specialization() == PALADIN_RETRIBUTION && maybe_ptr( p -> dbc.ptr ) )
     {
       cooldown -> duration = data().charge_cooldown();
       cooldown -> charges = data().charges();
