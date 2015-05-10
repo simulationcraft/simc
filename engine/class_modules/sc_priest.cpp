@@ -101,7 +101,7 @@ public:
     buff_t* clear_thoughts; //t17 4pc disc
     buff_t* shadow_power; //WoD Shadow 2pc PvP
     buff_t* reperation; // T18 Disc 2p
-    buff_t* mind_harvest; // T18 Shadow 4pc
+    buff_t* premonition; // T18 Shadow 4pc
   } buffs;
 
   // Talents
@@ -215,6 +215,7 @@ public:
     cooldown_t* penance;
     cooldown_t* power_word_shield;
     cooldown_t* shadowfiend;
+    cooldown_t* silence;
   } cooldowns;
 
   // Gains
@@ -604,8 +605,6 @@ struct base_fiend_pet_t : public priest_pet_t
 
   virtual void summon( timespan_t duration ) override
   {
-    dismiss();
-
     duration += timespan_t::from_seconds( 0.01 );
 
     priest_pet_t::summon( duration );
@@ -624,7 +623,7 @@ struct base_fiend_pet_t : public priest_pet_t
     priest_pet_t::demise();
 
     // T18 Shadow 4pc
-    o().buffs.mind_harvest -> trigger();
+    o().buffs.premonition -> trigger();
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -2194,8 +2193,7 @@ struct mind_blast_t : public priest_spell_t
 
     // Glyph of Mind Harvest
     if ( priest.glyphs.mind_harvest -> ok() )
-      priest.cooldowns.mind_blast -> duration += timespan_t::from_millis( 6000 ); //priest.glyphs.mind_harvest -> effectN( 2 ).base_value() ); // Wrong data in DBC -- Twintop 2014/08/18
-
+      priest.cooldowns.mind_blast -> duration += priest.glyphs.mind_harvest -> effectN( 2 ).time_value(); //Effect #2 -- http://www.wowhead.com/spell=162532
     if ( priest.talents.clarity_of_power -> ok() )
       priest.cooldowns.mind_blast -> duration += priest.talents.clarity_of_power -> effectN( 3 ).time_value(); //Now Effect #3... wod.wowhead.com/spell=155246
   }
@@ -2222,7 +2220,7 @@ struct mind_blast_t : public priest_spell_t
         if ( !td.glyph_of_mind_harvest_consumed )
         {
           td.glyph_of_mind_harvest_consumed = true;
-          generate_shadow_orb( 2, priest.gains.shadow_orb_mind_harvest ); // no sensible spell data available, 2014/06/09
+          generate_shadow_orb( priest.glyphs.mind_harvest -> effectN( 1 ).base_value(), priest.gains.shadow_orb_mind_harvest ); //Effect #1 -- http://www.wowhead.com/spell=162532
 
           if ( sim -> debug )
             sim -> out_debug.printf( "%s consumed Glyph of Mind Harvest on target %s.", priest.name(), s -> target -> name() );
@@ -4029,6 +4027,8 @@ private:
   }
 };
 
+// Void Entropy Spell =======================================================
+
 struct void_entropy_t : public priest_spell_t
 {
   void_entropy_t( priest_t& p, const std::string& options_str ) :
@@ -4052,7 +4052,7 @@ struct void_entropy_t : public priest_spell_t
 
       if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T17, B2 ) )
       {
-        if ( priest.cooldowns.mind_blast->remains() == timespan_t::zero() )
+        if ( priest.cooldowns.mind_blast -> remains() == timespan_t::zero() )
         {
           priest.procs.t17_2pc_caster_mind_blast_reset_overflow -> occur();
         }
@@ -4084,6 +4084,43 @@ struct void_entropy_t : public priest_spell_t
   {
     //Only usable with 3 orbs, per Celestalon in Theorycraft thread - Twintop 2014/07/27
     if ( priest.resources.current[ RESOURCE_SHADOW_ORB ] < 3.0 )
+      return false;
+
+    return priest_spell_t::ready();
+  }
+};
+
+// Silence Spell =======================================================
+
+struct silence_t : public priest_spell_t
+{
+  silence_t( priest_t& player, const std::string& options_str ) :
+    priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
+  {
+    parse_options( options_str );
+    may_miss = may_crit = false;
+    ignore_false_positive = true;
+
+    cooldown = priest.cooldowns.silence;
+    cooldown -> duration = data().cooldown();
+
+    // Glyph of Silence
+    if ( priest.specialization() == PRIEST_SHADOW && priest.glyphs.silence -> ok() )
+    {
+      cooldown -> duration += priest.glyphs.silence -> effectN( 1 ).time_value();
+    }
+
+  }
+
+  virtual void execute()
+  {
+    //Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be completely silenced.
+    target -> debuffs.casting -> expire();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! target -> debuffs.casting -> check() || cooldown -> remains() > timespan_t::zero() )
       return false;
 
     return priest_spell_t::ready();
@@ -5342,6 +5379,7 @@ void priest_t::create_cooldowns()
   cooldowns.penance           = get_cooldown( "penance" );
   cooldowns.power_word_shield = get_cooldown( "power_word_shield" );
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
+  cooldowns.silence           = get_cooldown( "silence" );
 
   cooldowns.angelic_feather -> charges = 3;
   cooldowns.angelic_feather -> duration = timespan_t::from_seconds( 10.0 );
@@ -5697,9 +5735,9 @@ double priest_t::composite_multistrike() const
 {
   double cm = base_t::composite_multistrike();
 
-  if ( buffs.mind_harvest -> check() )
+  if ( buffs.premonition -> check() )
   {
-    cm += buffs.mind_harvest -> data().effectN( 1 ).percent();
+    cm += buffs.premonition -> data().effectN( 1 ).percent();
   }
 
   return cm;
@@ -5894,6 +5932,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "pain_suppression"       ) return new pain_suppression_t      ( *this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( *this, options_str );
   if ( name == "shadowform"             ) return new shadowform_t            ( *this, options_str );
+  if ( name == "silence"                ) return new silence_t               ( *this, options_str );
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( *this, options_str );
   if ( name == "spirit_shell"           ) return new spirit_shell_t          ( *this, options_str );
 
@@ -6133,25 +6172,25 @@ void priest_t::init_spells()
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
 
   // Glyphs
-  glyphs.dispel_magic                 = find_glyph_spell( "Glyph of Dispel Magic" );            //NYI
-  glyphs.fade                         = find_glyph_spell( "Glyph of Fade" );                    //NYI
-  glyphs.fear_ward                    = find_glyph_spell( "Glyph of Fear Ward" );               //NYI
-  glyphs.leap_of_faith                = find_glyph_spell( "Glyph of Leap of Faith" );           //NYI
+  //glyphs.dispel_magic                 = find_glyph_spell( "Glyph of Dispel Magic" );            //NYI
+  //glyphs.fade                         = find_glyph_spell( "Glyph of Fade" );                    //NYI
+  //glyphs.fear_ward                    = find_glyph_spell( "Glyph of Fear Ward" );               //NYI
+  //glyphs.leap_of_faith                = find_glyph_spell( "Glyph of Leap of Faith" );           //NYI
   glyphs.levitate                     = find_glyph_spell( "Glyph of Levitate" );
-  glyphs.mass_dispel                  = find_glyph_spell( "Glyph of Mass Dispel" );             //NYI
+  //glyphs.mass_dispel                  = find_glyph_spell( "Glyph of Mass Dispel" );             //NYI
   glyphs.power_word_shield            = find_glyph_spell( "Glyph of Power Word: Shield" );
   glyphs.prayer_of_mending            = find_glyph_spell( "Glyph of Prayer of Mending" );
-  glyphs.psychic_scream               = find_glyph_spell( "Glyph of Psychic Scream" );          //NYI
-  glyphs.reflective_shield            = find_glyph_spell( "Glyph of Reflective Shield" );       //NYI
-  glyphs.restored_faith               = find_glyph_spell( "Glyph of Restored Faith" );          //NYI
-  glyphs.scourge_imprisonment         = find_glyph_spell( "Glyph of Scourge Imprisonment" );    //NYI
-  glyphs.weakened_soul                = find_glyph_spell( "Glyph of Weakened Soul" );           //NYI
+  //glyphs.psychic_scream               = find_glyph_spell( "Glyph of Psychic Scream" );          //NYI
+  //glyphs.reflective_shield            = find_glyph_spell( "Glyph of Reflective Shield" );       //NYI
+  //glyphs.restored_faith               = find_glyph_spell( "Glyph of Restored Faith" );          //NYI
+  //glyphs.scourge_imprisonment         = find_glyph_spell( "Glyph of Scourge Imprisonment" );    //NYI
+  //glyphs.weakened_soul                = find_glyph_spell( "Glyph of Weakened Soul" );           //NYI
 
   //Healing Specs
   glyphs.holy_fire                    = find_glyph_spell( "Glyph of Holy Fire" );
   glyphs.inquisitor                   = find_glyph_spell( "Glyph of the Inquisitor" );
-  glyphs.purify                       = find_glyph_spell( "Glyph of Purify" );                  //NYI
-  glyphs.shadow_magic                 = find_glyph_spell( "Glyph of Shadow Magic" );            //NYI
+  //glyphs.purify                       = find_glyph_spell( "Glyph of Purify" );                  //NYI
+  //glyphs.shadow_magic                 = find_glyph_spell( "Glyph of Shadow Magic" );            //NYI
   glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
 
   //Discipline
@@ -6159,26 +6198,26 @@ void priest_t::init_spells()
   glyphs.penance                      = find_glyph_spell( "Glyph of Penance" );
 
   //Holy
-  glyphs.binding_heal                 = find_glyph_spell( "Glyph of Binding Heal" );            //NYI
+  //glyphs.binding_heal                 = find_glyph_spell( "Glyph of Binding Heal" );            //NYI
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
   glyphs.deep_wells                   = find_glyph_spell( "Glyph of Deep Wells" );
-  glyphs.guardian_spirit              = find_glyph_spell( "Glyph of Guardian Spirit" );         //NYI
-  glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );               //NYI
-  glyphs.redeemer                     = find_glyph_spell( "Glyph of the Redeemer" );            //NYI
+  //glyphs.guardian_spirit              = find_glyph_spell( "Glyph of Guardian Spirit" );         //NYI
+  //glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );               //NYI
+  //glyphs.redeemer                     = find_glyph_spell( "Glyph of the Redeemer" );            //NYI
   glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
-  glyphs.spirit_of_redemption         = find_glyph_spell( "Glyph of Spirit of Redemption" );    //NYI
+  //glyphs.spirit_of_redemption         = find_glyph_spell( "Glyph of Spirit of Redemption" );    //NYI
 
   //Shadow
   glyphs.delayed_coalescence          = find_glyph_spell( "Glyph of Delayed Coalescence" );
   glyphs.dispersion                   = find_glyph_spell( "Glyph of Dispersion" );
-  glyphs.focused_mending              = find_glyph_spell( "Glyph of Focused Mending" );         //NYI
+  //glyphs.focused_mending              = find_glyph_spell( "Glyph of Focused Mending" );         //NYI
   glyphs.free_action                  = find_glyph_spell( "Glyph of Free Action" );
   glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
   glyphs.mind_flay                    = find_glyph_spell( "Glyph of Mind Flay" );
   glyphs.mind_harvest                 = find_glyph_spell( "Glyph of Mind Harvest" );
   glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
-  glyphs.miraculous_dispelling        = find_glyph_spell( "Glyph of Miraculous Dispelling" );   //NYI
-  glyphs.psychic_horror               = find_glyph_spell( "Glyph of Psychic Horror" );          //NYI
+  //glyphs.miraculous_dispelling        = find_glyph_spell( "Glyph of Miraculous Dispelling" );   //NYI
+  //glyphs.psychic_horror               = find_glyph_spell( "Glyph of Psychic Horror" );          //NYI
   glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
   glyphs.silence                      = find_glyph_spell( "Glyph of Silence" );                 //NYI
   glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
@@ -6351,7 +6390,7 @@ void priest_t::create_buffs()
                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                      .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-  buffs.mind_harvest = buff_creator_t( this, "mind_harvest" )
+  buffs.premonition = buff_creator_t( this, "premonition" )
                        .spell( find_spell( 188779 ) )
                        .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) )
                        .add_invalidate( CACHE_MULTISTRIKE );
@@ -6560,6 +6599,7 @@ void priest_t::apl_shadow()
   }
 
   default_list -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
+  default_list -> add_action( "silence,if=target.debuff.casting.react" );
 
   // Racials
   std::vector<std::string> racial_actions = get_racial_actions();
