@@ -7242,7 +7242,8 @@ void death_knight_t::create_buffs()
                        .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, PVP, B4 ) );
 
   buffs.obliteration = buff_creator_t( this, "obliteration", find_spell( 187893 ) )
-                      .chance( sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B2 ) );
+                      .chance( sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B2 ) )
+                      .add_invalidate( CACHE_HASTE );
   buffs.crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187981 ) )
                              .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
                              .add_invalidate( CACHE_ATTACK_SPEED )
