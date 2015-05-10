@@ -1380,6 +1380,7 @@ class SpellDataGenerator(DataGenerator):
           ( 47568, 0, True ), # Same goes for Empower Rune Weapon
           ( 170205, 0 ), # Frost T17 4pc driver continued ...
           ( 187981, 0 ), ( 187970, 0 ), # T18 4pc unholy relevant spells
+          ( 184982, 0 ),    # Frozen Obliteration
         ),
 
         # Shaman:

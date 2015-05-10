@@ -4443,32 +4443,30 @@ struct mind_freeze_t : public death_knight_spell_t
 
 struct frozen_obliteration_t : public death_knight_melee_attack_t
 {
-  frozen_obliteration_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* spell ) :
-    death_knight_melee_attack_t( name, p, spell )
+  double coeff;
+
+  frozen_obliteration_t( death_knight_t* p, const std::string& name ) :
+    death_knight_melee_attack_t( name, p, p -> find_spell( 184982 ) ),
+    coeff( p -> frozen_obliteration -> driver() -> effectN( 1 ).average( p -> frozen_obliteration -> item ) / 100.0 )
   {
-    school = SCHOOL_FROST;
     background = special = true;
     callbacks = false;
-    weapon = w;
-    rp_gain = 0;
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
-
-    if ( p -> frozen_obliteration )
-    {
-      const spell_data_t* data = p -> frozen_obliteration -> driver();
-      base_multiplier *= data -> effectN( 1 ).average( p -> frozen_obliteration -> item ) / 100.0;
-    }
+    may_crit = false;
   }
 
-  double composite_crit() const
+  void init()
   {
-    double cc = death_knight_melee_attack_t::composite_crit();
+    death_knight_melee_attack_t::init();
 
-    cc += p() -> buffs.killing_machine -> value();
+    snapshot_flags = update_flags = 0;
+  }
 
-    return cc;
+  void proxy_execute( const action_state_t* source_state )
+  {
+    target = source_state -> target;
+    base_dd_min = base_dd_max = source_state -> result_amount * coeff;
+
+    execute();
   }
 };
 
@@ -4487,7 +4485,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
     if ( p -> frozen_obliteration )
     {
-      fo = new frozen_obliteration_t( p, "obliterate_offhand_frost", weapon, &data() );
+      fo = new frozen_obliteration_t( p, "frozen_obliteration_oh" );
       add_child( fo );
     }
   }
@@ -4507,8 +4505,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
     if ( fo && result_is_hit( execute_state -> result ) )
     {
-      fo -> target = execute_state -> target;
-      fo -> execute();
+      fo -> proxy_execute( execute_state );
     }
   }
 };
@@ -4539,7 +4536,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( p -> frozen_obliteration )
     {
-      fo = new frozen_obliteration_t( p, "obliterate_frost", weapon, &data() );
+      fo = new frozen_obliteration_t( p, "frozen_obliteration" );
       add_child( fo );
     }
   }
@@ -4558,8 +4555,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       if ( fo )
       {
-        fo -> target = execute_state -> target;
-        fo -> execute();
+        fo -> proxy_execute( execute_state );
       }
 
       if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) || 
