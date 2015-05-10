@@ -3262,9 +3262,17 @@ struct inferno_blast_t : public mage_spell_t
     radius = 10;
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
-      cooldown -> charges = data().charges() +
-                            p -> sets.set( MAGE_FIRE, T17, B2 )
-                              -> effectN( 1 ).base_value();
+      if (  p -> dbc.ptr )
+      {
+        cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 )
+                                  -> effectN( 1 ).time_value();
+      }
+      else
+      {
+        cooldown -> charges = data().charges() +
+                              p -> sets.set( MAGE_FIRE, T17, B2 )
+                                -> effectN( 1 ).base_value();
+      }
     }
 
     max_spread_targets = data().effectN( 2 ).base_value();
@@ -5604,7 +5612,7 @@ void mage_t::apl_fire()
   default_list -> add_action( "call_action_list,name=movement,if=raid_event.movement.exists" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
-  default_list -> add_action( "call_action_list,name=t17_2pc_combust,if=set_bonus.tier17_2pc&pyro_chain&(active_enemies>1|(talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains>15))" );
+  default_list -> add_action( "call_action_list,name=t17_2pc_combust,if=ptr=0&set_bonus.tier17_2pc&pyro_chain&(active_enemies>1|(talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains>15))" );
   default_list -> add_action( "call_action_list,name=combust_sequence,if=pyro_chain" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=init_combust,if=!pyro_chain" );
@@ -5645,9 +5653,9 @@ void mage_t::apl_fire()
                               "Combustion sequence initialization\n"
                               "# This sequence lists the requirements for preparing a Combustion combo with each talent choice\n"
                               "# Meteor Combustion" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!set_bonus.tier17_2pc&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
+  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&(ptr=1|!set_bonus.tier17_2pc)&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
                               "Prismatic Crystal Combustion without 2T17" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&set_bonus.tier17_2pc&cooldown.prismatic_crystal.up&cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight)",
+  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&ptr=0&set_bonus.tier17_2pc&cooldown.prismatic_crystal.up&cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight)",
                               "Prismatic Crystal Combustion with 2T17" );
   init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
                               "Unglyphed Combustions between Prismatic Crystals" );
@@ -5773,17 +5781,17 @@ void mage_t::apl_fire()
                                "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
                                "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
   single_target -> add_action( this, "Pyroblast",
-                               "if=set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>1-(gcd.max%8)",
+                               "if=ptr=0&set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>1-(gcd.max%8)",
                                "Aggressively use Pyro with 2T17 and IB available" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up",
+                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=0|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up",
                                "Heating Up conversion to Pyroblast" );
   single_target -> add_action( "call_action_list,name=active_talents" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight",
+                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=0|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight",
                                "Adding Heating Up to Pyroblast" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=set_bonus.tier17_2pc&(cooldown.combustion.remains%8+charges_fractional>2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&charges_fractional>2-(gcd.max%8)",
+                               "if=ptr=0&set_bonus.tier17_2pc&(cooldown.combustion.remains%8+charges_fractional>2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&charges_fractional>2-(gcd.max%8)",
                                "Aggressively use IB with 2T17" );
   single_target -> add_action( this, "Fireball" );
   single_target -> add_action( this, "Scorch", "moving=1" );
