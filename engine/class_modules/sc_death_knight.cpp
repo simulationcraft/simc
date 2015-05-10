@@ -7708,7 +7708,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.crazed_monstrosity -> up() )
   {
-    m *= 1.0 / ( 1.0 + buffs.crazed_monstrosity -> data().effectN( 1 ).percent() );
+    m *= 1.0 + buffs.crazed_monstrosity -> data().effectN( 1 ).percent();
   }
 
   return m;
