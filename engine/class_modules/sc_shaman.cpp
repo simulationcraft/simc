@@ -180,6 +180,7 @@ public:
     buff_t* tidal_waves;
     buff_t* focus_of_the_elements;
     buff_t* feral_spirit;
+    buff_t* t18_4pc_elemental;
 
     haste_buff_t* elemental_mastery;
     haste_buff_t* tier13_4pc_healer;
@@ -564,6 +565,40 @@ struct maelstrom_weapon_buff_t : public buff_t
   void reset();
 };
 
+struct lightning_shield_buff_t: public buff_t
+{
+  int stacks_consumed;
+  lightning_shield_buff_t( shaman_t* player ):
+    buff_t( buff_creator_t( player, "lightning_shield", player -> find_class_spell( "Lightning Shield" ) )
+    .max_stack( ( player -> specialization() == SHAMAN_ELEMENTAL )
+    ? static_cast<int>( player -> spec.fulmination -> effectN( 1 ).base_value() + player -> perk.improved_lightning_shield -> effectN( 1 ).base_value() )
+    : player -> find_class_spell( "Lightning Shield" ) -> initial_stacks() )
+    .cd( timespan_t::zero() ) )
+  {
+    stacks_consumed = 0;
+  }
+
+  void reset()
+  {
+    buff_t::reset();
+    stacks_consumed = 0;
+  }
+
+  void decrement( int stacks, double b )
+  {
+    buff_t::decrement( stacks, b );
+    shaman_t* p = debug_cast<shaman_t*>( player );
+    if ( p -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
+    {
+      stacks_consumed += stacks;
+      if ( stacks_consumed >= p -> sets.set( SHAMAN_ELEMENTAL, T18, B4 ) -> effectN( 1 ).base_value() )
+      {
+        p -> buff.t18_4pc_elemental -> trigger( 5 );
+        stacks_consumed = 0;
+      }
+    }
+  }
+};
 struct ascendance_buff_t : public buff_t
 {
   action_t* lava_burst;
@@ -3495,9 +3530,18 @@ struct earth_shock_t : public shaman_spell_t
       shaman_td_t* tdata = td( execute_state -> target );
       tdata -> debuff.t16_2pc_caster -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
           consuming_stacks * tdata -> debuff.t16_2pc_caster -> data().duration() );
-      p() -> buff.lightning_shield -> decrement( consuming_stacks );
 
       p() -> trigger_tier17_4pc_elemental( consuming_stacks );
+
+      if ( p() -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) )
+      {
+        if ( rng().roll( p() -> sets.set( SHAMAN_ELEMENTAL, T18, B2 ) -> effectN( 1 ).percent() ) )
+        {
+          cooldown -> reset( true ); // Resets the cooldown, and also doesn't consume lightning shield charges.
+          return;
+        }
+      }
+      p() -> buff.lightning_shield -> decrement( consuming_stacks );
     }
   }
 };
@@ -5262,11 +5306,7 @@ void shaman_t::create_buffs()
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
-  buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
-                                 .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
-                                             ? static_cast< int >( spec.fulmination -> effectN( 1 ).base_value() + perk.improved_lightning_shield -> effectN( 1 ).base_value() )
-                                             : find_class_spell( "Lightning Shield" ) -> initial_stacks() )
-                                 .cd( timespan_t::zero() );
+  buff.lightning_shield        = new lightning_shield_buff_t( this );
   buff.maelstrom_weapon        = new maelstrom_weapon_buff_t( this );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
   buff.elemental_fusion        = buff_creator_t( this, "elemental_fusion", find_spell( 157174 ) )
@@ -5318,6 +5358,12 @@ void shaman_t::create_buffs()
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).trigger() )
                                   .chance( static_cast< double >( sets.has_set_bonus( SET_MELEE, T16, B2 ) ) );
+
+  buff.t18_4pc_elemental        = buff_creator_t( this, "lightning_vortex", find_spell( 189063 ) )
+    .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
+    .reverse( true )
+    .default_value( find_spell( 189063 ) -> effectN( 2 ).percent() )
+    .max_stack( 5 ); // Shows 3 stacks in spelldata, but the wording makes it seem that it is actually 5.
 
   buff.enhanced_chain_lightning = buff_creator_t( this, "enhanced_chain_lightning", find_spell( 157766 ) );
 
@@ -5783,6 +5829,9 @@ double shaman_t::composite_spell_haste() const
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
+
+    h *= 1.0 / ( 1.0 + buff.t18_4pc_elemental -> stack_value() );
+
   return h;
 }
 
