@@ -786,7 +786,7 @@ player_t* parse_player( sim_t*             sim,
 
   if ( ! profile.HasMember( "level" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player level from '%s'. Using fallback method to import armory.\n", player.cleanurl.c_str() );
     return 0;
   }
 

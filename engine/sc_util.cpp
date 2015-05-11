@@ -34,6 +34,7 @@ static spec_map_t spec_map[] =
   { PALADIN_PROTECTION,   "Protection Paladin"   },
   { PALADIN_RETRIBUTION,  "Retribution Paladin"  },
   { HUNTER_BEAST_MASTERY, "Beast Mastery Hunter" },
+  { HUNTER_BEAST_MASTERY, "Beast-Mastery Hunter" }, // Alternate
   { HUNTER_MARKSMANSHIP,  "Marksmanship Hunter"  },
   { HUNTER_SURVIVAL,      "Survival Hunter"      },
   { ROGUE_ASSASSINATION,  "Assassination Rogue"  },
