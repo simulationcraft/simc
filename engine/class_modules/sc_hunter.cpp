@@ -997,7 +997,7 @@ public:
     {
       if ( !( stats_list[i] -> parent ) )
       {
-        if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
+        if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
           o() -> stats_tier18_4pc_bm -> add_child( stats_list[i] );
         else
           o() -> stats_tier17_4pc_bm -> add_child( stats_list[i] );
@@ -1009,7 +1009,7 @@ public:
     owner_coeff.ap_from_ap = 0.6;
     owner_coeff.sp_from_ap = 0.6;
 
-    if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
+    if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
       buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
     }
