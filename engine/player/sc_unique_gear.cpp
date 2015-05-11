@@ -2539,11 +2539,10 @@ struct blademaster_pet_t : public pet_t
     pet_t( owner -> sim, owner, "mirror_image_(trinket)", true, true )
   {
     main_hand_weapon.type = WEAPON_BEAST;
+    // Verified 5/11/15, TODO: Check if this is still the same on live
+    owner_coeff.ap_from_ap = 1.0;
     // TODO: Verify in-game
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    // TODO: Verify in-game, this is also likely the thing that scales the pets
-    owner_coeff.ap_from_ap = 1.0;
   }
 
   void init_action_list()
@@ -2584,6 +2583,10 @@ struct burning_mirror_t : public spell_t
     for ( size_t i = 0; i < n_mirrors; ++i )
     {
       pets.push_back( new blademaster_pet_t( effect.player ) );
+
+      // Spawn every other image in front of the target
+      if ( i % 2 )
+        pets[ i ] -> base.position = POSITION_FRONT;
     }
   }
 
