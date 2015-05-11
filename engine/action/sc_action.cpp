@@ -1608,6 +1608,16 @@ void action_t::assess_damage( dmg_e    type,
       player -> spell.leech -> schedule_execute();
     }
   }
+  else if ( s -> result_amount > 0 && player -> buffs.spirit_shift -> check() )
+  {
+    if ( sim -> debug )
+    {
+      player -> sim -> out_debug.printf( "%s spirit_shift accumulates %.0f damage.",
+          player -> name(), s -> result_amount );
+    }
+
+    player -> buffs.spirit_shift -> current_value += s -> result_amount;
+  }
 
   // New callback system; proc spells on impact.
 

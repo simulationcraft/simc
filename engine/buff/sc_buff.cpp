@@ -1015,8 +1015,6 @@ void buff_t::expire( timespan_t delay )
   }
 
   current_stack = 0;
-  current_value = 0;
-  aura_loss();
   if ( requires_invalidation ) invalidate_cache();
   if ( last_start >= timespan_t::zero() )
   {
@@ -1054,6 +1052,9 @@ void buff_t::expire( timespan_t delay )
   }
 
   expire_override( expiration_stacks, remaining_duration ); // virtual expire call
+
+  current_value = 0;
+  aura_loss();
 
   if ( player ) player -> trigger_ready();
 }

@@ -2423,41 +2423,6 @@ void item::unblinking_gaze_of_sethe( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-struct soul_capacitor_cb_t : public dbc_proc_callback_t
-{
-  double stored_value;
-
-  soul_capacitor_cb_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect ), stored_value( 0 )
-  { }
-
-  void reset()
-  {
-    dbc_proc_callback_t::reset();
-
-    stored_value = 0;
-  }
-
-  void activate()
-  {
-    if ( ! active )
-    {
-      stored_value = 0;
-    }
-
-    dbc_proc_callback_t::activate();
-  }
-
-  void execute( action_t* /* a */, action_state_t* trigger_state )
-  {
-    if ( listener -> sim -> debug )
-    {
-      listener -> sim -> out_debug.printf( "%s spirit_shift accumulates %.0f damage.", listener -> name(), trigger_state -> result_amount );
-    }
-    stored_value += trigger_state -> result_amount;
-  }
-};
-
 struct soul_capacitor_explosion_t : public spell_t
 {
   double explosion_multiplier;
@@ -2477,76 +2442,43 @@ struct soul_capacitor_explosion_t : public spell_t
   {
     spell_t::init();
 
-    snapshot_flags = update_flags = 0;
+    snapshot_flags = STATE_MUL_DA;
+    update_flags = 0;
   }
 
-  virtual double calculate_direct_amount( action_state_t* s ) override
-  {
-    return spell_t::calculate_direct_amount( s ) * explosion_multiplier;
-  }
+  double composite_da_multiplier( const action_state_t* ) const
+  { return explosion_multiplier; }
 };
 
 struct soul_capacitor_buff_t : public buff_t
 {
   // Explosion here
   spell_t* explosion;
-  soul_capacitor_cb_t* cb;
 
   soul_capacitor_buff_t( player_t* player, special_effect_t& effect ) :
     buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ) ) ),
-    explosion( new soul_capacitor_explosion_t( player, effect ) ), cb( 0 )
+    explosion( new soul_capacitor_explosion_t( player, effect ) )
   {
     player -> buffs.spirit_shift = this;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
+    double cv = current_value;
+
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( cb -> stored_value > 0 && ! player -> is_sleeping() )
+    if ( cv > 0 && ! player -> is_sleeping() )
     {
-      explosion -> base_dd_min = explosion -> base_dd_max = cb -> stored_value;
+      explosion -> base_dd_min = explosion -> base_dd_max = cv;
       explosion -> execute();
     }
-
-    cb -> deactivate();
-  }
-
-  void execute( int stacks, double value, timespan_t duration )
-  {
-    buff_t::execute( stacks, value, duration );
-
-    cb -> activate();
-  }
-
-  void reset()
-  {
-    buff_t::reset();
-
-    cb -> deactivate();
   }
 };
-
-static void initialize_soul_capacitor( special_effect_t& effect )
-{
-  soul_capacitor_cb_t* damage_cb = new soul_capacitor_cb_t( effect );
-  static_cast<soul_capacitor_buff_t*>( effect.custom_buff ) -> cb = damage_cb;
-}
 
 void item::soul_capacitor( special_effect_t& effect )
 {
   effect.custom_buff = new soul_capacitor_buff_t( effect.player, effect );
-
-  special_effect_t damage_effect( effect.player );
-  damage_effect.name_str = "spirit_shift";
-  damage_effect.type = SPECIAL_EFFECT_CUSTOM;
-  damage_effect.proc_chance_ = 1.0;
-  damage_effect.proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
-  damage_effect.proc_flags2_ = PF2_ALL_HIT | PF2_ALL_MULTISTRIKE;
-  damage_effect.custom_buff = effect.custom_buff;
-  damage_effect.custom_init = initialize_soul_capacitor;
-
-  effect.player -> special_effects.push_back( new special_effect_t( damage_effect ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }

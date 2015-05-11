@@ -5167,11 +5167,17 @@ void player_t::assess_damage( school_e school,
 
   account_legendary_tank_cloak( *this, s );
 
-  collect_dmg_taken_data( *this, s, result_ignoring_external_absorbs );
-
   double actual_amount = 0.0;
-  if ( s -> result_amount > 0.0 )
-    actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, nullptr, s -> action );
+  // Prevent double-dipping on damage if the source has a spirit shift trinket up. Cthulhu save us
+  // all from this kludge.
+  if ( ! s -> action -> player -> buffs.spirit_shift ||
+       ! s -> action -> player -> buffs.spirit_shift -> check() )
+  {
+    collect_dmg_taken_data( *this, s, result_ignoring_external_absorbs );
+
+    if ( s -> result_amount > 0.0 )
+      actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, nullptr, s -> action );
+  }
 
   // New callback system; proc abilities on incoming events.
   // TODO: How to express action causing/not causing incoming callbacks?
