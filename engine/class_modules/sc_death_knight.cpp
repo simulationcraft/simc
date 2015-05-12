@@ -235,8 +235,9 @@ public:
     buff_t* lichborne;
     buff_t* death_dealer; // WoD PVP Unholy 4 piece set bonus
 
-    // Frost T18 2pc buffs TODO: Frost Strike bonus
+    // Frost T18 2pc buffs
     buff_t* obliteration;
+    buff_t* frozen_wake;
 
     // Unholy T18 4pc buff
     buff_t* crazed_monstrosity;
@@ -533,6 +534,7 @@ public:
   virtual double    composite_leech() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    passive_movement_modifier() const;
   virtual double    temporary_movement_modifier() const;
@@ -7253,6 +7255,8 @@ void death_knight_t::create_buffs()
   buffs.obliteration = buff_creator_t( this, "obliteration", find_spell( 187893 ) )
                       .chance( sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B2 ) )
                       .add_invalidate( CACHE_HASTE );
+  buffs.frozen_wake = buff_creator_t( this, "frozen_wake", find_spell( 187894 ) )
+                      .chance( sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B2 ) );
   buffs.crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187981 ) )
                              .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
                              .add_invalidate( CACHE_ATTACK_SPEED )
@@ -7720,6 +7724,20 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+// death_knight_t::composite_player_critical_damage_multiplier ===================
+
+double death_knight_t::composite_player_critical_damage_multiplier() const
+{
+  double m = player_t::composite_player_critical_damage_multiplier();
+
+  if ( buffs.frozen_wake -> up() )
+  {
+    m *= 1.0 + buffs.frozen_wake -> data().effectN( 1 ).percent();
+  }
+
+  return m;
+}
+
 // death_knight_t::composite_melee_attack_power ==================================
 
 double death_knight_t::composite_melee_attack_power() const
@@ -8120,6 +8138,7 @@ void death_knight_t::trigger_t18_2pc_frost( const action_state_t* state )
   }
   else
   {
+    buffs.frozen_wake -> trigger();
   }
 }
 
