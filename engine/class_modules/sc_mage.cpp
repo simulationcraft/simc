@@ -545,6 +545,7 @@ struct water_elemental_pet_t : public pet_t
       aoe = -1;
       may_crit = true;
       ignore_false_positive = true;
+      action_skill = 1;
     }
 
     virtual void impact( action_state_t* s )
@@ -4111,6 +4112,7 @@ struct prismatic_crystal_t : public mage_spell_t
     may_miss = may_crit = harmful = callbacks = false;
     min_gcd = data().gcd();
     ignore_false_positive = true;
+    action_skill = 1;
   }
 
   void execute()
@@ -4165,6 +4167,7 @@ struct choose_target_t : public action_t
 
     harmful = may_miss = may_crit = callbacks = false;
     ignore_false_positive = true;
+    action_skill = 1;
 
     std::string::size_type offset = target_if_str.find( ':' );
     if ( offset != std::string::npos )
@@ -4399,6 +4402,7 @@ struct start_pyro_chain_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
     ignore_false_positive = true;
+    action_skill = 1;
   }
 
   virtual void execute()
@@ -4438,6 +4442,7 @@ struct stop_pyro_chain_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
     ignore_false_positive = true;
+    action_skill = 1;
   }
 
   virtual void execute()
@@ -4479,6 +4484,7 @@ struct start_burn_phase_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
     ignore_false_positive = true;
+    action_skill = 1;
   }
 
   virtual void execute()
@@ -4518,6 +4524,7 @@ struct stop_burn_phase_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
     ignore_false_positive = true;
+    action_skill = 1;
   }
 
   virtual void execute()
@@ -4636,6 +4643,7 @@ struct water_jet_t : public action_t
     dual = true;
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
+    action_skill = 1;
   }
 
   void reset()
