@@ -1596,6 +1596,11 @@ void action_t::assess_damage( dmg_e    type,
       player -> priority_iteration_dmg += s -> result_amount;
     }
 
+    if ( player -> buffs.legendary_aoe_ring && player -> buffs.legendary_aoe_ring -> check() )
+    {
+      player -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
+    }
+
     // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
     // break in the future if we ever decide to not separate heal and damage assessing.
     double leech_pct = 0;

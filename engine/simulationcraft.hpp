@@ -4812,6 +4812,7 @@ struct player_t : public actor_t
     buff_t* archmages_incandescence_str;
     buff_t* archmages_incandescence_agi;
     buff_t* archmages_incandescence_int;
+    buff_t* legendary_aoe_ring; // Legendary ring buff.
 
     // T17 LFR stuff
     buff_t* surge_of_energy;

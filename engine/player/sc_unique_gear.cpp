@@ -78,6 +78,7 @@ namespace item
   void humming_blackiron_trigger( special_effect_t& );
   void spellbound_runic_band( special_effect_t& );
   void spellbound_solium_band( special_effect_t& );
+  void legendary_ring( special_effect_t& );
 
   /* Warlords of Draenor 6.2 */
   void discordant_chorus( special_effect_t& );
@@ -616,8 +617,6 @@ void enchants::executioner( special_effect_t& effect )
 
 struct nitro_boosts_action_t : public action_t
 {
-  buff_t* buff;
-
   nitro_boosts_action_t( player_t* p ) :
     action_t( ACTION_USE, "nitro_boosts", p )
   {
@@ -625,8 +624,9 @@ struct nitro_boosts_action_t : public action_t
     cooldown = p -> get_cooldown( "potion" );
   }
 
-  virtual void execute()
+  void execute()
   {
+    action_t::execute();
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
     player -> buffs.nitro_boosts-> trigger();
@@ -1559,6 +1559,94 @@ void item::spellbound_solium_band( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_EQUIP;
 
   new dbc_proc_callback_t( p, effect );
+}
+
+
+void item::legendary_ring( special_effect_t& effect )
+{
+  maintenance_check( 528 );
+
+  player_t* p = effect.item -> player;
+  buff_t* buff = 0;
+
+  struct legendary_ring_damage_t: public spell_t
+  {
+    legendary_ring_damage_t( player_t* player, const spell_data_t* spell ):
+      spell_t( spell -> name_cstr(), player, spell )
+    {
+      background = split_aoe_damage = true;
+      callbacks = false;
+      trigger_gcd = timespan_t::zero();
+      aoe = -1;
+      radius = 20;
+      range = -1;
+    }
+
+    void init() override
+    {
+      spell_t::init();
+
+      snapshot_flags = STATE_MUL_DA;
+      update_flags = 0;
+    }
+
+    double composite_da_multiplier( const action_state_t* ) const
+    {
+      return 0.25;
+    }
+  };
+
+  struct legendary_ring_buff_t: public buff_t
+  {
+    spell_t* boom;
+    legendary_ring_buff_t( special_effect_t& buff, const spell_data_t* effect, const spell_data_t* damage ):
+      buff_t( buff_creator_t( buff.player, effect -> name_cstr(), effect ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ),
+      boom( new legendary_ring_damage_t( buff.player, damage ) )
+    {
+      buff.player -> buffs.legendary_aoe_ring = this;
+    }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    double cv = current_value;
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( cv > 0 && !player -> is_sleeping() )
+    {
+      boom -> base_dd_min = boom -> base_dd_max = cv;
+      boom -> execute();
+    }
+  }
+};
+
+  const spell_data_t* buffspell;
+  const spell_data_t* actionspell;
+
+  switch ( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
+  {
+  case STAT_STRENGTH:
+    buffspell = p -> find_spell( 187619 );
+    actionspell = p -> find_spell( 187624 );
+    buff = new legendary_ring_buff_t( effect, buffspell, actionspell );
+    break;
+  case STAT_AGILITY:
+    buffspell = p -> find_spell( 187620 );
+    actionspell = p -> find_spell( 187626 );
+    buff = new legendary_ring_buff_t( effect, buffspell, actionspell );
+    break;
+  case STAT_INTELLECT:
+    buffspell = p -> find_spell( 187616 );
+    actionspell = p -> find_spell( 187625 );
+    buff = new legendary_ring_buff_t( effect, buffspell, actionspell );
+    break;
+  default:
+    break;
+  }
+
+  effect.custom_buff = buff;
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.cooldown_ = timespan_t::from_seconds( 120 );
 }
 
 void item::black_blood_of_yshaarj( special_effect_t& effect )
@@ -3240,6 +3328,9 @@ void unique_gear::register_special_effects()
   register_special_effect( 183951, item::unblinking_gaze_of_sethe       );
   register_special_effect( 184249, item::discordant_chorus              );
   register_special_effect( 184257, item::empty_drinking_horn            );
+  register_special_effect( 187614, item::legendary_ring                 );
+  register_special_effect( 187611, item::legendary_ring                 );
+  register_special_effect( 187615, item::legendary_ring                 );
 
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );

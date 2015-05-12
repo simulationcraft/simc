@@ -1287,6 +1287,7 @@ class SpellDataGenerator(DataGenerator):
          104510, 104423,            # Windsong Mastery / Haste buffs
          177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
          177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
+		 187619, 187620, 187616, 187624, 187626, 187625, # phase 2?
          143924,                    # Leech
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
