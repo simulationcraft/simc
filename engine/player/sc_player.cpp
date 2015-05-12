@@ -6415,16 +6415,22 @@ struct use_item_t : public action_t
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
     if ( e.type == SPECIAL_EFFECT_USE )
     {
-      buff = buff_t::find( player, e.name() );
-      if ( ! buff )
+      if ( e.buff_type() != SPECIAL_EFFECT_BUFF_NONE )
       {
-        buff = e.create_buff();
+        buff = buff_t::find( player, e.name() );
+        if ( ! buff )
+        {
+          buff = e.create_buff();
+        }
       }
 
-      action = player -> find_action( e.name() );
-      if ( ! action )
+      if ( e.action_type() != SPECIAL_EFFECT_ACTION_NONE )
       {
-        action = e.create_action();
+        action = player -> find_action( e.name() );
+        if ( ! action )
+        {
+          action = e.create_action();
+        }
       }
 
       stats = player ->  get_stats( name_str, this );
