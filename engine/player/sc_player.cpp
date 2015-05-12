@@ -6479,7 +6479,15 @@ struct use_item_t : public action_t
     update_ready();
 
     if ( triggered && buff )
-      lockout( buff -> buff_duration );
+    {
+      // Warlords of Draenor Legendary Ring On-Use effect does not trigger shared item cooldown. Match
+      // based on the buff spell id
+      unsigned buff_id = buff -> data().id();
+      if ( buff_id != 187619 && buff_id != 187620 && buff_id != 187616 )
+      {
+        lockout( buff -> buff_duration );
+      }
+    }
   }
 
   virtual bool ready()
