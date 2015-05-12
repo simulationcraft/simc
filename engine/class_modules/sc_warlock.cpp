@@ -3825,8 +3825,10 @@ struct touch_of_chaos_t: public warlock_spell_t
 
 struct drain_soul_t: public warlock_spell_t
 {
+  bool haunt_t18_4p_bonus;
   drain_soul_t( warlock_t* p ):
-    warlock_spell_t( "Drain Soul", p, p -> find_spell( 103103 ) )
+    warlock_spell_t( "Drain Soul", p, p -> find_spell( 103103 ) ),
+    haunt_t18_4p_bonus( false )
   {
     channeled = true;
     hasted_ticks = false;
@@ -3835,6 +3837,9 @@ struct drain_soul_t: public warlock_spell_t
     stats -> add_child( p -> get_stats( "agony_ds" ) );
     stats -> add_child( p -> get_stats( "corruption_ds" ) );
     stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
+
+    if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
+      haunt_t18_4p_bonus = true;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -3855,7 +3860,6 @@ struct drain_soul_t: public warlock_spell_t
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-
     if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
@@ -3867,14 +3871,17 @@ struct drain_soul_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) && p() -> buffs.dark_soul -> check() && td( p() -> target ) -> debuffs_haunt -> check() )
+    if ( haunt_t18_4p_bonus && p() -> buffs.dark_soul -> check() && td( d -> target ) -> debuffs_haunt -> check() )
     {
-      td( p() -> target ) -> debuffs_haunt -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, td( p() -> target ) -> dots_haunt -> remains() );
+      td( d -> target ) -> dots_haunt -> refresh_duration();
+      td( d -> target ) -> debuffs_haunt -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, td( d -> target ) -> dots_haunt -> remains() );
     }
 
-    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) && rng().roll( p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() ) && p() -> buffs.dark_soul -> check() )
-      p() -> buffs.dark_soul -> extend_duration( p(), p() -> sets.set ( WARLOCK_AFFLICTION, T18, B2 ) -> effectN( 1 ).time_value()  );
-
+    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) && p() -> buffs.dark_soul -> check() )
+    {
+      if ( rng().roll( p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() ) )
+        p() -> buffs.dark_soul -> extend_duration( p(), p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> effectN( 1 ).time_value() );
+    }
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
