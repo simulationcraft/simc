@@ -42,6 +42,7 @@ actions+=/focus_fire,if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&
 actions+=/bestial_wrath,if=focus>30&!buff.bestial_wrath.up
 actions+=/multishot,if=active_enemies>1&pet.cat.buff.beast_cleave.remains<0.5
 actions+=/focus_fire,five_stacks=1,if=buff.focus_fire.down
+actions+=/focus_fire,five_stacks=1,if=buff.focus_fire.stack<5&pet.cat.buff.frenzy.stack=5
 actions+=/barrage,if=active_enemies>1
 actions+=/explosive_trap,if=active_enemies>5
 actions+=/multishot,if=active_enemies>5
