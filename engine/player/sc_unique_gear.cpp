@@ -1602,12 +1602,23 @@ void item::legendary_ring( special_effect_t& effect )
 
   struct legendary_ring_buff_t: public buff_t
   {
-    spell_t* boom;
+    action_t* boom;
     legendary_ring_buff_t( special_effect_t& originaleffect, const spell_data_t* buff, const spell_data_t* damagespell ):
       buff_t( buff_creator_t( originaleffect.player, buff -> name_cstr(), buff ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ).
       default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
-      boom( new legendary_ring_damage_t( originaleffect, damagespell ) )
+      boom( 0 )
     {
+      boom = originaleffect.player -> find_action( damagespell -> name_cstr() );
+
+      if ( !boom )
+      {
+        boom = originaleffect.player -> create_proc_action( damagespell -> name_cstr(), originaleffect );
+      }
+
+      if ( !boom )
+      {
+        boom = new legendary_ring_damage_t( originaleffect, damagespell );
+      }
       originaleffect.player -> buffs.legendary_aoe_ring = this;
     }
 
