@@ -2988,7 +2988,7 @@ double player_t::composite_player_multiplier( school_e /* school */ ) const
   }
 
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> up() )
-    m *= 1.0 + buffs.legendary_aoe_ring -> data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
 
   return m;
 }

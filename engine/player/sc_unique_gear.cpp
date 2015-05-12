@@ -1571,15 +1571,19 @@ void item::legendary_ring( special_effect_t& effect )
 
   struct legendary_ring_damage_t: public spell_t
   {
-    legendary_ring_damage_t( player_t* player, const spell_data_t* spell ):
-      spell_t( spell -> name_cstr(), player, spell )
+    double damage_coeff;
+    legendary_ring_damage_t( special_effect_t& originaleffect, const spell_data_t* spell ):
+      spell_t( spell -> name_cstr(), originaleffect.player, spell ),
+      damage_coeff( 0 )
     {
+      damage_coeff = originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0;
       background = split_aoe_damage = true;
       callbacks = false;
       trigger_gcd = timespan_t::zero();
       aoe = -1;
       radius = 20;
       range = -1;
+      travel_speed = 0.0;
     }
 
     void init() override
@@ -1592,18 +1596,19 @@ void item::legendary_ring( special_effect_t& effect )
 
     double composite_da_multiplier( const action_state_t* ) const
     {
-      return 0.25;
+      return damage_coeff;
     }
   };
 
   struct legendary_ring_buff_t: public buff_t
   {
     spell_t* boom;
-    legendary_ring_buff_t( special_effect_t& buff, const spell_data_t* effect, const spell_data_t* damage ):
-      buff_t( buff_creator_t( buff.player, effect -> name_cstr(), effect ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ),
-      boom( new legendary_ring_damage_t( buff.player, damage ) )
+    legendary_ring_buff_t( special_effect_t& originaleffect, const spell_data_t* buff, const spell_data_t* damagespell ):
+      buff_t( buff_creator_t( originaleffect.player, buff -> name_cstr(), buff ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ).
+      default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
+      boom( new legendary_ring_damage_t( originaleffect, damagespell ) )
     {
-      buff.player -> buffs.legendary_aoe_ring = this;
+      originaleffect.player -> buffs.legendary_aoe_ring = this;
     }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
