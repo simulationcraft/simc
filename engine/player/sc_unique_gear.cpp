@@ -2419,6 +2419,31 @@ struct hammering_blows_buff_t : public stat_buff_t
   }
 };
 
+struct hammering_blows_driver_cb_t : public dbc_proc_callback_t
+{
+  hammering_blows_driver_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ )
+  {
+    int stack = proc_buff -> check();
+
+    if ( stack == 0 )
+    {
+      proc_buff -> trigger();
+    }
+    // Kludge refresh, since the buff is refresh-disabled and we have no way of bumping stacks
+    // without refreshing the whole buff.
+    else
+    {
+      proc_buff -> refresh_behavior = BUFF_REFRESH_DURATION;
+      proc_buff -> refresh( 0, buff_t::DEFAULT_VALUE(), proc_buff -> data().duration() );
+      proc_buff -> refresh_behavior = BUFF_REFRESH_DISABLED;
+    }
+  }
+};
+
 // Secondary initialization for the stack-gain driver for insatiable hunger
 static void insatiable_hunger_2( special_effect_t& effect )
 {
@@ -2445,7 +2470,7 @@ void item::insatiable_hunger( special_effect_t& effect )
   // Instatiate the actual buff
   effect.custom_buff = new hammering_blows_buff_t( effect );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new hammering_blows_driver_cb_t( effect );
 }
 
 // Prophecy of Fear base driver, handles the proccing (triggering) of Mark of Doom on targets
