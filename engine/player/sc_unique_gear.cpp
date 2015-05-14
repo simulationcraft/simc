@@ -2644,7 +2644,7 @@ struct felstorm_t : public melee_attack_t
   felstorm_t( pet_t* p ) :
     melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
   {
-    callbacks = may_miss = false;
+    callbacks = may_miss = may_block = may_parry = false;
     channeled = true;
 
     tick_action = new felstorm_tick_t( p );
