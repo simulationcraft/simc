@@ -2337,7 +2337,7 @@ public:
       p() -> buff.omen_of_clarity -> decrement();
 
       if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, eff_cost * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(), p() -> gain.feral_tier18_4pc );
+        p() -> resource_gain( RESOURCE_ENERGY, base_t::cost() * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(), p() -> gain.feral_tier18_4pc );
     }
   }
 
