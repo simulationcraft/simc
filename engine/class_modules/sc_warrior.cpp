@@ -5009,6 +5009,12 @@ void warrior_t::init_gains()
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank" );
   gain.tier17_4pc_arms        = get_gain( "tier17_4pc_arms" );
   gain.tier18_2pc_gladiator   = get_gain( "tier18_2pc_gladiator" );
+
+  if ( !fury_trinket )
+  {
+    buff.fury_trinket = buff_creator_t( this, "berserkers_fury" )
+      .chance( 0 );
+  }
 }
 
 // warrior_t::init_position ====================================================

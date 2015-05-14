@@ -4861,6 +4861,12 @@ void paladin_t::init_gains()
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
   gains.hp_blazing_contempt         = get_gain( "blazing_contempt" );
+
+  if ( !retribution_trinket )
+  {
+    buffs.retribution_trinket = buff_creator_t( this, "focus_of_vengeance" )
+      .chance( 0 );
+  }
 }
 
 // paladin_t::init_procs ====================================================
