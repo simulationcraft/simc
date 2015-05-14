@@ -290,6 +290,7 @@ public:
     buff_t* feral_tier15_4pc;
     buff_t* feral_tier16_2pc;
     buff_t* feral_tier16_4pc;
+    buff_t* feral_tier17_4pc;
 
     // Guardian
     buff_t* barkskin;
@@ -1880,7 +1881,7 @@ public:
   {
     ab::impact( s );
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( s -> target, s -> result_amount );
 
     if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil ) 
@@ -1891,7 +1892,7 @@ public:
   {
     ab::tick( d );
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
     if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
@@ -1902,7 +1903,7 @@ public:
   {
     ab::multistrike_tick( src_state, ms_state, multiplier );
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
 
     if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
@@ -1911,7 +1912,7 @@ public:
 
   void trigger_gushing_wound( player_t* t, double dmg )
   {
-    if ( ! ( p() -> buff.berserk -> check() && ab::special && ab::harmful && dmg > 0 ) )
+    if ( ! ( ab::special && ab::harmful && dmg > 0 ) )
       return;
 
     residual_action::trigger(
@@ -4487,6 +4488,9 @@ struct berserk_t : public druid_spell_t
     else if ( p() -> buff.cat_form -> check() )
       p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, ( p() -> spell.berserk_cat -> duration()  +
                                                                         p() -> perk.empowered_berserk -> effectN( 1 ).time_value() ) );
+
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+      p() -> buff.feral_tier17_4pc -> trigger();
   }
 };
 
@@ -6512,6 +6516,8 @@ void druid_t::create_buffs()
   buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) );
   buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) ); // tier16_2pc_melee
   buff.feral_tier16_4pc      = buff_creator_t( this, "feral_tier16_4pc", find_spell( 146874 ) ); // tier16_4pc_melee
+  buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
+                               .quiet( true );
 
   // Guardian
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
