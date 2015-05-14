@@ -3299,16 +3299,6 @@ struct incinerate_t: public warlock_spell_t
     warlock_spell_t::schedule_travel( s );
   }
 
-  void execute()
-  {
-    warlock_spell_t::execute();
-    if ( p() -> destruction_trinket )
-    {
-      warlock_td_t* td = p() -> get_target_data( execute_state -> target );
-      td -> debuffs_flamelicked -> trigger( 1 );
-    }
-  }
-
   void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
@@ -3324,6 +3314,11 @@ struct incinerate_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
+
+    if ( p() -> destruction_trinket )
+    {
+      td( s -> target ) -> debuffs_flamelicked -> trigger( 1 );
+    }
   }
 
   virtual bool ready()
