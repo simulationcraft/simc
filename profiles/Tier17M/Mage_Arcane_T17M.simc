@@ -148,8 +148,5 @@ main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_bleeding_hol
 # gear_armor=900
 # gear_multistrike_rating=582
 # gear_versatility_rating=108
-set_bonus=tier17_2pc=0
-set_bonus=tier17_4pc=0
-
-copy=2t18
-set_bonus=tier18_2pc=1
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
