@@ -6816,8 +6816,8 @@ void druid_t::apl_feral()
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
 
   // Generators
-  generate -> add_action( this, "Swipe", "if=active_enemies>=3" );
-  generate -> add_action( this, "Shred", "if=active_enemies<3" );
+  generate -> add_action( this, "Swipe", "if=active_enemies>=4|(active_enemies>=3&buff.incarnation.down)" );
+  generate -> add_action( this, "Shred", "if=active_enemies<3|(active_enemies=3&buff.incarnation.up)" );
 }
 
 // Balance Combat Action Priority List ==============================
