@@ -5301,7 +5301,6 @@ void mage_t::init_action_list()
   player_t::init_action_list();
 }
 
-
 // mage_t::has_t18_class_trinket ==============================================
 
 bool mage_t::has_t18_class_trinket() const
@@ -5321,7 +5320,6 @@ bool mage_t::has_t18_class_trinket() const
 
   return false;
 }
-
 
 //Pre-combat Action Priority List============================================
 

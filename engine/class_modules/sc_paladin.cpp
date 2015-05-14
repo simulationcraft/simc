@@ -441,6 +441,7 @@ public:
   void    trigger_grand_crusader();
   void    trigger_shining_protector( action_state_t* );
   void    trigger_holy_shield( action_state_t* s );
+  virtual bool      has_t18_class_trinket() const;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
@@ -4989,6 +4990,17 @@ void paladin_t::create_buffs()
                                  .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
                                  .quiet( true )
                                  .tick_callback( buffs::wings_of_liberty );
+}
+
+// paladin_t::has_t18_class_trinket ==============================================
+
+bool paladin_t::has_t18_class_trinket() const
+{
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    return retribution_trinket != 0;
+  }
+  return false;
 }
 
 // ==========================================================================
