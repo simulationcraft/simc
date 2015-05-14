@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -298,7 +298,7 @@ Name             : Vanish (id=1856) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 34
 Cooldown         : 120 seconds
-Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638), Item - Rogue T18 Subtlety 2P Bonus (186278)
+Affecting spells : Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638), Item - Rogue T18 Subtlety 2P Bonus (186278)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -967,10 +967,10 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6350)     : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 23
-                   Affected Spells: Stealth (1784), Vanish (1856), Vanish (11327)
+                   Affected Spells: Stealth (1784), Vanish (11327)
 #2 (id=165808)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 32
-                   Affected Spells: Stealth (1784), Vanish (1856), Vanish (11327)
+                   Affected Spells: Stealth (1784), Vanish (11327)
 Description      : While stealthed, you move $s1% faster and your abilities deal $s2% more damage.
 
 Name             : Improved Poisons (id=14117) [Spell Family (8), Passive] 
@@ -1343,7 +1343,7 @@ Name             : Cloak of Shadows (id=31224) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 58
 Duration         : 5 seconds
-Cooldown         : 60 seconds
+Cooldown         : 90 seconds
 Affecting spells : Glyph of Cloak of Shadows (63269)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4167,7 +4167,7 @@ GCD              : 2 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
 Affecting spells : Mastery: Executioner (76808)
-Attributes       : ....x... ........ x.x..... .......x   ........ ........ ....x... ........ 
+Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ....x... ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ x....... 
@@ -4898,7 +4898,7 @@ Class            : Rogue
 Spell Level      : 40
 Range            : 50000 yards
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ...x.... 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

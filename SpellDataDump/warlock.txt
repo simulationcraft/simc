@@ -1,4 +1,4 @@
-SimulationCraft 612-02 for World of Warcraft 6.2.0 PTR (build level 19973)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -169,7 +169,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 10
 #3 (id=186635)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 10
-Description      : Drains life from the target, causing ${($689m1*6)} Shadow damage$?a104315&!a54879[,][ and] restoring $689m2% of the caster's health$?a104315&!a54879[ and generating ${$m3*6} Demonic Fury][] over $d.
+Description      : Drains life from the target, causing ${($689m1*6)} Shadow damage$?a104315&!a54879[,][ and] restoring ${$689m2*$MHP/100} of the caster's health$?a104315&!a54879[ and generating ${$m3*6} Demonic Fury][] over $d.
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds. 
 
 Restoring ${$689m2/6}.1% of maximum health to the caster when Drain Life deals damage.
@@ -1646,7 +1646,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=40146)    : Apply Aura (6) | Periodic Damage: shadowflame every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.137) | SP Coefficient: 0.21600
+                   Base Value: 1 | Scaled Value: 0 (avg=0.137) | SP Coefficient: 0.12960
 #2 (id=153992)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $47960o1 Shadowflame damage over $47960d. Generates 2 Demonic Fury every time it deals damage.
@@ -2847,7 +2847,7 @@ Spell Level      : 79
 Range            : 40 yards
 GCD              : 1.5 seconds
 Affecting spells : Haunt (48181), Soulburn (74434), Soul Swap (86211), Kil'jaeden's Cunning (137587)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2870,7 +2870,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Kil'jaeden's Cunning (137587), Glyph of Soul Swap (159691)
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ........ ........   .......x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5882,7 +5882,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=180662)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Immolation Aura (129476), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Item - Warlock T17 Destruction 4P Dummy Proc Roller (170001), Meteor Strike (171017), Meteor Strike (171018), Convert Demon (175984)
+                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Immolation Aura (129476), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Item - Warlock T17 Destruction 4P Dummy Proc Roller (170001), Meteor Strike (171017), Meteor Strike (171018), Convert Demon (175984), Pet Damage (189921)
 Description      : The cunning of Kil'jaeden allows you to move while casting Warlock spells for $d. Castable while casting other spells.
 Tooltip          : Able to move while casting Warlock spells that have a cast or channel time.
 
@@ -7159,5 +7159,37 @@ Effects          :
 #1 (id=276918)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 95469 | Misc Value 2: 0xe4f | Radius: 0 - 10 yards
 Description      : $@spelldesc185964
+
+Name             : Pet Damage (id=189921) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+Affecting spells : Kil'jaeden's Cunning (137587)
+Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=278007)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
+Tooltip          : Damage increased by $s1%.
+
+Name             : Avoidance (Passive) (id=190019) [Passive] 
+Class            : Warlock
+Spell Level      : 1
+Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=278248)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -90 | Scaled Value: -90 | Misc Value: 127
+#2 (id=278249)   : Apply Aura (6) | Unknown effect sub type (229)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127
+Description      : Reduces the damage your summoned demon takes from creature area of effect attacks by an additional $s1%.
 
 
