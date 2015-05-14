@@ -5246,8 +5246,7 @@ double warlock_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  if ( spec.chaotic_energy -> ok() )
-    mp5 /= cache.spell_haste();
+  mp5 /= cache.spell_haste();
 
   return mp5;
 }
