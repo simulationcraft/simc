@@ -441,7 +441,7 @@ public:
   void    trigger_grand_crusader();
   void    trigger_shining_protector( action_state_t* );
   void    trigger_holy_shield( action_state_t* s );
-  virtual bool      has_t18_class_trinket() const;
+  virtual bool has_t18_class_trinket() const;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();

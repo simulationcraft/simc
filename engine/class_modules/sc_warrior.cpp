@@ -445,6 +445,7 @@ public:
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
   virtual void      invalidate_cache( cache_e );
   virtual double    temporary_movement_modifier() const;
+  virtual bool      has_t18_class_trinket() const;
 
   void              apl_precombat();
   void              apl_default();
@@ -4017,7 +4018,26 @@ void warrior_t::init_base_stats()
     resolve_manager.init();
 }
 
-//Pre-combat Action Priority List============================================
+// warrior_t::has_t18_class_trinket ============================================
+
+bool warrior_t::has_t18_class_trinket() const
+{
+  if ( specialization() == WARRIOR_FURY )
+  {
+    return fury_trinket != 0;
+  }
+  else if ( specialization() == WARRIOR_ARMS )
+  {
+    return arms_trinket != 0;
+  }
+  else if ( specialization() == WARRIOR_PROTECTION )
+  {
+    return prot_trinket != 0;
+  }
+  return false;
+}
+
+// Pre-combat Action Priority List============================================
 
 void warrior_t::apl_precombat()
 {
