@@ -182,6 +182,7 @@ public:
     buff_t* focus_of_the_elements;
     buff_t* feral_spirit;
     buff_t* t18_4pc_elemental;
+    buff_t* gathering_vortex;
 
     haste_buff_t* elemental_mastery;
     haste_buff_t* tier13_4pc_healer;
@@ -454,7 +455,7 @@ public:
   void trigger_tier16_4pc_caster( const action_state_t* );
   void trigger_tier17_2pc_elemental( int );
   void trigger_tier17_4pc_elemental( int );
-  void trigger_tier18_2pc_enhancement( const action_state_t* );
+  void trigger_tier18_4pc_elemental( int );
 
   // Character Definition
   virtual void      init_spells();
@@ -567,40 +568,6 @@ struct maelstrom_weapon_buff_t : public buff_t
   void reset();
 };
 
-struct lightning_shield_buff_t: public buff_t
-{
-  int stacks_consumed;
-  lightning_shield_buff_t( shaman_t* player ):
-    buff_t( buff_creator_t( player, "lightning_shield", player -> find_class_spell( "Lightning Shield" ) )
-    .max_stack( ( player -> specialization() == SHAMAN_ELEMENTAL )
-    ? static_cast<int>( player -> spec.fulmination -> effectN( 1 ).base_value() + player -> perk.improved_lightning_shield -> effectN( 1 ).base_value() )
-    : player -> find_class_spell( "Lightning Shield" ) -> initial_stacks() )
-    .cd( timespan_t::zero() ) )
-  {
-    stacks_consumed = 0;
-  }
-
-  void reset()
-  {
-    buff_t::reset();
-    stacks_consumed = 0;
-  }
-
-  void decrement( int stacks, double b )
-  {
-    buff_t::decrement( stacks, b );
-    shaman_t* p = debug_cast<shaman_t*>( player );
-    if ( p -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
-    {
-      stacks_consumed += stacks;
-      if ( stacks_consumed >= p -> sets.set( SHAMAN_ELEMENTAL, T18, B4 ) -> effectN( 1 ).base_value() )
-      {
-        p -> buff.t18_4pc_elemental -> trigger( 5 );
-        stacks_consumed = 0;
-      }
-    }
-  }
-};
 struct ascendance_buff_t : public buff_t
 {
   action_t* lava_burst;
@@ -3545,7 +3512,9 @@ struct earth_shock_t : public shaman_spell_t
           return;
         }
       }
+      int current_stacks = p() -> buff.lightning_shield -> check();
       p() -> buff.lightning_shield -> decrement( consuming_stacks );
+      p() -> trigger_tier18_4pc_elemental( current_stacks );
     }
   }
 };
@@ -5250,6 +5219,30 @@ void shaman_t::trigger_tier17_4pc_elemental( int stacks )
   cooldown.lava_burst -> reset( false );
 }
 
+void shaman_t::trigger_tier18_4pc_elemental( int ls_stack )
+{
+  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
+  {
+    return;
+  }
+
+  int gathering_vortex_stacks = buff.gathering_vortex -> check();
+  gathering_vortex_stacks += ls_stack;
+  // Stacks have to go past max stack to trigger Lightning Vortex
+  if ( gathering_vortex_stacks <= buff.gathering_vortex -> max_stack() )
+  {
+    buff.gathering_vortex -> trigger( ls_stack );
+  }
+  else
+  {
+    int remainder_stack = gathering_vortex_stacks % buff.gathering_vortex -> max_stack();
+    buff.gathering_vortex -> expire();
+    // Back to back 20 stack Lightning Shield fulminations will just set Gathering Vortex up so it's
+    // again at 20 stacks, presumably.
+    buff.gathering_vortex -> trigger( remainder_stack ? remainder_stack : buff.gathering_vortex -> max_stack() );
+    buff.t18_4pc_elemental -> trigger();
+  }
+}
 
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 {
@@ -5315,7 +5308,12 @@ void shaman_t::create_buffs()
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
-  buff.lightning_shield        = new lightning_shield_buff_t( this );
+  buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
+                                 .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
+                                              ? static_cast<int>( spec.fulmination -> effectN( 1 ).base_value() +
+                                                                  perk.improved_lightning_shield -> effectN( 1 ).base_value() )
+                                              : find_class_spell( "Lightning Shield" ) -> initial_stacks() )
+                                 .cd( timespan_t::zero() );
   buff.maelstrom_weapon        = new maelstrom_weapon_buff_t( this );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
   buff.elemental_fusion        = buff_creator_t( this, "elemental_fusion", find_spell( 157174 ) )
@@ -5382,6 +5380,9 @@ void shaman_t::create_buffs()
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
   buff.feral_spirit          = buff_creator_t( this, "feral_spirit", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
+
+  buff.gathering_vortex      = buff_creator_t( this, "gathering_vortex", find_spell( 189078 ) )
+                               .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) );
 
 }
 
