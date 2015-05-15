@@ -1121,28 +1121,22 @@ struct melee_t: public warrior_attack_t
       {
         p() -> buff.sudden_death -> trigger();
       }
+      if ( p() -> fury_trinket ) // Buff procs from any attack, even if it misses/parries/etc.
+      {
+        p() -> buff.fury_trinket -> trigger( 1 );
+      }
+      else if ( arms_trinket_chance > 0 && rng().roll( arms_trinket_chance ) ) // Same
+      {
+        p() -> cooldown.colossus_smash -> reset( true );
+        p() -> proc.arms_trinket -> occur();
+      }
       if ( result_is_hit( execute_state -> result ) )
       {
         trigger_rage_gain( execute_state );
-        if ( p() -> active.enhanced_rend )
+        if ( p() -> active.enhanced_rend && td( execute_state -> target ) -> dots_rend -> is_ticking() )
         {
-          if ( td( execute_state -> target ) -> dots_rend -> is_ticking() )
-          {
-            p() -> active.enhanced_rend -> target = execute_state -> target;
-            p() -> active.enhanced_rend -> execute();
-          }
-        }
-        if ( arms_trinket_chance > 0 )
-        {
-          if ( rng().roll( arms_trinket_chance ) )
-          {
-            p() -> cooldown.colossus_smash -> reset( true );
-            p() -> proc.arms_trinket -> occur();
-          }
-        }
-        if ( p() -> fury_trinket )
-        {
-          p() -> buff.fury_trinket -> trigger( 1 );
+          p() -> active.enhanced_rend -> target = execute_state -> target;
+          p() -> active.enhanced_rend -> execute();
         }
       }
     }
@@ -5778,17 +5772,19 @@ void warrior_t::create_options()
 
 // Discordant Chorus Trinket - T18 ================================================
 
-  struct fel_cleave_t: public warrior_attack_t
+struct fel_cleave_t: public warrior_attack_t
+{
+  fel_cleave_t( warrior_t* p, const special_effect_t& effect ):
+    warrior_attack_t( "fel_cleave", p, p -> find_spell( 184248 ) )
   {
-    fel_cleave_t( warrior_t* p, const special_effect_t& effect ):
-      warrior_attack_t( "fel_cleave", p, p -> find_spell( 184248 ) )
-    {
-      background = special = may_crit = true;
-      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-      weapon_multiplier = 0;
-      aoe = -1;
-    }
-  };
+    background = special = may_crit = true;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    weapon_multiplier = 0;
+    aoe = -1;
+  }
+  void trigger_bloodbath_dot( player_t* t, double dmg )
+  {}
+};
 
 action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& effect )
 {
