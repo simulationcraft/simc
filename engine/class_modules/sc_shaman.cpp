@@ -129,6 +129,7 @@ public:
   action_t* action_improved_lava_lash;
   action_t* action_lightning_strike;
   spell_t*  molten_earth;
+  spell_t*  electrocute;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -453,6 +454,7 @@ public:
   void trigger_tier16_4pc_caster( const action_state_t* );
   void trigger_tier17_2pc_elemental( int );
   void trigger_tier17_4pc_elemental( int );
+  void trigger_tier18_2pc_enhancement( const action_state_t* );
 
   // Character Definition
   virtual void      init_spells();
@@ -555,7 +557,7 @@ struct maelstrom_weapon_buff_t : public buff_t
   maelstrom_weapon_buff_t( shaman_t* player ) :
     buff_t( buff_creator_t( player, 53817, "maelstrom_weapon" )
             .max_stack( player -> find_spell( 53817 ) -> max_stacks() + 
-                        player -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 2 ).base_value() ) )
+                        player -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 2 ).base_value() ) )
   { activated = false; }
 
   using buff_t::trigger;
@@ -2008,6 +2010,14 @@ struct shaman_flurry_of_xuen_t : public shaman_attack_t
   { return new action_state_t( this, target ); }
 };
 
+struct electrocute_t : public shaman_spell_t
+{
+  electrocute_t( shaman_t* p ) :
+    shaman_spell_t( "electrocute", p, p -> find_spell( 189509 ) )
+  {
+    background = true;
+  }
+};
 
 // ==========================================================================
 // Shaman Action / Spell Base
@@ -2466,12 +2476,6 @@ struct stormstrike_t : public shaman_attack_t
       if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       {
         int bonus = p() -> sets.set( SET_MELEE, T15, B2 ) -> effectN( 1 ).base_value();
-        p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
-      }
-
-      if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
-      {
-        int bonus = p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).base_value();
         p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
       }
     }
@@ -5129,7 +5133,12 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state, double ove
   //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
   //  chance *= 1.2;
 
-  buff.maelstrom_weapon -> trigger( attack, 1, chance );
+  if ( buff.maelstrom_weapon -> trigger( attack, 1, chance ) &&
+       attack -> player -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
+  {
+    attack -> p() -> electrocute -> target = state -> target;
+    attack -> p() -> electrocute -> execute();
+  }
 }
 
 void shaman_t::trigger_tier16_2pc_melee( const action_state_t* state )
@@ -5464,6 +5473,11 @@ void shaman_t::init_action_list()
   if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
   {
     action_lightning_strike = new t15_2pc_caster_t( this );
+  }
+
+  if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
+  {
+    electrocute = new electrocute_t( this );
   }
 
   if ( mastery.molten_earth -> ok() )
