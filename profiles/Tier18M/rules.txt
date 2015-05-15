@@ -1,0 +1,6 @@
+# TxM
+# Tier x Mythic
+# * Ilvl Cap: 735
+# * No Sockets, Tertiary Stats, or Warforged items
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * EXCEPTION: 735 Legendary Ring can be used. (accessibility)
