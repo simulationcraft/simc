@@ -71,8 +71,8 @@ actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=d
 actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&active_enemies<=5&target.time_to_die-remains>tick_time*5
 actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)
 
-actions.generator=swipe,if=active_enemies>=3
-actions.generator+=/shred,if=active_enemies<3
+actions.generator=swipe,if=active_enemies>=4|(active_enemies>=3&buff.incarnation.down)
+actions.generator+=/shred,if=active_enemies<3|(active_enemies=3&buff.incarnation.up)
 
 head=acidic_jaws,id=113880
 neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike

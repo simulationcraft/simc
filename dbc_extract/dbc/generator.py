@@ -1396,7 +1396,8 @@ class SpellDataGenerator(DataGenerator):
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
-          ( 170512, 0 ), ( 170523, 0 )                  # Feral Spirit windfury (t17 enhance 4pc set bonus)
+          ( 170512, 0 ), ( 170523, 0 ),                 # Feral Spirit windfury (t17 enhance 4pc set bonus)
+          ( 189078, 0 ),                                # Gathering Vortex (Elemental t18 4pc charge)
         ),
 
         # Mage:

@@ -290,6 +290,7 @@ public:
     buff_t* feral_tier15_4pc;
     buff_t* feral_tier16_2pc;
     buff_t* feral_tier16_4pc;
+    buff_t* feral_tier17_4pc;
 
     // Guardian
     buff_t* barkskin;
@@ -1880,7 +1881,7 @@ public:
   {
     ab::impact( s );
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( s -> target, s -> result_amount );
 
     if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil ) 
@@ -1891,7 +1892,7 @@ public:
   {
     ab::tick( d );
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
     if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
@@ -1902,7 +1903,7 @@ public:
   {
     ab::multistrike_tick( src_state, ms_state, multiplier );
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
 
     if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
@@ -1911,7 +1912,7 @@ public:
 
   void trigger_gushing_wound( player_t* t, double dmg )
   {
-    if ( ! ( p() -> buff.berserk -> check() && ab::special && ab::harmful && dmg > 0 ) )
+    if ( ! ( ab::special && ab::harmful && dmg > 0 ) )
       return;
 
     residual_action::trigger(
@@ -2305,7 +2306,22 @@ public:
 
   virtual void consume_resource()
   {
+    // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
+    if ( base_t::cost() > 0 && consume_ooc && p() -> buff.omen_of_clarity -> up() )
+    {
+      // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that here.
+      double eff_cost = base_t::cost() * ( 1.0 + p() -> buff.berserk -> check() * p() -> spell.berserk_cat -> effectN( 1 ).percent() );
+      p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, eff_cost );
+
+      // Feral tier18 4pc occurs before the base cost is consumed.
+      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
+        p() -> resource_gain( RESOURCE_ENERGY, base_t::cost() * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(), p() -> gain.feral_tier18_4pc );
+    }
+
     base_t::consume_resource();
+
+    if ( base_t::cost() > 0 && consume_ooc )
+      p() -> buff.omen_of_clarity -> decrement();
 
     if ( base_costs[ RESOURCE_COMBO_POINT ] && result_is_hit( execute_state -> result ) )
     {
@@ -2325,19 +2341,6 @@ public:
         p() -> resource_gain( RESOURCE_ENERGY,
                               consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
                               p() -> gain.soul_of_the_forest );
-    }
-    
-    // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( base_t::cost() > 0 && consume_ooc && p() -> buff.omen_of_clarity -> up() )
-    {
-      // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that here.
-      double eff_cost = base_t::cost() * ( 1.0 + p() -> buff.berserk -> check() * p() -> spell.berserk_cat -> effectN( 1 ).percent() );
-      p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, eff_cost );
-
-      p() -> buff.omen_of_clarity -> decrement();
-
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, eff_cost * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(), p() -> gain.feral_tier18_4pc );
     }
   }
 
@@ -2518,6 +2521,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     if ( max_energy && p() -> resources.current[ RESOURCE_ENERGY ] < p() -> max_fb_energy )
       return false;
+
     return cat_attack_t::ready();
   }
 
@@ -2565,20 +2569,15 @@ struct ferocious_bite_t : public cat_attack_t
 
   void consume_resource()
   {
-    // Ferocious Bite consumes 25+x energy, with 0 <= x <= 25.
-    // Consumes the base_cost and handles Omen of Clarity
-    cat_attack_t::consume_resource();
-
+    // Extra energy consumption happens first.
+    // In-game it happens before the skill even casts but let's not do that because its dumb.
     if ( result_is_hit( execute_state -> result ) )
     {
-      // Let the additional energy consumption create it's own debug log entries.
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s consumes an additional %.1f %s for %s", player -> name(),
-                       excess_energy, util::resource_type_string( current_resource() ), name() );
-
       player -> resource_loss( current_resource(), excess_energy );
       stats -> consume_resource( current_resource(), excess_energy );
     }
+
+    cat_attack_t::consume_resource();
   }
 
   double action_multiplier() const
@@ -4487,6 +4486,9 @@ struct berserk_t : public druid_spell_t
     else if ( p() -> buff.cat_form -> check() )
       p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, ( p() -> spell.berserk_cat -> duration()  +
                                                                         p() -> perk.empowered_berserk -> effectN( 1 ).time_value() ) );
+
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+      p() -> buff.feral_tier17_4pc -> trigger();
   }
 };
 
@@ -6512,6 +6514,8 @@ void druid_t::create_buffs()
   buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) );
   buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) ); // tier16_2pc_melee
   buff.feral_tier16_4pc      = buff_creator_t( this, "feral_tier16_4pc", find_spell( 146874 ) ); // tier16_4pc_melee
+  buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
+                               .quiet( true );
 
   // Guardian
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
@@ -6812,8 +6816,8 @@ void druid_t::apl_feral()
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
 
   // Generators
-  generate -> add_action( this, "Swipe", "if=active_enemies>=3" );
-  generate -> add_action( this, "Shred", "if=active_enemies<3" );
+  generate -> add_action( this, "Swipe", "if=active_enemies>=4|(active_enemies>=3&buff.incarnation.down)" );
+  generate -> add_action( this, "Shred", "if=active_enemies<3|(active_enemies=3&buff.incarnation.up)" );
 }
 
 // Balance Combat Action Priority List ==============================

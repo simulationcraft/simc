@@ -1,0 +1,36 @@
+# TxH
+# Tier x Heroic
+# * Ilvl Cap: 720
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Thunderforged/Warforged)
+# * No Legendaries
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * EXCEPTION: 735 Legendary Ring can be used. (accessibility)
+
+optimal_raid=1
+ptr=1
+tmi_boss=TMI_Standard_Boss_T17M
+# Raid Tier18H
+
+# Death Knight
+
+# Druid
+
+# Hunter
+
+# Mage
+
+# Monk
+
+# Paladin
+
+# Priest
+
+# Rogue
+
+# Shaman
+
+# Warlock
+
+# Warrior

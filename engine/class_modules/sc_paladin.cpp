@@ -19,6 +19,7 @@ struct blessing_of_the_guardians_t;
 namespace buffs { 
                   struct avenging_wrath_buff_t;
                   struct ardent_defender_buff_t;
+                  struct wings_of_liberty_driver_t;
                 }
 
 enum seal_e
@@ -146,7 +147,7 @@ public:
     buff_t* defender_of_the_light; // t17_4pc_tank
     buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
     buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
-    buff_t* wings_of_liberty_driver;
+    buffs::wings_of_liberty_driver_t* wings_of_liberty_driver;
     buff_t* retribution_trinket; // 6.2 Spec-Specific Trinket
   } buffs;
   
@@ -471,139 +472,155 @@ public:
 // containing ones that require action_t definitions to function properly.
 
 namespace buffs {
-
-void wings_of_liberty( buff_t* buff, int, int )
-{
-  paladin_t* p = debug_cast<paladin_t*>( buff -> player );
-
-  p -> buffs.wings_of_liberty -> trigger( 1 );
-}
-
-struct ardent_defender_buff_t : public buff_t
-{
-  bool oneup_triggered;
-
-  ardent_defender_buff_t( player_t* p ) :
-    buff_t( buff_creator_t( p, "ardent_defender", p -> find_specialization_spell( "Ardent Defender" ) ) ),
-    oneup_triggered( false )
+  void wings_of_liberty( buff_t* buff, int, int )
   {
-    
+    paladin_t* p = debug_cast<paladin_t*>( buff -> player );
+
+    p -> buffs.wings_of_liberty -> trigger( 1 );
   }
-
-  void use_oneup()
+  struct wings_of_liberty_driver_t: public buff_t
   {
-    oneup_triggered = true;
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    paladin_t* p = static_cast<paladin_t*>( player );
-    if ( ! oneup_triggered && p -> glyphs.ardent_defender -> ok() )
+    wings_of_liberty_driver_t( player_t* p ):
+      buff_t( buff_creator_t( p, "wings_of_liberty_driver", p -> find_spell( 185655 ) )
+      .chance( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
+      .quiet( true )
+      .tick_callback( wings_of_liberty ) )
     {
-      p -> cooldowns.ardent_defender -> start( timespan_t::from_seconds( p -> glyphs.ardent_defender -> effectN( 1 ).base_value() ) );
-    }
-  }
-
-};
-
-struct avenging_wrath_buff_t : public buff_t
-{
-  avenging_wrath_buff_t( player_t* p ) :
-    buff_t( buff_creator_t( p, "avenging_wrath", p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) ) ),
-    damage_modifier( 0.0 ),
-    healing_modifier( 0.0 ),
-    crit_bonus( 0.0 ),
-    haste_bonus( 0.0 )
-  {
-    paladin_t* paladin = static_cast<paladin_t*>( player );
-
-    // Map modifiers appropriately based on spec
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      damage_modifier = data().effectN( 1 ).percent();
-      healing_modifier = data().effectN( 2 ).percent();
-    }
-    else // we're Holy
-    {
-      damage_modifier = data().effectN( 5 ).percent();
-      healing_modifier = data().effectN( 3 ).percent();
-      crit_bonus = data().effectN( 2 ).percent();
-      haste_bonus = data().effectN( 1 ).percent();
-      // merciful wrath reduces the healing effect by 50%
-      healing_modifier += paladin -> glyphs.divine_wrath -> effectN( 1 ).percent();
-      // merciful wrath glyph reduces all effects by 50%
-      damage_modifier  *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 1 ).percent();
-      healing_modifier *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 2 ).percent();
-      crit_bonus       *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 3 ).percent();
-      haste_bonus      *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 4 ).percent();
-
-      // invalidate crit and haste
-      add_invalidate( CACHE_CRIT );
-      add_invalidate( CACHE_HASTE );
     }
 
-    // Lengthen duration if Sanctified Wrath is taken
-    const spell_data_t* s = p -> find_talent_spell( "Sanctified Wrath" );
-    if ( s -> ok() )
-      buff_duration *= 1.0 + s -> effectN( 2 ).percent();
+    void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    // let the ability handle the cooldown
-    cooldown -> duration = timespan_t::zero();
+      paladin_t* p = static_cast<paladin_t*>( player );
+      p -> buffs.wings_of_liberty -> expire(); // Force the damage buff to fade.
+    }
+  };
 
-    // invalidate Damage and Healing for both specs
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  }
-
-  double get_damage_mod() const
+  struct ardent_defender_buff_t: public buff_t
   {
-    return damage_modifier;
-  }
+    bool oneup_triggered;
 
-  double get_healing_mod() const
+    ardent_defender_buff_t( player_t* p ):
+      buff_t( buff_creator_t( p, "ardent_defender", p -> find_specialization_spell( "Ardent Defender" ) ) ),
+      oneup_triggered( false )
+    {
+
+    }
+
+    void use_oneup()
+    {
+      oneup_triggered = true;
+    }
+
+    virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      paladin_t* p = static_cast<paladin_t*>( player );
+      if ( !oneup_triggered && p -> glyphs.ardent_defender -> ok() )
+      {
+        p -> cooldowns.ardent_defender -> start( timespan_t::from_seconds( p -> glyphs.ardent_defender -> effectN( 1 ).base_value() ) );
+      }
+    }
+
+  };
+
+  struct avenging_wrath_buff_t: public buff_t
   {
-    return healing_modifier;
-  }
+    avenging_wrath_buff_t( player_t* p ):
+      buff_t( buff_creator_t( p, "avenging_wrath", p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) ) ),
+      damage_modifier( 0.0 ),
+      healing_modifier( 0.0 ),
+      crit_bonus( 0.0 ),
+      haste_bonus( 0.0 )
+    {
+      paladin_t* paladin = static_cast<paladin_t*>( player );
 
-  double get_crit_bonus() const
-  {
-    return crit_bonus;
-  }
+      // Map modifiers appropriately based on spec
+      if ( p -> specialization() == PALADIN_RETRIBUTION )
+      {
+        damage_modifier = data().effectN( 1 ).percent();
+        healing_modifier = data().effectN( 2 ).percent();
+      }
+      else // we're Holy
+      {
+        damage_modifier = data().effectN( 5 ).percent();
+        healing_modifier = data().effectN( 3 ).percent();
+        crit_bonus = data().effectN( 2 ).percent();
+        haste_bonus = data().effectN( 1 ).percent();
+        // merciful wrath reduces the healing effect by 50%
+        healing_modifier += paladin -> glyphs.divine_wrath -> effectN( 1 ).percent();
+        // merciful wrath glyph reduces all effects by 50%
+        damage_modifier *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 1 ).percent();
+        healing_modifier *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 2 ).percent();
+        crit_bonus *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 3 ).percent();
+        haste_bonus *= 1.0 + paladin -> glyphs.merciful_wrath -> effectN( 4 ).percent();
 
-  double get_haste_bonus() const
-  {
-    return haste_bonus;
-  }
-private:
-  double damage_modifier;
-  double healing_modifier;
-  double crit_bonus;
-  double haste_bonus;
+        // invalidate crit and haste
+        add_invalidate( CACHE_CRIT );
+        add_invalidate( CACHE_HASTE );
+      }
 
-};
+      // Lengthen duration if Sanctified Wrath is taken
+      const spell_data_t* s = p -> find_talent_spell( "Sanctified Wrath" );
+      if ( s -> ok() )
+        buff_duration *= 1.0 + s -> effectN( 2 ).percent();
+
+      // let the ability handle the cooldown
+      cooldown -> duration = timespan_t::zero();
+
+      // invalidate Damage and Healing for both specs
+      add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
+
+    double get_damage_mod() const
+    {
+      return damage_modifier;
+    }
+
+    double get_healing_mod() const
+    {
+      return healing_modifier;
+    }
+
+    double get_crit_bonus() const
+    {
+      return crit_bonus;
+    }
+
+    double get_haste_bonus() const
+    {
+      return haste_bonus;
+    }
+    private:
+    double damage_modifier;
+    double healing_modifier;
+    double crit_bonus;
+    double haste_bonus;
+  };
 
 // Eternal Flame buff
-struct eternal_flame_t : public buff_t
-{
-  paladin_td_t* pair;
-  eternal_flame_t( paladin_td_t* q ) :
-    buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 156322 ) ) ),
-    pair( q )
+  struct eternal_flame_t: public buff_t
   {
-    cooldown -> duration = timespan_t::zero();
-  }
+    paladin_td_t* pair;
+    eternal_flame_t( paladin_td_t* q ):
+      buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 156322 ) ) ),
+      pair( q )
+    {
+      cooldown -> duration = timespan_t::zero();
+    }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    // cancel existing Eternal Flame HoT
-    pair -> dots.eternal_flame -> cancel();    
-  }
-  
-};
+      // cancel existing Eternal Flame HoT
+      pair -> dots.eternal_flame -> cancel();
+    }
+
+  };
 
 } // end namespace buffs
 // ==========================================================================
@@ -1105,7 +1122,7 @@ struct avenging_wrath_t : public paladin_heal_t
     }
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
     // override for this just in case Avenging Wrath were to get canceled or removed
     // early, or if there's a duration mismatch (unlikely, but...)
@@ -1116,11 +1133,12 @@ struct avenging_wrath_t : public paladin_heal_t
     }
   }
 
-  virtual void execute()
+  void execute()
   {
     paladin_heal_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
+    p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
     p() -> buffs.wings_of_liberty_driver -> trigger();
   }
 
@@ -4843,6 +4861,12 @@ void paladin_t::init_gains()
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
   gains.hp_blazing_contempt         = get_gain( "blazing_contempt" );
+
+  if ( !retribution_trinket )
+  {
+    buffs.retribution_trinket = buff_creator_t( this, "focus_of_vengeance" )
+      .chance( 0 );
+  }
 }
 
 // paladin_t::init_procs ====================================================
@@ -4986,10 +5010,7 @@ void paladin_t::create_buffs()
   buffs.wings_of_liberty       = buff_creator_t( this, "wings_of_liberty", find_spell( 185655 ) -> effectN( 1 ).trigger() )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                  .default_value( find_spell( 185655 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  buffs.wings_of_liberty_driver = buff_creator_t( this, "wings_of_liberty_driver", find_spell( 185655 ) )
-                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
-                                 .quiet( true )
-                                 .tick_callback( buffs::wings_of_liberty );
+  buffs.wings_of_liberty_driver = new buffs::wings_of_liberty_driver_t( this );
 }
 
 // paladin_t::has_t18_class_trinket ==============================================
