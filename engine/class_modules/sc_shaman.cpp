@@ -1983,6 +1983,7 @@ struct electrocute_t : public shaman_spell_t
     shaman_spell_t( "electrocute", p, p -> find_spell( 189509 ) )
   {
     background = true;
+    aoe = -1;
   }
 };
 
