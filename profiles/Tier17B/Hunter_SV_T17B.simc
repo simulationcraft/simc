@@ -37,7 +37,7 @@ actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1)&(cooldo
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 actions+=/a_murder_of_crows
 actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=45
-actions+=/black_arrow,if=remains<gcd*1.5
+actions+=/black_arrow,cycle_targets=1,if=remains<gcd*1.5
 actions+=/arcane_shot,if=(trinket.proc.any.react&trinket.proc.any.remains<4)|dot.serpent_sting.remains<=3
 actions+=/explosive_shot
 actions+=/cobra_shot,if=buff.pre_steady_focus.up
