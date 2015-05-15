@@ -2260,7 +2260,14 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
   {
     bool first = true;
 
-    std::string s = "http://www.wowhead.com/?items&amp;filter=";
+    std::string s = "http://";
+    
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      s += "ptr.";
+    else
+      s += "www.";
+
+    s += "wowhead.com/?items&amp;filter=";
 
     switch ( p -> type )
     {
@@ -2283,6 +2290,20 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
 
     // Min ilvl of 600 (sensible for current raid tier).
     s += "minle=600;";
+
+    // Filter to the appropriately flagged loot for the specialization.
+    switch ( p -> role )
+    {
+    case ROLE_ATTACK: if ( p -> type == DEATH_KNIGHT || p -> type == PALADIN || p -> type == WARRIOR )
+                        s += "ro=3;";
+                      else
+                        s += "ro=1;";
+                      break;
+    case ROLE_SPELL: s += "ro=2;"; break;
+    case ROLE_HEAL:  s += "ro=4;"; break;
+    case ROLE_TANK:  s += "ro=5;"; break;
+    default: break;
+    }
 
     std::string    id_string = "";
     std::string value_string = "";
