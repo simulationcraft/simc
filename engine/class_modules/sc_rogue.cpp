@@ -1520,10 +1520,16 @@ struct auto_melee_attack_t : public action_t
     action_t( ACTION_OTHER, "auto_attack", p ),
     sync_weapons( 0 )
   {
+    trigger_gcd = timespan_t::zero();
+
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
 
-    assert( p -> main_hand_weapon.type != WEAPON_NONE );
+    if ( p -> main_hand_weapon.type == WEAPON_NONE )
+    {
+      background = true;
+      return;
+    }
 
     p -> melee_main_hand = debug_cast<melee_t*>( p -> find_action( "auto_attack_mh" ) );
     if ( ! p -> melee_main_hand )
@@ -1544,8 +1550,6 @@ struct auto_melee_attack_t : public action_t
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
       p -> off_hand_attack -> id = 1;
     }
-
-    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
