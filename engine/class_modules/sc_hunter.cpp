@@ -2106,7 +2106,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
     crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
-    base_execute_time += timespan_t::from_seconds( -1 * ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).base_value() ) );
+    base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
   }
 
   virtual double cost() const
@@ -4234,7 +4234,7 @@ void hunter_t::apl_surv()
 
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=45" );
-  default_list -> add_action( this, "Black Arrow", "if=remains<gcd*1.5" );
+  default_list -> add_action( this, "Black Arrow", "cycle_targets=1,if=remains<gcd*1.5" );
   default_list -> add_action( this, "Arcane Shot", "if=(trinket.proc.any.react&trinket.proc.any.remains<4)|dot.serpent_sting.remains<=3" );
   default_list -> add_action( this, "Explosive Shot" );
   default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up" );
