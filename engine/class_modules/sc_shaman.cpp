@@ -2684,6 +2684,10 @@ struct chain_lightning_t : public shaman_spell_t
     radius = 10.0;
   }
 
+  // Make Chain Lightning a single target spell for procs
+  proc_types proc_type() const
+  { return PROC1_SPELL; }
+
   action_state_t* new_state()
   { return new chain_lightning_state_t( this, target ); }
 
