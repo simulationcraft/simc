@@ -3113,6 +3113,12 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
       "<li><b>Spec:</b> %s</li>\n",
       util::inverse_tokenize( dbc::specialization_string( p -> specialization() ) ).c_str() );
 
+  std::string timewalk_str = "(";
+  if ( sim -> timewalk > 0 )
+  {
+    timewalk_str += util::to_string( p -> level );
+    timewalk_str += ")";
+  }
   os.format(
     "<li><b>Level:</b> %d%s</li>\n"
     "<li><b>Role:</b> %s</li>\n"
@@ -3120,7 +3126,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
     "</ul>\n"
     "<div class=\"clear\"></div>\n",
     p -> get_level(),
-    sim -> timewalk > 0 ? " (" + std::to_string( p -> level ) + ")" : "",
+    sim -> timewalk > 0 ? timewalk_str.c_str() : "",
     util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(),
     p -> position_str.c_str() );
 }
