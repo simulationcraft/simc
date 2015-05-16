@@ -612,8 +612,6 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   // spot on.
   if ( item.parsed.data.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
   {
-    // Socket penalty is computed without the upgrade level of the item, but things like Timewalking
-    // and/or Simulationcraft scale_to_itemlevel should still apply
     double v_raw = util::round( item.parsed.data.stat_alloc[ idx ] * item_budget / 10000.0 );
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in the latest alpha.
     // NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based on _BASE_ itemlevel, not the upgraded one
