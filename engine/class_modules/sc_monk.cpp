@@ -3541,6 +3541,7 @@ struct tigereye_brew_t: public monk_spell_t
 
     int teb_stacks_used = std::min( p() -> buff.tigereye_brew -> stack(), p() -> buff.tigereye_brew_use -> max_stack() );
 
+    p() -> buff.tigereye_brew_use -> expire(); // Need to expire this first, otherwise it could refresh a 10 stack brew with a 1 stack use.
     p() -> buff.tigereye_brew_use -> trigger( teb_stacks_used );
     p() -> buff.tigereye_brew -> decrement( teb_stacks_used );
 
