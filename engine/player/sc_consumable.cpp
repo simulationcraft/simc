@@ -709,7 +709,7 @@ struct mana_potion_t : public action_t
     if ( min > max ) std::swap( min, max );
 
     if ( max <= 0 )
-      min = max = util::ability_rank( player -> level,  30001, 86, 10000, 85, 4300, 80,  2400, 68,  1800, 0 );
+      min = max = util::ability_rank( player -> get_level(),  30001, 86, 10000, 85, 4300, 80,  2400, 68,  1800, 0 );
 
     assert( max > 0 );
 

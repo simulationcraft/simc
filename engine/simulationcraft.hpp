@@ -2744,7 +2744,9 @@ struct sim_t : private sc_thread_t
   gear_stats_t enchant;
 
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
+  int timewalk;
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
+  bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables set bonuses.
   bool disable_2_set_bonus; // Disables all 2 set bonuses (Does not include 4)
   bool disable_4_set_bonus; // Disables all 4 set bonuses
@@ -4504,6 +4506,7 @@ struct player_t : public actor_t
   bool scale_player;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
   double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
+  int          timewalk;
 
   // dynamic attributes - things which change during combat
   player_t*   target;
@@ -4955,6 +4958,8 @@ struct player_t : public actor_t
 
   virtual void datacollection_begin();
   virtual void datacollection_end();
+
+  virtual int get_level() const;
 
   virtual double energy_regen_per_second() const;
   virtual double focus_regen_per_second() const;

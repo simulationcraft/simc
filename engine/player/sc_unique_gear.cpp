@@ -765,7 +765,7 @@ void gem::sinister_primal( special_effect_t& effect )
 {
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> level == 100 )
+  if ( effect.item -> player -> get_level() >= 100 )
     return;
 
   effect.custom_buff = effect.item -> player -> buffs.tempus_repit;
@@ -777,7 +777,7 @@ void gem::indomitable_primal( special_effect_t& effect )
 {
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> level == 100 )
+  if ( effect.item -> player -> get_level() >= 100 )
     return;
 
   effect.custom_buff = effect.item -> player -> buffs.fortitude;
@@ -789,7 +789,7 @@ void gem::capacitive_primal( special_effect_t& effect )
 {
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> level == 100 )
+  if ( effect.item -> player -> get_level() >= 100 )
     return;
 
   struct lightning_strike_t : public attack_t
@@ -853,7 +853,7 @@ void gem::courageous_primal( special_effect_t& effect )
   if ( effect.item -> sim -> challenge_mode )
     return;
 
-  if ( effect.item -> player -> level == 100 )
+  if ( effect.item -> player -> get_level() >= 100 )
     return;
 
   struct courageous_primal_proc_t : public dbc_proc_callback_t
@@ -1768,7 +1768,7 @@ void item::flurry_of_xuen( special_effect_t& effect )
   if ( effect.item -> sim -> challenge_mode )
     return;
 
-  if ( effect.item -> player -> level == 100 )
+  if ( effect.item -> player -> get_level() >= 100 )
     return;
 
   player_t* p = effect.item -> player;
@@ -1831,7 +1831,7 @@ void item::essence_of_yulon( special_effect_t& effect )
   if ( effect.item -> sim -> challenge_mode )
     return;
 
-  if ( effect.item -> player -> level == 100 )
+  if ( effect.item -> player -> get_level() >= 100 )
     return;
 
   player_t* p = effect.item -> player;
@@ -1851,7 +1851,7 @@ void item::endurance_of_niuzao( special_effect_t& effect )
 
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> level == 100 )
+  if ( effect.item -> player -> get_level() >= 100 )
     return;
 
   const spell_data_t* cd = effect.item -> player -> find_spell( 148010 );

@@ -1445,7 +1445,7 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 
   if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
   {
-    unsigned scaling_level = level ? level : p -> level;
+    unsigned scaling_level = level ? level : p -> get_level();
     if ( _spell -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
     m_scale = p -> dbc.spell_scaling( _spell -> scaling_class(), scaling_level );

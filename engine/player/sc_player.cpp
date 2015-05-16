@@ -830,7 +830,7 @@ void player_t::init_base_stats()
 #endif
 
   if ( ! is_enemy() )
-    base.rating.init( dbc, level );
+    base.rating.init( dbc, get_level() );
 
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
@@ -842,33 +842,33 @@ void player_t::init_base_stats()
 
   if ( ! is_enemy() )
   {
-    base.stats.attribute[ STAT_STRENGTH ]  = dbc.race_base( race ).strength + dbc.attribute_base( type, level ).strength;
-    base.stats.attribute[ STAT_AGILITY ]   = dbc.race_base( race ).agility + dbc.attribute_base( type, level ).agility;
-    base.stats.attribute[ STAT_STAMINA ]   = dbc.race_base( race ).stamina + dbc.attribute_base( type, level ).stamina;
-    base.stats.attribute[ STAT_INTELLECT ] = dbc.race_base( race ).intellect + dbc.attribute_base( type, level ).intellect;
-    base.stats.attribute[ STAT_SPIRIT ]    = dbc.race_base( race ).spirit + dbc.attribute_base( type, level ).spirit;
+    base.stats.attribute[ STAT_STRENGTH  ]  = dbc.race_base( race ).strength + dbc.attribute_base( type, get_level() ).strength;
+    base.stats.attribute[ STAT_AGILITY   ]  = dbc.race_base( race ).agility + dbc.attribute_base( type, get_level() ).agility;
+    base.stats.attribute[ STAT_STAMINA   ]  = dbc.race_base( race ).stamina + dbc.attribute_base( type, get_level() ).stamina;
+    base.stats.attribute[ STAT_INTELLECT ]  = dbc.race_base( race ).intellect + dbc.attribute_base( type, get_level() ).intellect;
+    base.stats.attribute[ STAT_SPIRIT    ]  = dbc.race_base( race ).spirit + dbc.attribute_base( type, get_level() ).spirit;
 
     // heroic presence is treated like base stats, floored before adding in; tested 7/20/2014
-    base.stats.attribute[ STAT_STRENGTH] += util::floor( racials.heroic_presence -> effectN( 1 ).average( this ) );
-    base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence -> effectN( 2 ).average( this ) );
-    base.stats.attribute[ STAT_INTELLECT] += util::floor( racials.heroic_presence -> effectN( 3 ).average( this ) );
+    base.stats.attribute[ STAT_STRENGTH  ] += util::floor( racials.heroic_presence -> effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_AGILITY   ] += util::floor( racials.heroic_presence -> effectN( 2 ).average( this ) );
+    base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence -> effectN( 3 ).average( this ) );
     // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic pres.
-    base.stats.attribute[ STAT_STAMINA ]  += util::floor( racials.endurance -> effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_STAMINA   ] += util::floor( racials.endurance -> effectN( 1 ).average( this ) );
     // Human spirit
-    base.stats.versatility_rating += util::floor( racials.the_human_spirit -> effectN( 1 ).average( this ) );
+    base.stats.versatility_rating          += util::floor( racials.the_human_spirit -> effectN( 1 ).average( this ) );
 
-    base.spell_crit               = dbc.spell_crit_base( type, level );
-    base.attack_crit              = dbc.melee_crit_base( type, level );
-    base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, level );
-    base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, level );
+    base.spell_crit               = dbc.spell_crit_base( type, get_level() );
+    base.attack_crit              = dbc.melee_crit_base( type, get_level() );
+    base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, get_level() );
+    base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, get_level() );
     base.mastery = 8.0;
 
-    resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level );
-    resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level );
+    resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, get_level() );
+    resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, get_level() );
 
-    base.mana_regen_per_second = dbc.regen_base( type, level ) / 5.0;
-    base.mana_regen_per_spirit = dbc.regen_spirit( type, level );
-    base.health_per_stamina    = dbc.health_per_stamina( level );
+    base.mana_regen_per_second = dbc.regen_base( type, get_level() ) / 5.0;
+    base.mana_regen_per_spirit = dbc.regen_spirit( type, get_level() );
+    base.health_per_stamina    = dbc.health_per_stamina( get_level() );
 
     // players have a base 7.5% hit/exp
     base.hit       = 0.075;
@@ -879,13 +879,13 @@ void player_t::init_base_stats()
   // Racial agility modifiers and Heroic Presence do affect base dodge, but are affected
   // by diminishing returns, and handled in composite_dodge()  (tested 7/24/2014)
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN )
-    base.dodge_per_agility     = dbc.avoid_per_str_agi_by_level( level ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
+    base.dodge_per_agility     = dbc.avoid_per_str_agi_by_level( get_level() ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
 
   // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
   // Racial strength modifiers and Heroic Presence do affect base parry, but are affected
   // by diminishing returns, and handled in composite_parry()  (tested 7/24/2014)
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
-    base.parry_per_strength    = dbc.avoid_per_str_agi_by_level( level ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
+    base.parry_per_strength    = dbc.avoid_per_str_agi_by_level( get_level() ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
 
   // All classes get 3% dodge and miss; add racials and racial agi mod in here too
   base.dodge = 0.03 + racials.quickness -> effectN( 1 ).percent() + dbc.race_base( race ).agility * base.dodge_per_agility;
@@ -1189,7 +1189,7 @@ void player_t::init_defense()
   }
 
   // Armor Coefficient
-  initial.armor_coeff = dbc.armor_mitigation_constant( level );
+  initial.armor_coeff = dbc.armor_mitigation_constant( get_level() );
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
 
@@ -2474,6 +2474,15 @@ bool player_t::has_t18_class_trinket() const
   return false;
 }
 
+// player_t::level ==========================================================
+
+int player_t::get_level() const
+{
+  if ( sim -> timewalk > 0 )
+    return sim -> timewalk;
+  else
+    return level;
+}
 
 // player_t::energy_regen_per_second ========================================
 
@@ -2718,7 +2727,7 @@ double player_t::composite_dodge() const
 
   // but not class base agility or racial modifiers (irrelevant for enemies)
   if ( ! is_enemy() )
-    bonus_dodge -= ( dbc.attribute_base( type, level ).agility + dbc.race_base( race ).agility ) * current.dodge_per_agility;
+    bonus_dodge -= ( dbc.attribute_base( type, get_level() ).agility + dbc.race_base( race ).agility ) * current.dodge_per_agility;
 
   // if we have any bonus_dodge, apply diminishing returns and add it to total_dodge.
   if ( bonus_dodge != 0 )
@@ -2740,7 +2749,7 @@ double player_t::composite_parry() const
 
   // but not class base strength or racial modifiers (irrelevant for enemies)
   if ( ! is_enemy() )
-    bonus_parry -= ( dbc.attribute_base( type, level ).strength + dbc.race_base( race ).strength ) * current.parry_per_strength;
+    bonus_parry -= ( dbc.attribute_base( type, get_level() ).strength + dbc.race_base( race ).strength ) * current.parry_per_strength;
 
   // if we have any bonus_parry, apply diminishing returns and add it to total_parry.
   if ( bonus_parry != 0 )
@@ -10689,7 +10698,7 @@ void manager_t::update()
   assert( _started && "Trying to update Resolve for a unstarted Resolve Manager." );
 
   // Relevant constants
-  static const double damage_mod_coefficient = 1 / ( 10 * _player.dbc.resolve_level_scaling( _player.level ) ); // multiplier for the resolve damage component
+  static const double damage_mod_coefficient = 1 / ( 10 * _player.dbc.resolve_level_scaling( _player.get_level() ) ); // multiplier for the resolve damage component
   //const double resolve_sta_mod = 1 / 250.0 /  _player.dbc.resolve_item_scaling( _player.level );
   static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
 

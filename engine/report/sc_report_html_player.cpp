@@ -3114,12 +3114,15 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
       util::inverse_tokenize( dbc::specialization_string( p -> specialization() ) ).c_str() );
 
   os.format(
-    "<li><b>Level:</b> %d</li>\n"
+    "<li><b>Level:</b> %d%s</li>\n"
     "<li><b>Role:</b> %s</li>\n"
     "<li><b>Position:</b> %s</li>\n"
     "</ul>\n"
     "<div class=\"clear\"></div>\n",
-    p -> level, util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(), p -> position_str.c_str() );
+    p -> get_level(),
+    sim -> timewalk > 0 ? " (" + std::to_string( p -> level ) + ")" : "",
+    util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(),
+    p -> position_str.c_str() );
 }
 
 // print_html_player_results_spec_gear ======================================

@@ -1472,7 +1472,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       if ( params.item )
         amount = util::round( effect.average( params.item ) );
       else
-        amount = util::round( effect.average( player, std::min( MAX_LEVEL, player -> level ) ) );
+        amount = util::round( effect.average( player, std::min( MAX_LEVEL, player -> get_level() ) ) );
 
       if ( effect.subtype() == A_MOD_STAT )
       {
@@ -1613,7 +1613,7 @@ cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_
         if ( params.item )
           amount = util::round( effect.average( params.item ) );
         else
-          amount = effect.average( player, std::min( MAX_LEVEL, player -> level ) );
+          amount = effect.average( player, std::min( MAX_LEVEL, player -> get_level() ) );
 
         amount = std::fabs( amount );
       }
@@ -1779,7 +1779,7 @@ absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
         if ( params.item )
           default_value = util::round( effect.average( params.item ) );
         else
-          default_value = effect.average( player, std::min( MAX_LEVEL, player -> level ) );
+          default_value = effect.average( player, std::min( MAX_LEVEL, player -> get_level() ) );
       }
       break;
     }

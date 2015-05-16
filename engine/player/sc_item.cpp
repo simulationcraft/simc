@@ -400,14 +400,20 @@ unsigned item_t::upgrade_level() const
 
 unsigned item_t::item_level() const
 {
-  if ( sim -> scale_to_itemlevel > 0 )
+  if ( sim -> scale_to_itemlevel > 0 && ! sim -> scale_itemlevel_down_only )
     return sim -> scale_to_itemlevel;
-  else if ( parsed.item_level > 0 )
-  {
-    return parsed.item_level;
-  }
+
+  unsigned ilvl;
+
+  if ( parsed.item_level > 0 )
+    ilvl = parsed.item_level;
   else
-    return parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() );
+    ilvl = parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() );
+
+  if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
+    return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
+
+  return ilvl;
 }
 
 stat_e item_t::stat( size_t idx ) const

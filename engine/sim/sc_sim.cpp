@@ -1056,7 +1056,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   requires_regen_event( false ), enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
-  challenge_mode( false ), scale_to_itemlevel( -1 ),
+  challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set_bonus( false ), disable_4_set_bonus( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ), equalize_plot_weights( false ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -1972,7 +1972,20 @@ bool sim_t::init()
 
   confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 630;
+  if ( challenge_mode && scale_to_itemlevel < 0 )
+  {
+    scale_to_itemlevel = 630;
+    scale_itemlevel_down_only = true;
+  }
+  else if ( timewalk )
+  {
+    switch ( timewalk )
+    {
+    case 80: scale_to_itemlevel = 160; break;
+    case 70: scale_to_itemlevel = 95;  break;
+    }
+    scale_itemlevel_down_only = true;
+  }
 
   // set scaling metric
   scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
@@ -2854,7 +2867,9 @@ void sim_t::create_options()
   add_option( opt_int( "target_level+", rel_target_level ) );
   add_option( opt_string( "target_race", target_race ) );
   add_option( opt_bool( "challenge_mode", challenge_mode ) );
+  add_option( opt_int( "timewalk", timewalk, -1, MAX_SCALING_LEVEL ) );
   add_option( opt_int( "scale_to_itemlevel", scale_to_itemlevel ) );
+  add_option( opt_bool( "scale_itemlevel_down_only", scale_itemlevel_down_only ) );
   add_option( opt_bool( "disable_set_bonuses", disable_set_bonuses ) );
   add_option( opt_bool( "disable_2_set_bonus", disable_2_set_bonus ) );
   add_option( opt_bool( "disable_4_set_bonus", disable_4_set_bonus ) );
