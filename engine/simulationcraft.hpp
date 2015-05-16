@@ -3661,6 +3661,7 @@ struct item_t
 
   unsigned item_level() const;
   unsigned upgrade_level() const;
+  unsigned base_item_level() const;
   stat_e stat( size_t idx ) const;
   int stat_value( size_t idx ) const;
   bool has_item_stat( stat_e stat ) const;
@@ -7338,7 +7339,7 @@ std::string stat_to_str( int stat, int stat_amount );
 
 // Stat scaling methods for items, or item stats
 double approx_scale_coefficient( unsigned current_ilevel, unsigned new_ilevel );
-int scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel );
+int scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel );
 
 unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
