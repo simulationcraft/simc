@@ -1,0 +1,85 @@
+# TxH
+# Tier x Heroic
+# * Ilvl Cap: 720
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Thunderforged/Warforged)
+# * No Legendaries
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * EXCEPTION: 735 Legendary Ring can be used. (accessibility)
+
+# talent_format=numbers
+
+mage="Mage_Arcane_T18H"
+level=100
+race=gnome
+role=spell
+position=back
+talents=3003322
+glyphs=cone_of_cold
+spec=arcane
+head=demon_princes_ascendant_crown,id=124159,bonus_id=566
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_mastery
+shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=566
+back=cloak_of_hideous_unity,id=124138,bonus_id=566,enchant=gift_of_mastery
+chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=566
+wrists=contemptuous_wristguards,id=124186,bonus_id=566
+hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=566
+waist=sash_of_unending_anguish,id=124181,bonus_id=566
+legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
+finger1=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_mastery
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+trinket1=tome_of_shifting_words,id=124516,bonus_id=566
+trinket2=prophecy_of_fear,id=124230,bonus_id=566
+main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_bleeding_hollow
+
+mage="Mage_Fire_T18H"
+level=100
+race=troll
+role=spell
+position=back
+talents=3003322
+glyphs=inferno_blast/combustion/dragons_breath
+spec=fire
+head=demon_princes_ascendant_crown,id=124159,bonus_id=566
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_critical_strike
+shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=566
+back=cloak_of_hideous_unity,id=124138,bonus_id=566,enchant=gift_of_critical_strike
+chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=566
+wrists=contemptuous_wristguards,id=124186,bonus_id=566
+hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=566
+waist=sash_of_unending_anguish,id=124181,bonus_id=566
+legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
+finger1=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_critical_strike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
+trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=566
+trinket2=goren_soul_repository,id=119194,bonus_id=566
+main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_thunderlord
+
+mage="Mage_Frost_T18H"
+level=100
+race=dwarf
+role=spell
+position=back
+talents=3003122
+glyphs=icy_veins/splitting_ice/cone_of_cold
+spec=frost
+head=demon_princes_ascendant_crown,id=124159,bonus_id=566
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_multistrike
+shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=566
+back=cloak_of_hideous_unity,id=124138,bonus_id=566,enchant=gift_of_multistrike
+chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=566
+wrists=contemptuous_wristguards,id=124186,bonus_id=566
+hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=566
+waist=sash_of_unending_anguish,id=124181,bonus_id=566
+legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
+finger1=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=566
+trinket2=prophecy_of_fear,id=124230,bonus_id=566
+main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_frostwolf
+
+
