@@ -1493,8 +1493,6 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
     }
   };
 
-  maintenance_check( 620 );
-
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new darkmoon_card_greatness_callback( effect.item, effect );
@@ -3485,6 +3483,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 109725, item::vial_of_shadows                );
   register_special_effect( 109722, item::vial_of_shadows                );
   register_special_effect( 107995, item::vial_of_shadows                );
+  register_special_effect( 72413, "10%"                                 );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
