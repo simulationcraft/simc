@@ -9,7 +9,7 @@ level=100
 race=draenei
 role=attack
 spec=retribution
-talents=2112333
+talents=2112231
 glyphs=54922/54924/57954/89401/115933/146957
 
 head=gutcrusher_coronet,id=109988,bonus_id=524

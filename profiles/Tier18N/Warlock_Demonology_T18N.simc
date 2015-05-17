@@ -1,4 +1,4 @@
-warlock="Warlock_Demonology_T17H"
+warlock="Warlock_Demonology_T18N"
 level=100
 race=troll
 role=spell
@@ -52,7 +52,7 @@ actions+=/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*dura
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.multistrike.down&trinket.proc.any.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&action.hand_of_guldan.charges>0&dot.shadowflame.remains<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&((demonic_fury<100&buff.dark_soul.remains>10)|time<15)&!glyph.dark_soul.enabled
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)
-actions+=/chaos_wave,if=buff.metamorphosis.up&(buff.dark_soul.up&active_enemies>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2))
+actions+=/chaos_wave,if=buff.metamorphosis.up&buff.dark_soul.up&active_enemies>=2
 actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25)&(((buff.molten_core.stack*execute_time>=trinket.stacking_proc.multistrike.remains-1|demonic_fury<=ceil((trinket.stacking_proc.multistrike.remains-buff.molten_core.stack*execute_time)*40)+80*buff.molten_core.stack)|target.health.pct<=25)&trinket.stacking_proc.multistrike.remains>=execute_time|trinket.stacking_proc.multistrike.down|!trinket.has_stacking_proc.multistrike)
 actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1
 actions+=/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.remains<17.4&demonic_fury>750
@@ -106,33 +106,33 @@ actions.db+=/shadow_bolt
 actions.db+=/hellfire,moving=1,interrupt=1
 actions.db+=/life_tap
 
-head=shadow_councils_hood,id=115586,bonus_id=566
-neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant_id=5319
-shoulders=shadow_councils_mantle,id=115589,bonus_id=566
-back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5312
-chest=shadow_councils_robes,id=115588,bonus_id=566
-wrists=bracers_of_darkened_skies,id=119332,bonus_id=566
-hands=toothbreaker_grips,id=113876,bonus_id=566
-waist=seeking_ember_girdle,id=113941,bonus_id=566
-legs=shadow_councils_leggings,id=115587,bonus_id=566
-feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5326
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5326
-trinket1=goren_soul_repository,id=119194,bonus_id=566
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
-main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant_id=5384
+head=deathrattle_mask,id=124162
+neck=vial_of_immiscible_liquid,id=124212,enchant_id=5319
+shoulders=mantle_of_the_eredar_lord,id=124176
+back=cloak_of_hideous_unity,id=124138,enchant_id=5312
+chest=deathrattle_robe,id=124173
+wrists=contemptuous_wristguards,id=124186
+hands=deathrattle_gloves,id=124156
+waist=sash_of_unending_anguish,id=124181
+legs=deathrattle_leggings,id=124167
+feet=dessicated_soulrender_slippers,id=124150
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
+finger2=loathful_encrusted_band,id=124192,enchant_id=5326
+trinket1=desecrated_shadowmoon_insignia,id=124228
+trinket2=fragment_of_the_dark_star,id=124522
+main_hand=edict_of_argus,id=124382,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=685.33
-# gear_stamina=4114
-# gear_intellect=3455
-# gear_spell_power=1596
-# gear_crit_rating=455
-# gear_haste_rating=1091
-# gear_mastery_rating=1827
-# gear_armor=809
-# gear_multistrike_rating=416
-# gear_versatility_rating=86
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=699.67
+# gear_stamina=4705
+# gear_intellect=3134
+# gear_spell_power=1925
+# gear_crit_rating=485
+# gear_haste_rating=1537
+# gear_mastery_rating=2240
+# gear_armor=885
+# gear_multistrike_rating=428
+# gear_versatility_rating=108
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
 default_pet=felguard

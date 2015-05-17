@@ -97,7 +97,7 @@ hands=shadow_councils_gloves,id=115585,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
 legs=turret_mechanics_legwraps,id=113970,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5324
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant_id=5326
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=goren_soul_repository,id=119194,bonus_id=567
@@ -108,9 +108,9 @@ main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant_id=5384
 # gear_stamina=4763
 # gear_intellect=3923
 # gear_spell_power=1837
-# gear_crit_rating=1301
+# gear_crit_rating=1251
 # gear_haste_rating=991
-# gear_mastery_rating=1879
+# gear_mastery_rating=1929
 # gear_armor=900
 # gear_multistrike_rating=141
 # gear_versatility_rating=108

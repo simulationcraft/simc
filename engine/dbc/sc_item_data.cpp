@@ -568,34 +568,34 @@ double item_database::approx_scale_coefficient( unsigned current_ilevel, unsigne
 
 // item_database_t::scaled_stat =============================================
 
-int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel )
+int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel )
 {
   // Safeguard against array overflow, should never happen in any case
-  if ( idx >= sizeof_array( item.stat_val ) - 1 )
+  if ( idx >= sizeof_array( item.parsed.data.stat_val ) - 1 )
     return -1;
 
-  if ( item.level == 0 )
-    return item.stat_val[ idx ];
+  if ( item.parsed.data.level == 0 )
+    return item.parsed.data.stat_val[ idx ];
 
   //if ( item.level == ( int ) new_ilevel )
   //  return item.stat_val[ idx ];
 
-  int slot_type = random_suffix_type( &item );
+  int slot_type = random_suffix_type( &item.parsed.data );
   double item_budget = 0/*, orig_budget = 0*/;
 
-  if ( slot_type != -1 && item.quality > 0 )
+  if ( slot_type != -1 && item.parsed.data.quality > 0 )
   {
     const random_prop_data_t& ilevel_data = dbc.random_property( new_ilevel );
     //const random_prop_data_t& orig_data = dbc.random_property( item.level );
 
     // Epic/Legendary
-    if ( item.quality == 4 || item.quality == 5 )
+    if ( item.parsed.data.quality == 4 || item.parsed.data.quality == 5 )
     {
       item_budget = ilevel_data.p_epic[ slot_type ];
       //orig_budget = orig_data.p_epic[ slot_type ];
     }
     // Rare/Heirloom
-    else if ( item.quality == 3 || item.quality == 7 )
+    else if ( item.parsed.data.quality == 3 || item.parsed.data.quality == 7 )
     {
       item_budget = ilevel_data.p_rare[ slot_type ];
       //orig_budget = orig_data.p_rare[ slot_type ];
@@ -610,18 +610,18 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
 
   // Precise stat scaling formula for ilevel increase, stats should be
   // spot on.
-  if ( item.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
+  if ( item.parsed.data.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
   {
-    double v_raw = util::round( item.stat_alloc[ idx ] * item_budget / 10000.0 );
+    double v_raw = util::round( item.parsed.data.stat_alloc[ idx ] * item_budget / 10000.0 );
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in the latest alpha.
     // NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based on _BASE_ itemlevel, not the upgraded one
-    double v_socket_penalty = util::round( item.stat_socket_mul[ idx ] * dbc.item_socket_cost( item.level ) );
+    double v_socket_penalty = util::round( item.parsed.data.stat_socket_mul[ idx ] * dbc.item_socket_cost( item.base_item_level() ) );
     return static_cast<int>( v_raw - v_socket_penalty );
   }
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
   else
-    return static_cast<int>( floor( item.stat_val[ idx ] * approx_scale_coefficient( item.level, new_ilevel ) ) );
+    return static_cast<int>( floor( item.parsed.data.stat_val[ idx ] * approx_scale_coefficient( item.parsed.data.level, new_ilevel ) ) );
 }
 
 // item_database_t::initialize_item_sources =================================

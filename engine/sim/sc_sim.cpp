@@ -1977,7 +1977,7 @@ bool sim_t::init()
     scale_to_itemlevel = 630;
     scale_itemlevel_down_only = true;
   }
-  else if ( timewalk )
+  else if ( timewalk > 0 )
   {
     switch ( timewalk )
     {

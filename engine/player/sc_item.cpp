@@ -416,6 +416,18 @@ unsigned item_t::item_level() const
   return ilvl;
 }
 
+unsigned item_t::base_item_level() const
+{
+  if ( sim -> scale_to_itemlevel > 0 )
+    return sim -> scale_to_itemlevel;
+  else if ( parsed.item_level > 0 )
+  {
+    return parsed.item_level;
+  }
+  else
+    return parsed.data.level;
+}
+
 stat_e item_t::stat( size_t idx ) const
 {
   if ( idx >= sizeof_array( parsed.data.stat_type_e ) )
@@ -429,7 +441,7 @@ int item_t::stat_value( size_t idx ) const
   if ( idx >= sizeof_array( parsed.data.stat_val ) - 1 )
     return -1;
 
-  return item_database::scaled_stat( parsed.data, player -> dbc, idx, item_level() );
+  return item_database::scaled_stat( *this, player -> dbc, idx, item_level() );
 }
 
 // item_t::active ===========================================================

@@ -5283,7 +5283,7 @@ void paladin_t::generate_action_prio_list_ret()
   precombat -> add_action( this, "Seal of Righteousness", "if=active_enemies>=2" );
 
   // Snapshot stats
-  precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-potting
   if ( sim -> allow_potions && level >= 80 )
@@ -5298,10 +5298,9 @@ void paladin_t::generate_action_prio_list_ret()
   // Action Priority List
   ///////////////////////
 
-  action_priority_list_t* def               = get_action_priority_list( "default" );
-  action_priority_list_t* single            = get_action_priority_list( "single" );
-  action_priority_list_t* cleave            = get_action_priority_list( "cleave" );
-
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* single = get_action_priority_list( "single" );
+  action_priority_list_t* cleave = get_action_priority_list( "cleave" );
   // Start with Rebuke.  Because why not.
   def -> add_action( this, "Rebuke" );
 
@@ -5323,14 +5322,14 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Light's Hammer" );
 
   // Items
-  int num_items = ( int ) items.size();
+  int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       std::string item_str;
       item_str += "use_item,name=";
-      item_str += items[ i ].name();
+      item_str += items[i].name();
       item_str += ",if=buff.avenging_wrath.up";
       def -> add_action( item_str );
     }
@@ -5339,17 +5338,22 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Holy Avenger", "sync=seraphim,if=talent.seraphim.enabled" );
   def -> add_talent( this, "Holy Avenger", "if=holy_power<=2&!talent.seraphim.enabled" );
   def -> add_action( this, "Avenging Wrath", "sync=seraphim,if=talent.seraphim.enabled" );
-  def -> add_action( this, "Avenging Wrath", "if=!talent.seraphim.enabled" );
+  def -> add_action( this, "Avenging Wrath", "if=!talent.seraphim.enabled&set_bonus.tier18_4pc=0" );
+  def -> add_action( this, "Avenging Wrath", "if=!talent.seraphim.enabled&time<20&set_bonus.tier18_4pc=1" );
+  def -> add_action( this, "Avenging Wrath", "if=prev.execution_sentence&set_bonus.tier18_4pc=1&talent.execution_sentence.enabled&!talent.seraphim.enabled" );
+  def -> add_action( this, "Avenging Wrath", "if=prev.lights_hammer&set_bonus.tier18_4pc=1&talent.lights_hammer.enabled&!talent.seraphim.enabled" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def -> add_action( racial_actions[ i ] );
+    def -> add_action( racial_actions[i] );
 
   def -> add_talent( this, "Seraphim" );
   def -> add_action( "wait,sec=cooldown.seraphim.remains,if=talent.seraphim.enabled&cooldown.seraphim.remains>0&cooldown.seraphim.remains<gcd.max&holy_power>=5" );
 
+
   def -> add_action( "call_action_list,name=cleave,if=active_enemies>=3" );
   def -> add_action( "call_action_list,name=single" );
+
 
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&buff.final_verdict.up" );
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&active_enemies=2&!talent.final_verdict.enabled" );
@@ -5363,22 +5367,23 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<3" );
 
   single -> add_action( this, "Hammer of Wrath" );
+  single -> add_action( this, "Crusader Strike", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
   single -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&seal.truth&buff.maraads_truth.remains<cooldown.judgment.duration" );
   single -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration" );
   single -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&seal.righteousness&cooldown.avenging_wrath.remains<cooldown.judgment.duration" );
-  single -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
+  single -> add_action( this, "Exorcism", "if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
 
   single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.down" );
   single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&cooldown.avenging_wrath.remains<cooldown.judgment.duration&buff.liadrins_righteousness.remains>cooldown.judgment.duration" );
   single -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains>cooldown.judgment.duration&buff.liadrins_righteousness.down&!buff.avenging_wrath.up&!buff.bloodlust.up" );
 
-  single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
-  single -> add_action( this, "Divine Storm","if=active_enemies=2&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
+  single -> add_action( this, "Divine Storm", "if=active_enemies=2&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
   single -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up|target.health.pct<35" );
-  single -> add_action( this, "Divine STorm", "if=buff.divine_crusader.react&active_enemies=2&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled" );
-  single -> add_action( this, "Templar's Verdict","if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
-  single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
-  single -> add_action( this, "Templar's Verdict","if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&active_enemies=2&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
 
   single -> add_action( this, "Crusader Strike", "if=holy_power<5&talent.seraphim.enabled" );
   single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
@@ -5387,7 +5392,7 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Judgment", "cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&holy_power<5" );
   single -> add_action( this, "Exorcism", "if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled&!set_bonus.tier17_4pc=1" );
 
-  single -> add_action( this, "Judgment", "if=holy_power<5&talent.seraphim.enabled");
+  single -> add_action( this, "Judgment", "if=holy_power<5&talent.seraphim.enabled" );
   single -> add_action( this, "Judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
 
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.final_verdict.up" );
@@ -5396,7 +5401,7 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_talent( this, "Final Verdict", "if=holy_power>=4" );
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&active_enemies=2&holy_power>=4&!talent.final_verdict.enabled" );
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
-  single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&!talent.final_verdict.enabled" );
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&!talent.final_verdict.enabled" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
 
   single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<cooldown.judgment.duration" );
@@ -5405,7 +5410,7 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Exorcism", "if=holy_power<5&talent.seraphim.enabled" );
   single -> add_action( this, "Exorcism", "if=holy_power<=3|(holy_power=4&(cooldown.judgment.remains>=gcd*2&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))" );
 
-  single -> add_action( this, "Divine Storm","if=active_enemies=2&holy_power>=3&buff.final_verdict.up" );
+  single -> add_action( this, "Divine Storm", "if=active_enemies=2&holy_power>=3&buff.final_verdict.up" );
   single -> add_talent( this, "Final Verdict", "if=holy_power>=3" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
   single -> add_talent( this, "Holy Prism" );
@@ -5419,8 +5424,9 @@ void paladin_t::generate_action_prio_list_ret()
   cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)&!talent.final_verdict.enabled" );
 
   cleave -> add_action( this, "Hammer of Wrath" );
+  cleave -> add_action( this, "Hammer of the Righteous", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
   cleave -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration" );
-  cleave -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
+  cleave -> add_action( this, "Exorcism", "if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
 
   cleave -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
   cleave -> add_action( this, "Divine Storm", "if=buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
@@ -5459,7 +5465,6 @@ void paladin_t::generate_action_prio_list_ret()
   cleave -> add_talent( this, "Final Verdict", "if=holy_power>=3&buff.final_verdict.down" );
 
   cleave -> add_talent( this, "Holy Prism", "target=self" );
-
 }
 
 // ==========================================================================

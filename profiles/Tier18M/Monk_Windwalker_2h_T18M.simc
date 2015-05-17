@@ -1,7 +1,7 @@
 monk="Monk_Windwalker_2h_T18M"
 level=100
 race=blood_elf
-role=dps
+role=hybrid
 position=back
 talents=0230023
 glyphs=touch_of_death,blackout_kick
