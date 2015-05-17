@@ -2033,10 +2033,8 @@ public:
     if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons && ab::p() -> buff.bloodtalons -> check() )
       pm *= 1.0 + ab::p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
-
     if ( ! ab::p() -> buff.bear_form -> check() && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
       pm *= 1.0 + ab::p() -> buff.savage_roar -> check() * ab::p() -> buff.savage_roar -> default_value; // Avoid using value() to prevent skewing benefit_pct.
-
 
     return pm;
   }
@@ -3045,6 +3043,19 @@ struct thrash_cat_t : public cat_attack_t
   // Treat direct damage as "bleed"
   virtual double target_armor( player_t* ) const
   { return 0.0; }
+};
+
+// Flurry of Xuen (Fen-yu Legendary Cloak proc) =============================
+
+struct flurry_of_xuen_t : public cat_attack_t
+{
+  flurry_of_xuen_t( druid_t* p ) :
+    cat_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
+  {
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
+    proc = false;
+    aoe = 5;
+  }
 };
 
 // Mark of the Shattered Hand ===============================================
@@ -7675,8 +7686,10 @@ void druid_t::copy_from( player_t* source )
 
 action_t* druid_t::create_proc_action( const std::string& name, const special_effect_t& )
 {
-  if ( name == "shattered_bleed" && specialization() == DRUID_FERAL )
+  if ( util::str_compare_ci( name, "shattered_bleed" ) && specialization() == DRUID_FERAL )
     return new cat_attacks::shattered_bleed_t( this );
+  if ( util::str_compare_ci( name, "flurry_of_xuen" ) && specialization() == DRUID_FERAL )
+    return new cat_attacks::flurry_of_xuen_t( this );
 
   return 0;
 }
