@@ -2082,8 +2082,8 @@ bool sim_t::init()
     for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
     {
       player_t* p = player_no_pet_list[ i ];
-      if ( max_player_level < p -> level )
-        max_player_level = p -> level;
+      if ( max_player_level < p -> get_level() )
+        max_player_level = p -> get_level();
     }
   }
 
