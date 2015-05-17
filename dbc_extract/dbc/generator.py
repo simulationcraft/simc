@@ -1295,6 +1295,7 @@ class SpellDataGenerator(DataGenerator):
          183950,                    # Darklight Ray (WoD 6.2 Int DPS Trinket 3 damage spell)
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
+		 60235,                     # Darkmoon Card: Greatness proc
         ),
 
         # Warrior:
@@ -3374,8 +3375,7 @@ class SetBonusListGenerator(DataGenerator):
         # Normal set bonuses, T13 -> T17
 		{
 			'name'   : 'tier6',
-			'bonuses': [ 674, 669, 679, 680, 681, 670, 673, 672, 682, 683,
-			             684, 668, 671, 676, 678, 677, 675 ],
+			'bonuses': [ 676 ],
 			'tier'   : 6
 		},
         {

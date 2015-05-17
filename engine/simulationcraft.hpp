@@ -3874,6 +3874,7 @@ struct set_bonus_t
 #ifndef NDEBUG
     switch ( set_bonus )
     {
+      case T6:
       case T13:
       case T14:
       case T15:
@@ -3907,6 +3908,7 @@ struct set_bonus_t
   {
     switch ( set_bonus )
     {
+      case T6:
       case T13:
       case T14:
       case T15:
