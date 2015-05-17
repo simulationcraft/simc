@@ -164,9 +164,9 @@ double spell_t::miss_chance( double hit, player_t* t ) const
   miss *= 2;
 
   // 11% level-dependent miss for level+4
-  miss += 0.03 * ( t -> level - player -> level );
+  miss += 0.03 * ( t -> level() - player -> level() );
     
-  miss += 0.08 * std::max( t -> level - player -> level - 3, 0 );
+  miss += 0.08 * std::max( t -> level() - player -> level() - 3, 0 );
 
   // subtract the player's hit and expertise
   miss -= hit;

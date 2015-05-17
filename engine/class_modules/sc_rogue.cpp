@@ -1292,9 +1292,9 @@ void rogue_attack_t::impact( action_state_t* state )
     // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
     // Logic from: http://code.google.com/p/simulationcraft/issues/detail?id=1118
     double fof_chance = ( p() -> specialization() == ROGUE_ASSASSINATION ) ? 0.23139 : ( p() -> specialization() == ROGUE_COMBAT ) ? 0.09438 : 0.28223;
-    if ( state -> target && state -> target -> level > 88 )
+    if ( state -> target && state -> target -> level() > 88 )
     {
-      fof_chance *= ( 1.0 - 0.1 * ( state -> target -> level - 88 ) );
+      fof_chance *= ( 1.0 - 0.1 * ( state -> target -> level() - 88 ) );
     }
     if ( rng().roll( fof_chance ) )
     {
@@ -5237,27 +5237,27 @@ void rogue_t::init_action_list()
   clear_action_priority_lists();
 
   // Flask
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( level > 90 )
+    if ( true_level > 90 )
       flask_action += "greater_draenic_agility_flask";
     else
-      flask_action += ( level >= 85 ) ? "spring_blossoms" : ( ( level >= 80 ) ? "winds" : "" );
+      flask_action += ( true_level >= 85 ) ? "spring_blossoms" : ( ( true_level >= 80 ) ? "winds" : "" );
 
     precombat -> add_action( flask_action );
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
     std::string food_action = "food,type=";
     if ( specialization() == ROGUE_ASSASSINATION )
-      food_action += ( ( level >= 100 ) ? "sleeper_sushi" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 100 ) ? "sleeper_sushi" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_COMBAT )
-      food_action += ( ( level >= 100 ) ? "buttered_sturgeon" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 100 ) ? "buttered_sturgeon" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_SUBTLETY )
-      food_action += ( ( level >= 100 ) ? "salty_squid_roll" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 100 ) ? "salty_squid_roll" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
 
     precombat -> add_action( food_action );
   }
@@ -5271,11 +5271,11 @@ void rogue_t::init_action_list()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   std::string potion_name;
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       potion_name = "draenic_agility";
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       potion_name = "virmens_bite";
     else
       potion_name = "tolvir";
@@ -5392,7 +5392,7 @@ void rogue_t::init_action_list()
 
     // Generate combo points, or use combo points
     def -> add_action( "call_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking|(talent.anticipation.enabled&anticipation_charges<3&buff.deep_insight.down)" );
-    if ( level >= 3 )
+    if ( true_level >= 3 )
       def -> add_action( "call_action_list,name=finisher,if=combo_points=5&dot.revealing_strike.ticking&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=3))" );
 
     // Combo point generators
@@ -6321,8 +6321,8 @@ void rogue_t::arise()
   if ( perk.improved_slice_and_dice -> ok() )
     buffs.slice_and_dice -> trigger( 1, buffs.slice_and_dice -> data().effectN( 1 ).percent(), -1.0, timespan_t::zero() );
 
-  if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.haste -> trigger();
-  if ( ! sim -> overrides.multistrike && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.multistrike -> trigger();
+  if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( true_level ) ) sim -> auras.haste -> trigger();
+  if ( ! sim -> overrides.multistrike && dbc.spell( 113742 ) -> is_level( true_level ) ) sim -> auras.multistrike -> trigger();
 }
 
 // rogue_t::energy_regen_per_second =========================================

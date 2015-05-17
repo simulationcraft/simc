@@ -5718,20 +5718,20 @@ void warlock_t::apl_precombat()
   if ( sim-> allow_flasks )
   {
     // Flask
-    if ( level == 100 )
+    if ( true_level == 100 )
       precombat_list = "flask,type=greater_draenic_intellect_flask";
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       precombat_list = "flask,type=warm_sun";
   }
 
   if ( sim -> allow_food )
   {
     // Food
-    if ( level == 100 && specialization() == WARLOCK_DESTRUCTION )
+    if ( level() == 100 && specialization() == WARLOCK_DESTRUCTION )
       precombat_list += "/food,type=pickled_eel";
-    else if ( level == 100 )
+    else if ( level() == 100 )
       precombat_list += "/food,type=sleeper_sushi";
-    else if ( level >= 85 )
+    else if ( level() >= 85 )
       precombat_list += "/food,type=mogu_fish_stew";
   }
 
@@ -5750,9 +5750,9 @@ void warlock_t::apl_precombat()
   if ( sim->allow_potions )
   {
     // Pre-potion
-    if ( level == 100 )
+    if ( true_level == 100 )
       precombat_list += "/potion,name=draenic_intellect";
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       precombat_list += "/potion,name=jade_serpent";
   }
 
@@ -5775,14 +5775,14 @@ void warlock_t::apl_precombat()
   if ( sim -> allow_potions )
   {
     // Potion
-    if ( level == 100 && specialization() == WARLOCK_DEMONOLOGY )
+    if ( true_level == 100 && specialization() == WARLOCK_DEMONOLOGY )
     {
       if ( find_item( "nithramus_the_allseer" ) )
         action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.remains>30|buff.Nithramus.remains>4|(((buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active))";
       else
         action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.remains>30|(((buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active))";
     }
-    else if ( level == 100 )
+    else if ( true_level == 100 )
     {
       if ( find_item( "nithramus_the_allseer" ) )
         action_list_str += "/potion,name=draenic_intellect,if=target.time_to_die<=25|buff.Nithramus.remains>4|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)";
@@ -6168,7 +6168,7 @@ void warlock_t::trigger_demonology_t17_2pc( const action_state_t* state ) const
   if ( cooldowns.t17_2pc_demonology -> down() )
     return;
 
-  if ( level < 100 )
+  if ( true_level < 100 )
     return;
 
   if ( ! rng().roll( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> proc_chance() ) )

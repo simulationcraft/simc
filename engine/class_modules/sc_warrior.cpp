@@ -2684,9 +2684,9 @@ struct shield_slam_t: public warrior_attack_t
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
     attack_power_mod.direct = 0.366; // Low level value for shield slam.
-    if ( p -> level >= 80 )
+    if ( p -> level() >= 80 )
       attack_power_mod.direct += 0.426; // Adds 42.6% ap once the character is level 80
-    if ( p -> level >= 85 )
+    if ( p -> level() >= 85 )
       attack_power_mod.direct += 2.46; // Adds another 246% ap at level 85
     //Shield slam is just the best.
   }
@@ -4038,10 +4038,10 @@ void warrior_t::apl_precombat()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   // Flask
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( level > 90 )
+    if ( true_level > 90 )
     {
       if ( primary_role() == ROLE_ATTACK || gladiator )
         flask_action += "greater_draenic_strength_flask";
@@ -4064,28 +4064,28 @@ void warrior_t::apl_precombat()
     std::string food_action = "food,type=";
     if ( specialization() == WARRIOR_FURY )
     {
-      if ( level > 90 )
+      if ( level() > 90 )
         food_action += "pickled_eel";
       else
         food_action += "black_pepper_ribs_and_shrimp";
     }
     else if ( specialization() == WARRIOR_ARMS )
     {
-      if ( level > 90 )
+      if ( level() > 90 )
         food_action += "sleeper_sushi";
       else
         food_action += "black_pepper_ribs_and_shrimp";
     }
     else if ( gladiator )
     {
-      if ( level > 90 )
+      if ( level() > 90 )
         food_action += "pickled_eel";
       else
         food_action += "chun_tian_spring_rolls";
     }
     else
     {
-      if ( level > 90 )
+      if ( level() > 90 )
         food_action += "sleeper_sushi";
       else
         food_action += "chun_tian_spring_rolls";
@@ -4135,14 +4135,14 @@ void warrior_t::apl_precombat()
   //Pre-pot
   if ( sim -> allow_potions )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
     {
       if ( specialization() != WARRIOR_PROTECTION )
         precombat -> add_action( "potion,name=draenic_strength" );
       else
         precombat -> add_action( "potion,name=draenic_armor" );
     }
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
     {
       if ( primary_role() == ROLE_ATTACK )
         precombat -> add_action( "potion,name=mogu_power" );
@@ -4185,9 +4185,9 @@ void warrior_t::apl_fury()
 
   if ( sim -> allow_potions )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
@@ -4308,9 +4308,9 @@ void warrior_t::apl_arms()
 
   if ( sim -> allow_potions )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25" );
   }
 
@@ -4420,9 +4420,9 @@ void warrior_t::apl_prot()
   //potion
   if ( sim -> allow_potions )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
   }
 
@@ -5166,7 +5166,7 @@ void warrior_t::arise()
   else if ( active.stance == STANCE_DEFENSE )
     buff.defensive_stance -> trigger();
 
-  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility && level >= 80 ) // Currently it is impossible to remove this aura in game.
+  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility && true_level >= 80 ) // Currently it is impossible to remove this aura in game.
     sim -> auras.versatility -> trigger();
 }
 

@@ -94,11 +94,11 @@ double attack_t::miss_chance( double hit, player_t* t ) const
   double miss = t -> cache.miss();
   
   // add or subtract 1.5% per level difference
-  miss += ( t -> level - player -> level ) * 0.015;
+  miss += ( t -> level() - player -> level() ) * 0.015;
 
   // asymmetric hit penalty for npcs attacking higher-level players
   if ( ! t -> is_enemy() )
-    miss += std::max( t -> level - player -> level - 3, 0 ) * 0.015;
+    miss += std::max( t -> level() - player -> level() - 3, 0 ) * 0.015;
 
   // subtract the player's hit chance
   miss -= hit;
@@ -115,7 +115,7 @@ double attack_t::dodge_chance( double expertise, player_t* t ) const
 
   // WoD mechanics are unchanged from MoP
   // add or subtract 1.5% per level difference
-  dodge += ( t -> level - player -> level ) * 0.015; 
+  dodge += ( t -> level() - player -> level() ) * 0.015; 
 
   // subtract the player's expertise chance
   dodge -= expertise;
@@ -129,7 +129,7 @@ double attack_t::block_chance( action_state_t* s ) const
   double block = s -> target -> cache.block();
 
   // add or subtract 1.5% per level difference
-  block += ( s -> target -> level - player -> level ) * 0.015;
+  block += ( s -> target -> level() - player -> level() ) * 0.015;
 
   return block;
 }
@@ -224,7 +224,7 @@ result_e attack_t::calculate_result( action_state_t* s )
 
   if ( ! harmful || ! may_hit || ! s -> target ) return RESULT_NONE;
 
-  int delta_level = s -> target -> level - player -> level;
+  int delta_level = s -> target -> level() - player -> level();
 
   double miss     = may_miss ? miss_chance( composite_hit(), s -> target ) : 0;
   double dodge    = may_dodge ? dodge_chance( composite_expertise(), s -> target ) : 0;
@@ -346,10 +346,10 @@ double melee_attack_t::parry_chance( double expertise, player_t* t ) const
   
   // WoD mechanics are similar to MoP
   // add or subtract 1.5% per level difference
-  parry += ( t -> level - player -> level ) * 0.015; 
+  parry += ( t -> level() - player -> level() ) * 0.015; 
 
   // 3% additional parry for attacking a level+3 or higher NPC
-  if ( t -> is_enemy() && ( t -> level - player -> level ) > 2 )
+  if ( t -> is_enemy() && ( t -> level() - player -> level() ) > 2 )
     parry += 0.03;
 
   // subtract the player's expertise chance - no longer depends on dodge

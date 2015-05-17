@@ -504,7 +504,7 @@ struct priest_pet_t : public pet_t
     int i = as<int>( sizeof_array( pet_base_stats ) );
     while ( --i > 0 )
     {
-      if ( pet_base_stats[ i ].level <= level )
+      if ( pet_base_stats[ i ].level <= level() )
         break;
     }
     if ( i >= 0 )
@@ -642,8 +642,8 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
   {
     direct_power_mod = 0.75;
 
-    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
-    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
+    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
+    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
 
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
@@ -666,8 +666,8 @@ struct mindbender_pet_t : public base_fiend_pet_t
   {
     direct_power_mod = 0.75;
 
-    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
-    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
+    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
+    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
@@ -6416,11 +6416,11 @@ void priest_t::apl_precombat()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   // Flask
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
 
-    if ( level > 90 )
+    if ( true_level > 90 )
     {
       switch ( specialization() )
       {
@@ -6441,7 +6441,7 @@ void priest_t::apl_precombat()
           break;
       }
     }
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       flask_action += "warm_sun";
     else
       flask_action += "draconic_mind";
@@ -6450,11 +6450,11 @@ void priest_t::apl_precombat()
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
     std::string food_action = "food,type=";
 
-    if ( level > 90 )
+    if ( level() > 90 )
     {
       switch ( specialization() )
       {
@@ -6478,7 +6478,7 @@ void priest_t::apl_precombat()
           break;
       }
     }
-    else if ( level > 85 )
+    else if ( level() > 85 )
         food_action += "mogu_fish_stew";
     else
         food_action += "seafood_magnifique_feast";
@@ -6508,11 +6508,11 @@ void priest_t::apl_precombat()
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       precombat -> add_action( "potion,name=draenic_intellect" );
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       precombat -> add_action( "potion,name=jade_serpent" );
     else
       precombat -> add_action( "potion,name=volcanic" );
@@ -6612,11 +6612,11 @@ void priest_t::apl_shadow()
     default_list -> add_action( profession_actions[ i ] );
 
   // Potions
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       default_list -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       default_list -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
       default_list -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
@@ -6931,11 +6931,11 @@ void priest_t::apl_disc_dmg()
     def -> add_action( profession_actions[ i ] );
 
   // Potions
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       def -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
       def -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
@@ -7038,9 +7038,9 @@ void priest_t::apl_holy_dmg()
   // Potions
   if ( sim -> allow_potions )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       def -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
       def -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
