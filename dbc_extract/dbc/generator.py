@@ -1296,6 +1296,9 @@ class SpellDataGenerator(DataGenerator):
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
 		 60235,                     # Darkmoon Card: Greatness proc
+		 72412, 72413, 72414,       # ICC Ring Procs
+		 72415, 72416, 72417,
+		 72418, 72419
         ),
 
         # Warrior:

@@ -51,7 +51,6 @@ namespace profession
 namespace item
 {
   void heartpierce( special_effect_t& );
-  void kiril_fury_of_beasts( special_effect_t& );
   void darkmoon_card_greatness( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
@@ -1416,32 +1415,6 @@ void item::humming_blackiron_trigger( special_effect_t& effect )
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
-                   .tick_behavior( BUFF_TICK_CLIP )
-                   .period( spell -> effectN( 1 ).period() )
-                   .duration( spell -> duration() );
-
-  effect.custom_buff = b;
-
-  new dbc_proc_callback_t( effect.item -> player, effect );
-}
-
-void item::kiril_fury_of_beasts( special_effect_t& effect )
-{
-  maintenance_check( 528 );
-
-  const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
-  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
-  const spell_data_t* buff = spell -> effectN( 1 ).trigger(); 
-
-  std::string buff_name = spell -> name_cstr();
-  util::tokenize( buff_name );
-
-  // Require a damaging result, instead of any harmful spell hit
-  effect.proc_flags2_ = PF2_ALL_HIT;
-
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
-                   .add_stat( STAT_AGILITY, buff -> effectN( 1 ).average( effect.item ) )
-                   .max_stack( 10 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
@@ -3466,6 +3439,14 @@ void unique_gear::register_special_effect( unsigned spell_id, const std::string&
  */
 void unique_gear::register_special_effects()
 {
+  /* Legacy Effects, pre-5.0 */
+  register_special_effect( 57345,  item::darkmoon_card_greatness        );
+  register_special_effect( 71892,  item::heartpierce                    );
+  register_special_effect( 71880,  item::heartpierce                    );
+  register_special_effect( 107824, "1Tick_108016Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
+  register_special_effect( 109862, "1Tick_109860Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
+  register_special_effect( 109865, "1Tick_109863Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
+  
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
   register_special_effect( 184291, item::soul_capacitor                 );
@@ -3513,6 +3494,8 @@ void unique_gear::register_special_effects()
   register_special_effect( 138964, item::unerring_vision_of_leishen     );
 
   register_special_effect( 138728, "Reverse"                            ); /* Steadfast Talisman of the Shado-Pan Assault */
+  register_special_effect( 138701, "ProcOn/Hit"                         ); /* Brutal Talisman of the Shado-Pan Assault */
+  register_special_effect( 138700, "ProcOn/Hit"                         ); /* Vicious Talisman of the Shado-Pan Assault */
   register_special_effect( 139171, "ProcOn/Crit_RPPMAttackCrit"         ); /* Gaze of the Twins */
   register_special_effect( 138757, "1Tick_138737Trigger"                ); /* Renataki's Soul Charm */
   register_special_effect( 138790, "ProcOn/Hit_1Tick_138788Trigger"     ); /* Wushoolay's Final Choice */
@@ -3532,25 +3515,37 @@ void unique_gear::register_special_effects()
   register_special_effect( 126490, "ProcOn/Crit"                        ); /* Searing Words */
 
   /* Mists of Pandaria: Player versus Player */
-  register_special_effect( 138701, "ProcOn/Hit"                         ); /* Brutal Talisman of the Shado-Pan Assault */
-  register_special_effect( 138700, "ProcOn/Hit"                         ); /* Vicious Talisman of the Shado-Pan Assault */
-
   register_special_effect( 126706, "ProcOn/Hit"                         ); /* Gladiator's Insignia of Dominance */
 
   /* Mists of Pandaria: Darkmoon Faire */
   register_special_effect( 128990, "ProcOn/Hit"                         ); /* Relic of Yu'lon */
   register_special_effect( 128445, "ProcOn/Crit"                        ); /* Relic of Xuen (agi) */
 
-  // Misc
-  register_special_effect( 71892,  item::heartpierce                    );
-  register_special_effect( 71880,  item::heartpierce                    );
-  register_special_effect( 107824, item::kiril_fury_of_beasts           );
-  register_special_effect( 109862, item::kiril_fury_of_beasts           );
-  register_special_effect( 109865, item::kiril_fury_of_beasts           );
-  register_special_effect( 57345,  item::darkmoon_card_greatness        );
   /**
    * Enchants
    */
+
+  /* The Burning Crusade */
+  register_special_effect(  28093, "1PPM"                               ); /* Mongoose */
+
+  /* Wrath of the Lich King */
+  register_special_effect(  59620, "1PPM"                               ); /* Berserking */
+  register_special_effect(  42976, enchants::executioner                );
+
+  /* Cataclysm */
+  register_special_effect(  94747, enchants::hurricane_spell            );
+  register_special_effect(  74221, "1PPM"                               ); /* Hurricane Weapon */
+  register_special_effect(  74245, "1PPM"                               ); /* Landslide */
+
+  /* Mists of Pandaria */
+  register_special_effect( 118333, enchants::dancing_steel              );
+  register_special_effect( 142531, enchants::dancing_steel              ); /* Bloody Dancing Steel */
+  register_special_effect( 120033, enchants::jade_spirit                );
+  register_special_effect( 141178, enchants::jade_spirit                );
+  register_special_effect( 104561, enchants::windsong                   );
+  register_special_effect( 104428, "rppmhaste"                          ); /* Elemental Force */
+  register_special_effect( 104441, enchants::rivers_song                );
+  register_special_effect( 118314, enchants::colossus                   );
 
   /* Warlords of Draenor */
   register_special_effect( 159239, enchants::mark_of_the_shattered_hand );
@@ -3563,28 +3558,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 156052, enchants::oglethorpes_missile_splitter );
   register_special_effect( 173286, enchants::hemets_heartseeker         );
   register_special_effect( 173321, enchants::mark_of_bleeding_hollow    );
-
-  /* Mists of Pandaria */
-  register_special_effect( 118333, enchants::dancing_steel              );
-  register_special_effect( 142531, enchants::dancing_steel              ); /* Bloody Dancing Steel */
-  register_special_effect( 120033, enchants::jade_spirit                );
-  register_special_effect( 141178, enchants::jade_spirit                );
-  register_special_effect( 104561, enchants::windsong                   );
-  register_special_effect( 104428, "rppmhaste"                          ); /* Elemental Force */
-  register_special_effect( 104441, enchants::rivers_song                );
-  register_special_effect( 118314, enchants::colossus                   );
-
-  /* Cataclysm */
-  register_special_effect(  94747, enchants::hurricane_spell            );
-  register_special_effect(  74221, "1PPM"                               ); /* Hurricane Weapon */
-  register_special_effect(  74245, "1PPM"                               ); /* Landslide */
-
-  /* Wrath of the Lich King */
-  register_special_effect(  59620, "1PPM"                               ); /* Berserking */
-  register_special_effect(  42976, enchants::executioner                );
-
-  /* The Burning Crusade */
-  register_special_effect(  28093, "1PPM"                               ); /* Mongoose */
 
   /* Engineering enchants */
   register_special_effect( 177708, "1PPM_109092Trigger"                 ); /* Mirror Scope */
