@@ -475,7 +475,7 @@ player_t::player_t( sim_t*             s,
   // (static) attributes
   race( r ),
   role( ROLE_NONE ),
-  level( default_level ),
+  true_level( default_level ),
   party( 0 ),
   ready_type( READY_POLL ),
   _spec( SPEC_NONE ),
@@ -830,7 +830,7 @@ void player_t::init_base_stats()
 #endif
 
   if ( ! is_enemy() )
-    base.rating.init( dbc, get_level() );
+    base.rating.init( dbc, level() );
 
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
@@ -842,11 +842,11 @@ void player_t::init_base_stats()
 
   if ( ! is_enemy() )
   {
-    base.stats.attribute[ STAT_STRENGTH  ]  = dbc.race_base( race ).strength + dbc.attribute_base( type, get_level() ).strength;
-    base.stats.attribute[ STAT_AGILITY   ]  = dbc.race_base( race ).agility + dbc.attribute_base( type, get_level() ).agility;
-    base.stats.attribute[ STAT_STAMINA   ]  = dbc.race_base( race ).stamina + dbc.attribute_base( type, get_level() ).stamina;
-    base.stats.attribute[ STAT_INTELLECT ]  = dbc.race_base( race ).intellect + dbc.attribute_base( type, get_level() ).intellect;
-    base.stats.attribute[ STAT_SPIRIT    ]  = dbc.race_base( race ).spirit + dbc.attribute_base( type, get_level() ).spirit;
+    base.stats.attribute[ STAT_STRENGTH  ]  = dbc.race_base( race ).strength + dbc.attribute_base( type, level() ).strength;
+    base.stats.attribute[ STAT_AGILITY   ]  = dbc.race_base( race ).agility + dbc.attribute_base( type, level() ).agility;
+    base.stats.attribute[ STAT_STAMINA   ]  = dbc.race_base( race ).stamina + dbc.attribute_base( type, level() ).stamina;
+    base.stats.attribute[ STAT_INTELLECT ]  = dbc.race_base( race ).intellect + dbc.attribute_base( type, level() ).intellect;
+    base.stats.attribute[ STAT_SPIRIT    ]  = dbc.race_base( race ).spirit + dbc.attribute_base( type, level() ).spirit;
 
     // heroic presence is treated like base stats, floored before adding in; tested 7/20/2014
     base.stats.attribute[ STAT_STRENGTH  ] += util::floor( racials.heroic_presence -> effectN( 1 ).average( this ) );
@@ -857,18 +857,18 @@ void player_t::init_base_stats()
     // Human spirit
     base.stats.versatility_rating          += util::floor( racials.the_human_spirit -> effectN( 1 ).average( this ) );
 
-    base.spell_crit               = dbc.spell_crit_base( type, get_level() );
-    base.attack_crit              = dbc.melee_crit_base( type, get_level() );
-    base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, get_level() );
-    base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, get_level() );
+    base.spell_crit               = dbc.spell_crit_base( type, level() );
+    base.attack_crit              = dbc.melee_crit_base( type, level() );
+    base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, level() );
+    base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, level() );
     base.mastery = 8.0;
 
-    resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, get_level() );
-    resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, get_level() );
+    resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level() );
+    resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level() );
 
-    base.mana_regen_per_second = dbc.regen_base( type, get_level() ) / 5.0;
-    base.mana_regen_per_spirit = dbc.regen_spirit( type, get_level() );
-    base.health_per_stamina    = dbc.health_per_stamina( get_level() );
+    base.mana_regen_per_second = dbc.regen_base( type, level() ) / 5.0;
+    base.mana_regen_per_spirit = dbc.regen_spirit( type, level() );
+    base.health_per_stamina    = dbc.health_per_stamina( level() );
 
     // players have a base 7.5% hit/exp
     base.hit       = 0.075;
@@ -879,13 +879,13 @@ void player_t::init_base_stats()
   // Racial agility modifiers and Heroic Presence do affect base dodge, but are affected
   // by diminishing returns, and handled in composite_dodge()  (tested 7/24/2014)
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN )
-    base.dodge_per_agility     = dbc.avoid_per_str_agi_by_level( get_level() ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
+    base.dodge_per_agility     = dbc.avoid_per_str_agi_by_level( level() ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
 
   // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
   // Racial strength modifiers and Heroic Presence do affect base parry, but are affected
   // by diminishing returns, and handled in composite_parry()  (tested 7/24/2014)
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
-    base.parry_per_strength    = dbc.avoid_per_str_agi_by_level( get_level() ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
+    base.parry_per_strength    = dbc.avoid_per_str_agi_by_level( level() ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
 
   // All classes get 3% dodge and miss; add racials and racial agi mod in here too
   base.dodge = 0.03 + racials.quickness -> effectN( 1 ).percent() + dbc.race_base( race ).agility * base.dodge_per_agility;
@@ -927,7 +927,7 @@ void player_t::init_base_stats()
   resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
 
 
-  if ( level >= 50 && matching_gear )
+  if ( true_level >= 50 && matching_gear )
   {
     for ( attribute_e a = ATTR_STRENGTH; a <= ATTR_SPIRIT; a++ )
     {
@@ -1189,7 +1189,7 @@ void player_t::init_defense()
   }
 
   // Armor Coefficient
-  initial.armor_coeff = dbc.armor_mitigation_constant( get_level() );
+  initial.armor_coeff = dbc.armor_mitigation_constant( level() );
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
 
@@ -1308,7 +1308,7 @@ void player_t::init_professions()
     if ( 2 != util::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
     {
       prof_name  = splits[ i ];
-      prof_value = level > 85 ? 600 : 525;
+      prof_value = true_level > 85 ? 600 : 525;
     }
 
     int prof_type = util::parse_profession_type( prof_name );
@@ -1653,7 +1653,7 @@ void player_t::override_talent( std::string override_str )
       talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc.ptr );
       if ( t && ( t -> spell_id() == spell_id ) )
       {
-        if ( level < std::min( ( j + 1 ) * 15, 100 ) )
+        if ( true_level < std::min( ( j + 1 ) * 15, 100 ) )
         {
           sim -> errorf( "Override talent %s is too high level for player %s.\n", override_str.c_str(), name() );
           return;
@@ -2476,12 +2476,12 @@ bool player_t::has_t18_class_trinket() const
 
 // player_t::level ==========================================================
 
-int player_t::get_level() const
+int player_t::level() const
 {
   if ( sim -> timewalk > 0 )
     return sim -> timewalk;
   else
-    return level;
+    return true_level;
 }
 
 // player_t::energy_regen_per_second ========================================
@@ -2727,7 +2727,7 @@ double player_t::composite_dodge() const
 
   // but not class base agility or racial modifiers (irrelevant for enemies)
   if ( ! is_enemy() )
-    bonus_dodge -= ( dbc.attribute_base( type, get_level() ).agility + dbc.race_base( race ).agility ) * current.dodge_per_agility;
+    bonus_dodge -= ( dbc.attribute_base( type, level() ).agility + dbc.race_base( race ).agility ) * current.dodge_per_agility;
 
   // if we have any bonus_dodge, apply diminishing returns and add it to total_dodge.
   if ( bonus_dodge != 0 )
@@ -2749,7 +2749,7 @@ double player_t::composite_parry() const
 
   // but not class base strength or racial modifiers (irrelevant for enemies)
   if ( ! is_enemy() )
-    bonus_parry -= ( dbc.attribute_base( type, get_level() ).strength + dbc.race_base( race ).strength ) * current.parry_per_strength;
+    bonus_parry -= ( dbc.attribute_base( type, level() ).strength + dbc.race_base( race ).strength ) * current.parry_per_strength;
 
   // if we have any bonus_parry, apply diminishing returns and add it to total_parry.
   if ( bonus_parry != 0 )
@@ -3116,7 +3116,7 @@ double player_t::composite_movement_speed() const
 double player_t::composite_attribute( attribute_e attr ) const
 {
   double a = current.stats.attribute[ attr ];
-  double m = ( ( level >= 50 ) && matching_gear ) ? ( 1.0 + matching_gear_multiplier( attr ) ) : 1.0;
+  double m = ( ( true_level >= 50 ) && matching_gear ) ? ( 1.0 + matching_gear_multiplier( attr ) ) : 1.0;
 
   a = util::floor( ( a - base.stats.attribute[ attr ] ) * m ) + base.stats.attribute[ attr ];
 
@@ -7271,7 +7271,7 @@ void player_t::replace_spells()
         break;
       }
       const spell_data_t* s = dbc.spell( id );
-      if ( s -> replace_spell_id() && ( ( int )s -> level() <= level ) )
+      if ( s -> replace_spell_id() && ( ( int )s -> level() <= true_level ) )
       {
         // Found a spell we should replace
         dbc.replace_id( s -> replace_spell_id(), id );
@@ -7284,7 +7284,7 @@ void player_t::replace_spells()
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_points.has_row_col( j, i ) && level < std::min( ( j + 1 ) * 15, 100 ) )
+      if ( talent_points.has_row_col( j, i ) && true_level < std::min( ( j + 1 ) * 15, 100 ) )
       {
         talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc.ptr );
         if ( td && td -> replace_id() )
@@ -7333,7 +7333,7 @@ void player_t::replace_spells()
         break;
       }
       const spell_data_t* s = dbc.spell( id );
-      if ( s -> replace_spell_id() && ( ( int )s -> level() <= level ) )
+      if ( s -> replace_spell_id() && ( ( int )s -> level() <= true_level ) )
       {
         // Found a spell we should replace
         dbc.replace_id( s -> replace_spell_id(), id );
@@ -7382,7 +7382,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
       {
         // check if we have the talent enabled or not
         // std::min( 100, x ) dirty fix so that we can access tier 7 talents at level 100 and not level 105
-        if ( check_validity && ( ! talent_points.has_row_col( j, i ) || level < std::min( ( j + 1 ) * 15, 100 ) ) )
+        if ( check_validity && ( ! talent_points.has_row_col( j, i ) || true_level < std::min( ( j + 1 ) * 15, 100 ) ) )
           return spell_data_t::not_found();
 
         // We have that talent enabled.
@@ -7438,7 +7438,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
     if ( unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() ) )
     {
       const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( ( int )spell -> level() <= level ) )
+      if ( ( ( int )spell -> level() <= true_level ) )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
@@ -7455,7 +7455,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 
 const spell_data_t* player_t::find_perk_spell( const std::string& name, specialization_e s ) const
 {
-  if ( level < 91 ) // No perks for level 90 characterss
+  if ( true_level < 91 ) // No perks for level 90 characterss
     return spell_data_t::not_found();
 
   if ( s == SPEC_NONE || s == _spec )
@@ -7463,7 +7463,7 @@ const spell_data_t* player_t::find_perk_spell( const std::string& name, speciali
     if ( unsigned spell_id = dbc.perk_ability_id( _spec, name.c_str() ) )
     {
       const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( ( int )spell -> level() <= level ) )
+      if ( ( ( int )spell -> level() <= true_level ) )
         return spell;
     }
   }
@@ -7473,7 +7473,7 @@ const spell_data_t* player_t::find_perk_spell( const std::string& name, speciali
 
 const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) const
 {
-  if ( level < 91 ) // No perks for level 90 characterss
+  if ( true_level < 91 ) // No perks for level 90 characterss
     return spell_data_t::not_found();
 
   if ( s == SPEC_NONE || s == _spec )
@@ -7481,7 +7481,7 @@ const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) 
     if ( unsigned spell_id = dbc.perk_ability_id( _spec, idx ) )
     {
       const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( ( int )spell -> level() <= level ) )
+      if ( ( ( int )spell -> level() <= true_level ) )
         return spell;
     }
   }
@@ -7498,7 +7498,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
     if ( unsigned spell_id = dbc.mastery_ability_id( s, idx ) )
     {
       const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( int )spell -> level() <= level )
+      if ( ( int )spell -> level() <= true_level )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
@@ -7581,7 +7581,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
     if ( unsigned spell_id = dbc.class_ability_id( type, _spec, name.c_str() ) )
     {
       const spell_data_t* spell = dbc.spell( spell_id );
-      if ( spell -> id() == spell_id && ( int )spell -> level() <= level )
+      if ( spell -> id() == spell_id && ( int )spell -> level() <= true_level )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
@@ -7619,7 +7619,7 @@ const spell_data_t* player_t::find_spell( const unsigned int id, const std::stri
   if ( id )
   {
     const spell_data_t* s = dbc.spell( id );
-    if ( s -> id() && ( int )s -> level() <= level )
+    if ( s -> id() && ( int )s -> level() <= true_level )
     {
       if ( dbc::get_token( id ).empty() )
         dbc.add_token( id, token );
@@ -7662,7 +7662,7 @@ expr_t* player_t::create_expression( action_t* a,
                                      const std::string& expression_str )
 {
   if ( expression_str == "level" )
-    return make_ref_expr( "level", level );
+    return make_ref_expr( "level", true_level );
   if ( expression_str == "name" )
     return make_ref_expr( "name", actor_index );
   if ( expression_str == "self" )
@@ -8602,7 +8602,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       profile_str += "origin=\"" + origin_str + '"' + term;
     if ( ! report_information.thumbnail_url.empty() )
       profile_str += "thumbnail=\"" + report_information.thumbnail_url + '"' + term;
-    profile_str += "level=" + util::to_string( level ) + term;
+    profile_str += "level=" + util::to_string( true_level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
@@ -8812,7 +8812,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 void player_t::copy_from( player_t* source )
 {
   origin_str = source -> origin_str;
-  level = source -> level;
+  true_level = source -> true_level;
   race_str = source -> race_str;
   timeofday = source -> timeofday;
   race = source -> race;
@@ -8861,7 +8861,7 @@ void player_t::create_options()
     add_option( opt_string( "glyphs", glyphs_str ) );
     add_option( opt_string( "race", race_str ) );
     add_option( opt_func( "timeofday", parse_timeofday ) );
-    add_option( opt_int( "level", level, 0, MAX_LEVEL ) );
+    add_option( opt_int( "level", true_level, 0, MAX_LEVEL ) );
     add_option( opt_bool( "ready_trigger", ready_type ) );
     add_option( opt_func( "role", parse_role_string ) );
     add_option( opt_string( "target", target_str ) );
@@ -10698,7 +10698,7 @@ void manager_t::update()
   assert( _started && "Trying to update Resolve for a unstarted Resolve Manager." );
 
   // Relevant constants
-  static const double damage_mod_coefficient = 1 / ( 10 * _player.dbc.resolve_level_scaling( _player.get_level() ) ); // multiplier for the resolve damage component
+  static const double damage_mod_coefficient = 1 / ( 10 * _player.dbc.resolve_level_scaling( _player.level() ) ); // multiplier for the resolve damage component
   //const double resolve_sta_mod = 1 / 250.0 /  _player.dbc.resolve_item_scaling( _player.level );
   static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
 

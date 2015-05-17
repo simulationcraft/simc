@@ -131,7 +131,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   if ( owner )
     writer.print_attribute( "owner", owner -> name() );
   writer.print_tag( "type", p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player" );
-  writer.print_tag( "level", util::to_string( p -> level ) );
+  writer.print_tag( "level", util::to_string( p -> true_level ) );
   writer.print_tag( "race", p -> race_str.c_str() );
   writer.begin_tag( "class" );
   writer.print_attribute( "type", util::player_type_string( p->type ) );

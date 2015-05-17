@@ -817,7 +817,7 @@ struct add_t : public pet_t
   add_t( sim_t* s, enemy_t* o, const std::string& n, pet_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
-    level = s -> max_player_level + 3;
+    true_level = s -> max_player_level + 3;
   }
 
   virtual void init_action_list()
@@ -886,7 +886,7 @@ struct heal_enemy_t : public enemy_t
     enemy_t( s, n, r, HEALING_ENEMY )
   {
     target = this;
-    level = s -> max_player_level; // set to default player level, not default+3
+    true_level = s -> max_player_level; // set to default player level, not default+3
   }
 
   virtual void init_resources( bool /* force */ )
@@ -904,7 +904,7 @@ struct heal_enemy_t : public enemy_t
 
     collected_data.htps.change_mode( false );
 
-    level = std::min( 100, level );
+    true_level = std::min( 100, true_level );
   }
   virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
@@ -981,7 +981,7 @@ struct tmi_enemy_t : public enemy_t
     race = RACE_HUMANOID;
 
     // override level    
-    level = sim -> max_player_level + 3; // fix at max player level
+    true_level = sim -> max_player_level + 3; // fix at max player level
   }
 
   std::string generate_action_list()
@@ -1059,11 +1059,11 @@ struct tank_dummy_enemy_t : public enemy_t
     switch ( tank_dummy_enum )
     {
       case TANK_DUMMY_DUNGEON:
-        level = 102; break;
+        true_level = 102; break;
       case TANK_DUMMY_WEAK:
-        level = 100; break;
+        true_level = 100; break;
       default:
-        level = 103;
+        true_level = 103;
     }
 
     // override race
@@ -1110,16 +1110,16 @@ void enemy_t::init_base_stats()
 
   resources.infinite_resource[ RESOURCE_HEALTH ] = false;
 
-  if ( level == 0 )
-    level = sim -> max_player_level + 3;
+  if ( true_level == 0 )
+    true_level = sim -> max_player_level + 3;
 
   // target_level override
   if ( sim -> target_level >= 0 )
-    level = sim -> target_level;
+    true_level = sim -> target_level;
   else if ( sim -> rel_target_level >= 0 && ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
-    level = sim -> max_player_level + sim -> rel_target_level;
+    true_level = sim -> max_player_level + sim -> rel_target_level;
   else
-    level = sim -> max_player_level + 3;
+    true_level = sim -> max_player_level + 3;
 
   // waiting_time override
   waiting_time = timespan_t::from_seconds( 5.0 );
@@ -1173,10 +1173,10 @@ void enemy_t::init_defense()
     double& a = initial.stats.armor;
 
     // a wild equation appears. It's super effective.
-    if ( level < 100 )
-      a = std::floor( 0.006464588162215 * std::exp( 0.123782410252464 * level ) + 0.5 );
+    if ( level() < 100 )
+      a = std::floor( 0.006464588162215 * std::exp( 0.123782410252464 * level() ) + 0.5 );
     else
-      a = 134*level-11864;
+      a = 134*level()-11864;
   }
 
   // for future reference, the equations above fit the given values
@@ -1297,7 +1297,7 @@ void enemy_t::init_action_list()
 
         double hps_per_healer = 90000;
         double swing_speed = 2.0;
-        action_list_str += "/auto_attack,damage=" + util::to_string( hps_per_healer * healers * swing_speed * level / 100.0 ) + ",attack_speed=" + util::to_string(swing_speed) + ",target=" + sim -> heal_target -> name_str;
+        action_list_str += "/auto_attack,damage=" + util::to_string( hps_per_healer * healers * swing_speed * level() / 100.0 ) + ",attack_speed=" + util::to_string(swing_speed) + ",target=" + sim -> heal_target -> name_str;
       }
       // Otherwise... do nothing?
       else
@@ -1422,7 +1422,7 @@ void enemy_t::create_options()
   // the next part handles actor-specific options for enemies
   player_t::create_options();
 
-  add_option( opt_int( "level", level, 0, MAX_LEVEL + 3 ) );
+  add_option( opt_int( "level", true_level, 0, MAX_LEVEL + 3 ) );
 }
 
 // enemy_t::create_add ======================================================

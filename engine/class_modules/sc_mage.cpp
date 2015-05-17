@@ -946,7 +946,7 @@ struct prismatic_crystal_t : public pet_t
     aoe_spell( 0 ),
     damage_taken( owner -> find_spell( 155153 ) ),
     frost_damage_taken( owner -> find_spell( 152087 ) )
-  { level = 101; }
+  { true_level = 101; }
 
   void add_proxy_stats( action_t* owner_action )
   {
@@ -3402,7 +3402,7 @@ struct inferno_blast_t : public mage_spell_t
     mage_spell_t::execute();
 
     if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) &&
-         p() -> level <= 90 )
+         p() -> level() <= 90 )
     {
       p() -> buffs.fiery_adept -> trigger();
     }
@@ -4987,7 +4987,7 @@ void mage_t::init_spells()
 
   // Passive Spells
   passives.nether_attunement = find_specialization_spell( "Nether Attunement" ); // BUG: Not in spell lists at present.
-  passives.nether_attunement = ( find_spell( 117957 ) -> is_level( level ) ) ? find_spell( 117957 ) : spell_data_t::not_found();
+  passives.nether_attunement = ( find_spell( 117957 ) -> is_level( true_level ) ) ? find_spell( 117957 ) : spell_data_t::not_found();
   passives.shatter           = find_specialization_spell( "Shatter" );
   passives.frost_armor       = find_specialization_spell( "Frost Armor" );
   passives.mage_armor        = find_specialization_spell( "Mage Armor" );
@@ -5327,13 +5327,13 @@ void mage_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  if( sim -> allow_flasks && level >= 80 )
+  if( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
 
-    if ( level <= 85 )
+    if ( true_level <= 85 )
       flask_action += "draconic_mind" ;
-    else if ( level <= 90 )
+    else if ( true_level <= 90 )
       flask_action += "warm_sun" ;
     else
       flask_action += "greater_draenic_intellect_flask" ;
@@ -5341,13 +5341,13 @@ void mage_t::apl_precombat()
     precombat -> add_action( flask_action );
   }
     // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
     std::string food_action = "food,type=";
 
-    if ( level <= 85 )
+    if ( level() <= 85 )
       food_action += "seafood_magnifique_feast" ;
-    else if ( level <= 90 )
+    else if ( level() <= 90 )
       food_action += "mogu_fish_stew" ;
     else if ( specialization() == MAGE_ARCANE )
       food_action += "sleeper_sushi" ;
@@ -5374,7 +5374,7 @@ void mage_t::apl_precombat()
   precombat -> add_talent( this, "Mirror Image" );
 
   //Potions
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
     precombat -> add_action( get_potion_action() );
   }
@@ -5397,9 +5397,9 @@ std::string mage_t::get_potion_action()
 {
   std::string potion_action = "potion,name=";
 
-  if ( level <= 85 )
+  if ( true_level <= 85 )
     potion_action += "volcanic" ;
-  else if ( level <= 90 )
+  else if ( true_level <= 90 )
     potion_action += "jade_serpent" ;
   else
     potion_action += "draenic_intellect" ;

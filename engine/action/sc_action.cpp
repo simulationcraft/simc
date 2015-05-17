@@ -181,7 +181,7 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
                                                        const std::string& action_options,
                                                        const std::string& comment )
 {
-  if ( ! s || ! s -> ok() || ! s -> is_level( p -> level ) ) return 0;
+  if ( ! s || ! s -> ok() || ! s -> is_level( p -> true_level ) ) return 0;
 
   std::string str = action_name;
   if ( ! action_options.empty() ) str += "," + action_options;
@@ -397,10 +397,10 @@ action_t::action_t( action_e       ty,
     parse_spell_data( data() );
   }
 
-  if ( data().id() && ! data().is_level( player -> level ) && data().level() <= MAX_LEVEL )
+  if ( data().id() && ! data().is_level( player -> true_level ) && data().level() <= MAX_LEVEL )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
-                   player -> name(), name(), player -> level, data().level() );
+                   player -> name(), name(), player -> true_level, data().level() );
 
     background = true; // prevent action from being executed
   }
@@ -483,7 +483,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
 
   id                   = spell_data.id();
-  base_execute_time    = spell_data.cast_time( player -> level );
+  base_execute_time    = spell_data.cast_time( player -> level() );
   cooldown -> duration = spell_data.cooldown();
   range                = spell_data.max_range();
   travel_speed         = spell_data.missile_speed();
@@ -549,22 +549,22 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       attack_power_mod.direct = spelleffect_data.ap_coeff();
       radius           = spelleffect_data.radius_max();
       amount_delta            = spelleffect_data.m_delta();
-      base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
-      base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
+      base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level() );
+      base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level() );
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
       normalize_weapon_speed = true;
     case E_WEAPON_DAMAGE:
-      base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
-      base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
+      base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level() );
+      base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level() );
       weapon = &( player -> main_hand_weapon );
       radius           = spelleffect_data.radius_max();
       break;
 
     case E_WEAPON_PERCENT_DAMAGE:
       weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
+      weapon_multiplier = player -> dbc.effect_min( spelleffect_data.id(), player -> level() );
       radius           = spelleffect_data.radius_max();
       break;
 
@@ -579,7 +579,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           spell_power_mod.tick  = spelleffect_data.sp_coeff();
           attack_power_mod.tick = spelleffect_data.ap_coeff();
           radius           = spelleffect_data.radius_max();
-          base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
+          base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level() );
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
         case A_PERIODIC_HEALTH_FUNNEL:
@@ -598,8 +598,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           spell_power_mod.direct  = spelleffect_data.sp_coeff();
           attack_power_mod.direct = spelleffect_data.ap_coeff();
           amount_delta            = spelleffect_data.m_delta();
-          base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
-          base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
+          base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level() );
+          base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level() );
           radius           = spelleffect_data.radius_max();
           break;
         case A_ADD_FLAT_MODIFIER:
@@ -929,7 +929,7 @@ double action_t::calculate_direct_amount( action_state_t* state )
 
   if ( state -> result == RESULT_GLANCE )
   {
-    double delta_skill = ( state -> target -> level - player -> level ) * 5.0;
+    double delta_skill = ( state -> target -> level() - player -> level() ) * 5.0;
 
     if ( delta_skill < 0.0 )
       delta_skill = 0.0;
@@ -2932,7 +2932,7 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 
 double action_t::composite_target_crit( player_t* target ) const
 {
-  return std::min( player -> level - target -> level, 0 ) / 100.0;
+  return std::min( player -> level() - target -> level(), 0 ) / 100.0;
 }
 
 event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
