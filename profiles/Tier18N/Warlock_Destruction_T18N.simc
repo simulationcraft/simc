@@ -1,4 +1,4 @@
-warlock="Warlock_Destruction_T17H"
+warlock="Warlock_Destruction_T18N"
 level=100
 race=dwarf
 role=spell
@@ -87,33 +87,33 @@ actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.
 actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up
 actions.aoe+=/incinerate
 
-head=shadow_councils_hood,id=115586,bonus_id=566
-neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant_id=5319
-shoulders=shadow_councils_mantle,id=115589,bonus_id=566
-back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5312
-chest=shadow_councils_robes,id=115588,bonus_id=566
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
-hands=shadow_councils_gloves,id=115585,bonus_id=566
-waist=seeking_ember_girdle,id=113941,bonus_id=566
-legs=turret_mechanics_legwraps,id=113970,bonus_id=566
-feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5326
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5326
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-trinket2=goren_soul_repository,id=119194,bonus_id=566
-main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant_id=5384
+head=demon_princes_ascendant_crown,id=124159
+neck=vial_of_immiscible_liquid,id=124212,enchant=75crit
+shoulders=deathrattle_shoulderpads,id=124179
+back=spellcloak_of_suramar,id=127972,enchant=100crit
+chest=deathrattle_robe,id=124173
+wrists=contemptuous_wristguards,id=124186
+hands=deathrattle_gloves,id=124156
+waist=demonbuckle_sash_of_argus,id=124200
+legs=deathrattle_leggings,id=124167
+feet=bloody_daggerheeled_pumps,id=124149
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50crit
+finger2=loathful_encrusted_band,id=124192,enchant=50crit
+trinket1=desecrated_shadowmoon_insignia,id=124228
+trinket2=goren_soul_repository,id=119194
+main_hand=edict_of_argus,id=124382,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=685.33
-# gear_stamina=4114
-# gear_intellect=3394
-# gear_spell_power=1596
-# gear_crit_rating=1088
-# gear_haste_rating=862
-# gear_mastery_rating=1699
-# gear_armor=809
-# gear_multistrike_rating=122
-# gear_versatility_rating=86
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=697.67
+# gear_stamina=4737
+# gear_intellect=3439
+# gear_spell_power=1925
+# gear_crit_rating=1290
+# gear_haste_rating=567
+# gear_mastery_rating=2115
+# gear_armor=806
+# gear_multistrike_rating=567
+# gear_versatility_rating=285
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
 default_pet=felhunter
