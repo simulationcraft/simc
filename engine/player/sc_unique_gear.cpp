@@ -52,6 +52,7 @@ namespace item
 {
   void heartpierce( special_effect_t& );
   void kiril_fury_of_beasts( special_effect_t& );
+  void darkmoon_card_greatness( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -1448,6 +1449,83 @@ void item::kiril_fury_of_beasts( special_effect_t& effect )
   effect.custom_buff = b;
 
   new dbc_proc_callback_t( effect.item -> player, effect );
+}
+
+void item::darkmoon_card_greatness( special_effect_t& effect )
+{
+  struct darkmoon_card_greatness_callback : public dbc_proc_callback_t
+  {
+    stat_buff_t* buff_str;
+    stat_buff_t* buff_agi;
+    stat_buff_t* buff_int;
+    stat_buff_t* buff_spi;
+
+    darkmoon_card_greatness_callback( const item_t* i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i -> player, data )
+    {
+      const spell_data_t* driver = listener -> find_spell( 57345 );
+      const spell_data_t* buff   = listener -> find_spell( 60235 );
+
+      struct common_buff_creator : public stat_buff_creator_t
+      {
+        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* buff, const spell_data_t* driver ) :
+          stat_buff_creator_t ( p, "greatness_" + n, buff )
+        {}
+      };
+
+      double value = buff -> effectN( 1 ).average( *i );
+
+      buff_str = common_buff_creator( listener, "str", buff, driver )
+                 .add_stat( STAT_STRENGTH, value );
+      buff_agi = common_buff_creator( listener, "agi", buff, driver )
+                 .add_stat( STAT_AGILITY, value );
+      buff_int = common_buff_creator( listener, "int", buff, driver )
+                 .add_stat( STAT_INTELLECT, value );
+      buff_spi = common_buff_creator( listener, "spi", buff, driver )
+                 .add_stat( STAT_SPIRIT, value );
+    }
+
+    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    {
+      player_t* p = a -> player;
+
+      double str  = p -> strength();
+      double agi  = p -> agility();
+      double inte = p -> intellect();
+      double spi  = p -> spirit();
+
+      if ( str > agi )
+        if ( str > inte )
+          if ( str > spi )
+            buff_str -> trigger();
+          else
+            buff_spi -> trigger();
+        else
+          if ( inte > spi )
+            buff_int -> trigger();
+          else
+            buff_spi -> trigger();
+      else
+        if ( agi > inte )
+          if ( agi > spi )
+            buff_agi -> trigger();
+          else
+            buff_spi -> trigger();
+        else
+          if ( inte > spi )
+            buff_int -> trigger();
+          else
+            buff_spi -> trigger();
+    }
+  };
+
+  maintenance_check( 620 );
+
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  // effect.cooldown_    = timespan_t::from_seconds( 45.0 );
+  // effect.proc_chance_ = effect.item -> player -> find_spell( 57345 ) -> proc_chance();
+
+  new darkmoon_card_greatness_callback( effect.item, effect );
 }
 
 void item::battering_talisman_trigger( special_effect_t& effect )
@@ -3469,6 +3547,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 107824, item::kiril_fury_of_beasts           );
   register_special_effect( 109862, item::kiril_fury_of_beasts           );
   register_special_effect( 109865, item::kiril_fury_of_beasts           );
+  register_special_effect( 57345,  item::darkmoon_card_greatness        );
   /**
    * Enchants
    */
