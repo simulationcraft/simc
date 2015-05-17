@@ -3126,7 +3126,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
     "</ul>\n"
     "<div class=\"clear\"></div>\n",
     p -> level(),
-    sim -> timewalk > 0 ? timewalk_str.c_str() : "",
+    sim -> timewalk > 0 && ! p -> is_enemy() ? timewalk_str.c_str() : "",
     util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(),
     p -> position_str.c_str() );
 }

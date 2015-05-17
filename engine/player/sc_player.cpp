@@ -2478,7 +2478,7 @@ bool player_t::has_t18_class_trinket() const
 
 int player_t::level() const
 {
-  if ( sim -> timewalk > 0 )
+  if ( sim -> timewalk > 0 && ! is_enemy() )
     return sim -> timewalk;
   else
     return true_level;
