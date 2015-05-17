@@ -52,6 +52,7 @@ namespace item
 {
   void heartpierce( special_effect_t& );
   void darkmoon_card_greatness( special_effect_t& );
+  void vial_of_shadows( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -1495,10 +1496,45 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
   maintenance_check( 620 );
 
   effect.proc_flags2_ = PF2_ALL_HIT;
-  // effect.cooldown_    = timespan_t::from_seconds( 45.0 );
-  // effect.proc_chance_ = effect.item -> player -> find_spell( 57345 ) -> proc_chance();
 
   new darkmoon_card_greatness_callback( effect.item, effect );
+}
+
+struct lightning_strike_t : public attack_t
+{
+  lightning_strike_t( const special_effect_t& effect ) :
+    attack_t( "lightning_strike_vial", effect.player, effect.player -> find_spell( 109724 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+    switch ( effect.driver() -> id() )
+    {
+      case 109725: attack_power_mod.direct = 0.339; break;
+      case 107995: attack_power_mod.direct = 0.300; break;
+      case 109722: attack_power_mod.direct = 0.266; break;
+      default: assert( false ); break;
+    }
+  }
+};
+
+void item::vial_of_shadows( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "lightning_strike_vial" );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "lightning_strike_vial", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new lightning_strike_t( effect );
+  }
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void item::battering_talisman_trigger( special_effect_t& effect )
@@ -3446,7 +3482,10 @@ void unique_gear::register_special_effects()
   register_special_effect( 107824, "1Tick_108016Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
   register_special_effect( 109862, "1Tick_109860Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
   register_special_effect( 109865, "1Tick_109863Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
-  
+  register_special_effect( 109725, item::vial_of_shadows                );
+  register_special_effect( 109722, item::vial_of_shadows                );
+  register_special_effect( 107995, item::vial_of_shadows                );
+
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
   register_special_effect( 184291, item::soul_capacitor                 );
