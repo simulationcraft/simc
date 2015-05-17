@@ -158,7 +158,7 @@ bool player_has_glance( player_t* p, unsigned stats_mask )
 std::string output_action_name( stats_t* s, player_t* actor )
 {
   std::string href = "#";
-  std::string rel = " rel=\"lvl=" + util::to_string( s -> player -> level ) + "\"";
+  std::string rel = " rel=\"lvl=" + util::to_string( s -> player -> true_level ) + "\"";
   std::string prefix, suffix, class_attr;
   action_t* a = 0;
 
@@ -3113,10 +3113,10 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
       "<li><b>Spec:</b> %s</li>\n",
       util::inverse_tokenize( dbc::specialization_string( p -> specialization() ) ).c_str() );
 
-  std::string timewalk_str = "(";
+  std::string timewalk_str = " (";
   if ( sim -> timewalk > 0 )
   {
-    timewalk_str += util::to_string( p -> level );
+    timewalk_str += util::to_string( p -> true_level );
     timewalk_str += ")";
   }
   os.format(
@@ -3125,8 +3125,8 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
     "<li><b>Position:</b> %s</li>\n"
     "</ul>\n"
     "<div class=\"clear\"></div>\n",
-    p -> get_level(),
-    sim -> timewalk > 0 ? timewalk_str.c_str() : "",
+    p -> level(),
+    sim -> timewalk > 0 && ! p -> is_enemy() ? timewalk_str.c_str() : "",
     util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(),
     p -> position_str.c_str() );
 }

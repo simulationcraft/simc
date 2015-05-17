@@ -578,9 +578,9 @@ bool parse_fight_style( sim_t*             sim,
     sim -> target = module_t::enemy() -> create_player( sim, "RaidDamageDummy" );
 
     player_t* add_1 = module_t::enemy() -> create_player( sim, "DungeonDamageDummy1" );
-    add_1 -> level = 102;
+    add_1 -> true_level = 102;
     player_t* add_2 = module_t::enemy() -> create_player( sim, "DungeonDamageDummy2" );
-    add_2 -> level = 102;
+    add_2 -> true_level = 102;
   }
   else if ( util::str_compare_ci( value, "WoD_WeakDamageDummyCluster" ) )
   {
@@ -593,7 +593,7 @@ bool parse_fight_style( sim_t*             sim,
     for ( size_t i = 0; i < 5; i++ )
     {
       player_t* dummy = module_t::enemy() -> create_player( sim, "WeakDamageDummy" + util::to_string( i + 1 ) );
-      dummy -> level = 100;
+      dummy -> true_level = 100;
       if ( i == 0 )
         sim -> target = dummy;
     }
@@ -2082,8 +2082,8 @@ bool sim_t::init()
     for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
     {
       player_t* p = player_no_pet_list[ i ];
-      if ( max_player_level < p -> level )
-        max_player_level = p -> level;
+      if ( max_player_level < p -> level() )
+        max_player_level = p -> level();
     }
   }
 

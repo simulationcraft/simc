@@ -6564,7 +6564,7 @@ void druid_t::apl_precombat()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   // Flask or Elixir
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask = "flask,type=";
     std::string elixir1, elixir2;
@@ -6572,25 +6572,25 @@ void druid_t::apl_precombat()
 
     if ( primary_role() == ROLE_TANK ) // Guardian
     {
-      if ( level > 90 )
+      if ( true_level > 90 )
         flask += "greater_draenic_agility_flask";
-      else if ( level > 85 )
+      else if ( true_level > 85 )
         flask += "winds";
       else
         flask += "steelskin";
     }
     else if ( primary_role() == ROLE_ATTACK ) // Feral
     {
-      if ( level > 90 )
+      if ( true_level > 90 )
         flask += "greater_draenic_agility_flask";
       else
         flask += "winds";
     }
     else // Balance & Restoration
     {
-      if ( level > 90 )
+      if ( true_level > 90 )
         flask += "greater_draenic_intellect_flask";
-      else if ( level > 85 )
+      else if ( true_level > 85 )
         flask += "warm_sun";
       else
         flask += "draconic_mind";
@@ -6606,11 +6606,11 @@ void druid_t::apl_precombat()
   }
 
   // Food
-  if ( sim -> allow_food && level > 80 )
+  if ( sim -> allow_food && level() > 80 )
   {
     std::string food = "food,type=";
 
-    if ( level > 90 )
+    if ( level() > 90 )
     {
       if ( specialization() == DRUID_FERAL )
         food += "pickled_eel";
@@ -6621,7 +6621,7 @@ void druid_t::apl_precombat()
       else
         food += "buttered_sturgeon";
     }
-    else if ( level > 85 )
+    else if ( level() > 85 )
       food += "seafood_magnifique_feast";
     else
       food += "seafood_magnifique_feast";
@@ -6633,7 +6633,7 @@ void druid_t::apl_precombat()
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
 
   // Feral: Bloodtalons
-  if ( specialization() == DRUID_FERAL && level >= 100 )
+  if ( specialization() == DRUID_FERAL && true_level >= 100 )
     precombat -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled" );
 
   // Forms
@@ -6655,14 +6655,14 @@ void druid_t::apl_precombat()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-Potion
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
     std::string potion_action = "potion,name=";
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
-      if ( level > 90 )
+      if ( true_level > 90 )
         potion_action += "draenic_agility";
-      else if ( level > 85 )
+      else if ( true_level > 85 )
         potion_action += "tolvir";
       else
         potion_action += "tolvir";
@@ -6670,9 +6670,9 @@ void druid_t::apl_precombat()
     }
     else if ( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ) && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL ) )
     {
-      if ( level > 90 )
+      if ( true_level > 90 )
         potion_action += "draenic_intellect";
-      else if ( level > 85 )
+      else if ( true_level > 85 )
         potion_action += "jade_serpent";
       else
         potion_action += "volcanic";
@@ -6747,9 +6747,9 @@ void druid_t::apl_feral()
   std::vector<std::string> item_actions   = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
   std::string              potion_action  = "potion,name=";
-  if ( level > 90 )
+  if ( true_level > 90 )
     potion_action += "draenic_agility";
-  else if ( level > 85 )
+  else if ( true_level > 85 )
     potion_action += "tolvir";
   else
     potion_action += "tolvir";
@@ -6773,7 +6773,7 @@ void druid_t::apl_feral()
   {
     def -> add_action( item_actions[ i ] + ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)" );
   }
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
     def -> add_action( potion_action + ",if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40" );
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6827,9 +6827,9 @@ void druid_t::apl_balance()
   std::vector<std::string> racial_actions = get_racial_actions();
   std::vector<std::string> item_actions   = get_item_actions();
   std::string              potion_action  = "potion,name=";
-  if ( level > 90 )
+  if ( true_level > 90 )
     potion_action += "draenic_intellect";
-  else if ( level > 85 )
+  else if ( true_level > 85 )
     potion_action += "jade_serpent";
   else
     potion_action += "volcanic";
@@ -6838,7 +6838,7 @@ void druid_t::apl_balance()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )

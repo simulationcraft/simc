@@ -4498,7 +4498,8 @@ struct player_t : public actor_t
   // (static) attributes - things which should not change during combat
   race_e       race;
   role_e       role;
-  int          level;
+  int          true_level; /* The character's true level. If the outcome would change when the character's level is
+                           scaled down (such as when timewalking) then use the level() method instead. */
   int          party;
   int          ready_type;
   specialization_e  _spec;
@@ -4960,7 +4961,7 @@ struct player_t : public actor_t
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
-  virtual int get_level() const;
+  virtual int level() const;
 
   virtual double energy_regen_per_second() const;
   virtual double focus_regen_per_second() const;

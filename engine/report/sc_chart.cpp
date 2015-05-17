@@ -2224,7 +2224,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
 
     s += "&Gem=3"; // FIXME: Remove this when epic gems become available
     s += "&Ver=7";
-    str::format( s, "&maxlv=%d", p -> level );
+    str::format( s, "&maxlv=%d", p -> true_level );
 
     if ( p -> items[ 0 ].parsed.data.id ) s += "&t1=" + util::to_string( p -> items[ 0 ].parsed.data.id );
     if ( p -> items[ 1 ].parsed.data.id ) s += "&t2=" + util::to_string( p -> items[ 1 ].parsed.data.id );

@@ -22,7 +22,7 @@ pet_t::owner_coefficients_t::owner_coefficients_t() :
 void pet_t::init_pet_t_()
 {
   target = owner -> target;
-  level = owner -> level;
+  true_level = owner -> true_level;
   full_name_str = owner -> name_str + '_' + name_str;
   expiration = 0;
   duration = timespan_t::zero();

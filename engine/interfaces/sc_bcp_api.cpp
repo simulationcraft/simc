@@ -697,7 +697,7 @@ player_t* parse_player_html( sim_t*             sim,
     return 0;
   }
 
-  p -> level = level;
+  p -> true_level = level;
   p -> region_str = player.region.empty() ? sim -> default_region_str : player.region;
   sc_xml_t realm_obj = profile.get_node( "span", "id", "profile-info-realm" );
   if ( ! realm_obj.valid() )
@@ -838,7 +838,7 @@ player_t* parse_player( sim_t*             sim,
     return 0;
   }
 
-  p -> level = profile[ "level" ].GetUint();
+  p -> true_level = profile[ "level" ].GetUint();
   p -> region_str = player.region.empty() ? sim -> default_region_str : player.region;
   if ( ! profile.HasMember( "realm" ) && ! player.server.empty() )
     p -> server_str = player.server;

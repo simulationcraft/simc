@@ -1228,8 +1228,8 @@ struct feral_spirit_pet_t : public pet_t
     pet_t( owner -> sim, owner, "spirit_wolf", true, true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
@@ -4272,7 +4272,7 @@ struct searing_totem_t : public shaman_totem_pet_t
   searing_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "searing_totem", TOTEM_FIRE )
   {
-    pulse_amplitude = p -> find_spell( 3606 ) -> cast_time( p -> level );
+    pulse_amplitude = p -> find_spell( 3606 ) -> cast_time( p -> level() );
   }
 
   void init_spells()
@@ -5505,25 +5505,25 @@ void shaman_t::init_action_list()
   action_priority_list_t* aoe       = get_action_priority_list( "aoe", "Multi target action priority list" );
 
   // Flask
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
     if ( primary_role() == ROLE_ATTACK )
-      flask_action += ( ( level > 90 ) ? "greater_draenic_agility_flask" : ( level >= 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
+      flask_action += ( ( true_level > 90 ) ? "greater_draenic_agility_flask" : ( true_level >= 85 ) ? "spring_blossoms" : ( true_level >= 80 ) ? "winds" : "" );
     else
-      flask_action += ( ( level > 90 ) ? "greater_draenic_intellect_flask" : ( level >= 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
+      flask_action += ( ( true_level > 90 ) ? "greater_draenic_intellect_flask" : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "" );
 
     precombat -> add_action( flask_action );
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
     std::string food_action = "food,type=";
     if ( specialization() == SHAMAN_ENHANCEMENT )
-      food_action += ( ( level >= 100 ) ? "buttered_sturgeon" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 100 ) ? "buttered_sturgeon" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
     else
-      food_action += ( ( level >= 100 ) ? "salty_squid_roll" : ( level > 85 ) ? "mogu_fish_stew" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 100 ) ? "salty_squid_roll" : ( level() > 85 ) ? "mogu_fish_stew" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
 
     precombat -> add_action( food_action );
   }
@@ -5536,22 +5536,22 @@ void shaman_t::init_action_list()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   std::string potion_name;
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
     if ( primary_role() == ROLE_ATTACK )
     {
-      if ( level > 90 )
+      if ( true_level > 90 )
         potion_name = "draenic_agility";
-      else if ( level > 85 )
+      else if ( true_level > 85 )
         potion_name = "virmens_bite";
       else
         potion_name = "tolvir";
     }
     else
     {
-      if ( level > 90 )
+      if ( true_level > 90 )
         potion_name = "draenic_intellect";
-      else if ( level > 85 )
+      else if ( true_level > 85 )
         potion_name = "jade_serpent";
       else
         potion_name = "volcanic";
@@ -5594,7 +5594,7 @@ void shaman_t::init_action_list()
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
   {
     // In-combat potion
-    if ( sim -> allow_potions && level >= 80  )
+    if ( sim -> allow_potions && true_level >= 80  )
     {
       std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
 
@@ -5672,7 +5672,7 @@ void shaman_t::init_action_list()
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {
     // In-combat potion
-    if ( sim -> allow_potions && level >= 80  )
+    if ( sim -> allow_potions && true_level >= 80  )
     {
       std::string potion_action = "potion,name=" + potion_name + ",if=buff.ascendance.up|target.time_to_die<=30";
 
@@ -5787,7 +5787,7 @@ void shaman_t::moving()
   // anything. So, to model that, if a raid move event comes, we need to check
   // if we can trigger Spiritwalker's Grace. If so, conditionally execute it, to
   // allow the currently executing cast to finish.
-  if ( level >= 85 )
+  if ( true_level >= 85 )
   {
     action_t* swg = find_action( "spiritwalkers_grace" );
 
@@ -6060,14 +6060,14 @@ void shaman_t::arise()
 
   assert( main_hand_attack == melee_mh && off_hand_attack == melee_oh );
 
-  if ( !sim -> overrides.mastery && dbc.spell( 116956 ) -> is_level( level ) )
+  if ( !sim -> overrides.mastery && dbc.spell( 116956 ) -> is_level( true_level ) )
   {
     double mastery_rating = dbc.spell( 116956 ) -> effectN( 1 ).average( this );
     if ( ! sim -> auras.mastery -> check() || sim -> auras.mastery -> current_value < mastery_rating )
       sim -> auras.mastery -> trigger( 1, mastery_rating );
   }
 
-  if ( !sim -> overrides.haste && dbc.spell( 116956 ) -> is_level( level ) )
+  if ( !sim -> overrides.haste && dbc.spell( 116956 ) -> is_level( true_level ) )
     sim -> auras.haste -> trigger();
 
   if ( main_hand_weapon.type != WEAPON_NONE )

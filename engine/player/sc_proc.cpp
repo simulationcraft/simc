@@ -510,10 +510,14 @@ struct proc_resource_t : public spell_t
 }
 action_t* special_effect_t::create_action() const
 {
-  action_t* a = player -> create_proc_action( name(), *this );
-  if ( a )
+  // Custom actions have done their create_proc_action() call in the second phase init of the
+  // special effect
+  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM && action_type() != SPECIAL_EFFECT_ACTION_NONE )
   {
-    return a;
+    if ( action_t* a = player -> create_proc_action( name(), *this ) )
+    {
+      return a;
+    }
   }
 
   switch ( action_type() )

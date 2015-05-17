@@ -1830,7 +1830,7 @@ struct eternal_flame_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) && p() -> level < 100 ) // 2015-02-02 hotfix disabled this for level 100 characters.
+    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) && p() -> level() < 100 ) // 2015-02-02 hotfix disabled this for level 100 characters.
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
     
     // consume BoG stacks and Bastion of Power if used on self
@@ -3314,7 +3314,7 @@ struct word_of_glory_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) && p() -> level < 100 ) // Disabled in 2015-02-02 hotfix for level 100 characters
+    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) && p() -> level() < 100 ) // Disabled in 2015-02-02 hotfix for level 100 characters
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
         
     // consume BoG stacks and Bastion of Power if used on self
@@ -5038,28 +5038,28 @@ void paladin_t::generate_action_prio_list_prot()
   //Flask
   if ( sim -> allow_flasks )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
     {
       precombat -> add_action( "flask,type=greater_draenic_stamina_flask" );
       precombat -> add_action( "flask,type=greater_draenic_strength_flask,if=role.attack|using_apl.max_dps" );
     }
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       precombat -> add_action( "flask,type=earth" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       precombat -> add_action( "flask,type=steelskin" );
   }
 
   // Food
   if ( sim -> allow_food )
   {
-    if ( level > 90 )
+    if ( level() > 90 )
     {
       precombat -> add_action( "food,type=whiptail_fillet" );
       precombat -> add_action( "food,type=pickled_eel,if=role.attack|using_apl.max_dps" );
     }
-    else if ( level > 85 )
+    else if ( level() > 85 )
       precombat -> add_action( "food,type=chun_tian_spring_rolls" );
-    else if ( level >= 80 )
+    else if ( level() >= 80 )
       precombat -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
@@ -5078,9 +5078,9 @@ void paladin_t::generate_action_prio_list_prot()
   {
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
-    if ( level > 90 )
+    if ( true_level > 90 )
       potion_type = "draenic_armor";
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       potion_type = "mogu_power";
 
     if ( potion_type.length() > 0 )
@@ -5252,12 +5252,12 @@ void paladin_t::generate_action_prio_list_ret()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( level > 90 )
+    if ( true_level > 90 )
       flask_action += "greater_draenic_strength_flask";
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       flask_action += "winters_bite";
     else
       flask_action += "titanic_strength";
@@ -5266,13 +5266,13 @@ void paladin_t::generate_action_prio_list_ret()
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
     std::string food_action = "food,type=";
-    if ( level > 90 )
+    if ( level() > 90 )
       food_action += "sleeper_sushi";
     else
-      food_action += ( level > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+      food_action += ( level() > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 
     precombat -> add_action( food_action );
   }
@@ -5286,12 +5286,12 @@ void paladin_t::generate_action_prio_list_ret()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-potting
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       precombat -> add_action( "potion,name=draenic_strength" );
     else
-      precombat -> add_action( ( level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
+      precombat -> add_action( ( true_level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
   }
 
   ///////////////////////
@@ -5306,11 +5306,11 @@ void paladin_t::generate_action_prio_list_ret()
 
   if ( sim -> allow_potions )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
-    else if ( level > 85 )
+    else if ( true_level > 85 )
       def -> add_action( "potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       def -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
   }
 
@@ -5475,24 +5475,24 @@ void paladin_t::generate_action_prio_list_holy_dps()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( level > 90 )
+    if ( true_level > 90 )
       flask_action += "greater_draenic_intellect_flask";
     else
-      flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      flask_action += ( true_level > 85 ) ? "warm_sun" : "draconic_mind";
 
     precombat -> add_action( flask_action );
   }
 
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
     std::string food_action = "food,type=";
-    if ( level > 90 )
+    if ( level() > 90 )
       food_action += "pickled_eel";
     else
-      food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+      food_action += ( level() > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
     precombat -> add_action( food_action );
   }
 
@@ -5541,25 +5541,25 @@ void paladin_t::generate_action_prio_list_holy()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( level > 90 )
+    if ( true_level > 90 )
       flask_action += "greater_draenic_intellect_flask";
     else
-      flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      flask_action += ( true_level > 85 ) ? "warm_sun" : "draconic_mind";
 
     precombat -> add_action( flask_action );
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
     std::string food_action = "food,type=";
-    if ( level > 90 )
+    if ( level() > 90 )
       food_action += "pickled_eel";
     else
-      food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+      food_action += ( level() > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
     precombat -> add_action( food_action );
   }
 
@@ -5653,7 +5653,7 @@ void paladin_t::init_action_list()
           generate_action_prio_list_holy_dps();
         break;
       default:
-        if ( level > 80 )
+        if ( true_level > 80 )
         {
           action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
           action_list_str += "/potion,name=volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
@@ -6528,7 +6528,7 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
     // cache.block() contains our block chance 
     double block = cache.block();
     // add or subtract 1.5% per level difference
-    block += ( level - s -> action -> player -> level ) * 0.015;
+    block += ( level() - s -> action -> player -> level() ) * 0.015;
 
     
     if ( block > 0 )

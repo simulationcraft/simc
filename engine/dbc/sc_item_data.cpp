@@ -520,7 +520,7 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
     value = enchantment.ench_amount[ index ];
   else
   {
-    unsigned level = player -> get_level();
+    unsigned level = player -> level();
 
     if ( static_cast< unsigned >( level ) > enchantment.max_scaling_level )
       level = enchantment.max_scaling_level;

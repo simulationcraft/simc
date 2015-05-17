@@ -1,4 +1,4 @@
-warlock="Warlock_Destruction_T17H"
+warlock="Warlock_Destruction_T18M"
 level=100
 race=dwarf
 role=spell
@@ -32,12 +32,14 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=target.time_to_die<=25|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)
+actions=use_item,name=nithramus_the_allseer
+actions+=/potion,name=draenic_intellect,if=target.time_to_die<=25|buff.Nithramus.remains>4|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/mannoroths_fury
-actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))
+actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|buff.Nithramus.remains>4|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))
+actions+=/use_item,name=nithramus_the_allseer
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<9
 actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=9
@@ -59,7 +61,7 @@ actions.single_target+=/cataclysm
 actions.single_target+=/rain_of_fire,if=remains<=tick_time&(active_enemies>4|(buff.mannoroths_fury.up&active_enemies>2))
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&active_enemies>1&target.health.pct>20
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20)
+actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20|buff.Nithramus.remains>cast_time+travel_time)
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&set_bonus.tier17_2pc=1&burning_ember>=2.5
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&buff.archmages_greater_incandescence_int.react&buff.archmages_greater_incandescence_int.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time
@@ -87,33 +89,33 @@ actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.
 actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up
 actions.aoe+=/incinerate
 
-head=shadow_councils_hood,id=115586,bonus_id=566
-neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant_id=5319
-shoulders=shadow_councils_mantle,id=115589,bonus_id=566
-back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5312
-chest=shadow_councils_robes,id=115588,bonus_id=566
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
-hands=shadow_councils_gloves,id=115585,bonus_id=566
-waist=seeking_ember_girdle,id=113941,bonus_id=566
-legs=turret_mechanics_legwraps,id=113970,bonus_id=566
-feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5326
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5326
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-trinket2=goren_soul_repository,id=119194,bonus_id=566
-main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant_id=5384
+head=demon_princes_ascendant_crown,id=124159,bonus_id=567
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=75crit
+shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567
+back=spellcloak_of_suramar,id=127972,bonus_id=567,enchant=100crit
+chest=deathrattle_robe,id=124173,bonus_id=567
+wrists=contemptuous_wristguards,id=124186,bonus_id=567
+hands=deathrattle_gloves,id=124156,bonus_id=567
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
+legs=deathrattle_leggings,id=124167,bonus_id=567
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
+finger1=nithramus_the_allseer,id=124635,enchant=50crit
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=50crit
+trinket1=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
+trinket2=goren_soul_repository,id=119194,bonus_id=567
+main_hand=edict_of_argus,id=124382,bonus_id=567,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=685.33
-# gear_stamina=4114
-# gear_intellect=3394
-# gear_spell_power=1596
-# gear_crit_rating=1088
-# gear_haste_rating=862
-# gear_mastery_rating=1699
-# gear_armor=809
-# gear_multistrike_rating=122
-# gear_versatility_rating=86
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=727.00
+# gear_stamina=6225
+# gear_intellect=4523
+# gear_spell_power=2545
+# gear_crit_rating=1618
+# gear_haste_rating=751
+# gear_mastery_rating=2780
+# gear_armor=1009
+# gear_multistrike_rating=750
+# gear_versatility_rating=365
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
 default_pet=felhunter

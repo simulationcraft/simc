@@ -765,7 +765,7 @@ void gem::sinister_primal( special_effect_t& effect )
 {
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> get_level() >= 100 )
+  if ( effect.item -> player -> level() >= 100 )
     return;
 
   effect.custom_buff = effect.item -> player -> buffs.tempus_repit;
@@ -777,7 +777,7 @@ void gem::indomitable_primal( special_effect_t& effect )
 {
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> get_level() >= 100 )
+  if ( effect.item -> player -> level() >= 100 )
     return;
 
   effect.custom_buff = effect.item -> player -> buffs.fortitude;
@@ -789,7 +789,7 @@ void gem::capacitive_primal( special_effect_t& effect )
 {
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> get_level() >= 100 )
+  if ( effect.item -> player -> level() >= 100 )
     return;
 
   struct lightning_strike_t : public attack_t
@@ -853,7 +853,7 @@ void gem::courageous_primal( special_effect_t& effect )
   if ( effect.item -> sim -> challenge_mode )
     return;
 
-  if ( effect.item -> player -> get_level() >= 100 )
+  if ( effect.item -> player -> level() >= 100 )
     return;
 
   struct courageous_primal_proc_t : public dbc_proc_callback_t
@@ -904,7 +904,7 @@ void set_bonus::t17_lfr_passive_stat( special_effect_t& effect )
     stat = STAT_BONUS_ARMOR;
   }
 
-  double amount = util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level ) ) );
+  double amount = util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level() ) ) );
 
   effect.player -> initial.stats.add_stat( stat, amount );
 }
@@ -1768,7 +1768,7 @@ void item::flurry_of_xuen( special_effect_t& effect )
   if ( effect.item -> sim -> challenge_mode )
     return;
 
-  if ( effect.item -> player -> get_level() >= 100 )
+  if ( effect.item -> player -> level() >= 100 )
     return;
 
   player_t* p = effect.item -> player;
@@ -1831,7 +1831,7 @@ void item::essence_of_yulon( special_effect_t& effect )
   if ( effect.item -> sim -> challenge_mode )
     return;
 
-  if ( effect.item -> player -> get_level() >= 100 )
+  if ( effect.item -> player -> level() >= 100 )
     return;
 
   player_t* p = effect.item -> player;
@@ -1851,7 +1851,7 @@ void item::endurance_of_niuzao( special_effect_t& effect )
 
   if ( effect.item -> sim -> challenge_mode )
     return;
-  if ( effect.item -> player -> get_level() >= 100 )
+  if ( effect.item -> player -> level() >= 100 )
     return;
 
   const spell_data_t* cd = effect.item -> player -> find_spell( 148010 );
@@ -1901,9 +1901,9 @@ void item::readiness( special_effect_t& effect )
   const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
   double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0 );
 
-  if ( p -> level > 90 )
+  if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease CDR until it hits .90 at level 100.
-    double level_nerf = ( static_cast<double>( p -> level - 90 ) / 10.0 );
+    double level_nerf = ( static_cast<double>( p -> level() - 90 ) / 10.0 );
     level_nerf = ( 1 - cdr ) * level_nerf;
     cdr += level_nerf;
     cdr = std::min( 0.90, cdr ); // The amount of CDR doesn't go above 90%, even at level 100.
@@ -1959,9 +1959,9 @@ void item::amplification( special_effect_t& effect )
 
   const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
   *amp_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
-  if ( p -> level > 90 )
+  if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
-    double level_nerf = ( static_cast<double>( p -> level ) - 90 ) / 10.0;
+    double level_nerf = ( static_cast<double>( p -> level() ) - 90 ) / 10.0;
     *amp_value *= 1 - level_nerf;
     *amp_value = std::max( 0.01, *amp_value ); // Cap it at 1%
   }
@@ -2095,9 +2095,9 @@ void item::cleave( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.proc_chance_ = budget.p_epic[ 0 ] * cleave_driver_spell -> effectN( 1 ).m_average() / 10000.0;
 
-  if ( p -> level > 90 )
+  if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
-    double level_nerf = ( static_cast<double>( p -> level ) - 90 ) / 10.0;
+    double level_nerf = ( static_cast<double>( p -> level() ) - 90 ) / 10.0;
      effect.proc_chance_ *= 1 - level_nerf;
      effect.proc_chance_ = std::max( 0.01, effect.proc_chance_ ); // Cap it at 1%
   }

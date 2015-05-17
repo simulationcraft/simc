@@ -1698,8 +1698,8 @@ public:
     pet_t( sim, owner, "xuen_the_white_tiger", true )
   {
     main_hand_weapon.type = WEAPON_BEAST;
-    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level );
-    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level );
+    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level() );
+    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap = 0.60;
@@ -6202,27 +6202,27 @@ void monk_t::apl_pre_brewmaster()
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
 
   // Flask
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       pre -> add_action( "flask,type=spring_blossoms" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       pre -> add_action( "flask,type=the_winds" );
-    else if ( level >= 75 )
+    else if ( true_level >= 75 )
       pre -> add_action( "flask,type=endless_rage" );
     else
       pre -> add_action( "flask,type=relentless_assault" );
   }
 
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
   {
-    if (level > 90)
+    if ( level() > 90)
       pre -> add_action( "food,type=sleeper_sushi" );
-    else if ( level >= 80 )
+    else if ( level() >= 80 )
       pre -> add_action( "food,type=skewered_eel" );
-    else if ( level >= 70 )
+    else if ( level() >= 70 )
       pre -> add_action( "food,type=blackened_dragonfin" );
     else
       pre -> add_action( "food,type=warp_burger" );
@@ -6231,11 +6231,11 @@ void monk_t::apl_pre_brewmaster()
   pre -> add_action( "stance,choose=sturdy_ox" );
   pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( level >= 90 )
+    if ( true_level >= 90 )
       pre -> add_action( "potion,name=draenic_armor" );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       pre -> add_action( "potion,name=virmens_bite" );
     else
       pre -> add_action( "potion,name=tolvir" );
@@ -6254,13 +6254,13 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_flasks )
   {
     // Flask
-    if ( level > 90 )
+    if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       pre -> add_action( "flask,type=spring_blossoms" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       pre -> add_action( "flask,type=the_winds" );
-    else if ( level >= 75 )
+    else if ( true_level >= 75 )
       pre -> add_action( "flask,type=endless_rage" );
     else
       pre->add_action( "flask,type=relentless_assault" );
@@ -6269,13 +6269,13 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_food )
   {
     // Food
-    if ( level > 90 )
+    if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
-    else if ( level >= 85 )
+    else if ( level() >= 85 )
       pre -> add_action( "food,type=sea_mist_rice_noodles" );
-    else if ( level >= 80 )
+    else if ( level() >= 80 )
       pre -> add_action( "food,type=skewered_eel" );
-    else if ( level >= 70 )
+    else if ( level() >= 70 )
       pre -> add_action( "food,type=blackened_dragonfin" );
     else
       pre -> add_action( "food,type=warp_burger" );
@@ -6287,11 +6287,11 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( level > 90 )
+    if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_agility" );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       pre -> add_action( "potion,name=virmens_bite" );
-    else if ( level >= 80 )
+    else if ( true_level >= 80 )
       pre -> add_action( "potion,name=tolvir" );
     else
       pre -> add_action( "potion,name=potion_of_speed" );
@@ -6307,23 +6307,23 @@ void monk_t::apl_pre_mistweaver()
 
   if ( sim -> allow_flasks )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_intellect_flask" );
     // Flask
-    if ( level >= 85 )
+    if ( true_level >= 85 )
       pre -> add_action( "flask,type=warm_sun" );
-    else if ( level > 80 )
+    else if ( true_level > 80 )
       pre -> add_action( "flask,type=draconic_mind" );
   }
 
   if ( sim -> allow_food )
   {
     // Food
-    if ( level > 90 )
+    if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
-    else if ( level >= 85 )
+    else if ( level() >= 85 )
       pre -> add_action( "food,type=mogu_fish_stew" );
-    else if ( level > 80 )
+    else if ( level() > 80 )
       pre -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
@@ -6333,11 +6333,11 @@ void monk_t::apl_pre_mistweaver()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( level > 90 )
+    if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_intellect_potion" );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       pre -> add_action( "potion,name=jade_serpent_potion" );
-    else if ( level > 80 )
+    else if ( true_level > 80 )
       pre -> add_action( "potion,name=volcanic_potion" );
   }
 }
@@ -6382,9 +6382,9 @@ void monk_t::apl_combat_brewmaster()
   
   if ( sim -> allow_potions )
   {
-    if ( level >= 90 )
+    if ( true_level >= 90 )
       def -> add_action( "potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
   }
   def -> add_action( this, "Touch of Death", "if=target.health.percent<10&cooldown.touch_of_death.remains=0&((!glyph.touch_of_death.enabled&chi>=3&target.time_to_die<8)|(glyph.touch_of_death.enabled&target.time_to_die<5))" );
@@ -6460,9 +6460,9 @@ void monk_t::apl_combat_windwalker()
 
   if ( sim -> allow_potions )
   {
-    if ( level == 100 )
+    if ( true_level == 100 )
       def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&(trinket.proc.agility.react|trinket.proc.multistrike.react))|buff.bloodlust.react|target.time_to_die<=60" );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
@@ -6608,7 +6608,7 @@ void monk_t::apl_combat_mistweaver()
 
   if ( sim -> allow_potions )
   {
-    if ( level >= 85 )
+    if ( true_level >= 85 )
       def -> add_action( "/potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 

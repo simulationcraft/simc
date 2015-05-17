@@ -785,8 +785,8 @@ public:
     owner.hunter_main_pets.push_back( this );
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( owner.type, owner.level ) * 0.25;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( owner.type, owner.level ) * 0.25;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( owner.type, owner.level() ) * 0.25;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( owner.type, owner.level() ) * 0.25;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
@@ -854,7 +854,7 @@ public:
   {
     base_t::init_base_stats();
 
-    resources.base[RESOURCE_HEALTH] = util::interpolate( level, 0, 4253, 6373 );
+    resources.base[RESOURCE_HEALTH] = util::interpolate( level(), 0, 4253, 6373 );
     resources.base[RESOURCE_FOCUS] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
     base_gcd = timespan_t::from_seconds( 1.00 );
@@ -1685,7 +1685,7 @@ struct dire_critter_t: public hunter_pet_t
       weapon = &( player -> main_hand_weapon );
       weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level );
+      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
       attack_power_mod.direct = 0.5714;
       school = SCHOOL_PHYSICAL;
       trigger_gcd = timespan_t::zero();
@@ -1732,7 +1732,7 @@ struct dire_critter_t: public hunter_pet_t
 
     stamina_per_owner = 0;
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level );
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
@@ -4024,10 +4024,10 @@ void hunter_t::init_action_list()
     action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
     // Flask
-    if ( sim -> allow_flasks && level >= 80 )
+    if ( sim -> allow_flasks && true_level >= 80 )
     {
       std::string flask_action = "flask,type=";
-      if ( level > 90 )
+      if ( true_level > 90 )
         flask_action += "greater_draenic_agility_flask";
       else
         flask_action += "spring_blossoms";
@@ -4038,10 +4038,10 @@ void hunter_t::init_action_list()
     if ( sim -> allow_food )
     {
       std::string food_action = "food,type=";
-      if ( level > 90 )
+      if ( level() > 90 )
         food_action += "salty_squid_roll";
       else
-        food_action += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+        food_action += ( level() > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
       precombat -> add_action( food_action );
     }
 
@@ -4114,9 +4114,9 @@ void hunter_t::add_potion_action( action_priority_list_t* list, const std::strin
   std::string action_options = options.empty() ? options : "," + options;
   if ( sim -> allow_potions )
   {
-    if ( level > 90 )
+    if ( true_level > 90 )
       list -> add_action( "potion,name=" + big_potion + action_options );
-    else if ( level >= 85 )
+    else if ( true_level >= 85 )
       list -> add_action( "potion,name=" + little_potion + action_options );
   }
 }
@@ -4159,7 +4159,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Cobra Shot", "if=active_enemies>5" );
   default_list -> add_action( this, "Arcane Shot", "if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_wrath.up" );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=75" );
-  if ( level >= 81 )
+  if ( true_level >= 81 )
     default_list -> add_action( this, "Cobra Shot");
   else
     default_list -> add_action(this, "Steady Shot");
@@ -4249,7 +4249,7 @@ void hunter_t::apl_surv()
   default_list -> add_talent( this, "Focusing Shot", "if=talent.steady_focus.enabled&buff.steady_focus.remains<=cast_time&focus.deficit>cast_regen" );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=70|talent.focusing_shot.enabled|(talent.steady_focus.enabled&focus>=50)" );
   default_list -> add_talent( this, "Focusing Shot" );
-  if ( level >= 81 )
+  if ( true_level >= 81 )
     default_list -> add_action( this, "Cobra Shot" );
   else
     default_list -> add_action( this, "Steady Shot" );
@@ -4268,7 +4268,7 @@ void hunter_t::apl_surv()
   aoe -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+cast_regen<80" );
   aoe -> add_action( this, "Multi-shot", "if=focus>=70|talent.focusing_shot.enabled" );
   aoe -> add_talent( this, "Focusing Shot" );
-  if ( level >= 81 )
+  if ( true_level >= 81 )
     aoe -> add_action( this, "Cobra Shot" );
   else
     aoe -> add_action( this, "Steady Shot" );
@@ -4329,7 +4329,7 @@ void hunter_t::arise()
 {
   player_t::arise();
 
-  if ( specs.trueshot_aura -> is_level( level ) && !sim -> overrides.attack_power_multiplier )
+  if ( specs.trueshot_aura -> is_level( true_level ) && !sim -> overrides.attack_power_multiplier )
     sim -> auras.attack_power_multiplier -> trigger();
 
   if ( mastery.sniper_training -> ok() )

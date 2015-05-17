@@ -1605,8 +1605,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_soul_reaper( nullptr ), drw_melee( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST_2H;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 3.0;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 3.0;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 3.0;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 3.0;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
 
     owner_coeff.ap_from_ap = 1/3.0;
@@ -1719,8 +1719,8 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( sim, owner, "army_of_the_dead", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     action_list_str = "snapshot_stats/auto_attack/claw";
@@ -1928,8 +1928,8 @@ struct ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( sim, owner, name, guardian )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     action_list_str = "auto_attack/monstrous_blow/sweeping_claws/claw";
@@ -2196,8 +2196,8 @@ struct fallen_zandalari_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 0.8;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     action_list_str = "auto_attack/strike";
@@ -6483,7 +6483,7 @@ void death_knight_t::default_apl_blood()
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    potion_str += ( level > 90 ) ? "draenic_armor" : ( level >= 85 ) ? "mountains" : "earthen";
+    potion_str += ( true_level > 90 ) ? "draenic_armor" : ( true_level >= 85 ) ? "mountains" : "earthen";
     if ( talent.breath_of_sindragosa -> ok() )
     {
       flask_str += "greater_draenic_strength_flask";
@@ -6491,30 +6491,30 @@ void death_knight_t::default_apl_blood()
     }
     else
     {
-      flask_str += ( level > 90 ) ? "greater_draenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
-      food_str += ( level > 90 ) ? "whiptail_fillet" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
+      flask_str += ( true_level > 90 ) ? "greater_draenic_stamina_flask" : ( true_level >= 85 ) ? "earth" : "steelskin";
+      food_str += ( level() > 90 ) ? "whiptail_fillet" : ( level() >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
     }
   }
   else
   {
-    potion_str += ( level > 90 ) ? "draenic_strength" : ( level >= 85 ) ? "mogu_power" : "golemblood";
-    flask_str += ( level > 90 ) ? "greater_draenic_strength_flask" : ( level >= 85 ) ? "winters_bite" : "titanic_strength";
-    food_str += ( level > 90 ) ? "salty_squid_roll" : ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+    potion_str += ( true_level > 90 ) ? "draenic_strength" : ( true_level >= 85 ) ? "mogu_power" : "golemblood";
+    flask_str += ( true_level > 90 ) ? "greater_draenic_strength_flask" : ( true_level >= 85 ) ? "winters_bite" : "titanic_strength";
+    food_str += ( level() > 90 ) ? "salty_squid_roll" : ( level() >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
   }
 
   // Precombat actions
 
-  if ( sim -> allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 80 )
     precombat -> add_action( flask_str );
 
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level() >= 80 )
     precombat -> add_action( food_str );
 
   precombat -> add_action( this, "Blood Presence" );
   precombat -> add_action( this, "Horn of Winter" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
     precombat -> add_action( potion_str );
 
   precombat -> add_action( this, "Bone Shield" );
@@ -6526,7 +6526,7 @@ void death_knight_t::default_apl_blood()
 
   if ( !talent.breath_of_sindragosa -> ok() )
   {
-    if ( sim -> allow_potions && level >= 80 )
+    if ( sim -> allow_potions && true_level >= 80 )
       def -> add_action( potion_str + ",if=buff.potion.down&buff.blood_shield.down&!unholy&!frost" );
 
     for ( size_t i = 0; i < get_racial_actions().size(); i++ )
@@ -6598,7 +6598,7 @@ void death_knight_t::default_apl_blood()
         def -> add_action( get_racial_actions()[i] + ",if=buff.dancing_rune_weapon.up" );
     }
     def -> add_action( this, "Dancing Rune Weapon", "if=target.time_to_die>90|buff.draenic_armor_potion.remains<=buff.dancing_rune_weapon.duration" );
-    if ( sim -> allow_potions && level >= 80 )
+    if ( sim -> allow_potions && true_level >= 80 )
       def -> add_action( potion_str + ",if=target.time_to_die<(buff.draenic_armor_potion.duration+13)" );
     for ( size_t i = 0; i < num_items; i++ )
     {
@@ -6749,29 +6749,29 @@ void death_knight_t::init_action_list()
   std::string food_mastery = "food,type=sleeper_sushi";
   std::string food_ms = "food,type=salty_squid_roll";
   std::string potion_str = "potion,name=";
-  potion_str += (level > 90) ? "draenic_strength" : ((level >= 85) ? "mogu_power" : "golemblood");
-  food_str += (level >= 85) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+  potion_str += (true_level > 90) ? "draenic_strength" : ((true_level >= 85) ? "mogu_power" : "golemblood");
+  food_str += (level() >= 85) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 
   if ( tree == DEATH_KNIGHT_UNHOLY )
   {
     talent_overrides_str += "unholy_blight,if=raid_event.adds.count>=1|enemies>1/"
                             "necrotic_plague,if=raid_event.adds.count>=1|enemies>1";
   }
-  flask_str += (level > 90) ? "greater_draenic_strength_flask" : ((level >= 85) ? "winters_bite" : "titanic_strength");
+  flask_str += (true_level > 90) ? "greater_draenic_strength_flask" : ((true_level >= 85) ? "winters_bite" : "titanic_strength");
 
   if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY )
     // Precombat actions
   {
-    if ( sim -> allow_flasks && level >= 80 )
+    if ( sim -> allow_flasks && true_level >= 80 )
       precombat -> add_action( flask_str );
   }
-  if ( sim -> allow_food && level >= 80 && level <= 90 )
+  if ( sim -> allow_food && level() >= 80 && level() <= 90 )
     precombat -> add_action( food_str );
 
-  if ( sim -> allow_food && level > 90 && tree == DEATH_KNIGHT_UNHOLY )
+  if ( sim -> allow_food && level() > 90 && tree == DEATH_KNIGHT_UNHOLY )
     precombat -> add_action( food_ms );
 
-  if ( sim -> allow_food && level > 90 && tree == DEATH_KNIGHT_FROST )
+  if ( sim -> allow_food && level() > 90 && tree == DEATH_KNIGHT_FROST )
   {
     if ( main_hand_weapon.group() == WEAPON_2H )
       precombat -> add_action( food_haste );
@@ -6788,7 +6788,7 @@ void death_knight_t::init_action_list()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat -> add_action( this, "Army of the Dead" );
 
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && true_level >= 80 )
     precombat -> add_action( potion_str );
   for ( size_t i = 0; i < get_profession_actions().size(); i++ )
     precombat -> add_action( get_profession_actions()[i] );
@@ -6805,7 +6805,7 @@ void death_knight_t::init_action_list()
     // Frost specific precombat stuff
     precombat -> add_action( this, "Pillar of Frost" );
     def -> add_action( this, "Pillar of Frost" );
-    if ( sim -> allow_potions && level >= 80 )
+    if ( sim -> allow_potions && true_level >= 80 )
       def -> add_action( potion_str + ",if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
     def -> add_action( this, "Empower Rune Weapon", "if=target.time_to_die<=60&buff.potion.up" );
 
@@ -6972,7 +6972,7 @@ void death_knight_t::init_action_list()
       def -> add_action( get_racial_actions()[i] + ",if=!talent.breath_of_sindragosa.enabled" );
     for ( size_t i = 0; i < get_item_actions().size(); i++ )
       def -> add_action( get_item_actions()[i] + ",if=!talent.breath_of_sindragosa.enabled" );
-    if ( sim -> allow_potions && level >= 80 )
+    if ( sim -> allow_potions && true_level >= 80 )
     {
       for ( size_t i = 0; i < num_items; i++ )
       {
@@ -7032,7 +7032,7 @@ void death_knight_t::init_action_list()
     }
     for ( size_t i = 0; i < get_item_actions().size(); i++ )
       bos -> add_action( get_item_actions()[i] + ",if=dot.breath_of_sindragosa.ticking" );
-    if ( sim -> allow_potions && level >= 80 )
+    if ( sim -> allow_potions && true_level >= 80 )
       bos -> add_action( potion_str + ",if=dot.breath_of_sindragosa.ticking" );
 
     bos -> add_talent( this, "Unholy Blight","if=!disease.ticking" );
