@@ -51,6 +51,7 @@ namespace profession
 namespace item
 {
   void heartpierce( special_effect_t& );
+  void kiril_fury_of_beasts( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -1414,6 +1415,32 @@ void item::humming_blackiron_trigger( special_effect_t& effect )
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+                   .tick_behavior( BUFF_TICK_CLIP )
+                   .period( spell -> effectN( 1 ).period() )
+                   .duration( spell -> duration() );
+
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( effect.item -> player, effect );
+}
+
+void item::kiril_fury_of_beasts( special_effect_t& effect )
+{
+  maintenance_check( 528 );
+
+  const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
+  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
+  const spell_data_t* buff = spell -> effectN( 1 ).trigger(); 
+
+  std::string buff_name = spell -> name_cstr();
+  util::tokenize( buff_name );
+
+  // Require a damaging result, instead of any harmful spell hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
+                   .add_stat( STAT_AGILITY, buff -> effectN( 1 ).average( effect.item ) )
+                   .max_stack( 10 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
@@ -3439,7 +3466,9 @@ void unique_gear::register_special_effects()
   // Misc
   register_special_effect( 71892,  item::heartpierce                    );
   register_special_effect( 71880,  item::heartpierce                    );
-
+  register_special_effect( 107824, item::kiril_fury_of_beasts           );
+  register_special_effect( 109862, item::kiril_fury_of_beasts           );
+  register_special_effect( 109865, item::kiril_fury_of_beasts           );
   /**
    * Enchants
    */

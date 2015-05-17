@@ -2455,6 +2455,12 @@ struct ferocious_bite_t : public cat_attack_t
       const spell_data_t* glyph = p -> find_glyph_spell( "Glyph of Ferocious Bite" );
       pct_heal = glyph -> effectN( 1 ).percent() / 10.0;
       energy_divisor = glyph -> effectN( 2 ).resource( RESOURCE_ENERGY );
+
+      if ( p -> sets.has_set_bonus( SET_MELEE, T6, B4 ) )
+      {
+        base_dd_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T6, B4 ) -> effectN( 1 ).percent();
+        base_td_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T6, B4 ) -> effectN( 2 ).percent();
+      }
     }
 
     druid_t* p() const
@@ -2765,6 +2771,12 @@ struct rip_t : public cat_attack_t
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+
+    if ( p -> sets.has_set_bonus( SET_MELEE, T6, B4 ) )
+    {
+      base_dd_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T6, B4 ) -> effectN( 1 ).percent();
+      base_td_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T6, B4 ) -> effectN( 2 ).percent();
+    }
   }
 
   action_state_t* new_state()
@@ -2841,6 +2853,9 @@ struct shred_t : public cat_attack_t
   {
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
+
+    if ( p -> sets.has_set_bonus( SET_MELEE, T6, B2 ) )
+      base_costs[ RESOURCE_ENERGY ] -= 5;
   }
 
   virtual void execute()
@@ -3364,6 +3379,9 @@ struct maul_t : public bear_attack_t
     }
 
     normalize_weapon_speed = false;
+    
+    if ( player -> sets.has_set_bonus( SET_MELEE, T6, B4 ) )
+      base_dd_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T6, B4 ) -> effectN( 1 ).percent();
   }
 
   virtual double cost() const

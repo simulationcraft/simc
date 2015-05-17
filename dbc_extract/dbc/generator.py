@@ -3372,6 +3372,12 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 0,
         },
         # Normal set bonuses, T13 -> T17
+		{
+			'name'   : 'tier6',
+			'bonuses': [ 674, 669, 679, 680, 681, 670, 673, 672, 682, 683,
+			             684, 668, 671, 676, 678, 677, 675 ],
+			'tier'   : 6
+		},
         {
             'name'   : 'tier13',
             'bonuses': [ 1073, 1074, 1063, 1065, 1064, 1061, 1068, 1066, 1067, 1056, 1057,
