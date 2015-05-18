@@ -1467,27 +1467,39 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
       double spi  = p -> spirit();
 
       if ( str > agi )
+      {
         if ( str > inte )
+        {
           if ( str > spi )
             buff_str -> trigger();
           else
             buff_spi -> trigger();
+        }
         else
+        {
           if ( inte > spi )
             buff_int -> trigger();
           else
             buff_spi -> trigger();
+        }
+      }
       else
+      {
         if ( agi > inte )
+        {
           if ( agi > spi )
             buff_agi -> trigger();
           else
             buff_spi -> trigger();
+        }
         else
+        {
           if ( inte > spi )
             buff_int -> trigger();
           else
             buff_spi -> trigger();
+        }
+      }
     }
   };
 
@@ -1544,7 +1556,7 @@ void item::deathbringers_will( special_effect_t& effect )
     stat_buff_t* crit;
     stat_buff_t* haste;
 
-    std::vector<stat_buff_t*> procs;
+    std::array<stat_buff_t*, 3> procs;
 
     deathbringers_will_callback( const item_t* i, const special_effect_t& data ) :
       dbc_proc_callback_t( i -> player, data )
@@ -1564,13 +1576,12 @@ void item::deathbringers_will( special_effect_t& effect )
       crit  = common_buff_creator( listener, i, "crit",  STAT_CRIT_RATING,  data.spell_id == 71562 ? 71559 : 71491 );
       haste = common_buff_creator( listener, i, "haste", STAT_HASTE_RATING, data.spell_id == 71562 ? 71560 : 71492 );
 
-      switch( i -> player -> type ) {
-        case DRUID:    procs = { agi, haste, str  }; break;
-        case HUNTER:   procs = { agi, haste, ap   }; break;
-        case PALADIN:  procs = { str, haste, crit }; break;
-        case ROGUE:    procs = { agi, haste, ap   }; break;
-        case WARRIOR:  procs = { str, haste, crit }; break;
-        default:       procs = { str, haste, crit }; break;
+      switch( i -> player -> type )
+      {
+        case DRUID:    procs[ 0 ] = agi; procs[ 1 ] = haste; procs[ 2 ] =  str; break;
+        case HUNTER:   procs[ 0 ] = agi; procs[ 1 ] = haste; procs[ 2 ] =   ap; break;
+        case ROGUE:    procs[ 0 ] = agi; procs[ 1 ] = haste; procs[ 2 ] =   ap; break;
+        default:       procs[ 0 ] = str; procs[ 1 ] = haste; procs[ 2 ] = crit; break;
       }
     }
 
@@ -1763,45 +1774,45 @@ void item::legendary_ring( special_effect_t& effect )
     }
   };
 
-  struct legendary_ring_buff_t: public buff_t
-  {
-    action_t* boom;
-    legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
-      buff_t( buff_creator_t( originaleffect.player, name, buff )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-      .default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
-      boom( 0 )
+    struct legendary_ring_buff_t: public buff_t
     {
-      boom = originaleffect.player -> find_action( damagespell -> name_cstr() );
-
-      if ( !boom )
+      action_t* boom;
+      legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
+        buff_t( buff_creator_t( originaleffect.player, name, buff )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        .default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
+        boom( 0 )
       {
-        boom = originaleffect.player -> create_proc_action( damagespell -> name_cstr(), originaleffect );
+        boom = originaleffect.player -> find_action( damagespell -> name_cstr() );
+
+        if ( !boom )
+        {
+          boom = originaleffect.player -> create_proc_action( damagespell -> name_cstr(), originaleffect );
+        }
+
+        if ( !boom )
+        {
+          boom = new legendary_ring_damage_t( originaleffect, damagespell );
+        }
+        originaleffect.player -> buffs.legendary_aoe_ring = this;
       }
 
-      if ( !boom )
+      void expire_override( int expiration_stacks, timespan_t remaining_duration )
       {
-        boom = new legendary_ring_damage_t( originaleffect, damagespell );
+        double cv = current_value;
+
+        buff_t::expire_override( expiration_stacks, remaining_duration );
+
+        if ( cv > 0 && !player -> is_sleeping() )
+        {
+          boom -> base_dd_min = boom -> base_dd_max = cv;
+          boom -> execute();
+        }
       }
-      originaleffect.player -> buffs.legendary_aoe_ring = this;
-    }
+  };
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    double cv = current_value;
-
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( cv > 0 && !player -> is_sleeping() )
-    {
-      boom -> base_dd_min = boom -> base_dd_max = cv;
-      boom -> execute();
-    }
-  }
-};
-
-  const spell_data_t* buffspell;
-  const spell_data_t* actionspell;
+  const spell_data_t* buffspell = 0;
+  const spell_data_t* actionspell = 0;
 
   switch ( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
   {
