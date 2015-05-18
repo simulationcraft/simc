@@ -1287,7 +1287,7 @@ class SpellDataGenerator(DataGenerator):
          104510, 104423,            # Windsong Mastery / Haste buffs
          177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
          177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
-		 187619, 187620, 187616, 187624, 187626, 187625, # phase 2?
+		 187619, 187616, 187624, 187625, # phase 2?
          143924,                    # Leech
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
@@ -1295,6 +1295,12 @@ class SpellDataGenerator(DataGenerator):
          183950,                    # Darklight Ray (WoD 6.2 Int DPS Trinket 3 damage spell)
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
+		 60235,                     # Darkmoon Card: Greatness proc
+		 72412, 72413, 72414,       # ICC Ring Procs
+		 72415, 72416, 72417,
+		 72418, 72419,
+		 71556, 71558, 71559, 71560,# Deathbringer's Will procs
+		 71484, 71485, 71492
         ),
 
         # Warrior:

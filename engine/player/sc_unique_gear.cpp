@@ -51,6 +51,9 @@ namespace profession
 namespace item
 {
   void heartpierce( special_effect_t& );
+  void darkmoon_card_greatness( special_effect_t& );
+  void vial_of_shadows( special_effect_t& );
+  void deathbringers_will( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -1421,6 +1424,167 @@ void item::humming_blackiron_trigger( special_effect_t& effect )
   effect.custom_buff = b;
 
   new dbc_proc_callback_t( effect.item -> player, effect );
+}
+
+void item::darkmoon_card_greatness( special_effect_t& effect )
+{
+  struct darkmoon_card_greatness_callback : public dbc_proc_callback_t
+  {
+    stat_buff_t* buff_str;
+    stat_buff_t* buff_agi;
+    stat_buff_t* buff_int;
+    stat_buff_t* buff_spi;
+
+    darkmoon_card_greatness_callback( const item_t* i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i -> player, data )
+    {
+      const spell_data_t* driver = listener -> find_spell( 57345 );
+      const spell_data_t* buff   = listener -> find_spell( 60235 );
+
+      struct common_buff_creator : public stat_buff_creator_t
+      {
+        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* buff, const spell_data_t* driver ) :
+          stat_buff_creator_t ( p, "greatness_" + n, buff )
+        {}
+      };
+
+      double value = buff -> effectN( 1 ).average( *i );
+
+      buff_str = common_buff_creator( listener, "str", buff, driver )
+                 .add_stat( STAT_STRENGTH, value );
+      buff_agi = common_buff_creator( listener, "agi", buff, driver )
+                 .add_stat( STAT_AGILITY, value );
+      buff_int = common_buff_creator( listener, "int", buff, driver )
+                 .add_stat( STAT_INTELLECT, value );
+      buff_spi = common_buff_creator( listener, "spi", buff, driver )
+                 .add_stat( STAT_SPIRIT, value );
+    }
+
+    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    {
+      player_t* p = a -> player;
+
+      double str  = p -> strength();
+      double agi  = p -> agility();
+      double inte = p -> intellect();
+      double spi  = p -> spirit();
+
+      if ( str > agi )
+        if ( str > inte )
+          if ( str > spi )
+            buff_str -> trigger();
+          else
+            buff_spi -> trigger();
+        else
+          if ( inte > spi )
+            buff_int -> trigger();
+          else
+            buff_spi -> trigger();
+      else
+        if ( agi > inte )
+          if ( agi > spi )
+            buff_agi -> trigger();
+          else
+            buff_spi -> trigger();
+        else
+          if ( inte > spi )
+            buff_int -> trigger();
+          else
+            buff_spi -> trigger();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new darkmoon_card_greatness_callback( effect.item, effect );
+}
+
+struct lightning_strike_t : public attack_t
+{
+  lightning_strike_t( const special_effect_t& effect ) :
+    attack_t( "lightning_strike_vial", effect.player, effect.player -> find_spell( 109724 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+    switch ( effect.driver() -> id() )
+    {
+      case 109725: attack_power_mod.direct = 0.339; break;
+      case 107995: attack_power_mod.direct = 0.300; break;
+      case 109722: attack_power_mod.direct = 0.266; break;
+      default: assert( false ); break;
+    }
+  }
+};
+
+void item::vial_of_shadows( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "lightning_strike_vial" );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "lightning_strike_vial", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new lightning_strike_t( effect );
+  }
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void item::deathbringers_will( special_effect_t& effect )
+{
+  struct deathbringers_will_callback : public dbc_proc_callback_t
+  {
+    stat_buff_t* str;
+    stat_buff_t* agi;
+    stat_buff_t* ap;
+    stat_buff_t* crit;
+    stat_buff_t* haste;
+
+    std::vector<stat_buff_t*> procs;
+
+    deathbringers_will_callback( const item_t* i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i -> player, data )
+    {
+      struct common_buff_creator : public stat_buff_creator_t
+      {
+        common_buff_creator( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+          stat_buff_creator_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
+        {
+          add_stat( stat, p -> find_spell( id ) -> effectN( 2 ).average( *i ) );
+        }
+      };
+
+      str   = common_buff_creator( listener, i, "str",   STAT_STRENGTH,     data.spell_id == 71562 ? 71561 : 71484 );
+      agi   = common_buff_creator( listener, i, "agi",   STAT_AGILITY,      data.spell_id == 71562 ? 71556 : 71485 );
+      ap    = common_buff_creator( listener, i, "ap",    STAT_ATTACK_POWER, data.spell_id == 71562 ? 71558 : 71486 );
+      crit  = common_buff_creator( listener, i, "crit",  STAT_CRIT_RATING,  data.spell_id == 71562 ? 71559 : 71491 );
+      haste = common_buff_creator( listener, i, "haste", STAT_HASTE_RATING, data.spell_id == 71562 ? 71560 : 71492 );
+
+      switch( i -> player -> type ) {
+        case DRUID:    procs = { agi, haste, str  }; break;
+        case HUNTER:   procs = { agi, haste, ap   }; break;
+        case PALADIN:  procs = { str, haste, crit }; break;
+        case ROGUE:    procs = { agi, haste, ap   }; break;
+        case WARRIOR:  procs = { str, haste, crit }; break;
+        default:       procs = { str, haste, crit }; break;
+      }
+    }
+
+    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    {
+      player_t* p = a -> player;
+
+      procs[ static_cast<int>( p -> rng().real() * 3 ) ] -> trigger();
+    }
+  };
+
+  new deathbringers_will_callback( effect.item, effect );
 }
 
 void item::battering_talisman_trigger( special_effect_t& effect )
@@ -3365,6 +3529,20 @@ void unique_gear::register_special_effect( unsigned spell_id, const std::string&
  */
 void unique_gear::register_special_effects()
 {
+  /* Legacy Effects, pre-5.0 */
+  register_special_effect( 57345,  item::darkmoon_card_greatness        );
+  register_special_effect( 71892,  item::heartpierce                    );
+  register_special_effect( 71880,  item::heartpierce                    );
+  register_special_effect( 107824, "1Tick_108016Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
+  register_special_effect( 109862, "1Tick_109860Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
+  register_special_effect( 109865, "1Tick_109863Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
+  register_special_effect( 109725, item::vial_of_shadows                );
+  register_special_effect( 109722, item::vial_of_shadows                );
+  register_special_effect( 107995, item::vial_of_shadows                );
+  register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
+  register_special_effect( 71562,  item::deathbringers_will             );
+  register_special_effect( 71562,  item::deathbringers_will             );
+
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
   register_special_effect( 184291, item::soul_capacitor                 );
@@ -3412,6 +3590,8 @@ void unique_gear::register_special_effects()
   register_special_effect( 138964, item::unerring_vision_of_leishen     );
 
   register_special_effect( 138728, "Reverse"                            ); /* Steadfast Talisman of the Shado-Pan Assault */
+  register_special_effect( 138701, "ProcOn/Hit"                         ); /* Brutal Talisman of the Shado-Pan Assault */
+  register_special_effect( 138700, "ProcOn/Hit"                         ); /* Vicious Talisman of the Shado-Pan Assault */
   register_special_effect( 139171, "ProcOn/Crit_RPPMAttackCrit"         ); /* Gaze of the Twins */
   register_special_effect( 138757, "1Tick_138737Trigger"                ); /* Renataki's Soul Charm */
   register_special_effect( 138790, "ProcOn/Hit_1Tick_138788Trigger"     ); /* Wushoolay's Final Choice */
@@ -3431,22 +3611,37 @@ void unique_gear::register_special_effects()
   register_special_effect( 126490, "ProcOn/Crit"                        ); /* Searing Words */
 
   /* Mists of Pandaria: Player versus Player */
-  register_special_effect( 138701, "ProcOn/Hit"                         ); /* Brutal Talisman of the Shado-Pan Assault */
-  register_special_effect( 138700, "ProcOn/Hit"                         ); /* Vicious Talisman of the Shado-Pan Assault */
-
   register_special_effect( 126706, "ProcOn/Hit"                         ); /* Gladiator's Insignia of Dominance */
 
   /* Mists of Pandaria: Darkmoon Faire */
   register_special_effect( 128990, "ProcOn/Hit"                         ); /* Relic of Yu'lon */
   register_special_effect( 128445, "ProcOn/Crit"                        ); /* Relic of Xuen (agi) */
 
-  // Misc
-  register_special_effect( 71892,  item::heartpierce                    );
-  register_special_effect( 71880,  item::heartpierce                    );
-
   /**
    * Enchants
    */
+
+  /* The Burning Crusade */
+  register_special_effect(  28093, "1PPM"                               ); /* Mongoose */
+
+  /* Wrath of the Lich King */
+  register_special_effect(  59620, "1PPM"                               ); /* Berserking */
+  register_special_effect(  42976, enchants::executioner                );
+
+  /* Cataclysm */
+  register_special_effect(  94747, enchants::hurricane_spell            );
+  register_special_effect(  74221, "1PPM"                               ); /* Hurricane Weapon */
+  register_special_effect(  74245, "1PPM"                               ); /* Landslide */
+
+  /* Mists of Pandaria */
+  register_special_effect( 118333, enchants::dancing_steel              );
+  register_special_effect( 142531, enchants::dancing_steel              ); /* Bloody Dancing Steel */
+  register_special_effect( 120033, enchants::jade_spirit                );
+  register_special_effect( 141178, enchants::jade_spirit                );
+  register_special_effect( 104561, enchants::windsong                   );
+  register_special_effect( 104428, "rppmhaste"                          ); /* Elemental Force */
+  register_special_effect( 104441, enchants::rivers_song                );
+  register_special_effect( 118314, enchants::colossus                   );
 
   /* Warlords of Draenor */
   register_special_effect( 159239, enchants::mark_of_the_shattered_hand );
@@ -3459,28 +3654,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 156052, enchants::oglethorpes_missile_splitter );
   register_special_effect( 173286, enchants::hemets_heartseeker         );
   register_special_effect( 173321, enchants::mark_of_bleeding_hollow    );
-
-  /* Mists of Pandaria */
-  register_special_effect( 118333, enchants::dancing_steel              );
-  register_special_effect( 142531, enchants::dancing_steel              ); /* Bloody Dancing Steel */
-  register_special_effect( 120033, enchants::jade_spirit                );
-  register_special_effect( 141178, enchants::jade_spirit                );
-  register_special_effect( 104561, enchants::windsong                   );
-  register_special_effect( 104428, "rppmhaste"                          ); /* Elemental Force */
-  register_special_effect( 104441, enchants::rivers_song                );
-  register_special_effect( 118314, enchants::colossus                   );
-
-  /* Cataclysm */
-  register_special_effect(  94747, enchants::hurricane_spell            );
-  register_special_effect(  74221, "1PPM"                               ); /* Hurricane Weapon */
-  register_special_effect(  74245, "1PPM"                               ); /* Landslide */
-
-  /* Wrath of the Lich King */
-  register_special_effect(  59620, "1PPM"                               ); /* Berserking */
-  register_special_effect(  42976, enchants::executioner                );
-
-  /* The Burning Crusade */
-  register_special_effect(  28093, "1PPM"                               ); /* Mongoose */
 
   /* Engineering enchants */
   register_special_effect( 177708, "1PPM_109092Trigger"                 ); /* Mirror Scope */
