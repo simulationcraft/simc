@@ -440,7 +440,7 @@ public:
   virtual priest_td_t* get_target_data( player_t* target ) const override;
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
   virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
-  virtual bool      has_t18_class_trinket() const;
+  virtual bool      has_t18_class_trinket() const override;
 
 private:
   void create_cooldowns();
