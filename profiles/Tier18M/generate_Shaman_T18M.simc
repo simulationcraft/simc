@@ -1,12 +1,12 @@
 # Enhancement
 shaman="Shaman_Enhancement_T18M"
 level=100
-race=draenei
+race=troll
 spec=enhancement
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=0003012
+talents=0002012
 glyphs=chain_lightning/frost_shock
 head=crown_of_the_living_mountain,id=124297,bonus_id=567
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,enchant=gift_of_haste

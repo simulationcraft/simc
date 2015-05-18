@@ -1,10 +1,10 @@
 shaman="Shaman_Enhancement_T18M"
 level=100
-race=draenei
+race=troll
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=0003012
+talents=0002012
 glyphs=chain_lightning/frost_shock
 spec=enhancement
 
