@@ -1768,6 +1768,8 @@ struct dispatch_t : public rogue_attack_t
     {
       callbacks = false;
       background = true;
+      may_crit = false;
+      may_multistrike = 1;
     }
   };
 
