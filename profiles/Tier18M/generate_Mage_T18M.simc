@@ -29,7 +29,7 @@ waist=sash_of_unending_anguish,id=124181,bonus_id=567
 legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
 finger1=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+finger2=nithramus_the_allseer,id=124635,enchant=gift_of_mastery
 trinket1=tome_of_shifting_words,id=124516,bonus_id=567
 trinket2=prophecy_of_fear,id=124230,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_bleeding_hollow
@@ -54,7 +54,7 @@ waist=sash_of_unending_anguish,id=124181,bonus_id=567
 legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
 finger1=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_critical_strike
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
+finger2=nithramus_the_allseer,id=124635,enchant=gift_of_critical_strike
 trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=567
 trinket2=goren_soul_repository,id=119194,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_the_thunderlord
@@ -79,7 +79,7 @@ waist=sash_of_unending_anguish,id=124181,bonus_id=567
 legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
 finger1=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_multistrike
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+finger2=nithramus_the_allseer,id=124635,enchant=gift_of_multistrike
 trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=567
 trinket2=prophecy_of_fear,id=124230,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_the_frostwolf
