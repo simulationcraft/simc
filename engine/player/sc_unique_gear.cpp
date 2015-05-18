@@ -1604,9 +1604,10 @@ void item::legendary_ring( special_effect_t& effect )
   struct legendary_ring_buff_t: public buff_t
   {
     action_t* boom;
-    legendary_ring_buff_t( special_effect_t& originaleffect, const spell_data_t* buff, const spell_data_t* damagespell ):
-      buff_t( buff_creator_t( originaleffect.player, buff -> name_cstr(), buff ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ).
-      default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
+    legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
+      buff_t( buff_creator_t( originaleffect.player, name, buff )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      .default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
       boom( 0 )
     {
       boom = originaleffect.player -> find_action( damagespell -> name_cstr() );
@@ -1645,20 +1646,24 @@ void item::legendary_ring( special_effect_t& effect )
   case STAT_STRENGTH:
     buffspell = p -> find_spell( 187619 );
     actionspell = p -> find_spell( 187624 );
-    buff = new legendary_ring_buff_t( effect, buffspell, actionspell );
     break;
   case STAT_AGILITY:
     buffspell = p -> find_spell( 187620 );
     actionspell = p -> find_spell( 187626 );
-    buff = new legendary_ring_buff_t( effect, buffspell, actionspell );
     break;
   case STAT_INTELLECT:
     buffspell = p -> find_spell( 187616 );
     actionspell = p -> find_spell( 187625 );
-    buff = new legendary_ring_buff_t( effect, buffspell, actionspell );
     break;
   default:
     break;
+  }
+
+  if ( buffspell && actionspell )
+  {
+    std::string name = buffspell -> name_cstr();
+    util::tokenize( name );
+    buff = new legendary_ring_buff_t( effect, name, buffspell, actionspell );
   }
 
   effect.custom_buff = buff;
