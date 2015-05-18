@@ -1780,9 +1780,7 @@ void item::flurry_of_xuen( special_effect_t& effect )
   player_t* p = effect.item -> player;
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
 
-  effect.ppm_        = -1.0 * driver -> real_ppm();
-  effect.ppm_       *= item_database::approx_scale_coefficient( effect.item -> parsed.data.level, effect.item -> item_level() );
-  effect.rppm_scale = RPPM_HASTE;
+  effect.ppm_        = -1.0 * driver -> real_ppm();  effect.rppm_scale = RPPM_HASTE;
   effect.execute_action = new flurry_of_xuen_driver_t( p, p -> create_proc_action( effect.name(), effect ) );
 
   new flurry_of_xuen_cb_t( p, effect );
@@ -1844,7 +1842,6 @@ void item::essence_of_yulon( special_effect_t& effect )
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
 
   effect.ppm_         = -1.0 * driver -> real_ppm();
-  effect.ppm_        *= item_database::approx_scale_coefficient( effect.item -> parsed.data.level, effect.item -> item_level() );
   effect.rppm_scale  = RPPM_HASTE;
   effect.execute_action = new essence_of_yulon_driver_t( p );
 
