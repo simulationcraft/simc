@@ -56,7 +56,7 @@ feet=bloody_daggerheeled_pumps,id=124149
 finger1=loathful_encrusted_band,id=124192,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
 trinket1=unblinking_gaze_of_sethe,id=124229
-trinket2=goren_soul_repository,id=119194
+trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=edict_of_argus,id=124382,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T18N.simc
 
