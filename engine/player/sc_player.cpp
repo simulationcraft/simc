@@ -6372,10 +6372,11 @@ struct use_item_t : public action_t
   std::string use_name;
   action_t* action;
   buff_t* buff;
+  bool triggers_item_cd;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 ), action( 0 ), buff( 0 )
+    item( 0 ), action( 0 ), buff( 0 ), triggers_item_cd( true )
   {
     std::string item_name, item_slot;
 
@@ -6433,6 +6434,14 @@ struct use_item_t : public action_t
         }
       }
 
+      // Warlords of Draenor Legendary Ring On-Use effect does not trigger shared item cooldown. Match
+      // based on the buff spell id
+      unsigned buff_id = buff -> data().id();
+      if ( buff_id == 187619 || buff_id == 187620 || buff_id == 187616 )
+      {
+        triggers_item_cd = false;
+      }
+
       if ( e.action_type() != SPECIAL_EFFECT_ACTION_NONE )
       {
         action = player -> find_action( e.name() );
@@ -6487,15 +6496,9 @@ struct use_item_t : public action_t
 
     update_ready();
 
-    if ( triggered && buff )
+    if ( triggers_item_cd && triggered && buff )
     {
-      // Warlords of Draenor Legendary Ring On-Use effect does not trigger shared item cooldown. Match
-      // based on the buff spell id
-      unsigned buff_id = buff -> data().id();
-      if ( buff_id != 187619 && buff_id != 187620 && buff_id != 187616 )
-      {
-        lockout( buff -> buff_duration );
-      }
+      lockout( buff -> buff_duration );
     }
   }
 
@@ -6503,7 +6506,10 @@ struct use_item_t : public action_t
   {
     if ( ! item ) return false;
 
-    if ( player -> item_cooldown.remains() > timespan_t::zero() ) return false;
+    if ( triggers_item_cd && player -> item_cooldown.remains() > timespan_t::zero() )
+    {
+      return false;
+    }
 
     if ( action && ! action -> ready() )
     {
