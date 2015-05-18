@@ -4796,7 +4796,7 @@ struct shadow_reflection_pet_t : public pet_t
   struct sr_backstab_t : public shadow_reflection_attack_t
   {
     sr_backstab_t( shadow_reflection_pet_t* p ) :
-      shadow_reflection_attack_t( "backstab", p, p -> find_spell( 53 ) )
+      shadow_reflection_attack_t( "backstab", p, p -> find_spell( 173458 ) )
     {
       requires_position = POSITION_BACK;
     }
@@ -4805,7 +4805,7 @@ struct shadow_reflection_pet_t : public pet_t
   struct sr_dispatch_t : public shadow_reflection_attack_t
   {
     sr_dispatch_t( shadow_reflection_pet_t* p ) :
-      shadow_reflection_attack_t( "dispatch", p, p -> find_spell( 111240 ) )
+      shadow_reflection_attack_t( "dispatch", p, p -> find_spell( 157957 ) )
     { }
   };
 

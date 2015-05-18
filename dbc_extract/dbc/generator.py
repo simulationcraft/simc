@@ -1353,6 +1353,8 @@ class SpellDataGenerator(DataGenerator):
             ( 115189, 0 ),          # Anticipation buff
             ( 157562, 0 ),          # Crimson Poison (Enhanced Crimson Tempest perk)
             ( 186183, 0 ),          # Assassination T18 2PC Nature Damage component
+            ( 157957, 0 ),          # Shadow Reflection Dispatch
+            ( 173458, 0 ),          # Shadow Reflection Backstab
         ),
 
         # Priest:
