@@ -4774,6 +4774,13 @@ struct shadow_reflection_pet_t : public pet_t
       shadow_reflection_attack_t( "ambush", p, p -> find_spell( 8676 ) )
     {
       requires_position = POSITION_BACK;
+
+      // Shadow Reflection benefits from the Subtlety WoD 6.2 trinket
+      if ( o() -> from_the_shadows )
+      {
+        const spell_data_t* data = p -> find_spell( o() -> from_the_shadows -> spell_id );
+        base_multiplier *= 1.0 + data -> effectN( 2 ).average( o() -> from_the_shadows -> item ) / 100.0;
+      }
     }
   };
 
