@@ -1578,6 +1578,7 @@ void item::legendary_ring( special_effect_t& effect )
     {
       damage_coeff = originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0;
       background = split_aoe_damage = true;
+      may_crit = may_multistrike = false;
       callbacks = false;
       trigger_gcd = timespan_t::zero();
       aoe = -1;
