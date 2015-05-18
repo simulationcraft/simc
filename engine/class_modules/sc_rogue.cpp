@@ -242,6 +242,7 @@ struct rogue_t : public player_t
     buff_t* shadow_strikes;
     buff_t* crimson_poison;
     buff_t* deadly_shadows;
+    buff_t* t18_adrenaline_rush;
   } buffs;
 
   // Cooldowns
@@ -260,6 +261,7 @@ struct rogue_t : public player_t
   struct gains_t
   {
     gain_t* adrenaline_rush;
+    gain_t* t18_adrenaline_rush;
     gain_t* combat_potency;
     gain_t* deceit;
     gain_t* energetic_recovery;
@@ -2030,6 +2032,9 @@ struct eviscerate_t : public rogue_attack_t
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
+    if ( t != timespan_t::zero() && p() -> buffs.t18_adrenaline_rush -> check() )
+      t += p() -> buffs.t18_adrenaline_rush -> data().effectN( 3 ).time_value();
+
     return t;
   }
 
@@ -2634,6 +2639,9 @@ struct revealing_strike_t : public rogue_attack_t
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
+    if ( t != timespan_t::zero() && p() -> buffs.t18_adrenaline_rush -> check() )
+      t += p() -> buffs.t18_adrenaline_rush -> data().effectN( 3 ).time_value();
+
     return t;
   }
 };
@@ -2660,6 +2668,9 @@ struct rupture_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+
+    if ( t != timespan_t::zero() && p() -> buffs.t18_adrenaline_rush -> check() )
+      t += p() -> buffs.t18_adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
   }
@@ -2760,6 +2771,9 @@ struct sinister_strike_t : public rogue_attack_t
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
+    if ( t != timespan_t::zero() && p() -> buffs.t18_adrenaline_rush -> check() )
+      t += p() -> buffs.t18_adrenaline_rush -> data().effectN( 3 ).time_value();
+
     return t;
   }
 
@@ -2834,6 +2848,9 @@ struct slice_and_dice_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+
+    if ( t != timespan_t::zero() && p() -> buffs.t18_adrenaline_rush -> check() )
+      t += p() -> buffs.t18_adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
   }
@@ -5123,6 +5140,9 @@ double rogue_t::composite_melee_speed() const
   if ( buffs.adrenaline_rush -> check() )
     h *= 1.0 / ( 1.0 + buffs.adrenaline_rush -> value() );
 
+  if ( buffs.t18_adrenaline_rush -> check() )
+    h *= 1.0 / ( 1.0 + buffs.t18_adrenaline_rush -> value() );
+
   return h;
 }
 
@@ -5195,9 +5215,17 @@ double rogue_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
     }
 
-    if ( sets.has_set_bonus( ROGUE_COMBAT, T18, B4 ) && buffs.adrenaline_rush -> up() )
+    if ( sets.has_set_bonus( ROGUE_COMBAT, T18, B4 ) )
     {
-      m *= 1.0 + sets.set( ROGUE_COMBAT, T18, B4 ) -> effectN( 1 ).percent();
+      if ( buffs.adrenaline_rush -> up() )
+      {
+        m *= 1.0 + sets.set( ROGUE_COMBAT, T18, B4 ) -> effectN( 1 ).percent();
+      }
+
+      if ( buffs.t18_adrenaline_rush -> up() )
+      {
+        m *= 1.0 + sets.set( ROGUE_COMBAT, T18, B4 ) -> effectN( 1 ).percent();
+      }
     }
 
     if ( buffs.deadly_shadows -> up() )
@@ -5693,6 +5721,7 @@ void rogue_t::init_gains()
   player_t::init_gains();
 
   gains.adrenaline_rush         = get_gain( "adrenaline_rush"    );
+  gains.t18_adrenaline_rush     = get_gain( "t18_adrenaline_rush"    );
   gains.combat_potency          = get_gain( "combat_potency"     );
   gains.deceit                  = get_gain( "deceit" );
   gains.empowered_fan_of_knives = get_gain( "empowered_fan_of_knives" );
@@ -5876,16 +5905,8 @@ static void energetic_recovery( buff_t* buff, int, int )
 
 static void combat_t18_2pc_bonus( buff_t* buff, int, int )
 {
-  double proc_chance = buff -> player -> sets.set( ROGUE_COMBAT, T18, B2 ) -> proc_chance();
   rogue_t* p = debug_cast<rogue_t*>( buff -> player );
-
-  if ( p -> buffs.adrenaline_rush -> remains() > p -> spell.tier18_2pc_combat_ar -> duration() )
-  {
-    return;
-  }
-
-  p -> buffs.adrenaline_rush -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance,
-      p -> spell.tier18_2pc_combat_ar -> duration() );
+  p -> buffs.t18_adrenaline_rush -> trigger();
 }
 
 void rogue_t::create_buffs()
@@ -6026,6 +6047,13 @@ void rogue_t::create_buffs()
   buffs.deadly_shadows = buff_creator_t( this, "deadly_shadows", find_spell( 188700 ) )
                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                          .chance( sets.has_set_bonus( ROGUE_SUBTLETY, T18, B2 ) );
+  buffs.t18_adrenaline_rush     = buff_creator_t( this, "adrenaline_rush_t18", find_spell( 186286 ) )
+                              .cd( timespan_t::zero() )
+                              .chance( sets.set( ROGUE_COMBAT, T18, B2 ) -> proc_chance() )
+                              .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
+                              .affects_regen( true )
+                              .add_invalidate( CACHE_ATTACK_SPEED )
+                              .add_invalidate( sets.has_set_bonus( ROGUE_COMBAT, T18, B4 ) ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
 }
 
 void rogue_t::register_callbacks()
@@ -6390,6 +6418,16 @@ void rogue_t::regen( timespan_t periodicity )
       double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
+    }
+  }
+
+  if ( buffs.t18_adrenaline_rush -> up() )
+  {
+    if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
+    {
+      double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * buffs.t18_adrenaline_rush -> data().effectN( 1 ).percent();
+
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains.t18_adrenaline_rush );
     }
   }
 }
