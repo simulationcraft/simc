@@ -391,7 +391,7 @@ Resource         : 2% Base Mana (3200 @Level 100) and 2% Base Mana (3200 @Level 
 Spell Level      : 22
 GCD              : 1.5 seconds
 Duration         : 14 seconds
-Affecting spells : Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), 
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), 
 Attributes       : ........ ........ x....... ........   ......x. .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -580,7 +580,7 @@ Spell Level      : 21
 Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Flamelicked (185229)
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ..xx...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -624,7 +624,7 @@ Tooltip          : Disoriented.
 Name             : Hellfire (id=5857) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 20
-Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -1601,7 +1601,7 @@ Name             : Rain of Fire (id=42223) [Scaling Spell (10), Spell Family (5)
 Class            : Warlock
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Flamelicked (185229)
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Flamelicked (185229)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ .x....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -3270,7 +3270,7 @@ Spell Level      : 22
 Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 10 seconds
-Affecting spells : Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ x....... ........   ........ .......x x....... ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -3311,7 +3311,7 @@ Spell Level      : 60
 Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Flamelicked (185229)
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5477,7 +5477,7 @@ Effects          :
 Name             : Immolation Aura (id=129476) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 20
-Affecting spells : Glyph of Hand of Gul'dan (56248), Mastery: Master Demonologist (77219), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Glyph of Hand of Gul'dan (56248), Mastery: Master Demonologist (77219), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
