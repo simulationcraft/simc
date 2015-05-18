@@ -2187,8 +2187,8 @@ class SpellDataGenerator(DataGenerator):
 
         # Items with a spell identifier as "stats"
         for iid, data in self._item_sparse_db.iteritems():
-            # Allow trinkets, weapons, 2hweapons to bypass ilevel checking
-            if data.inv_type not in [ 12, 13, 15, 17, 21, 22, 26 ] and \
+            # Allow neck, finger, trinkets, weapons, 2hweapons to bypass ilevel checking
+            if data.inv_type not in [ 2, 11, 12, 13, 15, 17, 21, 22, 26 ] and \
                (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
 
