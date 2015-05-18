@@ -1607,7 +1607,7 @@ void action_t::assess_damage( dmg_e    type,
       player_t* owner = player -> cast_pet() -> owner;
       if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )
       {
-        player -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
+        owner -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
       }
     }
 
