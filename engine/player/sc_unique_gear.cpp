@@ -1438,25 +1438,22 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
     darkmoon_card_greatness_callback( const item_t* i, const special_effect_t& data ) :
       dbc_proc_callback_t( i -> player, data )
     {
-      const spell_data_t* driver = listener -> find_spell( 57345 );
-      const spell_data_t* buff   = listener -> find_spell( 60235 );
-
       struct common_buff_creator : public stat_buff_creator_t
       {
-        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* buff, const spell_data_t* driver ) :
-          stat_buff_creator_t ( p, "greatness_" + n, buff )
+        common_buff_creator( player_t* p, const std::string& n ) :
+          stat_buff_creator_t ( p, "greatness_" + n, p -> find_spell( 60235 ) )
         {}
       };
 
-      double value = buff -> effectN( 1 ).average( *i );
+      double value = listener -> find_spell( 60235 ) -> effectN( 1 ).average( *i );
 
-      buff_str = common_buff_creator( listener, "str", buff, driver )
+      buff_str = common_buff_creator( listener, "str" )
                  .add_stat( STAT_STRENGTH, value );
-      buff_agi = common_buff_creator( listener, "agi", buff, driver )
+      buff_agi = common_buff_creator( listener, "agi" )
                  .add_stat( STAT_AGILITY, value );
-      buff_int = common_buff_creator( listener, "int", buff, driver )
+      buff_int = common_buff_creator( listener, "int" )
                  .add_stat( STAT_INTELLECT, value );
-      buff_spi = common_buff_creator( listener, "spi", buff, driver )
+      buff_spi = common_buff_creator( listener, "spi" )
                  .add_stat( STAT_SPIRIT, value );
     }
 
@@ -3540,7 +3537,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 109722, item::vial_of_shadows                );
   register_special_effect( 107995, item::vial_of_shadows                );
   register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
-  register_special_effect( 71562,  item::deathbringers_will             );
+  register_special_effect( 71519,  item::deathbringers_will             );
   register_special_effect( 71562,  item::deathbringers_will             );
 
   /* Warlords of Draenor 6.2 */
