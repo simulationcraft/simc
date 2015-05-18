@@ -4465,8 +4465,14 @@ struct frozen_obliteration_t : public death_knight_melee_attack_t
 
   void proxy_execute( const action_state_t* source_state )
   {
+    double m = coeff;
     target = source_state -> target;
-    base_dd_min = base_dd_max = source_state -> result_amount * coeff;
+
+    // Mastery has to be special cased here, since no other multipliers seem to work
+    if ( p() -> mastery.frozen_heart -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    base_dd_min = base_dd_max = source_state -> result_amount * m;
 
     execute();
   }
@@ -4501,13 +4507,13 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     return cc;
   }
 
-  void execute()
+  void impact( action_state_t* s )
   {
-    death_knight_melee_attack_t::execute();
+    death_knight_melee_attack_t::impact( s );
 
-    if ( fo && result_is_hit( execute_state -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) && fo )
     {
-      fo -> proxy_execute( execute_state );
+      fo -> proxy_execute( s );
     }
   }
 };
@@ -4555,11 +4561,6 @@ struct obliterate_t : public death_knight_melee_attack_t
       if ( p() -> buffs.killing_machine -> check() )
         p() -> procs.oblit_killing_machine -> occur();
 
-      if ( fo )
-      {
-        fo -> proxy_execute( execute_state );
-      }
-
       if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) || 
            ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
              ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
@@ -4596,6 +4597,11 @@ struct obliterate_t : public death_knight_melee_attack_t
             p() -> buffs.rime -> decrement( 1 );
         }
       }
+    }
+
+    if ( result_is_hit_or_multistrike( s -> result ) && fo )
+    {
+      fo -> proxy_execute( s );
     }
   }
 
