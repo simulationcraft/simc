@@ -4733,6 +4733,40 @@ struct doom_nova_t : public mage_spell_t
   }
 };
 
+// Override Nithramus ring explosion to impact Prismatic Crystal
+
+struct nithramus_t : public mage_spell_t
+{
+  double damage_coeff;
+  nithramus_t( mage_t* p, const special_effect_t& effect ) :
+    mage_spell_t( "nithramus", p, p -> find_spell( 187611 ) )
+  {
+    damage_coeff = data().effectN( 1 ).average( effect.item ) / 10000.0;
+
+    background = split_aoe_damage = true;
+    callbacks = false;
+    may_crit = may_multistrike = false;
+    trigger_gcd = timespan_t::zero();
+    aoe = -1;
+    radius = 20;
+    range = -1;
+    travel_speed = 0.0;
+  }
+
+  void init()
+  {
+    mage_spell_t::init();
+
+    snapshot_flags = STATE_MUL_DA|STATE_TGT_MUL_DA;
+    update_flags = 0;
+  }
+
+  double composite_da_multiplier( const action_state_t* ) const
+  {
+    return damage_coeff;
+  }
+};
+
 } // namespace actions
 
 namespace events {
@@ -4909,6 +4943,7 @@ action_t* mage_t::create_proc_action( const std::string& name, const special_eff
 {
   if ( util::str_compare_ci( name, "darklight_ray" ) ) return new actions::darklight_ray_t( this, effect );
   if ( util::str_compare_ci( name, "doom_nova" ) )     return new     actions::doom_nova_t( this, effect );
+  if ( util::str_compare_ci( name, "nithramus" ) )     return new     actions::nithramus_t( this, effect );
 
   return 0;
 }
