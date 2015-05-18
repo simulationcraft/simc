@@ -53,6 +53,7 @@ namespace item
   void heartpierce( special_effect_t& );
   void darkmoon_card_greatness( special_effect_t& );
   void vial_of_shadows( special_effect_t& );
+  void deathbringers_will( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -1533,6 +1534,57 @@ void item::vial_of_shadows( special_effect_t& effect )
   effect.execute_action = action;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void item::deathbringers_will( special_effect_t& effect )
+{
+  struct deathbringers_will_callback : public dbc_proc_callback_t
+  {
+    stat_buff_t* str;
+    stat_buff_t* agi;
+    stat_buff_t* ap;
+    stat_buff_t* crit;
+    stat_buff_t* haste;
+
+    std::vector<stat_buff_t*> procs;
+
+    deathbringers_will_callback( const item_t* i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i -> player, data )
+    {
+      struct common_buff_creator : public stat_buff_creator_t
+      {
+        common_buff_creator( player_t* p, const item_t* i, std::string n, stat_e stat, int id ) :
+          stat_buff_creator_t ( p, "deathbringers_will_" + n, p -> find_spell( id ) )
+        {
+          add_stat( stat, p -> find_spell( id ) -> effectN( 2 ).average( *i ) );
+        }
+      };
+
+      str   = common_buff_creator( listener, i, "str",   STAT_STRENGTH,     data.spell_id == 71562 ? 71561 : 71484 );
+      agi   = common_buff_creator( listener, i, "agi",   STAT_AGILITY,      data.spell_id == 71562 ? 71556 : 71485 );
+      ap    = common_buff_creator( listener, i, "ap",    STAT_ATTACK_POWER, data.spell_id == 71562 ? 71558 : 71486 );
+      crit  = common_buff_creator( listener, i, "crit",  STAT_CRIT_RATING,  data.spell_id == 71562 ? 71559 : 71491 );
+      haste = common_buff_creator( listener, i, "haste", STAT_HASTE_RATING, data.spell_id == 71562 ? 71560 : 71492 );
+
+      switch( i -> player -> type ) {
+        case DRUID:    procs = { agi, haste, str  }; break;
+        case HUNTER:   procs = { agi, haste, ap   }; break;
+        case PALADIN:  procs = { str, haste, crit }; break;
+        case ROGUE:    procs = { agi, haste, ap   }; break;
+        case WARRIOR:  procs = { str, haste, crit }; break;
+        default:       procs = { str, haste, crit }; break;
+      }
+    }
+
+    virtual void execute( action_t* a, action_state_t* /* state */ ) override
+    {
+      player_t* p = a -> player;
+
+      procs[ static_cast<int>( p -> rng().real() * 3 ) ] -> trigger();
+    }
+  };
+
+  new deathbringers_will_callback( effect.item, effect );
 }
 
 void item::battering_talisman_trigger( special_effect_t& effect )
@@ -3483,7 +3535,8 @@ void unique_gear::register_special_effects()
   register_special_effect( 109725, item::vial_of_shadows                );
   register_special_effect( 109722, item::vial_of_shadows                );
   register_special_effect( 107995, item::vial_of_shadows                );
-  register_special_effect( 72413, "10%"                                 );
+  register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
+  register_special_effect( 71562,  item::deathbringers_will             );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );

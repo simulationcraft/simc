@@ -1298,7 +1298,9 @@ class SpellDataGenerator(DataGenerator):
 		 60235,                     # Darkmoon Card: Greatness proc
 		 72412, 72413, 72414,       # ICC Ring Procs
 		 72415, 72416, 72417,
-		 72418, 72419
+		 72418, 72419,
+		 71556, 71558, 71559, 71560,# Deathbringer's Will procs
+		 71484, 71485, 71558, 71492
         ),
 
         # Warrior:
