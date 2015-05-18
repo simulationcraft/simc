@@ -1496,27 +1496,28 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
   new darkmoon_card_greatness_callback( effect.item, effect );
 }
 
-struct lightning_strike_t : public attack_t
-{
-  lightning_strike_t( const special_effect_t& effect ) :
-    attack_t( "lightning_strike_vial", effect.player, effect.player -> find_spell( 109724 ) )
-  {
-    background = may_crit = true;
-    callbacks = false;
-
-    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
-    switch ( effect.driver() -> id() )
-    {
-      case 109725: attack_power_mod.direct = 0.339; break;
-      case 107995: attack_power_mod.direct = 0.300; break;
-      case 109722: attack_power_mod.direct = 0.266; break;
-      default: assert( false ); break;
-    }
-  }
-};
-
 void item::vial_of_shadows( special_effect_t& effect )
 {
+  struct lightning_strike_t : public attack_t
+  {
+    lightning_strike_t( const special_effect_t& effect ) :
+      attack_t( "lightning_strike_vial", effect.player, effect.player -> find_spell( 109724 ) )
+    {
+      background = may_crit = true;
+      callbacks = false;
+
+      base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+      switch ( effect.driver() -> id() )
+      {
+        case 109725: attack_power_mod.direct = 0.339; break;
+        case 107995: attack_power_mod.direct = 0.300; break;
+        case 109722: attack_power_mod.direct = 0.266; break;
+        default: assert( false ); break;
+      }
+    }
+  };
+
+  // Call the proc _vial so it doesn't conflict with the legendary meta gem.
   action_t* action = effect.player -> find_action( "lightning_strike_vial" );
   if ( ! action )
   {
