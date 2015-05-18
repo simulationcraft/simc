@@ -1600,6 +1600,16 @@ void action_t::assess_damage( dmg_e    type,
     {
       player -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
     }
+    // (All?) pets contribute towards the owner's legendary ring.
+    // TODO: Check if this is all pets, or just "class pets/guardians".
+    else if ( player -> is_pet() )
+    {
+      player_t* owner = player -> cast_pet() -> owner;
+      if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )
+      {
+        player -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
+      }
+    }
 
     // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
     // break in the future if we ever decide to not separate heal and damage assessing.
