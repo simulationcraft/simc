@@ -6432,14 +6432,14 @@ struct use_item_t : public action_t
         {
           buff = e.create_buff();
         }
-      }
 
-      // Warlords of Draenor Legendary Ring On-Use effect does not trigger shared item cooldown. Match
-      // based on the buff spell id
-      unsigned buff_id = buff -> data().id();
-      if ( buff_id == 187619 || buff_id == 187620 || buff_id == 187616 )
-      {
-        triggers_item_cd = false;
+        // Warlords of Draenor Legendary Ring On-Use effect does not trigger shared item cooldown. Match
+        // based on the buff spell id
+        unsigned buff_id = buff -> data().id();
+        if ( buff_id == 187619 || buff_id == 187620 || buff_id == 187616 )
+        {
+          triggers_item_cd = false;
+        }
       }
 
       if ( e.action_type() != SPECIAL_EFFECT_ACTION_NONE )
