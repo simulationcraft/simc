@@ -3508,6 +3508,7 @@ struct earth_shock_t : public shaman_spell_t
           consuming_stacks * tdata -> debuff.t16_2pc_caster -> data().duration() );
 
       p() -> trigger_tier17_4pc_elemental( consuming_stacks );
+      p() -> trigger_tier18_4pc_elemental( p() -> buff.lightning_shield -> check() );
 
       if ( p() -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) )
       {
@@ -3517,9 +3518,7 @@ struct earth_shock_t : public shaman_spell_t
           return;
         }
       }
-      int current_stacks = p() -> buff.lightning_shield -> check();
       p() -> buff.lightning_shield -> decrement( consuming_stacks );
-      p() -> trigger_tier18_4pc_elemental( current_stacks );
     }
   }
 };

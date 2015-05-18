@@ -33,12 +33,12 @@ actions.precombat+=/incinerate
 # Executed every time the actor is available.
 
 actions=use_item,name=nithramus_the_allseer
-actions+=/potion,name=draenic_intellect,if=target.time_to_die<=25|buff.Nithramus.remains>4|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)
+actions+=/potion,name=draenic_intellect,if=target.time_to_die<=25|buff.nithramus.remains>4|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/mannoroths_fury
-actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|buff.Nithramus.remains>4|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))
+actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|buff.nithramus.remains>4|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))
 actions+=/use_item,name=nithramus_the_allseer
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<9
@@ -61,7 +61,7 @@ actions.single_target+=/cataclysm
 actions.single_target+=/rain_of_fire,if=remains<=tick_time&(active_enemies>4|(buff.mannoroths_fury.up&active_enemies>2))
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&active_enemies>1&target.health.pct>20
 actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20|buff.Nithramus.remains>cast_time+travel_time)
+actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20|buff.nithramus.remains>cast_time+travel_time)
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&set_bonus.tier17_2pc=1&burning_ember>=2.5
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&buff.archmages_greater_incandescence_int.react&buff.archmages_greater_incandescence_int.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time
