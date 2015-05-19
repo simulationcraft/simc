@@ -749,10 +749,6 @@ public:
       p() -> buff.raging_blow -> trigger();
 
     p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
-    if ( p() -> active.stance == STANCE_GLADIATOR && maybe_ptr( p() -> dbc.ptr ) )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 2 ).base_value(), p() -> gain.tier18_2pc_gladiator );
-    }
     p() -> buff.enrage -> trigger();
     p() -> buff.enraged_speed -> trigger();
   }
@@ -5282,7 +5278,14 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   // --- Enrages ---
   if ( buff.enrage -> check() )
   {
-    m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
+    if ( active.stance == STANCE_GLADIATOR && sets.has_set_bonus( WARRIOR_PROTECTION, T18, B2 ) )
+    {
+      m *= 1.0 + sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 2 ).percent();
+    }
+    else
+    {
+      m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
+    }
 
     if ( mastery.unshackled_fury -> ok() )
       m *= 1.0 + cache.mastery_value();
