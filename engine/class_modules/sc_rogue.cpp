@@ -2677,6 +2677,18 @@ struct rupture_t : public rogue_attack_t
     return t;
   }
 
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
+    {
+      timespan_t v = timespan_t::from_seconds( -p() -> sets.set( ROGUE_SUBTLETY, T18, B4 ) -> effectN( 1 ).base_value() );
+      v *= cast_state( execute_state ) -> cp;
+      p() -> cooldowns.vanish -> adjust( v, false );
+    }
+  }
+
   virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = data().duration();
