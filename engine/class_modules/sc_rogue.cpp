@@ -241,7 +241,7 @@ struct rogue_t : public player_t
     buff_t* enhanced_vendetta;
     buff_t* shadow_strikes;
     buff_t* crimson_poison;
-    buff_t* deadly_shadows;
+    buff_t* deathly_shadows;
     buff_t* t18_adrenaline_rush;
   } buffs;
 
@@ -2996,7 +2996,7 @@ struct vanish_t : public rogue_attack_t
     if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
       event_t::cancel( p() -> off_hand_attack -> execute_event );
 
-    p() -> buffs.deadly_shadows -> trigger();
+    p() -> buffs.deathly_shadows -> trigger();
   }
 };
 
@@ -3776,7 +3776,7 @@ inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
   sc_action -> base_dd_min = sc_action -> base_dd_max = sinister_calling_damage( dot );
   sc_action -> schedule_execute();
 
-  // Advances the time, so calculate new time to tick, num ticks, last tick factor
+  // Advances the time, so calculate new end time and last tick factor
   if ( dot -> remains() > dot -> time_to_tick )
   {
     timespan_t remains = dot -> end_event -> remains() - dot -> time_to_tick;
@@ -3790,6 +3790,8 @@ inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
     // Restart a new end-event, now one tick closer
     event_t::cancel( dot -> end_event );
     dot -> end_event = new ( *sim ) dot_end_event_t( dot, remains );
+    // And adjust last tick factor based on the new remaining duration
+    dot -> last_tick_factor = dot -> current_action -> last_tick_factor( dot, dot -> time_to_tick, dot -> remains() );
   }
   // Last ongoing tick, expire the dot early
   else
@@ -5237,9 +5239,9 @@ double rogue_t::composite_player_multiplier( school_e school ) const
       }
     }
 
-    if ( buffs.deadly_shadows -> up() )
+    if ( buffs.deathly_shadows -> up() )
     {
-      m *= 1.0 + buffs.deadly_shadows -> data().effectN( 1 ).percent();
+      m *= 1.0 + buffs.deathly_shadows -> data().effectN( 1 ).percent();
     }
   }
 
@@ -6053,7 +6055,7 @@ void rogue_t::create_buffs()
     .cd( timespan_t::zero() );
   buffs.crimson_poison    = buff_creator_t( this, "crimson_poison", find_spell( 157562 ) );
 
-  buffs.deadly_shadows = buff_creator_t( this, "deadly_shadows", find_spell( 188700 ) )
+  buffs.deathly_shadows = buff_creator_t( this, "deathly_shadows", find_spell( 188700 ) )
                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                          .chance( sets.has_set_bonus( ROGUE_SUBTLETY, T18, B2 ) );
   buffs.t18_adrenaline_rush     = buff_creator_t( this, "adrenaline_rush_t18", find_spell( 186286 ) )
