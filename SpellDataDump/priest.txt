@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -4470,10 +4470,10 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=162267)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=12) | SP Coefficient: 1.83600
-#2 (id=162268)   : Apply Aura (6) | Dummy (4)
+#1 (id=162267)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#2 (id=162268)   : School Damage: shadow (2)
+                   Base Value: 1 | Scaled Value: 0 (avg=12) | SP Coefficient: 1.83600
 Description      : $@spelldesc127632
 
 Name             : Cascade (id=127632) [Spell Family (6)] 

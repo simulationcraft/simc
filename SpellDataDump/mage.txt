@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -1421,7 +1421,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 126
                    Affected Spells: Deep Freeze (44572)
 #2 (id=154771)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 140 | Scaled Value: 140
 #3 (id=164986)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30455
 #4 (id=196961)   : Apply Aura (6) | Dummy (4)
@@ -2380,8 +2380,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 911
 #3 (id=202642)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.26000
-                   Affected Spells: Waterbolt (31707)
-Description      : When you damage enemies with Frostbolt and Frostfire Bolt, and their multistrikes, ${$m1}.1% of the damage done is stored as an Icicle with you, for $148012d. Also increases the damage of your Water Elemental's Waterbolt by ${$m3}.1%.
+                   Affected Spells: Waterbolt (31707), Water Jet (135029)
+Description      : When you damage enemies with Frostbolt and Frostfire Bolt, and their multistrikes, ${$m1}.1% of the damage done is stored as an Icicle with you, for $148012d. Also increases the damage of your Water Elemental's Waterbolt and Water Jet by ${$m3}.1%.
 
 Up to $s2 Icicles can be stored at once. Casting Ice Lance causes any Icicles to begin launching at the target.
 
@@ -3620,7 +3620,7 @@ Range            : 45 yards
 Cast Time        : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
-Affecting spells : Glyph of Water Elemental (63090), Item - Mage T18 Frost 4P Bonus (185971)
+Affecting spells : Glyph of Water Elemental (63090), Mastery: Icicles (76613), Item - Mage T18 Frost 4P Bonus (185971)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 

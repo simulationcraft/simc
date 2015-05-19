@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1419,10 +1419,10 @@ Effects          :
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Instant Poison (157584)
 #4 (id=220587)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240)
+                   Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240), Dispatch (157957)
 #5 (id=268531)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240)
+                   Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240), Dispatch (157957)
 Description      : Finishing move that deals instant Nature damage$?s157513[][, refreshes the duration of Slice and Dice if it is active,] and increases your poison application chance by $s2%. Damage and duration increased per combo point.
 
    1 point  : ${$<mult>*$AP*0.417+($m1*1)} damage, 2 sec
@@ -2871,7 +2871,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Internal Bleeding (154953), Instant Poison (157584), Instant Poison (157607), Hemorrhage (168908), Rupture (168963), Garrote (168971)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Internal Bleeding (154953), Instant Poison (157584), Instant Poison (157607), Dispatch (157957), Hemorrhage (168908), Rupture (168963), Garrote (168971), Backstab (173458)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -3579,10 +3579,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=149413)   : Apply Aura (6) | Unknown effect sub type (262)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Dispatch (111240)
+                   Affected Spells: Dispatch (111240), Dispatch (157957)
 #2 (id=165707)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Dispatch (111240)
+                   Affected Spells: Dispatch (111240), Dispatch (157957)
 Description      : $@spelldesc121152
 Tooltip          : You may use Dispatch with no cost, regardless of your enemy target's health.
 
@@ -3678,7 +3678,7 @@ Attributes       : .......x x....... ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=157252)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 25 | Scaled Value: 25
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Hemorrhage (168908), Rupture (168963), Garrote (168971)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Dispatch (157957), Hemorrhage (168908), Rupture (168963), Garrote (168971), Backstab (173458)
 #2 (id=157253)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 25 | Scaled Value: 25
 
@@ -4051,7 +4051,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=195473)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 8676 | Scaled Value: 8676
-                   Affected Spells: Backstab (53)
+                   Affected Spells: Backstab (53), Backstab (173458)
 #2 (id=195474)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Ambush (8676)
@@ -4582,6 +4582,30 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : You deal an additional $s1% damage for $31666d after Stealth breaks.
 
+Name             : Dispatch (id=157957) [Spell Family (8)] 
+Class            : Rogue
+Resource         : 30 Energy
+Spell Level      : 40
+Range            : 5 yards
+GCD              : 1 seconds
+Affecting spells : Envenom (32645), Vendetta (79140), Blindside (121153), Sanguinary Vein (124271), Silent Blades (145193), Enhanced Vendetta (158108), Cold Blood (170882), Item - Rogue T18 Assassination 4P Bonus (186277)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=220316)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+#2 (id=220317)   : Weapon Damage% (31)
+                   Base Value: 330 | Scaled Value: 3.3 | SP Coefficient: 1.00000
+#3 (id=220318)   : Add Combo Points (80)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Exploits the vulnerability of foes with less than 35% health, causing $sw2 Physical damage to the target. Awards $s3 combo $lpoint:points;.  Your successful Mutilates have a $121152h% chance to make your next Dispatch free and usable on any target.
+
+Replaces Sinister Strike.
+
 Name             : Enhanced Vendetta (id=158108) [Spell Family (8)] 
 Class            : Rogue
 Duration         : 15 seconds
@@ -4598,7 +4622,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
 Effects          :
 #1 (id=220575)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7
-                   Affected Spells: Mutilate (5374), Ambush (8676), Mutilate Off-Hand (27576), Envenom (32645), Dispatch (111240)
+                   Affected Spells: Mutilate (5374), Ambush (8676), Mutilate Off-Hand (27576), Envenom (32645), Dispatch (111240), Dispatch (157957)
 Description      : $@spelldesc157514
 Tooltip          : Increases critical strike chance of your next Mutilate, Dispatch, Envenom, or Ambush by $s1%.
 
@@ -4859,6 +4883,28 @@ Effects          :
 #1 (id=239421)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06000
 Description      : $@spelldesc703
+
+Name             : Backstab (id=173458) [Spell Family (8)] 
+Class            : Rogue
+Resource         : 35 Energy
+Spell Level      : 40
+Range            : 5 yards
+GCD              : 1 seconds
+Affecting spells : Vendetta (79140), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Sleight of Hand (145211)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
+                 : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246973)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+#2 (id=246974)   : Weapon Damage% (31)
+                   Base Value: 252 | Scaled Value: 2.52 | SP Coefficient: 1.00000
+#3 (id=246975)   : Add Combo Points (80)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Backstab the target, causing $sw2 Physical damage.  Must not be in front of the target.  Awards $s3 combo $lpoint:points;.
 
 Name             : Ruthlessness (id=174597) [Spell Family (8), Passive, Hidden] 
 Class            : Combat Rogue

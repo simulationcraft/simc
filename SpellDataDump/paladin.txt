@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -459,7 +459,7 @@ Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Glyph of Flash of Light (54957), Supplication (94686), Saint's Vigor (105742), Sanctuary (105805), Holy Insight (112859), Selfless Healer (114250), Lucidity (137288), Beacon of Faith (156910), Beacon of Insight (157007), Magnifying Light (185100)
+Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Infusion of Light (54149), Glyph of Flash of Light (54957), Supplication (94686), Saint's Vigor (105742), Sanctuary (105805), Holy Insight (112859), Selfless Healer (114250), Lucidity (137288), Beacon of Faith (156910), Beacon of Insight (157007), Magnifying Light (185100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1405,7 +1405,7 @@ Effects          :
                    Base Value: 24 | Scaled Value: 24 | SP Coefficient: 1.00000 | Misc Value: 5 | Trigger Spell: 54149
 #2 (id=223381)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10
-Description      : Your Holy Shock criticals reduce the cast time of your next Holy Light or Holy Radiance by ${$54149m1/-1000}.2 sec.
+Description      : Your Holy Shock criticals reduce the cast time of your next Holy Light or Holy Radiance by ${$54149m1/-1000}.2 sec or increase the healing of your next Flash of Light by $54149s2%.
 
 Also increases your haste by $s2%.
 
@@ -1553,6 +1553,9 @@ Effects          :
 #1 (id=46860)    : Apply Aura (6) | Add Flat Modifier: Spell Cast Time (107)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 10
                    Affected Spells: Holy Light (82326), Holy Radiance (82327)
+#2 (id=278932)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 60 | Scaled Value: 60
+                   Affected Spells: Flash of Light (19750)
 Description      : $@spelldesc53576
 Tooltip          : Reduces the cast time of your next Holy Light or Holy Radiance by ${$54149m1/-1000}.1 sec.
 

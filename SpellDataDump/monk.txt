@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -1202,7 +1202,7 @@ Resource         : 2% Base Mana (3200 @Level 100) w/ Stance of the Spirited Cran
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Desperate Measures (126060), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Glyph of Expel Harm (159487), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Brewmaster Training (117967), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Glyph of Expel Harm (159487), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1633,13 +1633,13 @@ Attributes       : ........ ........ ........ ........   ........ ..x....x .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.75) | SP Coefficient: 8.95000 | Radius: 0 - 100 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=8.75) | SP Coefficient: 8.95000 | Radius: 0 - 40 yards
 #2 (id=140011)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Radius: 0 - 100 yards
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Radius: 0 - 40 yards
 #3 (id=155430)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Radius: 0 - 100 yards
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Radius: 0 - 40 yards
 #4 (id=155431)   : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Radius: 0 - 100 yards
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Radius: 0 - 40 yards
 Description      : Heals all party and raid members within $A1 yards for $m1 and clears them of all harmful Magical, Poison, and Disease effects.
 
 Name             : Summon Jade Serpent Statue (id=115313) [Spell Family (53)] 
@@ -4574,7 +4574,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=159941)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.268, dl=0.15) | SP Coefficient: 0.95625
+                   Base Value: 1 | Scaled Value: 0 (avg=1.268, dl=0.15) | SP Coefficient: 1.14750
 Description      : $@spelldesc125950
 
 Name             : Glyph of Leer of the Ox (Brewmaster) (id=125967) [Spell Family (53), Passive, Hidden] 
@@ -4605,9 +4605,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=160092)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Expel Harm (115072)
+#1 (id=160092)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11
 Description      : While at or below 35% health, your Expel Harm has no cooldown.
 
 Name             : Desperate Measures (id=126086) [Scaling Spell (5), Spell Family (53), Passive, Hidden] 

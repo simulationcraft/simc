@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3701,7 +3701,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 59712 | Misc Value 2: 0x51
 #2 (id=185542)   : None (0)
                    Base Value: 10 | Scaled Value: 10
-Description      : Summons an Earth Totem with $?s63298[${$m1+$63298m1*$MHP/100}][$s1] health at the feet of the caster for $d, granting the caster a shield absorbing ${$cond($gt($AP*0.625,$SP),$AP*0.625*0.875,$SP*0.875)*4} damage for $114893d, and up to an additional ${$cond($gt($AP*0.625,$SP),$AP*0.625*0.875,$SP*0.875)} every $114889t1 sec.
+Description      : Summons an Earth Totem with $?s63298[${$63298m1*$MHP/100+$MHP*0.05}][$s1] health at the feet of the caster for $d, granting the caster a shield absorbing ${$cond($gt($AP*0.625,$SP),$AP*0.625*0.875,$SP*0.875)*4} damage for $114893d, and up to an additional ${$cond($gt($AP*0.625,$SP),$AP*0.625*0.875,$SP*0.875)} every $114889t1 sec.
 
 Name             : Astral Shift (id=108271) 
 Class            : Shaman
@@ -3755,7 +3755,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 59764 | Misc Value 2: 0x52
 #2 (id=247825)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
-Description      : Summons a Water Totemwith $?s63298[${$m1+$63298m1*$MHP/100}][$s1] health at the feet of the caster for $d. The Healing Tide Totem pulses every $t2 sec, healing all party or raid members within $114942A1 yards for $114942m1.
+Description      : Summons a Water Totemwith $?s63298[${$63298m1*$MHP/100+$MHP*0.05}][$s1] health at the feet of the caster for $d. The Healing Tide Totem pulses every $t2 sec, healing all party or raid members within $114942A1 yards for $114942m1.
 
 Name             : Ancestral Guidance (id=108281) 
 Class            : Shaman

@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -843,7 +843,7 @@ Name             : Enrage (id=12880) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 1
 Duration         : 8 seconds
-Affecting spells : Glyph of Enraged Speed (58355)
+Affecting spells : Glyph of Enraged Speed (58355), Item - Warrior T18 Protection 2P Bonus (185796)
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -956,7 +956,7 @@ Class            : Warrior
 Spell Level      : 54
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Affecting spells : Glyph of Enraged Speed (58355)
+Affecting spells : Glyph of Enraged Speed (58355), Item - Warrior T18 Protection 2P Bonus (185796)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2813,7 +2813,7 @@ Resource         : 10 Rage
 Spell Level      : 30 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836), Item - Warrior T18 Protection 2P Bonus (185796)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2837,7 +2837,7 @@ Name             : Raging Blow Off-Hand (id=85384) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 30 (max 80)
 Range            : 100 yards
-Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836), Item - Warrior T18 Protection 2P Bonus (185796)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -3084,7 +3084,7 @@ Name             : Raging Blow (id=96103) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 30 (max 80)
 Range            : 100 yards
-Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836), Item - Warrior T18 Protection 2P Bonus (185796)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 

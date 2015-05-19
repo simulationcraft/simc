@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1647,7 +1647,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=40146)    : Apply Aura (6) | Periodic Damage: shadowflame every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.137) | SP Coefficient: 0.12960
-#2 (id=153992)   : Apply Aura (6) | Decrease Movement Speed% (33)
+#2 (id=153992)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $47960o1 Shadowflame damage over $47960d. Generates 2 Demonic Fury every time it deals damage.
 Tooltip          : Deals $w1 Shadowflame damage every $t1 sec.
@@ -3420,7 +3420,7 @@ Description      : Deals $s1 Fire damage to a target.
 
 Name             : Demonic Synergy (id=104330) 
 Class            : Warlock
-Range            : 50000 yards
+Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ...x.... ........ 
@@ -7125,7 +7125,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=276916)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95467 | Misc Value 2: 0xe4f | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95467 | Misc Value 2: 0xe5c | Radius: 0 - 10 yards
 Description      : $@spelldesc185964
 
 Name             : Illidari Satyr (id=189297) 
@@ -7141,7 +7141,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=276917)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95468 | Misc Value 2: 0xe4f | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95468 | Misc Value 2: 0xe5c | Radius: 0 - 10 yards
 Description      : $@spelldesc185964
 
 Name             : Vicious Hellhound (id=189298) 
@@ -7157,7 +7157,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=276918)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95469 | Misc Value 2: 0xe4f | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95469 | Misc Value 2: 0xe5c | Radius: 0 - 10 yards
 Description      : $@spelldesc185964
 
 Name             : Pet Damage (id=189921) [Spell Family (5), Passive, Hidden] 

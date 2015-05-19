@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20008)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -1604,7 +1604,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=44095)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 16
-                   Affected Spells: Icy Touch (45477), Chains of Ice (45524), Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Chilblains (50435), Frost Fever (55095), Frost Strike Off-Hand (66196), Death Siphon (108196)
+                   Affected Spells: Icy Touch (45477), Chains of Ice (45524), Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Chilblains (50435), Frost Fever (55095), Frost Strike Off-Hand (66196), Death Siphon (108196), Soul Reaper (114867), Breath of Sindragosa (152279), Necrotic Plague (155159), Mark of Sindragosa (155166), Defile (156000)
 #2 (id=205722)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16
                    Affected Spells: Icy Touch (45477), Chains of Ice (45524), Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Chilblains (50435), Frost Fever (55095), Frost Strike Off-Hand (66196), Death Siphon (108196)
@@ -4163,7 +4163,7 @@ Name             : Soul Reaper (id=114867) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 87
 Range            : 100 yards
-Affecting spells : Biting Cold (166057)
+Affecting spells : Razorice (51714), Biting Cold (166057)
 Attributes       : ........ ........ .....x.x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -4938,13 +4938,14 @@ Last Stand
 Blood of the Rhino
 Great Stamina|r
 
-Name             : Breath of Sindragosa (id=152279) 
+Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 15 Runic Power per second w/ Killing Machine (id=51128)
 Resource         : 20 Runic Power per second w/ Blood Rites (id=50034)
 Resource         : 15 Runic Power per second w/ Reaping (id=56835)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
+Affecting spells : Razorice (51714)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -5033,7 +5034,7 @@ Stacks           : 15 maximum
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
-Affecting spells : Ebon Plaguebringer (51160), Glyph of Enduring Infection (58671), Crimson Scourge (81136)
+Affecting spells : Ebon Plaguebringer (51160), Razorice (51714), Glyph of Enduring Infection (58671), Crimson Scourge (81136)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5073,6 +5074,7 @@ Duration         : 6 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
+Affecting spells : Razorice (51714)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5106,7 +5108,7 @@ Tooltip          : Mastery increased by $s1.
 Name             : Defile (id=156000) [Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
-Affecting spells : Morbid Strike (166021)
+Affecting spells : Razorice (51714), Morbid Strike (166021)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .......x 
                  : x....... ........ ........ ........   ........ .......x ........ ........ 
@@ -6021,7 +6023,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : .....x.. ........ ........ ........   ........ ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=274208)   : Apply Aura (6) | Attack Speed (9)
+#1 (id=274208)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
                    Base Value: 15 | Scaled Value: 15
 #2 (id=274209)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f
