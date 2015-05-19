@@ -1599,6 +1599,14 @@ void action_t::assess_damage( dmg_e    type,
     if ( player -> buffs.legendary_aoe_ring && player -> buffs.legendary_aoe_ring -> check() )
     {
       player -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s %s stores %.2f damage from %s on %s, new stored amount = %.2f",
+                         player -> name(),
+                         player -> buffs.legendary_aoe_ring -> name(),
+                         s -> result_amount, name(), s -> target -> name(),
+                         player -> buffs.legendary_aoe_ring -> current_value );
+      }
     }
     // (All?) pets contribute towards the owner's legendary ring.
     // TODO: Check if this is all pets, or just "class pets/guardians".
@@ -1608,6 +1616,15 @@ void action_t::assess_damage( dmg_e    type,
       if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )
       {
         owner -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
+        if ( sim -> debug )
+        {
+          sim -> out_debug.printf( "%s %s stores %.2f damage from %s %s on %s, new stored amount = %.2f",
+                           owner -> name(),
+                           owner -> buffs.legendary_aoe_ring -> name(),
+                           s -> result_amount, player -> name(), name(),
+                           s -> target -> name(),
+                           owner -> buffs.legendary_aoe_ring -> current_value );
+        }
       }
     }
 
