@@ -9,9 +9,10 @@ Druid_Feral_T18M.simc
 
 # Hunter
 
-# Mage
+Mage_Arcane_T18M.simc
+Mage_Fire_T18M.simc
+Mage_Frost_T18M.simc
 
-# Monk
 Monk_Windwalker_1h_T18M.simc
 Monk_Windwalker_2h_T18M.simc
 
@@ -21,8 +22,10 @@ Monk_Windwalker_2h_T18M.simc
 
 # Rogue
 
-# Shaman
+Shaman_Enhancement_T18M.simc
 
-# Warlock
+Warlock_Affliction_T18M.simc
+Warlock_Demonology_T18M.simc
+Warlock_Destruction_T18M.simc
 
 # Warrior

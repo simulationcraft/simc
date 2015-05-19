@@ -10,9 +10,10 @@ Druid_Feral_T18H.simc
 
 # Hunter
 
-# Mage
+Mage_Arcane_T18H.simc
+Mage_Fire_T18H.simc
+Mage_Frost_T18H.simc
 
-# Monk
 Monk_Windwalker_1h_T18H.simc
 talents=0320012
 Monk_Windwalker_2h_T18H.simc
@@ -26,6 +27,8 @@ talents=0320012
 
 # Shaman
 
-# Warlock
+Warlock_Affliction_T18H.simc
+Warlock_Demonology_T18H.simc
+Warlock_Destruction_T18H.simc
 
 # Warrior
