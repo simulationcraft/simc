@@ -32,15 +32,15 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=target.time_to_die<=25|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)
+actions=summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<9
+actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=9
+actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
+actions+=/potion,name=draenic_intellect,if=target.time_to_die<=25|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/mannoroths_fury
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))
-actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
-actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<9
-actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=9
 actions+=/run_action_list,name=single_target,if=active_enemies<6&(!talent.charred_remains.enabled|active_enemies<4)
 actions+=/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)
 
@@ -51,7 +51,7 @@ actions.single_target+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions.single_target+=/cataclysm,if=active_enemies>1
 actions.single_target+=/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=action.immolate.cast_time&(cooldown.cataclysm.remains>action.immolate.cast_time|!talent.cataclysm.enabled)&active_enemies>4
 actions.single_target+=/immolate,cycle_targets=1,if=remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)
-actions.single_target+=/cancel_buff,name=fire_and_brimstone,if=buff.fire_and_brimstone.up&dot.immolate.remains-gcd>(dot.immolate.duration*0.3)
+actions.single_target+=/cancel_buff,name=fire_and_brimstone,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time>(dot.immolate.duration*0.3)
 actions.single_target+=/shadowburn,if=buff.havoc.remains
 actions.single_target+=/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3
 actions.single_target+=/conflagrate,if=charges=2
@@ -68,8 +68,8 @@ actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_pr
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.multistrike.react&trinket.proc.multistrike.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.versatility.react&trinket.proc.versatility.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time
-actions.single_target+=/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains-gcd<=(dot.immolate.duration*0.3)&active_enemies>4
-actions.single_target+=/immolate,cycle_targets=1,if=remains-gcd<=(duration*0.3)
+actions.single_target+=/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)&active_enemies>4
+actions.single_target+=/immolate,cycle_targets=1,if=remains-cast_time<=(duration*0.3)
 actions.single_target+=/conflagrate,if=buff.backdraft.stack=0
 actions.single_target+=/incinerate
 
@@ -83,7 +83,7 @@ actions.aoe+=/cataclysm
 actions.aoe+=/fire_and_brimstone,if=buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up&charges=2
-actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains-gcd<=(dot.immolate.duration*0.3)
+actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)
 actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up
 actions.aoe+=/incinerate
 
