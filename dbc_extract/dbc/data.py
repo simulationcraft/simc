@@ -142,6 +142,11 @@ _DIFF_DATA = {
             ( 'id_spell_visual_2', _REMOVE_FIELD ),
         ]
     },
+    20033: {
+        'ItemEffect.db2': [
+            ( 'id_specialization', _ADD_FIELD, 'cooldown_group_duration' )
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
@@ -151,7 +156,9 @@ _DBC_FIELDS = {
         'id', 'id_item_set', 'id_spell', 'n_req_items', 'unk_wod_1'
     ],
     'ItemEffect.db2': [
-        'id', 'id_item', 'index', ( 'id_spell', '%6u' ), 'trigger_type', ( 'cooldown_category', '%6d' ), ( 'cooldown_category_duration', '%6d' ), ( 'cooldown_group', '%6d' ), ( 'cooldown_group_duration', '%6d' )
+        'id', 'id_item', 'index', ( 'id_spell', '%6u' ), 'trigger_type',
+        ( 'cooldown_category', '%6d' ), ( 'cooldown_category_duration', '%6d' ),
+        ( 'cooldown_group', '%6d' ), ( 'cooldown_group_duration', '%6d' )
     ],
     'MinorTalent.dbc': [
         'id', 'id_spec', 'id_spell', 'index'
