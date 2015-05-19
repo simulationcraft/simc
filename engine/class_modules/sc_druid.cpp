@@ -203,6 +203,7 @@ public:
   bool stellar_flare_cast; //Hacky way of not consuming lunar/solar peak.
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
+  player_t* last_target_dot_moonkin;
 
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
@@ -638,6 +639,7 @@ public:
     t16_2pc_starfall_bolt = 0;
     t16_2pc_sun_bolt      = 0;
     double_dmg_triggered = false;
+    last_target_dot_moonkin = 0;
 
     for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
     {
@@ -5001,6 +5003,8 @@ struct sunfire_t: public druid_spell_t
   {
     druid_spell_t::execute();
 
+    p() -> last_target_dot_moonkin = execute_state -> target;
+
     if ( !p() -> stellar_flare_cast )
     {
       p() -> buff.solar_peak -> expire();
@@ -5175,6 +5179,8 @@ struct moonfire_t : public druid_spell_t
   void execute()
   {
     druid_spell_t::execute();
+
+    p() -> last_target_dot_moonkin = execute_state -> target;
 
     if ( !p() -> stellar_flare_cast )
     {
@@ -5993,10 +5999,9 @@ struct wrath_t : public druid_spell_t
 
 void druid_t::trigger_shooting_stars( action_state_t* s )
 {
-  if ( s -> target != sim -> target )
+  if ( s -> target != last_target_dot_moonkin )
     return;
   // Shooting stars will only proc on the most recent target of your moonfire/sunfire.
-  // For now, assume that the main simulation "Fluffy Pillow" is the most recent target all the time.
   if ( s -> result == RESULT_CRIT )
   {
     if ( rng().roll( spec.shooting_stars -> effectN( 1 ).percent() * 2 ) )
