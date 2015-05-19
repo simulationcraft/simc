@@ -615,6 +615,18 @@ struct water_elemental_pet_t : public pet_t
                      dot_duration * p() -> composite_spell_haste());
     }
 
+    virtual double action_multiplier() const
+    {
+      double am = spell_t::action_multiplier();
+
+      if ( p() -> dbc.ptr && p() -> o() -> spec.icicles -> ok() )
+      {
+        am *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return am;
+    }
+
     virtual void last_tick( dot_t* d )
     {
       spell_t::last_tick( d );
@@ -1574,14 +1586,11 @@ struct arcane_blast_t : public mage_spell_t
       p() -> buffs.arcane_instability -> trigger();
     }
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
+         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> proc_chance() ) )
     {
-      p() -> cooldowns.presence_of_mind
-          -> adjust( p() -> sets.set( MAGE_ARCANE, T18, B2 )
-                         -> effectN( 1 ).time_value() );
+      p() -> buffs.presence_of_mind -> trigger();
     }
-
-
   }
 
   virtual double action_multiplier() const
@@ -3257,7 +3266,7 @@ struct inferno_blast_t : public mage_spell_t
     radius = 10;
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
-      if (  p -> dbc.ptr )
+      if ( p -> dbc.ptr )
       {
         cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 )
                                   -> effectN( 1 ).time_value();
@@ -3694,6 +3703,16 @@ struct presence_of_mind_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.presence_of_mind -> check() )
+    {
+      return false;
+    }
+
+    return mage_spell_t::ready();
   }
 
   virtual void execute()
