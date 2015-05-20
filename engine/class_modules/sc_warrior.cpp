@@ -5280,7 +5280,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   {
     if ( active.stance == STANCE_GLADIATOR && sets.has_set_bonus( WARRIOR_PROTECTION, T18, B2 ) )
     {
-      m *= 1.0 + sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 2 ).percent();
+      m *= 1.0 + ( buff.enrage -> data().effectN( 2 ).percent + sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 2 ).percent() );
     }
     else
     {
