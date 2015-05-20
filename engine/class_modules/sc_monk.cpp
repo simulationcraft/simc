@@ -1824,6 +1824,20 @@ public:
     }
   }
 
+  void reset_swing()
+  {
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+    {
+      p() -> main_hand_attack -> cancel();
+      p() -> main_hand_attack -> schedule_execute();
+    }
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
+    {
+      p() -> off_hand_attack -> cancel();
+      p() -> off_hand_attack -> schedule_execute();
+    }
+  }
+
   virtual resource_e current_resource() const
   {
     resource_e resource_by_stance = _resource_by_stance[p() -> current_stance()];
@@ -4576,6 +4590,8 @@ struct expel_harm_heal_t : public monk_heal_t
 
     monk_heal_t::execute();
 
+    reset_swing(); // Resets autoattacks
+
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
     chi_gain += p() -> active_stance_data( FIERCE_TIGER ).effectN( 4 ).base_value();
@@ -4794,6 +4810,8 @@ struct surging_mist_t: public monk_heal_t
   virtual void execute()
   {
     monk_heal_t::execute();
+
+    reset_swing();
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
