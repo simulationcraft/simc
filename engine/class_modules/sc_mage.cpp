@@ -1462,6 +1462,41 @@ struct icicle_t : public mage_spell_t
   }
 };
 
+// Presence of Mind Spell ===================================================
+
+struct presence_of_mind_t : public mage_spell_t
+{
+  presence_of_mind_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "presence_of_mind", p, p -> find_class_spell( "Presence of Mind" )  )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.presence_of_mind -> check() )
+    {
+      return false;
+    }
+
+    return mage_spell_t::ready();
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    p() -> buffs.presence_of_mind -> trigger();
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+    {
+      // TODO: T18 4pc Arcane Placeholder. Add in the random time anomoly pets that this summons
+      //p() -> pets.random_time_anomoly_pet -> summon();
+    }
+  }
+};
+
 // Ignite ===================================================================
 
 struct ignite_t : public residual_action_t
@@ -1528,10 +1563,11 @@ struct arcane_barrage_t : public mage_spell_t
 struct arcane_blast_t : public mage_spell_t
 {
   double wild_arcanist_effect;
+  action_t* t18_presence_of_mind;
 
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) ),
-    wild_arcanist_effect( 0.0 )
+    wild_arcanist_effect( 0.0 ), t18_presence_of_mind( 0 )
   {
     parse_options( options_str );
 
@@ -1540,6 +1576,12 @@ struct arcane_blast_t : public mage_spell_t
       const spell_data_t* data = p -> wild_arcanist -> driver();
       wild_arcanist_effect = std::fabs( data -> effectN( 1 ).average( p -> wild_arcanist -> item ) );
       wild_arcanist_effect /= 100.0;
+    }
+
+    if ( p -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
+    {
+      t18_presence_of_mind = new presence_of_mind_t( p, options_str );
+      t18_presence_of_mind -> background = true;
     }
   }
 
@@ -1589,7 +1631,8 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
          rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> proc_chance() ) )
     {
-      p() -> buffs.presence_of_mind -> trigger();
+      p() -> cooldowns.presence_of_mind -> reset( false );
+      t18_presence_of_mind -> execute();
     }
   }
 
@@ -3691,41 +3734,6 @@ struct nether_tempest_t : public mage_spell_t
                 p() -> spec.arcane_charge -> effectN( 1 ).percent();
 
     return m;
-  }
-};
-
-// Presence of Mind Spell ===================================================
-
-struct presence_of_mind_t : public mage_spell_t
-{
-  presence_of_mind_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "presence_of_mind", p, p -> find_class_spell( "Presence of Mind" )  )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.presence_of_mind -> check() )
-    {
-      return false;
-    }
-
-    return mage_spell_t::ready();
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    p() -> buffs.presence_of_mind -> trigger();
-
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
-    {
-      // TODO: T18 4pc Arcane Placeholder. Add in the random time anomoly pets that this summons
-      //p() -> pets.random_time_anomoly_pet -> summon();
-    }
   }
 };
 
