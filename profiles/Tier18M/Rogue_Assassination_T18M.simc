@@ -1,0 +1,87 @@
+rogue="Rogue_Assassination_T18M"
+level=100
+race=blood_elf
+role=attack
+position=back
+talents=3000032
+glyphs=vendetta/energy/disappearance
+spec=assassination
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=sleeper_sushi
+actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death
+actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
+
+# Executed every time the actor is available.
+
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up
+actions+=/kick
+actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/use_item,slot=finger1,if=active_enemies>1|(debuff.vendetta.up&active_enemies=1)
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent,if=energy<60
+actions+=/vanish,if=time>10&!buff.stealth.up
+actions+=/rupture,if=combo_points=5&ticks_remain<3
+actions+=/rupture,cycle_targets=1,if=active_enemies>1&!ticking&combo_points=5
+actions+=/mutilate,if=buff.stealth.up
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<5
+actions+=/marked_for_death,if=combo_points=0
+actions+=/crimson_tempest,if=combo_points>4&active_enemies>=4&remains<8
+actions+=/fan_of_knives,if=(combo_points<5|(talent.anticipation.enabled&anticipation_charges<4))&active_enemies>=4
+actions+=/rupture,if=(remains<2|(combo_points=5&remains<=(duration*0.3)))&active_enemies=1
+actions+=/shadow_reflection,if=combo_points>4
+actions+=/vendetta,if=buff.shadow_reflection.up|!talent.shadow_reflection.enabled
+actions+=/death_from_above,if=combo_points>4
+actions+=/envenom,cycle_targets=1,if=(combo_points>4&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&!dot.deadly_poison_dot.ticking
+actions+=/envenom,if=(combo_points>4&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&(buff.envenom.remains<=1.8|energy>55)
+actions+=/fan_of_knives,cycle_targets=1,if=active_enemies>2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
+actions+=/dispatch,cycle_targets=1,if=(combo_points<5|(talent.anticipation.enabled&anticipation_charges<4))&active_enemies=2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
+actions+=/dispatch,if=(combo_points<5|(talent.anticipation.enabled&(anticipation_charges<4&set_bonus.tier18_4pc=0)|(anticipation_charges<2&set_bonus.tier18_4pc=1)))&active_enemies<4
+actions+=/mutilate,cycle_targets=1,if=target.health.pct>35&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<3))&active_enemies=2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
+actions+=/mutilate,if=target.health.pct>35&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<3))&active_enemies<5
+actions+=/mutilate,cycle_targets=1,if=active_enemies=2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
+actions+=/mutilate,if=active_enemies<5
+
+head=felblade_hood,id=124263,bonus_id=567
+neck=choker_of_reciprocity,id=127976,bonus_id=567,enchant_id=5319
+shoulders=felblade_spaulders,id=124274,bonus_id=567
+back=cloak_of_tangible_dread,id=124135,bonus_id=567,enchant_id=5312
+chest=felblade_chestguard,id=124248,bonus_id=567
+wrists=terrorweave_wristwraps,id=127982,bonus_id=567
+hands=felfinger_runegloves,id=124254,bonus_id=567
+waist=waistwrap_of_banishment,id=124276,bonus_id=567
+legs=felblade_leggings,id=124269,bonus_id=567
+feet=toxicologists_treated_boots,id=124250,bonus_id=567
+finger1=maalus_the_blood_drinker,id=124636,enchant_id=5326
+finger2=pitextracted_stone_signet,id=124187,bonus_id=567,enchant_id=5326
+trinket1=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567
+trinket2=soul_capacitor,id=124225,bonus_id=567
+main_hand=fang_of_the_pit,id=124367,bonus_id=567,enchant_id=5384
+off_hand=fang_of_the_pit,id=124367,bonus_id=567,enchant_id=5384
+
+# Gear Summary
+# gear_ilvl=728.13
+# gear_agility=4514
+# gear_stamina=6019
+# gear_crit_rating=660
+# gear_haste_rating=1004
+# gear_mastery_rating=2198
+# gear_armor=1376
+# gear_multistrike_rating=1265
+# gear_versatility_rating=487
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
