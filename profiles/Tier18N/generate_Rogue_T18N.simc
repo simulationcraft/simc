@@ -9,15 +9,15 @@ spec=assassination
 
 head=felblade_hood,id=124263
 neck=choker_of_reciprocity,id=127976,enchant_id=5319
-shoulders=felblade_spaulders,id=124274
+shoulders=poisoners_spaulders,id=115574,bonus_id=566
 back=cloak_of_tangible_dread,id=124135,enchant_id=5312
-chest=felblade_chestguard,id=124248
+chest=poisoners_tunic,id=115570,bonus_id=566
 wrists=terrorweave_wristwraps,id=127982
 hands=felfinger_runegloves,id=124254
 waist=waistwrap_of_banishment,id=124276
 legs=felblade_leggings,id=124269
 feet=toxicologists_treated_boots,id=124250
-trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566,enchant_id=5326
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
 finger2=pitextracted_stone_signet,id=124187,enchant_id=5326
 trinket1=bleeding_hollow_toxin_vessel,id=124520
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
@@ -44,7 +44,7 @@ hands=felfinger_runegloves,id=124254
 waist=waistwrap_of_banishment,id=124276
 legs=felblade_leggings,id=124269
 feet=oppressors_merciless_treads,id=124251
-trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566,enchant_id=5325
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307
 finger2=portal_key_signet,id=124189,enchant_id=5325
 trinket1=soul_capacitor,id=124225
 trinket2=malicious_censer,id=124226

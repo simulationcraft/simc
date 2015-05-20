@@ -74,6 +74,7 @@ hands=felfinger_runegloves,id=124254
 waist=waistwrap_of_banishment,id=124276
 legs=felblade_leggings,id=124269
 feet=oppressors_merciless_treads,id=124251
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307
 finger2=portal_key_signet,id=124189,enchant_id=5325
 trinket1=soul_capacitor,id=124225
 trinket2=malicious_censer,id=124226
@@ -81,14 +82,14 @@ main_hand=demonblade_eviscerator,id=124368,enchant_id=5337
 off_hand=demonblade_eviscerator,id=124368,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=699.00
-# gear_agility=3267
-# gear_stamina=4334
-# gear_crit_rating=659
+# gear_ilvl=700.00
+# gear_agility=3474
+# gear_stamina=4645
+# gear_crit_rating=803
 # gear_haste_rating=1424
 # gear_mastery_rating=787
 # gear_armor=1165
 # gear_multistrike_rating=1533
-# gear_versatility_rating=65
+# gear_versatility_rating=193
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

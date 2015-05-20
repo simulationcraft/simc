@@ -58,14 +58,15 @@ actions+=/mutilate,if=active_enemies<5
 
 head=felblade_hood,id=124263
 neck=choker_of_reciprocity,id=127976,enchant_id=5319
-shoulders=felblade_spaulders,id=124274
+shoulders=poisoners_spaulders,id=115574,bonus_id=566
 back=cloak_of_tangible_dread,id=124135,enchant_id=5312
-chest=felblade_chestguard,id=124248
+chest=poisoners_tunic,id=115570,bonus_id=566
 wrists=terrorweave_wristwraps,id=127982
 hands=felfinger_runegloves,id=124254
 waist=waistwrap_of_banishment,id=124276
 legs=felblade_leggings,id=124269
 feet=toxicologists_treated_boots,id=124250
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
 finger2=pitextracted_stone_signet,id=124187,enchant_id=5326
 trinket1=bleeding_hollow_toxin_vessel,id=124520
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
@@ -73,14 +74,14 @@ main_hand=fang_of_the_pit,id=124367,enchant_id=5384
 off_hand=fang_of_the_pit,id=124367,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=697.00
-# gear_agility=3184
-# gear_stamina=4268
-# gear_crit_rating=367
+# gear_ilvl=696.88
+# gear_agility=3343
+# gear_stamina=4507
+# gear_crit_rating=144
 # gear_haste_rating=759
-# gear_mastery_rating=1679
-# gear_armor=1162
-# gear_multistrike_rating=955
-# gear_versatility_rating=250
+# gear_mastery_rating=2037
+# gear_armor=1145
+# gear_multistrike_rating=945
+# gear_versatility_rating=378
+# set_bonus=tier17_2pc=1
 # set_bonus=tier18_2pc=1
-# set_bonus=tier18_4pc=1
