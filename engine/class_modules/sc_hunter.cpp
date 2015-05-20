@@ -892,7 +892,9 @@ public:
     buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
       .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    buffs.tier18_4pc_bm = buff_creator_t( this, "tier18_4pc_bm" );
+    buffs.tier18_4pc_bm = buff_creator_t( this, "tier18_4pc_bm" )
+      .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void init_special_effects()
