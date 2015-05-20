@@ -5343,7 +5343,10 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_COMBAT )
   {
-    potion_action_str += "|(buff.adrenaline_rush.up&(trinket.proc.any.react|trinket.stacking_proc.any.react|buff.archmages_greater_incandescence_agi.react))";
+    if ( find_item( "maalus_the_blood_drinker" ) )
+      potion_action_str += "|(buff.adrenaline_rush.up&buff.maalus.up&(trinket.proc.any.react|trinket.stacking_proc.any.react|buff.archmages_greater_incandescence_agi.react))";
+    else
+      potion_action_str += "|(buff.adrenaline_rush.up&(trinket.proc.any.react|trinket.stacking_proc.any.react|buff.archmages_greater_incandescence_agi.react))";
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
@@ -5406,7 +5409,12 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>30" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[i] );
+    {
+      if ( find_item( "maalus_the_blood_drinker" ) )
+        def -> add_action( item_actions[i] + ",if=buff.adrenaline_rush.up" );
+      else
+        def -> add_action( item_actions[i] + ",if=buff.adrenaline_rush.up" );
+    }
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -5434,7 +5442,7 @@ void rogue_t::init_action_list()
     ks -> add_action( this, "Killing Spree", "if=target.time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration" );
     ks -> add_action( this, "Killing Spree", "if=target.time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration" );
     ks -> add_action( this, "Killing Spree", "if=target.time_to_die<=buff.killing_spree.duration*1.5" );
-
+    
     ar -> add_action( this, "Adrenaline Rush", "if=target.time_to_die>=44" );
     ar -> add_action( this, "Adrenaline Rush", "if=target.time_to_die<44&(buff.archmages_greater_incandescence_agi.react|trinket.proc.any.react|trinket.stacking_proc.any.react)" );
     ar -> add_action( this, "Adrenaline Rush", "if=target.time_to_die<=buff.adrenaline_rush.duration*1.5" );
