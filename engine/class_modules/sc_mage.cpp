@@ -3753,6 +3753,7 @@ struct conjure_phoenix_t : public mage_spell_t
     mage_spell_t( "conjure_phoenix", p, p -> find_spell( 186181 ) )
   {
     background = true;
+    callbacks = false;
   }
 
   virtual void execute()
