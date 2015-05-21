@@ -4590,7 +4590,8 @@ struct expel_harm_heal_t : public monk_heal_t
 
     monk_heal_t::execute();
 
-    reset_swing(); // Resets autoattacks
+    if ( p() -> specialization = MONK_MISTWEAVER )
+      reset_swing(); // Resets autoattacks
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
@@ -4811,10 +4812,12 @@ struct surging_mist_t: public monk_heal_t
   {
     monk_heal_t::execute();
 
-    reset_swing();
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
       player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
+      reset_swing();
+    }
 
     if ( p() -> buff.vital_mists -> up() )
       p() -> buff.vital_mists -> reset();
