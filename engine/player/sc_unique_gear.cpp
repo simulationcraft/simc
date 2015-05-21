@@ -54,6 +54,7 @@ namespace item
   void darkmoon_card_greatness( special_effect_t& );
   void vial_of_shadows( special_effect_t& );
   void deathbringers_will( special_effect_t& );
+  void cunning_of_the_cruel( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -1510,6 +1511,7 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
 
 void item::vial_of_shadows( special_effect_t& effect )
 {
+  // TODO: Verify this scales by item level correctly.
   struct lightning_strike_t : public attack_t
   {
     lightning_strike_t( const special_effect_t& effect ) :
@@ -1539,6 +1541,37 @@ void item::vial_of_shadows( special_effect_t& effect )
   if ( ! action )
   {
     action = new lightning_strike_t( effect );
+  }
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void item::cunning_of_the_cruel( special_effect_t& effect )
+{
+  // TODO: Verify this matches in-game.
+  struct shadowbolt_volley_t : public spell_t
+  {
+    shadowbolt_volley_t( const special_effect_t& effect ) :
+      spell_t( "shadowbolt_volley", effect.player, effect.player -> find_spell( effect.driver() -> effectN( 1 ).trigger_spell_id() ) )
+    {
+      background = may_crit = true;
+      callbacks = false;
+      aoe = -1;
+      radius = effect.player -> find_spell( effect.driver() -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).radius();
+    }
+  };
+
+  action_t* action = effect.player -> find_action( "shadowbolt_volley" );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "shadowbolt_volley", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new shadowbolt_volley_t( effect );
   }
 
   effect.execute_action = action;
@@ -3551,6 +3584,9 @@ void unique_gear::register_special_effects()
   register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
   register_special_effect( 71519,  item::deathbringers_will             );
   register_special_effect( 71562,  item::deathbringers_will             );
+  register_special_effect( 108006, item::cunning_of_the_cruel           );
+  register_special_effect( 109799, item::cunning_of_the_cruel           );
+  register_special_effect( 109801, item::cunning_of_the_cruel           );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
