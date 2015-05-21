@@ -3844,16 +3844,11 @@ struct shaman_totem_pet_t : public pet_t
   std::string           pet_name;
   pet_t*                summon_pet;
 
-  // Liquid Magma 
-  buff_t*               liquid_magma;
-  action_t*             liquid_magma_action;
-
   shaman_totem_pet_t( shaman_t* p, const std::string& n, totem_e tt ) :
     pet_t( p -> sim, p, n, true ),
     totem_type( tt ),
     pulse_action( 0 ), pulse_event( 0 ), pulse_amplitude( timespan_t::zero() ),
-    summon_pet( 0 ),
-    liquid_magma( 0 ), liquid_magma_action( 0 )
+    summon_pet( 0 )
   {
     regen_type = REGEN_DISABLED;
   }
@@ -3898,16 +3893,6 @@ struct shaman_totem_pet_t : public pet_t
   }
 
   virtual void init_spells();
-
-  virtual void create_buffs()
-  {
-    pet_t::create_buffs();
-
-    if ( totem_type != TOTEM_FIRE )
-      return;
-
-    liquid_magma = buff_creator_t( this, "liquid_magma", o() -> find_talent_spell( "Liquid Magma" ) );
-  }
 };
 
 struct shaman_totem_t : public shaman_spell_t
@@ -4002,22 +3987,6 @@ struct totem_pulse_action_t : public spell_t
   }
 };
 
-struct liquid_magma_action_t : public totem_pulse_action_t
-{
-  liquid_magma_action_t( shaman_totem_pet_t* p ) :
-    totem_pulse_action_t( "liquid_magma", p, p -> o() -> talent.liquid_magma )
-  {
-    may_miss = may_crit = false;
-    tick_may_crit = true;
-    aoe = -1;
-    travel_speed = 0;
-    spell_power_mod.tick = p -> find_spell( 177601 ) -> effectN( 1 ).sp_coeff();
-    spell_power_mod.direct = 0;
-    base_dd_min = base_dd_max = 0;
-    hasted_ticks = true;
-  }
-};
-
 struct totem_pulse_event_t : public event_t
 {
   shaman_totem_pet_t* totem;
@@ -4089,28 +4058,43 @@ void shaman_totem_pet_t::init_spells()
 
   if ( totem_type != TOTEM_FIRE )
     return;
-
-  liquid_magma_action = new liquid_magma_action_t( this );
 }
 
 // Liquid Magma Spell =======================================================
 
 struct liquid_magma_t: public shaman_spell_t
 {
+  struct liquid_magma_aoe_t : public shaman_spell_t
+  {
+    liquid_magma_aoe_t( shaman_t* player ) :
+      shaman_spell_t( "liquid_magma_aoe", player, player -> find_spell( 177601 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+  };
+
   liquid_magma_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "liquid_magma", player, player -> find_talent_spell( "Liquid Magma" ), options_str )
   {
-    harmful = false;
-    dot_duration = timespan_t::zero();
-    base_tick_time = timespan_t::zero();
+    tick_zero = true;
+    hasted_ticks = true;
+    tick_action = new liquid_magma_aoe_t( player );
   }
 
-  virtual void execute()
+  void tick( dot_t* d )
+  {
+    // Liquid Magma never has partial ticks
+    d -> last_tick_factor = 1;
+
+    shaman_spell_t::tick( d );
+  }
+
+  void execute()
   {
     shaman_spell_t::execute();
 
-    p() -> totems[ TOTEM_FIRE ] -> liquid_magma -> trigger();
-    p() -> totems[ TOTEM_FIRE ] -> liquid_magma_action -> schedule_execute();
+    p() -> buff.liquid_magma -> trigger();
   }
 
   bool ready()
