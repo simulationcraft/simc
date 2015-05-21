@@ -4590,7 +4590,7 @@ struct expel_harm_heal_t : public monk_heal_t
 
     monk_heal_t::execute();
 
-    if ( p() -> specialization = MONK_MISTWEAVER )
+    if ( p() -> specialization() == MONK_MISTWEAVER )
       reset_swing(); // Resets autoattacks
 
     // Chi Gain
