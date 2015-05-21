@@ -1,10 +1,10 @@
-shaman="Shaman_Enhancement_T17H"
+shaman="Shaman_Enhancement_T18N"
 level=100
-race=draenei
+race=troll
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=0003012
+talents=0002012
 glyphs=chain_lightning/frost_shock
 spec=enhancement
 
@@ -29,7 +29,6 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
-actions+=/use_item,name=beating_heart_of_the_mountain
 # In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
 actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
 actions+=/blood_fury
@@ -99,32 +98,32 @@ actions.aoe+=/chain_lightning,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_
 actions.aoe+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&glyph.chain_lightning.enabled&active_enemies<3
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
 
-head=blastproof_cowl,id=113891,bonus_id=566
-neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant=gift_of_haste
-shoulders=windspeakers_mantle,id=115576,bonus_id=566
-back=cloak_of_delving_secrets,id=113929,bonus_id=566,enchant=gift_of_haste
-chest=windspeakers_tunic,id=115577,bonus_id=566
-wrists=bracers_of_callous_disregard,id=119334,bonus_id=566
-hands=windspeakers_handwraps,id=115578,bonus_id=566
-waist=earthgrasp_girdle,id=113930,bonus_id=566
-legs=windspeakers_legwraps,id=115575,bonus_id=566
-feet=slagstomper_treads,id=113888,bonus_id=566
-finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_haste
-finger2=cinderwolf_signet,id=113917,bonus_id=566,enchant=gift_of_haste
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
-main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_warsong
-off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_bleeding_hollow
+head=crown_of_the_living_mountain,id=124297,bonus_id=566
+neck=chain_of_lidless_eyes,id=124209,bonus_id=566,enchant=gift_of_haste
+shoulders=pauldrons_of_the_living_mountain,id=124308,bonus_id=566
+back=cloak_of_tangible_dread,id=124135,bonus_id=566,enchant=gift_of_haste
+chest=robe_of_the_living_mountain,id=124303,bonus_id=566
+wrists=supreme_felchain_bracers,id=127983,bonus_id=566
+hands=gauntlets_of_the_living_mountain,id=124293,bonus_id=566
+waist=girdle_of_the_legion_general,id=124310,bonus_id=566
+legs=haughty_chain_legguards,id=124300,bonus_id=566
+feet=unhallowed_voidlink_boots,id=124288,bonus_id=566
+finger1=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_haste
+finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
+trinket1=core_of_the_primal_elements,id=124521,bonus_id=566
+trinket2=malicious_censer,id=124226,bonus_id=566
+main_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant=mark_of_warsong
+off_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=685.31
-# gear_agility=3368
-# gear_stamina=4054
-# gear_crit_rating=564
-# gear_haste_rating=1434
-# gear_mastery_rating=619
-# gear_armor=1401
-# gear_multistrike_rating=849
-# gear_versatility_rating=326
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=713.44
+# gear_agility=3484
+# gear_stamina=5227
+# gear_crit_rating=450
+# gear_haste_rating=1879
+# gear_mastery_rating=1469
+# gear_armor=1576
+# gear_multistrike_rating=1364
+# gear_versatility_rating=203
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

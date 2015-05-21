@@ -49,23 +49,23 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 # Single target action priority list
 
 actions.single=searing_totem,if=!totem.fire.active
-actions.single+=/unleash_elements,if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)
-actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react=5
+actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=5+set_bonus.tier18_4pc
 actions.single+=/windstrike,if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.windstrike.charges_fractional>1.75)|(charges=1&buff.ascendance.remains<1.5)))
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=5+set_bonus.tier18_4pc
 actions.single+=/stormstrike,if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.stormstrike.charges_fractional>1.75)|target.time_to_die<6))
 actions.single+=/lava_lash,if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.lava_lash.charges_fractional>1.8)|target.time_to_die<8))
 actions.single+=/flame_shock,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking
 actions.single+=/unleash_elements
 actions.single+=/windstrike,if=talent.echo_of_the_elements.enabled
-actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up
-actions.single+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=3&!buff.ascendance.up)|buff.ancestral_swiftness.up
+actions.single+=/elemental_blast,if=(!set_bonus.tier18_4pc&buff.maelstrom_weapon.react>=3)|buff.ancestral_swiftness.up
+actions.single+=/lightning_bolt,if=(!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=3&!buff.ascendance.up))|buff.ancestral_swiftness.up
 actions.single+=/lava_lash,if=talent.echo_of_the_elements.enabled
 actions.single+=/frost_shock,if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled
-actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
-actions.single+=/lightning_bolt,if=talent.echo_of_the_elements.enabled&((buff.maelstrom_weapon.react>=2&!buff.ascendance.up)|buff.ancestral_swiftness.up)
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=1+2*set_bonus.tier18_4pc
+actions.single+=/lightning_bolt,if=talent.echo_of_the_elements.enabled&((!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=2&!buff.ascendance.up))|buff.ancestral_swiftness.up)
 actions.single+=/stormstrike,if=talent.echo_of_the_elements.enabled
-actions.single+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=1&!buff.ascendance.up)|buff.ancestral_swiftness.up
+actions.single+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=1+2*set_bonus.tier18_4pc&!buff.ascendance.up)|buff.ancestral_swiftness.up
 actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
 
 # Multi target action priority list
