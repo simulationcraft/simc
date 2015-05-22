@@ -42,9 +42,9 @@ actions+=/use_item,name=nithramus_the_allseer
 actions+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
 actions+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions+=/cataclysm
-actions+=/agony,cycle_targets=1,if=remains<=gcd
-actions+=/corruption,cycle_targets=1,if=remains<=gcd
-actions+=/unstable_affliction,cycle_targets=1,if=remains<=cast_time
+actions+=/agony,if=remains<=gcd
+actions+=/corruption,if=remains<=gcd
+actions+=/unstable_affliction,if=remains<=cast_time
 actions+=/soulburn,cycle_targets=1,if=!talent.soulburn_haunt.enabled&active_enemies>2&dot.corruption.remains<=dot.corruption.duration*0.3
 actions+=/seed_of_corruption,cycle_targets=1,if=!talent.soulburn_haunt.enabled&active_enemies>2&!dot.seed_of_corruption.remains&buff.soulburn.remains
 actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|buff.nithramus.remains>cast_time+travel_time|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)
@@ -79,13 +79,13 @@ trinket2=fragment_of_the_dark_star,id=124522,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=727.67
+# gear_ilvl=729.00
 # gear_stamina=6180
-# gear_intellect=4494
+# gear_intellect=4120
 # gear_spell_power=2545
 # gear_crit_rating=640
 # gear_haste_rating=2309
-# gear_mastery_rating=2101
+# gear_mastery_rating=2579
 # gear_armor=1108
 # gear_multistrike_rating=566
 # gear_versatility_rating=130

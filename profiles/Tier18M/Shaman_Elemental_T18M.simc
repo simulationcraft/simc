@@ -1,10 +1,10 @@
-shaman="Shaman_Elemental_T17B"
+shaman="Shaman_Elemental_T18M"
 level=100
 race=dwarf
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=0003011
+talents=0001011
 glyphs=chain_lightning
 spec=elemental
 
@@ -28,6 +28,7 @@ actions.precombat+=/potion,name=draenic_intellect
 actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
+actions+=/use_item,name=nithramus_the_allseer
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
 actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))
@@ -72,33 +73,33 @@ actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)
 actions.aoe+=/chain_lightning,if=active_enemies>=2
 actions.aoe+=/lightning_bolt
 
-head=windspeakers_faceguard,id=115579,bonus_id=567/523/448,gem_id=115813
-neck=choker_of_bloody_flame,id=120077,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
-shoulders=windspeakers_mantle,id=115576,bonus_id=567/523/448,gem_id=115813
-back=runescribed_gronncloak,id=120078,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
-chest=windspeakers_tunic,id=115577,bonus_id=567/523/448,gem_id=115813
-wrists=bloodwhirl_bracers,id=113968,bonus_id=567/523/448,gem_id=115813
-hands=windspeakers_handwraps,id=115578,bonus_id=567/523/448,gem_id=115813
-waist=grenadiers_belt,id=113955,bonus_id=567/523/448,gem_id=115813
-legs=legguards_of_the_stampede,id=113944,bonus_id=567/523/448,gem_id=115813
-feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567/523/448,gem_id=115813
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
-finger2=epicenter_loop,id=113947,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448,gem_id=115813
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/523/448,gem_id=115813
-main_hand=franzoks_headsmasher,id=113904,bonus_id=567/523/448,gem_id=115813,enchant=mark_of_the_frostwolf
-off_hand=enginestokers_lantern,id=113960,bonus_id=567/523/448,gem_id=115813
+head=sinister_felborne_helmet,id=124295,bonus_id=567
+neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,enchant=gift_of_multistrike
+shoulders=pauldrons_of_the_living_mountain,id=124308,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_multistrike
+chest=robe_of_the_living_mountain,id=124303,bonus_id=567
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567
+hands=gauntlets_of_the_living_mountain,id=124293,bonus_id=567
+waist=cursed_demonchain_belt,id=124311,bonus_id=567
+legs=leggings_of_the_living_mountain,id=124302,bonus_id=567
+feet=spiked_throatcrusher_boots,id=124287,bonus_id=567
+finger1=nithramus_the_allseer,id=124635,enchant=gift_of_multistrike
+finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_multistrike
+trinket1=prophecy_of_fear,id=124230,bonus_id=567
+trinket2=iron_reaver_piston,id=124227,bonus_id=567
+main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_the_frostwolf
+off_hand=fallen_defender_of_argus,id=124355,bonus_id=567
 
 # Gear Summary
-# gear_ilvl=706.56
-# gear_stamina=5014
-# gear_intellect=4208
-# gear_spell_power=1940
-# gear_crit_rating=490
-# gear_haste_rating=837
-# gear_mastery_rating=1069
-# gear_armor=1536
-# gear_multistrike_rating=2662
-# gear_versatility_rating=352
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=727.81
+# gear_stamina=6111
+# gear_intellect=5051
+# gear_spell_power=2544
+# gear_crit_rating=1640
+# gear_haste_rating=1689
+# gear_mastery_rating=618
+# gear_armor=2506
+# gear_multistrike_rating=2137
+# gear_versatility_rating=130
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
