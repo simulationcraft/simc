@@ -1660,7 +1660,7 @@ private:
       // Looks like Xuen needs a couple fixups to work properly.  Let's do that now.
       aoe = 3;
       special = tick_may_crit = true;
-      cooldown->duration = timespan_t::from_seconds( 6.0 );
+      cooldown -> duration = timespan_t::from_seconds( 6.0 );
     }
   };
 
@@ -1676,6 +1676,8 @@ private:
 
       trigger_gcd = timespan_t::zero();
     }
+
+    virtual double target_armor( player_t* ) const { return 0; }
 
     virtual void execute()
     {
@@ -4619,8 +4621,8 @@ struct expel_harm_heal_t : public monk_heal_t
     }
 
     // Every time you use Expel Harm, the remaining cooldown of your Guard is reduced by 5 sec.
-    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) && p() -> cooldown.guard -> down() )
-      p() -> cooldown.guard -> duration + p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value(); // T18 set bonus is saved as "-5000"
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) )
+      p() -> cooldown.guard -> adjust( p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value() ); // T18 set bonus is saved as "-5000"
   }
 };
 
