@@ -5854,11 +5854,11 @@ void mage_t::apl_fire()
                                "if=ptr=0&set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>1-(gcd.max%8)",
                                "Aggressively use Pyro with 2T17 and IB available" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=0|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up",
+                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=1|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up",
                                "Heating Up conversion to Pyroblast" );
   single_target -> add_action( "call_action_list,name=active_talents" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=0|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight",
+                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=1|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight",
                                "Adding Heating Up to Pyroblast" );
   single_target -> add_action( this, "Inferno Blast",
                                "if=ptr=0&set_bonus.tier17_2pc&(cooldown.combustion.remains%8+charges_fractional>2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&charges_fractional>2-(gcd.max%8)",
