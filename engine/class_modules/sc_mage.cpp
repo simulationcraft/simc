@@ -5607,7 +5607,7 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Arcane Barrage",
                       "if=talent.arcane_orb.enabled&active_enemies>=3&buff.arcane_charge.stack=4&(cooldown.arcane_orb.remains<gcd.max|prev_gcd.arcane_orb)" );
   burn -> add_action( this, "Presence of Mind",
-                      "if=(mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))|set_bonus.tier18_2pc" );
+                      "if=mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up)" );
   burn -> add_action( this, "Arcane Blast",
                       "if=buff.arcane_charge.stack=4&mana.pct>93" );
   burn -> add_action( this, "Arcane Missiles",
@@ -5635,7 +5635,7 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Arcane Orb",
                           "if=buff.arcane_charge.stack<2" );
   conserve -> add_action( this, "Presence of Mind",
-                          "if=(mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))|set_bonus.tier18_2pc" );
+                          "if=mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up)" );
   conserve -> add_action( this, "Arcane Blast",
                           "if=buff.arcane_charge.stack=4&mana.pct>93" );
   conserve -> add_action( this, "Arcane Barrage",
