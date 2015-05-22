@@ -75,5 +75,5 @@ zz1234
 
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD -t spec_enum >> $OUTPATH/specialization.hpp
 
-echo "#endif\n" >> $OUTPATH/specialization.hpp
+echo -e "#endif\n" >> $OUTPATH/specialization.hpp
 
