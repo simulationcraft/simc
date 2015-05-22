@@ -1411,17 +1411,16 @@ class SpellDataGenerator(DataGenerator):
         # Mage:
         (
           ( 48107, 0, False ), ( 48108, 0, False ), # Heating Up and Pyroblast! buffs
-          ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
-          ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
-          ( 80354, 0 ),                                           # Temporal Displacement
-          ( 131079, 0 ), ( 131080, 0 ), ( 131081, 0 ),		      # Mini-bolt spells
-          ( 131581, 0 ),                                          # Waterbolt
-          ( 7268, 0, False ),                                     # Arcane missiles trigger
-          ( 115757, 0, False ),                                   # Frost Nova false positive for activatable
-          ( 145264, 0 ),                                          # T16 Frigid Blast
-          ( 148022, 0 ),                                          # Icicle
-          ( 155152, 5 ),                                          # Prismatic Crystal nuke
-          ( 157978, 0 ), ( 157979, 0 ),                           # Unstable magic aoe
+          ( 88084, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
+          ( 80354, 0 ),                             # Temporal Displacement
+          ( 131581, 0 ),                            # Waterbolt
+          ( 7268, 0, False ),                       # Arcane missiles trigger
+          ( 115757, 0, False ),                     # Frost Nova false positive for activatable
+          ( 145264, 0 ),                            # T16 Frigid Blast
+          ( 148022, 0 ),                            # Icicle
+          ( 155152, 5 ),                            # Prismatic Crystal nuke
+          ( 157978, 0 ), ( 157979, 0 ),             # Unstable magic aoe
+          ( 9672, 0 ), ( 59710, 0 ),                # Arcane T18 2P Pet
         ),
 
         # Warlock:
