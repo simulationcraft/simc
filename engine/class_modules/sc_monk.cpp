@@ -1677,8 +1677,6 @@ private:
       trigger_gcd = timespan_t::zero();
     }
 
-    virtual double target_armor( player_t* ) const { return 0; }
-
     virtual void execute()
     {
       player -> main_hand_attack -> schedule_execute();
