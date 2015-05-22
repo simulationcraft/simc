@@ -6089,8 +6089,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
     }
-
-    cache.player_mult_valid[ school ] = false;
   }
   else if ( talents.incanters_flow -> ok() )
   {
@@ -6100,7 +6098,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
   }
 
   if ( buffs.icarus_uprising -> check() )
+  {
     m *= 1.0 + buffs.icarus_uprising -> data().effectN( 2 ).percent();
+  }
 
   return m;
 }
