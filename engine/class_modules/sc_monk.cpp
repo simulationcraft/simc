@@ -513,7 +513,6 @@ public:
   {
     int initial_chi;
     double goto_throttle;
-    double eh_reset_throttle;
     double ppm_below_35_percent_dm;
     double ppm_below_50_percent_dm;
   } user_options;
@@ -562,7 +561,6 @@ public:
     }
     user_options.initial_chi = 0;
     user_options.goto_throttle = 0;
-    user_options.eh_reset_throttle = 0;
     user_options.ppm_below_35_percent_dm = 0;
     user_options.ppm_below_50_percent_dm = 0;
   }
@@ -4593,38 +4591,29 @@ struct expel_harm_heal_t : public monk_heal_t
 
     may_crit = true;
     may_multistrike = 1;
-    base_dd_min = base_dd_max = 1;
-    cooldown -> duration = data().cooldown();
-    p.cooldown.expel_harm = cooldown;
 
     p.cooldown.desperate_measure = new cooldown_t( "desperate_measure", p );
-    p.cooldown.desperate_measure -> duration = timespan_t::zero();
 
-    double desperate_measure = 0;
     if ( p.specialization() == MONK_BREWMASTER )
     {
+      double desperate_measure = 0;
+
       if ( p.sets.has_set_bonus( MONK_BREWMASTER, T18, B2) )
       {
         if ( p.user_options.ppm_below_50_percent_dm > 0 )
           desperate_measure = p.user_options.ppm_below_50_percent_dm;
         else
-        {
-          // Increase the proc rate for PTR by 1/3 due to the changes made to Brewmaster
-          desperate_measure += ( 50.0 / 35.0 ) * ( 4.0 / 3.0 );
-        }
+          // Increase the proc rate for PTR by 50% due to the changes made to Brewmaster
+          desperate_measure = ( 50.0 / 35.0 ) * ( 3.0 / 2.0 );
       }
       else if ( p.user_options.ppm_below_35_percent_dm > 0 )
         desperate_measure = p.user_options.ppm_below_35_percent_dm;
       else
-        // Increase the proc rate for PTR by 1/3 due to the changes made to Brewmaster
-        desperate_measure += 1 * (maybe_ptr(p.dbc.ptr) ? (4.0 / 3.0) : 1);
+        // Increase the proc rate for PTR by 50% due to the changes made to Brewmaster
+        desperate_measure = ( maybe_ptr( p.dbc.ptr ) ? ( 3.0 / 2.0 ) : 1 );
+
+      p.cooldown.desperate_measure -> duration = timespan_t::from_seconds( 60.0 / ( desperate_measure * 2 ) );
     }
-    if ( desperate_measure > 0 )
-    {
-      // since a tank is normally tanking half the time, double the proc per minute to simulate as if they were single-tanking
-      timespan_t dur = timespan_t::from_seconds( 60.0 / ( desperate_measure * 2 ) );
-      p.cooldown.desperate_measure -> duration = dur;
-    } 
   }
 
   void init()
@@ -6025,7 +6014,6 @@ void monk_t::create_options()
 
   add_option( opt_int( "initial_chi", user_options.initial_chi ) );
   add_option( opt_float( "goto_throttle", user_options.goto_throttle ) );
-  add_option( opt_float( "eh_reset_throttle", user_options.eh_reset_throttle ) );
   add_option( opt_float ( "ppm_below_35_percent_dm", user_options.ppm_below_35_percent_dm ) );
   add_option( opt_float ( "ppm_below_50_percent_dm", user_options.ppm_below_50_percent_dm ) );
 }
