@@ -1331,16 +1331,17 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
 // 12/9/2014 update: now that this doesn't have hasted ticks anymore, it can probably be converted back to a melee. Rather than fuss with that
 // right now, though, I'm leaving it as-is (and just disabling hasted_ticks) since it's easier than dealing with the problems of converting
 // a paladin_spell_t to a paladin_melee_attack_t.
+// 5/23/2015 - Had to change to melee attack to work with empty drinking horn.
 
-struct censure_t : public paladin_spell_t
+struct censure_t : public paladin_melee_attack_t
 {
   censure_t( paladin_t* p ) :
-    paladin_spell_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
+    paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
   {
     background       = true;
     proc             = true;
     tick_may_crit    = true;
-    hasted_ticks     = false; // necessary since spells have hasted ticks by default
+    hasted_ticks     = false;
 
     // Glyph of Immediate Truth reduces DoT damage
     if ( p -> glyphs.immediate_truth -> ok() )
@@ -1352,38 +1353,36 @@ struct censure_t : public paladin_spell_t
     if ( p -> passives.guarded_by_the_light -> ok() )
       base_multiplier /= 5;
   }
-  
-  virtual void impact( action_state_t* s )
+
+  void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
     {
       // if the application hits, apply/refresh the censure debuff; this will also increment stacks
       td( s -> target ) -> buffs.debuffs_censure -> trigger();
-      // cheesy hack to make Censure use melee crit rather than spell crit
-      s -> crit = p() -> composite_melee_crit();
     }
 
-    paladin_spell_t::impact( s );
+    paladin_melee_attack_t::impact( s );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  double composite_target_multiplier( player_t* t ) const
   {
     // since we don't support stacking debuffs, we handle the stack size in paladin_td buffs.debuffs_censure
     // and apply the stack size as an action multiplier
-    double am = paladin_spell_t::composite_target_multiplier( t );
+    double am = paladin_melee_attack_t::composite_target_multiplier( t );
 
     am *= td( t ) -> buffs.debuffs_censure -> check();
 
     return am;
   }
 
-  virtual void last_tick( dot_t* d )
+  void last_tick( dot_t* d )
   {
     // if this is the last tick, expire the debuff locally
     // (this shouldn't happen ... ever? ... under normal operation)
     td( d -> state -> target ) -> buffs.debuffs_censure -> expire();
 
-    paladin_spell_t::last_tick( d );
+    paladin_melee_attack_t::last_tick( d );
   }
 };
 
@@ -1978,10 +1977,10 @@ struct execution_sentence_t : public paladin_spell_t
 
 // Exorcism =================================================================
 
-struct exorcism_t : public paladin_spell_t
+struct exorcism_t : public paladin_melee_attack_t
 {
   exorcism_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
+    : paladin_melee_attack_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
   {
     parse_options( options_str );
 
@@ -1997,9 +1996,9 @@ struct exorcism_t : public paladin_spell_t
     cooldown -> duration = data().cooldown();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
-    double am = paladin_spell_t::action_multiplier();
+    double am = paladin_melee_attack_t::action_multiplier();
     
     // Holy Avenger
     if ( p() -> buffs.holy_avenger -> check() )
@@ -2010,9 +2009,9 @@ struct exorcism_t : public paladin_spell_t
     return am;
   }
 
-  virtual void execute()
+  void execute()
   {
-    paladin_spell_t::execute();
+    paladin_melee_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
       // base spell adds one Holy Power
@@ -2037,14 +2036,14 @@ struct exorcism_t : public paladin_spell_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
     {
       p() -> buffs.tier15_2pc_melee -> trigger();
     }
 
-    paladin_spell_t::impact( s );
+    paladin_melee_attack_t::impact( s );
   }
 };
 
@@ -3654,7 +3653,7 @@ struct glyph_of_divine_storm_t : public paladin_heal_t
 
 };
 
-struct divine_storm_t : public paladin_melee_attack_t
+struct divine_storm_t: public paladin_melee_attack_t
 {
   glyph_of_divine_storm_t* glyph_heal;
 
@@ -3665,8 +3664,8 @@ struct divine_storm_t : public paladin_melee_attack_t
 
     weapon = &( p -> main_hand_weapon );
 
-    aoe                = -1;
-    trigger_seal       = false;
+    aoe = -1;
+    trigger_seal = false;
     trigger_seal_of_righteousness = true;
 
     if ( p -> glyphs.divine_storm -> ok() )
@@ -3675,7 +3674,13 @@ struct divine_storm_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double cost() const
+  void execute()
+  {
+    paladin_melee_attack_t::execute();
+    p() -> buffs.final_verdict -> expire();
+  }
+
+  double cost() const
   {
     // check for the T16 4-pc melee buff
     if ( p() -> buffs.divine_crusader -> check() )
@@ -3684,7 +3689,7 @@ struct divine_storm_t : public paladin_melee_attack_t
     return paladin_melee_attack_t::cost();
   }
 
-  virtual void consume_free_hp_effects()
+  void consume_free_hp_effects()
   {
     // order of operations: T16 4-pc melee, then Divine Purpose
 
@@ -3699,7 +3704,7 @@ struct divine_storm_t : public paladin_melee_attack_t
     paladin_melee_attack_t::consume_free_hp_effects();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3712,7 +3717,7 @@ struct divine_storm_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
 
@@ -3720,9 +3725,6 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       if ( p() -> glyphs.divine_storm -> ok() )
         glyph_heal -> schedule_execute();
-      
-      // expire Final Verdict buff, but delay by 50ms so that other targets hit by the AoE get the benefit in action_multiplier
-      p() -> buffs.final_verdict -> expire( timespan_t::from_millis( 50 ) );
     }
     if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
@@ -3751,7 +3753,6 @@ struct fist_of_justice_t : public paladin_melee_attack_t
   }
 };
 
-
 // Hammer of the Righteous ==================================================
 
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
@@ -3769,7 +3770,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3891,10 +3892,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     // Cannot be parried or blocked, but can be dodged
     may_parry = may_block = false;
-
-    // Not sure if it's intended, but currently HoW procs seals on beta. 8/30/14 - Alex
-    if ( p -> bugs )
-      trigger_seal = true;
+    trigger_seal = true;
     // no weapon multiplier
     weapon_multiplier = 0.0;
 
@@ -4418,7 +4416,8 @@ struct final_verdict_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
     trigger_seal       = true;
-
+    if ( maybe_ptr( p -> dbc.ptr ) && p -> bugs )
+      trigger_seal_of_righteousness = false;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
