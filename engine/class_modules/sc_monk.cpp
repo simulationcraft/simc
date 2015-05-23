@@ -560,6 +560,11 @@ public:
       regen_caches[CACHE_HASTE] = true;
       regen_caches[CACHE_ATTACK_HASTE] = true;
     }
+    user_options.initial_chi = 0;
+    user_options.goto_throttle = 0;
+    user_options.eh_reset_throttle = 0;
+    user_options.ppm_below_35_percent_dm = 0;
+    user_options.ppm_below_50_percent_dm = 0;
   }
 
   // player_t overrides
