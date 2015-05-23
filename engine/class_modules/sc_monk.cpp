@@ -87,6 +87,7 @@ enum sef_ability_e {
   SEF_TIGER_PALM,
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
+  SEF_RISING_SUN_KICK_TRINKET,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
@@ -354,7 +355,11 @@ public:
     const spell_data_t* leather_specialization;
     const spell_data_t* legacy_of_the_white_tiger;
     const spell_data_t* rising_sun_kick;
+    const spell_data_t* rising_sun_kick_debuff;
     const spell_data_t* spinning_crane_kick;
+    const spell_data_t* spinning_crane_kick_heal;
+    const spell_data_t* rushing_jade_wind_heal;
+    const spell_data_t* tiger_palm;
     const spell_data_t* tiger_strikes;
     const spell_data_t* touch_of_death;
     const spell_data_t* way_of_the_monk_aa_damage;
@@ -362,6 +367,9 @@ public:
     const spell_data_t* zen_meditaiton;
     const spell_data_t* fortifying_brew;
     const spell_data_t* expel_harm_damage;
+    const spell_data_t* chi_torpedo_heal;
+    const spell_data_t* surging_mist_heal;
+
     // Brewmaster
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
@@ -395,13 +403,18 @@ public:
     const spell_data_t* mana_tea;
     const spell_data_t* mana_tea_driver;
     const spell_data_t* renewing_mist;
+    const spell_data_t* renewing_mist_heal;
     const spell_data_t* revival;
     const spell_data_t* soothing_mist;
     const spell_data_t* soothing_mists_trigger;
+    const spell_data_t* soothing_mist_statue;
     const spell_data_t* summon_jade_serpent_statue;
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
     const spell_data_t* uplift;
+    const spell_data_t* eminence;
+    const spell_data_t* eminence_statue;
+    const spell_data_t* breath_of_the_serpent_heal;
     const spell_data_t* extend_life;
 
     // Windwalker
@@ -674,7 +687,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) :
       actor_target_data_t( target, source ),
-      rising_sun_kick( buff_creator_t( *this, "rising_sun_kick" ).spell( source -> find_spell( 130320 ) ) )
+      rising_sun_kick( buff_creator_t( *this, "rising_sun_kick", source -> o() -> spec.rising_sun_kick_debuff )
+                          .default_value( source -> o() -> spec.rising_sun_kick_debuff -> effectN( 1 ).percent() ) )
     { }
   };
 
@@ -759,7 +773,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       const sef_td_t* tdata = td( t );
       if ( tdata -> rising_sun_kick -> check() )
-        m *= 1.0 + tdata -> rising_sun_kick -> data().effectN( 1 ).percent();
+        m *= 1.0 + tdata -> rising_sun_kick -> default_value;
 
       return m;
     }
@@ -875,7 +889,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       double a = base_t::target_armor( t );
 
       if ( p() -> tiger_power -> up() )
-        a *= 1.0 - p() -> tiger_power -> check() * p() -> tiger_power -> data().effectN( 1 ).percent();
+        a *= 1.0 - p() -> tiger_power -> check() * p() -> tiger_power -> default_value;
 
       return a;
     }
@@ -1128,39 +1142,56 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_rsk_debuff_t : public sef_melee_attack_t
+  {
+    sef_rsk_debuff_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rsk_debuff", player, player -> o() -> spec.rising_sun_kick_debuff )
+    {
+      may_crit = may_miss = may_block = callbacks = false;
+      quiet = dual = true;
+
+      weapon_power_mod = 0;
+      aoe = -1;
+    }
+
+    void init()
+    {
+      sef_melee_attack_t::init();
+
+      snapshot_flags = update_flags = 0;
+    }
+
+    void impact( action_state_t* state )
+    {
+      sef_melee_attack_t::impact( state );
+
+      td( state -> target ) -> rising_sun_kick -> trigger();
+    }
+  };
+
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
-    struct sef_rsk_debuff_t : public sef_melee_attack_t
-    {
-      sef_rsk_debuff_t( storm_earth_and_fire_pet_t* player ) :
-        sef_melee_attack_t( "rsk_debuff", player, player -> owner -> find_spell( 130320 ) )
-      {
-        may_crit = may_miss = may_block = callbacks = false;
-        quiet = dual = true;
-
-        weapon_power_mod = 0;
-        aoe = -1;
-      }
-
-      void init()
-      {
-        sef_melee_attack_t::init();
-
-        snapshot_flags = update_flags = 0;
-      }
-
-      void impact( action_state_t* state )
-      {
-        sef_melee_attack_t::impact( state );
-
-        td( state -> target ) -> rising_sun_kick -> trigger();
-      }
-    };
-
     sef_rsk_debuff_t* debuff;
 
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick ),
+      debuff( new sef_rsk_debuff_t( player ) )
+    { }
+
+    void execute()
+    {
+      sef_melee_attack_t::execute();
+
+      debuff -> schedule_execute();
+    }
+  };
+
+  struct sef_rising_sun_kick_trinket_t : public sef_melee_attack_t
+  {
+    sef_rsk_debuff_t* debuff;
+
+    sef_rising_sun_kick_trinket_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> spec.rising_sun_kick_trinket ),
       debuff( new sef_rsk_debuff_t( player ) )
     { }
 
@@ -1498,7 +1529,8 @@ public:
   {
     pet_t::create_buffs();
 
-    tiger_power = buff_creator_t( this, "tiger_power", o() -> find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
+    tiger_power = buff_creator_t( this, "tiger_power", o() -> spec.tiger_palm -> effectN( 2 ).trigger() )
+      .default_value( o() -> spec.tiger_palm -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
       .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   }
 
@@ -1506,15 +1538,16 @@ public:
   {
     pet_t::init_spells();
 
-    attacks[ SEF_JAB                 ] = new sef_jab_t( this );
-    attacks[ SEF_TIGER_PALM          ] = new sef_tiger_palm_t( this );
-    attacks[ SEF_BLACKOUT_KICK       ] = new sef_blackout_kick_t( this );
-    attacks[ SEF_RISING_SUN_KICK     ] = new sef_rising_sun_kick_t( this );
-    attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
-    attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
-    attacks[ SEF_RUSHING_JADE_WIND   ] = new sef_rushing_jade_wind_t( this );
-    attacks[ SEF_HURRICANE_STRIKE    ] = new sef_hurricane_strike_t( this );
-    attacks[ SEF_CHI_EXPLOSION       ] = new sef_chi_explosion_t( this );
+    attacks[ SEF_JAB                     ] = new sef_jab_t( this );
+    attacks[ SEF_TIGER_PALM              ] = new sef_tiger_palm_t( this );
+    attacks[ SEF_BLACKOUT_KICK           ] = new sef_blackout_kick_t( this );
+    attacks[ SEF_RISING_SUN_KICK         ] = new sef_rising_sun_kick_t( this );
+    attacks[ SEF_RISING_SUN_KICK_TRINKET ] = new sef_rising_sun_kick_trinket_t( this );
+    attacks[ SEF_FISTS_OF_FURY           ] = new sef_fists_of_fury_t( this );
+    attacks[ SEF_SPINNING_CRANE_KICK     ] = new sef_spinning_crane_kick_t( this );
+    attacks[ SEF_RUSHING_JADE_WIND       ] = new sef_rushing_jade_wind_t( this );
+    attacks[ SEF_HURRICANE_STRIKE        ] = new sef_hurricane_strike_t( this );
+    attacks[ SEF_CHI_EXPLOSION           ] = new sef_chi_explosion_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
     spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
@@ -2281,7 +2314,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
 
   rising_sun_kick_proc_t( monk_t* p, const spell_data_t* s ) :
     monk_melee_attack_t( "rising_sun_kick_trinket", p, s ),
-    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
+    rsk_debuff( new rsk_debuff_t( p, p -> spec.rising_sun_kick_debuff ) )
   {
     cooldown -> duration = timespan_t::from_millis( 250 );
     background = true;
@@ -2292,7 +2325,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( maybe_ptr( p -> dbc.ptr ) )
       base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
-    sef_ability = SEF_RISING_SUN_KICK;
+    sef_ability = SEF_RISING_SUN_KICK_TRINKET;
     min_gcd = timespan_t::from_millis( 250 );
     trigger_gcd = timespan_t::from_millis( 250 );
   }
@@ -2317,7 +2350,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
-    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) ),
+    rsk_debuff( new rsk_debuff_t( p, p -> spec.rising_sun_kick_debuff ) ),
     rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
     cooldown -> duration = data().charge_cooldown();
@@ -3768,7 +3801,7 @@ struct chi_burst_t: public monk_spell_t
 struct chi_torpedo_heal_t: public monk_heal_t
 {
   chi_torpedo_heal_t( monk_t& player ):
-    monk_heal_t( "chi_torpedo_heal", player, player.find_spell( 124040 ) )
+    monk_heal_t( "chi_torpedo_heal", player, player.spec.chi_torpedo_heal )
   {
     background = true;
     target = p();
@@ -4640,7 +4673,7 @@ struct renewing_mist_t: public monk_heal_t
     parse_options( options_str );
     stancemask = WISE_SERPENT;
     may_crit = may_miss = false;
-    dot_duration = p.find_spell( 119611 ) -> duration();
+    dot_duration = p.spec.renewing_mist_heal -> duration();
 
     // Improved Renewing Mist
     dot_duration += p.perk.improved_renewing_mist -> effectN( 1 ).time_value();
@@ -4766,7 +4799,7 @@ Main Spell ID is 116694, but the AP Co-efficient is from 116995
 struct surging_mist_t: public monk_heal_t
 {
   surging_mist_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "surging_mist", p, p.find_spell( 116995 ) )
+    monk_heal_t( "surging_mist", p, p.spec.surging_mist_heal )
   {
     parse_options( options_str );
 
@@ -5093,8 +5126,8 @@ debuff( buffs_t() ),
 monk( *p )
 {
   debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" )
-    .spell( p -> find_spell( 130320 ) )
-    .default_value( p -> find_spell( 130320 ) -> effectN( 1 ).percent() );
+    .spell( p -> spec.rising_sun_kick_debuff )
+    .default_value( p -> spec.rising_sun_kick_debuff -> effectN( 1 ).percent() );
   debuff.dizzying_haze = buff_creator_t( *this, "dizzying_haze" )
     .spell( p -> find_spell( 116330 ) )
     .default_value( p -> find_spell( 116330 ) -> effectN( 1 ).percent() );
@@ -5250,13 +5283,19 @@ void monk_t::init_spells()
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
   spec.legacy_of_the_white_tiger     = find_specialization_spell( "Legacy of the White Tiger" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
+  spec.rising_sun_kick_debuff        = find_spell( 130320 );
   spec.spinning_crane_kick           = find_class_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick_heal      = find_spell( 117640 );
+  spec.rushing_jade_wind_heal        = find_spell( 162530 );
+  spec.tiger_palm                    = find_class_spell( "Tiger Palm" );
   spec.tiger_strikes                 = find_spell( 120272 );
   spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
   spec.way_of_the_monk_aa_damage     = find_spell( 108977 );
   spec.way_of_the_monk_aa_speed      = find_spell( 140737 );
   spec.fortifying_brew               = find_class_spell( "Fortifying Brew" );
   spec.expel_harm_damage             = find_spell( 115129 );
+  spec.chi_torpedo_heal              = find_spell( 124040 );
+  spec.surging_mist_heal             = find_spell( 116995 );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew         = find_specialization_spell( "Brewing: Tigereye Brew" );
@@ -5300,7 +5339,9 @@ void monk_t::init_spells()
   spec.crane_style_techniques        = find_specialization_spell( "Crane Style Techniques" );
   spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
   spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
+  spec.renewing_mist_heal            = find_spell( 119611 );
   spec.soothing_mist                 = find_specialization_spell( "Soothing Mist" );
+  spec.soothing_mist_statue          = find_spell( 125953 );
   spec.mana_tea                      = find_specialization_spell( "Mana Tea" );
   spec.revival                       = find_specialization_spell( "Revival" );
   spec.summon_jade_serpent_statue    = find_specialization_spell( "Summon Jade Serpent Statue" );
@@ -5314,6 +5355,9 @@ void monk_t::init_spells()
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
   spec.enveloping_mist               = find_specialization_spell( "Enveloping Mist" );
   spec.jade_mists                    = find_specialization_spell( "Jade Mists" );
+  spec.eminence                      = find_spell( 126890 );
+  spec.eminence_statue               = find_spell( 117895 );
+  spec.breath_of_the_serpent_heal    = find_spell( 157590 );
   spec.extend_life                   = find_spell( 185158 ); // Tier 18 bonus
 
   // Stance
@@ -5444,14 +5488,13 @@ void monk_t::create_buffs()
     .default_value( talent.power_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
 
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
-    .default_value(spec.tiger_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .default_value( spec.tiger_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( spec.tiger_strikes -> proc_chance() * ( ( main_hand_weapon.group() == WEAPON_1H && specialization() != MONK_MISTWEAVER ) ? 0.5 : 1 ) ) // Tooltips are wrong....
     .refresh_behavior( BUFF_REFRESH_DURATION )
-    .cd( timespan_t::from_seconds( 0.2 ) )
     .add_invalidate( CACHE_MULTISTRIKE );
 
-  buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
-    .default_value( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
+  buff.tiger_power = buff_creator_t( this, "tiger_power", spec.tiger_palm -> effectN( 2 ).trigger() )
+    .default_value( spec.tiger_palm -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
