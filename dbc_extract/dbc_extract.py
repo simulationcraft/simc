@@ -47,7 +47,7 @@ parser.add_option("--suffix", dest = "suffix",
                   default = r'', action = "store", type = "string")
 parser.add_option("--min-ilvl", dest = "min_ilevel",
                   help    = "Minimum inclusive ilevel for item-related extraction",
-                  default = 372, action = "store", type = "int" )
+                  default = 90, action = "store", type = "int" )
 parser.add_option("--max-ilvl", dest = "max_ilevel",
                   help    = "Maximum inclusive ilevel for item-related extraction",
                   default = 800, action = "store", type = "int" )
