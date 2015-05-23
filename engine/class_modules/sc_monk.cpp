@@ -4597,7 +4597,7 @@ struct expel_harm_heal_t : public monk_heal_t
     cooldown -> duration = data().cooldown();
     p.cooldown.expel_harm = cooldown;
 
-    p.cooldown.desperate_measure = new cooldown_t( "desperate_measure", p );
+    p.cooldown.desperate_measure = p.get_cooldown( "desperate_measure" );
     p.cooldown.desperate_measure -> duration = timespan_t::zero();
 
     double desperate_measure = 0;
