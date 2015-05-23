@@ -1228,7 +1228,7 @@ struct auto_attack_t: public warrior_attack_t
   {
     if ( p() -> main_hand_attack -> execute_event == 0 )
       p() -> main_hand_attack -> schedule_execute();
-    if ( p() -> off_hand_attack && p() -> off_hand_attack == 0 )
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == 0 )
     {
       p() -> off_hand_attack -> schedule_execute();
     }
