@@ -995,11 +995,13 @@ public:
 
     type = PLAYER_GUARDIAN;
 
+    bool is_t18 = o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 );
+
     for ( size_t i = 0; i < stats_list.size(); ++i )
     {
       if ( !( stats_list[i] -> parent ) )
       {
-        if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
+        if ( is_t18 )
           o() -> stats_tier18_4pc_bm -> add_child( stats_list[i] );
         else
           o() -> stats_tier17_4pc_bm -> add_child( stats_list[i] );
@@ -1008,15 +1010,16 @@ public:
     base_t::summon( duration );
     // pet appears at the target
     current.distance = 0;
-    owner_coeff.ap_from_ap = 0.6;
-    owner_coeff.sp_from_ap = 0.6;
+    double ap_coeff = is_t18 
+      ? 1.0 / (1.0 + o() -> buffs.focus_fire -> current_value) 
+      : 0.6;
+    owner_coeff.ap_from_ap = ap_coeff;
+    owner_coeff.sp_from_ap = ap_coeff;
 
-    if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
-    {
-      buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-    }
-    else
+    if ( is_t18 )
       buffs.tier18_4pc_bm -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    else
+      buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
     // pet swings immediately (without an execute time)
     if ( !main_hand_attack -> execute_event ) main_hand_attack -> execute();
@@ -3341,6 +3344,32 @@ struct bestial_wrath_t: public hunter_spell_t
 
 // Focus Fire ===============================================================
 
+struct focus_fire_buff_t : public buff_t
+{
+  focus_fire_buff_t( const buff_creator_t& creator ) : buff_t( creator ) {}
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    
+    hunter_t* p = debug_cast<hunter_t*>( player );
+    if ( p -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
+    {
+      // unsummon an active t18 pet
+      for ( size_t i = p -> hunter_main_pets.size(); i-- > 0; )
+      {
+        pets::hunter_main_pet_t* pet = p -> hunter_main_pets[i];
+        // we manually dismiss the pets when the buff expires because it focus fir emay be extended
+        if ( pet -> buffs.tier18_4pc_bm -> check() )
+        {
+          pet -> buffs.tier18_4pc_bm -> expire();
+          pet -> dismiss();
+        }
+      }
+    }
+  }
+};
+
 struct focus_fire_t: public hunter_spell_t
 {
   int min_stacks;
@@ -3368,11 +3397,11 @@ struct focus_fire_t: public hunter_spell_t
     p() -> buffs.focus_fire -> trigger( stacks, value );
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
     {
-      const timespan_t duration = p() -> buffs.focus_fire -> buff_duration;
       // start from the back so we don't overlap stampede pets in reporting
       for ( size_t i = p() -> hunter_main_pets.size(); i-- > 0; )
       {
-        if ( p() -> hunter_main_pets[i] -> tier_pet_summon( duration ) )
+        // we manually unsummon the pets when the buff expires because it focus fir emay be extended
+        if ( p() -> hunter_main_pets[i] -> tier_pet_summon( timespan_t::zero() ) )
           break;
       }
     }
@@ -3549,7 +3578,7 @@ struct stampede_t: public hunter_spell_t
 
     for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 5; ++i )
     {
-      p() -> hunter_main_pets[i] -> stampede_summon( timespan_t::from_millis( 40027 ) );
+      p() -> hunter_main_pets[i] -> stampede_summon( p() -> buffs.stampede -> buff_duration + timespan_t::from_millis( 27 ) );
       // Added 0.027 seconds to properly reflect haste threshholds seen in game.
     }
     p() -> no_steady_focus();
@@ -3874,10 +3903,10 @@ void hunter_t::create_buffs()
 
   buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( specs.cobra_strikes -> proc_chance() );
 
-  buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" )
-    .max_stack( find_spell( 19615 ) -> max_stacks() )
-    .add_invalidate( CACHE_ATTACK_HASTE )
-    .add_invalidate( CACHE_ATTACK_POWER );
+  buffs.focus_fire                  = new spells::focus_fire_buff_t( buff_creator_t( this, 82692, "focus_fire" )
+                                                                .max_stack( find_spell( 19615 ) -> max_stacks() )
+                                                                .add_invalidate( CACHE_ATTACK_HASTE )
+                                                                .add_invalidate( CACHE_ATTACK_POWER ));
 
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
   buffs.steady_focus                = buff_creator_t( this, 177668, "steady_focus" ).chance( talents.steady_focus -> ok() );
