@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -31,7 +31,7 @@ Duration         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Cat Form (3025), Glyph of Entangling Roots (54760), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Nature's Swiftness (132158), Lucidity (137247), Entangling Energy (164991), Claws of Shirvallah (171745)
+Affecting spells : Cat Form (3025), Glyph of Entangling Roots (54760), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Roots Range Increase (96148), Nature's Swiftness (132158), Lucidity (137247), Entangling Energy (164991), Claws of Shirvallah (171745)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   .....x.. ........ ........ ........ 
@@ -4387,7 +4387,7 @@ Duration         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Cat Form (3025), Glyph of Entangling Roots (54760), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Nature's Swiftness (132158), Lucidity (137247), Entangling Energy (164991), Claws of Shirvallah (171745)
+Affecting spells : Cat Form (3025), Glyph of Entangling Roots (54760), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Roots Range Increase (96148), Nature's Swiftness (132158), Lucidity (137247), Entangling Energy (164991), Claws of Shirvallah (171745)
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   .....x.. ........ ........ ........ 

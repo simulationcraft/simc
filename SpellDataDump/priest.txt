@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -504,7 +504,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Improved Psychic Scream (44297), Glyph of Psychic Scream (55676), Glyph of Dispel Magic (119864), Lucidity (137323)
+Affecting spells : Psychic Scream Duration Increase (23044), Improved Psychic Scream (44297), Glyph of Psychic Scream (55676), Glyph of Dispel Magic (119864), Lucidity (137323)
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -986,7 +986,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6402)     : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 18
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Venomhide Poison (14795), Venomous Wound (79136), Instant Poison (157584)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Venomhide Poison (14795), Spore Cloud (32643), Venomous Wound (79136), Instant Poison (157584)
 Description      : Increases the application chance of Deadly Poison and Wound Poison by $s1%.
 
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
@@ -2751,10 +2751,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Venomous Wound (79136), Deadly Poison (113780), Debilitating Poison (115196), Instant Poison (157584), Instant Poison (157607)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Venomous Wound (79136), Deadly Poison (113780), Debilitating Poison (115196), Instant Poison (157584), Instant Poison (157607)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Misc Value: 22
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Venomous Wound (79136), Deadly Poison (113780), Debilitating Poison (115196), Instant Poison (157584), Instant Poison (157607)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Venomous Wound (79136), Deadly Poison (113780), Debilitating Poison (115196), Instant Poison (157584), Instant Poison (157607)
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350
 Description      : Increases the damage done by your poisons by $76803s1%.
@@ -2871,7 +2871,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Internal Bleeding (154953), Instant Poison (157584), Instant Poison (157607), Dispatch (157957), Hemorrhage (168908), Rupture (168963), Garrote (168971), Backstab (173458)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Internal Bleeding (154953), Instant Poison (157584), Instant Poison (157607), Dispatch (157957), Hemorrhage (168908), Rupture (168963), Garrote (168971), Backstab (173458)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -3678,7 +3678,7 @@ Attributes       : .......x x....... ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=157252)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 25 | Scaled Value: 25
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Dispatch (157957), Hemorrhage (168908), Rupture (168963), Garrote (168971), Backstab (173458)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Dispatch (157957), Hemorrhage (168908), Rupture (168963), Garrote (168971), Backstab (173458)
 #2 (id=157253)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 25 | Scaled Value: 25
 
@@ -4403,10 +4403,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219713)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Venomous Wound (79136), Deadly Poison (113780), Instant Poison (157584), Instant Poison (157607)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Venomous Wound (79136), Deadly Poison (113780), Instant Poison (157584), Instant Poison (157607)
 #2 (id=219714)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Venomous Wound (79136), Deadly Poison (113780), Instant Poison (157584), Instant Poison (157607)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Venomous Wound (79136), Deadly Poison (113780), Instant Poison (157584), Instant Poison (157607)
 Description      : $@spelldesc157561
 Tooltip          : Your poisons deal $s1% more damage.
 
@@ -4473,7 +4473,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219771)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 157584 | Scaled Value: 157584
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Venomous Wound (79136), Instant Poison (157584)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Venomous Wound (79136), Instant Poison (157584)
 Description      : Replaces your Deadly Poison with Instant Poison.
 
 $@spellname157584

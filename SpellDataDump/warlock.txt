@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -603,7 +603,7 @@ Spell Level      : 14
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Increased Fear Break Threshold (95677), Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5224,7 +5224,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Increased Fear Break Threshold (95677), Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
                  : x....... ........ ........ ........   .....x.. ........ ........ ........ 

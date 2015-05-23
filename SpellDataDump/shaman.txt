@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -25,7 +25,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Stormstrike (17364), Energized Shield (24499), Mental Quickness (30814), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
+Affecting spells : Stormstrike (17364), Energized Shield (24499), Mental Quickness (30814), Shaman Lightning Shield Bonus (33020), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -504,7 +504,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Ancestral Swiftness (16188), Restorative Waves (16213), Tidal Waves (53390), Maelstrom Weapon (53817), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326)
+Affecting spells : Ancestral Swiftness (16188), Restorative Waves (16213), Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Maelstrom Weapon (53817), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -902,7 +902,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=9070)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 8
-                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Lightning Shield (26364), Elemental Blast (117014)
+                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Lightning Shield (26364), Spore Cloud (32642), Elemental Blast (117014)
 #2 (id=223648)   : Trigger Spell: Stormstrike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 32175
 #3 (id=223649)   : Trigger Spell: Stormstrike Off-Hand (64)
@@ -1006,7 +1006,7 @@ Class            : Shaman
 Spell Level      : 8
 Range            : 100 yards
 Cooldown         : 3 seconds
-Affecting spells : Stormstrike (17364), Energized Shield (24499), Mental Quickness (30814), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Glyph of Reactive Shielding (159647)
+Affecting spells : Stormstrike (17364), Energized Shield (24499), Mental Quickness (30814), Shaman Lightning Shield Bonus (33020), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Glyph of Reactive Shielding (159647)
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ .x...... ........ ........ 
                  : .......x ......xx ........ ........   ...x.... ........ .xx..... ........ 
@@ -1077,7 +1077,7 @@ Effects          :
                    Base Value: 130 | Scaled Value: 130 | Misc Value: 126 | Misc Value 2: 0x1
 #2 (id=138751)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 14
-                   Affected Spells: Lightning Shield (324), Purge (370), Fire Nova (1535), Earth Elemental Totem (2062), Earthbind Totem (2484), Ghost Wolf (2645), Bloodlust (2825), Fire Elemental Totem (2894), Searing Totem (3599), Healing Stream Totem (5394), Tremor Totem (8143), Grounding Totem (8177), Magma Totem (8190), Lightning Shield (26364), Heroism (32182), Earthgrab Totem (51485), Feral Spirit (51533), Cleanse Spirit (51886), Wind Shear (57994), Spirit Walk (58875), Unleash Elements (73680), Spiritwalker's Grace (79206), Timewalker (105877), Capacitor Totem (108269), Stone Bulwark Totem (108270), Windwalk Totem (108273), Healing Tide Totem (108280), Ascendance (114049), Ascendance (114050), Cloudburst Totem (157153)
+                   Affected Spells: Lightning Shield (324), Purge (370), Fire Nova (1535), Earth Elemental Totem (2062), Earthbind Totem (2484), Ghost Wolf (2645), Bloodlust (2825), Fire Elemental Totem (2894), Searing Totem (3599), Healing Stream Totem (5394), Tremor Totem (8143), Grounding Totem (8177), Magma Totem (8190), Lightning Shield (26364), Heroism (32182), Spore Cloud (32642), Earthgrab Totem (51485), Feral Spirit (51533), Cleanse Spirit (51886), Wind Shear (57994), Spirit Walk (58875), Unleash Elements (73680), Spiritwalker's Grace (79206), Timewalker (105877), Capacitor Totem (108269), Stone Bulwark Totem (108270), Windwalk Totem (108273), Healing Tide Totem (108280), Ascendance (114049), Ascendance (114050), Cloudburst Totem (157153)
 #3 (id=183482)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -90 | Scaled Value: -90 | Misc Value: 14
                    Affected Spells: Earth Shock (8042), Flame Shock (8050), Frost Shock (8056)
@@ -1874,7 +1874,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48396)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Lightning Shield (324), Lightning Shield (26364)
+                   Affected Spells: Lightning Shield (324), Lightning Shield (26364), Spore Cloud (32642)
 #2 (id=48397)    : None (0)
                    Base Value: 1 | Scaled Value: 1
                    Affected Spells: Mana Spring (24853)
@@ -2647,7 +2647,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 15
-                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Searing Bolt (3606), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Magma Totem (8187), Fire Nova (8349), Flametongue (10400), Flametongue Attack (10444), Lightning Shield (26364), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Unleash Flame (73683), Earthquake (77478), Lava Beam (114074), Elemental Blast (117014), Unleash Flame (165462), Molten Earth (170379)
+                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Searing Bolt (3606), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Magma Totem (8187), Fire Nova (8349), Flametongue (10400), Flametongue Attack (10444), Lightning Shield (26364), Spore Cloud (32642), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Unleash Flame (73683), Earthquake (77478), Lava Beam (114074), Elemental Blast (117014), Unleash Flame (165462), Molten Earth (170379)
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -4169,7 +4169,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=129136)   : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 8
-                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Lightning Shield (26364), Elemental Blast (117014)
+                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Lightning Shield (26364), Spore Cloud (32642), Elemental Blast (117014)
 #2 (id=129137)   : Trigger Spell: Windstrike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115357
 #3 (id=129138)   : Trigger Spell: Windstrike Off-Hand (64)

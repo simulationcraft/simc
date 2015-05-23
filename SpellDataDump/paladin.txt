@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -656,7 +656,7 @@ Spell Level      : 5
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Lucidity (137288), Exorcism (138162), Glyph of Judgment (159592)
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Lucidity (137288), Exorcism (138162), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Glyph of Judgment (159592)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

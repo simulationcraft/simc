@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20033)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -298,7 +298,7 @@ Spell Level      : 5
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982)
+Affecting spells : Arcane Power (12042), Shatter (12982), Mage Fire Blast Range Bonus (33066)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -582,6 +582,28 @@ Effects          :
 #1 (id=3176)     : Create Item (24)
                    Base Value: 3 | Scaled Value: 3
 Description      : Creates 3 vials of Anti-Venom.
+
+Name             : Frostbolt (id=9672) 
+Class            : Mage
+Resource         : 90% Base Mana (144000 @Level 100)
+Spell Level      : 20
+Range            : 40 yards
+Cast Time        : 3 seconds
+Velocity         : 24 yards/sec
+Duration         : 4 seconds
+Attributes       : ........ ........ x..x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=4094)     : School Damage: frost (2)
+                   Base Value: 271 | Scaled Value: 272 - 322 | Value Range: 51 | SP Coefficient: 1.00000
+#2 (id=4095)     : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -50 | Scaled Value: -50
+Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
+Tooltip          : Reduced movement speed.
 
 Name             : Mageweave Bandage (id=10840) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
@@ -2089,6 +2111,23 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
+
+Name             : Shoot (id=59710) 
+Class            : Mage
+Spell Level      : 20
+Range            : 60 yards
+Velocity         : 40 yards/sec
+Attributes       : .x..x... ........ ...x..x. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Ranged ability (1)
+Effects          :
+#1 (id=53320)    : School Damage: physical (2)
+                   Base Value: 286 | Scaled Value: 287 - 351 | Value Range: 65 | SP Coefficient: 1.00000
+Description      : Shoots at an enemy, inflicting Physical damage.
 
 Name             : Glyph of Ignite (Fire) (id=61205) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
