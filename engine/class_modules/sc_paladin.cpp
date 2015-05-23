@@ -3988,7 +3988,6 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     may_parry   = false;
     may_glance  = false;
     may_multistrike = 0;
-    proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
     id          = 96172;
@@ -4292,7 +4291,6 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
     paladin_melee_attack_t( "seal_of_justice_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Justice" ) -> ok() ? 20170 : 0 ) )
   {
     background        = true;
-    proc              = true;
     trigger_gcd       = timespan_t::zero();
 
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
@@ -4307,7 +4305,6 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
     paladin_melee_attack_t( "seal_of_righteousness_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Righteousness" ) -> ok() ? 101423 : 0 ) )
   {
     background  = true;
-    proc        = true;
     trigger_gcd = timespan_t::zero();
 
     aoe         = -1;
@@ -4325,7 +4322,6 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "seal_of_truth_proc", p, p -> find_class_spell( "Seal of Truth" ), true )
   {
     background  = true;
-    proc        = true;
     // automatically connects when triggered
     may_block   = false;
     may_glance  = false;
