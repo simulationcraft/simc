@@ -35,13 +35,13 @@ actions+=/judgment,if=talent.empowered_seals.enabled&time<2
 actions+=/execution_sentence
 actions+=/lights_hammer
 actions+=/use_item,name=vial_of_convulsive_shadows,if=buff.avenging_wrath.up
-actions+=/holy_avenger,sync=seraphim,if=talent.seraphim.enabled
-actions+=/holy_avenger,if=holy_power<=2&!talent.seraphim.enabled
 actions+=/avenging_wrath,sync=seraphim,if=talent.seraphim.enabled
 actions+=/avenging_wrath,if=!talent.seraphim.enabled&set_bonus.tier18_4pc=0
 actions+=/avenging_wrath,if=!talent.seraphim.enabled&time<20&set_bonus.tier18_4pc=1
 actions+=/avenging_wrath,if=prev.execution_sentence&set_bonus.tier18_4pc=1&talent.execution_sentence.enabled&!talent.seraphim.enabled
 actions+=/avenging_wrath,if=prev.lights_hammer&set_bonus.tier18_4pc=1&talent.lights_hammer.enabled&!talent.seraphim.enabled
+actions+=/holy_avenger,sync=seraphim,if=talent.seraphim.enabled
+actions+=/holy_avenger,if=holy_power<=2&!talent.seraphim.enabled
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -117,7 +117,7 @@ actions.cleave+=/divine_storm,if=holy_power=5&(buff.avenging_wrath.up|target.hea
 actions.cleave+=/divine_storm,if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)&!talent.final_verdict.enabled
 actions.cleave+=/divine_storm,if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)&!talent.final_verdict.enabled
 actions.cleave+=/hammer_of_the_righteous,if=active_enemies>=4&holy_power<5&talent.seraphim.enabled
-actions.cleave+=/hammer_of_the_righteous,if=active_enemies>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))
+actions.cleave+=/hammer_of_the_righteous,,if=active_enemies>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))
 actions.cleave+=/crusader_strike,if=holy_power<5&talent.seraphim.enabled
 actions.cleave+=/crusader_strike,if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)
 actions.cleave+=/exorcism,if=glyph.mass_exorcism.enabled&holy_power<5&!set_bonus.tier17_4pc=1
