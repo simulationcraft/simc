@@ -934,7 +934,7 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
   sweeping_strikes_aoe_attack_t( warrior_t* p ):
     warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
     background = true;
     may_multistrike = 1; // Yep. It can multistrike.
     aoe = 1;
@@ -978,7 +978,7 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
   sweeping_strikes_attack_t( warrior_t* p ):
     warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
     background = true;
     aoe = 1;
     may_multistrike = 1;
