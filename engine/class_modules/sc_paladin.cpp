@@ -1314,78 +1314,6 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
 
 };
 
-//Censure  ==================================================================
-
-// Censure is the debuff applied by Seal of Truth, and it's an oddball.  The dot ticks are really melee attacks, believe it or not.
-// They cannot miss/dodge/parry (though the application of the debuff can do all of those things, and often shows up in WoL reports
-// as such) and use melee crit.  Up until WoD, the tick interval also scales with spell haste like a normal DoT.
-//
-// The easiest solution here is to treat it like a spell, since that way it gets all of the spell-like properties it ought to.  However,
-// we need to tweak it to use melee crit, which we do in impact() by setting the action_state_t -> crit variable accordingly.
-//
-// The way this works is that censure_t represents a spell attack proc which is made every time we succeed with a qualifying melee attack.
-// That spell attack proc does 0 damage and applies the censure dot, which is defined in the dots_t structure.  The dot takes care of the
-// tick damage, but since we don't support stackable dots, we have to handle the stacking in the player -> debuff_censure variable and use
-// that value as an action multiplier to scale the damage.  Got all that?
-
-// 12/9/2014 update: now that this doesn't have hasted ticks anymore, it can probably be converted back to a melee. Rather than fuss with that
-// right now, though, I'm leaving it as-is (and just disabling hasted_ticks) since it's easier than dealing with the problems of converting
-// a paladin_spell_t to a paladin_melee_attack_t.
-// 5/23/2015 - Had to change to melee attack to work with empty drinking horn.
-
-struct censure_t : public paladin_melee_attack_t
-{
-  censure_t( paladin_t* p ) :
-    paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
-  {
-    background       = true;
-    proc             = true;
-    tick_may_crit    = true;
-    hasted_ticks     = false;
-
-    // Glyph of Immediate Truth reduces DoT damage
-    if ( p -> glyphs.immediate_truth -> ok() )
-    {
-      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
-    }
-
-    // 1/15 hotfix reduces damage by 80% for prot
-    if ( p -> passives.guarded_by_the_light -> ok() )
-      base_multiplier /= 5;
-  }
-
-  void impact( action_state_t* s )
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      // if the application hits, apply/refresh the censure debuff; this will also increment stacks
-      td( s -> target ) -> buffs.debuffs_censure -> trigger();
-    }
-
-    paladin_melee_attack_t::impact( s );
-  }
-
-  double composite_target_multiplier( player_t* t ) const
-  {
-    // since we don't support stacking debuffs, we handle the stack size in paladin_td buffs.debuffs_censure
-    // and apply the stack size as an action multiplier
-    double am = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    am *= td( t ) -> buffs.debuffs_censure -> check();
-
-    return am;
-  }
-
-  void last_tick( dot_t* d )
-  {
-    // if this is the last tick, expire the debuff locally
-    // (this shouldn't happen ... ever? ... under normal operation)
-    td( d -> state -> target ) -> buffs.debuffs_censure -> expire();
-
-    paladin_melee_attack_t::last_tick( d );
-  }
-};
-
 // Consecration =============================================================
 
 struct consecration_tick_t : public paladin_spell_t
@@ -1972,78 +1900,6 @@ struct execution_sentence_t : public paladin_spell_t
     {
       stay_of_execution -> schedule_execute();
     }
-  }
-};
-
-// Exorcism =================================================================
-
-struct exorcism_t : public paladin_melee_attack_t
-{
-  exorcism_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
-  {
-    parse_options( options_str );
-
-    may_crit = true;
-
-    if ( p -> glyphs.mass_exorcism -> ok() )
-    {
-      aoe = -1;
-      base_aoe_multiplier = 0.25;
-    }
-
-    cooldown = p -> cooldowns.exorcism;
-    cooldown -> duration = data().cooldown();
-  }
-
-  double action_multiplier() const
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    
-    // Holy Avenger
-    if ( p() -> buffs.holy_avenger -> check() )
-    {
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-
-    return am;
-  }
-
-  void execute()
-  {
-    paladin_melee_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // base spell adds one Holy Power
-      int g = 1;
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_exorcism );
-
-      // activate T16 2-piece bonus
-      if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
-        p() -> buffs.warrior_of_the_light -> trigger();
-
-      // T17 Ret 4-piece bonus adds two holy power
-      if ( p() -> buffs.blazing_contempt -> up() )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.blazing_contempt -> default_value, p() -> gains.hp_blazing_contempt );
-        p() -> buffs.blazing_contempt -> expire();
-      }
-      // Holy Avenger also adds 2 holy power
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
-      }
-    }
-  }
-
-  void impact( action_state_t* s )
-  {
-    if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
-    {
-      p() -> buffs.tier15_2pc_melee -> trigger();
-    }
-
-    paladin_melee_attack_t::impact( s );
   }
 };
 
@@ -3566,6 +3422,78 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
   }
 };
 
+//Censure  ==================================================================
+
+// Censure is the debuff applied by Seal of Truth, and it's an oddball.  The dot ticks are really melee attacks, believe it or not.
+// They cannot miss/dodge/parry (though the application of the debuff can do all of those things, and often shows up in WoL reports
+// as such) and use melee crit.  Up until WoD, the tick interval also scales with spell haste like a normal DoT.
+//
+// The easiest solution here is to treat it like a spell, since that way it gets all of the spell-like properties it ought to.  However,
+// we need to tweak it to use melee crit, which we do in impact() by setting the action_state_t -> crit variable accordingly.
+//
+// The way this works is that censure_t represents a spell attack proc which is made every time we succeed with a qualifying melee attack.
+// That spell attack proc does 0 damage and applies the censure dot, which is defined in the dots_t structure.  The dot takes care of the
+// tick damage, but since we don't support stackable dots, we have to handle the stacking in the player -> debuff_censure variable and use
+// that value as an action multiplier to scale the damage.  Got all that?
+
+// 12/9/2014 update: now that this doesn't have hasted ticks anymore, it can probably be converted back to a melee. Rather than fuss with that
+// right now, though, I'm leaving it as-is (and just disabling hasted_ticks) since it's easier than dealing with the problems of converting
+// a paladin_spell_t to a paladin_melee_attack_t.
+// 5/23/2015 - Had to change to melee attack to work with empty drinking horn.
+
+struct censure_t : public paladin_melee_attack_t
+{
+  censure_t( paladin_t* p ) :
+    paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
+  {
+    background       = true;
+    proc             = true;
+    tick_may_crit    = true;
+    hasted_ticks     = false;
+
+    // Glyph of Immediate Truth reduces DoT damage
+    if ( p -> glyphs.immediate_truth -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
+    }
+
+    // 1/15 hotfix reduces damage by 80% for prot
+    if ( p -> passives.guarded_by_the_light -> ok() )
+      base_multiplier /= 5;
+  }
+
+  void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      // if the application hits, apply/refresh the censure debuff; this will also increment stacks
+      td( s -> target ) -> buffs.debuffs_censure -> trigger();
+    }
+
+    paladin_melee_attack_t::impact( s );
+  }
+
+  double composite_target_multiplier( player_t* t ) const
+  {
+    // since we don't support stacking debuffs, we handle the stack size in paladin_td buffs.debuffs_censure
+    // and apply the stack size as an action multiplier
+    double am = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    am *= td( t ) -> buffs.debuffs_censure -> check();
+
+    return am;
+  }
+
+  void last_tick( dot_t* d )
+  {
+    // if this is the last tick, expire the debuff locally
+    // (this shouldn't happen ... ever? ... under normal operation)
+    td( d -> state -> target ) -> buffs.debuffs_censure -> expire();
+
+    paladin_melee_attack_t::last_tick( d );
+  }
+};
+
 // Crusader Strike ==========================================================
 
 struct crusader_strike_t : public paladin_melee_attack_t
@@ -3729,6 +3657,78 @@ struct divine_storm_t: public paladin_melee_attack_t
     if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
+  }
+};
+
+// Exorcism =================================================================
+
+struct exorcism_t : public paladin_melee_attack_t
+{
+  exorcism_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
+  {
+    parse_options( options_str );
+
+    may_crit = true;
+
+    if ( p -> glyphs.mass_exorcism -> ok() )
+    {
+      aoe = -1;
+      base_aoe_multiplier = 0.25;
+    }
+
+    cooldown = p -> cooldowns.exorcism;
+    cooldown -> duration = data().cooldown();
+  }
+
+  double action_multiplier() const
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    
+    // Holy Avenger
+    if ( p() -> buffs.holy_avenger -> check() )
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
+
+    return am;
+  }
+
+  void execute()
+  {
+    paladin_melee_attack_t::execute();
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      // base spell adds one Holy Power
+      int g = 1;
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_exorcism );
+
+      // activate T16 2-piece bonus
+      if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
+        p() -> buffs.warrior_of_the_light -> trigger();
+
+      // T17 Ret 4-piece bonus adds two holy power
+      if ( p() -> buffs.blazing_contempt -> up() )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.blazing_contempt -> default_value, p() -> gains.hp_blazing_contempt );
+        p() -> buffs.blazing_contempt -> expire();
+      }
+      // Holy Avenger also adds 2 holy power
+      if ( p() -> buffs.holy_avenger -> check() )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
+      }
+    }
+  }
+
+  void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
+    {
+      p() -> buffs.tier15_2pc_melee -> trigger();
+    }
+
+    paladin_melee_attack_t::impact( s );
   }
 };
 
