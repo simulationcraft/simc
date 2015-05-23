@@ -2319,15 +2319,14 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     cooldown -> duration = timespan_t::from_millis( 250 );
     background = true;
     stancemask = FIERCE_TIGER | SPIRITED_CRANE;
-    mh = &( player->main_hand_weapon );
-    oh = &( player->off_hand_weapon );
-    base_multiplier *= 10.56; // hardcoded into tooltip
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    base_multiplier = 10.56; // hardcoded into tooltip
     if ( maybe_ptr( p -> dbc.ptr ) )
       base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
-    min_gcd = timespan_t::from_millis( 250 );
-    trigger_gcd = timespan_t::from_millis( 250 );
+    min_gcd = timespan_t::from_millis( 250 ); // Force 250 milliseconds for the animation, but not delay the overall GCD
   }
 
   virtual void impact(action_state_t* s)
@@ -2359,9 +2358,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     stancemask = FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 10.56; // hardcoded into tooltip
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 10.0; // hardcoded into tooltip
+    base_multiplier = rsk_proc -> base_multiplier;
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK;
   }
