@@ -5783,7 +5783,7 @@ struct fel_cleave_t: public warrior_attack_t
     weapon_multiplier = 0;
     aoe = -1;
   }
-  void trigger_bloodbath_dot( player_t* t, double dmg )
+  void trigger_bloodbath_dot( player_t*, double )
   {}
 };
 
