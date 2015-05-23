@@ -2611,6 +2611,7 @@ struct dot_chi_explosion_t: public residual_action::residual_periodic_action_t <
   {
     dual = true;
     may_miss = may_crit = false;
+    school = SCHOOL_NATURE;
   }
 };
 
@@ -2621,7 +2622,8 @@ struct chi_explosion_t: public monk_melee_attack_t
   rising_sun_kick_proc_t* rsk_proc;
 
   chi_explosion_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion ),
+    monk_melee_attack_t("chi_explosion", p, p -> specialization() == MONK_WINDWALKER ? p -> find_spell( 152174 ) :
+    p -> specialization() == MONK_BREWMASTER ? p -> find_spell( 157676 ) : p -> find_spell( 157675 ) ),
     windwalker_chi_explosion_dot( p -> find_spell( 157680 ) ),
     spirited_crane_chi_explosion( p -> find_spell( 159620 ) ),
     rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
@@ -2629,6 +2631,7 @@ struct chi_explosion_t: public monk_melee_attack_t
     parse_options( options_str );
     may_block = false;
     sef_ability = SEF_CHI_EXPLOSION;
+    school = SCHOOL_NATURE;
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const
