@@ -45,9 +45,10 @@ actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
 actions.st=purifying_brew,if=stagger.heavy
+actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2
 actions.st+=/blackout_kick,if=buff.shuffle.down
 actions.st+=/purifying_brew,if=buff.serenity.up
-actions.st+=/chi_explosion,if=chi>=3
+actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3
 actions.st+=/purifying_brew,if=stagger.moderate&buff.shuffle.remains>=6
 actions.st+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
 actions.st+=/guard,if=incoming_damage_10s>=health.max*0.5
@@ -59,14 +60,15 @@ actions.st+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down
 actions.st+=/blackout_kick,if=chi.max-chi<2
-actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
+actions.st+=/expel_harm,if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.st+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.st+=/tiger_palm
 
 actions.aoe=purifying_brew,if=stagger.heavy
+actions.aoe+=/chi_explosion,if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2
 actions.aoe+=/blackout_kick,if=buff.shuffle.down
 actions.aoe+=/purifying_brew,if=buff.serenity.up
-actions.aoe+=/chi_explosion,if=chi>=4
+actions.aoe+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=4
 actions.aoe+=/purifying_brew,if=stagger.moderate&buff.shuffle.remains>=6
 actions.aoe+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
 actions.aoe+=/guard,if=incoming_damage_10s>=health.max*0.5
@@ -79,7 +81,7 @@ actions.aoe+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/blackout_kick,if=chi.max-chi<2
-actions.aoe+=/expel_harm,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
+actions.aoe+=/expel_harm,if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.aoe+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.aoe+=/tiger_palm
 

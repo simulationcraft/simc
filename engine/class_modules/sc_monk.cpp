@@ -351,6 +351,7 @@ public:
   {
     // GENERAL
     const spell_data_t* critical_strikes;
+    const spell_data_t* expel_harm;
     const spell_data_t* healing_sphere;
     const spell_data_t* leather_specialization;
     const spell_data_t* legacy_of_the_white_tiger;
@@ -478,6 +479,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* desperate_measure;
     cooldown_t* expel_harm;
     cooldown_t* guard;
     cooldown_t* healing_elixirs;
@@ -512,6 +514,8 @@ public:
     int initial_chi;
     double goto_throttle;
     double eh_reset_throttle;
+    double ppm_below_35_percent_dm;
+    double ppm_below_50_percent_dm;
   } user_options;
 
 private:
@@ -544,7 +548,7 @@ public:
   {
     // actives
     _active_stance = FIERCE_TIGER;
-    cooldown.expel_harm       = get_cooldown( "expel_harm" );
+    cooldown.expel_harm       = get_cooldown( "expel_harm_heal" );
     cooldown.guard            = get_cooldown( "guard" );
     cooldown.healing_elixirs  = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere   = get_cooldown( "healing_sphere" );
@@ -641,8 +645,8 @@ public:
   const double moderate_stagger_threshold;
   const double heavy_stagger_threshold;
   double weapon_power_mod;
-  double  clear_stagger();
-  bool  has_stagger();
+  double clear_stagger();
+  bool has_stagger();
 
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* eluding_movements;
@@ -2622,7 +2626,7 @@ struct chi_explosion_t: public monk_melee_attack_t
   rising_sun_kick_proc_t* rsk_proc;
 
   chi_explosion_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t("chi_explosion", p, p -> specialization() == MONK_WINDWALKER ? p -> find_spell( 152174 ) :
+    monk_melee_attack_t( "chi_explosion", p, p -> specialization() == MONK_WINDWALKER ? p -> find_spell( 152174 ) :
     p -> specialization() == MONK_BREWMASTER ? p -> find_spell( 157676 ) : p -> find_spell( 157675 ) ),
     windwalker_chi_explosion_dot( p -> find_spell( 157680 ) ),
     spirited_crane_chi_explosion( p -> find_spell( 159620 ) ),
@@ -4570,7 +4574,7 @@ struct expel_harm_heal_t : public monk_heal_t
 {
   expel_harm_damage_t* damage;
   expel_harm_heal_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) ),
+    monk_heal_t( "expel_harm_heal", p, p.spec.expel_harm ),
     damage( new expel_harm_damage_t( &p ) )
   {
     parse_options( options_str );
@@ -4585,6 +4589,37 @@ struct expel_harm_heal_t : public monk_heal_t
     may_crit = true;
     may_multistrike = 1;
     base_dd_min = base_dd_max = 1;
+    cooldown -> duration = data().cooldown();
+    p.cooldown.expel_harm = cooldown;
+
+    p.cooldown.desperate_measure = new cooldown_t( "desperate_measure", p );
+    p.cooldown.desperate_measure -> duration = timespan_t::zero();
+
+    double desperate_measure = 0;
+    if ( p.specialization() == MONK_BREWMASTER )
+    {
+      if ( p.sets.has_set_bonus( MONK_BREWMASTER, T18, B2) )
+      {
+        if ( p.user_options.ppm_below_50_percent_dm > 0 )
+          desperate_measure = p.user_options.ppm_below_50_percent_dm;
+        else
+        {
+          // Increase the proc rate for PTR by 1/3 due to the changes made to Brewmaster
+          desperate_measure += ( 50.0 / 35.0 ) * ( 4.0 / 3.0 );
+        }
+      }
+      else if ( p.user_options.ppm_below_35_percent_dm > 0 )
+        desperate_measure = p.user_options.ppm_below_35_percent_dm;
+      else
+        // Increase the proc rate for PTR by 1/3 due to the changes made to Brewmaster
+        desperate_measure += 1 * (maybe_ptr(p.dbc.ptr) ? (4.0 / 3.0) : 1);
+    }
+    if ( desperate_measure > 0 )
+    {
+      // since a tank is normally tanking half the time, double the proc per minute to simulate as if they were single-tanking
+      timespan_t dur = timespan_t::from_seconds( 60.0 / ( desperate_measure * 2 ) );
+      p.cooldown.desperate_measure -> duration = dur;
+    } 
   }
 
   void init()
@@ -5279,6 +5314,7 @@ void monk_t::init_spells()
 
   // General Passives
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
+  spec.expel_harm                    = find_class_spell( "Expel Harm" );
   spec.healing_sphere                = find_spell( 125355 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
   spec.legacy_of_the_white_tiger     = find_specialization_spell( "Legacy of the White Tiger" );
@@ -5985,6 +6021,8 @@ void monk_t::create_options()
   add_option( opt_int( "initial_chi", user_options.initial_chi ) );
   add_option( opt_float( "goto_throttle", user_options.goto_throttle ) );
   add_option( opt_float( "eh_reset_throttle", user_options.eh_reset_throttle ) );
+  add_option( opt_float ( "ppm_below_35_percent_dm", user_options.ppm_below_35_percent_dm ) );
+  add_option( opt_float ( "ppm_below_50_percent_dm", user_options.ppm_below_50_percent_dm ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -6161,14 +6199,15 @@ void monk_t::assess_damage(school_e school,
     }
 
     // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
-    // currently giving this a 10% chance to reset, but the user can determin how often to reset this. 
-    double desperate_measures = ( specialization() == MONK_BREWMASTER ? 
-      ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35) : 0 );
-    if ( health_percentage() < desperate_measures )
+    // adding a cooldown for desperate Measure so that we can throttle however much we want it to be; basing around a Proc Per Minute mentality
+    if ( health_percentage() < ( specialization() == MONK_BREWMASTER ?
+      ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35 ) : 0 ) )
     {
-      bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : 0.10 );
-      if ( eh_reset )
+      if ( cooldown.desperate_measure -> up() && cooldown.expel_harm -> down() )
+      {
         cooldown.expel_harm -> reset( true );
+        cooldown.desperate_measure -> start();
+      } 
     }
 
     if ( s -> result == RESULT_DODGE && sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
@@ -6457,10 +6496,10 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
   st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  st -> add_action( this, "Chi Explosion", "if=buff.shuffle.down&chi>=2" );
+  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2" );
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  st -> add_talent( this, "Chi Explosion", "if=chi>=3" );
+  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=3" );
   st -> add_action( this, "Purifying Brew", "if=stagger.moderate&buff.shuffle.remains>=6" );
   st -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   st -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
@@ -6472,15 +6511,15 @@ void monk_t::apl_combat_brewmaster()
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down" );
   st -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
-  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  st -> add_action( this, "Expel Harm", "if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   st -> add_action( this, "Tiger Palm" );
 
   aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  aoe -> add_action( this, "Chi Explosion", "if=buff.shuffle.down&chi>=2" );
+  aoe -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2" );
   aoe -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
+  aoe -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=4" );
   aoe -> add_action( this, "Purifying Brew", "if=stagger.moderate&buff.shuffle.remains>=6" );
   aoe -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   aoe -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
@@ -6493,7 +6532,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
-  aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  aoe -> add_action( this, "Expel Harm", "if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Tiger Palm" );
 }
