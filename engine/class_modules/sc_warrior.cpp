@@ -549,40 +549,34 @@ public:
 
   virtual void execute()
   {
-    if ( p() -> stance_dance )
+    if ( p() -> stance_dance && p() -> cooldown.stance_swap -> up() )
     { // Part of automatic stance swapping, if the player is not in the default stance for the spec this will force them back to it.
       // This is done because blizzard has enabled some automated swapping in game, and because most players use macros to swap back to the proper stance.
-      if ( p() -> cooldown.stance_swap -> up() )
+      switch ( p() -> active.stance )
       {
-        switch ( p() -> active.stance )
-        {
-        case STANCE_DEFENSE:
-        { // If the player is currently in defensive stance, should not be in defensive stance, and the ability can be used in battle stance
-          if ( p() -> specialization() != WARRIOR_PROTECTION && ( ( stancemask & STANCE_BATTLE ) != 0 ) )
-            stance_swap(); // Swap back. The stance isn't actually swapped for about 0.2-0.3~ seconds in game, which is modeled here by not officially swapping stances
-          break;                  // until the buff has been applied, and the buff has a 0.25~ second delay.
-        }
-        case STANCE_BATTLE:
-        { // If player is in battle stance, is a tank, can use the ability in defensive stance, and is really reallly a tank 
-          // and not some strange person trying to dps in battle stance without gladiator's resolve :p
-          if ( p() -> specialization() == WARRIOR_PROTECTION && ( ( stancemask & STANCE_DEFENSE ) != 0 ) && p() -> primary_role() == ROLE_TANK )
-            stance_swap(); // Swap back to defensive stance.
-          break;
-        }
-        default:break;
-        }
+      case STANCE_DEFENSE:
+      { // If the player is currently in defensive stance, should not be in defensive stance, and the ability can be used in battle stance
+        if ( p() -> specialization() != WARRIOR_PROTECTION && ( ( stancemask & STANCE_BATTLE ) != 0 ) )
+          stance_swap(); // Swap back. The stance isn't actually swapped for about 0.2-0.3~ seconds in game, which is modeled here by not officially swapping stances
+        break;                  // until the buff has been applied, and the buff has a 0.25~ second delay.
+      }
+      case STANCE_BATTLE:
+      { // If player is in battle stance, is a tank, can use the ability in defensive stance, and is really reallly a tank 
+        // and not some strange person trying to dps in battle stance without gladiator's resolve :p
+        if ( p() -> specialization() == WARRIOR_PROTECTION && ( ( stancemask & STANCE_DEFENSE ) != 0 ) && p() -> primary_role() == ROLE_TANK )
+          stance_swap(); // Swap back to defensive stance.
+        break;
+      }
+      default:break;
       }
       p() -> stance_dance = false; // Reset variable.
     }
-    if ( p() -> non_dps_mechanics )
+    if ( p() -> non_dps_mechanics && p() -> talents.second_wind -> ok() )
     {
-      if ( p() -> talents.second_wind -> ok() )
-      {
-        if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 && !p() -> buff.second_wind -> check() )
-          p() -> buff.second_wind -> trigger();
-        else
-          p() -> buff.second_wind -> expire();
-      }
+      if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 && !p() -> buff.second_wind -> check() )
+        p() -> buff.second_wind -> trigger();
+      else
+        p() -> buff.second_wind -> expire();
     }
     ab::execute();
   }
@@ -841,13 +835,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::assess_damage( type, s );
 
-    if ( s -> result_amount > 0 )
+    if ( special && s -> result_amount > 0 && result_is_hit_or_multistrike( s -> result ) && p() -> buff.bloodbath -> up() )
     {
-      if ( result_is_hit_or_multistrike( s -> result ) )
-      {
-        if ( p() -> buff.bloodbath -> up() && special )
-          trigger_bloodbath_dot( s -> target, s -> result_amount );
-      }
+      trigger_bloodbath_dot( s -> target, s -> result_amount );
     }
   }
 
@@ -1121,7 +1111,7 @@ struct melee_t: public warrior_attack_t
       {
         p() -> buff.fury_trinket -> trigger( 1 );
       }
-      else if ( arms_trinket_chance > 0 && rng().roll( arms_trinket_chance ) ) // Same
+      else if ( rng().roll( arms_trinket_chance ) ) // Same
       {
         p() -> cooldown.colossus_smash -> reset( true );
         p() -> proc.arms_trinket -> occur();
@@ -1142,19 +1132,13 @@ struct melee_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( p() -> non_dps_mechanics )
+    if ( p() -> non_dps_mechanics && p() -> active.blood_craze && result_is_multistrike( s -> result ) )
     {
-      if ( p() -> active.blood_craze )
-      {
-        if ( result_is_multistrike( s -> result ) )
-        {
-          p() -> buff.blood_craze -> trigger();
-          residual_action::trigger(
-            p() -> active.blood_craze, // ignite spell
-            p(), // target
-            p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
-        }
-      }
+      p() -> buff.blood_craze -> trigger();
+      residual_action::trigger(
+        p() -> active.blood_craze, // ignite spell
+        p(), // target
+        p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
     }
   }
 
@@ -1244,10 +1228,9 @@ struct auto_attack_t: public warrior_attack_t
   {
     if ( p() -> main_hand_attack -> execute_event == 0 )
       p() -> main_hand_attack -> schedule_execute();
-    if ( p() -> off_hand_attack )
+    if ( p() -> off_hand_attack && p() -> off_hand_attack == 0 )
     {
-      if ( p() -> off_hand_attack -> execute_event == 0 )
-        p() -> off_hand_attack -> schedule_execute();
+      p() -> off_hand_attack -> schedule_execute();
     }
   }
 
@@ -1258,11 +1241,9 @@ struct auto_attack_t: public warrior_attack_t
     {
       if ( p() -> main_hand_attack -> execute_event == 0 )
         return ready;
-      if ( p() -> off_hand_attack )
-      { // Don't check for execute_event if we don't have an offhand.
-        if ( p() -> off_hand_attack -> execute_event == 0 )
-          return ready;
-      }
+      if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == 0 )
+        // Don't check for execute_event if we don't have an offhand.
+        return ready;
     }
     return false;
   }
@@ -1552,18 +1533,14 @@ struct colossus_smash_t: public warrior_attack_t
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
       p() -> buff.colossus_smash -> trigger();
 
-      if ( !maybe_ptr( p() -> dbc.ptr ) )
+      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
       {
-        if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
-        {
-          p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-            p() -> gain.tier17_4pc_arms );
-        }
+        p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+          p() -> gain.tier17_4pc_arms );
       }
-      if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) )
+      if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
       {
-        if ( p() -> buff.tier17_2pc_arms -> trigger() )
-          p() -> proc.t17_2pc_arms -> occur();
+        p() -> proc.t17_2pc_arms -> occur();
       }
     }
   }
@@ -1620,11 +1597,8 @@ struct devastate_t: public warrior_attack_t
       if ( p() -> buff.sword_and_board -> trigger() )
         p() -> cooldown.shield_slam -> reset( true );
 
-      if ( p() -> talents.unyielding_strikes -> ok() )
-      {
-        if ( p() -> buff.unyielding_strikes -> current_stack != p() -> buff.unyielding_strikes -> max_stack() )
-          p() -> buff.unyielding_strikes -> trigger( 1 );
-      }
+      if ( p() -> talents.unyielding_strikes -> ok() && p() -> buff.unyielding_strikes -> current_stack != p() -> buff.unyielding_strikes -> max_stack() )
+        p() -> buff.unyielding_strikes -> trigger( 1 );
 
       if ( execute_state -> result == RESULT_CRIT )
         enrage();
@@ -1847,8 +1821,7 @@ struct heroic_strike_t: public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> buff.unyielding_strikes -> up() )
-      c += p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
+    c += p() -> buff.unyielding_strikes -> stack_value();
 
     if ( p() -> buff.ultimatum -> check() )
       c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -2057,7 +2030,7 @@ struct intervene_t: public warrior_attack_t
     if ( p() -> current.distance_to_move > 0 )
     {
       p() -> buff.intervene_movement -> trigger( 1, movement_speed_increase, 1,
-                                                 timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+        timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
       p() -> current.moving_away = 0;
     }
   }
@@ -2192,11 +2165,8 @@ struct mortal_strike_t: public warrior_attack_t
   void execute()
   {
     warrior_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      if ( sim -> overrides.mortal_wounds )
-        execute_state -> target -> debuffs.mortal_wounds -> trigger();
-    }
+    if ( result_is_hit( execute_state -> result ) && sim -> overrides.mortal_wounds )
+      execute_state -> target -> debuffs.mortal_wounds -> trigger();
     p() -> buff.tier16_4pc_death_sentence -> trigger();
   }
 
@@ -2422,10 +2392,9 @@ struct revenge_t: public warrior_attack_t
     {
       p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.revenge );
 
-      if ( p() -> sets.has_set_bonus( SET_TANK, T15, B4 ) )
+      if ( p() -> sets.has_set_bonus( SET_TANK, T15, B4 ) && td( target ) -> debuffs_demoralizing_shout -> up() )
       {
-        if ( td( target ) -> debuffs_demoralizing_shout -> up() )
-          p() -> resource_gain( RESOURCE_RAGE,
+        p() -> resource_gain( RESOURCE_RAGE,
           rage_gain * p() -> sets.set( SET_TANK, T15, B4 ) -> effectN( 1 ).percent(),
           p() -> gain.tier15_4pc_tank );
       }
@@ -3271,8 +3240,10 @@ struct last_stand_t: public warrior_spell_t
     warrior_spell_t( "last_stand", p, p -> spec.last_stand )
   {
     parse_options( options_str );
+    range = -1;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).time_value();
+    cooldown -> duration *= 1.0 + p -> sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 1 ).percent();
   }
 
   void execute()
@@ -3333,10 +3304,9 @@ struct recklessness_t: public warrior_spell_t
 
 struct shield_barrier_t: public warrior_action_t < absorb_t >
 {
-  double t18_max_cost, t18_min_cost;
   shield_barrier_t( warrior_t* p, const std::string& options_str ):
     base_t( "shield_barrier", p, p -> specialization() == WARRIOR_PROTECTION ?
-    p -> find_spell( 112048 ) : p -> spec.shield_barrier ), t18_max_cost( 60.0 ), t18_min_cost( 20.0 )
+    p -> find_spell( 112048 ) : p -> spec.shield_barrier )
   {
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -3345,30 +3315,11 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     range = -1;
     target = player;
     attack_power_mod.direct = 1.4; // No spell data.
-    if ( p -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B2 ) )
-    {
-      t18_max_cost *= 0.5; // No spell data for this atm.
-      t18_min_cost *= 0.5;
-      if ( p -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) )
-      {
-        t18_max_cost *= 0.75;
-        t18_min_cost *= 0.75;
-      }
-    }
   }
 
   double cost() const
   {
-    double cost;
-    if ( p() -> buff.shield_block -> check() )
-    {
-      cost = std::min( t18_max_cost, std::max( p() -> resources.current[RESOURCE_RAGE], t18_min_cost ) );
-    }
-    else
-    {
-      cost = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
-    }
-    return cost;
+    return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
   }
 
   void impact( action_state_t* s )
@@ -3378,7 +3329,10 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     double amount;
 
     amount = s -> result_amount;
-    amount *= cost() / ( p() -> buff.shield_block -> check() ? t18_min_cost : 20.0 );
+    amount *= cost() / 20.0;
+    if ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) && p() -> buff.last_stand -> up() )
+      amount *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T18, B4 ) -> effectN( 1 ).percent();
+
     if ( !p() -> buff.shield_barrier -> check() ||
          ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < amount ) )
     {
@@ -3436,10 +3390,7 @@ struct shield_block_t: public warrior_spell_t
 
   bool ready()
   {
-    if ( !p() -> has_shield_equipped() )
-      return false;
-
-    if ( !block_cd -> up() )
+    if ( !p() -> has_shield_equipped() || !block_cd -> up() )
       return false;
 
     return warrior_spell_t::ready();
@@ -3483,7 +3434,7 @@ struct shield_charge_t: public warrior_spell_t
     else
       p() -> buff.shield_charge -> trigger();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) )
+    if ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) )
       enrage();
 
     shield_charge_cd -> start();
@@ -3491,13 +3442,10 @@ struct shield_charge_t: public warrior_spell_t
 
   bool ready()
   {
-    if ( !shield_charge_cd -> up() )
+    if ( !shield_charge_cd -> up() || !p() -> has_shield_equipped() )
       return false;
 
     if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.intervene_movement -> check() )
-      return false;
-  
-    if ( !p() -> has_shield_equipped() )
       return false;
 
     return warrior_spell_t::ready();
