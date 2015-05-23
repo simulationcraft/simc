@@ -2542,11 +2542,9 @@ struct rend_t: public warrior_attack_t
   void tick( dot_t* d )
   {
     warrior_attack_t::tick( d );
-    if ( t18_2pc_chance > 0 )
-    {
-      if ( rng().roll( t18_2pc_chance ) )
-        p() -> cooldown.mortal_strike -> reset( true );
-    }
+
+    if ( rng().roll( t18_2pc_chance ) )
+      p() -> cooldown.mortal_strike -> reset( true );
 
     if ( p() -> talents.taste_for_blood -> ok() )
     {

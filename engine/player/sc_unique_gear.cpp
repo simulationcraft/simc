@@ -2477,8 +2477,9 @@ struct empty_drinking_horn_damage_t : public melee_attack_t
   empty_drinking_horn_damage_t( const special_effect_t& effect  ) :
     melee_attack_t( "fel_burn", effect.player, effect.player -> find_spell( 184256 ) )
   {
-    background = special = tick_may_crit = true;
-    may_crit = callbacks = false;
+    background = special = true;
+    may_crit = callbacks = tick_may_crit = false; // Current ptr behavior doeesn't allow crits, but does allow multistrikes.
+    may_multistrike = 1;
     base_td = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
   }
