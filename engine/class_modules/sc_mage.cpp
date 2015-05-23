@@ -4779,8 +4779,8 @@ struct nithramus_t : public mage_spell_t
     damage_coeff = data().effectN( 1 ).average( effect.item ) / 10000.0;
 
     background = split_aoe_damage = true;
-    callbacks = false;
-    may_crit = may_multistrike = false;
+    may_crit = callbacks = false;
+    may_multistrike = 0;
     trigger_gcd = timespan_t::zero();
     aoe = -1;
     radius = 20;
