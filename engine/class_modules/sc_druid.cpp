@@ -598,7 +598,6 @@ public:
   } talent;
 
   bool inflight_starsurge;
-  real_ppm_t rppm_fey_moonwing;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
@@ -633,8 +632,7 @@ public:
     spec( specializations_t() ),
     spell( spells_t() ),
     talent( talents_t() ),
-    inflight_starsurge( false ),
-    rppm_fey_moonwing( *this, std::numeric_limits<double>::min(), RPPM_NONE )
+    inflight_starsurge( false )
   {
     t16_2pc_starfall_bolt = 0;
     t16_2pc_sun_bolt      = 0;
@@ -1105,7 +1103,7 @@ namespace pets {
     struct fey_missile_t: public spell_t
     {
       fey_missile_t( fey_moonwing_t* player ):
-        spell_t( "fey_missile", player, player -> find_spell( 113769 ) )
+        spell_t( "fey_missile", player, player -> find_spell( 188046 ) )
       {
         if ( player -> o() -> pet_fey_moonwing[0] )
           stats = player -> o() -> pet_fey_moonwing[0] -> get_stats( "fey_missile" );
@@ -1117,7 +1115,7 @@ namespace pets {
     fey_moonwing_t( sim_t* sim, druid_t* owner ):
       pet_t( sim, owner, "fey_moonwing", true /*GUARDIAN*/, true )
     {
-      owner_coeff.sp_from_sp = 1.0;
+      owner_coeff.sp_from_sp = 0.75;
       regen_type = REGEN_DISABLED;
     }
 
@@ -4940,22 +4938,6 @@ struct sunfire_t: public druid_spell_t
     {
       druid_spell_t::tick( d );
 
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-      {
-        if ( p() -> rppm_fey_moonwing.trigger() )
-        {
-          for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-          {
-            if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-            {
-              p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-              p() -> cooldown.fey_faerie -> start();
-              break;
-            }
-          }
-        }
-      }
-
       if ( result_is_hit( d -> state -> result ) )
         p() -> trigger_shooting_stars( d -> state );
     }
@@ -5003,6 +4985,22 @@ struct sunfire_t: public druid_spell_t
   {
     druid_spell_t::execute();
 
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
+    {
+      p() -> cooldown.fey_faerie -> start();
+      if ( rng().roll( 0.55 ) )
+      {
+        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
+        {
+          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
+          {
+            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
+            break;
+          }
+        }
+      }
+    }
+
     p() -> last_target_dot_moonkin = execute_state -> target;
 
     if ( !p() -> stellar_flare_cast )
@@ -5014,22 +5012,6 @@ struct sunfire_t: public druid_spell_t
   void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-    {
-      if ( p() -> rppm_fey_moonwing.trigger() )
-      {
-        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-        {
-          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-          {
-            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-            p() -> cooldown.fey_faerie -> start();
-            break;
-          }
-        }
-      }
-    }
 
     if ( result_is_hit( d -> state -> result ) )
       p() -> trigger_shooting_stars( d -> state );
@@ -5095,22 +5077,6 @@ struct moonfire_t : public druid_spell_t
 
       if ( result_is_hit( d -> state -> result ) )
         p() -> trigger_shooting_stars( d -> state );
-
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-      {
-        if ( p() -> rppm_fey_moonwing.trigger() )
-        {
-          for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-          {
-            if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-            {
-              p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-              p() -> cooldown.fey_faerie -> start();
-              break;
-            }
-          }
-        }
-      }
     }
   };
 
@@ -5149,21 +5115,6 @@ struct moonfire_t : public druid_spell_t
     if ( result_is_hit( d -> state -> result ) )
       p() -> trigger_shooting_stars( d -> state );
 
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-    {
-      if ( p() -> rppm_fey_moonwing.trigger() )
-      {
-        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-        {
-          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-          {
-            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-            p() -> cooldown.fey_faerie -> start();
-            break;
-          }
-        }
-      }
-    }
   }
 
   double action_multiplier() const
@@ -5179,6 +5130,22 @@ struct moonfire_t : public druid_spell_t
   void execute()
   {
     druid_spell_t::execute();
+
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
+    {
+      p() -> cooldown.fey_faerie -> start();
+      if ( rng().roll( 0.55 ) )
+      {
+        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
+        {
+          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
+          {
+            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
+            break;
+          }
+        }
+      }
+    }
 
     p() -> last_target_dot_moonkin = execute_state -> target;
 
@@ -6411,8 +6378,6 @@ void druid_t::init_base_stats()
   // initialize resolve for Guardians
   if ( specialization() == DRUID_GUARDIAN )
     resolve_manager.init();
-
-  rppm_fey_moonwing.set_frequency( 3 );
 }
 
 // druid_t::init_buffs ======================================================
@@ -7115,7 +7080,6 @@ void druid_t::reset()
 {
   player_t::reset();
 
-  rppm_fey_moonwing.reset();
   inflight_starsurge = false;
   double_dmg_triggered = false;
   eclipse_amount = 0;
