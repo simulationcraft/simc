@@ -507,44 +507,61 @@ void parse_spell_coefficient( action_t& a )
 // Pets
 namespace pets {
 
-struct warlock_pet_t: public pet_t
-{
-  gain_t* owner_fury_gain;
-  action_t* special_action;
-  action_t* special_action_two;
-  melee_attack_t* melee_attack;
-  stats_t* summon_stats;
-  const spell_data_t* supremacy;
-  const spell_data_t* command;
+  struct warlock_pet_t: public pet_t
+  {
+    gain_t* owner_fury_gain;
+    action_t* special_action;
+    action_t* special_action_two;
+    melee_attack_t* melee_attack;
+    stats_t* summon_stats;
+    const spell_data_t* supremacy;
+    const spell_data_t* command;
 
-  warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
-  virtual void init_base_stats() override;
-  virtual void init_action_list() override;
-  virtual void create_buffs() override;
-  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
-                               bool   waiting = false ) override;
-  virtual double composite_player_multiplier( school_e school ) const override;
-  virtual double composite_melee_crit() const override;
-  virtual double composite_spell_crit() const override;
-  virtual double composite_melee_haste() const override;
-  virtual double composite_spell_haste() const override;
-  virtual double composite_melee_speed() const override;
-  virtual double composite_spell_speed() const override;
-  virtual resource_e primary_resource() const override { return RESOURCE_ENERGY; }
-  warlock_t* o()
-  {
-    return static_cast<warlock_t*>( owner );
-  }
-  const warlock_t* o() const
-  {
-    return static_cast<warlock_t*>( owner );
-  }
+    warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
+    virtual void init_base_stats() override;
+    virtual void init_action_list() override;
+    virtual void create_buffs() override;
+    virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
+      bool   waiting = false ) override;
+    virtual double composite_player_multiplier( school_e school ) const override;
+    virtual double composite_melee_crit() const override;
+    virtual double composite_spell_crit() const override;
+    virtual double composite_melee_haste() const override;
+    virtual double composite_spell_haste() const override;
+    virtual double composite_melee_speed() const override;
+    virtual double composite_spell_speed() const override;
+    virtual resource_e primary_resource() const override { return RESOURCE_ENERGY; }
+    warlock_t* o()
+    {
+      return static_cast<warlock_t*>( owner );
+    }
+    const warlock_t* o() const
+    {
+      return static_cast<warlock_t*>( owner );
+    }
 
-  struct buffs_t
-  {
-    buff_t* demonic_synergy;
-  } buffs;
-};
+    struct buffs_t
+    {
+      buff_t* demonic_synergy;
+    } buffs;
+
+    struct travel_t: public action_t
+    {
+      travel_t( player_t* player ): action_t( ACTION_OTHER, "travel", player ) {}
+      void execute() { player -> current.distance = 1; }
+      timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+      bool ready() { return ( player -> current.distance > 1 ); }
+      bool usable_moving() const { return true; }
+    };
+
+    action_t* create_action( const std::string& name,
+      const std::string& options_str )
+    {
+      if ( name == "travel" ) return new travel_t( this );
+
+      return pet_t::create_action( name, options_str );
+    }
+  };
 
 namespace actions {
 
@@ -1249,6 +1266,7 @@ struct t18_illidari_satyr_t: public warlock_pet_t
   {
     owner_coeff.ap_from_sp = 1.1;
     regen_type = REGEN_DISABLED;
+    action_list_str = "travel";
   }
 
   void init_base_stats()
@@ -1268,6 +1286,7 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
   {
     owner_coeff.ap_from_sp = 1.1;
     regen_type = REGEN_DISABLED;
+    action_list_str = "travel";
   }
 
   void init_base_stats()
@@ -1294,6 +1313,7 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
   {
     owner_coeff.ap_from_sp = 1.1;
     regen_type = REGEN_DISABLED;
+    action_list_str = "travel";
   }
 
   void init_base_stats()
@@ -5722,8 +5742,6 @@ struct molten_core_t : public buff_t
           if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
           {
             p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 10 ) );
-            p -> pets.t18_vicious_hellhound[i] -> current.distance = 0;
-            p -> pets.t18_vicious_hellhound[i] -> melee_attack -> execute();
             break;
           }
         }
@@ -5735,8 +5753,6 @@ struct molten_core_t : public buff_t
           if ( p -> pets.t18_illidari_satyr[i] -> is_sleeping() )
           {
             p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 10 ) );
-            p -> pets.t18_illidari_satyr[i] -> current.distance = 0;
-            p -> pets.t18_illidari_satyr[i] -> melee_attack -> execute();
             break;
           }
         }
@@ -5748,8 +5764,6 @@ struct molten_core_t : public buff_t
           if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
           {
             p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 10 ) );
-            p -> pets.t18_prince_malchezaar[i] -> current.distance = 0;
-            p -> pets.t18_prince_malchezaar[i] -> melee_attack -> execute();
             break;
           }
         }
