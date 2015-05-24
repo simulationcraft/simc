@@ -1264,7 +1264,7 @@ struct t18_illidari_satyr_t: public warlock_pet_t
   t18_illidari_satyr_t(sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "illidari_satyr", PET_FELGUARD, true )
   {
-    owner_coeff.ap_from_sp = 1.1;
+    owner_coeff.ap_from_sp = 1;
     regen_type = REGEN_DISABLED;
     action_list_str = "travel";
   }
@@ -1284,7 +1284,7 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
   t18_prince_malchezaar_t(  sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "prince_malchezaar", PET_GHOUL, true )
   {
-    owner_coeff.ap_from_sp = 1.1;
+    owner_coeff.ap_from_sp = 1;
     regen_type = REGEN_DISABLED;
     action_list_str = "travel";
   }
@@ -1311,7 +1311,7 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
   t18_vicious_hellhound_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "vicious_hellhound", PET_DOG, true )
   {
-    owner_coeff.ap_from_sp = 1.1;
+    owner_coeff.ap_from_sp = 1;
     regen_type = REGEN_DISABLED;
     action_list_str = "travel";
   }
