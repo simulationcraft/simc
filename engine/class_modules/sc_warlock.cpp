@@ -2792,7 +2792,7 @@ struct corruption_t: public warlock_spell_t
 
       double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10 + p() -> perk.empowered_corruption -> effectN( 1 ).percent() / 10;
 
-      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T17, B2 ) && td( d -> state -> target ) -> dots_agony -> is_ticking() && td( d -> state -> target ) -> dots_unstable_affliction -> is_ticking() ) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
+      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T17, B2 ) && td( d -> state -> target ) -> dots_drain_soul -> is_ticking() && td( d -> state -> target ) -> dots_agony -> is_ticking() && td( d -> state -> target ) -> dots_unstable_affliction -> is_ticking() ) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
       {
         nightfall_chance += p() -> sets.set( WARLOCK_AFFLICTION, T17, B2 ) -> effectN( 1 ).percent();
       }
@@ -5158,7 +5158,7 @@ warlock( p )
 
 void warlock_td_t::target_demise()
 {
-  if ( dots_drain_soul )
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && dots_drain_soul -> is_ticking() )
   {
     if ( warlock.sim -> log )
     {
