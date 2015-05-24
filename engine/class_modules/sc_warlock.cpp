@@ -5741,7 +5741,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
           {
-            p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 20 ) );
             break;
           }
         }
@@ -5752,7 +5752,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_illidari_satyr[i] -> is_sleeping() )
           {
-            p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 20 ) );
             break;
           }
         }
@@ -5763,7 +5763,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
           {
-            p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 20 ) );
             break;
           }
         }
