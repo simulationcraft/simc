@@ -327,6 +327,9 @@ public:
     proc_t* havoc_waste;
     proc_t* fragment_wild_imp;
     proc_t* t18_4pc_destruction;
+    proc_t* t18_illidari_satyr;
+    proc_t* t18_vicious_hellhound;
+    proc_t* t18_prince_malchezaar;
   } procs;
 
   struct spells_t
@@ -5742,6 +5745,7 @@ struct molten_core_t : public buff_t
           if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
           {
             p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> procs.t18_vicious_hellhound -> occur();
             break;
           }
         }
@@ -5753,6 +5757,7 @@ struct molten_core_t : public buff_t
           if ( p -> pets.t18_illidari_satyr[i] -> is_sleeping() )
           {
             p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> procs.t18_illidari_satyr -> occur();
             break;
           }
         }
@@ -5764,6 +5769,7 @@ struct molten_core_t : public buff_t
           if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
           {
             p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> procs.t18_prince_malchezaar -> occur();
             break;
           }
         }
@@ -5872,6 +5878,9 @@ void warlock_t::init_procs()
   procs.havoc_waste = get_proc( "Havoc: Buff expiration" );
   procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
   procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
+  procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
+  procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
+  procs.t18_illidari_satyr = get_proc( "t18_illidari_satyr" );
 }
 
 void warlock_t::apl_precombat()
