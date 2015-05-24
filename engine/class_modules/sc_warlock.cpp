@@ -22,6 +22,9 @@ struct warlock_t;
 
 namespace pets {
 struct wild_imp_pet_t;
+struct t18_illidari_satyr_t;
+struct t18_prince_malchezaar_t;
+struct t18_vicious_hellhound_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -71,8 +74,12 @@ public:
     pet_t* active;
     pet_t* last;
     static const int WILD_IMP_LIMIT = 25;
+    static const int T18_PET_LIMIT = 6 ;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     pet_t* inner_demon;
+    std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
+    std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
+    std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
   } pets;
 
   std::vector<std::string> pet_name_list;
@@ -1232,6 +1239,72 @@ struct felguard_pet_t: public warlock_pet_t
     if ( name == "legion_strike" ) return new actions::legion_strike_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
+  }
+};
+
+struct t18_illidari_satyr_t: public warlock_pet_t
+{
+  t18_illidari_satyr_t(sim_t* sim, warlock_t* owner ):
+    warlock_pet_t( sim, owner, "illidari_satyr", PET_FELGUARD, true )
+  {
+    owner_coeff.ap_from_sp = 1.1;
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats()
+  {
+    warlock_pet_t::init_base_stats();
+    base_energy_regen_per_second = 0;
+    melee_attack = new actions::warlock_pet_melee_t( this );
+    if ( o() -> pets.t18_illidari_satyr[0] )
+      melee_attack -> stats = o() -> pets.t18_illidari_satyr[0] -> get_stats( "melee" );
+  }
+};
+
+struct t18_prince_malchezaar_t: public warlock_pet_t
+{
+  t18_prince_malchezaar_t(  sim_t* sim, warlock_t* owner ):
+    warlock_pet_t( sim, owner, "prince_malchezaar", PET_GHOUL, true )
+  {
+    owner_coeff.ap_from_sp = 1.1;
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats()
+  {
+    warlock_pet_t::init_base_stats();
+    base_energy_regen_per_second = 0;
+    melee_attack = new actions::warlock_pet_melee_t( this );
+    if ( o() -> pets.t18_prince_malchezaar[0] )
+      melee_attack -> stats = o() -> pets.t18_prince_malchezaar[0] -> get_stats( "melee" );
+  }
+
+  double composite_player_multiplier( school_e school ) const
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+    m *= 9.45; // Prince deals 9.45 times normal damage.. you know.. for reasons.
+    return m;
+  }
+};
+
+struct t18_vicious_hellhound_t: public warlock_pet_t
+{
+  t18_vicious_hellhound_t( sim_t* sim, warlock_t* owner ):
+    warlock_pet_t( sim, owner, "vicious_hellhound", PET_DOG, true )
+  {
+    owner_coeff.ap_from_sp = 1.1;
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats()
+  {
+    warlock_pet_t::init_base_stats();
+    base_energy_regen_per_second = 0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
+    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack -> base_execute_time = timespan_t::from_seconds( 1.0 );
+    if ( o() -> pets.t18_vicious_hellhound[0] )
+      melee_attack -> stats = o() -> pets.t18_vicious_hellhound[0] -> get_stats( "melee" );
   }
 };
 
@@ -5407,6 +5480,21 @@ void warlock_t::create_pets()
       if ( i > 0 )
         pets.wild_imps[ i ] -> quiet = 1;
     }
+    if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
+    {
+      for ( size_t i = 0; i < pets.t18_illidari_satyr.size(); i++ )
+      {
+        pets.t18_illidari_satyr[i] = new pets::t18_illidari_satyr_t( sim, this );
+      }
+      for ( size_t i = 0; i < pets.t18_prince_malchezaar.size(); i++ )
+      {
+        pets.t18_prince_malchezaar[i] = new pets::t18_prince_malchezaar_t( sim, this );
+      }
+      for ( size_t i = 0; i < pets.t18_vicious_hellhound.size(); i++ )
+      {
+        pets.t18_vicious_hellhound[i] = new pets::t18_vicious_hellhound_t( sim, this );
+      }
+    }
 
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B2 ) )
     {
@@ -5608,6 +5696,68 @@ struct havoc_buff_t : public buff_t
   }
 };
 
+struct molten_core_t : public buff_t
+{
+  molten_core_t( warlock_t* p ) :
+    buff_t( buff_creator_t( p, "molten_core", p -> find_spell( 122355 ) ).activated( false ).max_stack( 10 ) )
+  { }
+
+  void execute( int a, double b, timespan_t t )
+  {
+    warlock_t* p = debug_cast<warlock_t*>( player );
+    bool trigger_t18_4p = true;
+    if ( p -> buffs.molten_core -> check() && p -> bugs )
+      trigger_t18_4p = false;
+
+    buff_t::execute( a, b, t );
+
+    if ( trigger_t18_4p && rng().roll( p -> sets.set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ) )
+    {
+      //Which pet will we spawn?
+      double pet = rng().range( 0.0, 1.0 );
+      if ( pet >= 0.50 ) // 50% chance to spawn hellhound
+      {
+        for ( size_t i = 0; i < p -> pets.t18_vicious_hellhound.size(); i++ )
+        {
+          if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
+          {
+            p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_vicious_hellhound[i] -> current.distance = 0;
+            p -> pets.t18_vicious_hellhound[i] -> melee_attack -> execute();
+            break;
+          }
+        }
+      }
+      else if ( pet <= 0.45 ) // 45% chance to spawn illidari
+      {
+        for ( size_t i = 0; i < p -> pets.t18_illidari_satyr.size(); i++ )
+        {
+          if ( p -> pets.t18_illidari_satyr[i] -> is_sleeping() )
+          {
+            p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_illidari_satyr[i] -> current.distance = 0;
+            p -> pets.t18_illidari_satyr[i] -> melee_attack -> execute();
+            break;
+          }
+        }
+      }
+      else // Spawn Prince
+      {
+        for ( size_t i = 0; i < p -> pets.t18_prince_malchezaar.size(); i++ )
+        {
+          if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
+          {
+            p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_prince_malchezaar[i] -> current.distance = 0;
+            p -> pets.t18_prince_malchezaar[i] -> melee_attack -> execute();
+            break;
+          }
+        }
+      }
+    }
+  }
+};
+
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
@@ -5616,7 +5766,7 @@ void warlock_t::create_buffs()
   buffs.dark_soul = buff_creator_t( this, "dark_soul", spec.dark_soul ).add_invalidate( CACHE_CRIT ).add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_MASTERY )
     .cd( timespan_t::zero() );
   buffs.metamorphosis = buff_creator_t( this, "metamorphosis", spec.metamorphosis ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.molten_core = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 10 );
+  buffs.molten_core = new molten_core_t( this );
   buffs.soulburn = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
