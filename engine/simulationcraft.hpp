@@ -4673,7 +4673,6 @@ struct player_t : public actor_t
   action_t* last_foreground_action;
   action_t* last_gcd_action;
   std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
-  bool legendary_ring; // Set to true when the ring is detected in unique_gear.
 
   // Delay time used by "cast_delay" expression to determine when an action
   // can be used at minimum after a spell cast has finished, including GCD

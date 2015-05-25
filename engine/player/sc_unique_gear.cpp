@@ -1880,9 +1880,6 @@ void item::legendary_ring( special_effect_t& effect )
     buff = buff_t::find( p, "sanctus" );
   }
 
-  if ( buff )
-    p -> legendary_ring = true;
-
   effect.custom_buff = buff;
   effect.type = SPECIAL_EFFECT_USE;
   effect.cooldown_ = timespan_t::from_seconds( 120 );
