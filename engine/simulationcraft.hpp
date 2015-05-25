@@ -2096,7 +2096,7 @@ public:
                                     buff_t* static_buff = 0 );
   std::string to_str() const;
 
-  static double DEFAULT_VALUE() { return std::numeric_limits< double >::min(); }
+  static double DEFAULT_VALUE() { return -std::numeric_limits< double >::min(); }
   static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source = 0 );
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name, player_t* source = 0 );
