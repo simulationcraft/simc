@@ -6838,14 +6838,14 @@ void druid_t::apl_balance()
   default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
-  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20" );
+  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&(eclipse_energy>20|buff.celestial_alignment.up)" );
   single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40" );
   single_target -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
-  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_energy>40" );
+  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_energy>0" );
   single_target -> add_action( "incarnation,if=eclipse_energy>0" );
-  single_target -> add_action( this, "Sunfire", "if=remains<7|(buff.solar_peak.up&!talent.balance_of_power.enabled)" );
+  single_target -> add_action( this, "Sunfire", "if=remains<7|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time&!talent.balance_of_power.enabled)" );
   single_target -> add_talent( this, "Stellar Flare", "if=remains<7" );
-  single_target -> add_action( this, "Moonfire" , "if=!talent.balance_of_power.enabled&(buff.lunar_peak.up&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
+  single_target -> add_action( this, "Moonfire" , "if=!talent.balance_of_power.enabled&(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
   single_target -> add_action( this, "Moonfire", "if=talent.balance_of_power.enabled&(remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
   single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   single_target -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
