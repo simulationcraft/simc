@@ -2165,7 +2165,7 @@ void action_t::cancel()
 
   player -> debuffs.casting -> expire();
 
-  if ( was_busy && ! player -> is_sleeping() )
+  if ( was_busy && player -> arise_time >= timespan_t::zero() && ! player -> readying )
     player -> schedule_ready();
 }
 
