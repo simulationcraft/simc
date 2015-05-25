@@ -7,7 +7,7 @@
 
 using namespace unique_gear;
 
-#define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
+#define maintenance_check( ilvl ) static_assert( ilvl >= 90, "unique item below min level, should be deprecated." )
 
 namespace { // UNNAMED NAMESPACE
 
@@ -1848,29 +1848,36 @@ void item::legendary_ring( special_effect_t& effect )
   const spell_data_t* buffspell = 0;
   const spell_data_t* actionspell = 0;
 
-  switch ( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
+  if ( effect.spell_id != 187613 )
   {
-  case STAT_STRENGTH:
-    buffspell = p -> find_spell( 187619 );
-    actionspell = p -> find_spell( 187624 );
-    break;
-  case STAT_AGILITY:
-    buffspell = p -> find_spell( 187620 );
-    actionspell = p -> find_spell( 187626 );
-    break;
-  case STAT_INTELLECT:
-    buffspell = p -> find_spell( 187616 );
-    actionspell = p -> find_spell( 187625 );
-    break;
-  default:
-    break;
-  }
+    switch ( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
+    {
+    case STAT_STRENGTH:
+      buffspell = p -> find_spell( 187619 );
+      actionspell = p -> find_spell( 187624 );
+      break;
+    case STAT_AGILITY:
+      buffspell = p -> find_spell( 187620 );
+      actionspell = p -> find_spell( 187626 );
+      break;
+    case STAT_INTELLECT:
+      buffspell = p -> find_spell( 187616 );
+      actionspell = p -> find_spell( 187625 );
+      break;
+    default:
+      break;
+    }
 
-  if ( buffspell && actionspell )
+    if ( buffspell && actionspell )
+    {
+      std::string name = buffspell -> name_cstr();
+      util::tokenize( name );
+      buff = new legendary_ring_buff_t( effect, name, buffspell, actionspell );
+    }
+  }
+  else // Tanks
   {
-    std::string name = buffspell -> name_cstr();
-    util::tokenize( name );
-    buff = new legendary_ring_buff_t( effect, name, buffspell, actionspell );
+    buff = buff_t::find( p, "sanctus" );
   }
 
   effect.custom_buff = buff;
@@ -3601,6 +3608,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 187614, item::legendary_ring                 );
   register_special_effect( 187611, item::legendary_ring                 );
   register_special_effect( 187615, item::legendary_ring                 );
+  register_special_effect( 187613, item::legendary_ring                 );
 
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );

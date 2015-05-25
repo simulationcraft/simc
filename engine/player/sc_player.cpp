@@ -2378,6 +2378,9 @@ void player_t::create_buffs()
       buffs.archmages_incandescence_int = buff_creator_t( this, "archmages_incandescence_int", find_spell( 177159 ) )
         .add_invalidate( CACHE_INTELLECT );
 
+      buffs.legendary_tank_buff = buff_creator_t( this, "sanctus", find_spell( 187617 ) )
+        .add_invalidate( CACHE_VERSATILITY );
+
       // Legendary meta haste buff
       buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
 
@@ -2933,8 +2936,11 @@ double player_t::composite_damage_versatility() const
 {
   double cdv = composite_damage_versatility_rating() / current.rating.damage_versatility;
 
-  if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
+  if ( !is_pet() && !is_enemy() && sim -> auras.versatility -> check() )
     cdv += sim -> auras.versatility -> default_value;
+
+  if ( ! is_pet() && ! is_enemy() && buffs.legendary_tank_buff -> check() )
+    cdv += buffs.legendary_tank_buff -> data().effectN( 1 ).percent();
 
   return cdv;
 }
@@ -2945,8 +2951,11 @@ double player_t::composite_heal_versatility() const
 {
   double chv = composite_heal_versatility_rating() / current.rating.heal_versatility;
 
-  if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
+  if ( !is_pet() && !is_enemy() && sim -> auras.versatility -> check() )
     chv += sim -> auras.versatility -> default_value;
+
+  if ( ! is_pet() && ! is_enemy() && buffs.legendary_tank_buff -> check() )
+    chv += buffs.legendary_tank_buff -> data().effectN( 1 ).percent();
 
   return chv;
 }
@@ -2959,6 +2968,9 @@ double player_t::composite_mitigation_versatility() const
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
     cmv += sim -> auras.versatility -> default_value / 2; // Mitigation recieves 1.5% from the aura.
+
+  if ( ! is_pet() && ! is_enemy() && buffs.legendary_tank_buff -> check() )
+    cmv += buffs.legendary_tank_buff -> data().effectN( 1 ).percent() / 2; // Check later to see if it's actually half.
 
   return cmv;
 }
