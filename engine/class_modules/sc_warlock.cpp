@@ -327,6 +327,9 @@ public:
     proc_t* havoc_waste;
     proc_t* fragment_wild_imp;
     proc_t* t18_4pc_destruction;
+    proc_t* t18_illidari_satyr;
+    proc_t* t18_vicious_hellhound;
+    proc_t* t18_prince_malchezaar;
   } procs;
 
   struct spells_t
@@ -2789,7 +2792,7 @@ struct corruption_t: public warlock_spell_t
 
       double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10 + p() -> perk.empowered_corruption -> effectN( 1 ).percent() / 10;
 
-      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T17, B2 ) && td( d -> state -> target ) -> dots_agony -> is_ticking() && td( d -> state -> target ) -> dots_unstable_affliction -> is_ticking() ) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
+      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T17, B2 ) && td( d -> state -> target ) -> dots_drain_soul -> is_ticking() && td( d -> state -> target ) -> dots_agony -> is_ticking() && td( d -> state -> target ) -> dots_unstable_affliction -> is_ticking() ) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
       {
         nightfall_chance += p() -> sets.set( WARLOCK_AFFLICTION, T17, B2 ) -> effectN( 1 ).percent();
       }
@@ -5155,7 +5158,7 @@ warlock( p )
 
 void warlock_td_t::target_demise()
 {
-  if ( dots_drain_soul )
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && dots_drain_soul -> is_ticking() )
   {
     if ( warlock.sim -> log )
     {
@@ -5741,7 +5744,8 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
           {
-            p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> procs.t18_vicious_hellhound -> occur();
             break;
           }
         }
@@ -5752,7 +5756,8 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_illidari_satyr[i] -> is_sleeping() )
           {
-            p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> procs.t18_illidari_satyr -> occur();
             break;
           }
         }
@@ -5763,7 +5768,8 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
           {
-            p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 10 ) );
+            p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> procs.t18_prince_malchezaar -> occur();
             break;
           }
         }
@@ -5872,6 +5878,9 @@ void warlock_t::init_procs()
   procs.havoc_waste = get_proc( "Havoc: Buff expiration" );
   procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
   procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
+  procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
+  procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
+  procs.t18_illidari_satyr = get_proc( "t18_illidari_satyr" );
 }
 
 void warlock_t::apl_precombat()
