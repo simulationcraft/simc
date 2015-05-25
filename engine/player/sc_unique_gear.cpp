@@ -3589,10 +3589,10 @@ void unique_gear::register_special_effect( unsigned spell_id, const std::string&
 void unique_gear::register_special_effects()
 {
   /* Legacy Effects, pre-5.0 */
-  register_special_effect( 45481,  "ProcBy/spell_ProcOn/hit_45481Driver_45479Trigger"  ); /* Shattered Sun Pendant of Acumen */
-  register_special_effect( 45482,  "ProcBy/attack_ProcOn/hit_45482Driver_45480Trigger" ); /* Shattered Sun Pendant of Might */
-  register_special_effect( 45483,  "ProcBy/attack_ProcOn/hit_45483Driver_45431Trigger" ); /* Shattered Sun Pendant of Resolve */
-  register_special_effect( 45484,  "ProcBy/heal_ProcOn/hit_45484Driver_45478Trigger"   ); /* Shattered Sun Pendant of Restoration */
+  register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
+  register_special_effect( 45482,  "ProcOn/hit_45480Trigger"            ); /* Shattered Sun Pendant of Might */
+  register_special_effect( 45483,  "ProcOn/hit_45431Trigger"            ); /* Shattered Sun Pendant of Resolve */
+  register_special_effect( 45484,  "ProcOn/hit_45478Trigger"            ); /* Shattered Sun Pendant of Restoration */
   register_special_effect( 57345,  item::darkmoon_card_greatness        );
   register_special_effect( 71519,  item::deathbringers_will             );
   register_special_effect( 71562,  item::deathbringers_will             );

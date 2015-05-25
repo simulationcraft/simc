@@ -1368,13 +1368,33 @@ bool item_t::decode_equip_effect()
   // If the user has defined an equip= string, use it
   if ( ! option_equip_str.empty() )
   {
-    if ( ( ret = special_effect::parse_special_effect_encoding( effect, option_equip_str ) ) )
+    if ( ! ( ret = special_effect::parse_special_effect_encoding( effect, option_equip_str ) ) )
     {
-      effect.name_str = name_str;
-      effect.type = SPECIAL_EFFECT_EQUIP;
-      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-      parsed.special_effects.push_back( new special_effect_t( effect ) );
+      sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
+          player -> name(), option_equip_str.c_str(), name() );
+      return ret;
     }
+
+    effect.name_str = name_str;
+    effect.type = SPECIAL_EFFECT_EQUIP;
+    effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+    if ( ! special_effect::usable_proc( effect ) )
+    {
+      sim -> errorf( "%s no proc trigger flags found for effect '%s' on item '%s'",
+          player -> name(), option_equip_str.c_str(), name() );
+      return false;
+    }
+
+    if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
+         effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
+    {
+      sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
+          player -> name(), option_equip_str.c_str(), name() );
+      return false;
+    }
+
+    parsed.special_effects.push_back( new special_effect_t( effect ) );
   }
   // Otherwise, use fancy schmancy database
   else
@@ -1419,11 +1439,24 @@ bool item_t::decode_use_effect()
   {
     if ( ( ret = special_effect::parse_special_effect_encoding( effect, option_use_str ) ) )
     {
-      effect.name_str = name_str;
-      effect.type = SPECIAL_EFFECT_USE;
-      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-      parsed.special_effects.push_back( new special_effect_t( effect ) );
+      sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
+          player -> name(), option_use_str.c_str(), name() );
+      return ret;
     }
+
+    effect.name_str = name_str;
+    effect.type = SPECIAL_EFFECT_USE;
+    effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+    if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
+         effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
+    {
+      sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
+          player -> name(), option_equip_str.c_str(), name() );
+      return false;
+    }
+
+    parsed.special_effects.push_back( new special_effect_t( effect ) );
   }
   // Otherwise, use fancy schmancy database
   else
