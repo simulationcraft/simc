@@ -4107,6 +4107,8 @@ void warrior_t::apl_fury()
   action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
   action_priority_list_t* bladestorm          = get_action_priority_list( "bladestorm" );
+  action_priority_list_t* reck_anger_management = get_action_priority_list( "reck_anger_management" );
+  action_priority_list_t* reck_no_anger       = get_action_priority_list( "reck_no_anger" );
 
   default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
@@ -4121,6 +4123,8 @@ void warrior_t::apl_fury()
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.avatar.up|buff.bloodbath.up|target.time_to_die<25)" );
     else if ( items[i].name_str == "vial_of_convulsive_shadows" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25|!talent.anger_management.enabled)" );
+    else if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25)" );
     else if ( items[i].name_str != "nitro_boosts" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|buff.avatar.up|buff.bloodbath.up|target.time_to_die<25)" );
   }
@@ -4128,14 +4132,19 @@ void warrior_t::apl_fury()
   if ( sim -> allow_potions )
   {
     if ( true_level > 90 )
-      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=30" );
     else if ( true_level >= 80 )
-      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=30" );
   }
 
   default_list -> add_action( "run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
-  default_list -> add_action( this, "Recklessness", "if=(((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)",
-                              "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'" );
+  default_list -> add_action( this, "Recklessness", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>25|!talent.bloodbath.enabled|target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&set_bonus.tier18_4pc" );
+  default_list -> add_action( "call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc" );
+  default_list -> add_action( "call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc" );
+
+  reck_anger_management -> add_action( this, "Recklessness", "if=(target.time_to_die>140|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled|target.time_to_die<15)" );
+  reck_no_anger -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled|target.time_to_die<15)" );
+
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|cooldown.recklessness.remains>60|target.time_to_die<30" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
