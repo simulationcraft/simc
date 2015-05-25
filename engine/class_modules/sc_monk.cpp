@@ -2786,6 +2786,9 @@ struct chi_explosion_t: public monk_melee_attack_t
 
   bool ready()
   {
+    if ( !p() -> talent.chi_explosion -> ok() )
+      return false;
+
     if ( p() -> resources.current[RESOURCE_CHI] > 0 )
       return monk_melee_attack_t::ready();
 
