@@ -4155,17 +4155,6 @@ void player_t::demise()
     readying = 0;
   }
 
-  if ( is_enemy() )
-  {
-    sim -> active_enemies--;
-    sim -> target_non_sleeping_list.find_and_erase_unordered( this );
-  }
-  else
-  {
-    sim -> active_allies--;
-    sim -> player_non_sleeping_list.find_and_erase_unordered( this );
-  }
-
   event_t::cancel( off_gcd );
 
   // stops resolve and clear resolve_source_list
@@ -4194,6 +4183,17 @@ void player_t::demise()
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> cancel();
+
+  if ( is_enemy() )
+  {
+    sim -> active_enemies--;
+    sim -> target_non_sleeping_list.find_and_erase_unordered( this );
+  }
+  else
+  {
+    sim -> active_allies--;
+    sim -> player_non_sleeping_list.find_and_erase_unordered( this );
+  }
 
   current.sleeping = true;
 }
