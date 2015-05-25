@@ -1668,7 +1668,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
+      oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
       add_child( oh_attack );
       if ( p -> main_hand_weapon.group() == WEAPON_1H &&
            p -> off_hand_weapon.group() == WEAPON_1H )
@@ -2274,7 +2274,7 @@ struct raging_blow_t: public warrior_attack_t
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
 
-    oh_attack = new raging_blow_attack_t( p, "raging_blow_oh", data().effectN( 2 ).trigger() );
+    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
   }
@@ -4806,7 +4806,7 @@ void warrior_t::create_buffs()
 
   buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
-  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
+  buff.heroic_leap_glyph = buff_creator_t( this, "glyph_of_heroic_leap", find_spell( 133278 ) )
     .chance( glyphs.heroic_leap -> ok() ? 1.0 : 0 );
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
