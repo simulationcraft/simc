@@ -362,6 +362,7 @@ public:
     gain_t* frenzied_regeneration;
     gain_t* primal_tenacity;
     gain_t* stalwart_guardian;
+    gain_t* rage_refund;
     gain_t* tooth_and_claw;
     gain_t* guardian_tier17_2pc;
     gain_t* guardian_tier18_2pc;
@@ -3720,10 +3721,12 @@ private:
   }
 public:
   double base_max_rage_cost;
+  double rage_spent;
+  double refund_amount;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
-    base_max_rage_cost( 0.0 )
+    base_max_rage_cost( 0.0 ), rage_spent( 0.0 ), refund_amount( 0.0 )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -3750,6 +3753,10 @@ public:
   virtual void consume_resource() override
   {
     druid_heal_t::consume_resource();
+
+    // Refund rage based on the overheal in impact().
+    if ( refund_amount > 0 && maybe_ptr( p() -> dbc.ptr ) )
+      p() -> resource_gain( current_resource(), refund_amount, p() -> gain.rage_refund );
   }
 
   virtual double action_multiplier() const
@@ -3766,6 +3773,9 @@ public:
   {
     // Benefit tracking
     p() -> buff.guardian_tier17_4pc -> up();
+    
+    // Save rage spent so we can refund based on it later.
+    rage_spent = cost();
 
     druid_heal_t::execute();
 
@@ -3774,6 +3784,17 @@ public:
 
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
+
+    // Reset refund variables for next ability use
+    rage_spent = refund_amount = 0.0;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    druid_heal_t::impact( s );
+
+    // Store amount to be refunded so it can be refunded in consume_resource().
+    refund_amount = ( 1 - s -> result_amount / s -> result_total ) * rage_spent;
   }
 
   virtual bool ready()
@@ -6977,6 +6998,7 @@ void druid_t::init_gains()
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.primal_tenacity       = get_gain( "primal_tenacity"       );
+  gain.rage_refund           = get_gain( "rage_refund"           );
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
