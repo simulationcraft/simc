@@ -3416,6 +3416,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1249, 1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258, 1259 ],
             'tier'   : 18
         },
+        {
+            'name'   : 'tier18lfr',
+            'bonuses': [ 1260, 1261, 1262, 1263 ],
+            'tier'   : 18,
+        },
     ]
 
     def __init__(self, options):
