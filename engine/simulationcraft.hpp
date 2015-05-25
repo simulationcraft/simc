@@ -2498,24 +2498,24 @@ struct vector_with_callback
 {
 private:
   std::vector<T> _data;
-  std::vector<std::function<void(void)> > _callbacks ;
+  std::vector<std::function<void(T)> > _callbacks ;
 public:
   /* Register your custom callback, which will be called when the vector is modified
    */
-  void register_callback( std::function<void(void)> c )
+  void register_callback( std::function<void(T)> c )
   {
     if ( c )
       _callbacks.push_back( c );
   }
 
-  void trigger_callbacks() const
+  void trigger_callbacks(T v) const
   {
     for ( size_t i = 0; i < _callbacks.size(); ++i )
-      _callbacks[i]();
+      _callbacks[i](v);
   }
 
   void push_back( T x )
-  { _data.push_back( x ); trigger_callbacks(); }
+  { _data.push_back( x ); trigger_callbacks( x ); }
 
   void find_and_erase( T x )
   {
@@ -2546,10 +2546,10 @@ public:
 
 private:
   void erase_unordered( typename std::vector<T>::iterator it )
-  { ::erase_unordered( _data, it ); trigger_callbacks(); }
+  { ::erase_unordered( _data, it ); trigger_callbacks( *it ); }
 
   void erase( typename std::vector<T>::iterator it )
-  { _data.erase( it ); trigger_callbacks(); }
+  { _data.erase( it ); trigger_callbacks( *it ); }
 };
 
 /* Unformatted SimC output class.

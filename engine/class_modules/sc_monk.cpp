@@ -3930,7 +3930,7 @@ struct sef_despawn_cb_t
 
   sef_despawn_cb_t( storm_earth_and_fire_t* a );
 
-  void operator()();
+  void operator()(player_t*);
 };
 
 struct storm_earth_and_fire_t: public monk_spell_t
@@ -4020,7 +4020,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
 sef_despawn_cb_t::sef_despawn_cb_t( storm_earth_and_fire_t* a ) : action( a )
 { assert( action ); }
 
-void sef_despawn_cb_t::operator()()
+void sef_despawn_cb_t::operator()(player_t*)
 {
   for ( size_t i = 0; i < sizeof_array( action -> p() -> pet.sef ); i++ )
   {
