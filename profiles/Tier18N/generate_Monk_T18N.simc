@@ -24,7 +24,7 @@ trinket1=sacred_draenic_incense,id=124517
 trinket2=soul_capacitor,id=124225
 main_hand=hammer_of_wicked_infusion,id=124371,enchant=mark_of_the_frostwolf
 off_hand=hammer_of_wicked_infusion,id=124371,enchant=mark_of_the_thunderlord
-save=Monk_Windwalker_1h_T18M.simc
+save=Monk_Windwalker_1h_T18N.simc
 
 # Windwalker 2h Serenity
 monk="Monk_Windwalker_2h_T18N"
@@ -51,4 +51,4 @@ finger2=portal_key_signet,id=124189,enchant=gift_of_multistrike
 trinket1=sacred_draenic_incense,id=124517
 trinket2=soul_capacitor,id=124225
 main_hand=xutenash_glaive_of_ruin,id=124378,enchant=mark_of_the_frostwolf
-save=Monk_Windwalker_2h_T18M.simc
+save=Monk_Windwalker_2h_T18N.simc
