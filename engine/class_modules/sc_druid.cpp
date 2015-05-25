@@ -3600,7 +3600,7 @@ public:
       }
     }
 
-    if ( base_dd_min > 0 && ! background )
+    if ( p() -> mastery.harmony -> ok() && spell_power_mod.direct > 0 && ! background )
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
   }
 
@@ -4032,21 +4032,20 @@ struct regrowth_t : public druid_heal_t
   regrowth_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "regrowth", p, p -> find_class_spell( "Regrowth" ), options_str )
   {
-    base_crit   += 0.6;
+    base_crit += 0.60;
 
     if ( p -> glyph.regrowth -> ok() )
     {
       base_crit += p -> glyph.regrowth -> effectN( 1 ).percent();
-      base_td    = 0;
       dot_duration  = timespan_t::zero();
     }
+
     ignore_false_positive = true;
     init_living_seed();
   }
 
   virtual double cost() const
   {
-    // Feral doesn't have Regrowth so don't need to worry about checking that, for now.
     if ( p() -> buff.omen_of_clarity -> check() )
       return 0;
 
@@ -4077,17 +4076,6 @@ struct regrowth_t : public druid_heal_t
 
       if ( state -> result == RESULT_CRIT )
         trigger_living_seed( state );
-    }
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    druid_heal_t::tick( d );
-
-    if ( result_is_hit( d -> state -> result ) && d -> state -> target -> health_percentage() <= p() -> spell.regrowth -> effectN( 1 ).percent() &&
-         td( d -> state -> target ) -> dots.regrowth -> is_ticking() )
-    {
-      td( d -> state -> target )-> dots.regrowth -> refresh_duration();
     }
   }
 
