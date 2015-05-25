@@ -151,7 +151,7 @@ struct aoe_target_list_callback_t
   aoe_target_list_callback_t( action_t* a ) :
     action( a ) {}
 
-  void operator()()
+  void operator()(player_t*)
   {
     // Invalidate target cache
     action -> target_cache.is_valid = false;

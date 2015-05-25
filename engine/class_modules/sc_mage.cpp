@@ -23,7 +23,7 @@ struct current_target_reset_cb_t
 
   current_target_reset_cb_t( player_t* m );
 
-  void operator()();
+  void operator()(player_t*);
 };
 
 struct state_switch_t
@@ -413,7 +413,7 @@ public:
       current_target_reset_cb_t( mage_t* m ) : mage( m )
       { }
 
-      void operator()()
+      void operator()(player_t*)
       {
         for ( size_t i = 0, end = mage -> sim -> target_non_sleeping_list.size(); i < end; ++i )
         {
@@ -499,7 +499,7 @@ inline current_target_reset_cb_t::current_target_reset_cb_t( player_t* m ):
   mage( debug_cast<mage_t*>( m ) )
 { }
 
-inline void current_target_reset_cb_t::operator()()
+inline void current_target_reset_cb_t::operator()(player_t*)
 {
   for ( size_t i = 0, end = mage -> sim -> target_non_sleeping_list.size(); i < end; ++i )
   {

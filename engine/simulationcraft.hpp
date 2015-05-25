@@ -2096,7 +2096,7 @@ public:
                                     buff_t* static_buff = 0 );
   std::string to_str() const;
 
-  static double DEFAULT_VALUE() { return std::numeric_limits< double >::min(); }
+  static double DEFAULT_VALUE() { return -std::numeric_limits< double >::min(); }
   static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source = 0 );
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name, player_t* source = 0 );
@@ -2498,24 +2498,24 @@ struct vector_with_callback
 {
 private:
   std::vector<T> _data;
-  std::vector<std::function<void(void)> > _callbacks ;
+  std::vector<std::function<void(T)> > _callbacks ;
 public:
   /* Register your custom callback, which will be called when the vector is modified
    */
-  void register_callback( std::function<void(void)> c )
+  void register_callback( std::function<void(T)> c )
   {
     if ( c )
       _callbacks.push_back( c );
   }
 
-  void trigger_callbacks() const
+  void trigger_callbacks(T v) const
   {
     for ( size_t i = 0; i < _callbacks.size(); ++i )
-      _callbacks[i]();
+      _callbacks[i](v);
   }
 
   void push_back( T x )
-  { _data.push_back( x ); trigger_callbacks(); }
+  { _data.push_back( x ); trigger_callbacks( x ); }
 
   void find_and_erase( T x )
   {
@@ -2546,10 +2546,10 @@ public:
 
 private:
   void erase_unordered( typename std::vector<T>::iterator it )
-  { ::erase_unordered( _data, it ); trigger_callbacks(); }
+  { ::erase_unordered( _data, it ); trigger_callbacks( *it ); }
 
   void erase( typename std::vector<T>::iterator it )
-  { _data.erase( it ); trigger_callbacks(); }
+  { _data.erase( it ); trigger_callbacks( *it ); }
 };
 
 /* Unformatted SimC output class.

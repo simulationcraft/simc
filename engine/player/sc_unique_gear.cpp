@@ -2798,6 +2798,18 @@ struct soul_capacitor_explosion_t : public spell_t
   { return explosion_multiplier; }
 };
 
+
+struct soul_capacitor_buff_t;
+
+struct spirit_shift_explode_callback_t
+{
+  soul_capacitor_buff_t* buff;
+
+  spirit_shift_explode_callback_t( soul_capacitor_buff_t* b );
+  void operator()(player_t*);
+};
+
+
 struct soul_capacitor_buff_t : public buff_t
 {
   // Explosion here
@@ -2808,21 +2820,34 @@ struct soul_capacitor_buff_t : public buff_t
     explosion( new soul_capacitor_explosion_t( player, effect ) )
   {
     player -> buffs.spirit_shift = this;
+    player -> sim -> target_non_sleeping_list.register_callback( spirit_shift_explode_callback_t( this ) );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    double cv = current_value;
-
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( cv > 0 && ! player -> is_sleeping() )
+    if ( current_value > 0 && ! player -> is_sleeping() )
     {
-      explosion -> base_dd_min = explosion -> base_dd_max = cv;
+      explosion -> base_dd_min = explosion -> base_dd_max = current_value;
       explosion -> execute();
     }
   }
 };
+
+spirit_shift_explode_callback_t::spirit_shift_explode_callback_t( soul_capacitor_buff_t* b ) :
+  buff( b )
+{ }
+
+void spirit_shift_explode_callback_t::operator()(player_t* player)
+{
+  if ( player != player -> sim -> target )
+  {
+    return;
+  }
+
+  buff -> expire();
+}
 
 void item::soul_capacitor( special_effect_t& effect )
 {
