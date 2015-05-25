@@ -3589,18 +3589,22 @@ void unique_gear::register_special_effect( unsigned spell_id, const std::string&
 void unique_gear::register_special_effects()
 {
   /* Legacy Effects, pre-5.0 */
+  register_special_effect( 45481,  "ProcBy/spell_ProcOn/hit_45481Driver_45479Trigger"  ); /* Shattered Sun Pendant of Acumen */
+  register_special_effect( 45482,  "ProcBy/attack_ProcOn/hit_45482Driver_45480Trigger" ); /* Shattered Sun Pendant of Might */
+  register_special_effect( 45483,  "ProcBy/attack_ProcOn/hit_45483Driver_45431Trigger" ); /* Shattered Sun Pendant of Resolve */
+  register_special_effect( 45484,  "ProcBy/heal_ProcOn/hit_45484Driver_45478Trigger"   ); /* Shattered Sun Pendant of Restoration */
   register_special_effect( 57345,  item::darkmoon_card_greatness        );
+  register_special_effect( 71519,  item::deathbringers_will             );
+  register_special_effect( 71562,  item::deathbringers_will             );
   register_special_effect( 71892,  item::heartpierce                    );
   register_special_effect( 71880,  item::heartpierce                    );
+  register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
   register_special_effect( 107824, "1Tick_108016Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
   register_special_effect( 109862, "1Tick_109860Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
   register_special_effect( 109865, "1Tick_109863Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
+  register_special_effect( 107995, item::vial_of_shadows                );
   register_special_effect( 109725, item::vial_of_shadows                );
   register_special_effect( 109722, item::vial_of_shadows                );
-  register_special_effect( 107995, item::vial_of_shadows                );
-  register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
-  register_special_effect( 71519,  item::deathbringers_will             );
-  register_special_effect( 71562,  item::deathbringers_will             );
   register_special_effect( 108006, item::cunning_of_the_cruel           );
   register_special_effect( 109799, item::cunning_of_the_cruel           );
   register_special_effect( 109801, item::cunning_of_the_cruel           );
@@ -3735,7 +3739,7 @@ void unique_gear::register_special_effects()
 
   // TODO: check why 20% PPM and not 100% from spell data?
   register_special_effect(  39958, "0.2PPM"                             ); /* Thundering Skyfire */
-  register_special_effect(  55380, "0.2PPM"                             ); /* Thundering Skyfire */
+  register_special_effect(  55380, "0.2PPM"                             ); /* Thundering Skyflare */
   register_special_effect( 137592, gem::sinister_primal                 ); /* Caster Legendary Gem */
   register_special_effect( 137594, gem::indomitable_primal              ); /* Tank Legendary Gem */
   register_special_effect( 137595, gem::capacitive_primal               ); /* Melee Legendary Gem */
