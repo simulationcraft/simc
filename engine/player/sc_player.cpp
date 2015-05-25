@@ -4148,7 +4148,6 @@ void player_t::demise()
   arise_time = timespan_t::min();
   current.distance_to_move = 0;
 
-  current.sleeping = true;
   if ( readying )
   {
     event_t::cancel( readying );
@@ -4194,6 +4193,8 @@ void player_t::demise()
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> cancel();
+
+  current.sleeping = true;
 }
 
 // player_t::interrupt ======================================================
