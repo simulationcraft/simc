@@ -1880,6 +1880,9 @@ void item::legendary_ring( special_effect_t& effect )
     buff = buff_t::find( p, "sanctus" );
   }
 
+  if ( buff )
+    p -> legendary_ring = true;
+
   effect.custom_buff = buff;
   effect.type = SPECIAL_EFFECT_USE;
   effect.cooldown_ = timespan_t::from_seconds( 120 );
@@ -3296,37 +3299,45 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
     PROC_COOLDOWN,
   };
 
-  int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
-  enum proc_expr_e pexprtype = PROC_ENABLED;
-  enum proc_type_e ptype = PROC_STAT;
-  stat_e stat = STAT_NONE;
-  std::vector<slot_e> slots;
+    int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
+    enum proc_expr_e pexprtype = PROC_ENABLED;
+    enum proc_type_e ptype = PROC_STAT;
+    stat_e stat = STAT_NONE;
+    std::vector<slot_e> slots;
 
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+    std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( util::is_number( splits[ 1 ] ) )
-  {
-    if ( splits[ 1 ] == "1" )
+    if ( splits[0] != "legendary_ring" )
     {
-      slots.push_back( SLOT_TRINKET_1 );
-    }
-    else if ( splits[ 1 ] == "2" )
-    {
-      slots.push_back( SLOT_TRINKET_2 );
+      if ( util::is_number( splits[1] ) )
+      {
+        if ( splits[1] == "1" )
+        {
+          slots.push_back( SLOT_TRINKET_1 );
+        }
+        else if ( splits[1] == "2" )
+        {
+          slots.push_back( SLOT_TRINKET_2 );
+        }
+        else
+          return 0;
+        ptype_idx++;
+
+        stat_idx++;
+        expr_idx++;
+      }
+      // No positional parameter given so check both trinkets
+      else
+      {
+        slots.push_back( SLOT_TRINKET_1 );
+        slots.push_back( SLOT_TRINKET_2 );
+      }
     }
     else
-      return 0;
-    ptype_idx++;
-
-    stat_idx++;
-    expr_idx++;
-  }
-  // No positional parameter given so check both trinkets
-  else
-  {
-    slots.push_back( SLOT_TRINKET_1 );
-    slots.push_back( SLOT_TRINKET_2 );
-  }
+    {
+      slots.push_back( SLOT_FINGER_1 );
+      slots.push_back( SLOT_FINGER_2 );
+    }
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
     pexprtype = PROC_EXISTS;
