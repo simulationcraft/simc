@@ -115,12 +115,12 @@ actions.single_target+=/ice_lance,if=!talent.frost_bomb.enabled&buff.fingers_of_
 actions.single_target+=/frostbolt
 actions.single_target+=/ice_lance,moving=1
 
-head=demon_princes_ascendant_crown,id=124159,bonus_id=567
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_multistrike
+head=countenance_of_the_revenant,id=124158,bonus_id=567
+neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,enchant=gift_of_multistrike
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_multistrike
 chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567
-wrists=contemptuous_wristguards,id=124186,bonus_id=567
+wrists=powdersinged_bracers,id=124183,bonus_id=567
 hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567
 waist=sash_of_unending_anguish,id=124181,bonus_id=567
 legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
@@ -132,15 +132,15 @@ trinket2=prophecy_of_fear,id=124230,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=729.33
-# gear_stamina=6217
-# gear_intellect=5171
+# gear_ilvl=728.00
+# gear_stamina=6140
+# gear_intellect=5120
 # gear_spell_power=2545
-# gear_crit_rating=1126
-# gear_haste_rating=1288
-# gear_mastery_rating=2104
-# gear_armor=1114
-# gear_multistrike_rating=983
+# gear_crit_rating=654
+# gear_haste_rating=1742
+# gear_mastery_rating=1350
+# gear_armor=1102
+# gear_multistrike_rating=1686
 # gear_versatility_rating=278
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

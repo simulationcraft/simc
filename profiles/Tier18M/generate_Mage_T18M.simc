@@ -1,14 +1,3 @@
-# TxM
-# Tier x Mythic
-# * Ilvl Cap: 735
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 735 Legendary Ring can be used. (accessibility)
-
-# talent_format=numbers
 
 mage="Mage_Arcane_T18M"
 level=100
@@ -43,20 +32,20 @@ position=back
 talents=3003322
 glyphs=inferno_blast/combustion/dragons_breath
 spec=fire
-head=demon_princes_ascendant_crown,id=124159,bonus_id=567
+head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_critical_strike
-chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567
+chest=raiment_of_divine_clarity,id=124170,bonus_id=567
 wrists=contemptuous_wristguards,id=124186,bonus_id=567
 hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567
 waist=sash_of_unending_anguish,id=124181,bonus_id=567
 legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
-finger1=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_critical_strike
+finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_critical_strike
 finger2=nithramus_the_allseer,id=124635,enchant=gift_of_critical_strike
-trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=567
-trinket2=goren_soul_repository,id=119194,bonus_id=567
+trinket1=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
+trinket2=intuitions_gift,id=124232,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T18M.simc
 
@@ -68,12 +57,12 @@ position=back
 talents=3003122
 glyphs=icy_veins/splitting_ice/cone_of_cold
 spec=frost
-head=demon_princes_ascendant_crown,id=124159,bonus_id=567
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_multistrike
+head=countenance_of_the_revenant,id=124158,bonus_id=567
+neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,enchant=gift_of_multistrike
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_multistrike
 chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567
-wrists=contemptuous_wristguards,id=124186,bonus_id=567
+wrists=powdersinged_bracers,id=124183,bonus_id=567
 hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567
 waist=sash_of_unending_anguish,id=124181,bonus_id=567
 legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
