@@ -110,7 +110,7 @@ namespace set_bonus
   void t17_lfr_4pc_leacaster( special_effect_t& );
   void t17_lfr_4pc_mailcaster( special_effect_t& );
   void t17_lfr_4pc_platemelee( special_effect_t& );
-  void t17_lfr_passive_stat( special_effect_t& );
+  void tier_lfr_passive_stat( special_effect_t& );
 }
 
 /**
@@ -881,7 +881,7 @@ void gem::courageous_primal( special_effect_t& effect )
   new courageous_primal_proc_t( effect );
 }
 
-void set_bonus::t17_lfr_passive_stat( special_effect_t& effect )
+void set_bonus::tier_lfr_passive_stat( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.player -> find_spell( effect.spell_id );
   stat_e stat = STAT_NONE;
@@ -3748,23 +3748,37 @@ void unique_gear::register_special_effects()
   /* Generic special effects begin here */
 
   /* T17 LFR set bonuses */
-  register_special_effect( 179108, set_bonus::t17_lfr_passive_stat      ); /* 2P Cloth DPS */
+  register_special_effect( 179108, set_bonus::tier_lfr_passive_stat     ); /* 2P Cloth DPS */
   register_special_effect( 179107, set_bonus::t17_lfr_4pc_clothcaster   );
-  register_special_effect( 179110, set_bonus::t17_lfr_passive_stat      ); /* 2P Cloth Healer */
-  register_special_effect( 179114, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Melee */
+  register_special_effect( 179110, set_bonus::tier_lfr_passive_stat     ); /* 2P Cloth Healer */
+  register_special_effect( 179114, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Melee */
   register_special_effect( 179115, set_bonus::t17_lfr_4pc_leamelee      );
-  register_special_effect( 179117, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Caster */
+  register_special_effect( 179117, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Caster */
   register_special_effect( 179118, set_bonus::t17_lfr_4pc_leacaster     );
-  register_special_effect( 179121, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Healer */
-  register_special_effect( 179127, set_bonus::t17_lfr_passive_stat      ); /* 2P Leather Tank */
-  register_special_effect( 179130, set_bonus::t17_lfr_passive_stat      ); /* 2P Mail Agility */
+  register_special_effect( 179121, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Healer */
+  register_special_effect( 179127, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Tank */
+  register_special_effect( 179130, set_bonus::tier_lfr_passive_stat     ); /* 2P Mail Agility */
   register_special_effect( 179131, set_bonus::t17_lfr_4pc_agimelee      );
-  register_special_effect( 179133, set_bonus::t17_lfr_passive_stat      ); /* 2P Mail Caster */
+  register_special_effect( 179133, set_bonus::tier_lfr_passive_stat     ); /* 2P Mail Caster */
   register_special_effect( 179134, set_bonus::t17_lfr_4pc_mailcaster    );
-  register_special_effect( 179137, set_bonus::t17_lfr_passive_stat      ); /* 2P Mail Healer */
-  register_special_effect( 179139, set_bonus::t17_lfr_passive_stat      ); /* 2P Plate Melee */
+  register_special_effect( 179137, set_bonus::tier_lfr_passive_stat     ); /* 2P Mail Healer */
+  register_special_effect( 179139, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Melee */
   register_special_effect( 179140, set_bonus::t17_lfr_4pc_platemelee    );
-  register_special_effect( 179142, set_bonus::t17_lfr_passive_stat      ); /* 2P Plate Tank */
-  register_special_effect( 179145, set_bonus::t17_lfr_passive_stat      ); /* 2P Plate Healer */
+  register_special_effect( 179142, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Tank */
+  register_special_effect( 179145, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Healer */
+
+  /* T18 LFR set bonuses */
+  register_special_effect( 187075, set_bonus::tier_lfr_passive_stat     ); /* 2P Cloth DPS */
+  register_special_effect( 187132, set_bonus::tier_lfr_passive_stat     ); /* 2P Cloth Healer */
+  register_special_effect( 187133, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Caster */
+  register_special_effect( 187134, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Healer */
+  register_special_effect( 187135, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Melee */
+  register_special_effect( 187136, set_bonus::tier_lfr_passive_stat     ); /* 2P Leather Tank */
+  register_special_effect( 187137, set_bonus::tier_lfr_passive_stat     ); /* 2P Mail Agility */
+  register_special_effect( 187138, set_bonus::tier_lfr_passive_stat     ); /* 2P Mail Caster */
+  register_special_effect( 187139, set_bonus::tier_lfr_passive_stat     ); /* 2P Mail Healer */
+  register_special_effect( 187140, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Healer */
+  register_special_effect( 187141, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Melee */
+  register_special_effect( 187142, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Tank */
 }
 
