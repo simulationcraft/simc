@@ -606,10 +606,13 @@ struct water_elemental_pet_t : public pet_t
     {
       spell_t::impact( s );
 
-      td( s -> target ) -> water_jet -> trigger();
+      td( s -> target ) -> water_jet
+                        -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
+                                   dot_duration *
+                                   p() -> composite_spell_haste());
+
       // Trigger hidden proxy water jet for the mage, so
       // debuff.water_jet.<expression> works
-
       p() -> o() -> get_target_data( s -> target ) -> debuffs.water_jet
           -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
                      dot_duration * p() -> composite_spell_haste());
