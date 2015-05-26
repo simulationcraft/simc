@@ -128,7 +128,8 @@ struct action_execute_event_t : public player_event_t
 
     if ( ! p() -> channeling )
     {
-      assert( ! p() -> readying && "Danger Will Robinson!  Danger! Channeling action is trying to block player readying state, but player is already in it." );
+      assert( ! p() -> readying &&
+              "Danger Will Robinson! Danger! Non-channeling action is trying to overwrite player-ready-event upon execute." );
 
       p() -> schedule_ready( timespan_t::zero() );
     }

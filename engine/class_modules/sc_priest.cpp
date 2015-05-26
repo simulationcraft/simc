@@ -878,8 +878,10 @@ struct lightwell_renew_t : public heal_t
   {
     heal_t::last_tick( d );
 
+    // Need to kill the actor with an event instead of performing the demise directly inside the
+    // last_tick().
     if ( p().charges <= 0 )
-      p().dismiss();
+      new ( *sim ) player_demise_event_t( p() );
   }
 
   virtual bool ready() override

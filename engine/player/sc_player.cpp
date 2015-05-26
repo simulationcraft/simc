@@ -52,29 +52,6 @@ struct player_ready_event_t : public player_event_t
   }
 };
 
-/* Event which will demise the player
- * - Reason for it are that we need to finish the current action ( eg. a dot tick ) without
- * killing off target dependent things ( eg. dot state ).
- */
-struct demise_event_t : public player_event_t
-{
-  demise_event_t( player_t& p,
-                  timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
-     player_event_t( p )
-  {
-    if ( sim().debug )
-      sim().out_debug.printf( "New Player-Demise Event: %s", p.name() );
-
-    sim().add_event( this, delta_time );
-  }
-  virtual const char* name() const override
-  { return "Player-Demise"; }
-  virtual void execute()
-  {
-    p() -> demise();
-  }
-};
-
 // Trigger a wakeup based on a resource treshold. Only used by trigger_ready=1 actors
 struct resource_threshold_event_t : public event_t
 {
@@ -5234,7 +5211,7 @@ void player_t::assess_damage( school_e school,
         collected_data.deaths.add( sim -> current_time().total_seconds() );
       }
       if ( sim -> log ) sim -> out_log.printf( "%s has died.", name() );
-      new ( *sim ) demise_event_t( *this );
+      new ( *sim ) player_demise_event_t( *this );
     }
   }
 }
