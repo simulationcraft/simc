@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -4415,7 +4415,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126851)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Radius: 0 - 40 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Radius: 0 - 40 yards
 Description      : Heals one of the most injured nearby friendly targets for ${$m1*0.9/1.1}.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
@@ -7640,7 +7640,7 @@ Effects          :
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 127
 #3 (id=268109)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
-Description      : $?s137010[All damage received is reduced by ${$AP*$m1/100} (increased by Attack Power). This effect cannot absorb more than $s2% of an attack.][]
+Description      : All damage received is reduced by ${$AP*$m1/100} (increased by Attack Power). This effect cannot absorb more than $s2% of an attack.
 
 Name             : Starfall (Lunar) (id=184989) [Spell Family (7)] 
 Class            : Druid
@@ -7681,15 +7681,14 @@ Effects          :
 Description      : $@spelldesc155592
 Tooltip          : Summoning solar bolts from the sky.
 
-Name             : Stalwart Guardian (id=185321) [Passive] 
+Name             : Stalwart Guardian (id=185321) 
 Class            : Druid
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6)
 Effects          :
 #1 (id=269049)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0

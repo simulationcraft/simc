@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1554,7 +1554,7 @@ Effects          :
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 10
                    Affected Spells: Holy Light (82326), Holy Radiance (82327)
 #2 (id=278932)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 60 | Scaled Value: 60
+                   Base Value: 50 | Scaled Value: 50
                    Affected Spells: Flash of Light (19750)
 Description      : $@spelldesc53576
 Tooltip          : Reduces the cast time of your next Holy Light or Holy Radiance by ${$54149m1/-1000}.1 sec.

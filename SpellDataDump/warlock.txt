@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3422,7 +3422,7 @@ Name             : Demonic Synergy (id=104330)
 Class            : Warlock
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3700,19 +3700,19 @@ $@spellicon112870 $@spellname112870][]
 $@spellicon112921 $@spellname112921
 $@spellicon112927 $@spellname112927
 
-Name             : Grimoire of Service (id=108501) [Spell Family (5), Hidden] 
+Name             : Grimoire of Service (id=108501) [Spell Family (5), Passive] 
 Class            : Warlock
 Spell Level      : 75
 Cooldown         : 120 seconds
-Attributes       : .......x ........ ........ ........   ........ ........ ........ .......x 
+Attributes       : ......x. x....... ........ .......x   ........ ........ ........ ....x..x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
+                 : Passive (6)
 Effects          :
-#1 (id=119638)   : Dummy (3)
+#1 (id=119638)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
 Description      : Instantly summon a second demon which fights for $s1 sec. The demon will instantly use one of its special abilities when summoned:
 

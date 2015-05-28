@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -4494,7 +4494,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #2 (id=162274)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
-Description      : Launch a Shadowy bolt that grows in power with distance, damaging an enemy for up to $127628M1, and then bouncing to additional enemies $s1 times. Each time it bounces, it splits into $s2 bolts.
+Description      : Launch a Shadowy bolt that grows in power with distance, damaging an enemy for up to $127628M2, and then bouncing to additional enemies $s1 times. Each time it bounces, it splits into $s2 bolts.
 
 Name             : Insanity (id=129197) [Spell Family (6)] 
 Class            : Priest

@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -2419,7 +2419,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 911
 #3 (id=202642)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.26000
-                   Affected Spells: Waterbolt (31707), Water Jet (135029)
+                   Affected Spells: Waterbolt (31707)
+#4 (id=279323)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.26000 | Misc Value: 22
+                   Affected Spells: Water Jet (135029)
 Description      : When you damage enemies with Frostbolt and Frostfire Bolt, and their multistrikes, ${$m1}.1% of the damage done is stored as an Icicle with you, for $148012d. Also increases the damage of your Water Elemental's Waterbolt and Water Jet by ${$m3}.1%.
 
 Up to $s2 Icicles can be stored at once. Casting Ice Lance causes any Icicles to begin launching at the target.
@@ -4659,7 +4662,7 @@ Charges          : 2 (25 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :

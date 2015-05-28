@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -615,7 +615,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6
 #2 (id=83836)    : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6
-#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (167)
+#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (166)
                    Base Value: 0 | Scaled Value: 0
 Description      : Your pet's Basic Attacks have a $19623s2% chance to trigger Frenzy, granting $19623s1% increased attack speed for $19615d, stacking up to $19615u times.
 

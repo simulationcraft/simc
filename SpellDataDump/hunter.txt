@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20057)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -3413,7 +3413,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6
 #2 (id=83836)    : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6
-#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (167)
+#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (166)
                    Base Value: 0 | Scaled Value: 0
 Description      : Your pet's Basic Attacks have a $19623s2% chance to trigger Frenzy, granting $19623s1% increased attack speed for $19615d, stacking up to $19615u times.
 
@@ -4255,11 +4255,11 @@ Effects          :
 #1 (id=135267)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11
                    Affected Spells: Disengage (781)
-#2 (id=135268)   : Apply Aura (6) | Unknown effect sub type (332)
+#2 (id=135268)   : Apply Aura (6) | Dummy (4)
                    Base Value: 148467 | Scaled Value: 148467
                    Affected Spells: Deterrence (19263)
-#3 (id=202214)   : Dummy (3)
-                   Base Value: 60000 | Scaled Value: 60000
+#3 (id=202214)   : Apply Aura (6) | Unknown effect sub type (453)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1448
 Description      : Reduces the cooldown of Disengage by ${$m1/-1000} sec, and the cooldown of Deterrence by ${$m3/1000} sec.
 
 Name             : Spirit Bond (id=118694) 
