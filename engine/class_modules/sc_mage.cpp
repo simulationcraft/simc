@@ -280,6 +280,8 @@ public:
     pets::water_elemental_pet_t* water_elemental;
     pet_t* mirror_images[ 3 ];
     pet_t* prismatic_crystal;
+    pet_t* temporal_heroes[ 10 ];
+    int active_temporal_heroes;
   } pets;
 
   // Procs
@@ -744,6 +746,7 @@ water_elemental_pet_td_t::water_elemental_pet_td_t( player_t* target, water_elem
 {
   water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) ).cd( timespan_t::zero() );
 }
+
 // ==========================================================================
 // Pet Mirror Image
 // ==========================================================================
@@ -1047,6 +1050,235 @@ struct prismatic_crystal_t : public pet_t
     aoe_spell -> base_dd_max = state -> result_total;
     aoe_spell -> pre_execute_state = new_state;
     aoe_spell -> execute();
+  }
+};
+
+// ==========================================================================
+// Pet Temporal Heroes (2T18)
+// ==========================================================================
+
+struct temporal_hero_t : public pet_t
+{
+  enum hero_e
+  {
+    ARTHAS,
+    JAINA,
+    SYLVANAS,
+    TYRANDE
+  };
+
+  hero_e hero_type;
+
+  struct temporal_hero_melee_attack_t : public melee_attack_t
+  {
+    temporal_hero_melee_attack_t( pet_t* p ) :
+      melee_attack_t( "melee", p, spell_data_t::nil() )
+    {
+      may_crit = true;
+      background = repeating = auto_attack = true;
+      school = SCHOOL_PHYSICAL;
+      special = false;
+      weapon = &( p -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+    }
+
+    bool init_finished()
+    {
+      pet_t* p = debug_cast<pet_t*>( player );
+      mage_t* m = debug_cast<mage_t*>( p -> owner );
+
+      if ( m -> pets.temporal_heroes[0] )
+      {
+        stats = m -> pets.temporal_heroes[0] -> get_stats( "melee" );
+      }
+
+      return melee_attack_t::init_finished();
+    }
+  };
+
+  struct temporal_hero_autoattack_t : public melee_attack_t
+  {
+    temporal_hero_autoattack_t( pet_t* p ) :
+      melee_attack_t( "auto_attack", p, spell_data_t::nil() )
+    {
+      p -> main_hand_attack = new temporal_hero_melee_attack_t( p );
+      trigger_gcd = timespan_t::zero();
+    }
+
+    virtual void execute()
+    {
+      player -> main_hand_attack -> schedule_execute();
+    }
+
+    virtual bool ready()
+    {
+      temporal_hero_t* hero = debug_cast<temporal_hero_t*>( player );
+      if ( hero -> hero_type != ARTHAS )
+      {
+        return false;
+      }
+
+      return player -> main_hand_attack -> execute_event == 0;
+    }
+  };
+
+  struct temporal_hero_frostbolt_t : public spell_t
+  {
+    temporal_hero_frostbolt_t( pet_t* p ) :
+      spell_t( "frostbolt", p, p -> find_spell( 9672 ) )
+    {}
+
+    virtual bool ready()
+    {
+      temporal_hero_t* hero = debug_cast<temporal_hero_t*>( player );
+      if ( hero -> hero_type != JAINA )
+      {
+        return false;
+      }
+
+      return spell_t::ready();
+    }
+
+    bool init_finished()
+    {
+      pet_t* p = debug_cast<pet_t*>( player );
+      mage_t* m = debug_cast<mage_t*>( p -> owner );
+
+      if ( m -> pets.temporal_heroes[0] )
+      {
+        stats = m -> pets.temporal_heroes[0] -> get_stats( "frostbolt" );
+      }
+
+      return spell_t::init_finished();
+    }
+  };
+
+  struct temporal_hero_shoot_t : public spell_t
+  {
+    temporal_hero_shoot_t( pet_t* p ) :
+      spell_t( "shoot", p, p -> find_spell( 59710 ) )
+    {
+      school = SCHOOL_PHYSICAL;
+      base_execute_time = p -> main_hand_weapon.swing_time;
+    }
+
+    virtual bool ready()
+    {
+      temporal_hero_t* hero = debug_cast<temporal_hero_t*>( player );
+      if ( hero -> hero_type != SYLVANAS && hero -> hero_type != TYRANDE )
+      {
+        return false;
+      }
+
+      return player -> main_hand_attack -> execute_event == 0;
+    }
+
+    bool init_finished()
+    {
+      pet_t* p = debug_cast<pet_t*>( player );
+      mage_t* m = debug_cast<mage_t*>( p -> owner );
+
+      if ( m -> pets.temporal_heroes[0] )
+      {
+        stats = m -> pets.temporal_heroes[0] -> get_stats( "shoot" );
+      }
+
+      return spell_t::init_finished();
+    }
+  };
+
+  temporal_hero_t( sim_t* sim, mage_t* owner ) :
+    pet_t( sim, owner, "temporal_hero", true, true ), hero_type( ARTHAS )
+  { }
+
+  void init_base_stats()
+  {
+    owner_coeff.ap_from_sp = 1.0;
+    owner_coeff.sp_from_sp = 1.0;
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 0.0;
+    main_hand_weapon.max_dmg    = 0.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+
+    pet_t::init_base_stats();
+  }
+
+  void init_action_list()
+  {
+    action_list_str = "auto_attack/frostbolt/shoot";
+
+    use_default_action_list = true;
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "auto_attack" ) return new temporal_hero_autoattack_t( this );
+    if ( name == "frostbolt" )   return new  temporal_hero_frostbolt_t( this );
+    if ( name == "shoot" )       return new      temporal_hero_shoot_t( this );
+
+    return base_t::create_action( name, options_str );
+  }
+
+  void arise()
+  {
+    pet_t::arise();
+
+    double rand = rng().real();
+    if ( rand < 0.25 )
+    {
+      hero_type = ARTHAS;
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Arthas",
+                                 owner -> name() );
+      }
+    }
+    else if ( rand < 0.5 )
+    {
+      hero_type = JAINA;
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Jaina" ,
+                                 owner -> name() );
+      }
+    }
+    else if ( rand < 0.75 )
+    {
+      hero_type = SYLVANAS;
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Sylvanas",
+                                 owner -> name() );
+      }
+    }
+    else
+    {
+      hero_type = TYRANDE;
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Tyrande",
+                                 owner -> name() );
+      }
+    }
+
+    mage_t* m = debug_cast<mage_t*>( owner );
+    m -> pets.active_temporal_heroes++;
+
+    owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  void demise()
+  {
+    pet_t::demise();
+
+    mage_t* m = debug_cast<mage_t*>( owner );
+    m -> pets.active_temporal_heroes--;
+
+    owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -1491,12 +1723,6 @@ struct presence_of_mind_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.presence_of_mind -> trigger();
-
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
-    {
-      // TODO: T18 4pc Arcane Placeholder. Add in the random time anomoly pets that this summons
-      //p() -> pets.random_time_anomoly_pet -> summon();
-    }
   }
 };
 
@@ -1566,11 +1792,10 @@ struct arcane_barrage_t : public mage_spell_t
 struct arcane_blast_t : public mage_spell_t
 {
   double wild_arcanist_effect;
-  action_t* t18_presence_of_mind;
 
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) ),
-    wild_arcanist_effect( 0.0 ), t18_presence_of_mind( 0 )
+    wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
 
@@ -1579,12 +1804,6 @@ struct arcane_blast_t : public mage_spell_t
       const spell_data_t* data = p -> wild_arcanist -> driver();
       wild_arcanist_effect = std::fabs( data -> effectN( 1 ).average( p -> wild_arcanist -> item ) );
       wild_arcanist_effect /= 100.0;
-    }
-
-    if ( p -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
-    {
-      t18_presence_of_mind = new presence_of_mind_t( p, options_str );
-      t18_presence_of_mind -> background = true;
     }
   }
 
@@ -1629,13 +1848,6 @@ struct arcane_blast_t : public mage_spell_t
          p() -> rppm_arcane_instability.trigger() )
     {
       p() -> buffs.arcane_instability -> trigger();
-    }
-
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
-         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> proc_chance() ) )
-    {
-      p() -> cooldowns.presence_of_mind -> reset( false );
-      t18_presence_of_mind -> execute();
     }
   }
 
@@ -1782,9 +1994,13 @@ struct arcane_missiles_tick_t : public mage_spell_t
 struct arcane_missiles_t : public mage_spell_t
 {
   timespan_t missiles_tick_time;
+  timespan_t temporal_hero_duration;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
+    mage_spell_t( "arcane_missiles", p,
+                  p -> find_class_spell( "Arcane Missiles" ) ),
+    missiles_tick_time( timespan_t::zero() ),
+    temporal_hero_duration( timespan_t::zero() )
   {
     parse_options( options_str );
     may_miss = false;
@@ -1798,6 +2014,10 @@ struct arcane_missiles_t : public mage_spell_t
     may_miss = false;
 
     missiles_tick_time = base_tick_time;
+    if ( p -> dbc.ptr )
+    {
+      temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
+    }
   }
 
   virtual double action_multiplier() const
@@ -1855,6 +2075,19 @@ struct arcane_missiles_t : public mage_spell_t
     if ( !p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) || !rng().roll( p() -> sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> buffs.arcane_missiles -> decrement();
+    }
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
+         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> proc_chance() ))
+    {
+      for ( unsigned i = 0; i < sizeof_array( p() -> pets.temporal_heroes ); i++ )
+      {
+        if ( p() -> pets.temporal_heroes[ i ] -> is_sleeping() )
+        {
+          p() -> pets.temporal_heroes[ i ] -> summon( temporal_hero_duration );
+          break;
+        }
+      }
     }
   }
 
@@ -5012,6 +5245,15 @@ void mage_t::create_pets()
       }
     }
   }
+
+  if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
+  {
+    for ( unsigned i = 0; i < sizeof_array( pets.temporal_heroes ); i++ )
+    {
+      pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
+      pets.active_temporal_heroes = 0;
+    }
+  }
 }
 
 // mage_t::init_spells ======================================================
@@ -6105,6 +6347,12 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.icarus_uprising -> data().effectN( 2 ).percent();
   }
 
+  if ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+  {
+    m *= 1.0 + pets.active_temporal_heroes *
+               sets.set( MAGE_ARCANE, T18, B4 ) -> effectN( 1 ).percent();
+  }
+
   return m;
 }
 
@@ -6199,6 +6447,8 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   last_bomb_target = 0;
+
+  pets.active_temporal_heroes = 0;
 
   burn_phase.reset();
   pyro_chain.reset();
