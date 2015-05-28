@@ -6063,10 +6063,10 @@ void mage_t::apl_fire()
 
 
   living_bomb -> add_action( this, "Inferno Blast",
-                             "cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies",
+                             "cycle_targets=1,if=dot.living_bomb.ticking&active_enemies-active_dot.living_bomb>1",
                              "Living Bomb application" );
   living_bomb -> add_talent( this, "Living Bomb",
-                             "cycle_targets=1,if=target!=pet.prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.time_to_die>remains+12" );
+                             "if=target!=pet.prismatic_crystal&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.time_to_die>remains+12" );
 
 
   aoe -> add_action( this, "Inferno Blast",
@@ -6075,8 +6075,6 @@ void mage_t::apl_fire()
   aoe -> add_action( "call_action_list,name=active_talents" );
   aoe -> add_action( this, "Pyroblast",
                      "if=buff.pyroblast.react|buff.pyromaniac.react" );
-  aoe -> add_action( this, "Pyroblast",
-                     "if=active_dot.pyroblast=0&!in_flight" );
   aoe -> add_talent( this, "Cold Snap",
                      "if=glyph.dragons_breath.enabled&!cooldown.dragons_breath.up" );
   aoe -> add_action( this, "Dragon's Breath",
@@ -6086,7 +6084,7 @@ void mage_t::apl_fire()
 
 
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)",
+                               "if=dot.combustion.ticking&active_dot.combustion<active_enemies",
                                "Single target sequence" );
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time",
@@ -6102,14 +6100,14 @@ void mage_t::apl_fire()
                                "if=ptr=0&set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>1-(gcd.max%8)",
                                "Aggressively use Pyro with 2T17 and IB available" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=1|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up",
+                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=1|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up&!(dot.living_bomb.remains>10&active_enemies>1)",
                                "Heating Up conversion to Pyroblast" );
   single_target -> add_action( "call_action_list,name=active_talents" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=1|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight",
+                               "if=(cooldown.combustion.remains%8+charges_fractional>=2|ptr=1|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight&!(dot.living_bomb.remains>10&active_enemies>1)",
                                "Adding Heating Up to Pyroblast" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=ptr=0&set_bonus.tier17_2pc&(cooldown.combustion.remains%8+charges_fractional>2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&charges_fractional>2-(gcd.max%8)",
+                               "if=ptr=0&set_bonus.tier17_2pc&(cooldown.combustion.remains%8+charges_fractional>2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&charges_fractional>2-(gcd.max%8)&!(dot.living_bomb.remains>10&active_enemies>1)",
                                "Aggressively use IB with 2T17" );
   single_target -> add_action( this, "Fireball" );
   single_target -> add_action( this, "Scorch", "moving=1" );
