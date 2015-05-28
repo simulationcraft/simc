@@ -175,7 +175,8 @@ public:
           * improved_blink,        // Perk
           * profound_magic,        // T16 2pc Arcane
           * arcane_affinity,       // T17 2pc Arcane
-          * arcane_instability;    // T17 4pc Arcane
+          * arcane_instability,    // T17 4pc Arcane
+          * temporal_power;        // T18 4pc Arcane
 
     stat_buff_t* mage_armor;
 
@@ -281,7 +282,6 @@ public:
     pet_t* mirror_images[ 3 ];
     pet_t* prismatic_crystal;
     pet_t* temporal_heroes[ 10 ];
-    int active_temporal_heroes;
   } pets;
 
   // Procs
@@ -1193,8 +1193,8 @@ struct temporal_hero_t : public pet_t
 
   void init_base_stats()
   {
-    owner_coeff.ap_from_sp = 5.5;
-    owner_coeff.sp_from_sp = 5.5;
+    owner_coeff.ap_from_sp = 5.0;
+    owner_coeff.sp_from_sp = 5.0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 0.0;
@@ -1266,7 +1266,7 @@ struct temporal_hero_t : public pet_t
     }
 
     mage_t* m = debug_cast<mage_t*>( owner );
-    m -> pets.active_temporal_heroes++;
+    m -> buffs.temporal_power -> bump();
 
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
@@ -1276,7 +1276,7 @@ struct temporal_hero_t : public pet_t
     pet_t::demise();
 
     mage_t* m = debug_cast<mage_t*>( owner );
-    m -> pets.active_temporal_heroes--;
+    m -> buffs.temporal_power -> decrement();
 
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
@@ -2078,7 +2078,8 @@ struct arcane_missiles_t : public mage_spell_t
     }
 
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
-         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 ) -> proc_chance() ))
+         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 )
+                         -> proc_chance() ) )
     {
       for ( unsigned i = 0; i < sizeof_array( p() -> pets.temporal_heroes ); i++ )
       {
@@ -5251,7 +5252,6 @@ void mage_t::create_pets()
     for ( unsigned i = 0; i < sizeof_array( pets.temporal_heroes ); i++ )
     {
       pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
-      pets.active_temporal_heroes = 0;
     }
   }
 }
@@ -5471,6 +5471,9 @@ void mage_t::create_buffs()
                                   .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
   buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
                                   .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) );
+  // 4T18 Temporal Power buff has no duration and stacks multiplicatively
+  buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
+                                  .max_stack( 10 );
 
   // Fire
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
@@ -6347,10 +6350,11 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.icarus_uprising -> data().effectN( 2 ).percent();
   }
 
-  if ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+  if ( buffs.temporal_power -> check() &&
+       sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
   {
-    m *= 1.0 + pets.active_temporal_heroes *
-               sets.set( MAGE_ARCANE, T18, B4 ) -> effectN( 1 ).percent();
+    m *= std::pow( 1.0 + buffs.temporal_power -> data().effectN( 1 ).percent(),
+                   buffs.temporal_power -> check() );
   }
 
   return m;
@@ -6447,8 +6451,6 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   last_bomb_target = 0;
-
-  pets.active_temporal_heroes = 0;
 
   burn_phase.reset();
   pyro_chain.reset();
