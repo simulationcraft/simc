@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 20057
+// Class based active abilities, wow build 20061
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1003,7 +1003,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 20057
+// Talent tree specialization abilities, wow build 20061
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1943,7 +1943,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 20057
+// Class mastery abilities, wow build 20061
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2166,7 +2166,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 20057
+// Racial abilities, wow build 20061
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2889,7 +2889,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 20057
+// Glyph spells for classes, wow build 20061
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3529,7 +3529,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 20057
+// Tier item set bonuses for class, wow build 20061
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3954,7 +3954,7 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
 
 #define PTR_SET_BONUS_DATA_SIZE (512)
 
-// Set bonus data, wow build 20057
+// Set bonus data, wow build 20061
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4397,11 +4397,11 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    2,  263, 185872, { 124293, 124297, 124302, 124303, 124308,  0 } },
   { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   2,   7,              {   0 },    3,  262, 185880, { 124293, 124297, 124302, 124303, 124308,  0 } },
   { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    3,  262, 185881, { 124293, 124297, 124302, 124303, 124308,  0 } },
-  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   62, 186165, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   62, 186166, { 124154, 124160, 124165, 124171, 124177,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   63, 186167, { 124154, 124160, 124165, 124171, 124177,  0 } },
   { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   64, 185969, { 124154, 124160, 124165, 124171, 124177,  0 } },
-  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   62, 186166, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   62, 186165, { 124154, 124160, 124165, 124171, 124177,  0 } },
   { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   63, 186168, { 124154, 124160, 124165, 124171, 124177,  0 } },
   { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   64, 185971, { 124154, 124160, 124165, 124171, 124177,  0 } },
   { "Deathrattle Regalia"                        ,     "tier18",      8,  1259,   18,   2,   9,              {   0 },    3,  265, 185882, { 124156, 124162, 124167, 124173, 124179,  0 } },
@@ -4425,75 +4425,75 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    3,  102, 187875, { 124246, 124255, 124261, 124267, 124272,  0 } },
   { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    3,  102, 187877, { 124246, 124255, 124261, 124267, 124272,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    0,   73, 187142, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    0,   73, 187143, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    2,   72, 187141, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    2,   71, 187141, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    2,   72, 187151, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    2,   71, 187151, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    0,   66, 179142, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    0,   66, 179143, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    1,   65, 187140, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    1,   65, 187155, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    2,   70, 179139, {  0 } },
-  { "6.2 LFR - Raid Set - Plate"                 ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    2,   70, 187151, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  255, 187688, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  254, 187137, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  253, 187137, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  255, 187137, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  254, 187688, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  253, 187688, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  259, 187135, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  260, 187135, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  261, 187135, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  259, 187863, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  260, 187863, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  261, 187863, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    1,  257, 187132, {  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    0,   73, 187142, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    0,   73, 187143, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    2,   72, 187141, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    2,   71, 187141, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    2,   72, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    2,   71, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    0,   66, 179142, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    0,   66, 179143, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    1,   65, 187140, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    1,   65, 187155, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    2,   70, 179139, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    2,   70, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  255, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  254, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  253, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  255, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  254, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  253, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  259, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  260, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  261, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  259, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  260, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  261, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    1,  257, 187132, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    1,  256, 187132, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    1,  257, 187430, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    1,  256, 187430, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    3,  258, 187075, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    3,  258, 187079, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    1,  264, 187139, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    1,  264, 187158, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    2,  263, 187137, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    2,  263, 187688, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    3,  262, 187138, {  0 } },
-  { "6.2 LFR - Raid Set - Mail"                  ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    3,  262, 187778, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   62, 187075, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   63, 187075, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   64, 187075, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   62, 187079, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   63, 187079, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   64, 187079, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  265, 187075, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  266, 187075, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  267, 187075, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  265, 187079, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  266, 187079, {  0 } },
-  { "6.2 LFR - Raid Set - Cloth"                 ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  267, 187079, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    0,  268, 187136, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    0,  268, 187862, {  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    1,  256, 187132, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    1,  257, 187430, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    1,  256, 187430, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    3,  258, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    3,  258, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    1,  264, 187139, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    1,  264, 187158, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    2,  263, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    2,  263, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    3,  262, 187138, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    3,  262, 187778, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   62, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   63, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   64, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   62, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   63, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   64, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  265, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  266, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  267, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  265, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  266, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  267, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    0,  268, 187136, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    0,  268, 187862, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    1,  270, 187134, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    1,  270, 187604, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    2,  269, 187135, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    2,  269, 187863, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    0,  104, 187136, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    0,  104, 187862, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    1,  105, 187134, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    1,  105, 187604, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    2,  103, 187135, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    2,  103, 187863, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    3,  102, 187133, {  0 } },
-  { "6.2 LFR - Raid Set - Leather"               ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    3,  102, 187435, {  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    1,  270, 187134, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    1,  270, 187604, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    2,  269, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    2,  269, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    0,  104, 187136, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    0,  104, 187862, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    1,  105, 187134, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    1,  105, 187604, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    2,  103, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    2,  103, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    3,  102, 187133, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    3,  102, 187435, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
 };
 
 #define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 20057
+// Perk specialization abilities, wow build 20061
 static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
@@ -4801,7 +4801,7 @@ static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 20057
+// Glyph properties, wow build 20061
 static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {   162,  54811 },
   {   163,  54812 },
