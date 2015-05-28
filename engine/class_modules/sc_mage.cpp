@@ -1193,8 +1193,8 @@ struct temporal_hero_t : public pet_t
 
   void init_base_stats()
   {
-    owner_coeff.ap_from_sp = 1.0;
-    owner_coeff.sp_from_sp = 1.0;
+    owner_coeff.ap_from_sp = 5.5;
+    owner_coeff.sp_from_sp = 5.5;
 
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 0.0;
