@@ -1011,13 +1011,13 @@ public:
     // pet appears at the target
     current.distance = 0;
     double ap_coeff = is_t18 
-      ? 1.0 / (1.0 + o() -> buffs.focus_fire -> current_value) 
+      ? 1.0 //  (1.0 + o() -> buffs.focus_fire -> current_value) 
       : 0.6;
     owner_coeff.ap_from_ap = ap_coeff;
     owner_coeff.sp_from_ap = ap_coeff;
 
     if ( is_t18 )
-      buffs.tier18_4pc_bm -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+      buffs.tier18_4pc_bm -> trigger();
     else
       buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
