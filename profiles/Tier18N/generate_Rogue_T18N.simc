@@ -9,9 +9,9 @@ spec=assassination
 
 head=felblade_hood,id=124263
 neck=choker_of_reciprocity,id=127976,enchant_id=5319
-shoulders=poisoners_spaulders,id=115574,bonus_id=566
+shoulders=felblade_spaulders,id=124274
 back=cloak_of_tangible_dread,id=124135,enchant_id=5312
-chest=poisoners_tunic,id=115570,bonus_id=566
+chest=felblade_chestguard,id=124248
 wrists=terrorweave_wristwraps,id=127982
 hands=felfinger_runegloves,id=124254
 waist=waistwrap_of_banishment,id=124276

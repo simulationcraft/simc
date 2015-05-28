@@ -59,9 +59,9 @@ actions+=/mutilate,if=active_enemies<5
 
 head=felblade_hood,id=124263,bonus_id=566
 neck=choker_of_reciprocity,id=127976,bonus_id=566,enchant_id=5319
-shoulders=poisoners_spaulders,id=115574,bonus_id=567
+shoulders=felblade_spaulders,id=124274,bonus_id=566
 back=cloak_of_tangible_dread,id=124135,bonus_id=566,enchant_id=5312
-chest=poisoners_tunic,id=115570,bonus_id=567
+chest=felblade_chestguard,id=124248,bonus_id=566
 wrists=terrorweave_wristwraps,id=127982,bonus_id=566
 hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
@@ -75,14 +75,14 @@ main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
 off_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=712.19
-# gear_agility=3860
-# gear_stamina=5201
-# gear_crit_rating=174
-# gear_haste_rating=874
-# gear_mastery_rating=2300
-# gear_armor=1245
-# gear_multistrike_rating=1086
+# gear_ilvl=713.44
+# gear_agility=3914
+# gear_stamina=5283
+# gear_crit_rating=596
+# gear_haste_rating=873
+# gear_mastery_rating=1945
+# gear_armor=1263
+# gear_multistrike_rating=1098
 # gear_versatility_rating=442
-# set_bonus=tier17_2pc=1
 # set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
