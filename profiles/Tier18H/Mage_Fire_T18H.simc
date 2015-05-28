@@ -75,7 +75,6 @@ actions.t17_2pc_combust+=/blood_fury
 actions.t17_2pc_combust+=/berserking
 actions.t17_2pc_combust+=/arcane_torrent
 actions.t17_2pc_combust+=/use_item,slot=finger2
-actions.t17_2pc_combust+=/use_item,slot=trinket2
 actions.t17_2pc_combust+=/potion,name=draenic_intellect
 # Second pre-combust IB
 actions.t17_2pc_combust+=/inferno_blast,if=prev_gcd.inferno_blast&pyro_chain_duration>gcd.max*3
@@ -109,7 +108,6 @@ actions.combust_sequence+=/blood_fury
 actions.combust_sequence+=/berserking
 actions.combust_sequence+=/arcane_torrent
 actions.combust_sequence+=/use_item,slot=finger2
-actions.combust_sequence+=/use_item,slot=trinket2
 actions.combust_sequence+=/potion,name=draenic_intellect
 actions.combust_sequence+=/meteor,if=active_enemies<=2
 actions.combust_sequence+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.up
@@ -171,18 +169,18 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_critical_strike
 finger2=nithramus_the_allseer,id=124635,enchant=gift_of_critical_strike
-trinket1=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
-trinket2=intuitions_gift,id=124232,bonus_id=566
+trinket1=goren_soul_repository,id=119194,bonus_id=566
+trinket2=iron_reaver_piston,id=124227,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=713.67
+# gear_ilvl=712.00
 # gear_stamina=5391
-# gear_intellect=4030
+# gear_intellect=4335
 # gear_spell_power=2214
-# gear_crit_rating=1767
-# gear_haste_rating=985
-# gear_mastery_rating=1761
+# gear_crit_rating=2183
+# gear_haste_rating=1401
+# gear_mastery_rating=1345
 # gear_armor=985
 # gear_multistrike_rating=685
 # gear_versatility_rating=259

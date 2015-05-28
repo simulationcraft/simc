@@ -4,7 +4,7 @@ level=100
 race=gnome
 role=spell
 position=back
-talents=3003322
+talents=3003222
 glyphs=cone_of_cold
 spec=arcane
 head=demon_princes_ascendant_crown,id=124159,bonus_id=566
@@ -44,8 +44,8 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_critical_strike
 finger2=nithramus_the_allseer,id=124635,enchant=gift_of_critical_strike
-trinket1=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
-trinket2=intuitions_gift,id=124232,bonus_id=566
+trinket1=goren_soul_repository,id=119194,bonus_id=566
+trinket2=iron_reaver_piston,id=124227,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T18H.simc
 
