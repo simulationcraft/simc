@@ -2747,9 +2747,7 @@ struct sim_t : private sc_thread_t
   int timewalk;
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
-  bool disable_set_bonuses; // Disables set bonuses.
-  bool disable_2_set_bonus; // Disables all 2 set bonuses (Does not include 4)
-  bool disable_4_set_bonus; // Disables all 4 set bonuses
+  bool disable_set_bonuses; // Disables all set bonuses.
   unsigned int disable_2_set; // Disables all 2 set bonuses for this tier/integer that this is set as
   unsigned int disable_4_set; // Disables all 4 set bonuses for this tier/integer that this is set as
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as

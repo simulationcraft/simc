@@ -200,8 +200,7 @@ void set_bonus_t::initialize()
         {
           if ( data.bonus -> bonus == 2 )
           {
-            if ( !actor -> sim -> disable_2_set_bonus && 
-              ( actor -> sim -> disable_2_set != data.bonus -> tier ) )
+            if ( actor -> sim -> disable_2_set != data.bonus -> tier ) 
             {
               data.spell = actor -> find_spell( data.bonus -> spell_id );
               data.enabled = true;
@@ -213,8 +212,7 @@ void set_bonus_t::initialize()
           }
           else if ( data.bonus -> bonus == 4 )
           {
-            if ( !actor -> sim -> disable_4_set_bonus && 
-              ( actor -> sim -> disable_4_set != data.bonus -> tier ) )
+            if ( actor -> sim -> disable_4_set != data.bonus -> tier )
             {
               data.spell = actor -> find_spell( data.bonus -> spell_id );
               data.enabled = true;
