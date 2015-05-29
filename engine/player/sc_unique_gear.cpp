@@ -3282,7 +3282,7 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
     for ( size_t i = 0, end = effects.size(); i < end; i++ )
     {
       const special_effect_t* e = effects[ i ];
-      if ( e -> cooldown() != timespan_t::zero() )
+      if ( e -> cooldown() != timespan_t::zero() && e -> rppm() == 0 ) // Technically, rppm doesn't have a cooldown.
       {
         v = 1;
         break;
