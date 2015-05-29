@@ -2080,11 +2080,24 @@ struct eviscerate_t : public rogue_attack_t
       p() -> trigger_energy_refund( execute_state );
   }
 
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
+    {
+      timespan_t v = timespan_t::from_seconds( -p() -> sets.set( ROGUE_SUBTLETY, T18, B4 ) -> effectN( 1 ).base_value() );
+      v *= cast_state( execute_state ) -> cp;
+      p() -> cooldowns.vanish -> adjust( v, false );
+    }
+  }
+
   virtual void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
 
-    if ( p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
+    if ( result_is_hit( state -> result ) &&
+         p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
     {
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
       if ( p() -> mastery.executioner -> ok() )
@@ -2094,12 +2107,6 @@ struct eviscerate_t : public rogue_attack_t
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
 
-    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
-    {
-      timespan_t v = timespan_t::from_seconds( -p() -> sets.set( ROGUE_SUBTLETY, T18, B4 ) -> effectN( 1 ).base_value() );
-      v *= cast_state( state ) -> cp;
-      p() -> cooldowns.vanish -> adjust( v, false );
-    }
   }
 };
 
