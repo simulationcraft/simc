@@ -135,9 +135,21 @@ struct move_enemy_t : public raid_event_t
     parse_options( options_str );
 
     enemy = sim -> find_player( name );
+
+    if ( !sim -> fancy_target_distance_stuff )
+    {
+      sim -> out_log.printf( "fancy_target_distance_stuff=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
+      sim -> fancy_target_distance_stuff = true;
+    }
+
     if ( !enemy )
     {
-      sim -> out_debug.printf( "Move enemy event cannot be created, there is no enemy named %s.", name.c_str() );
+      sim -> out_log.printf( "Move enemy event cannot be created, there is no enemy named %s.", name.c_str() );
+    }
+    else if ( enemy == sim -> target )
+    {
+      sim -> out_log.printf( "Move enemy currently does not work with the first enemy created in a sim, named %s.\nPlease only use move_enemy to move secondary targets.", name.c_str() );
+      enemy = 0;
     }
   }
 
