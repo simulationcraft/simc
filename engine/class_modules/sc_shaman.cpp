@@ -2835,7 +2835,7 @@ struct chain_lightning_t : public shaman_spell_t
               targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
             local_attempts++; // Only count failures towards the limit-cap.
           }
-          if ( target_cache.list.size() == aoe || target_cache.list.size() == num_targets ) // If we run out of targets to hit, or have hit 5 already. Break.
+          if ( static_cast<int>( target_cache.list.size() ) == aoe || target_cache.list.size() == num_targets ) // If we run out of targets to hit, or have hit 5 already. Break.
           {
             stop_trying = true;
             break;
