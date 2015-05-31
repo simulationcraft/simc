@@ -2778,6 +2778,87 @@ struct chain_lightning_t : public shaman_spell_t
 
     return cls -> ms_results;
   }
+
+  std::vector< player_t* >& target_list() const
+  {
+    if ( !sim -> fancy_target_distance_stuff )
+    {
+      return shaman_spell_t::target_list();
+    }
+    if ( !target_cache.is_valid )
+    {
+      target_cache.list.clear();
+      // The following code is intended to generate a target list that properly accounts for range from each target during chain lightning.
+      // On a very basic level, it starts at the original target, and then finds a path that will hit 4 more, if possible.
+      // The code below randomly cycles through targets until it finds said path, or hits the maximum amount of attempts, in which it gives up and just returns the current best path.
+      // I wouldn't be terribly surprised if Blizz did something like this in game.
+
+      player_t* last_chain; // We have to track the last target that it hit.
+      last_chain = target;
+      target_cache.list.push_back( last_chain ); // The original target is always the first.
+      std::vector< player_t* > best_so_far( target_cache.list ); // Keeps track of the best chain path found so far, so we can use it if we give up.
+
+      size_t num_targets = sim -> target_non_sleeping_list.size();
+      size_t max_attempts = ( num_targets - 1 ) * 3, local_attempts = 0, attempts = 0, chain_number = 1;
+      std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
+      std::vector<player_t*>::iterator position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
+      if ( position != targets_left_to_try.end() )
+        targets_left_to_try.erase( position );
+
+      std::vector<player_t*> original_targets( targets_left_to_try ); // This is just so we don't have to constantly remove the original target.
+
+      bool stop_trying = false; // It's not you, it's me.
+
+      while ( !stop_trying )
+      {
+        local_attempts = 0;
+        attempts++;
+        if ( attempts >= max_attempts )
+          stop_trying = true;
+        while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
+        {
+          player_t* possibletarget;
+          size_t rng_target = static_cast<size_t>( rng().range( 0.0, ( static_cast<double>( targets_left_to_try.size() ) - 0.000001 ) ) );
+          possibletarget = targets_left_to_try[rng_target];
+
+          double distance_from_last_chain = last_chain -> get_position_distance( possibletarget -> x_position, possibletarget -> y_position );
+          if ( distance_from_last_chain <= radius )
+          {
+            last_chain = possibletarget;
+            target_cache.list.push_back( last_chain );
+            targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
+            chain_number++;
+          }
+          else
+          {
+            if ( distance_from_last_chain > ( radius * ( aoe - chain_number ) ) ) // If there is no hope of this target being chained to, there's no need to test it again for other possibilities. 
+              targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
+            local_attempts++; // Only count failures towards the limit-cap.
+          }
+          if ( target_cache.list.size() == aoe || target_cache.list.size() == num_targets ) // If we run out of targets to hit, or have hit 5 already. Break.
+          {
+            stop_trying = true;
+            break;
+          }
+        }
+        if ( target_cache.list.size() > best_so_far.size() )
+          best_so_far.swap( target_cache.list );
+
+        target_cache.list.clear();
+        target_cache.list.push_back( target );
+        last_chain = target;
+        targets_left_to_try = original_targets;
+        chain_number = 1;
+      }
+
+      if ( best_so_far.size() > target_cache.list.size() )
+        target_cache.list.swap( best_so_far );
+
+      sim -> out_debug.printf( "Total attempts at finding path: %.3f %.3f", static_cast<double>( attempts ), static_cast<double>( local_attempts ) );
+    }
+    target_cache.is_valid = true;
+    return target_cache.list;
+  }
 };
 
 // Lava Beam Spell ==========================================================
