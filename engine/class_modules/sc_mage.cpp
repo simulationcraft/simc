@@ -2521,7 +2521,6 @@ struct comet_storm_t : public mage_spell_t
     mage_spell_t( "comet_storm", p, p -> talents.comet_storm ),
     projectile( new comet_storm_projectile_t( p ) )
   {
-
     parse_options( options_str );
 
     may_miss = false;
@@ -3786,7 +3785,7 @@ struct meteor_burn_t : public mage_spell_t
 
 struct meteor_impact_t: public mage_spell_t
 {
-  meteor_impact_t( mage_t* p, mage_spell_t* meteor, int targets ):
+  meteor_impact_t( mage_t* p, int targets ):
     mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) )
   {
     background = true;
@@ -3821,13 +3820,13 @@ struct meteor_t : public mage_spell_t
   meteor_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
     targets( -1 ),
-    meteor_impact( new meteor_impact_t( p, this, targets ) ),
+    meteor_impact( new meteor_impact_t( p, targets ) ),
     meteor_burn( new meteor_burn_t( p, targets ) ),
     meteor_delay( p -> find_spell( 177345 ) -> duration() )
   {
     add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
-    hasted_ticks = tick_zero = false;
+    hasted_ticks = false;
     callbacks = false;
     may_multistrike = 0;
     add_child( meteor_impact );
