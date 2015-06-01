@@ -2867,6 +2867,10 @@ struct felstorm_t : public melee_attack_t
     tick_action = new felstorm_tick_t( p );
   }
 
+  // Felstorm, while channeled, is not affected by haste
+  timespan_t tick_time( double ) const
+  { return base_tick_time; }
+
   bool init_finished()
   {
     pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "mirror_image_(trinket)" );
@@ -2887,8 +2891,15 @@ struct blademaster_pet_t : public pet_t
     main_hand_weapon.type = WEAPON_BEAST;
     // Verified 5/11/15, TODO: Check if this is still the same on live
     owner_coeff.ap_from_ap = 1.0;
-    // TODO: Verify in-game
+
+    // Magical constants for base damage
+    double damage_range = 0.4;
+    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
+    double min_dps = base_dps * ( 1 - damage_range / 2.0 );
+    double max_dps = base_dps * ( 1 + damage_range / 2.0 );
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.min_dmg =  min_dps * main_hand_weapon.swing_time.total_seconds();
+    main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
   }
 
   void init_action_list()
