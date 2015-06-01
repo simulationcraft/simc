@@ -3612,7 +3612,6 @@ struct death_and_decay_t : public death_knight_spell_t
 
     aoe              = -1;
     attack_power_mod.tick = p -> find_spell( 52212 ) -> effectN( 1 ).ap_coeff();
-    radius = p -> find_spell( 52212 ) -> effectN( 1 ).radius_max();
     base_tick_time   = timespan_t::from_seconds( 1.0 );
     dot_duration = data().duration(); // 11 with tick_zero
     tick_may_crit = tick_zero = true;
@@ -3686,7 +3685,7 @@ struct defile_t : public death_knight_spell_t
     base_dd_min = base_dd_max = 0;
     school = p -> find_spell( 156000 ) -> get_school_type();
     attack_power_mod.tick = p -> find_spell( 156000 ) -> effectN( 1 ).ap_coeff();
-    radius = p -> find_spell( 156000 ) -> effectN( 1 ).radius();
+    radius =  data().effectN( 1 ).radius();
     dot_duration = data().duration();
     tick_may_crit = true;
     hasted_ticks = tick_zero = false;
