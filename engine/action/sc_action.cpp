@@ -546,11 +546,9 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       // Direct Damage
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
-    case E_DUMMY:
     case E_HEALTH_LEECH:
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
-      radius           = spelleffect_data.radius_max();
       amount_delta            = spelleffect_data.m_delta();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level() );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level() );
@@ -573,6 +571,10 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 
       // Dot
     case E_PERSISTENT_AREA_AURA:
+      radius = spelleffect_data.radius_max();
+      if ( radius < 0 )
+        radius = spelleffect_data.radius();
+      break;
     case E_APPLY_AURA:
       switch ( spelleffect_data.subtype() )
       {
