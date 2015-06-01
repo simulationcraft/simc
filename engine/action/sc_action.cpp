@@ -357,6 +357,7 @@ action_t::action_t( action_e       ty,
   action_list = 0;
   movement_directionality = MOVEMENT_NONE;
   base_teleport_distance = 0;
+  parent_dot_name = "";
   state_cache = 0;
 
   range::fill( base_costs, 0.0 );
@@ -545,6 +546,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       // Direct Damage
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
+    case E_DUMMY:
     case E_HEALTH_LEECH:
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
@@ -1040,6 +1042,12 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
   if ( ! target -> is_sleeping() )
     tl.push_back( target );
 
+  dot_t* ground_aoe = 0;
+  if ( sim -> fancy_target_distance_stuff )
+  {
+    if ( parent_dot_name.size() > 0 )
+      ground_aoe = target -> find_dot( parent_dot_name, player );
+  }
   for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
   {
     player_t* t = sim -> target_non_sleeping_list[i];
@@ -1055,21 +1063,27 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
         }
         if ( radius > 0 )
         {
-          if ( range > 0 ) // Abilities with range/radius radiate from the target.
+          if ( range > 0 ) // Abilities with range/radius radiate from the target. 
           {
-            if ( target -> get_position_distance( t -> x_position, t -> y_position ) <= radius )
+            if ( ground_aoe && ground_aoe -> is_ticking() )
+            {
+              if ( sim -> log )
+                sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", ground_aoe -> state -> original_x, ground_aoe -> state -> original_y );
+              if ( t -> get_position_distance( ground_aoe -> state -> original_x, ground_aoe -> state -> original_y ) <= radius )
+                tl.push_back( t );
+            }
+            else if ( target -> get_position_distance( t -> x_position, t -> y_position ) <= radius )
               tl.push_back( t );
           } // If they do not have a range, they are likely based on the distance from the player.
           else if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= radius )
             tl.push_back( t );
         }
-        else if ( range > 0 ) // If they only have a range, then they are a single target ability.
-        {
-          if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= range )
-            tl.push_back( t );
-        }
-
-        }
+      }
+      else if ( range > 0 ) // If they only have a range, then they are a single target ability.
+      {
+        if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= range )
+          tl.push_back( t );
+      }
       else
       {
         tl.push_back( t );
@@ -1986,6 +2000,7 @@ void action_t::init()
     tick_action -> direct_tick = true;
     tick_action -> dual = true;
     tick_action -> stats = stats;
+    tick_action -> parent_dot_name = name_str;
     stats -> action_list.push_back( tick_action );
   }
 

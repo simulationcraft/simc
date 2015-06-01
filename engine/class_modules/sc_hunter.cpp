@@ -2460,31 +2460,39 @@ struct freezing_trap_t: public hunter_ranged_attack_t
 
 // Explosive Trap ==============================================================
 
+struct explosive_trap_tick_t: public hunter_ranged_attack_t
+{
+  explosive_trap_tick_t( hunter_t* player ):
+    hunter_ranged_attack_t( "explosive_trap_tick", player, player -> find_spell( 13812 ) )
+  {
+    aoe = -1;
+    hasted_ticks = false;
+    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
+    dot_duration = data().duration();
+    base_tick_time = data().effectN( 2 ).period();
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    // BUG in game it uses the direct damage AP mltiplier for ticks as well.
+    attack_power_mod.tick = attack_power_mod.direct;
+    ignore_false_positive = true;
+  }
+};
+
 struct explosive_trap_t: public hunter_ranged_attack_t
 {
+  explosive_trap_tick_t* tick;
   explosive_trap_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) )
+    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) ),
+    tick( new explosive_trap_tick_t( player ) )
   {
     parse_options( options_str );
-    aoe = -1;
 
     cooldown -> duration = data().cooldown();
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
-    hasted_ticks = false;
-    const spell_data_t* damage = p() -> find_spell( 13812 );
-    dot_duration  = damage -> duration();
-    base_tick_time = damage -> effectN( 2 ).period();
-    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-    attack_power_mod.direct = damage -> effectN( 1 ).ap_coeff();
-    radius = damage -> effectN( 1 ).radius_max();
     range = 40.0;
-
-    // BUG in game it uses the direct damage AP mltiplier for ticks as well.
-    attack_power_mod.tick = attack_power_mod.direct;
-    ignore_false_positive = true;
     // BUG simulate slow velocity of launch
     travel_speed = 18.0;
+    add_child( tick );
   }
 };
 
@@ -3145,7 +3153,8 @@ struct barrage_t: public hunter_spell_t
       base_execute_time = weapon -> swing_time;
       aoe = -1;
       base_aoe_multiplier = 0.5;
-      radius = 40;
+      range = radius;
+      range = 0;
     }
   };
 

@@ -2570,6 +2570,7 @@ struct mind_sear_tick_t : public priest_spell_t
   mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear ) :
     priest_spell_t( "mind_sear_tick", p, mind_sear -> effectN( 1 ).trigger() )
   {
+    radius = data().effectN( 1 ).radius();
     background  = true;
     dual        = true;
     aoe         = -1;

@@ -692,6 +692,9 @@ void dot_t::start( timespan_t duration )
   if ( sim.debug )
     sim.out_debug.printf( "%s starts dot for %s on %s. duration=%.3f", source -> name(), name(), target -> name(), duration.total_seconds() );
 
+  state -> original_x = target -> x_position;
+  state -> original_y = target -> y_position;
+
   check_tick_zero();
 
   schedule_tick();

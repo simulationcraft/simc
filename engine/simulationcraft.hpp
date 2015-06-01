@@ -5796,6 +5796,8 @@ struct action_state_t : public noncopyable
   // Execution attributes
   size_t          n_targets;            // Total number of targets the execution hits.
   int             chain_target;         // The chain target number, 0 == no chain, 1 == first target, etc.
+  double original_x;
+  double original_y;
   // Execution results
   dmg_e           result_type;
   result_e        result;
@@ -6014,6 +6016,7 @@ struct action_t : public noncopyable
   // Movement stuff
   movement_direction_e movement_directionality;
   double base_teleport_distance;
+  std::string parent_dot_name; // This is used to find where ground effect aoes were originally cast.
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -6140,7 +6143,11 @@ struct action_t : public noncopyable
     return target_specific_dot[ t ];
   }
 
-  void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
+  void add_child( action_t* child ) 
+  {
+    child -> parent_dot_name = name_str;
+    stats -> add_child( child -> stats ); 
+  }
 
   virtual int num_targets();
   virtual size_t available_targets( std::vector< player_t* >& ) const;

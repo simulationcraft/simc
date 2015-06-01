@@ -1671,6 +1671,8 @@ private:
     {
       aoe = 3;
       dual = direct_tick = background = may_crit = may_miss = true;
+      range = radius;
+      radius = 0;
     }
   };
 

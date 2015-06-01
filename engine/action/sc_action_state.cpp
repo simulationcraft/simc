@@ -68,6 +68,8 @@ void action_state_t::copy_state( const action_state_t* o )
   target = o -> target; assert( target );
   n_targets = o -> n_targets;
   chain_target = o -> chain_target;
+  original_x = o -> original_x;
+  original_y = o -> original_y;
   result_type = o -> result_type;
   result = o -> result;
   result_raw = o -> result_raw;
@@ -99,7 +101,7 @@ void action_state_t::copy_state( const action_state_t* o )
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
   next( 0 ), action( a ), target( t ),
-  n_targets( 0 ), chain_target( 0 ),
+  n_targets( 0 ), chain_target( 0 ), original_x( 0 ), original_y( 0 ),
   result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), block_result( BLOCK_RESULT_UNKNOWN ),
   result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ),
   result_absorbed( 0 ), result_amount( 0 ), blocked_amount( 0 ), self_absorb_amount( 0 ),
@@ -151,6 +153,8 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << " n_targets=" << n_targets;
   s << " chain_target=" << chain_target;
+  s << " original_x=" << original_x;
+  s << " original_y=" << original_y;
 
   s << " raw_amount=" << result_raw;
   s << " total_amount=" << result_total;

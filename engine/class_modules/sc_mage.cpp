@@ -3772,49 +3772,37 @@ struct living_bomb_t : public mage_spell_t
 
 struct meteor_burn_t : public mage_spell_t
 {
-  meteor_burn_t( mage_t* p ) :
+  meteor_burn_t( mage_t* p, int targets ) :
     mage_spell_t( "meteor_burn", p, p -> find_spell( 155158 ) )
   {
     background = true;
-
-    // Meteor is observed to have 7 ticks over 7 seconds in game. This
-    // correlates well with the ground tick effect, 155158's duration (10 sec)
-    // minus Meteor's initial travel time, 177345's duration (3 seconds)
-    dot_duration = data().duration() - p -> find_spell( 177345 ) -> duration();
-    hasted_ticks = false;
+    aoe = targets;
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.tick = 0;
+    dot_duration = timespan_t::zero();
+    radius = p -> find_spell( 153564 ) -> effectN( 1 ).radius_max();
   }
 };
 
-struct meteor_impact_t : public mage_spell_t
+struct meteor_impact_t: public mage_spell_t
 {
-  meteor_burn_t* meteor_burn;
-
-  meteor_impact_t( mage_t* p, mage_spell_t* meteor, int targets ) :
-    mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) ),
-    meteor_burn( new meteor_burn_t( p ) )
+  meteor_impact_t( mage_t* p, mage_spell_t* meteor, int targets ):
+    mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) )
   {
     background = true;
-
     aoe = targets;
     split_aoe_damage = true;
-
-    meteor -> add_child( meteor_burn );
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
   }
 
-  virtual timespan_t travel_time() const
+  timespan_t travel_time() const
   {
     return timespan_t::from_seconds( 1.0 );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      meteor_burn -> target = s -> target;
-      meteor_burn -> execute();
-    }
 
     if ( result_is_hit_or_multistrike( s -> result ) )
     {
@@ -3827,19 +3815,25 @@ struct meteor_t : public mage_spell_t
 {
   int targets;
   meteor_impact_t* meteor_impact;
+  meteor_burn_t* meteor_burn;
   timespan_t meteor_delay;
+  timespan_t actual_tick_time;
   meteor_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
     targets( -1 ),
     meteor_impact( new meteor_impact_t( p, this, targets ) ),
+    meteor_burn( new meteor_burn_t( p, targets ) ),
     meteor_delay( p -> find_spell( 177345 ) -> duration() )
   {
     add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
-
+    hasted_ticks = tick_zero = false;
     callbacks = false;
     may_multistrike = 0;
     add_child( meteor_impact );
+    add_child( meteor_burn );
+    dot_duration = p -> find_spell( 175396 ) -> duration() - p -> find_spell( 153564 ) -> duration();
+    actual_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
   }
 
@@ -3854,10 +3848,18 @@ struct meteor_t : public mage_spell_t
 
   void impact( action_state_t* s )
   {
+    base_tick_time = timespan_t::from_seconds( 2 ); // Yep. Don't hate. Need to make the dot tick 1 second after impact.
     mage_spell_t::impact( s );
-
     meteor_impact -> target = s -> target;
     meteor_impact -> execute();
+    base_tick_time = actual_tick_time;
+  }
+
+  void tick( dot_t* d )
+  {
+    mage_spell_t::tick( d );
+    meteor_burn -> target = d -> target;
+    meteor_burn -> execute();
   }
 };
 
@@ -3893,9 +3895,6 @@ struct mirror_image_t : public mage_spell_t
 
   virtual void execute()
   {
-    if (!p() -> talents.mirror_image -> ok() )
-      return;
-
     mage_spell_t::execute();
 
     if ( p() -> pets.mirror_images[ 0 ] )

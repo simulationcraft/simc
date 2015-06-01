@@ -5550,7 +5550,7 @@ struct starfall_t : public druid_spell_t
     {
       direct_tick = true;
       aoe = -1;
-      radius = 40;
+      range = 40;
     }
   };
 
