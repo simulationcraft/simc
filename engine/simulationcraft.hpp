@@ -2546,10 +2546,18 @@ public:
 
 private:
   void erase_unordered( typename std::vector<T>::iterator it )
-  { ::erase_unordered( _data, it ); trigger_callbacks( *it ); }
+  {
+    T _v = *it;
+    ::erase_unordered( _data, it );
+    trigger_callbacks( _v );
+  }
 
   void erase( typename std::vector<T>::iterator it )
-  { _data.erase( it ); trigger_callbacks( *it ); }
+  {
+    T _v = *it;
+    _data.erase( it );
+    trigger_callbacks( _v );
+  }
 };
 
 /* Unformatted SimC output class.
