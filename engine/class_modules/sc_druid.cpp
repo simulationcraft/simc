@@ -6886,7 +6886,7 @@ void druid_t::apl_guardian()
   default_list -> add_action( this, "Barkskin", "if=buff.bristling_fur.down" );
   default_list -> add_talent( this, "Bristling Fur", "if=buff.barkskin.down&buff.savage_defense.down" );
   default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&incoming_damage_1s" );
-  default_list -> add_action( this, "Berserk", "if=buff.pulverize.remains>10" );
+  default_list -> add_action( this, "Berserk", "if=(buff.pulverize.remains>10|!talent.pulverize.enabled)&buff.incarnation.down" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=rage>=80" );
   default_list -> add_talent( this, "Cenarion Ward" );
   default_list -> add_talent( this, "Renewal", "if=health.pct<30" );
@@ -6896,7 +6896,7 @@ void druid_t::apl_guardian()
   default_list -> add_action( this, "Healing Touch", "if=buff.dream_of_cenarius.react&health.pct<30" );
   default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<=3.6" );
   default_list -> add_action( this, "Lacerate", "if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd&buff.berserk.down" );
-  default_list -> add_action( "incarnation" );
+  default_list -> add_action( "incarnation,if=buff.berserk.down" );
   default_list -> add_action( this, "Lacerate", "if=!ticking" );
   default_list -> add_action( "thrash_bear,if=!ticking" );
   default_list -> add_action( this, "Mangle" );
