@@ -1266,7 +1266,7 @@ struct temporal_hero_t : public pet_t
     }
 
     mage_t* m = debug_cast<mage_t*>( owner );
-    m -> buffs.temporal_power -> bump();
+    m -> buffs.temporal_power -> trigger();
 
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
