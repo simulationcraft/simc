@@ -3568,6 +3568,8 @@ struct chaos_bolt_t: public warlock_spell_t
     aoe = -1;
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
+    radius = 10;
+    range = 40;
 
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
