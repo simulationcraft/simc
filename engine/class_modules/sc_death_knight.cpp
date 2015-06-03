@@ -460,6 +460,8 @@ public:
     proc_t* ready_blood;
     proc_t* ready_frost;
     proc_t* ready_unholy;
+
+    proc_t* km_natural_expiration;
   } procs;
 
   real_ppm_t t15_2pc_melee;
@@ -5829,6 +5831,26 @@ struct frozen_runeblade_buff_t : public buff_t
   }
 };
 
+struct killing_machine_buff_t : public buff_t
+{
+  killing_machine_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "killing_machine", p -> find_spell( 51124 ) )
+                           .default_value( p -> find_spell( 51124 ) -> effectN( 1 ).percent() )
+                           .chance( p -> find_specialization_spell( "Killing Machine" ) -> proc_chance() ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      death_knight_t* dk = debug_cast<death_knight_t*>( player );
+      dk -> procs.km_natural_expiration -> occur();
+    }
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 // Runeforges ==============================================================
@@ -7193,9 +7215,9 @@ void death_knight_t::create_buffs()
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
                               .cd( timespan_t::zero() );
-  buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
+  buffs.killing_machine     = new killing_machine_buff_t( this );/*buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
-                              .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
+                              .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based! */
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
@@ -7335,6 +7357,8 @@ void death_knight_t::init_procs()
   procs.ready_blood              = get_proc( "Blood runes ready" );
   procs.ready_frost              = get_proc( "Frost runes ready" );
   procs.ready_unholy             = get_proc( "Unholy runes ready" );
+
+  procs.km_natural_expiration    = get_proc( "Killing Machine expired naturally" );
 }
 
 // death_knight_t::init_resources ===========================================
