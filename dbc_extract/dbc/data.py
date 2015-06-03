@@ -147,6 +147,11 @@ _DIFF_DATA = {
             ( 'id_specialization', _ADD_FIELD, 'cooldown_group_duration' )
         ]
     },
+    20076: {
+        'SpecializationSpells.dbc': [
+            ( 'unk_20076', _ADD_FIELD, 'spec_id' ),
+        ]
+    }
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
