@@ -2220,7 +2220,7 @@ enum token_e
   TOK_ABS,
   TOK_SPELL_LIST,
   TOK_FLOOR,
-  TOK_CEIL,
+  TOK_CEIL
 };
 
 struct expr_token_t
@@ -6015,7 +6015,6 @@ struct action_t : public noncopyable
   expr_t* if_expr;
   std::string target_if_str;
   target_if_mode_e target_if_mode;
-  player_t* selected_target;
   expr_t* target_if_expr;
   std::string interrupt_if_expr_str;
   std::string early_chain_if_expr_str;
