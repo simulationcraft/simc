@@ -4482,6 +4482,7 @@ struct choose_target_t : public action_t
     }
 
     mage_t* p = debug_cast<mage_t*>( player );
+    assert( ! target_if_expr || ( selected_target == select_target_if_target() ) );
 
     if ( sim -> current_time() == last_execute )
     {
