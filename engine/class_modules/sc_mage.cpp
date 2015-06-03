@@ -1223,6 +1223,19 @@ struct temporal_hero_t : public pet_t
     return base_t::create_action( name, options_str );
   }
 
+  virtual double composite_player_multiplier( school_e school ) const
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    // Temporal Hero benefits from Temporal Power applied by itself (1 stack).
+    // Using owner's buff object, in order to avoid creating a separate buff_t
+    // for each pet instance, and merging the buff statistics.
+    mage_t* mage = debug_cast<mage_t*>( owner );
+    m *= 1.0 + mage -> buffs.temporal_power -> data().effectN( 1 ).percent();
+
+    return m;
+  }
+
   void arise()
   {
     pet_t::arise();
