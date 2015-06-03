@@ -1053,7 +1053,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 
   if ( sim -> distance_targeting_enabled )
   {
-    distance_targeting.available_targeting( tl, this );
+    this -> available_targeting( tl );
   }
   else
   {
@@ -1174,7 +1174,7 @@ void action_t::execute()
   if ( n_targets() == 0 && target -> is_sleeping() )
     return;
 
-  if ( !distance_targeting.execute_targeting( this ) )
+  if ( !execute_targeting( this ) )
   {
     cancel(); // This cancels the cast if the target moves out of range while the spell is casting.
     return;
@@ -3031,7 +3031,7 @@ void action_t::impact( action_state_t* s )
 {
   if ( sim -> distance_targeting_enabled )
   {
-    if ( !distance_targeting.impact_targeting( s ) )
+    if ( !impact_targeting( s ) )
       return;
   }
 

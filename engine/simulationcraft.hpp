@@ -5936,14 +5936,6 @@ struct action_t : public noncopyable
     target_cache_t() : is_valid( false ) {}
   } mutable target_cache;
 
-  struct distance_targeting_t
-  {
-    virtual bool execute_targeting( const action_t* action );
-    virtual bool impact_targeting( action_state_t* s );
-    std::vector<player_t*> available_targeting( std::vector< player_t* >& tl, const action_t* action );
-    distance_targeting_t() {}
-  } mutable distance_targeting;
-
   enum target_if_mode_e
   {
     TARGET_IF_NONE,
@@ -6186,6 +6178,10 @@ struct action_t : public noncopyable
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual std::vector< player_t* >& target_list() const;
   virtual player_t* find_target_by_number( int number ) const;
+
+  virtual bool execute_targeting( const action_t* action );
+  virtual bool impact_targeting( action_state_t* s );
+  virtual std::vector<player_t*> available_targeting( std::vector< player_t* >& tl ) const;
 
   action_state_t* state_cache;
   action_state_t* execute_state; /* State of the last execute() */

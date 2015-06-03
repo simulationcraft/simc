@@ -2779,7 +2779,7 @@ struct chain_lightning_t: public shaman_spell_t
     return cls -> ms_results;
   }
 
-  std::vector<player_t*> available_targeting( std::vector< player_t* >& tl, action_t* )
+  std::vector<player_t*> available_targeting( std::vector< player_t* >& tl ) const
   { // available_targeting is only called when distance_targeting_enabled is true. Otherwise, available_targets is called.
     // The following code is intended to generate a target list that properly accounts for range from each target during chain lightning.
     // On a very basic level, it starts at the original target, and then finds a path that will hit 4 more, if possible.
@@ -2846,7 +2846,8 @@ struct chain_lightning_t: public shaman_spell_t
     if ( best_so_far.size() > tl.size() )
       tl.swap( best_so_far );
 
-    sim -> out_debug.printf( "Total attempts at finding path: %.3f %.3f", static_cast<double>( attempts ), static_cast<double>( local_attempts ) );
+    if ( sim -> log )
+      sim -> out_debug.printf( "Total attempts at finding path: %.3f %.3f", static_cast<double>( attempts ), static_cast<double>( local_attempts ) );
     return tl;
   }
 };
