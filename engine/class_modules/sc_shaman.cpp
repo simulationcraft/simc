@@ -5443,6 +5443,9 @@ void shaman_t::create_buffs()
   buff.feral_spirit          = buff_creator_t( this, "feral_spirit", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
 
   buff.gathering_vortex      = buff_creator_t( this, "gathering_vortex", find_spell( 189078 ) )
+                               .max_stack( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 )
+                                           ? sets.set( SHAMAN_ELEMENTAL, T18, B4 ) -> effectN( 1 ).base_value()
+                                           : 1 )
                                .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) );
 
 }
