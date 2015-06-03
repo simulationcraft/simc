@@ -2474,6 +2474,7 @@ struct explosive_trap_tick_t: public hunter_ranged_attack_t
     // BUG in game it uses the direct damage AP mltiplier for ticks as well.
     attack_power_mod.tick = attack_power_mod.direct;
     ignore_false_positive = true;
+    ground_aoe = true;
   }
 };
 
@@ -4541,11 +4542,13 @@ void hunter_t::invalidate_cache( cache_e c )
     if ( mastery.essence_of_the_viper -> ok() || mastery.sniper_training -> ok() )
     {
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-      if ( sim -> fancy_target_distance_stuff && mastery.sniper_training -> ok() )
+      if ( sim -> distance_targeting_enabled && mastery.sniper_training -> ok() )
       {
         // Marksman is a unique butterfly, since mastery changes the max range of abilities. We need to regenerate every target cache.
         for ( size_t i = 0, end = action_list.size(); i < end; i++ )
+        {
           action_list[i] -> target_cache.is_valid = false;
+        }
       }
     }
     break;

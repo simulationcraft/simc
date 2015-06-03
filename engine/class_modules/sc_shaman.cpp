@@ -2643,13 +2643,13 @@ struct bloodlust_t : public shaman_spell_t
 
 // Chain Lightning Spell ====================================================
 
-struct chain_lightning_t : public shaman_spell_t
+struct chain_lightning_t: public shaman_spell_t
 {
-  struct chain_lightning_state_t : public action_state_t
+  struct chain_lightning_state_t: public action_state_t
   {
     int ms_results;
 
-    chain_lightning_state_t( action_t* action, player_t* target ) :
+    chain_lightning_state_t( action_t* action, player_t* target ):
       action_state_t( action, target ), ms_results( 0 )
     { }
 
@@ -2672,15 +2672,15 @@ struct chain_lightning_t : public shaman_spell_t
     }
   };
 
-  chain_lightning_t( shaman_t* player, const std::string& options_str ) :
+  chain_lightning_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "chain_lightning", player, player -> find_class_spell( "Chain Lightning" ), options_str )
   {
-    may_fulmination       = player -> spec.fulmination -> ok();
+    may_fulmination = player -> spec.fulmination -> ok();
     cooldown -> duration += player -> spec.shamanism -> effectN( 4 ).time_value();
-    base_multiplier      *= 1.0 + player -> spec.shamanism -> effectN( 2 ).percent();
-    base_multiplier      *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
-    aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
-    base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+    base_multiplier *= 1.0 + player -> spec.shamanism -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
+    aoe = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
+    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
   }
 
@@ -2779,85 +2779,75 @@ struct chain_lightning_t : public shaman_spell_t
     return cls -> ms_results;
   }
 
-  std::vector< player_t* >& target_list() const
-  {
-    if ( !sim -> fancy_target_distance_stuff )
+  std::vector<player_t*> available_targeting( std::vector< player_t* >& tl, action_t* )
+  { // available_targeting is only called when distance_targeting_enabled is true. Otherwise, available_targets is called.
+    // The following code is intended to generate a target list that properly accounts for range from each target during chain lightning.
+    // On a very basic level, it starts at the original target, and then finds a path that will hit 4 more, if possible.
+    // The code below randomly cycles through targets until it finds said path, or hits the maximum amount of attempts, in which it gives up and just returns the current best path.
+    // I wouldn't be terribly surprised if Blizz did something like this in game.
+
+    player_t* last_chain; // We have to track the last target that it hit.
+    last_chain = target;
+    std::vector< player_t* > best_so_far( tl ); // Keeps track of the best chain path found so far, so we can use it if we give up.
+
+    size_t num_targets = sim -> target_non_sleeping_list.size();
+    size_t max_attempts = ( num_targets - 1 ) * 3, local_attempts = 0, attempts = 0, chain_number = 1;
+    std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
+    std::vector<player_t*>::iterator position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
+    if ( position != targets_left_to_try.end() )
+      targets_left_to_try.erase( position );
+
+    std::vector<player_t*> original_targets( targets_left_to_try ); // This is just so we don't have to constantly remove the original target.
+
+    bool stop_trying = false; // It's not you, it's me.
+
+    while ( !stop_trying )
     {
-      return shaman_spell_t::target_list();
-    }
-    if ( !target_cache.is_valid )
-    {
-      target_cache.list.clear();
-      // The following code is intended to generate a target list that properly accounts for range from each target during chain lightning.
-      // On a very basic level, it starts at the original target, and then finds a path that will hit 4 more, if possible.
-      // The code below randomly cycles through targets until it finds said path, or hits the maximum amount of attempts, in which it gives up and just returns the current best path.
-      // I wouldn't be terribly surprised if Blizz did something like this in game.
-
-      player_t* last_chain; // We have to track the last target that it hit.
-      last_chain = target;
-      target_cache.list.push_back( last_chain ); // The original target is always the first.
-      std::vector< player_t* > best_so_far( target_cache.list ); // Keeps track of the best chain path found so far, so we can use it if we give up.
-
-      size_t num_targets = sim -> target_non_sleeping_list.size();
-      size_t max_attempts = ( num_targets - 1 ) * 3, local_attempts = 0, attempts = 0, chain_number = 1;
-      std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
-      std::vector<player_t*>::iterator position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
-      if ( position != targets_left_to_try.end() )
-        targets_left_to_try.erase( position );
-
-      std::vector<player_t*> original_targets( targets_left_to_try ); // This is just so we don't have to constantly remove the original target.
-
-      bool stop_trying = false; // It's not you, it's me.
-
-      while ( !stop_trying )
+      local_attempts = 0;
+      attempts++;
+      if ( attempts >= max_attempts )
+        stop_trying = true;
+      while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
       {
-        local_attempts = 0;
-        attempts++;
-        if ( attempts >= max_attempts )
-          stop_trying = true;
-        while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
+        player_t* possibletarget;
+        size_t rng_target = static_cast<size_t>( rng().range( 0.0, ( static_cast<double>( targets_left_to_try.size() ) - 0.000001 ) ) );
+        possibletarget = targets_left_to_try[rng_target];
+
+        double distance_from_last_chain = last_chain -> get_position_distance( possibletarget -> x_position, possibletarget -> y_position );
+        if ( distance_from_last_chain <= radius )
         {
-          player_t* possibletarget;
-          size_t rng_target = static_cast<size_t>( rng().range( 0.0, ( static_cast<double>( targets_left_to_try.size() ) - 0.000001 ) ) );
-          possibletarget = targets_left_to_try[rng_target];
-
-          double distance_from_last_chain = last_chain -> get_position_distance( possibletarget -> x_position, possibletarget -> y_position );
-          if ( distance_from_last_chain <= radius )
-          {
-            last_chain = possibletarget;
-            target_cache.list.push_back( last_chain );
-            targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
-            chain_number++;
-          }
-          else
-          {
-            if ( distance_from_last_chain > ( radius * ( aoe - chain_number ) ) ) // If there is no hope of this target being chained to, there's no need to test it again for other possibilities. 
-              targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
-            local_attempts++; // Only count failures towards the limit-cap.
-          }
-          if ( static_cast<int>( target_cache.list.size() ) == aoe || target_cache.list.size() == num_targets ) // If we run out of targets to hit, or have hit 5 already. Break.
-          {
-            stop_trying = true;
-            break;
-          }
+          last_chain = possibletarget;
+          tl.push_back( last_chain );
+          targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
+          chain_number++;
         }
-        if ( target_cache.list.size() > best_so_far.size() )
-          best_so_far.swap( target_cache.list );
-
-        target_cache.list.clear();
-        target_cache.list.push_back( target );
-        last_chain = target;
-        targets_left_to_try = original_targets;
-        chain_number = 1;
+        else
+        {
+          if ( distance_from_last_chain > ( radius * ( aoe - chain_number ) ) ) // If there is no hope of this target being chained to, there's no need to test it again for other possibilities. 
+            targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
+          local_attempts++; // Only count failures towards the limit-cap.
+        }
+        if ( static_cast<int>( tl.size() ) == aoe || tl.size() == num_targets ) // If we run out of targets to hit, or have hit 5 already. Break.
+        {
+          stop_trying = true;
+          break;
+        }
       }
+      if ( tl.size() > best_so_far.size() )
+        best_so_far.swap( tl );
 
-      if ( best_so_far.size() > target_cache.list.size() )
-        target_cache.list.swap( best_so_far );
-
-      sim -> out_debug.printf( "Total attempts at finding path: %.3f %.3f", static_cast<double>( attempts ), static_cast<double>( local_attempts ) );
+      tl.clear();
+      tl.push_back( target );
+      last_chain = target;
+      targets_left_to_try = original_targets;
+      chain_number = 1;
     }
-    target_cache.is_valid = true;
-    return target_cache.list;
+
+    if ( best_so_far.size() > tl.size() )
+      tl.swap( best_so_far );
+
+    sim -> out_debug.printf( "Total attempts at finding path: %.3f %.3f", static_cast<double>( attempts ), static_cast<double>( local_attempts ) );
+    return tl;
   }
 };
 
@@ -3398,6 +3388,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     aoe = -1;
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.11; // Hardcoded into tooltip because it's cool
+    ground_aoe = true;
   }
 
   virtual double composite_spell_power() const
@@ -4297,6 +4288,7 @@ struct magma_totem_pulse_t : public totem_pulse_action_t
     aoe = -1;
     base_multiplier *= 1.0 + totem -> o() -> perk.improved_fire_totems -> effectN( 1 ).percent();
     hasted_pulse = true;
+    ground_aoe = true;
   }
 };
 

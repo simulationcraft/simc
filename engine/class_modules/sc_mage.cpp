@@ -996,8 +996,8 @@ struct prismatic_crystal_t : public pet_t
     // For now, when Prismatic Crystal is summoned, adjust all mage targets to it.
     o() -> current_target = this;
     for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
-      o() -> action_list[ i ] -> target_cache.is_valid = false;
-  }
+      o() -> action_list[i] -> target_cache.is_valid = false;
+    }
 
   void demise()
   {
@@ -1006,8 +1006,8 @@ struct prismatic_crystal_t : public pet_t
     // For now, when Prismatic Crystal despawns, adjust all mage targets back to fluffy pillow.
     o() -> current_target = o() -> target;
     for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
-      o() -> action_list[ i ] -> target_cache.is_valid = false;
-  }
+      o() -> action_list[i] -> target_cache.is_valid = false;
+    }
 
   double composite_mitigation_versatility() const { return 0; }
 
@@ -2318,6 +2318,7 @@ struct blizzard_shard_t : public mage_spell_t
   {
     aoe = -1;
     background = true;
+    ground_aoe = true;
   }
 
   // Override damage type because Blizzard is considered a DOT
@@ -2352,7 +2353,7 @@ struct blizzard_t : public mage_spell_t
   blizzard_shard_t* shard;
 
   blizzard_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "blizzard", p, p -> find_class_spell( "Blizzard" ) ),
+    mage_spell_t( "blizzard", p, p -> find_specialization_spell( "Blizzard" ) ),
     shard( new blizzard_shard_t( p ) )
   {
     parse_options( options_str );
@@ -3796,6 +3797,7 @@ struct meteor_burn_t : public mage_spell_t
     spell_power_mod.tick = 0;
     dot_duration = timespan_t::zero();
     radius = p -> find_spell( 153564 ) -> effectN( 1 ).radius_max();
+    ground_aoe = true;
   }
 };
 
@@ -3808,6 +3810,7 @@ struct meteor_impact_t: public mage_spell_t
     aoe = targets;
     split_aoe_damage = true;
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    ground_aoe = true;
   }
 
   timespan_t travel_time() const
@@ -4615,8 +4618,8 @@ struct choose_target_t : public action_t
 
     // Invalidate target caches
     for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
-      p -> action_list[ i ] -> target_cache.is_valid = false;
-  }
+      p -> action_list[i] -> target_cache.is_valid = false;
+    }
 
   bool ready()
   {

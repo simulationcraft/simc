@@ -136,10 +136,10 @@ struct move_enemy_t : public raid_event_t
 
     enemy = sim -> find_player( name );
 
-    if ( !sim -> fancy_target_distance_stuff )
+    if ( !sim -> distance_targeting_enabled )
     {
-      sim -> out_log.printf( "fancy_target_distance_stuff=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
-      sim -> fancy_target_distance_stuff = true;
+      sim -> out_log.printf( "distance_targeting_enabled=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
+      sim -> distance_targeting_enabled = true;
     }
 
     if ( !enemy )
@@ -160,9 +160,9 @@ struct move_enemy_t : public raid_event_t
       player_t* p = affected_players[i];
       // Invalidate target caches
       for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
-        p -> action_list[i] -> target_cache.is_valid = false; //Regenerate  Cache.
+        p -> action_list[i] -> target_cache.is_valid = false; //Regenerate Cache.
+      }
     }
-  }
 
   void reset()
   {
