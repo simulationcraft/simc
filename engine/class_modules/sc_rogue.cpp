@@ -4044,13 +4044,13 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( state -> result_total <= 0 )
     return;
 
-  if ( ! buffs.blade_flurry -> check() )
+  if ( !buffs.blade_flurry -> check() )
     return;
 
-  if ( ! state -> action -> weapon )
+  if ( !state -> action -> weapon )
     return;
 
-  if ( ! state -> action -> result_is_hit_or_multistrike( state -> result ) )
+  if ( !state -> action -> result_is_hit_or_multistrike( state -> result ) )
     return;
 
   if ( sim -> active_enemies == 1 )
@@ -4064,14 +4064,10 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
     active_blade_flurry -> target_cache.is_valid = false;
   active_blade_flurry -> target = state -> target;
 
-  active_blade_flurry -> target_list();
-  if ( active_blade_flurry -> target_cache.list.size() > 0 )
-  {
-    // Note, unmitigated damage
-    active_blade_flurry -> base_dd_min = state -> result_total;
-    active_blade_flurry -> base_dd_max = state -> result_total;
-    active_blade_flurry -> schedule_execute();
-  }
+  // Note, unmitigated damage
+  active_blade_flurry -> base_dd_min = state -> result_total;
+  active_blade_flurry -> base_dd_max = state -> result_total;
+  active_blade_flurry -> schedule_execute();
 }
 
 void rogue_t::trigger_shadow_reflection( const action_state_t* state )

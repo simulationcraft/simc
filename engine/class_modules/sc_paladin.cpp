@@ -3851,10 +3851,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
         hotr_aoe -> target_cache.is_valid = false;
 
       hotr_aoe -> target = execute_state -> target;
-      hotr_aoe -> target_list();
-
-      if ( hotr_aoe -> target_cache.list.size() > 0 )
-        hotr_aoe -> execute();
+      hotr_aoe -> execute();
     }
   }
 

@@ -894,13 +894,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         p -> active.sweeping_strikes -> target_cache.is_valid = false;
 
       p -> active.sweeping_strikes -> target = s -> target;
-      p -> active.sweeping_strikes -> target_list();
-      if ( p -> active.sweeping_strikes -> target_cache.list.size() > 0 )
-      {
-        p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
-        p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
-        p -> active.sweeping_strikes -> execute();
-      }
+      p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
+      p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
+      p -> active.sweeping_strikes -> execute();
     }
     else
     {
@@ -908,11 +904,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         p -> active.aoe_sweeping_strikes -> target_cache.is_valid = false;
 
       p -> active.aoe_sweeping_strikes -> target = s -> target;
-      p -> active.aoe_sweeping_strikes -> target_list();
-      if ( p -> active.aoe_sweeping_strikes -> target_cache.list.size() > 0 )
-      {
-        p -> active.aoe_sweeping_strikes -> execute();
-      }
+      p -> active.aoe_sweeping_strikes -> execute();
     }
   }
 };

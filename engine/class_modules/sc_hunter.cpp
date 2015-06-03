@@ -1233,16 +1233,15 @@ static void trigger_beast_cleave( action_state_t* s )
   if ( !p -> buffs.beast_cleave -> check() )
     return;
 
-  p -> active.beast_cleave -> target = s -> target;
-  p -> active.beast_cleave -> target_list();
-  if ( p -> active.beast_cleave -> target_cache.list.size() > 0 )
-  {
-    double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
+  if ( p -> active.beast_cleave -> target != s -> target )
+    p -> active.beast_cleave -> target_cache.is_valid = false;
 
-    p -> active.beast_cleave -> base_dd_min = cleave;
-    p -> active.beast_cleave -> base_dd_max = cleave;
-    p -> active.beast_cleave -> execute();
-  }
+  p -> active.beast_cleave -> target = s -> target;
+  double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
+
+  p -> active.beast_cleave -> base_dd_min = cleave;
+  p -> active.beast_cleave -> base_dd_max = cleave;
+  p -> active.beast_cleave -> execute();
 }
 
 // Pet Melee ================================================================

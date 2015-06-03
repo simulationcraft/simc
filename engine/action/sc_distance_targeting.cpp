@@ -94,7 +94,6 @@
     player_t* original_target = target;
     player_t* proposed_target = target;
 
-    target = proposed_target;
     double current_target_v = target_if_expr -> evaluate();
 
     double max_ = current_target_v;
