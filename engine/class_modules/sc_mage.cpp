@@ -1232,8 +1232,11 @@ struct temporal_hero_t : public pet_t
     // Temporal Hero benefits from Temporal Power applied by itself (1 stack).
     // Using owner's buff object, in order to avoid creating a separate buff_t
     // for each pet instance, and merging the buff statistics.
-    mage_t* mage = debug_cast<mage_t*>( owner );
-    m *= 1.0 + mage -> buffs.temporal_power -> data().effectN( 1 ).percent();
+    if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
+    {
+      mage_t* mage = debug_cast<mage_t*>( owner );
+      m *= 1.0 + mage -> buffs.temporal_power -> data().effectN( 1 ).percent();
+    }
 
     return m;
   }
