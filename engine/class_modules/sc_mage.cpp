@@ -1126,7 +1126,9 @@ struct temporal_hero_t : public pet_t
   {
     temporal_hero_frostbolt_t( pet_t* p ) :
       spell_t( "frostbolt", p, p -> find_spell( 9672 ) )
-    {}
+    {
+      may_crit = true;
+    }
 
     virtual bool ready()
     {
@@ -1160,6 +1162,7 @@ struct temporal_hero_t : public pet_t
     {
       school = SCHOOL_PHYSICAL;
       base_execute_time = p -> main_hand_weapon.swing_time;
+      may_crit = true;
     }
 
     virtual bool ready()
