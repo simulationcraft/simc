@@ -1151,10 +1151,14 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( o() -> mastery_spells.master_demonologist -> ok() )
   {
     double mastery = o() -> cache.mastery();
+    if ( o() -> dbc.ptr )
+      mastery *= 1.25 / 0.96;
+
     m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
-    m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
   }
 
+  if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY,T18,B4 ) )
+    m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
     m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
 
@@ -1758,6 +1762,8 @@ struct inner_demon_t : public pet_t
     if ( o() -> mastery_spells.master_demonologist -> ok() )
     {
       double mastery = o() -> cache.mastery();
+      if ( o() -> dbc.ptr )
+        mastery *= 1.25 / 0.96;
       m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
     }
 
@@ -2115,6 +2121,8 @@ public:
     if ( p() -> buffs.metamorphosis -> up() && demo_mastery )
     {
       double mastery = p() -> cache.mastery();
+      if ( p() -> dbc.ptr )
+        mastery *= 1.25 / 0.96;
       pm *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
     }
 
@@ -2387,6 +2395,8 @@ struct doom_t: public warlock_spell_t
     double am = spell_t::action_multiplier();
 
     double mastery = p() -> cache.mastery();
+    if ( p() -> dbc.ptr )
+      mastery *= 1.25 / 0.96;
     am *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
 
     return am;
@@ -5225,6 +5235,8 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( mastery_spells.master_demonologist -> ok() )
   {
     double mastery = cache.mastery();
+    if ( dbc.ptr )
+      mastery *= 1.25 / 0.96;
     m *= 1.0 + mastery * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
 
