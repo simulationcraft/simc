@@ -1814,12 +1814,11 @@ bool action_t::ready()
 
   if ( target_if_mode != TARGET_IF_NONE )
   {
-
-    target = select_target_if_target();
-    if ( target == 0 )
-    {
+    player_t* potential_target = select_target_if_target();
+    if ( potential_target )
+      target = potential_target;
+    else
       return false;
-    }
   }
 
   if ( cycle_targets )
@@ -2089,10 +2088,9 @@ bool action_t::init_finished()
       target_if_mode = TARGET_IF_FIRST;
     }
 
-    if ( !target_if_str.empty() )
-    {
-      target_if_expr = expr_t::parse( this, target_if_str, sim -> optimize_expressions );
-    }
+    if ( !target_if_str.empty() &&
+      ( target_if_expr = expr_t::parse( this, target_if_str, sim -> optimize_expressions ) ) == 0 )
+      ret = false;
   }
 
   if ( ! if_expr_str.empty() &&

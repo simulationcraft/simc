@@ -65,7 +65,7 @@
                 if ( t -> get_position_distance( action -> parent_dot -> state -> original_x, action -> parent_dot -> state -> original_y ) <= action -> radius )
                   tl.push_back( t );
               }
-              else if ( action -> ground_aoe && action -> execute_state &&  t -> get_position_distance( action -> execute_state -> original_x, action -> execute_state -> original_y ) <= action -> radius ) // We should just check the child.
+              else if ( action -> ground_aoe && action -> execute_state && t -> get_position_distance( action -> execute_state -> original_x, action -> execute_state -> original_y ) <= action -> radius ) // We should just check the child.
                 tl.push_back( t );
               else if ( t -> get_position_distance( target -> x_position, target -> y_position ) <= action -> radius )
                 tl.push_back( t );
