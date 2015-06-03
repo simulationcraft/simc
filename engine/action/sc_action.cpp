@@ -452,7 +452,7 @@ action_t::action_t( action_e       ty,
   add_option( opt_bool( "cycle_targets", cycle_targets ) );
   add_option( opt_bool( "cycle_players", cycle_players ) );
   add_option( opt_int( "max_cycle_targets", max_cycle_targets ) );
-  add_option( opt_string( "target_if", target_if_str ) );
+  add_option( opt_string( "target_if_curse_you_mages", target_if_str ) );
   add_option( opt_bool( "moving", moving ) );
   add_option( opt_string( "sync", sync_str ) );
   add_option( opt_bool( "wait_on_ready", wait_on_ready ) );
