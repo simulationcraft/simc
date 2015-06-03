@@ -1571,7 +1571,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    druid.max_fb_energy *= 1.0 + druid.spell.berserk_cat -> effectN( 1 ).percent();
+    bool refresh = druid.buff.berserk -> check();
 
     if ( druid.perk.enhanced_berserk -> ok() )
       player -> resources.max[ RESOURCE_ENERGY ] += druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
@@ -1581,7 +1581,12 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
     if ( druid.wildcat_celerity )
       duration *= 1.0 + druid.wildcat_celerity -> driver() -> effectN( 1 ).average( druid.wildcat_celerity -> item ) / 100.0;
 
-    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+    bool success = druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+
+    if ( ! refresh && success )
+      druid.max_fb_energy *= 1.0 + druid.spell.berserk_cat -> effectN( 1 ).percent();
+
+    return success;
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -1702,15 +1707,19 @@ struct omen_of_clarity_buff_t : public druid_buff_t<buff_t>
     )
   {}
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    if ( ! druid.buff.omen_of_clarity -> check() )
+    bool refresh = druid.buff.omen_of_clarity -> check();
+
+    bool success = druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+
+    if ( ! refresh && success )
       druid.max_fb_energy -= druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + druid.buff.berserk -> check() * druid.spell.berserk_cat -> effectN( 1 ).percent() );
 
-    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+    return success;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     druid.max_fb_energy += druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + druid.buff.berserk -> check() * druid.spell.berserk_cat -> effectN( 1 ).percent() );
 
@@ -2513,7 +2522,6 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p -> glyph.ferocious_bite -> ok() )
       glyph_effect = new glyph_of_ferocious_bite_t( p );
 
-    p -> max_fb_energy = max_excess_energy + cost();
   }
 
   bool ready()
@@ -7099,6 +7107,7 @@ void druid_t::reset()
   clamped_eclipse_amount = 0;
   last_check = timespan_t::zero();
   balance_time = timespan_t::zero();
+  max_fb_energy = spell.ferocious_bite -> powerN( 1 ).cost() - spell.ferocious_bite -> effectN( 2 ).base_value();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
