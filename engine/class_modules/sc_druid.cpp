@@ -6763,7 +6763,7 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
-  def -> add_action( this, "Berserk", "if=((!t18_class_trinket&buff.tigers_fury.up)|(t18_class_trinket&energy.time_to_max<2))&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)" );
+  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
   {
@@ -6776,9 +6776,8 @@ void druid_t::apl_feral()
   {
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
   }
-  def -> add_action( this, "Tiger's Fury", "if=(!t18_class_trinket|cooldown.berserk.remains)&((!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80)" );
-  def -> add_action( "incarnation,if=!t18_class_trinket&cooldown.berserk.remains<10&energy.time_to_max>1" );
-  def -> add_action( "incarnation,if=t18_class_trinket&cooldown.berserk.remains<1&energy.time_to_max<3" );
+  def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80" );
+  def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
   if ( race == RACE_NIGHT_ELF )
   {
     def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.incarnation.up" );
@@ -6787,11 +6786,11 @@ void druid_t::apl_feral()
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
+  def -> add_action( "thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&combo_points+buff.bloodtalons.stack!=6" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)" );
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
-  def -> add_action( "pool_resource,if=t18_class_trinket&!buff.omen_of_clarity.react&cooldown.berserk.remains*energy.regen+energy<energy.max" );
   def -> add_action( "call_action_list,name=maintain,if=combo_points<5" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2" );
