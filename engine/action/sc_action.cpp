@@ -226,9 +226,9 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
 // action_t::action_t =======================================================
 
 action_t::action_t( action_e       ty,
-  const std::string&  token,
-  player_t*           p,
-  const spell_data_t* s ):
+                    const std::string&  token,
+                    player_t*           p,
+                    const spell_data_t* s ) :
   s_data( s ? s : spell_data_t::nil() ),
   sim( p -> sim ),
   type( ty ),
@@ -294,63 +294,63 @@ action_t::action_t( action_e       ty,
   total_executions(),
   line_cooldown( cooldown_t( "line_cd", *p ) )
 {
-  dot_behavior = DOT_CLIP;
-  trigger_gcd = player -> base_gcd;
-  range = -1.0;
-  radius = -1.0;
+  dot_behavior                   = DOT_CLIP;
+  trigger_gcd                    = player -> base_gcd;
+  range                          = -1.0;
+  radius                         = -1.0;
 
-  amount_delta = 0.0;
-  base_dd_min = 0.0;
-  base_dd_max = 0.0;
-  base_td = 0.0;
-  base_td_multiplier = 1.0;
-  base_dd_multiplier = 1.0;
-  base_multiplier = 1.0;
-  base_hit = 0.0;
-  base_crit = 0.0;
-  rp_gain = 0.0;
-  crit_multiplier = 1.0;
-  crit_bonus_multiplier = 1.0;
-  base_dd_adder = 0.0;
-  base_ta_adder = 0.0;
-  weapon = NULL;
-  weapon_multiplier = 1.0;
-  base_add_multiplier = 1.0;
-  base_aoe_multiplier = 1.0;
-  split_aoe_damage = false;
-  normalize_weapon_speed = false;
-  stats = NULL;
-  execute_event = 0;
-  travel_speed = 0.0;
-  resource_consumed = 0.0;
-  moving = -1;
-  wait_on_ready = -1;
-  interrupt = 0;
-  chain = 0;
-  cycle_targets = 0;
-  cycle_players = 0;
-  max_cycle_targets = 0;
-  target_number = 0;
-  round_base_dmg = true;
+  amount_delta                   = 0.0;
+  base_dd_min                    = 0.0;
+  base_dd_max                    = 0.0;
+  base_td                        = 0.0;
+  base_td_multiplier             = 1.0;
+  base_dd_multiplier             = 1.0;
+  base_multiplier                = 1.0;
+  base_hit                       = 0.0;
+  base_crit                      = 0.0;
+  rp_gain                        = 0.0;
+  crit_multiplier                = 1.0;
+  crit_bonus_multiplier          = 1.0;
+  base_dd_adder                  = 0.0;
+  base_ta_adder                  = 0.0;
+  weapon                         = NULL;
+  weapon_multiplier              = 1.0;
+  base_add_multiplier            = 1.0;
+  base_aoe_multiplier            = 1.0;
+  split_aoe_damage               = false;
+  normalize_weapon_speed         = false;
+  stats                          = NULL;
+  execute_event                  = 0;
+  travel_speed                   = 0.0;
+  resource_consumed              = 0.0;
+  moving                         = -1;
+  wait_on_ready                  = -1;
+  interrupt                      = 0;
+  chain                          = 0;
+  cycle_targets                  = 0;
+  cycle_players                  = 0;
+  max_cycle_targets              = 0;
+  target_number                  = 0;
+  round_base_dmg                 = true;
   if_expr_str.clear();
-  if_expr = NULL;
+  if_expr                        = NULL;
   target_if_str.clear();
-  target_if_expr = 0;
+  target_if_expr                 = 0;
   target_if_mode = TARGET_IF_NONE;
   interrupt_if_expr_str.clear();
-  interrupt_if_expr = NULL;
+  interrupt_if_expr              = NULL;
   early_chain_if_expr_str.clear();
-  early_chain_if_expr = NULL;
+  early_chain_if_expr            = NULL;
   sync_str.clear();
-  sync_action = NULL;
-  marker = 0;
-  last_reaction_time = timespan_t::zero();
-  tick_action = NULL;
-  execute_action = NULL;
-  impact_action = NULL;
-  dynamic_tick_action = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
-  starved_proc = NULL;
-  action_skill = player -> base.skill;
+  sync_action                    = NULL;
+  marker                         = 0;
+  last_reaction_time             = timespan_t::zero();
+  tick_action                    = NULL;
+  execute_action                 = NULL;
+  impact_action                  = NULL;
+  dynamic_tick_action            = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
+  starved_proc                   = NULL;
+  action_skill                   = player -> base.skill;
 
   // New Stuff
   snapshot_flags = 0;
@@ -452,7 +452,7 @@ action_t::action_t( action_e       ty,
   add_option( opt_bool( "cycle_targets", cycle_targets ) );
   add_option( opt_bool( "cycle_players", cycle_players ) );
   add_option( opt_int( "max_cycle_targets", max_cycle_targets ) );
-  add_option( opt_string( "target_if_curse_you_mages", target_if_str ) );
+  add_option( opt_string( "target_if", target_if_str ) );
   add_option( opt_bool( "moving", moving ) );
   add_option( opt_string( "sync", sync_str ) );
   add_option( opt_bool( "wait_on_ready", wait_on_ready ) );
