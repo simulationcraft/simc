@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -4092,7 +4092,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=158657)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 107428 | Misc Value 2: 0x1e8de
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 185099 | Misc Value 2: 0x1e8de
 Description      : Your Rising Sun Kick's visual is altered to the color of the White Tiger.
 
 Name             : Rising Tiger Kick (id=125152) 

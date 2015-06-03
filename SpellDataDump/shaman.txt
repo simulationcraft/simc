@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -6268,7 +6268,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=270195)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 15
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 15
 Description      : For every $m1 Lightning Shield charges consumed, your total total spell haste is increased by $189063m1% for $189063d. Every $189063t2 sec the effect diminishes.
 
 Name             : Glyph of Ascendance (id=186198) [Spell Family (11), Passive, Hidden] 

@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -7696,10 +7696,10 @@ Description      : $@spelldesc184878
 
 Name             : Item - Druid T18 Balance 2P Bonus (id=187875) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
-Internal Cooldown: 3 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..... ........ 
-                 : Hostile Spell, Periodic
+Real PPM         : 4
+Proc Flags       : ........ ........ ..x..... ........ 
+                 : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -7727,7 +7727,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274309)   : School Damage: spellstorm (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90700
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.72330
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 

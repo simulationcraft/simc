@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -4470,7 +4470,7 @@ $damageSec=${($rw+$RW)/2*0.7*7.5*(1+$@versadmg)}
 Name             : Barrage (id=120361) [Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 24
-Range            : 40 yards
+Range            : 43 yards
 Velocity         : 30 yards/sec
 Affecting spells : Freezing Trap (3355), Sniper Training (168811), Guide: Sharpshooting (178549), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
@@ -4484,9 +4484,9 @@ Effects          :
 #1 (id=139841)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=139842)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 40 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 43 yards
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 85 | Scaled Value: 0.85 | Radius: 40 yards
+                   Base Value: 85 | Scaled Value: 0.85 | Radius: 43 yards
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -6706,19 +6706,19 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : Your Focus Fire effect also summons a Fel Boar to assist you. The Fel Boar lasts for the duration of Focus Fire.
 
-Name             : Shadow Nova (id=188402) [Hidden] 
+Name             : Shadow Nova (id=188402) 
 Class            : Hunter
 Range            : 50000 yards
-Attributes       : .......x x....... .....x.x x..x.x..   .....x.. ..x..... ........ ........ 
+Attributes       : ........ ........ .....x.x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xxx.x... ....x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=274988)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.18000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.28800 | Radius: 0 - 10 yards
 Description      : $@spelldesc188199
 
 Name             : Fel Boar (id=188507) 

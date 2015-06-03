@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20061)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -4936,7 +4936,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=271060)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45 | Misc Value: 17
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 17
 Description      : Your Dispatch deals $m1% additional damage as Nature damage.
 
 Name             : Dispatch (id=186183) [Spell Family (8)] 
