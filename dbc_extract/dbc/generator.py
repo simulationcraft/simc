@@ -3664,6 +3664,10 @@ class SetBonusListGenerator(DataGenerator):
         for data_idx in xrange(0, len(ids)):
             entry = ids[data_idx]
 
+            # Sanity check the bonus type so the sim actual does not break
+            if entry['bonus'] not in [2, 4]:
+                continue
+
             if data_idx % 25 == 0:
                 s += '  // %-44s,      OptName, EnumID, SetID, Tier, Bns, Cls, %20s, Role, Spec,  Spell, Items\n' % ('Set bonus name', 'Derived Spec')
 
