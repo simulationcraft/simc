@@ -10771,6 +10771,7 @@ luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
 
 action_t* player_t::select_action( const action_priority_list_t& list )
 {
+  player_t* action_target = 0;
   // Mark this action list as visited with the APL internal id
   visited_apls_ |= list.internal_id_mask;
 
@@ -10787,7 +10788,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
     if ( list.random == 1 )
     {
       size_t random = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
-      a = list.foreground_action_list[ random ];
+      a = list.foreground_action_list[random];
     }
     else
     {
@@ -10796,7 +10797,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
       {
         size_t max_random_attempts = static_cast<size_t>( num_actions * ( skill * 0.5 ) );
         size_t random = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
-        a = list.foreground_action_list[ random ];
+        a = list.foreground_action_list[random];
         attempted_random++;
         // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100 ms.
         if ( attempted_random > max_random_attempts )
@@ -10804,7 +10805,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
       }
       else
       {
-        a = list.foreground_action_list[ i ];
+        a = list.foreground_action_list[i];
       }
     }
 
@@ -10812,6 +10813,13 @@ action_t* player_t::select_action( const action_priority_list_t& list )
 
     if ( a -> wait_on_ready == 1 )
       break;
+
+    // Change the target of the action before ready call ...
+    if ( a -> target != target )
+    {
+      action_target = a -> target;
+      a -> target = target;
+    }
 
     if ( a -> ready() )
     {
@@ -10822,7 +10830,11 @@ action_t* player_t::select_action( const action_priority_list_t& list )
       else
       {
         call_action_list_t* call = static_cast<call_action_list_t*>( a );
-
+        if ( action_target )
+        {
+          a -> target = action_target;
+          action_target = 0;
+        }
         // If the called APLs bitflag (based on internal id) is up, we're in an
         // infinite loop, and need to cancel the sim
         if ( visited_apls_ & call -> alist -> internal_id_mask )
@@ -10840,6 +10852,11 @@ action_t* player_t::select_action( const action_priority_list_t& list )
           return real_a;
         }
       }
+    }
+    else if ( action_target )
+    {
+      a -> target = action_target;
+      action_target = 0;
     }
   }
 

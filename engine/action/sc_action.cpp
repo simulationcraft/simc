@@ -226,9 +226,9 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
 // action_t::action_t =======================================================
 
 action_t::action_t( action_e       ty,
-                    const std::string&  token,
-                    player_t*           p,
-                    const spell_data_t* s ) :
+  const std::string&  token,
+  player_t*           p,
+  const spell_data_t* s ):
   s_data( s ? s : spell_data_t::nil() ),
   sim( p -> sim ),
   type( ty ),
@@ -294,60 +294,63 @@ action_t::action_t( action_e       ty,
   total_executions(),
   line_cooldown( cooldown_t( "line_cd", *p ) )
 {
-  dot_behavior                   = DOT_CLIP;
-  trigger_gcd                    = player -> base_gcd;
-  range                          = -1.0;
-  radius                         = -1.0;
+  dot_behavior = DOT_CLIP;
+  trigger_gcd = player -> base_gcd;
+  range = -1.0;
+  radius = -1.0;
 
-  amount_delta                   = 0.0;
-  base_dd_min                    = 0.0;
-  base_dd_max                    = 0.0;
-  base_td                        = 0.0;
-  base_td_multiplier             = 1.0;
-  base_dd_multiplier             = 1.0;
-  base_multiplier                = 1.0;
-  base_hit                       = 0.0;
-  base_crit                      = 0.0;
-  rp_gain                        = 0.0;
-  crit_multiplier                = 1.0;
-  crit_bonus_multiplier          = 1.0;
-  base_dd_adder                  = 0.0;
-  base_ta_adder                  = 0.0;
-  weapon                         = NULL;
-  weapon_multiplier              = 1.0;
-  base_add_multiplier            = 1.0;
-  base_aoe_multiplier            = 1.0;
-  split_aoe_damage               = false;
-  normalize_weapon_speed         = false;
-  stats                          = NULL;
-  execute_event                  = 0;
-  travel_speed                   = 0.0;
-  resource_consumed              = 0.0;
-  moving                         = -1;
-  wait_on_ready                  = -1;
-  interrupt                      = 0;
-  chain                          = 0;
-  cycle_targets                  = 0;
-  cycle_players                  = 0;
-  max_cycle_targets              = 0;
-  target_number                  = 0;
-  round_base_dmg                 = true;
+  amount_delta = 0.0;
+  base_dd_min = 0.0;
+  base_dd_max = 0.0;
+  base_td = 0.0;
+  base_td_multiplier = 1.0;
+  base_dd_multiplier = 1.0;
+  base_multiplier = 1.0;
+  base_hit = 0.0;
+  base_crit = 0.0;
+  rp_gain = 0.0;
+  crit_multiplier = 1.0;
+  crit_bonus_multiplier = 1.0;
+  base_dd_adder = 0.0;
+  base_ta_adder = 0.0;
+  weapon = NULL;
+  weapon_multiplier = 1.0;
+  base_add_multiplier = 1.0;
+  base_aoe_multiplier = 1.0;
+  split_aoe_damage = false;
+  normalize_weapon_speed = false;
+  stats = NULL;
+  execute_event = 0;
+  travel_speed = 0.0;
+  resource_consumed = 0.0;
+  moving = -1;
+  wait_on_ready = -1;
+  interrupt = 0;
+  chain = 0;
+  cycle_targets = 0;
+  cycle_players = 0;
+  max_cycle_targets = 0;
+  target_number = 0;
+  round_base_dmg = true;
   if_expr_str.clear();
-  if_expr                        = NULL;
+  if_expr = NULL;
+  target_if_str.clear();
+  target_if_expr = 0;
+  target_if_mode = TARGET_IF_NONE;
   interrupt_if_expr_str.clear();
-  interrupt_if_expr              = NULL;
+  interrupt_if_expr = NULL;
   early_chain_if_expr_str.clear();
-  early_chain_if_expr            = NULL;
+  early_chain_if_expr = NULL;
   sync_str.clear();
-  sync_action                    = NULL;
-  marker                         = 0;
-  last_reaction_time             = timespan_t::zero();
-  tick_action                    = NULL;
-  execute_action                 = NULL;
-  impact_action                  = NULL;
-  dynamic_tick_action            = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
-  starved_proc                   = NULL;
-  action_skill                   = player -> base.skill;
+  sync_action = NULL;
+  marker = 0;
+  last_reaction_time = timespan_t::zero();
+  tick_action = NULL;
+  execute_action = NULL;
+  impact_action = NULL;
+  dynamic_tick_action = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
+  starved_proc = NULL;
+  action_skill = player -> base.skill;
 
   // New Stuff
   snapshot_flags = 0;
@@ -357,20 +360,21 @@ action_t::action_t( action_e       ty,
   action_list = 0;
   movement_directionality = MOVEMENT_NONE;
   base_teleport_distance = 0;
-  parent_dot_name = "";
+  parent_dot = 0;
+  ground_aoe = false;
   state_cache = 0;
 
   range::fill( base_costs, 0.0 );
   range::fill( base_costs_per_second, 0.0 );
-  
-  assert( ! name_str.empty() && "Abilities must have valid name_str entries!!" );
+
+  assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
 
   util::tokenize( name_str );
 
   if ( sim -> initialized )
   {
     sim -> errorf( "Player %s action %s created after simulator initialization.",
-        player -> name(), name() );
+      player -> name(), name() );
   }
 
   if ( sim -> current_iteration > 0 )
@@ -382,7 +386,7 @@ action_t::action_t( action_e       ty,
   if ( sim -> debug )
     sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
 
-  if ( ! player -> initialized )
+  if ( !player -> initialized )
   {
     sim -> errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
     sim -> cancel();
@@ -392,17 +396,17 @@ action_t::action_t( action_e       ty,
 
   cooldown = player -> get_cooldown( name_str );
 
-  stats = player -> get_stats( name_str , this );
+  stats = player -> get_stats( name_str, this );
 
   if ( data().ok() )
   {
     parse_spell_data( data() );
   }
 
-  if ( data().id() && ! data().is_level( player -> true_level ) && data().level() <= MAX_LEVEL )
+  if ( data().id() && !data().is_level( player -> true_level ) && data().level() <= MAX_LEVEL )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
-                   player -> name(), name(), player -> true_level, data().level() );
+      player -> name(), name(), player -> true_level, data().level() );
 
     background = true; // prevent action from being executed
   }
@@ -412,7 +416,7 @@ action_t::action_t( action_e       ty,
   if ( data().id() && player -> dbc.ability_specialization( data().id(), spec_list ) && range::find( spec_list, _s ) == spec_list.end() )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
-                   player -> name(), name() );
+      player -> name(), name() );
 
     background = true; // prevent action from being executed
   }
@@ -421,8 +425,8 @@ action_t::action_t( action_e       ty,
   {
     // this is super-spammy, may just want to disable this after we're sure this section is working as intended.
     if ( sim -> debug )
-      sim -> errorf( "Player %s attempting to use action %s without the required talent, spec, class, or race; ignoring.\n", 
-                   player -> name(), name() );
+      sim -> errorf( "Player %s attempting to use action %s without the required talent, spec, class, or race; ignoring.\n",
+      player -> name(), name() );
     background = true;
   }
 
@@ -448,6 +452,7 @@ action_t::action_t( action_e       ty,
   add_option( opt_bool( "cycle_targets", cycle_targets ) );
   add_option( opt_bool( "cycle_players", cycle_players ) );
   add_option( opt_int( "max_cycle_targets", max_cycle_targets ) );
+  add_option( opt_string( "target_if", target_if_str ) );
   add_option( opt_bool( "moving", moving ) );
   add_option( opt_string( "sync", sync_str ) );
   add_option( opt_bool( "wait_on_ready", wait_on_ready ) );
@@ -458,11 +463,68 @@ action_t::action_t( action_e       ty,
   add_option( opt_float( "action_skill", action_skill ) );
 }
 
+  player_t* action_t::select_target_if_target()
+  {
+    if ( target_if_mode == TARGET_IF_NONE || target_list().size() == 1 )
+    {
+      return 0;
+    }
+
+    player_t* original_target = target;
+    player_t* proposed_target = target;
+
+    target = proposed_target;
+    double current_target_v = target_if_expr -> evaluate();
+
+    double max_ = current_target_v;
+    double min_ = current_target_v;
+    std::vector<player_t*> master_list = target_list();
+    for ( size_t i = 0, end = master_list.size(); i < end; ++i )
+    {
+      target = master_list[ i ];
+
+      // No need to check current target
+      if ( target == original_target )
+      {
+        continue;
+      }
+      target_cache.is_valid = false;
+      double v = target_if_expr -> evaluate();
+
+      // Don't swap to targets that evaluate to identical value than the current target
+      if ( v == current_target_v )
+      {
+        continue;
+      }
+
+      if ( target_if_mode == TARGET_IF_FIRST && v != 0 )
+      {
+        proposed_target = target;
+        break;
+      }
+      else if ( target_if_mode == TARGET_IF_MAX && v > max_ )
+      {
+        max_ = v;
+        proposed_target = target;
+      }
+      else if ( target_if_mode == TARGET_IF_MIN && v < min_ )
+      {
+        min_ = v;
+        proposed_target = target;
+      }
+    }
+
+    target = original_target;
+
+    return proposed_target;
+  }
+
 action_t::~action_t()
 {
   delete execute_state;
   delete pre_execute_state;
   delete if_expr;
+  delete target_if_expr;
   delete interrupt_if_expr;
   delete early_chain_if_expr;
 
@@ -552,6 +614,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       amount_delta            = spelleffect_data.m_delta();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level() );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level() );
+      radius           = spelleffect_data.radius_max();
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
@@ -1020,7 +1083,7 @@ void action_t::consume_resource()
   stats -> consume_resource( current_resource(), resource_consumed );
 }
 
-// action_t::available_targets ==============================================
+// action_t::num_targets  ==================================================
 
 int action_t::num_targets()
 {
@@ -1044,49 +1107,17 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
   if ( ! target -> is_sleeping() )
     tl.push_back( target );
 
-  dot_t* ground_aoe = 0;
-  if ( sim -> fancy_target_distance_stuff )
+  if ( sim -> distance_targeting_enabled )
   {
-    if ( parent_dot_name.size() > 0 )
-      ground_aoe = target -> find_dot( parent_dot_name, player );
+    distance_targeting.available_targeting( tl, this );
   }
-  for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+  else
   {
-    player_t* t = sim -> target_non_sleeping_list[i];
-
-    if ( t -> is_enemy() && ( t != target ) )
+    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
     {
-      if ( sim -> fancy_target_distance_stuff )
-      {
-        if ( sim -> log )
-        {
-          sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
-            player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, t -> name(), t -> x_position, t -> y_position );
-        }
-        if ( radius > 0 )
-        {
-          if ( range > 0 ) // Abilities with range/radius radiate from the target. 
-          {
-            if ( ground_aoe && ground_aoe -> is_ticking() )
-            {
-              if ( sim -> log )
-                sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", ground_aoe -> state -> original_x, ground_aoe -> state -> original_y );
-              if ( t -> get_position_distance( ground_aoe -> state -> original_x, ground_aoe -> state -> original_y ) <= radius )
-                tl.push_back( t );
-            }
-            else if ( target -> get_position_distance( t -> x_position, t -> y_position ) <= radius )
-              tl.push_back( t );
-          } // If they do not have a range, they are likely based on the distance from the player.
-          else if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= radius )
-            tl.push_back( t );
-        }
-      }
-      else if ( range > 0 ) // If they only have a range, then they are a single target ability.
-      {
-        if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= range )
-          tl.push_back( t );
-      }
-      else
+      player_t* t = sim -> target_non_sleeping_list[i];
+
+      if ( t -> is_enemy() && ( t != target ) )
       {
         tl.push_back( t );
       }
@@ -1178,29 +1209,6 @@ block_result_e action_t::calculate_block_result( action_state_t* s )
   return block_result;
 }
 
-bool action_t::fancy_target_stuff_execute()
-{
-  if ( sim -> fancy_target_distance_stuff )
-  {
-    if ( sim -> log )
-    {
-      sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, target: %s - location: x=%.3f,y=%.3f",
-        player -> name(), name(), range, radius, player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position );
-    }
-    if ( time_to_execute > timespan_t::zero() )
-    { // No need to recheck if the execute time was zero.
-      if ( range > 0.0 )
-      {
-        if ( target -> get_position_distance( player -> x_position, player -> y_position ) > range )
-        { // Target is now out of range, we cannot finish the cast.
-          return false;
-        }
-      }
-    }
-  }
-  return true;
-}
-
 // action_t::execute ========================================================
 
 void action_t::execute()
@@ -1222,7 +1230,7 @@ void action_t::execute()
   if ( n_targets() == 0 && target -> is_sleeping() )
     return;
 
-  if ( !fancy_target_stuff_execute() )
+  if ( ! distance_targeting.execute_targeting( this ) )
   {
     cancel();
     return;
@@ -1451,6 +1459,7 @@ void action_t::tick( dot_t* d )
       update_state( state, amount_type( state, true ) );
     state -> da_multiplier = state -> ta_multiplier * d -> get_last_tick_factor();
     state -> target_da_multiplier = state -> target_ta_multiplier;
+    tick_action -> target = d -> target;
     tick_action -> schedule_execute( state );
   }
   else
@@ -1859,9 +1868,19 @@ bool action_t::ready()
     return false;
   }
 
+  if ( target_if_mode != TARGET_IF_NONE )
+  {
+    target_cache.is_valid = false;
+    target = select_target_if_target();
+    if ( target == 0 )
+    {
+      return false;
+    }
+  }
+
   if ( cycle_targets )
   {
-    player_t* saved_target  = target;
+    player_t* saved_target = target;
     cycle_targets = 0;
     bool found_ready = false;
 
@@ -1873,7 +1892,7 @@ bool action_t::ready()
 
     for ( size_t i = 0; i < num_targets; i++ )
     {
-      target = tl[ i ];
+      target = tl[i];
       if ( ready() )
       {
         found_ready = true;
@@ -1943,7 +1962,7 @@ bool action_t::ready()
     return false;
   }
 
-  if ( sim -> fancy_target_distance_stuff )
+  if ( sim -> distance_targeting_enabled )
   {
     if ( range > 0 )
     {
@@ -1976,15 +1995,15 @@ void action_t::init()
 {
   if ( initialized ) return;
 
-  assert( ! ( impact_action && tick_action ) && "Both tick_action and impact_action should not be used in a single action." );
+  assert( !( impact_action && tick_action ) && "Both tick_action and impact_action should not be used in a single action." );
 
-  assert( ! ( n_targets() && channeled ) && "DONT create a channeled aoe spell!" );
+  assert( !( n_targets() && channeled ) && "DONT create a channeled aoe spell!" );
 
-  if ( ! sync_str.empty() )
+  if ( !sync_str.empty() )
   {
     sync_action = player -> find_action( sync_str );
 
-    if ( ! sync_action )
+    if ( !sync_action )
     {
       sim -> errorf( "Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
       sim -> cancel();
@@ -2002,7 +2021,11 @@ void action_t::init()
     tick_action -> direct_tick = true;
     tick_action -> dual = true;
     tick_action -> stats = stats;
-    tick_action -> parent_dot_name = name_str;
+    tick_action -> parent_dot = target -> get_dot( name_str, player );
+    if ( tick_action -> parent_dot && range > 0 && tick_action -> radius > 0 && tick_action -> is_aoe() ) 
+     // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely also has a range.
+     // This will allow distance_target_t to correctly determine spells that radiate from the target, instead of the player.
+       tick_action -> range = range;
     stats -> action_list.push_back( tick_action );
   }
 
@@ -2091,6 +2114,43 @@ bool action_t::init_finished()
 {
   bool ret = true;
 
+  if ( !target_if_str.empty() )
+  {
+    std::string::size_type offset = target_if_str.find( ':' );
+    if ( offset != std::string::npos )
+    {
+      std::string target_if_type_str = target_if_str.substr( 0, offset );
+      target_if_str.erase( 0, offset + 1 );
+      if ( util::str_compare_ci( target_if_type_str, "max" ) )
+      {
+        target_if_mode = TARGET_IF_MAX;
+      }
+      else if ( util::str_compare_ci( target_if_type_str, "min" ) )
+      {
+        target_if_mode = TARGET_IF_MIN;
+      }
+      else if ( util::str_compare_ci( target_if_type_str, "first" ) )
+      {
+        target_if_mode = TARGET_IF_FIRST;
+      }
+      else
+      {
+        sim -> errorf( "%s unknown target_if mode '%s' for choose_target. Valid values are 'min', 'max', 'first'.",
+          player -> name(), target_if_type_str.c_str() );
+        background = true;
+      }
+    }
+    else if ( !target_if_str.empty() )
+    {
+      target_if_mode = TARGET_IF_FIRST;
+    }
+
+    if ( !target_if_str.empty() )
+    {
+      target_if_expr = expr_t::parse( this, target_if_str, sim -> optimize_expressions );
+    }
+  }
+
   if ( ! if_expr_str.empty() &&
        ( if_expr = expr_t::parse( this, if_expr_str, sim -> optimize_expressions ) ) == 0 )
   {
@@ -2148,6 +2208,7 @@ void action_t::reset()
         }
       }
     }
+    if ( target_if_expr ) target_if_expr = target_if_expr -> optimize();
     if( interrupt_if_expr ) interrupt_if_expr = interrupt_if_expr -> optimize();
     if( early_chain_if_expr ) early_chain_if_expr = early_chain_if_expr -> optimize();
   }
@@ -2680,27 +2741,31 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return new gcd_remains_expr_t( *this );
       }
     }
-    else if ( splits[0] == "spell_targets" )
+  }
+
+  if ( splits.size() > 1 && splits[0] == "spell_targets" )
+  {
+    struct spell_targets_t: public expr_t
     {
-      struct spell_targets_t: public expr_t
+      action_t* spell;
+      action_t& original_spell;
+      spell_targets_t( action_t& a, const std::vector<std::string>& spell_name ): expr_t( "spell_targets" ), original_spell( a )
       {
-        action_t* spell;
-        spell_targets_t( action_t& a, const std::string& spell_name ): expr_t( "spell_targets" )
+        spell = a.player -> find_action( spell_name[1] );
+      }
+      double evaluate()
+      {
+        if ( spell )
         {
-          spell = a.player -> find_action( spell_name );
+          spell -> target = original_spell.target;
+          spell -> target_cache.is_valid = false;
+          spell -> target_list();
+          return static_cast<double>( spell -> target_list().size() );
         }
-        double evaluate()
-        {
-          if ( spell )
-          {
-            spell -> target_list();
-            return static_cast<double>( spell -> target_list().size() );
-          }
-          return 0;
-        }
-      };
-      return new spell_targets_t( *this, splits[1] );
-    }
+        return 0;
+      }
+    };
+    return new spell_targets_t( *this, splits );
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
@@ -3014,16 +3079,11 @@ void action_t::schedule_travel( action_state_t* s )
   do_schedule_travel( s, time_to_travel );
 }
 
-bool action_t::fancy_target_stuff_impact( action_state_t* /*s*/ ) // This is for abilities with unusual mechanics, such as glaive toss. 
-{
-  return true;
-}
-
 void action_t::impact( action_state_t* s )
 {
-  if ( sim -> fancy_target_distance_stuff )
+  if ( sim -> distance_targeting_enabled )
   {
-    if ( !fancy_target_stuff_impact( s ) )
+    if ( !distance_targeting.impact_targeting( s ) )
       return;
   }
 

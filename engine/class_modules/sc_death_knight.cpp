@@ -3617,6 +3617,7 @@ struct death_and_decay_t : public death_knight_spell_t
     tick_may_crit = tick_zero = true;
     hasted_ticks     = false;
     ignore_false_positive = true;
+    ground_aoe = true;
   }
 
   virtual void consume_resource()
@@ -3690,6 +3691,7 @@ struct defile_t : public death_knight_spell_t
     tick_may_crit = true;
     hasted_ticks = tick_zero = false;
     ignore_false_positive = true;
+    ground_aoe = true;
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const

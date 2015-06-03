@@ -2220,7 +2220,7 @@ enum token_e
   TOK_ABS,
   TOK_SPELL_LIST,
   TOK_FLOOR,
-  TOK_CEIL
+  TOK_CEIL,
 };
 
 struct expr_token_t
@@ -2896,7 +2896,7 @@ struct sim_t : private sc_thread_t
   bool maximize_reporting;
   std::string apikey;
   bool ilevel_raid_report;
-  bool fancy_target_distance_stuff;
+  bool distance_targeting_enabled;
   double scaling_normalized;
 
   sim_report_information_t report_information;
@@ -5936,6 +5936,22 @@ struct action_t : public noncopyable
     target_cache_t() : is_valid( false ) {}
   } mutable target_cache;
 
+  struct distance_targeting_t
+  {
+    virtual bool execute_targeting( const action_t* action );
+    virtual bool impact_targeting( action_state_t* s );
+    std::vector<player_t*> available_targeting( std::vector< player_t* >& tl, const action_t* action );
+    distance_targeting_t() {}
+  } mutable distance_targeting;
+
+  enum target_if_mode_e
+  {
+    TARGET_IF_NONE,
+    TARGET_IF_FIRST,
+    TARGET_IF_MIN,
+    TARGET_IF_MAX
+  };
+
   school_e school; // What type of damage - Fire, Physical, etc.
   uint32_t id;
   unsigned internal_id; // Every action -- even actions without spelldata -- is given an internal_id
@@ -5997,6 +6013,10 @@ struct action_t : public noncopyable
   bool round_base_dmg;
   std::string if_expr_str;
   expr_t* if_expr;
+  std::string target_if_str;
+  target_if_mode_e target_if_mode;
+  player_t* selected_target;
+  expr_t* target_if_expr;
   std::string interrupt_if_expr_str;
   std::string early_chain_if_expr_str;
   expr_t* interrupt_if_expr;
@@ -6024,13 +6044,15 @@ struct action_t : public noncopyable
   // Movement stuff
   movement_direction_e movement_directionality;
   double base_teleport_distance;
-  std::string parent_dot_name; // This is used to find where ground effect aoes were originally cast.
+  dot_t* parent_dot; // This is used to cache/track spells that have a parent driver, such as most channeled/ground aoe abilities.
+  bool ground_aoe; // This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual ~action_t();
-  void init_dot( const std::string& dot_name );
 
+  void init_dot( const std::string& dot_name );
+  player_t* select_target_if_target();
   const spell_data_t& data() const { return ( *s_data ); }
   void parse_spell_data( const spell_data_t& );
   void parse_effect_data( const spelleffect_data_t& );
@@ -6153,7 +6175,11 @@ struct action_t : public noncopyable
 
   void add_child( action_t* child ) 
   {
-    child -> parent_dot_name = name_str;
+    child -> parent_dot = target -> get_dot( name_str, player );
+    if ( child -> parent_dot && range > 0 && child -> radius > 0 && child -> is_aoe() ) 
+     // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely also has a range.
+     // This will allow distance_target_t to correctly determine spells that radiate from the target, instead of the player.
+       child -> range = range;
     stats -> add_child( child -> stats ); 
   }
 
@@ -6176,8 +6202,6 @@ private:
 public:
   virtual void do_schedule_travel( action_state_t*, const timespan_t& );
   virtual void schedule_travel( action_state_t* );
-  virtual bool fancy_target_stuff_impact( action_state_t* ); // I swear I'll rename this one day.
-  virtual bool fancy_target_stuff_execute();
   virtual void impact( action_state_t* );
   virtual void trigger_dot( action_state_t* );
 
