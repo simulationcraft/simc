@@ -2319,7 +2319,6 @@ struct ravager_tick_t: public warrior_attack_t
   {
     aoe = -1;
     dual = true;
-    ground_aoe = true;
   }
 
   void trigger_sweeping_strikes( action_state_t* ) // Ravager doesn't proc Sweeping Strikes. Check after each patch because this could change without Blizzard telling us.

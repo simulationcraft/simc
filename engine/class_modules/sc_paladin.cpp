@@ -1326,7 +1326,6 @@ struct consecration_tick_t : public paladin_spell_t
     direct_tick = true;
     background  = true;
     may_crit    = true;
-    ground_aoe = true;
   }
 };
 
@@ -2680,7 +2679,6 @@ struct lights_hammer_damage_tick_t : public paladin_spell_t
     background = true;
     aoe = -1;
     may_crit = true;
-    ground_aoe = true;
   }
 };
 
