@@ -29,7 +29,8 @@ warlock="Warlock_Demonology_T18H"
 level=100
 race=troll
 spec=demonology
-talents=0000213
+talents=0000311
+glyphs=dark_soul
 head=demon_princes_ascendant_crown,id=124159,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant_id=5319
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=566
@@ -42,8 +43,8 @@ legs=deathrattle_leggings,id=124167,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
 finger1=nithramus_the_allseer,id=124635,enchant_id=5326
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant_id=5326
-trinket1=iron_reaver_piston,id=124227,bonus_id=566
-trinket2=prophecy_of_fear,id=124230,bonus_id=566
+trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=566
+trinket2=iron_reaver_piston,id=124227,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 save=Warlock_Demonology_T18H.simc
 
