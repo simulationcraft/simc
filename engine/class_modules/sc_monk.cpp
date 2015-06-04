@@ -5978,7 +5978,7 @@ double monk_t::composite_rating_multiplier( rating_e rating ) const
   case RATING_SPELL_CRIT:
     return m *= 1.0 + spec.ferment -> effectN( 1 ).percent();
   case RATING_MULTISTRIKE:
-    m *= 1.0 + 0.15;// spec.battle_trance->effectN(1).percent();
+    m *= 1.0 + spec.battle_trance -> effectN( 1 ).percent();
     m *= 1.0 + spec.jade_mists -> effectN( 1 ).percent();
     return m;
     break;
@@ -5996,7 +5996,7 @@ double monk_t::composite_multistrike() const
   double m = player_t::composite_multistrike();
 
   if ( buff.tiger_strikes -> check() )
-    m += 0.35;//buff.tiger_strikes -> default_value;
+    m += buff.tiger_strikes -> default_value;
 
   return m;
 }
