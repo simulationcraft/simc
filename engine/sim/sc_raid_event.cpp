@@ -22,17 +22,30 @@ struct adds_event_t : public raid_event_t
   double count_range;
   size_t adds_to_remove;
   static int wave;
+  double spawn_x_coord;
+  double spawn_y_coord;
+  int spawn_stacked;
+  double spawn_radius_min;
+  double spawn_radius_max;
+  double spawn_radius;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
     count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
-    master( 0 ), count_range( false ), adds_to_remove( 0 )
+    master( 0 ), count_range( false ), adds_to_remove( 0 ), spawn_x_coord ( 0 ),
+    spawn_y_coord ( 0 ), spawn_stacked ( 0 ), spawn_radius_min ( 0 ), spawn_radius_max ( 0 ), spawn_radius ( 0 )
   {
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
     add_option( opt_float( "count", count ) );
     add_option( opt_float( "health", health ) );
     add_option( opt_float( "count_range", count_range ) );
+    add_option( opt_float( "spawn_x", spawn_x_coord ) );
+    add_option( opt_float( "spawn_y", spawn_y_coord ) );
+    add_option( opt_int( "stacked", spawn_stacked ) );
+    add_option( opt_float( "min_distance", spawn_radius_min ) );
+    add_option( opt_float( "max_distance", spawn_radius_max ) );
+    add_option( opt_float( "distance", spawn_radius ) );
     parse_options( options_str );
 
     master = sim -> find_player( master_str );
@@ -64,6 +77,21 @@ struct adds_event_t : public raid_event_t
 
     wave++;
 
+
+    if ( fabs( spawn_radius ) > 0 || fabs( spawn_radius_max ) > 0 || fabs( spawn_radius_min ) > 0 )
+    {
+      if ( !sim -> distance_targeting_enabled )
+      {
+        sim -> out_log.printf( "distance_targeting_enabled=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
+        sim -> distance_targeting_enabled = true;
+      }
+
+      if ( fabs( spawn_radius ) > 0 )
+      {
+        spawn_radius_min = spawn_radius_max = fabs( spawn_radius );
+      }
+    }
+
     for ( int i = 0; i < util::ceil( overlap ); i++ )
     {
       for ( unsigned add = 0; add < util::ceil( count + count_range ); add++ )
@@ -88,14 +116,53 @@ struct adds_event_t : public raid_event_t
     }
   }
 
+  void regenerate_cache()
+  {
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    {
+      player_t* p = affected_players[i];
+      // Invalidate target caches
+      for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
+        p -> action_list[i] -> target_cache.is_valid = false; //Regenerate Cache.
+    }
+  }
+
   void _start()
   {
     adds_to_remove = static_cast<size_t>( util::round( std::max( 0.0, sim -> rng().range( count - count_range, count + count_range ) ) ) );
+
+    double x = 0;
+    double y = 0;
+
     for ( size_t i = 0; i < adds.size(); i++ )
     {
       if ( i < adds.size() )
       {
+        if ( fabs( spawn_radius_max ) > 0 )
+        {
+          if ( spawn_stacked == 0 || ( x == 0 && y == 0 ) )
+          {
+            double angle = sim -> rng().range( 0, M_PI );
+            double radius = sim -> rng().range( fabs( spawn_radius_min ), fabs( spawn_radius_max ) );
+            x = radius * cos(angle);
+            y = radius * sin(angle);
+          }
+        }
+        else
+        {
+          x = spawn_x_coord;
+          y = spawn_y_coord;
+        }
+
         adds[i] -> summon( saved_duration );
+        adds[i] -> x_position = x;
+        adds[i] -> y_position = y;
+        regenerate_cache();
+
+        if (x != 0 || y != 0)
+        {
+          sim -> out_log.printf( "New add spawned at %f, %f.", x, y );
+        }
       }
       if ( i >= adds_to_remove )
       {
@@ -156,8 +223,8 @@ struct move_enemy_t : public raid_event_t
       // Invalidate target caches
       for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
         p -> action_list[i] -> target_cache.is_valid = false; //Regenerate Cache.
-      }
     }
+  }
 
   void reset()
   {
