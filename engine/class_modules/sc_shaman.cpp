@@ -2779,8 +2779,8 @@ struct chain_lightning_t: public shaman_spell_t
     return cls -> ms_results;
   }
 
-  std::vector<player_t*> available_targeting( std::vector< player_t* >& tl ) const
-  { // available_targeting is only called when distance_targeting_enabled is true. Otherwise, available_targets is called.
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const
+  { // check_distance_targeting is only called when distance_targeting_enabled is true. Otherwise, available_targets is called.
     // The following code is intended to generate a target list that properly accounts for range from each target during chain lightning.
     // On a very basic level, it starts at the original target, and then finds a path that will hit 4 more, if possible.
     // The code below randomly cycles through targets until it finds said path, or hits the maximum amount of attempts, in which it gives up and just returns the current best path.
@@ -2788,10 +2788,13 @@ struct chain_lightning_t: public shaman_spell_t
 
     player_t* last_chain; // We have to track the last target that it hit.
     last_chain = target;
-    std::vector< player_t* > best_so_far( tl ); // Keeps track of the best chain path found so far, so we can use it if we give up.
+    std::vector< player_t* > best_so_far; // Keeps track of the best chain path found so far, so we can use it if we give up.
+    std::vector< player_t* > current_attempt;
+    best_so_far.push_back( last_chain );
+    current_attempt.push_back( last_chain );
 
     size_t num_targets = sim -> target_non_sleeping_list.size();
-    size_t max_attempts = ( num_targets - 1 ) * 3, local_attempts = 0, attempts = 0, chain_number = 1;
+    size_t max_attempts = ( num_targets - 1 ) * 2, local_attempts = 0, attempts = 0, chain_number = 1;
     std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
     std::vector<player_t*>::iterator position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
     if ( position != targets_left_to_try.end() )
@@ -2817,7 +2820,7 @@ struct chain_lightning_t: public shaman_spell_t
         if ( distance_from_last_chain <= radius )
         {
           last_chain = possibletarget;
-          tl.push_back( last_chain );
+          current_attempt.push_back( last_chain );
           targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
           chain_number++;
         }
@@ -2827,27 +2830,26 @@ struct chain_lightning_t: public shaman_spell_t
             targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
           local_attempts++; // Only count failures towards the limit-cap.
         }
-        if ( static_cast<int>( tl.size() ) == aoe || tl.size() == num_targets ) // If we run out of targets to hit, or have hit 5 already. Break.
+        if ( static_cast<int>( current_attempt.size() ) == aoe || current_attempt.size() == num_targets ) // If we run out of targets to hit, or have hit 5 already. Break.
         {
           stop_trying = true;
           break;
         }
       }
-      if ( tl.size() > best_so_far.size() )
-        best_so_far.swap( tl );
+      if ( current_attempt.size() > best_so_far.size() )
+        best_so_far = current_attempt;
 
-      tl.clear();
-      tl.push_back( target );
+      current_attempt.clear();
+      current_attempt.push_back( target );
       last_chain = target;
       targets_left_to_try = original_targets;
       chain_number = 1;
     }
 
-    if ( best_so_far.size() > tl.size() )
-      tl.swap( best_so_far );
-
     if ( sim -> log )
-      sim -> out_debug.printf( "Total attempts at finding path: %.3f %.3f", static_cast<double>( attempts ), static_cast<double>( local_attempts ) );
+      sim -> out_debug.printf( "%s Total attempts at finding path: %.3f - %.3f targets found - %s target is first chain", 
+        player -> name(), static_cast<double>(attempts), static_cast<double>( best_so_far.size() ), target -> name() );
+    tl.swap( best_so_far );
     return tl;
   }
 };
