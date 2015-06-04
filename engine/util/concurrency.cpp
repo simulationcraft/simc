@@ -85,7 +85,7 @@ int translate_thread_priority( sc_thread_t::priority_e prio )
   case sc_thread_t::LOWEST: return THREAD_PRIORITY_IDLE;
   default: assert( false && "invalid thread priority" ); break;
   }
-  return THREAD_PRIORITY_NORMAL;
+  return THREAD_PRIORITY_LOWEST+1;
 }
 
 } // unnamed namespace

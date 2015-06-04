@@ -770,7 +770,7 @@ bool parse_thread_priority( sim_t*             sim,
                                    const std::string& /* name */,
                                    const std::string& value )
 {
-  sc_thread_t::priority_e pr = sc_thread_t::NORMAL;
+  sc_thread_t::priority_e pr = sc_thread_t::BELOW_NORMAL;
 
   if ( util::str_compare_ci( value, "normal" ) )
   {
@@ -794,7 +794,7 @@ bool parse_thread_priority( sim_t*             sim,
   }
   else
   {
-    sim -> errorf( "Could not set thread priority to %s. Using Normal priority.", value.c_str() );
+    sim -> errorf( "Could not set thread priority to %s. Defaulting to below_normal priority.", value.c_str() );
   }
 
   sim -> thread_priority = pr;
@@ -1095,7 +1095,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling_normalized( 1.0 ),
   report_information(),
   // Multi-Threading
-  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
+  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::BELOW_NORMAL ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
   pause_mutex( 0 ),
   paused( false )
