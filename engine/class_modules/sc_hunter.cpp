@@ -662,6 +662,10 @@ public:
   {
     double m = base_t::composite_player_multiplier( school );
     m *= o() -> beast_multiplier();
+    
+    if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
+      m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
+
     return m;
   }
 };
@@ -1012,7 +1016,7 @@ public:
     double ap_coeff = 0.6; // default coefficient for pets
     if ( is_t18 )
     {
-      ap_coeff = 1.0; //  (1.0 + o() -> buffs.focus_fire -> current_value) 
+      ap_coeff = 0.4; //  (1.0 + o() -> buffs.focus_fire -> current_value) 
       buffs.tier18_4pc_bm -> trigger();
     }
     else if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
