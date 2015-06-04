@@ -2171,7 +2171,7 @@ struct glaive_toss_strike_t: public ranged_attack_t
     primary_target_multiplier = player -> talents.glaive_toss -> effectN( 1 ).base_value();
   }
 
-  bool fancy_target_stuff_impact( action_state_t* s )
+  bool impact_targeting( action_state_t* s )
   {
     if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
       ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
@@ -2205,7 +2205,7 @@ struct glaive_rebound_t: public ranged_attack_t
     aoe = -1;
   }
 
-  bool fancy_target_stuff_impact( action_state_t* s )
+  bool impact_targeting( action_state_t* s )
   {
     if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
       ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
