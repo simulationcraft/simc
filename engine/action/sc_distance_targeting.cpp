@@ -116,7 +116,7 @@
 
     std::vector<player_t*> master_list;
     master_list = target_list();
-    if ( !master_list.size() > 0 )
+    if ( master_list.size() == 1 )
       return 0;
 
     player_t* original_target = target;
