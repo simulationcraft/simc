@@ -2344,7 +2344,7 @@ public:
                                name(),
                                (int) player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
-      if ( p() -> talent.soul_of_the_forest -> ok() )
+      if ( p() -> talent.soul_of_the_forest -> ok() && p() -> specialization() == DRUID_FERAL )
         p() -> resource_gain( RESOURCE_ENERGY,
                               consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
                               p() -> gain.soul_of_the_forest );
@@ -3284,12 +3284,14 @@ struct mangle_t : public bear_attack_t
   {
     parse_options( options_str );
 
-    rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
+    {
+      rage_amount += player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
+      base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
       base_crit += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
-
-    base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
+    }
   }
 
   void update_ready( timespan_t )
