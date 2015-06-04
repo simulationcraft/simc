@@ -5596,6 +5596,7 @@ public:
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 
   virtual double composite_attribute( attribute_e attr ) const;
+  virtual double composite_player_multiplier( school_e ) const;
 
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143

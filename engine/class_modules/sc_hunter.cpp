@@ -663,9 +663,6 @@ public:
     double m = base_t::composite_player_multiplier( school );
     m *= o() -> beast_multiplier();
     
-    if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
-      m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
-
     return m;
   }
 };

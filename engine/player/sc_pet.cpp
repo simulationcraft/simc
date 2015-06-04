@@ -90,6 +90,18 @@ double pet_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
+// pet_t::composite_player_multiplier =======================================
+
+double pet_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
+    m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
+
+  return m;
+}
+
 // pet_t::init ==============================================================
 
 void pet_t::init()
