@@ -2338,6 +2338,39 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     min_gcd = timespan_t::from_millis( 250 ); // Force 250 milliseconds for the animation, but not delay the overall GCD
   }
 
+  double combo_breaker_chance()
+  {
+    double cb_chance = 0;
+    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+      cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
+    return cb_chance;
+  }
+
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    double cb_chance = combo_breaker_chance();
+    if ( cb_chance > 0 )
+    {
+      if ( p() -> talent.chi_explosion -> ok() )
+      {
+        if ( p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+          p() -> proc.combo_breaker_ce -> occur();
+      }
+      else
+      {
+        if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+          p() -> proc.combo_breaker_bok -> occur();
+      }
+      if ( p() -> buff.combo_breaker_tp -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+        p() -> proc.combo_breaker_tp -> occur();
+    }
+  }
+
   virtual void impact(action_state_t* s)
   {
     monk_melee_attack_t::impact(s);
@@ -5945,7 +5978,7 @@ double monk_t::composite_rating_multiplier( rating_e rating ) const
   case RATING_SPELL_CRIT:
     return m *= 1.0 + spec.ferment -> effectN( 1 ).percent();
   case RATING_MULTISTRIKE:
-    m *= 1.0 + spec.battle_trance -> effectN( 1 ).percent();
+    m *= 1.0 + 0.15;// spec.battle_trance->effectN(1).percent();
     m *= 1.0 + spec.jade_mists -> effectN( 1 ).percent();
     return m;
     break;
@@ -5963,7 +5996,7 @@ double monk_t::composite_multistrike() const
   double m = player_t::composite_multistrike();
 
   if ( buff.tiger_strikes -> check() )
-    m += buff.tiger_strikes -> default_value;
+    m += 0.35;//buff.tiger_strikes -> default_value;
 
   return m;
 }
