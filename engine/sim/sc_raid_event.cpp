@@ -157,7 +157,6 @@ struct adds_event_t : public raid_event_t
         adds[i] -> summon( saved_duration );
         adds[i] -> x_position = x;
         adds[i] -> y_position = y;
-        regenerate_cache();
 
         if (x != 0 || y != 0)
         {
@@ -169,6 +168,7 @@ struct adds_event_t : public raid_event_t
         adds[i] -> dismiss();
       }
     }
+    regenerate_cache();
   }
 
   void _finish()
