@@ -5288,10 +5288,10 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( "auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.distance>5" );
   def -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&time<2" );
-  def -> add_action( this, "Execution_Sentence", "if=!talent.seraphim.enabled" );
-  def -> add_action( this, "Execution_Sentence", "sync=seraphim,if=talent.seraphim.enabled" );
-  def -> add_action( this, "Light's Hammer", "if=!talent.seraphim.enabled" );
-  def -> add_action( this, "Light's Hammer", "sync=seraphim,if=talent.seraphim.enabled" );
+  def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled" );
+  def -> add_talent( this, "Execution Sentence", "sync=seraphim,if=talent.seraphim.enabled" );
+  def -> add_talent( this, "Light's Hammer", "if=!talent.seraphim.enabled" );
+  def -> add_talent( this, "Light's Hammer", "sync=seraphim,if=talent.seraphim.enabled" );
 
   // Items
   int num_items = ( int ) items.size();

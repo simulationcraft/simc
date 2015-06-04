@@ -32,6 +32,10 @@ actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wr
 actions+=/auto_attack
 actions+=/speed_of_light,if=movement.distance>5
 actions+=/judgment,if=talent.empowered_seals.enabled&time<2
+actions+=/execution_sentence,if=!talent.seraphim.enabled
+actions+=/execution_sentence,sync=seraphim,if=talent.seraphim.enabled
+actions+=/lights_hammer,if=!talent.seraphim.enabled
+actions+=/lights_hammer,sync=seraphim,if=talent.seraphim.enabled
 actions+=/use_item,name=bonemaws_big_toe,if=buff.avenging_wrath.up
 actions+=/avenging_wrath,sync=seraphim,if=talent.seraphim.enabled
 actions+=/avenging_wrath,if=!talent.seraphim.enabled&set_bonus.tier18_4pc=0
