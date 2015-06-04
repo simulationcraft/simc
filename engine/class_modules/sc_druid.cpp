@@ -1571,7 +1571,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    bool refresh = druid.buff.berserk -> check();
+    bool refresh = druid.buff.berserk -> check() != 0;
 
     if ( druid.perk.enhanced_berserk -> ok() )
       player -> resources.max[ RESOURCE_ENERGY ] += druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
@@ -1709,7 +1709,7 @@ struct omen_of_clarity_buff_t : public druid_buff_t<buff_t>
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    bool refresh = druid.buff.omen_of_clarity -> check();
+    bool refresh = druid.buff.omen_of_clarity -> check() != 0;
 
     bool success = druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
 
