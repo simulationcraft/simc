@@ -1832,7 +1832,6 @@ private:
   {
     may_crit = true;
     tick_may_crit = true;
-    dot_behavior = DOT_REFRESH;
     weapon_multiplier = 0.0;
     gain = player -> get_gain( name_str );
     generate_fury = 0;
@@ -3043,7 +3042,6 @@ struct immolate_t: public warlock_spell_t
   {
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
-    dot_behavior = DOT_REFRESH;
     base_tick_time = p -> find_spell( 157736 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 157736 ) -> duration();
     spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();

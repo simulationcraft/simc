@@ -32,16 +32,11 @@ spell_base_t::spell_base_t( action_e at,
   action_t( at, token, p, s ),
   procs_courageous_primal_diamond( true )
 {
-
-  dot_behavior      = DOT_REFRESH;
-
   min_gcd = timespan_t::from_seconds( 1.0 );
-
   hasted_ticks = true;
   special = true;
 
   crit_bonus = 1.0;
-
   crit_multiplier *= util::crit_multiplier( player -> meta_gem );
 }
 

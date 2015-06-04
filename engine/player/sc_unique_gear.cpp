@@ -386,7 +386,6 @@ void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
     bleed_attack_t( player_t* p, const special_effect_t& effect ) :
       attack_t( effect.name(), p, p -> find_spell( effect.trigger_spell_id ) )
     {
-      dot_behavior = DOT_REFRESH;
       hasted_ticks = false; background = true; callbacks = false; special = true;
       may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
       tick_may_crit = false;

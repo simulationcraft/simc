@@ -3433,7 +3433,6 @@ struct censure_t : public paladin_melee_attack_t
   {
     background = proc = tick_may_crit = true;
     hasted_ticks = may_miss = may_dodge = may_parry = false;
-    dot_behavior = DOT_REFRESH;
     weapon_multiplier = 0.0;
 
     // Glyph of Immediate Truth reduces DoT damage

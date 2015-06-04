@@ -1547,7 +1547,6 @@ struct deep_wounds_t: public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
-    dot_behavior = DOT_REFRESH;
   }
 };
 
@@ -2416,7 +2415,6 @@ struct blood_craze_t: public residual_action::residual_periodic_action_t < warri
     background = true;
     base_tick_time = p -> find_spell( 159363 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 159363 ) -> duration();
-    dot_behavior = DOT_REFRESH;
   }
 };
 
@@ -2483,7 +2481,6 @@ struct rend_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
-    dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
     base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
     t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> effectN( 1 ).percent();

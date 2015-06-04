@@ -1816,7 +1816,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     tick_may_crit = true;
     may_parry = false;
     may_block = false;
-    dot_behavior = DOT_REFRESH;
   }
 
   virtual void init()

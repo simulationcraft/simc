@@ -983,8 +983,6 @@ public:
   {
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
-
-    ab::dot_behavior      = DOT_REFRESH;
     ab::weapon_multiplier = 0.0;
 
     can_cancel_shadowform = p.options.autoUnshift;
@@ -1590,7 +1588,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     base_t( n, player, s ),
     atonement( nullptr ), can_trigger_atonement( false ), is_mind_spell( false )
   {
-    dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
 

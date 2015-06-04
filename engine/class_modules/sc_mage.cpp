@@ -4035,7 +4035,6 @@ struct pyroblast_t : public mage_spell_t
     conjure_phoenix( 0 )
   {
     parse_options( options_str );
-    dot_behavior = DOT_REFRESH;
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) )
     {

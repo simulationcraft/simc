@@ -1262,7 +1262,6 @@ struct force_of_nature_feral_t : public pet_t
     rake_t( force_of_nature_feral_t* p ) :
       melee_attack_t( "rake", p, p -> find_spell( 150017 ) ), owner( 0 )
     {
-      dot_behavior     = DOT_REFRESH;
       special = may_crit = tick_may_crit = true;
       owner            = p -> o();
     }
@@ -2648,7 +2647,6 @@ struct rake_t : public cat_attack_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     bleed_spell           = p -> find_spell( 155722 );
-    dot_behavior          = DOT_REFRESH;
     base_td               = bleed_spell -> effectN( 1 ).base_value();
     attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_duration          = bleed_spell -> duration();
@@ -2768,7 +2766,6 @@ struct rip_t : public cat_attack_t
     ap_per_point = data().effectN( 1 ).ap_coeff();
     special      = true;
     may_crit     = false;
-    dot_behavior = DOT_REFRESH;
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
@@ -3009,7 +3006,6 @@ struct thrash_cat_t : public cat_attack_t
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe                    = -1;
-    dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
@@ -3059,7 +3055,6 @@ struct shattered_bleed_t : public cat_attack_t
   shattered_bleed_t( druid_t* p ):
     cat_attack_t( "shattered_bleed", p, p -> find_spell( 159238 ) )
     {
-      dot_behavior = DOT_REFRESH;
       hasted_ticks = false; background = true; callbacks = false; special = true;
       may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
       tick_may_crit = false;
@@ -3235,8 +3230,6 @@ struct lacerate_t : public bear_attack_t
     bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
   {
     parse_options( options_str );
-    dot_behavior = DOT_REFRESH;
-
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
   }
 
@@ -3487,7 +3480,6 @@ struct thrash_bear_t : public bear_attack_t
   {
     parse_options( options_str );
     aoe                    = -1;
-    dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
 
     // Apply hidden passive damage multiplier
@@ -3574,7 +3566,6 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     if( target_self )
       target = p;
 
-    dot_behavior      = DOT_REFRESH;
     may_miss          = false;
     weapon_multiplier = 0;
     harmful           = false;
@@ -5577,7 +5568,6 @@ struct starfall_t : public druid_spell_t
       dot_duration   = aura_spell -> duration();
       base_tick_time = aura_spell -> effectN( 1 ).period();
     }
-    dot_behavior   = DOT_REFRESH;
     hasted_ticks = may_crit = false;
     may_multistrike = 0;
     spell_power_mod.tick = spell_power_mod.direct = 0;
