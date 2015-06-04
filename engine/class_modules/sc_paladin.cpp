@@ -4304,11 +4304,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
   {
     background  = true;
     // automatically connects when triggered
-    may_block   = false;
-    may_glance  = false;
-    may_miss    = false;
-    may_dodge   = false;
-    may_parry   = false;
+    may_block = may_glance = may_miss = may_dodge = may_parry = false;
     trigger_gcd = timespan_t::zero();
 
     if ( data().ok() )
@@ -4331,7 +4327,6 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
     if ( p -> passives.guarded_by_the_light -> ok() )
       base_multiplier /= 5;
   }
-
 };
 
 // Shield of the Righteous ==================================================

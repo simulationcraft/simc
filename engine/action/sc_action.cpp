@@ -1084,16 +1084,15 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 std::vector< player_t* >& action_t::target_list() const
 {
   // Check if target cache is still valid. If not, recalculate it
-  if ( ! target_cache.is_valid )
+  if ( !target_cache.is_valid )
   {
+    available_targets( target_cache.list ); // This grabs the full list of targets, which will also pickup various awfulness that some classes have.. such as prismatic crystal.
     if ( sim -> distance_targeting_enabled )
     {
-      available_targets( target_cache.list ); // This grabs the full list of targets, which will also pickup various awfulness that some classes have.. such as prismatic crystal.
-      check_distance_targeting( target_cache.list ); // This eliminates targets that will be out of range.
-    }
-    else
-    {
-      available_targets( target_cache.list );
+      if ( execute_state ) // If there is an execute state, that means the ability has already been cast, and is currently channeling or ticking. 
+        check_distance_targeting( target_cache.list ); // This eliminates targets that will be out of range.
+      else // If there is no execute state, that means we are inside ready() or target_if, and only need to check if the target is reachable.
+        targets_in_range_list( target_cache.list ); // target_if will run check_distance_targeting if needed.
     }
     target_cache.is_valid = true;
   }
@@ -2706,8 +2705,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
         if ( spell )
         {
           spell -> target = original_spell.target;
-          if ( !original_spell.target_cache.is_valid )
-            spell -> target_cache.is_valid = false;
+          if ( !original_spell.target_cache.is_valid ) // This is to catch aoe spells that have a parent driver using target_if to find the best target.
+            spell -> target_cache.is_valid = false;    // Ex: mind sear actually deals damage with mind sear tick
           spell -> target_list();
           return static_cast<double>( spell -> target_list().size() );
         }

@@ -34,19 +34,20 @@
     return true;
   }
 
-  std::vector<player_t*> action_t::targets_in_range_list() const
+  std::vector<player_t*> action_t::targets_in_range_list( std::vector< player_t* >& tl ) const
   {
-    std::vector<player_t*> reachable_targets;
-    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+    size_t i = tl.size();
+    while ( i > 0 )
     {
-      player_t* target_ = sim -> target_non_sleeping_list[i];
+      i--;
+      player_t* target_ = tl[i];
       if ( range > 0.0 )
       {
-        if ( target_ -> get_position_distance( player -> x_position, player -> y_position ) < range )
-          reachable_targets.push_back( target_ );
+        if ( target_ -> get_position_distance( player -> x_position, player -> y_position ) > range )
+          tl.erase( tl.begin() + i );
       }
     }
-    return reachable_targets;
+    return tl;
   }
 
   std::vector<player_t*> action_t::check_distance_targeting( std::vector< player_t* >& tl ) const
@@ -111,23 +112,15 @@
   player_t* action_t::select_target_if_target()
   {
     if ( target_if_mode == TARGET_IF_NONE || target_list().size() == 1 )
-    {
       return 0;
-    }
 
     std::vector<player_t*> master_list;
-    if ( !sim -> distance_targeting_enabled )
-      master_list = target_list();
-    else
-    {
-      master_list = targets_in_range_list(); // Same thing as a normal target_list, except it removes targets that are out of range.
-      if ( master_list.size() == 1 )
-        return 0;
-    }
+    master_list = target_list();
+    if ( !master_list.size() > 0 )
+      return 0;
 
     player_t* original_target = target;
     player_t* proposed_target = target;
-    target_cache.is_valid = false;
     double current_target_v = target_if_expr -> evaluate();
 
     double max_ = current_target_v;
@@ -139,17 +132,13 @@
 
       // No need to check current target
       if ( target == original_target )
-      {
         continue;
-      }
       target_cache.is_valid = false;
       double v = target_if_expr -> evaluate();
 
       // Don't swap to targets that evaluate to identical value than the current target
       if ( v == current_target_v )
-      {
         continue;
-      }
 
       if ( target_if_mode == TARGET_IF_FIRST && v != 0 )
       {
