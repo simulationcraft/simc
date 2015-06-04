@@ -3426,33 +3426,15 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 
 //Censure  ==================================================================
 
-// Censure is the debuff applied by Seal of Truth, and it's an oddball.  The dot ticks are really melee attacks, believe it or not.
-// They cannot miss/dodge/parry (though the application of the debuff can do all of those things, and often shows up in WoL reports
-// as such) and use melee crit.  Up until WoD, the tick interval also scales with spell haste like a normal DoT.
-//
-// The easiest solution here is to treat it like a spell, since that way it gets all of the spell-like properties it ought to.  However,
-// we need to tweak it to use melee crit, which we do in impact() by setting the action_state_t -> crit variable accordingly.
-//
-// The way this works is that censure_t represents a spell attack proc which is made every time we succeed with a qualifying melee attack.
-// That spell attack proc does 0 damage and applies the censure dot, which is defined in the dots_t structure.  The dot takes care of the
-// tick damage, but since we don't support stackable dots, we have to handle the stacking in the player -> debuff_censure variable and use
-// that value as an action multiplier to scale the damage.  Got all that?
-
-// 12/9/2014 update: now that this doesn't have hasted ticks anymore, it can probably be converted back to a melee. Rather than fuss with that
-// right now, though, I'm leaving it as-is (and just disabling hasted_ticks) since it's easier than dealing with the problems of converting
-// a paladin_spell_t to a paladin_melee_attack_t.
-// 5/23/2015 - Had to change to melee attack to work with empty drinking horn.
-
 struct censure_t : public paladin_melee_attack_t
 {
   censure_t( paladin_t* p ) :
     paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
   {
-    background       = true;
-    proc             = true;
-    tick_may_crit    = true;
-    hasted_ticks     = false;
+    background = proc = tick_may_crit = true;
+    hasted_ticks = may_miss = may_dodge = may_parry = false;
     dot_behavior = DOT_REFRESH;
+    weapon_multiplier = 0.0;
 
     // Glyph of Immediate Truth reduces DoT damage
     if ( p -> glyphs.immediate_truth -> ok() )
