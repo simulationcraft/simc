@@ -1157,6 +1157,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
 
+  if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
+    m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
+
   if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY,T18,B4 ) )
     m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
