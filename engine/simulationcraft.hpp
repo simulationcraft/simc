@@ -5270,6 +5270,7 @@ struct player_t : public actor_t
   uptime_t*   get_uptime  ( const std::string& name );
   luxurious_sample_data_t* get_sample_data( const std::string& name );
   double      get_player_distance( player_t& );
+  double      get_ground_aoe_distance( action_state_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
@@ -6180,8 +6181,8 @@ struct action_t : public noncopyable
   virtual std::vector< player_t* >& target_list() const;
   virtual player_t* find_target_by_number( int number ) const;
 
-  virtual bool execute_targeting( const action_t* action );
-  virtual bool impact_targeting( action_state_t* s );
+  virtual bool execute_targeting( action_t* action ) const;
+  virtual bool impact_targeting( action_state_t* s ) const;
   virtual std::vector<player_t*> targets_in_range_list( std::vector< player_t* >& tl ) const;
   virtual std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const;
 

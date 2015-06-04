@@ -5598,6 +5598,13 @@ double player_t::get_player_distance( player_t& p )
   return get_position_distance( p.x_position, p.y_position );
 }
 
+// player_t::get_ground_aoe_distance ========================================
+
+double player_t::get_ground_aoe_distance( action_state_t& a )
+{
+  return get_position_distance( a.original_x, a.original_y );
+}
+
 // player_t::get_action_priority_list( const std::string& name ) ============
 
 action_priority_list_t* player_t::get_action_priority_list( const std::string& name, const std::string& comment )

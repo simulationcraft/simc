@@ -769,7 +769,12 @@ timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 ) return timespan_t::zero();
 
-  double distance = player -> current.distance;
+  double distance;
+  if ( sim -> distance_targeting_enabled )
+    distance = player -> get_player_distance( *target );
+  else
+    distance = player -> current.distance;
+
   if ( execute_state && execute_state -> target )
     distance += execute_state -> target -> size;
 
@@ -780,9 +785,7 @@ timespan_t action_t::travel_time() const
   double v = sim -> travel_variance;
 
   if ( v )
-  {
     t = rng().gauss( t, v );
-  }
 
   return timespan_t::from_seconds( t );
 }
@@ -1905,14 +1908,8 @@ bool action_t::ready()
     return false;
   }
 
-  if ( sim -> distance_targeting_enabled )
-  {
-    if ( range > 0 )
-    {
-      if ( target -> get_position_distance( player -> x_position, player -> y_position ) > range )
-        return false;
-    }
-  }
+  if ( sim -> distance_targeting_enabled && range > 0 && target -> get_player_distance( *player ) )
+    return false;
 
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
@@ -2568,7 +2565,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
           {
             player_t* t = action -> player -> sim -> target_non_sleeping_list[i];
-            if ( action -> player -> get_position_distance( t -> x_position, t -> y_position ) <= yards_from_player )
+            if ( action -> player -> get_player_distance( *t ) <= yards_from_player )
               num_targets++;
           }
           return num_targets;
@@ -3156,7 +3153,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
 
   if ( ! alist )
   {
-    sim -> errorf( "Player %s uses call_action_lis with unknown action list %s\n", player -> name(), alist_name.c_str() );
+    sim -> errorf( "Player %s uses call_action_list with unknown action list %s\n", player -> name(), alist_name.c_str() );
     sim -> cancel();
   }
 }

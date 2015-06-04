@@ -5,12 +5,12 @@
 
 #include "simulationcraft.hpp"
 
-  bool action_t::impact_targeting( action_state_t* )
+  bool action_t::impact_targeting( action_state_t* ) const
   {
     return true;
   }
 
-  bool action_t::execute_targeting( const action_t* action )
+  bool action_t::execute_targeting( action_t* action ) const
   {
     if ( action -> sim -> distance_targeting_enabled )
     {
@@ -24,7 +24,7 @@
       { // No need to recheck if the execute time was zero.
         if ( action -> range > 0.0 )
         {
-          if ( action -> target -> get_position_distance( action -> player -> x_position, action -> player -> y_position ) > action -> range )
+          if ( action -> target -> get_player_distance( *action -> player ) > action -> range )
           { // Target is now out of range, we cannot finish the cast.
             return false;
           }
@@ -41,7 +41,7 @@
     {
       i--;
       player_t* target_ = tl[i];
-      if ( range > 0.0 && target -> get_position_distance( player -> x_position, player -> y_position ) )
+      if ( range > 0.0 && target -> get_player_distance( *player ) > range )
         tl.erase( tl.begin() + i );
       else if ( !ground_aoe && target_ -> debuffs.invulnerable -> check() ) // Cannot target invulnerable mobs, unless it's a ground aoe. It just won't do damage.
         tl.erase( tl.begin() + i );
@@ -72,24 +72,24 @@
           { // We need to check the parents dot for location.
             if ( sim -> log )
               sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", parent_dot -> state -> original_x, parent_dot -> state -> original_y );
-            if ( t -> get_position_distance( parent_dot -> state -> original_x, parent_dot -> state -> original_y ) > radius )
+            if ( t -> get_ground_aoe_distance( *parent_dot -> state ) > radius )
               tl.erase( tl.begin() + i );
           }
           else if ( ground_aoe && execute_state )
           {
-            if ( t -> get_position_distance( execute_state -> original_x, execute_state -> original_y ) > radius )
+            if ( t -> get_ground_aoe_distance( *execute_state ) > radius )
               tl.erase( tl.begin() + i ); // We should just check the child.
           }
-          else if ( t -> get_position_distance( target -> x_position, target -> y_position ) > radius )
+          else if ( t -> get_player_distance( *target ) > radius )
             tl.erase( tl.begin() + i );
         } // If they do not have a range, they are likely based on the distance from the player.
-        else if ( radius > 0 && t -> get_position_distance( player -> x_position, player -> y_position ) > radius )
+        else if ( radius > 0 && t -> get_player_distance( *player ) > radius )
           tl.erase( tl.begin() + i );
-        else if ( range > 0 && t -> get_position_distance( player -> x_position, player -> y_position ) > range )
+        else if ( range > 0 && t -> get_player_distance( *player ) > range )
           tl.erase( tl.begin() + i ); // If they only have a range, then they are a single target ability.
       }
     }
-    if ( sim -> debug )
+    if ( sim -> log )
     {
       sim -> out_debug.printf( "%s regenerated target cache for %s (%s)",
         player -> name(),
@@ -97,10 +97,12 @@
         name() );
       for ( size_t i = 0; i < tl.size(); i++ )
       {
-        sim -> out_debug.printf( "[%u, %s (id=%u)]",
+        sim -> out_debug.printf( "[%u, %s (id=%u) x= %.3f y= %.3f ]",
           static_cast<unsigned>( i ),
           tl[i] -> name(),
-          tl[i] -> actor_index );
+          tl[i] -> actor_index,
+          tl[i] -> x_position,
+          tl[i] -> y_position );
       }
     }
     return tl;
@@ -118,8 +120,8 @@
       master_list = targets_in_range_list( master_list );
       if ( sim -> log )
         sim -> out_debug.printf( "%s Number of targets found in range - %.3f", 
-        player -> name(), static_cast<double>(master_list.size() ) );
-      if ( master_list.size() == 1 )
+        player -> name(), static_cast<double>( master_list.size() ) );
+      if ( master_list.size() <= 1 )
         return target;
     }
 
