@@ -41,11 +41,10 @@
     {
       i--;
       player_t* target_ = tl[i];
-      if ( range > 0.0 )
-      {
-        if ( target_ -> get_position_distance( player -> x_position, player -> y_position ) > range )
-          tl.erase( tl.begin() + i );
-      }
+      if ( range > 0.0 && target -> get_position_distance( player -> x_position, player -> y_position ) )
+        tl.erase( tl.begin() + i );
+      else if ( !ground_aoe && target_ -> debuffs.invulnerable -> check() ) // Cannot target invulnerable mobs, unless it's a ground aoe. It just won't do damage.
+        tl.erase( tl.begin() + i );
     }
     return tl;
   }
@@ -57,8 +56,7 @@
     {
       i--;
       player_t* t = tl[i];
-
-      if ( t -> is_enemy() && ( t != target ) )
+      if ( t != target )
       {
         if ( sim -> log )
         {
@@ -66,30 +64,29 @@
             player -> name(), name(), range, radius,
             player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, t -> name(), t -> x_position, t -> y_position );
         }
-        if ( radius > 0 )
-        {
-          if ( range > 0 ) // Abilities with range/radius radiate from the target. 
+        if ( ( ground_aoe && t -> debuffs.flying -> check() ) || t -> debuffs.invulnerable -> check() )
+          tl.erase( tl.begin() + i );
+        else if ( radius > 0 && range > 0 )
+        { // Abilities with range/radius radiate from the target. 
+          if ( ground_aoe && parent_dot && parent_dot -> is_ticking() )
+          { // We need to check the parents dot for location.
+            if ( sim -> log )
+              sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", parent_dot -> state -> original_x, parent_dot -> state -> original_y );
+            if ( t -> get_position_distance( parent_dot -> state -> original_x, parent_dot -> state -> original_y ) > radius )
+              tl.erase( tl.begin() + i );
+          }
+          else if ( ground_aoe && execute_state )
           {
-            if ( ground_aoe && parent_dot && parent_dot -> is_ticking() )
-            { // We need to check the parents dot for location.
-              if ( sim -> log )
-                sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", parent_dot -> state -> original_x, parent_dot -> state -> original_y );
-              if ( t -> get_position_distance( parent_dot -> state -> original_x, parent_dot -> state -> original_y ) > radius )
-                tl.erase( tl.begin() + i );
-            }
-            else if ( ground_aoe && execute_state && t -> get_position_distance( execute_state -> original_x, execute_state -> original_y ) > radius ) // We should just check the child.
-              tl.erase( tl.begin() + i );
-            else if ( t -> get_position_distance( target -> x_position, target -> y_position ) > radius )
-              tl.erase( tl.begin() + i );
-          } // If they do not have a range, they are likely based on the distance from the player.
-          else if ( t -> get_position_distance( player -> x_position, player -> y_position ) > radius )
+            if ( t -> get_position_distance( execute_state -> original_x, execute_state -> original_y ) > radius )
+              tl.erase( tl.begin() + i ); // We should just check the child.
+          }
+          else if ( t -> get_position_distance( target -> x_position, target -> y_position ) > radius )
             tl.erase( tl.begin() + i );
-        }
-        else if ( range > 0 ) // If they only have a range, then they are a single target ability.
-        {
-          if ( t -> get_position_distance( player -> x_position, player -> y_position ) > range )
-            tl.erase( tl.begin() + i );
-        }
+        } // If they do not have a range, they are likely based on the distance from the player.
+        else if ( radius > 0 && t -> get_position_distance( player -> x_position, player -> y_position ) > radius )
+          tl.erase( tl.begin() + i );
+        else if ( range > 0 && t -> get_position_distance( player -> x_position, player -> y_position ) > range )
+          tl.erase( tl.begin() + i ); // If they only have a range, then they are a single target ability.
       }
     }
     if ( sim -> debug )
@@ -112,12 +109,19 @@
   player_t* action_t::select_target_if_target()
   {
     if ( target_if_mode == TARGET_IF_NONE || target_list().size() == 1 )
-      return 0;
+      return target;
 
     std::vector<player_t*> master_list;
     master_list = target_list();
-    if ( master_list.size() == 1 )
-      return 0;
+    if ( sim -> distance_targeting_enabled )
+    {
+      master_list = targets_in_range_list( master_list );
+      if ( sim -> log )
+        sim -> out_debug.printf( "%s Number of targets found in range - %.3f", 
+        player -> name(), static_cast<double>(master_list.size() ) );
+      if ( master_list.size() == 1 )
+        return target;
+    }
 
     player_t* original_target = target;
     player_t* proposed_target = target;
