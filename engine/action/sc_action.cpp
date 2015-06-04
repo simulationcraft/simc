@@ -272,7 +272,7 @@ action_t::action_t( action_e       ty,
   tick_may_crit(),
   tick_zero(),
   hasted_ticks(),
-  dot_behavior( DOT_CLIP ),
+  dot_behavior( DOT_REFRESH ),
   ability_lag( timespan_t::zero() ),
   ability_lag_stddev( timespan_t::zero() ),
   rp_gain(),
@@ -294,7 +294,7 @@ action_t::action_t( action_e       ty,
   total_executions(),
   line_cooldown( cooldown_t( "line_cd", *p ) )
 {
-  dot_behavior                   = DOT_CLIP;
+  dot_behavior                   = DOT_REFRESH;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
   radius                         = -1.0;
@@ -1051,24 +1051,17 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
   if ( ! target -> is_sleeping() )
     tl.push_back( target );
 
-  if ( sim -> distance_targeting_enabled )
+  for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
   {
-    this -> available_targeting( tl );
-  }
-  else
-  {
-    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> target_non_sleeping_list[i];
+    player_t* t = sim -> target_non_sleeping_list[i];
 
-      if ( t -> is_enemy() && ( t != target ) )
-      {
-        tl.push_back( t );
-      }
+    if ( t -> is_enemy() && ( t != target ) )
+    {
+      tl.push_back( t );
     }
   }
 
-  if ( sim -> debug )
+  if ( sim -> debug && !sim -> distance_targeting_enabled )
   {
     sim -> out_debug.printf( "%s regenerated target cache for %s (%s)",
         player -> name(),
@@ -1093,7 +1086,15 @@ std::vector< player_t* >& action_t::target_list() const
   // Check if target cache is still valid. If not, recalculate it
   if ( ! target_cache.is_valid )
   {
-    available_targets( target_cache.list );
+    if ( sim -> distance_targeting_enabled )
+    {
+      available_targets( target_cache.list ); // This grabs the full list of targets, which will also pickup various awfulness that some classes have.. such as prismatic crystal.
+      check_distance_targeting( target_cache.list ); // This eliminates targets that will be out of range.
+    }
+    else
+    {
+      available_targets( target_cache.list );
+    }
     target_cache.is_valid = true;
   }
 

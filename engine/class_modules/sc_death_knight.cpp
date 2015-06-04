@@ -1268,7 +1268,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "blood_plague", p, p -> owner -> find_spell( 55078 ) )  // Also check spell id 55078
     {
       tick_may_crit    = true;
-      dot_behavior     = DOT_REFRESH;
       may_miss         = false;
       may_crit         = false;
       hasted_ticks     = false;
@@ -1287,7 +1286,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       may_miss         = false;
       may_crit         = false;
       tick_may_crit    = true;
-      dot_behavior     = DOT_REFRESH;
     }
 
     virtual double composite_crit() const
@@ -1302,7 +1300,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     {
       hasted_ticks = may_miss = may_crit = false;
       background = tick_may_crit = true;
-      dot_behavior = DOT_REFRESH;
     }
 
     double composite_target_multiplier( player_t* target ) const
@@ -2948,7 +2945,6 @@ struct disease_t : public death_knight_spell_t
   {
     tick_may_crit    = true;
     background       = true;
-    dot_behavior     = DOT_REFRESH;
     may_miss         = false;
     may_crit         = false;
     hasted_ticks     = false;

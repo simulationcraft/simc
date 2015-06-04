@@ -146,11 +146,6 @@ struct move_enemy_t : public raid_event_t
     {
       sim -> out_log.printf( "Move enemy event cannot be created, there is no enemy named %s.", name.c_str() );
     }
-    else if ( enemy == sim -> target )
-    {
-      sim -> out_log.printf( "Move enemy currently does not work with the first enemy created in a sim, named %s.\nPlease only use move_enemy to move secondary targets.", name.c_str() );
-      enemy = 0;
-    }
   }
 
   void regenerate_cache()

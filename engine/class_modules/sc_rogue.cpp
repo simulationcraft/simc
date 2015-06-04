@@ -962,7 +962,6 @@ struct deadly_poison_t : public rogue_poison_t
     {
       may_crit       = false;
       harmful        = true;
-      dot_behavior   = DOT_REFRESH;
     }
 
     void impact( action_state_t* state )
@@ -2268,7 +2267,6 @@ struct hemorrhage_t : public rogue_attack_t
     rogue_attack_t( "hemorrhage", p, p -> find_class_spell( "Hemorrhage" ), options_str )
   {
     ability_type = HEMORRHAGE;
-    dot_behavior = DOT_REFRESH;
     weapon = &( p -> main_hand_weapon );
 
     initialize_sinister_calling( 168908 );
@@ -2604,7 +2602,6 @@ struct recuperate_t : public rogue_attack_t
     rogue_attack_t( "recuperate", p, p -> find_class_spell( "Recuperate" ), options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    dot_behavior = DOT_REFRESH;
     harmful = false;
   }
 
@@ -2634,7 +2631,6 @@ struct revealing_strike_t : public rogue_attack_t
     rogue_attack_t( "revealing_strike", p, p -> find_class_spell( "Revealing Strike" ), options_str )
   {
     ability_type = REVEALING_STRIKE;
-    dot_behavior = DOT_REFRESH;
 
     // Legendary buff increases RS damage
     if ( p -> fof_p1 || p -> fof_p2 || p -> fof_p3 )
@@ -2665,7 +2661,6 @@ struct rupture_t : public rogue_attack_t
     ability_type          = RUPTURE;
     may_crit              = false;
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    dot_behavior          = DOT_REFRESH;
     base_multiplier      *= 1.0 + p -> spec.sanguinary_vein -> effectN( 1 ).percent();
 
     initialize_sinister_calling( 168963 );
@@ -4806,7 +4801,6 @@ struct shadow_reflection_pet_t : public pet_t
     sr_hemorrhage_t( shadow_reflection_pet_t* p ):
       shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) )
     {
-      dot_behavior = DOT_REFRESH;
     }
   };
 
@@ -4889,7 +4883,6 @@ struct shadow_reflection_pet_t : public pet_t
     {
       base_costs[ RESOURCE_COMBO_POINT ] = 1;
       may_crit              = false;
-      dot_behavior          = DOT_REFRESH;
       weapon_multiplier = 0.0;
     }
 

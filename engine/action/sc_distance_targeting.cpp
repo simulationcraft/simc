@@ -34,47 +34,75 @@
     return true;
   }
 
-  std::vector<player_t*> action_t::available_targeting( std::vector< player_t* >& tl ) const
+  std::vector<player_t*> action_t::targets_in_range_list() const
   {
-    if ( !target_cache.is_valid )
+    std::vector<player_t*> reachable_targets;
+    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
     {
-      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      player_t* target_ = sim -> target_non_sleeping_list[i];
+      if ( range > 0.0 )
       {
-        player_t* t = sim -> target_non_sleeping_list[i];
+        if ( target_ -> get_position_distance( player -> x_position, player -> y_position ) < range )
+          reachable_targets.push_back( target_ );
+      }
+    }
+    return reachable_targets;
+  }
 
-        if ( t -> is_enemy() && ( t != target ) )
+  std::vector<player_t*> action_t::check_distance_targeting( std::vector< player_t* >& tl ) const
+  {
+    size_t i = tl.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* t = tl[i];
+
+      if ( t -> is_enemy() && ( t != target ) )
+      {
+        if ( sim -> log )
         {
-          if ( sim -> log )
-          {
-            sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
-              player -> name(), name(), range, radius,
-              player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, t -> name(), t -> x_position, t -> y_position );
-          }
-          if ( radius > 0 )
-          {
-            if ( range > 0 ) // Abilities with range/radius radiate from the target. 
-            {
-              if ( ground_aoe && parent_dot && parent_dot -> is_ticking() )
-              { // We need to check the parents dot for location.
-                if ( sim -> log )
-                  sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", parent_dot -> state -> original_x, parent_dot -> state -> original_y );
-                if ( t -> get_position_distance( parent_dot -> state -> original_x, parent_dot -> state -> original_y ) <= radius )
-                  tl.push_back( t );
-              }
-              else if ( ground_aoe && execute_state && t -> get_position_distance( execute_state -> original_x, execute_state -> original_y ) <= radius ) // We should just check the child.
-                tl.push_back( t );
-              else if ( t -> get_position_distance( target -> x_position, target -> y_position ) <= radius )
-                tl.push_back( t );
-            } // If they do not have a range, they are likely based on the distance from the player.
-            else if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= radius )
-              tl.push_back( t );
-          }
-          else if ( range > 0 ) // If they only have a range, then they are a single target ability.
-          {
-            if ( t -> get_position_distance( player -> x_position, player -> y_position ) <= range )
-              tl.push_back( t );
-          }
+          sim -> out_debug.printf( "%s action %s - Range %.3f, Radius %.3f, player location x=%.3f,y=%.3f, original target: %s - location: x=%.3f,y=%.3f, impact target: %s - location: x=%.3f,y=%.3f",
+            player -> name(), name(), range, radius,
+            player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, t -> name(), t -> x_position, t -> y_position );
         }
+        if ( radius > 0 )
+        {
+          if ( range > 0 ) // Abilities with range/radius radiate from the target. 
+          {
+            if ( ground_aoe && parent_dot && parent_dot -> is_ticking() )
+            { // We need to check the parents dot for location.
+              if ( sim -> log )
+                sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", parent_dot -> state -> original_x, parent_dot -> state -> original_y );
+              if ( t -> get_position_distance( parent_dot -> state -> original_x, parent_dot -> state -> original_y ) > radius )
+                tl.erase( tl.begin() + i );
+            }
+            else if ( ground_aoe && execute_state && t -> get_position_distance( execute_state -> original_x, execute_state -> original_y ) > radius ) // We should just check the child.
+              tl.erase( tl.begin() + i );
+            else if ( t -> get_position_distance( target -> x_position, target -> y_position ) > radius )
+              tl.erase( tl.begin() + i );
+          } // If they do not have a range, they are likely based on the distance from the player.
+          else if ( t -> get_position_distance( player -> x_position, player -> y_position ) > radius )
+            tl.erase( tl.begin() + i );
+        }
+        else if ( range > 0 ) // If they only have a range, then they are a single target ability.
+        {
+          if ( t -> get_position_distance( player -> x_position, player -> y_position ) > range )
+            tl.erase( tl.begin() + i );
+        }
+      }
+    }
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s regenerated target cache for %s (%s)",
+        player -> name(),
+        signature_str.c_str(),
+        name() );
+      for ( size_t i = 0; i < tl.size(); i++ )
+      {
+        sim -> out_debug.printf( "[%u, %s (id=%u)]",
+          static_cast<unsigned>( i ),
+          tl[i] -> name(),
+          tl[i] -> actor_index );
       }
     }
     return tl;
@@ -82,19 +110,28 @@
 
   player_t* action_t::select_target_if_target()
   {
-    if ( target_if_mode == TARGET_IF_NONE || sim -> target_non_sleeping_list.size() == 1 )
+    if ( target_if_mode == TARGET_IF_NONE || target_list().size() == 1 )
     {
       return 0;
     }
 
+    std::vector<player_t*> master_list;
+    if ( !sim -> distance_targeting_enabled )
+      master_list = target_list();
+    else
+    {
+      master_list = targets_in_range_list(); // Same thing as a normal target_list, except it removes targets that are out of range.
+      if ( master_list.size() == 1 )
+        return 0;
+    }
+
     player_t* original_target = target;
     player_t* proposed_target = target;
-
+    target_cache.is_valid = false;
     double current_target_v = target_if_expr -> evaluate();
 
     double max_ = current_target_v;
     double min_ = current_target_v;
-    std::vector<player_t*> master_list = sim -> target_non_sleeping_list.data();
 
     for ( size_t i = 0, end = master_list.size(); i < end; ++i )
     {
@@ -130,6 +167,10 @@
         proposed_target = target;
       }
     }
+
+    if ( sim -> log )
+      sim -> out_debug.printf( "%s target_if best target: %s - original target - %s - current target -%s", 
+        player -> name(), proposed_target -> name(), original_target -> name(), target -> name() );
 
     target = original_target;
 

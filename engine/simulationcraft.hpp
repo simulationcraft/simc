@@ -6181,7 +6181,8 @@ struct action_t : public noncopyable
 
   virtual bool execute_targeting( const action_t* action );
   virtual bool impact_targeting( action_state_t* s );
-  virtual std::vector<player_t*> available_targeting( std::vector< player_t* >& tl ) const;
+  virtual std::vector<player_t*> targets_in_range_list() const;
+  virtual std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const;
 
   action_state_t* state_cache;
   action_state_t* execute_state; /* State of the last execute() */
