@@ -6080,7 +6080,7 @@ void warlock_t::apl_demonology()
     //Use KJC to allow casting of Demonbolts
     get_action_priority_list( "db" ) -> action_list_str += "/kiljaedens_cunning,moving=1,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time))";
     get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&buff.demon_rush.remains<=4&set_bonus.tier18_2pc=1";
-    get_action_priority_list( "db" ) -> action_list_str += "/demonbolt,if=(buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time)))&legendary_ring.cooldown.remains>=buff.demonbolt.duration";
+    get_action_priority_list( "db" ) -> action_list_str += "/demonbolt,if=(buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time)))&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)";
     get_action_priority_list( "db" ) -> action_list_str += "/doom,cycle_targets=1,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
     get_action_priority_list( "db" ) -> action_list_str += "/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down";
     get_action_priority_list( "db" ) -> action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&demonic_fury<=600&target.time_to_die>buff.demonbolt.remains&buff.dark_soul.down";
@@ -6091,7 +6091,7 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "db" ) -> action_list_str += "/touch_of_chaos,if=buff.metamorphosis.up&(target.time_to_die<buff.demonbolt.remains|(demonic_fury>=750&buff.demonbolt.remains)|buff.dark_soul.up)";
     get_action_priority_list( "db" ) -> action_list_str += "/touch_of_chaos,if=buff.metamorphosis.up&(((demonic_fury-40)%800)>(buff.demonbolt.remains%(40*spell_haste)))&demonic_fury>=750";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=buff.dark_soul.remains>gcd&(demonic_fury>=470|buff.dark_soul.remains<=action.demonbolt.execute_time*3)&(buff.demonbolt.down|target.time_to_die<buff.demonbolt.remains|(buff.dark_soul.remains>execute_time&demonic_fury>=175))";
-    get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=buff.demonbolt.down&demonic_fury>=480&(action.dark_soul.charges=0|!talent.archimondes_darkness.enabled&cooldown.dark_soul.remains)&legendary_ring.cooldown.remains>=buff.demonbolt.duration";
+    get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=buff.demonbolt.down&demonic_fury>=480&(action.dark_soul.charges=0|!talent.archimondes_darkness.enabled&cooldown.dark_soul.remains)&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=(demonic_fury%80)*2*spell_haste>=target.time_to_die&target.time_to_die<buff.demonbolt.remains";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=target.time_to_die>=30*spell_haste&!dot.doom.ticking&buff.dark_soul.down&time>10";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=demonic_fury>750&buff.demonbolt.remains>=action.metamorphosis.cooldown";
