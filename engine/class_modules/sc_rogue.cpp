@@ -516,7 +516,7 @@ struct rogue_t : public player_t
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_shadow_reflection( const action_state_t* );
-  void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0 );
+  void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0, bool allow_anticipation = true );
   void spend_combo_points( const action_state_t* );
   bool trigger_t17_4pc_combat( const action_state_t* );
   void trigger_anticipation_replenish( const action_state_t* );
@@ -2977,8 +2977,16 @@ struct vanish_t : public rogue_attack_t
 
     cooldown -> duration += p -> perk.enhanced_vanish -> effectN( 1 ).time_value();
     cooldown -> duration += p -> glyph.disappearance -> effectN( 1 ).time_value();
+  }
 
-    adds_combo_points = p -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value();
+  void init()
+  {
+    rogue_attack_t::init();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B2 ) )
+    {
+      cp_gain = player -> get_gain( name_str );
+    }
   }
 
   void execute()
@@ -2995,6 +3003,14 @@ struct vanish_t : public rogue_attack_t
       event_t::cancel( p() -> off_hand_attack -> execute_event );
 
     p() -> buffs.deathly_shadows -> trigger();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B2 ) )
+    {
+      p() -> trigger_combo_point_gain( execute_state,
+                                       p() -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value(),
+                                       cp_gain,
+                                       false );
+    }
   }
 };
 
@@ -4078,7 +4094,10 @@ void rogue_t::trigger_shadow_reflection( const action_state_t* state )
     sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", name(), state -> action -> name(), rs -> cp );
 }
 
-void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_override, gain_t* gain )
+void rogue_t::trigger_combo_point_gain( const action_state_t* state,
+                                        int                   cp_override,
+                                        gain_t*               gain,
+                                        bool                  allow_anticipation )
 {
   using namespace actions;
 
@@ -4101,7 +4120,7 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   int overflow = n_cp - added;
   int anticipation_added = 0;
   int anticipation_overflow = 0;
-  if ( overflow > 0 && talent.anticipation -> ok() )
+  if ( overflow > 0 && talent.anticipation -> ok() && allow_anticipation )
   {
     int anticipation_fill =  buffs.anticipation -> max_stack() - buffs.anticipation -> check();
     anticipation_added = std::min( anticipation_fill, overflow );
@@ -4114,7 +4133,7 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   if ( gain_obj == 0 && attack && attack -> cp_gain )
     gain_obj = attack -> cp_gain;
 
-  if ( ! talent.anticipation -> ok() )
+  if ( ! talent.anticipation -> ok() || ! allow_anticipation )
   {
     resource_gain( RESOURCE_COMBO_POINT, n_cp, gain_obj, state ? state -> action : 0 );
   }
