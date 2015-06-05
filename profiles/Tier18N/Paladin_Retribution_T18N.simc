@@ -1,9 +1,9 @@
-paladin="Paladin_Retribution_T17N"
+paladin="Paladin_Retribution_T18N"
 level=100
 race=draenei
 role=attack
 position=back
-talents=2112231
+talents=2112232
 glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/mass_exorcism
 spec=retribution
 
@@ -36,7 +36,6 @@ actions+=/execution_sentence,if=!talent.seraphim.enabled
 actions+=/execution_sentence,sync=seraphim,if=talent.seraphim.enabled
 actions+=/lights_hammer,if=!talent.seraphim.enabled
 actions+=/lights_hammer,sync=seraphim,if=talent.seraphim.enabled
-actions+=/use_item,name=vial_of_convulsive_shadows,if=buff.avenging_wrath.up
 actions+=/avenging_wrath,sync=seraphim,if=talent.seraphim.enabled
 actions+=/avenging_wrath,if=!talent.seraphim.enabled&set_bonus.tier18_4pc=0
 actions+=/avenging_wrath,if=!talent.seraphim.enabled&time<20&set_bonus.tier18_4pc=1
@@ -137,30 +136,30 @@ actions.cleave+=/divine_storm,if=holy_power>=3&buff.final_verdict.up
 actions.cleave+=/final_verdict,if=holy_power>=3&buff.final_verdict.down
 actions.cleave+=/holy_prism,target=self
 
-head=helmet_of_guiding_light,id=115568
-neck=thogars_serrated_chain,id=113959,enchant=gift_of_mastery
-shoulders=pauldrons_of_guiding_light,id=115565
-back=cloak_of_sanguine_terror,id=113972,enchant=gift_of_mastery
-chest=battleplate_of_guiding_light,id=115566
-wrists=bracers_of_visceral_force,id=119331
-hands=flamefury_gauntlets,id=113925
-waist=uktars_belt_of_chiming_rings,id=113976
-legs=legplates_of_guiding_light,id=115569
-feet=sabatons_of_fractal_earth,id=113936
-finger1=phosphorescent_seal,id=113866,enchant=gift_of_mastery
-finger2=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_mastery
-trinket1=vial_of_convulsive_shadows,id=113969
-trinket2=horn_of_screaming_spirits,id=119193
-main_hand=thogars_control_rod,id=113953,enchant=mark_of_warsong
+head=helm_of_the_ceaseless_vigil,id=124333
+neck=choker_of_sneering_superiority,id=124219,enchant=gift_of_mastery
+shoulders=doomcriers_shoulderplates,id=124343
+back=cloak_of_incendiary_wrath,id=124144,enchant=gift_of_mastery
+chest=cuirass_of_the_ceaseless_vigil,id=124318
+wrists=breachscarred_wristplates,id=124353
+hands=gauntlets_of_the_ceaseless_vigil,id=124328
+waist=annihilans_waistplate,id=124349
+legs=greaves_of_the_ceaseless_vigil,id=124339
+feet=treads_of_the_defiler,id=124322
+finger1=loop_of_beckoned_shadows,id=124199,enchant=gift_of_mastery
+finger2=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
+trinket1=libram_of_vindication,id=124518
+trinket2=empty_drinking_horn,id=124238
+main_hand=calamitys_edge,id=124389,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=671.33
-# gear_strength=3021
-# gear_stamina=3610
-# gear_crit_rating=634
-# gear_haste_rating=840
-# gear_mastery_rating=1319
-# gear_multistrike_rating=618
-# gear_armor=2082
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=701.33
+# gear_strength=3562
+# gear_stamina=4750
+# gear_crit_rating=1639
+# gear_haste_rating=765
+# gear_mastery_rating=1402
+# gear_multistrike_rating=680
+# gear_armor=2278
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

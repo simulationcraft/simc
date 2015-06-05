@@ -24,7 +24,7 @@ main_hand=maul_of_tyranny,id=124375,bonus_id=566,enchant=rune_of_the_fallen_crus
 
 save=Death_Knight_Frost_2h_T18H.simc
 
-deathknight="Death_Knight_Frost_1h_T18M"
+deathknight="Death_Knight_Frost_1h_T18H"
 level=100
 race=blood_elf
 spec=frost

@@ -1,4 +1,4 @@
-deathknight="Death_Knight_Frost_2h_T18H"
+deathknight="Death_Knight_Frost_2h_T18N"
 level=100
 race=blood_elf
 spec=frost
@@ -22,9 +22,9 @@ trinket1=reapers_harvest,id=124513
 trinket2=rumbling_pebble,id=124235
 main_hand=maul_of_tyranny,id=124375,enchant=rune_of_the_fallen_crusader
 
-save=Death_Knight_Frost_2h_T18H.simc
+save=Death_Knight_Frost_2h_T18N.simc
 
-deathknight="Death_Knight_Frost_1h_T18M"
+deathknight="Death_Knight_Frost_1h_T18N"
 level=100
 race=blood_elf
 spec=frost
@@ -49,9 +49,9 @@ trinket2=rumbling_pebble,id=124235
 main_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_the_fallen_crusader
 off_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_razorice
 
-save=Death_Knight_Frost_1h_T18H.simc
+save=Death_Knight_Frost_1h_T18N.simc
 
-deathknight="Death_Knight_Unholy_T18H"
+deathknight="Death_Knight_Unholy_T18N"
 level=100
 race=blood_elf
 spec=unholy
@@ -75,4 +75,4 @@ trinket1=unending_hunger,id=124236
 trinket2=rumbling_pebble,id=124235
 main_hand=hellrender,id=124360,enchant=rune_of_the_fallen_crusader
 
-save=Death_Knight_Unholy_T18H.simc
+save=Death_Knight_Unholy_T18N.simc
