@@ -44,7 +44,7 @@ legs=demongaze_legplates,id=124338,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_haste
 finger2=congealed_globule_loop,id=124197,bonus_id=566,enchant=gift_of_haste
-trinket1=reapers_harvest,id=124513,bonus_id=566
+trinket1=unending_hunger,id=124236,bonus_id=566
 trinket2=rumbling_pebble,id=124235,bonus_id=566
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=rune_of_the_fallen_crusader
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=rune_of_razorice
