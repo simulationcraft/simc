@@ -41,7 +41,7 @@
     {
       i--;
       player_t* target_ = tl[i];
-      if ( range > 0.0 && target -> get_player_distance( *player ) > range )
+      if ( range > 0.0 && target_ -> get_player_distance( *player ) > range )
         tl.erase( tl.begin() + i );
       else if ( !ground_aoe && target_ -> debuffs.invulnerable -> check() ) // Cannot target invulnerable mobs, unless it's a ground aoe. It just won't do damage.
         tl.erase( tl.begin() + i );
@@ -114,15 +114,27 @@
       return target;
 
     std::vector<player_t*> master_list;
-    master_list = target_list();
     if ( sim -> distance_targeting_enabled )
     {
-      master_list = targets_in_range_list( master_list );
+      if ( !target_cache.is_valid )
+      {
+        available_targets( target_cache.list );
+        master_list = targets_in_range_list( target_cache.list );
+        target_cache.is_valid = true;
+      }
+      else
+      {
+        master_list = target_cache.list;
+      }
       if ( sim -> log )
-        sim -> out_debug.printf( "%s Number of targets found in range - %.3f", 
+        sim -> out_debug.printf( "%s Number of targets found in range - %.3f",
         player -> name(), static_cast<double>( master_list.size() ) );
       if ( master_list.size() <= 1 )
         return target;
+    }
+    else
+    {
+      master_list = target_list();
     }
 
     player_t* original_target = target;
@@ -139,7 +151,6 @@
       // No need to check current target
       if ( target == original_target )
         continue;
-      target_cache.is_valid = false;
       double v = target_if_expr -> evaluate();
 
       // Don't swap to targets that evaluate to identical value than the current target

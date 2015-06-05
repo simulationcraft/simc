@@ -5341,7 +5341,7 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
   single -> add_action( this, "Divine Storm","if=active_enemies=2&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
   single -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up|target.health.pct<35" );
-  single -> add_action( this, "Divine STorm", "if=buff.divine_crusader.react&active_enemies=2&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled" );
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&active_enemies=2&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
@@ -5351,14 +5351,14 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Crusader Strike", "if=holy_power<5&talent.seraphim.enabled" );
   single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
-  single -> add_action( this, "seal_of_truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<(cooldown.judgment.duration*1.5|buff.maraads_truth.down)&(buff.avenging_wrath.up|target.health.pct<35)&!buff.wings_of_liberty.up)" );
-  single -> add_action( this, "seal_of_righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<cooldown.judgment.duration*1.5&buff.maraads_truth.remains>cooldown.judgment.duration*1.5&target.health.pct<35&!buff.wings_of_liberty.up&!buff.bloodlust.up)" );
+  single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<(cooldown.judgment.duration*1.5|buff.maraads_truth.down)&(buff.avenging_wrath.up|target.health.pct<35)&!buff.wings_of_liberty.up" );
+  single -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<cooldown.judgment.duration*1.5&buff.maraads_truth.remains>cooldown.judgment.duration*1.5&target.health.pct<35&!buff.wings_of_liberty.up&!buff.bloodlust.up" );
 
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled" );
   single -> add_action( this, "Judgment", "cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&holy_power<5" );
   single -> add_action( this, "Exorcism", "if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled&!set_bonus.tier17_4pc=1" );
 
-  single -> add_action( this, "Judgment", "if=holy_power<5&talent.seraphim.enabled");
+  single -> add_action( this, "Judgment", "if=holy_power<5&talent.seraphim.enabled" );
   single -> add_action( this, "Judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
 
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.final_verdict.up" );

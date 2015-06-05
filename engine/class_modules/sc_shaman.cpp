@@ -2794,7 +2794,7 @@ struct chain_lightning_t: public shaman_spell_t
     current_attempt.push_back( last_chain );
 
     size_t num_targets = sim -> target_non_sleeping_list.size();
-    size_t max_attempts = static_cast<size_t>( std::min( ( num_targets - 1.0 ) * 2.0 , 20.0 ) ); // With a lot of targets this can get pretty high. Cap it at 20.
+    size_t max_attempts = static_cast<size_t>( std::min( ( num_targets - 1.0 ) * 2.0 , 30.0 ) ); // With a lot of targets this can get pretty high. Cap it at 30.
     size_t local_attempts = 0, attempts = 0, chain_number = 1;
     std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
     std::vector<player_t*>::iterator position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );

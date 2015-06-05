@@ -1908,7 +1908,7 @@ bool action_t::ready()
     return false;
   }
 
-  if ( sim -> distance_targeting_enabled && range > 0 && target -> get_player_distance( *player ) )
+  if ( sim -> distance_targeting_enabled && range > 0 && target -> get_player_distance( *player ) > range )
     return false;
 
   if ( target -> debuffs.invulnerable -> check() && harmful )

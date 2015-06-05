@@ -158,9 +158,12 @@ struct adds_event_t : public raid_event_t
         adds[i] -> x_position = x;
         adds[i] -> y_position = y;
 
-        if (x != 0 || y != 0)
+        if ( sim -> log )
         {
-          sim -> out_log.printf( "New add spawned at %f, %f.", x, y );
+          if ( x != 0 || y != 0 )
+          {
+            sim -> out_log.printf( "New add spawned at %f, %f.", x, y );
+          }
         }
       }
       if ( i >= adds_to_remove )
