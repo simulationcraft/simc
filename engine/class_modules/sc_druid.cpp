@@ -6732,7 +6732,6 @@ void druid_t::apl_feral()
   action_priority_list_t* maintain = get_action_priority_list( "maintain"  );
   action_priority_list_t* generate = get_action_priority_list( "generator" );
 
-  std::vector<std::string> item_actions   = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
   std::string              potion_action  = "potion,name=";
   if ( true_level > 90 )
@@ -6756,24 +6755,40 @@ void druid_t::apl_feral()
   def -> add_action( this, "Skull Bash" );
   def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)" );
+
   // On-Use Items
-  for ( size_t i = 0; i < item_actions.size(); i++ )
+  for ( size_t i = 0; i < items.size(); i++ )
   {
-    def -> add_action( item_actions[ i ] + ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)" );
+    if ( items[ i ].has_use_special_effect() )
+    {
+      std::string line = std::string( "use_item,slot=" ) + items[ i ].slot_name();
+      if ( ! ( items[ i ].name_str == "maalus_the_blood_drinker"
+            || items[ i ].name_str == "mirror_of_the_blademaster" ) )
+      {
+        line += ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)";
+      }
+
+      def -> add_action( line );
+    }
   }
+
   if ( sim -> allow_potions && true_level >= 80 )
     def -> add_action( potion_action + ",if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40" );
+
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
   }
+
   def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)" );
   def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
+
   if ( race == RACE_NIGHT_ELF )
   {
     def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.incarnation.up" );
   }
+
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)" );
