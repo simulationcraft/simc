@@ -3601,14 +3601,36 @@ struct chaos_bolt_t: public warlock_spell_t
     warlock_spell_t::consume_resource();
   }
 
+  // Force spell to always crit
   double composite_crit() const
   {
     return 1.0;
   }
 
-  double composite_target_crit( player_t* ) const
+  // Record non-crit suppressed target-based crit% to state object
+  double composite_target_crit( player_t* target ) const
   {
-    return 0.0;
+    double c = warlock_spell_t::composite_target_crit( target );
+
+    int level_delta = player -> level() - target -> level();
+    if ( level_delta < 0 )
+    {
+      c += abs( level_delta ) / 100.0;
+    }
+
+    return c;
+  }
+
+  double calculate_direct_amount( action_state_t* state )
+  {
+    warlock_spell_t::calculate_direct_amount( state );
+
+    // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
+    // player spell crit instead. The state target crit chance of the state object is correct.
+    state -> result_amount *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+    state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+
+    return state -> result_amount;
   }
 
   double cost() const
@@ -3636,8 +3658,6 @@ struct chaos_bolt_t: public warlock_spell_t
 
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
-
-    m *= 1.0 + p() -> cache.spell_crit();
 
     if ( !p() -> buffs.fire_and_brimstone -> check() )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
