@@ -126,17 +126,17 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=loathful_encrusted_band,id=124192,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
-trinket1=unblinking_gaze_of_sethe,id=124229
+trinket1=iron_reaver_piston,id=124227
 trinket2=prophecy_of_fear,id=124230
 main_hand=edict_of_argus,id=124382,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=699.00
+# gear_ilvl=698.67
 # gear_stamina=4689
-# gear_intellect=3901
+# gear_intellect=3883
 # gear_spell_power=1925
-# gear_crit_rating=494
-# gear_haste_rating=1198
+# gear_crit_rating=855
+# gear_haste_rating=1559
 # gear_mastery_rating=1030
 # gear_multistrike_rating=1481
 # gear_versatility_rating=220

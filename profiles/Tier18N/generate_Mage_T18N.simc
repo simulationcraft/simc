@@ -4,7 +4,7 @@ level=100
 race=gnome
 role=spell
 position=back
-talents=3003222
+talents=3003322
 glyphs=cone_of_cold
 spec=arcane
 head=demon_princes_ascendant_crown,id=124159
@@ -19,8 +19,8 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=loathful_encrusted_band,id=124192,enchant=gift_of_mastery
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
-trinket1=tome_of_shifting_words,id=124516
-trinket2=prophecy_of_fear,id=124230
+trinket1=prophecy_of_fear,id=124230
+trinket2=iron_reaver_piston,id=124227
 main_hand=edict_of_argus,id=124382,enchant=mark_of_bleeding_hollow
 save=Mage_Arcane_T18N.simc
 
@@ -44,7 +44,7 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=seal_of_the_traitorous_councilor,id=124191,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
-trinket1=goren_soul_repository,id=119194
+trinket1=unblinking_gaze_of_sethe,id=124229
 trinket2=iron_reaver_piston,id=124227
 main_hand=edict_of_argus,id=124382,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T18N.simc
@@ -69,7 +69,7 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=loathful_encrusted_band,id=124192,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
-trinket1=unblinking_gaze_of_sethe,id=124229
+trinket1=iron_reaver_piston,id=124227
 trinket2=prophecy_of_fear,id=124230
 main_hand=edict_of_argus,id=124382,enchant=mark_of_the_frostwolf
 save=Mage_Frost_T18N.simc
