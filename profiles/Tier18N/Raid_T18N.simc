@@ -5,14 +5,20 @@ tmi_boss=TMI_Standard_Boss_T17M
 
 # Death Knight
 
+# Druid
 Druid_Feral_T18N.simc
 
 # Hunter
+Hunter_BM_T18N.simc
+Hunter_MM_T18N.simc
+Hunter_SV_T18N.simc
 
+# Mage
 Mage_Arcane_T18N.simc
 Mage_Fire_T18N.simc
 Mage_Frost_T18N.simc
 
+# Monk
 Monk_Windwalker_1h_T18N.simc
 Monk_Windwalker_2h_T18N.simc
 
@@ -21,9 +27,13 @@ Monk_Windwalker_2h_T18N.simc
 # Priest
 
 # Rogue
+Rogue_Assassination_T18N.simc
+Rogue_Combat_T18N.simc
 
 # Shaman
+Shaman_Enhancement_T18N.simc
 
+# Warlock
 Warlock_Affliction_T18N.simc
 Warlock_Demonology_T18N.simc
 Warlock_Destruction_T18N.simc

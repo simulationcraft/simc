@@ -6,29 +6,48 @@ enemy=fluffy_pillow
 
 # Death Knight
 
+# Druid
 Druid_Feral_T18M.simc
 
 # Hunter
+Hunter_BM_T18M.simc
+Hunter_MM_T18M.simc
+Hunter_SV_T18M.simc
 
+# Mage
 Mage_Arcane_T18M.simc
+talents=1000123
+trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=567
 Mage_Fire_T18M.simc
+talents=1000121
 Mage_Frost_T18M.simc
+talents=1000121
 
+# Monk
 Monk_Windwalker_1h_T18M.simc
 talents=0320012
 Monk_Windwalker_2h_T18M.simc
 talents=0320012
 
 # Paladin
+Paladin_Retribution_T18M.simc
 
 # Priest
 
 # Rogue
+Rogue_Assassination_T18M.simc
+Rogue_Combat_T18M.simc
 
+# Shaman
+Shaman_Elemental_T18M.simc
 Shaman_Enhancement_T18M.simc
 
+# Warlock
 Warlock_Affliction_T18M.simc
 Warlock_Demonology_T18M.simc
 Warlock_Destruction_T18M.simc
 
 # Warrior
+Warrior_Fury_2H_T18M.simc
+Warrior_Fury_1H_T18M.simc
+Warrior_Arms_T18M.simc
