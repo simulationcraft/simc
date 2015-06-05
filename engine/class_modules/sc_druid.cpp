@@ -6768,7 +6768,7 @@ void druid_t::apl_feral()
   {
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
   }
-  def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80" );
+  def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)" );
   def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
   if ( race == RACE_NIGHT_ELF )
   {
@@ -6776,9 +6776,9 @@ void druid_t::apl_feral()
   }
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
-  def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
+  def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
-  def -> add_action( "thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&combo_points+buff.bloodtalons.stack!=6" );
+  def -> add_action( "thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&remains<4.5&combo_points+buff.bloodtalons.stack!=6" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)" );
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
