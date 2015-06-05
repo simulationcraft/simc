@@ -180,8 +180,8 @@ main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_the_thunderlord
 # gear_crit_rating=2470
 # gear_haste_rating=1454
 # gear_mastery_rating=1514
-# gear_armor=1106
 # gear_multistrike_rating=973
 # gear_versatility_rating=278
+# gear_armor=1106
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

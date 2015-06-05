@@ -311,8 +311,8 @@ main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_the_thunder
 # gear_crit_rating=1868
 # gear_haste_rating=568
 # gear_mastery_rating=888
-# gear_armor=900
 # gear_multistrike_rating=742
 # gear_versatility_rating=338
+# gear_armor=900
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

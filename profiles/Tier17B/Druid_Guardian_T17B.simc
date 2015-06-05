@@ -73,8 +73,8 @@ main_hand=earthwarped_bladestaff,id=113640,bonus_id=567/523/448,gem_id=115814,en
 # gear_stamina=4953
 # gear_haste_rating=707
 # gear_mastery_rating=2222
-# gear_armor=1219
-# gear_bonus_armor=1070
 # gear_multistrike_rating=1194
 # gear_versatility_rating=1240
+# gear_armor=1219
+# gear_bonus_armor=1070
 # set_bonus=tier17_2pc=1

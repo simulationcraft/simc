@@ -87,9 +87,9 @@ main_hand=mouth_of_the_fury,id=113885,bonus_id=566,enchant_id=5276
 # gear_crit_rating=1614
 # gear_haste_rating=511
 # gear_mastery_rating=644
-# gear_armor=1401
 # gear_multistrike_rating=920
 # gear_versatility_rating=205
+# gear_armor=1401
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

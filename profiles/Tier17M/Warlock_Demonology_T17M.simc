@@ -130,9 +130,9 @@ main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant_id=5384
 # gear_crit_rating=523
 # gear_haste_rating=1255
 # gear_mastery_rating=2075
-# gear_armor=900
 # gear_multistrike_rating=479
 # gear_versatility_rating=108
+# gear_armor=900
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felguard

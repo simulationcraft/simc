@@ -73,8 +73,8 @@ main_hand=earthwarped_bladestaff,id=113640,enchant=mark_of_the_frostwolf
 # gear_stamina=3541
 # gear_haste_rating=506
 # gear_mastery_rating=1665
-# gear_armor=1002
-# gear_bonus_armor=766
 # gear_multistrike_rating=852
 # gear_versatility_rating=386
+# gear_armor=1002
+# gear_bonus_armor=766
 # set_bonus=tier17_2pc=1

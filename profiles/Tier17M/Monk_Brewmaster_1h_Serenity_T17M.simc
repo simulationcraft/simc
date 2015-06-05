@@ -110,9 +110,9 @@ off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_bleeding_hollow
 # gear_crit_rating=739
 # gear_haste_rating=381
 # gear_mastery_rating=2192
-# gear_armor=1177
-# gear_bonus_armor=987
 # gear_multistrike_rating=1022
 # gear_versatility_rating=125
+# gear_armor=1177
+# gear_bonus_armor=987
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

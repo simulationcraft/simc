@@ -93,7 +93,7 @@ main_hand=azzakels_boltslinger,id=110048,enchant=oglethorpes_missile_splitter
 # gear_crit_rating=575
 # gear_haste_rating=185
 # gear_mastery_rating=216
-# gear_armor=1111
 # gear_multistrike_rating=1243
 # gear_versatility_rating=367
+# gear_armor=1111
 summon_pet=cat

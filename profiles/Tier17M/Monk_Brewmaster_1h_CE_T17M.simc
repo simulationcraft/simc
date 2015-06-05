@@ -110,9 +110,9 @@ off_hand=phemos_double_slasher,id=113667,bonus_id=567,enchant=mark_of_bleeding_h
 # gear_crit_rating=551
 # gear_haste_rating=214
 # gear_mastery_rating=2040
-# gear_armor=1177
-# gear_bonus_armor=976
 # gear_multistrike_rating=1518
 # gear_versatility_rating=125
+# gear_armor=1177
+# gear_bonus_armor=976
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

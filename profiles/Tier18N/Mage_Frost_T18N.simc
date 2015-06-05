@@ -138,8 +138,8 @@ main_hand=edict_of_argus,id=124382,enchant=mark_of_the_frostwolf
 # gear_crit_rating=494
 # gear_haste_rating=1198
 # gear_mastery_rating=1030
-# gear_armor=883
 # gear_multistrike_rating=1481
 # gear_versatility_rating=220
+# gear_armor=883
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

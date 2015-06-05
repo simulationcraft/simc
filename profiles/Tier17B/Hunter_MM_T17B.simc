@@ -87,10 +87,10 @@ main_hand=mouth_of_the_fury,id=113885,bonus_id=41/562/565/567,gem_id=115809,ench
 # gear_crit_rating=2609
 # gear_haste_rating=621
 # gear_mastery_rating=783
-# gear_armor=1536
 # gear_multistrike_rating=1119
 # gear_versatility_rating=255
 # gear_leech_rating=2082
+# gear_armor=1536
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

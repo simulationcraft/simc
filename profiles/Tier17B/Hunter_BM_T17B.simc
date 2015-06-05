@@ -84,10 +84,10 @@ main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=41/562/565/567,gem_id=1
 # gear_crit_rating=867
 # gear_haste_rating=353
 # gear_mastery_rating=2533
-# gear_armor=1536
 # gear_multistrike_rating=1488
 # gear_versatility_rating=128
 # gear_leech_rating=2082
+# gear_armor=1536
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

@@ -109,9 +109,9 @@ main_hand=headlopper_skullscythe,id=119448,enchant_id=5336
 # gear_crit_rating=703
 # gear_haste_rating=173
 # gear_mastery_rating=2025
-# gear_armor=1002
-# gear_bonus_armor=365
 # gear_multistrike_rating=772
 # gear_versatility_rating=90
+# gear_armor=1002
+# gear_bonus_armor=365
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

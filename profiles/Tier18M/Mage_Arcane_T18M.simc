@@ -146,8 +146,8 @@ main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_bleeding_hollow
 # gear_crit_rating=1126
 # gear_haste_rating=1288
 # gear_mastery_rating=2379
-# gear_armor=1114
 # gear_multistrike_rating=708
 # gear_versatility_rating=278
+# gear_armor=1114
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

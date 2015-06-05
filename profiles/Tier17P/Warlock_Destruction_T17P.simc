@@ -110,6 +110,6 @@ main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant_id=5330
 # gear_crit_rating=1545
 # gear_haste_rating=63
 # gear_mastery_rating=880
-# gear_armor=552
 # gear_multistrike_rating=268
+# gear_armor=552
 default_pet=felhunter

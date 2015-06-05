@@ -186,9 +186,9 @@ off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
 # gear_crit_rating=844
 # gear_haste_rating=852
 # gear_mastery_rating=1910
-# gear_armor=3082
-# gear_bonus_armor=987
 # gear_multistrike_rating=341
 # gear_versatility_rating=361
+# gear_armor=3082
+# gear_bonus_armor=987
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

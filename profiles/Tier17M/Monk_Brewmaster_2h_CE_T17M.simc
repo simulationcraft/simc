@@ -109,9 +109,9 @@ main_hand=headlopper_skullscythe,id=119448,bonus_id=567,enchant=mark_of_bleeding
 # gear_crit_rating=744
 # gear_haste_rating=214
 # gear_mastery_rating=1835
-# gear_armor=1177
-# gear_bonus_armor=976
 # gear_multistrike_rating=1631
 # gear_versatility_rating=125
+# gear_armor=1177
+# gear_bonus_armor=976
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

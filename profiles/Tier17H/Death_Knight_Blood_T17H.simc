@@ -109,9 +109,9 @@ main_hand=kagrazs_burning_blade,id=113913,bonus_id=566,enchant=rune_of_the_stone
 # gear_crit_rating=326
 # gear_haste_rating=654
 # gear_mastery_rating=484
-# gear_armor=2181
-# gear_bonus_armor=596
 # gear_multistrike_rating=1517
 # gear_versatility_rating=598
+# gear_armor=2181
+# gear_bonus_armor=596
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

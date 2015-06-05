@@ -86,10 +86,10 @@ off_hand=enginestokers_lantern,id=113960,bonus_id=41/562/565/567,gem_id=115811
 # gear_crit_rating=717
 # gear_haste_rating=2495
 # gear_mastery_rating=1591
-# gear_armor=943
 # gear_multistrike_rating=497
 # gear_versatility_rating=108
 # gear_leech_rating=2080
+# gear_armor=943
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felhunter

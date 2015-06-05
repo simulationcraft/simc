@@ -178,9 +178,9 @@ main_hand=blackhand_doomstaff,id=113988,bonus_id=42/562/565/567,gem_id=115809,en
 # gear_crit_rating=2155
 # gear_haste_rating=998
 # gear_mastery_rating=1849
-# gear_armor=943
 # gear_multistrike_rating=243
 # gear_versatility_rating=108
 # gear_speed_rating=2082
+# gear_armor=943
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -110,9 +110,9 @@ main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant_id=5384
 # gear_crit_rating=1251
 # gear_haste_rating=991
 # gear_mastery_rating=1929
-# gear_armor=900
 # gear_multistrike_rating=141
 # gear_versatility_rating=108
+# gear_armor=900
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felhunter

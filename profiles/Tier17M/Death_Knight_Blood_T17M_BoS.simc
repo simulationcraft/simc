@@ -140,9 +140,9 @@ main_hand=kagrazs_burning_blade,id=113913,bonus_id=567,enchant=rune_of_the_falle
 # gear_crit_rating=521
 # gear_haste_rating=574
 # gear_mastery_rating=720
-# gear_armor=2287
-# gear_bonus_armor=875
 # gear_multistrike_rating=1985
 # gear_versatility_rating=267
+# gear_armor=2287
+# gear_bonus_armor=875
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

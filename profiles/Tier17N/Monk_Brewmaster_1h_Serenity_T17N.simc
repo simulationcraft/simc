@@ -110,9 +110,9 @@ off_hand=steelforged_hammer,id=116646,bonus_id=54/559,enchant_id=5384
 # gear_crit_rating=681
 # gear_haste_rating=173
 # gear_mastery_rating=1697
-# gear_armor=1002
-# gear_bonus_armor=742
 # gear_multistrike_rating=772
 # gear_versatility_rating=90
+# gear_armor=1002
+# gear_bonus_armor=742
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

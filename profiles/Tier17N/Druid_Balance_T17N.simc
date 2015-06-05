@@ -84,8 +84,8 @@ main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_the_thunderlord
 # gear_crit_rating=1051
 # gear_haste_rating=705
 # gear_mastery_rating=1062
-# gear_armor=972
 # gear_multistrike_rating=419
 # gear_versatility_rating=163
+# gear_armor=972
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

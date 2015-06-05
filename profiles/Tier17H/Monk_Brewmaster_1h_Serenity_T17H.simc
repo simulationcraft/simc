@@ -110,9 +110,9 @@ off_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant_id=5384
 # gear_crit_rating=642
 # gear_haste_rating=331
 # gear_mastery_rating=1941
-# gear_armor=1086
-# gear_bonus_armor=847
 # gear_multistrike_rating=889
 # gear_versatility_rating=99
+# gear_armor=1086
+# gear_bonus_armor=847
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

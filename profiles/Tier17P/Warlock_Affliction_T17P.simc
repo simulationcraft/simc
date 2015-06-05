@@ -86,6 +86,6 @@ off_hand=interlopers_mossy_skull,id=119176,bonus_id=524
 # gear_crit_rating=333
 # gear_haste_rating=1474
 # gear_mastery_rating=863
-# gear_armor=552
 # gear_multistrike_rating=76
+# gear_armor=552
 default_pet=felhunter
