@@ -431,7 +431,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.46300
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.40400
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -533,7 +533,7 @@ Cooldown         : 6 seconds
 Affecting spells : Recklessness (1719), Unwavering Sentinel (29144), Glyph of Unending Rage (58098), Glyph of Resonating Power (58356), Glyph of Wind and Thunder (63324), Deep Wounds (115768), Headlong Rush (158836), 
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .......x ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -749,7 +749,7 @@ Effects          :
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25
+                   Base Value: 211 | Scaled Value: 2.11
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage
 #5 (id=160440)   : Apply Aura (6) | Unknown effect sub type (118)
@@ -2678,10 +2678,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68041)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.20000
                    Affected Spells: Heroic Strike (78), Execute (5308), Mortal Strike (12294), Colossus Smash (86346), Colossus Smash (108126), Ignite Weapon (156288), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874)
 #2 (id=89760)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 450 | Scaled Value: 450
+                   Base Value: 520 | Scaled Value: 520
 Description      : Increases the damage of your Mortal Strike, $?s156288[Ignite Weapon, ][]Colossus Smash, and Execute abilities by $s1%.
 
 Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passive] 
@@ -4714,7 +4714,7 @@ Effects          :
 #5 (id=244197)   : Apply Aura (6) | Unknown effect sub type (470)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 #6 (id=266057)   : Apply Aura (6) | Unknown effect sub type (405)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 33554432
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 33554432
 Description      : A dauntless combat stance.
 
 Increases physical damage dealt by $s1%, increases Mastery by $s6%, and replaces your Shield Block with Shield Charge.

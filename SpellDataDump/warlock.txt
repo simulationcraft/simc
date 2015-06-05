@@ -2690,14 +2690,14 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68066)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96000 | Misc Value: 0x7f
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | Misc Value: 0x7f
 #2 (id=124552)   : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000
 #3 (id=92147)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.92000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
                    Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Immolation Aura (129476), Demonbolt (157695)
 #4 (id=251445)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.92000 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 22
                    Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Immolation Aura (129476), Demonbolt (157695)
 Description      : Increases all damage done by you and your demon servants by ${$m1}.1%.
 

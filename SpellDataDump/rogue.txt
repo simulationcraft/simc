@@ -651,7 +651,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.46300
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.40400
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -1255,8 +1255,8 @@ Effects          :
 #1 (id=16646)    : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=16647)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
-Description      : Finishing move that deals damage, reduces the target's movement speed by $s2% for $d, and interrupts spellcasting when used with 5 combo points:
+                   Base Value: -70 | Scaled Value: -70
+Description      : Finishing move that deals damage and reduces the target's movement speed by $s2% for $d:
    1 point  : ${$AP*0.178*1*$<mult>} damage
    2 points: ${$AP*0.178*2*$<mult>} damage
    3 points: ${$AP*0.178*3*$<mult>} damage

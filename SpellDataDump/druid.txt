@@ -356,7 +356,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=879)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.34000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.24600
 #2 (id=169356)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20
 Description      : A Lunar spell that causes $s1 Arcane damage to the target.
@@ -441,7 +441,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.46300
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.40400
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -1195,7 +1195,7 @@ GCD              : 1 seconds
 Affecting spells : Predatory Swiftness (16974), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Tiger's Fury (138358), Bloodtalons (145152), Naturalist (165374), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ....x... ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1895,7 +1895,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=42452)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.29200
+                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.28000
 Description      : $@spelldesc48505
 
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
@@ -2776,9 +2776,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68110)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | Misc Value: 8
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 8
 #2 (id=90627)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 190 | Scaled Value: 190
+                   Base Value: 250 | Scaled Value: 250
 Description      : Increases the maximum bonus damage from Eclipse by ${$m1}.1%.
 
 Name             : Mastery: Razor Claws (id=77493) [Spell Family (7), Passive] 
@@ -2861,7 +2861,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage: spellstorm (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.54, dl=0.319) | SP Coefficient: 2.92500
+                   Base Value: 1 | Scaled Value: 0 (avg=4.54, dl=0.319) | SP Coefficient: 2.80800
 Description      : Instantly causes $78674s1 Spellstorm damage to the target, benefiting from your strongest current Eclipse bonus. Also grants Lunar or Solar Empowerment, based on current Balance Energy side, which increases the damage of your next $164547n Starfires or $164545n Wraths by $164545s1%.
 
 Max 3 charges. Charges shared with Starfall.
@@ -7007,9 +7007,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=232409)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38900
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.29250
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.28080
 Description      : $@spelldesc8921
 Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
 
@@ -7028,9 +7028,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=232416)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38900
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.29250 | Radius: 0 - 5 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.28080 | Radius: 0 - 5 yards
 Description      : $@spelldesc93402
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 

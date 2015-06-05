@@ -5890,7 +5890,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=233440)   : Apply Aura (6) | Unknown effect sub type (405)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2048
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 2048
 #2 (id=238536)   : Apply Aura (6) | Modify Multistrike% (441)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=238537)   : Apply Aura (6) | Unknown effect sub type (440)
