@@ -126,9 +126,9 @@ actions.multi_target_bos+=/plague_strike,if=unholy=1
 actions.multi_target_bos+=/empower_rune_weapon
 
 head=demongaze_helm,id=124332
-neck=corrupted_talonguard_pendant,id=124218,enchant=gift_of_haste
+neck=corrupted_talonguard_pendant,id=124218,enchant=gift_of_mastery
 shoulders=demongaze_pauldrons,id=124344
-back=soulbinders_greatcloak,id=124143,enchant=gift_of_haste
+back=soulbinders_greatcloak,id=124143,enchant=gift_of_mastery
 chest=demongaze_chestplate,id=124317
 wrists=breachscarred_wristplates,id=124353
 hands=gauntlets_of_derision,id=124326
@@ -136,7 +136,7 @@ waist=girdle_of_demonic_wrath,id=124350
 legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
-finger2=congealed_globule_loop,id=124197,enchant=gift_of_haste
+finger2=congealed_globule_loop,id=124197,enchant=gift_of_mastery
 trinket1=unending_hunger,id=124236
 trinket2=rumbling_pebble,id=124235
 main_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_the_fallen_crusader
@@ -147,8 +147,8 @@ off_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_razorice
 # gear_strength=3409
 # gear_stamina=4574
 # gear_crit_rating=1209
-# gear_haste_rating=1354
-# gear_mastery_rating=1272
+# gear_haste_rating=1129
+# gear_mastery_rating=1497
 # gear_multistrike_rating=1976
 # gear_armor=2264
 # set_bonus=tier18_2pc=1
