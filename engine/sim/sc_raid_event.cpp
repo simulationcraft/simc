@@ -28,12 +28,15 @@ struct adds_event_t : public raid_event_t
   double spawn_radius_min;
   double spawn_radius_max;
   double spawn_radius;
+  double spawn_angle_start;
+  double spawn_angle_end;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
     count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
-    master( 0 ), count_range( false ), adds_to_remove( 0 ), spawn_x_coord ( 0 ),
-    spawn_y_coord ( 0 ), spawn_stacked ( 0 ), spawn_radius_min ( 0 ), spawn_radius_max ( 0 ), spawn_radius ( 0 )
+    master( 0 ), count_range( false ), adds_to_remove( 0 ), spawn_x_coord( 0 ),
+    spawn_y_coord( 0 ), spawn_stacked( 0 ), spawn_radius_min( 0 ), spawn_radius_max( 0 ),
+    spawn_radius( 0 ), spawn_angle_start( -1 ), spawn_angle_end( -1 )
   {
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
@@ -46,6 +49,8 @@ struct adds_event_t : public raid_event_t
     add_option( opt_float( "min_distance", spawn_radius_min ) );
     add_option( opt_float( "max_distance", spawn_radius_max ) );
     add_option( opt_float( "distance", spawn_radius ) );
+    add_option( opt_float( "angle_start", spawn_angle_start ) );
+    add_option( opt_float( "angle_end", spawn_angle_end ) );
     parse_options( options_str );
 
     master = sim -> find_player( master_str );
@@ -77,18 +82,77 @@ struct adds_event_t : public raid_event_t
 
     wave++;
 
-
     if ( fabs( spawn_radius ) > 0 || fabs( spawn_radius_max ) > 0 || fabs( spawn_radius_min ) > 0 )
     {
       if ( !sim -> distance_targeting_enabled )
       {
-        sim -> out_log.printf( "distance_targeting_enabled=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
+        if ( sim -> log )
+        {
+          sim -> out_log.printf( "distance_targeting_enabled=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
+        }
         sim -> distance_targeting_enabled = true;
       }
 
       if ( fabs( spawn_radius ) > 0 )
       {
         spawn_radius_min = spawn_radius_max = fabs( spawn_radius );
+      }
+
+      double tempangle;
+
+      if ( spawn_angle_start > 360 )
+      {
+        tempangle = fmod( spawn_angle_start, 360 );
+        if ( tempangle != spawn_angle_start )
+        {
+          spawn_angle_start = tempangle;
+        }
+      }
+
+      if ( spawn_angle_end > 360 )
+      {
+        tempangle = fmod( spawn_angle_end, 360 );
+        if ( tempangle != spawn_angle_end )
+        {
+          spawn_angle_end = tempangle;
+        }
+      }
+
+      if ( spawn_angle_start == spawn_angle_end && spawn_angle_start >= 0 ) //Full circle
+      {
+        spawn_angle_start = 0;
+        spawn_angle_end = 360;
+      }
+      else //Not a full circle, or, one/both of the values is not specified
+      {
+        if ( spawn_x_coord != 0 || spawn_y_coord != 0 ) //Not default placement
+        {
+          if ( spawn_angle_start < 0 && spawn_angle_end < 0 ) //No arc specified, full circle
+          {
+            spawn_angle_start = 0;
+            spawn_angle_end = 360;
+          }
+        }
+        else if ( spawn_x_coord == 0 && spawn_y_coord == 0 && spawn_angle_start < 0 && spawn_angle_end < 0 ) //Default placement, only spawn adds on near side
+        {
+          spawn_angle_start = 90;
+          spawn_angle_end = 270;
+        }
+
+        if (spawn_angle_start < 0 ) //Default start value if not specified
+        {
+          spawn_angle_start = 90;
+        }
+
+        if (spawn_angle_end < 0 ) //Default end value if not specified
+        {
+          spawn_angle_end = 270;
+        }
+      }
+
+      if ( sim -> log )
+      {
+        sim -> out_log.printf( "Spawn Angle set between %f and %f degrees.", spawn_angle_start, spawn_angle_end );
       }
     }
 
@@ -131,8 +195,8 @@ struct adds_event_t : public raid_event_t
   {
     adds_to_remove = static_cast<size_t>( util::round( std::max( 0.0, sim -> rng().range( count - count_range, count + count_range ) ) ) );
 
-    double x = 0;
-    double y = 0;
+    double x;
+    double y;
 
     for ( size_t i = 0; i < adds.size(); i++ )
     {
@@ -140,18 +204,18 @@ struct adds_event_t : public raid_event_t
       {
         if ( fabs( spawn_radius_max ) > 0 )
         {
-          if ( spawn_stacked == 0 || ( x == 0 && y == 0 ) )
-          {
-            double angle = sim -> rng().range( 0, M_PI );
-            double radius = sim -> rng().range( fabs( spawn_radius_min ), fabs( spawn_radius_max ) );
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-          }
-        }
-        else
-        {
           x = spawn_x_coord;
           y = spawn_y_coord;
+
+          if ( spawn_stacked == 0 || ( x == 0 && y == 0 ) )
+          {
+            double angle_start = spawn_angle_start * ( M_PI / 180 );
+            double angle_end = spawn_angle_end * ( M_PI / 180 );
+            double angle = sim -> rng().range( angle_start, angle_end );
+            double radius = sim -> rng().range( fabs( spawn_radius_min ), fabs( spawn_radius_max ) );
+            x += radius * cos(angle);
+            y += radius * sin(angle);
+          }
         }
 
         adds[i] -> summon( saved_duration );
