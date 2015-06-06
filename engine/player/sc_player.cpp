@@ -7888,6 +7888,34 @@ expr_t* player_t::create_expression( action_t* a,
       return expr;
   }
 
+  if ( splits.size() == 2 && ( splits[ 0 ] == "main_hand" || splits[ 0 ] == "off_hand" ) )
+  {
+    double weapon_status = -1;
+    if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
+    {
+      weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_2H );
+    }
+    else if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
+    {
+      weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_1H ||
+                                           main_hand_weapon.group() == WEAPON_SMALL );
+    }
+    else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
+    {
+      weapon_status = static_cast<double>( off_hand_weapon.group() == WEAPON_2H );
+    }
+    else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
+    {
+      weapon_status = static_cast<double>( off_hand_weapon.group() == WEAPON_1H ||
+                                           off_hand_weapon.group() == WEAPON_SMALL );
+    }
+
+    if ( weapon_status > -1 )
+    {
+      return expr_t::create_constant( "weapon_type_expr", weapon_status );
+    }
+  }
+
   if ( splits[ 0 ] == "legendary_ring" )
   {
     if ( expr_t* expr = unique_gear::create_expression( a, expression_str ) )
