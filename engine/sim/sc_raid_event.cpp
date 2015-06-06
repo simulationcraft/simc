@@ -142,14 +142,19 @@ struct adds_event_t : public raid_event_t
           spawn_angle_end = 270;
         }
 
-        if (spawn_angle_start < 0 ) //Default start value if not specified
+        if ( spawn_angle_start < 0 ) //Default start value if not specified
         {
           spawn_angle_start = 90;
         }
 
-        if (spawn_angle_end < 0 ) //Default end value if not specified
+        if ( spawn_angle_end < 0 ) //Default end value if not specified
         {
           spawn_angle_end = 270;
+        }
+
+        if ( spawn_angle_end < spawn_angle_start )
+        {
+          spawn_angle_end += 360;
         }
       }
 
