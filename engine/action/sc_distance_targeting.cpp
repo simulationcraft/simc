@@ -86,7 +86,7 @@
         else if ( radius > 0 && t -> get_player_distance( *player ) > radius )
           tl.erase( tl.begin() + i );
         else if ( range > 0 && t -> get_player_distance( *player ) > range )
-          tl.erase( tl.begin() + i ); // If they only have a range, then they are a single target ability.
+          tl.erase( tl.begin() + i ); // If they only have a range, then they are a single target ability, or are also based on the distance from the player.
       }
     }
     if ( sim -> log )

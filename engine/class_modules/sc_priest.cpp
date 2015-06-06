@@ -3704,6 +3704,8 @@ public:
     ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
     ab::school       = scaling_data -> get_school_type();
     ab::travel_speed = scaling_data -> missile_speed();
+    ab::radius       = 40;
+    ab::range        = 0;
   }
 
   virtual action_state_t* new_state() override
@@ -3803,11 +3805,17 @@ public:
 
     if ( cs -> source_target == nullptr ) //Initial bounce
     {
-      distance = std::fabs( cs -> action -> player -> current.distance - cs -> target -> current.distance );
+      if ( cs -> action -> player -> sim -> distance_targeting_enabled )
+        distance = cs -> action -> player -> get_player_distance( cs -> target ) )
+      else
+        distance = std::fabs( cs -> action -> player -> current.distance - cs -> target -> current.distance );
     }
     else
     {
-      distance = std::fabs( cs -> source_target -> current.distance - cs -> target -> current.distance );
+      if ( cs -> action -> player -> sim -> distance_targeting_enabled )
+        distance = cs -> source_target -> get_player_distance( cs -> target ) )
+      else
+        distance = std::fabs( cs -> source_target -> current.distance - cs -> target -> current.distance );
     }
 
     if ( distance >= 30.0 )
@@ -3891,6 +3899,8 @@ public:
       // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
       ab::parse_effect_data( ab::data().effectN( 1 ) );
     }
+    ab::radius = 30;
+    ab::range = 0;
   }
   virtual ~halo_base_t() {}
 
