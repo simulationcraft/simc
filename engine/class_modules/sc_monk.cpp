@@ -2335,7 +2335,12 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
-    min_gcd = timespan_t::from_millis( 250 ); // Force 250 milliseconds for the animation, but not delay the overall GCD
+    trigger_gcd = timespan_t::zero();
+  }
+
+  timespan_t execute_time() const
+  {
+    return timespan_t::from_millis( 250 ); // Force 250 milliseconds for the animation, but not delay the overall GCD
   }
 
   double combo_breaker_chance()
@@ -4689,9 +4694,6 @@ struct expel_harm_heal_t : public monk_heal_t
       ( p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
 
     monk_heal_t::execute();
-
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      reset_swing(); // Resets autoattacks
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
