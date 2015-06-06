@@ -3991,7 +3991,7 @@ public:
     double distance;
 
     if ( ab::player -> sim -> distance_targeting_enabled )
-      distance = ab::player -> get_player_distance( ab::target );
+      distance = ab::player -> get_player_distance( *ab::target );
     else
       distance = ab::player -> current.distance;
 
