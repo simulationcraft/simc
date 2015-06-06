@@ -3806,14 +3806,14 @@ public:
     if ( cs -> source_target == nullptr ) //Initial bounce
     {
       if ( cs -> action -> player -> sim -> distance_targeting_enabled )
-        distance = cs -> action -> player -> get_player_distance( cs -> target ) )
+        distance = cs -> action -> player -> get_player_distance( *cs -> target );
       else
         distance = std::fabs( cs -> action -> player -> current.distance - cs -> target -> current.distance );
     }
     else
     {
       if ( cs -> action -> player -> sim -> distance_targeting_enabled )
-        distance = cs -> source_target -> get_player_distance( cs -> target ) )
+        distance = cs -> source_target -> get_player_distance( *cs -> target );
       else
         distance = std::fabs( cs -> source_target -> current.distance - cs -> target -> current.distance );
     }
