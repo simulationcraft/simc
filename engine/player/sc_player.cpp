@@ -2433,6 +2433,9 @@ void player_t::create_buffs()
   debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
                                     .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
 
+  if ( this -> sim -> distance_targeting_enabled )
+    x_position = -1 * base.distance; // Most profiles set the base distance in init_base_stats, and create_buffs happens later.
+
 }
 
 // player_t::find_item ======================================================
