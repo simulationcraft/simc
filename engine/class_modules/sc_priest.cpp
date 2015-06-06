@@ -3830,19 +3830,22 @@ public:
 struct cascade_t : public cascade_base_t<priest_spell_t>
 {
   cascade_t( priest_t& p, const std::string& options_str ) :
-    base_t( "cascade", p, options_str, get_spell_data( p ) ),
-    _target_list_source( get_target_list_source( p ) )
+    base_t( "cascade", p, options_str, get_spell_data( p ) )
   {
     instant_multistrike = 0;
   }
 
   virtual void populate_target_list() override
   {
-    for ( size_t i = 0; i < _target_list_source.size(); ++i )
+    for ( size_t i = 0; i < target_list().size(); ++i )
     {
-      player_t* t = _target_list_source[i];
+      player_t* t;
+      if ( priest.specialization() == PRIEST_SHADOW )
+        t = target_list()[i];
+      else
+        t = sim -> player_no_pet_list[i];
 
-      if ( _target_list_source.size() > 1)
+      if ( target_list().size() > 1)
       {
         targets.push_back( t );
         targets.push_back( t );
@@ -3861,19 +3864,6 @@ private:
     unsigned id = p.specialization() == PRIEST_SHADOW ? 127628 : 121148;
     return p.find_spell( id );
   }
-  const vector_with_callback<player_t*>& get_target_list_source( priest_t& p ) const
-  {
-    if ( p.specialization() == PRIEST_SHADOW )
-    {
-      return sim -> target_list;
-    }
-    else
-    {
-      return sim -> player_list;
-    }
-  }
-
-  const vector_with_callback<player_t*>& _target_list_source;
 };
 
 // Halo Spell
