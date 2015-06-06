@@ -127,9 +127,12 @@ struct adds_event_t : public raid_event_t
       {
         if ( spawn_x_coord != 0 || spawn_y_coord != 0 ) //Not default placement
         {
-          if ( spawn_angle_start < 0 && spawn_angle_end < 0 ) //No arc specified, full circle
+          if ( spawn_angle_start < 0 )
           {
             spawn_angle_start = 0;
+          }
+          if (spawn_angle_end < 0 )
+          {
             spawn_angle_end = 360;
           }
         }
@@ -195,8 +198,9 @@ struct adds_event_t : public raid_event_t
   {
     adds_to_remove = static_cast<size_t>( util::round( std::max( 0.0, sim -> rng().range( count - count_range, count + count_range ) ) ) );
 
-    double x;
-    double y;
+    double x_offset = 0;
+    double y_offset = 0;
+    bool offset_computed = false;
 
     for ( size_t i = 0; i < adds.size(); i++ )
     {
@@ -204,29 +208,27 @@ struct adds_event_t : public raid_event_t
       {
         if ( fabs( spawn_radius_max ) > 0 )
         {
-          x = spawn_x_coord;
-          y = spawn_y_coord;
-
-          if ( spawn_stacked == 0 || ( x == 0 && y == 0 ) )
+          if ( spawn_stacked == 0 || !offset_computed )
           {
             double angle_start = spawn_angle_start * ( M_PI / 180 );
             double angle_end = spawn_angle_end * ( M_PI / 180 );
             double angle = sim -> rng().range( angle_start, angle_end );
             double radius = sim -> rng().range( fabs( spawn_radius_min ), fabs( spawn_radius_max ) );
-            x += radius * cos(angle);
-            y += radius * sin(angle);
+            x_offset = radius * cos(angle);
+            y_offset = radius * sin(angle);
+            offset_computed = true;
           }
         }
 
         adds[i] -> summon( saved_duration );
-        adds[i] -> x_position = x;
-        adds[i] -> y_position = y;
+        adds[i] -> x_position = x_offset + spawn_x_coord;
+        adds[i] -> y_position = y_offset + spawn_y_coord;
 
         if ( sim -> log )
         {
-          if ( x != 0 || y != 0 )
+          if ( x_offset != 0 || y_offset != 0 )
           {
-            sim -> out_log.printf( "New add spawned at %f, %f.", x, y );
+            sim -> out_log.printf( "New add spawned at %f, %f.", x_offset, y_offset );
           }
         }
       }
