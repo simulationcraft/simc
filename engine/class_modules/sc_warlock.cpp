@@ -3579,17 +3579,22 @@ struct chaos_bolt_t: public warlock_spell_t
 
   void consume_resource()
   {
-    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T18, B4 ) )
+    bool t18_procced = rng().roll( p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent() );
+    double base_cost = 0;
+
+    if ( t18_procced )
     {
-      if ( rng().roll( p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent() ) )
-      {
-        if ( use_backdraft() ) // Since we are skipping consume_resource, we still need to consume the backdraft.
-          p() -> buffs.backdraft -> decrement( backdraft_consume );
-        p() -> procs.t18_4pc_destruction -> occur();
-        return;
-      }
+      base_cost = base_costs[ RESOURCE_BURNING_EMBER ];
+      base_costs[ RESOURCE_BURNING_EMBER ] = p() -> buffs.fire_and_brimstone -> check() ? 1 : 0;
+      p() -> procs.t18_4pc_destruction -> occur();
     }
+
     warlock_spell_t::consume_resource();
+
+    if ( t18_procced )
+    {
+      base_costs[ RESOURCE_BURNING_EMBER ] = base_cost;
+    }
   }
 
   // Force spell to always crit
