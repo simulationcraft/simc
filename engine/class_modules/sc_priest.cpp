@@ -3716,7 +3716,8 @@ public:
   player_t* get_next_player( player_t* currentTarget )
   {
     player_t* t = nullptr;
-
+    player_t* furthest = 0;
+    double furthest_distance = 0;
     // Get target at first position
     if ( !targets.empty() )
     {
@@ -3724,16 +3725,27 @@ public:
       {
         t = *it;
 
-        if ( t != currentTarget )
+        if ( t == currentTarget )
+          continue;
+        if ( currentTarget -> sim -> distance_targeting_enabled )
         {
-          targets.erase( it );
-          return t;
+          double current_distance = t -> get_player_distance( *currentTarget );
+          if ( current_distance > furthest_distance )
+          {
+            furthest_distance = current_distance;
+            furthest = t;
+          }
+          continue;
         }
+        targets.erase( it );
+        return t;
       }
 
       t = nullptr;
     }
 
+    if ( furthest )
+      return furthest;
     return t;
   }
 
