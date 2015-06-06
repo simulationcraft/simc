@@ -92,6 +92,8 @@ actions.single_target_1h+=/plague_leech
 actions.single_target_1h+=/empower_rune_weapon
 
 actions.multi_target=unholy_blight
+actions.multi_target+=/frost_strike,if=buff.killing_machine.react&main_hand.1h
+actions.multi_target+=/obliterate,if=unholy>1
 actions.multi_target+=/blood_boil,if=dot.blood_plague.ticking&(!talent.unholy_blight.enabled|cooldown.unholy_blight.remains<49),line_cd=28
 actions.multi_target+=/defile
 actions.multi_target+=/breath_of_sindragosa,if=runic_power>75
@@ -100,7 +102,7 @@ actions.multi_target+=/howling_blast
 actions.multi_target+=/blood_tap,if=buff.blood_charge.stack>10
 actions.multi_target+=/frost_strike,if=runic_power>88
 actions.multi_target+=/death_and_decay,if=unholy=1
-actions.multi_target+=/plague_strike,if=unholy=2
+actions.multi_target+=/plague_strike,if=unholy=2&!dot.blood_plague.ticking&!talent.necrotic_plague.enabled
 actions.multi_target+=/blood_tap
 actions.multi_target+=/frost_strike,if=!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>=10
 actions.multi_target+=/plague_leech

@@ -6883,6 +6883,8 @@ void death_knight_t::default_apl_frost()
 
   // Multi-target default APL
   aoe -> add_talent( this, "Unholy Blight" );
+  aoe -> add_action( this, "Frost Strike", "if=buff.killing_machine.react&main_hand.1h" );
+  aoe -> add_action( this, "Obliterate", "if=unholy>1" );
   aoe -> add_action( this, "Blood Boil", "if=dot.blood_plague.ticking&(!talent.unholy_blight.enabled|cooldown.unholy_blight.remains<49),line_cd=28" );
   aoe -> add_talent( this, "Defile" );
   aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75" );
@@ -6891,7 +6893,7 @@ void death_knight_t::default_apl_frost()
   aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
   aoe -> add_action( this, "Frost Strike", "if=runic_power>88" );
   aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
-  aoe -> add_action( this, "Plague Strike", "if=unholy=2" );
+  aoe -> add_action( this, "Plague Strike", "if=unholy=2&!dot.blood_plague.ticking&!talent.necrotic_plague.enabled" );
   aoe -> add_talent( this, "Blood Tap" );
   aoe -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>=10" );
   aoe -> add_talent( this, "Plague Leech" );
