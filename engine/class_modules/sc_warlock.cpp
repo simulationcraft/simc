@@ -3625,7 +3625,7 @@ struct chaos_bolt_t: public warlock_spell_t
 
   void multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
   {
-    multistrike_direct( source_state, ms_state );
+    warlock_spell_t::multistrike_direct( source_state, ms_state );
 
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
