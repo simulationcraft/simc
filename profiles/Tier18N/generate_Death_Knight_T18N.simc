@@ -4,7 +4,7 @@ race=blood_elf
 spec=frost
 role=attack
 position=back
-talents=2001003
+talents=2001001
 glyphs=
 head=demongaze_helm,id=124332
 neck=shadowgorged_iron_choker,id=124217,enchant=gift_of_haste
