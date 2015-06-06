@@ -951,6 +951,16 @@ protected:
     errorReturn -> baseUrl = errorOption -> url;
     return true;
   }
+#else
+  virtual bool acceptNavigationRequest( const QUrl &url, NavigationType type, bool isMainFrame )
+  {
+    QString url_to_show = url.toString();
+    if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( "battlenet" ) || url_to_show.contains( "google.com" ) )
+      return true;
+    else
+      QDesktopServices::openUrl( url_to_show );
+    return false;
+  }
 #endif /* SC_USE_WEBKIT */
 };
 
@@ -1154,19 +1164,6 @@ private slots:
     {
       url_to_show = "results.html";
     }
-#ifndef SC_USE_WEBKIT 
-    else if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( "battlenet" ) || url_to_show.contains( "google.com" ) )
-    {
-      return;
-    }
-    else
-    {
-      page() -> triggerAction( QWebEnginePage::Stop );
-      QDesktopServices::openUrl( url_to_show );
-      page() -> triggerAction( QWebEnginePage::Back );
-      return;
-    }
-#endif
     mainWindow -> updateWebView( this );
   }
 
