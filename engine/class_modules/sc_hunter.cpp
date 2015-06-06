@@ -4519,8 +4519,10 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   {
     const spell_data_t* data = find_spell( longview -> spell_id ); 
     double factor = data -> effectN( 1 ).average( longview -> item ) / 100.0 / 100.0;
-    m *= 1.0 + base.distance * factor;
-  //  m *= 1.0 + base.distance * 0.0025;
+    if ( sim -> distance_targeting_enabled )
+      m*= 1.0 + target -> get_position_distance( x_position, y_position ) * factor;
+    else
+      m *= 1.0 + base.distance * factor;
   }
 
   if ( sets.has_set_bonus( SET_MELEE, T16, B4 ) )
