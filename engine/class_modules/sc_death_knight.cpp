@@ -6794,9 +6794,9 @@ void death_knight_t::default_apl_frost()
   def -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&cooldown.soul_reaper.remains=0)" );
 
   // Default APL selector
-  def -> add_action( "run_action_list,name=single_target_2h,if=active_enemies<4&(main_hand.2h|t18_class_trinket|set_bonus.tier18_4pc)" );
+  def -> add_action( "run_action_list,name=single_target_2h,if=active_enemies<4&main_hand.2h" );
   def -> add_action( "run_action_list,name=single_target_1h,if=active_enemies<3&main_hand.1h" );
-  def -> add_action( "run_action_list,name=multi_target,if=active_enemies>=3+(main_hand.2h|t18_class_trinket|set_bonus.tier18_4pc)" );
+  def -> add_action( "run_action_list,name=multi_target,if=active_enemies>=3+main_hand.2h" );
 
   // Main APL; Single target; 2handed weapon/t18 class trinket/t18 4pc set bonus
 
@@ -6842,36 +6842,40 @@ void death_knight_t::default_apl_frost()
   st_2h -> add_action( this, "Empower Rune Weapon" );
 
   // Main APL; Single target; 1handed weapon
-  st_1h -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))" );
 
   // Breath of Sindragosa in use, cast it and then keep it up
   st_1h -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75" );
   st_1h -> add_action( "run_action_list,name=single_target_bos,if=dot.breath_of_sindragosa.ticking" );
+
+  // Killing Machine
+  st_1h -> add_action( this, "Frost Strike", "if=buff.killing_machine.react" );
+  st_1h -> add_action( this, "Obliterate", "if=unholy>1|buff.killing_machine.react" );
+
   // Defile
   st_1h -> add_talent( this, "Defile" );
   st_1h -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
-  // Breath of Sindragosa coming off cooldown, get ready to use
-  st_1h -> add_action( this, "Howling Blast", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<88" );
-  st_1h -> add_action( this, "Obliterate", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<3&runic_power<76" );
-  // Killing Machine / Very High RP
-  st_1h -> add_action( this, "Frost Strike", "if=buff.killing_machine.react|runic_power>88" );
-  st_1h -> add_action( this, "Frost Strike", "if=cooldown.antimagic_shell.remains<1&runic_power>=50&!buff.antimagic_shell.up" );
-  // Capped Runes
-  st_1h -> add_action( this, "Howling Blast", "if=death>1|frost>1" );
+
+  // Very High RP
+  st_1h -> add_action( this, "Frost Strike", "if=runic_power>88" );
+
+  // Capped runes / Rime
+  st_1h -> add_action( this, "Howling Blast", "if=buff.rime.react|death>1|frost>1" );
+
+  // Blood tapping
+  st_1h -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
+
+  // High RP
+  st_1h -> add_action( this, "Frost Strike", "if=runic_power>76" );
+
   // Diseases for free
   st_1h -> add_talent( this, "Unholy Blight", "if=!disease.ticking" );
+  st_1h -> add_action( this, "Outbreak", "if=!dot.blood_plague.ticking" );
+
   // Diseases for runes
-  st_1h -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking" );
-  st_1h -> add_action( this, "Howling Blast", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
-  st_1h -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking&unholy>0" );
-  // Rime
-  st_1h -> add_action( this, "Howling Blast", "if=buff.rime.react" );
-  // Don't waste Runic Power
-  st_1h -> add_action( this, "Frost Strike", "if=set_bonus.tier17_2pc=1&(runic_power>=50&(cooldown.pillar_of_frost.remains<5))" );
-  st_1h -> add_action( this, "Frost Strike", "if=runic_power>76" );
-  // Keep Runes on Cooldown
-  st_1h -> add_action( this, "Obliterate", "if=unholy>0&!buff.killing_machine.react" );
-  st_1h -> add_action( this, "Howling Blast", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<3)|death+frost>=2" );
+  st_1h -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking" );
+  st_1h -> add_action( this, "Howling Blast", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&cooldown.soul_reaper.remains<3)|death+frost>=2" );
+  st_1h -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&debuff.necrotic_plague.stack<=14" );
+
   // Better than waiting
   st_1h -> add_talent( this, "Blood Tap" );
   st_1h -> add_talent( this, "Plague Leech" );
