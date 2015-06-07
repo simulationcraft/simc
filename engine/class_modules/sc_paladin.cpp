@@ -773,7 +773,7 @@ public:
     }
 
     // Handle benefit tracking
-    if ( harmful )
+    if ( this -> harmful )
     {
       p() -> buffs.avenging_wrath -> up();
       p() -> buffs.wings_of_liberty -> up();
