@@ -6644,6 +6644,11 @@ void priest_t::apl_shadow()
       default_list -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
+  if ( find_item( "nithramus_the_allseer" ))
+  {
+    default_list -> add_action( "use_item,name=nithramus_the_allseer" );
+  }
+
   default_list -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
   default_list -> add_action( "silence,if=target.debuff.casting.react" );
 
