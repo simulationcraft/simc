@@ -37,6 +37,12 @@ talents=0320012
 Paladin_Retribution_T18N.simc
 
 # Priest
+Priest_Shadow_T18N_AS.simc
+trinket1=unblinking_gaze_of_sethe,id=124229
+Priest_Shadow_T18N_COP.simc
+trinket1=unblinking_gaze_of_sethe,id=124229
+Priest_Shadow_T18N_VE.simc
+trinket1=unblinking_gaze_of_sethe,id=124229
 
 # Rogue
 Rogue_Assassination_T18N.simc

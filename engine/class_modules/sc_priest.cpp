@@ -1608,7 +1608,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest_td_t& td = get_td( t );
       if ( priest.active_items.mental_fatigue )
       {
-        am *= 1.0 + td.buffs.mental_fatigue -> stack_value();
+        am *= 1.0 + ( td.buffs.mental_fatigue -> stack_value() * 2 ); //Stack count was halved from 10 to 5 in latest build, but the value per stack wasn't doubled. Assuming for now this is an oversight. -- Twintop, 2015/06/07
       }
     }
 
@@ -6816,7 +6816,7 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_dotweave -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
-  cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<10" );
+  cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop_dotweave -> add_action( "mind_spike" );
   cop_dotweave -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop_dotweave -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
@@ -6856,7 +6856,7 @@ void priest_t::apl_shadow()
   cop_insanity -> add_action( "divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&active_enemies>2&target.distance<=24" );
   cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_insanity -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
-  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<10" );
+  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop_insanity -> add_action( "mind_spike" );
   cop_insanity -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop_insanity -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
@@ -6903,7 +6903,7 @@ void priest_t::apl_shadow()
   cop -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   cop -> add_action( "mind_spike,if=target.dot.devouring_plague_tick.remains&target.dot.devouring_plague_tick.remains<cast_time" );
   cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies>1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
-  cop -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<10" );
+  cop -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop -> add_action( "mind_spike" );
   cop -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
