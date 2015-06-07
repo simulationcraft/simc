@@ -4,8 +4,6 @@ race=tauren
 role=attack
 position=back
 talents=0033023
-talent_override=bladestorm,if=raid_event.adds.count>=1|enemies>1
-talent_override=dragon_roar,if=raid_event.adds.count>=1|enemies>1
 glyphs=unending_rage/heroic_leap/cleave
 spec=protection
 head=faceguard_of_iron_wrath,id=124334,bonus_id=567

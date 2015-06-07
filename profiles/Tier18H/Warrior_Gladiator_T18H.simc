@@ -5,7 +5,6 @@ role=attack
 position=back
 talents=0033023
 talent_override=bladestorm,if=raid_event.adds.count>=1|enemies>1
-talent_override=dragon_roar,if=raid_event.adds.count>=1|enemies>1bladestorm,if=raid_event.adds.count>=1|enemies>1
 talent_override=dragon_roar,if=raid_event.adds.count>=1|enemies>1
 glyphs=unending_rage/heroic_leap/cleave
 spec=protection
