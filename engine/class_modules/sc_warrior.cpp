@@ -5814,7 +5814,7 @@ static void fury_trinket( special_effect_t& effect )
   if ( s -> fury_trinket )
   {
     s -> buff.fury_trinket = buff_creator_t( s, "berserkers_fury", s -> fury_trinket -> driver() -> effectN( 1 ).trigger() )
-      .default_value( s -> fury_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( s -> fury_trinket -> item ) / 10000.0 )
+      .default_value( s -> fury_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( s -> fury_trinket -> item ) / 100.0 )
       .add_invalidate( CACHE_HASTE );
   }
 }
