@@ -5523,7 +5523,8 @@ struct antimagic_shell_t : public death_knight_spell_t
 
       double generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ];
 
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), p() -> gains.antimagic_shell, this );
+      // AMS generates 2 runic power per percentage max health absorbed.
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 * 2.0 ), p() -> gains.antimagic_shell, this );
     }
     else
       p() -> buffs.antimagic_shell -> trigger();
