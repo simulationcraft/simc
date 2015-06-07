@@ -771,6 +771,14 @@ public:
       // trigger WoD Ret PvP 4-P
       p() -> buffs.vindicators_fury -> trigger( 1, c > 0 ? c : 3 );
     }
+
+    // Handle benefit tracking
+    if ( harmful )
+    {
+      p() -> buffs.avenging_wrath -> up();
+      p() -> buffs.wings_of_liberty -> up();
+      p() -> buffs.retribution_trinket -> up();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1126,7 +1134,7 @@ struct avenging_wrath_t : public paladin_heal_t
   {
     // override for this just in case Avenging Wrath were to get canceled or removed
     // early, or if there's a duration mismatch (unlikely, but...)
-    if ( p() -> buffs.avenging_wrath -> up() )
+    if ( p() -> buffs.avenging_wrath -> check() )
     {
       // call tick()
       heal_t::tick( d );
@@ -1918,9 +1926,9 @@ struct flash_of_light_t : public paladin_heal_t
   }
 
   virtual double cost() const
-  {
+  { 
     // selfless healer reduces mana cost by 35% per stack
-    double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
+    double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
 
     return ( paladin_heal_t::cost() * cost_multiplier );
   }
@@ -1928,7 +1936,7 @@ struct flash_of_light_t : public paladin_heal_t
   virtual timespan_t execute_time() const
   {
     // Selfless Healer reduces cast time by 35% per stack
-    double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
+    double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
 
     return ( paladin_heal_t::execute_time() * cast_multiplier );
   }
@@ -1943,7 +1951,7 @@ struct flash_of_light_t : public paladin_heal_t
       // multiplicative 35% per Selfless Healer stack when FoL is used on others
       if ( target != player )
       {
-        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> stack();
+        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> current_stack;
       }
     }
 
@@ -1954,8 +1962,8 @@ struct flash_of_light_t : public paladin_heal_t
   {
     paladin_heal_t::execute();
 
-    // if Selfless Healer is talented, expire SH buff 
-    if ( p() -> talents.selfless_healer -> ok() )
+    // if Selfless Healer is talented, expire SH buff. Call up() for benefit tracking.
+    if ( p() -> talents.selfless_healer -> ok() && p() -> buffs.selfless_healer -> up() )
       p() -> buffs.selfless_healer -> expire();
 
     // Enhanced Holy Shock trigger
@@ -2557,7 +2565,7 @@ struct holy_shock_t : public paladin_heal_t
   {
     double cdm = paladin_heal_t::cooldown_multiplier();
     
-    if ( p() -> buffs.avenging_wrath -> up() )
+    if ( p() -> buffs.avenging_wrath -> check() )
       cdm += cooldown_mult;
 
     return cdm;
@@ -3937,7 +3945,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     double cdm = paladin_melee_attack_t::cooldown_multiplier();
     
-    if ( p() -> buffs.avenging_wrath -> up() )
+    if ( p() -> buffs.avenging_wrath -> check() )
       cdm *= cooldown_mult;
 
     return cdm;
@@ -6052,9 +6060,9 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
 
-  m *= 1.0 + buffs.wings_of_liberty -> stack_value();
+  m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
   if ( retribution_trinket )
-    m *= 1.0 + buffs.retribution_trinket -> stack_value();
+    m *= 1.0 + buffs.retribution_trinket -> current_stack * buffs.wings_of_liberty -> current_value;
 
   // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
