@@ -5974,7 +5974,6 @@ void warlock_t::apl_precombat()
 
   add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<9" );
   add_action( "Summon Infernal", "if=!talent.demonic_servitude.enabled&active_enemies>=9" );
-  action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))";
 
   if ( sim -> allow_potions )
   {
@@ -6001,6 +6000,27 @@ void warlock_t::apl_precombat()
   action_list_str += "/arcane_torrent";
   action_list_str += "/mannoroths_fury";
 
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ))
+    {
+      if ( items[i].name_str != "nithramus_the_allseer" || specialization() != WARLOCK_DEMONOLOGY )
+      {
+        action_list_str += "/use_item,name=";
+        action_list_str += items[i].name();
+      }
+    }
+  }
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    action_list_str += "/felguard:felstorm";
+    action_list_str += "/wrathguard:wrathstorm";
+    action_list_str += "/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains>5";
+    action_list_str += "/call_action_list,name=opener,if=time<7&talent.demonic_servitude.enabled";
+    action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))";
+  }
+
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     action_list_str += "/dark_soul,if=talent.demonbolt.enabled&((time<=20&!buff.demonbolt.remains&demonic_fury>=360)|target.time_to_die<buff.demonbolt.remains|(!buff.demonbolt.remains&demonic_fury>=790))";
@@ -6020,25 +6040,10 @@ void warlock_t::apl_precombat()
   else
     add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))" );
 
-  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
-  {
-    if (items[i].has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
-    {
-      if ( items[i].name_str != "nithramus_the_allseer" || specialization() != WARLOCK_DEMONOLOGY )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
-      }
-    }
-  }
-
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    if ( find_item( "nithramus_the_allseer" ) )
+    if ( find_item( "nithramus_the_allseer" ))
       action_list_str += "/use_item,name=nithramus_the_allseer,if=buff.dark_soul.remains";
-    action_list_str += "/felguard:felstorm";
-    action_list_str += "/wrathguard:wrathstorm";
-    action_list_str += "/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains>5";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&((cooldown.cataclysm.remains>dot.shadowflame.duration)|!talent.cataclysm.enabled))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1";
@@ -6096,6 +6101,10 @@ void warlock_t::apl_demonology()
   {
 
     action_list_str += "/call_action_list,name=db,if=talent.demonbolt.enabled";
+
+    get_action_priority_list( "opener" ) -> action_list_str += "hand_of_guldan,if=!in_flight&!dot.shadowflame.ticking";
+    get_action_priority_list( "opener" ) -> action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
+    get_action_priority_list( "opener" ) -> action_list_str += "/corruption,if=!ticking";
 
     get_action_priority_list( "db" ) -> action_list_str += "immolation_aura,if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down";
     get_action_priority_list( "db" ) -> action_list_str += "/doom,cycle_targets=1,if=buff.metamorphosis.up&active_enemies>=6&target.time_to_die>=30*spell_haste&remains-gcd<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
