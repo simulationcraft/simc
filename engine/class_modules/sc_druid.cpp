@@ -6691,6 +6691,8 @@ void druid_t::apl_precombat()
   }
   else if ( specialization() == DRUID_GUARDIAN )
     precombat -> add_talent( this, "Cenarion Ward" );
+  else if ( specialization() == DRUID_FERAL && ( find_item( "soul_capacitor") || find_item( "maalus_the_blood_drinker" ) ) )
+    precombat -> add_action( "incarnation" );
 }
 
 // NO Spec Combat Action Priority List ======================================
