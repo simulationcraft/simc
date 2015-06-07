@@ -200,6 +200,7 @@ public:
   double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
   bool alternate_stellar_flare; // Player request.
   bool predatory_swiftness_bug; // Trigger a PS when combat begins.
+  int initial_berserk_duration;
   bool stellar_flare_cast; //Hacky way of not consuming lunar/solar peak.
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
@@ -613,6 +614,7 @@ public:
     time_to_next_solar( 30 ),
     alternate_stellar_flare( 0 ),
     predatory_swiftness_bug( 0 ),
+    initial_berserk_duration( 0 ),
     stellar_flare_cast( 0 ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
@@ -4280,6 +4282,17 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual void execute()
   {
+    // Adjust buffs and cooldowns if we're in precombat.
+    if ( ! p() -> in_combat )
+    {
+      if ( p() -> buff.incarnation -> check() )
+      {
+        timespan_t time = std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
+        p() -> buff.incarnation -> extend_duration( p(), -time );
+        p() -> get_cooldown( "incarnation" ) -> adjust( -time );
+      }
+    }
+
     if( p() -> specialization() == DRUID_BALANCE )
     {
       p() -> balance_tracker();
@@ -4868,22 +4881,20 @@ struct incarnation_t : public druid_spell_t
 
     p() -> buff.incarnation -> trigger();
 
-    switch ( p() -> specialization() )
+    if ( ! p() -> in_combat )
     {
-    case DRUID_FERAL:
-      // Waste 1 second of the buff if its used prior to combat.
-      if ( ! p() -> in_combat )
-        p() -> buff.incarnation -> extend_duration( p(), timespan_t::from_seconds( -1.0 ) );
-      break;
-    case DRUID_GUARDIAN:
+      timespan_t time = std::max( min_gcd, trigger_gcd * composite_haste() );
+      p() -> buff.incarnation -> extend_duration( p(), -time );
+      cooldown -> adjust( -time );
+    }
+
+    if ( p() -> specialization() == DRUID_GUARDIAN )
+    {
       p() -> cooldown.mangle -> reset( false );
       p() -> cooldown.growl  -> reset( false );
       p() -> cooldown.maul   -> reset( false );
       if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
         p() -> cooldown.faerie_fire -> reset( false ); 
-      break;
-    default:
-      break;
     }
   }
 };
@@ -6429,14 +6440,18 @@ void druid_t::create_buffs()
   switch ( specialization() ) {
     case DRUID_BALANCE:     buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_chosen )
                              .default_value( talent.incarnation_chosen -> effectN( 1 ).percent() )
-                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             .cd( timespan_t::zero() );
                             break;
-    case DRUID_FERAL:       buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_king );
+    case DRUID_FERAL:       buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_king )
+                             .cd( timespan_t::zero() );
                             break;
-    case DRUID_GUARDIAN:    buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_son );
+    case DRUID_GUARDIAN:    buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_son )
+                             .cd( timespan_t::zero() );
                             break;
     case DRUID_RESTORATION: buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_tree )
-                             .duration( timespan_t::from_seconds( 30 ) );
+                             .duration( timespan_t::from_seconds( 30 ) )
+                             .cd( timespan_t::zero() );
                             break;
     default:
       break;
@@ -7209,6 +7224,12 @@ void druid_t::combat_begin()
 
   if ( predatory_swiftness_bug && glyph.savage_roar -> ok() )
     buff.predatory_swiftness -> trigger();
+
+  if ( spell.berserk_cat -> ok() && initial_berserk_duration > 0 )
+  {
+    buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( initial_berserk_duration ) );
+    resources.current[ RESOURCE_ENERGY ] = resources.max[ RESOURCE_ENERGY ];
+  }
 }
 
 // druid_t::invalidate_cache ================================================
@@ -7643,6 +7664,7 @@ void druid_t::create_options()
 
   add_option( opt_bool( "alternate_stellar_flare", alternate_stellar_flare ) );
   add_option( opt_bool( "predatory_swiftness_bug", predatory_swiftness_bug ) );
+  add_option( opt_int( "initial_berserk_duration", initial_berserk_duration ) );
 }
 
 // druid_t::copy_from =======================================================
