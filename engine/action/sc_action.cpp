@@ -763,6 +763,13 @@ double action_t::false_negative_pct() const
   return failure_rate;
 }
 
+// action_t::distance_targeting_travel_time ======================================
+
+timespan_t action_t::distance_targeting_travel_time( action_state_t* s ) const
+{
+  return timespan_t::zero();
+}
+
 // action_t::travel_time ====================================================
 
 timespan_t action_t::travel_time() const
@@ -3013,18 +3020,17 @@ void action_t::schedule_travel( action_state_t* s )
 
   execute_state -> copy_state( s );
 
-  time_to_travel = travel_time();
+  time_to_travel = distance_targeting_travel_time( s ); // This is used for spells that don't use the typical player ---> main target travel time. 
+  if ( time_to_travel == timespan_t::zero() )
+    time_to_travel = travel_time();
 
   do_schedule_travel( s, time_to_travel );
 }
 
 void action_t::impact( action_state_t* s )
 {
-  if ( sim -> distance_targeting_enabled )
-  {
-    if ( !impact_targeting( s ) )
-      return;
-  }
+  if ( !impact_targeting( s ) )
+    return;
 
   assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
 

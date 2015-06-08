@@ -3680,7 +3680,6 @@ private:
   typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
 public:
   typedef cascade_base_t base_t; // typedef for cascade_base_t<action_base_t>
-
   struct cascade_state_t : action_state_t
   {
     int jump_counter;
@@ -3701,7 +3700,10 @@ public:
   {
     ab::parse_options( options_str );
 
-    ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
+    if ( p.specialization() != PRIEST_SHADOW )
+      ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
+    else
+      ab::parse_effect_data( scaling_data -> effectN( 2 ) );
     ab::school       = scaling_data -> get_school_type();
     ab::travel_speed = scaling_data -> missile_speed();
     ab::radius       = 40;
@@ -3711,6 +3713,14 @@ public:
   virtual action_state_t* new_state() override
   {
     return new cascade_state_t( this, ab::target );
+  }
+
+  virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const
+  {
+    cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
+    if ( cs -> source_target )
+      return timespan_t::from_seconds( cs -> source_target -> get_player_distance( *s -> target ) / ab::travel_speed );
+    return timespan_t::zero();
   }
 
   player_t* get_next_player( player_t* currentTarget )
@@ -3730,7 +3740,7 @@ public:
         if ( currentTarget -> sim -> distance_targeting_enabled )
         {
           double current_distance = t -> get_player_distance( *currentTarget );
-          if ( current_distance > furthest_distance )
+          if ( current_distance <= 40 && current_distance > furthest_distance )
           {
             furthest_distance = current_distance;
             furthest = t;
@@ -3793,7 +3803,7 @@ public:
           s -> result = ab::calculate_result( s );
 
           if ( ab:: result_is_hit( s -> result ) )
-            s -> result_amount = ab::calculate_direct_amount( s );
+            s -> result_amount = calculate_direct_amount( s );
 
           if ( ab::sim -> debug )
             s -> debug();
@@ -3905,6 +3915,11 @@ public:
     ab::range = 0;
   }
   virtual ~halo_base_t() {}
+
+  virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const
+  {
+    return timespan_t::from_seconds( s -> action -> player -> get_player_distance( *s -> target ) / ab::travel_speed );
+  }
 
   virtual double calculate_direct_amount( action_state_t* s )
   {
