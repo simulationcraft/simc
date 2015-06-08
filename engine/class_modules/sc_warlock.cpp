@@ -5326,7 +5326,7 @@ double warlock_t::composite_mastery() const
   {
     if ( buffs.dark_soul -> up() )
     {
-      m += spec.dark_soul -> effectN( 1 ).percent() * mastery_spells.master_demonologist -> effectN( 1 ).sp_coeff();
+      m += spec.dark_soul -> effectN( 1 ).base_value();
     }
   }
   return m;
