@@ -41,7 +41,7 @@ hands=oathclaw_gauntlets,id=124255,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=spiked_irontoe_slippers,id=124249,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=621,enchant_id=5324
+finger1=maalus_the_blood_drinker,id=124636,enchant_id=5324
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
 trinket1=felspring_coil,id=124223,bonus_id=567
 trinket2=soul_capacitor,id=124225,bonus_id=567

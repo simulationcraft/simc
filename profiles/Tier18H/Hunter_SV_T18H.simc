@@ -81,21 +81,21 @@ hands=eredar_felchain_gloves,id=124291,bonus_id=566
 waist=girdle_of_the_legion_general,id=124310,bonus_id=566
 legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=566,enchant_id=5327
+finger1=maalus_the_blood_drinker,id=124636,enchant_id=5327
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5327
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=malicious_censer,id=124226,bonus_id=566
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5275
 
 # Gear Summary
-# gear_ilvl=714.33
-# gear_agility=3989
-# gear_stamina=5474
-# gear_crit_rating=1826
+# gear_ilvl=713.33
+# gear_agility=3952
+# gear_stamina=5418
+# gear_crit_rating=1800
 # gear_haste_rating=311
 # gear_mastery_rating=741
 # gear_multistrike_rating=2526
-# gear_versatility_rating=177
+# gear_versatility_rating=154
 # gear_armor=1582
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

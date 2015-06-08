@@ -15,7 +15,7 @@ hands=gloves_of_the_savage_hunt,id=124292,bonus_id=566
 waist=girdle_of_the_legion_general,id=124310,bonus_id=566
 legs=haughty_chain_legguards,id=124300,bonus_id=566
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=566,enchant_id=5326
+finger1=maalus_the_blood_drinker,id=124636,enchant_id=5326
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5326
 trinket1=mirror_of_the_blademaster,id=124224,bonus_id=566
 trinket2=malicious_censer,id=124226,bonus_id=566
@@ -40,7 +40,7 @@ hands=eredar_felchain_gloves,id=124291,bonus_id=566
 waist=girdle_of_the_legion_general,id=124310,bonus_id=566
 legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=566,enchant_id=5324
+finger1=maalus_the_blood_drinker,id=124636,enchant_id=5324
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
 trinket1=talisman_of_the_master_tracker,id=124515,bonus_id=566
 trinket2=felspring_coil,id=124223,bonus_id=566
@@ -64,7 +64,7 @@ hands=eredar_felchain_gloves,id=124291,bonus_id=566
 waist=girdle_of_the_legion_general,id=124310,bonus_id=566
 legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=566,enchant_id=5327
+finger1=maalus_the_blood_drinker,id=124636,enchant_id=5327
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5327
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=malicious_censer,id=124226,bonus_id=566
