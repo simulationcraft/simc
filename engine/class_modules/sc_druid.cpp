@@ -213,6 +213,9 @@ public:
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
 
+  // RPPM objects
+  real_ppm_t balance_t18_2pc;
+
   // Absorb Stats
   stats_t* tooth_and_claw;
   
@@ -620,6 +623,7 @@ public:
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
+    balance_t18_2pc( *this, 0, RPPM_NONE ),
     active( active_actions_t() ),
     caster_form_weapon(),
     starshards(),
@@ -659,8 +663,6 @@ public:
     cooldown.starfallsurge       = get_cooldown( "starfallsurge"       );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
-    cooldown.fey_faerie          = get_cooldown( "fey_faerie"          );
-    cooldown.fey_faerie -> duration = timespan_t::from_seconds( 3.0 ); // ICD on the set bonus
     
     cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
     cooldown.starfallsurge -> charges = 3;
@@ -688,6 +690,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool );
+  virtual void      init_rng();
   virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
@@ -1111,6 +1114,14 @@ namespace pets {
         if ( player -> o() -> pet_fey_moonwing[0] )
           stats = player -> o() -> pet_fey_moonwing[0] -> get_stats( "fey_missile" );
         may_crit = true;
+
+        // Casts have a delay that decreases with haste. This is a very rough approximation.
+        cooldown -> duration = timespan_t::from_millis( 600 );
+      }
+
+      double cooldown_reduction() const override
+      {
+        return spell_t::cooldown_reduction() * composite_haste();
       }
     };
     druid_t* o() { return static_cast<druid_t*>( owner ); }
@@ -4356,6 +4367,21 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
     return base_t::ready();
   }
+
+  virtual void trigger_balance_t18_2pc()
+  {
+    if ( ! p() -> balance_t18_2pc.trigger() )
+      return;
+
+    for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
+    {
+      if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
+      {
+        p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
+        return;
+      }
+    }
+  }
 }; // end druid_spell_t
 
 // Auto Attack ==============================================================
@@ -4959,6 +4985,9 @@ struct sunfire_t: public druid_spell_t
 
       if ( result_is_hit( d -> state -> result ) )
         p() -> trigger_shooting_stars( d -> state );
+
+      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+        trigger_balance_t18_2pc();
     }
   };
 
@@ -5004,28 +5033,10 @@ struct sunfire_t: public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-    {
-      p() -> cooldown.fey_faerie -> start();
-      if ( rng().roll( 0.55 ) )
-      {
-        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-        {
-          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-          {
-            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-            break;
-          }
-        }
-      }
-    }
-
     p() -> last_target_dot_moonkin = execute_state -> target;
 
-    if ( !p() -> stellar_flare_cast )
-    {
+    if ( ! p() -> stellar_flare_cast )
       p() -> buff.solar_peak -> expire();
-    }
   }
 
   void tick( dot_t* d )
@@ -5034,6 +5045,9 @@ struct sunfire_t: public druid_spell_t
 
     if ( result_is_hit( d -> state -> result ) )
       p() -> trigger_shooting_stars( d -> state );
+
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+      trigger_balance_t18_2pc();
   }
 
   void impact( action_state_t* s )
@@ -5096,6 +5110,9 @@ struct moonfire_t : public druid_spell_t
 
       if ( result_is_hit( d -> state -> result ) )
         p() -> trigger_shooting_stars( d -> state );
+
+      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+        trigger_balance_t18_2pc();
     }
   };
 
@@ -5134,6 +5151,8 @@ struct moonfire_t : public druid_spell_t
     if ( result_is_hit( d -> state -> result ) )
       p() -> trigger_shooting_stars( d -> state );
 
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+      trigger_balance_t18_2pc();
   }
 
   double action_multiplier() const
@@ -5150,28 +5169,10 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-    {
-      p() -> cooldown.fey_faerie -> start();
-      if ( rng().roll( 0.55 ) )
-      {
-        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-        {
-          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-          {
-            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-            break;
-          }
-        }
-      }
-    }
-
     p() -> last_target_dot_moonkin = execute_state -> target;
 
-    if ( !p() -> stellar_flare_cast )
-    {
+    if ( ! p() -> stellar_flare_cast )
       p() -> buff.lunar_peak -> expire();
-    }
   }
 
   void schedule_execute( action_state_t* state = 0 )
@@ -7059,7 +7060,17 @@ void druid_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[RESOURCE_ECLIPSE] = 0;
+  resources.current[ RESOURCE_ECLIPSE ] = 0;
+}
+
+// druid_t::init_rng =======================================================
+
+void druid_t::init_rng()
+{
+  // RPPM objects
+  balance_t18_2pc.set_frequency( sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
+
+  player_t::init_rng();
 }
 
 // druid_t::init_actions ====================================================
