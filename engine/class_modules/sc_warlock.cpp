@@ -1841,6 +1841,9 @@ private:
     havoc_proc = 0;
 
     parse_spell_coefficient( *this );
+
+    affected_by_flamelicked = p() -> destruction_trinket && data().affected_by(
+        p() -> destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ) );
   }
 
 public:
@@ -1854,6 +1857,8 @@ public:
   int havoc_consume, backdraft_consume;
 
   proc_t* havoc_proc;
+
+  bool affected_by_flamelicked;
 
   struct cost_event_t: player_event_t
   {
@@ -2137,7 +2142,7 @@ public:
   virtual double composite_target_crit( player_t* target ) const
   {
     double c = spell_t::composite_target_crit( target );
-    if ( p() -> destruction_trinket )
+    if ( p() -> destruction_trinket && affected_by_flamelicked )
       c += td( target ) -> debuffs_flamelicked -> stack_value();
 
     return c;
@@ -3548,6 +3553,9 @@ struct chaos_bolt_t: public warlock_spell_t
 
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
+
+    // In game, chaos bolt is not affected by flamelicked debuff
+    affected_by_flamelicked = ! p -> bugs;
   }
 
   chaos_bolt_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
@@ -3567,6 +3575,9 @@ struct chaos_bolt_t: public warlock_spell_t
     gain = p -> get_gain( "chaos_bolt_fnb" );
     // TODO: Fix with spell data generation and whitelisting the correct spell
     base_costs[ RESOURCE_BURNING_EMBER ] = 2;
+
+    // In game, chaos bolt is not affected by flamelicked debuff
+    affected_by_flamelicked = ! p -> bugs;
   }
 
   void schedule_execute( action_state_t* state )
