@@ -43,7 +43,7 @@ legs=deathrattle_leggings,id=124167
 feet=dessicated_soulrender_slippers,id=124150
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
 finger2=loathful_encrusted_band,id=124192,enchant_id=5326
-trinket1=unblinking_gaze_of_sethe,id=124229
+trinket1=chipped_soul_prism,id=124545
 trinket2=iron_reaver_piston,id=124227
 main_hand=edict_of_argus,id=124382,enchant_id=5384
 save=Warlock_Demonology_T18N.simc

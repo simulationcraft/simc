@@ -6112,33 +6112,36 @@ void warlock_t::apl_demonology()
   {
 
     action_list_str += "/call_action_list,name=db,if=talent.demonbolt.enabled";
+    action_list_str += "/call_action_list,name=meta,if=buff.metamorphosis.up";
 
     get_action_priority_list( "opener" ) -> action_list_str += "hand_of_guldan,if=!in_flight&!dot.shadowflame.ticking";
     get_action_priority_list( "opener" ) -> action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
     get_action_priority_list( "opener" ) -> action_list_str += "/corruption,if=!ticking";
 
-    get_action_priority_list( "db" ) -> action_list_str += "immolation_aura,if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down";
-    get_action_priority_list( "db" ) -> action_list_str += "/doom,cycle_targets=1,if=buff.metamorphosis.up&active_enemies>=6&target.time_to_die>=30*spell_haste&remains-gcd<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
-    //Use KJC to allow casting of Demonbolts
     get_action_priority_list( "db" ) -> action_list_str += "/kiljaedens_cunning,moving=1,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time))";
-    get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&buff.demon_rush.remains<=4&set_bonus.tier18_2pc=1";
-    get_action_priority_list( "db" ) -> action_list_str += "/demonbolt,if=(buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time)))&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)";
-    get_action_priority_list( "db" ) -> action_list_str += "/doom,cycle_targets=1,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
+    get_action_priority_list( "db" ) -> action_list_str += "/call_action_list,name=db_meta,if=buff.metamorphosis.up";
+
+    get_action_priority_list( "db_meta" ) -> action_list_str += "immolation_aura,if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/doom,cycle_targets=1,if=active_enemies>=6&target.time_to_die>=30*spell_haste&remains-gcd<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&buff.demon_rush.remains<=4&set_bonus.tier18_2pc=1";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/demonbolt,if=(buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time)))&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/doom,cycle_targets=1,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/cancel_metamorphosis,if=buff.demonbolt.stack>3&demonic_fury<=600&target.time_to_die>buff.demonbolt.remains&buff.dark_soul.down";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2&demonic_fury>450";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(((buff.dark_soul.remains>execute_time)&demonic_fury>=175)|(target.time_to_die<buff.demonbolt.remains))";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&target.health.pct<=25&(((demonic_fury-80)%800)>(buff.demonbolt.remains%40))&demonic_fury>=750";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/touch_of_chaos,if=(target.time_to_die<buff.demonbolt.remains|(demonic_fury>=750&buff.demonbolt.remains)|buff.dark_soul.up)";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/touch_of_chaos,if=(((demonic_fury-40)%800)>(buff.demonbolt.remains%40))&demonic_fury>=750";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/cancel_metamorphosis";
+
     get_action_priority_list( "db" ) -> action_list_str += "/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down";
-    get_action_priority_list( "db" ) -> action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&demonic_fury<=600&target.time_to_die>buff.demonbolt.remains&buff.dark_soul.down";
-    get_action_priority_list( "db" ) -> action_list_str += "/chaos_wave,if=buff.metamorphosis.up&buff.dark_soul.up&active_enemies>=2&demonic_fury>450";
-    get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(((buff.dark_soul.remains>execute_time)&demonic_fury>=175)|(target.time_to_die<buff.demonbolt.remains))";
-    get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&target.health.pct<=25&(((demonic_fury-80)%800)>(buff.demonbolt.remains%(40*spell_haste)))&demonic_fury>=750";
-    get_action_priority_list( "db" ) -> action_list_str += "/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.remains<17.4&demonic_fury>750";
-    get_action_priority_list( "db" ) -> action_list_str += "/touch_of_chaos,if=buff.metamorphosis.up&(target.time_to_die<buff.demonbolt.remains|(demonic_fury>=750&buff.demonbolt.remains)|buff.dark_soul.up)";
-    get_action_priority_list( "db" ) -> action_list_str += "/touch_of_chaos,if=buff.metamorphosis.up&(((demonic_fury-40)%800)>(buff.demonbolt.remains%(40*spell_haste)))&demonic_fury>=750";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=buff.dark_soul.remains>gcd&(demonic_fury>=470|buff.dark_soul.remains<=action.demonbolt.execute_time*3)&(buff.demonbolt.down|target.time_to_die<buff.demonbolt.remains|(buff.dark_soul.remains>execute_time&demonic_fury>=175))";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=buff.demonbolt.down&demonic_fury>=480&(action.dark_soul.charges=0|!talent.archimondes_darkness.enabled&cooldown.dark_soul.remains)&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=(demonic_fury%80)*2*spell_haste>=target.time_to_die&target.time_to_die<buff.demonbolt.remains";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=target.time_to_die>=30*spell_haste&!dot.doom.ticking&buff.dark_soul.down&time>10";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=demonic_fury>750&buff.demonbolt.remains>=action.metamorphosis.cooldown";
-    get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=(((demonic_fury-120)%800)>(buff.demonbolt.remains%(40*spell_haste)))&buff.demonbolt.remains>=10&dot.doom.remains-gcd<=dot.doom.duration*0.3";
-    get_action_priority_list( "db" ) -> action_list_str += "/cancel_metamorphosis";
+    get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=(((demonic_fury-120)%800)>(buff.demonbolt.remains%40))&buff.demonbolt.remains>=10&dot.doom.remains-gcd<=dot.doom.duration*0.3";
     get_action_priority_list( "db" ) -> action_list_str += "/imp_swarm";
     get_action_priority_list( "db" ) -> action_list_str += "/hellfire,interrupt=1,if=active_enemies>=5";
     get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
@@ -6148,41 +6151,42 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "db" ) -> action_list_str += "/shadow_bolt";
     get_action_priority_list( "db" ) -> action_list_str += "/hellfire,moving=1,interrupt=1";
     get_action_priority_list( "db" ) -> action_list_str += "/life_tap";
-    //Use KJC to allow casting cata
-    action_list_str += "/kiljaedens_cunning,if=!cooldown.cataclysm.remains&buff.metamorphosis.up";
-    action_list_str += "/cataclysm,if=buff.metamorphosis.up";
-    action_list_str += "/immolation_aura,if=demonic_fury>450&active_enemies>=3&buff.immolation_aura.down";
-    action_list_str += "/doom,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.multistrike.react<10";
-    action_list_str += "/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down";
-    if (find_item("draenic_philosophers_stone"))
+
+    get_action_priority_list( "meta" ) -> action_list_str += "/kiljaedens_cunning,if=!cooldown.cataclysm.remains";
+    get_action_priority_list( "meta" ) -> action_list_str += "/cataclysm";
+    get_action_priority_list( "meta" ) -> action_list_str += "/immolation_aura,if=demonic_fury>450&active_enemies>=3&buff.immolation_aura.down";
+    get_action_priority_list( "meta" ) -> action_list_str += "/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.any.react<10";
+    if ( find_item("draenic_philosophers_stone" ) )
     {
-      action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.multistrike.down&trinket.proc.any.down&buff.draenor_philosophers_stone_int.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20";
+      get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis,if=((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.any.down&trinket.proc.any.down&buff.draenor_philosophers_stone_int.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20";
     }
     else
-      action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.multistrike.down&trinket.proc.any.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20";
-    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&action.hand_of_guldan.charges>0&dot.shadowflame.remains<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&((demonic_fury<100&buff.dark_soul.remains>10)|time<15)&!glyph.dark_soul.enabled";
-    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)";
+      get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis,if=((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.any.down&trinket.proc.any.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20";
+    get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges>0&dot.shadowflame.remains<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&((demonic_fury<100&buff.dark_soul.remains>10)|time<15)&!glyph.dark_soul.enabled";
+    get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)";
     if ( find_item( "fragment_of_the_dark_star" ) )
-      action_list_str += "/chaos_wave,if=buff.metamorphosis.up&buff.dark_soul.up&active_enemies>=2";
+      get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2";
     else
-      action_list_str += "/chaos_wave,if=buff.metamorphosis.up&(buff.dark_soul.up&active_enemies>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2))";
-    action_list_str += "/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25)&(((buff.molten_core.stack*execute_time>=trinket.stacking_proc.multistrike.remains-1|demonic_fury<=ceil((trinket.stacking_proc.multistrike.remains-buff.molten_core.stack*execute_time)*40)+80*buff.molten_core.stack)|target.health.pct<=25)&trinket.stacking_proc.multistrike.remains>=execute_time|trinket.stacking_proc.multistrike.down|!trinket.has_stacking_proc.multistrike)";
-    action_list_str += "/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
-    action_list_str += "/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.remains<17.4&demonic_fury>750";
-    action_list_str += "/touch_of_chaos,if=buff.metamorphosis.up";
+      get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2)";
+    get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25)&(((buff.molten_core.stack*execute_time>=trinket.stacking_proc.any.remains-1|demonic_fury<=ceil((trinket.stacking_proc.any.remains-buff.molten_core.stack*execute_time)*40)+80*buff.molten_core.stack)|target.health.pct<=25)&trinket.stacking_proc.any.remains>=execute_time|trinket.stacking_proc.any.down|!trinket.has_stacking_proc.any)";
+    get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
+    get_action_priority_list( "meta" ) -> action_list_str += "/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750";
+    get_action_priority_list( "meta" ) -> action_list_str += "/touch_of_chaos";
+    get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis";
+
+    action_list_str += "/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down";
     if ( find_item( "nithramus_the_allseer" ) )
       action_list_str += "/metamorphosis,if=buff.nithramus.remains>4&demonic_fury>200";
     action_list_str += "/metamorphosis,if=buff.dark_soul.remains>gcd&(time>6|debuff.shadowflame.stack=2)&(demonic_fury>300|!glyph.dark_soul.enabled)&(demonic_fury>=80&buff.molten_core.stack>=1|demonic_fury>=40)";
-    action_list_str += "/metamorphosis,if=(trinket.stacking_proc.multistrike.react|trinket.proc.any.react)&((demonic_fury>450&action.dark_soul.recharge_time>=10&glyph.dark_soul.enabled)|(demonic_fury>650&cooldown.dark_soul.remains>=10))";
+    action_list_str += "/metamorphosis,if=(trinket.stacking_proc.any.react|trinket.proc.any.react)&((demonic_fury>450&action.dark_soul.recharge_time>=10&glyph.dark_soul.enabled)|(demonic_fury>650&cooldown.dark_soul.remains>=10))";
     action_list_str += "/metamorphosis,if=!cooldown.cataclysm.remains&talent.cataclysm.enabled";
     action_list_str += "/metamorphosis,if=!dot.doom.ticking&target.time_to_die>=30%(1%spell_haste)&demonic_fury>300";
     action_list_str += "/metamorphosis,if=(demonic_fury>750&(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target)))|floor(demonic_fury%80)*action.soul_fire.execute_time>=target.time_to_die";
     action_list_str += "/metamorphosis,if=demonic_fury>=950";
-    action_list_str += "/cancel_metamorphosis";
     action_list_str += "/imp_swarm";
     action_list_str += "/hellfire,interrupt=1,if=active_enemies>=5";
     action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
-    action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.molten_core.stack>=7|target.health.pct<=25|(buff.dark_soul.remains&cooldown.metamorphosis.remains>buff.dark_soul.remains)|trinket.proc.any.remains>execute_time|trinket.stacking_proc.multistrike.remains>execute_time)&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>execute_time)";
+    action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.molten_core.stack>=7|target.health.pct<=25|(buff.dark_soul.remains&cooldown.metamorphosis.remains>buff.dark_soul.remains)|trinket.proc.any.remains>execute_time|trinket.stacking_proc.any.remains>execute_time)&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>execute_time)";
     action_list_str += "/soul_fire,if=buff.molten_core.react&target.time_to_die<(time+target.time_to_die)*0.25+cooldown.dark_soul.remains";
     action_list_str += "/life_tap,if=mana.pct<40&buff.dark_soul.down";
     action_list_str += "/hellfire,interrupt=1,if=active_enemies>=4";
