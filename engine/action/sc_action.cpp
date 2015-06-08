@@ -430,6 +430,16 @@ action_t::action_t( action_e       ty,
     background = true;
   }
 
+#ifndef NDEBUG
+  if ( sim -> distance_targeting_enabled )
+  { // Values over 50 may not be an issue, depending on how the spell is setup. 
+    if ( radius > 50 )
+      sim -> out_debug.printf( "%s's radius of %.3f is much larger than should be possible.", name(), radius );
+    if ( range > 50 )
+      sim -> out_debug.printf( "%s's range of %.3f is much larger than should be possible.", name(), radius );
+  }
+#endif
+
   spec_list.clear();
 
   add_option( opt_deprecated( "bloodlust", "if=buff.bloodlust.react" ) );

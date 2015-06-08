@@ -233,26 +233,6 @@ std::string& util::glyph_name( std::string& n )
   return n;
 }
 
-// Approximation of square root ==============================================
-
-double util::approx_sqrt( double number )
-{
-  if ( number > 0.0 )
-  {
-    float xhalf = 0.5f*static_cast<float>(number);
-    union
-    {
-      float x;
-      int i;
-    } u;
-    u.x = static_cast<float>(number);
-    u.i = 0x5f3759df - ( u.i >> 1 );
-    u.x = u.x * ( 1.5f - xhalf * u.x * u.x );
-    return static_cast<double>(u.x*number);
-  }
-  return 0.0;
-}
-
 // str_prefix_ci ============================================================
 
 bool util::str_prefix_ci( const std::string& str,
