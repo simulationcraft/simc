@@ -47,6 +47,7 @@ trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=567
 # Rogue
 Rogue_Assassination_T18M.simc
 Rogue_Combat_T18M.simc
+Rogue_Subtlety_T18M.simc
 
 # Shaman
 Shaman_Elemental_T18M.simc
