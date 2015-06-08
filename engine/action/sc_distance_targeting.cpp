@@ -5,6 +5,11 @@
 
 #include "simulationcraft.hpp"
 
+/* 
+ This file contains all functions that treat targets as if they were on an x,y plane with coordinates other than 0,0.
+ The simulation flag distance_targeting_enabled must be turned on for these to do anything.
+*/
+
   bool action_t::impact_targeting( action_state_t* ) const
   {
     return true;
@@ -20,14 +25,11 @@
           action -> player -> name(), action -> name(), action -> range, action -> radius,
           action -> player -> x_position, action -> player -> y_position, action -> target -> name(), action -> target -> x_position, action -> target -> y_position );
       }
-      if ( action -> time_to_execute > timespan_t::zero() )
+      if ( action -> time_to_execute > timespan_t::zero() && action -> range > 0.0 )
       { // No need to recheck if the execute time was zero.
-        if ( action -> range > 0.0 )
-        {
-          if ( action -> target -> get_player_distance( *action -> player ) > action -> range )
-          { // Target is now out of range, we cannot finish the cast.
-            return false;
-          }
+        if ( action -> target -> get_player_distance( *action -> player ) > action -> range )
+        { // Target is now out of range, we cannot finish the cast.
+          return false;
         }
       }
     }
@@ -182,3 +184,47 @@
 
     return proposed_target;
   }
+
+// action_t::distance_targeting_travel_time ======================================
+
+timespan_t action_t::distance_targeting_travel_time( action_state_t* s ) const
+{
+  return timespan_t::zero();
+}
+
+// Player functions =============================================================
+
+// player_t::get_position_distance ==============================================
+
+double player_t::get_position_distance( double m, double v )
+{
+  double delta_x = this -> x_position - m;
+  double delta_y = this -> y_position - v;
+  double sqrtnum = delta_x * delta_x + delta_y * delta_y;
+  return util::approx_sqrt( sqrtnum );
+}
+
+// player_t::get_player_distance ===============================================
+
+double player_t::get_player_distance( player_t& p )
+{
+  return get_position_distance( p.x_position, p.y_position );
+}
+
+// player_t::get_ground_aoe_distance ===========================================
+
+double player_t::get_ground_aoe_distance( action_state_t& a )
+{
+  return get_position_distance( a.original_x, a.original_y );
+}
+
+// player_t::init_distance_targeting ===========================================
+// Will eventually reorganize everything so that this enables the functionality behind distance_targeting
+
+void player_t::init_distance_targeting()
+{
+  if ( !sim -> distance_targeting_enabled )
+    return;
+
+  x_position = -1 * base.distance;
+}

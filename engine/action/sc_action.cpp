@@ -763,13 +763,6 @@ double action_t::false_negative_pct() const
   return failure_rate;
 }
 
-// action_t::distance_targeting_travel_time ======================================
-
-timespan_t action_t::distance_targeting_travel_time( action_state_t* s ) const
-{
-  return timespan_t::zero();
-}
-
 // action_t::travel_time ====================================================
 
 timespan_t action_t::travel_time() const

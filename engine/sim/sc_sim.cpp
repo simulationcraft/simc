@@ -1894,6 +1894,7 @@ bool sim_t::init_actor( player_t* p )
   p -> init_benefits();
   p -> init_rng();
   p -> init_stats();
+  p -> init_distance_targeting();
 
   return ret;
 }

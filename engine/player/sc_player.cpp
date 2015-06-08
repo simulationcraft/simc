@@ -2432,10 +2432,6 @@ void player_t::create_buffs()
 
   debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
                                     .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
-
-  if ( this -> sim -> distance_targeting_enabled )
-    x_position = -1 * base.distance; // Most profiles set the base distance in init_base_stats, and create_buffs happens later.
-
 }
 
 // player_t::find_item ======================================================
@@ -5582,30 +5578,6 @@ uptime_t* player_t::get_uptime( const std::string& name )
   }
 
   return u;
-}
-
-// player_t::get_position_distance ==========================================
-
-double player_t::get_position_distance( double m, double v )
-{
-  double delta_x = this -> x_position - m;
-  double delta_y = this -> y_position - v;
-  double sqrtnum = delta_x * delta_x + delta_y * delta_y;
-  return util::approx_sqrt( sqrtnum );
-}
-
-// player_t::get_player_distance ============================================
-
-double player_t::get_player_distance( player_t& p )
-{
-  return get_position_distance( p.x_position, p.y_position );
-}
-
-// player_t::get_ground_aoe_distance ========================================
-
-double player_t::get_ground_aoe_distance( action_state_t& a )
-{
-  return get_position_distance( a.original_x, a.original_y );
 }
 
 // player_t::get_action_priority_list( const std::string& name ) ============
