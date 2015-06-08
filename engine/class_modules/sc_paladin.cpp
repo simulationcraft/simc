@@ -1787,11 +1787,10 @@ struct stay_of_execution_t : public paladin_heal_t
 {
   std::array<double, 11> soe_tick_multiplier;
 
-  stay_of_execution_t( paladin_t* p, const std::string& options_str )
+  stay_of_execution_t( paladin_t* p )
     : paladin_heal_t( "stay_of_execution", p, p -> find_talent_spell( "Execution Sentence" ) ),
       soe_tick_multiplier()
   {
-    parse_options( options_str );
     hasted_ticks   = false;
     travel_speed   = 0;
     tick_may_crit  = 1;
@@ -1878,7 +1877,7 @@ struct execution_sentence_t : public paladin_spell_t
       tick_multiplier[ 10 ] *= 5;
     }
 
-    stay_of_execution = new stay_of_execution_t( p, options_str );
+    stay_of_execution = new stay_of_execution_t( p );
     add_child( stay_of_execution );
 
     // disable if not talented
