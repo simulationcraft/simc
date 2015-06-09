@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20104)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -4024,7 +4024,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=149405)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=12) | SP Coefficient: 0.54000
+                   Base Value: 1 | Scaled Value: 0 (avg=12) | SP Coefficient: 0.43200
 Description      : $@spelldesc121135
 
 Name             : Shadow Passive (Passive) (id=121196) [Spell Family (6), Passive, Hidden] 
