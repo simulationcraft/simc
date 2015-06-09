@@ -187,7 +187,7 @@
 
 // action_t::distance_targeting_travel_time ======================================
 
-timespan_t action_t::distance_targeting_travel_time( action_state_t* s ) const
+timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) const
 {
   return timespan_t::zero();
 }
