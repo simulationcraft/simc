@@ -3332,17 +3332,24 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
       switch ( p() -> active_seal )
       {
       case SEAL_OF_JUSTICE:
+        p() -> active_seal_of_justice_proc       -> target = target;
         p() -> active_seal_of_justice_proc       -> execute();
         break;
       case SEAL_OF_INSIGHT:
         p() -> active_seal_of_insight_proc       -> execute();
         break;
       case SEAL_OF_RIGHTEOUSNESS:
+        p() -> active_seal_of_righteousness_proc -> target = target;
         p() -> active_seal_of_righteousness_proc -> execute();
         break;
       case SEAL_OF_TRUTH:
+        p() -> active_censure                    -> target = target;
         p() -> active_censure                    -> execute();
-        if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+        if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 )
+        {
+          p() -> active_seal_of_truth_proc       -> target = target;
+          p() -> active_seal_of_truth_proc       -> execute();
+        }
         break;
       default: break;
       }
