@@ -972,20 +972,23 @@ struct immolation_t: public warlock_pet_spell_t
     warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
   {
     parse_options( options_str );
-    dynamic_tick_action = true;
+
+    may_crit = false;
+    dynamic_tick_action = hasted_ticks = true;
     tick_action = new immolation_tick_t( p, data() );
+  }
+
+  void init()
+  {
+    warlock_pet_spell_t::init();
+
+    // Explicitly snapshot haste, as the spell actually has no duration in spell data
+    snapshot_flags |= STATE_HASTE;
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const
   {
     return player -> sim -> expected_iteration_time * 2;
-  }
-
-  void tick( dot_t* d )
-  {
-    d -> current_tick = 0; // ticks indefinitely
-
-    warlock_pet_spell_t::tick( d );
   }
 
   virtual void cancel()
