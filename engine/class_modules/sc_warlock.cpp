@@ -972,9 +972,6 @@ struct immolation_t: public warlock_pet_spell_t
     warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
   {
     parse_options( options_str );
-
-    hasted_ticks = false;
-
     dynamic_tick_action = true;
     tick_action = new immolation_tick_t( p, data() );
   }
@@ -984,7 +981,7 @@ struct immolation_t: public warlock_pet_spell_t
     return player -> sim -> expected_iteration_time * 2;
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
     d -> current_tick = 0; // ticks indefinitely
 
