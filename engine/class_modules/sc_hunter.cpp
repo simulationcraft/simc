@@ -618,6 +618,12 @@ public:
 
     trigger_tier16_bm_4pc_brutal_kinship( p() );
   }
+
+  virtual void try_steady_focus()
+  {
+    if ( p() -> talents.steady_focus -> ok() )
+      p() -> buffs.pre_steady_focus -> expire();
+  }
 };
 
 // SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load.
@@ -1849,11 +1855,16 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     return t;
   }
 
-  virtual void try_steady_focus()
+  void trigger_go_for_the_throat()
   {
-    // Most ranged attacks reset the counter for two steady/cobra shots in a row
-    if ( p() -> talents.steady_focus -> ok() )
-      p() -> buffs.pre_steady_focus -> expire();
+    if ( !p() -> specs.go_for_the_throat -> ok() )
+      return;
+
+    if ( !p() -> active.pet )
+      return;
+
+    int gain = p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+    p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.go_for_the_throat );
   }
 
   virtual void trigger_steady_focus( bool require_pre )
@@ -1872,18 +1883,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
     p() -> buffs.steady_focus -> trigger( 1, regen_buff );
     p() -> buffs.pre_steady_focus -> expire();
-  }
-
-  void trigger_go_for_the_throat()
-  {
-    if ( !p() -> specs.go_for_the_throat -> ok() )
-      return;
-
-    if ( !p() -> active.pet )
-      return;
-
-    int gain = p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
-    p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.go_for_the_throat );
   }
 
   void trigger_tier15_2pc_melee()
@@ -3054,6 +3053,13 @@ public:
 
     // Hunter gcd unaffected by haste
     return trigger_gcd;
+  }
+
+  virtual void execute() override
+  {
+    hunter_action_t::execute();
+    
+    try_steady_focus();
   }
 };
 
