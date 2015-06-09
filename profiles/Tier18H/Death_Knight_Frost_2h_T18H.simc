@@ -35,7 +35,6 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.potion.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=finger1
 actions+=/plague_leech,if=disease.min_remains<1
 actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
@@ -136,20 +135,20 @@ hands=gauntlets_of_derision,id=124326,bonus_id=566
 waist=girdle_of_demonic_wrath,id=124350,bonus_id=566
 legs=demongaze_legplates,id=124338,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
 finger2=flanged_gasket,id=124196,bonus_id=566,enchant=gift_of_haste
 trinket1=reapers_harvest,id=124513,bonus_id=566
 trinket2=rumbling_pebble,id=124235,bonus_id=566
 main_hand=maul_of_tyranny,id=124375,bonus_id=566,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=713.00
-# gear_strength=3969
-# gear_stamina=5328
-# gear_crit_rating=370
+# gear_ilvl=711.67
+# gear_strength=3926
+# gear_stamina=5264
+# gear_crit_rating=340
 # gear_haste_rating=2166
 # gear_mastery_rating=1473
-# gear_multistrike_rating=1730
+# gear_multistrike_rating=1705
 # gear_versatility_rating=88
 # gear_armor=2376
 # set_bonus=tier18_2pc=1

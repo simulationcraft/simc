@@ -16,7 +16,7 @@ hands=gauntlets_of_iron_wrath,id=124329,bonus_id=566
 waist=annihilans_waistplate,id=124349,bonus_id=566
 legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_mastery
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_mastery
 trinket1=anzus_cursed_plume,id=124241,bonus_id=566
 trinket2=rumbling_pebble,id=124235,bonus_id=566
@@ -41,7 +41,7 @@ hands=gauntlets_of_iron_wrath,id=124329,bonus_id=566
 waist=annihilans_waistplate,id=124349,bonus_id=566
 legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_critical_strike
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=rumbling_pebble,id=124235,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566
@@ -66,7 +66,7 @@ hands=gauntlets_of_iron_wrath,id=124329,bonus_id=566
 waist=annihilans_waistplate,id=124349,bonus_id=566
 legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_critical_strike
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=rumbling_pebble,id=124235,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566
@@ -92,7 +92,7 @@ hands=gauntlets_of_iron_wrath,id=124329,bonus_id=566
 waist=annihilans_waistplate,id=124349,bonus_id=566
 legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_critical_strike
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=rumbling_pebble,id=124235,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566

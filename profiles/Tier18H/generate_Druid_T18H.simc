@@ -15,7 +15,7 @@ hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=oppressors_merciless_treads,id=124251,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant=50haste
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50haste
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=50haste
 trinket1=iron_reaver_piston,id=124227,bonus_id=566
 trinket2=chipped_soul_prism,id=124545,bonus_id=566
@@ -41,7 +41,7 @@ hands=oathclaw_gauntlets,id=124255,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=spiked_irontoe_slippers,id=124249,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=5324
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
 trinket1=felspring_coil,id=124223,bonus_id=567
 trinket2=soul_capacitor,id=124225,bonus_id=567

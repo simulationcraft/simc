@@ -28,7 +28,6 @@ actions.precombat+=/focusing_shot
 # Executed every time the actor is available.
 
 actions=auto_shot
-actions+=/use_item,name=maalus_the_blood_drinker
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
@@ -74,21 +73,21 @@ hands=eredar_felchain_gloves,id=124291,bonus_id=566
 waist=girdle_of_the_legion_general,id=124310,bonus_id=566
 legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=5324
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
 trinket1=talisman_of_the_master_tracker,id=124515,bonus_id=566
 trinket2=felspring_coil,id=124223,bonus_id=566
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5276
 
 # Gear Summary
-# gear_ilvl=715.00
-# gear_agility=4028
-# gear_stamina=5418
-# gear_crit_rating=2491
+# gear_ilvl=713.67
+# gear_agility=3985
+# gear_stamina=5354
+# gear_crit_rating=2461
 # gear_haste_rating=311
 # gear_mastery_rating=1157
 # gear_multistrike_rating=1795
-# gear_versatility_rating=154
+# gear_versatility_rating=128
 # gear_armor=1582
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

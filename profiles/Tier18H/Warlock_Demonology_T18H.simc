@@ -29,7 +29,7 @@ actions.precombat+=/soul_fire
 
 actions=summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<9
 actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=9
-actions+=/potion,name=draenic_intellect,if=buff.bloodlust.remains>30|buff.nithramus.remains>4|(((buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active))
+actions+=/potion,name=draenic_intellect,if=buff.bloodlust.remains>30|(((buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active))
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
@@ -40,16 +40,14 @@ actions+=/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains
 actions+=/call_action_list,name=opener,if=time<7&talent.demonic_servitude.enabled
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
 actions+=/dark_soul,if=talent.demonbolt.enabled&((time<=20&!buff.demonbolt.remains&demonic_fury>=360)|target.time_to_die<buff.demonbolt.remains|(!buff.demonbolt.remains&demonic_fury>=790))
-actions+=/dark_soul,if=!talent.demonbolt.enabled&((charges=2&(time>6|(debuff.shadowflame.stack=1&action.hand_of_guldan.in_flight)))|!talent.archimondes_darkness.enabled|(target.time_to_die<=20&!glyph.dark_soul.enabled)|target.time_to_die<=10|(target.time_to_die<=60&demonic_fury>400)|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(demonic_fury>600|(glyph.dark_soul.enabled&demonic_fury>450))))|buff.nithramus.remains>4
-actions+=/imp_swarm,if=!talent.demonbolt.enabled&(buff.dark_soul.up|buff.nithramus.remains>4|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3
-actions+=/use_item,name=nithramus_the_allseer,if=buff.dark_soul.remains
+actions+=/dark_soul,if=!talent.demonbolt.enabled&((charges=2&(time>6|(debuff.shadowflame.stack=1&action.hand_of_guldan.in_flight)))|!talent.archimondes_darkness.enabled|(target.time_to_die<=20&!glyph.dark_soul.enabled)|target.time_to_die<=10|(target.time_to_die<=60&demonic_fury>400)|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(demonic_fury>600|(glyph.dark_soul.enabled&demonic_fury>450))))
+actions+=/imp_swarm,if=!talent.demonbolt.enabled&(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&((cooldown.cataclysm.remains>dot.shadowflame.duration)|!talent.cataclysm.enabled))|dot.shadowflame.remains>travel_time)
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1
 actions+=/call_action_list,name=db,if=talent.demonbolt.enabled
 actions+=/call_action_list,name=meta,if=buff.metamorphosis.up
 actions+=/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
-actions+=/metamorphosis,if=buff.nithramus.remains>4&demonic_fury>200
 actions+=/metamorphosis,if=buff.dark_soul.remains>gcd&(time>6|debuff.shadowflame.stack=2)&(demonic_fury>300|!glyph.dark_soul.enabled)&(demonic_fury>=80&buff.molten_core.stack>=1|demonic_fury>=40)
 actions+=/metamorphosis,if=(trinket.stacking_proc.any.react|trinket.proc.any.react)&((demonic_fury>450&action.dark_soul.recharge_time>=10&glyph.dark_soul.enabled)|(demonic_fury>650&cooldown.dark_soul.remains>=10))
 actions+=/metamorphosis,if=!cooldown.cataclysm.remains&talent.cataclysm.enabled
@@ -128,22 +126,22 @@ hands=deathrattle_gloves,id=124156,bonus_id=566
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
 legs=deathrattle_leggings,id=124167,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant_id=5326
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant_id=5326
 trinket1=chipped_soul_prism,id=124545,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=714.33
-# gear_stamina=5444
-# gear_intellect=4241
+# gear_ilvl=713.00
+# gear_stamina=5380
+# gear_intellect=4198
 # gear_spell_power=2214
 # gear_crit_rating=1465
 # gear_haste_rating=1500
-# gear_mastery_rating=2607
+# gear_mastery_rating=2575
 # gear_multistrike_rating=1001
-# gear_versatility_rating=326
+# gear_versatility_rating=304
 # gear_armor=991
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

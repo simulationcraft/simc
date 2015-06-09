@@ -33,7 +33,6 @@ actions.precombat+=/honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|(buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)|((buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&target.time_to_die<136)
 actions+=/kick
-actions+=/use_item,slot=finger1,if=buff.shadow_dance.up
 actions+=/shadow_reflection,if=buff.shadow_dance.up
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
@@ -93,7 +92,7 @@ hands=felblade_gloves,id=124257,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=felblade_leggings,id=124269,bonus_id=566
 feet=toxicologists_treated_boots,id=124250,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=gift_of_multistrike
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=gift_of_multistrike
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_multistrike
 trinket1=soul_capacitor,id=124225,bonus_id=566
 trinket2=felspring_coil,id=124223,bonus_id=566
@@ -101,14 +100,14 @@ main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant=mark_of_the_frostwolf
 off_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=713.75
-# gear_agility=4382
-# gear_stamina=5297
-# gear_crit_rating=1258
+# gear_ilvl=712.50
+# gear_agility=4339
+# gear_stamina=5233
+# gear_crit_rating=1228
 # gear_haste_rating=541
 # gear_mastery_rating=1796
 # gear_multistrike_rating=1864
-# gear_versatility_rating=292
+# gear_versatility_rating=266
 # gear_armor=1254
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

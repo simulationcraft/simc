@@ -30,7 +30,6 @@ actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
 actions+=/blood_fury,if=buff.celestial_alignment.up
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up
-actions+=/use_item,slot=finger1
 actions+=/force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
 actions+=/call_action_list,name=single_target,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
@@ -71,22 +70,22 @@ hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=oppressors_merciless_treads,id=124251,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant=50haste
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50haste
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=50haste
 trinket1=iron_reaver_piston,id=124227,bonus_id=566
 trinket2=chipped_soul_prism,id=124545,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=714.67
-# gear_stamina=5450
-# gear_intellect=4245
+# gear_ilvl=713.33
+# gear_stamina=5386
+# gear_intellect=4202
 # gear_spell_power=2214
 # gear_crit_rating=1209
 # gear_haste_rating=2156
-# gear_mastery_rating=2217
+# gear_mastery_rating=2185
 # gear_multistrike_rating=997
-# gear_versatility_rating=326
+# gear_versatility_rating=304
 # gear_armor=1266
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

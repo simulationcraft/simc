@@ -17,7 +17,7 @@ hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=felblade_leggings,id=124269,bonus_id=566
 feet=toxicologists_treated_boots,id=124250,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=5326
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
 finger2=pitextracted_stone_signet,id=124187,bonus_id=566,enchant_id=5326
 trinket1=bleeding_hollow_toxin_vessel,id=124520,bonus_id=566
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
@@ -44,7 +44,7 @@ hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=felblade_leggings,id=124269,bonus_id=566
 feet=oppressors_merciless_treads,id=124251,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=5325
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5325
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5325
 trinket1=soul_capacitor,id=124225,bonus_id=566
 trinket2=malicious_censer,id=124226,bonus_id=566
@@ -71,7 +71,7 @@ hands=felblade_gloves,id=124257,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=felblade_leggings,id=124269,bonus_id=566
 feet=toxicologists_treated_boots,id=124250,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=gift_of_multistrike
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=gift_of_multistrike
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_multistrike
 trinket1=soul_capacitor,id=124225,bonus_id=566
 trinket2=felspring_coil,id=124223,bonus_id=566

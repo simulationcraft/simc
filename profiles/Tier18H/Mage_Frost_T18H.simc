@@ -67,7 +67,6 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=draenic_intellect,if=buff.bloodlust.up|buff.icy_veins.up
-actions.cooldowns+=/use_item,slot=finger2
 
 # Water Jet initialization
 actions.init_water_jet=frost_bomb,if=remains<4*spell_haste*(1+set_bonus.tier18_4pc)+cast_time
@@ -126,21 +125,21 @@ waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
 legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
 finger1=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_multistrike
-finger2=nithramus_the_allseer,id=124635,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=566
 trinket2=prophecy_of_fear,id=124230,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=714.33
-# gear_stamina=5408
-# gear_intellect=4498
+# gear_ilvl=713.00
+# gear_stamina=5344
+# gear_intellect=4455
 # gear_spell_power=2214
 # gear_crit_rating=568
 # gear_haste_rating=1376
-# gear_mastery_rating=1193
+# gear_mastery_rating=1161
 # gear_multistrike_rating=1662
-# gear_versatility_rating=259
+# gear_versatility_rating=237
 # gear_armor=988
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

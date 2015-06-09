@@ -28,7 +28,7 @@ hands=pious_handwraps,id=124155,bonus_id=566
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
 legs=pious_leggings,id=124166,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant=gift_of_mastery
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_mastery
 trinket1=repudiation_of_war,id=124519,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566
@@ -49,7 +49,7 @@ hands=pious_handwraps,id=124155,bonus_id=566
 waist=sludgesoaked_waistband,id=124180,bonus_id=566
 legs=leggings_of_the_iron_summoner,id=124164,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_haste
 trinket1=repudiation_of_war,id=124519,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566
@@ -70,7 +70,7 @@ hands=pious_handwraps,id=124155,bonus_id=566
 waist=cord_of_unhinged_malice,id=124182,bonus_id=566
 legs=leggings_of_the_iron_summoner,id=124164,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant=gift_of_critical_strike
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=repudiation_of_war,id=124519,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566

@@ -34,7 +34,6 @@ actions+=/auto_attack
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/avatar
 actions+=/bloodbath
-actions+=/use_item,name=thorasus_the_stone_heart_of_draenor,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/arcane_torrent,if=rage<rage.max-40
@@ -86,7 +85,7 @@ hands=gauntlets_of_iron_wrath,id=124329,bonus_id=566
 waist=annihilans_waistplate,id=124349,bonus_id=566
 legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_mastery
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_mastery
 trinket1=anzus_cursed_plume,id=124241,bonus_id=566
 trinket2=rumbling_pebble,id=124235,bonus_id=566
@@ -94,13 +93,13 @@ main_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant_id=5330
 off_hand=fallen_defender_of_argus,id=124355,bonus_id=566
 
 # Gear Summary
-# gear_ilvl=714.69
-# gear_strength=4037
-# gear_stamina=5433
-# gear_crit_rating=1827
+# gear_ilvl=713.44
+# gear_strength=3994
+# gear_stamina=5369
+# gear_crit_rating=1797
 # gear_haste_rating=683
 # gear_mastery_rating=2051
-# gear_multistrike_rating=1358
+# gear_multistrike_rating=1333
 # gear_armor=3195
 # gear_bonus_armor=436
 # set_bonus=tier18_2pc=1

@@ -18,7 +18,7 @@ hands=deathrattle_gloves,id=124156,bonus_id=566
 waist=sash_of_unending_anguish,id=124181,bonus_id=566
 legs=deathrattle_leggings,id=124167,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant_id=5325
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5325
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant_id=5325
 trinket1=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566
@@ -41,7 +41,7 @@ hands=deathrattle_gloves,id=124156,bonus_id=566
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
 legs=deathrattle_leggings,id=124167,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant_id=5326
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant_id=5326
 trinket1=chipped_soul_prism,id=124545,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566
@@ -68,7 +68,7 @@ hands=deathrattle_gloves,id=124156,bonus_id=566
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
 legs=deathrattle_leggings,id=124167,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant=50crit
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=50crit
 trinket1=iron_reaver_piston,id=124227,bonus_id=566
 trinket2=chipped_soul_prism,id=124545,bonus_id=566

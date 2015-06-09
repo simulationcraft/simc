@@ -35,7 +35,6 @@ actions+=/auto_attack
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/berserker_rage,if=buff.enrage.down|(prev_gcd.bloodthirst&buff.raging_blow.stack<2)
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-actions+=/use_item,name=thorasus_the_stone_heart_of_draenor,if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25)
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=30
 # Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon.
 actions+=/run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5
@@ -135,7 +134,7 @@ hands=gauntlets_of_iron_wrath,id=124329,bonus_id=566
 waist=annihilans_waistplate,id=124349,bonus_id=566
 legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_critical_strike
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=rumbling_pebble,id=124235,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566
@@ -143,13 +142,13 @@ main_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=mark_of_the_thunde
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=715.63
-# gear_strength=3997
-# gear_stamina=5373
-# gear_crit_rating=2082
+# gear_ilvl=714.38
+# gear_strength=3954
+# gear_stamina=5309
+# gear_crit_rating=2052
 # gear_haste_rating=874
 # gear_mastery_rating=1617
-# gear_multistrike_rating=1293
+# gear_multistrike_rating=1268
 # gear_armor=2391
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

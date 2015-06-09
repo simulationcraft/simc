@@ -27,9 +27,7 @@ actions.precombat+=/vampiric_touch
 # Executed every time the actor is available.
 
 actions=shadowform,if=!buff.shadowform.up
-actions+=/use_item,slot=finger1
 actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40
-actions+=/use_item,name=nithramus_the_allseer
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/silence,if=target.debuff.casting.react
 actions+=/blood_fury
@@ -299,7 +297,7 @@ hands=pious_handwraps,id=124155,bonus_id=566
 waist=sludgesoaked_waistband,id=124180,bonus_id=566
 legs=leggings_of_the_iron_summoner,id=124164,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
-finger1=nithramus_the_allseer,id=124635,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_haste
 trinket1=repudiation_of_war,id=124519,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566
@@ -307,15 +305,15 @@ main_hand=gavel_of_the_eredar,id=124372,bonus_id=566,enchant=mark_of_warsong
 off_hand=gibbering_madness,id=124205,bonus_id=566
 
 # Gear Summary
-# gear_ilvl=712.81
-# gear_stamina=5298
-# gear_intellect=3948
+# gear_ilvl=711.56
+# gear_stamina=5234
+# gear_intellect=3905
 # gear_spell_power=2214
 # gear_crit_rating=1310
 # gear_haste_rating=2826
-# gear_mastery_rating=516
+# gear_mastery_rating=484
 # gear_multistrike_rating=931
-# gear_versatility_rating=205
+# gear_versatility_rating=183
 # gear_armor=976
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

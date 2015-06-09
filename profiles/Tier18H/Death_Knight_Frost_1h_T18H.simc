@@ -35,7 +35,6 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.potion.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=finger1
 actions+=/plague_leech,if=disease.min_remains<1
 actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
@@ -136,7 +135,7 @@ hands=gauntlets_of_derision,id=124326,bonus_id=566
 waist=girdle_of_demonic_wrath,id=124350,bonus_id=566
 legs=demongaze_legplates,id=124338,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
 finger2=congealed_globule_loop,id=124197,bonus_id=566,enchant=gift_of_haste
 trinket1=unending_hunger,id=124236,bonus_id=566
 trinket2=rumbling_pebble,id=124235,bonus_id=566
@@ -144,13 +143,13 @@ main_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=rune_of_the_fallen
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_ilvl=713.13
-# gear_strength=3934
-# gear_stamina=5277
-# gear_crit_rating=1397
+# gear_ilvl=711.88
+# gear_strength=3891
+# gear_stamina=5213
+# gear_crit_rating=1367
 # gear_haste_rating=1515
 # gear_mastery_rating=1462
-# gear_multistrike_rating=2276
+# gear_multistrike_rating=2251
 # gear_armor=2376
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
