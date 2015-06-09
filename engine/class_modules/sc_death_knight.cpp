@@ -5376,7 +5376,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
       const spellpower_data_t& power = data().powerN( idx );
       if ( power.aura_id() == 0 || p -> dbc.spec_by_spell( power.aura_id() ) == p -> specialization() )
       {
-        base_costs[ power.resource() ] = power.cost_per_second();
+        base_costs_per_second[ power.resource() ] = power.cost_per_second();
       }
     }
   }
