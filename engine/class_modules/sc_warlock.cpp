@@ -962,7 +962,8 @@ struct immolation_tick_t: public warlock_pet_spell_t
   {
     aoe = -1;
     background = true;
-    may_crit = false;
+    may_crit = true;
+    may_multistrike = true;
   }
 };
 
@@ -973,7 +974,6 @@ struct immolation_t: public warlock_pet_spell_t
   {
     parse_options( options_str );
 
-    may_crit = false;
     dynamic_tick_action = hasted_ticks = true;
     tick_action = new immolation_tick_t( p, data() );
   }
