@@ -5762,7 +5762,7 @@ struct molten_core_t : public buff_t
     {
       //Which pet will we spawn?
       double pet = rng().range( 0.0, 1.0 );
-      if ( pet >= 0.50 ) // 50% chance to spawn hellhound
+      if ( pet >= 0.55 ) // 45% chance to spawn hellhound
       {
         for ( size_t i = 0; i < p -> pets.t18_vicious_hellhound.size(); i++ )
         {
