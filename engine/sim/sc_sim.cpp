@@ -1092,6 +1092,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   apikey( "" ),
   ilevel_raid_report( false ),
   distance_targeting_enabled( false ),
+  enable_leech( false ),
   scaling_normalized( 1.0 ),
   report_information(),
   // Multi-Threading
@@ -2955,6 +2956,7 @@ void sim_t::create_options()
   add_option( opt_string( "apikey", apikey ) );
   add_option( opt_bool( "ilevel_raid_report", ilevel_raid_report ) );
   add_option( opt_bool( "distance_targeting_enabled", distance_targeting_enabled ) );
+  add_option( opt_bool( "enable_leech", enable_leech ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );

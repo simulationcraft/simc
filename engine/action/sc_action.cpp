@@ -1611,16 +1611,19 @@ void action_t::assess_damage( dmg_e    type,
       }
     }
 
-    // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
-    // break in the future if we ever decide to not separate heal and damage assessing.
-    double leech_pct = 0;
-    if ( ( s -> result_type == DMG_DIRECT || s -> result_type == DMG_OVER_TIME ) &&
-         s -> result_amount > 0 &&
-         ( leech_pct = composite_leech( s ) ) > 0 )
+    if ( player -> spell.leech )
     {
-      double leech_amount = leech_pct * s -> result_amount;
-      player -> spell.leech -> base_dd_min = player -> spell.leech -> base_dd_max = leech_amount;
-      player -> spell.leech -> schedule_execute();
+      // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
+      // break in the future if we ever decide to not separate heal and damage assessing.
+      double leech_pct = 0;
+      if ( ( s -> result_type == DMG_DIRECT || s -> result_type == DMG_OVER_TIME ) &&
+        s -> result_amount > 0 &&
+        ( leech_pct = composite_leech( s ) ) > 0 )
+      {
+        double leech_amount = leech_pct * s -> result_amount;
+        player -> spell.leech -> base_dd_min = player -> spell.leech -> base_dd_max = leech_amount;
+        player -> spell.leech -> schedule_execute();
+      }
     }
   }
   else if ( s -> result_amount > 0 && player -> buffs.spirit_shift -> check() )
