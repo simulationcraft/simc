@@ -2902,20 +2902,24 @@ struct drain_life_t: public warlock_spell_t
     heal = new drain_life_heal_t( p );
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
-    warlock_spell_t::tick( d );
+    spell_t::tick( d );
 
     heal -> execute();
 
-    if ( d -> current_tick != d -> num_ticks )
-    {
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY && !p() -> buffs.metamorphosis -> check() )
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
+
+    trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
+
+    if ( d -> current_tick != d -> num_ticks && p() -> buffs.metamorphosis -> check() )
       consume_tick_resource( d );
-    }
   }
-  virtual double action_multiplier() const
+
+  double composite_target_multiplier( player_t* target ) const
   {
-    double am = warlock_spell_t::action_multiplier();
+    double am = warlock_spell_t::composite_target_multiplier( target );
 
     if ( p() -> talents.harvest_life -> ok() )
       am *= 1.0 + p() -> talents.harvest_life -> effectN( 1 ).percent();
