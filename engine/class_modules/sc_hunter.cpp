@@ -1441,6 +1441,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
     background = true;
     proc = true;
     school = SCHOOL_PHYSICAL;
+    range = 25;
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
@@ -2173,11 +2174,16 @@ struct glaive_toss_strike_t: public ranged_attack_t
 
   bool impact_targeting( action_state_t* s ) const
   {
-    if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
-      ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
-      return true;
+    if ( player -> sim -> distance_targeting_enabled )
+    {
+      if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <=
+        ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
+        return true;
+      else
+        return false;
+    }
 
-    return false;
+    return true;
   }
 
   double composite_target_multiplier( player_t* target ) const
@@ -2207,11 +2213,16 @@ struct glaive_rebound_t: public ranged_attack_t
 
   bool impact_targeting( action_state_t* s ) const
   {
-    if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
-      ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
-      return true;
+    if ( player -> sim -> distance_targeting_enabled )
+    {
+      if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <=
+        ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
+        return true;
+      else
+        return false;
+    }
 
-    return false;
+    return true;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
@@ -3457,7 +3468,6 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t( "kill_command", player, player -> specs.kill_command )
   {
     parse_options( options_str );
-
     harmful = false;
   }
 
@@ -3487,7 +3497,10 @@ struct kill_command_t: public hunter_spell_t
 
   virtual bool ready()
   {
-    return p() -> active.pet && hunter_spell_t::ready();
+    if ( p() -> active.pet && p() -> active.pet -> active.kill_command -> ready() ) // Range check from the pet.
+      return hunter_spell_t::ready();
+
+    return false;
   }
 
   bool trigger_tier17_2pc_bm()

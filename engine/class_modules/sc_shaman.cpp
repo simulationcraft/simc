@@ -4155,6 +4155,8 @@ struct liquid_magma_t: public shaman_spell_t
       shaman_spell_t( "liquid_magma_aoe", player, player -> find_spell( 177601 ) )
     {
       background = true;
+      range = 0;
+      radius = 40; // in tooltip
       aoe = -1;
     }
   };

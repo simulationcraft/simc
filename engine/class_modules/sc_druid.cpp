@@ -5564,6 +5564,7 @@ struct starfall_t : public druid_spell_t
       direct_tick = true;
       aoe = -1;
       range = 40;
+      radius = 0;
     }
   };
 
