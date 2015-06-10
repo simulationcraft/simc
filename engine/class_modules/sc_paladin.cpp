@@ -3426,14 +3426,20 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     parse_options( options_str );
   }
 
-  virtual void execute()
+  void execute()
   {
     p() -> main_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready()
+  bool ready()
   {
-    if ( p() -> is_moving() ) return false;
+    if ( p() -> is_moving() ) 
+      return false;
+
+    player_t* potential_target = select_target_if_target();
+    if ( potential_target && potential_target != p() -> main_hand_attack -> target )
+      p() -> main_hand_attack -> target = potential_target;
+
     return( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
