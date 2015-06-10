@@ -3440,7 +3440,6 @@ struct soul_fire_t: public warlock_spell_t
 
   virtual void execute()
   {
-    p() -> buffs.tier18_2pc_demonology -> trigger();
     if ( meta_spell && p() -> buffs.metamorphosis -> check() )
     {
       meta_spell -> time_to_execute = time_to_execute;
@@ -3467,6 +3466,8 @@ struct soul_fire_t: public warlock_spell_t
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
+
+    p() -> buffs.tier18_2pc_demonology -> trigger();
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
