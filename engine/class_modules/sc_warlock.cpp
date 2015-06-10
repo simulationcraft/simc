@@ -2172,32 +2172,16 @@ public:
     }
   }
 
-  void consume_tick_resource( dot_t* d )
+  bool consume_cost_per_second( timespan_t tick_time )
   {
+    bool consume = spell_t::consume_cost_per_second( tick_time );
+
     resource_e r = current_resource();
 
-    player -> resource_loss( r, resource_consumed, 0, this );
+    if ( p() -> resources.current[r] < resource_consumed && r == RESOURCE_DEMONIC_FURY && p() -> buffs.metamorphosis -> check() )
+      p() -> spells.metamorphosis -> cancel();
 
-    if ( sim -> log )
-      sim -> out_log.printf( "%s consumes %.1f %s for %s tick (%.0f)", player -> name(),
-      resource_consumed, util::resource_type_string( r ),
-      name(), player -> resources.current[r] );
-
-    stats -> consume_resource( r, resource_consumed );
-
-    if ( player -> resources.current[r] < resource_consumed )
-    {
-      if ( r == RESOURCE_DEMONIC_FURY && p() -> buffs.metamorphosis -> check() )
-        p() -> spells.metamorphosis -> cancel();
-      else
-      {
-        if ( sim -> debug )
-        {
-          sim -> out_debug.printf( "%s out of resource", player -> name() );
-        }
-        d -> current_action -> cancel();
-      }
-    }
+    return consume;
   }
 
   // ds_tick is set, and we will record the damage as "direct", even if it is
@@ -2902,6 +2886,21 @@ struct drain_life_t: public warlock_spell_t
     heal = new drain_life_heal_t( p );
   }
 
+  void consume_resource()
+  {
+    if ( !p() -> buffs.metamorphosis -> check() )
+      return;
+    warlock_spell_t::consume_resource();
+  }
+
+  bool consume_cost_per_second( timespan_t tick_time )
+  {
+    if ( !p() -> buffs.metamorphosis -> check() )
+      return false;
+
+    return warlock_spell_t::consume_cost_per_second( tick_time );
+  }
+
   void tick( dot_t* d )
   {
     spell_t::tick( d );
@@ -2912,14 +2911,11 @@ struct drain_life_t: public warlock_spell_t
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
-
-    if ( d -> current_tick != d -> num_ticks && p() -> buffs.metamorphosis -> check() )
-      consume_tick_resource( d );
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  virtual double action_multiplier() const
   {
-    double am = warlock_spell_t::composite_target_multiplier( target );
+    double am = warlock_spell_t::action_multiplier();
 
     if ( p() -> talents.harvest_life -> ok() )
       am *= 1.0 + p() -> talents.harvest_life -> effectN( 1 ).percent();
@@ -4367,14 +4363,11 @@ struct rain_of_fire_t: public warlock_spell_t
     tick_action = new rain_of_fire_tick_t( p, data() );
   }
 
-  virtual void tick( dot_t* d )
+  bool consume_cost_per_second( timespan_t tick_time )
   {
-    warlock_spell_t::tick( d );
-
-    if ( channeled && d -> current_tick != 0 && d -> current_tick != d -> num_ticks )
-    {
-      consume_tick_resource( d );
-    }
+    if ( channeled )
+      return false;
+    return warlock_spell_t::consume_cost_per_second( tick_time );
   }
 
   timespan_t composite_dot_duration( const action_state_t* state ) const
@@ -4448,16 +4441,6 @@ struct hellfire_t: public warlock_spell_t
   virtual bool usable_moving() const
   {
     return true;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    if ( d -> current_tick != 0 && d -> current_tick != d -> num_ticks )
-    {
-      consume_tick_resource( d );
-    }
   }
 
   virtual bool ready()
