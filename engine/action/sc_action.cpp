@@ -2556,38 +2556,45 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     if ( splits[0] == "active_enemies_within" )
     {
-      struct active_enemies_t: public expr_t
+      if ( sim -> distance_targeting_enabled )
       {
-        action_t* action;
-        const std::string& yards;
-        double yards_from_player;
-        int num_targets;
-        active_enemies_t( action_t* p, const std::string& r ):
-          expr_t( "active_enemies_within" ), action( p ), yards( r )
+        struct active_enemies_t: public expr_t
         {
-          yards_from_player = util::str_to_num<int>( yards );
-          num_targets = 0;
-        }
-
-        double evaluate()
-        {
-          num_targets = 0;
-          for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+          action_t* action;
+          const std::string& yards;
+          double yards_from_player;
+          int num_targets;
+          active_enemies_t( action_t* p, const std::string& r ):
+            expr_t( "active_enemies_within" ), action( p ), yards( r )
           {
-            player_t* t = action -> player -> sim -> target_non_sleeping_list[i];
-            if ( action -> player -> get_player_distance( *t ) <= yards_from_player )
-              num_targets++;
+            yards_from_player = util::str_to_num<int>( yards );
+            num_targets = 0;
           }
-          return num_targets;
-        }
 
-        void reset()
-        {
-          active_enemies_t::reset();
-          num_targets = 0;
-        }
-      };
-      return new active_enemies_t( this, splits[1] );
+          double evaluate()
+          {
+            num_targets = 0;
+            for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+            {
+              player_t* t = action -> player -> sim -> target_non_sleeping_list[i];
+              if ( action -> player -> get_player_distance( *t ) <= yards_from_player )
+                num_targets++;
+            }
+            return num_targets;
+          }
+
+          void reset()
+          {
+            active_enemies_t::reset();
+            num_targets = 0;
+          }
+        };
+        return new active_enemies_t( this, splits[1] );
+      }
+      else
+      { // If distance targeting is not enabled, default to active_enemies behavior. 
+        return make_ref_expr( name_str, sim -> active_enemies );
+      }
     }
     if ( splits[0] == "prev" )
     {
@@ -2694,27 +2701,34 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() > 1 && splits[0] == "spell_targets" )
   {
-    struct spell_targets_t: public expr_t
+    if ( sim -> distance_targeting_enabled )
     {
-      action_t* spell;
-      action_t& original_spell;
-      spell_targets_t( action_t& a, const std::vector<std::string>& spell_name ): expr_t( "spell_targets" ), original_spell( a )
+      struct spell_targets_t: public expr_t
       {
-        spell = a.player -> find_action( spell_name[1] );
-      }
-      double evaluate()
-      {
-        if ( spell )
+        action_t* spell;
+        action_t& original_spell;
+        spell_targets_t( action_t& a, const std::vector<std::string>& spell_name ): expr_t( "spell_targets" ), original_spell( a )
         {
-          spell -> target = original_spell.target;
-          spell -> target_cache.is_valid = false;
-          spell -> target_list();
-          return static_cast<double>( spell -> target_list().size() );
+          spell = a.player -> find_action( spell_name[1] );
         }
-        return 0;
-      }
-    };
-    return new spell_targets_t( *this, splits );
+        double evaluate()
+        {
+          if ( spell )
+          {
+            spell -> target = original_spell.target;
+            spell -> target_cache.is_valid = false;
+            spell -> target_list();
+            return static_cast<double>( spell -> target_list().size() );
+          }
+          return 0;
+        }
+      };
+      return new spell_targets_t( *this, splits );
+    }
+    else
+    { // If distance targeting is not enabled, default to active_enemies behavior. 
+      return make_ref_expr( name_str, sim -> active_enemies );
+    }
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
