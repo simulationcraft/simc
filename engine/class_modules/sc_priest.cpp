@@ -5776,7 +5776,7 @@ double priest_t::composite_multistrike() const
 
   if ( buffs.premonition -> check() )
   {
-    cm += 0.16; // buffs.premonition -> data().effectN( 1 ).percent(); -- DBC Still says 25%, should be 16% - Twintop 2015/06/03
+    cm += buffs.premonition -> data().effectN( 1 ).percent();
   }
 
   return cm;
@@ -6730,9 +6730,8 @@ void priest_t::apl_shadow()
   main -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=natural_shadow_word_death_range&cooldown.shadow_word_death.remains<0.5&active_enemies<=1,cycle_targets=1" );
   main -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&!set_bonus.tier18_4pc" );
-  main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&buff.premonition.up" );
+  main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&(buff.premonition.up|talent.mindbender.enabled)" );
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&!talent.mindbender.enabled&cooldown.shadowfiend.remains>13&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
-  main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&talent.mindbender.enabled&cooldown.shadowfiend.remains>10&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
   main -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1" );
   main -> add_action( "mind_sear,chain=1,if=active_enemies>=4,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5),target_if=max:spell_targets.mind_sear_tick" );
   main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.9)&target.time_to_die>(18*0.75)&active_enemies>=3&miss_react,cycle_targets=1,max_cycle_targets=7" );
@@ -6789,9 +6788,8 @@ void priest_t::apl_shadow()
   vent -> add_action( "cascade,if=talent.cascade.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=40&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=24&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&!set_bonus.tier18_4pc" );
-  vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&buff.premonition.up" );
+  vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&(buff.premonition.up|talent.mindbender.enabled)" );
   vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&!talent.mindbender.enabled&cooldown.shadowfiend.remains>13&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
-  vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&talent.mindbender.enabled&cooldown.shadowfiend.remains>10&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
   vent -> add_action( "mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "mind_sear,chain=1,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   vent -> add_action( "mind_flay,if=cooldown.mind_blast.remains>0.5*gcd,interrupt=1,chain=1" );

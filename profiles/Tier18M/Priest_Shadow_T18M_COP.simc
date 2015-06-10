@@ -90,9 +90,8 @@ actions.main+=/divine_star,if=talent.divine_star.enabled&!set_bonus.tier18_4pc&t
 actions.main+=/wait,sec=cooldown.shadow_word_death.remains,if=natural_shadow_word_death_range&cooldown.shadow_word_death.remains<0.5&active_enemies<=1,cycle_targets=1
 actions.main+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1
 actions.main+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&!set_bonus.tier18_4pc
-actions.main+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&buff.premonition.up
+actions.main+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&(buff.premonition.up|talent.mindbender.enabled)
 actions.main+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&!talent.mindbender.enabled&cooldown.shadowfiend.remains>13&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)
-actions.main+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&talent.mindbender.enabled&cooldown.shadowfiend.remains>10&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)
 actions.main+=/divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1
 actions.main+=/mind_sear,chain=1,if=active_enemies>=4,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5),target_if=max:spell_targets.mind_sear_tick
 actions.main+=/shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.9)&target.time_to_die>(18*0.75)&active_enemies>=3&miss_react,cycle_targets=1,max_cycle_targets=7
@@ -148,9 +147,8 @@ actions.vent+=/divine_star,if=talent.divine_star.enabled&!set_bonus.tier18_4pc&t
 actions.vent+=/cascade,if=talent.cascade.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=40&cooldown.mind_blast.remains>0.5*gcd
 actions.vent+=/divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=24&cooldown.mind_blast.remains>0.5*gcd
 actions.vent+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&!set_bonus.tier18_4pc
-actions.vent+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&buff.premonition.up
+actions.vent+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&(buff.premonition.up|talent.mindbender.enabled)
 actions.vent+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&!talent.mindbender.enabled&cooldown.shadowfiend.remains>13&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)
-actions.vent+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&talent.mindbender.enabled&cooldown.shadowfiend.remains>10&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)
 actions.vent+=/mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react&cooldown.mind_blast.remains>0.5*gcd
 actions.vent+=/mind_sear,chain=1,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick
 actions.vent+=/mind_flay,if=cooldown.mind_blast.remains>0.5*gcd,interrupt=1,chain=1
