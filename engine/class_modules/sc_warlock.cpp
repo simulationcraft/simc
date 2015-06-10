@@ -2886,21 +2886,6 @@ struct drain_life_t: public warlock_spell_t
     heal = new drain_life_heal_t( p );
   }
 
-  void consume_resource()
-  {
-    if ( !p() -> buffs.metamorphosis -> check() )
-      return;
-    warlock_spell_t::consume_resource();
-  }
-
-  bool consume_cost_per_second( timespan_t tick_time )
-  {
-    if ( !p() -> buffs.metamorphosis -> check() )
-      return false;
-
-    return warlock_spell_t::consume_cost_per_second( tick_time );
-  }
-
   void tick( dot_t* d )
   {
     spell_t::tick( d );
