@@ -5763,7 +5763,7 @@ struct molten_core_t : public buff_t
     {
       //Which pet will we spawn?
       double pet = rng().range( 0.0, 1.0 );
-      if ( pet >= 0.55 ) // 45% chance to spawn hellhound
+      if ( pet <= 0.6 ) // 45% chance to spawn hellhound
       {
         for ( size_t i = 0; i < p -> pets.t18_vicious_hellhound.size(); i++ )
         {
@@ -5775,7 +5775,7 @@ struct molten_core_t : public buff_t
           }
         }
       }
-      else if ( pet <= 0.45 ) // 45% chance to spawn illidari
+      else // 45% chance to spawn illidari
       {
         for ( size_t i = 0; i < p -> pets.t18_illidari_satyr.size(); i++ )
         {
@@ -5783,18 +5783,6 @@ struct molten_core_t : public buff_t
           {
             p -> pets.t18_illidari_satyr[i] -> summon( illidari_satyr_duration );
             p -> procs.t18_illidari_satyr -> occur();
-            break;
-          }
-        }
-      }
-      else // Spawn Prince
-      {
-        for ( size_t i = 0; i < p -> pets.t18_prince_malchezaar.size(); i++ )
-        {
-          if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
-          {
-            p -> pets.t18_prince_malchezaar[i] -> summon( prince_malchezaar_duration );
-            p -> procs.t18_prince_malchezaar -> occur();
             break;
           }
         }
