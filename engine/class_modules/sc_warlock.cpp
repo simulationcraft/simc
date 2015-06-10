@@ -5775,8 +5775,6 @@ struct molten_core_t : public buff_t
   {
     warlock_t* p = debug_cast<warlock_t*>( player );
     bool trigger_t18_4p = true;
-    if ( p -> buffs.molten_core -> check() && p -> bugs )
-      trigger_t18_4p = false;
 
     buff_t::execute( a, b, t );
 
@@ -5790,7 +5788,8 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
           {
-            p -> pets.t18_vicious_hellhound[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> find_spell( 189296 );
+            p -> pets.t18_vicious_hellhound[i] -> summon( p -> find_spell( 189298 ) -> duration() );
             p -> procs.t18_vicious_hellhound -> occur();
             break;
           }
@@ -5802,7 +5801,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_illidari_satyr[i] -> is_sleeping() )
           {
-            p -> pets.t18_illidari_satyr[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> pets.t18_illidari_satyr[i] -> summon( p -> find_spell( 189297 ) -> duration() );
             p -> procs.t18_illidari_satyr -> occur();
             break;
           }
@@ -5814,7 +5813,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
           {
-            p -> pets.t18_prince_malchezaar[i] -> summon( timespan_t::from_seconds( 20 ) );
+            p -> pets.t18_prince_malchezaar[i] -> summon( p -> find_spell( 189296 ) -> duration() );
             p -> procs.t18_prince_malchezaar -> occur();
             break;
           }
