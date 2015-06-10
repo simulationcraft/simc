@@ -5767,9 +5767,17 @@ struct havoc_buff_t : public buff_t
 
 struct molten_core_t : public buff_t
 {
+  timespan_t illidari_satyr_duration;
+  timespan_t vicious_hellhound_duration;
+  timespan_t prince_malchezaar_duration;
+
   molten_core_t( warlock_t* p ) :
     buff_t( buff_creator_t( p, "molten_core", p -> find_spell( 122355 ) ).activated( false ).max_stack( 10 ) )
-  { }
+  { 
+    prince_malchezaar_duration = p -> find_spell( 189296 ) -> duration();
+    vicious_hellhound_duration = p -> find_spell( 189298 ) -> duration();
+    illidari_satyr_duration = p -> find_spell( 189297 ) -> duration();
+  }
 
   void execute( int a, double b, timespan_t t )
   {
@@ -5788,7 +5796,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
           {
-            p -> pets.t18_vicious_hellhound[i] -> summon( p -> find_spell( 189298 ) -> duration() );
+            p -> pets.t18_vicious_hellhound[i] -> summon( vicious_hellhound_duration );
             p -> procs.t18_vicious_hellhound -> occur();
             break;
           }
@@ -5800,7 +5808,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_illidari_satyr[i] -> is_sleeping() )
           {
-            p -> pets.t18_illidari_satyr[i] -> summon( p -> find_spell( 189297 ) -> duration() );
+            p -> pets.t18_illidari_satyr[i] -> summon( illidari_satyr_duration );
             p -> procs.t18_illidari_satyr -> occur();
             break;
           }
@@ -5812,7 +5820,7 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_prince_malchezaar[i] -> is_sleeping() )
           {
-            p -> pets.t18_prince_malchezaar[i] -> summon( p -> find_spell( 189296 ) -> duration() );
+            p -> pets.t18_prince_malchezaar[i] -> summon( prince_malchezaar_duration );
             p -> procs.t18_prince_malchezaar -> occur();
             break;
           }
