@@ -1745,7 +1745,7 @@ void player_t::init_spells()
       heal_t::init();
 
       snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY |
-                                      STATE_RESOLVE | STATE_MUL_PERSISTENT;
+                                      /* STATE_RESOLVE | */ STATE_MUL_PERSISTENT;
     }
   };
 
