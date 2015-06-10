@@ -436,7 +436,7 @@ action_t::action_t( action_e       ty,
     if ( radius > 50 )
       sim -> out_debug.printf( "%s's radius of %.3f is much larger than should be possible.", name(), radius );
     if ( range > 50 )
-      sim -> out_debug.printf( "%s's range of %.3f is much larger than should be possible.", name(), radius );
+      sim -> out_debug.printf( "%s's range of %.3f is much larger than should be possible.", name(), range );
   }
 #endif
 
