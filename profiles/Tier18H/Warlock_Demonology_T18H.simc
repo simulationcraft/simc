@@ -109,7 +109,7 @@ actions.meta+=/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3
 actions.meta+=/cancel_metamorphosis,if=((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.any.down&trinket.proc.any.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20
 actions.meta+=/cancel_metamorphosis,if=action.hand_of_guldan.charges>0&dot.shadowflame.remains<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&((demonic_fury<100&buff.dark_soul.remains>10)|time<15)&!glyph.dark_soul.enabled
 actions.meta+=/cancel_metamorphosis,if=action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)
-actions.meta+=/chaos_wave,if=buff.dark_soul.up&active_enemies>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2)
+actions.meta+=/chaos_wave,if=buff.dark_soul.up&active_enemies>=2
 actions.meta+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25)&(((buff.molten_core.stack*execute_time>=trinket.stacking_proc.any.remains-1|demonic_fury<=ceil((trinket.stacking_proc.any.remains-buff.molten_core.stack*execute_time)*40)+80*buff.molten_core.stack)|target.health.pct<=25)&trinket.stacking_proc.any.remains>=execute_time|trinket.stacking_proc.any.down|!trinket.has_stacking_proc.any)
 actions.meta+=/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1
 actions.meta+=/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750
@@ -128,20 +128,20 @@ legs=deathrattle_leggings,id=124167,bonus_id=566
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant_id=5326
-trinket1=chipped_soul_prism,id=124545,bonus_id=566
+trinket1=fragment_of_the_dark_star,id=124522,bonus_id=566
 trinket2=iron_reaver_piston,id=124227,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=713.00
+# gear_ilvl=713.67
 # gear_stamina=5380
-# gear_intellect=4198
+# gear_intellect=4002
 # gear_spell_power=2214
-# gear_crit_rating=1465
-# gear_haste_rating=1500
-# gear_mastery_rating=2575
-# gear_multistrike_rating=1001
-# gear_versatility_rating=304
+# gear_crit_rating=1269
+# gear_haste_rating=1304
+# gear_mastery_rating=2379
+# gear_multistrike_rating=805
+# gear_versatility_rating=108
 # gear_armor=991
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
