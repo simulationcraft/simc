@@ -5788,7 +5788,6 @@ struct molten_core_t : public buff_t
         {
           if ( p -> pets.t18_vicious_hellhound[i] -> is_sleeping() )
           {
-            p -> find_spell( 189296 );
             p -> pets.t18_vicious_hellhound[i] -> summon( p -> find_spell( 189298 ) -> duration() );
             p -> procs.t18_vicious_hellhound -> occur();
             break;
