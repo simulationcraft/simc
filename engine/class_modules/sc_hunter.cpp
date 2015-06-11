@@ -3562,7 +3562,6 @@ struct rapid_fire_t: public hunter_spell_t
   virtual void execute()
   {
     p() -> buffs.rapid_fire -> trigger( 1, value );
-    if ( p() -> buffs.t18_2p_rapid_fire -> check() )
     {
       p() -> procs.tier18_2pc_mm_wasted_overwrite -> occur();
       p() -> buffs.t18_2p_rapid_fire -> expire();
@@ -4507,8 +4506,7 @@ double hunter_t::composite_melee_haste() const
   double h = player_t::composite_melee_haste();
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
   h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
-  h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
-  h *= 1.0 / ( 1.0 + buffs.t18_2p_rapid_fire -> stack_value() );
+  h *= 1.0 / ( 1.0 + std::min( buffs.rapid_fire -> value(), buffs.t18_2p_rapid_fire -> value() ) );
   return h;
 }
 
