@@ -143,6 +143,8 @@ public:
     proc_t* tier16_4pc_melee;
     proc_t* tier17_2pc_bm;
     proc_t* black_arrow_trinket_reset;
+    proc_t* tier18_2pc_mm_wasted_proc;
+    proc_t* tier18_2pc_mm_wasted_overwrite;
   } procs;
 
   real_ppm_t ppm_tier15_2pc_melee;
@@ -2541,8 +2543,16 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
     {
-      if ( s -> result == RESULT_CRIT )
+      if ( s -> result == RESULT_CRIT && p() -> buffs.rapid_fire -> remains() < p() -> buffs.t18_2p_rapid_fire -> buff_duration )
+      {
         p() -> buffs.t18_2p_rapid_fire -> trigger();
+
+        if ( p() -> buffs.rapid_fire -> check() )
+        {
+          p() -> buffs.rapid_fire -> expire();
+          p() -> procs.tier18_2pc_mm_wasted_proc -> occur();
+        }
+      }
     }
   }
 
@@ -3552,6 +3562,11 @@ struct rapid_fire_t: public hunter_spell_t
   virtual void execute()
   {
     p() -> buffs.rapid_fire -> trigger( 1, value );
+    if ( p() -> buffs.t18_2p_rapid_fire -> check() )
+    {
+      p() -> procs.tier18_2pc_mm_wasted_overwrite -> occur();
+      p() -> buffs.t18_2p_rapid_fire -> expire();
+    }
 
     hunter_spell_t::execute();
   }
@@ -4058,6 +4073,8 @@ void hunter_t::init_procs()
   procs.tier16_4pc_melee             = get_proc( "tier16_4pc_melee" );
   procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
   procs.black_arrow_trinket_reset    = get_proc( "black_arrow_trinket_reset" );
+  procs.tier18_2pc_mm_wasted_proc    = get_proc( "tier18_2pc_mm_wasted_proc" );
+  procs.tier18_2pc_mm_wasted_overwrite     = get_proc ("tier18_2pc_mm_wasted_overwrite");
 }
 
 // hunter_t::init_rng =======================================================
