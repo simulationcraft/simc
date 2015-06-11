@@ -6109,6 +6109,7 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=target.time_to_die>=30*spell_haste&!dot.doom.ticking&buff.dark_soul.down&time>10";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=demonic_fury>750&buff.demonbolt.remains>=action.metamorphosis.cooldown";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=(((demonic_fury-120)%800)>(buff.demonbolt.remains%40))&buff.demonbolt.remains>=10&dot.doom.remains-gcd<=dot.doom.duration*0.3";
+    get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=buff.demonbolt.remains&buff.demonbolt.remains<10&demonic_fury-((40*action.touch_of_chaos.gcd*buff.demonbolt.remains)+(6*buff.demonbolt.remains))>=800";
     get_action_priority_list( "db" ) -> action_list_str += "/imp_swarm";
     get_action_priority_list( "db" ) -> action_list_str += "/hellfire,interrupt=1,if=active_enemies>=5";
     get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
