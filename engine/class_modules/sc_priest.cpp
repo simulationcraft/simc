@@ -1608,7 +1608,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest_td_t& td = get_td( t );
       if ( priest.active_items.mental_fatigue )
       {
-        am *= 1.0 + td.buffs.mental_fatigue -> stack_value();
+        am *= 1.0 + ( td.buffs.mental_fatigue -> stack_value() * 2 ); //Stack count was halved from 10 to 5 in latest build, but the value per stack wasn't doubled. Assuming for now this is an oversight. -- Twintop, 2015/06/07
       }
     }
 
@@ -3680,7 +3680,6 @@ private:
   typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
 public:
   typedef cascade_base_t base_t; // typedef for cascade_base_t<action_base_t>
-
   struct cascade_state_t : action_state_t
   {
     int jump_counter;
@@ -3701,7 +3700,10 @@ public:
   {
     ab::parse_options( options_str );
 
-    ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
+    if ( p.specialization() != PRIEST_SHADOW )
+      ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
+    else
+      ab::parse_effect_data( scaling_data -> effectN( 2 ) );
     ab::school       = scaling_data -> get_school_type();
     ab::travel_speed = scaling_data -> missile_speed();
     ab::radius       = 40;
@@ -3713,10 +3715,19 @@ public:
     return new cascade_state_t( this, ab::target );
   }
 
+  virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const
+  {
+    cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
+    if ( cs -> source_target )
+      return timespan_t::from_seconds( cs -> source_target -> get_player_distance( *s -> target ) / ab::travel_speed );
+    return timespan_t::zero();
+  }
+
   player_t* get_next_player( player_t* currentTarget )
   {
     player_t* t = nullptr;
-
+    player_t* furthest = 0;
+    double furthest_distance = 0;
     // Get target at first position
     if ( !targets.empty() )
     {
@@ -3724,16 +3735,27 @@ public:
       {
         t = *it;
 
-        if ( t != currentTarget )
+        if ( t == currentTarget )
+          continue;
+        if ( currentTarget -> sim -> distance_targeting_enabled )
         {
-          targets.erase( it );
-          return t;
+          double current_distance = t -> get_player_distance( *currentTarget );
+          if ( current_distance <= 40 && current_distance > furthest_distance )
+          {
+            furthest_distance = current_distance;
+            furthest = t;
+          }
+          continue;
         }
+        targets.erase( it );
+        return t;
       }
 
       t = nullptr;
     }
 
+    if ( furthest )
+      return furthest;
     return t;
   }
 
@@ -3781,7 +3803,7 @@ public:
           s -> result = ab::calculate_result( s );
 
           if ( ab:: result_is_hit( s -> result ) )
-            s -> result_amount = ab::calculate_direct_amount( s );
+            s -> result_amount = calculate_direct_amount( s );
 
           if ( ab::sim -> debug )
             s -> debug();
@@ -3830,19 +3852,22 @@ public:
 struct cascade_t : public cascade_base_t<priest_spell_t>
 {
   cascade_t( priest_t& p, const std::string& options_str ) :
-    base_t( "cascade", p, options_str, get_spell_data( p ) ),
-    _target_list_source( get_target_list_source( p ) )
+    base_t( "cascade", p, options_str, get_spell_data( p ) )
   {
     instant_multistrike = 0;
   }
 
   virtual void populate_target_list() override
   {
-    for ( size_t i = 0; i < _target_list_source.size(); ++i )
+    for ( size_t i = 0; i < target_list().size(); ++i )
     {
-      player_t* t = _target_list_source[i];
+      player_t* t;
+      if ( priest.specialization() == PRIEST_SHADOW )
+        t = target_list()[i];
+      else
+        t = sim -> player_no_pet_list[i];
 
-      if ( _target_list_source.size() > 1)
+      if ( target_list().size() > 1)
       {
         targets.push_back( t );
         targets.push_back( t );
@@ -3861,19 +3886,6 @@ private:
     unsigned id = p.specialization() == PRIEST_SHADOW ? 127628 : 121148;
     return p.find_spell( id );
   }
-  const vector_with_callback<player_t*>& get_target_list_source( priest_t& p ) const
-  {
-    if ( p.specialization() == PRIEST_SHADOW )
-    {
-      return sim -> target_list;
-    }
-    else
-    {
-      return sim -> player_list;
-    }
-  }
-
-  const vector_with_callback<player_t*>& _target_list_source;
 };
 
 // Halo Spell
@@ -3903,6 +3915,11 @@ public:
     ab::range = 0;
   }
   virtual ~halo_base_t() {}
+
+  virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const
+  {
+    return timespan_t::from_seconds( s -> action -> player -> get_player_distance( *s -> target ) / ab::travel_speed );
+  }
 
   virtual double calculate_direct_amount( action_state_t* s )
   {
@@ -3991,7 +4008,7 @@ public:
     double distance;
 
     if ( ab::player -> sim -> distance_targeting_enabled )
-      distance = ab::player -> get_player_distance( *target );
+      distance = ab::player -> get_player_distance( *ab::target );
     else
       distance = ab::player -> current.distance;
 
@@ -4002,23 +4019,6 @@ public:
       if ( return_spell && distance <= 24 )
         return_spell -> execute();
     }
-  }
-  bool isInside( int x1, int y1, int x2, int y2, int x3, int y3, int x, int y )
-  {
-    /* Calculate area of triangle ABC */
-    float A = area( x1, y1, x2, y2, x3, y3 );
-
-    /* Calculate area of triangle PBC */
-    float A1 = area( x, y, x2, y2, x3, y3 );
-
-    /* Calculate area of triangle PAC */
-    float A2 = area( x1, y1, x, y, x3, y3 );
-
-    /* Calculate area of triangle PAB */
-    float A3 = area( x1, y1, x2, y2, x, y );
-
-    /* Check if sum of A1, A2 and A3 is same as A */
-    return ( A == A1 + A2 + A3 );
   }
 };
 
@@ -5776,7 +5776,7 @@ double priest_t::composite_multistrike() const
 
   if ( buffs.premonition -> check() )
   {
-    cm += 0.16; // buffs.premonition -> data().effectN( 1 ).percent(); -- DBC Still says 25%, should be 16% - Twintop 2015/06/03
+    cm += buffs.premonition -> data().effectN( 1 ).percent();
   }
 
   return cm;
@@ -6659,6 +6659,11 @@ void priest_t::apl_shadow()
       default_list -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
+  if ( find_item( "nithramus_the_allseer" ))
+  {
+    default_list -> add_action( "use_item,name=nithramus_the_allseer" );
+  }
+
   default_list -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
   default_list -> add_action( "silence,if=target.debuff.casting.react" );
 
@@ -6725,9 +6730,8 @@ void priest_t::apl_shadow()
   main -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=natural_shadow_word_death_range&cooldown.shadow_word_death.remains<0.5&active_enemies<=1,cycle_targets=1" );
   main -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&!set_bonus.tier18_4pc" );
-  main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&buff.premonition.up" );
+  main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&(buff.premonition.up|talent.mindbender.enabled)" );
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&!talent.mindbender.enabled&cooldown.shadowfiend.remains>13&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
-  main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&talent.mindbender.enabled&cooldown.shadowfiend.remains>10&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
   main -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1" );
   main -> add_action( "mind_sear,chain=1,if=active_enemies>=4,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5),target_if=max:spell_targets.mind_sear_tick" );
   main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.9)&target.time_to_die>(18*0.75)&active_enemies>=3&miss_react,cycle_targets=1,max_cycle_targets=7" );
@@ -6784,9 +6788,8 @@ void priest_t::apl_shadow()
   vent -> add_action( "cascade,if=talent.cascade.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=40&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=24&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&!set_bonus.tier18_4pc" );
-  vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&buff.premonition.up" );
+  vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&(buff.premonition.up|talent.mindbender.enabled)" );
   vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&!talent.mindbender.enabled&cooldown.shadowfiend.remains>13&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
-  vent -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&talent.mindbender.enabled&cooldown.shadowfiend.remains>10&buff.surge_of_darkness.remains<(1.1*gcd*buff.surge_of_darkness.react)" );
   vent -> add_action( "mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "mind_sear,chain=1,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   vent -> add_action( "mind_flay,if=cooldown.mind_blast.remains>0.5*gcd,interrupt=1,chain=1" );
@@ -6831,7 +6834,7 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_dotweave -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
-  cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<10" );
+  cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop_dotweave -> add_action( "mind_spike" );
   cop_dotweave -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop_dotweave -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
@@ -6871,7 +6874,7 @@ void priest_t::apl_shadow()
   cop_insanity -> add_action( "divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&active_enemies>2&target.distance<=24" );
   cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_insanity -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
-  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<10" );
+  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop_insanity -> add_action( "mind_spike" );
   cop_insanity -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop_insanity -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
@@ -6918,7 +6921,7 @@ void priest_t::apl_shadow()
   cop -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   cop -> add_action( "mind_spike,if=target.dot.devouring_plague_tick.remains&target.dot.devouring_plague_tick.remains<cast_time" );
   cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies>1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
-  cop -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<10" );
+  cop -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop -> add_action( "mind_spike" );
   cop -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );

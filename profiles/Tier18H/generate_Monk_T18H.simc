@@ -18,7 +18,7 @@ hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=566
 waist=flayed_demonskin_belt,id=124277,bonus_id=566
 legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=566
 feet=oppressors_merciless_treads,id=124251,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=621,enchant=gift_of_multistrike
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_multistrike
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_multistrike
 trinket1=sacred_draenic_incense,id=124517,bonus_id=566
 trinket2=soul_capacitor,id=124225,bonus_id=566
@@ -46,7 +46,7 @@ hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=566
 waist=flayed_demonskin_belt,id=124277,bonus_id=566
 legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=566
 feet=oppressors_merciless_treads,id=124251,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=621,enchant=gift_of_multistrike
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_multistrike
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_multistrike
 trinket1=sacred_draenic_incense,id=124517,bonus_id=566
 trinket2=soul_capacitor,id=124225,bonus_id=566

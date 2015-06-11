@@ -2897,6 +2897,7 @@ struct sim_t : private sc_thread_t
   std::string apikey;
   bool ilevel_raid_report;
   bool distance_targeting_enabled;
+  bool enable_leech;
   double scaling_normalized;
 
   sim_report_information_t report_information;
@@ -4953,6 +4954,7 @@ struct player_t : public actor_t
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
+  virtual void init_distance_targeting();
   virtual void register_callbacks();
   // Class specific hook for first-phase initializing special effects. Returns true if the class-specific hook initialized something, false otherwise.
   virtual bool init_special_effect( special_effect_t& /* effect */, unsigned /* spell_id */ ) { return false; }
@@ -6061,6 +6063,7 @@ struct action_t : public noncopyable
   virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time( double haste ) const;
   virtual timespan_t travel_time() const;
+  virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual result_e calculate_multistrike_result( action_state_t* /* state */, dmg_e /* type */ );
   virtual block_result_e calculate_block_result( action_state_t* s );

@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20111)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -6279,7 +6279,7 @@ Description      : $@spelldesc162539
 Tooltip          : Slowed by $s2%.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

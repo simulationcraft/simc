@@ -24,6 +24,7 @@ actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/incarnation
 
 # Executed every time the actor is available.
 
@@ -36,7 +37,6 @@ actions+=/auto_attack
 actions+=/skull_bash
 actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
 actions+=/berserk,if=buff.tigers_fury.up&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)
-actions+=/use_item,slot=finger1
 actions+=/potion,name=draenic_agility,if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
@@ -83,21 +83,21 @@ hands=oathclaw_gauntlets,id=124255,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=spiked_irontoe_slippers,id=124249,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=621,enchant_id=5324
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
-trinket1=soul_capacitor,id=124225,bonus_id=566
-trinket2=seed_of_creation,id=124514,bonus_id=566
+trinket1=felspring_coil,id=124223,bonus_id=567
+trinket2=soul_capacitor,id=124225,bonus_id=567
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=566,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=714.33
-# gear_agility=4010
-# gear_stamina=5362
-# gear_crit_rating=1770
+# gear_ilvl=714.00
+# gear_agility=4511
+# gear_stamina=5298
+# gear_crit_rating=2218
 # gear_haste_rating=123
-# gear_mastery_rating=1064
+# gear_mastery_rating=1542
 # gear_multistrike_rating=1916
-# gear_versatility_rating=154
+# gear_versatility_rating=128
 # gear_armor=1251
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

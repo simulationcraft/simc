@@ -50,10 +50,10 @@ actions+=/call_action_list,name=aoe,if=active_enemies>2
 actions.single=unleash_flame,moving=1
 actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.single+=/flame_shock,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<(dot.flame_shock.duration*0.3))
+actions.single+=/flame_shock,cycle_targets=1,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<(dot.flame_shock.duration*(0.3+t18_class_trinket*0.65)))
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
-actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(set_bonus.tier18_4pc&buff.lightning_shield.react>=14)|(!set_bonus.tier17_4pc&!set_bonus.tier18_4pc&buff.lightning_shield.react>15)
-actions.single+=/flame_shock,if=dot.flame_shock.remains<=9
+actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)
+actions.single+=/flame_shock,cycle_targets=1,if=dot.flame_shock.remains<=9
 actions.single+=/elemental_blast
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
@@ -85,15 +85,15 @@ legs=leggings_of_the_living_mountain,id=124302,bonus_id=567
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567
 finger1=nithramus_the_allseer,id=124635,enchant=gift_of_multistrike
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_multistrike
-trinket1=prophecy_of_fear,id=124230,bonus_id=567
+trinket1=core_of_the_primal_elements,id=124521,bonus_id=567
 trinket2=iron_reaver_piston,id=124227,bonus_id=567
 main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_the_frostwolf
 off_hand=fallen_defender_of_argus,id=124355,bonus_id=567
 
 # Gear Summary
-# gear_ilvl=727.81
+# gear_ilvl=728.13
 # gear_stamina=6111
-# gear_intellect=5077
+# gear_intellect=4552
 # gear_spell_power=2544
 # gear_crit_rating=1853
 # gear_haste_rating=1902

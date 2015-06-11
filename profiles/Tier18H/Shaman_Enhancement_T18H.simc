@@ -29,7 +29,6 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
-actions+=/use_item,name=maalus_the_blood_drinker
 # In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
 actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
 actions+=/blood_fury
@@ -110,21 +109,21 @@ waist=girdle_of_the_legion_general,id=124310,bonus_id=566
 legs=haughty_chain_legguards,id=124300,bonus_id=566
 feet=unhallowed_voidlink_boots,id=124288,bonus_id=566
 finger1=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_haste
-finger2=maalus_the_blood_drinker,id=124636,enchant=gift_of_haste
+finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 trinket1=core_of_the_primal_elements,id=124521,bonus_id=566
 trinket2=malicious_censer,id=124226,bonus_id=566
 main_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant=mark_of_warsong
 off_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=714.69
-# gear_agility=3527
-# gear_stamina=5291
-# gear_crit_rating=480
+# gear_ilvl=713.44
+# gear_agility=3484
+# gear_stamina=5227
+# gear_crit_rating=450
 # gear_haste_rating=1879
 # gear_mastery_rating=1469
 # gear_multistrike_rating=1364
-# gear_versatility_rating=229
+# gear_versatility_rating=203
 # gear_armor=1576
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

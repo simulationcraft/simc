@@ -8,6 +8,7 @@ Death_Knight_Frost_2h_T18H.simc
 Death_Knight_Unholy_T18H.simc
 
 # Druid
+Druid_Balance_T18H.simc
 Druid_Feral_T18H.simc
 
 # Hunter
@@ -25,14 +26,20 @@ Monk_Windwalker_1h_T18H.simc
 Monk_Windwalker_2h_T18H.simc
 
 # Paladin
+Paladin_Retribution_T18H.simc
 
 # Priest
+Priest_Shadow_T18H_AS.simc
+Priest_Shadow_T18H_COP.simc
+Priest_Shadow_T18H_VE.simc
 
 # Rogue
 Rogue_Assassination_T18H.simc
 Rogue_Combat_T18H.simc
+Rogue_Subtlety_T18H.simc
 
 # Shaman
+Shaman_Elemental_T18H.simc
 Shaman_Enhancement_T18H.simc
 
 # Warlock
@@ -41,3 +48,7 @@ Warlock_Demonology_T18H.simc
 Warlock_Destruction_T18H.simc
 
 # Warrior
+Warrior_Arms_T18H.simc
+Warrior_Fury_1h_T18H.simc
+Warrior_Fury_2h_T18H.simc
+Warrior_Gladiator_T18H.simc

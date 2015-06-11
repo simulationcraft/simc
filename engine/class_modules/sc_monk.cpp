@@ -2335,7 +2335,13 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
-    min_gcd = timespan_t::from_millis( 250 ); // Force 250 milliseconds for the animation, but not delay the overall GCD
+    trigger_gcd = timespan_t::zero();
+  }
+
+  // Force 250 milliseconds for the animation, but not delay the overall GCD
+  timespan_t execute_time() const
+  {
+    return timespan_t::from_millis( 250 );
   }
 
   double combo_breaker_chance()
@@ -3735,7 +3741,7 @@ struct zen_sphere_detonate_damage_t: public monk_spell_t
 struct chi_wave_heal_tick_t: public monk_heal_t
 {
   chi_wave_heal_tick_t( monk_t& p, const std::string& name ):
-    monk_heal_t( name, p, p.talent.chi_wave )
+    monk_heal_t( name, p, p.find_spell( 132463 ) )
   {
     background = direct_tick = true;
     attack_power_mod.direct = 0.500; // Hard code 09/09/14
@@ -3752,7 +3758,7 @@ struct chi_wave_heal_tick_t: public monk_heal_t
 struct chi_wave_dmg_tick_t: public monk_spell_t
 {
   chi_wave_dmg_tick_t( monk_t* player, const std::string& name ):
-    monk_spell_t( name, player, player -> talent.chi_wave )
+    monk_spell_t( name, player, player -> find_spell( 132467 ) )
   {
     background = direct_tick = true;
     attack_power_mod.direct = 0.500; // Hard code 09/09/14
@@ -4689,9 +4695,6 @@ struct expel_harm_heal_t : public monk_heal_t
       ( p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
 
     monk_heal_t::execute();
-
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      reset_swing(); // Resets autoattacks
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();

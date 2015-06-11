@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20111)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -6740,7 +6740,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1180
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Balance Shaman, Mage, Warlock, Druid
+Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7116,7 +7116,7 @@ Name             : Prince Malchezaar (id=189296)
 Class            : Warlock
 Spell Level      : 100
 Velocity         : 40 yards/sec
-Duration         : 20 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7132,7 +7132,7 @@ Name             : Illidari Satyr (id=189297)
 Class            : Warlock
 Spell Level      : 100
 Velocity         : 40 yards/sec
-Duration         : 20 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7148,7 +7148,7 @@ Name             : Vicious Hellhound (id=189298)
 Class            : Warlock
 Spell Level      : 100
 Velocity         : 40 yards/sec
-Duration         : 20 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

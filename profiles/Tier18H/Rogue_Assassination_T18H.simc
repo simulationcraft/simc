@@ -30,7 +30,6 @@ actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up
 actions+=/kick
 actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
-actions+=/use_item,slot=finger1,if=active_enemies>1|(debuff.vendetta.up&active_enemies=1)
 actions+=/use_item,slot=trinket2,if=active_enemies>1|(debuff.vendetta.up&active_enemies=1)
 actions+=/blood_fury
 actions+=/berserking
@@ -67,7 +66,7 @@ hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
 legs=felblade_leggings,id=124269,bonus_id=566
 feet=toxicologists_treated_boots,id=124250,bonus_id=566
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=5326
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
 finger2=pitextracted_stone_signet,id=124187,bonus_id=566,enchant_id=5326
 trinket1=bleeding_hollow_toxin_vessel,id=124520,bonus_id=566
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
@@ -75,14 +74,14 @@ main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
 off_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=713.44
-# gear_agility=3914
-# gear_stamina=5283
-# gear_crit_rating=596
+# gear_ilvl=712.19
+# gear_agility=3871
+# gear_stamina=5219
+# gear_crit_rating=566
 # gear_haste_rating=873
 # gear_mastery_rating=1945
 # gear_multistrike_rating=1098
-# gear_versatility_rating=442
+# gear_versatility_rating=416
 # gear_armor=1263
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

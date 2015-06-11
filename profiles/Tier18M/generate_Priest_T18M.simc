@@ -1,0 +1,120 @@
+# TxM
+# Tier x Mythic
+# * Ilvl Cap: 735
+# * No Sockets, Tertiary Stats, or Warforged items
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * EXCEPTION: 735 Legendary Ring can be used. (accessibility)
+
+# talent_format=numbers
+
+# Shadow
+priest="Priest_Shadow_T18M_COP"
+talents=1133231
+level=100
+race=troll
+spec=shadow
+role=spell
+position=back
+glyphs=mind_flay/fade/sha
+head=demon_princes_ascendant_crown,id=124159,bonus_id=567
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_mastery
+shoulders=pious_mantle,id=124178,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_mastery
+chest=pious_raiment,id=124172,bonus_id=567
+wrists=contemptuous_wristguards,id=124186,bonus_id=567
+hands=pious_handwraps,id=124155,bonus_id=567
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
+legs=pious_leggings,id=124166,bonus_id=567
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
+finger1=nithramus_the_allseer,id=124635,enchant=gift_of_mastery
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
+trinket1=repudiation_of_war,id=124519,bonus_id=567
+trinket2=iron_reaver_piston,id=124227,bonus_id=567
+main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_warsong
+off_hand=
+save=Priest_Shadow_T18M_COP.simc
+
+copy="Priest_Shadow_T18M_VE"
+talents=1133232
+race=troll
+head=pious_cowl,id=124161,bonus_id=567
+neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,enchant=gift_of_haste
+shoulders=pious_mantle,id=124178,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_haste
+chest=pious_raiment,id=124172,bonus_id=567
+wrists=bracers_of_perfect_discomfort,id=127981,bonus_id=567
+hands=pious_handwraps,id=124155,bonus_id=567
+waist=sludgesoaked_waistband,id=124180,bonus_id=567
+legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
+finger1=nithramus_the_allseer,id=124635,enchant=gift_of_haste
+finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_haste
+trinket1=repudiation_of_war,id=124519,bonus_id=567
+trinket2=iron_reaver_piston,id=124227,bonus_id=567
+main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_warsong
+off_hand=gibbering_madness,id=124205,bonus_id=567
+save=Priest_Shadow_T18M_VE.simc
+
+copy="Priest_Shadow_T18M_AS"
+talents=1133233
+race=troll
+head=pious_cowl,id=124161,bonus_id=567
+neck=glowing_firestone,id=124211,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=pious_mantle,id=124178,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_critical_strike
+chest=pious_raiment,id=124172,bonus_id=567
+wrists=contemptuous_wristguards,id=124186,bonus_id=567
+hands=pious_handwraps,id=124155,bonus_id=567
+waist=cord_of_unhinged_malice,id=124182,bonus_id=567
+legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
+finger1=nithramus_the_allseer,id=124635,enchant=gift_of_critical_strike
+finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=repudiation_of_war,id=124519,bonus_id=567
+trinket2=iron_reaver_piston,id=124227,bonus_id=567
+main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_the_thunderlord
+off_hand=gibbering_madness,id=124205,bonus_id=567
+save=Priest_Shadow_T18M_AS.simc
+
+# Holy Heal
+priest="Priest_Holy_T18M_Heal"
+talents=3223332
+level=100
+race=draenei
+spec=holy
+role=heal
+position=back
+#save=Priest_Holy_T18M_Heal.simc
+
+# Holy DMG
+priest="Priest_Holy_T18M_DMG"
+talents=3223232
+level=100
+race=draenei
+spec=holy
+role=spell
+position=back
+glyphs=smite/holy_fire/inquisitor
+#save=Priest_Holy_T18M_Dmg.simc
+
+# Discipline Heal
+priest="Priest_Discipline_T18M_Heal"
+talents=3223232
+level=100
+race=draenei
+spec=discipline
+role=heal
+position=back
+glyphs=prayer_of_mending/circle_of_healing/deep_wells
+#save=Priest_Discipline_T18M_Heal.simc
+
+# Discipline Dmg
+priest="Priest_Discipline_T18M_Dmg"
+talents=3223232
+level=100
+race=draenei
+spec=discipline
+role=spell
+position=back
+glyphs=smite/holy_fire/inquisitor
+#save=Priest_Discipline_T18M_Dmg.simc

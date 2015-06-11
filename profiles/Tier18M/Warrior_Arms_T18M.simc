@@ -3,7 +3,7 @@ level=100
 race=tauren
 role=attack
 position=back
-talents=1321322
+talents=0021022
 talent_override=bladestorm,if=raid_event.adds.count>=1|enemies>1
 talent_override=dragon_roar,if=raid_event.adds.count>=1|enemies>1
 talent_override=taste_for_blood,if=raid_event.adds.count>=1|enemies>1
@@ -23,8 +23,6 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
-# Generic on-use trinket line if needed when swapping trinkets out. 
-# actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&(prev_gcd.ravager|(!talent.ravager.enabled&!cooldown.bladestorm.remains&dot.rend.ticking)))
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
 
@@ -44,8 +42,8 @@ actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colo
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=rage<rage.max-40
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-actions+=/call_action_list,name=single,if=active_enemies=1
-actions+=/call_action_list,name=aoe,if=active_enemies>1
+actions+=/call_action_list,name=aoe,if=spell_targets.whirlwind>1
+actions+=/call_action_list,name=single
 
 actions.movement=heroic_leap
 actions.movement+=/charge,cycle_targets=1,if=debuff.charge.down
@@ -74,22 +72,22 @@ actions.single+=/shockwave
 actions.aoe=sweeping_strikes
 actions.aoe+=/rend,if=ticks_remain<2&target.time_to_die>4&(target.health.pct>20|!debuff.colossus_smash.up)
 actions.aoe+=/rend,cycle_targets=1,max_cycle_targets=2,if=ticks_remain<2&target.time_to_die>8&!buff.colossus_smash_up.up&talent.taste_for_blood.enabled
-actions.aoe+=/rend,cycle_targets=1,if=ticks_remain<2&target.time_to_die-remains>18&!buff.colossus_smash_up.up&active_enemies<=8
+actions.aoe+=/rend,cycle_targets=1,if=ticks_remain<2&target.time_to_die-remains>18&!buff.colossus_smash_up.up&spell_targets.whirlwind<=8
 actions.aoe+=/ravager,if=buff.bloodbath.up|cooldown.colossus_smash.remains<4
 actions.aoe+=/bladestorm,if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)
 actions.aoe+=/colossus_smash,if=dot.rend.ticking
-actions.aoe+=/execute,cycle_targets=1,if=!buff.sudden_death.react&active_enemies<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)
+actions.aoe+=/execute,cycle_targets=1,if=!buff.sudden_death.react&spell_targets.whirlwind<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)
 actions.aoe+=/heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down
 # Heroic Charge is an event that makes the warrior heroic leap out of melee range for an instant
 #If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.
 #This can delay autoattacks, but typically the rage gained from charging (Especially with bull rush glyphed) is more than
 #The amount lost from delayed autoattacks. Charge only grants rage from charging a different target than the last time.
 #Which means this is only worth doing on AoE, and only when you cycle your charge target.
-actions.aoe+=/mortal_strike,if=target.health.pct>20&active_enemies<=5
+actions.aoe+=/mortal_strike,if=target.health.pct>20&spell_targets.whirlwind<=5
 actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
-actions.aoe+=/thunder_clap,if=(target.health.pct>20|active_enemies>=9)&glyph.resonating_power.enabled
-actions.aoe+=/rend,cycle_targets=1,if=ticks_remain<2&target.time_to_die>8&!buff.colossus_smash_up.up&active_enemies>=9&rage<50&!talent.taste_for_blood.enabled
-actions.aoe+=/whirlwind,if=target.health.pct>20|active_enemies>=9
+actions.aoe+=/thunder_clap,if=(target.health.pct>20|spell_targets.whirlwind>=9)&glyph.resonating_power.enabled
+actions.aoe+=/rend,cycle_targets=1,if=ticks_remain<2&target.time_to_die>8&!buff.colossus_smash_up.up&spell_targets.whirlwind>=9&rage<50&!talent.taste_for_blood.enabled
+actions.aoe+=/whirlwind,if=target.health.pct>20|spell_targets.whirlwind>=9
 actions.aoe+=/siegebreaker
 actions.aoe+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
 actions.aoe+=/shockwave
@@ -107,18 +105,18 @@ legs=legplates_of_iron_wrath,id=124340,bonus_id=567
 feet=treads_of_the_defiler,id=124322,bonus_id=567
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=empty_drinking_horn,id=124238,bonus_id=567
+trinket1=rumbling_pebble,id=124235,bonus_id=567
 trinket2=worldbreakers_resolve,id=124523,bonus_id=567
 main_hand=calamitys_edge,id=124389,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=730.67
-# gear_strength=4686
+# gear_ilvl=730.00
+# gear_strength=4639
 # gear_stamina=6242
 # gear_crit_rating=2506
 # gear_haste_rating=1006
-# gear_mastery_rating=1613
-# gear_multistrike_rating=684
+# gear_mastery_rating=2091
+# gear_multistrike_rating=1162
 # gear_armor=2512
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

@@ -1745,11 +1745,18 @@ void player_t::init_spells()
       heal_t::init();
 
       snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY |
-                                      STATE_RESOLVE | STATE_MUL_PERSISTENT;
+                                      /* STATE_RESOLVE | */ STATE_MUL_PERSISTENT;
     }
   };
 
-  spell.leech = new leech_t( this );
+  if ( role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_leech )
+  {
+    spell.leech = new leech_t( this );
+  }
+  else
+  {
+    spell.leech = 0;
+  }
 }
 
 // player_t::init_gains =====================================================
@@ -2432,10 +2439,6 @@ void player_t::create_buffs()
 
   debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
                                     .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
-
-  if ( this -> sim -> distance_targeting_enabled )
-    x_position = -1 * base.distance; // Most profiles set the base distance in init_base_stats, and create_buffs happens later.
-
 }
 
 // player_t::find_item ======================================================
@@ -5584,30 +5587,6 @@ uptime_t* player_t::get_uptime( const std::string& name )
   return u;
 }
 
-// player_t::get_position_distance ==========================================
-
-double player_t::get_position_distance( double m, double v )
-{
-  double delta_x = this -> x_position - m;
-  double delta_y = this -> y_position - v;
-  double sqrtnum = delta_x * delta_x + delta_y * delta_y;
-  return util::approx_sqrt( sqrtnum );
-}
-
-// player_t::get_player_distance ============================================
-
-double player_t::get_player_distance( player_t& p )
-{
-  return get_position_distance( p.x_position, p.y_position );
-}
-
-// player_t::get_ground_aoe_distance ========================================
-
-double player_t::get_ground_aoe_distance( action_state_t& a )
-{
-  return get_position_distance( a.original_x, a.original_y );
-}
-
 // player_t::get_action_priority_list( const std::string& name ) ============
 
 action_priority_list_t* player_t::get_action_priority_list( const std::string& name, const std::string& comment )
@@ -7886,6 +7865,34 @@ expr_t* player_t::create_expression( action_t* a,
   {
     if ( expr_t* expr = unique_gear::create_expression( a, expression_str ) )
       return expr;
+  }
+
+  if ( splits.size() == 2 && ( splits[ 0 ] == "main_hand" || splits[ 0 ] == "off_hand" ) )
+  {
+    double weapon_status = -1;
+    if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
+    {
+      weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_2H );
+    }
+    else if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
+    {
+      weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_1H ||
+                                           main_hand_weapon.group() == WEAPON_SMALL );
+    }
+    else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
+    {
+      weapon_status = static_cast<double>( off_hand_weapon.group() == WEAPON_2H );
+    }
+    else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
+    {
+      weapon_status = static_cast<double>( off_hand_weapon.group() == WEAPON_1H ||
+                                           off_hand_weapon.group() == WEAPON_SMALL );
+    }
+
+    if ( weapon_status > -1 )
+    {
+      return expr_t::create_constant( "weapon_type_expr", weapon_status );
+    }
   }
 
   if ( splits[ 0 ] == "legendary_ring" )

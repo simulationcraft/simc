@@ -771,6 +771,14 @@ public:
       // trigger WoD Ret PvP 4-P
       p() -> buffs.vindicators_fury -> trigger( 1, c > 0 ? c : 3 );
     }
+
+    // Handle benefit tracking
+    if ( this -> harmful )
+    {
+      p() -> buffs.avenging_wrath -> up();
+      p() -> buffs.wings_of_liberty -> up();
+      p() -> buffs.retribution_trinket -> up();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1126,7 +1134,7 @@ struct avenging_wrath_t : public paladin_heal_t
   {
     // override for this just in case Avenging Wrath were to get canceled or removed
     // early, or if there's a duration mismatch (unlikely, but...)
-    if ( p() -> buffs.avenging_wrath -> up() )
+    if ( p() -> buffs.avenging_wrath -> check() )
     {
       // call tick()
       heal_t::tick( d );
@@ -1779,11 +1787,10 @@ struct stay_of_execution_t : public paladin_heal_t
 {
   std::array<double, 11> soe_tick_multiplier;
 
-  stay_of_execution_t( paladin_t* p, const std::string& options_str )
+  stay_of_execution_t( paladin_t* p )
     : paladin_heal_t( "stay_of_execution", p, p -> find_talent_spell( "Execution Sentence" ) ),
       soe_tick_multiplier()
   {
-    parse_options( options_str );
     hasted_ticks   = false;
     travel_speed   = 0;
     tick_may_crit  = 1;
@@ -1870,7 +1877,7 @@ struct execution_sentence_t : public paladin_spell_t
       tick_multiplier[ 10 ] *= 5;
     }
 
-    stay_of_execution = new stay_of_execution_t( p, options_str );
+    stay_of_execution = new stay_of_execution_t( p );
     add_child( stay_of_execution );
 
     // disable if not talented
@@ -1918,9 +1925,9 @@ struct flash_of_light_t : public paladin_heal_t
   }
 
   virtual double cost() const
-  {
+  { 
     // selfless healer reduces mana cost by 35% per stack
-    double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
+    double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
 
     return ( paladin_heal_t::cost() * cost_multiplier );
   }
@@ -1928,7 +1935,7 @@ struct flash_of_light_t : public paladin_heal_t
   virtual timespan_t execute_time() const
   {
     // Selfless Healer reduces cast time by 35% per stack
-    double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
+    double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
 
     return ( paladin_heal_t::execute_time() * cast_multiplier );
   }
@@ -1943,7 +1950,7 @@ struct flash_of_light_t : public paladin_heal_t
       // multiplicative 35% per Selfless Healer stack when FoL is used on others
       if ( target != player )
       {
-        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> stack();
+        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> current_stack;
       }
     }
 
@@ -1954,8 +1961,8 @@ struct flash_of_light_t : public paladin_heal_t
   {
     paladin_heal_t::execute();
 
-    // if Selfless Healer is talented, expire SH buff 
-    if ( p() -> talents.selfless_healer -> ok() )
+    // if Selfless Healer is talented, expire SH buff. Call up() for benefit tracking.
+    if ( p() -> talents.selfless_healer -> ok() && p() -> buffs.selfless_healer -> up() )
       p() -> buffs.selfless_healer -> expire();
 
     // Enhanced Holy Shock trigger
@@ -2557,7 +2564,7 @@ struct holy_shock_t : public paladin_heal_t
   {
     double cdm = paladin_heal_t::cooldown_multiplier();
     
-    if ( p() -> buffs.avenging_wrath -> up() )
+    if ( p() -> buffs.avenging_wrath -> check() )
       cdm += cooldown_mult;
 
     return cdm;
@@ -3325,17 +3332,24 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
       switch ( p() -> active_seal )
       {
       case SEAL_OF_JUSTICE:
+        p() -> active_seal_of_justice_proc       -> target = target;
         p() -> active_seal_of_justice_proc       -> execute();
         break;
       case SEAL_OF_INSIGHT:
         p() -> active_seal_of_insight_proc       -> execute();
         break;
       case SEAL_OF_RIGHTEOUSNESS:
+        p() -> active_seal_of_righteousness_proc -> target = target;
         p() -> active_seal_of_righteousness_proc -> execute();
         break;
       case SEAL_OF_TRUTH:
+        p() -> active_censure                    -> target = target;
         p() -> active_censure                    -> execute();
-        if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+        if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 )
+        {
+          p() -> active_seal_of_truth_proc       -> target = target;
+          p() -> active_seal_of_truth_proc       -> execute();
+        }
         break;
       default: break;
       }
@@ -3412,14 +3426,20 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     parse_options( options_str );
   }
 
-  virtual void execute()
+  void execute()
   {
     p() -> main_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready()
+  bool ready()
   {
-    if ( p() -> is_moving() ) return false;
+    if ( p() -> is_moving() ) 
+      return false;
+
+    player_t* potential_target = select_target_if_target();
+    if ( potential_target && potential_target != p() -> main_hand_attack -> target )
+      p() -> main_hand_attack -> target = potential_target;
+
     return( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -3937,7 +3957,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     double cdm = paladin_melee_attack_t::cooldown_multiplier();
     
-    if ( p() -> buffs.avenging_wrath -> up() )
+    if ( p() -> buffs.avenging_wrath -> check() )
       cdm *= cooldown_mult;
 
     return cdm;
@@ -6052,9 +6072,9 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
 
-  m *= 1.0 + buffs.wings_of_liberty -> stack_value();
+  m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
   if ( retribution_trinket )
-    m *= 1.0 + buffs.retribution_trinket -> stack_value();
+    m *= 1.0 + buffs.retribution_trinket -> current_stack * buffs.wings_of_liberty -> current_value;
 
   // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )

@@ -200,6 +200,7 @@ public:
   double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
   bool alternate_stellar_flare; // Player request.
   bool predatory_swiftness_bug; // Trigger a PS when combat begins.
+  int initial_berserk_duration;
   bool stellar_flare_cast; //Hacky way of not consuming lunar/solar peak.
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
@@ -211,6 +212,9 @@ public:
   // Active
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
+
+  // RPPM objects
+  real_ppm_t balance_t18_2pc;
 
   // Absorb Stats
   stats_t* tooth_and_claw;
@@ -613,11 +617,13 @@ public:
     time_to_next_solar( 30 ),
     alternate_stellar_flare( 0 ),
     predatory_swiftness_bug( 0 ),
+    initial_berserk_duration( 0 ),
     stellar_flare_cast( 0 ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
+    balance_t18_2pc( *this, 0, RPPM_NONE ),
     active( active_actions_t() ),
     caster_form_weapon(),
     starshards(),
@@ -657,8 +663,6 @@ public:
     cooldown.starfallsurge       = get_cooldown( "starfallsurge"       );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
-    cooldown.fey_faerie          = get_cooldown( "fey_faerie"          );
-    cooldown.fey_faerie -> duration = timespan_t::from_seconds( 3.0 ); // ICD on the set bonus
     
     cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
     cooldown.starfallsurge -> charges = 3;
@@ -686,6 +690,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool );
+  virtual void      init_rng();
   virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
@@ -1109,6 +1114,14 @@ namespace pets {
         if ( player -> o() -> pet_fey_moonwing[0] )
           stats = player -> o() -> pet_fey_moonwing[0] -> get_stats( "fey_missile" );
         may_crit = true;
+
+        // Casts have a delay that decreases with haste. This is a very rough approximation.
+        cooldown -> duration = timespan_t::from_millis( 600 );
+      }
+
+      double cooldown_reduction() const override
+      {
+        return spell_t::cooldown_reduction() * composite_haste();
       }
     };
     druid_t* o() { return static_cast<druid_t*>( owner ); }
@@ -4280,6 +4293,17 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual void execute()
   {
+    // Adjust buffs and cooldowns if we're in precombat.
+    if ( ! p() -> in_combat )
+    {
+      if ( p() -> buff.incarnation -> check() )
+      {
+        timespan_t time = std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
+        p() -> buff.incarnation -> extend_duration( p(), -time );
+        p() -> get_cooldown( "incarnation" ) -> adjust( -time );
+      }
+    }
+
     if( p() -> specialization() == DRUID_BALANCE )
     {
       p() -> balance_tracker();
@@ -4342,6 +4366,21 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       p() -> balance_tracker();
 
     return base_t::ready();
+  }
+
+  virtual void trigger_balance_t18_2pc()
+  {
+    if ( ! p() -> balance_t18_2pc.trigger() )
+      return;
+
+    for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
+    {
+      if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
+      {
+        p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
+        return;
+      }
+    }
   }
 }; // end druid_spell_t
 
@@ -4868,22 +4907,20 @@ struct incarnation_t : public druid_spell_t
 
     p() -> buff.incarnation -> trigger();
 
-    switch ( p() -> specialization() )
+    if ( ! p() -> in_combat )
     {
-    case DRUID_FERAL:
-      // Waste 1 second of the buff if its used prior to combat.
-      if ( ! p() -> in_combat )
-        p() -> buff.incarnation -> extend_duration( p(), timespan_t::from_seconds( -1.0 ) );
-      break;
-    case DRUID_GUARDIAN:
+      timespan_t time = std::max( min_gcd, trigger_gcd * composite_haste() );
+      p() -> buff.incarnation -> extend_duration( p(), -time );
+      cooldown -> adjust( -time );
+    }
+
+    if ( p() -> specialization() == DRUID_GUARDIAN )
+    {
       p() -> cooldown.mangle -> reset( false );
       p() -> cooldown.growl  -> reset( false );
       p() -> cooldown.maul   -> reset( false );
       if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
         p() -> cooldown.faerie_fire -> reset( false ); 
-      break;
-    default:
-      break;
     }
   }
 };
@@ -4948,6 +4985,9 @@ struct sunfire_t: public druid_spell_t
 
       if ( result_is_hit( d -> state -> result ) )
         p() -> trigger_shooting_stars( d -> state );
+
+      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+        trigger_balance_t18_2pc();
     }
   };
 
@@ -4993,28 +5033,10 @@ struct sunfire_t: public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-    {
-      p() -> cooldown.fey_faerie -> start();
-      if ( rng().roll( 0.55 ) )
-      {
-        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-        {
-          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-          {
-            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-            break;
-          }
-        }
-      }
-    }
-
     p() -> last_target_dot_moonkin = execute_state -> target;
 
-    if ( !p() -> stellar_flare_cast )
-    {
+    if ( ! p() -> stellar_flare_cast )
       p() -> buff.solar_peak -> expire();
-    }
   }
 
   void tick( dot_t* d )
@@ -5023,6 +5045,9 @@ struct sunfire_t: public druid_spell_t
 
     if ( result_is_hit( d -> state -> result ) )
       p() -> trigger_shooting_stars( d -> state );
+
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+      trigger_balance_t18_2pc();
   }
 
   void impact( action_state_t* s )
@@ -5085,6 +5110,9 @@ struct moonfire_t : public druid_spell_t
 
       if ( result_is_hit( d -> state -> result ) )
         p() -> trigger_shooting_stars( d -> state );
+
+      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+        trigger_balance_t18_2pc();
     }
   };
 
@@ -5123,6 +5151,8 @@ struct moonfire_t : public druid_spell_t
     if ( result_is_hit( d -> state -> result ) )
       p() -> trigger_shooting_stars( d -> state );
 
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+      trigger_balance_t18_2pc();
   }
 
   double action_multiplier() const
@@ -5139,28 +5169,10 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) && p() -> cooldown.fey_faerie -> up() )
-    {
-      p() -> cooldown.fey_faerie -> start();
-      if ( rng().roll( 0.55 ) )
-      {
-        for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
-        {
-          if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
-          {
-            p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
-            break;
-          }
-        }
-      }
-    }
-
     p() -> last_target_dot_moonkin = execute_state -> target;
 
-    if ( !p() -> stellar_flare_cast )
-    {
+    if ( ! p() -> stellar_flare_cast )
       p() -> buff.lunar_peak -> expire();
-    }
   }
 
   void schedule_execute( action_state_t* state = 0 )
@@ -5552,6 +5564,7 @@ struct starfall_t : public druid_spell_t
       direct_tick = true;
       aoe = -1;
       range = 40;
+      radius = 0;
     }
   };
 
@@ -6429,14 +6442,18 @@ void druid_t::create_buffs()
   switch ( specialization() ) {
     case DRUID_BALANCE:     buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_chosen )
                              .default_value( talent.incarnation_chosen -> effectN( 1 ).percent() )
-                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             .cd( timespan_t::zero() );
                             break;
-    case DRUID_FERAL:       buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_king );
+    case DRUID_FERAL:       buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_king )
+                             .cd( timespan_t::zero() );
                             break;
-    case DRUID_GUARDIAN:    buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_son );
+    case DRUID_GUARDIAN:    buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_son )
+                             .cd( timespan_t::zero() );
                             break;
     case DRUID_RESTORATION: buff.incarnation = buff_creator_t( this, "incarnation", talent.incarnation_tree )
-                             .duration( timespan_t::from_seconds( 30 ) );
+                             .duration( timespan_t::from_seconds( 30 ) )
+                             .cd( timespan_t::zero() );
                             break;
     default:
       break;
@@ -6676,6 +6693,8 @@ void druid_t::apl_precombat()
   }
   else if ( specialization() == DRUID_GUARDIAN )
     precombat -> add_talent( this, "Cenarion Ward" );
+  else if ( specialization() == DRUID_FERAL && ( find_item( "soul_capacitor") || find_item( "maalus_the_blood_drinker" ) ) )
+    precombat -> add_action( "incarnation" );
 }
 
 // NO Spec Combat Action Priority List ======================================
@@ -7042,7 +7061,17 @@ void druid_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[RESOURCE_ECLIPSE] = 0;
+  resources.current[ RESOURCE_ECLIPSE ] = 0;
+}
+
+// druid_t::init_rng =======================================================
+
+void druid_t::init_rng()
+{
+  // RPPM objects
+  balance_t18_2pc.set_frequency( sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
+
+  player_t::init_rng();
 }
 
 // druid_t::init_actions ====================================================
@@ -7209,6 +7238,12 @@ void druid_t::combat_begin()
 
   if ( predatory_swiftness_bug && glyph.savage_roar -> ok() )
     buff.predatory_swiftness -> trigger();
+
+  if ( spell.berserk_cat -> ok() && initial_berserk_duration > 0 )
+  {
+    buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( initial_berserk_duration ) );
+    resources.current[ RESOURCE_ENERGY ] = resources.max[ RESOURCE_ENERGY ];
+  }
 }
 
 // druid_t::invalidate_cache ================================================
@@ -7643,6 +7678,7 @@ void druid_t::create_options()
 
   add_option( opt_bool( "alternate_stellar_flare", alternate_stellar_flare ) );
   add_option( opt_bool( "predatory_swiftness_bug", predatory_swiftness_bug ) );
+  add_option( opt_int( "initial_berserk_duration", initial_berserk_duration ) );
 }
 
 // druid_t::copy_from =======================================================

@@ -618,6 +618,12 @@ public:
 
     trigger_tier16_bm_4pc_brutal_kinship( p() );
   }
+
+  virtual void try_steady_focus()
+  {
+    if ( p() -> talents.steady_focus -> ok() )
+      p() -> buffs.pre_steady_focus -> expire();
+  }
 };
 
 // SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load.
@@ -1435,6 +1441,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
     background = true;
     proc = true;
     school = SCHOOL_PHYSICAL;
+    range = 25;
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
@@ -1849,11 +1856,16 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     return t;
   }
 
-  virtual void try_steady_focus()
+  void trigger_go_for_the_throat()
   {
-    // Most ranged attacks reset the counter for two steady/cobra shots in a row
-    if ( p() -> talents.steady_focus -> ok() )
-      p() -> buffs.pre_steady_focus -> expire();
+    if ( !p() -> specs.go_for_the_throat -> ok() )
+      return;
+
+    if ( !p() -> active.pet )
+      return;
+
+    int gain = p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+    p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.go_for_the_throat );
   }
 
   virtual void trigger_steady_focus( bool require_pre )
@@ -1872,18 +1884,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
     p() -> buffs.steady_focus -> trigger( 1, regen_buff );
     p() -> buffs.pre_steady_focus -> expire();
-  }
-
-  void trigger_go_for_the_throat()
-  {
-    if ( !p() -> specs.go_for_the_throat -> ok() )
-      return;
-
-    if ( !p() -> active.pet )
-      return;
-
-    int gain = p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
-    p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.go_for_the_throat );
   }
 
   void trigger_tier15_2pc_melee()
@@ -2174,11 +2174,16 @@ struct glaive_toss_strike_t: public ranged_attack_t
 
   bool impact_targeting( action_state_t* s ) const
   {
-    if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
-      ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
-      return true;
+    if ( player -> sim -> distance_targeting_enabled )
+    {
+      if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <=
+        ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
+        return true;
+      else
+        return false;
+    }
 
-    return false;
+    return true;
   }
 
   double composite_target_multiplier( player_t* target ) const
@@ -2208,11 +2213,16 @@ struct glaive_rebound_t: public ranged_attack_t
 
   bool impact_targeting( action_state_t* s ) const
   {
-    if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <= 
-      ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
-      return true;
+    if ( player -> sim -> distance_targeting_enabled )
+    {
+      if ( ( s -> target -> x_position - std::min( player -> x_position, target -> x_position ) ) <=
+        ( std::max( player -> x_position, target -> x_position ) - std::min( player -> x_position, target -> x_position ) ) )
+        return true;
+      else
+        return false;
+    }
 
-    return false;
+    return true;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
@@ -3073,6 +3083,13 @@ public:
     // Hunter gcd unaffected by haste
     return trigger_gcd;
   }
+
+  virtual void execute() override
+  {
+    hunter_action_t::execute();
+    
+    try_steady_focus();
+  }
 };
 
 struct aspect_of_the_fox_t: public hunter_spell_t
@@ -3469,7 +3486,6 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t( "kill_command", player, player -> specs.kill_command )
   {
     parse_options( options_str );
-
     harmful = false;
   }
 
@@ -3499,7 +3515,10 @@ struct kill_command_t: public hunter_spell_t
 
   virtual bool ready()
   {
-    return p() -> active.pet && hunter_spell_t::ready();
+    if ( p() -> active.pet && p() -> active.pet -> active.kill_command -> ready() ) // Range check from the pet.
+      return hunter_spell_t::ready();
+
+    return false;
   }
 
   bool trigger_tier17_2pc_bm()

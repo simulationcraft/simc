@@ -3,7 +3,7 @@ level=100
 race=tauren
 role=attack
 position=back
-talents=1321321
+talents=0021021
 talent_override=bladestorm,if=raid_event.adds.count>=1|enemies>1
 talent_override=dragon_roar,if=raid_event.adds.count>=1|enemies>1
 talent_override=ravager,if=raid_event.adds.cooldown>=60&raid_event.adds.exists
@@ -22,8 +22,6 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
-# Generic on-use trinket line if needed when swapping trinkets out. 
-#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
 
@@ -35,10 +33,10 @@ actions+=/auto_attack
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/berserker_rage,if=buff.enrage.down|(prev_gcd.bloodthirst&buff.raging_blow.stack<2)
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-actions+=/use_item,name=thorasus_the_stone_heart_of_draenor,if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25)
+actions+=/use_item,name=thorasus_the_stone_heart_of_draenor,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25)
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=30
 # Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon.
-actions+=/run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5
+actions+=/run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5
 actions+=/recklessness,if=(buff.bloodbath.up|cooldown.bloodbath.remains>25|!talent.bloodbath.enabled|target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&set_bonus.tier18_4pc
 actions+=/call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc
 actions+=/call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc
@@ -46,10 +44,10 @@ actions+=/avatar,if=buff.recklessness.up|cooldown.recklessness.remains>60|target
 actions+=/blood_fury,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
 actions+=/arcane_torrent,if=rage<rage.max-40
-actions+=/call_action_list,name=single_target,if=active_enemies=1
-actions+=/call_action_list,name=two_targets,if=active_enemies=2
-actions+=/call_action_list,name=three_targets,if=active_enemies=3
-actions+=/call_action_list,name=aoe,if=active_enemies>3
+actions+=/call_action_list,name=two_targets,if=spell_targets.whirlwind=2
+actions+=/call_action_list,name=three_targets,if=spell_targets.whirlwind=3
+actions+=/call_action_list,name=aoe,if=spell_targets.whirlwind>3
+actions+=/call_action_list,name=single_target
 
 actions.movement=heroic_leap
 actions.movement+=/charge,cycle_targets=1,if=debuff.charge.down
@@ -118,8 +116,8 @@ actions.aoe+=/bloodthirst
 actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 # oh god why
-actions.bladestorm=recklessness,sync=bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|active_enemies>desired_targets)
-actions.bladestorm+=/bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|active_enemies>desired_targets)
+actions.bladestorm=recklessness,sync=bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
+actions.bladestorm+=/bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
 
 actions.reck_anger_management=recklessness,if=(target.time_to_die>140|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled|target.time_to_die<15)
 
@@ -137,19 +135,19 @@ legs=legplates_of_iron_wrath,id=124340,bonus_id=567
 feet=treads_of_the_defiler,id=124322,bonus_id=567
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=empty_drinking_horn,id=124238,bonus_id=567
+trinket1=rumbling_pebble,id=124235,bonus_id=567
 trinket2=worldbreakers_resolve,id=124523,bonus_id=567
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=mark_of_the_thunderlord
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=730.31
-# gear_strength=4604
+# gear_ilvl=729.69
+# gear_strength=4557
 # gear_stamina=6119
 # gear_crit_rating=2327
 # gear_haste_rating=1006
-# gear_mastery_rating=1381
-# gear_multistrike_rating=988
+# gear_mastery_rating=1859
+# gear_multistrike_rating=1466
 # gear_armor=2512
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

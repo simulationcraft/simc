@@ -34,7 +34,6 @@ actions+=/antimagic_shell,damage=100000,if=((dot.breath_of_sindragosa.ticking&ru
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled
 actions+=/berserking,if=!talent.breath_of_sindragosa.enabled
 actions+=/arcane_torrent,if=!talent.breath_of_sindragosa.enabled
-actions+=/use_item,slot=finger1,if=!talent.breath_of_sindragosa.enabled
 actions+=/potion,name=draenic_strength,if=(buff.dark_transformation.up&target.time_to_die<=60)&!talent.breath_of_sindragosa.enabled
 actions+=/run_action_list,name=unholy
 
@@ -74,7 +73,6 @@ actions.unholy+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
 actions.bos=blood_fury,if=dot.breath_of_sindragosa.ticking
 actions.bos+=/berserking,if=dot.breath_of_sindragosa.ticking
-actions.bos+=/use_item,slot=finger1,if=dot.breath_of_sindragosa.ticking
 actions.bos+=/potion,name=draenic_strength,if=dot.breath_of_sindragosa.ticking
 actions.bos+=/unholy_blight,if=!disease.ticking
 actions.bos+=/plague_strike,if=!disease.ticking
@@ -103,20 +101,20 @@ hands=gauntlets_of_derision,id=124326,bonus_id=566
 waist=ravenous_girdle,id=124348,bonus_id=566
 legs=demongaze_legplates,id=124338,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_multistrike
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,bonus_id=566,enchant=gift_of_multistrike
 trinket1=unending_hunger,id=124236,bonus_id=566
 trinket2=rumbling_pebble,id=124235,bonus_id=566
 main_hand=hellrender,id=124360,bonus_id=566,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=713.67
-# gear_strength=4006
-# gear_stamina=5385
-# gear_crit_rating=1552
+# gear_ilvl=712.33
+# gear_strength=3963
+# gear_stamina=5321
+# gear_crit_rating=1522
 # gear_haste_rating=925
 # gear_mastery_rating=1532
-# gear_multistrike_rating=2737
+# gear_multistrike_rating=2712
 # gear_armor=2382
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

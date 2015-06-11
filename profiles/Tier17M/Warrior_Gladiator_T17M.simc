@@ -21,8 +21,6 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/stance,choose=gladiator
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
-# Generic on-use trinket line if needed when swapping trinkets out. 
-#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_armor
 
@@ -47,8 +45,8 @@ actions+=/heroic_strike,if=buff.shield_charge.up&target.health.pct>20
 actions+=/heroic_strike,if=buff.shield_charge.up&target.health.pct<20&buff.unyielding_strikes.stack>3
 actions+=/heroic_strike,if=buff.ultimatum.up|(rage>=rage.max-20)
 actions+=/heroic_strike,if=target.time_to_die<10|buff.unyielding_strikes.stack>4
-actions+=/call_action_list,name=single,if=active_enemies=1
-actions+=/call_action_list,name=aoe,if=active_enemies>=2
+actions+=/call_action_list,name=aoe,if=spell_targets.revenge>=2
+actions+=/call_action_list,name=single
 
 actions.movement=heroic_leap
 actions.movement+=/shield_charge
@@ -69,10 +67,10 @@ actions.aoe=revenge
 actions.aoe+=/shield_slam
 actions.aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
 actions.aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
-actions.aoe+=/thunder_clap,cycle_targets=1,if=dot.deep_wounds.remains<3&active_enemies>4
+actions.aoe+=/thunder_clap,cycle_targets=1,if=dot.deep_wounds.remains<3&spell_targets.thunder_clap>4
 actions.aoe+=/bladestorm,if=buff.shield_charge.down
 actions.aoe+=/execute,if=buff.sudden_death.react
-actions.aoe+=/thunder_clap,if=active_enemies>6
+actions.aoe+=/thunder_clap,if=spell_targets.thunder_clap>6
 actions.aoe+=/devastate,cycle_targets=1,if=dot.deep_wounds.remains<5&cooldown.shield_slam.remains>execute_time*0.4
 actions.aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 

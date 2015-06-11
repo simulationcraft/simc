@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20111)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -6840,7 +6840,7 @@ $gift=$?s87305[${1.25}][${1}]
 $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6859,7 +6859,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Balance Shaman, Mage, Warlock, Druid
+Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7727,7 +7727,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274309)   : School Damage: spellstorm (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.72330
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60316
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 

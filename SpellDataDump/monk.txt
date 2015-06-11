@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20076)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20111)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -6558,7 +6558,7 @@ Effects          :
 Description      : While channeling Rushing Jade Wind, you also heal nearby injured allies for $162530m1 every $101546t1 sec for $101546d. Healing yourself does not count for Chi generation.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
