@@ -2341,7 +2341,6 @@ struct powershot_t: public hunter_ranged_attack_t
 
 struct black_arrow_t: public hunter_ranged_attack_t
 {
-  uint32_t lnl_procs;
   double lnl_chance;
 
   black_arrow_t( hunter_t* player, const std::string& options_str ):
@@ -2354,16 +2353,33 @@ struct black_arrow_t: public hunter_ranged_attack_t
     may_multistrike = 1;
     lnl_chance = data().effectN( 2 ).percent(); 
   }
+  
+  struct black_arrow_state_t : action_state_t
+  {
+    uint32_t lnl_proc_mask;
+    uint32_t lnl_proc_count;
+
+    black_arrow_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+      lnl_proc_mask( 0 ),
+      lnl_proc_count( 0 )
+    { }
+  };
+
+  virtual action_state_t* new_state() override
+  { return new black_arrow_state_t( this, target ); }
 
   virtual void tick( dot_t* d )
   {
     hunter_ranged_attack_t::tick( d );
+    
+    black_arrow_state_t* ba_state = debug_cast<black_arrow_state_t*>( d -> state );
 
     // All LnL procs are pre-planned. The current_tick is the order of
     // magnitude, so the lowest bit is for the zero_tick
     uint32_t proc_bit = 1 << ( d -> current_tick );
-    if ( lnl_procs & proc_bit )
+    if ( ba_state -> lnl_proc_mask & proc_bit )
     {
+      ba_state -> lnl_proc_count++;
       p() -> buffs.lock_and_load -> trigger( 2 );
       p() -> cooldowns.explosive_shot -> reset( true );
       p() -> procs.lock_and_load -> occur();
@@ -2402,7 +2418,8 @@ struct black_arrow_t: public hunter_ranged_attack_t
     }
 
     // assign each proc to a tick
-    lnl_procs = 0;
+    black_arrow_state_t* ba_state = debug_cast<black_arrow_state_t*>( s );
+    int lnl_procs = 0;
     int possible_slots = num_ticks;
     while ( proc_count > 0 )
     {
@@ -2421,6 +2438,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
       proc_count--;
       possible_slots--;
     }
+    ba_state -> lnl_proc_mask = lnl_procs;
   }
 };
 
@@ -4269,7 +4287,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_shot" );
 
   add_racial_actions( default_list ); 
-  add_item_actions( default_list );
+  add_item_actions( default_list ); 
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=25" );
@@ -4301,7 +4319,7 @@ void hunter_t::apl_surv()
   aoe -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up|buff.archmages_incandescence_agi.up))" );
   aoe -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&(!talent.barrage.enabled|cooldown.barrage.remains>0)" );
   aoe -> add_talent( this, "Barrage" );
-  aoe -> add_action( this, "Black Arrow", "if=!ticking" );
+  aoe -> add_action( this, "Black Arrow", "cycle_targets=1,if=remains<gcd*1.5" );
   aoe -> add_action( this, "Explosive Shot", "if=active_enemies<5" );
   aoe -> add_action( this, "Explosive Trap", "if=dot.explosive_trap.remains<=5" );
   aoe -> add_talent( this, "A Murder of Crows" );

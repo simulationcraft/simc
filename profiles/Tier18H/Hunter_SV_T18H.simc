@@ -58,7 +58,7 @@ actions+=/cobra_shot
 actions.aoe=stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up|buff.archmages_incandescence_agi.up))
 actions.aoe+=/explosive_shot,if=buff.lock_and_load.react&(!talent.barrage.enabled|cooldown.barrage.remains>0)
 actions.aoe+=/barrage
-actions.aoe+=/black_arrow,if=!ticking
+actions.aoe+=/black_arrow,cycle_targets=1,if=remains<gcd*1.5
 actions.aoe+=/explosive_shot,if=active_enemies<5
 actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
 actions.aoe+=/a_murder_of_crows
