@@ -2546,6 +2546,11 @@ double player_t::composite_melee_speed() const
 {
   double h = composite_melee_haste();
 
+  if ( buffs.fel_winds && buffs.fel_winds -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.fel_winds -> value() );
+  }
+
   return h;
 }
 

@@ -113,6 +113,7 @@ namespace set_bonus
   void tier_lfr_passive_stat( special_effect_t& );
 
   void t18_lfr_4pc_clothcaster( special_effect_t& );
+  void t18_lfr_4pc_platemelee( special_effect_t& );
 }
 
 /**
@@ -1176,6 +1177,41 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
 
   effect.execute_action = spell;
 
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+static void fel_winds_callback( buff_t* buff, int ct, int tt )
+{
+  double old_mas = buff -> player -> cache.attack_speed();
+  // .. aand force recomputation of attack speed so reschedule_auto_attack will see the new value.
+  buff -> player -> invalidate_cache( CACHE_ATTACK_SPEED );
+  // Hardcoding this value for now, the spell data does not really make sense.
+  buff -> current_value = buff -> default_value - 0.1 * ct;
+  if ( buff -> sim -> debug )
+  {
+    buff -> sim -> out_debug.printf( "%s %s effect decreases, current_value=%.f",
+        buff -> player -> name(), buff -> name(), buff -> current_value );
+  }
+
+  if ( buff -> current_value > 0 )
+  {
+    if ( buff -> player -> main_hand_attack )
+      buff -> player -> main_hand_attack -> reschedule_auto_attack( old_mas );
+    if ( buff -> player -> off_hand_attack )
+      buff -> player -> off_hand_attack -> reschedule_auto_attack( old_mas );
+  }
+}
+
+void set_bonus::t18_lfr_4pc_platemelee( special_effect_t& effect )
+{
+  if ( ! effect.player -> buffs.fel_winds )
+  {
+    effect.player -> buffs.fel_winds = haste_buff_creator_t( effect.player, "fel_winds", effect.trigger() )
+      .default_value( effect.trigger() -> effectN( 1 ).percent() )
+      .tick_callback( fel_winds_callback );
+  }
+
+  effect.custom_buff = effect.player -> buffs.fel_winds;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -3826,5 +3862,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 187142, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Tank */
 
   register_special_effect( 187079, set_bonus::t18_lfr_4pc_clothcaster   );
+  register_special_effect( 187151, set_bonus::t18_lfr_4pc_platemelee    );
 }
 
