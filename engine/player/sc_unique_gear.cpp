@@ -117,6 +117,7 @@ namespace set_bonus
   void t18_lfr_4pc_leathercaster( special_effect_t& );
   void t18_lfr_4pc_mail_agility( special_effect_t& );
   void t18_lfr_4pc_mail_caster( special_effect_t& );
+  void t18_lfr_4pc_leather_melee( special_effect_t& );
 }
 
 /**
@@ -1281,6 +1282,14 @@ void set_bonus::t18_lfr_4pc_mail_caster( special_effect_t& effect )
   effect.execute_action = spell;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void set_bonus::t18_lfr_4pc_leather_melee( special_effect_t& effect )
+{
+  player_t* p = effect.player;
+
+  p -> resources.base[ RESOURCE_ENERGY ] += effect.driver() -> effectN( 1 ).base_value();
+  p -> base_energy_regen_per_second *= 1.0 + effect.driver() -> effectN( 2 ).percent();
 }
 
 
@@ -3935,5 +3944,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 187435, set_bonus::t18_lfr_4pc_leathercaster );
   register_special_effect( 187688, set_bonus::t18_lfr_4pc_mail_agility  );
   register_special_effect( 187778, set_bonus::t18_lfr_4pc_mail_caster   );
+  register_special_effect( 187863, set_bonus::t18_lfr_4pc_leather_melee );
 }
 
