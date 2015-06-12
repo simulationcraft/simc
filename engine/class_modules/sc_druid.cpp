@@ -373,7 +373,7 @@ public:
   } gain;
 
   // Perks
-  struct
+  struct perk_t
   {
     // Feral
     const spell_data_t* enhanced_berserk;
@@ -624,6 +624,7 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     balance_t18_2pc( *this, 0, RPPM_NONE ),
+    tooth_and_claw( 0 ),
     active( active_actions_t() ),
     caster_form_weapon(),
     starshards(),
@@ -633,6 +634,7 @@ public:
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
+    perk( perk_t() ),
     glyph( glyphs_t() ),
     mastery( masteries_t() ),
     proc( procs_t() ),
@@ -649,6 +651,11 @@ public:
     for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
     {
       pet_force_of_nature[i] = nullptr;
+    }
+
+    for ( size_t i = 0; i < sizeof_array( pet_fey_moonwing ); i++ )
+    {
+      pet_fey_moonwing[i] = nullptr;
     }
     
     cooldown.berserk             = get_cooldown( "berserk"             );
@@ -668,6 +675,7 @@ public:
     cooldown.starfallsurge -> charges = 3;
     cooldown.starfallsurge -> duration = timespan_t::from_seconds( 30.0 );
 
+    caster_melee_attack = 0;
     cat_melee_attack = 0;
     bear_melee_attack = 0;
 
@@ -784,7 +792,7 @@ druid_t::~druid_t()
 
 snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
   sim( player -> sim ), p( player ), b( 0 ), 
-  exe_up( 0 ), exe_down( 0 ), tick_up( 0 ), tick_down( 0 ), wasted_buffs( 0 )
+  exe_up( 0 ), exe_down( 0 ), tick_up( 0 ), tick_down( 0 ), is_snapped( false ), wasted_buffs( 0 )
 {
   b.push_back( buff );
   p -> counters.push_back( this );
@@ -940,7 +948,8 @@ struct ursocs_vigor_t : public heal_t
   int ticks_remain;
 
   ursocs_vigor_t( druid_t* p ) :
-    heal_t( "ursocs_vigor", p, p -> find_spell( 144888 ) )
+    heal_t( "ursocs_vigor", p, p -> find_spell( 144888 ) ),
+    ticks_remain( 0 )
   {
     background = true;
 

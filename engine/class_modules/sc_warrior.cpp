@@ -354,7 +354,7 @@ public:
   } talents;
 
   // Perks
-  struct
+  struct perks_t
   {
     //All Specs
     const spell_data_t* improved_heroic_leap;
@@ -380,12 +380,14 @@ public:
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
+	spell( spells_t() ),
     glyphs( glyphs_t() ),
     mastery( mastery_t() ),
     proc( procs_t() ),
     rppm( realppm_t() ),
     spec( spec_t() ),
-    talents( talents_t() )
+    talents( talents_t() ),
+	perk( perks_t() )
   {
     initial_rage = 0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
@@ -2094,7 +2096,6 @@ struct heroic_charge_movement_ticker_t: public event_t
 struct heroic_charge_t: public warrior_attack_t
 {
   action_t*leap;
-  heroic_charge_movement_ticker_t* charge;
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
   {

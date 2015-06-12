@@ -544,7 +544,6 @@ struct movement_event_t : public raid_event_t
     if ( max > cooldown_move ) distance_range = ( max - cooldown_move ) * avg_player_movement_speed;
 
     if ( distance_max < distance_min ) distance_max = distance_min;
-    else if ( distance_min > distance_max ) distance_min = distance_max;
 
     if ( distance_max / avg_player_movement_speed > cooldown_move ) distance_max = cooldown_move * avg_player_movement_speed;
     if ( distance_min / avg_player_movement_speed > cooldown_move ) distance_min = cooldown_move * avg_player_movement_speed;

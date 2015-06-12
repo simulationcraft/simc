@@ -2697,23 +2697,6 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect )
   { }
 
-  void initialize()
-  {
-    dbc_proc_callback_t::initialize();
-
-    action_t* damage_spell = listener -> find_action( "doom_nova" );
-
-    if ( ! damage_spell )
-    {
-      damage_spell = listener -> create_proc_action( "doom_nova", effect );
-    }
-
-    if ( ! damage_spell )
-    {
-      damage_spell = new doom_nova_t( effect );
-    }
-  }
-
   void execute( action_t* /* a */, action_state_t* trigger_state )
   {
     actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );

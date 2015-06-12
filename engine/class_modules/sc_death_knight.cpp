@@ -474,6 +474,8 @@ public:
     active_presence(),
     t16_tank_2pc_driver(),
     runic_power_decay_rate(),
+    blood_charge_counter( 0 ),
+    shadow_infusion_counter( 0 ),
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     antimagic_shell_absorbed( 0.0 ),
@@ -490,6 +492,7 @@ public:
     talent( talents_t() ),
     spell( spells_t() ),
     glyph( glyphs_t() ),
+    perk( perks_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
     t15_2pc_melee( *this ),
@@ -1925,7 +1928,8 @@ struct ghoul_pet_t : public death_knight_pet_t
   buff_t* crazed_monstrosity;
 
   ghoul_pet_t( sim_t* sim, death_knight_t* owner, const std::string& name, bool guardian ) :
-    death_knight_pet_t( sim, owner, name, guardian )
+    death_knight_pet_t( sim, owner, name, guardian ),
+    crazed_monstrosity( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
@@ -4692,7 +4696,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
     {
       if ( bp )
         sim -> out_debug.printf( "Player %s longest duration Blood Plague on %s (%.3f seconds left)",
-            player -> name(), bp -> target -> name(), bp -> target -> name(), bp -> remains().total_seconds() );
+            player -> name(), bp -> target -> name(), bp -> remains().total_seconds() );
 
       if ( ff )
         sim -> out_debug.printf( "Player %s longest duration Frost Fever on %s (%.3f seconds left)",
@@ -6504,8 +6508,6 @@ void death_knight_t::default_apl_blood()
   action_priority_list_t* last = get_action_priority_list( "last" );
   action_priority_list_t* nbos = get_action_priority_list( "nbos" );
 
-
-  std::string srpct = sets.has_set_bonus( SET_MELEE, T15, B4 ) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str = "food,type=";
   std::string potion_str = "potion,name=";
@@ -6959,11 +6961,10 @@ void death_knight_t::init_action_list()
   int tree = specialization();
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def = get_action_priority_list( "default" );
-  std::string soul_reaper_pct = (perk.improved_soul_reaper -> ok() || sets.has_set_bonus( SET_MELEE, T15, B4 )) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str = "food,type=";
-  std::string food_haste = "food,type=buttered_sturgeon";
-  std::string food_mastery = "food,type=sleeper_sushi";
+  //std::string food_haste = "food,type=buttered_sturgeon";
+  //std::string food_mastery = "food,type=sleeper_sushi";
   std::string food_ms = "food,type=salty_squid_roll";
   std::string potion_str = "potion,name=";
   potion_str += (true_level > 90) ? "draenic_strength" : ((true_level >= 85) ? "mogu_power" : "golemblood");

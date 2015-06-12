@@ -4081,7 +4081,7 @@ void player_t::arise()
   actor_spawn_index = sim -> global_spawn_index++;
 
   if ( sim -> log )
-    sim -> out_log.printf( "%s arises. Spawn Index=", name(), actor_spawn_index );
+    sim -> out_log.printf( "%s arises. Spawn Index=%f", name(), actor_spawn_index );
 
 
   init_resources( true );
@@ -4120,7 +4120,7 @@ void player_t::demise()
     return;
 
   if ( sim -> log )
-    sim -> out_log.printf( "%s demises.. Spawn Index=", name(), actor_spawn_index );
+    sim -> out_log.printf( "%s demises.. Spawn Index=%f", name(), actor_spawn_index );
 
   /* Do not reset spawn index, because the player can still have damaging events ( dots ) which
    * need to be associated with eg. resolve Diminishing Return list.

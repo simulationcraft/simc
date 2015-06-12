@@ -2665,7 +2665,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
         struct gcd_expr_t: public action_expr_t
         {
           double gcd_time;
-          gcd_expr_t( action_t & a ): action_expr_t( "gcd", a )
+          gcd_expr_t( action_t & a ): action_expr_t( "gcd", a ),
+          gcd_time( 0 )
           {
           }
           double evaluate()
@@ -2688,7 +2689,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
         struct gcd_remains_expr_t: public action_expr_t
         {
           double gcd_remains;
-          gcd_remains_expr_t( action_t & a ): action_expr_t( "gcd", a )
+          gcd_remains_expr_t( action_t & a ): action_expr_t( "gcd", a ),
+          gcd_remains( 0 )
           {
           }
           double evaluate()

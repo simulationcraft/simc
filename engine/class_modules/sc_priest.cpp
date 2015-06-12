@@ -6564,7 +6564,6 @@ void priest_t::apl_precombat()
       else
         precombat -> add_action( "prayer_of_mending" );
       break;
-      break;
     case PRIEST_HOLY:
       if ( primary_role() != ROLE_HEAL )
         precombat -> add_action( "smite" );
