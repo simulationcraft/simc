@@ -144,12 +144,12 @@ main_hand=maul_of_tyranny,id=124375,bonus_id=567,enchant=rune_of_the_fallen_crus
 
 # Gear Summary
 # gear_ilvl=727.00
-# gear_strength=4526
+# gear_strength=4407
 # gear_stamina=6072
 # gear_crit_rating=399
 # gear_haste_rating=2452
-# gear_mastery_rating=1693
-# gear_multistrike_rating=1969
+# gear_mastery_rating=1574
+# gear_multistrike_rating=1850
 # gear_versatility_rating=101
 # gear_armor=2495
 # set_bonus=tier18_2pc=1

@@ -173,10 +173,10 @@ main_hand=edict_of_argus,id=124382,enchant=mark_of_the_thunderlord
 # Gear Summary
 # gear_ilvl=698.67
 # gear_stamina=4692
-# gear_intellect=3866
+# gear_intellect=3776
 # gear_spell_power=1925
-# gear_crit_rating=1934
-# gear_haste_rating=1099
+# gear_crit_rating=1844
+# gear_haste_rating=1009
 # gear_mastery_rating=1158
 # gear_multistrike_rating=736
 # gear_versatility_rating=220

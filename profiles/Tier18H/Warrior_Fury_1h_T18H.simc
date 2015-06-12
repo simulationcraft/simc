@@ -141,12 +141,12 @@ off_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=mark_of_the_thunder
 
 # Gear Summary
 # gear_ilvl=714.38
-# gear_strength=3954
+# gear_strength=3850
 # gear_stamina=5309
 # gear_crit_rating=2052
 # gear_haste_rating=874
-# gear_mastery_rating=1617
-# gear_multistrike_rating=1268
+# gear_mastery_rating=1513
+# gear_multistrike_rating=1164
 # gear_armor=2391
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

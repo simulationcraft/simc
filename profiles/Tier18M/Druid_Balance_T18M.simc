@@ -80,10 +80,10 @@ main_hand=edict_of_argus,id=124382,bonus_id=567,enchant_id=5384
 # Gear Summary
 # gear_ilvl=728.67
 # gear_stamina=6209
-# gear_intellect=4842
+# gear_intellect=4723
 # gear_spell_power=2545
-# gear_crit_rating=1389
-# gear_haste_rating=2439
+# gear_crit_rating=1270
+# gear_haste_rating=2320
 # gear_mastery_rating=2522
 # gear_multistrike_rating=1148
 # gear_versatility_rating=355

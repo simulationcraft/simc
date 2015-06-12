@@ -307,10 +307,10 @@ off_hand=gibbering_madness,id=124205,bonus_id=567
 # Gear Summary
 # gear_ilvl=727.50
 # gear_stamina=6080
-# gear_intellect=4531
+# gear_intellect=4412
 # gear_spell_power=2544
-# gear_crit_rating=2619
-# gear_haste_rating=2073
+# gear_crit_rating=2500
+# gear_haste_rating=1954
 # gear_mastery_rating=565
 # gear_multistrike_rating=927
 # gear_versatility_rating=428

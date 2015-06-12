@@ -140,10 +140,10 @@ main_hand=edict_of_argus,id=124382,enchant=mark_of_bleeding_hollow
 # Gear Summary
 # gear_ilvl=699.67
 # gear_stamina=4733
-# gear_intellect=3911
+# gear_intellect=3821
 # gear_spell_power=1925
-# gear_crit_rating=1212
-# gear_haste_rating=1335
+# gear_crit_rating=1122
+# gear_haste_rating=1245
 # gear_mastery_rating=1881
 # gear_multistrike_rating=536
 # gear_versatility_rating=220

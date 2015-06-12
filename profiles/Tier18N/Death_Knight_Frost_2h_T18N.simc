@@ -143,12 +143,12 @@ main_hand=maul_of_tyranny,id=124375,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=697.67
-# gear_strength=3440
+# gear_strength=3350
 # gear_stamina=4619
 # gear_crit_rating=315
 # gear_haste_rating=1921
-# gear_mastery_rating=1281
-# gear_multistrike_rating=1500
+# gear_mastery_rating=1191
+# gear_multistrike_rating=1410
 # gear_versatility_rating=76
 # gear_armor=2264
 # set_bonus=tier18_2pc=1

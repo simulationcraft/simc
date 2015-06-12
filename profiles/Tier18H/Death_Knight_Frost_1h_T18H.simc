@@ -144,12 +144,12 @@ off_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=rune_of_razorice
 
 # Gear Summary
 # gear_ilvl=711.88
-# gear_strength=3891
+# gear_strength=3787
 # gear_stamina=5213
 # gear_crit_rating=1367
 # gear_haste_rating=1515
-# gear_mastery_rating=1462
-# gear_multistrike_rating=2251
+# gear_mastery_rating=1358
+# gear_multistrike_rating=2147
 # gear_armor=2376
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
