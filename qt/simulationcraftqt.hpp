@@ -951,8 +951,8 @@ protected:
     errorReturn -> baseUrl = errorOption -> url;
     return true;
   }
-#else
-  virtual bool acceptNavigationRequest( const QUrl &url, NavigationType type, bool isMainFrame )
+#elif ( QT_VERSION >= QT_VERSION_CHECK( 5, 5, 0 ) ) // Functionality added to webengine in qt 5.5
+  bool acceptNavigationRequest( const QUrl &url, NavigationType, bool )
   {
     QString url_to_show = url.toString();
     if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( "battlenet" ) || url_to_show.contains( "google.com" ) )
