@@ -8,6 +8,7 @@ enemy=fluffy_pillow
 Death_Knight_Frost_1h_T18H.simc
 Death_Knight_Frost_2h_T18H.simc
 Death_Knight_Unholy_T18H.simc
+trinket1=reapers_harvest,id=124513,bonus_id=566
 
 # Druid
 Druid_Balance_T18H.simc
@@ -30,8 +31,10 @@ talents=1000121
 # Monk
 Monk_Windwalker_1h_T18H.simc
 talents=0320012
+trinket2=felspring_coil,id=124223,bonus_id=566
 Monk_Windwalker_2h_T18H.simc
 talents=0320012
+trinket2=felspring_coil,id=124223,bonus_id=566
 
 # Paladin
 Paladin_Retribution_T18H.simc
@@ -47,7 +50,7 @@ trinket1=unblinking_gaze_of_sethe,id=124229,bonus_id=566
 # Rogue
 Rogue_Assassination_T18H.simc
 Rogue_Combat_T18H.simc
-ROgue_Subtlety_T18H.simc
+Rogue_Subtlety_T18H.simc
 
 # Shaman
 Shaman_Elemental_T18H.simc

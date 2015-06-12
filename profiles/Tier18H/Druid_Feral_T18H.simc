@@ -85,17 +85,17 @@ legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=spiked_irontoe_slippers,id=124249,bonus_id=566
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
-trinket1=felspring_coil,id=124223,bonus_id=567
-trinket2=soul_capacitor,id=124225,bonus_id=567
+trinket1=felspring_coil,id=124223,bonus_id=566
+trinket2=soul_capacitor,id=124225,bonus_id=566
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=566,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=714.00
-# gear_agility=4511
+# gear_ilvl=712.00
+# gear_agility=4383
 # gear_stamina=5298
-# gear_crit_rating=2218
+# gear_crit_rating=2156
 # gear_haste_rating=123
-# gear_mastery_rating=1542
+# gear_mastery_rating=1480
 # gear_multistrike_rating=1916
 # gear_versatility_rating=128
 # gear_armor=1251
