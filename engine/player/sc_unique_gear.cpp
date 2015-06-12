@@ -116,6 +116,7 @@ namespace set_bonus
   void t18_lfr_4pc_platemelee( special_effect_t& );
   void t18_lfr_4pc_leathercaster( special_effect_t& );
   void t18_lfr_4pc_mail_agility( special_effect_t& );
+  void t18_lfr_4pc_mail_caster( special_effect_t& );
 }
 
 /**
@@ -1259,6 +1260,29 @@ void set_bonus::t18_lfr_4pc_mail_agility( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void set_bonus::t18_lfr_4pc_mail_caster( special_effect_t& effect )
+{
+  action_t* spell = effect.player -> find_action( "chaotic_flame" );
+  if ( ! spell )
+  {
+    spell = effect.player -> create_proc_action( "chaotic_flame", effect );
+  }
+
+  if ( ! spell )
+  {
+    spell = new lfr_harmful_spell_t( "chaotic_flame", effect, effect.player -> find_spell( 187773 ) );
+  }
+
+  spell -> aoe = -1;
+
+  // Procs on all targets?
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.execute_action = spell;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 
 // Items ====================================================================
 
@@ -3910,5 +3934,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 187151, set_bonus::t18_lfr_4pc_platemelee    );
   register_special_effect( 187435, set_bonus::t18_lfr_4pc_leathercaster );
   register_special_effect( 187688, set_bonus::t18_lfr_4pc_mail_agility  );
+  register_special_effect( 187778, set_bonus::t18_lfr_4pc_mail_caster   );
 }
 
