@@ -1608,7 +1608,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest_td_t& td = get_td( t );
       if ( priest.active_items.mental_fatigue )
       {
-        am *= 1.0 + ( td.buffs.mental_fatigue -> stack_value() * 2 ); //Stack count was halved from 10 to 5 in latest build, but the value per stack wasn't doubled. Assuming for now this is an oversight. -- Twintop, 2015/06/07
+        am *= 1.0 + td.buffs.mental_fatigue -> stack_value();
       }
     }
 
