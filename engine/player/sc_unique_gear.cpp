@@ -111,6 +111,8 @@ namespace set_bonus
   void t17_lfr_4pc_mailcaster( special_effect_t& );
   void t17_lfr_4pc_platemelee( special_effect_t& );
   void tier_lfr_passive_stat( special_effect_t& );
+
+  void t18_lfr_4pc_clothcaster( special_effect_t& );
 }
 
 /**
@@ -880,6 +882,16 @@ void gem::courageous_primal( special_effect_t& effect )
   new courageous_primal_proc_t( effect );
 }
 
+struct lfr_harmful_spell_t : public spell_t
+{
+  lfr_harmful_spell_t( const std::string& name_str, special_effect_t& effect, const spell_data_t* data ) :
+    spell_t( name_str, effect.player, data )
+  {
+    background = may_crit = true;
+    callbacks = false;
+  }
+};
+
 void set_bonus::tier_lfr_passive_stat( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.player -> find_spell( effect.spell_id );
@@ -1139,6 +1151,30 @@ void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
   };
 
   effect.execute_action = new eruption_t( spell_name, effect.player, spell );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
+{
+  // "Damaging spell cast", needs testing if this means "direct damage".
+  effect.proc_flags2_ = PF2_CAST;
+
+  action_t* spell = effect.player -> find_action( "fel_meteor" );
+  if ( ! spell )
+  {
+    spell = effect.player -> create_proc_action( "fel_meteor", effect );
+  }
+
+  if ( ! spell )
+  {
+    spell = new lfr_harmful_spell_t( "fel_meteor", effect, effect.trigger() );
+    // Meteor, so split damage
+    spell -> aoe = -1;
+    spell -> split_aoe_damage = true;
+  }
+
+  effect.execute_action = spell;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -3788,5 +3824,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 187140, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Healer */
   register_special_effect( 187141, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Melee */
   register_special_effect( 187142, set_bonus::tier_lfr_passive_stat     ); /* 2P Plate Tank */
+
+  register_special_effect( 187079, set_bonus::t18_lfr_4pc_clothcaster   );
 }
 
