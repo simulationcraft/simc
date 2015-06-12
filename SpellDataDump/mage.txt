@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20111)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20141)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -2126,7 +2126,7 @@ Attributes       : .x..x... ........ ...x..x. ........   ........ ........ .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=53320)    : School Damage: physical (2)
-                   Base Value: 538 | Scaled Value: 539 - 660 | Value Range: 122 | AP Coefficient: 1.00000
+                   Base Value: 268 | Scaled Value: 269 - 330 | Value Range: 62 | AP Coefficient: 1.00000
 Description      : Shoots at an enemy, inflicting Physical damage.
 
 Name             : Glyph of Ignite (Fire) (id=61205) [Spell Family (3), Passive, Hidden] 

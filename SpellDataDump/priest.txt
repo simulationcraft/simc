@@ -1,4 +1,4 @@
-SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20111)
+SimulationCraft 612-03 for World of Warcraft 6.2.0 PTR (build level 20141)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
