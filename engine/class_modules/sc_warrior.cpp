@@ -380,14 +380,14 @@ public:
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
-	spell( spells_t() ),
+    spell( spells_t() ),
     glyphs( glyphs_t() ),
     mastery( mastery_t() ),
     proc( procs_t() ),
     rppm( realppm_t() ),
     spec( spec_t() ),
     talents( talents_t() ),
-	perk( perks_t() )
+    perk( perks_t() )
   {
     initial_rage = 0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
