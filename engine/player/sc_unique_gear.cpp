@@ -115,6 +115,7 @@ namespace set_bonus
   void t18_lfr_4pc_clothcaster( special_effect_t& );
   void t18_lfr_4pc_platemelee( special_effect_t& );
   void t18_lfr_4pc_leathercaster( special_effect_t& );
+  void t18_lfr_4pc_mail_agility( special_effect_t& );
 }
 
 /**
@@ -1233,6 +1234,26 @@ void set_bonus::t18_lfr_4pc_leathercaster( special_effect_t& effect )
   }
 
   spell -> hasted_ticks = false;
+
+  effect.execute_action = spell;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void set_bonus::t18_lfr_4pc_mail_agility( special_effect_t& effect )
+{
+  action_t* spell = effect.player -> find_action( "fel_explosion" );
+  if ( ! spell )
+  {
+    spell = effect.player -> create_proc_action( "fel_explosion", effect );
+  }
+
+  if ( ! spell )
+  {
+    spell = new lfr_harmful_spell_t( "fel_explosion", effect, effect.trigger() );
+  }
+
+  spell -> aoe = -1;
 
   effect.execute_action = spell;
 
@@ -3888,5 +3909,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 187079, set_bonus::t18_lfr_4pc_clothcaster   );
   register_special_effect( 187151, set_bonus::t18_lfr_4pc_platemelee    );
   register_special_effect( 187435, set_bonus::t18_lfr_4pc_leathercaster );
+  register_special_effect( 187688, set_bonus::t18_lfr_4pc_mail_agility  );
 }
 
