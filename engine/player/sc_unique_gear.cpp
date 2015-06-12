@@ -114,6 +114,7 @@ namespace set_bonus
 
   void t18_lfr_4pc_clothcaster( special_effect_t& );
   void t18_lfr_4pc_platemelee( special_effect_t& );
+  void t18_lfr_4pc_leathercaster( special_effect_t& );
 }
 
 /**
@@ -888,7 +889,7 @@ struct lfr_harmful_spell_t : public spell_t
   lfr_harmful_spell_t( const std::string& name_str, special_effect_t& effect, const spell_data_t* data ) :
     spell_t( name_str, effect.player, data )
   {
-    background = may_crit = true;
+    background = may_crit = tick_may_crit = true;
     callbacks = false;
   }
 };
@@ -1180,7 +1181,7 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-static void fel_winds_callback( buff_t* buff, int ct, int tt )
+static void fel_winds_callback( buff_t* buff, int ct, int )
 {
   double old_mas = buff -> player -> cache.attack_speed();
   // .. aand force recomputation of attack speed so reschedule_auto_attack will see the new value.
@@ -1212,6 +1213,29 @@ void set_bonus::t18_lfr_4pc_platemelee( special_effect_t& effect )
   }
 
   effect.custom_buff = effect.player -> buffs.fel_winds;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void set_bonus::t18_lfr_4pc_leathercaster( special_effect_t& effect )
+{
+  // Direct damage spells have a chance to .. the target.
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  action_t* spell = effect.player -> find_action( "fel_chaos" );
+  if ( ! spell )
+  {
+    spell = effect.player -> create_proc_action( "fel_chaos", effect );
+  }
+
+  if ( ! spell )
+  {
+    spell = new lfr_harmful_spell_t( "fel_chaos", effect, effect.trigger() );
+  }
+
+  spell -> hasted_ticks = false;
+
+  effect.execute_action = spell;
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -3863,5 +3887,6 @@ void unique_gear::register_special_effects()
 
   register_special_effect( 187079, set_bonus::t18_lfr_4pc_clothcaster   );
   register_special_effect( 187151, set_bonus::t18_lfr_4pc_platemelee    );
+  register_special_effect( 187435, set_bonus::t18_lfr_4pc_leathercaster );
 }
 
