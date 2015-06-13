@@ -5993,8 +5993,9 @@ void warlock_t::apl_precombat()
     action_list_str += "/wrathguard:wrathstorm";
     action_list_str += "/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains>5";
     action_list_str += "/call_action_list,name=opener,if=time<7&talent.demonic_servitude.enabled";
-    action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))";
   }
+
+  action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))";
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {

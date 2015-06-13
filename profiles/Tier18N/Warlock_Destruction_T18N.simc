@@ -38,6 +38,7 @@ actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/mannoroths_fury
+actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))
 actions+=/run_action_list,name=single_target,if=active_enemies<6&(!talent.charred_remains.enabled|active_enemies<4)
 actions+=/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)
@@ -97,18 +98,18 @@ legs=deathrattle_leggings,id=124167
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,enchant=50crit
-trinket1=iron_reaver_piston,id=124227
+trinket1=desecrated_shadowmoon_insignia,id=124228
 trinket2=chipped_soul_prism,id=124545
 main_hand=edict_of_argus,id=124382,enchant_id=5384
 
 # Gear Summary
 # gear_ilvl=699.33
 # gear_stamina=4737
-# gear_intellect=3597
+# gear_intellect=3326
 # gear_spell_power=1925
-# gear_crit_rating=1731
-# gear_haste_rating=1008
-# gear_mastery_rating=1924
+# gear_crit_rating=1460
+# gear_haste_rating=737
+# gear_mastery_rating=2285
 # gear_multistrike_rating=737
 # gear_versatility_rating=455
 # gear_armor=890
