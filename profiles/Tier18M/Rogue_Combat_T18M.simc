@@ -66,11 +66,11 @@ actions.finisher=death_from_above
 actions.finisher+=/eviscerate,if=(!talent.death_from_above.enabled|cooldown.death_from_above.remains)
 
 head=felblade_hood,id=124263,bonus_id=567
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5318
+neck=chain_of_lidless_eyes,id=124209,bonus_id=567,enchant_id=5318
 shoulders=felblade_spaulders,id=124274,bonus_id=567
 back=cloak_of_tangible_dread,id=124135,bonus_id=567,enchant_id=5311
 chest=felblade_chestguard,id=124248,bonus_id=567
-wrists=terrorweave_wristwraps,id=127982,bonus_id=567
+wrists=manacles_of_the_multitudes,id=124280,bonus_id=567
 hands=felfinger_runegloves,id=124254,bonus_id=567
 waist=waistwrap_of_banishment,id=124276,bonus_id=567
 legs=felblade_leggings,id=124269,bonus_id=567
@@ -84,13 +84,13 @@ off_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant_id=5337
 
 # Gear Summary
 # gear_ilvl=729.38
-# gear_agility=4571
-# gear_stamina=6104
-# gear_crit_rating=1045
-# gear_haste_rating=1859
-# gear_mastery_rating=1041
-# gear_multistrike_rating=2030
-# gear_versatility_rating=241
-# gear_armor=1380
+# gear_agility=4569
+# gear_stamina=6101
+# gear_crit_rating=1127
+# gear_haste_rating=1949
+# gear_mastery_rating=1242
+# gear_multistrike_rating=1741
+# gear_versatility_rating=154
+# gear_armor=1382
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
