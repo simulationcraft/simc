@@ -104,17 +104,17 @@ feet=treads_of_the_defiler,id=124322,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,bonus_id=566,enchant=gift_of_multistrike
 trinket1=unending_hunger,id=124236,bonus_id=566
-trinket2=rumbling_pebble,id=124235,bonus_id=566
+trinket2=empty_drinking_horn,id=124238,bonus_id=566
 main_hand=hellrender,id=124360,bonus_id=566,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=712.33
-# gear_strength=3859
+# gear_ilvl=713.00
+# gear_strength=4003
 # gear_stamina=5321
 # gear_crit_rating=1522
 # gear_haste_rating=925
-# gear_mastery_rating=1428
-# gear_multistrike_rating=2608
+# gear_mastery_rating=1116
+# gear_multistrike_rating=2296
 # gear_armor=2382
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

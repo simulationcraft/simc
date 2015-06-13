@@ -138,17 +138,17 @@ feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
 finger2=flanged_gasket,id=124196,enchant=gift_of_haste
 trinket1=reapers_harvest,id=124513
-trinket2=rumbling_pebble,id=124235
+trinket2=empty_drinking_horn,id=124238
 main_hand=maul_of_tyranny,id=124375,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=697.67
-# gear_strength=3350
+# gear_ilvl=698.33
+# gear_strength=3476
 # gear_stamina=4619
 # gear_crit_rating=315
 # gear_haste_rating=1921
-# gear_mastery_rating=1191
-# gear_multistrike_rating=1410
+# gear_mastery_rating=920
+# gear_multistrike_rating=1139
 # gear_versatility_rating=76
 # gear_armor=2264
 # set_bonus=tier18_2pc=1

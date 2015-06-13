@@ -139,18 +139,18 @@ feet=treads_of_the_defiler,id=124322,bonus_id=567
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_mastery
 finger2=congealed_globule_loop,id=124197,bonus_id=567,enchant=gift_of_mastery
 trinket1=unending_hunger,id=124236,bonus_id=567
-trinket2=rumbling_pebble,id=124235,bonus_id=567
+trinket2=empty_drinking_horn,id=124238,bonus_id=567
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_the_fallen_crusader
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_ilvl=727.19
-# gear_strength=4367
+# gear_ilvl=727.81
+# gear_strength=4533
 # gear_stamina=6012
 # gear_crit_rating=1582
 # gear_haste_rating=1428
-# gear_mastery_rating=1839
-# gear_multistrike_rating=2480
+# gear_mastery_rating=1480
+# gear_multistrike_rating=2121
 # gear_armor=2495
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
