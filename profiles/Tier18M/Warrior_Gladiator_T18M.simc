@@ -87,18 +87,18 @@ feet=treads_of_the_defiler,id=124322,bonus_id=567
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_mastery
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=567,enchant=gift_of_mastery
 trinket1=anzus_cursed_plume,id=124241,bonus_id=567
-trinket2=rumbling_pebble,id=124235,bonus_id=567
+trinket2=empty_drinking_horn,id=124238,bonus_id=567
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant_id=5330
 off_hand=fallen_defender_of_argus,id=124355,bonus_id=567
 
 # Gear Summary
-# gear_ilvl=728.75
-# gear_strength=4485
+# gear_ilvl=729.38
+# gear_strength=4651
 # gear_stamina=6189
 # gear_crit_rating=2075
 # gear_haste_rating=786
-# gear_mastery_rating=2200
-# gear_multistrike_rating=1422
+# gear_mastery_rating=1841
+# gear_multistrike_rating=1063
 # gear_armor=3326
 # gear_bonus_armor=502
 # set_bonus=tier18_2pc=1

@@ -134,19 +134,19 @@ legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=rumbling_pebble,id=124235,bonus_id=566
+trinket1=empty_drinking_horn,id=124238,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566
 main_hand=calamitys_edge,id=124389,bonus_id=566,enchant=mark_of_the_thunderlord
 off_hand=calamitys_edge,id=124389,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=715.00
-# gear_strength=4308
+# gear_ilvl=715.63
+# gear_strength=4452
 # gear_stamina=5995
 # gear_crit_rating=2520
 # gear_haste_rating=874
-# gear_mastery_rating=1917
-# gear_multistrike_rating=900
+# gear_mastery_rating=1605
+# gear_multistrike_rating=588
 # gear_armor=2391
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

@@ -19,7 +19,7 @@ feet=treads_of_the_defiler,id=124322,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_mastery
 trinket1=anzus_cursed_plume,id=124241,bonus_id=566
-trinket2=rumbling_pebble,id=124235,bonus_id=566
+trinket2=empty_drinking_horn,id=124238,bonus_id=566
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant_id=5330
 off_hand=fallen_defender_of_argus,id=124355,bonus_id=566
 save=Warrior_Gladiator_T18H.simc
@@ -43,7 +43,7 @@ legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=rumbling_pebble,id=124235,bonus_id=566
+trinket1=empty_drinking_horn,id=124238,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=mark_of_the_thunderlord
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=mark_of_the_thunderlord
@@ -68,7 +68,7 @@ legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=rumbling_pebble,id=124235,bonus_id=566
+trinket1=empty_drinking_horn,id=124238,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566
 main_hand=calamitys_edge,id=124389,bonus_id=566,enchant=mark_of_the_thunderlord
 off_hand=calamitys_edge,id=124389,bonus_id=566,enchant=mark_of_the_thunderlord
@@ -94,7 +94,7 @@ legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=rumbling_pebble,id=124235,bonus_id=566
-trinket2=worldbreakers_resolve,id=124523,bonus_id=566
+trinket1=empty_drinking_horn,id=124238,bonus_id=566
+trinket2=discordant_chorus,id=124237,bonus_id=566
 main_hand=calamitys_edge,id=124389,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Warrior_Arms_T18H.simc
