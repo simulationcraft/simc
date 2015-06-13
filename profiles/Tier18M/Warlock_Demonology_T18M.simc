@@ -109,11 +109,13 @@ actions.meta=kiljaedens_cunning,if=!cooldown.cataclysm.remains
 actions.meta+=/cataclysm
 actions.meta+=/immolation_aura,if=demonic_fury>450&active_enemies>=3&buff.immolation_aura.down
 actions.meta+=/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.any.react<10
+actions.meta+=/chaos_wave,if=buff.dark_soul.remains&(trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react|trinket.stacking_proc.multistrike.react>7)
 actions.meta+=/cancel_metamorphosis,if=((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.any.down&trinket.proc.any.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20
 actions.meta+=/cancel_metamorphosis,if=action.hand_of_guldan.charges>0&dot.shadowflame.remains<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&((demonic_fury<100&buff.dark_soul.remains>10)|time<15)&!glyph.dark_soul.enabled
 actions.meta+=/cancel_metamorphosis,if=action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)
 actions.meta+=/chaos_wave,if=buff.dark_soul.up&active_enemies>=2
-actions.meta+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25)&(((buff.molten_core.stack*execute_time>=trinket.stacking_proc.any.remains-1|demonic_fury<=ceil((trinket.stacking_proc.any.remains-buff.molten_core.stack*execute_time)*40)+80*buff.molten_core.stack)|target.health.pct<=25)&trinket.stacking_proc.any.remains>=execute_time|trinket.stacking_proc.any.down|!trinket.has_stacking_proc.any)
+actions.meta+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25|trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react)
+actions.meta+=/soul_fire,if=buff.molten_core.react&trinket.stacking_proc.multistrike.react&trinket.stacking_proc.multistrike.remains<=buff.molten_core.react*cast_time&trinket.stacking_proc.multistrike.remains<=demonic_fury%(80%cast_time)
 actions.meta+=/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1
 actions.meta+=/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750
 actions.meta+=/touch_of_chaos

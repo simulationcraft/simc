@@ -6122,6 +6122,7 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "meta" ) -> action_list_str += "/cataclysm";
     get_action_priority_list( "meta" ) -> action_list_str += "/immolation_aura,if=demonic_fury>450&active_enemies>=3&buff.immolation_aura.down";
     get_action_priority_list( "meta" ) -> action_list_str += "/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.any.react<10";
+    get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.remains&(trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react|trinket.stacking_proc.multistrike.react>7)";
     if ( find_item("draenic_philosophers_stone" ) )
     {
       get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis,if=((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.any.down&trinket.proc.any.down&buff.draenor_philosophers_stone_int.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20";
@@ -6134,7 +6135,8 @@ void warlock_t::apl_demonology()
       get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2";
     else
       get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2)";
-    get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25)&(((buff.molten_core.stack*execute_time>=trinket.stacking_proc.any.remains-1|demonic_fury<=ceil((trinket.stacking_proc.any.remains-buff.molten_core.stack*execute_time)*40)+80*buff.molten_core.stack)|target.health.pct<=25)&trinket.stacking_proc.any.remains>=execute_time|trinket.stacking_proc.any.down|!trinket.has_stacking_proc.any)";
+    get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25|trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react)";
+    get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&trinket.stacking_proc.multistrike.react&trinket.stacking_proc.multistrike.remains<=buff.molten_core.react*cast_time&trinket.stacking_proc.multistrike.remains<=demonic_fury%(80%cast_time)";
     get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
     get_action_priority_list( "meta" ) -> action_list_str += "/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750";
     get_action_priority_list( "meta" ) -> action_list_str += "/touch_of_chaos";
