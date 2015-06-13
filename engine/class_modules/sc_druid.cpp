@@ -5570,10 +5570,11 @@ struct starfall_t : public druid_spell_t
     starfall_pulse_t( druid_t* player, const std::string& name ) :
       druid_spell_t( name, player, player -> find_spell( 50288 ) )
     {
-      direct_tick = true;
+      background = direct_tick = true;
       aoe = -1;
       range = 40;
       radius = 0;
+      callbacks = false;
     }
   };
 
