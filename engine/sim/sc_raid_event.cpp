@@ -1273,7 +1273,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
 
   // now that we have the event in question, use the filter to figure out return
   if ( util::str_compare_ci( filter, "in" ) )
-    return time_to_event.total_seconds();
+    return time_to_event > timespan_t::zero() ? time_to_event.total_seconds() : 1.0e10;
   else if ( util::str_compare_ci( filter, "duration" ) )
     return e -> duration_time().total_seconds();
   else if ( util::str_compare_ci( filter, "cooldown" ) )
