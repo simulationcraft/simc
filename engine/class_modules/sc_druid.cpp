@@ -6791,11 +6791,10 @@ void druid_t::apl_feral()
     if ( items[ i ].has_use_special_effect() )
     {
       std::string line = std::string( "use_item,slot=" ) + items[ i ].slot_name();
-      if ( ! ( items[ i ].name_str == "maalus_the_blood_drinker"
-            || items[ i ].name_str == "mirror_of_the_blademaster" ) )
-      {
+      if ( items[ i ].name_str == "mirror_of_the_blademaster" )
+        line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.felstorm>desired_targets";
+      else if ( items[ i ].name_str != "maalus_the_blood_drinker" )
         line += ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)";
-      }
 
       def -> add_action( line );
     }
