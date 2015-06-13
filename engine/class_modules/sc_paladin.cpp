@@ -3308,7 +3308,7 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
           && p() -> last_retribution_trinket_target == execute_state -> target ) )
     {
       // Wrong target, expire stacks and set new target.
-      if ( ! p() -> last_retribution_trinket_target )
+      if ( p() -> last_retribution_trinket_target )
       {
         p() -> procs.focus_of_vengeance_reset -> occur();
         p() -> buffs.retribution_trinket -> expire();
