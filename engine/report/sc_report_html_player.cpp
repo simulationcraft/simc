@@ -2083,7 +2083,8 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     }
   }
 
-  os.format( "</td>\n" );
+  os << "</td>\n";
+  os << "</tr>\n";
 }
 
 // print_html_player_action_priority_list =====================================

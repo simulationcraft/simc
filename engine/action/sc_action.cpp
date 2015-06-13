@@ -2716,7 +2716,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         {
           spell = a.player -> find_action( spell_name[1] );
           if ( ! spell )
-            a.sim -> errorf( "Warning: %s used invalid spell_targets action \"%s\"", a.player -> name(), spell_name[1] );
+            a.sim -> errorf( "Warning: %s used invalid spell_targets action \"%s\"", a.player -> name(), spell_name[1].c_str() );
         }
         double evaluate()
         {
