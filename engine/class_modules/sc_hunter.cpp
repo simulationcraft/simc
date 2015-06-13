@@ -372,6 +372,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
+  virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -3662,6 +3663,38 @@ dots( dots_t() )
   debuffs_survival_t18_2p = buff_creator_t( *this, "black_decay", p -> sets.set( HUNTER_SURVIVAL, T18, B2 ) -> effectN( 1 ).trigger() );
   debuffs_pvp_surv_4p_black_fire = buff_creator_t( *this, "debuffs_pvp_surv_4p_black_fire", p -> sets.set( HUNTER_SURVIVAL, PVP, B4 ) -> effectN( 1 ).trigger() );
 }
+ 
+
+expr_t* hunter_t::create_expression( action_t* a, const std::string& name )
+{
+  if ( util::str_compare_ci( name, "lnl_procs" ) )
+  {
+    // Return the number of lock and load procs in the current black arrow ticking on the target.
+    struct lnl_procs_expr_t : public expr_t
+    {
+      action_t* action;
+      action_t* black_arrow_action;
+      lnl_procs_expr_t( action_t* a, action_t* ba_action) :
+        expr_t( "lnl_procs" ),  action( a ), black_arrow_action( ba_action ) { }
+
+      virtual double evaluate()
+      { 
+        if ( !black_arrow_action ) return 0;
+        dot_t* dot = black_arrow_action -> get_dot( action -> target ); 
+        if ( dot -> is_ticking() )
+        {
+          attacks::black_arrow_t::black_arrow_state_t * state = debug_cast<attacks::black_arrow_t::black_arrow_state_t*>( dot -> state );
+          return state -> lnl_proc_count;
+        }
+        else return 0;
+      }
+    };
+    return new lnl_procs_expr_t( a, find_action( "black_arrow" ) );
+  }
+
+  return player_t::create_expression( a, name );
+}
+
 
 // hunter_t::create_action ==================================================
 
