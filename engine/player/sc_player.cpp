@@ -2118,17 +2118,17 @@ bool player_t::init_actions()
           //a -> action_list = action_priority_list[ alist ] -> name_str;
           a -> action_list = action_priority_list[ alist ];
 
-          a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
-                                   ( j < 36 ) ? ( 'A' + j - 10 ) :
-                                   ( j < 66 ) ? ( 'a' + j - 36 ) :
-                                   ( j < 79 ) ? ( '!' + j - 66 ) :
-                                   ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
-
           a -> signature_str = action_str;
           a -> signature = &( action_priority_list[ alist ] -> action_list[ i ] );
 
-          if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
+          if ( sim -> separate_stats_by_actions > 0 && !is_pet() )
           {
+            a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
+                          ( j < 36 ) ? ( 'A' + j - 10 ) :
+                          ( j < 66 ) ? ( 'a' + j - 36 ) :
+                          ( j < 79 ) ? ( '!' + j - 66 ) :
+                          ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
+
             a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
           }
           j++;
@@ -3386,7 +3386,7 @@ void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts
 
 void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
 {
-  if ( a -> marker )
+  if ( a -> action_list )
   {
     // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
     if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||

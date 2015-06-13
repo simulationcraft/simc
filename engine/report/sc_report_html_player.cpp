@@ -2096,11 +2096,27 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
      << "<div class=\"toggle-content hide\">\n";
 
   action_priority_list_t* alist = 0;
+  int j = 0;
 
   for ( size_t i = 0; i < p -> action_list.size(); ++i )
   {
     action_t* a = p -> action_list[ i ];
-    if ( a -> signature_str.empty() || ! a -> marker ) continue;
+
+    // Map markers to only used actions
+    if ( ! sim -> separate_stats_by_actions && a -> action_list )
+    {
+      if ( a -> total_executions > 0 || util::str_compare_ci( a -> action_list -> name_str, "precombat" ) )
+      {
+        a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
+                                       ( j < 36 ) ? ( 'A' + j - 10 ) :
+                                       ( j < 66 ) ? ( 'a' + j - 36 ) :
+                                       ( j < 79 ) ? ( '!' + j - 66 ) :
+                                       ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
+        j++;
+      }
+    }
+
+    if ( a -> signature_str.empty() || ! ( a -> marker || a -> action_list ) ) continue;
 
     if ( ! alist || a -> action_list -> name_str != alist -> name_str )
     {
