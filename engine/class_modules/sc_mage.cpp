@@ -1067,6 +1067,7 @@ struct temporal_hero_t : public pet_t
   };
 
   hero_e hero_type;
+  static hero_e last_summoned;
 
   struct temporal_hero_melee_attack_t : public melee_attack_t
   {
@@ -1189,8 +1190,13 @@ struct temporal_hero_t : public pet_t
     }
   };
 
+  // Each Temporal Hero has an individual hidden multiplier for damage done
+  // Values are reverse engineered from 6.2 PTR Build 20141 testing
+  double temporal_hero_multiplier;
+
   temporal_hero_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "temporal_hero", true, true ), hero_type( ARTHAS )
+    pet_t( sim, owner, "temporal_hero", true, true ),
+    hero_type( ARTHAS ), temporal_hero_multiplier( 1.0 )
   { }
 
   void init_base_stats()
@@ -1238,6 +1244,8 @@ struct temporal_hero_t : public pet_t
       m *= 1.0 + mage -> buffs.temporal_power -> data().effectN( 1 ).percent();
     }
 
+    m *= temporal_hero_multiplier;
+
     return m;
   }
 
@@ -1245,28 +1253,37 @@ struct temporal_hero_t : public pet_t
   {
     pet_t::arise();
 
-    double rand = rng().real();
-    if ( rand < 0.25 )
+    // Summoned heroes follow Jaina -> Arthas -> Sylvanas -> Tyrande order
+    if ( last_summoned == JAINA )
     {
       hero_type = ARTHAS;
+      last_summoned = hero_type;
+      temporal_hero_multiplier = 1.668;
+
       if ( sim -> debug )
       {
         sim -> out_debug.printf( "%s summons 2T18 temporal hero: Arthas",
                                  owner -> name() );
       }
     }
-    else if ( rand < 0.5 )
+    else if ( last_summoned == TYRANDE )
     {
       hero_type = JAINA;
+      last_summoned = hero_type;
+      temporal_hero_multiplier = 1.122;
+
       if ( sim -> debug )
       {
         sim -> out_debug.printf( "%s summons 2T18 temporal hero: Jaina" ,
                                  owner -> name() );
       }
     }
-    else if ( rand < 0.75 )
+    else if ( last_summoned == ARTHAS )
     {
       hero_type = SYLVANAS;
+      last_summoned = hero_type;
+      temporal_hero_multiplier = 0.273;
+
       if ( sim -> debug )
       {
         sim -> out_debug.printf( "%s summons 2T18 temporal hero: Sylvanas",
@@ -1276,6 +1293,9 @@ struct temporal_hero_t : public pet_t
     else
     {
       hero_type = TYRANDE;
+      last_summoned = hero_type;
+      temporal_hero_multiplier = 0.283;
+
       if ( sim -> debug )
       {
         sim -> out_debug.printf( "%s summons 2T18 temporal hero: Tyrande",
@@ -1298,7 +1318,30 @@ struct temporal_hero_t : public pet_t
 
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
+
+  static void randomize_last_summoned( const mage_t* p )
+  {
+    double rand = p -> rng().real();
+    if ( rand < 0.25 )
+    {
+      last_summoned = ARTHAS;
+    }
+    else if ( rand < 0.5 )
+    {
+      last_summoned = JAINA;
+    }
+    else if ( rand < 0.75 )
+    {
+      last_summoned = SYLVANAS;
+    }
+    else
+    {
+      last_summoned = TYRANDE;
+    }
+  }
 };
+
+temporal_hero_t::hero_e temporal_hero_t::last_summoned;
 
 } // pets
 
@@ -5154,6 +5197,7 @@ void mage_t::create_pets()
     for ( unsigned i = 0; i < sizeof_array( pets.temporal_heroes ); i++ )
     {
       pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
+      pets::temporal_hero_t::randomize_last_summoned( this );
     }
   }
 }
@@ -6357,6 +6401,11 @@ void mage_t::reset()
 
   rppm_pyromaniac.reset();
   rppm_arcane_instability.reset();
+
+  if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
+  {
+    pets::temporal_hero_t::randomize_last_summoned( this );
+  }
 }
 
 // mage_t::regen  ===========================================================
