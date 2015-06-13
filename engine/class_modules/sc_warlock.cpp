@@ -1842,8 +1842,6 @@ private:
 
     parse_spell_coefficient( *this );
 
-    affected_by_flamelicked = p() -> destruction_trinket && data().affected_by(
-        p() -> destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ) );
   }
 
 public:
@@ -1858,7 +1856,6 @@ public:
 
   proc_t* havoc_proc;
 
-  bool affected_by_flamelicked;
 
   struct cost_event_t: player_event_t
   {
@@ -2142,7 +2139,7 @@ public:
   virtual double composite_target_crit( player_t* target ) const
   {
     double c = spell_t::composite_target_crit( target );
-    if ( p() -> destruction_trinket && affected_by_flamelicked )
+    if ( p() -> destruction_trinket )
       c += td( target ) -> debuffs_flamelicked -> stack_value();
 
     return c;
@@ -3540,8 +3537,6 @@ struct chaos_bolt_t: public warlock_spell_t
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
 
-    // In game, chaos bolt is not affected by flamelicked debuff
-    affected_by_flamelicked = ! p -> bugs;
   }
 
   chaos_bolt_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
@@ -3562,8 +3557,6 @@ struct chaos_bolt_t: public warlock_spell_t
     // TODO: Fix with spell data generation and whitelisting the correct spell
     base_costs[ RESOURCE_BURNING_EMBER ] = 2;
 
-    // In game, chaos bolt is not affected by flamelicked debuff
-    affected_by_flamelicked = ! p -> bugs;
   }
 
   void schedule_execute( action_state_t* state )
@@ -3620,7 +3613,9 @@ struct chaos_bolt_t: public warlock_spell_t
 
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
-    state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+    // Targeted Crit debuffs function as a separate multiplier.
+    state -> result_total *= 1.0 + player -> cache.spell_crit();
+    state -> result_total *= 1.0 + state -> target_crit;
 
     return state -> result_total;
   }
@@ -3631,7 +3626,9 @@ struct chaos_bolt_t: public warlock_spell_t
 
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
-    ms_state -> result_total *= 1.0 + player -> cache.spell_crit() + source_state -> target_crit;
+    // Targeted Crit debuffs function as a separate multiplier.
+    ms_state -> result_total *= 1.0 + player -> cache.spell_crit();
+    ms_state -> result_total *= 1.0 + source_state -> target_crit;
     ms_state -> result_amount = ms_state -> result_total;
   }
 
