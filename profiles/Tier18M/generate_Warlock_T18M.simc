@@ -61,7 +61,7 @@ talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=75crit
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567
-back=spellcloak_of_suramar,id=127972,bonus_id=567,enchant=100crit
+back=shawl_of_sanguinary_ritual,id=124137,bonus_id=567,enchant=100crit
 chest=deathrattle_robe,id=124173,bonus_id=567
 wrists=contemptuous_wristguards,id=124186,bonus_id=567
 hands=deathrattle_gloves,id=124156,bonus_id=567
@@ -70,8 +70,8 @@ legs=deathrattle_leggings,id=124167,bonus_id=567
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
 finger1=nithramus_the_allseer,id=124635,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=50crit
-trinket1=iron_reaver_piston,id=124227,bonus_id=567
-trinket2=chipped_soul_prism,id=124545,bonus_id=567
+trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant_id=5384
 save=Warlock_Destruction_T18M.simc
 

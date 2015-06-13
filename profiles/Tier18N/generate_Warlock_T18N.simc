@@ -70,7 +70,7 @@ legs=deathrattle_leggings,id=124167
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,enchant=50crit
-trinket1=iron_reaver_piston,id=124227
+trinket1=desecrated_shadowmoon_insignia,id=124228
 trinket2=chipped_soul_prism,id=124545
 main_hand=edict_of_argus,id=124382,enchant_id=5384
 save=Warlock_Destruction_T18N.simc
