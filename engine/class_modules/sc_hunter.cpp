@@ -4506,7 +4506,7 @@ double hunter_t::composite_melee_haste() const
   double h = player_t::composite_melee_haste();
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
   h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
-  h *= 1.0 / ( 1.0 + std::min( buffs.rapid_fire -> value(), buffs.t18_2p_rapid_fire -> value() ) );
+  h *= 1.0 / ( 1.0 + std::max( buffs.rapid_fire -> value(), buffs.t18_2p_rapid_fire -> value() ) );
   return h;
 }
 
