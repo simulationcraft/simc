@@ -251,6 +251,7 @@ public:
     proc_t* divine_crusader;
     proc_t* eternal_glory;
     proc_t* exorcism_cd_reset;
+    proc_t* focus_of_vengeance_reset;
     proc_t* redundant_divine_crusader;
     proc_t* wasted_exorcism_cd_reset;
     proc_t* crusaders_fury;
@@ -3300,24 +3301,22 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 
   void retribution_trinket_trigger()
   {
-    if ( p() -> retribution_trinket )
+    if ( ! p() -> retribution_trinket )
+      return;
+
+    if ( ! ( p() -> last_retribution_trinket_target // Target check
+          && p() -> last_retribution_trinket_target == execute_state -> target ) )
     {
-      if ( p() -> last_retribution_trinket_target ) // Check if we have used this on a target before.
+      // Wrong target, expire stacks and set new target.
+      if ( ! p() -> last_retribution_trinket_target )
       {
-        if ( p() -> last_retribution_trinket_target == execute_state -> target )
-          p() -> buffs.retribution_trinket -> trigger( 1 ); // If it's the same target, it's all good.
-        else
-        {
-          p() -> buffs.retribution_trinket -> expire();
-          p() -> last_retribution_trinket_target = execute_state -> target;
-        }
+        p() -> procs.focus_of_vengeance_reset -> occur();
+        p() -> buffs.retribution_trinket -> expire();
       }
-      else
-      {
-        p() -> buffs.retribution_trinket -> trigger( 1 );
-        p() -> last_retribution_trinket_target = execute_state -> target;
-      }
+      p() -> last_retribution_trinket_target = execute_state -> target;
     }
+    
+    p() -> buffs.retribution_trinket -> trigger();
   }
 
   virtual void execute()
@@ -4853,7 +4852,7 @@ void paladin_t::init_gains()
   gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
   gains.hp_blazing_contempt         = get_gain( "blazing_contempt" );
 
-  if ( !retribution_trinket )
+  if ( ! retribution_trinket )
   {
     buffs.retribution_trinket = buff_creator_t( this, "focus_of_vengeance" )
       .chance( 0 );
@@ -4866,13 +4865,14 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.divine_purpose           = get_proc( "divine_purpose"                 );
-  procs.divine_crusader          = get_proc( "divine_crusader"                );
-  procs.eternal_glory            = get_proc( "eternal_glory"                  );
-  procs.exorcism_cd_reset        = get_proc( "exorcism_cd_reset"              );
-  procs.redundant_divine_crusader= get_proc( "redundant_divine_crusader"      );
-  procs.wasted_exorcism_cd_reset = get_proc( "wasted_exorcism_cd_reset"       );
-  procs.crusaders_fury           = get_proc( "crusaders_fury"                 );
+  procs.divine_purpose            = get_proc( "divine_purpose"                 );
+  procs.divine_crusader           = get_proc( "divine_crusader"                );
+  procs.eternal_glory             = get_proc( "eternal_glory"                  );
+  procs.exorcism_cd_reset         = get_proc( "exorcism_cd_reset"              );
+  procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
+  procs.redundant_divine_crusader = get_proc( "redundant_divine_crusader"      );
+  procs.wasted_exorcism_cd_reset  = get_proc( "wasted_exorcism_cd_reset"       );
+  procs.crusaders_fury            = get_proc( "crusaders_fury"                 );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -6073,8 +6073,9 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
+
   if ( retribution_trinket )
-    m *= 1.0 + buffs.retribution_trinket -> current_stack * buffs.wings_of_liberty -> current_value;
+    m *= 1.0 + buffs.retribution_trinket -> current_stack * buffs.retribution_trinket -> current_value;
 
   // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
@@ -6795,8 +6796,9 @@ static void retribution_trinket( special_effect_t& effect )
   
   if ( s -> retribution_trinket )
   {
-    s -> buffs.retribution_trinket = buff_creator_t( s, "focus_of_vengeance", s -> retribution_trinket -> driver() -> effectN( 1 ).trigger() )
-      .default_value( s -> retribution_trinket -> driver() -> effectN( 1 ).average( s -> retribution_trinket -> item ) / 10000.0 )
+    const spell_data_t* buff_spell = s -> retribution_trinket -> driver() -> effectN( 1 ).trigger();
+    s -> buffs.retribution_trinket = buff_creator_t( s, "focus_of_vengeance", buff_spell )
+      .default_value( buff_spell -> effectN( 1 ).average( s -> retribution_trinket -> item ) / 100.0 )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 }
