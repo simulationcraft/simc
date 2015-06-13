@@ -2988,6 +2988,7 @@ struct felstorm_tick_t : public melee_attack_t
     background = special = may_crit = true;
     callbacks = false;
     aoe = -1;
+    range = data().effectN( 1 ).radius();
 
     weapon = &( p -> main_hand_weapon );
   }
