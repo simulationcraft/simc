@@ -2419,7 +2419,8 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
     // decide guaranteed proc for lnl.
     // determine number of procs by rolling proc chance until it fails
-    int num_ticks = get_dot( execute_state -> target ) -> num_ticks;
+    dot_t* dot = get_dot( s -> target );
+    int num_ticks = dot -> num_ticks;
     int proc_count = 1; // guaranteed at least one proc
     for ( int i = 0; i < num_ticks; i++ )
     {
@@ -2430,7 +2431,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     }
 
     // assign each proc to a tick
-    black_arrow_state_t* ba_state = debug_cast<black_arrow_state_t*>( s );
+    black_arrow_state_t* ba_state = debug_cast<black_arrow_state_t*>( dot -> state );
     int lnl_procs = 0;
     int possible_slots = num_ticks;
     while ( proc_count > 0 )
@@ -2451,6 +2452,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
       possible_slots--;
     }
     ba_state -> lnl_proc_mask = lnl_procs;
+    ba_state -> lnl_proc_count = 0;
   }
 };
 
