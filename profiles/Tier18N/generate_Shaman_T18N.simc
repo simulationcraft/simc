@@ -21,7 +21,7 @@ feet=unhallowed_voidlink_boots,id=124288
 finger1=portal_key_signet,id=124189,enchant=gift_of_haste
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 trinket1=core_of_the_primal_elements,id=124521
-trinket2=malicious_censer,id=124226
+trinket2=soul_capacitor,id=124225
 main_hand=demonblade_eviscerator,id=124368,enchant=mark_of_warsong
 off_hand=demonblade_eviscerator,id=124368,enchant=mark_of_bleeding_hollow
 save=Shaman_Enhancement_T18N.simc
