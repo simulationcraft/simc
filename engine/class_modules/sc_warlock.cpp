@@ -6041,6 +6041,8 @@ void warlock_t::apl_affliction()
   action_list_str += "/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)";
   action_list_str += "/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled";
   action_list_str += "/cataclysm";
+  add_action( "Soulburn", "if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking" );
+  add_action( "Soul Swap", "if=buff.soulburn.up&!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking" );
   add_action( "Agony", "if=remains<=gcd" );
   add_action( "Corruption", "if=remains<=gcd" );
   add_action( "Unstable Affliction", "if=remains<=cast_time" );
