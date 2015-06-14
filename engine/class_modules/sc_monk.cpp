@@ -277,7 +277,8 @@ public:
     gain_t* chi_refund;
     gain_t* chi_sphere;
     gain_t* combo_breaker_ce;
-    gain_t* combo_breaker_savings;
+    gain_t* combo_breaker_bok;
+    gain_t* combo_breaker_tp;
     gain_t* crackling_jade_lightning;
     gain_t* energizing_brew;
     gain_t* energy_refund;
@@ -2289,7 +2290,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> buff.combo_breaker_tp -> up() )
     {
       p() -> buff.combo_breaker_tp -> expire();
-      p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, cost() );
+      p() -> gain.combo_breaker_tp -> add( RESOURCE_CHI, cost() );
     }
   }
 };
@@ -2599,8 +2600,8 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
-      p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.combo_breaker_bok -> expire();
+      p() -> gain.combo_breaker_bok -> add( RESOURCE_CHI, savings );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -5672,7 +5673,8 @@ void monk_t::init_gains()
   gain.chi_refund               = get_gain( "chi_refund" );
   gain.chi_sphere               = get_gain( "chi_sphere" );
   gain.combo_breaker_ce         = get_gain( "combo_breaker_chi_explosion" );
-  gain.combo_breaker_savings    = get_gain( "combo_breaker_savings" );
+  gain.combo_breaker_bok        = get_gain( "combo_breaker_blackout_kick" );
+  gain.combo_breaker_tp         = get_gain( "combo_breaker_tiger_palm" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
   gain.energizing_brew          = get_gain( "energizing_brew" );
   gain.energy_refund            = get_gain( "energy_refund" );
@@ -6625,11 +6627,11 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Tigereye Brew", "if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
+  def -> add_action( this, "Fortifying Brew", "if=target.health.percent<10&cooldown.touch_of_death.remains=0&(glyph.touch_of_death.enabled|chi>=3)" );
+  def -> add_action( this, "Touch of Death", "if=target.health.percent<10&(glyph.touch_of_death.enabled|chi>=3)" );
   def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
   def -> add_talent( this, "Serenity", "if=chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up" );
   def -> add_action( this, "Fists of Fury", "if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&energy.time_to_max>cast_time&!buff.serenity.up" );
-  def -> add_action( this, "Fortifying Brew", "if=target.health.percent<10&cooldown.touch_of_death.remains=0&(glyph.touch_of_death.enabled|chi>=3)" );
-  def -> add_action( this, "Touch of Death", "if=target.health.percent<10&(glyph.touch_of_death.enabled|chi>=3)" );
   def -> add_talent( this, "Hurricane Strike", "if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down" );
   def -> add_action( this, "Energizing Brew", "if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen<50" );
   
