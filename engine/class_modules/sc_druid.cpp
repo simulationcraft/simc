@@ -4963,61 +4963,25 @@ struct mark_of_the_wild_t : public druid_spell_t
   }
 };
 
-// Sunfire Spell ===========================================================
+// Sunfire Base Spell ===========================================================
 
-struct sunfire_t: public druid_spell_t
+struct sunfire_base_t: public druid_spell_t
 {
-  // Sunfire also applies the Moonfire DoT during Celestial Alignment.
-  struct moonfire_CA_t: public druid_spell_t
-  {
-    moonfire_CA_t( druid_t* player ):
-      druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
-    {
-      const spell_data_t* dmg_spell = player -> find_spell( 164812 );
-      dot_duration = dmg_spell -> duration();
-      dot_duration *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
-      dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
-      base_tick_time = dmg_spell -> effectN( 2 ).period();
-      spell_power_mod.tick = dmg_spell -> effectN( 2 ).sp_coeff();
-
-      base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-
-      // Does no direct damage, costs no mana
-      attack_power_mod.direct = 0;
-      spell_power_mod.direct = 0;
-      range::fill( base_costs, 0 );
-    }
-
-    void tick( dot_t* d )
-    {
-      druid_spell_t::tick( d );
-
-      if ( result_is_hit( d -> state -> result ) )
-        p() -> trigger_shooting_stars( d -> state );
-
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-        trigger_balance_t18_2pc();
-    }
-  };
-
-  action_t* moonfire;
-  sunfire_t( druid_t* player, const std::string& options_str ):
+  sunfire_base_t( druid_t* player ):
     druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
   {
-    parse_options( options_str );
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
-    dot_duration = dmg_spell -> duration();
-    dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
-    base_tick_time = dmg_spell -> effectN( 2 ).period();
+
+    dot_duration           = dmg_spell -> duration();
+    dot_duration          += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+    base_tick_time         = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.direct = dmg_spell-> effectN( 1 ).sp_coeff();
-    spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
+    spell_power_mod.tick   = dmg_spell-> effectN( 2 ).sp_coeff();
 
     base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
     if ( player -> spec.astral_showers -> ok() )
       aoe = -1;
-    if ( player -> specialization() == DRUID_BALANCE )
-      moonfire = new moonfire_CA_t( player );
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const
@@ -5059,77 +5023,22 @@ struct sunfire_t: public druid_spell_t
       trigger_balance_t18_2pc();
   }
 
-  void impact( action_state_t* s )
-  {
-    if ( moonfire && result_is_hit( s -> result ) )
-    {
-      if ( p() -> buff.celestial_alignment -> check() )
-      {
-        moonfire -> target = s -> target;
-        moonfire -> execute();
-      }
-    }
-    druid_spell_t::impact( s );
-  }
-
   bool ready()
   {
-    bool ready = druid_spell_t::ready();
-
-    if ( p() -> buff.celestial_alignment -> up() )
-      return ready;
-
     if ( p() -> eclipse_amount >= 0 )
       return false;
 
-    return ready;
+    return druid_spell_t::ready();
   }
 };
 
-// Moonfire spell ===============================================================
+// Moonfire Base Spell ===============================================================
 
-struct moonfire_t : public druid_spell_t
+struct moonfire_base_t : public druid_spell_t
 {
-  // Moonfire also applies the Sunfire DoT during Celestial Alignment.
-  struct sunfire_CA_t: public druid_spell_t
-  {
-    sunfire_CA_t( druid_t* player ):
-      druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
-    {
-      const spell_data_t* dmg_spell = player -> find_spell( 164815 );
-      dot_duration = dmg_spell -> duration();
-      dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
-      base_tick_time = dmg_spell -> effectN( 2 ).period();
-      spell_power_mod.tick = dmg_spell -> effectN( 2 ).sp_coeff();
-
-      base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-
-      // Does no direct damage, costs no mana
-      attack_power_mod.direct = 0;
-      spell_power_mod.direct = 0;
-      range::fill( base_costs, 0 );
-
-      if ( p() -> spec.astral_showers -> ok() )
-        aoe = -1;
-    }
-
-    void tick( dot_t* d )
-    {
-      druid_spell_t::tick( d );
-
-      if ( result_is_hit( d -> state -> result ) )
-        p() -> trigger_shooting_stars( d -> state );
-
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-        trigger_balance_t18_2pc();
-    }
-  };
-
-  action_t* sunfire;
-  moonfire_t( druid_t* player, const std::string& options_str ) :
+  moonfire_base_t( druid_t* player ) :
     druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
   {
-    parse_options( options_str );
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
 
     dot_duration                  = dmg_spell -> duration(); 
@@ -5140,9 +5049,6 @@ struct moonfire_t : public druid_spell_t
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
 
     base_td_multiplier           *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-
-    if ( player -> specialization() == DRUID_BALANCE )
-      sunfire = new sunfire_CA_t( player );
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const
@@ -5192,30 +5098,77 @@ struct moonfire_t : public druid_spell_t
     p() -> buff.cat_form -> expire();
   }
 
-  void impact( action_state_t* s )
-  {
-    // The Sunfire hits BEFORE the moonfire!
-    if ( sunfire && result_is_hit( s -> result ) )
-    {
-      if ( p() -> buff.celestial_alignment -> check() )
-      {
-        sunfire -> target = s -> target;
-        sunfire -> execute();
-      }
-    }
-    druid_spell_t::impact( s );
-  }
-
   bool ready()
   {
-    bool ready = druid_spell_t::ready();
-
-    if ( p() -> buff.celestial_alignment -> up() )
-      return ready;
     if ( p() -> eclipse_amount < 0 )
       return false;
 
-    return ready;
+    return druid_spell_t::ready();
+  }
+};
+
+// Moonfire & Sunfire "parent" spells ================================================
+
+struct moonfire_t : public moonfire_base_t
+{
+  sunfire_base_t* sunfire;
+
+  moonfire_t( druid_t* player, const std::string& options_str ) :
+    moonfire_base_t( player )
+  {
+    parse_options( options_str );
+
+    if ( player -> specialization() == DRUID_BALANCE )
+    {
+      sunfire = new sunfire_base_t( player );
+      sunfire -> callbacks = false;
+      sunfire -> dual = sunfire -> background = true;
+    }
+  }
+
+  // Execute CA Sunfire in update_ready() to assure the correct timing.
+  // It must occur after Moonfire has impacted but before callbacks occur.
+  virtual void update_ready( timespan_adl_barrier::timespan_t cd_duration ) override
+  {
+    moonfire_base_t::update_ready( cd_duration );
+
+    if ( p() -> buff.celestial_alignment -> up() )
+    {
+      sunfire -> target = execute_state -> target;
+      sunfire -> execute();
+    }
+  }
+};
+
+struct sunfire_t : public sunfire_base_t
+{
+  moonfire_base_t* moonfire;
+  bool trigger_moonfire;
+
+  sunfire_t( druid_t* player, const std::string& options_str ) :
+    sunfire_base_t( player ), trigger_moonfire( false )
+  {
+    parse_options( options_str );
+
+    if ( player -> specialization() == DRUID_BALANCE )
+    {
+      moonfire = new moonfire_base_t( player );
+      moonfire -> callbacks = false;
+      moonfire -> dual = moonfire -> background = true;
+    }
+  }
+  
+  // Execute CA Moonfire in update_ready() to assure the correct timing.
+  // It must occur after Sunfire has impacted but before callbacks occur.
+  virtual void update_ready( timespan_adl_barrier::timespan_t cd_duration ) override
+  {
+    sunfire_base_t::update_ready( cd_duration );
+
+    if ( p() -> buff.celestial_alignment -> up() )
+    {
+      moonfire -> target = execute_state -> target;
+      moonfire -> execute();
+    }
   }
 };
 
