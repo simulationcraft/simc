@@ -6643,9 +6643,11 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( "call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled" );
 
   // Single Target & Non-Chi Explosion Cleave
+  st -> add_action( this, "Blackout Kick", "if=set_bonus.tier18_2pc=1&buff.combo_breaker_bok.react" );
+  st -> add_action( this, "Tiger Palm", "if=set_bonus.tier18_2pc=1&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   st -> add_action( this, "Rising Sun Kick" );
-  st -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
-  st -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
+  st -> add_action( this, "Blackout Kick", "if=set_bonus.tier18_2pc=0&buff.combo_breaker_bok.react|buff.serenity.up" );
+  st -> add_action( this, "Tiger Palm", "if=set_bonus.tier18_2pc=0&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );
