@@ -5143,10 +5143,9 @@ struct moonfire_t : public moonfire_base_t
 struct sunfire_t : public sunfire_base_t
 {
   moonfire_base_t* moonfire;
-  bool trigger_moonfire;
 
   sunfire_t( druid_t* player, const std::string& options_str ) :
-    sunfire_base_t( player ), trigger_moonfire( false )
+    sunfire_base_t( player )
   {
     parse_options( options_str );
 
