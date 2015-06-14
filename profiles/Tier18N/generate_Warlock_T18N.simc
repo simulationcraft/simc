@@ -44,7 +44,7 @@ feet=dessicated_soulrender_slippers,id=124150
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
 finger2=loathful_encrusted_band,id=124192,enchant_id=5326
 trinket1=fragment_of_the_dark_star,id=124522
-trinket2=iron_reaver_piston,id=124227
+trinket2=desecrated_shadowmoon_insignia,id=124228
 main_hand=edict_of_argus,id=124382,enchant_id=5384
 save=Warlock_Demonology_T18N.simc
 
@@ -71,7 +71,7 @@ feet=bloody_daggerheeled_pumps,id=124149
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,enchant=50crit
 trinket1=desecrated_shadowmoon_insignia,id=124228
-trinket2=chipped_soul_prism,id=124545
+trinket2=fragment_of_the_dark_star,id=124522
 main_hand=edict_of_argus,id=124382,enchant_id=5384
 save=Warlock_Destruction_T18N.simc
 

@@ -99,19 +99,19 @@ feet=bloody_daggerheeled_pumps,id=124149
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,enchant=50crit
 trinket1=desecrated_shadowmoon_insignia,id=124228
-trinket2=chipped_soul_prism,id=124545
+trinket2=fragment_of_the_dark_star,id=124522
 main_hand=edict_of_argus,id=124382,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=699.33
+# gear_ilvl=700.00
 # gear_stamina=4737
-# gear_intellect=3326
+# gear_intellect=3156
 # gear_spell_power=1925
-# gear_crit_rating=1460
-# gear_haste_rating=737
-# gear_mastery_rating=2285
-# gear_multistrike_rating=737
-# gear_versatility_rating=455
+# gear_crit_rating=1290
+# gear_haste_rating=567
+# gear_mastery_rating=2115
+# gear_multistrike_rating=567
+# gear_versatility_rating=285
 # gear_armor=890
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
