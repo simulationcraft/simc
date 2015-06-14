@@ -42,6 +42,8 @@ actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_
 actions+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
 actions+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions+=/cataclysm
+actions+=/soulburn,if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking
+actions+=/soul_swap,if=buff.soulburn.up&!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking
 actions+=/agony,if=remains<=gcd
 actions+=/corruption,if=remains<=gcd
 actions+=/unstable_affliction,if=remains<=cast_time
