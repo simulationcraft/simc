@@ -2105,7 +2105,8 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     // Map markers to only used actions
     if ( ! sim -> separate_stats_by_actions && a -> action_list )
     {
-      if ( a -> total_executions > 0 || util::str_compare_ci( a -> action_list -> name_str, "precombat" ) )
+      if ( a -> total_executions > 0 || util::str_compare_ci( a -> action_list -> name_str, "precombat" ) 
+        || util::str_in_str_ci( a -> name_str, "_action_list" ) )
       {
         a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
                                        ( j < 36 ) ? ( 'A' + j - 10 ) :
