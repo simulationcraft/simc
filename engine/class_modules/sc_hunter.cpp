@@ -3483,6 +3483,10 @@ struct focus_fire_t: public hunter_spell_t
 
     if ( !p() -> active.pet -> buffs.frenzy -> check() )
       return false;
+    
+    // Focus fire cannot be triggered while the focus_fire buff is active.
+    if ( p() -> buffs.focus_fire -> check() )
+      return false;
 
     if ( p() -> active.pet -> buffs.frenzy -> stack_react() < min_stacks )
       return false;
