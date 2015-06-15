@@ -3177,24 +3177,33 @@ void item::tyrants_decree( special_effect_t& effect )
 
 void warlords_unseeing_eye_handler( player_t& player, action_state_t* s )
 {
-  // Absorb is based on what the player's HP would be after taking the damage, ignoring other absorbs.
-  double after_percent = ( std::max( player.resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_mitigated )
+  /* Absorb is based on what the player's HP would be after taking the damage,
+     accounting for absorbs that occur prior but ignoring the rest.
+
+     Max current health to 0 to keep the trinket's value somewhat sane when the
+     actor goes negative.
+     
+     TOCHECK: If the actor would die from the hit, does the size of the absorb
+     scale with the amount of overkill? */
+  double after_percent = ( std::max( player.resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_amount )
                        / player.resources.max[ RESOURCE_HEALTH ];
   
-  /* 06/15/2015: Mitigation percent supposedly does not cap at 100% of the trinket's value,
-     so lets cap the absorb at 100% mitigation just to be safe. */
-  double absorb_pct = std::min( 1.0, ( 1 - after_percent ) * player.warlords_unseeing_eye );
-  double amount_absorbed = s -> result_amount * absorb_pct;
+  double absorb_pct = ( 1 - after_percent ) * player.warlords_unseeing_eye;
+  double raw_amount = s -> result_amount * absorb_pct;
+  double effective  = std::min( raw_amount, s -> result_amount );
+  double wasted     = std::max( 0.0, raw_amount - s -> result_amount );
 
-  s -> result_amount -= amount_absorbed;
+  s -> result_amount      -= effective;
+  s -> result_absorbed    -= effective;
+  s -> self_absorb_amount += effective;
 
   if ( player.sim -> debug )
-    player.sim -> out_debug.printf( "%s's warlords_unseeing_eye absorbs %.2f damage (%.2f%%)", player.name(), amount_absorbed, absorb_pct * 100 );
+    player.sim -> out_debug.printf( "%s's warlords_unseeing_eye absorbs %.2f damage (%.2f%%)", player.name(), effective, absorb_pct * 100 );
 
-  player.gains.warlords_unseeing_eye -> add( RESOURCE_HEALTH, amount_absorbed, 0 );
+  player.gains.warlords_unseeing_eye -> add( RESOURCE_HEALTH, effective, wasted );
 
-  player.warlords_unseeing_eye_stats -> add_result( amount_absorbed,
-        amount_absorbed,
+  player.warlords_unseeing_eye_stats -> add_result( effective,
+        raw_amount,
         ABSORB,
         RESULT_HIT,
         BLOCK_RESULT_UNBLOCKED,

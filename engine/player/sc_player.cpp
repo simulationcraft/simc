@@ -5182,10 +5182,10 @@ void player_t::assess_damage( school_e school,
 
   assess_damage_imminent_pre_absorb( school, type, s );
 
+  double result_ignoring_external_absorbs = account_absorb_buffs( *this, s, school );
+
   if ( warlords_unseeing_eye > 0 )
     account_warlords_unseeing_eye( *this, s );
-
-  double result_ignoring_external_absorbs = account_absorb_buffs( *this, s, school );
 
   assess_damage_imminent( school, type, s );
 
