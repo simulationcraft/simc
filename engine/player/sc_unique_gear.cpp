@@ -93,6 +93,7 @@ namespace item
   void soul_capacitor( special_effect_t& );
   void tyrants_decree( special_effect_t& );
   void unblinking_gaze_of_sethe( special_effect_t& );
+  void warlords_unseeing_eye( special_effect_t& );
 }
 
 namespace gem
@@ -3175,6 +3176,45 @@ void item::tyrants_decree( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void warlords_unseeing_eye_handler( player_t& player, action_state_t* s )
+{
+  // Absorb is based on what the player's HP would be after taking the damage, ignoring other absorbs.
+  double after_percent = ( std::max( player.resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_mitigated )
+                       / player.resources.max[ RESOURCE_HEALTH ];
+  
+  /* 06/15/2015: Mitigation percent supposedly does not cap at 100% of the trinket's value,
+     so lets cap the absorb at 100% mitigation just to be safe. */
+  double absorb_pct = std::min( 1.0, ( 1 - after_percent ) * player.warlords_unseeing_eye );
+  double amount_absorbed = s -> result_amount * absorb_pct;
+
+  s -> result_amount -= amount_absorbed;
+
+  if ( player.sim -> debug )
+    player.sim -> out_debug.printf( "%s's warlords_unseeing_eye absorbs %.2f damage (%.2f%%)", player.name(), amount_absorbed, absorb_pct * 100 );
+
+  player.gains.warlords_unseeing_eye -> add( RESOURCE_HEALTH, amount_absorbed, 0 );
+
+  player.warlords_unseeing_eye_stats -> add_result( amount_absorbed,
+        amount_absorbed,
+        ABSORB,
+        RESULT_HIT,
+        BLOCK_RESULT_UNBLOCKED,
+        &player );
+}
+
+void item::warlords_unseeing_eye( special_effect_t& effect )
+{
+  // Store the magic mitigation number in a player-scope variable.
+  effect.player -> warlords_unseeing_eye = effect.driver() -> effectN( 2 ).average( effect.item ) / 10000.0;
+  // Assign our handler function so it can be accessed from player_t::assess_damage().
+  effect.player -> account_warlords_unseeing_eye = &warlords_unseeing_eye_handler;
+  // Init gains.warlords_unseeing eye for reporting purposes.
+  effect.player -> gains.warlords_unseeing_eye = effect.player -> get_gain( "warlords_unseeing_eye" );
+  effect.player -> warlords_unseeing_eye_stats = effect.player -> get_stats( "warlords_unseeing_eye" );
+  effect.player -> warlords_unseeing_eye_stats -> type = STATS_ABSORB;
+  effect.player -> warlords_unseeing_eye_stats -> school = SCHOOL_PHYSICAL;
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -3825,6 +3865,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 184249, item::discordant_chorus              );
   register_special_effect( 184257, item::empty_drinking_horn            );
   register_special_effect( 184767, item::tyrants_decree                 );
+  register_special_effect( 184762, item::warlords_unseeing_eye          );
   register_special_effect( 187614, item::legendary_ring                 );
   register_special_effect( 187611, item::legendary_ring                 );
   register_special_effect( 187615, item::legendary_ring                 );

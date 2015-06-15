@@ -529,6 +529,7 @@ player_t::player_t( sim_t*             s,
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
+  warlords_unseeing_eye( 0.0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -5182,6 +5183,9 @@ void player_t::assess_damage( school_e school,
   account_hand_of_sacrifice( *this, s );
 
   assess_damage_imminent_pre_absorb( school, type, s );
+
+  if ( warlords_unseeing_eye > 0 )
+    account_warlords_unseeing_eye( *this, s );
 
   double result_ignoring_external_absorbs = account_absorb_buffs( *this, s, school );
 

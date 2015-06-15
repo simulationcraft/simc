@@ -4752,6 +4752,10 @@ struct player_t : public actor_t
   cooldown_t item_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
+  // Warlord's Unseeing Eye (6.2 Trinket)
+  double warlords_unseeing_eye;
+  stats_t* warlords_unseeing_eye_stats;
+
   // Scale Factors
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
@@ -4858,6 +4862,7 @@ struct player_t : public actor_t
     gain_t* restore_mana;
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
+    gain_t* warlords_unseeing_eye;
 
     gain_t* leech;
   } gains;
@@ -5240,6 +5245,9 @@ struct player_t : public actor_t
 
   // T18 Hellfire Citadel class trinket detection
   virtual bool has_t18_class_trinket() const;
+  
+  // Warlord's Unseeing Eye Handler (6.2 Trinket)
+  std::function< void( player_t&, action_state_t* ) > account_warlords_unseeing_eye;
 
   action_priority_list_t* find_action_priority_list( const std::string& name );
   void                    clear_action_priority_lists() const;
