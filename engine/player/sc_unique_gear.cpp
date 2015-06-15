@@ -91,6 +91,7 @@ namespace item
   void mirror_of_the_blademaster( special_effect_t& );
   void prophecy_of_fear( special_effect_t& );
   void soul_capacitor( special_effect_t& );
+  void tyrants_decree( special_effect_t& );
   void unblinking_gaze_of_sethe( special_effect_t& );
 }
 
@@ -3126,6 +3127,53 @@ void item::mirror_of_the_blademaster( special_effect_t& effect )
   // properly detect the special effect.
   effect.type = SPECIAL_EFFECT_USE;
 }
+  
+static void tyrants_decree_driver_callback( buff_t* buff, int, int )
+{
+  if ( buff -> player -> resources.pct( RESOURCE_HEALTH ) >= buff -> data().effectN( 2 ).percent() )
+    buff -> player -> buffs.tyrants_immortality -> trigger();
+}
+
+void item::tyrants_decree( special_effect_t& effect )
+{
+  struct tyrants_decree_cancel_t : public action_t
+  {
+    double cancel_threshold;
+
+    tyrants_decree_cancel_t( player_t* player, const special_effect_t& effect ) :
+      action_t( ACTION_OTHER, "tyrants_decree_cancel", player )
+    {
+      quiet = background = true;
+      cancel_threshold = effect.driver() -> effectN( 2 ).percent();
+    }
+
+    virtual void execute() override
+    {
+      if ( player -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
+        player -> buffs.tyrants_immortality -> expire();
+    }
+  };
+
+  // Create a callback that triggers on damage taken to check if the buff should be expired.
+  effect.execute_action = new tyrants_decree_cancel_t( effect.player, effect );
+  effect.proc_flags_= PF_DAMAGE_TAKEN;
+  effect.proc_chance_ = 1.0;
+  
+  buff_t* driver  = buff_creator_t( effect.player, "tyrants_decree_driver", effect.driver() )
+                    .period( effect.driver() -> effectN( 1 ).period() )
+                    .tick_behavior( BUFF_TICK_REFRESH )
+                    .tick_callback( &tyrants_decree_driver_callback )
+                    .quiet( true );
+  buff_t* trigger = stat_buff_creator_t( effect.player, "tyrants_immortality", effect.player -> find_spell( 184770 ) )
+                    .add_stat( STAT_STAMINA, effect.player -> find_spell( 184770 ) -> effectN( 1 ).average( effect.item ) )
+                    .duration( timespan_t::zero() ); // indefinite, this will never expire naturally so might as well save some CPU cycles
+
+  // Driver is triggered in player_t::arise()
+  effect.player -> buffs.tyrants_decree_driver = driver;
+  effect.player -> buffs.tyrants_immortality   = trigger;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 } // UNNAMED NAMESPACE
 
@@ -3776,6 +3824,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 183951, item::unblinking_gaze_of_sethe       );
   register_special_effect( 184249, item::discordant_chorus              );
   register_special_effect( 184257, item::empty_drinking_horn            );
+  register_special_effect( 184767, item::tyrants_decree                 );
   register_special_effect( 187614, item::legendary_ring                 );
   register_special_effect( 187611, item::legendary_ring                 );
   register_special_effect( 187615, item::legendary_ring                 );

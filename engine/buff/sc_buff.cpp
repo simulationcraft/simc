@@ -82,7 +82,7 @@ struct tick_t : public buff_event_t
       buff -> decrement( current_stacks, current_value );
 
     timespan_t period = buff -> buff_period;
-    if ( buff -> remains() >= period )
+    if ( buff -> remains() >= period || buff -> buff_duration == timespan_t::zero() )
     {
       // Reorder the last tick to happen 1ms before expiration
       if ( buff -> remains() == period )
@@ -800,21 +800,19 @@ void buff_t::start( int        stacks,
   last_start = sim -> current_time();
 
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
+
   if ( d > timespan_t::zero() )
-  {
     expiration = new ( *sim ) expiration_t( this, d );
 
-    if ( tick_behavior != BUFF_TICK_NONE &&
-         buff_period > timespan_t::zero() &&
-         buff_period <= d )
-    {
-      timespan_t tick_time = buff_period;
-      // Reorder the last tick to happen 1ms before expiration
-      if ( tick_time == d )
-        tick_time -= timespan_t::from_millis( 1 );
-      assert( ! tick_event );
-      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, reverse ? 1 : stacks );
-    }
+  if ( tick_behavior != BUFF_TICK_NONE && buff_period > timespan_t::zero()
+    && ( buff_period <= d || d == timespan_t::zero() ) )
+  {
+    timespan_t tick_time = buff_period;
+    // Reorder the last tick to happen 1ms before expiration
+    if ( tick_time == d )
+      tick_time -= timespan_t::from_millis( 1 );
+    assert( ! tick_event );
+    tick_event = new ( *sim ) tick_t( this, tick_time, current_value, reverse ? 1 : stacks );
   }
 }
 
