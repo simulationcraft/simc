@@ -3744,11 +3744,10 @@ private:
   }
 public:
   double base_max_rage_cost;
-  double refund_pct;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
-    base_max_rage_cost( 0.0 ), refund_pct( 0.0 )
+    base_max_rage_cost( 0.0 )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -3770,17 +3769,6 @@ public:
       std::min( p() -> resources.current[ RESOURCE_RAGE ], max_rage_cost() );
 
     return druid_heal_t::cost();
-  }
-
-  virtual void consume_resource() override
-  {
-    double rage_spent = cost();
-
-    druid_heal_t::consume_resource();
-
-    // Refund rage based on the overheal
-    if ( refund_pct > 0 && maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( current_resource(), refund_pct * rage_spent, p() -> gain.rage_refund );
   }
 
   virtual double action_multiplier() const
@@ -3805,17 +3793,6 @@ public:
 
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
-
-    // Reset refund variable for next ability use
-    refund_pct = 0.0;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    druid_heal_t::impact( s );
-
-    // Store pct to be refunded so it can be refunded in consume_resource().
-    refund_pct = ( 1 - s -> result_amount / s -> result_total );
   }
 
   virtual bool ready()
@@ -4845,6 +4822,7 @@ struct hurricane_tick_t : public druid_spell_t
     druid_spell_t( "hurricane", player, s )
   {
     aoe = -1;
+    ground_aoe = true;
   }
 };
 
@@ -6848,7 +6826,7 @@ void druid_t::apl_balance()
   aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
   aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
   aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<8" );
-  aoe -> add_action( this, "Starfall", "if=!buff.starfall.up&active_enemies>2" );
+  aoe -> add_action( this, "Starfall", "if=buff.starfall.remains<3&active_enemies>2" );
   aoe -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
   aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
   aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=remains<7" );
