@@ -522,6 +522,48 @@ inline void current_target_reset_cb_t::operator()(player_t*)
 
 namespace pets {
 
+struct mage_pet_spell_t : public spell_t
+{
+  mage_pet_spell_t( const std::string& n, pet_t* p, const spell_data_t* s ):
+    spell_t( n, p, s )
+  {}
+
+  mage_t* o()
+  {
+    pet_t* pet = static_cast< pet_t* >( player );
+    mage_t* mage = static_cast< mage_t* >( pet -> owner );
+    return mage;
+  }
+
+  virtual void schedule_execute( action_state_t* execute_state )
+  {
+    target = o() -> current_target;
+
+    spell_t::schedule_execute( execute_state );
+  }
+};
+
+struct mage_pet_melee_attack_t : public melee_attack_t
+{
+  mage_pet_melee_attack_t( const std::string& n, pet_t* p ):
+    melee_attack_t( n, p, spell_data_t::nil() )
+  {}
+
+  mage_t* o()
+  {
+    pet_t* pet = static_cast< pet_t* >( player );
+    mage_t* mage = static_cast< mage_t* >( pet -> owner );
+    return mage;
+  }
+
+  virtual void schedule_execute( action_state_t* execute_state )
+  {
+    target = o() -> current_target;
+
+    melee_attack_t::schedule_execute( execute_state );
+  }
+};
+
 // ==========================================================================
 // Pet Water Elemental
 // ==========================================================================
@@ -537,10 +579,10 @@ public:
 
 struct water_elemental_pet_t : public pet_t
 {
-  struct freeze_t : public spell_t
+  struct freeze_t : public mage_pet_spell_t
   {
     freeze_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
+      mage_pet_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
     {
       parse_options( options_str );
       aoe = -1;
@@ -562,13 +604,13 @@ struct water_elemental_pet_t : public pet_t
 
   };
 
-  struct water_jet_t : public spell_t
+  struct water_jet_t : public mage_pet_spell_t
   {
     // queued water jet spell, auto cast water jet spell
     bool queued, autocast;
 
     water_jet_t( water_elemental_pet_t* p, const std::string& options_str ) :
-      spell_t( "water_jet", p, p -> find_spell( 135029 ) ),
+      mage_pet_spell_t( "water_jet", p, p -> find_spell( 135029 ) ),
       queued( false ), autocast( true )
     {
       parse_options( options_str );
@@ -591,7 +633,7 @@ struct water_elemental_pet_t : public pet_t
 
     void execute()
     {
-      spell_t::execute();
+      mage_pet_spell_t::execute();
 
       if ( p() -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B2 ) )
       {
@@ -605,7 +647,7 @@ struct water_elemental_pet_t : public pet_t
 
     virtual void impact( action_state_t* s )
     {
-      spell_t::impact( s );
+      mage_pet_spell_t::impact( s );
 
       td( s -> target ) -> water_jet
                         -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
@@ -621,7 +663,7 @@ struct water_elemental_pet_t : public pet_t
 
     virtual double action_multiplier() const
     {
-      double am = spell_t::action_multiplier();
+      double am = mage_pet_spell_t::action_multiplier();
 
       if ( p() -> dbc.ptr && p() -> o() -> spec.icicles -> ok() )
       {
@@ -633,7 +675,7 @@ struct water_elemental_pet_t : public pet_t
 
     virtual void last_tick( dot_t* d )
     {
-      spell_t::last_tick( d );
+      mage_pet_spell_t::last_tick( d );
       td( d -> target ) -> water_jet -> expire();
     }
 
@@ -646,12 +688,12 @@ struct water_elemental_pet_t : public pet_t
       if ( ! autocast && ! queued )
         return false;
 
-      return spell_t::ready();
+      return mage_pet_spell_t::ready();
     }
 
     void reset()
     {
-      spell_t::reset();
+      mage_pet_spell_t::reset();
 
       queued = false;
     }
@@ -670,10 +712,10 @@ struct water_elemental_pet_t : public pet_t
     return td;
   }
 
-  struct waterbolt_t: public spell_t
+  struct waterbolt_t: public mage_pet_spell_t
   {
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
+      mage_pet_spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
       trigger_gcd = timespan_t::zero();
       parse_options( options_str );
@@ -685,7 +727,7 @@ struct water_elemental_pet_t : public pet_t
 
     virtual double action_multiplier() const
     {
-      double am = spell_t::action_multiplier();
+      double am = mage_pet_spell_t::action_multiplier();
 
       if ( p() -> o() -> spec.icicles -> ok() )
       {
@@ -752,10 +794,10 @@ water_elemental_pet_td_t::water_elemental_pet_td_t( player_t* target, water_elem
 
 struct mirror_image_pet_t : public pet_t
 {
-  struct mirror_image_spell_t : public spell_t
+  struct mirror_image_spell_t : public mage_pet_spell_t
   {
     mirror_image_spell_t( const std::string& n, mirror_image_pet_t* p, const spell_data_t* s ):
-      spell_t( n, p, s )
+      mage_pet_spell_t( n, p, s )
     {
       may_crit = true;
     }
@@ -767,7 +809,7 @@ struct mirror_image_pet_t : public pet_t
         stats = p() -> o() -> pets.mirror_images[ 0 ] -> get_stats( name_str );
       }
 
-      return spell_t::init_finished();
+      return mage_pet_spell_t::init_finished();
     }
 
     mirror_image_pet_t* p() const
@@ -996,17 +1038,33 @@ struct prismatic_crystal_t : public pet_t
     o() -> current_target = this;
     for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
       o() -> action_list[i] -> target_cache.is_valid = false;
-    }
+  }
 
   void demise()
   {
     pet_t::demise();
 
-    // For now, when Prismatic Crystal despawns, adjust all mage targets back to fluffy pillow.
+    // For now, when Prismatic Crystal despawns, adjust all mage targets back
+    // to fluffy pillow and invalid all mage and pet action target caches
     o() -> current_target = o() -> target;
     for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
+    {
+      o() -> action_list[i] -> target = o() -> current_target;
       o() -> action_list[i] -> target_cache.is_valid = false;
     }
+
+    for ( size_t i = 0, i_end = o() -> pet_list.size(); i < i_end; i++ )
+    {
+      pet_t* pet = o() -> pet_list[i];
+
+      pet -> target = o() -> target;
+      for ( size_t j = 0, j_end = pet -> action_list.size(); j < j_end; j++ )
+      {
+        pet -> action_list[j] -> target = pet -> target;
+        pet -> action_list[j] -> target_cache.is_valid = false;
+      }
+    }
+  }
 
   double composite_mitigation_versatility() const { return 0; }
 
@@ -1069,10 +1127,10 @@ struct temporal_hero_t : public pet_t
   hero_e hero_type;
   static hero_e last_summoned;
 
-  struct temporal_hero_melee_attack_t : public melee_attack_t
+  struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
   {
     temporal_hero_melee_attack_t( pet_t* p ) :
-      melee_attack_t( "melee", p, spell_data_t::nil() )
+      mage_pet_melee_attack_t( "melee", p )
     {
       may_crit = true;
       background = repeating = auto_attack = true;
@@ -1092,14 +1150,14 @@ struct temporal_hero_t : public pet_t
         stats = m -> pets.temporal_heroes[0] -> get_stats( "melee" );
       }
 
-      return melee_attack_t::init_finished();
+      return mage_pet_melee_attack_t::init_finished();
     }
   };
 
-  struct temporal_hero_autoattack_t : public melee_attack_t
+  struct temporal_hero_autoattack_t : public mage_pet_melee_attack_t
   {
     temporal_hero_autoattack_t( pet_t* p ) :
-      melee_attack_t( "auto_attack", p, spell_data_t::nil() )
+      mage_pet_melee_attack_t( "auto_attack", p )
     {
       p -> main_hand_attack = new temporal_hero_melee_attack_t( p );
       trigger_gcd = timespan_t::zero();
@@ -1122,10 +1180,10 @@ struct temporal_hero_t : public pet_t
     }
   };
 
-  struct temporal_hero_frostbolt_t : public spell_t
+  struct temporal_hero_frostbolt_t : public mage_pet_spell_t
   {
     temporal_hero_frostbolt_t( pet_t* p ) :
-      spell_t( "frostbolt", p, p -> find_spell( 9672 ) )
+      mage_pet_spell_t( "frostbolt", p, p -> find_spell( 9672 ) )
     {
       may_crit = true;
     }
@@ -1138,7 +1196,7 @@ struct temporal_hero_t : public pet_t
         return false;
       }
 
-      return spell_t::ready();
+      return mage_pet_spell_t::ready();
     }
 
     bool init_finished()
@@ -1151,14 +1209,14 @@ struct temporal_hero_t : public pet_t
         stats = m -> pets.temporal_heroes[0] -> get_stats( "frostbolt" );
       }
 
-      return spell_t::init_finished();
+      return mage_pet_spell_t::init_finished();
     }
   };
 
-  struct temporal_hero_shoot_t : public spell_t
+  struct temporal_hero_shoot_t : public mage_pet_spell_t
   {
     temporal_hero_shoot_t( pet_t* p ) :
-      spell_t( "shoot", p, p -> find_spell( 59710 ) )
+      mage_pet_spell_t( "shoot", p, p -> find_spell( 59710 ) )
     {
       school = SCHOOL_PHYSICAL;
       base_execute_time = p -> main_hand_weapon.swing_time;
@@ -1186,7 +1244,7 @@ struct temporal_hero_t : public pet_t
         stats = m -> pets.temporal_heroes[0] -> get_stats( "shoot" );
       }
 
-      return spell_t::init_finished();
+      return mage_pet_spell_t::init_finished();
     }
   };
 
