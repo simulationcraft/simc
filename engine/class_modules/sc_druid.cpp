@@ -895,9 +895,21 @@ struct natures_vigil_proc_t : public spell_t
 
 struct stalwart_guardian_t : public absorb_t
 {
+  struct stalwart_guardian_reflect_t : public attack_t
+  {
+    stalwart_guardian_reflect_t( druid_t* p ) :
+      attack_t( "stalwart_guardian_reflect", p, p -> find_spell( 185321 ) )
+    {
+      may_block = may_dodge = may_parry = may_miss = true;
+      may_crit = true;
+    }
+  };
+
   double incoming_damage;
   double absorb_limit;
   double absorb_size;
+  player_t* triggering_enemy;
+  stalwart_guardian_reflect_t* reflect;
 
   stalwart_guardian_t( druid_t* p ) :
     absorb_t( "stalwart_guardian", p, p -> find_spell( 185321 ) ),
@@ -907,6 +919,9 @@ struct stalwart_guardian_t : public absorb_t
     may_crit = false;
     may_multistrike = 0;
     target = p;
+    harmful = false;
+
+    reflect = new stalwart_guardian_reflect_t( p );
   }
 
   druid_t* p() const
@@ -931,6 +946,16 @@ struct stalwart_guardian_t : public absorb_t
     assert( p() -> stalwart_guardian );
 
     absorb_t::execute();
+
+    // Trigger damage reflect
+    double resolve = 1.0;
+    if ( p() -> resolve_manager.is_started() )
+      resolve *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+
+    // Base damage is equal to the size of the absorb pre-resolve.
+    reflect -> base_dd_min = absorb_size / resolve;
+    reflect -> target = triggering_enemy;
+    reflect -> execute();
   }
 
   void impact( action_state_t* s ) override
@@ -7872,7 +7897,10 @@ void druid_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s 
     // TODO: Does this go before or after PT?
     if ( stalwart_guardian )
     {
+      // Pass incoming damage value so the absorb can be calculated.
       active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
+      // Pass the triggering enemy so that the damage reflect has a target;
+      active.stalwart_guardian -> triggering_enemy = s -> action -> player;
       active.stalwart_guardian -> execute();
 
       double effective = std::min( active.stalwart_guardian -> absorb_size, s -> result_absorbed );
