@@ -3137,28 +3137,23 @@ static void tyrants_decree_driver_callback( buff_t* buff, int, int )
 
 void item::tyrants_decree( special_effect_t& effect )
 {
-  struct tyrants_decree_cancel_t : public action_t
+  struct tyrants_decree_callback_t : public dbc_proc_callback_t
   {
     double cancel_threshold;
+    player_t* p;
 
-    tyrants_decree_cancel_t( player_t* player, const special_effect_t& effect ) :
-      action_t( ACTION_OTHER, "tyrants_decree_cancel", player )
+    tyrants_decree_callback_t( player_t* player, const special_effect_t& effect ) :
+      dbc_proc_callback_t( player, effect ), p( player )
     {
-      quiet = background = true;
       cancel_threshold = effect.driver() -> effectN( 2 ).percent();
     }
 
-    virtual void execute() override
+    virtual void trigger( action_t* a, void* /* call_data */ ) override
     {
-      if ( player -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
-        player -> buffs.tyrants_immortality -> expire();
+      if ( p -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
+        p -> buffs.tyrants_immortality -> expire();
     }
   };
-
-  // Create a callback that triggers on damage taken to check if the buff should be expired.
-  effect.execute_action = new tyrants_decree_cancel_t( effect.player, effect );
-  effect.proc_flags_= PF_DAMAGE_TAKEN;
-  effect.proc_chance_ = 1.0;
   
   buff_t* driver  = buff_creator_t( effect.player, "tyrants_decree_driver", effect.driver() )
                     .period( effect.driver() -> effectN( 1 ).period() )
@@ -3172,8 +3167,12 @@ void item::tyrants_decree( special_effect_t& effect )
   // Driver is triggered in player_t::arise()
   effect.player -> buffs.tyrants_decree_driver = driver;
   effect.player -> buffs.tyrants_immortality   = trigger;
+  
+  // Create a callback that triggers on damage taken to check if the buff should be expired.
+  effect.proc_flags_= PF_DAMAGE_TAKEN;
+  effect.proc_chance_ = 1.0;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new tyrants_decree_callback_t( effect.player, effect );
 }
 
 void warlords_unseeing_eye_handler( player_t& player, action_state_t* s )
@@ -3208,7 +3207,7 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   effect.player -> warlords_unseeing_eye = effect.driver() -> effectN( 2 ).average( effect.item ) / 10000.0;
   // Assign our handler function so it can be accessed from player_t::assess_damage().
   effect.player -> account_warlords_unseeing_eye = &warlords_unseeing_eye_handler;
-  // Init gains.warlords_unseeing eye for reporting purposes.
+  // Init stats & gains for reporting purposes.
   effect.player -> gains.warlords_unseeing_eye = effect.player -> get_gain( "warlords_unseeing_eye" );
   effect.player -> warlords_unseeing_eye_stats = effect.player -> get_stats( "warlords_unseeing_eye" );
   effect.player -> warlords_unseeing_eye_stats -> type = STATS_ABSORB;
