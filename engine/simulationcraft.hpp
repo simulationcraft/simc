@@ -1973,6 +1973,7 @@ protected:
   timespan_t last_start;
   timespan_t last_trigger;
   timespan_t iteration_uptime_sum;
+  timespan_t last_benefite_update;
   unsigned int up_count, down_count, start_count, refresh_count;
   unsigned int overflow_count, overflow_total;
   int trigger_attempts, trigger_successes;
@@ -2007,21 +2008,10 @@ public:
   /**
    * Get current number of stacks + benefit tracking.
    * Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
+   * This will only modify the benefit counters once per sim time unit. 
    * Use up()/down where the presence of the buff affects the action mechanics.
    */
-  int stack()
-  {
-    int cs = current_stack;
-    if ( cs > 0 )
-    {
-      up_count++;
-    }
-    else
-    {
-      down_count++;
-    }
-    return cs;
-  }
+  int stack();
 
   /**
    * Check if buff is up

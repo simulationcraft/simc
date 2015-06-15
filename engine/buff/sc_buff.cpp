@@ -456,6 +456,21 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
   }
 }
 
+int buff_t::stack()
+{
+  int cs = current_stack;
+  if ( last_benefite_update != sim -> current_time() )
+  {
+    // make sure we only record a benfit once per sim event
+    last_benefite_update = sim -> current_time();
+    if ( cs > 0 )
+      up_count++;
+    else
+      down_count++;
+  }
+  return cs;
+}
+
 // buff_t::total_stack ======================================================
 
 int buff_t::total_stack()
