@@ -4114,6 +4114,14 @@ void player_t::arise()
     schedule_ready();
 
   active_during_iteration = true;
+
+  // Tyrant's Decree trinket (6.2)
+  if ( buffs.tyrants_decree_driver )
+  {
+    buffs.tyrants_decree_driver -> trigger();
+    // Assume actor has stacked the buff to max stack precombat.
+    buffs.tyrants_immortality   -> trigger( buffs.tyrants_immortality -> max_stack() );
+  }
 }
 
 // player_t::demise =========================================================

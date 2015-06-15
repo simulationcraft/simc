@@ -4835,6 +4835,8 @@ struct player_t : public actor_t
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
     buff_t* spirit_shift; // Soul Capacitor trinket
+    buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
+    buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
     haste_buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
   } buffs;
