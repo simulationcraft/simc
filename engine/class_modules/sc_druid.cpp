@@ -7862,65 +7862,71 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
 
 // druid_t::assess_damage_imminent ==========================================
 
-// Handle absorbs.
+/* Handle absorbs.
+    Absorb order typically, but not always, goes as follows:
+      Primal Tenacity -- handled in account_absorb_buffs(), before assess_damage_imminient()
+      Warlord's Unseeing Eye -- in player_t::assess_damage()
+      Stalwart Guardian
+      Tooth and Claw
+ */
 
 void druid_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
 {
-  if ( ! ( s -> result == RESULT_MISS || s -> result == RESULT_DODGE ) )
+  // Apply Stalwart Guardian -- Guardian T18 trinket
+  if ( stalwart_guardian && s -> result_amount > 0 )
   {
-    // Apply Tooth and Claw
-    // 4/30/2015: Tooth and Claw takes place after PT 
-    if ( ! s -> action -> special && dbc::is_school( SCHOOL_PHYSICAL, school ) && buff.tooth_and_claw_absorb -> up() )
-    {
-      double effective = std::min( buff.tooth_and_claw_absorb -> current_value, s -> result_absorbed );
-      double wasted = std::max( 0.0, buff.tooth_and_claw_absorb -> current_value - s -> result_absorbed );
+    // Pass incoming damage value so the absorb can be calculated.
+    // TOCHECK: Does this use result_amount or result_mitigated?
+    active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
+    // Pass the triggering enemy so that the damage reflect has a target;
+    active.stalwart_guardian -> triggering_enemy = s -> action -> player;
+    active.stalwart_guardian -> execute();
 
-      s -> result_absorbed -= effective;
-      s -> result_amount   -= effective;
+    double effective = std::min( active.stalwart_guardian -> absorb_size, s -> result_amount );
+    double wasted = std::max( 0.0, active.stalwart_guardian -> absorb_size - s -> result_amount );
 
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s tooth_and_claw_absorb absorbs %.2f (%.2f wasted)", name(), effective, wasted );
+    s -> result_absorbed    -= effective;
+    s -> result_amount      -= effective;
+    s -> self_absorb_amount += effective;
 
-      tooth_and_claw -> add_result( effective,
-        buff.tooth_and_claw_absorb -> current_value,
-        ABSORB,
-        RESULT_HIT,
-        BLOCK_RESULT_UNBLOCKED,
-        this );
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s stalwart_guardian absorbs %.2f (%.2f wasted)", name(), effective, wasted );
 
-      gain.tooth_and_claw -> add( RESOURCE_HEALTH, effective, wasted );
+    active.stalwart_guardian -> stats -> add_result( effective,
+      active.stalwart_guardian -> absorb_size,
+      ABSORB,
+      RESULT_HIT,
+      BLOCK_RESULT_UNBLOCKED,
+      this );
 
-      buff.tooth_and_claw_absorb -> expire();
-    }
+    gain.stalwart_guardian -> add( RESOURCE_HEALTH, effective, wasted );
+  }
 
-    // Apply Stalwart Guardian -- Guardian T18 trinket
-    // TODO: Does this go before or after PT?
-    if ( stalwart_guardian )
-    {
-      // Pass incoming damage value so the absorb can be calculated.
-      active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
-      // Pass the triggering enemy so that the damage reflect has a target;
-      active.stalwart_guardian -> triggering_enemy = s -> action -> player;
-      active.stalwart_guardian -> execute();
+  // Apply Tooth and Claw
+  // Tooth and Claw is only consumed if there's damage left to absorb.
+  if ( ! s -> action -> special && dbc::is_school( SCHOOL_PHYSICAL, school )
+    && s -> result_amount > 0 && buff.tooth_and_claw_absorb -> up() )
+  {
+    double effective = std::min( buff.tooth_and_claw_absorb -> current_value, s -> result_amount );
+    double wasted = std::max( 0.0, buff.tooth_and_claw_absorb -> current_value - s -> result_amount );
 
-      double effective = std::min( active.stalwart_guardian -> absorb_size, s -> result_absorbed );
-      double wasted = std::max( 0.0, active.stalwart_guardian -> absorb_size - s -> result_absorbed );
+    s -> result_absorbed    -= effective;
+    s -> result_amount      -= effective;
+    s -> self_absorb_amount += effective;
 
-      s -> result_absorbed -= effective;
-      s -> result_amount   -= effective;
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s tooth_and_claw_absorb absorbs %.2f (%.2f wasted)", name(), effective, wasted );
 
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s stalwart_guardian absorbs %.2f (%.2f wasted)", name(), effective, wasted );
+    tooth_and_claw -> add_result( effective,
+      buff.tooth_and_claw_absorb -> current_value,
+      ABSORB,
+      RESULT_HIT,
+      BLOCK_RESULT_UNBLOCKED,
+      this );
 
-      active.stalwart_guardian -> stats -> add_result( effective,
-        active.stalwart_guardian -> absorb_size,
-        ABSORB,
-        RESULT_HIT,
-        BLOCK_RESULT_UNBLOCKED,
-        this );
+    gain.tooth_and_claw -> add( RESOURCE_HEALTH, effective, wasted );
 
-      gain.stalwart_guardian -> add( RESOURCE_HEALTH, effective, wasted );
-    }
+    buff.tooth_and_claw_absorb -> expire();
   }
 }
 

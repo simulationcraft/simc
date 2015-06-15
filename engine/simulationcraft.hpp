@@ -5822,7 +5822,7 @@ struct action_state_t : public noncopyable
   double          result_absorbed;      // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_amount;        // Final (actual) result
   double          blocked_amount;        // The exact amount of how much damage was reduced via block or critical block
-  double          self_absorb_amount;    // The exqact amount of how much damaga was reduced via personal absorbs such as shield_barrier
+  double          self_absorb_amount;    // The exact amount of how much damage was reduced via personal absorbs such as shield_barrier
   // Snapshotted stats during execution
   double          haste;
   double          crit;
