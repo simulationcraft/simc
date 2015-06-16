@@ -103,15 +103,15 @@ legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,enchant=gift_of_multistrike
-trinket1=unending_hunger,id=124236
-trinket2=empty_drinking_horn,id=124238
+trinket1=empty_drinking_horn,id=124238
+trinket2=discordant_chorus,id=124237
 main_hand=hellrender,id=124360,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=699.00
-# gear_strength=3509
+# gear_ilvl=699.33
+# gear_strength=3906
 # gear_stamina=4668
-# gear_crit_rating=1343
+# gear_crit_rating=585
 # gear_haste_rating=805
 # gear_mastery_rating=972
 # gear_multistrike_rating=2052

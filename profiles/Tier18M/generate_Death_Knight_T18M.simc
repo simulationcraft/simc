@@ -44,8 +44,8 @@ legs=demongaze_legplates,id=124338,bonus_id=567
 feet=treads_of_the_defiler,id=124322,bonus_id=567
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_mastery
 finger2=congealed_globule_loop,id=124197,bonus_id=567,enchant=gift_of_mastery
-trinket1=unending_hunger,id=124236,bonus_id=567
-trinket2=empty_drinking_horn,id=124238,bonus_id=567
+trinket1=empty_drinking_horn,id=124238,bonus_id=567
+trinket2=discordant_chorus,id=124237,bonus_id=567
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_the_fallen_crusader
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_razorice
 save=Death_Knight_Frost_1h_T18M.simc
@@ -70,8 +70,8 @@ legs=demongaze_legplates,id=124338,bonus_id=567
 feet=treads_of_the_defiler,id=124322,bonus_id=567
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,bonus_id=567,enchant=gift_of_multistrike
-trinket1=unending_hunger,id=124236,bonus_id=567
-trinket2=empty_drinking_horn,id=124238,bonus_id=567
+trinket1=empty_drinking_horn,id=124238,bonus_id=567
+trinket2=discordant_chorus,id=124237,bonus_id=567
 main_hand=hellrender,id=124360,bonus_id=567,enchant=rune_of_the_fallen_crusader
 
 save=Death_Knight_Unholy_T18M.simc
