@@ -1,6 +1,6 @@
 optimal_raid=1
 ptr=1
-tmi_boss=TMI_Standard_Boss_T17M
+tmi_boss=TMI_Standard_Boss_T18N
 # Raid Tier18N
 
 # Death Knight
@@ -11,6 +11,7 @@ Death_Knight_Unholy_T18N.simc
 # Druid
 Druid_Balance_T18N.simc
 Druid_Feral_T18N.simc
+Druid_Guardian_T18N.simc
 
 # Hunter
 Hunter_BM_T18N.simc

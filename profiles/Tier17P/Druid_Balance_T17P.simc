@@ -52,7 +52,7 @@ actions.single_target+=/wrath
 actions.aoe=celestial_alignment,if=lunar_max<8|target.time_to_die<20
 actions.aoe+=/incarnation,if=buff.celestial_alignment.up
 actions.aoe+=/sunfire,cycle_targets=1,if=remains<8
-actions.aoe+=/starfall,if=!buff.starfall.up&active_enemies>2
+actions.aoe+=/starfall,if=buff.starfall.remains<3&active_enemies>2
 actions.aoe+=/starsurge,if=(charges=2&recharge_time<6)|charges=3
 actions.aoe+=/moonfire,cycle_targets=1,if=remains<12
 actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
