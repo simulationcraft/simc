@@ -6499,7 +6499,7 @@ void druid_t::create_buffs()
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
                                .school( SCHOOL_PHYSICAL )
                                .source( get_stats( "primal_tenacity" ) )
-                               .gain( gain.primal_tenacity );
+                               .gain( get_gain( "primal_tenacity" ) ); // gain.primal_tenacity isn't initialized yet
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
