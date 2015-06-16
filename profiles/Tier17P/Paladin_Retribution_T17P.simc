@@ -3,7 +3,7 @@ level=100
 race=draenei
 role=attack
 position=back
-talents=2112231
+talents=2112333
 glyphs=54922/54924/57954/89401/115933/146957
 spec=retribution
 
@@ -19,8 +19,8 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
-actions.precombat+=/seal_of_truth,if=active_enemies<2
-actions.precombat+=/seal_of_righteousness,if=active_enemies>=2
+actions.precombat+=/seal_of_truth,if=active_enemies<3
+actions.precombat+=/seal_of_righteousness,if=active_enemies>=3
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
@@ -29,6 +29,7 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=rebuke
 actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)
+# target_if=dot.censure.remains<4
 actions+=/auto_attack
 actions+=/speed_of_light,if=movement.distance>5
 actions+=/judgment,if=talent.empowered_seals.enabled&time<2
@@ -59,7 +60,6 @@ actions.single+=/divine_storm,if=(holy_power=5|buff.holy_avenger.up&holy_power>=
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(talent.seraphim.enabled&cooldown.seraphim.remains<gcd*4)
 actions.single+=/templars_verdict,if=(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(buff.avenging_wrath.down|target.health.pct>35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)
 actions.single+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<3
-actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<3&!talent.final_verdict.enabled
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<3&buff.final_verdict.up
 actions.single+=/final_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
 actions.single+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<3
@@ -73,16 +73,17 @@ actions.single+=/divine_storm,if=buff.divine_crusader.react&active_enemies=2&(bu
 actions.single+=/templars_verdict,if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)
 actions.single+=/templars_verdict,if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)
 actions.single+=/templars_verdict,if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)
-actions.single+=/judgment,if=talent.empowered_seals.enabled&seal.truth&buff.maraads_truth.remains<cooldown.judgment.duration
-actions.single+=/judgment,if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration
-actions.single+=/crusader_strike,if=holy_power<5&talent.seraphim.enabled
+actions.single+=/judgment,if=talent.empowered_seals.enabled&seal.truth&buff.maraads_truth.remains<cooldown.judgment.duration*1.5
+actions.single+=/judgment,if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration*1.5
+actions.single+=/seal_of_truth,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<(cooldown.judgment.duration|buff.maraads_truth.down)&(buff.avenging_wrath.up|target.health.pct<35)&!buff.wings_of_liberty.up
+actions.single+=/seal_of_righteousness,if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<cooldown.judgment.duration&buff.maraads_truth.remains>cooldown.judgment.duration*1.5&target.health.pct<35&!buff.wings_of_liberty.up&!buff.bloodlust.up
+actions.single+=/crusader_strike,if=talent.seraphim.enabled
 actions.single+=/crusader_strike,if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)
-actions.single+=/seal_of_truth,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<(cooldown.judgment.duration*1.5|buff.maraads_truth.down)&(buff.avenging_wrath.up|target.health.pct<35)&!buff.wings_of_liberty.up
-actions.single+=/seal_of_righteousness,if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<cooldown.judgment.duration*1.5&buff.maraads_truth.remains>cooldown.judgment.duration*1.5&target.health.pct<35&!buff.wings_of_liberty.up&!buff.bloodlust.up
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled
-actions.single+=/judgment,cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&holy_power<5
-actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled&!set_bonus.tier17_4pc=1
-actions.single+=/judgment,if=holy_power<5&talent.seraphim.enabled
+actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&!glyph.double_jeopardy.enabled&!set_bonus.tier17_4pc=1
+actions.single+=/judgment,cycle_targets=1,if=last_judgment_target!=target&talent.seraphim.enabled&glyph.double_jeopardy.enabled
+actions.single+=/judgment,if=talent.seraphim.enabled
+actions.single+=/judgment,cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&(holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))
 actions.single+=/judgment,if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.final_verdict.up
 actions.single+=/divine_storm,if=active_enemies=2&holy_power>=4&buff.final_verdict.up
@@ -94,7 +95,7 @@ actions.single+=/divine_storm,if=buff.divine_crusader.react&active_enemies=2&hol
 actions.single+=/templars_verdict,if=buff.divine_purpose.react
 actions.single+=/divine_storm,if=buff.divine_crusader.react&!talent.final_verdict.enabled
 actions.single+=/templars_verdict,if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)
-actions.single+=/exorcism,if=holy_power<5&talent.seraphim.enabled
+actions.single+=/exorcism,if=talent.seraphim.enabled
 actions.single+=/exorcism,if=holy_power<=3|(holy_power=4&(cooldown.judgment.remains>=gcd*2&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))
 actions.single+=/divine_storm,if=active_enemies=2&holy_power>=3&buff.final_verdict.up
 actions.single+=/final_verdict,if=holy_power>=3
@@ -117,13 +118,14 @@ actions.cleave+=/divine_storm,if=buff.divine_crusader.react&(buff.avenging_wrath
 actions.cleave+=/divine_storm,if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)&!talent.final_verdict.enabled
 actions.cleave+=/divine_storm,if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)&!talent.final_verdict.enabled
 actions.cleave+=/divine_storm,if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)&!talent.final_verdict.enabled
-actions.cleave+=/hammer_of_the_righteous,if=active_enemies>=4&holy_power<5&talent.seraphim.enabled
+actions.cleave+=/hammer_of_the_righteous,if=active_enemies>=4&talent.seraphim.enabled
 actions.cleave+=/hammer_of_the_righteous,,if=active_enemies>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))
-actions.cleave+=/crusader_strike,if=holy_power<5&talent.seraphim.enabled
+actions.cleave+=/crusader_strike,if=talent.seraphim.enabled
 actions.cleave+=/crusader_strike,if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)
-actions.cleave+=/exorcism,if=glyph.mass_exorcism.enabled&holy_power<5&!set_bonus.tier17_4pc=1
-actions.cleave+=/judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&holy_power<5
-actions.cleave+=/judgment,if=holy_power<5&talent.seraphim.enabled
+actions.cleave+=/exorcism,if=glyph.mass_exorcism.enabled&!set_bonus.tier17_4pc=1
+actions.cleave+=/judgment,cycle_targets=1,if=last_judgment_target!=target&talent.seraphim.enabled&glyph.double_jeopardy.enabled
+actions.cleave+=/judgment,if=talent.seraphim.enabled
+actions.cleave+=/judgment,cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&(holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))
 actions.cleave+=/judgment,if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)
 actions.cleave+=/divine_storm,if=buff.divine_crusader.react&buff.final_verdict.up
 actions.cleave+=/divine_storm,if=buff.divine_purpose.react&buff.final_verdict.up
@@ -132,7 +134,7 @@ actions.cleave+=/final_verdict,if=buff.divine_purpose.react&buff.final_verdict.d
 actions.cleave+=/final_verdict,if=holy_power>=4&buff.final_verdict.down
 actions.cleave+=/divine_storm,if=buff.divine_crusader.react&!talent.final_verdict.enabled
 actions.cleave+=/divine_storm,if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)&!talent.final_verdict.enabled
-actions.cleave+=/exorcism,if=holy_power<5&talent.seraphim.enabled
+actions.cleave+=/exorcism,if=talent.seraphim.enabled
 actions.cleave+=/exorcism,if=holy_power<=3|(holy_power=4&(cooldown.judgment.remains>=gcd*2&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))
 actions.cleave+=/divine_storm,if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)&!talent.final_verdict.enabled
 actions.cleave+=/divine_storm,if=holy_power>=3&buff.final_verdict.up
