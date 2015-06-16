@@ -22,7 +22,7 @@ enum tmi_boss_e
 {
   TMI_NONE = 0,
   TMI_T16L, TMI_T16N, TMI_T16H, TMI_T16M, TMI_17L, TMI_T17N, TMI_T17H, TMI_T17M,
-  TMI_MAX
+  TMI_T18L, TMI_T18N, TMI_T18H, TMI_T18M, TMI_MAX
 };
 
 
@@ -955,6 +955,14 @@ struct tmi_enemy_t : public enemy_t
       return TMI_T17H;
     if ( util::str_in_str_ci( tmi_string, "T17M" ) )
       return TMI_T17M;
+    if ( util::str_in_str_ci( tmi_string, "T18L" ) )
+      return TMI_T18L;
+    if ( util::str_in_str_ci( tmi_string, "T18N" ) )
+      return TMI_T18N;
+    if ( util::str_in_str_ci( tmi_string, "T18H" ) )
+      return TMI_T18H;
+    if ( util::str_in_str_ci( tmi_string, "T18M" ) )
+      return TMI_T18M;
 
     if ( ! tmi_string.empty() && sim -> debug )
       sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
@@ -990,7 +998,11 @@ struct tmi_enemy_t : public enemy_t
     std::string als = "";
     const int num_bosses = TMI_MAX;
     assert( tmi_boss_enum < TMI_MAX );
-    int aa_damage[ num_bosses ] = { 0, 40000, 50000, 65000, 80000, 150000, 195000, 255000, 315000 };
+    int aa_damage[ num_bosses ] = { 0, // L       N       H       M
+                                        40000,  50000,  65000,  80000,  // T16
+                                        150000, 195000, 255000, 315000, // T17
+                                        255000, 315000, 385000, 475000, // T18 (PH)
+                                  };
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
     als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
