@@ -29,8 +29,7 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=rebuke
 actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)
-# target_if=dot.censure.remains<4
-actions+=/auto_attack
+actions+=/auto_attack,target_if=dot.censure.remains<4
 actions+=/speed_of_light,if=movement.distance>5
 actions+=/judgment,if=talent.empowered_seals.enabled&time<2
 actions+=/execution_sentence,if=!talent.seraphim.enabled

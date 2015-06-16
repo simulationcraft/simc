@@ -5301,7 +5301,7 @@ void paladin_t::generate_action_prio_list_ret()
       def -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
   }
  
-  def -> add_action( "auto_attack", "target_if=dot.censure.remains<4" );
+  def -> add_action( "auto_attack,target_if=dot.censure.remains<4" );
   def -> add_talent( this, "Speed of Light", "if=movement.distance>5" );
   def -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&time<2" );
   def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled" );
