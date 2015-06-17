@@ -117,14 +117,14 @@ main_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant=mark_of_warsong
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=728.44
-# gear_agility=4520
-# gear_stamina=6027
+# gear_ilvl=729.06
+# gear_agility=4542
+# gear_stamina=6060
 # gear_crit_rating=525
-# gear_haste_rating=2120
+# gear_haste_rating=2133
 # gear_mastery_rating=1691
-# gear_multistrike_rating=1046
-# gear_versatility_rating=241
-# gear_armor=1687
+# gear_multistrike_rating=1054
+# gear_versatility_rating=249
+# gear_armor=1692
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
