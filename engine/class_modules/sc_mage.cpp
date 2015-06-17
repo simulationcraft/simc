@@ -231,6 +231,7 @@ public:
   {
     // Major
     const spell_data_t* arcane_power;
+    const spell_data_t* arcane_explosion;
     const spell_data_t* blink;
     const spell_data_t* combustion;
     const spell_data_t* cone_of_cold;
@@ -2072,6 +2073,11 @@ struct arcane_explosion_t : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+
+    if ( p -> glyphs.arcane_explosion -> ok() )
+    {
+      radius += p -> glyphs.arcane_explosion -> effectN( 2 ).base_value();
+    }
   }
 
   virtual void execute()
@@ -5351,6 +5357,7 @@ void mage_t::init_spells()
 
   // Glyphs
   glyphs.arcane_power       = find_glyph_spell( "Glyph of Arcane Power"       );
+  glyphs.arcane_explosion   = find_glyph_spell( "Glyph of Arcane Explosion"   );
   glyphs.blink              = find_glyph_spell( "Glyph of Blink"              );
   glyphs.combustion         = find_glyph_spell( "Glyph of Combustion"         );
   glyphs.cone_of_cold       = find_glyph_spell( "Glyph of Cone of Cold"       );
