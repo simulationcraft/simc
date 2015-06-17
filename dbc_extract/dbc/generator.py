@@ -1300,7 +1300,8 @@ class SpellDataGenerator(DataGenerator):
          71484, 71485, 71492,
          45428, 45429, 45430,       # Shattered Sun Pendant procs
          45431, 45432, 45478,
-         45479, 45480
+         45479, 45480,
+         184968,                    # Unholy coil heal (Blood dk class trinket)
         ),
 
         # Warrior:

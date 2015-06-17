@@ -3767,20 +3767,51 @@ struct defile_t : public death_knight_spell_t
 
 // Death Coil ===============================================================
 
+struct unholy_coil_t : public death_knight_heal_t
+{
+  double heal_multiplier;
+
+  unholy_coil_t( death_knight_t* p ) :
+    death_knight_heal_t( "unholy_coil", p, p -> find_spell( 184968 ) )
+  {
+    background = true;
+    callbacks = may_crit = false;
+    may_multistrike = 0;
+
+    const spell_data_t* data = p -> unholy_coil -> driver();
+    heal_multiplier = data -> effectN( 1 ).average( p -> unholy_coil -> item ) / 100.0;
+  }
+
+  double action_multiplier() const
+  { return heal_multiplier; }
+
+  void init()
+  {
+    death_knight_heal_t::init();
+
+    snapshot_flags = update_flags = STATE_MUL_DA | STATE_RESOLVE;
+  }
+};
+
+
 struct death_coil_t : public death_knight_spell_t
 {
+  unholy_coil_t* uc;
+
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "death_coil", p, p -> find_class_spell( "Death Coil" ) )
+    death_knight_spell_t( "death_coil", p, p -> find_class_spell( "Death Coil" ) ),
+    uc( 0 )
   {
     parse_options( options_str );
 
     attack_power_mod.direct = 0.80;
 
-    // TODO: Healing
     if ( p -> unholy_coil )
     {
       const spell_data_t* data = p -> unholy_coil -> driver();
-      base_multiplier *= 1.0 + data -> effectN( 1 ).average( p -> unholy_coil -> item ) / 100.0;
+      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> unholy_coil -> item ) / 100.0;
+
+      uc = new unholy_coil_t( p );
     }
   }
 
@@ -3790,6 +3821,17 @@ struct death_coil_t : public death_knight_spell_t
       return 0;
 
     return death_knight_spell_t::cost();
+  }
+
+  void impact( action_state_t* state )
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( uc )
+    {
+      uc -> base_dd_min = uc -> base_dd_max = state -> result_amount;
+      uc -> execute();
+    }
   }
 
   void execute()
