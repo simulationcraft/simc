@@ -5015,7 +5015,7 @@ void account_hand_of_sacrifice( player_t& p, action_state_t* s )
   }
 }
 
-double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
+void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 {
   /* ABSORB BUFFS
    *
@@ -5023,7 +5023,6 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
    * the currently active absorb buffs of a player.
    */
   size_t offset = 0;
-  double result_ignoring_external_absorbs = s -> result_amount;
 
   while ( offset < p.absorb_buff_list.size() && s -> result_amount > 0 && ! p.absorb_buff_list.empty() )
   {
@@ -5047,10 +5046,9 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
       s -> result_amount -= value;
       // track result using only self-absorbs separately
       if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
-      {
-        result_ignoring_external_absorbs -= value;
         s -> self_absorb_amount += value;
-      }
+      else
+        s -> external_absorb_amount += value;
 
 
       if ( value < buff_value )
@@ -5077,11 +5075,9 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
       offset++;
   } // end of absorb list loop
 
-  p.iteration_absorb_taken += result_ignoring_external_absorbs - s -> result_amount;
+  p.iteration_absorb_taken += s -> self_absorb_amount;
 
   s -> result_absorbed = s -> result_amount;
-
-  return result_ignoring_external_absorbs;
 }
 
 void account_legendary_tank_cloak( player_t& p, action_state_t* s )
@@ -5108,7 +5104,7 @@ void account_legendary_tank_cloak( player_t& p, action_state_t* s )
 
 /* Statistical data collection
  */
-void collect_dmg_taken_data( player_t& p, action_state_t* s, double result_ignoring_external_absorbs )
+void collect_dmg_taken_data( player_t& p, action_state_t* s )
 {
   p.iteration_dmg_taken += s -> result_amount;
 
@@ -5128,8 +5124,8 @@ void collect_dmg_taken_data( player_t& p, action_state_t* s, double result_ignor
   if ( p.collected_data.health_changes_tmi.collect )
   {
     // health_changes_tmi ignores external effects (e.g. external absorbs), used for raw TMI
-    p.collected_data.health_changes_tmi.timeline.add( p.sim -> current_time(), result_ignoring_external_absorbs );
-    p.collected_data.health_changes_tmi.timeline_normalized.add( p.sim -> current_time(), result_ignoring_external_absorbs / p.resources.max[ RESOURCE_HEALTH ] );
+    p.collected_data.health_changes_tmi.timeline.add( p.sim -> current_time(), s -> result_amount - s -> external_absorb_amount );
+    p.collected_data.health_changes_tmi.timeline_normalized.add( p.sim -> current_time(), ( s -> result_amount - s -> external_absorb_amount ) / p.resources.max[ RESOURCE_HEALTH ] );
   }
 }
 
@@ -5182,7 +5178,7 @@ void player_t::assess_damage( school_e school,
 
   assess_damage_imminent_pre_absorb( school, type, s );
 
-  double result_ignoring_external_absorbs = account_absorb_buffs( *this, s, school );
+  account_absorb_buffs( *this, s, school );
 
   if ( warlords_unseeing_eye > 0 )
     account_warlords_unseeing_eye( *this, s );
@@ -5197,7 +5193,7 @@ void player_t::assess_damage( school_e school,
   if ( ! s -> action -> player -> buffs.spirit_shift ||
        ! s -> action -> player -> buffs.spirit_shift -> check() )
   {
-    collect_dmg_taken_data( *this, s, result_ignoring_external_absorbs );
+    collect_dmg_taken_data( *this, s );
 
     if ( s -> result_amount > 0.0 )
       actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, nullptr, s -> action );
