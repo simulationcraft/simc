@@ -1001,7 +1001,7 @@ struct tmi_enemy_t : public enemy_t
     int aa_damage[ num_bosses ] = { 0, // L       N       H       M
                                         40000,  50000,  65000,  80000,  // T16
                                         150000, 195000, 255000, 315000, // T17
-                                        255000, 315000, 385000, 475000, // T18 (PH)
+                                        255000, 315000, 475000, 650000, // T18 -- L-H values are estimates
                                   };
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
