@@ -295,7 +295,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(    "Iterations" ),      choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 8, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),    choice.fight_length = addValidatorToComboBox( 1, 1000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
   globalsLayout_left -> addRow( tr(   "Vary Length %" ),  choice.fight_variance = addValidatorToComboBox( 0, 100, createChoice( 6, "0", "10", "20", "30", "40", "50" ) ) );
-  globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 6, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
+  globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 7, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "Beastlord" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),    choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr( "Default Role" ),     choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
@@ -829,7 +829,10 @@ void SC_OptionsTab::createToolTips()
                                         "    %3% into the fight until %4% before the end" ).arg( 7 ).arg( 85 ).arg( 10 ).arg( 20 ) + "\n" +
                                     tr( "HeavyMovement:\n"
                                         "    %1s Movement, %2s CD,\n"
-                                        "    beginning %3s into the fight" ).arg( 4 ).arg( 10 ).arg( 10 ) );
+                                        "    beginning %3s into the fight" ).arg( 4 ).arg( 10 ).arg( 10 ) + "\n" +
+                                    tr( "Beastlord:\n"
+                                        "    Random Movement, Advanced Positioning,\n"
+                                        "    Frequent Single and Wave Add Spawns" ) );
 
   choice.target_race -> setToolTip( tr( "Race of the target and any adds." ) );
 
