@@ -103,12 +103,12 @@ head=crown_of_the_living_mountain,id=124297,bonus_id=567
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,enchant=gift_of_haste
 shoulders=pauldrons_of_the_living_mountain,id=124308,bonus_id=567
 back=cloak_of_tangible_dread,id=124135,bonus_id=567,enchant=gift_of_haste
-chest=robe_of_the_living_mountain,id=124303,bonus_id=567
-wrists=supreme_felchain_bracers,id=127983,bonus_id=567
+chest=ringmail_of_madness_accordant,id=124283,bonus_id=567
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567
 hands=gauntlets_of_the_living_mountain,id=124293,bonus_id=567
 waist=girdle_of_the_legion_general,id=124310,bonus_id=567
-legs=haughty_chain_legguards,id=124300,bonus_id=567
-feet=unhallowed_voidlink_boots,id=124288,bonus_id=567
+legs=leggings_of_the_living_mountain,id=124302,bonus_id=567
+feet=surefooted_chain_treads,id=124286,bonus_id=567
 finger1=portal_key_signet,id=124189,bonus_id=567,enchant=gift_of_haste
 finger2=maalus_the_blood_drinker,id=124636,enchant=gift_of_haste
 trinket1=core_of_the_primal_elements,id=124521,bonus_id=567
@@ -117,14 +117,14 @@ main_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant=mark_of_warsong
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=729.06
-# gear_agility=4542
-# gear_stamina=6060
-# gear_crit_rating=525
-# gear_haste_rating=2133
-# gear_mastery_rating=1691
-# gear_multistrike_rating=1054
-# gear_versatility_rating=249
-# gear_armor=1692
+# gear_ilvl=728.75
+# gear_agility=4530
+# gear_stamina=6042
+# gear_crit_rating=855
+# gear_haste_rating=2256
+# gear_mastery_rating=829
+# gear_multistrike_rating=1540
+# gear_versatility_rating=154
+# gear_armor=1690
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

@@ -12,12 +12,12 @@ head=crown_of_the_living_mountain,id=124297
 neck=chain_of_lidless_eyes,id=124209,enchant=gift_of_haste
 shoulders=pauldrons_of_the_living_mountain,id=124308
 back=cloak_of_tangible_dread,id=124135,enchant=gift_of_haste
-chest=robe_of_the_living_mountain,id=124303
-wrists=supreme_felchain_bracers,id=127983
+chest=ringmail_of_madness_accordant,id=124283
+wrists=bracers_of_fel_empowerment,id=124314
 hands=gauntlets_of_the_living_mountain,id=124293
 waist=girdle_of_the_legion_general,id=124310
-legs=haughty_chain_legguards,id=124300
-feet=unhallowed_voidlink_boots,id=124288
+legs=leggings_of_the_living_mountain,id=124302
+feet=surefooted_chain_treads,id=124286
 finger1=portal_key_signet,id=124189,enchant=gift_of_haste
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 trinket1=core_of_the_primal_elements,id=124521
