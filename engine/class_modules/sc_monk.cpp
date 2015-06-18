@@ -2049,8 +2049,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
     double d_rsk = td( t ) -> debuff.rising_sun_kick -> default_value;
 
     // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
-    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
-      d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
+    d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
       m *= 1.0 + d_rsk;
@@ -2127,8 +2126,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double d_rsk = td( t ) -> debuff.rising_sun_kick -> default_value;
 
     // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
-      d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
+    d_rsk += p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
       m *= 1.0 + d_rsk;
@@ -2182,8 +2180,7 @@ struct jab_t: public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = p() -> spec.combo_breaker -> effectN( 1 ).percent();
-    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
-      cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 1 ).percent();
+    cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 1 ).percent();
     return cb_chance;
   }
 
@@ -2245,9 +2242,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 3.6;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 3.42; // hardcoded into tooltip
+    base_multiplier = 3.42; // hardcoded into tooltip
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
@@ -2331,9 +2326,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 10.56; // hardcoded into tooltip
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 10.0; // hardcoded into tooltip
+    base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
     trigger_gcd = timespan_t::zero();
@@ -2348,8 +2341,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = 0;
-    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
+    cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
     return cb_chance;
   }
 
@@ -2415,8 +2407,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = 0;
-    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
+    cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
     return cb_chance;
   }
 
@@ -2462,7 +2453,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
 
@@ -2528,9 +2519,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       background = true;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 6.4; // hardcoded into tooltip
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 6.08; // hardcoded into tooltip
+    base_multiplier = 6.08; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
@@ -2606,7 +2595,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
@@ -2759,7 +2748,7 @@ struct chi_explosion_t: public monk_melee_attack_t
 
       // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
       // of the special effect.
-      if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+      if ( p() -> furious_sun )
       {
         double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
         // Chi Explosion's proc chance is reduced in half
@@ -3075,9 +3064,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-    base_multiplier *= 7.755; // hardcoded into tooltip
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 7.367; // hardcoded into tooltip
+    base_multiplier = 7.367; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
@@ -3105,7 +3092,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     monk_melee_attack_t::last_tick( dot );
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
@@ -3152,9 +3139,8 @@ struct hurricane_strike_t: public monk_melee_attack_t
     channeled = true;
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
-    base_multiplier = 2.5;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier = 2.375; // hardcoded into tooltip
+
+    base_multiplier = 2.375; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
@@ -3169,7 +3155,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
   virtual void last_tick(dot_t* dot)
   {
     monk_melee_attack_t::last_tick(dot); 
-    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> furious_sun ) )
+    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
       // Hurricane Strike's proc chance is reduced in half
@@ -3262,12 +3248,7 @@ struct melee_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( result_is_hit( s -> result ) && p() -> current_stance() != WISE_SERPENT )
-        p() -> buff.tiger_strikes -> trigger();
-    }
-    else if ( result_is_hit_or_multistrike( s -> result ) && p() -> current_stance() != WISE_SERPENT )
+    if ( result_is_hit( s -> result ) && p() -> current_stance() != WISE_SERPENT )
       p() -> buff.tiger_strikes -> trigger();
 
     if ( p() -> spec.brewing_elusive_brew -> ok() )
@@ -4655,7 +4636,7 @@ struct expel_harm_heal_t : public monk_heal_t
         desperate_measure = p.user_options.ppm_below_35_percent_dm;
       else
         // Increase the proc rate for PTR by 1/3 due to the changes made to Brewmaster
-        desperate_measure = ( maybe_ptr( p.dbc.ptr ) ? ( 3.0 / 2.0 ) : 1 );
+        desperate_measure = ( 3.0 / 2.0 );
       // since a tank is normally tanking half the time, double the proc per minute to simulate as if they were single-tanking
       p.cooldown.desperate_measure -> duration = timespan_t::from_seconds( 60.0 / ( desperate_measure * 2 ) );
     } 
@@ -4723,7 +4704,7 @@ struct expel_harm_heal_t : public monk_heal_t
     }
 
     // Every time you use Expel Harm, the remaining cooldown of your Guard is reduced by 5 sec.
-    if ( maybe_ptr( p() -> dbc.ptr ) &&  p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) )
+    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) )
       p() -> cooldown.guard -> adjust( p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value() ); // T18 set bonus is saved as "-5000"
   }
 };
@@ -5495,7 +5476,7 @@ void monk_t::init_base_stats()
     base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
-  resources.base[RESOURCE_ENERGY] = 100 + ( ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) ) ? sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 2 ).base_value() : 0 );
+  resources.base[RESOURCE_ENERGY] = 100 + sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 2 ).base_value();
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
@@ -5579,7 +5560,7 @@ void monk_t::create_buffs()
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .duration( maybe_ptr( dbc.ptr ) && specialization() == MONK_BREWMASTER ? timespan_t::from_seconds( talent.serenity -> effectN( 1 ).base_value() ) : talent.serenity -> duration() );
+    .duration( specialization() == MONK_BREWMASTER ? timespan_t::from_seconds( talent.serenity -> effectN( 1 ).base_value() ) : talent.serenity -> duration() );
 
   buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) )
     .duration( timespan_t::from_minutes( 60 ) );
@@ -5858,7 +5839,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
   }
 
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
-  if ( maybe_ptr( dbc.ptr ) && eluding_movements && buff.elusive_brew_activated -> up() )
+  if ( eluding_movements && buff.elusive_brew_activated -> up() )
   {
     m *= 1.0 + ( eluding_movements -> driver() -> effectN( 2 ).average( eluding_movements -> item ) / 100 );
   }
@@ -6222,7 +6203,7 @@ void monk_t::assess_damage(school_e school,
       buff.guard -> up();
 
     // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, adjust Elusive Brew proc chance based on spell data of the special effect.
-    if ( maybe_ptr( dbc.ptr ) && eluding_movements )
+    if ( eluding_movements )
     {
       double bm_trinket_proc = eluding_movements -> driver() -> effectN( 1 ).average( eluding_movements -> item );
 
@@ -6237,7 +6218,7 @@ void monk_t::assess_damage(school_e school,
     // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
     // adding a cooldown for desperate Measure so that we can throttle however much we want it to be; basing around a Proc Per Minute mentality
     if ( health_percentage() < ( specialization() == MONK_BREWMASTER ?
-      ( maybe_ptr( dbc.ptr ) && sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35 ) : 0 ) )
+      ( sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35 ) : 0 ) )
     {
       if ( cooldown.desperate_measure -> up() && cooldown.expel_harm -> down() )
       {
@@ -6846,9 +6827,6 @@ double monk_t::stagger_pct()
   if ( current_stance() == STURDY_OX ) // no stagger without active stance
   {
     stagger += static_stance_data( STURDY_OX ).effectN( 8 ).percent();
-
-    if ( !maybe_ptr( dbc.ptr ) && buff.shuffle -> check() )
-      stagger += buff.shuffle -> data().effectN( 2 ).percent();
 
     if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
       stagger += spec.brewmaster_training -> effectN( 1 ).percent();

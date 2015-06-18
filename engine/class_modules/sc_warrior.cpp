@@ -1514,8 +1514,6 @@ struct colossus_smash_t: public warrior_attack_t
     stancemask = STANCE_BATTLE;
 
     weapon = &( player -> main_hand_weapon );
-    if ( !maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
   }
 
   void execute()
@@ -1527,15 +1525,8 @@ struct colossus_smash_t: public warrior_attack_t
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
       p() -> buff.colossus_smash -> trigger();
 
-      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
-      {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-          p() -> gain.tier17_4pc_arms );
-      }
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
-      {
         p() -> proc.t17_2pc_arms -> occur();
-      }
     }
   }
 };
@@ -2150,8 +2141,7 @@ struct mortal_strike_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+    base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   void execute()
@@ -5313,8 +5303,7 @@ double warrior_t::composite_mastery() const
 {
   double mast = player_t::composite_mastery();
 
-  if ( maybe_ptr( dbc.ptr ) && active.stance == STANCE_GLADIATOR )
-    mast *= 1.0 + buff.gladiator_stance -> data().effectN( 6 ).percent();
+  mast *= 1.0 + buff.gladiator_stance -> data().effectN( 6 ).percent();
 
   return mast;
 }
@@ -5624,7 +5613,7 @@ void warrior_t::assess_damage( school_e school,
   {
     if ( active.stance == STANCE_DEFENSE )
       s -> result_amount *= 1.0 + ( buff.defensive_stance -> data().effectN( 1 ).percent() +
-      talents.gladiators_resolve -> effectN( 2 ).percent() + ( maybe_ptr( dbc.ptr ) ? perk.improved_defensive_stance -> effectN( 2 ).percent(): 0 ) );
+      talents.gladiators_resolve -> effectN( 2 ).percent() + perk.improved_defensive_stance -> effectN( 2 ).percent() );
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 

@@ -5535,19 +5535,15 @@ struct starfall_t : public druid_spell_t
 
   spell_t* pulse;
 
-  starfall_t( druid_t* player, const std::string& options_str ) :
+  starfall_t( druid_t* player, const std::string& options_str ):
     druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) ),
     pulse( new starfall_pulse_t( player, "starfall_pulse" ) )
   {
     parse_options( options_str );
 
-    if ( maybe_ptr ( player -> dbc.ptr ) )
-    {
-      const spell_data_t* aura_spell = player -> find_spell( data().effectN( 1 ).trigger_spell_id() );
-    
-      dot_duration   = aura_spell -> duration();
-      base_tick_time = aura_spell -> effectN( 1 ).period();
-    }
+    const spell_data_t* aura_spell = player -> find_spell( data().effectN( 1 ).trigger_spell_id() );
+    dot_duration = aura_spell -> duration();
+    base_tick_time = aura_spell -> effectN( 1 ).period();
     hasted_ticks = may_crit = false;
     may_multistrike = 0;
     spell_power_mod.tick = spell_power_mod.direct = 0;
@@ -6250,10 +6246,7 @@ void druid_t::init_spells()
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
-  if ( maybe_ptr( dbc.ptr ) )
-    spell.starfall_aura                 = find_class_spell( "Starfall"                    ) -> ok() ? find_spell( 184989 ) : spell_data_t::not_found();
-  else
-    spell.starfall_aura                 = find_class_spell( "Starfall"                    ) -> ok() ? find_spell( 48505  ) : spell_data_t::not_found();
+  spell.starfall_aura                   = find_class_spell( "Starfall"                    ) -> ok() ? find_spell( 184989 ) : spell_data_t::not_found();
 
   if ( specialization() == DRUID_FERAL )
   {
@@ -7259,7 +7252,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 + spell.bear_form_skill -> effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent() + ( maybe_ptr( dbc.ptr ) ? spec.survival_of_the_fittest -> effectN( 2 ).percent() : 0 );
+    a *= 1.0 + spell.bear_form_skill -> effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent() + spec.survival_of_the_fittest -> effectN( 2 ).percent();
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
@@ -7519,8 +7512,7 @@ double druid_t::composite_dodge() const
   if ( buff.savage_defense -> check() )
     d += buff.savage_defense -> default_value;
 
-  if ( maybe_ptr( dbc.ptr ) && talent.guardian_of_elune -> ok() )
-    d += talent.guardian_of_elune -> effectN( 5 ).percent();
+  d += talent.guardian_of_elune -> effectN( 5 ).percent();
 
   return d;
 }
@@ -7816,7 +7808,7 @@ void druid_t::assess_damage( school_e school,
 
   if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
-    if ( buff.savage_defense -> up() && maybe_ptr( dbc.ptr ) && dbc::is_school( SCHOOL_PHYSICAL, school ) )
+    if ( buff.savage_defense -> up() && dbc::is_school( SCHOOL_PHYSICAL, school ) )
       s -> result_amount *= 1.0 + buff.savage_defense -> data().effectN( 4 ).percent();
 
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )

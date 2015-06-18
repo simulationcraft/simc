@@ -1108,7 +1108,7 @@ struct avenging_wrath_t : public paladin_heal_t
     // disable for protection
     if ( p -> specialization() == PALADIN_PROTECTION )
       background = true;
-    else if ( p -> specialization() == PALADIN_RETRIBUTION && maybe_ptr( p -> dbc.ptr ) )
+    else if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       cooldown -> duration = data().charge_cooldown();
       cooldown -> charges = data().charges();
@@ -4407,7 +4407,7 @@ struct final_verdict_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
     trigger_seal       = true;
-    if ( maybe_ptr( p -> dbc.ptr ) && p -> bugs )
+    if ( p -> bugs )
       trigger_seal_of_righteousness = false;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();

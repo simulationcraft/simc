@@ -405,7 +405,6 @@ public:
   struct glyphs_t
   {
     const spell_data_t* chains_of_ice;
-    const spell_data_t* icy_runes;
     const spell_data_t* ice_reaper;
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* enduring_infection;
@@ -4355,12 +4354,6 @@ struct chains_of_ice_t : public death_knight_spell_t
       convert_runes = 1.0;
     }
 
-    if ( p -> glyph.icy_runes -> ok() )
-    {
-      exclusivity_check++;
-      rp_gain += p -> glyph.icy_runes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-    }
-
     if ( p -> glyph.chains_of_ice -> ok() )
     {
       exclusivity_check++;
@@ -6467,7 +6460,6 @@ void death_knight_t::init_spells()
 
   // Glyphs
   glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
-  glyph.icy_runes                 = find_glyph_spell( "Glyph of Icy Runes" );
   glyph.ice_reaper                = find_glyph_spell( "Glyph of the Ice Reaper" );
   glyph.dancing_rune_weapon       = find_glyph_spell( "Glyph of Dancing Rune Weapon" );
   glyph.enduring_infection        = find_glyph_spell( "Glyph of Enduring Infection" );
@@ -6707,14 +6699,14 @@ void death_knight_t::default_apl_blood()
       }
     }
     bos -> add_action( this, "Outbreak", "if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&runic_power>21" );
-    bos -> add_action( this, "Chains of Ice", "if=!dot.frost_fever.ticking&glyph.icy_runes.enabled&runic_power<90" );
+    bos -> add_action( this, "Chains of Ice", "if=!dot.frost_fever.ticking&runic_power<90" );
     bos -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking&runic_power>5" );
     bos -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking&runic_power>5" );
     bos -> add_action( this, "Death Strike", "if=runic_power<16" );
     bos -> add_talent( this, "Blood Tap", "if=runic_power<16" );
     bos -> add_action( this, "Blood Boil", "if=runic_power<16&runic_power>5&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)" );
     bos -> add_action( "arcane_torrent,if=runic_power<16" );
-    bos -> add_action( this, "Chains of Ice", "if=runic_power<16&glyph.icy_runes.enabled" );
+    bos -> add_action( this, "Chains of Ice", "if=runic_power<16" );
     bos -> add_action( this, "Blood Boil", "if=runic_power<16&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)" );
     bos -> add_action( this, "Icy Touch", "if=runic_power<16" );
     bos -> add_action( this, "Plague Strike", "if=runic_power<16" );
@@ -6764,7 +6756,7 @@ void death_knight_t::default_apl_blood()
 
     nbos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=80" );
     nbos -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35" );
-    nbos -> add_action( this, "Chains of Ice", "if=!dot.frost_fever.ticking&glyph.icy_runes.enabled" );
+    nbos -> add_action( this, "Chains of Ice", "if=!dot.frost_fever.ticking" );
     nbos -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
     nbos -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
     nbos -> add_action( this, "Death Strike", "if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)&runic_power<80" );

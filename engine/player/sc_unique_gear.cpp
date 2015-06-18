@@ -3148,7 +3148,7 @@ void item::tyrants_decree( special_effect_t& effect )
       cancel_threshold = effect.driver() -> effectN( 2 ).percent();
     }
 
-    virtual void trigger( action_t* a, void* /* call_data */ ) override
+    virtual void trigger( action_t* , void* ) override
     {
       if ( p -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
         p -> buffs.tyrants_immortality -> expire();
