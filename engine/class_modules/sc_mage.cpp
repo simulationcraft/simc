@@ -1186,6 +1186,7 @@ struct temporal_hero_t : public pet_t
     temporal_hero_frostbolt_t( pet_t* p ) :
       mage_pet_spell_t( "frostbolt", p, p -> find_spell( 191764 ) )
     {
+      base_dd_min = base_dd_max = 2750.0;
       may_crit = true;
     }
 
@@ -1220,6 +1221,7 @@ struct temporal_hero_t : public pet_t
       mage_pet_spell_t( "shoot", p, p -> find_spell( 191799 ) )
     {
       school = SCHOOL_PHYSICAL;
+      base_dd_min = base_dd_max = 3303.0;
       base_execute_time = p -> main_hand_weapon.swing_time;
       may_crit = true;
     }
@@ -1249,8 +1251,8 @@ struct temporal_hero_t : public pet_t
     }
   };
 
-  // Each Temporal Hero has an individual hidden multiplier for damage done
-  // Values are reverse engineered from 6.2 PTR Build 20141 testing
+  // Each Temporal Hero has base damage and hidden multipliers for damage done
+  // Values are reverse engineered from 6.2 PTR Build 20157 testing
   double temporal_hero_multiplier;
 
   temporal_hero_t( sim_t* sim, mage_t* owner ) :
@@ -1260,12 +1262,12 @@ struct temporal_hero_t : public pet_t
 
   void init_base_stats()
   {
-    owner_coeff.ap_from_sp = 11.41;
+    owner_coeff.ap_from_sp = 11.408;
     owner_coeff.sp_from_sp = 5.0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 0.0;
-    main_hand_weapon.max_dmg    = 0.0;
+    main_hand_weapon.min_dmg    = 7095.0;
+    main_hand_weapon.max_dmg    = 7095.0;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     pet_t::init_base_stats();
@@ -1317,7 +1319,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = ARTHAS;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 1.000;
+      temporal_hero_multiplier = 0.3282;
 
       if ( sim -> debug )
       {
@@ -1341,7 +1343,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = SYLVANAS;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 1.000;
+      temporal_hero_multiplier = 0.8795;
 
       if ( sim -> debug )
       {
@@ -1353,7 +1355,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = TYRANDE;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 1.000;
+      temporal_hero_multiplier = 0.8795;
 
       if ( sim -> debug )
       {
