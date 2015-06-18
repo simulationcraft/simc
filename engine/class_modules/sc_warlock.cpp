@@ -5929,8 +5929,8 @@ void warlock_t::apl_precombat()
 
   precombat_list += "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
 
-  precombat_list += "/summon_doomguard,if=talent.demonic_servitude.enabled&spell_targets.infernal_awakening<9";    
-  precombat_list += "/summon_infernal,if=talent.demonic_servitude.enabled&spell_targets.infernal_awakening>=9";
+  precombat_list += "/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9";    
+  precombat_list += "/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9";
   precombat_list += "/snapshot_stats";
 
   if ( specialization() != WARLOCK_DEMONOLOGY )
