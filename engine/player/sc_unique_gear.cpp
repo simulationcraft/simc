@@ -2535,9 +2535,10 @@ struct fel_burn_t : public debuff_t
     debuff_t( buff_creator_t( p, "fel_burn", source_effect.driver()  )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
     .max_stack( 50 )
-    .duration( timespan_t::from_seconds( 15.0 ) ) )
-  {
-  }
+    // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
+    // will always have the correct number of stacks.
+    .duration( timespan_t::from_seconds( 15.001 ) ) )
+  { }
 };
 
 struct empty_drinking_horn_damage_t : public melee_attack_t
@@ -2585,11 +2586,6 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
   {
     actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
     assert( td );
-    if ( !td -> debuff.fel_burn )
-    {
-      td -> debuff.fel_burn = new fel_burn_t( actor_pair_t( trigger_state -> target, listener ), effect );
-      td -> debuff.fel_burn -> reset();
-    }
     if ( ! td -> debuff.fel_burn -> up() )
     {
       td -> debuff.fel_burn -> trigger( 1 );
@@ -2603,9 +2599,28 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
   }
 };
 
+struct empty_drinking_horn_constructor_t
+{
+  const special_effect_t& effect;
+
+  empty_drinking_horn_constructor_t( const special_effect_t& e ) :
+    effect( e )
+  { }
+
+  void operator()( actor_target_data_t* td )
+  {
+    assert( ! td -> debuff.fel_burn );
+
+    td -> debuff.fel_burn = new fel_burn_t( *td, effect );
+    td -> debuff.fel_burn -> reset();
+  }
+};
+
 void item::empty_drinking_horn( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_ALL_HIT;
+
+  effect.player -> register_target_data_initializer( empty_drinking_horn_constructor_t( effect ) );
 
   new empty_drinking_horn_cb_t( effect );
 }
