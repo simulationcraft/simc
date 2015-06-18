@@ -5715,7 +5715,7 @@ void shaman_t::init_action_list()
 
     // AoE
     aoe -> add_action( this, "Unleash Elements", "if=spell_targets.fire_nova_explosion>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)" );
-    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3&spell_targets.fire_nova_explosion>=3" );
     aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=!talent.echo_of_the_elements.enabled&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
     aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking&active_dot.flame_shock<spell_targets.fire_nova_explosion" );
@@ -5736,12 +5736,12 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, "Stormstrike", "target=3,if=!debuff.stormstrike.up" );
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Lava Lash" );
-    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=2" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=2&spell_targets.fire_nova_explosion>=2" );
     aoe -> add_action( this, "Primal Strike" );
     aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=2))" );
     aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&glyph.chain_lightning.enabled&spell_targets.chain_lightning<3" );
-    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=1" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=1&spell_targets.fire_nova_explosion>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {

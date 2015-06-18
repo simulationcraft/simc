@@ -50,12 +50,12 @@ actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.u
 actions+=/savage_roar,if=buff.savage_roar.down
 actions+=/thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&remains<4.5&combo_points+buff.bloodtalons.stack!=6
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)
+actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&(spell_targets.thrash_cat>=2&set_bonus.tier17_2pc|spell_targets.thrash_cat>=4)
 actions+=/call_action_list,name=finisher,if=combo_points=5
 actions+=/savage_roar,if=buff.savage_roar.remains<gcd
 actions+=/call_action_list,name=maintain,if=combo_points<5
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2
+actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&spell_targets.thrash_cat>=2
 actions+=/call_action_list,name=generator,if=combo_points<5
 
 actions.finisher=rip,cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)
@@ -65,13 +65,13 @@ actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.
 actions.finisher+=/savage_roar,if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6
 actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
 
-actions.maintain=rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)
-actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)
-actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&active_enemies<=5&target.time_to_die-remains>tick_time*5
-actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)
+actions.maintain=rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5
+actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
 
-actions.generator=swipe,if=active_enemies>=4|(active_enemies>=3&buff.incarnation.down)
-actions.generator+=/shred,if=active_enemies<3|(active_enemies=3&buff.incarnation.up)
+actions.generator=swipe,if=spell_targets.swipe>=4|(spell_targets.swipe>=3&buff.incarnation.down)
+actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.incarnation.up)
 
 head=oathclaw_helm,id=124261
 neck=choker_of_the_great_betrayer,id=124210,enchant_id=5317

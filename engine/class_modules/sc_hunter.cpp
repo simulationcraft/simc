@@ -4179,8 +4179,8 @@ void hunter_t::init_action_list()
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat -> add_action( "exotic_munitions,ammo_type=poisoned,if=active_enemies<3" );
-    precombat -> add_action( "exotic_munitions,ammo_type=incendiary,if=active_enemies>=3" );
+    precombat -> add_action( "exotic_munitions,ammo_type=poisoned,if=spell_targets.multi_shot<3" );
+    precombat -> add_action( "exotic_munitions,ammo_type=incendiary,if=spell_targets.multi_shot>=3" );
 
     //Pre-pot
     add_potion_action( precombat, "draenic_agility", "virmens_bite" );
@@ -4272,23 +4272,23 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Focus Fire", "if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)" );
   default_list -> add_action( this, "Bestial Wrath", "if=focus>30&!buff.bestial_wrath.up" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>1&pet.cat.buff.beast_cleave.remains<0.5" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>1&pet.cat.buff.beast_cleave.remains<0.5" );
   default_list -> add_action( this, "Focus Fire", "five_stacks=1,if=buff.focus_fire.down" );
   default_list -> add_action( this, "Focus Fire", "five_stacks=1,if=buff.focus_fire.stack<5&pet.cat.buff.frenzy.stack=5" );
-  default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
-  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>5" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5" );
+  default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
+  default_list -> add_action( this, "Explosive Trap", "if=spell_targets.explosive_trap_tick>5" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>5" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_action( this, "Kill Shot","if=focus.time_to_max>gcd" );
   default_list -> add_talent( this, "Focusing Shot", "if=focus<50" );
   default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
-  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
+  default_list -> add_action( this, "Explosive Trap", "if=spell_targets.explosive_trap_tick>1" );
   default_list -> add_action( this, "Cobra Shot", "if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50", "Prepare for steady focus refresh if it is running out." );
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time" );
-  default_list -> add_action( this, "Cobra Shot", "if=active_enemies>5" );
+  default_list -> add_action( this, "Cobra Shot", "if=spell_targets.multi_shot>5" );
   default_list -> add_action( this, "Arcane Shot", "if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_wrath.up" );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=75" );
   if ( true_level >= 81 )
@@ -4321,14 +4321,14 @@ void hunter_t::apl_mm()
   default_list -> add_action( "call_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>2" );
-    careful_aim -> add_talent( this, "Powershot", "if=active_enemies>1&cast_regen<focus.deficit" );
-    careful_aim -> add_talent( this, "Barrage", "if=active_enemies>1" );
+    careful_aim -> add_talent( this, "Powershot", "if=spell_targets.powershot>1&cast_regen<focus.deficit" );
+    careful_aim -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
     // careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit)" );
     careful_aim -> add_action( this, "Aimed Shot" );
     careful_aim -> add_talent( this, "Focusing Shot", "if=50+cast_regen<focus.deficit" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
-  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
+  default_list -> add_action( this, "Explosive Trap", "if=spell_targets.explosive_trap_tick>1" );
 
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );
@@ -4339,7 +4339,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Steady Shot", "if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
   default_list -> add_talent( this, "Focusing Shot", "if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100" );
   default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>6" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>6" );
   default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
   default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>=85" );
   default_list -> add_action( this, "Aimed Shot", "if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65" );
@@ -4362,7 +4362,7 @@ void hunter_t::apl_surv()
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=25" );
 
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=spell_targets.multi_shot>1" );
 
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=45" );
@@ -4390,7 +4390,7 @@ void hunter_t::apl_surv()
   aoe -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&(!talent.barrage.enabled|cooldown.barrage.remains>0)" );
   aoe -> add_talent( this, "Barrage" );
   aoe -> add_action( this, "Black Arrow", "cycle_targets=1,if=remains<gcd*1.5" );
-  aoe -> add_action( this, "Explosive Shot", "if=active_enemies<5" );
+  aoe -> add_action( this, "Explosive Shot", "if=spell_targets.multi_shot<5" );
   aoe -> add_action( this, "Explosive Trap", "if=dot.explosive_trap.remains<=5" );
   aoe -> add_talent( this, "A Murder of Crows" );
   aoe -> add_talent( this, "Dire Beast" );

@@ -6771,12 +6771,12 @@ void druid_t::apl_feral()
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
   def -> add_action( "thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&remains<4.5&combo_points+buff.bloodtalons.stack!=6" );
   def -> add_action( "pool_resource,for_next=1" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(spell_targets.thrash_cat>=2&set_bonus.tier17_2pc|spell_targets.thrash_cat>=4)" );
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
   def -> add_action( "call_action_list,name=maintain,if=combo_points<5" );
   def -> add_action( "pool_resource,for_next=1" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&spell_targets.thrash_cat>=2" );
   def -> add_action( "call_action_list,name=generator,if=combo_points<5" );
 
   // Finishers  
@@ -6788,14 +6788,14 @@ void druid_t::apl_feral()
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3" );
 
   // DoT Maintenance
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&active_enemies<=5&target.time_to_die-remains>tick_time*5" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
 
   // Generators
-  generate -> add_action( this, "Swipe", "if=active_enemies>=4|(active_enemies>=3&buff.incarnation.down)" );
-  generate -> add_action( this, "Shred", "if=active_enemies<3|(active_enemies=3&buff.incarnation.up)" );
+  generate -> add_action( this, "Swipe", "if=spell_targets.swipe>=4|(spell_targets.swipe>=3&buff.incarnation.down)" );
+  generate -> add_action( this, "Shred", "if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.incarnation.up)" );
 }
 
 // Balance Combat Action Priority List ==============================
@@ -6825,8 +6825,8 @@ void druid_t::apl_balance()
     default_list -> add_action( item_actions[i] );
 
   default_list -> add_talent( this, "Force of Nature", "if=trinket.stat.intellect.up|charges=3|target.time_to_die<21" );
-  default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=spell_targets.starfall_pulse>1" );
+  default_list -> add_action( "call_action_list,name=single_target" );
 
   single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&(eclipse_energy>20|buff.celestial_alignment.up)" );
   single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40" );
@@ -6844,12 +6844,12 @@ void druid_t::apl_balance()
   aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
   aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
   aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<8" );
-  aoe -> add_action( this, "Starfall", "if=buff.starfall.remains<3&active_enemies>2" );
+  aoe -> add_action( this, "Starfall", "if=buff.starfall.remains<3&spell_targets.starfall_pulse>2" );
   aoe -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
   aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
   aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=remains<7" );
-  aoe -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20&active_enemies=2" );
-  aoe -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40&active_enemies=2" );
+  aoe -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20&spell_targets.starfall_pulse=2" );
+  aoe -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40&spell_targets.starfall_pulse=2" );
   aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   aoe -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
   aoe -> add_action( this, "Wrath" );

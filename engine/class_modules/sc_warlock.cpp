@@ -5929,8 +5929,8 @@ void warlock_t::apl_precombat()
 
   precombat_list += "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
 
-  precombat_list += "/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9";    
-  precombat_list += "/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9";
+  precombat_list += "/summon_doomguard,if=talent.demonic_servitude.enabled&spell_targets.infernal_awakening<9";    
+  precombat_list += "/summon_infernal,if=talent.demonic_servitude.enabled&spell_targets.infernal_awakening>=9";
   precombat_list += "/snapshot_stats";
 
   if ( specialization() != WARLOCK_DEMONOLOGY )
@@ -5953,8 +5953,8 @@ void warlock_t::apl_precombat()
 
   // Usable Item
 
-  add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<9" );
-  add_action( "Summon Infernal", "if=!talent.demonic_servitude.enabled&active_enemies>=9" );
+  add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening<9" );
+  add_action( "Summon Infernal", "if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening>=9" );
 
   if ( sim -> allow_potions )
   {
@@ -6053,8 +6053,8 @@ void warlock_t::apl_affliction()
   add_action( "Corruption", "if=remains<=gcd" );
   add_action( "Unstable Affliction", "if=remains<=cast_time" );
 
-  add_action( "Soulburn", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&active_enemies>2&dot.corruption.remains<=dot.corruption.duration*0.3" );
-  add_action( "Seed of Corruption", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&active_enemies>2&!dot.seed_of_corruption.remains&buff.soulburn.remains" );
+  add_action( "Soulburn", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>2&dot.corruption.remains<=dot.corruption.duration*0.3" );
+  add_action( "Seed of Corruption", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>2&!dot.seed_of_corruption.remains&buff.soulburn.remains" );
   
   if ( find_item( "nithramus_the_allseer" ) )
     add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|buff.nithramus.remains>cast_time+travel_time|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)" );
@@ -6072,9 +6072,9 @@ void warlock_t::apl_affliction()
   add_action( "Haunt", "if=shard_react&!in_flight_to_target&buff.dark_soul.remains>cast_time+travel_time&!dot.haunt.ticking&set_bonus.tier18_4pc=1" );
   add_action( "Agony", "cycle_targets=1,if=target.time_to_die>16&remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)" );
   add_action( "Unstable Affliction", "cycle_targets=1,if=target.time_to_die>10&remains-cast_time<=(duration*0.3)" );
-  add_action( "Seed of Corruption", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&active_enemies>3&!dot.seed_of_corruption.ticking" );
+  add_action( "Seed of Corruption", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>3&!dot.seed_of_corruption.ticking" );
   add_action( "Corruption", "cycle_targets=1,if=target.time_to_die>12&remains<=(duration*0.3)" );
-  add_action( "Seed of Corruption", "cycle_targets=1,if=active_enemies>3&!dot.seed_of_corruption.ticking" );
+  add_action( "Seed of Corruption", "cycle_targets=1,if=spell_targets.seed_of_corruption_aoe>3&!dot.seed_of_corruption.ticking" );
   add_action( "Life Tap", "if=mana.pct<40&buff.dark_soul.down" );
   add_action( "Drain Soul", "interrupt=1,chain=1" );
   add_action( "Agony", "cycle_targets=1,moving=1,if=mana.pct>50");
@@ -6094,13 +6094,13 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "db" ) -> action_list_str += "/kiljaedens_cunning,moving=1,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time))";
     get_action_priority_list( "db" ) -> action_list_str += "/call_action_list,name=db_meta,if=buff.metamorphosis.up";
 
-    get_action_priority_list( "db_meta" ) -> action_list_str += "immolation_aura,if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down";
-    get_action_priority_list( "db_meta" ) -> action_list_str += "/doom,cycle_targets=1,if=active_enemies>=6&target.time_to_die>=30*spell_haste&remains-gcd<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "immolation_aura,if=demonic_fury>450&spell_targets.immolation_aura_tick>=5&buff.immolation_aura.down";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/doom,cycle_targets=1,if=active_enemies_within.40>=6&target.time_to_die>=30*spell_haste&remains-gcd<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
     get_action_priority_list( "db_meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&buff.demon_rush.remains<=4&set_bonus.tier18_2pc=1";
     get_action_priority_list( "db_meta" ) -> action_list_str += "/demonbolt,if=(buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time)))&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)";
     get_action_priority_list( "db_meta" ) -> action_list_str += "/doom,cycle_targets=1,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)";
     get_action_priority_list( "db_meta" ) -> action_list_str += "/cancel_metamorphosis,if=buff.demonbolt.stack>3&demonic_fury<=600&target.time_to_die>buff.demonbolt.remains&buff.dark_soul.down";
-    get_action_priority_list( "db_meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2&demonic_fury>450";
+    get_action_priority_list( "db_meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&spell_targets.chaos_wave>=2&demonic_fury>450";
     get_action_priority_list( "db_meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(((buff.dark_soul.remains>execute_time)&demonic_fury>=175)|(target.time_to_die<buff.demonbolt.remains))";
     get_action_priority_list( "db_meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&target.health.pct<=25&(((demonic_fury-80)%800)>(buff.demonbolt.remains%40))&demonic_fury>=750";
     get_action_priority_list( "db_meta" ) -> action_list_str += "/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750";
@@ -6117,18 +6117,18 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=(((demonic_fury-120)%800)>(buff.demonbolt.remains%40))&buff.demonbolt.remains>=10&dot.doom.remains-gcd<=dot.doom.duration*0.3";
     get_action_priority_list( "db" ) -> action_list_str += "/metamorphosis,if=buff.demonbolt.remains&buff.demonbolt.remains<10&demonic_fury-((40*action.touch_of_chaos.gcd*buff.demonbolt.remains)+(6*buff.demonbolt.remains))>=800";
     get_action_priority_list( "db" ) -> action_list_str += "/imp_swarm";
-    get_action_priority_list( "db" ) -> action_list_str += "/hellfire,interrupt=1,if=active_enemies>=5";
+    get_action_priority_list( "db" ) -> action_list_str += "/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=5";
     get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
     get_action_priority_list( "db" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)";
     get_action_priority_list( "db" ) -> action_list_str += "/life_tap,if=mana.pct<40&buff.dark_soul.down";
-    get_action_priority_list( "db" ) -> action_list_str += "/hellfire,interrupt=1,if=active_enemies>=4";
+    get_action_priority_list( "db" ) -> action_list_str += "/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=4";
     get_action_priority_list( "db" ) -> action_list_str += "/shadow_bolt";
     get_action_priority_list( "db" ) -> action_list_str += "/hellfire,moving=1,interrupt=1";
     get_action_priority_list( "db" ) -> action_list_str += "/life_tap";
 
     get_action_priority_list( "meta" ) -> action_list_str += "/kiljaedens_cunning,if=!cooldown.cataclysm.remains";
     get_action_priority_list( "meta" ) -> action_list_str += "/cataclysm";
-    get_action_priority_list( "meta" ) -> action_list_str += "/immolation_aura,if=demonic_fury>450&active_enemies>=3&buff.immolation_aura.down";
+    get_action_priority_list( "meta" ) -> action_list_str += "/immolation_aura,if=demonic_fury>450&spell_targets.immolation_aura_tick>=3&buff.immolation_aura.down";
     get_action_priority_list( "meta" ) -> action_list_str += "/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.any.react<10";
     get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.remains&(trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react|trinket.stacking_proc.multistrike.react>7)";
     if ( find_item("draenic_philosophers_stone" ) )
@@ -6140,9 +6140,9 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges>0&dot.shadowflame.remains<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&((demonic_fury<100&buff.dark_soul.remains>10)|time<15)&!glyph.dark_soul.enabled";
     get_action_priority_list( "meta" ) -> action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)";
     if ( find_item( "fragment_of_the_dark_star" ) )
-      get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2";
+      get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&spell_targets.chaos_wave>=2";
     else
-      get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&active_enemies>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2)";
+      get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.up&spell_targets.chaos_wave>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2)";
     get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25|trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react)";
     get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&trinket.stacking_proc.multistrike.react&trinket.stacking_proc.multistrike.remains<=buff.molten_core.react*cast_time&trinket.stacking_proc.multistrike.remains<=demonic_fury%(80%cast_time)";
     get_action_priority_list( "meta" ) -> action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
@@ -6160,12 +6160,12 @@ void warlock_t::apl_demonology()
     action_list_str += "/metamorphosis,if=(demonic_fury>750&(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target)))|floor(demonic_fury%80)*action.soul_fire.execute_time>=target.time_to_die";
     action_list_str += "/metamorphosis,if=demonic_fury>=950";
     action_list_str += "/imp_swarm";
-    action_list_str += "/hellfire,interrupt=1,if=active_enemies>=5";
+    action_list_str += "/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=5";
     action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
     action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.molten_core.stack>=7|target.health.pct<=25|(buff.dark_soul.remains&cooldown.metamorphosis.remains>buff.dark_soul.remains)|trinket.proc.any.remains>execute_time|trinket.stacking_proc.any.remains>execute_time)&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>execute_time)";
     action_list_str += "/soul_fire,if=buff.molten_core.react&target.time_to_die<(time+target.time_to_die)*0.25+cooldown.dark_soul.remains";
     action_list_str += "/life_tap,if=mana.pct<40&buff.dark_soul.down";
-    action_list_str += "/hellfire,interrupt=1,if=active_enemies>=4";
+    action_list_str += "/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=4";
     action_list_str += "/shadow_bolt";
     action_list_str += "/hellfire,moving=1,interrupt=1";
   }
@@ -6176,23 +6176,23 @@ void warlock_t::apl_destruction()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );    
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
-  action_list_str +="/run_action_list,name=single_target,if=active_enemies<6&(!talent.charred_remains.enabled|active_enemies<4)";
-  action_list_str +="/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)";
+  action_list_str +="/run_action_list,name=single_target,if=spell_targets.fire_and_brimstone<6&(!talent.charred_remains.enabled|spell_targets.rain_of_fire<4)";
+  action_list_str +="/run_action_list,name=aoe,if=spell_targets.fire_and_brimstone>=6|(talent.charred_remains.enabled&spell_targets.rain_of_fire>=4)";
 
   single_target -> action_list_str += "/havoc,target=2";
   single_target -> action_list_str += "/shadowburn,if=talent.charred_remains.enabled&target.time_to_die<10";
   single_target -> action_list_str += "/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)";
   single_target -> action_list_str += "/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled";
-  single_target -> action_list_str += "/cataclysm,if=active_enemies>1";
-  single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=action.immolate.cast_time&(cooldown.cataclysm.remains>action.immolate.cast_time|!talent.cataclysm.enabled)&active_enemies>4";
+  single_target -> action_list_str += "/cataclysm,if=spell_targets.cataclysm>1";
+  single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=action.immolate.cast_time&(cooldown.cataclysm.remains>action.immolate.cast_time|!talent.cataclysm.enabled)&spell_targets.fire_and_brimstone>4";
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)";
   single_target -> action_list_str += "/cancel_buff,name=fire_and_brimstone,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time>(dot.immolate.duration*0.3)";
   single_target -> action_list_str += "/shadowburn,if=buff.havoc.remains";
   single_target -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";
   single_target -> action_list_str += "/conflagrate,if=charges=2";
   single_target -> action_list_str += "/cataclysm";
-  single_target -> action_list_str += "/rain_of_fire,if=remains<=tick_time&(active_enemies>4|(buff.mannoroths_fury.up&active_enemies>2))";
-  single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&active_enemies>1&target.health.pct>20";
+  single_target -> action_list_str += "/rain_of_fire,if=remains<=tick_time&(spell_targets.rain_of_fire>4|(buff.mannoroths_fury.up&spell_targets.rain_of_fire>2))";
+  single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&spell_targets.fire_and_brimstone>1&target.health.pct>20";
   single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5";
 
   if ( find_item( "nithramus_the_allseer" ) )
@@ -6208,7 +6208,7 @@ void warlock_t::apl_destruction()
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.multistrike.react&trinket.proc.multistrike.remains>cast_time";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.versatility.react&trinket.proc.versatility.remains>cast_time";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time";
-  single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)&active_enemies>4";
+  single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)&spell_targets.fire_and_brimstone>4";
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains-cast_time<=(duration*0.3)";
   single_target -> action_list_str += "/conflagrate,if=buff.backdraft.stack=0";
   single_target -> action_list_str += "/incinerate";

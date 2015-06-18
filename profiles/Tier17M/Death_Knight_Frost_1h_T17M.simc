@@ -39,9 +39,9 @@ actions+=/use_item,slot=trinket2
 actions+=/plague_leech,if=disease.min_remains<1
 actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
-actions+=/run_action_list,name=single_target_2h,if=active_enemies<4&main_hand.2h
-actions+=/run_action_list,name=single_target_1h,if=active_enemies<3&main_hand.1h
-actions+=/run_action_list,name=multi_target,if=active_enemies>=3+main_hand.2h
+actions+=/run_action_list,name=single_target_2h,if=spell_targets.howling_blast<4&main_hand.2h
+actions+=/run_action_list,name=single_target_1h,if=spell_targets.howling_blast<3&main_hand.1h
+actions+=/run_action_list,name=multi_target,if=spell_targets.howling_blast>=3+main_hand.2h
 
 actions.single_target_2h=defile
 actions.single_target_2h+=/blood_tap,if=talent.defile.enabled&cooldown.defile.remains=0

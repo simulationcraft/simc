@@ -7124,7 +7124,7 @@ void priest_t::apl_holy_dmg()
   def -> add_action( "mindbender,if=talent.mindbender.enabled" );
   def -> add_action( "shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking" );
   def -> add_action( "power_word_solace" );
-  def -> add_action( "mind_sear,if=active_enemies>=4" );
+  def -> add_action( "mind_sear,if=spell_targets.mind_sear_tick>=4" );
   def -> add_action( "holy_fire" );
   def -> add_action( "smite" );
   def -> add_action( "holy_word,moving=1" );

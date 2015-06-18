@@ -35,7 +35,7 @@ actions+=/shadowfiend,if=!talent.mindbender.enabled
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking
 actions+=/power_word_solace
-actions+=/mind_sear,if=active_enemies>=4
+actions+=/mind_sear,if=spell_targets.mind_sear_tick>=4
 actions+=/holy_fire
 actions+=/smite
 actions+=/holy_word,moving=1

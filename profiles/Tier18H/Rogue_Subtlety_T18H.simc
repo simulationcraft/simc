@@ -62,7 +62,7 @@ actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff
 actions.generator+=/pool_resource,for_next=1
 actions.generator+=/ambush
 # If simulating AoE, it is recommended to use Anticipation as the level 90 talent.
-actions.generator+=/fan_of_knives,if=active_enemies>1
+actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>1
 actions.generator+=/backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
 actions.generator+=/hemorrhage,if=(remains<duration*0.3&target.time_to_die>=remains+duration+8&debuff.find_weakness.down)|!ticking|position_front
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
@@ -74,7 +74,7 @@ actions.generator+=/run_action_list,name=pool
 actions.finisher=rupture,cycle_targets=1,if=(!ticking|remains<duration*0.3|(buff.shadow_reflection.remains>8&dot.rupture.remains<12))&target.time_to_die>=8
 actions.finisher+=/slice_and_dice,if=((buff.slice_and_dice.remains<10.8&debuff.find_weakness.down)|buff.slice_and_dice.remains<6)&buff.slice_and_dice.remains<target.time_to_die
 actions.finisher+=/death_from_above
-actions.finisher+=/crimson_tempest,if=(active_enemies>=2&debuff.find_weakness.down)|active_enemies>=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
+actions.finisher+=/crimson_tempest,if=(spell_targets.crimson_tempest>=2&debuff.find_weakness.down)|spell_targets.crimson_tempest>=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
 actions.finisher+=/eviscerate,if=(energy.time_to_max<=cooldown.death_from_above.remains+action.death_from_above.execute_time)|!talent.death_from_above.enabled
 actions.finisher+=/run_action_list,name=pool
 
