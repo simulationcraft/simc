@@ -229,6 +229,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.armory_spec,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.center_scale_delta, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.challenge_mode,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.chart_render,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.gui_localization,   SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -342,6 +343,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "Statistics Level" ),   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Auto-Save Reports" ), choice.auto_save = createChoice( 3, "No", "Use current date/time", "Ask for filename on each simulation" ) );
+  globalsLayout_right -> addRow( tr( "Chart library" ),     choice.chart_render = createChoice( 2, "Google Image Charts", "Highcharts" ) );
 
   createItemDataSourceSelector( globalsLayout_right );
 
@@ -677,6 +679,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "statistics_level", choice.statistics_level, "1" );
   load_setting( settings, "deterministic_rng", choice.deterministic_rng, "No" );
   load_setting( settings, "challenge_mode", choice.challenge_mode );
+  load_setting( settings, "enable_highcharts", choice.chart_render, "Google Image Charts" );
 
   load_setting( settings, "center_scale_delta", choice.center_scale_delta, "No" );
   load_setting( settings, "scale_over", choice.scale_over );
@@ -769,6 +772,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "center_scale_delta", choice.center_scale_delta -> currentText() );
   settings.setValue( "scale_over", choice.scale_over -> currentText() );
   settings.setValue( "challenge_mode", choice.challenge_mode -> currentText() );
+  settings.setValue( "enable_highcharts", choice.chart_render -> currentText() );
 
   settings.setValue( "plot_points", choice.plots_points -> currentText() );
   settings.setValue( "plot_step", choice.plots_step -> currentText() );
@@ -837,6 +841,8 @@ void SC_OptionsTab::createToolTips()
   choice.target_race -> setToolTip( tr( "Race of the target and any adds." ) );
 
   choice.challenge_mode -> setToolTip( tr( "Enables/Disables the challenge mode setting, downscaling items to level 630." ) );
+
+  choice.chart_render -> setToolTip( tr( "Selects the chart render library for the HTML report." ) );
 
   choice.num_target -> setToolTip( tr( "Number of enemies." ) );
 
@@ -976,6 +982,11 @@ QString SC_OptionsTab::get_globalSettings()
 
   if ( choice.challenge_mode -> currentIndex() > 0 )
     options += "challenge_mode=1\n";
+
+  if ( choice.chart_render -> currentIndex() > 0 )
+  {
+    options += "enable_highcharts=1\n";
+  }
 
   if ( choice.show_etmi -> currentIndex() != 0 )
     options += "show_etmi=1\n";

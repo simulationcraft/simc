@@ -72,6 +72,7 @@ public:
     QComboBox* deterministic_rng;
     QComboBox* center_scale_delta;
     QComboBox* challenge_mode;
+    QComboBox* chart_render;
     // scaling
     QComboBox* scale_over;
     QComboBox* plots_points;
