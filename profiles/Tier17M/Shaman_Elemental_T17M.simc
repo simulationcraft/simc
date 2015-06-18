@@ -37,12 +37,12 @@ actions+=/elemental_mastery,if=action.lava_burst.cast_time>=1.2
 actions+=/ancestral_swiftness,if=!buff.ascendance.up
 actions+=/storm_elemental_totem
 actions+=/fire_elemental_totem,if=!active
-actions+=/ascendance,if=active_enemies>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
+actions+=/ascendance,if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15
-# If one or two enemies, priority follows the 'single' action list.
-actions+=/call_action_list,name=single,if=active_enemies<3
 # On multiple enemies, the priority follows the 'aoe' action list.
-actions+=/call_action_list,name=aoe,if=active_enemies>2
+actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>2
+# If one or two enemies, priority follows the 'single' action list.
+actions+=/call_action_list,name=single
 
 # Single target action priority list
 
@@ -64,12 +64,12 @@ actions.single+=/lightning_bolt
 
 # Multi target action priority list
 
-actions.aoe=earthquake,cycle_targets=1,if=!ticking&(buff.enhanced_chain_lightning.up|level<=90)&active_enemies>=2
+actions.aoe=earthquake,cycle_targets=1,if=!ticking&(buff.enhanced_chain_lightning.up|level<=90)&spell_targets.earthquake_rumble>=2
 actions.aoe+=/lava_beam
 actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.aoe+=/thunderstorm,if=active_enemies>=10
+actions.aoe+=/thunderstorm,if=spell_targets.thunderstorm>=10
 actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
-actions.aoe+=/chain_lightning,if=active_enemies>=2
+actions.aoe+=/chain_lightning,if=spell_targets.chain_lightning>=2
 actions.aoe+=/lightning_bolt
 
 head=windspeakers_faceguard,id=115579,bonus_id=567

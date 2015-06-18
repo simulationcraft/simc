@@ -42,10 +42,10 @@ actions+=/feral_spirit
 actions+=/liquid_magma,if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10
 actions+=/ancestral_swiftness
 actions+=/ascendance
-# If only one enemy, priority follows the 'single' action list.
-actions+=/call_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
-actions+=/call_action_list,name=aoe,if=active_enemies>1
+actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>1
+# If only one enemy, priority follows the 'single' action list.
+actions+=/call_action_list,name=single
 
 # Single target action priority list
 
@@ -71,23 +71,23 @@ actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemen
 
 # Multi target action priority list
 
-actions.aoe=unleash_elements,if=active_enemies>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)
+actions.aoe=unleash_elements,if=spell_targets.fire_nova_explosion>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=!talent.echo_of_the_elements.enabled&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2
 actions.aoe+=/magma_totem,if=!totem.fire.active
-actions.aoe+=/lava_lash,if=dot.flame_shock.ticking&active_dot.flame_shock<active_enemies
+actions.aoe+=/lava_lash,if=dot.flame_shock.ticking&active_dot.flame_shock<spell_targets.fire_nova_explosion
 actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)
-actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&active_enemies>=3)|(!glyph.chain_lightning.enabled&active_enemies>=2))
-actions.aoe+=/unleash_elements,if=active_enemies<4
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=2))
+actions.aoe+=/unleash_elements,if=spell_targets.fire_nova_explosion<4
 actions.aoe+=/flame_shock,if=dot.flame_shock.remains<=9|!ticking
 actions.aoe+=/windstrike,target=1,if=!debuff.stormstrike.up
 actions.aoe+=/windstrike,target=2,if=!debuff.stormstrike.up
 actions.aoe+=/windstrike,target=3,if=!debuff.stormstrike.up
 actions.aoe+=/windstrike
 actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=3
-actions.aoe+=/chain_lightning,if=(buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&active_enemies>=4)|(!glyph.chain_lightning.enabled&active_enemies>=3))
+actions.aoe+=/chain_lightning,if=(buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=4)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3))
 actions.aoe+=/magma_totem,if=pet.magma_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
-actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&glyph.chain_lightning.enabled&active_enemies<3
+actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&glyph.chain_lightning.enabled&spell_targets.chain_lightning<3
 actions.aoe+=/stormstrike,target=1,if=!debuff.stormstrike.up
 actions.aoe+=/stormstrike,target=2,if=!debuff.stormstrike.up
 actions.aoe+=/stormstrike,target=3,if=!debuff.stormstrike.up
@@ -95,8 +95,8 @@ actions.aoe+=/stormstrike
 actions.aoe+=/lava_lash
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
 actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=1
-actions.aoe+=/chain_lightning,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&active_enemies>=3)|(!glyph.chain_lightning.enabled&active_enemies>=2))
-actions.aoe+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&glyph.chain_lightning.enabled&active_enemies<3
+actions.aoe+=/chain_lightning,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=2))
+actions.aoe+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&glyph.chain_lightning.enabled&spell_targets.chain_lightning<3
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
 
 head=blastproof_cowl,id=113891,bonus_id=567
