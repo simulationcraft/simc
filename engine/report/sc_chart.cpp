@@ -102,135 +102,6 @@ std::string chart_title_formatting ( const std::string& color, unsigned font_siz
   return s.str();
 }
 
-namespace old_color {
-// http://www.wowwiki.com/Class_colors
-const std::string light_blue    = "69CCF0";
-const std::string pink          = "F58CBA";
-const std::string purple        = "9482C9";
-const std::string red           = "C41F3B";
-const std::string tan           = "C79C6E";
-const std::string yellow        = "FFF569";
-const std::string blue          = "0070DE";
-const std::string hunter_green  = "ABD473";
-const std::string jade_green    = "00FF96";
-
-// http://www.brobstsystems.com/colors1.htm
-const std::string purple_dark   = "7668A1";
-const std::string white         = "FFFFFF";
-const std::string nearly_white  = "FCFFFF";
-const std::string green         = "336600";
-const std::string grey          = "C0C0C0";
-const std::string olive         = "909000";
-const std::string orange        = "FF7D0A";
-const std::string teal          = "009090";
-const std::string darker_blue   = "59ADCC";
-const std::string darker_silver = "8A8A8A";
-const std::string darker_yellow = "C0B84F";
-const std::string red_blue      = "9900CC"; // Our color mixer thinks red + blue = poo brown.
-
-/* Creates the average color of two given colors
- */
-std::string mix( const std::string& color1, const std::string& color2 )
-{
-  assert( ( color1.length() == 6 ) && ( color2.length() == 6 ) );
-
-  std::stringstream converter1( color1 );
-  unsigned int value;
-  converter1 >> std::hex >> value;
-  std::stringstream converter2( color2 );
-  unsigned int value2;
-  converter2 >> std::hex >> value2;
-
-  value += value2;
-  value /= 2;
-  std::stringstream out;
-  out << std::uppercase << std::hex << value;
-  return out.str();
-}
-
-/* Creates the average of all sequentially given color codes
- */
-std::string mix_multiple( const std::string& color )
-{
-  assert( color.size() % 6 == 0 );
-
-  unsigned i = 0, total_value = 0;
-  for ( ; ( i + 1 ) * 6 < color.length(); ++i )
-  {
-    std::stringstream converter1( color.substr( i * 6, 6 ) );
-    unsigned value;
-    converter1 >> std::hex >> value;
-    total_value += value;
-  }
-  if ( i ) total_value /= i;
-
-  std::stringstream out;
-  out << std::uppercase << std::noskipws << std::hex << total_value;
-  return out.str();
-}
-
-/* Converts rgb percentage input into a hexadecimal color code
- *
- */
-std::string from_pct( double r, double g, double b )
-{
-  assert( r >= 0 && r <= 1.0 );
-  assert( g >= 0 && g <= 1.0 );
-  assert( b >= 0 && b <= 1.0 );
-
-  std::string out;
-  out += util::uchar_to_hex( static_cast<unsigned char>( r * 255 ) );
-  out += util::uchar_to_hex( static_cast<unsigned char>( g * 255 ) );
-  out += util::uchar_to_hex( static_cast<unsigned char>( b * 255 ) );
-
-  return out;
-}
-
-} // end namespace old_colour
-
-std::string class_color( player_e type )
-{
-  switch ( type )
-  {
-    case PLAYER_NONE:  return old_color::grey;
-    case DEATH_KNIGHT: return old_color::red;
-    case DRUID:        return old_color::orange;
-    case HUNTER:       return old_color::hunter_green;
-    case MAGE:         return old_color::light_blue;
-    case MONK:         return old_color::jade_green;
-    case PALADIN:      return old_color::pink;
-    case PRIEST:       return old_color::white;
-    case ROGUE:        return old_color::yellow;
-    case SHAMAN:       return old_color::blue;
-    case WARLOCK:      return old_color::purple;
-    case WARRIOR:      return old_color::tan;
-    case ENEMY:        return old_color::grey;
-    case ENEMY_ADD:    return old_color::grey;
-    case HEALING_ENEMY: return old_color::grey;
-    case TMI_BOSS:     return old_color::grey;
-    case TANK_DUMMY:   return old_color::grey;
-    default: assert( 0 ); return std::string();
-  }
-}
-
-/* The above colors don't all work for text rendered on a light (white) background.
- * These colors work better by reducing the brightness HSV component of the above colors
- */
-std::string class_color( player_e type, int print_style )
-{
-  if ( print_style == 1 )
-  {
-    switch ( type )
-    {
-      case MAGE:         return old_color::darker_blue;
-      case PRIEST:       return old_color::darker_silver;
-      case ROGUE:        return old_color::darker_yellow;
-      default: break;
-    }
-  }
-  return class_color( type );
-}
-
 const char* get_chart_base_url()
 {
   static const char* const base_urls[] =
@@ -264,73 +135,6 @@ player_e get_player_or_owner_type( player_t* p )
   return p -> type;
 }
 
-/* Blizzard shool colors:
- * http://wowprogramming.com/utils/xmlbrowser/live/AddOns/Blizzard_CombatLog/Blizzard_CombatLog.lua
- * search for: SchoolStringTable
- */
-// These colors are picked to sort of line up with classes, but match the "feel" of the spell class' color
-std::string school_color( school_e type )
-{
-  switch ( type )
-  {
-      // -- Single Schools
-      // Doesn't use the same colors as the blizzard ingame UI, as they are ugly
-    case SCHOOL_NONE:         return old_color::white;
-    case SCHOOL_PHYSICAL:     return old_color::tan;
-    case SCHOOL_HOLY:         return old_color::from_pct( 1.0, 0.9, 0.5 );
-    case SCHOOL_FIRE:         return old_color::red;
-    case SCHOOL_NATURE:       return old_color::hunter_green;
-    case SCHOOL_FROST:        return old_color::blue;
-    case SCHOOL_SHADOW:       return old_color::purple;
-    case SCHOOL_ARCANE:       return old_color::light_blue;
-      // -- Physical and a Magical
-    case SCHOOL_FLAMESTRIKE:  return old_color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FIRE ) );
-    case SCHOOL_FROSTSTRIKE:  return old_color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FROST ) );
-    case SCHOOL_SPELLSTRIKE:  return old_color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_ARCANE ) );
-    case SCHOOL_STORMSTRIKE:  return old_color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_NATURE ) );
-    case SCHOOL_SHADOWSTRIKE: return old_color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_SHADOW ) );
-    case SCHOOL_HOLYSTRIKE:   return old_color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_HOLY ) );
-      // -- Two Magical Schools
-    case SCHOOL_FROSTFIRE:    return old_color::red_blue;
-    case SCHOOL_SPELLFIRE:    return old_color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FIRE ) );
-    case SCHOOL_FIRESTORM:    return old_color::mix( school_color( SCHOOL_FIRE ), school_color( SCHOOL_NATURE ) );
-    case SCHOOL_SHADOWFLAME:  return old_color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FIRE ) );
-    case SCHOOL_HOLYFIRE:     return old_color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FIRE ) );
-    case SCHOOL_SPELLFROST:   return old_color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FROST ) );
-    case SCHOOL_FROSTSTORM:   return old_color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_NATURE ) );
-    case SCHOOL_SHADOWFROST:  return old_color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FROST ) );
-    case SCHOOL_HOLYFROST:    return old_color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FROST ) );
-    case SCHOOL_SPELLSTORM:   return old_color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_NATURE ) );
-    case SCHOOL_SPELLSHADOW:  return old_color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_SHADOW ) );
-    case SCHOOL_DIVINE:       return old_color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_HOLY ) );
-    case SCHOOL_SHADOWSTORM:  return old_color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_NATURE ) );
-    case SCHOOL_HOLYSTORM:    return old_color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_NATURE ) );
-    case SCHOOL_SHADOWLIGHT:  return old_color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_HOLY ) );
-      //-- Three or more schools
-    case SCHOOL_ELEMENTAL:    return old_color::jade_green;
-    case SCHOOL_CHROMATIC:    return old_color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                       school_color( SCHOOL_FROST ) +
-                                       school_color( SCHOOL_ARCANE ) +
-                                       school_color( SCHOOL_NATURE ) +
-                                       school_color( SCHOOL_SHADOW ) );
-    case SCHOOL_MAGIC:    return old_color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                   school_color( SCHOOL_FROST ) +
-                                   school_color( SCHOOL_ARCANE ) +
-                                   school_color( SCHOOL_NATURE ) +
-                                   school_color( SCHOOL_SHADOW ) +
-                                   school_color( SCHOOL_HOLY ) );
-    case SCHOOL_CHAOS:    return old_color::mix_multiple( school_color( SCHOOL_PHYSICAL ) +
-                                   school_color( SCHOOL_FIRE ) +
-                                   school_color( SCHOOL_FROST ) +
-                                   school_color( SCHOOL_ARCANE ) +
-                                   school_color( SCHOOL_NATURE ) +
-                                   school_color( SCHOOL_SHADOW ) +
-                                   school_color( SCHOOL_HOLY ) );
-
-    default: return std::string();
-  }
-}
-
 std::string get_color( player_t* p )
 {
   player_e type;
@@ -338,7 +142,7 @@ std::string get_color( player_t* p )
     type = p -> cast_pet() -> owner -> type;
   else
     type = p -> type;
-  return class_color( type, p -> sim -> print_styles );
+  return color::class_color( type ).hex_str();
 }
 
 unsigned char simple_encoding( int number )
@@ -597,32 +401,6 @@ public:
 // Chart
 // ==========================================================================
 
-std::string chart::stat_color( stat_e type )
-{
-  switch ( type )
-  {
-    case STAT_STRENGTH:                 return class_color( WARRIOR );
-    case STAT_AGILITY:                  return class_color( HUNTER );
-    case STAT_INTELLECT:                return class_color( MAGE );
-    case STAT_SPIRIT:                   return old_color::darker_silver;
-    case STAT_ATTACK_POWER:             return class_color( ROGUE );
-    case STAT_SPELL_POWER:              return class_color( WARLOCK );
-    case STAT_READINESS_RATING:         return class_color( DEATH_KNIGHT );
-    case STAT_CRIT_RATING:              return class_color( PALADIN );
-    case STAT_HASTE_RATING:             return class_color( SHAMAN );
-    case STAT_MASTERY_RATING:           return class_color( ROGUE );
-    case STAT_MULTISTRIKE_RATING:       return old_color::mix( old_color::red, old_color::tan );
-    case STAT_VERSATILITY_RATING:       return class_color( DRUID );
-    case STAT_SPEED_RATING:             return old_color::mix( old_color::blue, old_color::darker_silver );
-    case STAT_AVOIDANCE_RATING:         return old_color::mix( old_color::red, old_color::darker_silver );
-    case STAT_DODGE_RATING:             return class_color( MONK );
-    case STAT_PARRY_RATING:             return old_color::teal;
-    case STAT_ARMOR:                    return class_color( PRIEST );
-    case STAT_BONUS_ARMOR:              return class_color( PRIEST );
-    default:                            return "FFFFF";
-  }
-}
-
 std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int print_styles )
 {
   // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
@@ -690,7 +468,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
   for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
     if ( i ) s << ",";
-    s << class_color( get_player_or_owner_type( waiting_list[ i ] ) );
+    s << color::class_color( get_player_or_owner_type( waiting_list[ i ] ) ).hex_str();
   }
   s << amp;
 
@@ -858,147 +636,6 @@ size_t chart::raid_aps( std::vector<std::string>& images,
   return images.size();
 }
 
-// chart::raid_gear =========================================================
-
-size_t chart::raid_gear( std::vector<std::string>& images,
-                         sim_t* sim,
-                         int print_styles )
-{
-  size_t num_players = sim -> players_by_dps.size();
-
-  if ( ! num_players )
-    return 0;
-
-  std::vector<double> data_points[ STAT_MAX ];
-
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    data_points[ i ].reserve( num_players );
-    for ( size_t j = 0; j < num_players; j++ )
-    {
-      player_t* p = sim -> players_by_dps[ j ];
-
-      data_points[ i ].push_back( ( p -> gear.   get_stat( i ) +
-                                    p -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i ) );
-    }
-  }
-
-  double max_total = 0;
-  for ( size_t i = 0; i < num_players; i++ )
-  {
-    double total = 0;
-    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
-    {
-      if ( stat_color( j ).empty() )
-        continue;
-
-      total += data_points[ j ][ i ];
-    }
-    if ( total > max_total ) max_total = total;
-  }
-
-  std::string s;
-
-  std::vector<player_t*> player_list = sim -> players_by_dps;
-  static const size_t max_players = MAX_PLAYERS_PER_CHART;
-
-  while ( true )
-  {
-    if ( num_players > max_players ) num_players = max_players;
-
-    unsigned height = as<unsigned>( num_players ) * 20 + 30;
-
-    if ( num_players <= 12 ) height += 70;
-
-    sc_chart chart( "Gear Overview", HORIZONTAL_BAR_STACKED, print_styles, 1 );
-    chart.set_height( height );
-
-    s = chart.create();
-
-    s += "chbh=15";
-    s += amp;
-    s += "chd=t:";
-    bool first = true;
-    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    {
-      if ( stat_color( i ).empty() )
-        continue;
-
-      if ( ! first ) s += "|";
-      first = false;
-      for ( size_t j = 0; j < num_players; j++ )
-      {
-	str::format( s, "%s%.0f", ( j ? "," : "" ), data_points[ i ][ j ] );
-      }
-    }
-    s += amp;
-    str::format( s, "chds=0,%.0f", max_total );
-    s += amp;
-    s += "chco=";
-    first = true;
-    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    {
-      if ( stat_color( i ).empty() )
-        continue;
-
-      if ( ! first ) s += ",";
-      first = false;
-      s += stat_color( i );
-    }
-    s += amp;
-    s += "chxt=y";
-    s += amp;
-    s += "chxl=0:";
-    for ( size_t i = 0; i < num_players; ++i )
-    {
-      std::string formatted_name = player_list[ i ] -> name_str;
-      util::urlencode( formatted_name );
-
-      s += "|";
-      s += formatted_name.c_str();
-    }
-    s += amp;
-    s += "chdl=";
-    first = true;
-    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    {
-      if ( stat_color( i ).empty() )
-        continue;
-
-      if ( ! first ) s += "|";
-      first = false;
-      s += util::stat_type_abbrev( i );
-    }
-    s += amp;
-    if ( num_players <= 12 )
-    {
-      s += "chdlp=t";
-      s += amp;
-    }
-    if ( ! ( sim -> print_styles == 1 ) )
-    {
-      s += "chdls=dddddd,12";
-      s += amp;
-    }
-
-    images.push_back( s );
-
-    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    {
-      std::vector<double>& c = data_points[ i ];
-      c.erase( c.begin(), c.begin() + num_players );
-    }
-
-    player_list.erase( player_list.begin(), player_list.begin() + num_players );
-    num_players = ( int ) player_list.size();
-    if ( num_players == 0 ) break;
-  }
-
-  return images.size();
-}
-
-
-
 // chart::raid_dpet =========================================================
 
 size_t chart::raid_dpet( std::vector<std::string>& images,
@@ -1059,7 +696,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_stats; i++ )
     {
       if ( i ) s += ",";
-      s += school_color ( stats_list[ i ] -> school );
+      s += color::school_color( stats_list[ i ] -> school ).hex_str();
     }
     s += amp;
     s += "chm=";
@@ -1129,7 +766,7 @@ std::string chart::action_dpet(  player_t* p )
     if ( i ) s += ",";
 
 
-    std::string school = school_color( stats_list[ i ] -> school );
+    std::string school = color::school_color( stats_list[ i ] -> school ).hex_str();
     if ( school.empty() )
     {
       p -> sim -> errorf( "chart_t::action_dpet assertion error! School color unknown, stats %s from %s. School %s\n", stats_list[ i ] -> name_str.c_str(), p -> name(), util::school_type_string( stats_list[ i ] -> school ) );
@@ -1142,7 +779,7 @@ std::string chart::action_dpet(  player_t* p )
   for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    str::format( s, "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i );
+    str::format( s, "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), st -> apet, st -> name_str.c_str(), color::school_color( st -> school ).hex_str().c_str(), i );
   }
   s += amp;
 
@@ -1205,7 +842,7 @@ std::string chart::aps_portion(  player_t* p )
   {
     if ( i ) s += ",";
 
-    std::string school = school_color( stats_list[ i ] -> school );
+    std::string school = color::school_color( stats_list[ i ] -> school ).hex_str();
     if ( school.empty() )
     {
       p -> sim -> errorf( "chart_t::action_dmg assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
@@ -1274,7 +911,7 @@ std::string chart::time_spent( player_t* p )
   {
     if ( i ) s += ",";
 
-    std::string school = school_color( filtered_waiting_stats[ i ] -> school );
+    std::string school = color::school_color( filtered_waiting_stats[ i ] -> school ).hex_str();
     if ( school.empty() )
     {
       p -> sim -> errorf( "chart_t::time_spent assertion error! School unknown, stats %s from %s.\n", filtered_waiting_stats[ i ] -> name_str.c_str(), p -> name() );
@@ -1358,7 +995,7 @@ std::string chart::gains( player_t* p, resource_e type )
 
   // Series color
   s << "chco=";
-  s << resource_color( type );
+  s << color::resource_color( type ).hex_str();
   s << amp;
 
   // Labels
@@ -1495,9 +1132,13 @@ std::string chart::scaling_dps( player_t* p )
   bool first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( stat_color( i ).empty() ) continue;
     std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();
+    if ( size == 0 )
+    {
+      continue;
+    }
+
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
     for ( size_t j = 0; j < size; j++ )
@@ -1532,8 +1173,11 @@ std::string chart::scaling_dps( player_t* p )
   first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( stat_color( i ).empty() ) continue;
     size_t size = p -> dps_plot_data[ i ].size();
+    if ( size == 0 )
+    {
+      continue;
+    }
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
     s += util::stat_type_abbrev( i );
@@ -1549,12 +1193,15 @@ std::string chart::scaling_dps( player_t* p )
   first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( stat_color( i ).empty() ) continue;
     size_t size = p -> dps_plot_data[ i ].size();
+    if ( size == 0 )
+    {
+      continue;
+    }
     if ( size != num_points ) continue;
     if ( ! first ) s += ",";
     first = false;
-    s += stat_color( i );
+    s += color::stat_color( i ).hex_str();
   }
   s += amp;
   str::format( s, "chg=%.4f,10,1,3", floor( 10000.0 * 100.0 / ( num_points - 1 ) ) / 10000.0 );
@@ -1758,7 +1405,7 @@ std::string chart::reforge_dps( player_t* p )
 
     // Chart color
     s << "chco=";
-    s << stat_color( stat_indices[ 0 ] );
+    s << color::stat_color( stat_indices[ 0 ] ).hex_str();
     s << amp;
 
     // Grid lines
@@ -1928,8 +1575,8 @@ std::string chart::timeline(  player_t* p,
 
   if ( avg || timeline_min < 0.0 )
   {
-    s << "chm=h," << old_color::yellow << ",0," << ( avg - timeline_min ) / timeline_range << ",0.4";
-    s << "|h," << old_color::red << ",0," << ( 0 - timeline_min ) / timeline_range << ",0.4";
+    s << "chm=h," << color::YELLOW.hex_str() << ",0," << ( avg - timeline_min ) / timeline_range << ",0.4";
+    s << "|h," << color::RED.hex_str() << ",0," << ( 0 - timeline_min ) / timeline_range << ",0.4";
     s << amp;
   }
 
@@ -2643,41 +2290,6 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   s << "chm=B,C6D9FD,0," << std::max( 4 * std_dev - std_dev * tolerance_interval, 0.0 ) * 100.0 / std_dev << ":" << floor( std::min( 4 * std_dev + std_dev * tolerance_interval, 8 * std_dev ) * 100.0 / std_dev ) << ",0";
 
   return s.str();
-}
-
-// chart::resource_color ====================================================
-
-std::string chart::resource_color( int type )
-{
-  switch ( type )
-  {
-    case RESOURCE_HEALTH:
-    case RESOURCE_RUNE_UNHOLY:   return class_color( HUNTER );
-
-    case RESOURCE_RUNE_FROST:
-    case RESOURCE_MANA:          return class_color( SHAMAN );
-
-    case RESOURCE_ENERGY:
-    case RESOURCE_FOCUS:         
-    case RESOURCE_COMBO_POINT:   return class_color( ROGUE );
-
-    case RESOURCE_RAGE:
-    case RESOURCE_RUNIC_POWER:
-    case RESOURCE_RUNE:
-    case RESOURCE_RUNE_BLOOD:    return class_color( DEATH_KNIGHT );
-
-    case RESOURCE_HOLY_POWER:    return class_color( PALADIN );
-
-    case RESOURCE_SOUL_SHARD:
-    case RESOURCE_BURNING_EMBER:
-    case RESOURCE_DEMONIC_FURY:  return class_color( WARLOCK );
-    case RESOURCE_ECLIPSE: return class_color( DRUID );
-
-    case RESOURCE_CHI:           return class_color( MONK );
-
-    case RESOURCE_NONE:
-    default:                   return "000000";
-  }
 }
 
 /* Creates a normal distribution chart for p.dps

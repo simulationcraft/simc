@@ -1203,14 +1203,6 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_informatio
       writer.print_attribute_unescaped( "img_src", ri.hps_charts[ i ] );
       writer.end_tag( "chart" );
     }
-    count = ri.gear_charts.size();
-    for ( size_t i = 0; i < count; i++ )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "gear" );
-      writer.print_attribute_unescaped( "img_src", ri.gear_charts[ i ] );
-      writer.end_tag( "chart" );
-    }
     count = ri.dpet_charts.size();
     for ( size_t i = 0; i < count; i++ )
     {

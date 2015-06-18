@@ -563,14 +563,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, const sim_r
   }
 
   // Gear Charts
-  if ( ! sim -> enable_highcharts )
-  {
-    for ( size_t i = 0; i < ri.gear_charts.size(); i++ )
-    {
-      os << "<img src=\"" << ri.gear_charts[ i ] << "\" alt=\"Gear Chart\" />\n";
-    }
-  }
-  else
+  if ( sim -> enable_highcharts )
   {
     highchart::bar_chart_t gear( "raid_gear", sim );
     if ( chart::generate_raid_gear( gear, sim ) )

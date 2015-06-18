@@ -2,7 +2,7 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-
+ 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 
@@ -1031,7 +1031,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                          cd.resource_timelines[ i ].timeline.data(),
                          encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
                          cd.resource_timelines[ i ].timeline.mean(),
-                         chart::resource_color( rt ),
+                         color::resource_color( rt ).hex_str(),
                          max_buckets );
       ri.gains_chart[ rt ] = chart::gains( p, rt );
     }
@@ -1047,7 +1047,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                            cd.stat_timelines[ i ].timeline.data(),
                            encoded_name + ' ' + util::inverse_tokenize( util::stat_type_string( st ) ),
                            cd.stat_timelines[ i ].timeline.mean(),
-                           chart::stat_color( st ),
+                           color::stat_color( st ).hex_str(),
                            max_buckets );
       }
     }
@@ -1059,7 +1059,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                          cd.health_changes.merged_timeline.data(),
                          encoded_name + ' ' + "Health Change",
                          cd.health_changes.merged_timeline.mean(),
-                         chart::resource_color( RESOURCE_HEALTH ),
+                         color::resource_color( RESOURCE_HEALTH ).hex_str(),
                          max_buckets );
 
       sc_timeline_t sliding_average_tl;
@@ -1069,7 +1069,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                          sliding_average_tl.data(),
                          encoded_name + ' ' + "Health Change (" + util::to_string( p -> tmi_window, 2 ) + "s moving avg.)",
                          sliding_average_tl.mean(),
-                         chart::resource_color( RESOURCE_HEALTH ),
+                         color::resource_color( RESOURCE_HEALTH ).hex_str(),
                          max_buckets );
     }
   }
@@ -1106,7 +1106,6 @@ void report::generate_sim_report_information( sim_t* s , sim_report_information_
   chart::raid_aps     ( ri.tmi_charts, s, s -> players_by_tmi, "tmi" );
   chart::raid_aps     ( ri.apm_charts, s, s -> players_by_apm, "apm" );
   chart::raid_dpet    ( ri.dpet_charts, s );
-  chart::raid_gear    ( ri.gear_charts, s, s -> print_styles );
   ri.timeline_chart = chart::distribution( s -> print_styles,
                                            s -> simulation_length.distribution, "Timeline",
                                            s -> simulation_length.mean(),
@@ -1179,6 +1178,9 @@ std::string rgb::rgb_str() const
 
 std::string rgb::str() const
 { return *this; }
+
+std::string rgb::hex_str() const
+{ return str().substr( 1 ); }
 
 rgb& rgb::adjust( double v )
 {
