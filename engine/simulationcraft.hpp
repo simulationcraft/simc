@@ -1498,7 +1498,6 @@ private:
 
 struct raid_event_t
 {
-protected:
   sim_t* sim;
   std::string name_str;
   int64_t num_starts;
