@@ -9219,6 +9219,7 @@ void player_t::analyze( sim_t& s )
     s.players_by_tmi.push_back( this );
     s.players_by_name.push_back( this );
     s.players_by_apm.push_back( this );
+    s.players_by_variance.push_back( this );
   }
   if ( !  quiet && (  is_enemy() ||  is_add() ) && ! (  is_pet() && s.report_pets_separately ) )
     s.targets_by_name.push_back( this );

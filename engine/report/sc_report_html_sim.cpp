@@ -830,7 +830,14 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, const sim_
      << "</div>\n\n";
 
   os << "<div id=\"apm-summary\" class=\"section grouped-first\">\n\n";
-  os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute Summary</h2>\n";
+  if ( ! sim -> enable_highcharts )
+  {
+    os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute Summary</h2>\n";
+  }
+  else
+  {
+    os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n";
+  }
   os << "<div class=\"toggle-content hide\">\n";
   os << "<ul class=\"params\">\n";
 
