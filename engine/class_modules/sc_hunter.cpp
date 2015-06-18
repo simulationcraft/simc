@@ -3095,9 +3095,9 @@ public:
 
   virtual void execute() override
   {
-    hunter_action_t::execute();
+    hunter_action_t<spell_t>::execute();
     
-    try_steady_focus();
+    this -> try_steady_focus();
   }
 };
 
