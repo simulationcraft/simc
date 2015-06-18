@@ -3679,7 +3679,7 @@ struct exorcism_t : public paladin_melee_attack_t
       aoe = -1;
       base_aoe_multiplier = 0.25;
     }
-
+    weapon_multiplier = 0;
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
   }
