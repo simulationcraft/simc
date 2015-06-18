@@ -42,6 +42,7 @@ struct warlock_td_t: public actor_target_data_t
 
   buff_t* debuffs_haunt;
   buff_t* debuffs_shadowflame;
+  buff_t* debuffs_agony;
   buff_t* debuffs_flamelicked;
 
   bool ds_started_below_20;
@@ -2335,7 +2336,10 @@ struct agony_t: public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    if ( td( d -> state -> target ) -> agony_stack < ( 10 ) ) td( d -> state -> target ) -> agony_stack++;
+    if ( td( d -> state -> target ) -> agony_stack < ( 10 ) ) 
+      td( d -> state -> target ) -> agony_stack++;
+
+    td( d -> target ) -> debuffs_agony -> trigger();
     warlock_spell_t::tick( d );
   }
 
@@ -5162,6 +5166,8 @@ warlock( p )
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   if ( warlock.destruction_trinket )
   {
