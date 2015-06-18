@@ -3563,14 +3563,9 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t* p, sc
 
     std::string color = color::stat_color( i );
 
-    if ( color.empty() )
-    {
-      continue;
-    }
-
     std::vector<std::pair<double, double> > data;
 
-    ac.add( "colors", "#" + color );
+    ac.add( "colors", color );
 
     for ( size_t j = 0; j < pd.size(); j++ )
     {
