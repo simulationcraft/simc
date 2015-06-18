@@ -298,18 +298,18 @@ feet=dessicated_soulrender_slippers,id=124150
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
 finger2=seal_of_the_traitorous_councilor,id=124191,enchant=gift_of_haste
 trinket1=repudiation_of_war,id=124519
-trinket2=iron_reaver_piston,id=124227
+trinket2=desecrated_shadowmoon_insignia,id=124228
 main_hand=gavel_of_the_eredar,id=124372,enchant=mark_of_warsong
 off_hand=gibbering_madness,id=124205
 
 # Gear Summary
 # gear_ilvl=698.13
 # gear_stamina=4617
-# gear_intellect=3349
+# gear_intellect=3078
 # gear_spell_power=1926
-# gear_crit_rating=1056
-# gear_haste_rating=2414
-# gear_mastery_rating=443
+# gear_crit_rating=785
+# gear_haste_rating=2143
+# gear_mastery_rating=804
 # gear_multistrike_rating=811
 # gear_versatility_rating=180
 # gear_armor=879

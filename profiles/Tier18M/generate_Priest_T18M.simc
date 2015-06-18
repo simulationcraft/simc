@@ -29,7 +29,7 @@ feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
 finger1=nithramus_the_allseer,id=124635,enchant=gift_of_mastery
 finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
 trinket1=repudiation_of_war,id=124519,bonus_id=567
-trinket2=iron_reaver_piston,id=124227,bonus_id=567
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_warsong
 off_hand=
 save=Priest_Shadow_T18M_COP.simc
@@ -50,7 +50,7 @@ feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
 finger1=nithramus_the_allseer,id=124635,enchant=gift_of_haste
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_haste
 trinket1=repudiation_of_war,id=124519,bonus_id=567
-trinket2=iron_reaver_piston,id=124227,bonus_id=567
+trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567
 main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_warsong
 off_hand=gibbering_madness,id=124205,bonus_id=567
 save=Priest_Shadow_T18M_VE.simc

@@ -298,17 +298,17 @@ feet=dessicated_soulrender_slippers,id=124150
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 finger2=loathful_encrusted_band,id=124192,enchant=gift_of_mastery
 trinket1=repudiation_of_war,id=124519
-trinket2=iron_reaver_piston,id=124227
+trinket2=desecrated_shadowmoon_insignia,id=124228
 main_hand=edict_of_argus,id=124382,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_ilvl=700.00
 # gear_stamina=4734
-# gear_intellect=3424
+# gear_intellect=3153
 # gear_spell_power=1925
-# gear_crit_rating=1004
-# gear_haste_rating=1226
-# gear_mastery_rating=1932
+# gear_crit_rating=733
+# gear_haste_rating=955
+# gear_mastery_rating=2293
 # gear_multistrike_rating=733
 # gear_versatility_rating=108
 # gear_armor=889

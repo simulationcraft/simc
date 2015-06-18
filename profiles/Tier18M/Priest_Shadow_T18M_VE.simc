@@ -300,17 +300,17 @@ feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
 finger1=nithramus_the_allseer,id=124635,enchant=gift_of_haste
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_haste
 trinket1=repudiation_of_war,id=124519,bonus_id=567
-trinket2=iron_reaver_piston,id=124227,bonus_id=567
+trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567
 main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_warsong
 off_hand=gibbering_madness,id=124205,bonus_id=567
 
 # Gear Summary
-# gear_ilvl=727.50
+# gear_ilvl=727.81
 # gear_stamina=6072
-# gear_intellect=4407
+# gear_intellect=4550
 # gear_spell_power=2544
-# gear_crit_rating=1398
-# gear_haste_rating=3105
+# gear_crit_rating=1039
+# gear_haste_rating=2746
 # gear_mastery_rating=567
 # gear_multistrike_rating=1072
 # gear_versatility_rating=225
