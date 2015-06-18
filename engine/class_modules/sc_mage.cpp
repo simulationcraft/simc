@@ -1184,7 +1184,7 @@ struct temporal_hero_t : public pet_t
   struct temporal_hero_frostbolt_t : public mage_pet_spell_t
   {
     temporal_hero_frostbolt_t( pet_t* p ) :
-      mage_pet_spell_t( "frostbolt", p, p -> find_spell( 9672 ) )
+      mage_pet_spell_t( "frostbolt", p, p -> find_spell( 191764 ) )
     {
       may_crit = true;
     }
@@ -1217,7 +1217,7 @@ struct temporal_hero_t : public pet_t
   struct temporal_hero_shoot_t : public mage_pet_spell_t
   {
     temporal_hero_shoot_t( pet_t* p ) :
-      mage_pet_spell_t( "shoot", p, p -> find_spell( 59710 ) )
+      mage_pet_spell_t( "shoot", p, p -> find_spell( 191799 ) )
     {
       school = SCHOOL_PHYSICAL;
       base_execute_time = p -> main_hand_weapon.swing_time;
@@ -1260,7 +1260,7 @@ struct temporal_hero_t : public pet_t
 
   void init_base_stats()
   {
-    owner_coeff.ap_from_sp = 5.0;
+    owner_coeff.ap_from_sp = 11.41;
     owner_coeff.sp_from_sp = 5.0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1317,7 +1317,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = ARTHAS;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 1.668;
+      temporal_hero_multiplier = 1.000;
 
       if ( sim -> debug )
       {
@@ -1329,7 +1329,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = JAINA;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 1.122;
+      temporal_hero_multiplier = 1.000;
 
       if ( sim -> debug )
       {
@@ -1341,7 +1341,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = SYLVANAS;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 0.273;
+      temporal_hero_multiplier = 1.000;
 
       if ( sim -> debug )
       {
@@ -1353,7 +1353,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = TYRANDE;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 0.283;
+      temporal_hero_multiplier = 1.000;
 
       if ( sim -> debug )
       {
