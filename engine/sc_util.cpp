@@ -863,6 +863,7 @@ const char* util::school_type_string( school_e school )
     case SCHOOL_CHROMATIC:        return "chromatic";
     case SCHOOL_MAGIC:            return "magic";
     case SCHOOL_DRAIN:            return "drain";
+    case SCHOOL_NONE:             return "none";
     default:                      return "unknown";
   }
 }
@@ -1689,6 +1690,29 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
 {
   switch ( sm )
   {
+    case SCALE_METRIC_DPS:       return "Damage per Second";
+    case SCALE_METRIC_DPSE:      return "Damage per Second (effective)";
+    case SCALE_METRIC_DPSP:      return "Damage per Second to Priority Target/Boss";
+    case SCALE_METRIC_HPS:       return "Healing per Second";
+    case SCALE_METRIC_HPSE:      return "Healing per Second (effective)";
+    case SCALE_METRIC_APS:       return "Absorb per Second";
+    case SCALE_METRIC_HAPS:      return "Healing/Absorb per Second";
+    case SCALE_METRIC_DTPS:      return "Damage Taken per Second";
+    case SCALE_METRIC_DMG_TAKEN: return "Damage Taken";
+    case SCALE_METRIC_HTPS:      return "Healing Taken per Second";
+    case SCALE_METRIC_TMI:       return "Theck-Meloree-Index";
+    case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
+    case SCALE_METRIC_DEATHS:    return "Deaths";
+    default:                     return "Damage per Second"; //When set to "Default", assume dps until we have a better solution.
+  }
+}
+
+// scale_metric_type_abbrev ===================================================
+
+const char* util::scale_metric_type_abbrev( scale_metric_e sm )
+{
+  switch ( sm )
+  {
     case SCALE_METRIC_DPS:       return "dps";
     case SCALE_METRIC_DPSP:      return "prioritydps";
     case SCALE_METRIC_DPSE:      return "dpse";
@@ -1710,7 +1734,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
 
 scale_metric_e util::parse_scale_metric( const std::string& name )
 {
-  scale_metric_e sm = parse_enum<scale_metric_e, SCALE_METRIC_NONE, SCALE_METRIC_MAX, scale_metric_type_string>( name );
+  scale_metric_e sm = parse_enum<scale_metric_e, SCALE_METRIC_NONE, SCALE_METRIC_MAX, scale_metric_type_abbrev>( name );
   if ( sm != SCALE_METRIC_NONE ) return sm;
 
   if ( name == "theck_meloree_index" ) return SCALE_METRIC_TMI;

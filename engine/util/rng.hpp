@@ -27,7 +27,7 @@ struct rng_t
 {
   enum type_e { DEFAULT, MURMURHASH, SFMT, STD, TINYMT, XORSHIFT64, XORSHIFT128, XORSHIFT1024 };
 
-  virtual const char* name() = 0;
+  virtual const char* name() const = 0;
   virtual void seed( uint64_t start ) = 0;
   virtual double real() = 0;
 

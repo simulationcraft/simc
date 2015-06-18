@@ -1,58 +1,264 @@
+// Copyright (C) 2011 Milo Yip
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 #ifndef RAPIDJSON_RAPIDJSON_H_
 #define RAPIDJSON_RAPIDJSON_H_
 
-// Copyright (c) 2011-2012 Milo Yip (miloyip@gmail.com)
-// Version 0.11
+// Copyright (c) 2011 Milo Yip (miloyip@gmail.com)
+// Version 0.1
 
-#include <cstdlib>	// malloc(), realloc(), free()
-#include <cstring>	// memcpy()
+/*!\file rapidjson.h
+    \brief common definitions and configuration
+
+    \see RAPIDJSON_CONFIG
+ */
+
+/*! \defgroup RAPIDJSON_CONFIG RapidJSON configuration
+    \brief Configuration macros for library features
+
+    Some RapidJSON features are configurable to adapt the library to a wide
+    variety of platforms, environments and usage scenarios.  Most of the
+    features can be configured in terms of overriden or predefined
+    preprocessor macros at compile-time.
+
+    Some additional customization is available in the \ref RAPIDJSON_ERRORS APIs.
+
+    \note These macros should be given on the compiler command-line
+          (where applicable)  to avoid inconsistent values when compiling
+          different translation units of a single application.
+ */
+
+#include <cstdlib>  // malloc(), realloc(), free(), size_t
+#include <cstring>  // memset(), memcpy(), memmove(), memcmp()
+
+///////////////////////////////////////////////////////////////////////////////
+// RAPIDJSON_NAMESPACE_(BEGIN|END)
+/*! \def RAPIDJSON_NAMESPACE
+    \ingroup RAPIDJSON_CONFIG
+    \brief   provide custom rapidjson namespace
+
+    In order to avoid symbol clashes and/or "One Definition Rule" errors
+    between multiple inclusions of (different versions of) RapidJSON in
+    a single binary, users can customize the name of the main RapidJSON
+    namespace.
+
+    In case of a single nesting level, defining \c RAPIDJSON_NAMESPACE
+    to a custom name (e.g. \c MyRapidJSON) is sufficient.  If multiple
+    levels are needed, both \ref RAPIDJSON_NAMESPACE_BEGIN and \ref
+    RAPIDJSON_NAMESPACE_END need to be defined as well:
+
+    \code
+    // in some .cpp file
+    #define RAPIDJSON_NAMESPACE my::rapidjson
+    #define RAPIDJSON_NAMESPACE_BEGIN namespace my { namespace rapidjson {
+    #define RAPIDJSON_NAMESPACE_END   } }
+    #include "rapidjson/..."
+    \endcode
+
+    \see rapidjson
+ */
+/*! \def RAPIDJSON_NAMESPACE_BEGIN
+    \ingroup RAPIDJSON_CONFIG
+    \brief   provide custom rapidjson namespace (opening expression)
+    \see RAPIDJSON_NAMESPACE
+*/
+/*! \def RAPIDJSON_NAMESPACE_END
+    \ingroup RAPIDJSON_CONFIG
+    \brief   provide custom rapidjson namespace (closing expression)
+    \see RAPIDJSON_NAMESPACE
+*/
+#ifndef RAPIDJSON_NAMESPACE
+#define RAPIDJSON_NAMESPACE rapidjson
+#endif
+#ifndef RAPIDJSON_NAMESPACE_BEGIN
+#define RAPIDJSON_NAMESPACE_BEGIN namespace RAPIDJSON_NAMESPACE {
+#endif
+#ifndef RAPIDJSON_NAMESPACE_END
+#define RAPIDJSON_NAMESPACE_END }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // RAPIDJSON_NO_INT64DEFINE
 
-// Here defines int64_t and uint64_t types in global namespace.
-// If user have their own definition, can define RAPIDJSON_NO_INT64DEFINE to disable this.
+/*! \def RAPIDJSON_NO_INT64DEFINE
+    \ingroup RAPIDJSON_CONFIG
+    \brief Use external 64-bit integer types.
+
+    RapidJSON requires the 64-bit integer types \c int64_t and  \c uint64_t types
+    to be available at global scope.
+
+    If users have their own definition, define RAPIDJSON_NO_INT64DEFINE to
+    prevent RapidJSON from defining its own types.
+*/
 #ifndef RAPIDJSON_NO_INT64DEFINE
+//!@cond RAPIDJSON_HIDDEN_FROM_DOXYGEN
 #ifdef _MSC_VER
-typedef __int64 int64_t;
-typedef unsigned __int64 uint64_t;
+#include "msinttypes/stdint.h"
+#include "msinttypes/inttypes.h"
 #else
+// Other compilers should have this.
+#include <stdint.h>
 #include <inttypes.h>
+#endif
+//!@endcond
+#ifdef RAPIDJSON_DOXYGEN_RUNNING
+#define RAPIDJSON_NO_INT64DEFINE
 #endif
 #endif // RAPIDJSON_NO_INT64TYPEDEF
 
 ///////////////////////////////////////////////////////////////////////////////
+// RAPIDJSON_FORCEINLINE
+
+#ifndef RAPIDJSON_FORCEINLINE
+//!@cond RAPIDJSON_HIDDEN_FROM_DOXYGEN
+#ifdef _MSC_VER
+#define RAPIDJSON_FORCEINLINE __forceinline
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#define RAPIDJSON_FORCEINLINE __attribute__((always_inline))
+#else
+#define RAPIDJSON_FORCEINLINE
+#endif
+//!@endcond
+#endif // RAPIDJSON_FORCEINLINE
+
+///////////////////////////////////////////////////////////////////////////////
 // RAPIDJSON_ENDIAN
-#define RAPIDJSON_LITTLEENDIAN	0	//!< Little endian machine
-#define RAPIDJSON_BIGENDIAN		1	//!< Big endian machine
+#define RAPIDJSON_LITTLEENDIAN  0   //!< Little endian machine
+#define RAPIDJSON_BIGENDIAN     1   //!< Big endian machine
 
 //! Endianness of the machine.
-/*!	GCC provided macro for detecting endianness of the target machine. But other
-	compilers may not have this. User can define RAPIDJSON_ENDIAN to either
-	RAPIDJSON_LITTLEENDIAN or RAPIDJSON_BIGENDIAN.
+/*!
+    \def RAPIDJSON_ENDIAN
+    \ingroup RAPIDJSON_CONFIG
+
+    GCC 4.6 provided macro for detecting endianness of the target machine. But other
+    compilers may not have this. User can define RAPIDJSON_ENDIAN to either
+    \ref RAPIDJSON_LITTLEENDIAN or \ref RAPIDJSON_BIGENDIAN.
+
+    Default detection implemented with reference to
+    \li https://gcc.gnu.org/onlinedocs/gcc-4.6.0/cpp/Common-Predefined-Macros.html
+    \li http://www.boost.org/doc/libs/1_42_0/boost/detail/endian.hpp
 */
 #ifndef RAPIDJSON_ENDIAN
-#ifdef __BYTE_ORDER__
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#define RAPIDJSON_ENDIAN RAPIDJSON_LITTLEENDIAN
-#else
-#define RAPIDJSON_ENDIAN RAPIDJSON_BIGENDIAN
-#endif // __BYTE_ORDER__
-#else
-#define RAPIDJSON_ENDIAN RAPIDJSON_LITTLEENDIAN	// Assumes little endian otherwise.
-#endif
+// Detect with GCC 4.6's macro
+#  ifdef __BYTE_ORDER__
+#    if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#      define RAPIDJSON_ENDIAN RAPIDJSON_LITTLEENDIAN
+#    elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#      define RAPIDJSON_ENDIAN RAPIDJSON_BIGENDIAN
+#    else
+#      error Unknown machine endianess detected. User needs to define RAPIDJSON_ENDIAN.
+#    endif // __BYTE_ORDER__
+// Detect with GLIBC's endian.h
+#  elif defined(__GLIBC__)
+#    include <endian.h>
+#    if (__BYTE_ORDER == __LITTLE_ENDIAN)
+#      define RAPIDJSON_ENDIAN RAPIDJSON_LITTLEENDIAN
+#    elif (__BYTE_ORDER == __BIG_ENDIAN)
+#      define RAPIDJSON_ENDIAN RAPIDJSON_BIGENDIAN
+#    else
+#      error Unknown machine endianess detected. User needs to define RAPIDJSON_ENDIAN.
+#   endif // __GLIBC__
+// Detect with _LITTLE_ENDIAN and _BIG_ENDIAN macro
+#  elif defined(_LITTLE_ENDIAN) && !defined(_BIG_ENDIAN)
+#    define RAPIDJSON_ENDIAN RAPIDJSON_LITTLEENDIAN
+#  elif defined(_BIG_ENDIAN) && !defined(_LITTLE_ENDIAN)
+#    define RAPIDJSON_ENDIAN RAPIDJSON_BIGENDIAN
+// Detect with architecture macros
+#  elif defined(__sparc) || defined(__sparc__) || defined(_POWER) || defined(__powerpc__) || defined(__ppc__) || defined(__hpux) || defined(__hppa) || defined(_MIPSEB) || defined(_POWER) || defined(__s390__)
+#    define RAPIDJSON_ENDIAN RAPIDJSON_BIGENDIAN
+#  elif defined(__i386__) || defined(__alpha__) || defined(__ia64) || defined(__ia64__) || defined(_M_IX86) || defined(_M_IA64) || defined(_M_ALPHA) || defined(__amd64) || defined(__amd64__) || defined(_M_AMD64) || defined(__x86_64) || defined(__x86_64__) || defined(_M_X64) || defined(__bfin__)
+#    define RAPIDJSON_ENDIAN RAPIDJSON_LITTLEENDIAN
+#  elif defined(RAPIDJSON_DOXYGEN_RUNNING)
+#    define RAPIDJSON_ENDIAN
+#  else
+#    error Unknown machine endianess detected. User needs to define RAPIDJSON_ENDIAN.   
+#  endif
 #endif // RAPIDJSON_ENDIAN
+
+///////////////////////////////////////////////////////////////////////////////
+// RAPIDJSON_64BIT
+
+//! Whether using 64-bit architecture
+#ifndef RAPIDJSON_64BIT
+#if defined(__LP64__) || defined(_WIN64)
+#define RAPIDJSON_64BIT 1
+#else
+#define RAPIDJSON_64BIT 0
+#endif
+#endif // RAPIDJSON_64BIT
+
+///////////////////////////////////////////////////////////////////////////////
+// RAPIDJSON_ALIGN
+
+//! Data alignment of the machine.
+/*! \ingroup RAPIDJSON_CONFIG
+    \param x pointer to align
+
+    Some machines require strict data alignment. Currently the default uses 4 bytes
+    alignment. User can customize by defining the RAPIDJSON_ALIGN function macro.,
+*/
+#ifndef RAPIDJSON_ALIGN
+#define RAPIDJSON_ALIGN(x) ((x + 3u) & ~3u)
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+// RAPIDJSON_UINT64_C2
+
+//! Construct a 64-bit literal by a pair of 32-bit integer.
+/*!
+    64-bit literal with or without ULL suffix is prone to compiler warnings.
+    UINT64_C() is C macro which cause compilation problems.
+    Use this macro to define 64-bit constants by a pair of 32-bit integer.
+*/
+#ifndef RAPIDJSON_UINT64_C2
+#define RAPIDJSON_UINT64_C2(high32, low32) ((static_cast<uint64_t>(high32) << 32) | static_cast<uint64_t>(low32))
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // RAPIDJSON_SSE2/RAPIDJSON_SSE42/RAPIDJSON_SIMD
 
-// Enable SSE2 optimization.
-//#define RAPIDJSON_SSE2
+/*! \def RAPIDJSON_SIMD
+    \ingroup RAPIDJSON_CONFIG
+    \brief Enable SSE2/SSE4.2 optimization.
 
-// Enable SSE4.2 optimization.
-//#define RAPIDJSON_SSE42
+    RapidJSON supports optimized implementations for some parsing operations
+    based on the SSE2 or SSE4.2 SIMD extensions on modern Intel-compatible
+    processors.
 
-#if defined(RAPIDJSON_SSE2) || defined(RAPIDJSON_SSE42)
+    To enable these optimizations, two different symbols can be defined;
+    \code
+    // Enable SSE2 optimization.
+    #define RAPIDJSON_SSE2
+
+    // Enable SSE4.2 optimization.
+    #define RAPIDJSON_SSE42
+    \endcode
+
+    \c RAPIDJSON_SSE42 takes precedence, if both are defined.
+
+    If any of these symbols is defined, RapidJSON defines the macro
+    \c RAPIDJSON_SIMD to indicate the availability of the optimized code.
+*/
+#if defined(RAPIDJSON_SSE2) || defined(RAPIDJSON_SSE42) \
+    || defined(RAPIDJSON_DOXYGEN_RUNNING)
 #define RAPIDJSON_SIMD
 #endif
 
@@ -60,20 +266,49 @@ typedef unsigned __int64 uint64_t;
 // RAPIDJSON_NO_SIZETYPEDEFINE
 
 #ifndef RAPIDJSON_NO_SIZETYPEDEFINE
-namespace rapidjson {
-//! Use 32-bit array/string indices even for 64-bit platform, instead of using size_t.
-/*! User may override the SizeType by defining RAPIDJSON_NO_SIZETYPEDEFINE.
+/*! \def RAPIDJSON_NO_SIZETYPEDEFINE
+    \ingroup RAPIDJSON_CONFIG
+    \brief User-provided \c SizeType definition.
+
+    In order to avoid using 32-bit size types for indexing strings and arrays,
+    define this preprocessor symbol and provide the type rapidjson::SizeType
+    before including RapidJSON:
+    \code
+    #define RAPIDJSON_NO_SIZETYPEDEFINE
+    namespace rapidjson { typedef ::std::size_t SizeType; }
+    #include "rapidjson/..."
+    \endcode
+
+    \see rapidjson::SizeType
+*/
+#ifdef RAPIDJSON_DOXYGEN_RUNNING
+#define RAPIDJSON_NO_SIZETYPEDEFINE
+#endif
+RAPIDJSON_NAMESPACE_BEGIN
+//! Size type (for string lengths, array sizes, etc.)
+/*! RapidJSON uses 32-bit array/string indices even on 64-bit platforms,
+    instead of using \c size_t. Users may override the SizeType by defining
+    \ref RAPIDJSON_NO_SIZETYPEDEFINE.
 */
 typedef unsigned SizeType;
-} // namespace rapidjson
+RAPIDJSON_NAMESPACE_END
 #endif
+
+// always import std::size_t to rapidjson namespace
+RAPIDJSON_NAMESPACE_BEGIN
+using std::size_t;
+RAPIDJSON_NAMESPACE_END
 
 ///////////////////////////////////////////////////////////////////////////////
 // RAPIDJSON_ASSERT
 
 //! Assertion.
-/*! By default, rapidjson uses C assert() for assertion.
-	User can override it by defining RAPIDJSON_ASSERT(x) macro.
+/*! \ingroup RAPIDJSON_CONFIG
+    By default, rapidjson uses C \c assert() for internal assertions.
+    User can override it by defining RAPIDJSON_ASSERT(x) macro.
+
+    \note Parsing errors are handled and can be customized by the
+          \ref RAPIDJSON_ERRORS APIs.
 */
 #ifndef RAPIDJSON_ASSERT
 #include <cassert>
@@ -81,399 +316,256 @@ typedef unsigned SizeType;
 #endif // RAPIDJSON_ASSERT
 
 ///////////////////////////////////////////////////////////////////////////////
+// RAPIDJSON_STATIC_ASSERT
+
+// Adopt from boost
+#ifndef RAPIDJSON_STATIC_ASSERT
+//!@cond RAPIDJSON_HIDDEN_FROM_DOXYGEN
+RAPIDJSON_NAMESPACE_BEGIN
+template <bool x> struct STATIC_ASSERTION_FAILURE;
+template <> struct STATIC_ASSERTION_FAILURE<true> { enum { value = 1 }; };
+template<int x> struct StaticAssertTest {};
+RAPIDJSON_NAMESPACE_END
+
+#define RAPIDJSON_JOIN(X, Y) RAPIDJSON_DO_JOIN(X, Y)
+#define RAPIDJSON_DO_JOIN(X, Y) RAPIDJSON_DO_JOIN2(X, Y)
+#define RAPIDJSON_DO_JOIN2(X, Y) X##Y
+
+#if defined(__GNUC__)
+#define RAPIDJSON_STATIC_ASSERT_UNUSED_ATTRIBUTE __attribute__((unused))
+#else
+#define RAPIDJSON_STATIC_ASSERT_UNUSED_ATTRIBUTE 
+#endif
+//!@endcond
+
+/*! \def RAPIDJSON_STATIC_ASSERT
+    \brief (Internal) macro to check for conditions at compile-time
+    \param x compile-time condition
+    \hideinitializer
+ */
+#define RAPIDJSON_STATIC_ASSERT(x) \
+    typedef ::RAPIDJSON_NAMESPACE::StaticAssertTest< \
+      sizeof(::RAPIDJSON_NAMESPACE::STATIC_ASSERTION_FAILURE<bool(x) >)> \
+    RAPIDJSON_JOIN(StaticAssertTypedef, __LINE__) RAPIDJSON_STATIC_ASSERT_UNUSED_ATTRIBUTE
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
 // Helpers
+
+//!@cond RAPIDJSON_HIDDEN_FROM_DOXYGEN
 
 #define RAPIDJSON_MULTILINEMACRO_BEGIN do {  
 #define RAPIDJSON_MULTILINEMACRO_END \
 } while((void)0, 0)
 
-namespace rapidjson {
+// adopted from Boost
+#define RAPIDJSON_VERSION_CODE(x,y,z) \
+  (((x)*100000) + ((y)*100) + (z))
+
+// token stringification
+#define RAPIDJSON_STRINGIFY(x) RAPIDJSON_DO_STRINGIFY(x)
+#define RAPIDJSON_DO_STRINGIFY(x) #x
 
 ///////////////////////////////////////////////////////////////////////////////
-// Allocator
+// RAPIDJSON_DIAG_PUSH/POP, RAPIDJSON_DIAG_OFF
 
-/*! \class rapidjson::Allocator
-	\brief Concept for allocating, resizing and freeing memory block.
-	
-	Note that Malloc() and Realloc() are non-static but Free() is static.
-	
-	So if an allocator need to support Free(), it needs to put its pointer in 
-	the header of memory block.
+#if defined(__GNUC__)
+#define RAPIDJSON_GNUC \
+    RAPIDJSON_VERSION_CODE(__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__)
+#endif
 
-\code
-concept Allocator {
-	static const bool kNeedFree;	//!< Whether this allocator needs to call Free().
+#if defined(__clang__) || (defined(RAPIDJSON_GNUC) && RAPIDJSON_GNUC >= RAPIDJSON_VERSION_CODE(4,2,0))
 
-	// Allocate a memory block.
-	// \param size of the memory block in bytes.
-	// \returns pointer to the memory block.
-	void* Malloc(size_t size);
+#define RAPIDJSON_PRAGMA(x) _Pragma(RAPIDJSON_STRINGIFY(x))
+#define RAPIDJSON_DIAG_PRAGMA(x) RAPIDJSON_PRAGMA(GCC diagnostic x)
+#define RAPIDJSON_DIAG_OFF(x) \
+    RAPIDJSON_DIAG_PRAGMA(ignored RAPIDJSON_STRINGIFY(RAPIDJSON_JOIN(-W,x)))
 
-	// Resize a memory block.
-	// \param originalPtr The pointer to current memory block. Null pointer is permitted.
-	// \param originalSize The current size in bytes. (Design issue: since some allocator may not book-keep this, explicitly pass to it can save memory.)
-	// \param newSize the new size in bytes.
-	void* Realloc(void* originalPtr, size_t originalSize, size_t newSize);
+// push/pop support in Clang and GCC>=4.6
+#if defined(__clang__) || (defined(RAPIDJSON_GNUC) && RAPIDJSON_GNUC >= RAPIDJSON_VERSION_CODE(4,6,0))
+#define RAPIDJSON_DIAG_PUSH RAPIDJSON_DIAG_PRAGMA(push)
+#define RAPIDJSON_DIAG_POP  RAPIDJSON_DIAG_PRAGMA(pop)
+#else // GCC >= 4.2, < 4.6
+#define RAPIDJSON_DIAG_PUSH /* ignored */
+#define RAPIDJSON_DIAG_POP /* ignored */
+#endif
 
-	// Free a memory block.
-	// \param pointer to the memory block. Null pointer is permitted.
-	static void Free(void *ptr);
-};
-\endcode
-*/
+#elif defined(_MSC_VER)
 
-///////////////////////////////////////////////////////////////////////////////
-// CrtAllocator
+// pragma (MSVC specific)
+#define RAPIDJSON_PRAGMA(x) __pragma(x)
+#define RAPIDJSON_DIAG_PRAGMA(x) RAPIDJSON_PRAGMA(warning(x))
 
-//! C-runtime library allocator.
-/*! This class is just wrapper for standard C library memory routines.
-	\implements Allocator
-*/
-class CrtAllocator {
-public:
-	static const bool kNeedFree = true;
-	void* Malloc(size_t size) { return malloc(size); }
-	void* Realloc(void* originalPtr, size_t originalSize, size_t newSize) { (void)originalSize; return realloc(originalPtr, newSize); }
-	static void Free(void *ptr) { free(ptr); }
-};
+#define RAPIDJSON_DIAG_OFF(x) RAPIDJSON_DIAG_PRAGMA(disable: x)
+#define RAPIDJSON_DIAG_PUSH RAPIDJSON_DIAG_PRAGMA(push)
+#define RAPIDJSON_DIAG_POP  RAPIDJSON_DIAG_PRAGMA(pop)
+
+#else
+
+#define RAPIDJSON_DIAG_OFF(x) /* ignored */
+#define RAPIDJSON_DIAG_PUSH   /* ignored */
+#define RAPIDJSON_DIAG_POP    /* ignored */
+
+#endif // RAPIDJSON_DIAG_*
 
 ///////////////////////////////////////////////////////////////////////////////
-// MemoryPoolAllocator
+// C++11 features
 
-//! Default memory allocator used by the parser and DOM.
-/*! This allocator allocate memory blocks from pre-allocated memory chunks. 
+#ifndef RAPIDJSON_HAS_CXX11_RVALUE_REFS
+#if defined(__clang__) && (!defined(__APPLE__) || defined(_LIBCPP_VERSION))
+#define RAPIDJSON_HAS_CXX11_RVALUE_REFS __has_feature(cxx_rvalue_references)
+#elif (defined(RAPIDJSON_GNUC) && (RAPIDJSON_GNUC >= RAPIDJSON_VERSION_CODE(4,3,0)) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+      (defined(_MSC_VER) && _MSC_VER >= 1600)
 
-    It does not free memory blocks. And Realloc() only allocate new memory.
+#define RAPIDJSON_HAS_CXX11_RVALUE_REFS 1
+#else
+#define RAPIDJSON_HAS_CXX11_RVALUE_REFS 0
+#endif
+#endif // RAPIDJSON_HAS_CXX11_RVALUE_REFS
 
-    The memory chunks are allocated by BaseAllocator, which is CrtAllocator by default.
+#ifndef RAPIDJSON_HAS_CXX11_NOEXCEPT
+#if defined(__clang__)
+#define RAPIDJSON_HAS_CXX11_NOEXCEPT __has_feature(cxx_noexcept)
+#elif (defined(RAPIDJSON_GNUC) && (RAPIDJSON_GNUC >= RAPIDJSON_VERSION_CODE(4,6,0)) && defined(__GXX_EXPERIMENTAL_CXX0X__))
+//    (defined(_MSC_VER) && _MSC_VER >= ????) // not yet supported
+#define RAPIDJSON_HAS_CXX11_NOEXCEPT 1
+#else
+#define RAPIDJSON_HAS_CXX11_NOEXCEPT 0
+#endif
+#endif
+#if RAPIDJSON_HAS_CXX11_NOEXCEPT
+#define RAPIDJSON_NOEXCEPT noexcept
+#else
+#define RAPIDJSON_NOEXCEPT /* noexcept */
+#endif // RAPIDJSON_HAS_CXX11_NOEXCEPT
 
-    User may also supply a buffer as the first chunk.
+// no automatic detection, yet
+#ifndef RAPIDJSON_HAS_CXX11_TYPETRAITS
+#define RAPIDJSON_HAS_CXX11_TYPETRAITS 0
+#endif
 
-    If the user-buffer is full then additional chunks are allocated by BaseAllocator.
-
-    The user-buffer is not deallocated by this allocator.
-
-    \tparam BaseAllocator the allocator type for allocating memory chunks. Default is CrtAllocator.
-	\implements Allocator
-*/
-template <typename BaseAllocator = CrtAllocator>
-class MemoryPoolAllocator {
-public:
-	static const bool kNeedFree = false;	//!< Tell users that no need to call Free() with this allocator. (concept Allocator)
-
-	//! Constructor with chunkSize.
-	/*! \param chunkSize The size of memory chunk. The default is kDefaultChunkSize.
-		\param baseAllocator The allocator for allocating memory chunks.
-	*/
-	MemoryPoolAllocator(size_t chunkSize = kDefaultChunkCapacity, BaseAllocator* baseAllocator = 0) : 
-		chunkHead_(0), chunk_capacity_(chunkSize), userBuffer_(0), baseAllocator_(baseAllocator), ownBaseAllocator_(0)
-	{
-		if (!baseAllocator_)
-			ownBaseAllocator_ = baseAllocator_ = new BaseAllocator();
-		AddChunk(chunk_capacity_);
-	}
-
-	//! Constructor with user-supplied buffer.
-	/*! The user buffer will be used firstly. When it is full, memory pool allocates new chunk with chunk size.
-
-		The user buffer will not be deallocated when this allocator is destructed.
-
-		\param buffer User supplied buffer.
-		\param size Size of the buffer in bytes. It must at least larger than sizeof(ChunkHeader).
-		\param chunkSize The size of memory chunk. The default is kDefaultChunkSize.
-		\param baseAllocator The allocator for allocating memory chunks.
-	*/
-	MemoryPoolAllocator(char *buffer, size_t size, size_t chunkSize = kDefaultChunkCapacity, BaseAllocator* baseAllocator = 0) :
-		chunkHead_(0), chunk_capacity_(chunkSize), userBuffer_(buffer), baseAllocator_(baseAllocator), ownBaseAllocator_(0)
-	{
-		RAPIDJSON_ASSERT(buffer != 0);
-		RAPIDJSON_ASSERT(size > sizeof(ChunkHeader));
-		chunkHead_ = (ChunkHeader*)buffer;
-		chunkHead_->capacity = size - sizeof(ChunkHeader);
-		chunkHead_->size = 0;
-		chunkHead_->next = 0;
-	}
-
-	//! Destructor.
-	/*! This deallocates all memory chunks, excluding the user-supplied buffer.
-	*/
-	~MemoryPoolAllocator() {
-		Clear();
-		delete ownBaseAllocator_;
-	}
-
-	//! Deallocates all memory chunks, excluding the user-supplied buffer.
-	void Clear() {
-		while(chunkHead_ != 0 && chunkHead_ != (ChunkHeader *)userBuffer_) {
-			ChunkHeader* next = chunkHead_->next;
-			baseAllocator_->Free(chunkHead_);
-			chunkHead_ = next;
-		}
-	}
-
-	//! Computes the total capacity of allocated memory chunks.
-	/*! \return total capacity in bytes.
-	*/
-	size_t Capacity() {
-		size_t capacity = 0;
-		for (ChunkHeader* c = chunkHead_; c != 0; c = c->next)
-			capacity += c->capacity;
-		return capacity;
-	}
-
-	//! Computes the memory blocks allocated.
-	/*! \return total used bytes.
-	*/
-	size_t Size() {
-		size_t size = 0;
-		for (ChunkHeader* c = chunkHead_; c != 0; c = c->next)
-			size += c->size;
-		return size;
-	}
-
-	//! Allocates a memory block. (concept Allocator)
-	void* Malloc(size_t size) {
-		size = (size + 3) & ~3;	// Force aligning size to 4
-
-		if (chunkHead_->size + size > chunkHead_->capacity)
-			AddChunk(chunk_capacity_ > size ? chunk_capacity_ : size);
-
-		char *buffer = (char *)(chunkHead_ + 1) + chunkHead_->size;
-		RAPIDJSON_ASSERT(((uintptr_t)buffer & 3) == 0);	// returned buffer is aligned to 4
-		chunkHead_->size += size;
-
-		return buffer;
-	}
-
-	//! Resizes a memory block (concept Allocator)
-	void* Realloc(void* originalPtr, size_t originalSize, size_t newSize) {
-		if (originalPtr == 0)
-			return Malloc(newSize);
-
-		// Do not shrink if new size is smaller than original
-		if (originalSize >= newSize)
-			return originalPtr;
-
-		// Simply expand it if it is the last allocation and there is sufficient space
-		if (originalPtr == (char *)(chunkHead_ + 1) + chunkHead_->size - originalSize) {
-			size_t increment = newSize - originalSize;
-			increment = (increment + 3) & ~3;	// Force aligning size to 4
-			if (chunkHead_->size + increment <= chunkHead_->capacity) {
-				chunkHead_->size += increment;
-				RAPIDJSON_ASSERT(((uintptr_t)originalPtr & 3) == 0);	// returned buffer is aligned to 4
-				return originalPtr;
-			}
-		}
-
-		// Realloc process: allocate and copy memory, do not free original buffer.
-		void* newBuffer = Malloc(newSize);
-		RAPIDJSON_ASSERT(newBuffer != 0);	// Do not handle out-of-memory explicitly.
-		return memcpy(newBuffer, originalPtr, originalSize);
-	}
-
-	//! Frees a memory block (concept Allocator)
-	static void Free(void *) {} // Do nothing
-
-private:
-	//! Creates a new chunk.
-	/*! \param capacity Capacity of the chunk in bytes.
-	*/
-	void AddChunk(size_t capacity) {
-		ChunkHeader* chunk = (ChunkHeader*)baseAllocator_->Malloc(sizeof(ChunkHeader) + capacity);
-		chunk->capacity = capacity;
-		chunk->size = 0;
-		chunk->next = chunkHead_;
-		chunkHead_ =  chunk;
-	}
-
-	static const int kDefaultChunkCapacity = 64 * 1024; //!< Default chunk capacity.
-
-	//! Chunk header for perpending to each chunk.
-	/*! Chunks are stored as a singly linked list.
-	*/
-	struct ChunkHeader {
-		size_t capacity;	//!< Capacity of the chunk in bytes (excluding the header itself).
-		size_t size;		//!< Current size of allocated memory in bytes.
-		ChunkHeader *next;	//!< Next chunk in the linked list.
-	};
-
-	ChunkHeader *chunkHead_;	//!< Head of the chunk linked-list. Only the head chunk serves allocation.
-	size_t chunk_capacity_;		//!< The minimum capacity of chunk when they are allocated.
-	char *userBuffer_;			//!< User supplied buffer.
-	BaseAllocator* baseAllocator_;	//!< base allocator for allocating memory chunks.
-	BaseAllocator* ownBaseAllocator_;	//!< base allocator created by this object.
-};
+//!@endcond
 
 ///////////////////////////////////////////////////////////////////////////////
-// Encoding
+// new/delete
 
-/*! \class rapidjson::Encoding
-	\brief Concept for encoding of Unicode characters.
-
-\code
-concept Encoding {
-	typename Ch;	//! Type of character.
-
-	//! \brief Encode a Unicode codepoint to a buffer.
-	//! \param buffer pointer to destination buffer to store the result. It should have sufficient size of encoding one character.
-	//! \param codepoint An unicode codepoint, ranging from 0x0 to 0x10FFFF inclusively.
-	//! \returns the pointer to the next character after the encoded data.
-	static Ch* Encode(Ch *buffer, unsigned codepoint);
-};
-\endcode
-*/
+#ifndef RAPIDJSON_NEW
+///! customization point for global \c new
+#define RAPIDJSON_NEW(x) new x
+#endif
+#ifndef RAPIDJSON_DELETE
+///! customization point for global \c delete
+#define RAPIDJSON_DELETE(x) delete x
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
-// UTF8
+// Allocators and Encodings
 
-//! UTF-8 encoding.
-/*! http://en.wikipedia.org/wiki/UTF-8
-	\tparam CharType Type for storing 8-bit UTF-8 data. Default is char.
-	\implements Encoding
+#include "allocators.h"
+#include "encodings.h"
+
+/*! \namespace rapidjson
+    \brief main RapidJSON namespace
+    \see RAPIDJSON_NAMESPACE
 */
-template<typename CharType = char>
-struct UTF8 {
-	typedef CharType Ch;
-
-	static Ch* Encode(Ch *buffer, unsigned codepoint) {
-		if (codepoint <= 0x7F) 
-			*buffer++ = codepoint & 0xFF;
-		else if (codepoint <= 0x7FF) {
-			*buffer++ = 0xC0 | ((codepoint >> 6) & 0xFF);
-			*buffer++ = 0x80 | ((codepoint & 0x3F));
-		}
-		else if (codepoint <= 0xFFFF) {
-			*buffer++ = 0xE0 | ((codepoint >> 12) & 0xFF);
-			*buffer++ = 0x80 | ((codepoint >> 6) & 0x3F);
-			*buffer++ = 0x80 | (codepoint & 0x3F);
-		}
-		else {
-			RAPIDJSON_ASSERT(codepoint <= 0x10FFFF);
-			*buffer++ = 0xF0 | ((codepoint >> 18) & 0xFF);
-			*buffer++ = 0x80 | ((codepoint >> 12) & 0x3F);
-			*buffer++ = 0x80 | ((codepoint >> 6) & 0x3F);
-			*buffer++ = 0x80 | (codepoint & 0x3F);
-		}
-		return buffer;
-	}
-};
-
-///////////////////////////////////////////////////////////////////////////////
-// UTF16
-
-//! UTF-16 encoding.
-/*! http://en.wikipedia.org/wiki/UTF-16
-	\tparam CharType Type for storing 16-bit UTF-16 data. Default is wchar_t. C++11 may use char16_t instead.
-	\implements Encoding
-*/
-template<typename CharType = wchar_t>
-struct UTF16 {
-	typedef CharType Ch;
-
-	static Ch* Encode(Ch* buffer, unsigned codepoint) {
-		if (codepoint <= 0xFFFF) {
-			RAPIDJSON_ASSERT(codepoint < 0xD800 || codepoint > 0xDFFF); // Code point itself cannot be surrogate pair 
-			*buffer++ = static_cast<Ch>(codepoint);
-		}
-		else {
-			RAPIDJSON_ASSERT(codepoint <= 0x10FFFF);
-			unsigned v = codepoint - 0x10000;
-			*buffer++ = static_cast<Ch>((v >> 10) + 0xD800);
-			*buffer++ = (v & 0x3FF) + 0xDC00;
-		}
-		return buffer;
-	}
-};
-
-///////////////////////////////////////////////////////////////////////////////
-// UTF32
-
-//! UTF-32 encoding. 
-/*! http://en.wikipedia.org/wiki/UTF-32
-	\tparam Ch Type for storing 32-bit UTF-32 data. Default is unsigned. C++11 may use char32_t instead.
-	\implements Encoding
-*/
-template<typename CharType = unsigned>
-struct UTF32 {
-	typedef CharType Ch;
-
-	static Ch *Encode(Ch* buffer, unsigned codepoint) {
-		RAPIDJSON_ASSERT(codepoint <= 0x10FFFF);
-		*buffer++ = codepoint;
-		return buffer;
-	}
-};
+RAPIDJSON_NAMESPACE_BEGIN
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Stream
 
 /*! \class rapidjson::Stream
-	\brief Concept for reading and writing characters.
+    \brief Concept for reading and writing characters.
 
-	For read-only stream, no need to implement PutBegin(), Put() and PutEnd().
+    For read-only stream, no need to implement PutBegin(), Put(), Flush() and PutEnd().
 
-	For write-only stream, only need to implement Put().
+    For write-only stream, only need to implement Put() and Flush().
 
 \code
 concept Stream {
-	typename Ch;	//!< Character type of the stream.
+    typename Ch;    //!< Character type of the stream.
 
-	//! Read the current character from stream without moving the read cursor.
-	Ch Peek() const;
+    //! Read the current character from stream without moving the read cursor.
+    Ch Peek() const;
 
-	//! Read the current character from stream and moving the read cursor to next character.
-	Ch Take();
+    //! Read the current character from stream and moving the read cursor to next character.
+    Ch Take();
 
-	//! Get the current read cursor.
-	//! \return Number of characters read from start.
-	size_t Tell();
+    //! Get the current read cursor.
+    //! \return Number of characters read from start.
+    size_t Tell();
 
-	//! Begin writing operation at the current read pointer.
-	//! \return The begin writer pointer.
-	Ch* PutBegin();
+    //! Begin writing operation at the current read pointer.
+    //! \return The begin writer pointer.
+    Ch* PutBegin();
 
-	//! Write a character.
-	void Put(Ch c);
+    //! Write a character.
+    void Put(Ch c);
 
-	//! End the writing operation.
-	//! \param begin The begin write pointer returned by PutBegin().
-	//! \return Number of characters written.
-	size_t PutEnd(Ch* begin);
+    //! Flush the buffer.
+    void Flush();
+
+    //! End the writing operation.
+    //! \param begin The begin write pointer returned by PutBegin().
+    //! \return Number of characters written.
+    size_t PutEnd(Ch* begin);
 }
 \endcode
 */
 
+//! Provides additional information for stream.
+/*!
+    By using traits pattern, this type provides a default configuration for stream.
+    For custom stream, this type can be specialized for other configuration.
+    See TEST(Reader, CustomStringStream) in readertest.cpp for example.
+*/
+template<typename Stream>
+struct StreamTraits {
+    //! Whether to make local copy of stream for optimization during parsing.
+    /*!
+        By default, for safety, streams do not use local copy optimization.
+        Stream that can be copied fast should specialize this, like StreamTraits<StringStream>.
+    */
+    enum { copyOptimization = 0 };
+};
+
 //! Put N copies of a character to a stream.
 template<typename Stream, typename Ch>
 inline void PutN(Stream& stream, Ch c, size_t n) {
-	for (size_t i = 0; i < n; i++)
-		stream.Put(c);
+    for (size_t i = 0; i < n; i++)
+        stream.Put(c);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // StringStream
 
 //! Read-only string stream.
-/*! \implements Stream
+/*! \note implements Stream concept
 */
 template <typename Encoding>
 struct GenericStringStream {
-	typedef typename Encoding::Ch Ch;
+    typedef typename Encoding::Ch Ch;
 
-	GenericStringStream(const Ch *src) : src_(src), head_(src) {}
+    GenericStringStream(const Ch *src) : src_(src), head_(src) {}
 
-	Ch Peek() const { return *src_; }
-	Ch Take() { return *src_++; }
-	size_t Tell() const { return src_ - head_; }
+    Ch Peek() const { return *src_; }
+    Ch Take() { return *src_++; }
+    size_t Tell() const { return static_cast<size_t>(src_ - head_); }
 
-	Ch* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }
-	void Put(Ch) { RAPIDJSON_ASSERT(false); }
-	size_t PutEnd(Ch*) { RAPIDJSON_ASSERT(false); return 0; }
+    Ch* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }
+    void Put(Ch) { RAPIDJSON_ASSERT(false); }
+    void Flush() { RAPIDJSON_ASSERT(false); }
+    size_t PutEnd(Ch*) { RAPIDJSON_ASSERT(false); return 0; }
 
-	const Ch* src_;		//!< Current read position.
-	const Ch* head_;	//!< Original head of the string.
+    const Ch* src_;     //!< Current read position.
+    const Ch* head_;    //!< Original head of the string.
 };
 
+template <typename Encoding>
+struct StreamTraits<GenericStringStream<Encoding> > {
+    enum { copyOptimization = 1 };
+};
+
+//! String stream with UTF8 encoding.
 typedef GenericStringStream<UTF8<> > StringStream;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -481,29 +573,40 @@ typedef GenericStringStream<UTF8<> > StringStream;
 
 //! A read-write string stream.
 /*! This string stream is particularly designed for in-situ parsing.
-	\implements Stream
+    \note implements Stream concept
 */
 template <typename Encoding>
 struct GenericInsituStringStream {
-	typedef typename Encoding::Ch Ch;
+    typedef typename Encoding::Ch Ch;
 
-	GenericInsituStringStream(Ch *src) : src_(src), dst_(0), head_(src) {}
+    GenericInsituStringStream(Ch *src) : src_(src), dst_(0), head_(src) {}
 
-	// Read
-	Ch Peek() { return *src_; }
-	Ch Take() { return *src_++; }
-	size_t Tell() { return src_ - head_; }
+    // Read
+    Ch Peek() { return *src_; }
+    Ch Take() { return *src_++; }
+    size_t Tell() { return static_cast<size_t>(src_ - head_); }
 
-	// Write
-	Ch* PutBegin() { return dst_ = src_; }
-	void Put(Ch c) { RAPIDJSON_ASSERT(dst_ != 0); *dst_++ = c; }
-	size_t PutEnd(Ch* begin) { return dst_ - begin; }
+    // Write
+    void Put(Ch c) { RAPIDJSON_ASSERT(dst_ != 0); *dst_++ = c; }
 
-	Ch* src_;
-	Ch* dst_;
-	Ch* head_;
+    Ch* PutBegin() { return dst_ = src_; }
+    size_t PutEnd(Ch* begin) { return static_cast<size_t>(dst_ - begin); }
+    void Flush() {}
+
+    Ch* Push(size_t count) { Ch* begin = dst_; dst_ += count; return begin; }
+    void Pop(size_t count) { dst_ -= count; }
+
+    Ch* src_;
+    Ch* dst_;
+    Ch* head_;
 };
 
+template <typename Encoding>
+struct StreamTraits<GenericInsituStringStream<Encoding> > {
+    enum { copyOptimization = 1 };
+};
+
+//! Insitu string stream with UTF8 encoding.
 typedef GenericInsituStringStream<UTF8<> > InsituStringStream;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -511,15 +614,15 @@ typedef GenericInsituStringStream<UTF8<> > InsituStringStream;
 
 //! Type of JSON value
 enum Type {
-	kNullType = 0,		//!< null
-	kFalseType = 1,		//!< false
-	kTrueType = 2,		//!< true
-	kObjectType = 3,	//!< object
-	kArrayType = 4,		//!< array 
-	kStringType = 5,	//!< string
-	kNumberType = 6,	//!< number
+    kNullType = 0,      //!< null
+    kFalseType = 1,     //!< false
+    kTrueType = 2,      //!< true
+    kObjectType = 3,    //!< object
+    kArrayType = 4,     //!< array 
+    kStringType = 5,    //!< string
+    kNumberType = 6     //!< number
 };
 
-} // namespace rapidjson
+RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_RAPIDJSON_H_

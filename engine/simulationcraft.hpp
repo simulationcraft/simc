@@ -1186,6 +1186,7 @@ const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
 const char* special_effect_string     ( special_effect_e type );
 const char* special_effect_source_string( special_effect_source_e type );
+const char* scale_metric_type_abbrev  ( scale_metric_e );
 const char* scale_metric_type_string  ( scale_metric_e );
 
 bool is_match_slot( slot_e slot );
@@ -2525,6 +2526,9 @@ public:
   std::vector<T>& data()
   { return _data; }
 
+  const std::vector<T>& data() const
+  { return _data; }
+
   player_t* operator[]( size_t i ) const
   { return _data[ i ]; }
 
@@ -2854,13 +2858,13 @@ struct sim_t : private sc_thread_t
   std::vector<player_t*> players_by_tmi;
   std::vector<player_t*> players_by_name;
   std::vector<player_t*> players_by_apm;
+  std::vector<player_t*> players_by_variance;
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
   std::map<double, std::vector<double> > divisor_timeline_cache;
-  std::string output_file_str, html_file_str;
+  std::string output_file_str, html_file_str, json_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
   std::string reforge_plot_output_file_str;
-  std::string csv_output_file_str;
   std::vector<std::string> error_list;
   int report_precision;
   int report_pets_separately;
@@ -3003,6 +3007,31 @@ struct sim_t : private sc_thread_t
 
 
   void abort();
+  // Highcharts stuff
+
+  // Vector of on-ready charts. These receive individual jQuery handlers in the HTML report (at the
+  // end of the report) to load the highcharts into the target div.
+  std::vector<std::string> on_ready_chart_data;
+
+  // A map of highcharts data, added as a json object into the HTML report. JQuery installs handlers
+  // to correct elements (toggled elements in the HTML report) based on the data.
+  std::map<std::string, std::vector<std::string> > chart_data;
+
+  void add_chart_data( const highchart::chart_t& chart )
+  {
+    if ( chart.toggle_id_str_.empty() )
+    {
+      on_ready_chart_data.push_back( chart.to_aggregate_string( false ) );
+    }
+    else
+    {
+      chart_data[ chart.toggle_id_str_ ].push_back( chart.to_data() );
+    }
+  }
+
+  bool enable_highcharts;
+  bool output_relative_difference;
+  double boxplot_percentile;
 private:
   void do_pause();
 
@@ -4467,6 +4496,18 @@ struct action_variable_t
   { current_value_ = default_; }
 };
 
+struct scaling_metric_data_t {
+  std::string name;
+  double value, stddev;
+  scale_metric_e metric;
+  scaling_metric_data_t( scale_metric_e m, const std::string& n, double v, double dev ) :
+    name( n ), value( v ), stddev( dev ), metric( m ) {}
+  scaling_metric_data_t( scale_metric_e m, const extended_sample_data_t& sd ) :
+    name( sd.name_str ), value( sd.mean() ), stddev( sd.mean_std_dev ), metric( m ) {}
+  scaling_metric_data_t( scale_metric_e m, const sc_timeline_t& tl, const std::string& name ) :
+    name( name ), value( tl.mean() ), stddev( tl.mean_stddev() ), metric( m ) {}
+};
+
 struct actor_target_data_t : public actor_pair_t
 {
   struct atd_debuff_t
@@ -5290,17 +5331,7 @@ struct player_t : public actor_t
 
   virtual void analyze( sim_t& );
 
-  struct scales_over_t {
-    std::string name; double value, stddev;
-    scales_over_t( const std::string& n, double v, double dev ) :
-      name( n ), value( v ), stddev( dev ) {}
-    scales_over_t( const extended_sample_data_t& sd ) :
-      name( sd.name_str ), value( sd.mean() ), stddev( sd.mean_std_dev ) {}
-    scales_over_t( const sc_timeline_t& tl, const std::string& name ) :
-      name( name ), value( tl.mean() ), stddev( tl.mean_stddev() ) {}
-  };
-  scales_over_t scales_over();
-  scales_over_t scaling_for_metric( scale_metric_e metric );
+  scaling_metric_data_t scaling_for_metric( scale_metric_e metric ) const;
 
   void change_position( position_e );
   position_e position() const
@@ -5799,6 +5830,9 @@ public:
   void analyze();
   void merge( const stats_t& other );
   const char* name() const { return name_str.c_str(); }
+
+  bool has_direct_amount_results() const;
+  bool has_tick_amount_results() const;
 };
 
 struct action_state_t : public noncopyable

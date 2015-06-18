@@ -9267,61 +9267,9 @@ void player_t::analyze( sim_t& s )
 // Return sample_data reference over which this player gets scaled ( scale factors, reforge plots, etc. )
 // By default this will be his personal dps or hps
 
-player_t::scales_over_t player_t::scales_over()
+scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) const
 {
-  const std::string& so = sim -> scaling -> scale_over;
-
-  player_t* q = nullptr;
-  if ( ! sim -> scaling -> scale_over_player.empty() )
-    q = sim -> find_player( sim -> scaling -> scale_over_player );
-  if ( !q )
-    q = this;
-
-  if ( util::str_compare_ci( so, "dmg_taken" ) )
-    return q -> collected_data.dmg_taken;
-
-  if ( util::str_compare_ci( so, "dps" ) )
-    return q -> collected_data.dps;
-
-  if ( util::str_compare_ci( so, "prioritydps" ) )
-    return q -> collected_data.prioritydps;
-
-  if ( util::str_compare_ci( so, "dpse" ) )
-    return q -> collected_data.dpse;
-
-  if ( util::str_compare_ci( so, "hps" ) )
-    return q -> collected_data.hps;
-
-  if ( util::str_compare_ci( so, "aps" ) )
-    return q -> collected_data.aps;
-
-  if ( util::str_compare_ci( so, "hpse" ) )
-    return q -> collected_data.hpse;
-
-  if ( util::str_compare_ci( so, "htps" ) )
-    return q -> collected_data.htps;
-
-  if ( util::str_compare_ci( so, "deaths" ) )
-    return q -> collected_data.deaths;
-
-  if ( util::str_compare_ci( so, "theck_meloree_index" ) || util::str_compare_ci( so, "tmi" ) )
-    return q -> collected_data.theck_meloree_index;
-
-  if ( util::str_compare_ci( so, "etmi" ) )
-    return q -> collected_data.effective_theck_meloree_index;
-
-  if ( q -> primary_role() == ROLE_HEAL || util::str_compare_ci( so, "haps" ) )
-    return scaling_for_metric( SCALE_METRIC_HAPS );
-
-  if ( q -> primary_role() == ROLE_TANK || util::str_compare_ci( so, "dtps" ) )
-    return q -> collected_data.dtps;
-
-  return q -> collected_data.dps;
-}
-
-player_t::scales_over_t player_t::scaling_for_metric( scale_metric_e metric )
-{
-  player_t* q = nullptr;
+  const player_t* q = nullptr;
   if ( ! sim -> scaling -> scale_over_player.empty() )
     q = sim -> find_player( sim -> scaling -> scale_over_player );
   if ( !q )
@@ -9329,31 +9277,31 @@ player_t::scales_over_t player_t::scaling_for_metric( scale_metric_e metric )
 
   switch ( metric )
   {
-    case SCALE_METRIC_DPS:        return q -> collected_data.dps;
-    case SCALE_METRIC_DPSP:       return q -> collected_data.prioritydps;
-    case SCALE_METRIC_DPSE:       return q -> collected_data.dpse;
-    case SCALE_METRIC_HPS:        return q -> collected_data.hps;
-    case SCALE_METRIC_HPSE:       return q -> collected_data.hpse;
-    case SCALE_METRIC_APS:        return q -> collected_data.aps;
+    case SCALE_METRIC_DPS:        return scaling_metric_data_t( metric, q -> collected_data.dps );
+    case SCALE_METRIC_DPSE:       return scaling_metric_data_t( metric, q -> collected_data.dpse );
+    case SCALE_METRIC_HPS:        return scaling_metric_data_t( metric, q -> collected_data.hps );
+    case SCALE_METRIC_HPSE:       return scaling_metric_data_t( metric, q -> collected_data.hpse );
+    case SCALE_METRIC_APS:        return scaling_metric_data_t( metric, q -> collected_data.aps );
+    case SCALE_METRIC_DPSP:       return scaling_metric_data_t( metric, q -> collected_data.prioritydps );
     case SCALE_METRIC_HAPS:
       {
         double mean = q -> collected_data.hps.mean() + q -> collected_data.aps.mean();
         double stddev = sqrt( q -> collected_data.hps.mean_variance + q -> collected_data.aps.mean_variance );
-        return scales_over_t( "Healing + Absorb per second", mean, stddev );
+        return scaling_metric_data_t( metric, "Healing + Absorb per second", mean, stddev );
       }
-    case SCALE_METRIC_DTPS:       return q -> collected_data.dtps;
-    case SCALE_METRIC_DMG_TAKEN:  return q -> collected_data.dmg_taken;
-    case SCALE_METRIC_HTPS:       return q -> collected_data.htps;
-    case SCALE_METRIC_TMI:        return q -> collected_data.theck_meloree_index;
-    case SCALE_METRIC_ETMI:       return q -> collected_data.effective_theck_meloree_index;
-    case SCALE_METRIC_DEATHS:     return q -> collected_data.deaths;
+    case SCALE_METRIC_DTPS:       return scaling_metric_data_t( metric, q -> collected_data.dtps );
+    case SCALE_METRIC_DMG_TAKEN:  return scaling_metric_data_t( metric, q -> collected_data.dmg_taken );
+    case SCALE_METRIC_HTPS:       return scaling_metric_data_t( metric, q -> collected_data.htps );
+    case SCALE_METRIC_TMI:        return scaling_metric_data_t( metric, q -> collected_data.theck_meloree_index );
+    case SCALE_METRIC_ETMI:       return scaling_metric_data_t( metric, q -> collected_data.effective_theck_meloree_index );
+    case SCALE_METRIC_DEATHS:     return scaling_metric_data_t( metric, q -> collected_data.deaths );
     default:
       if ( q -> primary_role() == ROLE_TANK )
-        return q -> collected_data.dtps;
+        return scaling_metric_data_t( SCALE_METRIC_DTPS, q -> collected_data.dtps );
       else if ( q -> primary_role() == ROLE_HEAL )
         return scaling_for_metric( SCALE_METRIC_HAPS );
       else
-       return q -> collected_data.dps;
+       return scaling_metric_data_t( SCALE_METRIC_DPS, q -> collected_data.dps );
   }
 }
 

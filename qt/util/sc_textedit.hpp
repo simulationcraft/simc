@@ -15,7 +15,7 @@ class SC_SearchBox;
 // SC_TextEdit
 // ============================================================================
 
-class SC_TextEdit : public QTextEdit
+class SC_TextEdit : public QPlainTextEdit
 {
   Q_OBJECT
 private:

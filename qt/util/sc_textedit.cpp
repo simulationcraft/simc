@@ -13,7 +13,7 @@
 // public
 
 SC_TextEdit::SC_TextEdit( QWidget* parent, bool accept_drops, bool enable_search ) :
-  QTextEdit( parent ),
+  QPlainTextEdit( parent ),
   searchBox( nullptr ),
   searchBoxCorner( Qt::BottomLeftCorner ),
   enable_search( enable_search ),
@@ -22,8 +22,8 @@ SC_TextEdit::SC_TextEdit( QWidget* parent, bool accept_drops, bool enable_search
   textformat_error.setFontPointSize( 20 );
 
   setAcceptDrops( accept_drops );
-  setLineWrapMode( QTextEdit::NoWrap );
-  setAcceptRichText( false );
+  setLineWrapMode( QPlainTextEdit::NoWrap );
+  //setAcceptRichText( false );
   
   QList< Qt::KeyboardModifier > ctrl;
   ctrl.push_back( Qt::ControlModifier );
@@ -93,7 +93,7 @@ void SC_TextEdit::keyPressEvent( QKeyEvent* e )
     }
   }
   // no key match
-  QTextEdit::keyPressEvent( e );
+  QPlainTextEdit::keyPressEvent( e );
 }
 
 void SC_TextEdit::focusInEvent( QFocusEvent* e )
@@ -102,7 +102,7 @@ void SC_TextEdit::focusInEvent( QFocusEvent* e )
   {
     hideSearchBox();
   }
-  QTextEdit::focusInEvent( e );
+  QPlainTextEdit::focusInEvent( e );
 }
 
 void SC_TextEdit::resizeEvent( QResizeEvent* e )

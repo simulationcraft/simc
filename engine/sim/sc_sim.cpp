@@ -1107,7 +1107,11 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::BELOW_NORMAL ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
   pause_mutex( 0 ),
-  paused( false )
+  paused( false ),
+  // Highcharts stuff
+  enable_highcharts( false ),
+  output_relative_difference( false ),
+  boxplot_percentile( .25 )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -2833,6 +2837,7 @@ void sim_t::create_options()
   add_option( opt_bool( "debug", debug ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_string( "html", html_file_str ) );
+  add_option( opt_string( "json", json_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
   add_option( opt_int( "healing", healing ) );
   add_option( opt_string( "xml", xml_file_str ) );
@@ -2958,7 +2963,6 @@ void sim_t::create_options()
   add_option( opt_bool( "separate_stats_by_actions", separate_stats_by_actions ) );
   add_option( opt_bool( "report_raid_summary", report_raid_summary ) ); // Force reporting of raid summary
   add_option( opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ) );
-  add_option( opt_string( "csv_output_file_str", csv_output_file_str ) );
   add_option( opt_bool( "monitor_cpu", event_mgr.monitor_cpu ) );
   add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
   add_option( opt_string( "apikey", apikey ) );
@@ -2968,6 +2972,10 @@ void sim_t::create_options()
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );
+  // Highcharts
+  add_option( opt_bool( "enable_highcharts", enable_highcharts ) );
+  add_option( opt_bool( "chart_show_relative_difference", output_relative_difference ) );
+  add_option( opt_float( "chart_boxplot_percentile", boxplot_percentile ) );
 }
 
 // sim_t::find_api_key ======================================================

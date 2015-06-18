@@ -179,13 +179,16 @@ void plot_t::analyze_stats()
         {
           player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-          data.value = delta_p -> scales_over().value;
-          data.error = delta_p -> scales_over().stddev * delta_sim -> confidence_estimator;
+          scaling_metric_data_t scaling_data = delta_p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
+
+          data.value = scaling_data.value;
+          data.error = scaling_data.stddev * delta_sim -> confidence_estimator;
         }
         else
         {
-          data.value = p -> scales_over().value;
-          data.error = p -> scales_over().stddev * sim -> confidence_estimator;
+          scaling_metric_data_t scaling_data = p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
+          data.value = scaling_data.value;
+          data.error = scaling_data.stddev * sim -> confidence_estimator;
         }
         data.plot_step = j * dps_plot_step;
         p -> dps_plot_data[ i ].push_back( data );

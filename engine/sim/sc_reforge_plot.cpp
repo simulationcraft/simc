@@ -235,8 +235,10 @@ void reforge_plot_t::analyze_stats()
         plot_data_t& data = delta_result[ stat_mods[ i ].size() ];
         player_t* delta_p = current_reforge_sim -> find_player( p -> name() );
 
-        data.value = delta_p -> scales_over().value;
-        data.error = delta_p -> scales_over().stddev * current_reforge_sim -> confidence_estimator;
+        scaling_metric_data_t scaling_data = delta_p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
+
+        data.value = scaling_data.value;
+        data.error = scaling_data.stddev * current_reforge_sim -> confidence_estimator;
 
         p -> reforge_plot_data.push_back( delta_result );
       }

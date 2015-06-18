@@ -1223,7 +1223,7 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
 
     label.sidebar = new QLabel( tr( "Rotation Abbreviations" ) );
     textbox.sidebar = new SC_TextEdit;
-    textbox.sidebar -> setText( " Stuff Goes Here" );
+    textbox.sidebar -> setPlainText( " Stuff Goes Here" );
     gridLayout -> addWidget( label.sidebar,   1, 2, 0 );
     gridLayout -> addWidget( textbox.sidebar, 2, 2, 7, 1, 0 );
 
@@ -1264,7 +1264,7 @@ void SC_AutomationTab::setSpecDropDown( const int player_class )
 // method to set the sidebar text based on class slection
 void SC_AutomationTab::setSidebarClassText()
 {
-  textbox.sidebar -> setText( sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
+  textbox.sidebar -> setPlainText( sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
 }
 
 void SC_AutomationTab::compTypeChanged( const int comp )
@@ -1283,7 +1283,7 @@ void SC_AutomationTab::compTypeChanged( const int comp )
   label.advanced -> setText( advancedText[ comp ] );
 
   // set the text of the help bar appropriately
-  textbox.helpbar -> setText( helpbarText[ comp ] );
+  textbox.helpbar -> setPlainText( helpbarText[ comp ] );
   
   // enable everything but the sidebar & rotation Footer (default state) - adjust based on selection below
   textbox.advanced -> setDisabled( false );
@@ -1312,20 +1312,20 @@ void SC_AutomationTab::compTypeChanged( const int comp )
       label.advanced -> setToolTip( "Choose a comparison type to enable this text box." );
       break;
     case 1:
-      textbox.advanced -> setText( advTalent );
+      textbox.advanced -> setPlainText( advTalent );
       textbox.talents -> setDisabled( true );
       textbox.advanced -> setToolTip( advTalentToolTip );
       label.advanced   -> setToolTip( advTalentToolTip );
       break;
     case 2:
       textbox.glyphs -> setDisabled( true );
-      textbox.advanced -> setText( advGlyph );
+      textbox.advanced -> setPlainText( advGlyph );
       textbox.advanced -> setToolTip( advGlyphToolTip );
       label.advanced   -> setToolTip( advGlyphToolTip );
       break;
     case 3:
       textbox.gear -> setDisabled( true );
-      textbox.advanced -> setText( advGear );
+      textbox.advanced -> setPlainText( advGear );
       textbox.advanced -> setToolTip( advGearToolTip );
       label.advanced   -> setToolTip( advGearToolTip );
       break;
@@ -1337,7 +1337,7 @@ void SC_AutomationTab::compTypeChanged( const int comp )
       label.rotationFooter -> setText( "Actions Footer" );
       label.rotationFooter -> setToolTip( "Use this box to specify any actions you want to apply to all configurations.\nThe text in this box will be placed AFTER each entry in the Rotation Configurations text box." );
       textbox.rotationFooter -> setToolTip( "Use this box to specify any actions you want to apply to all configurations.\nThe text in this box will be placed AFTER each entry in the Rotation Configurations text box." );
-      textbox.advanced -> setText( advRotation );
+      textbox.advanced -> setPlainText( advRotation );
       textbox.sidebar -> setDisabled( false );
       textbox.rotationFooter -> setDisabled( false );
       textbox.advanced -> setToolTip( advRotToolTip );
@@ -1464,9 +1464,9 @@ void SC_AutomationTab::load_setting( QSettings& s, const QString& name, SC_TextE
   const QString& v = s.value( name ).toString();
 
   if ( !v.isEmpty() )
-    textbox -> setText( v );
+    textbox -> setPlainText( v );
   else if ( !default_value.isEmpty() )
-    textbox -> setText( default_value );
+    textbox -> setPlainText( default_value );
 }
 
 void SC_AutomationTab::decodeSettings()

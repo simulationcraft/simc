@@ -610,7 +610,6 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     files.push_back( sim -> html_file_str );
     files.push_back( sim -> xml_file_str );
     files.push_back( sim -> reforge_plot_output_file_str );
-    files.push_back( sim -> csv_output_file_str );
 
     std::string output_file_str = sim -> output_file_str;
     bool sim_control_was_not_zero = sim -> control != 0;
@@ -701,7 +700,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       if ( suggestions.length() != 0 )
       {
         suggestions = "\nSome possible suggestions on how to fix:\n" + suggestions;
-        append_error_message -> append( QString::fromStdString( suggestions ) );
+        append_error_message -> appendPlainText( QString::fromStdString( suggestions ) );
         if ( windowsPermissionRecommendation.length() != 0 )
         {
           contents.append( QString::fromStdString( windowsPermissionRecommendation + "\n" ) );
@@ -719,11 +718,11 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     // If requested, append the error message to the given Text Widget as well.
     if ( append_error_message )
     {
-      append_error_message -> append( contents );
+      append_error_message -> appendPlainText( contents );
     }
     if ( logText != append_error_message )
     {
-      logText -> append( contents );
+      logText -> appendPlainText( contents );
       logText -> moveCursor( QTextCursor::End );
     }
   }
@@ -888,7 +887,6 @@ void SC_MainWindow::startSim()
 
   sim -> xml_file_str = (reportFileBase + ".xml").toStdString();
   sim -> reforge_plot_output_file_str = (reportFileBase + "_plotdata.csv").toStdString();
-  sim -> csv_output_file_str = (reportFileBase + ".csv").toStdString();
 
   if ( optionsTab -> get_api_key().size() == 32 ) // api keys are 32 characters long, it's not worth parsing <32 character keys.
     sim -> parse_option( "apikey",  optionsTab -> get_api_key().toUtf8().constData() );
@@ -1043,8 +1041,8 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       mainTab -> setCurrentTab( TAB_LOG );
 
     qDebug() << "sim failed!" << simulateThread -> getError();
-    logText -> append( simulateThread -> getError() );
-    logText -> append( tr("Simulation failed!") );
+    logText -> appendPlainText( simulateThread -> getError() );
+    logText -> appendPlainText( tr("Simulation failed!") );
 
     // Spell Query
     if ( mainTab -> currentTab() == TAB_SPELLQUERY )
@@ -1064,7 +1062,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       {
         result = "No results found!";
       }
-      spellQueryTab -> textbox.result -> setText( result );
+      spellQueryTab -> textbox.result -> setPlainText( result );
       spellQueryTab -> checkForSave();
     }
   }
@@ -1120,10 +1118,11 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     // XML
     SC_TextEdit* resultsXmlView = new SC_TextEdit( resultsEntry );
     resultsEntry -> addTab( resultsXmlView, "xml" );
+
     QFile xml_file( sim -> xml_file_str.c_str() );
     if ( xml_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      resultsXmlView -> append( xml_file.readAll() );
+      resultsXmlView -> appendPlainText( xml_file.readAll() );
       xml_file.close();
     }
     else
@@ -1137,22 +1136,12 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     QFile plot_file( sim -> reforge_plot_output_file_str.c_str() );
     if ( plot_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      resultsPlotView -> append( plot_file.readAll() );
+      resultsPlotView -> appendPlainText( plot_file.readAll() );
       plot_file.close();
     }
     else
     {
         resultsPlotView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> reforge_plot_output_file_str.c_str(), plot_file.errorString() ) );
-    }
-
-    // CSV
-    SC_TextEdit* resultsCsvView = new SC_TextEdit( resultsEntry );
-    resultsEntry -> addTab( resultsCsvView, "csv" );
-    QFile csv_file( sim -> csv_output_file_str.c_str() );
-    if ( csv_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      resultsCsvView -> append( csv_file.readAll() );
-      csv_file.close();
     }
 
     if ( simulationQueue.isEmpty() )
@@ -1206,7 +1195,7 @@ void SC_MainWindow::saveLog()
     file.close();
   }
 
-  logText->append( QString( tr("Log saved to: %1\n") ).arg( cmdLine -> commandLineText( TAB_LOG ) ) );
+  logText->appendPlainText( QString( tr("Log saved to: %1\n") ).arg( cmdLine -> commandLineText( TAB_LOG ) ) );
 }
 
 void SC_MainWindow::saveResults()
@@ -1703,8 +1692,6 @@ void SC_SingleResultTab::save_result()
     defaultDestination = "results_xml.xml"; extension = "xml"; break;
   case TAB_PLOTDATA:
     defaultDestination = "results_plotdata.csv"; extension = "csv"; break;
-  case TAB_CSV:
-    defaultDestination = "results_csv.csv"; extension = "csv"; break;
   default: break;
   }
   destination = defaultDestination;
@@ -1760,7 +1747,7 @@ void SC_SingleResultTab::save_result()
       }
       file.close();
       QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( file.fileName() ), QMessageBox::Ok, QMessageBox::Ok );
-      mainWindow -> logText -> append( QString( tr("Results saved to: %1\n") ).arg( file.fileName() ) );
+      mainWindow -> logText -> appendPlainText( QString( tr("Results saved to: %1\n") ).arg( file.fileName() ) );
     }
   }
 }

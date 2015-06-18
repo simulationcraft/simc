@@ -106,7 +106,8 @@ public:
   }
 
   // Adjust timeline by dividing through divisor timeline
-  void adjust( const std::vector<double>& divisor_timeline )
+  template <class A>
+  void adjust( const std::vector<A>& divisor_timeline )
   {
 
     for ( size_t j = 0, size = std::min( data().size(), divisor_timeline.size() ); j < size; j++ )
@@ -116,10 +117,20 @@ public:
   }
 
   double mean() const
-  { return statistics::calculate_mean( data().begin(), data().end() ); }
+  { 
+    if ( data().size() == 0 )
+      return 0;
+
+    return statistics::calculate_mean( data().begin(), data().end() );
+  }
 
   double mean_stddev() const
-  { return statistics::calculate_mean_stddev( data().begin(), data().end() ); }
+  { 
+    if ( data().size() == 0 )
+      return 0;
+
+    return statistics::calculate_mean_stddev( data().begin(), data().end() ); 
+  }
 
   // Merge with other timeline
   void merge( const timeline_t& other )
@@ -335,5 +346,4 @@ public:
   size_t num_entries() const
   { return _num_entries; }
 };
-
 #endif // TIMELINE_HPP

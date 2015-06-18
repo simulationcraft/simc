@@ -3,7 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#pragma once
+#ifndef XML_HPP
+#define XML_HPP
 
 #include "../config.hpp"
 
@@ -197,3 +198,5 @@ public:
   void print_text( const std::string & input );
   static std::string sanitize( std::string v );
 };
+
+#endif /* XML_HPP */

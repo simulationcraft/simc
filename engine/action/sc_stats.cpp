@@ -460,3 +460,23 @@ void stats_t::merge( const stats_t& other )
 
   timeline_amount.merge( other.timeline_amount );
 }
+
+bool stats_t::has_direct_amount_results() const
+{
+  return (
+      direct_results[ RESULT_HIT ].actual_amount.mean() > 0 ||
+      direct_results[ RESULT_CRIT ].actual_amount.mean() > 0 ||
+      direct_results[ RESULT_MULTISTRIKE ].actual_amount.mean() > 0 ||
+      direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean() > 0
+  );
+}
+
+bool stats_t::has_tick_amount_results() const
+{
+  return (
+      tick_results[ RESULT_HIT ].actual_amount.mean() > 0 ||
+     tick_results[ RESULT_CRIT ].actual_amount.mean() > 0 ||
+      tick_results[ RESULT_MULTISTRIKE ].actual_amount.mean() > 0 ||
+      tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean() > 0
+  );
+}

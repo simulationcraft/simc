@@ -59,7 +59,7 @@ bool SC_SimulateTab::contains_Only_Default_Profiles()
 int SC_SimulateTab::add_Text( const QString& text, const QString& tab_name )
 {
     SC_TextEdit* s = new SC_TextEdit();
-    s -> setText( text );
+    s -> setPlainText( text );
 
     int indextoInsert = indexOf( addTabWidget );
     int i = insertTab( indextoInsert, s, tab_name );
@@ -75,13 +75,13 @@ SC_TextEdit* SC_SimulateTab::current_Text()
 void SC_SimulateTab::set_Text( const QString& text )
 {
     SC_TextEdit* current_s = static_cast<SC_TextEdit*>(currentWidget());
-    current_s -> setText( text );
+    current_s -> setPlainText( text );
 }
 
 void SC_SimulateTab::append_Text( const QString& text )
 {
     SC_TextEdit* current_s = static_cast<SC_TextEdit*>(currentWidget());
-    current_s -> append( text );
+    current_s -> appendPlainText( text );
 }
 
 void SC_SimulateTab::close_All_Tabs()
@@ -145,7 +145,7 @@ void SC_SimulateTab::insertNewTabAt( int index, const QString text, const QStrin
     if ( index < 0 || index > count() )
         index = currentIndex();
     SC_TextEdit* s = new SC_TextEdit();
-    s -> setText( text );
+    s -> setPlainText( text );
     insertTab( index, s, title );
     setCurrentIndex( index );
 }

@@ -374,9 +374,9 @@ void SC_SpellQueryTab::load_setting( QSettings& s, const QString& name, SC_TextE
   const QString& v = s.value( name ).toString();
 
   if ( !v.isEmpty() )
-    textbox -> setText( v );
+    textbox -> setPlainText( v );
   else if ( !default_value.isEmpty() )
-    textbox -> setText( default_value );
+    textbox -> setPlainText( default_value );
 }
 
 // Encode all options/setting into a string ( to be able to save it to the history )
