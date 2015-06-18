@@ -116,7 +116,7 @@ race=orc
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#da!1000002
-glyphs=icy_runes/vampiric_blood/regenerative_magic
+glyphs=vampiric_blood/regenerative_magic
 spec=blood
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_multistrike
