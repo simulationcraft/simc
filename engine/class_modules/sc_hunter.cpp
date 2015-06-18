@@ -2710,9 +2710,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
       add_child( t18_4p_surv );
     }
 
-    attack_power_mod.tick = 0.553; //Welcome to the hard-coded tooltip club!
-    if ( player -> dbc.ptr )
-      attack_power_mod.tick = 0.47;
+    attack_power_mod.tick = 0.47;
     attack_power_mod.direct = attack_power_mod.tick;
     // the inital impact is not part of the rolling dot
     dot_duration = timespan_t::zero();
@@ -2833,8 +2831,6 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     background = true;
     proc = true;
     tick_may_crit = true;
-    if ( !player -> dbc.ptr)
-      tick_zero = true;
     hasted_ticks = false;
   }
 };
@@ -4590,12 +4586,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   if ( mastery.essence_of_the_viper -> ok() &&
-       dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+    dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
   {
-       m *= 1.0 + cache.mastery_value();
-       // the 19% mastery buff is not in the spell data yet.
-       if ( dbc.ptr )
-         m *= 1.19;
+    m *= 1.0 + cache.mastery_value();
   }
 
   if ( buffs.bestial_wrath -> up() )

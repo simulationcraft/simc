@@ -666,7 +666,7 @@ struct water_elemental_pet_t : public pet_t
     {
       double am = mage_pet_spell_t::action_multiplier();
 
-      if ( p() -> dbc.ptr && p() -> o() -> spec.icicles -> ok() )
+      if ( p() -> o() -> spec.icicles -> ok() )
       {
         am *= 1.0 + p() -> o() -> cache.mastery_value();
       }
@@ -2139,10 +2139,7 @@ struct arcane_missiles_t : public mage_spell_t
     may_miss = false;
 
     missiles_tick_time = base_tick_time;
-    if ( p -> dbc.ptr )
-    {
-      temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
-    }
+    temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
   }
 
   virtual double action_multiplier() const
@@ -3676,20 +3673,7 @@ struct inferno_blast_t : public mage_spell_t
     parse_options( options_str );
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
     radius = 10;
-    if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
-    {
-      if ( p -> dbc.ptr )
-      {
-        cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 )
-                                  -> effectN( 1 ).time_value();
-      }
-      else
-      {
-        cooldown -> charges = data().charges() +
-                              p -> sets.set( MAGE_FIRE, T17, B2 )
-                                -> effectN( 1 ).base_value();
-      }
-    }
+    cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
 
     max_spread_targets = data().effectN( 2 ).base_value();
     if ( p -> glyphs.inferno_blast -> ok() )
