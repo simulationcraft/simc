@@ -1421,7 +1421,7 @@ class SpellDataGenerator(DataGenerator):
           ( 148022, 0 ),                            # Icicle
           ( 155152, 5 ),                            # Prismatic Crystal nuke
           ( 157978, 0 ), ( 157979, 0 ),             # Unstable magic aoe
-          ( 9672, 0 ), ( 59710, 0 ),                # Arcane T18 2P Pet
+          ( 191764, 0 ), ( 191799, 0 ),             # Arcane T18 2P Pet
         ),
 
         # Warlock:
