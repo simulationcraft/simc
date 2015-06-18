@@ -2,7 +2,7 @@
 
 warlock="Warlock_Affliction_T18H"
 level=100
-race=gnome
+race=troll
 spec=affliction
 talents=0000311
 talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
