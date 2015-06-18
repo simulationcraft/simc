@@ -5317,8 +5317,17 @@ struct player_t : public actor_t
   double      get_ground_aoe_distance( action_state_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
+
+  // Targetdata stuff
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
+
+  // List of callbacks to call when an actor_target_data_t object is created. Currently used to
+  // initialize the generic targetdata debuffs/dots we have.
+  std::vector<std::function<void(actor_target_data_t*)> > target_data_initializer;
+
+  void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
+  { target_data_initializer.push_back( cb ); }
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}
@@ -7904,7 +7913,12 @@ inline player_t* target_wrapper_expr_t::target() const
 
 inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
   actor_pair_t( target, source ), debuff( atd_debuff_t() ), dot( atd_dot_t() )
-{ }
+{
+  for ( size_t i = 0, end = source -> target_data_initializer.size(); i < end; ++i )
+  {
+    source -> target_data_initializer[ i ]( this );
+  }
+}
 
 
 /* Simple String to Number function, using stringstream

@@ -2854,6 +2854,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         {
           proxy_expr[ action.target -> actor_index ] = action.target -> create_expression( &action, suffix_expr_str );
         }
+        assert( proxy_expr[ action.target -> actor_index ] );
 
         return proxy_expr[ action.target -> actor_index ] -> eval();
       }
