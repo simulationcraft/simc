@@ -86,17 +86,17 @@ feet=spiked_throatcrusher_boots,id=124287,bonus_id=567
 finger1=nithramus_the_allseer,id=124635,enchant=gift_of_multistrike
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_multistrike
 trinket1=core_of_the_primal_elements,id=124521,bonus_id=567
-trinket2=iron_reaver_piston,id=124227,bonus_id=567
+trinket2=prophecy_of_fear,id=124230,bonus_id=567
 main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_the_frostwolf
 off_hand=fallen_defender_of_argus,id=124355,bonus_id=567
 
 # Gear Summary
-# gear_ilvl=728.13
+# gear_ilvl=728.75
 # gear_stamina=6111
-# gear_intellect=4433
+# gear_intellect=4599
 # gear_spell_power=2544
-# gear_crit_rating=1734
-# gear_haste_rating=1783
+# gear_crit_rating=1375
+# gear_haste_rating=1424
 # gear_mastery_rating=618
 # gear_multistrike_rating=2137
 # gear_versatility_rating=130
