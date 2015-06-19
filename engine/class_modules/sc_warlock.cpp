@@ -5966,9 +5966,8 @@ void warlock_t::apl_precombat()
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     action_list_str += "/soulburn,if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking&buff.soulburn.down";
-    action_list_str += "/soul_swap,if=(buff.soulburn.remains&!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking)|(buff.soulburn.up&soul_shard=4&set_bonus.tier18_4pc=1&(dot.agony.remains<dot.agony.duration*0.3|dot.corruption.remains<dot.corruption.duration*0.3|(dot.unstable_affliction.remains<dot.unstable_affliction.duration*0.3&target.time_to_die>4.2)))";
-    action_list_str += "/haunt,if=set_bonus.tier18_4pc=1&soul_shard=4&buff.soulburn.up&!in_flight_to_target&trinket.proc.int.remains>cast_time+travel_time&buff.haunting_spirits.remains<=buff.haunting_spirits.duration*0.3";
-  }
+    action_list_str += "/soul_swap,if=buff.soulburn.remains&!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking";
+   }
 
   if ( sim -> allow_potions )
   {
@@ -6046,11 +6045,6 @@ void warlock_t::apl_precombat()
       action_list_str += "/imp_swarm,if=!talent.demonbolt.enabled&(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3";
     }
   }
-  else if ( specialization() == WARLOCK_AFFLICTION )
-    {
-      add_action( spec.dark_soul, "if=set_bonus.tier18_2pc=1&(dot.agony.remains&dot.corruption.remains)" );
-      add_action( spec.dark_soul, "if=set_bonus.tier18_2pc=0&(!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains)))))" );
-    }
   else if ( find_item( "nithramus_the_allseer") )
     add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|buff.nithramus.remains>4|target.time_to_die<40|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active|recharge_time<=cooldown.service_pet.remains))))" );
   else
@@ -6088,22 +6082,20 @@ void warlock_t::apl_affliction()
   add_action( "Soulburn", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>2&dot.corruption.remains<=dot.corruption.duration*0.3" );
   add_action( "Seed of Corruption", "cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>2&!dot.seed_of_corruption.remains&buff.soulburn.remains" );
   
-  add_action( "Soulburn", "if=set_bonus.tier18_4pc=1&talent.soulburn_haunt.enabled&(soul_shard=4|(buff.haunting_spirits.remains<=buff.haunting_spirits.duration*0.3&buff.soulburn.down))" );
-  add_action( "Soulburn", "if=set_bonus.tier18_4pc=0&shard_react&soul_shard>=2&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.remains-action.haunt.cast_time<=buff.haunting_spirits.duration*0.3)" );
-  add_action( "Haunt", "if=set_bonus.tier18_4pc=1&talent.soulburn_haunt.enabled&((buff.haunting_spirits.remains<=buff.haunting_spirits.duration*0.3&!buff.draenic_intellect_potion.remains)|buff.haunting_spirits.remains<cast_time)" );
-  
+  add_action( "Soulburn", "if=shard_react&soul_shard>=2&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.remains-action.haunt.cast_time<=buff.haunting_spirits.duration*0.3)" );
+   
   if ( find_item( "nithramus_the_allseer" ) )
     add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(buff.nithramus.remains>cast_time+travel_time|trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)" );
   else
     add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)" );
   
   add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&buff.dark_soul.remains>cast_time+travel_time&!dot.haunt.ticking&set_bonus.tier18_4pc=1" );
-  add_action( "Haunt", "if=set_bonus.tier18_4pc=0&shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&((buff.haunting_spirits.remains-cast_time<=buff.haunting_spirits.duration*0.3&(dot.haunt.remains-cast_time<=dot.haunt.duration*0.3|set_bonus.tier18_4pc=1&buff.dark_soul.remains))|buff.haunting_spirits.down)))" );
+  add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&((buff.haunting_spirits.remains-cast_time<=buff.haunting_spirits.duration*0.3&(dot.haunt.remains-cast_time<=dot.haunt.duration*0.3|set_bonus.tier18_4pc=1&buff.dark_soul.remains))|buff.haunting_spirits.down)))" );
  
   if ( find_item( "nithramus_the_allseer" ) )
-    add_action( "Haunt", "if=set_bonus.tier18_4pc=0&shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&buff.haunting_spirits.remains>=buff.haunting_spirits.duration*0.5&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(buff.nithramus.remains>cast_time+travel_time|trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)" );
+    add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&buff.haunting_spirits.remains>=buff.haunting_spirits.duration*0.5&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(buff.nithramus.remains>cast_time+travel_time|trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)" );
   else
-    add_action( "Haunt", "if=set_bonus.tier18_4pc=0&shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&buff.haunting_spirits.remains>=buff.haunting_spirits.duration*0.5&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)" );
+    add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&buff.haunting_spirits.remains>=buff.haunting_spirits.duration*0.5&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)" );
   
   if ( find_item( "nithramus_the_allseer" ) )
   {
