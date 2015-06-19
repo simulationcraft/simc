@@ -5776,7 +5776,7 @@ double priest_t::composite_multistrike() const
 
   if ( buffs.premonition -> check() )
   {
-    cm += buffs.premonition -> data().effectN( 1 ).percent();
+    cm += buffs.premonition -> default_value; //PTR Hotfix 2016/06/19 -- Twintop 2015/06/19 //data().effectN( 1 ).percent();
   }
 
   return cm;
@@ -6431,7 +6431,7 @@ void priest_t::create_buffs()
 
   buffs.premonition = buff_creator_t( this, "premonition" )
                        .spell( find_spell( 188779 ) )
-                       .default_value( 0.16 )
+                       .default_value( 0.20 ) //PTR Hotfix 2016/06/19 -- Twintop 2015/06/19
                        .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) )
                        .add_invalidate( CACHE_MULTISTRIKE );
 
