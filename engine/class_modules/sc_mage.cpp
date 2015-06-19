@@ -619,7 +619,14 @@ struct water_elemental_pet_t : public pet_t
 
       if ( p -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
       {
-        dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
+        if ( p -> o() -> wod_hotfix )
+        {
+          dot_duration += timespan_t::from_seconds( 10.0 );
+        }
+        else
+        {
+          dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
+        }
       }
     }
 
@@ -1306,6 +1313,11 @@ struct temporal_hero_t : public pet_t
     }
 
     m *= temporal_hero_multiplier;
+
+    if ( owner -> wod_hotfix )
+    {
+      m *= 0.55;
+    }
 
     return m;
   }
