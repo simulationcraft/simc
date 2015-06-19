@@ -1766,12 +1766,13 @@ debuff_t::debuff_t( const buff_creator_basics_t& params ) :
 
 // Absorb Buff
 
-
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
   buff_t( params ),
   absorb_school( params._absorb_school ),
   absorb_source( params._absorb_source ),
-  absorb_gain( params._absorb_gain )
+  absorb_gain( params._absorb_gain ),
+  high_priority( params._high_priority ),
+  eligibility( params._eligibility )
 {
   assert( player && "Absorb Buffs only supported for player!" );
 
@@ -1819,24 +1820,28 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
     player -> absorb_buff_list.erase( it );
 }
 
-void absorb_buff_t::consume( double amount )
+double absorb_buff_t::consume( double amount )
 {
+  // Limit the consumption to the current size of the buff.
+  amount = std::min( amount, current_value );
+
   if ( absorb_source )
     absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
 
   if ( absorb_gain )
     absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
 
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s %s absorbs %.2f", player -> name(), name(), amount );
-
   current_value -= amount;
+
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)", player -> name(), name(), amount, current_value );
+
   absorb_used( amount );
 
   if ( current_value <= 0 )
     expire();
-  else if ( sim -> debug )
-    sim -> out_debug.printf( "%s %s absorb remaining %.2f", player -> name(), name(), current_value );
+
+  return amount;
 }
 
 void buff_creator_basics_t::init()

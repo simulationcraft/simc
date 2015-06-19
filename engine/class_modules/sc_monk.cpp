@@ -6306,6 +6306,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
       stagger_dmg += s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() );
 
     s -> result_amount -= stagger_dmg;
+    s -> result_mitigated -= stagger_dmg;
   }
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )

@@ -7509,6 +7509,8 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
 
       s -> result_amount -= absorbed;
       s -> result_absorbed -= absorbed;
+      s -> self_absorb_amount += absorbed;
+      iteration_absorb_taken += absorbed;
 
       //gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
 

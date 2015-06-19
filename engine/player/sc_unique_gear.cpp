@@ -3202,7 +3202,7 @@ void item::tyrants_decree( special_effect_t& effect )
   new tyrants_decree_callback_t( effect.player, effect );
 }
 
-void warlords_unseeing_eye_handler( player_t& player, action_state_t* s )
+double warlords_unseeing_eye_handler( const action_state_t* s )
 {
   /* Absorb is based on what the player's HP would be after taking the damage,
      accounting for absorbs that occur prior but ignoring the rest.
@@ -3212,42 +3212,23 @@ void warlords_unseeing_eye_handler( player_t& player, action_state_t* s )
      
      TOCHECK: If the actor would die from the hit, does the size of the absorb
      scale with the amount of overkill? */
-  double after_percent = ( std::max( player.resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_amount )
-                       / player.resources.max[ RESOURCE_HEALTH ];
+  player_t* p = s -> target;
+
+  double absorb_amount = s -> result_amount * p -> warlords_unseeing_eye;
   
-  double absorb_pct = ( 1 - after_percent ) * player.warlords_unseeing_eye;
-  double raw_amount = s -> result_amount * absorb_pct;
-  double effective  = std::min( raw_amount, s -> result_amount );
-  double wasted     = std::max( 0.0, raw_amount - s -> result_amount );
+  absorb_amount *= 1 - ( std::max( p -> resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_amount )
+                       / p -> resources.max[ RESOURCE_HEALTH ];
 
-  s -> result_amount      -= effective;
-  s -> result_absorbed    -= effective;
-  s -> self_absorb_amount += effective;
-
-  if ( player.sim -> debug )
-    player.sim -> out_debug.printf( "%s's warlords_unseeing_eye absorbs %.2f damage (%.2f%%)", player.name(), effective, absorb_pct * 100 );
-
-  player.gains.warlords_unseeing_eye -> add( RESOURCE_HEALTH, effective, wasted );
-
-  player.warlords_unseeing_eye_stats -> add_result( effective,
-        raw_amount,
-        ABSORB,
-        RESULT_HIT,
-        BLOCK_RESULT_UNBLOCKED,
-        &player );
+  return absorb_amount;
 }
 
 void item::warlords_unseeing_eye( special_effect_t& effect )
 {
   // Store the magic mitigation number in a player-scope variable.
   effect.player -> warlords_unseeing_eye = effect.driver() -> effectN( 2 ).average( effect.item ) / 10000.0;
-  // Assign our handler function so it can be accessed from player_t::assess_damage().
-  effect.player -> account_warlords_unseeing_eye = &warlords_unseeing_eye_handler;
-  // Init stats & gains for reporting purposes.
-  effect.player -> gains.warlords_unseeing_eye = effect.player -> get_gain( "warlords_unseeing_eye" );
-  effect.player -> warlords_unseeing_eye_stats = effect.player -> get_stats( "warlords_unseeing_eye" );
-  effect.player -> warlords_unseeing_eye_stats -> type = STATS_ABSORB;
-  effect.player -> warlords_unseeing_eye_stats -> school = SCHOOL_PHYSICAL;
+  // Register our handler function so it can be managed by player_t::account_absorb_buffs()
+  effect.player -> instant_absorb_list[ effect.driver() -> id() ] =
+    new instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", &warlords_unseeing_eye_handler );
 }
 
 } // UNNAMED NAMESPACE
