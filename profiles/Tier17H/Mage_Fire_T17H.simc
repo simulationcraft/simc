@@ -59,7 +59,7 @@ actions.crystal_sequence+=/call_action_list,name=single_target
 # This sequence lists the requirements for preparing a Combustion combo with each talent choice
 # Meteor Combustion
 actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&((cooldown.combustion.remains<gcd.max*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
-# Prismatic Crystal Combustion without 2T17
+# Prismatic Crystal Combustion
 actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Unglyphed Combustions between Prismatic Crystals
 actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
@@ -108,10 +108,10 @@ actions.single_target+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.react
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 # Heating Up conversion to Pyroblast
-actions.single_target+=/inferno_blast,if=(cooldown.combustion.remains%8+charges_fractional>=2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.down&buff.heating_up.up&!(dot.living_bomb.remains>10&active_enemies>1)
+actions.single_target+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.up&!(dot.living_bomb.remains>10&active_enemies>1)
 actions.single_target+=/call_action_list,name=active_talents
 # Adding Heating Up to Pyroblast
-actions.single_target+=/inferno_blast,if=(cooldown.combustion.remains%8+charges_fractional>=2|!set_bonus.tier17_2pc|!(active_enemies>1|talent.prismatic_crystal.enabled))&buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight&!(dot.living_bomb.remains>10&active_enemies>1)
+actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight&!(dot.living_bomb.remains>10&active_enemies>1)
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 
