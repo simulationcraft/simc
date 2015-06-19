@@ -1862,7 +1862,7 @@ private:
   stats_t* _absorb_source;
   gain_t*  _absorb_gain;
   bool     _high_priority; // For tank absorbs that should explicitly "go first"
-  std::function< static bool( const action_state_t* ) > _eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
+  std::function< bool( const action_state_t* ) > _eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
   friend struct ::absorb_buff_t;
 public:
   absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
@@ -1887,7 +1887,7 @@ public:
   bufftype& high_priority( bool h )
   { _high_priority = h; return *this; }
 
-  bufftype& eligibility( std::function<static bool(const action_state_t*)> e )
+  bufftype& eligibility( std::function<bool(const action_state_t*)> e )
   { _eligibility = e; return *this; }
 
   operator absorb_buff_t* () const;
@@ -2141,7 +2141,7 @@ struct absorb_buff_t : public buff_t
   stats_t* absorb_source;
   gain_t*  absorb_gain;
   bool     high_priority; // For tank absorbs that should explicitly "go first"
-  std::function< static bool( const action_state_t* ) > eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
+  std::function< bool( const action_state_t* ) > eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );

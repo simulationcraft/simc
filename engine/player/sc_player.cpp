@@ -5061,7 +5061,7 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
     for ( size_t i = 0; i < p.absorb_priority.size(); i++ )
     {
       // Check for the absorb ID in instantaneous absorbs first, since its low cost.
-      if ( p.instant_absorb_list[ p.absorb_priority[ i ] ] )
+      if ( p.instant_absorb_list.find( p.absorb_priority[ i ] ) != p.instant_absorb_list.end() )
       {
         instant_absorb_t* ab = p.instant_absorb_list[ p.absorb_priority[ i ] ];
 
@@ -5074,39 +5074,40 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 
         if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
           p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name.c_str(), s -> result_amount );
-
-        break;
       }
-
-      // Check for the absorb ID in high priority absorbs.
-      for ( size_t j = 0; j < p.absorb_buff_list.size(); j++ )
+      else
       {
-        if ( p.absorb_buff_list[ j ] -> data().id() == p.absorb_priority[ i ] )
+        // Check for the absorb ID in high priority absorbs.
+        for ( size_t j = 0; j < p.absorb_buff_list.size(); j++ )
         {
-          absorb_buff_t* ab = p.absorb_buff_list[ j ];
-
-          assert( ab -> high_priority && "Absorb buff with set priority is not flagged for high priority." );
-
-          if ( school == SCHOOL_NONE || dbc::is_school( ab -> absorb_school, school ) && ab -> up()
-            && ( ! ab -> eligibility || ab -> eligibility( s ) ) )
+          if ( p.absorb_buff_list[ j ] -> data().id() == p.absorb_priority[ i ] )
           {
-            double absorbed = ab -> consume( s -> result_amount );
+            absorb_buff_t* ab = p.absorb_buff_list[ j ];
 
-            s -> result_amount -= absorbed;
-            result_ignoring_external_absorbs -= absorbed;
+            assert( ab -> high_priority && "Absorb buff with set priority is not flagged for high priority." );
 
-            // track result using only self-absorbs separately
-            if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
-              s -> self_absorb_amount += absorbed;
+            if ( ( ( ab -> eligibility && ab -> eligibility( s ) ) // Use the eligibility function if there is one
+              || ( school == SCHOOL_NONE || dbc::is_school( ab -> absorb_school, school ) ) ) // Otherwise check by school
+              && ab -> up() )
+            {
+              double absorbed = ab -> consume( s -> result_amount );
 
-            if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-              p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
+              s -> result_amount -= absorbed;
+              result_ignoring_external_absorbs -= absorbed;
+
+              // track result using only self-absorbs separately
+              if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
+                s -> self_absorb_amount += absorbed;
+
+              if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+                p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
+            }
+
+            if ( ab -> current_value <= 0 )
+              ab -> expire();
+
+            break;
           }
-
-          if ( ab -> current_value <= 0 )
-            ab -> expire();
-
-          break;
         }
       }
        
@@ -5129,8 +5130,8 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 
       /* Check absorb eligbility by school and custom eligibility function, skipping high priority
          absorbs since those have already been processed above. */
-      if ( ab -> high_priority || ( school != SCHOOL_NONE && ! dbc::is_school( ab -> absorb_school, school ) )
-        || ( ab -> eligibility && ! ab -> eligibility( s ) ) )
+      if ( ab -> high_priority || ( ab -> eligibility && ! ab -> eligibility( s ) ) // Use the eligibility function if there is one
+        || ( school != SCHOOL_NONE && ! dbc::is_school( ab -> absorb_school, school ) ) ) // Otherwise check by school
       {
         offset++;
         continue;
