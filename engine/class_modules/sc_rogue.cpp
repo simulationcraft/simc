@@ -937,9 +937,6 @@ struct venomous_wound_t : public rogue_poison_t
 
     m *= 1.0 + p() -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
-    if ( p() -> buffs.crimson_poison -> check() )
-      m *= 1.0 + p() -> buffs.crimson_poison -> data().effectN( 1 ).percent();
-
     return m;
   }
 };
