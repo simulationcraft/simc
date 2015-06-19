@@ -1228,7 +1228,7 @@ struct temporal_hero_t : public pet_t
       mage_pet_spell_t( "shoot", p, p -> find_spell( 191799 ) )
     {
       school = SCHOOL_PHYSICAL;
-      base_dd_min = base_dd_max = 3303.0;
+      base_dd_min = base_dd_max = 3255.19;
       base_execute_time = p -> main_hand_weapon.swing_time;
       may_crit = true;
     }
@@ -1273,8 +1273,8 @@ struct temporal_hero_t : public pet_t
     owner_coeff.sp_from_sp = 5.0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 7095.0;
-    main_hand_weapon.max_dmg    = 7095.0;
+    main_hand_weapon.min_dmg    = 7262.57;
+    main_hand_weapon.max_dmg    = 7262.57;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     pet_t::init_base_stats();
@@ -1314,11 +1314,6 @@ struct temporal_hero_t : public pet_t
 
     m *= temporal_hero_multiplier;
 
-    if ( owner -> wod_hotfix )
-    {
-      m *= 0.55;
-    }
-
     return m;
   }
 
@@ -1331,7 +1326,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = ARTHAS;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 0.3282;
+      temporal_hero_multiplier = 0.1964;
 
       if ( sim -> debug )
       {
@@ -1343,7 +1338,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = JAINA;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 1.000;
+      temporal_hero_multiplier = 0.6;
 
       if ( sim -> debug )
       {
@@ -1355,7 +1350,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = SYLVANAS;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 0.8795;
+      temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
       {
@@ -1367,7 +1362,7 @@ struct temporal_hero_t : public pet_t
     {
       hero_type = TYRANDE;
       last_summoned = hero_type;
-      temporal_hero_multiplier = 0.8795;
+      temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
       {
