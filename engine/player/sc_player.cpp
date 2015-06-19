@@ -639,6 +639,16 @@ player_t::player_t( sim_t*             s,
     parent = sim -> parent -> find_player( name() );
 }
 
+player_t::~player_t()
+{
+  for ( std::map<unsigned, instant_absorb_t*>::iterator i = instant_absorb_list.begin();
+        i != instant_absorb_list.end();
+        ++i )
+  {
+    delete i -> second;
+  }
+}
+
 player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
   mana_regen_per_second(),
@@ -1846,6 +1856,15 @@ void player_t::init_stats()
   }
 
   collected_data.reserve_memory( *this );
+}
+
+// player_t::init_absorb_priority ===========================================
+
+void player_t::init_absorb_priority()
+{
+  /* Absorbs with the high priority flag will follow the order in absorb_priority
+     vector when resolving. This method should be overwritten in class modules to
+     declare the order of spec-specific high priority absorbs. */
 }
 
 // player_t::init_scaling ===================================================
@@ -5015,69 +5034,160 @@ void account_hand_of_sacrifice( player_t& p, action_state_t* s )
   }
 }
 
-void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
+bool absorb_sort( absorb_buff_t* a, absorb_buff_t* b )
+{
+  return a -> current_value < b -> current_value;
+}
+
+double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 {
   /* ABSORB BUFFS
-   *
-   * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
-   * the currently active absorb buffs of a player.
-   */
-  size_t offset = 0;
+  
+     std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
+     the currently active absorb buffs of a player.
 
-  while ( offset < p.absorb_buff_list.size() && s -> result_amount > 0 && ! p.absorb_buff_list.empty() )
+     std:map<int,instant_absorb_t*> instant_absorb_list; is a map by spell id that contains
+     the data for instant absorb effects.
+
+     std::vector<int> absorb_priority; is a vector that contains the sequencing for
+     high priority (tank) absorbs and instant absorbs, by spell ID. High priority and
+     instant absorbs MUST be pushed into this array inside init_absorb_priority() to
+     function.
+   
+  */
+
+  /* Initialize result ignoring external absorbs for raw TMI tracking purposes. Each
+     effective absorb caused by the player should subtract from this value */
+  double result_ignoring_external_absorbs = s -> result_amount;
+
+  if ( ! ( p.absorb_buff_list.empty() && p.instant_absorb_list.empty() ) )
   {
-    absorb_buff_t* ab = p.absorb_buff_list[ offset ];
-
-    if ( school != SCHOOL_NONE && ! dbc::is_school( ab -> absorb_school, school ) )
+    /* First, handle high priority absorbs and instant absorbs. These absorbs should 
+       obey the sequence laid out in absorb_priority. To achieve this, we loop through
+       absorb_priority in order, then find and apply the appropriate high priority
+       or instant absorb. */
+    for ( size_t i = 0; i < p.absorb_priority.size(); i++ )
     {
-      offset++;
-      continue;
-    }
-
-    // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
-    if ( ab -> up() )
-    {
-      // Get absorb value of the buff
-      double buff_value = ab -> current_value;
-      double value = std::min( s -> result_amount, buff_value );
-
-      ab -> consume( value );
-
-      s -> result_amount -= value;
-      // track result using only self-absorbs separately
-      if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
-        s -> self_absorb_amount += value;
-      else
-        s -> external_absorb_amount += value;
-
-
-      if ( value < buff_value )
+      // Check for the absorb ID in instantaneous absorbs first, since its low cost.
+      if ( p.instant_absorb_list.find( p.absorb_priority[ i ] ) != p.instant_absorb_list.end() )
       {
-        // Buff is not fully consumed
+        instant_absorb_t* ab = p.instant_absorb_list[ p.absorb_priority[ i ] ];
+
+        // eligibility is handled in the instant absorb's handler
+        double absorbed = ab -> consume( s );
+
+        s -> result_amount -= absorbed;
+        result_ignoring_external_absorbs -= absorbed;
+        s -> self_absorb_amount += absorbed;
+
+        if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+          p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name.c_str(), s -> result_amount );
+      }
+      else
+      {
+        // Check for the absorb ID in high priority absorbs.
+        for ( size_t j = 0; j < p.absorb_buff_list.size(); j++ )
+        {
+          if ( p.absorb_buff_list[ j ] -> data().id() == p.absorb_priority[ i ] )
+          {
+            absorb_buff_t* ab = p.absorb_buff_list[ j ];
+
+            assert( ab -> high_priority && "Absorb buff with set priority is not flagged for high priority." );
+
+            if ( ( ( ab -> eligibility && ab -> eligibility( s ) ) // Use the eligibility function if there is one
+              || ( school == SCHOOL_NONE || dbc::is_school( ab -> absorb_school, school ) ) ) // Otherwise check by school
+              && ab -> up() )
+            {
+              double absorbed = ab -> consume( s -> result_amount );
+
+              s -> result_amount -= absorbed;
+              result_ignoring_external_absorbs -= absorbed;
+
+              // track result using only self-absorbs separately
+              if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
+                s -> self_absorb_amount += absorbed;
+
+              if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+                p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
+            }
+
+            if ( ab -> current_value <= 0 )
+              ab -> expire();
+
+            break;
+          }
+        }
+      }
+       
+      if ( s -> result_amount <= 0 )
+      {
         assert( s -> result_amount == 0 );
         break;
       }
-
-      if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && buff_value > 0 )
-        p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
     }
 
-    // So, it turns out it's possible to have absorb buff behavior, where
-    // there's a "minimum value" for the absorb buff, even after absorbing
-    // damage more than its current value. In this case, the absorb buff should
-    // not be expired, as the current_value still has something left.
-    if ( ab -> current_value <= 0 )
+    // Second, we handle any low priority absorbs. These absorbs obey the rule of "smallest first".
+
+    // Sort the absorbs by size, then we can loop through them in order.
+    std::sort( p.absorb_buff_list.begin(), p.absorb_buff_list.end(), absorb_sort );
+    size_t offset = 0;
+
+    while ( offset < p.absorb_buff_list.size() && s -> result_amount > 0 && ! p.absorb_buff_list.empty() )
     {
-      ab -> expire();
-      assert( p.absorb_buff_list.empty() || p.absorb_buff_list[ 0 ] != ab );
-    }
-    else
-      offset++;
-  } // end of absorb list loop
+      absorb_buff_t* ab = p.absorb_buff_list[ offset ];
+
+      /* Check absorb eligbility by school and custom eligibility function, skipping high priority
+         absorbs since those have already been processed above. */
+      if ( ab -> high_priority || ( ab -> eligibility && ! ab -> eligibility( s ) ) // Use the eligibility function if there is one
+        || ( school != SCHOOL_NONE && ! dbc::is_school( ab -> absorb_school, school ) ) ) // Otherwise check by school
+      {
+        offset++;
+        continue;
+      }
+
+      // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
+      if ( ab -> up() )
+      {
+        // Consume the absorb and grab the effective amount consumed.
+        double absorbed = ab -> consume( s -> result_amount );
+
+        s -> result_amount -= absorbed;
+        result_ignoring_external_absorbs -= absorbed;
+
+        // track result using only self-absorbs separately
+        if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
+          s -> self_absorb_amount += absorbed;
+
+        if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+          p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
+
+        if ( s -> result_amount <= 0 )
+        {
+          // Buff is not fully consumed
+          assert( s -> result_amount == 0 );
+          break;
+        }
+      }
+
+      // So, it turns out it's possible to have absorb buff behavior, where
+      // there's a "minimum value" for the absorb buff, even after absorbing
+      // damage more than its current value. In this case, the absorb buff should
+      // not be expired, as the current_value still has something left.
+      if ( ab -> current_value <= 0 )
+      {
+        ab -> expire();
+        assert( p.absorb_buff_list.empty() || p.absorb_buff_list[ 0 ] != ab );
+      }
+      else
+        offset++;
+    } // end of absorb list loop
+  }
 
   p.iteration_absorb_taken += s -> self_absorb_amount;
 
   s -> result_absorbed = s -> result_amount;
+
+  return result_ignoring_external_absorbs;
 }
 
 void account_legendary_tank_cloak( player_t& p, action_state_t* s )
@@ -5104,7 +5214,7 @@ void account_legendary_tank_cloak( player_t& p, action_state_t* s )
 
 /* Statistical data collection
  */
-void collect_dmg_taken_data( player_t& p, action_state_t* s )
+void collect_dmg_taken_data( player_t& p, action_state_t* s, double result_ignoring_external_absorbs )
 {
   p.iteration_dmg_taken += s -> result_amount;
 
@@ -5124,8 +5234,8 @@ void collect_dmg_taken_data( player_t& p, action_state_t* s )
   if ( p.collected_data.health_changes_tmi.collect )
   {
     // health_changes_tmi ignores external effects (e.g. external absorbs), used for raw TMI
-    p.collected_data.health_changes_tmi.timeline.add( p.sim -> current_time(), s -> result_amount - s -> external_absorb_amount );
-    p.collected_data.health_changes_tmi.timeline_normalized.add( p.sim -> current_time(), ( s -> result_amount - s -> external_absorb_amount ) / p.resources.max[ RESOURCE_HEALTH ] );
+    p.collected_data.health_changes_tmi.timeline.add( p.sim -> current_time(), result_ignoring_external_absorbs );
+    p.collected_data.health_changes_tmi.timeline_normalized.add( p.sim -> current_time(), result_ignoring_external_absorbs / p.resources.max[ RESOURCE_HEALTH ] );
   }
 }
 
@@ -5171,6 +5281,7 @@ void player_t::assess_damage( school_e school,
 
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;
+
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> out_debug.printf( "Damage to %s after all mitigation is %f", s -> target -> name(), s -> result_amount );
 
@@ -5178,10 +5289,7 @@ void player_t::assess_damage( school_e school,
 
   assess_damage_imminent_pre_absorb( school, type, s );
 
-  account_absorb_buffs( *this, s, school );
-
-  if ( warlords_unseeing_eye > 0 )
-    account_warlords_unseeing_eye( *this, s );
+  double result_ignoring_external_absorbs = account_absorb_buffs( *this, s, school );
 
   assess_damage_imminent( school, type, s );
 
@@ -5193,7 +5301,7 @@ void player_t::assess_damage( school_e school,
   if ( ! s -> action -> player -> buffs.spirit_shift ||
        ! s -> action -> player -> buffs.spirit_shift -> check() )
   {
-    collect_dmg_taken_data( *this, s );
+    collect_dmg_taken_data( *this, s, result_ignoring_external_absorbs );
 
     if ( s -> result_amount > 0.0 )
       actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, nullptr, s -> action );

@@ -6526,6 +6526,7 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
 
         // update the relevant counters
         iteration_absorb_taken += block_amount;
+        s -> self_absorb_amount += block_amount;
         s -> result_amount -= block_amount;
         s -> result_absorbed = s -> result_amount;
         

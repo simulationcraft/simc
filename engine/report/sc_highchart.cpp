@@ -4,7 +4,7 @@
 
 namespace
 {
-static const char* TEXT_OUTLINE      = "-1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000";
+// static const char* TEXT_OUTLINE      = "-1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000";
 static const char* TEXT_COLOR        = "#CACACA";
 static const char* TEXT_COLOR_ALT    = "black";
 

@@ -1908,6 +1908,7 @@ bool sim_t::init_actor( player_t* p )
   p -> init_rng();
   p -> init_stats();
   p -> init_distance_targeting();
+  p -> init_absorb_priority();
 
   return ret;
 }

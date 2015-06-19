@@ -17,10 +17,7 @@ namespace { // UNNAMED NAMESPACE
     = Balance =
     APL adjustments for set bonuses & trinket
 
-    = Guardian =
-    FR rage refund
-    PvP bonuses
-    Add SD time @ max charges statistic
+    = Guardian =ax charges statistic
     Tooth & Claw in multi-tank sims
 
     = Restoration =
@@ -213,11 +210,11 @@ public:
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
 
+  // Absorb stats
+  stats_t* primal_tenacity_stats;
+
   // RPPM objects
   real_ppm_t balance_t18_2pc;
-
-  // Absorb Stats
-  stats_t* tooth_and_claw;
   
   struct active_actions_t
   {
@@ -298,15 +295,15 @@ public:
     buff_t* feral_tier17_4pc;
 
     // Guardian
+    absorb_buff_t* primal_tenacity;
+    absorb_buff_t* tooth_and_claw_absorb;
     buff_t* barkskin;
     buff_t* bladed_armor;
     buff_t* bristling_fur;
-    absorb_buff_t* primal_tenacity;
     buff_t* pulverize;
     buff_t* savage_defense;
     buff_t* survival_instincts;
     buff_t* tooth_and_claw;
-    buff_t* tooth_and_claw_absorb;
     buff_t* ursa_major;
     buff_t* guardian_tier15_2pc;
     buff_t* guardian_tier17_4pc;
@@ -336,7 +333,6 @@ public:
     cooldown_t* starfallsurge;
     cooldown_t* swiftmend;
     cooldown_t* tigers_fury;
-    cooldown_t* fey_faerie; // T18 2P Balance
   } cooldown;
 
   // Gains
@@ -624,7 +620,6 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     balance_t18_2pc( *this, 0, RPPM_NONE ),
-    tooth_and_claw( 0 ),
     active( active_actions_t() ),
     caster_form_weapon(),
     starshards(),
@@ -699,6 +694,7 @@ public:
   virtual void      init_procs();
   virtual void      init_resources( bool );
   virtual void      init_rng();
+  virtual void      init_absorb_priority();
   virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
@@ -737,7 +733,6 @@ public:
   virtual double    mana_regen_per_second() const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
-  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& );
@@ -912,10 +907,10 @@ struct stalwart_guardian_t : public absorb_t
   stalwart_guardian_reflect_t* reflect;
 
   stalwart_guardian_t( druid_t* p ) :
-    absorb_t( "stalwart_guardian", p, p -> find_spell( 185321 ) ),
+    absorb_t( "stalwart_guardian_bg", p, p -> find_spell( 185321 ) ),
     incoming_damage( 0 ), absorb_limit( 0 ), absorb_size( 0 )
   {
-    background = true;
+    background = quiet = true;
     may_crit = false;
     may_multistrike = 0;
     target = p;
@@ -1770,6 +1765,36 @@ struct omen_of_clarity_buff_t : public druid_buff_t<buff_t>
     druid.max_fb_energy += druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + druid.buff.berserk -> check() * druid.spell.berserk_cat -> effectN( 1 ).percent() );
 
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// Tooth and Claw Absorb Buff ===============================================
+
+static bool tooth_and_claw_can_absorb( const action_state_t* s )
+{ return ! s -> action -> special; }
+
+struct tooth_and_claw_absorb_t : public absorb_buff_t
+{
+  tooth_and_claw_absorb_t( druid_t& p ) :
+    absorb_buff_t( absorb_buff_creator_t( &p, "tooth_and_claw_absorb", p.find_spell( 135597 ) )
+      .school( SCHOOL_PHYSICAL )
+      .source( p.get_stats( "tooth_and_claw_absorb" ) )
+      .gain( p.get_gain( "tooth_and_claw_absorb" ) )
+      .high_priority( true )
+      .eligibility( &tooth_and_claw_can_absorb )
+    )
+  {}
+
+  virtual bool trigger( int stacks, double value, double, timespan_adl_barrier::timespan_t ) override
+  {
+    // Tooth and Claw absorb stacks by value.
+    return absorb_buff_t::trigger( stacks, value + current_value );
+  }
+
+  virtual void absorb_used( double /* amount */ ) override
+  {
+    // Tooth and Claw expires after ANY amount of the absorb is used.
+    expire();
   }
 };
 
@@ -3388,11 +3413,10 @@ struct maul_t : public bear_attack_t
       harmful = special = may_crit = false;
       may_multistrike = 0;
       target = player;
+      stats = p -> get_stats( "tooth_and_claw_absorb" );
 
       // Coeff is in tooltip but not spell data, so hardcode the value here.
       attack_power_mod.direct = 2.40;
-
-      p -> tooth_and_claw = stats;
     }
 
     virtual void impact( action_state_t* s )
@@ -3400,7 +3424,7 @@ struct maul_t : public bear_attack_t
       if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
         p() -> buff.guardian_tier17_4pc -> increment();
 
-      p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount + p() -> buff.tooth_and_claw_absorb -> current_value );
+      p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount );
     }
   };
 
@@ -6492,7 +6516,8 @@ void druid_t::create_buffs()
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
                                .school( SCHOOL_PHYSICAL )
                                .source( get_stats( "primal_tenacity" ) )
-                               .gain( get_gain( "primal_tenacity" ) ); // gain.primal_tenacity isn't initialized yet
+                               .gain( get_gain( "primal_tenacity" ) ) // gain.primal_tenacity isn't initialized yet
+                               .high_priority( true );
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -6511,7 +6536,7 @@ void druid_t::create_buffs()
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) )
                                .max_stack( find_spell( 135286 ) -> _max_stack + perk.enhanced_tooth_and_claw -> effectN( 1 ).base_value() );
-  buff.tooth_and_claw_absorb = buff_creator_t( this, "tooth_and_claw_absorb", find_spell( 135597 ) );
+  buff.tooth_and_claw_absorb = new tooth_and_claw_absorb_t( *this );
   buff.ursa_major            = new ursa_major_t( *this );
 
   // Restoration
@@ -6989,6 +7014,8 @@ void druid_t::init_gains()
   gain.feral_tier18_4pc      = get_gain( "feral_tier18_4pc"      );
   gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
   gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
+
+  primal_tenacity_stats      = get_stats( "primal_tenacity"      );
 }
 
 // druid_t::init_procs ======================================================
@@ -7778,6 +7805,18 @@ resource_e druid_t::primary_resource() const
   return RESOURCE_ENERGY;
 }
 
+// druid_t::init_absorb_priority ============================================
+
+void druid_t::init_absorb_priority()
+{
+  absorb_priority.insert( absorb_priority.begin(), 155784 ); // Primal Tenacity
+
+  player_t::init_absorb_priority();
+
+  absorb_priority.push_back( 184878 ); // Stalwart Guardian
+  absorb_priority.push_back( 135597 ); // Tooth & Claw
+}
+
 // druid_t::assess_damage ===================================================
 
 void druid_t::assess_damage( school_e school,
@@ -7834,6 +7873,7 @@ void druid_t::assess_damage( school_e school,
         pt_amount -= pt_pre_amount;
 
         buff.primal_tenacity -> trigger( 1, pt_amount );
+        primal_tenacity_stats -> add_execute( timespan_t::zero(), this );
       }
     }
   }
@@ -7850,76 +7890,6 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
 
   if ( buff.moonkin_form -> up() && s -> result_amount > 0 && s -> action -> aoe == 0 )
     buff.empowered_moonkin -> trigger();
-}
-
-// druid_t::assess_damage_imminent ==========================================
-
-/* Handle absorbs.
-    Absorb order typically, but not always, goes as follows:
-      Primal Tenacity -- handled in account_absorb_buffs(), before assess_damage_imminient()
-      Warlord's Unseeing Eye -- in player_t::assess_damage()
-      Stalwart Guardian
-      Tooth and Claw
- */
-
-void druid_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
-{
-  // Apply Stalwart Guardian -- Guardian T18 trinket
-  if ( stalwart_guardian && s -> result_amount > 0 )
-  {
-    // Pass incoming damage value so the absorb can be calculated.
-    // TOCHECK: Does this use result_amount or result_mitigated?
-    active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
-    // Pass the triggering enemy so that the damage reflect has a target;
-    active.stalwart_guardian -> triggering_enemy = s -> action -> player;
-    active.stalwart_guardian -> execute();
-
-    double effective = std::min( active.stalwart_guardian -> absorb_size, s -> result_amount );
-    double wasted = std::max( 0.0, active.stalwart_guardian -> absorb_size - s -> result_amount );
-
-    s -> result_absorbed    -= effective;
-    s -> result_amount      -= effective;
-    s -> self_absorb_amount += effective;
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s stalwart_guardian absorbs %.2f (%.2f wasted)", name(), effective, wasted );
-
-    active.stalwart_guardian -> stats -> add_result( effective,
-      active.stalwart_guardian -> absorb_size,
-      ABSORB,
-      RESULT_HIT,
-      BLOCK_RESULT_UNBLOCKED,
-      this );
-
-    gain.stalwart_guardian -> add( RESOURCE_HEALTH, effective, wasted );
-  }
-
-  // Apply Tooth and Claw
-  // Tooth and Claw is only consumed if there's damage left to absorb.
-  if ( ! s -> action -> special && dbc::is_school( SCHOOL_PHYSICAL, school )
-    && s -> result_amount > 0 && buff.tooth_and_claw_absorb -> up() )
-  {
-    double effective = std::min( buff.tooth_and_claw_absorb -> current_value, s -> result_amount );
-    double wasted = std::max( 0.0, buff.tooth_and_claw_absorb -> current_value - s -> result_amount );
-
-    s -> result_absorbed    -= effective;
-    s -> result_amount      -= effective;
-    s -> self_absorb_amount += effective;
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s tooth_and_claw_absorb absorbs %.2f (%.2f wasted)", name(), effective, wasted );
-
-    tooth_and_claw -> add_result( effective,
-      buff.tooth_and_claw_absorb -> current_value,
-      ABSORB,
-      RESULT_HIT,
-      BLOCK_RESULT_UNBLOCKED,
-      this );
-
-    gain.tooth_and_claw -> add( RESOURCE_HEALTH, effective, wasted );
-
-    buff.tooth_and_claw_absorb -> expire();
-  }
 }
 
 // druid_t::assess_heal =====================================================
@@ -8392,10 +8362,27 @@ static void wildcat_celerity( special_effect_t& effect )
 }
 
 // Guardian T18 (WoD 6.2) trinket effect
+static double stalwart_guardian_handler( const action_state_t* s )
+{
+  druid_t* p = static_cast<druid_t*>( s -> target );
+
+  // Pass incoming damage value so the absorb can be calculated.
+  // TOCHECK: Does this use result_amount or result_mitigated?
+  p -> active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
+  // Pass the triggering enemy so that the damage reflect has a target;
+  p -> active.stalwart_guardian -> triggering_enemy = s -> action -> player;
+  p -> active.stalwart_guardian -> execute();
+
+  return p -> active.stalwart_guardian -> absorb_size;
+}
+
 static void stalwart_guardian( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
   do_trinket_init( s, DRUID_GUARDIAN, s -> stalwart_guardian, effect );
+
+  effect.player -> instant_absorb_list[ 184878 ] =
+    new instant_absorb_t( s, s -> find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler );
 }
 
 // Restoration T18 (WoD 6.2) trinket effect

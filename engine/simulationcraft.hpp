@@ -121,6 +121,7 @@ struct gain_t;
 struct haste_buff_t;
 struct heal_t;
 struct item_t;
+struct instant_absorb_t;
 struct module_t;
 struct pet_t;
 struct player_t;
@@ -1860,16 +1861,18 @@ private:
   school_e _absorb_school;
   stats_t* _absorb_source;
   gain_t*  _absorb_gain;
+  bool     _high_priority; // For tank absorbs that should explicitly "go first"
+  std::function< bool( const action_state_t* ) > _eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
   friend struct ::absorb_buff_t;
 public:
   absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
     base_t( q, name, s, i ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 ), _high_priority( false )
   { }
 
   absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
     base_t( sim, name, s, i ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 ), _high_priority( false )
   { }
 
   bufftype& source( stats_t* s )
@@ -1880,6 +1883,12 @@ public:
 
   bufftype& gain( gain_t* g )
   { _absorb_gain = g; return *this; }
+
+  bufftype& high_priority( bool h )
+  { _high_priority = h; return *this; }
+
+  bufftype& eligibility( std::function<bool(const action_state_t*)> e )
+  { _eligibility = e; return *this; }
 
   operator absorb_buff_t* () const;
 };
@@ -2131,6 +2140,8 @@ struct absorb_buff_t : public buff_t
   school_e absorb_school;
   stats_t* absorb_source;
   gain_t*  absorb_gain;
+  bool     high_priority; // For tank absorbs that should explicitly "go first"
+  std::function< bool( const action_state_t* ) > eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
@@ -2144,7 +2155,7 @@ public:
   virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
 
-  void consume( double amount );
+  double consume( double amount );
 };
 
 struct cost_reduction_buff_t : public buff_t
@@ -4560,6 +4571,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
+  std::map<unsigned,instant_absorb_t*> instant_absorb_list;
   resolve::manager_t resolve_manager;
 
   int         invert_scaling;
@@ -4590,7 +4602,7 @@ struct player_t : public actor_t
   // Profs
   std::array<int, PROFESSION_MAX> profession;
 
-  virtual ~player_t() {}
+  virtual ~player_t();
 
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
@@ -4775,6 +4787,7 @@ struct player_t : public actor_t
   // Heal
   double iteration_heal, iteration_heal_taken, iteration_absorb, iteration_absorb_taken; // temporary accumulators
   double hpr;
+  std::vector<unsigned> absorb_priority; // for strict sequence absorbs
 
   player_processed_report_information_t report_information;
 
@@ -4994,6 +5007,7 @@ struct player_t : public actor_t
   virtual void init_rng();
   virtual void init_stats();
   virtual void init_distance_targeting();
+  virtual void init_absorb_priority();
   virtual void register_callbacks();
   // Class specific hook for first-phase initializing special effects. Returns true if the class-specific hook initialized something, false otherwise.
   virtual bool init_special_effect( special_effect_t& /* effect */, unsigned /* spell_id */ ) { return false; }
@@ -5285,9 +5299,6 @@ struct player_t : public actor_t
 
   // T18 Hellfire Citadel class trinket detection
   virtual bool has_t18_class_trinket() const;
-  
-  // Warlord's Unseeing Eye Handler (6.2 Trinket)
-  std::function< void( player_t&, action_state_t* ) > account_warlords_unseeing_eye;
 
   action_priority_list_t* find_action_priority_list( const std::string& name );
   void                    clear_action_priority_lists() const;
@@ -5863,9 +5874,8 @@ struct action_state_t : public noncopyable
   double          result_mitigated;       // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_absorbed;        // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_amount;          // Final (actual) result
-  double          blocked_amount;         // The exact amount of how much damage was reduced via block or critical block
-  double          self_absorb_amount;     // The exact amount of how much damage was reduced via personal absorbs such as shield_barrier
-  double          external_absorb_amount; // The exact amount of how much damage was reduced via external absorbs
+  double          blocked_amount;         // The amount of damage reduced via block or critical block
+  double          self_absorb_amount;     // The amount of damage reduced via personal absorbs such as shield_barrier.
   // Snapshotted stats during execution
   double          haste;
   double          crit;
@@ -7920,6 +7930,48 @@ inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* sou
   }
 }
 
+// Instant absorbs
+struct instant_absorb_t
+{
+private:
+  /* const spell_data_t* spell */;
+  std::function<double( const action_state_t* )> absorb_handler;
+  stats_t* absorb_stats;
+  gain_t*  absorb_gain;
+  player_t* player;
+
+public:
+  std::string name;
+
+  instant_absorb_t( player_t* p, const spell_data_t* s, const std::string n,
+                    std::function<double( const action_state_t* )> handler ) :
+    /* spell( s ), */ absorb_handler( handler ), player( p ), name( n )
+  {
+    util::tokenize( name );
+
+    absorb_stats = p -> get_stats( name );
+    absorb_gain  = p -> get_gain( name );
+    absorb_stats -> type = STATS_ABSORB;
+    absorb_stats -> school = s -> get_school_type();
+  }
+
+  double consume( const action_state_t* s )
+  {
+    double amount = std::min( s -> result_amount, absorb_handler( s ) );
+
+    if ( amount > 0 )
+    {
+      absorb_stats -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
+      absorb_stats -> add_execute( timespan_t::zero(), player );
+      absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
+
+      if ( player -> sim -> debug )
+        player -> sim -> out_debug.printf( "%s %s absorbs %.2f", player -> name(), name.c_str(), amount );
+    }
+
+    return amount;
+  }
+};
 
 /* Simple String to Number function, using stringstream
  * This will NOT translate all numbers in the string to a number,
