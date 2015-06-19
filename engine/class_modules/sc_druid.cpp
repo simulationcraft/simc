@@ -7809,7 +7809,7 @@ resource_e druid_t::primary_resource() const
 
 void druid_t::init_absorb_priority()
 {
-  absorb_priority.push_back( 155784 ); // Primal Tenacity
+  absorb_priority.insert( absorb_priority.begin(), 155784 ); // Primal Tenacity
 
   player_t::init_absorb_priority();
 

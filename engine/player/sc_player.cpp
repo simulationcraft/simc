@@ -1855,8 +1855,6 @@ void player_t::init_absorb_priority()
   /* Absorbs with the high priority flag will follow the order in absorb_priority
      vector when resolving. This method should be overwritten in class modules to
      declare the order of spec-specific high priority absorbs. */
-
-  absorb_priority.push_back( 184762 ); // Kilrogg's Dead Eye (6.2 Trinket)
 }
 
 // player_t::init_scaling ===================================================

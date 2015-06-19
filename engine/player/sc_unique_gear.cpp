@@ -3229,6 +3229,8 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   // Register our handler function so it can be managed by player_t::account_absorb_buffs()
   effect.player -> instant_absorb_list[ effect.driver() -> id() ] =
     new instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", &warlords_unseeing_eye_handler );
+  // Push the effect into the priority list. 
+  effect.player -> absorb_priority.push_back( 184762 );
 }
 
 } // UNNAMED NAMESPACE
