@@ -4003,7 +4003,10 @@ struct drain_soul_t: public warlock_spell_t
 
     if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) && p() -> buffs.dark_soul -> check() )
     {
-      if ( rng().roll( 0.1 ) )
+      if ( rng().roll( 0.1 ) && p() -> wod_hotfix )
+        p() -> buffs.dark_soul -> extend_duration( p(), p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> effectN( 1 ).time_value() );
+
+      if ( rng().roll( p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() ) && !p() -> wod_hotfix )
         p() -> buffs.dark_soul -> extend_duration( p(), p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> effectN( 1 ).time_value() );
     }
 
