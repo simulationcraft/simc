@@ -3510,6 +3510,25 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
   { return v; }
 };
 
+struct legendary_item_buff_exists_expr_t : public item_effect_expr_t
+{
+  legendary_item_buff_exists_expr_t( action_t* a, const std::vector<slot_e>& slots, const std::string& expr_str ) :
+    item_effect_expr_t( a, slots )
+  {
+    for ( size_t i = 0, end = effects.size(); i < end; i++ )
+    {
+      const special_effect_t* e = effects[i];
+
+      buff_t* b = buff_t::find( a -> player, e -> name() );
+      if ( b )
+      {
+        if ( expr_t* expr_obj = buff_t::create_expression( b -> name(), a, expr_str, b ) )
+          exprs.push_back( expr_obj );
+      }
+    }
+  }
+};
+
 // Cooldown based item expressions, creates cooldown expressions for the items
 // from user input
 struct item_cooldown_expr_t : public item_effect_expr_t
@@ -3583,6 +3602,7 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
     enum proc_type_e ptype = PROC_STAT;
     stat_e stat = STAT_NONE;
     std::vector<slot_e> slots;
+    bool legendary_ring = false;
 
     std::vector<std::string> splits = util::string_split( name_str, "." );
 
@@ -3614,6 +3634,7 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
     }
     else
     {
+      legendary_ring = true;
       slots.push_back( SLOT_FINGER_1 );
       slots.push_back( SLOT_FINGER_2 );
     }
@@ -3631,7 +3652,7 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
   if ( util::str_in_str_ci( splits[ ptype_idx ], "stacking_" ) )
     ptype = PROC_STACKING_STAT;
 
-  if ( ptype != PROC_COOLDOWN )
+  if ( ptype != PROC_COOLDOWN && !legendary_ring )
   {
     // Use "all stat" to indicate "any" ..
     if ( util::str_compare_ci( splits[ stat_idx ], "any" ) )
@@ -3644,11 +3665,14 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
     }
   }
 
-  if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && splits.size() >= 4 )
+  if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && ( splits.size() >= 4 || legendary_ring ) )
   {
-    return new item_buff_expr_t( a, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
+    if ( legendary_ring )
+      return new legendary_item_buff_exists_expr_t( a, slots, splits[ 1 ] );
+    else
+      return new item_buff_expr_t( a, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
-  else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3 )
+  else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3  )
   {
     return new item_cooldown_expr_t( a, slots, splits[ expr_idx ] );
   }
