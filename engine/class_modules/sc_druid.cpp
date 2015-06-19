@@ -1791,7 +1791,7 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
     return absorb_buff_t::trigger( stacks, value + current_value );
   }
 
-  virtual void absorb_used( double amount ) override
+  virtual void absorb_used( double /* amount */ ) override
   {
     // Tooth and Claw expires after ANY amount of the absorb is used.
     expire();
