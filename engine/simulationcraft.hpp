@@ -4571,7 +4571,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
-  std::map<int,instant_absorb_t*> instant_absorb_list;
+  std::map<unsigned,instant_absorb_t*> instant_absorb_list;
   resolve::manager_t resolve_manager;
 
   int         invert_scaling;
@@ -4602,7 +4602,7 @@ struct player_t : public actor_t
   // Profs
   std::array<int, PROFESSION_MAX> profession;
 
-  virtual ~player_t() {}
+  virtual ~player_t();
 
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
@@ -4787,7 +4787,7 @@ struct player_t : public actor_t
   // Heal
   double iteration_heal, iteration_heal_taken, iteration_absorb, iteration_absorb_taken; // temporary accumulators
   double hpr;
-  std::vector<int> absorb_priority; // for strict sequence absorbs
+  std::vector<unsigned> absorb_priority; // for strict sequence absorbs
 
   player_processed_report_information_t report_information;
 
@@ -7934,7 +7934,7 @@ inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* sou
 struct instant_absorb_t
 {
 private:
-  const spell_data_t* spell;
+  /* const spell_data_t* spell */;
   std::function<double( const action_state_t* )> absorb_handler;
   stats_t* absorb_stats;
   gain_t*  absorb_gain;
@@ -7943,16 +7943,12 @@ private:
 public:
   std::string name;
 
-  instant_absorb_t( player_t* p, const spell_data_t* s, std::string n,
-                    std::function<double( const action_state_t* )> handler )
+  instant_absorb_t( player_t* p, const spell_data_t* s, const std::string n,
+                    std::function<double( const action_state_t* )> handler ) :
+    /* spell( s ), */ absorb_handler( handler ), player( p ), name( n )
   {
-    util::tokenize( n );
+    util::tokenize( name );
 
-    player = p;
-    spell = s;
-
-    name = n;
-    absorb_handler = handler;
     absorb_stats = p -> get_stats( name );
     absorb_gain  = p -> get_gain( name );
     absorb_stats -> type = STATS_ABSORB;
@@ -7965,14 +7961,9 @@ public:
 
     if ( amount > 0 )
     {
-      if ( absorb_stats )
-      {
-        absorb_stats -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
-        absorb_stats -> add_execute( timespan_t::zero(), player );
-      }
-
-      if ( absorb_gain )
-        absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
+      absorb_stats -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
+      absorb_stats -> add_execute( timespan_t::zero(), player );
+      absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
 
       if ( player -> sim -> debug )
         player -> sim -> out_debug.printf( "%s %s absorbs %.2f", player -> name(), name.c_str(), amount );

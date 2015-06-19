@@ -639,6 +639,16 @@ player_t::player_t( sim_t*             s,
     parent = sim -> parent -> find_player( name() );
 }
 
+player_t::~player_t()
+{
+  for ( std::map<unsigned, instant_absorb_t*>::iterator i = instant_absorb_list.begin();
+        i != instant_absorb_list.end();
+        ++i )
+  {
+    delete i -> second;
+  }
+}
+
 player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
   mana_regen_per_second(),
