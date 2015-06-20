@@ -27,16 +27,21 @@ namespace { // UNNAMED NAMESPACE
 #if ! defined( SC_USE_WEBKIT )
 struct HtmlOutputFunctor
 {
-  QFile* file_;
+  QString fname;
 
-  HtmlOutputFunctor( QFile* out_file ) : file_( out_file )
+  HtmlOutputFunctor(const QString& fn) : fname( fn )
   { }
 
   void operator()( QString htmlOutput )
   {
-    QByteArray out_utf8 = htmlOutput.toUtf8();
-    file_ -> write( out_utf8.constData(), out_utf8.size() );
-    file_ -> close();
+    QFile file( fname );
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+      QByteArray out_utf8 = htmlOutput.toUtf8();
+      qint64 ret = file.write(out_utf8);
+      file.close();
+      assert(ret == htmlOutput.size());
+    }
   }
 };
 #endif
@@ -1725,30 +1730,39 @@ void SC_SingleResultTab::save_result()
 
   if ( f.exec() )
   {
-    QFile file( f.selectedFiles().at( 0 ) );
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    switch ( currentTab() )
     {
-      switch ( currentTab() )
-      {
-      case TAB_HTML:
+    case TAB_HTML:
+    {
 #if defined( SC_USE_WEBKIT )
+      QFile file( f.selectedFiles().at( 0 ) );
+      if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+      {
         file.write(static_cast<SC_WebView*>(currentWidget())->toHtml().toUtf8());
+        file.close();
+      }
 #else
-        static_cast<SC_WebView*>(currentWidget()) -> page() -> toHtml( HtmlOutputFunctor( &file ) );
+      static_cast<SC_WebView*>(currentWidget())->page()->toHtml(HtmlOutputFunctor(f.selectedFiles().at( 0 )));
 #endif /* SC_USE_WEBKIT */
-        break;
+      break;
+    }
       case TAB_TEXT:
       case TAB_XML:
       case TAB_PLOTDATA:
       case TAB_CSV:
-        file.write( static_cast<SC_TextEdit*>( currentWidget() ) -> toPlainText().toUtf8() );
+      {
+        QFile file(f.selectedFiles().at(0));
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+          file.write(static_cast<SC_TextEdit*>(currentWidget())->toPlainText().toUtf8());
+          file.close();
+        }
         break;
-      default: break;
       }
-      file.close();
-      QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( file.fileName() ), QMessageBox::Ok, QMessageBox::Ok );
-      mainWindow -> logText -> appendPlainText( QString( tr("Results saved to: %1\n") ).arg( file.fileName() ) );
+      default: break;
     }
+    QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( f.selectedFiles().at( 0 )), QMessageBox::Ok, QMessageBox::Ok );
+    mainWindow -> logText -> appendPlainText( QString( tr("Results saved to: %1\n") ).arg( f.selectedFiles().at( 0 )) );
   }
 }
 
