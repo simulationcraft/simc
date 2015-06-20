@@ -16,7 +16,7 @@ spec=arcane
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=buttered_sturgeon
+actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
@@ -139,13 +139,13 @@ trinket2=prophecy_of_fear,id=124230,bonus_id=567
 main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=730.00
+# gear_ilvl=729.67
 # gear_stamina=6204
 # gear_intellect=4660
 # gear_spell_power=2545
 # gear_crit_rating=747
 # gear_haste_rating=1888
-# gear_mastery_rating=2119
+# gear_mastery_rating=2018
 # gear_multistrike_rating=985
 # gear_versatility_rating=130
 # gear_armor=1114

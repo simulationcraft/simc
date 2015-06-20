@@ -128,16 +128,16 @@ feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
 trinket1=goren_soul_repository,id=119194,bonus_id=566
-trinket2=iron_reaver_piston,id=124227,bonus_id=566
+trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=711.00
+# gear_ilvl=711.33
 # gear_stamina=5347
-# gear_intellect=4201
+# gear_intellect=4325
 # gear_spell_power=2214
-# gear_crit_rating=2079
-# gear_haste_rating=1160
+# gear_crit_rating=1767
+# gear_haste_rating=848
 # gear_mastery_rating=1308
 # gear_multistrike_rating=845
 # gear_versatility_rating=237
