@@ -6325,7 +6325,7 @@ double death_knight_t::composite_melee_haste() const
 
   if ( buffs.obliteration -> up() )
   {
-    haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
+    haste *= 1.0 / ( 1.0 + ( wod_hotfix ? 0.03 : buffs.obliteration -> data().effectN( 1 ).percent() ) );
   }
 
   return haste;
@@ -6345,7 +6345,7 @@ double death_knight_t::composite_spell_haste() const
 
   if ( buffs.obliteration -> up() )
   {
-    haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
+    haste *= 1.0 / ( 1.0 + ( wod_hotfix ? 0.03 : buffs.obliteration -> data().effectN( 1 ).percent() ) );
   }
 
   return haste;
@@ -7814,7 +7814,7 @@ double death_knight_t::composite_player_critical_damage_multiplier() const
 
   if ( buffs.frozen_wake -> up() )
   {
-    m *= 1.0 + buffs.frozen_wake -> data().effectN( 1 ).percent();
+    m *= 1.0 + ( wod_hotfix ? 0.06 : buffs.frozen_wake -> data().effectN( 1 ).percent() );
   }
 
   return m;
