@@ -1841,6 +1841,15 @@ private:
 
     havoc_proc = 0;
 
+    if ( p() -> destruction_trinket )
+    {
+      affected_by_flamelicked = data().affected_by( p() -> destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    }
+    else
+    {
+      affected_by_flamelicked = false;
+    }
+
     parse_spell_coefficient( *this );
 
   }
@@ -1857,6 +1866,7 @@ public:
 
   proc_t* havoc_proc;
 
+  bool affected_by_flamelicked;
 
   struct cost_event_t: player_event_t
   {
@@ -2140,7 +2150,7 @@ public:
   virtual double composite_target_crit( player_t* target ) const
   {
     double c = spell_t::composite_target_crit( target );
-    if ( p() -> destruction_trinket )
+    if ( affected_by_flamelicked && p() -> destruction_trinket )
       c += td( target ) -> debuffs_flamelicked -> stack_value();
 
     return c;
@@ -3529,7 +3539,7 @@ struct chaos_bolt_t: public warlock_spell_t
   chaos_bolt_t* fnb;
   chaos_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Chaos Bolt" ),
-    fnb( new chaos_bolt_t( "chaos_bolt", p, p -> find_spell( 116858 ) ) )
+    fnb( new chaos_bolt_t( "chaos_bolt", p, p -> find_spell( 157701 ) ) )
   {
     if ( !p -> talents.charred_remains -> ok() )
       fnb = 0;
@@ -3556,11 +3566,11 @@ struct chaos_bolt_t: public warlock_spell_t
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
 
+    // CR Chaos Bolt specifically does not benefit from Flamelicked (Destruction 6.2 class trinket)
+    affected_by_flamelicked = false;
+
     stats = p -> get_stats( "chaos_bolt_fnb", this );
     gain = p -> get_gain( "chaos_bolt_fnb" );
-    // TODO: Fix with spell data generation and whitelisting the correct spell
-    base_costs[ RESOURCE_BURNING_EMBER ] = 2;
-
   }
 
   void schedule_execute( action_state_t* state )
