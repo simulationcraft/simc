@@ -134,28 +134,28 @@ head=mask_of_the_hurricanes_eye,id=124262,bonus_id=566
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant=gift_of_multistrike
 shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=566
 back=cloak_of_desperate_temerity,id=124134,bonus_id=566,enchant=gift_of_multistrike
-chest=chestguard_of_gnawing_desire,id=124244,bonus_id=566
+chest=tunic_of_the_soulbinder,id=124245,bonus_id=566
 wrists=bloodcult_bracers,id=124279,bonus_id=566
 hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=566
 waist=flayed_demonskin_belt,id=124277,bonus_id=566
 legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=566
-feet=oppressors_merciless_treads,id=124251,bonus_id=566
+feet=jungle_assassins_footpads,id=124252,bonus_id=566
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_multistrike
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_multistrike
 trinket1=sacred_draenic_incense,id=124517,bonus_id=566
 trinket2=soul_capacitor,id=124225,bonus_id=566
-main_hand=hammer_of_wicked_infusion,id=124371,bonus_id=566,enchant=mark_of_the_frostwolf
+main_hand=hammer_of_wicked_infusion,id=124371,bonus_id=566,enchant=mark_of_the_thunderlord
 off_hand=hammer_of_wicked_infusion,id=124371,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=712.81
-# gear_agility=3904
-# gear_stamina=5203
-# gear_crit_rating=1399
-# gear_haste_rating=936
+# gear_ilvl=712.50
+# gear_agility=3891
+# gear_stamina=5184
+# gear_crit_rating=1416
+# gear_haste_rating=672
 # gear_mastery_rating=131
-# gear_multistrike_rating=1873
-# gear_versatility_rating=547
-# gear_armor=1250
+# gear_multistrike_rating=2408
+# gear_versatility_rating=243
+# gear_armor=1246
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

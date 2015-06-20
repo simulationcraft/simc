@@ -31,12 +31,12 @@ Mage_Frost_T18H.simc
 talents=1000121
 
 # Monk
-Monk_Windwalker_1h_T18H.simc
+Monk_Windwalker_1h_T18H_ChiX.simc
 talents=0320012
-trinket2=felspring_coil,id=124223,bonus_id=566
-Monk_Windwalker_2h_T18H.simc
+trinket1=mirror_of_the_blademaster,id=124224,bonus_id=566
+Monk_Windwalker_2h_T18H_ChiX.simc
 talents=0320012
-trinket2=felspring_coil,id=124223,bonus_id=566
+trinket1=mirror_of_the_blademaster,id=124224,bonus_id=566
 
 # Paladin
 Paladin_Retribution_T18H.simc
