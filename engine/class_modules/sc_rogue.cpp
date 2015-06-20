@@ -5244,7 +5244,10 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
     if ( buffs.deathly_shadows -> up() )
     {
-      m *= 1.0 + buffs.deathly_shadows -> data().effectN( 1 ).percent();
+      if ( wod_hotfix )
+        m *= 1.3;
+      else
+        m *= 1.0 + buffs.deathly_shadows -> data().effectN( 1 ).percent();
     }
   }
 
