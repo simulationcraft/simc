@@ -4,10 +4,10 @@ level=100
 race=gnome
 role=spell
 position=back
-talents=3003223
+talents=3003222
 glyphs=cone_of_cold
 spec=arcane
-head=countenance_of_the_revenant,id=124158
+head=demon_princes_ascendant_crown,id=124159
 neck=choker_of_forbidden_indulgence,id=124391,enchant=gift_of_haste
 shoulders=mantle_of_the_arcanic_conclave,id=124177
 back=cloak_of_hideous_unity,id=124138,enchant=gift_of_haste
@@ -16,11 +16,11 @@ wrists=powdersinged_bracers,id=124183
 hands=gloves_of_the_arcanic_conclave,id=124154
 waist=demonbuckle_sash_of_argus,id=124200
 legs=pantaloons_of_the_arcanic_conclave,id=124165
-feet=pedalpushing_sandals,id=124148
-finger1=seal_of_the_traitorous_councilor,id=124191,enchant=gift_of_haste
+feet=bloody_daggerheeled_pumps,id=124149
+finger1=loathful_encrusted_band,id=124192,enchant=gift_of_haste
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-trinket1=prophecy_of_fear,id=124230
-trinket2=desecrated_shadowmoon_insignia,id=124228
+trinket1=tome_of_shifting_words,id=124516
+trinket2=prophecy_of_fear,id=124230
 main_hand=edict_of_argus,id=124382,enchant=mark_of_warsong
 save=Mage_Arcane_T18N.simc
 

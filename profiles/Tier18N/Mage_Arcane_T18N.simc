@@ -3,7 +3,7 @@ level=100
 race=gnome
 role=spell
 position=back
-talents=3003223
+talents=3003222
 glyphs=cone_of_cold
 spec=arcane
 
@@ -121,7 +121,7 @@ actions.conserve+=/presence_of_mind,if=buff.arcane_charge.stack<2&mana.pct>93
 actions.conserve+=/arcane_blast
 actions.conserve+=/arcane_barrage
 
-head=countenance_of_the_revenant,id=124158
+head=demon_princes_ascendant_crown,id=124159
 neck=choker_of_forbidden_indulgence,id=124391,enchant=gift_of_haste
 shoulders=mantle_of_the_arcanic_conclave,id=124177
 back=cloak_of_hideous_unity,id=124138,enchant=gift_of_haste
@@ -130,23 +130,23 @@ wrists=powdersinged_bracers,id=124183
 hands=gloves_of_the_arcanic_conclave,id=124154
 waist=demonbuckle_sash_of_argus,id=124200
 legs=pantaloons_of_the_arcanic_conclave,id=124165
-feet=pedalpushing_sandals,id=124148
-finger1=seal_of_the_traitorous_councilor,id=124191,enchant=gift_of_haste
+feet=bloody_daggerheeled_pumps,id=124149
+finger1=loathful_encrusted_band,id=124192,enchant=gift_of_haste
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-trinket1=prophecy_of_fear,id=124230
-trinket2=desecrated_shadowmoon_insignia,id=124228
+trinket1=tome_of_shifting_words,id=124516
+trinket2=prophecy_of_fear,id=124230
 main_hand=edict_of_argus,id=124382,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=697.67
-# gear_stamina=4643
-# gear_intellect=3492
+# gear_ilvl=700.00
+# gear_stamina=4712
+# gear_intellect=3537
 # gear_spell_power=1925
-# gear_crit_rating=376
-# gear_haste_rating=1701
-# gear_mastery_rating=1250
-# gear_multistrike_rating=1309
-# gear_versatility_rating=108
-# gear_armor=876
+# gear_crit_rating=631
+# gear_haste_rating=1351
+# gear_mastery_rating=1340
+# gear_multistrike_rating=901
+# gear_versatility_rating=220
+# gear_armor=888
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
