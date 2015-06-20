@@ -1769,6 +1769,24 @@ struct dispatch_t : public rogue_attack_t
       may_crit = false;
       may_multistrike = 1;
     }
+
+    void init()
+    {
+      melee_attack_t::init();
+
+      snapshot_flags = update_flags = STATE_MUL_DA;
+    }
+
+    double action_da_multiplier() const
+    {
+      double m = melee_attack_t::action_da_multiplier();
+
+      rogue_t* p = debug_cast<rogue_t*>( player );
+      if ( p -> mastery.potent_poisons -> ok() )
+        m *= 1.0 + p -> cache.mastery_value();
+
+      return m;
+    }
   };
 
   double toxic_mutilator_crit_chance;
