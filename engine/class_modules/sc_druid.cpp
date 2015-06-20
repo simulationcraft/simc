@@ -2168,8 +2168,11 @@ public:
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
 
-    double chance = ab::weapon -> proc_chance_on_swing( 3.5 ) *
-                    ( 1.0 + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent() );
+    double chance = ab::weapon -> proc_chance_on_swing( 3.5 );
+
+    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
+      chance *= 1.0 + ( ab::p() -> wod_hotfix ? 0.90 : ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent() );
+
     int active = ab::p() -> buff.omen_of_clarity -> check();
 
     // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
@@ -7304,7 +7307,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
       if ( buff.incarnation -> check() )
         m *= 1.0 + buff.incarnation -> default_value;
       if ( buff.faerie_blessing -> check() )
-        m *= 1.0 + buff.faerie_blessing -> data().effectN( 1 ).percent();
+        m *= 1.0 + ( wod_hotfix ? 0.06 : buff.faerie_blessing -> data().effectN( 1 ).percent() );
     }
   }
   return m;
