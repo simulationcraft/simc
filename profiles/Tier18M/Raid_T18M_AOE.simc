@@ -13,6 +13,7 @@ trinket1=reapers_harvest,id=124513,bonus_id=567
 
 # Druid
 Druid_Balance_T18M.simc
+trinket1=seed_of_creation,id=124514,bonus_id=567
 Druid_Feral_T18M.simc
 
 # Hunter
