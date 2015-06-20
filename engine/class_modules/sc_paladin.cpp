@@ -72,6 +72,7 @@ public:
   action_t* active_censure;  // this is the Censure dot application
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
+  action_t* active_hand_of_light_multistrike_proc;
   action_t* active_holy_shield_proc;
   absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
@@ -362,6 +363,7 @@ public:
     active_censure                     = 0;
     active_enlightened_judgments       = 0;
     active_hand_of_light_proc          = 0;
+    active_hand_of_light_multistrike_proc = 0;
     active_holy_shield_proc            = 0;
     active_illuminated_healing         = 0;
     active_protector_of_the_innocent   = 0;
@@ -688,9 +690,18 @@ public:
   {
     if ( p() -> passives.hand_of_light -> ok() )
     {
-      p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
-      p() -> active_hand_of_light_proc -> target = s -> target;
-      p() -> active_hand_of_light_proc -> execute();
+      if ( result_is_multistrike( s -> result ) )
+      {
+        p() -> active_hand_of_light_multistrike_proc -> base_dd_max = p() -> active_hand_of_light_multistrike_proc -> base_dd_min = s -> result_amount;
+        p() -> active_hand_of_light_multistrike_proc -> target = s -> target;
+        p() -> active_hand_of_light_multistrike_proc -> execute();
+      }
+      else
+      {
+        p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
+        p() -> active_hand_of_light_proc -> target = s -> target;
+        p() -> active_hand_of_light_proc -> execute();
+      }
     }
   }
 
@@ -4029,6 +4040,59 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
   }
 };
 
+struct hand_of_light_multistrike_proc_t : public paladin_melee_attack_t
+{
+  hand_of_light_multistrike_proc_t( paladin_t* p )
+    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false )
+  {
+    school = SCHOOL_HOLY;
+    may_crit    = false;
+    may_miss    = false;
+    may_dodge   = false;
+    may_parry   = false;
+    may_glance  = false;
+    callbacks = false;
+    may_multistrike = 0;
+    background  = true;
+    trigger_gcd = timespan_t::zero();
+    id          = 96172;
+
+    // No weapon multiplier
+    weapon_multiplier = 0.0;
+    // Note that setting weapon_multiplier=0.0 prevents STATE_MUL_DA from being added 
+    // to snapshot_flags because both base_dd_min && base_dd_max are zero, so we need
+    // to do it specifically in init(). 
+    // Alternate solution is to set weapon = NULL, but we have to use init() to disable
+    // other multipliers (Versatility) anyway.
+  }
+
+  // Disable multipliers in init() so that it doesn't double-dip on anything  
+  virtual void init()
+  {
+    paladin_melee_attack_t::init();
+    // Disable the snapshot_flags for all multipliers, but specifically allow factors in
+    // action_state_t::composite_da_multiplier() to be called. This lets us use
+    // action_multiplier() to apply the HoL factor, but we need to divide by the other 
+    // factors in composite_da_multiplier() to make sure we don't double-dip.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_MUL_DA;
+
+    // Note: I've turned off ALL other multipliers here now that CoE is gone. If we need to enable
+    // specific ones later, we'll have to remove the STATE_NO_MULTIPLIER flag and disable 
+    // STATE_VERSATILITY (and any other relevant flags) individually.
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
+    
+    // HoL doesn't double dip on anything in composite_player_multiplier(): avenging wrath, GoWoG, Divine Shield, etc.
+    // Remove it here by dividing by the resulting multiplier.
+    am /= p() -> composite_player_multiplier( SCHOOL_HOLY );
+
+    return am;
+  }
+};
 // Judgment =================================================================
 
 struct judgment_t : public paladin_melee_attack_t
@@ -5613,6 +5677,7 @@ void paladin_t::init_action_list()
   }
 
   active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
+  active_hand_of_light_multistrike_proc = new hand_of_light_multistrike_proc_t( this );
 
   // create action priority lists
   if ( action_list_str.empty() )
