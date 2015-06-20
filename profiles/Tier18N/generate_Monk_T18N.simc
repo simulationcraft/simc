@@ -10,10 +10,10 @@ spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262
 neck=choker_of_the_great_betrayer,id=124210,enchant=gift_of_multistrike
-shoulder=mantle_of_the_hurricanes_eye,id=124273
+shoulders=mantle_of_the_hurricanes_eye,id=124273
 back=cloak_of_desperate_temerity,id=124134,enchant=gift_of_multistrike
 chest=tunic_of_the_soulbinder,id=124245
-wrist=bloodcult_bracers,id=124279
+wrists=bloodcult_bracers,id=124279
 hands=fistwraps_of_the_hurricanes_eye,id=124256
 waist=flayed_demonskin_belt,id=124277
 legs=legwraps_of_the_hurricanes_eye,id=124268
@@ -38,10 +38,10 @@ spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262
 neck=choker_of_the_great_betrayer,id=124210,enchant=gift_of_multistrike
-shoulder=mantle_of_the_hurricanes_eye,id=124273
+shoulders=mantle_of_the_hurricanes_eye,id=124273
 back=cloak_of_desperate_temerity,id=124134,enchant=gift_of_multistrike
 chest=tunic_of_the_soulbinder,id=124245
-wrist=bloodcult_bracers,id=124279
+wrists=bloodcult_bracers,id=124279
 hands=fistwraps_of_the_hurricanes_eye,id=124256
 waist=flayed_demonskin_belt,id=124277
 legs=legwraps_of_the_hurricanes_eye,id=124268
@@ -66,10 +66,10 @@ spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262
 neck=choker_of_the_great_betrayer,id=124210,enchant=gift_of_haste
-shoulder=mantle_of_the_hurricanes_eye,id=124273
+shoulders=mantle_of_the_hurricanes_eye,id=124273
 back=cloak_of_desperate_temerity,id=124134,enchant=gift_of_haste
 chest=tunic_of_the_soulbinder,id=124245
-wrist=bloodcult_bracers,id=124279
+wrists=bloodcult_bracers,id=124279
 hands=fistwraps_of_the_hurricanes_eye,id=124256
 waist=waistwrap_of_banishment,id=124276
 legs=legwraps_of_the_hurricanes_eye,id=124268
@@ -95,10 +95,10 @@ spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262
 neck=choker_of_the_great_betrayer,id=124210,enchant=gift_of_haste
-shoulder=mantle_of_the_hurricanes_eye,id=124273
+shoulders=mantle_of_the_hurricanes_eye,id=124273
 back=cloak_of_desperate_temerity,id=124134,enchant=gift_of_haste
 chest=tunic_of_the_soulbinder,id=124245
-wrist=bloodcult_bracers,id=124279
+wrists=bloodcult_bracers,id=124279
 hands=fistwraps_of_the_hurricanes_eye,id=124256
 waist=waistwrap_of_banishment,id=124276
 legs=legwraps_of_the_hurricanes_eye,id=124268
