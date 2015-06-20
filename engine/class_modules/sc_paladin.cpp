@@ -690,7 +690,7 @@ public:
   {
     if ( p() -> passives.hand_of_light -> ok() )
     {
-      if ( result_is_multistrike( s -> result ) )
+      if ( ab::result_is_multistrike( s -> result ) )
       {
         p() -> active_hand_of_light_multistrike_proc -> base_dd_max = p() -> active_hand_of_light_multistrike_proc -> base_dd_min = s -> result_amount;
         p() -> active_hand_of_light_multistrike_proc -> target = s -> target;
