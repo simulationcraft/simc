@@ -203,7 +203,7 @@ void dbc::apply_hotfixes()
   if ( SC_USE_PTR )
   {
     s = spell_data_t::find( 185800, true );
-    s -> _spell_level = 30;
+    s -> _proc_chance = 100;
   }
 
   e = spelleffect_data_t::find( 270032 );
