@@ -148,6 +148,10 @@ void dbc::apply_hotfixes()
 
   // Paladin
 
+  e = spelleffect_data_t::find( 269763 );
+  assert( e -> _base_value == 6 && "Check T184P Retribution" );
+  e -> _base_value = 5;
+
   // Priest
 
   // Rogue
@@ -184,6 +188,27 @@ void dbc::apply_hotfixes()
     s = spell_data_t::find( 85384, true );
     s -> _spell_level = 30;
   }
+
+  e = spelleffect_data_t::find( 270034 );
+  assert( e -> _base_value == 50 && "Check T182P Fury" );
+  e -> _base_value = 100;
+
+  e = spelleffect_data_t::find( 270037 );
+  assert( e -> _base_value == -20000 && "Check T184P Fury" );
+  e -> _base_value = -25000;
+
+  s = spell_data_t::find( 185800, false );
+  assert( s -> _proc_chance == 60 && "Check T182P Arms" );
+  s -> _proc_chance = 100;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 185800, true );
+    s -> _spell_level = 30;
+  }
+
+  e = spelleffect_data_t::find( 270032 );
+  assert( e -> _base_value == 200 && "Check T184P Protection" );
+  e -> _base_value = 100;
 
   // Druid
   s = spell_data_t::find( 50288, false ); // Starfall probably doesn't take 30 seconds to hit the target.
