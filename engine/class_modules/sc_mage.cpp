@@ -5672,7 +5672,7 @@ void mage_t::apl_precombat()
     else if ( level() <= 90 )
       food_action += "mogu_fish_stew" ;
     else if ( specialization() == MAGE_ARCANE )
-      food_action += "sleeper_sushi" ;
+      food_action += "buttered_sturgeon" ;
     else if ( specialization() == MAGE_FIRE )
       food_action += "pickled_eel" ;
     else

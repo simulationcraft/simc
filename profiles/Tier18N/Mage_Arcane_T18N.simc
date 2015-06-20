@@ -16,7 +16,7 @@ spec=arcane
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=sleeper_sushi
+actions.precombat+=/food,type=buttered_sturgeon
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
@@ -126,11 +126,11 @@ neck=choker_of_forbidden_indulgence,id=124391,enchant=gift_of_haste
 shoulders=mantle_of_the_arcanic_conclave,id=124177
 back=cloak_of_hideous_unity,id=124138,enchant=gift_of_haste
 chest=robe_of_the_arcanic_conclave,id=124171
-wrists=powdersinged_bracers,id=124183
+wrists=contemptuous_wristguards,id=124186
 hands=gloves_of_the_arcanic_conclave,id=124154
 waist=demonbuckle_sash_of_argus,id=124200
 legs=pantaloons_of_the_arcanic_conclave,id=124165
-feet=bloody_daggerheeled_pumps,id=124149
+feet=dessicated_soulrender_slippers,id=124150
 finger1=loathful_encrusted_band,id=124192,enchant=gift_of_haste
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
 trinket1=tome_of_shifting_words,id=124516
@@ -139,14 +139,14 @@ main_hand=edict_of_argus,id=124382,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_ilvl=700.00
-# gear_stamina=4712
-# gear_intellect=3537
+# gear_stamina=4721
+# gear_intellect=3542
 # gear_spell_power=1925
-# gear_crit_rating=631
-# gear_haste_rating=1351
-# gear_mastery_rating=1340
-# gear_multistrike_rating=901
-# gear_versatility_rating=220
-# gear_armor=888
+# gear_crit_rating=564
+# gear_haste_rating=1494
+# gear_mastery_rating=1617
+# gear_multistrike_rating=745
+# gear_versatility_rating=108
+# gear_armor=889
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
