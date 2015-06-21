@@ -5888,6 +5888,8 @@ void mage_t::apl_arcane()
                           "if=buff.arcane_charge.stack<2" );
   conserve -> add_action( this, "Presence of Mind",
                           "if=mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up)" );
+  conserve -> add_action( this, "Arcane Missiles",
+                          "if=debuff.mark_of_doom.remains>travel_time" );
   conserve -> add_action( this, "Arcane Blast",
                           "if=buff.arcane_charge.stack=4&mana.pct>93" );
   conserve -> add_action( this, "Arcane Barrage",
