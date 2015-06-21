@@ -1011,15 +1011,7 @@ struct prismatic_crystal_t : public pet_t
 
   stats_t* add_proxy_stats( action_t* owner_action )
   {
-    std::map<size_t, std::vector<stats_t*> >::iterator idx =
-      proxy_stats.find( owner_action -> player -> actor_index );
-    if ( idx == proxy_stats.end() )
-    {
-      proxy_stats[ owner_action -> player -> actor_index ] = std::vector<stats_t*>();
-      idx = proxy_stats.find( owner_action -> player -> actor_index );
-    }
-
-    std::vector<stats_t*>& stats_data = idx -> second;
+    std::vector<stats_t*>& stats_data = proxy_stats[ owner_action -> player -> actor_index ];
 
     if ( stats_data.size() <= owner_action -> internal_id )
       stats_data.resize( owner_action -> internal_id + 1, 0 );
