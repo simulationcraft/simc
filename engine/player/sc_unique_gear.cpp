@@ -3046,10 +3046,6 @@ struct felstorm_t : public melee_attack_t
     tick_action = new felstorm_tick_t( p );
   }
 
-  // Felstorm, while channeled, is not affected by haste
-  timespan_t tick_time( double ) const
-  { return base_tick_time; }
-
   bool init_finished()
   {
     pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "mirror_image_(trinket)" );
