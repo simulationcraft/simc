@@ -6536,7 +6536,7 @@ void monk_t::apl_combat_brewmaster()
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down" );
   st -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
   st -> add_action( this, "Expel Harm", "if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
-  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   st -> add_action( this, "Tiger Palm" );
 
   aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
@@ -6557,7 +6557,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
   aoe -> add_action( this, "Expel Harm", "if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
-  aoe -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  aoe -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Tiger Palm" );
 }
 
