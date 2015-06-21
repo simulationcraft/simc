@@ -123,6 +123,52 @@ namespace set_bonus
 }
 
 /**
+ * Targetdata initializer for items. When targetdata is constructed (due to a call to
+ * player_t::get_target_data failing to find an object for the given target), all targetdata
+ * initializers in the sim are invoked. Most class specific targetdata is handled by the derived
+ * class-specific targetdata, however there are a couple of trinkets that require "generic"
+ * targetdata support. Item targetdata initializers will create the relevant debuffs/buffs needed.
+ * Note that the buff/debuff needs to be created always, since expressions for buffs/debuffs presume
+ * the buff exists or the whole sim fails to init.
+ *
+ * See unique_gear::register_target_data_initializers() for currently supported target-based debuffs
+ * in generic items.
+ */
+struct item_targetdata_initializer_t
+{
+  unsigned item_id;
+  std::vector< slot_e > slots;
+
+  item_targetdata_initializer_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_id( iid ), slots( s )
+  { }
+
+  // Returns the special effect based on item id and slots to source from. Overridable if more
+  // esoteric functionality is needed
+  virtual const special_effect_t* find_effect( player_t* player ) const
+  {
+    // No need to check items on pets/enemies
+    if ( player -> is_pet() || player -> is_enemy() || player -> type == HEALING_ENEMY )
+    {
+      return 0;
+    }
+
+    for ( size_t i = 0; i < slots.size(); ++i )
+    {
+      if ( player -> items[ slots[ i ] ].parsed.data.id == item_id )
+      {
+        return player -> items[ slots[ i ] ].parsed.special_effects[ 0 ];
+      }
+    }
+
+    return 0;
+  }
+
+  // Override to initialize the targetdata object.
+  virtual void operator()( actor_target_data_t* ) const = 0;
+};
+
+/**
  * Select attribute operator for buffs. Selects the attribute based on the
  * comparator given (std::greater for example), based on all defined attributes
  * that the stat buff is using. Note that this is for _ATTRIBUTES_ only. Using
@@ -2599,28 +2645,32 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
   }
 };
 
-struct empty_drinking_horn_constructor_t
+struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
 {
-  const special_effect_t& effect;
-
-  empty_drinking_horn_constructor_t( const special_effect_t& e ) :
-    effect( e )
+  empty_drinking_horn_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
   { }
 
-  void operator()( actor_target_data_t* td )
+  void operator()( actor_target_data_t* td ) const
   {
-    assert( ! td -> debuff.fel_burn );
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( ! effect )
+    {
+      td -> debuff.fel_burn = buff_creator_t( *td, "fel_burn" );
+    }
+    else
+    {
+      assert( ! td -> debuff.fel_burn );
 
-    td -> debuff.fel_burn = new fel_burn_t( *td, effect );
-    td -> debuff.fel_burn -> reset();
+      td -> debuff.fel_burn = new fel_burn_t( *td, *effect );
+      td -> debuff.fel_burn -> reset();
+    }
   }
 };
 
 void item::empty_drinking_horn( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_ALL_HIT;
-
-  effect.player -> register_target_data_initializer( empty_drinking_horn_constructor_t( effect ) );
 
   new empty_drinking_horn_cb_t( effect );
 }
@@ -2889,28 +2939,32 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
   }
 };
 
-struct prophecy_of_fear_constructor_t
+struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
 {
-  const special_effect_t& effect;
-
-  prophecy_of_fear_constructor_t( const special_effect_t& e ) :
-    effect( e )
+  prophecy_of_fear_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
   { }
 
-  void operator()( actor_target_data_t* td )
+  void operator()( actor_target_data_t* td ) const
   {
-    assert( ! td -> debuff.mark_of_doom );
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( effect == 0 )
+    {
+      td -> debuff.mark_of_doom = buff_creator_t( *td, "mark_of_doom" );
+    }
+    else
+    {
+      assert( ! td -> debuff.mark_of_doom );
 
-    td -> debuff.mark_of_doom = new mark_of_doom_t( *td, effect );
-    td -> debuff.mark_of_doom -> reset();
+      td -> debuff.mark_of_doom = new mark_of_doom_t( *td, *effect );
+      td -> debuff.mark_of_doom -> reset();
+    }
   }
 };
 
 void item::prophecy_of_fear( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_ALL_HIT;
-
-  effect.player -> register_target_data_initializer( prophecy_of_fear_constructor_t( effect ) );
 
   new prophecy_of_fear_driver_t( effect );
 }
@@ -4076,3 +4130,13 @@ void unique_gear::register_special_effects()
   register_special_effect( 187863, set_bonus::t18_lfr_4pc_leather_melee );
 }
 
+void unique_gear::register_target_data_initializers( sim_t* sim )
+{
+  std::vector< slot_e > trinkets;
+  trinkets.push_back( SLOT_TRINKET_1 );
+  trinkets.push_back( SLOT_TRINKET_2 );
+
+  sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
+  sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
+
+}

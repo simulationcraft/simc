@@ -1666,6 +1666,21 @@ struct actor_pair_t
   virtual ~actor_pair_t() {}
 };
 
+struct actor_target_data_t : public actor_pair_t
+{
+  struct atd_debuff_t
+  {
+    debuff_t* mark_of_doom;
+    debuff_t* fel_burn;
+  } debuff;
+
+  struct atd_dot_t
+  {
+  } dot;
+
+  actor_target_data_t( player_t* target, player_t* source );
+};
+
 // Uptime ==================================================================
 
 struct uptime_common_t
@@ -3042,6 +3057,13 @@ struct sim_t : private sc_thread_t
   bool enable_highcharts;
   bool output_relative_difference;
   double boxplot_percentile;
+
+  // List of callbacks to call when an actor_target_data_t object is created. Currently used to
+  // initialize the generic targetdata debuffs/dots we have.
+  std::vector<std::function<void(actor_target_data_t*)> > target_data_initializer;
+
+  void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
+  { target_data_initializer.push_back( cb ); }
 private:
   void do_pause();
 
@@ -4518,21 +4540,6 @@ struct scaling_metric_data_t {
     name( name ), value( tl.mean() ), stddev( tl.mean_stddev() ), metric( m ) {}
 };
 
-struct actor_target_data_t : public actor_pair_t
-{
-  struct atd_debuff_t
-  {
-    debuff_t* mark_of_doom;
-    debuff_t* fel_burn;
-  } debuff;
-
-  struct atd_dot_t
-  {
-  } dot;
-
-  actor_target_data_t( player_t* target, player_t* source );
-};
-
 struct player_t : public actor_t
 {
   static const int default_level = 100;
@@ -5332,13 +5339,6 @@ struct player_t : public actor_t
   // Targetdata stuff
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
-
-  // List of callbacks to call when an actor_target_data_t object is created. Currently used to
-  // initialize the generic targetdata debuffs/dots we have.
-  std::vector<std::function<void(actor_target_data_t*)> > target_data_initializer;
-
-  void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
-  { target_data_initializer.push_back( cb ); }
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}
@@ -7531,6 +7531,7 @@ namespace unique_gear
 void register_special_effects();
 void register_special_effect( unsigned spell_id, const std::string& encoded_str );
 void register_special_effect( unsigned spell_id, custom_cb_t callback );
+void register_target_data_initializers( sim_t* );
 
 void init( player_t* );
 
@@ -7924,9 +7925,9 @@ inline player_t* target_wrapper_expr_t::target() const
 inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
   actor_pair_t( target, source ), debuff( atd_debuff_t() ), dot( atd_dot_t() )
 {
-  for ( size_t i = 0, end = source -> target_data_initializer.size(); i < end; ++i )
+  for ( size_t i = 0, end = source -> sim -> target_data_initializer.size(); i < end; ++i )
   {
-    source -> target_data_initializer[ i ]( this );
+    source -> sim -> target_data_initializer[ i ]( this );
   }
 }
 
