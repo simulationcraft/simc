@@ -988,13 +988,7 @@ struct prismatic_crystal_t : public pet_t
       // execute with a state
       const prismatic_crystal_aoe_state_t* st = debug_cast<const prismatic_crystal_aoe_state_t*>( pre_execute_state );
 
-      if ( p() -> proxy_stats.size() <= st -> owner_action -> internal_id ||
-           ! p() -> proxy_stats[ st -> owner_action -> internal_id ] )
-      {
-        p() -> add_proxy_stats( st -> owner_action );
-      }
-
-      stats = p() -> proxy_stats[ st -> owner_action -> internal_id ];
+      stats = p() -> add_proxy_stats( st -> owner_action );
 
       spell_t::execute();
     }
@@ -1006,7 +1000,7 @@ struct prismatic_crystal_t : public pet_t
   prismatic_crystal_aoe_t* aoe_spell;
   const spell_data_t* damage_taken,
                     * frost_damage_taken;
-  std::vector<stats_t*> proxy_stats;
+  std::map<size_t, std::vector<stats_t*> > proxy_stats;
 
   prismatic_crystal_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "prismatic_crystal", true ),
@@ -1015,17 +1009,29 @@ struct prismatic_crystal_t : public pet_t
     frost_damage_taken( owner -> find_spell( 152087 ) )
   { true_level = 101; }
 
-  void add_proxy_stats( action_t* owner_action )
+  stats_t* add_proxy_stats( action_t* owner_action )
   {
-    if ( proxy_stats.size() <= owner_action -> internal_id )
-      proxy_stats.resize( owner_action -> internal_id + 1, 0 );
+    std::map<size_t, std::vector<stats_t*> >::iterator idx =
+      proxy_stats.find( owner_action -> player -> actor_index );
+    if ( idx == proxy_stats.end() )
+    {
+      proxy_stats[ owner_action -> player -> actor_index ] = std::vector<stats_t*>();
+      idx = proxy_stats.find( owner_action -> player -> actor_index );
+    }
 
-    if ( proxy_stats[ owner_action -> internal_id ] )
-      return;
+    std::vector<stats_t*>& stats_data = idx -> second;
 
-    proxy_stats[ owner_action -> internal_id ] = get_stats( owner_action -> name_str );
-    proxy_stats[ owner_action -> internal_id ] -> action_list.push_back( owner_action );
-    proxy_stats[ owner_action -> internal_id ] -> school = owner_action -> school;
+    if ( stats_data.size() <= owner_action -> internal_id )
+      stats_data.resize( owner_action -> internal_id + 1, 0 );
+
+    if ( stats_data[ owner_action -> internal_id ] == 0 )
+    {
+      stats_data[ owner_action -> internal_id ] = get_stats( owner_action -> name_str );
+      stats_data[ owner_action -> internal_id ] -> action_list.push_back( owner_action );
+      stats_data[ owner_action -> internal_id ] -> school = owner_action -> school;
+    }
+
+    return stats_data[ owner_action -> internal_id ];
   }
 
   mage_t* o() const
