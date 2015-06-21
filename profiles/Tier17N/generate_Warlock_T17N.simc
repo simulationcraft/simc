@@ -18,6 +18,7 @@ talents=0000311
 talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
 talent_override=soulburn_haunt,if=enemies=2
 talent_override=cataclysm,if=enemies>2
+talent_override=grimoire_of_supremacy,if=enemies>1
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant_id=5318
 shoulder=hexweave_mantle,id=114809,bonus_id=118/559

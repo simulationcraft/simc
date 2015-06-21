@@ -13,6 +13,7 @@ talents=0000213
 talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
 talent_override=soulburn_haunt,if=enemies=2
 talent_override=cataclysm,if=enemies>2
+talent_override=grimoire_of_supremacy,if=enemies>1
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=torq_of_soothing_waters,id=114478,bonus_id=487,enchant_id=5318
 shoulder=frosttouched_shoulderpads,id=109931,bonus_id=524
