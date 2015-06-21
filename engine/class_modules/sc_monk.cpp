@@ -2341,7 +2341,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = 0;
-    if ( p() -> wod_hotfix )
+    if ( p() -> wod_hotfix && p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
       cb_chance += 0.3;
     else
       cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
@@ -2410,7 +2410,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = 0;
-    if ( p() -> wod_hotfix )
+    if ( p() -> wod_hotfix && p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
       cb_chance += 0.3;
     else
       cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
