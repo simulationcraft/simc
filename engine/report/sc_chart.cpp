@@ -2333,7 +2333,7 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc, sim_t* sim )
   }
 
   bc.set( "series.0.name", "Downtime" );
-  bc.set( "series.0.tooltip.pointFormat", "<span style=\"color:{point.color}\">\u25CF</span> {series.name}: <b>{point.y}</b>%<br/>" );
+  bc.set( "series.0.tooltip.pointFormat", "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>%<br/>" );
 
   bc.set_title( "Raid downtime" );
   bc.set_yaxis_title( "Downtime% (of total fight length)" );
@@ -2732,7 +2732,7 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const 
 
   generate_stats_sources( chart, p, p -> name_str + " Damage Sources", stats_list );
   chart.set( "series.0.name", "Damage" );
-  chart.set( "plotOptions.pie.tooltip.pointFormat", "<span style=\"color:{point.color}\">\u25CF</span> {series.name}: <b>{point.y}</b>%<br/>" );
+  chart.set( "plotOptions.pie.tooltip.pointFormat", "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>%<br/>" );
   return true;
 }
 
@@ -3213,7 +3213,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc,
       sc_js_t e;
       e.set( "color", c.str() );
       e.set( "name", p -> name_str );
-      e.set( "y", util::round( value, precision ) );
+      e.set( "y", util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p -> index ) + "toggle" );
 
       // If median is defined, add relative difference (in percent) to the data

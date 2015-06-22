@@ -401,7 +401,7 @@ chart_t& chart_t::add_yplotline( double value_,
       if ( text_v -> GetType() == rapidjson::kStringType )
         mean_str = std::string( text_v -> GetString() ) + ", " + mean_str;
 
-      text_v -> SetString( mean_str.c_str(), mean_str.size(), js_.GetAllocator() );
+      text_v -> SetString( mean_str.c_str(), static_cast<rapidjson::SizeType>( mean_str.size() ), js_.GetAllocator() );
     }
 
     rapidjson::Value new_obj( rapidjson::kObjectType );

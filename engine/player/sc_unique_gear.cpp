@@ -143,6 +143,8 @@ struct item_targetdata_initializer_t
     item_id( iid ), slots( s )
   { }
 
+  virtual ~item_targetdata_initializer_t() {}
+
   // Returns the special effect based on item id and slots to source from. Overridable if more
   // esoteric functionality is needed
   virtual const special_effect_t* find_effect( player_t* player ) const
