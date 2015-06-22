@@ -438,7 +438,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -474,7 +474,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -511,7 +511,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -549,7 +549,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -587,7 +587,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -622,7 +622,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -657,7 +657,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -698,7 +698,7 @@
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>

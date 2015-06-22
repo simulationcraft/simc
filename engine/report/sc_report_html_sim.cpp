@@ -864,7 +864,8 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, const sim_
       os << raid_apm.to_target_div();
       sim -> add_chart_data( raid_apm );
     }
-
+    os << "</div>\n";
+    os << "<div class=\"charts\">\n";
     highchart::bar_chart_t raid_variance( "raid_variance", sim );
     if ( chart::generate_raid_aps( raid_variance, sim, "variance" ) )
     {
