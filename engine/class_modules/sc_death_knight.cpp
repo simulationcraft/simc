@@ -3696,6 +3696,11 @@ struct defile_t : public death_knight_spell_t
     ground_aoe = true;
   }
 
+  // Defile very likely counts as direct damage, as it procs certain trinkets that are flagged for
+  // "aoe harmful spell", but not "periodic".
+  dmg_e amount_type( const action_state_t*, bool ) const
+  { return DMG_DIRECT; }
+
   double composite_ta_multiplier( const action_state_t* state ) const
   {
     double m = death_knight_spell_t::composite_ta_multiplier( state );
