@@ -1,9 +1,9 @@
-mage="Mage_Frost_T18H_weave2"
+mage="Mage_Frost_T18H"
 level=100
 race=dwarf
 role=spell
 position=back
-talents=3003222
+talents=3003322
 glyphs=icy_veins/splitting_ice/cone_of_cold
 spec=frost
 
