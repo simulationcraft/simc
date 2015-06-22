@@ -5425,6 +5425,11 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     }
   }
 
+  // Breath of Sindragosa very likely counts as direct damage, as it procs certain trinkets that are
+  // flagged for "aoe harmful spell", but not "periodic".
+  dmg_e amount_type( const action_state_t*, bool ) const
+  { return DMG_DIRECT; }
+
   timespan_t composite_dot_duration( const action_state_t* ) const
   {
     return player -> sim -> expected_iteration_time * 2;
