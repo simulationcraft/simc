@@ -606,7 +606,8 @@ struct base_fiend_pet_t : public priest_pet_t
 
   virtual void summon( timespan_t duration ) override
   {
-    duration += timespan_t::from_seconds( 0.01 );
+    // TODO: Why is there extra duration added? This messes up pet spawning with T18 set bonus.
+    //duration += timespan_t::from_seconds( 0.01 );
 
     priest_pet_t::summon( duration );
 
@@ -619,12 +620,16 @@ struct base_fiend_pet_t : public priest_pet_t
     }
   }
 
-  virtual void demise() override
+  virtual void dismiss() override
   {
-    priest_pet_t::demise();
+    // T18 Shadow 4pc; don't trigger if the we're at the end of the iteration (owner demise is in
+    // progress)
+    if ( expiration && expiration -> remains() == timespan_t::zero() )
+    {
+      o().buffs.premonition -> trigger();
+    }
 
-    // T18 Shadow 4pc
-    o().buffs.premonition -> trigger();
+    priest_pet_t::dismiss();
   }
 
   virtual action_t* create_action( const std::string& name,

@@ -187,10 +187,9 @@ void pet_t::summon( timespan_t summon_duration )
       { return "pet_summon_duration"; }
       virtual void execute()
       {
-        pet.expiration = nullptr;
-
         if ( ! pet.is_sleeping() )
           pet.dismiss();
+        pet.expiration = nullptr;
       }
     };
     expiration = new ( *sim ) expiration_t( *this, summon_duration );
