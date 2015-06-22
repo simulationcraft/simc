@@ -5737,6 +5737,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& c
 {
   assert( a );
   interrupt_auto_attack = false;
+  quiet = true;
 }
 
 timespan_t wait_for_cooldown_t::execute_time() const
@@ -6407,6 +6408,7 @@ struct wait_fixed_t : public wait_action_base_t
     add_option( opt_string( "sec", sec_str ) );
     parse_options( options_str );
     interrupt_auto_attack = false; //Probably shouldn't interrupt autoattacks while waiting.
+    quiet = true;
 
     time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
     if ( ! time_expr )
@@ -6429,10 +6431,11 @@ struct wait_fixed_t : public wait_action_base_t
 // wait until actions *before* this wait are ready.
 struct wait_until_ready_t : public wait_fixed_t
 {
-  wait_until_ready_t( player_t* player, const std::string& options_str ) :
+  wait_until_ready_t( player_t* player, const std::string& options_str ):
     wait_fixed_t( player, options_str )
   {
-   interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
+    quiet = true;
   }
 
   virtual timespan_t execute_time() const
