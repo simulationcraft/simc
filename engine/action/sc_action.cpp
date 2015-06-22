@@ -2049,12 +2049,7 @@ void action_t::init()
 
   #ifndef NDEBUG
   if ( sim -> distance_targeting_enabled )
-  { // Values over 50 may not be an issue, depending on how the spell is setup. 
-    if ( radius > 50 )
-      sim -> out_debug.printf( "%s's radius of %.3f is much larger than should be possible.", name(), radius );
-    if ( range > 50 )
-      sim -> out_debug.printf( "%s's range of %.3f is much larger than should be possible.", name(), range );
-  }
+    sim -> out_debug.printf( "%s - radius %.1f - range - %.1f", name(), radius, range );
 #endif
 
   init_target_cache();

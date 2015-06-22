@@ -84,22 +84,13 @@ struct adds_event_t : public raid_event_t
 
     if ( fabs( spawn_radius ) > 0 || fabs( spawn_radius_max ) > 0 || fabs( spawn_radius_min ) > 0 )
     {
-      if ( !sim -> distance_targeting_enabled )
-      {
-        if ( sim -> log )
-        {
-          sim -> out_log.printf( "distance_targeting_enabled=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
-        }
-        sim -> distance_targeting_enabled = true;
-      }
-
+      sim -> distance_targeting_enabled = true;
       if ( fabs( spawn_radius ) > 0 )
       {
         spawn_radius_min = spawn_radius_max = fabs( spawn_radius );
       }
 
       double tempangle;
-
       if ( spawn_angle_start > 360 )
       {
         tempangle = fmod( spawn_angle_start, 360 );
@@ -276,12 +267,7 @@ struct move_enemy_t : public raid_event_t
     parse_options( options_str );
 
     enemy = sim -> find_player( name );
-
-    if ( !sim -> distance_targeting_enabled )
-    {
-      sim -> out_log.printf( "distance_targeting_enabled=1 must be enabled for move_enemy to be worth using. It has been force enabled." );
-      sim -> distance_targeting_enabled = true;
-    }
+    sim -> distance_targeting_enabled = true;
 
     if ( !enemy )
     {

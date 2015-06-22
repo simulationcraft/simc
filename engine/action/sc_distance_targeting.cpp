@@ -219,7 +219,6 @@ double player_t::get_ground_aoe_distance( action_state_t& a )
 }
 
 // player_t::init_distance_targeting ===========================================
-// Will eventually reorganize everything so that this enables the functionality behind distance_targeting
 
 void player_t::init_distance_targeting()
 {
