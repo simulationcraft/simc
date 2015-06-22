@@ -1369,8 +1369,11 @@ struct temporal_hero_t : public pet_t
       }
     }
 
-    mage_t* m = debug_cast<mage_t*>( owner );
-    m -> buffs.temporal_power -> trigger();
+    if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+    {
+      mage_t* m = debug_cast<mage_t*>( owner );
+      m -> buffs.temporal_power -> trigger();
+    }
 
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
