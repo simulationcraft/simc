@@ -39,32 +39,6 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   }
 }
 
-#if defined SC_WINDOWS
-bool checkWindowsVersion()
-{
-#if defined VS_WIN_NONXP_TARGET && defined SC_VS
-  // The 32 bit version should be built with xp toolchain so that it will give an error box with an explanation, instead of a generic
-  // appcrash that it would give with the normal toolchain.. which would just mean more issues being posted. 
-  // After a few months we can probably remove this targetting for the GUI and only leave it in for CLI. - 01/08/2015
-  if ( !IsWindows7SP1OrGreater() && IsWindows7OrGreater() ) // Winxp cannot access fancy-pants methods to determine if the OS has Win7 SP1... which is probably ok.
-  {
-    QMessageBox Msgbox;
-    Msgbox.setText( "SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1." );
-    Msgbox.exec();
-    return true;
-  }
-#endif
-  if ( QSysInfo::WindowsVersion < QSysInfo::WV_VISTA )
-  {
-    QMessageBox Msgbox;
-    Msgbox.setText( "SimulationCraft GUI is no longer supported on Windows XP as of January 2015. \nIf you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe." );
-    Msgbox.exec();
-    return false; // Do not continue loading.
-  }
-  return true;
-}
-#endif
-
 int main( int argc, char *argv[] )
 {
   QLocale::setDefault( QLocale( "C" ) );
@@ -75,18 +49,7 @@ int main( int argc, char *argv[] )
   module_t::init();
   unique_gear::register_special_effects();
 
-#if defined SC_WINDOWS
-  if ( QSysInfo::WindowsVersion == QSysInfo::WV_WINDOWS7 )
-    QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
-  // This is to fix an issue with older video cards on windows 7. It must be called before the application.
-#endif
-
   QApplication a( argc, argv );
-
-#if defined SC_WINDOWS
-  if ( !checkWindowsVersion() ) // Check for compatability. Must be called after application.
-  { return 0; }
-#endif
 
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
