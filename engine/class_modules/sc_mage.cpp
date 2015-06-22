@@ -6111,10 +6111,14 @@ void mage_t::apl_frost()
   crystal_sequence -> add_action( "call_action_list,name=cooldowns" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
                                   "if=talent.prismatic_crystal.enabled&current_target=pet.prismatic_crystal&active_enemies>1&!ticking" );
+  crystal_sequence -> add_action( this, "Frostbolt",
+                                  "if=t18_class_trinket&buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc*2&!in_flight" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc*2|(buff.fingers_of_frost.react>set_bonus.tier18_4pc*2&active_dot.frozen_orb>=1)" );
   crystal_sequence -> add_talent( this, "Ice Nova",
                                   "if=charges=2|pet.prismatic_crystal.remains<gcd.max" );
+  crystal_sequence -> add_talent( this, "Frostbolt",
+                                  "if=t18_class_trinket&buff.fingers_of_frost.react&!in_flight" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react" );
   crystal_sequence -> add_action( this, "Frostfire Bolt",
