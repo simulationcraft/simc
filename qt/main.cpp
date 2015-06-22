@@ -4,13 +4,6 @@
 #include <QtWidgets/QApplication>
 #include "sc_SimulateTab.hpp"
 #include <locale>
-#if defined SC_VS
-#include <windows.h>
-#include <stdio.h>
-#if defined VS_WIN_NONXP_TARGET
-#include <VersionHelpers.h>
-#endif
-#endif
 
 /* Parse additional arguments
  * 1. Argument is parsed as a file name, complete content goes into simulate tab.
