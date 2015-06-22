@@ -440,13 +440,16 @@ void heal_t::assess_damage( dmg_e heal_type,
       action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
   }
 
-  stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );
+  if ( player -> record_healing() )
+  {
+    stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );
 
-  // Record external healing too
-  if ( player != s -> target )
-    s -> target -> gains.health -> add( RESOURCE_HEALTH, s -> result_amount, s -> result_total - s -> result_amount );
-  else
-    heal_gain -> add( RESOURCE_HEALTH, s -> result_amount, s -> result_total - s -> result_amount );
+    // Record external healing too
+    if ( player != s -> target )
+      s -> target -> gains.health -> add( RESOURCE_HEALTH, s -> result_amount, s -> result_total - s -> result_amount );
+    else
+      heal_gain -> add( RESOURCE_HEALTH, s -> result_amount, s -> result_total - s -> result_amount );
+  }
 }
 
 // heal_t::find_greatest_difference_player ==================================

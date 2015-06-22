@@ -2916,7 +2916,7 @@ struct sim_t : private sc_thread_t
   std::string apikey;
   bool ilevel_raid_report;
   bool distance_targeting_enabled;
-  bool enable_leech;
+  bool enable_dps_healing;
   double scaling_normalized;
 
   sim_report_information_t report_information;
@@ -5543,6 +5543,10 @@ public:
   event_t* resource_threshold_trigger;
   std::vector<double> resource_thresholds;
   void min_threshold_trigger();
+
+  // Figure out if healing should be recorded
+  bool record_healing() const
+  { return role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_dps_healing; }
 };
 
 // Target Specific ==========================================================

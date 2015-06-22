@@ -4983,7 +4983,10 @@ struct zen_sphere_t: public monk_heal_t
     if ( ! player -> is_sleeping() )
     {
       zen_sphere_detonate_damage -> execute();
-      zen_sphere_detonate_heal -> execute();
+      if ( player -> record_healing() )
+      {
+        zen_sphere_detonate_heal -> execute();
+      }
     }
   }
 };

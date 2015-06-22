@@ -1760,7 +1760,7 @@ void player_t::init_spells()
     }
   };
 
-  if ( role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_leech )
+  if ( record_healing() )
   {
     spell.leech = new leech_t( this );
   }
