@@ -1402,7 +1402,10 @@ void SC_OptionsTab::_resetallSettings()
   if ( confirm == QMessageBox::Yes )
   {
     QSettings settings;
+    QString savehighcharts;
+    savehighcharts = settings.value( "options/enable_highcharts" ).toString(); // It's annoying having this reset. 
     settings.clear();
+    settings.setValue( "options/enable_highcharts", savehighcharts );
     decodeOptions();
   }
 }
