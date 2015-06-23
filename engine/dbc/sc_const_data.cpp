@@ -225,6 +225,10 @@ void dbc::apply_hotfixes()
   // Enchants
 
   // Item hotfixes
+
+  // 2015-06-22: Empty Drinking Horn proc (Fel Burn) halved in power.
+  e = spelleffect_data_t::find( 267001, false );
+  e -> _m_avg = 0.212250;
 }
 
 static void generate_class_flags_index( bool ptr = false )
