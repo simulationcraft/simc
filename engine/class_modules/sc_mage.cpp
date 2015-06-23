@@ -5799,9 +5799,9 @@ void mage_t::apl_arcane()
   crystal_sequence -> add_action( this, "Arcane Blast",
                                   "if=buff.arcane_charge.stack=4&mana.pct>93&pet.prismatic_crystal.remains>cast_time" );
   crystal_sequence -> add_action( this, "Arcane Missiles",
-                                  "if=pet.prismatic_crystal.remains>2*spell_haste+travel_time" );
+                                  "if=pet.prismatic_crystal.remains>2*spell_haste+(target.distance%20)" );
   crystal_sequence -> add_talent( this, "Supernova",
-                                  "if=pet.prismatic_crystal.remains<2*spell_haste" );
+                                  "if=pet.prismatic_crystal.remains<2*spell_haste+(target.distance%20)" );
   crystal_sequence -> add_action( "choose_target,if=pet.prismatic_crystal.remains<action.arcane_blast.cast_time&buff.presence_of_mind.down" );
   crystal_sequence -> add_action( this, "Arcane Blast" );
 
@@ -5834,6 +5834,8 @@ void mage_t::apl_arcane()
                      "interrupt_if=mana.pct>96,if=mana.pct<85-2.5*buff.arcane_charge.stack" );
   aoe -> add_action( this, "Arcane Missiles",
                      "if=set_bonus.tier17_4pc&active_enemies<10&buff.arcane_charge.stack=4&buff.arcane_instability.react" );
+  aoe -> add_action( this, "Arcane Missiles",
+                     "target_if=debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20),if=buff.arcane_missiles.react" );
   aoe -> add_talent( this, "Nether Tempest",
                      "cycle_targets=1,if=talent.arcane_orb.enabled&buff.arcane_charge.stack=4&ticking&remains<cooldown.arcane_orb.remains" );
   aoe -> add_action( this, "Arcane Barrage",
@@ -5890,7 +5892,7 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Presence of Mind",
                           "if=mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up)" );
   conserve -> add_action( this, "Arcane Missiles",
-                          "if=debuff.mark_of_doom.remains>travel_time" );
+                          "if=buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20)" );
   conserve -> add_action( this, "Arcane Blast",
                           "if=buff.arcane_charge.stack=4&mana.pct>93" );
   conserve -> add_action( this, "Arcane Barrage",
