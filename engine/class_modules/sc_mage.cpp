@@ -2152,6 +2152,11 @@ struct arcane_missiles_t : public mage_spell_t
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
   }
 
+  virtual timespan_t travel_time() const
+  {
+    return tick_action -> travel_time();
+  }
+
   virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
