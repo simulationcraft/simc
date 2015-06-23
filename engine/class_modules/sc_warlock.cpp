@@ -6126,7 +6126,7 @@ void warlock_t::apl_affliction()
     add_action( "Corruption", "cycle_targets=1,if=target.time_to_die>12&remains<=(duration*0.3)" );
 
   add_action( "Drain Soul", "cycle_targets=1,interrupt=1,if=buff.dark_soul.remains&dot.haunt.ticking&dot.haunt.remains<=dot.haunt.duration*0.3&set_bonus.tier18_4pc=1");
-  add_action( "Life Tap","if=mana.pct<40&buff.dark_soul.down&!trinket.proc.any.react&trinket.stacking_proc.any.react" );
+  add_action( "Life Tap","if=mana.pct<30&buff.dark_soul.down" );
   add_action( "Seed of Corruption", "cycle_targets=1,if=spell_targets.seed_of_corruption_aoe>3&!dot.seed_of_corruption.ticking" );
   add_action( "Drain Soul", "interrupt=1,chain=1" );
   add_action( "Agony", "cycle_targets=1,moving=1,if=mana.pct>50" );
@@ -6220,7 +6220,7 @@ void warlock_t::apl_demonology()
     action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=4|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1";
     action_list_str += "/soul_fire,if=buff.molten_core.react&(buff.molten_core.stack>=7|target.health.pct<=25|(buff.dark_soul.remains&cooldown.metamorphosis.remains>buff.dark_soul.remains)|trinket.proc.any.remains>execute_time|trinket.stacking_proc.any.remains>execute_time)&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>execute_time)";
     action_list_str += "/soul_fire,if=buff.molten_core.react&target.time_to_die<(time+target.time_to_die)*0.25+cooldown.dark_soul.remains";
-    action_list_str += "/life_tap,if=mana.pct<30&buff.dark_soul.down&!trinket.proc.any.react&trinket.stacking_proc.any.react";
+    action_list_str += "/life_tap,if=mana.pct<40&buff.dark_soul.down";
     action_list_str += "/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=4";
     action_list_str += "/shadow_bolt";
     action_list_str += "/hellfire,moving=1,interrupt=1";
