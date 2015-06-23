@@ -1590,9 +1590,9 @@ public:
     owner_td -> debuff.storm_earth_and_fire -> trigger();
   }
 
-  void dismiss()
+  void dismiss( bool expired = false )
   {
-    pet_t::dismiss();
+    pet_t::dismiss( expired );
 
     if ( ! target -> is_sleeping() )
     {

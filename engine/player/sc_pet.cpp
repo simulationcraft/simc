@@ -187,9 +187,9 @@ void pet_t::summon( timespan_t summon_duration )
       { return "pet_summon_duration"; }
       virtual void execute()
       {
-        if ( ! pet.is_sleeping() )
-          pet.dismiss();
         pet.expiration = nullptr;
+        if ( ! pet.is_sleeping() )
+          pet.dismiss( true );
       }
     };
     expiration = new ( *sim ) expiration_t( *this, summon_duration );
@@ -202,7 +202,7 @@ void pet_t::summon( timespan_t summon_duration )
 
 // pet_t::dismiss ===========================================================
 
-void pet_t::dismiss()
+void pet_t::dismiss( bool expired )
 {
   if ( sim -> log ) sim -> out_log.printf( "%s dismisses %s", owner -> name(), name() );
 
@@ -211,7 +211,7 @@ void pet_t::dismiss()
   if ( it != owner -> active_pets.end() )
     erase_unordered( owner -> active_pets, it );
 
-  if ( expiration )
+  if ( expiration && ! expired )
   {
     event_t::cancel( expiration );
     expiration = nullptr;

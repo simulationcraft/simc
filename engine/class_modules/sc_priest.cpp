@@ -620,16 +620,16 @@ struct base_fiend_pet_t : public priest_pet_t
     }
   }
 
-  virtual void dismiss() override
+  virtual void dismiss( bool expired ) override
   {
     // T18 Shadow 4pc; don't trigger if the we're at the end of the iteration (owner demise is in
     // progress)
-    if ( expiration && expiration -> remains() == timespan_t::zero() )
+    if ( expired )
     {
       o().buffs.premonition -> trigger();
     }
 
-    priest_pet_t::dismiss();
+    priest_pet_t::dismiss( expired );
   }
 
   virtual action_t* create_action( const std::string& name,

@@ -3939,7 +3939,7 @@ struct shaman_totem_pet_t : public pet_t
   }
 
   virtual void summon( timespan_t = timespan_t::zero() );
-  virtual void dismiss();
+  virtual void dismiss( bool expired = false );
 
   bool init_finished()
   {
@@ -4116,7 +4116,7 @@ void shaman_totem_pet_t::summon( timespan_t duration )
     summon_pet -> summon();
 }
 
-void shaman_totem_pet_t::dismiss()
+void shaman_totem_pet_t::dismiss( bool expired )
 {
   // Disable last (partial) tick on dismiss, as it seems not to happen in game atm
   if ( pulse_action && pulse_event && expiration && expiration -> remains() == timespan_t::zero() )
@@ -4134,7 +4134,7 @@ void shaman_totem_pet_t::dismiss()
   if ( o() -> totems[ totem_type ] == this )
     o() -> totems[ totem_type ] = 0;
 
-  pet_t::dismiss();
+  pet_t::dismiss( expired );
 }
 
 void shaman_totem_pet_t::init_spells()

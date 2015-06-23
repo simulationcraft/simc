@@ -5646,7 +5646,7 @@ public:
   virtual void init_target();
   virtual void reset();
   virtual void summon( timespan_t duration = timespan_t::zero() );
-  virtual void dismiss();
+  virtual void dismiss( bool expired = false );
   virtual void assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void combat_begin();
 
