@@ -106,7 +106,7 @@ actions.db_meta+=/touch_of_chaos,if=(((demonic_fury-40)%800)>(buff.demonbolt.rem
 actions.db_meta+=/cancel_metamorphosis
 
 actions.meta=kiljaedens_cunning,if=!cooldown.cataclysm.remains
-actions.meta+=/cataclysm
+actions.meta+=/cataclysm,if=(active_enemies=1|spell_targets.cataclysm>1)
 actions.meta+=/immolation_aura,if=demonic_fury>450&spell_targets.immolation_aura_tick>=3&buff.immolation_aura.down
 actions.meta+=/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.any.react<10
 actions.meta+=/chaos_wave,if=buff.dark_soul.remains&(trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react|trinket.stacking_proc.multistrike.react>7)

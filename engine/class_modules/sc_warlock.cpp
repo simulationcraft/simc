@@ -6179,7 +6179,7 @@ void warlock_t::apl_demonology()
     get_action_priority_list( "db" ) -> action_list_str += "/life_tap";
 
     get_action_priority_list( "meta" ) -> action_list_str += "/kiljaedens_cunning,if=!cooldown.cataclysm.remains";
-    get_action_priority_list( "meta" ) -> action_list_str += "/cataclysm";
+    get_action_priority_list( "meta" ) -> action_list_str += "/cataclysm,if=(active_enemies=1|spell_targets.cataclysm>1)";
     get_action_priority_list( "meta" ) -> action_list_str += "/immolation_aura,if=demonic_fury>450&spell_targets.immolation_aura_tick>=3&buff.immolation_aura.down";
     get_action_priority_list( "meta" ) -> action_list_str += "/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.any.react<10";
     get_action_priority_list( "meta" ) -> action_list_str += "/chaos_wave,if=buff.dark_soul.remains&(trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react|trinket.stacking_proc.multistrike.react>7)";
