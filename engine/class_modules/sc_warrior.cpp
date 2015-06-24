@@ -2474,7 +2474,7 @@ struct rend_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     tick_may_crit = true;
     base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
-    t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
+    t18_2pc_chance = p -> wod_hotfix ? 0.60 : p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
     add_child( burst );
   }
 
@@ -4275,8 +4275,8 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Execute", "if=!buff.sudden_death.react&(rage>72&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
   single_target -> add_talent( this, "Impending Victory", "if=!set_bonus.tier18_4pc&(rage<40&target.health.pct>20&cooldown.colossus_smash.remains>1)" );
   single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>gcd)&target.health.pct>20&cooldown.colossus_smash.remains>1&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Thunder Clap", "if=!set_bonus.tier18_4pc&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled&cooldown.colossus_smash.remains>gcd" );
-  single_target -> add_action( this, "Whirlwind", "if=!set_bonus.tier18_4pc&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>gcd" );
+  single_target -> add_action( this, "Thunder Clap", "if=(!set_bonus.tier18_4pc|rage.deficit<30)&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled&cooldown.colossus_smash.remains>gcd" );
+  single_target -> add_action( this, "Whirlwind", "if=(!set_bonus.tier18_4pc|rage.deficit<30)&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>gcd" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );

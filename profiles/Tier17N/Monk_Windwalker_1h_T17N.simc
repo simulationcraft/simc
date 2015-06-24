@@ -72,8 +72,8 @@ actions.opener+=/jab,if=chi.max-chi>=2&!buff.serenity.up
 actions.st=blackout_kick,if=set_bonus.tier18_2pc=1&buff.combo_breaker_bok.react
 actions.st+=/tiger_palm,if=set_bonus.tier18_2pc=1&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.st+=/rising_sun_kick
-actions.st+=/blackout_kick,if=set_bonus.tier18_2pc=0&buff.combo_breaker_bok.react|buff.serenity.up
-actions.st+=/tiger_palm,if=set_bonus.tier18_2pc=0&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
+actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react|buff.serenity.up
+actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.st+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down
