@@ -5777,7 +5777,7 @@ void shaman_t::init_action_list()
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
 
-    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>2", "On multiple enemies, the priority follows the 'aoe' action list." );
+    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)", "On multiple enemies, the priority follows the 'aoe' action list." );
     def -> add_action( "call_action_list,name=single", "If one or two enemies, priority follows the 'single' action list." );
 
     single -> add_action( this, "Unleash Flame", "moving=1" );
@@ -5797,17 +5797,14 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Unleash Flame", "if=talent.unleashed_fury.enabled&!buff.ascendance.up|(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&(dot.flame_shock.remains)<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22)))&cooldown.flame_shock.remains<gcd)" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))" );
 
-      /*(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)" ); */
-//  single -> add_action( this, "Unleash Elements", "moving=1,if=!glyph.unleashed_lightning.enabled" );
-//  single -> add_action( this, "Earth Shock", "moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown",
-//                        "Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left" );
+    single -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
+    single -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
-    aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=!ticking&(buff.enhanced_chain_lightning.up|level<=90)&spell_targets.earthquake_rumble>=2" );
+    aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
     aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
-    aoe -> add_action( this, "Thunderstorm", "if=spell_targets.thunderstorm>=10" );
     aoe -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)" );
     aoe -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
     aoe -> add_action( this, "Lightning Bolt" );
