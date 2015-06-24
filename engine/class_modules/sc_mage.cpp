@@ -3902,6 +3902,12 @@ struct meteor_burn_t : public mage_spell_t
     radius = p -> find_spell( 153564 ) -> effectN( 1 ).radius_max();
     ground_aoe = true;
   }
+
+  // Override damage type because Meteor Burn is considered a DOT
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  {
+    return DMG_OVER_TIME;
+  }
 };
 
 struct meteor_impact_t: public mage_spell_t
