@@ -197,15 +197,6 @@ void dbc::apply_hotfixes()
   assert( e -> _base_value == -20000 && "Check T184P Fury" );
   e -> _base_value = -25000;
 
-  s = spell_data_t::find( 185800, false );
-  assert( s -> _proc_chance == 60 && "Check T182P Arms" );
-  s -> _proc_chance = 100;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 185800, true );
-    s -> _proc_chance = 100;
-  }
-
   e = spelleffect_data_t::find( 270032 );
   assert( e -> _base_value == 200 && "Check T184P Protection" );
   e -> _base_value = 100;
