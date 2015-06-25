@@ -72,13 +72,13 @@ actions.aoe+=/focusing_shot
 actions.aoe+=/cobra_shot
 
 head=hood_of_the_savage_hunt,id=124296,bonus_id=566
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5320
-shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5320
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
 back=nimble_burnished_cloak,id=116174,bonus_id=227/618,enchant_id=5313
 chest=wayfaring_tunic,id=116191,bonus_id=227/618
 wrists=bracers_of_fel_empowerment,id=124314,bonus_id=566
-hands=rylakstalkers_gloves,id=115549,bonus_id=567
-waist=cursed_demonchain_belt,id=124311,bonus_id=567
+hands=rylakstalkers_gloves,id=115549,bonus_id=566
+waist=cursed_demonchain_belt,id=124311,bonus_id=566
 legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
 feet=wayfaring_boots,id=116193,bonus_id=227/618
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5327
@@ -88,15 +88,15 @@ trinket2=mirror_of_the_blademaster,id=124224,bonus_id=566
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5275
 
 # Gear Summary
-# gear_ilvl=713.67
-# gear_agility=3999
-# gear_stamina=5374
-# gear_crit_rating=1068
-# gear_haste_rating=237
-# gear_mastery_rating=366
-# gear_multistrike_rating=3123
+# gear_ilvl=709.67
+# gear_agility=3862
+# gear_stamina=5171
+# gear_crit_rating=1030
+# gear_haste_rating=206
+# gear_mastery_rating=344
+# gear_multistrike_rating=3035
 # gear_versatility_rating=696
-# gear_armor=1575
+# gear_armor=1543
 # set_bonus=tier17_2pc=1
 # set_bonus=tier18_2pc=1
 summon_pet=cat

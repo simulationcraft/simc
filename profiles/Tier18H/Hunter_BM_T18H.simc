@@ -63,13 +63,13 @@ actions+=/arcane_shot,if=focus>=75
 actions+=/cobra_shot
 
 head=hood_of_the_savage_hunt,id=124296,bonus_id=566
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5318
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5318
 shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=566
 back=cloak_of_tangible_dread,id=124135,bonus_id=566,enchant_id=5311
 chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=566
 wrists=wayfaring_bracers,id=116192,bonus_id=139/618
 hands=gloves_of_the_savage_hunt,id=124292,bonus_id=566
-waist=cursed_demonchain_belt,id=124311,bonus_id=567
+waist=cursed_demonchain_belt,id=124311,bonus_id=566
 legs=haughty_chain_legguards,id=124300,bonus_id=566
 feet=wayfaring_boots,id=116193,bonus_id=185/618
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5325
@@ -79,15 +79,15 @@ trinket2=mirror_of_the_blademaster,id=124224,bonus_id=566
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5383
 
 # Gear Summary
-# gear_ilvl=715.00
-# gear_agility=4045
-# gear_stamina=5444
-# gear_crit_rating=610
-# gear_haste_rating=1222
+# gear_ilvl=713.00
+# gear_agility=3972
+# gear_stamina=5335
+# gear_crit_rating=593
+# gear_haste_rating=1191
 # gear_mastery_rating=1370
-# gear_multistrike_rating=2228
+# gear_multistrike_rating=2180
 # gear_versatility_rating=128
-# gear_armor=1589
+# gear_armor=1579
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 summon_pet=cat
