@@ -4,6 +4,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=0003332
+talent_override=lone_wolf,if=raid_event.adds.count>=3|enemies>1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -15,7 +16,7 @@ spec=marksmanship
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -28,6 +29,7 @@ actions.precombat+=/focusing_shot
 # Executed every time the actor is available.
 
 actions=auto_shot
+actions+=/use_item,name=mirror_of_the_blademaster
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
@@ -64,31 +66,31 @@ actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
 actions.careful_aim+=/steady_shot
 
 head=hood_of_the_savage_hunt,id=124296,bonus_id=566
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5317
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5317
 shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=566
-back=cloak_of_desperate_temerity,id=124134,bonus_id=566,enchant_id=5310
+back=nimble_burnished_cloak,id=116174,bonus_id=76/618,enchant_id=5310
 chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=566
-wrists=bracers_of_fel_empowerment,id=124314,bonus_id=566
+wrists=wayfaring_bracers,id=116192,bonus_id=76/618
 hands=eredar_felchain_gloves,id=124291,bonus_id=566
-waist=girdle_of_the_legion_general,id=124310,bonus_id=566
+waist=cursed_demonchain_belt,id=124311,bonus_id=567
 legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
-finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
-trinket1=talisman_of_the_master_tracker,id=124515,bonus_id=566
-trinket2=felspring_coil,id=124223,bonus_id=566
+finger2=shifting_taladite_ring,id=115796,bonus_id=76/618,enchant_id=5324
+trinket1=malicious_censer,id=124226,bonus_id=566
+trinket2=mirror_of_the_blademaster,id=124224,bonus_id=566
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5276
 
 # Gear Summary
-# gear_ilvl=713.67
-# gear_agility=3881
-# gear_stamina=5354
-# gear_crit_rating=2357
-# gear_haste_rating=311
-# gear_mastery_rating=1053
-# gear_multistrike_rating=1795
+# gear_ilvl=715.33
+# gear_agility=4054
+# gear_stamina=5458
+# gear_crit_rating=2107
+# gear_haste_rating=443
+# gear_mastery_rating=478
+# gear_multistrike_rating=2414
 # gear_versatility_rating=128
-# gear_armor=1582
+# gear_armor=1591
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 summon_pet=cat

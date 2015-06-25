@@ -4,6 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 talents=0003313
+talent_override=lone_wolf,if=raid_event.adds.count>=3|enemies>1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -15,7 +16,7 @@ spec=marksmanship
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats

@@ -4,6 +4,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=0001333
+talent_override=exotic_munitions,if=raid_event.adds.count>=3|enemies>2
 spec=survival
 
 # This default action priority list is automatically created based on your character.

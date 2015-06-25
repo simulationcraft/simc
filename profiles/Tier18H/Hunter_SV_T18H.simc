@@ -4,6 +4,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=0001333
+talent_override=exotic_munitions,if=raid_event.adds.count>=3|enemies>2
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -32,7 +33,7 @@ actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/use_item,name=beating_heart_of_the_mountain
+actions+=/use_item,name=mirror_of_the_blademaster
 actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=25
 actions+=/call_action_list,name=aoe,if=spell_targets.multi_shot>1
 actions+=/a_murder_of_crows
@@ -71,31 +72,31 @@ actions.aoe+=/focusing_shot
 actions.aoe+=/cobra_shot
 
 head=hood_of_the_savage_hunt,id=124296,bonus_id=566
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5320
-shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=566
-back=cloak_of_desperate_temerity,id=124134,bonus_id=566,enchant_id=5313
-chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=566
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5320
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
+back=nimble_burnished_cloak,id=116174,bonus_id=227/618,enchant_id=5313
+chest=wayfaring_tunic,id=116191,bonus_id=227/618
 wrists=bracers_of_fel_empowerment,id=124314,bonus_id=566
-hands=eredar_felchain_gloves,id=124291,bonus_id=566
-waist=girdle_of_the_legion_general,id=124310,bonus_id=566
+hands=rylakstalkers_gloves,id=115549,bonus_id=567
+waist=cursed_demonchain_belt,id=124311,bonus_id=567
 legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
-feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
+feet=wayfaring_boots,id=116193,bonus_id=227/618
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5327
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5327
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
-trinket2=malicious_censer,id=124226,bonus_id=566
+trinket1=malicious_censer,id=124226,bonus_id=566
+trinket2=mirror_of_the_blademaster,id=124224,bonus_id=566
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5275
 
 # Gear Summary
-# gear_ilvl=712.00
-# gear_agility=3909
-# gear_stamina=5354
-# gear_crit_rating=1770
-# gear_haste_rating=311
-# gear_mastery_rating=741
-# gear_multistrike_rating=2526
-# gear_versatility_rating=128
-# gear_armor=1582
+# gear_ilvl=713.67
+# gear_agility=3999
+# gear_stamina=5374
+# gear_crit_rating=1068
+# gear_haste_rating=237
+# gear_mastery_rating=366
+# gear_multistrike_rating=3123
+# gear_versatility_rating=696
+# gear_armor=1575
+# set_bonus=tier17_2pc=1
 # set_bonus=tier18_2pc=1
-# set_bonus=tier18_4pc=1
 summon_pet=cat
