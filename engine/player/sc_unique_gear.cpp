@@ -3017,13 +3017,6 @@ struct soul_capacitor_explosion_t : public spell_t
     aoe = -1;
 
     explosion_multiplier = 1.0 + player -> find_spell( effect.spell_id ) -> effectN( 1 ).average( effect.item ) / 10000.0;
-
-    if ( player -> bugs )
-    {
-      explosion_multiplier -= 1.0;
-      explosion_multiplier *= 0.194 / 0.2677;
-      explosion_multiplier += 1.0;
-    }
   }
 
   void init() override

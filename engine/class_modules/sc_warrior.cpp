@@ -4275,8 +4275,8 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Execute", "if=!buff.sudden_death.react&(rage>72&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
   single_target -> add_talent( this, "Impending Victory", "if=!set_bonus.tier18_4pc&(rage<40&target.health.pct>20&cooldown.colossus_smash.remains>1)" );
   single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>gcd)&target.health.pct>20&cooldown.colossus_smash.remains>1&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Thunder Clap", "if=!set_bonus.tier18_4pc&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled&cooldown.colossus_smash.remains>gcd" );
-  single_target -> add_action( this, "Whirlwind", "if=!set_bonus.tier18_4pc&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>gcd" );
+  single_target -> add_action( this, "Thunder Clap", "if=(!set_bonus.tier18_4pc|rage.deficit<30)&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled&cooldown.colossus_smash.remains>gcd" );
+  single_target -> add_action( this, "Whirlwind", "if=(!set_bonus.tier18_4pc|rage.deficit<30)&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>gcd" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );

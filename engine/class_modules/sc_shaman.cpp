@@ -949,19 +949,11 @@ public:
          ab::instant_eligibility() &&
          ! p -> buff.ancestral_swiftness -> check() )
     {
-      size_t max_stack = 0;
-      if ( ! p -> bugs )
-      {
-        max_stack = std::min( static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() ),
-                              p -> buff.maelstrom_weapon -> data().max_stacks() );
-      }
-      else
-      {
-        max_stack = static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() );
-      }
+      size_t max_stack = max_stack = std::min( static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() ),
+                                               p -> buff.maelstrom_weapon -> data().max_stacks() );
 
       double v = p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
-      v += p -> wod_hotfix ? 0.05 : p -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).percent();
+      v += p -> wod_hotfix ? 0.12 : p -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).percent();
 
       m *= 1.0 + max_stack * v;
     }
@@ -5694,9 +5686,9 @@ void shaman_t::init_action_list()
 
     single -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
     single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled" );
-    single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=5+4*set_bonus.tier18_4pc" );
+    single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=5+3*set_bonus.tier18_4pc" );
     single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.windstrike.charges_fractional>1.75)|(charges=1&buff.ascendance.remains<1.5)))" );
-    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=5+4*set_bonus.tier18_4pc" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=5+3*set_bonus.tier18_4pc" );
     single -> add_action( this, "Stormstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.stormstrike.charges_fractional>1.75)|target.time_to_die<6))" );
     single -> add_action( this, "Primal Strike" );
     single -> add_action( this, "Lava Lash", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.lava_lash.charges_fractional>1.8)|target.time_to_die<8))" );
@@ -5710,7 +5702,7 @@ void shaman_t::init_action_list()
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1+2*set_bonus.tier18_4pc" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=talent.echo_of_the_elements.enabled&((!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=2&!buff.ascendance.up))|buff.ancestral_swiftness.up)" );
     single -> add_action( this, "Stormstrike", "if=talent.echo_of_the_elements.enabled" );
-    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=1&!buff.ascendance.up))|(set_bonus.tier18_4pc&buff.maelstrom_weapon.react>=7)|buff.ancestral_swiftness.up" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=1&!buff.ascendance.up))|(set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=5|(buff.maelstrom_weapon.react>=3&!buff.ascendance.up)))|buff.ancestral_swiftness.up" );
     single -> add_action( this, "Searing Totem", "if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
 
     // AoE
@@ -5785,7 +5777,7 @@ void shaman_t::init_action_list()
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
 
-    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>2", "On multiple enemies, the priority follows the 'aoe' action list." );
+    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)", "On multiple enemies, the priority follows the 'aoe' action list." );
     def -> add_action( "call_action_list,name=single", "If one or two enemies, priority follows the 'single' action list." );
 
     single -> add_action( this, "Unleash Flame", "moving=1" );
@@ -5805,17 +5797,14 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Unleash Flame", "if=talent.unleashed_fury.enabled&!buff.ascendance.up|(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&(dot.flame_shock.remains)<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22)))&cooldown.flame_shock.remains<gcd)" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))" );
 
-      /*(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)" ); */
-//  single -> add_action( this, "Unleash Elements", "moving=1,if=!glyph.unleashed_lightning.enabled" );
-//  single -> add_action( this, "Earth Shock", "moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown",
-//                        "Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left" );
+    single -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
+    single -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
-    aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=!ticking&(buff.enhanced_chain_lightning.up|level<=90)&spell_targets.earthquake_rumble>=2" );
+    aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
     aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
-    aoe -> add_action( this, "Thunderstorm", "if=spell_targets.thunderstorm>=10" );
     aoe -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)" );
     aoe -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
     aoe -> add_action( this, "Lightning Bolt" );
