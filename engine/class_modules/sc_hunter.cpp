@@ -4170,10 +4170,16 @@ void hunter_t::init_action_list()
     if ( sim -> allow_food )
     {
       std::string food_action = "food,type=";
-      if ( level() > 90 )
+      if ( level() <= 90 )
+        food_action += ( level() > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      else if ( specialization() == HUNTER_BEAST_MASTERY )
+        food_action += "sleeper_sushi";
+      else if ( specialization() == HUNTER_MARKSMANSHIP )
+        food_action += "pickled_eel";
+      else if ( specialization() == HUNTER_SURVIVAL )
         food_action += "salty_squid_roll";
       else
-        food_action += ( level() > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+        food_action += "salty_squid_roll";
       precombat -> add_action( food_action );
     }
 
@@ -4195,6 +4201,7 @@ void hunter_t::init_action_list()
     switch ( specialization() )
     {
     case HUNTER_SURVIVAL:
+      talent_overrides_str += "exotic_munitions,if=raid_event.adds.count>=3|enemies>2";
       apl_surv();
       break;
     case HUNTER_BEAST_MASTERY:
@@ -4202,6 +4209,7 @@ void hunter_t::init_action_list()
       apl_bm();
       break;
     case HUNTER_MARKSMANSHIP:
+      talent_overrides_str += "lone_wolf,if=raid_event.adds.count>=3|enemies>1";
       apl_mm();
       break;
     default:
