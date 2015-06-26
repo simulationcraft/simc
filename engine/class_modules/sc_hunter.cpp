@@ -4519,7 +4519,7 @@ void hunter_t::regen( timespan_t periodicity )
 double hunter_t::composite_attack_power_multiplier() const
 {
   double mult = player_t::composite_attack_power_multiplier();
-  if ( ! bugs && perks.improved_focus_fire -> ok() && buffs.focus_fire -> check() )
+  if ( perks.improved_focus_fire -> ok() && buffs.focus_fire -> check() )
     mult += buffs.focus_fire -> current_stack * perks.improved_focus_fire -> effectN( 1 ).percent();
   return mult;
 }
