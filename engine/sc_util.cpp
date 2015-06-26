@@ -1126,6 +1126,7 @@ const char* util::food_type_string( food_e food )
     case FOOD_TALADOR_SURF_AND_TURF:            return "talador_surf_and_turf";
     case FOOD_WHIPTAIL_CHOWDER:                 return "whiptail_chowder";
     case FOOD_WHIPTAIL_FILLET:                  return "whiptail_fillet";
+    case FOOD_FELMOUTH_FRENZY:                  return "felmouth_frenzy";
 
     default:                                    return "unknown";
   }

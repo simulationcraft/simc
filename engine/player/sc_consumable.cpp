@@ -491,11 +491,25 @@ struct food_t : public action_t
       sim -> errorf( "Player %s: invalid food type '%s'\n", p -> name(), type_str.c_str() );
       background = true;
     }
-    std::string food_name = util::food_type_string( type );
-    food_name += "_food";
+    
+    // Hardcode this for now
+    if ( type == FOOD_FELMOUTH_FRENZY )
+    {
+      special_effect_t effect( player );
+      unique_gear::initialize_special_effect( effect, 188534 );
+      player -> special_effects.push_back( new special_effect_t( effect ) );
+      // This needs to be done manually, because player_t::init_special_effects() is invoked before
+      // init_actions.
+      unique_gear::initialize_special_effect_2( player -> special_effects.back() );
+    }
+    else
+    {
+      std::string food_name = util::food_type_string( type );
+      food_name += "_food";
 
-    player -> consumables.food = stat_buff_creator_t( player, food_name )
-      .duration( timespan_t::from_seconds( 60 * 60 ) ); // 1hr
+      player -> consumables.food = stat_buff_creator_t( player, food_name )
+        .duration( timespan_t::from_seconds( 60 * 60 ) ); // 1hr
+    }
   }
 
   /**

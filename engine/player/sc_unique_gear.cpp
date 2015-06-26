@@ -50,11 +50,13 @@ namespace profession
 
 namespace item
 {
+  /* Misc */
   void heartpierce( special_effect_t& );
   void darkmoon_card_greatness( special_effect_t& );
   void vial_of_shadows( special_effect_t& );
   void deathbringers_will( special_effect_t& );
   void cunning_of_the_cruel( special_effect_t& );
+  void felmouth_frenzy( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -2577,6 +2579,58 @@ void item::heartpierce( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item -> player, effect );
 }
 
+struct felmouth_frenzy_driver_t : public spell_t
+{
+  struct felmouth_frenzy_damage_t : public spell_t
+  {
+    felmouth_frenzy_damage_t( const special_effect_t& effect ) :
+      spell_t( "felmouth_frenzy_damage", effect.player, effect.player -> find_spell( 188505 ) )
+    {
+      background = true;
+      callbacks = false;
+    }
+  };
+
+  size_t bolt_min, bolt_range;
+
+  felmouth_frenzy_driver_t( const special_effect_t& effect ) :
+    spell_t( "felmouth_frenzy", effect.player, effect.player -> find_spell( 188512 ) ),
+    bolt_min( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) + 1 ),
+    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) )
+  {
+    background = true;
+    may_crit = callbacks = hasted_ticks = false;
+    // Estimated from logs
+    base_tick_time = timespan_t::from_millis( 250 );
+
+    tick_action = effect.player -> find_action( "felmouth_frenzy_damage" );
+    if ( ! tick_action )
+    {
+      tick_action = effect.player -> create_proc_action( "felmouth_frenzy_damage", effect );
+    }
+
+    if ( ! tick_action )
+    {
+      tick_action = new felmouth_frenzy_damage_t( effect );
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const
+  {
+    size_t n_ticks = bolt_min + static_cast<size_t>( rng().real() * bolt_range );
+    assert( n_ticks >= 4 && n_ticks <= 6 );
+    return base_tick_time * n_ticks;
+  }
+};
+
+void item::felmouth_frenzy( special_effect_t& effect )
+{
+  effect.execute_action = new felmouth_frenzy_driver_t( effect );
+
+  dbc_proc_callback_t* cb = new dbc_proc_callback_t( effect.player, effect );
+  cb -> initialize();
+}
+
 struct fel_burn_t : public debuff_t
 {
   fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
@@ -3949,6 +4003,9 @@ void unique_gear::register_special_effects()
   register_special_effect( 108006, item::cunning_of_the_cruel           );
   register_special_effect( 109799, item::cunning_of_the_cruel           );
   register_special_effect( 109801, item::cunning_of_the_cruel           );
+
+  /* Misc effects */
+  register_special_effect( 188534, item::felmouth_frenzy                );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
