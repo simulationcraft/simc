@@ -6880,8 +6880,7 @@ void druid_t::apl_balance()
   aoe -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20&spell_targets.starfall_pulse=2" );
   aoe -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40&spell_targets.starfall_pulse=2" );
   aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
-  aoe -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
-  aoe -> add_action( this, "Wrath" );
+  aoe -> add_action( this, "Starfire" );
 }
 
 // Guardian Combat Action Priority List ==============================

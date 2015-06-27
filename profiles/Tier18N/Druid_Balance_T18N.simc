@@ -58,8 +58,7 @@ actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
 actions.aoe+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>20&spell_targets.starfall_pulse=2
 actions.aoe+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-40&spell_targets.starfall_pulse=2
 actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
-actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
-actions.aoe+=/wrath
+actions.aoe+=/starfire
 
 head=oathclaw_helm,id=124261
 neck=vial_of_immiscible_liquid,id=124212,enchant=75haste
