@@ -248,6 +248,7 @@ public:
   {
     proc_t* arms_trinket;
     proc_t* bloodsurge_wasted;
+    proc_t* raging_blow_wasted;
     proc_t* delayed_auto_attack;
 
     //Tier bonuses
@@ -742,7 +743,12 @@ public:
     // Crit BT/Devastate/Block give rage, and refresh enrage
     // Additionally, BT crits grant 1 charge of Raging Blow
     if ( p() -> specialization() == WARRIOR_FURY )
+    {
+      if ( p() -> buff.raging_blow -> current_stack == p() -> buff.raging_blow -> max_stack() )
+        p() -> proc.raging_blow_wasted -> occur();
+
       p() -> buff.raging_blow -> trigger();
+    }
 
     p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
     p() -> buff.enrage -> trigger();
@@ -4953,6 +4959,7 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
   proc.bloodsurge_wasted       = get_proc( "bloodsurge_wasted" );
+  proc.raging_blow_wasted      = get_proc( "raging_blow_wasted" );
   proc.delayed_auto_attack     = get_proc( "delayed_auto_attack" );
 
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
