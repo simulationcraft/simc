@@ -105,17 +105,17 @@ legs=legplates_of_iron_wrath,id=124340
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
 finger2=loop_of_beckoned_shadows,id=124199,enchant=gift_of_mastery
-trinket1=empty_drinking_horn,id=124238,bonus_id=566
-trinket2=unending_hunger,id=124236,bonus_id=566
-main_hand=calamitys_edge,id=124389,bonus_id=566,enchant=mark_of_bleeding_hollow
+trinket1=empty_drinking_horn,id=124238
+trinket2=unending_hunger,id=124236
+main_hand=calamitys_edge,id=124389,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=703.67
-# gear_strength=3672
-# gear_stamina=4826
-# gear_crit_rating=2612
+# gear_ilvl=700.67
+# gear_strength=3562
+# gear_stamina=4750
+# gear_crit_rating=2459
 # gear_haste_rating=761
-# gear_mastery_rating=1522
+# gear_mastery_rating=1496
 # gear_multistrike_rating=529
 # gear_armor=2278
 # set_bonus=tier18_2pc=1
