@@ -3628,8 +3628,7 @@ struct chaos_bolt_t: public warlock_spell_t
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
     // Targeted Crit debuffs function as a separate multiplier.
-    state -> result_total *= 1.0 + player -> cache.spell_crit();
-    state -> result_total *= 1.0 + state -> target_crit;
+    state -> result_total *= 1.0 + player -> cache.spell_crit() + state-> target_crit;
 
     return state -> result_total;
   }
@@ -3641,8 +3640,7 @@ struct chaos_bolt_t: public warlock_spell_t
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
     // Targeted Crit debuffs function as a separate multiplier.
-    ms_state -> result_total *= 1.0 + player -> cache.spell_crit();
-    ms_state -> result_total *= 1.0 + source_state -> target_crit;
+    ms_state -> result_total *= 1.0 + player-> cache.spell_crit() + source_state -> target_crit;
     ms_state -> result_amount = ms_state -> result_total;
   }
 
