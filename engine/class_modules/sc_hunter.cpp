@@ -3429,20 +3429,22 @@ struct focus_fire_buff_t : public buff_t
 
 struct focus_fire_t: public hunter_spell_t
 {
-  int min_stacks;
+  int min_frenzy;
 
   focus_fire_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "focus_fire", player, player -> find_spell( 82692 ) ),
-    min_stacks( 0 )
+    min_frenzy( 1 )
   {
     int five_stacks = 0;
+    int min_stacks = 0;
     add_option( opt_bool( "five_stacks", five_stacks ) );
     add_option( opt_int( "stacks", min_stacks ) );
+    add_option( opt_int( "min_frenzy", min_frenzy ) );
     parse_options( options_str );
     if ( five_stacks )
-      min_stacks = 5;
-    else if ( min_stacks == 0 )
-      min_stacks = 1;
+      min_frenzy = std::max(min_frenzy, 5);
+    else if ( min_stacks )
+      min_frenzy = std::max(min_frenzy, min_stacks);
 
     harmful = false;
   }
@@ -3484,7 +3486,7 @@ struct focus_fire_t: public hunter_spell_t
     if ( p() -> buffs.focus_fire -> check() )
       return false;
 
-    if ( p() -> active.pet -> buffs.frenzy -> stack_react() < min_stacks )
+    if ( p() -> active.pet -> buffs.frenzy -> stack_react() < min_frenzy )
       return false;
 
     return hunter_spell_t::ready();
@@ -4281,8 +4283,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Focus Fire", "if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)" );
   default_list -> add_action( this, "Bestial Wrath", "if=focus>30&!buff.bestial_wrath.up" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>1&pet.cat.buff.beast_cleave.remains<0.5" );
-  default_list -> add_action( this, "Focus Fire", "five_stacks=1,if=buff.focus_fire.down" );
-  default_list -> add_action( this, "Focus Fire", "five_stacks=1,if=buff.focus_fire.stack<5&pet.cat.buff.frenzy.stack=5" );
+  default_list -> add_action( this, "Focus Fire", "min_frenzy=5" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Explosive Trap", "if=spell_targets.explosive_trap_tick>5" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>5" );
