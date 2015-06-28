@@ -2588,6 +2588,12 @@ struct felmouth_frenzy_driver_t : public spell_t
     {
       background = true;
       callbacks = false;
+
+      // Based on data fitting on various SP levels. Unlikely to be the real thing, but close enough
+      // for now.
+      base_dd_min = base_dd_max = 0.8155;
+      attack_power_mod.direct = 0.4233;
+      spell_power_mod.direct = 0.4233;
     }
   };
 
