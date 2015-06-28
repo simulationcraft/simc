@@ -5064,7 +5064,8 @@ void paladin_t::create_buffs()
                                  .duration( timespan_t::from_seconds( 4 ) );
   buffs.wings_of_liberty       = buff_creator_t( this, "wings_of_liberty", find_spell( 185655 ) -> effectN( 1 ).trigger() )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                 .default_value( find_spell( 185655 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+                                 .default_value( find_spell( 185655 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) );
   buffs.wings_of_liberty_driver = new buffs::wings_of_liberty_driver_t( this );
 }
 
