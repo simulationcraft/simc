@@ -3,7 +3,7 @@ cd wow
 dir /b /a:D /O:-D>hi.txt
 set /p wowdir=<hi.txt
 set /p oldname=<hi.txt
-set wowdir=%wowdir:~4,-17%
+set wowdir=%wowdir:~4,-18%
 ren %oldname% %wowdir%
 del hi.txt
 cd ..
