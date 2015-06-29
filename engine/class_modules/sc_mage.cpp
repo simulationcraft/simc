@@ -5687,8 +5687,10 @@ void mage_t::apl_precombat()
       food_action += "seafood_magnifique_feast" ;
     else if ( level() <= 90 )
       food_action += "mogu_fish_stew" ;
-    else if ( specialization() == MAGE_ARCANE )
+    else if ( specialization() == MAGE_ARCANE && sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
       food_action += "buttered_sturgeon" ;
+    else if ( specialization() == MAGE_ARCANE )
+      food_action += "sleeper_sushi" ;
     else if ( specialization() == MAGE_FIRE )
       food_action += "pickled_eel" ;
     else
