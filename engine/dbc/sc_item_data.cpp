@@ -478,6 +478,34 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       }
       break;
     }
+    // This is backed up by some unknown (to us) client data at the moment. Just hardcode the values
+    // based on the given bonus IDs, and hope for the best.
+    case ITEM_BONUS_TIMEWALKER:
+    {
+      switch ( entry.bonus_id )
+      {
+        // Timewarped
+        case 615:
+          item.parsed.data.level = 660;
+          break;
+        // Timewarped Warforged
+        case 645:
+          item.parsed.data.level = 675;
+          break;
+        // Warforged (related to timewarping, +15 ilevels). This presumes that the item bonus ids
+        // are ordered the correct way (i.e., the base ilevel increase is set before warforged is
+        // applied).
+        case 656:
+          item.parsed.data.level += 15;
+          break;
+        default:
+          item.sim -> errorf( "Unknown bonus entry for type 11. "
+              "Open an issue at https://code.google.com/p/simulationcraft/, "
+              "or inform people in IRC (irc.gamers-irc.org, channel #simulationcraft)." );
+          break;
+      }
+      break;
+    }
     default:
       break;
   }
