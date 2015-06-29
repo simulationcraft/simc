@@ -4291,7 +4291,7 @@ struct howling_blast_t : public death_knight_spell_t
     // 2015-06-26: Howling Blast damage has been reduced by 13.5%.
     if ( p -> wod_hotfix )
     {
-      attack_power_mod.direct /= 1.2;
+      attack_power_mod.direct *= 1.0 - 0.135;
     }
 
     assert( p -> active_spells.frost_fever );
