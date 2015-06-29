@@ -2627,7 +2627,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     // Can't be done on init() for abilities with tick_action() as the parent init() is called
     // before action_t::consolidate_snapshot_flags().
-    snapshot_flags = update_flags = STATE_AP | STATE_SP;
+    snapshot_flags = update_flags = STATE_AP | STATE_SP | STATE_TGT_MUL_DA;
 
     return ret;
   }
