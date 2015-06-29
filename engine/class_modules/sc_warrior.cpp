@@ -2197,11 +2197,13 @@ struct pummel_t: public warrior_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
+  /*
   void execute()
   {
     warrior_attack_t::execute();
-    //p() -> buff.rude_interruption -> trigger();
+    p() -> buff.rude_interruption -> trigger();
   }
+  */
 };
 
 // Raging Blow ==============================================================
@@ -3133,6 +3135,7 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t( "berserker_rage", p, p -> find_class_spell( "Berserker Rage" ) )
   {
     parse_options( options_str );
+    callbacks = false;
     range = -1; // Just in case anyone wants to use berserker rage + enraged speed glyph to get somewhere a little faster... I guess.
   }
 
