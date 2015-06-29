@@ -9,7 +9,7 @@ enum item_bonus_type
   ITEM_BONUS_SUFFIX    = 5,
   ITEM_BONUS_SOCKET    = 6,
   ITEM_BONUS_REQ_LEVEL = 8,
-  ITEM_BONUS_TIMEWALKER= 11, // Placeholder
+  ITEM_BONUS_SCALING   = 11, // Scaling based on ScalingStatDistribution.db2
 };
 
 enum proc_types

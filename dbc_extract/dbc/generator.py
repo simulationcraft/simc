@@ -852,10 +852,13 @@ class ItemDataGenerator(DataGenerator):
             if data.flags & 0x10:
                 continue
 
-            # On-use armors/weapons
+            # Various things in armors/weapons
             if classdata.classs in [ 2, 4 ]:
                 # All shirts
                 if data.inv_type == 4:
+                    filter_ilevel = False
+                # All heirlooms
+                elif data.quality == 7:
                     filter_ilevel = False
                 else:
                     # On-use item, with a valid spell (and cooldown)
@@ -937,6 +940,9 @@ class ItemDataGenerator(DataGenerator):
                 filter_ilevel = False
             # All tabards
             elif data.inv_type == 19:
+                filter_ilevel = False
+            # All heirlooms
+            elif data.quality == 7:
                 filter_ilevel = False
 
             # Item-level based non-equippable items
@@ -1029,7 +1035,7 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(cooldown_shared) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )
+            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix', 'scale_stat_dist' )
 
             s += '  { %s },\n' % (', '.join(fields))
 
@@ -4221,3 +4227,67 @@ class ItemBonusDataGenerator(DataGenerator):
         s += '};\n\n'
 
         return s
+
+def curve_point_sort(a, b):
+    if a.id_distribution < b.id_distribution:
+        return -1
+    elif a.id_distribution > b.id_distribution:
+        return 1
+    else:
+        if a.curve_index < b.curve_index:
+            return -1
+        elif a.curve_index > b.curve_index:
+            return 1
+        else:
+            return 0
+
+class ScalingStatDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ScalingStatDistribution', 'CurvePoint' ]
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids):
+        # Bonus trees
+
+        data_str = "%sscaling_stat_distribution%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._scalingstatdistribution_db.keys()) + 1)
+
+        s += '// Scaling stat distributions, wow build %d\n' % ( self._options.build )
+
+        s += 'static struct scaling_stat_distribution_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper())
+
+        for key in sorted(self._scalingstatdistribution_db.keys()) + [0,]:
+            data = self._scalingstatdistribution_db[key]
+
+            fields = data.field('id', 'min_level', 'max_level', 'id_curve' )
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '};\n\n'
+
+        data_str = "%scurve_point%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s += '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._curvepoint_db.keys()) + 1)
+
+        s += '// Curve points data, wow build %d\n' % ( self._options.build )
+
+        s += 'static struct curve_point_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper())
+
+        vals = self._curvepoint_db.values()
+        for data in sorted(vals, cmp = curve_point_sort):
+            fields = data.field('id_distribution', 'curve_index', 'val1', 'val2' )
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '  { %s },\n' % (', '.join(self._curvepoint_db[0].field('id_distribution', 'curve_index', 'val1', 'val2' )))
+
+        s += '};\n\n'
+
+
+        return s
+

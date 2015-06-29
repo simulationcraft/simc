@@ -1150,6 +1150,13 @@ bool item_t::decode_stats()
     }
   }
 
+  // If scaling fails, then there's some issue with the scaling data, and the item stats will be
+  // wrong.
+  if ( ! item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution ) )
+  {
+    return false;
+  }
+
   for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
   {
     stat_e s = stat( i );

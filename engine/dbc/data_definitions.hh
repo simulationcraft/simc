@@ -16,6 +16,22 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct scaling_stat_distribution_t
+{
+  unsigned id;
+  unsigned min_level;
+  unsigned max_level;
+  unsigned curve_id;
+};
+
+struct curve_point_t
+{
+  unsigned curve_id;
+  unsigned index;
+  double   val1;
+  double   val2;
+};
+
 struct item_bonus_tree_entry_t
 {
   unsigned id;
@@ -199,6 +215,7 @@ struct item_data_t {
   int      id_socket_bonus;
   int      id_set;
   int      id_suffix_group;
+  unsigned id_scaling_distribution;
 
   bool is_armor()
   { return item_class == ITEM_CLASS_ARMOR && ( item_subclass >= ITEM_SUBCLASS_ARMOR_CLOTH && item_subclass <= ITEM_SUBCLASS_ARMOR_SHIELD ); }

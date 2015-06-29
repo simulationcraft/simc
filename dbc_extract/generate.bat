@@ -49,6 +49,7 @@ python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t weapon_
 python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t gem_properties         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_upgrade           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_bonus             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
+python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_scaling           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 
 
 echo // ==========================================================================>  %OUTPATH%\specialization.hpp

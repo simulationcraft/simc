@@ -380,12 +380,137 @@ void dbc::init_item_data()
 #endif
 }
 
+const scaling_stat_distribution_t* dbc_t::scaling_stat_distribution( unsigned id )
+{
+#if SC_USE_PTR
+  const scaling_stat_distribution_t* table = ptr ? &__ptr_scaling_stat_distribution_data[ 0 ]
+                                                 : &__scaling_stat_distribution_data[ 0 ];
+#else
+  const scaling_stat_distribution_t* table = &__scaling_stat_distribution_data[ 0 ];
+#endif
+
+  while ( table -> id != 0 )
+  {
+    if ( table -> id == id )
+      return table;
+    table++;
+  }
+
+  return 0;
+}
+
+std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsigned curve_id, double value )
+{
+#if SC_USE_PTR
+  const curve_point_t* table = ptr ? &__ptr_curve_point_data[ 0 ]
+                                   : &__curve_point_data[ 0 ];
+#else
+  const curve_point_t* table = &__curve_point_data[ 0 ];
+#endif
+
+  const curve_point_t* lower_bound = 0, * upper_bound = 0;
+  while ( table -> curve_id != 0 )
+  {
+    if ( table -> curve_id != curve_id )
+    {
+      table++;
+      continue;
+    }
+
+    if ( table -> val1 <= value )
+    {
+      lower_bound = table;
+    }
+
+    if ( table -> val1 >= value )
+    {
+      upper_bound = table;
+      break;
+    }
+
+    table++;
+  }
+
+  return std::pair<const curve_point_t*, const curve_point_t*>( lower_bound, upper_bound );
+}
+
 item_data_t* item_data_t::find( unsigned id, bool ptr )
 {
   item_data_t* i = item_data_index.get( ptr, id );
   if ( ! i )
     return &nil_item_data;
   return i;
+}
+
+// TODO: Needs some way to figure what value to pass, for now presume min of player level, max
+// level. Also presumes we are only scaling itemlevel for now, this is almost certainly not 100%
+// true in all cases for the use of curve data.
+bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
+{
+  // No scaling needed
+  if ( scaling_id == 0 )
+  {
+    return true;
+  }
+
+  const scaling_stat_distribution_t* data = item.player -> dbc.scaling_stat_distribution( scaling_id );
+  // Unable to find the scaling stat distribution
+  if ( data == 0 )
+  {
+    item.sim -> errorf( "%s: Unable to find scaling information for %s scaling id %u",
+        item.player -> name(), item.name(), item.parsed.data.id_scaling_distribution );
+    return false;
+  }
+
+  // Player level lower than item minimum scaling level, shouldnt happen but let item init go
+  // through
+  if ( static_cast<unsigned>( item.player -> level() ) < data -> min_level )
+  {
+    return true;
+  }
+
+  double base_value = std::min( static_cast<double>( item.player -> level() ),
+                                static_cast<double>( data -> max_level ) );
+
+  std::pair<const curve_point_t*, const curve_point_t*> curve_data = item.player -> dbc.curve_point( data -> curve_id, base_value );
+  // No data found, this really should not happen.
+  if ( ! curve_data.first || ! curve_data.second )
+  {
+    item.sim -> errorf( "%s: Unable to find scaling information for %s curve_id %u",
+        item.player -> name(), item.name(), data -> curve_id );
+    return false;
+  }
+
+  double scaled_result = 0;
+  // Lands on a value, use data
+  if ( curve_data.first -> val1 == base_value )
+  {
+    scaled_result = curve_data.first -> val2;
+  }
+  else if ( curve_data.second -> val1 == base_value )
+  {
+    // Should never happen
+    assert( 0 );
+  }
+  else
+  {
+    // Linear interpolation
+    scaled_result = curve_data.first -> val2 + ( curve_data.second -> val2 - curve_data.first -> val2 ) *
+      ( base_value - curve_data.first -> val1 ) / ( curve_data.second -> val1 - curve_data.first -> val1 );
+  }
+
+  item.parsed.data.level = static_cast<unsigned>( util::round( scaled_result, 0 ) );
+
+  if ( item.sim -> debug )
+  {
+    item.sim -> out_debug.printf( "%s: Scaling %s to ilevel %u (%.3f), curve data: x=%.3f, x0=%.3f, y0=%.3f, x1=%.3f, y1=%.3f",
+        item.player -> name(), item.name(), item.parsed.data.level,
+        scaled_result, base_value,
+        curve_data.first -> val1, curve_data.first -> val2,
+        curve_data.second -> val1, curve_data.second -> val2 );
+  }
+
+  return true;
 }
 
 bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& entry )
@@ -480,29 +605,13 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     }
     // This is backed up by some unknown (to us) client data at the moment. Just hardcode the values
     // based on the given bonus IDs, and hope for the best.
-    case ITEM_BONUS_TIMEWALKER:
+    case ITEM_BONUS_SCALING:
     {
-      switch ( entry.bonus_id )
+      if ( ! item_database::apply_item_scaling( item, entry.value_1 ) )
       {
-        // Timewarped
-        case 615:
-          item.parsed.data.level = 660;
-          break;
-        // Timewarped Warforged
-        case 645:
-          item.parsed.data.level = 675;
-          break;
-        // Warforged (related to timewarping, +15 ilevels). This presumes that the item bonus ids
-        // are ordered the correct way (i.e., the base ilevel increase is set before warforged is
-        // applied).
-        case 656:
-          item.parsed.data.level += 15;
-          break;
-        default:
-          item.sim -> errorf( "Unknown bonus entry for type 11. "
-              "Open an issue at https://code.google.com/p/simulationcraft/, "
-              "or inform people in IRC (irc.gamers-irc.org, channel #simulationcraft)." );
-          break;
+        item.player -> sim -> errorf( "Player %s item '%s' unable to initialize item scaling for bonus id %u",
+            item.player -> name(), item.name(), entry.id );
+        return false;
       }
       break;
     }

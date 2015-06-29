@@ -26,7 +26,9 @@ parser.add_option("-t", "--type", dest = "type",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'csv',
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
                               'glyph_list', 'glyph_property_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
-                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff', 'set_list2', 'item_bonus' ]), 
+                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties',
+                              'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
+                              'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling' ]), 
 parser.add_option("--delim", dest = "delim",
                   help = "Delimiter for -t csv",
                   default = ",", action = "store", type = "str")
@@ -264,6 +266,13 @@ elif options.type == 'perk_list':
     print g.generate(ids)
 elif options.type == 'item_bonus':
     g = dbc.generator.ItemBonusDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
+    print g.generate(ids)
+elif options.type == 'item_scaling':
+    g = dbc.generator.ScalingStatDataGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()

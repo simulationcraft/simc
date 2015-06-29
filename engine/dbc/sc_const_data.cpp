@@ -2594,6 +2594,7 @@ double dbc_t::rppm_coefficient( specialization_e spec, unsigned spell_id ) const
   return 1.0 + rppmm.coefficient;
 }
 
+
 // DBC
 
 bool spell_data_t::affected_by( const spell_data_t* spell ) const

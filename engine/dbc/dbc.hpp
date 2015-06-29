@@ -1101,6 +1101,11 @@ public:
 
   std::vector< const spell_data_t* > effect_affects_spells( unsigned, const spelleffect_data_t* ) const;
   std::vector< const spelleffect_data_t* > effects_affecting_spell( const spell_data_t* ) const;
+
+  // Heirloomage and misc scaling hijinxery
+  const scaling_stat_distribution_t* scaling_stat_distribution( unsigned id );
+  std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value );
+
 };
 // ==========================================================================
 // Indices to provide log time, constant space access to spells, effects, and talents by id.

@@ -7475,6 +7475,8 @@ inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_
 
 bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 
+bool apply_item_scaling( item_t& item, unsigned scaling_id );
+
 struct token_t
 {
   std::string full;

@@ -301,7 +301,7 @@ _DBC_FIELDS = {
           ( 'stat_alloc_6', '%5u' ), ( 'stat_alloc_7', '%5u' ), ( 'stat_alloc_8', '%5u' ), ( 'stat_alloc_9', '%5u' ),     ( 'stat_alloc_10', '%5u' ),
           ( 'stat_socket_mul_1', '%.3f'  ), ( 'stat_socket_mul_2', '%.3f'  ), ( 'stat_socket_mul_3', '%.3f'  ), ( 'stat_socket_mul_4', '%.3f'  ),     ( 'stat_socket_mul_5', '%.3f'  ),
           ( 'stat_socket_mul_6', '%.3f'  ), ( 'stat_socket_mul_7', '%.3f'  ), ( 'stat_socket_mul_8', '%.3f'  ), ( 'stat_socket_mul_9', '%.3f'  ),     ( 'stat_socket_mul_10', '%.3f' ),
-            'scale_stat_dist',        'damage_type',          ( 'delay', '%5d' ),     ( 'ranged_mod_range', '%f' ), 
+          ( 'scale_stat_dist', '%5u' ), 'damage_type',          ( 'delay', '%5d' ),     ( 'ranged_mod_range', '%f' ), 
           ( 'id_spell_1', '%5d' ),  ( 'id_spell_2', '%5d' ),  ( 'id_spell_3', '%5d' ),  ( 'id_spell_4', '%5d' ),      ( 'id_spell_5', '%5d' ),
           ( 'trg_spell_1', '%3d' ), ( 'trg_spell_2', '%3d' ), ( 'trg_spell_3', '%3d' ), ( 'trg_spell_4', '%3d' ),     ( 'trg_spell_5', '%3d' ),
           ( 'chg_spell_1', '%5d' ), ( 'chg_spell_2', '%5d' ), ( 'chg_spell_3', '%5d' ), ( 'chg_spell_4', '%5d' ),     ( 'chg_spell_5', '%5d' ),
@@ -370,6 +370,16 @@ _DBC_FIELDS = {
     ],
     'RulesetRaidOverride.dbc' : [
         'id', 'f1', 'f2', 'f3', 'f4', 'f5'
+    ],
+    'ScalingStatDistribution.db2' : [
+        ( 'id', '%4u' ), ( 'min_level', '%3u' ), ( 'max_level', '%3u' ), ( 'id_curve', '%4u' )
+    ],
+    'CurvePoint.db2': [
+        ( 'id', '%5u' ), ( 'id_distribution', '%4u' ), ( 'curve_index', '%3u' ), ( 'val1', '%.5f' ),
+        ( 'val2', '%.5f' )
+    ],
+    'Curve.db2': [
+        'id', 'f1', 'f2'
     ],
     'SkillLine.dbc' : [
           'id',         'id_category',    'ofs_name', 'ofs_desc',
