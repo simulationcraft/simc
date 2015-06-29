@@ -4986,22 +4986,6 @@ struct water_jet_t : public action_t
 // =====================================================================================
 
 
-struct felmouth_frenzy_damage_t : public mage_spell_t
-{
-  felmouth_frenzy_damage_t( mage_t* p, const special_effect_t& effect ) :
-    mage_spell_t( "felmouth_frenzy_damage", p, p -> find_spell( 188505 ) )
-  {
-    background = true;
-    callbacks = false;
-
-    // Felmouth Frenzy seems to have different base damage for SP and AP users. 
-    // This overrides the base damage to make it match log/fitting derived base value for SP user, Mage.
-    // Reference: http://altered-time.com/forum/viewtopic.php?f=2&t=1693
-    base_dd_min = base_dd_max = 0.8155;
-    spell_power_mod.direct = 0.4236;
- }
-};
-
 // Override T18 trinket procs so they are affected by mage multipliers
 struct darklight_ray_t : public mage_spell_t
 {
@@ -5250,7 +5234,6 @@ action_t* mage_t::create_proc_action( const std::string& name, const special_eff
   if ( util::str_compare_ci( name, "darklight_ray" ) ) return new actions::darklight_ray_t( this, effect );
   if ( util::str_compare_ci( name, "doom_nova" ) )     return new     actions::doom_nova_t( this, effect );
   if ( util::str_compare_ci( name, "nithramus" ) )     return new     actions::nithramus_t( this, effect );
-  if ( util::str_compare_ci( name, "felmouth_frenzy_damage" ) ) return new actions::felmouth_frenzy_damage_t( this, effect );
 
   return 0;
 }

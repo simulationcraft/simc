@@ -2589,10 +2589,8 @@ struct felmouth_frenzy_driver_t : public spell_t
       background = true;
       callbacks = false;
 
-      // Based on data from ~1200 Fel Lashes.
-      base_dd_min = 427.03 / 2;
-      base_dd_max = base_dd_min * 3;
-      spell_power_mod.direct = attack_power_mod.direct = 0.4236;
+      base_dd_max = base_dd_min = 0;
+      spell_power_mod.direct = attack_power_mod.direct = 0.424;
     }
   };
 
@@ -2653,8 +2651,8 @@ void item::felmouth_frenzy( special_effect_t& effect )
     a = new felmouth_frenzy_driver_t( effect );
   }
 
+  effect.rppm_scale = RPPM_HASTE;
   effect.execute_action = a;
-
 
   dbc_proc_callback_t* cb = new dbc_proc_callback_t( effect.player, effect );
   cb -> initialize();
