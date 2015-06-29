@@ -4443,12 +4443,15 @@ struct vanish_t : public buff_t
   }
 };
 
+// Note, stealth buff is set a max time of half the nominal fight duration, so it can be forced to
+// show in sample sequence tables.
 struct stealth_t : public buff_t
 {
   rogue_t* rogue;
 
   stealth_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "stealth", r -> find_spell( 1784 ) ) ),
+    buff_t( buff_creator_t( r, "stealth", r -> find_spell( 1784 ) )
+        .duration( r -> sim -> max_time / 2 ) ),
     rogue( r )
   { }
 
@@ -6003,6 +6006,7 @@ void rogue_t::create_buffs()
   buffs.feint               = buff_creator_t( this, "feint", find_class_spell( "Feint" ) )
     .duration( find_class_spell( "Feint" ) -> duration() + glyph.feint -> effectN( 1 ).time_value() );
   buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", spec.master_of_subtlety )
+                                     .duration( sim -> max_time / 2 )
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", find_spell( 31666 ) )
                               .default_value( spec.master_of_subtlety -> effectN( 1 ).percent() )
