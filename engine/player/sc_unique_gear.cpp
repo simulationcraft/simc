@@ -2605,7 +2605,7 @@ struct felmouth_frenzy_driver_t : public spell_t
     bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) )
   {
     background = true;
-    may_crit = callbacks = hasted_ticks = false;
+    may_crit = callbacks = hasted_ticks = dynamic_tick_action = false;
     // Estimated from logs
     base_tick_time = timespan_t::from_millis( 250 );
 
@@ -2627,7 +2627,8 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     // Can't be done on init() for abilities with tick_action() as the parent init() is called
     // before action_t::consolidate_snapshot_flags().
-    snapshot_flags = update_flags = STATE_AP | STATE_SP | STATE_TGT_MUL_DA;
+    snapshot_flags = STATE_AP | STATE_SP | STATE_TGT_MUL_DA;
+    update_flags = STATE_TGT_MUL_DA;
 
     return ret;
   }
