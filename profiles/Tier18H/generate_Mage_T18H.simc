@@ -54,7 +54,7 @@ level=100
 race=dwarf
 role=spell
 position=back
-talents=3003322
+talents=3003222
 glyphs=icy_veins/splitting_ice/cone_of_cold
 spec=frost
 head=countenance_of_the_revenant,id=124158,bonus_id=566
