@@ -2621,6 +2621,18 @@ struct felmouth_frenzy_driver_t : public spell_t
     }
   }
 
+  bool init_finished()
+  {
+    bool ret = spell_t::init_finished();
+
+    // Can't be done on init() for abilities with tick_action() as the parent init() is called
+    // before action_t::consolidate_snapshot_flags().
+    snapshot_flags &= ~STATE_VERSATILITY;
+    update_flags &= ~STATE_VERSATILITY;
+
+    return ret;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* ) const
   {
     size_t n_ticks = bolt_min + static_cast<size_t>( rng().real() * bolt_range );
