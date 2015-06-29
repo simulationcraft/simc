@@ -949,8 +949,8 @@ public:
          ab::instant_eligibility() &&
          ! p -> buff.ancestral_swiftness -> check() )
     {
-      size_t max_stack = max_stack = std::min( static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() ),
-                                               p -> buff.maelstrom_weapon -> data().max_stacks() );
+      size_t max_stack = std::min( static_cast<unsigned>( p -> buff.maelstrom_weapon -> check() ),
+                                   p -> buff.maelstrom_weapon -> data().max_stacks() );
 
       double v = p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
       if ( p -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B4 ) )
