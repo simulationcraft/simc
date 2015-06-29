@@ -2627,8 +2627,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     // Can't be done on init() for abilities with tick_action() as the parent init() is called
     // before action_t::consolidate_snapshot_flags().
-    snapshot_flags &= ~STATE_VERSATILITY;
-    update_flags &= ~STATE_VERSATILITY;
+    snapshot_flags = update_flags = STATE_AP | STATE_SP;
 
     return ret;
   }
@@ -2643,7 +2642,19 @@ struct felmouth_frenzy_driver_t : public spell_t
 
 void item::felmouth_frenzy( special_effect_t& effect )
 {
-  effect.execute_action = new felmouth_frenzy_driver_t( effect );
+  action_t* a = effect.player -> find_action( "felmouth_frenzy_driver" );
+  if ( ! a )
+  {
+    a = effect.player -> create_proc_action( "felmouth_frenzy_driver", effect );
+  }
+
+  if ( ! a )
+  {
+    a = new felmouth_frenzy_driver_t( effect );
+  }
+
+  effect.execute_action = a;
+
 
   dbc_proc_callback_t* cb = new dbc_proc_callback_t( effect.player, effect );
   cb -> initialize();
