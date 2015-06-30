@@ -2626,6 +2626,7 @@ struct felmouth_frenzy_driver_t : public spell_t
     may_crit = callbacks = hasted_ticks = dynamic_tick_action = false;
     // Estimated from logs
     base_tick_time = timespan_t::from_millis( 250 );
+    dot_behavior = DOT_EXTEND;
 
     tick_action = effect.player -> find_action( "felmouth_frenzy_damage" );
     if ( ! tick_action )
