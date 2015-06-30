@@ -2333,8 +2333,8 @@ struct agony_t: public warlock_spell_t
       double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
       double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
 
-      base_tick_time *= 1.0 + period_value;
-      dot_duration *= 1.0 + duration_value;
+      base_tick_time *= 1.0 + ( period_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
+      dot_duration *= 1.0 + ( duration_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
     }
   }
 
@@ -2766,8 +2766,8 @@ struct corruption_t: public warlock_spell_t
       double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
       double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
 
-      base_tick_time *= 1.0 + period_value;
-      dot_duration *= 1.0 + duration_value;
+      base_tick_time *= 1.0 + ( period_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
+      dot_duration *= 1.0 + ( duration_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
     }
   }
 
@@ -2935,8 +2935,8 @@ struct unstable_affliction_t: public warlock_spell_t
       double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
       double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
 
-      base_tick_time *= 1.0 + period_value;
-      dot_duration *= 1.0 + duration_value;
+      base_tick_time *= 1.0 + ( period_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
+      dot_duration *= 1.0 + ( duration_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
     }
   }
 
