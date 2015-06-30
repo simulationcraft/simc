@@ -5386,7 +5386,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   if ( priest.active_items.mental_fatigue )
   {
     buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue", priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() )
-      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) / 100.0 );
+      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) * 1.3 / 100.0 ); // 2015/06/29 Hotfix - Twintop
   }
   else
   {
@@ -5786,7 +5786,7 @@ double priest_t::composite_multistrike() const
 
   if ( buffs.premonition -> check() )
   {
-    cm += buffs.premonition -> default_value; //PTR Hotfix 2016/06/19 -- Twintop 2015/06/19 //data().effectN( 1 ).percent();
+    cm += buffs.premonition -> default_value; //PTR Hotfix 2015/06/19 -- Twintop 2015/06/19 //data().effectN( 1 ).percent();
   }
 
   return cm;
