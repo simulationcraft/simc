@@ -2703,7 +2703,8 @@ struct fel_burn_t : public debuff_t
   fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
     debuff_t( buff_creator_t( p, "fel_burn", source_effect.driver()  )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
-    .max_stack( 50 )
+    // 2015-06-29: Empty Drinking Horn's Fel Burn effect can now stack up to 30 times, down from 50.
+    .max_stack( p.source -> wod_hotfix ? 30 : 50 )
     // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
     // will always have the correct number of stacks.
     .duration( timespan_t::from_seconds( 15.001 ) ) )
