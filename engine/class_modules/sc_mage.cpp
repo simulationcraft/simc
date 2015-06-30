@@ -3516,6 +3516,11 @@ struct ice_lance_t : public mage_spell_t
       const spell_data_t* data = p -> shatterlance -> driver();
       shatterlance_effect = data -> effectN( 1 ).average( p -> shatterlance -> item );
       shatterlance_effect /= 100.0;
+
+      if ( p -> wod_hotfix )
+      {
+        shatterlance_effect *= 2.0 / 3.0;
+      }
     }
 
     if ( p -> talents.frost_bomb -> ok() )
@@ -3708,6 +3713,11 @@ struct inferno_blast_t : public mage_spell_t
       const spell_data_t* data = p -> pyrosurge -> driver();
       pyrosurge_chance = data -> effectN( 1 ).average( p -> pyrosurge -> item );
       pyrosurge_chance /= 100.0;
+
+      if ( p -> wod_hotfix )
+      {
+        pyrosurge_chance *= 0.94;
+      }
 
       pyrosurge_flamestrike = new flamestrike_t( p, options_str );
       pyrosurge_flamestrike -> background = true;
