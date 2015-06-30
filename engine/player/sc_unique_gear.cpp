@@ -2583,8 +2583,11 @@ struct felmouth_frenzy_driver_t : public spell_t
 {
   struct felmouth_frenzy_damage_t : public spell_t
   {
+    player_t* p;
+
     felmouth_frenzy_damage_t( const special_effect_t& effect ) :
-      spell_t( "felmouth_frenzy_damage", effect.player, effect.player -> find_spell( 188505 ) )
+      spell_t( "felmouth_frenzy_damage", effect.player, effect.player -> find_spell( 188505 ) ),
+      p( effect.player )
     {
       background = true;
       callbacks = false;
@@ -2592,14 +2595,32 @@ struct felmouth_frenzy_driver_t : public spell_t
       base_dd_max = base_dd_min = 0;
       spell_power_mod.direct = attack_power_mod.direct = 0.424;
     }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const
+    {
+      if ( p -> cache.spell_power( school ) > p -> cache.attack_power() )
+        return 0;
+
+      return spell_t::attack_direct_power_coefficient( s );
+    }
+
+    double spell_direct_power_coefficient( const action_state_t* s ) const
+    {
+      if ( p -> cache.attack_power() > p -> cache.spell_power( school ) )
+        return 0;
+
+      return spell_t::spell_direct_power_coefficient( s );
+    }
   };
 
   size_t bolt_min, bolt_range;
+  player_t* volley_target;
 
   felmouth_frenzy_driver_t( const special_effect_t& effect ) :
     spell_t( "felmouth_frenzy", effect.player, effect.player -> find_spell( 188512 ) ),
     bolt_min( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) + 1 ),
-    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) )
+    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) ),
+    volley_target( 0 )
   {
     background = true;
     may_crit = callbacks = hasted_ticks = dynamic_tick_action = false;
@@ -2635,6 +2656,24 @@ struct felmouth_frenzy_driver_t : public spell_t
     size_t n_ticks = bolt_min + static_cast<size_t>( rng().real() * bolt_range );
     assert( n_ticks >= 4 && n_ticks <= 6 );
     return base_tick_time * n_ticks;
+  }
+
+  // Successive procs extend the volley on the current target.
+  void execute()
+  {
+    if ( volley_target && ! volley_target -> is_sleeping() )
+      target = volley_target;
+
+    spell_t::execute();
+
+    volley_target = execute_state -> target;
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    spell_t::last_tick( d );
+
+    volley_target = 0;
   }
 };
 
