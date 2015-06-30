@@ -1602,7 +1602,7 @@ struct ambush_t : public rogue_attack_t
     if ( p -> from_the_shadows )
     {
       const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
-      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0;
+      base_multiplier *= 1.0 + ( data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0 * ( p -> wod_hotfix ? 1.4 : 1.0 ) );
     }
   }
 
@@ -2037,7 +2037,7 @@ struct eviscerate_t : public rogue_attack_t
     if ( p -> eviscerating_blade )
     {
       const spell_data_t* data = p -> find_spell( p -> eviscerating_blade -> spell_id );
-      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0;
+      base_multiplier *= 1.0 + ( data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0 * ( p -> wod_hotfix ? 1.28 : 1.0 ) );
 
       range += data -> effectN( 1 ).base_value();
     }
@@ -2255,7 +2255,7 @@ struct garrote_t : public rogue_attack_t
     if ( p -> from_the_shadows )
     {
       const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
-      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0;
+      base_multiplier *= 1.0 + ( data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0 * ( p -> wod_hotfix ? 1.4 : 1.0 ) );
     }
 
     initialize_sinister_calling( 168971 );
@@ -4815,7 +4815,7 @@ struct shadow_reflection_pet_t : public pet_t
       if ( o() -> from_the_shadows )
       {
         const spell_data_t* data = p -> find_spell( o() -> from_the_shadows -> spell_id );
-        base_multiplier *= 1.0 + data -> effectN( 2 ).average( o() -> from_the_shadows -> item ) / 100.0;
+        base_multiplier *= 1.0 + data -> effectN( 2 ).average( o() -> from_the_shadows -> item ) / 100.0 * ( p -> wod_hotfix ? 1.4 : 1.0 );
       }
     }
   };
