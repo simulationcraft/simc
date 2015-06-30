@@ -1865,6 +1865,12 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
       furious_winds_chance = data -> effectN( 2 ).average( player -> furious_winds -> item ) / 100.0;
 
       base_multiplier *= 1.0 + damage_value;
+
+      // 2015-06-29: Core of the Primal Elements now deals 40% more damage for Enhancement Shaman.
+      if ( player -> wod_hotfix )
+      {
+        base_multiplier *= 1.4;
+      }
     }
   }
 
