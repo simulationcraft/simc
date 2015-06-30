@@ -1101,6 +1101,13 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
       callbacks = false;
 
       aoe = -1;
+
+      // 2015-06-29: 4-piece set bonus for Damage Dealing Spellcasters had its damage dealt reduced
+      // by 75% and has an 8-second internal cooldown
+      if ( player -> wod_hotfix )
+      {
+        spell_power_mod.direct *= 0.25;
+      }
     }
   };
 
@@ -1146,6 +1153,13 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
   };
 
   effect.proc_flags2_ = PF2_ALL_HIT; // Proc on impact so we can proc on multiple targets
+
+  // 2015-06-29: 4-piece set bonus for Damage Dealing Spellcasters had its damage dealt reduced by
+  // 75% and has an 8-second internal cooldown
+  if ( effect.player -> wod_hotfix )
+  {
+    effect.cooldown_ = timespan_t::from_seconds( 8.0 );
+  }
 
   new electric_orb_cb_t( effect );
 }
