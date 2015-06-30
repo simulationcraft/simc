@@ -5642,7 +5642,11 @@ struct starsurge_t : public druid_spell_t
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
 
     if ( player -> starshards )
+    {
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
+      if ( player -> wod_hotfix )
+        starshards_chance *= 1.00 / 1.16;
+    }
   }
 
   void execute()
