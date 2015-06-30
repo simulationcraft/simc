@@ -3026,8 +3026,7 @@ struct vanish_t : public rogue_attack_t
     {
       p() -> trigger_combo_point_gain( execute_state,
                                        p() -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value(),
-                                       cp_gain,
-                                       false );
+                                       cp_gain );
     }
   }
 };
