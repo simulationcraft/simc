@@ -20,7 +20,7 @@ feet=toxicologists_treated_boots,id=124250
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
 finger2=pitextracted_stone_signet,id=124187,enchant_id=5326
 trinket1=bleeding_hollow_toxin_vessel,id=124520
-trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
+trinket2=soul_capacitor,id=124225
 main_hand=fang_of_the_pit,id=124367,enchant_id=5384
 off_hand=fang_of_the_pit,id=124367,enchant_id=5384
 save=Rogue_Assassination_T18N.simc
@@ -47,7 +47,7 @@ feet=oppressors_merciless_treads,id=124251
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307
 finger2=portal_key_signet,id=124189,enchant_id=5325
 trinket1=soul_capacitor,id=124225
-trinket2=malicious_censer,id=124226
+trinket2=bleeding_hollow_toxin_vessel,id=124520
 main_hand=demonblade_eviscerator,id=124368,enchant_id=5337
 off_hand=demonblade_eviscerator,id=124368,enchant_id=5337
 save=Rogue_Combat_T18N.simc
@@ -74,7 +74,7 @@ feet=toxicologists_treated_boots,id=124250
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307
 finger2=portal_key_signet,id=124189,enchant=gift_of_multistrike
 trinket1=soul_capacitor,id=124225
-trinket2=felspring_coil,id=124223
+trinket2=bleeding_hollow_toxin_vessel,id=124520
 main_hand=fang_of_the_pit,id=124367,enchant=mark_of_the_frostwolf
 off_hand=fang_of_the_pit,id=124367,enchant=mark_of_the_frostwolf
 save=Rogue_Subtlety_T18N.simc

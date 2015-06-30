@@ -77,19 +77,19 @@ legs=felblade_leggings,id=124269,bonus_id=567
 feet=oppressors_merciless_treads,id=124251,bonus_id=567
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5325
 finger2=portal_key_signet,id=124189,bonus_id=567,enchant_id=5325
-trinket1=soul_capacitor,id=124225,bonus_id=567
-trinket2=malicious_censer,id=124226,bonus_id=567
+trinket1=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567
+trinket2=soul_capacitor,id=124225,bonus_id=567
 main_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant_id=5337
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=729.38
+# gear_ilvl=729.69
 # gear_agility=4569
 # gear_stamina=6101
 # gear_crit_rating=1127
 # gear_haste_rating=1949
 # gear_mastery_rating=1242
-# gear_multistrike_rating=1741
+# gear_multistrike_rating=1216
 # gear_versatility_rating=154
 # gear_armor=1382
 # set_bonus=tier18_2pc=1

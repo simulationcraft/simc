@@ -77,18 +77,18 @@ feet=oppressors_merciless_treads,id=124251,bonus_id=566
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5325
 finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5325
 trinket1=soul_capacitor,id=124225,bonus_id=566
-trinket2=malicious_censer,id=124226,bonus_id=566
+trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=566
 main_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant_id=5337
 off_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=714.06
+# gear_ilvl=714.38
 # gear_agility=3964
 # gear_stamina=5294
 # gear_crit_rating=973
 # gear_haste_rating=1731
 # gear_mastery_rating=1080
-# gear_multistrike_rating=1512
+# gear_multistrike_rating=1056
 # gear_versatility_rating=128
 # gear_armor=1269
 # set_bonus=tier18_2pc=1

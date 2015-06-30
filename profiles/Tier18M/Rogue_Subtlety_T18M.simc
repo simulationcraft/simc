@@ -95,18 +95,18 @@ legs=felblade_leggings,id=124269,bonus_id=567
 feet=toxicologists_treated_boots,id=124250,bonus_id=567
 finger1=maalus_the_blood_drinker,id=124636,enchant=gift_of_multistrike
 finger2=portal_key_signet,id=124189,bonus_id=567,enchant=gift_of_multistrike
-trinket1=soul_capacitor,id=124225,bonus_id=567
-trinket2=felspring_coil,id=124223,bonus_id=567
+trinket1=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567
+trinket2=soul_capacitor,id=124225,bonus_id=567
 main_hand=fang_of_the_pit,id=124367,bonus_id=567,enchant=mark_of_the_frostwolf
 off_hand=fang_of_the_pit,id=124367,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=727.81
-# gear_agility=4883
+# gear_ilvl=728.75
+# gear_agility=4524
 # gear_stamina=6033
-# gear_crit_rating=1301
+# gear_crit_rating=942
 # gear_haste_rating=621
-# gear_mastery_rating=1947
+# gear_mastery_rating=1588
 # gear_multistrike_rating=2161
 # gear_versatility_rating=313
 # gear_armor=1365

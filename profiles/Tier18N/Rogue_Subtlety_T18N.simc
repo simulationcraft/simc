@@ -95,17 +95,17 @@ feet=toxicologists_treated_boots,id=124250
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307
 finger2=portal_key_signet,id=124189,enchant=gift_of_multistrike
 trinket1=soul_capacitor,id=124225
-trinket2=felspring_coil,id=124223
+trinket2=bleeding_hollow_toxin_vessel,id=124520
 main_hand=fang_of_the_pit,id=124367,enchant=mark_of_the_frostwolf
 off_hand=fang_of_the_pit,id=124367,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=698.44
-# gear_agility=3709
+# gear_ilvl=699.38
+# gear_agility=3438
 # gear_stamina=4592
-# gear_crit_rating=996
+# gear_crit_rating=725
 # gear_haste_rating=470
-# gear_mastery_rating=1473
+# gear_mastery_rating=1202
 # gear_multistrike_rating=1651
 # gear_versatility_rating=248
 # gear_armor=1153
