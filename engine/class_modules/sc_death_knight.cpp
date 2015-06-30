@@ -2967,6 +2967,11 @@ struct disease_t : public death_knight_spell_t
 
       wandering_plague_proc_chance = data -> effectN( 1 ).average( p -> wandering_plague -> item );
       wandering_plague_proc_chance /= 100.0;
+      // 2015-06-29: Reaper's Harvest had its chance to trigger reduced by 6% for Unholy Death Knights.
+      if ( p -> wod_hotfix )
+      {
+        wandering_plague_proc_chance *= 0.94;
+      }
     }
   }
 
