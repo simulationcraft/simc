@@ -1246,6 +1246,11 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
   }
 
   effect.execute_action = spell;
+  // 2015-06-29: 4-piece set bonus for Damage Dealers now has a 3-second internal cooldown.
+  if ( effect.player -> wod_hotfix )
+  {
+    effect.cooldown_ = timespan_t::from_seconds( 3.0 );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
