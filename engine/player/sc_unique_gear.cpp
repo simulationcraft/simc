@@ -1351,6 +1351,12 @@ void set_bonus::t18_lfr_4pc_mail_caster( special_effect_t& effect )
   // Procs on all targets?
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.execute_action = spell;
+  // 2015-06-29: 4-piece set bonus for Damage Dealing Spellcasters now has a 3-second internal
+  // cooldown.
+  if ( effect.player -> wod_hotfix )
+  {
+    effect.cooldown_ = timespan_t::from_seconds( 3.0 );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
