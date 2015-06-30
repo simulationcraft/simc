@@ -1327,6 +1327,13 @@ void set_bonus::t18_lfr_4pc_mail_agility( special_effect_t& effect )
   }
 
   spell -> aoe = -1;
+  // 2015-06-29: 4-piece set bonus for Physical Damage Dealers no longer scales with Attack Power,
+  // the Fel Explosion effect is now centered on the target, and has a 3-second internal cooldown.
+  if ( effect.player -> wod_hotfix )
+  {
+    effect.cooldown_ = timespan_t::from_seconds( 3.0 );
+    spell -> attack_power_mod.direct = 0;
+  }
 
   effect.execute_action = spell;
 
