@@ -262,6 +262,11 @@ void dbc::apply_hotfixes()
   // 2015-06-22: Empty Drinking Horn proc (Fel Burn) halved in power.
   e = spelleffect_data_t::find( 267001, false );
   e -> _m_avg = 0.212250;
+
+  // 2015-06-30: Discordant Chorus damage done by Fel Cleave reduced by 50%.
+  e = spelleffect_data_t::find( 266992, false );
+  assert( util::round( e -> _m_avg, 4 ) == 33.7122 && "Check Discordant Chorus damage" );
+  e -> _m_avg /= 2;
 }
 
 static void generate_class_flags_index( bool ptr = false )
