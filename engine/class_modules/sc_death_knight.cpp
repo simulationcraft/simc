@@ -2967,11 +2967,6 @@ struct disease_t : public death_knight_spell_t
 
       wandering_plague_proc_chance = data -> effectN( 1 ).average( p -> wandering_plague -> item );
       wandering_plague_proc_chance /= 100.0;
-      // 2015-06-29: Reaper's Harvest had its chance to trigger reduced by 6% for Unholy Death Knights.
-      if ( p -> wod_hotfix )
-      {
-        wandering_plague_proc_chance *= 0.94;
-      }
     }
   }
 
@@ -4163,12 +4158,6 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
-    // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier /= 1.2;
-    }
-
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
 
@@ -4196,12 +4185,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
 
     weapon     = &( p -> main_hand_weapon );
-
-    // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier /= 1.2;
-    }
 
     if ( p -> spec.threat_of_thassarian -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
     {
@@ -4292,12 +4275,6 @@ struct howling_blast_t : public death_knight_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 1 ).percent();
-
-    // 2015-06-26: Howling Blast damage has been reduced by 13.5%.
-    if ( p -> wod_hotfix )
-    {
-      attack_power_mod.direct *= 1.0 - 0.135;
-    }
 
     assert( p -> active_spells.frost_fever );
   }
@@ -4560,12 +4537,6 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
-    // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier /= 1.2;
-    }
-
     if ( p -> frozen_obliteration )
     {
       fo = new frozen_obliteration_t( p, "frozen_obliteration_oh" );
@@ -4607,12 +4578,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     weapon = &( p -> main_hand_weapon );
-
-    // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier /= 1.2;
-    }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
@@ -6370,7 +6335,7 @@ double death_knight_t::composite_melee_haste() const
 
   if ( buffs.obliteration -> up() )
   {
-    haste *= 1.0 / ( 1.0 + ( wod_hotfix ? 0.03 : buffs.obliteration -> data().effectN( 1 ).percent() ) );
+    haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
   }
 
   return haste;
@@ -6390,7 +6355,7 @@ double death_knight_t::composite_spell_haste() const
 
   if ( buffs.obliteration -> up() )
   {
-    haste *= 1.0 / ( 1.0 + ( wod_hotfix ? 0.03 : buffs.obliteration -> data().effectN( 1 ).percent() ) );
+    haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
   }
 
   return haste;
@@ -7859,7 +7824,7 @@ double death_knight_t::composite_player_critical_damage_multiplier() const
 
   if ( buffs.frozen_wake -> up() )
   {
-    m *= 1.0 + ( wod_hotfix ? 0.06 : buffs.frozen_wake -> data().effectN( 1 ).percent() );
+    m *= 1.0 + buffs.frozen_wake -> data().effectN( 1 ).percent();
   }
 
   return m;

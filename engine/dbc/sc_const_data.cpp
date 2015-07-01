@@ -212,6 +212,48 @@ void dbc::apply_hotfixes()
   }
 
   // Death Knight
+  e = spelleffect_data_t::find( 268168, false );
+  assert( util::round( e -> _m_avg, 6 ) == 0.118555 && "Check Wandering Plague scaling" );
+
+  // 2015-06-29: Reaper's Harvest had its chance to trigger reduced by 6% for Unholy Death Knights.
+  e -> _m_avg *= 0.94;
+
+  // 2015-06-30: Reaper's Harvest chance to trigger reduced by 60% for Unholy Death Knights.
+  e -> _m_avg *= 0.4;
+
+  // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
+  e = spelleffect_data_t::find( 60369, false );
+  assert( e -> _base_value == 96 && "Check Frost Strike Off-hand weapon damage" );
+  e -> _base_value /= 1.2;
+
+  e = spelleffect_data_t::find( 41259, false );
+  assert( e -> _base_value == 96 && "Check Frost Strike weapon damage" );
+  e -> _base_value /= 1.2;
+
+  // 2015-06-26: Howling Blast damage has been reduced by 13.5%.
+  e = spelleffect_data_t::find( 41296, false );
+  assert( util::round( e -> _ap_coeff, 4 ) == 1.1556 && "Check Howling Blast AP coefficient" );
+  e -> _ap_coeff *= 1.0 - 0.135;
+
+  // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
+  e = spelleffect_data_t::find( 60373, false );
+  assert( e -> _base_value == 258 && "Check Obliterate Off-hand weapon damage" );
+  e -> _base_value /= 1.2;
+
+  e = spelleffect_data_t::find( 41121, false );
+  assert( e -> _base_value == 258 && "Check Obliterate weapon damage" );
+  e -> _base_value /= 1.2;
+
+  // 2015-06-23: Tier-18 2-piece set bonus for Frost Death Knights now provides a 3% gain to haste
+  // (down from 5%) on critical hits with Obliterate and critical damage is increased by 6% (down
+  // from 10%) on critical hits with Frost Strike.
+  e = spelleffect_data_t::find( 274072, false );
+  assert( e -> _base_value == 5 && "Check Frost DK T18 2pc set bonus" );
+  e -> _base_value = 3;
+
+  e = spelleffect_data_t::find( 274073, false );
+  assert( e -> _base_value == 10 && "Check Frost DK T18 2pc set bonus" );
+  e -> _base_value = 6;
 
   // Enchants
 
