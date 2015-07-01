@@ -7436,7 +7436,7 @@ double druid_t::composite_attribute( attribute_e attr ) const
   {
     case ATTR_AGILITY:
       if ( spec.killer_instinct -> ok() && ( buff.bear_form -> up() || buff.cat_form -> up() ) )
-        a += spec.killer_instinct -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_INTELLECT );
+        a += spec.killer_instinct -> effectN( 1 ).percent() * cache.intellect();
       break;
     default:
       break;
