@@ -6357,10 +6357,9 @@ void druid_t::init_base_stats()
   // Set base distance based on spec
   base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
 
-  if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
-    base.attack_power_per_agility  = 1.0;
-  if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
-    base.spell_power_per_intellect = 1.0;
+  // All specs get benefit from both agi and intellect.
+  base.attack_power_per_agility  = 1.0;
+  base.spell_power_per_intellect = 1.0;
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
@@ -7418,7 +7417,7 @@ double druid_t::composite_spell_power( school_e school ) const
   {
     case SCHOOL_NATURE:
       if ( spec.nurturing_instinct -> ok() )
-        p += spec.nurturing_instinct -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_AGILITY );
+        p += spec.nurturing_instinct -> effectN( 1 ).percent() * cache.agility();
       break;
     default:
       break;
