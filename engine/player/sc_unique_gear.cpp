@@ -2630,7 +2630,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     double attack_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( p -> cache.spell_power( school ) > p -> cache.attack_power() )
+      if ( composite_spell_power() > composite_attack_power() )
         return 0;
 
       return spell_t::attack_direct_power_coefficient( s );
@@ -2638,10 +2638,21 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     double spell_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( p -> cache.attack_power() > p -> cache.spell_power( school ) )
+      if ( composite_attack_power() >= composite_spell_power() )
         return 0;
 
       return spell_t::spell_direct_power_coefficient( s );
+    }
+
+    double composite_spell_power() const
+    {
+      // Fel Lash uses the player's highest primary school spellpower.
+      double csp = 0.0;
+
+      for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; i++ )
+        csp = std::max( csp, p -> cache.spell_power( i ) );
+
+      return csp;
     }
   };
 
