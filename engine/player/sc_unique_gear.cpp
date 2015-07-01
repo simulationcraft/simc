@@ -2615,12 +2615,11 @@ struct felmouth_frenzy_driver_t : public spell_t
 {
   struct felmouth_frenzy_damage_t : public spell_t
   {
-    spell_t* d;
     player_t* p;
 
-    felmouth_frenzy_damage_t( const special_effect_t& effect, spell_t* driver ) :
+    felmouth_frenzy_damage_t( const special_effect_t& effect ) :
       spell_t( "felmouth_frenzy_damage", effect.player, effect.player -> find_spell( 188505 ) ),
-      d( driver ), p( effect.player )
+      p( effect.player )
     {
       background = true;
       callbacks = false;
@@ -2631,8 +2630,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     double attack_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( d -> composite_spell_power() * p -> composite_spell_power_multiplier()
-             > composite_attack_power() * p -> composite_attack_power_multiplier() )
+      if ( s -> composite_spell_power() > s -> composite_attack_power() )
         return 0;
 
       return spell_t::attack_direct_power_coefficient( s );
@@ -2640,8 +2638,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     double spell_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( d -> composite_spell_power() * p -> composite_spell_power_multiplier()
-            <= composite_attack_power() * p -> composite_attack_power_multiplier() )
+      if ( s -> composite_spell_power() <= s -> composite_attack_power() )
         return 0;
 
       return spell_t::spell_direct_power_coefficient( s );
@@ -2671,7 +2668,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     if ( ! tick_action )
     {
-      tick_action = new felmouth_frenzy_damage_t( effect, this );
+      tick_action = new felmouth_frenzy_damage_t( effect );
     }
   }
 
