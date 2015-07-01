@@ -76,7 +76,7 @@ class BuildCfg(object):
 			self.options.parser.error('Unknown file format for .build.info file, expected 12 fields, got %u' % len(line_split))
 
 		self.build_cfg_file = line_split[2]
-		self.cdn_domain = line_split[7]
+		self.cdn_domain = line_split[7].split(' ')[0].strip()
 		self.cdn_dir = line_split[6]
 
 		if len(self.build_cfg_file) == 0:
