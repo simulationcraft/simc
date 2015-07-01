@@ -2657,13 +2657,11 @@ struct felmouth_frenzy_driver_t : public spell_t
   };
 
   size_t bolt_min, bolt_range;
-  player_t* volley_target;
 
   felmouth_frenzy_driver_t( const special_effect_t& effect ) :
     spell_t( "felmouth_frenzy", effect.player, effect.player -> find_spell( 188512 ) ),
     bolt_min( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) + 1 ),
-    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) ),
-    volley_target( 0 )
+    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) )
   {
     background = true;
     may_crit = callbacks = hasted_ticks = dynamic_tick_action = false;
@@ -2700,24 +2698,6 @@ struct felmouth_frenzy_driver_t : public spell_t
     size_t n_ticks = bolt_min + static_cast<size_t>( rng().real() * bolt_range );
     assert( n_ticks >= 4 && n_ticks <= 6 );
     return base_tick_time * n_ticks;
-  }
-
-  // Successive procs extend the volley on the current target.
-  void execute()
-  {
-    if ( volley_target && ! volley_target -> is_sleeping() )
-      target = volley_target;
-
-    spell_t::execute();
-
-    volley_target = execute_state -> target;
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    spell_t::last_tick( d );
-
-    volley_target = 0;
   }
 };
 
