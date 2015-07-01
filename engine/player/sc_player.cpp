@@ -823,8 +823,11 @@ void player_t::init_base_stats()
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
 
-  total_gear = gear + enchant;
-  if (  ! is_pet() ) total_gear += sim -> enchant;
+  if ( ! is_pet() && ! is_enemy() )
+  {
+    total_gear = gear + enchant;
+    total_gear += sim -> enchant;
+  }
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Total Gear Stats: %s", name(), total_gear.to_string().c_str() );
 
