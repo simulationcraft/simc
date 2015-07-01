@@ -2615,11 +2615,12 @@ struct felmouth_frenzy_driver_t : public spell_t
 {
   struct felmouth_frenzy_damage_t : public spell_t
   {
+    spell_t* d;
     player_t* p;
 
-    felmouth_frenzy_damage_t( const special_effect_t& effect ) :
+    felmouth_frenzy_damage_t( const special_effect_t& effect, spell_t* driver ) :
       spell_t( "felmouth_frenzy_damage", effect.player, effect.player -> find_spell( 188505 ) ),
-      p( effect.player )
+      d( driver ), p( effect.player )
     {
       background = true;
       callbacks = false;
@@ -2630,7 +2631,8 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     double attack_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( composite_spell_power() > composite_attack_power() )
+      if ( d -> composite_spell_power() * p -> composite_spell_power_multiplier()
+             > composite_attack_power() * p -> composite_attack_power_multiplier() )
         return 0;
 
       return spell_t::attack_direct_power_coefficient( s );
@@ -2638,30 +2640,22 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     double spell_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( composite_attack_power() >= composite_spell_power() )
+      if ( d -> composite_spell_power() * p -> composite_spell_power_multiplier()
+            <= composite_attack_power() * p -> composite_attack_power_multiplier() )
         return 0;
 
       return spell_t::spell_direct_power_coefficient( s );
     }
-
-    double composite_spell_power() const
-    {
-      // Fel Lash uses the player's highest primary school spellpower.
-      double csp = 0.0;
-
-      for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; i++ )
-        csp = std::max( csp, p -> cache.spell_power( i ) );
-
-      return csp;
-    }
   };
 
   size_t bolt_min, bolt_range;
+  player_t* p;
 
   felmouth_frenzy_driver_t( const special_effect_t& effect ) :
     spell_t( "felmouth_frenzy", effect.player, effect.player -> find_spell( 188512 ) ),
     bolt_min( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) + 1 ),
-    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) )
+    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) ),
+    p( effect.player )
   {
     background = true;
     may_crit = callbacks = hasted_ticks = dynamic_tick_action = false;
@@ -2677,7 +2671,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     if ( ! tick_action )
     {
-      tick_action = new felmouth_frenzy_damage_t( effect );
+      tick_action = new felmouth_frenzy_damage_t( effect, this );
     }
   }
 
@@ -2698,6 +2692,17 @@ struct felmouth_frenzy_driver_t : public spell_t
     size_t n_ticks = bolt_min + static_cast<size_t>( rng().real() * bolt_range );
     assert( n_ticks >= 4 && n_ticks <= 6 );
     return base_tick_time * n_ticks;
+  }
+
+  double composite_spell_power() const
+  {
+    // Fel Lash uses the player's highest primary school spellpower.
+    double csp = 0.0;
+
+    for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; i++ )
+      csp = std::max( csp, p -> cache.spell_power( i ) );
+
+    return csp;
   }
 };
 
