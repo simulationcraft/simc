@@ -2214,6 +2214,7 @@ struct crimson_tempest_t : public rogue_attack_t
     weapon_power_mod = weapon_multiplier = 0;
     ct_dot = new crimson_tempest_dot_t( p );
     base_dd_min = base_dd_max = 0;
+    proc_relentless_strikes_ = true;
   }
 
   // Apparently Crimson Tempest does not trigger Main Gauche?
