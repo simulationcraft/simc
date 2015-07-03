@@ -2832,6 +2832,7 @@ void item::discordant_chorus( special_effect_t& effect )
       melee_attack_t( "fel_cleave", effect.player, effect.driver() -> effectN( 1 ).trigger() )
     {
       background = special = may_crit = true;
+      callbacks = false;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
       weapon_multiplier = 0;
       aoe = -1;

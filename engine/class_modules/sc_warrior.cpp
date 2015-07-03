@@ -2253,7 +2253,7 @@ struct raging_blow_t: public warrior_attack_t
     weapon_multiplier = attack_power_mod.direct = 0;
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
-
+    callbacks = false;
     mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", data().effectN( 1 ).trigger() );
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
