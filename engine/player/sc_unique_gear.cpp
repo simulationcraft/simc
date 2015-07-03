@@ -686,6 +686,9 @@ struct nitro_boosts_action_t : public action_t
     cooldown = p -> get_cooldown( "potion" );
   }
 
+  result_e calculate_result( action_state_t* /* state */ )
+  { return RESULT_HIT; }
+
   void execute()
   {
     action_t::execute();
