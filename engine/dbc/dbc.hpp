@@ -221,6 +221,8 @@ namespace hotfix
   void add_hotfix_spell( spell_data_t* spell, bool ptr = false );
   const spell_data_t* find_spell( const spell_data_t* dbc_spell, bool ptr = false );
   const spelleffect_data_t* find_effect( const spelleffect_data_t* dbc_effect, bool ptr = false );
+
+  std::vector<const hotfix_entry_t*> hotfix_entries();
 }
 
 namespace dbc_override

@@ -341,6 +341,17 @@ std::string hotfix::to_str()
   return s.str();
 }
 
+std::vector<const hotfix_entry_t*> hotfix::hotfix_entries()
+{
+  std::vector<const hotfix_entry_t*> data;
+  for ( size_t i = 0; i < hotfixes_.size(); ++i )
+  {
+    data.push_back( hotfixes_[ i ] );
+  }
+
+  return data;
+}
+
 template<typename T>
 static void do_hotfix( dbc_hotfix_entry_t* e, T* dbc_data )
 {
@@ -544,6 +555,8 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* s, bool ptr )
   if ( ! news )
   {
     news = new spell_data_t( *s );
+    // TODO: Power, not overridable atm so we can use the static data, and the static data vector
+    // too.
     news -> _effects = new std::vector<const spelleffect_data_t*>( s -> effect_count(), spelleffect_data_t::nil() );
 
     add_spell( news, ptr );

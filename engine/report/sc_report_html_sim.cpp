@@ -1332,6 +1332,49 @@ void print_html_beta_warning( report::sc_html_stream& os )
 #endif
 }
 
+void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
+{
+  std::vector<const hotfix::hotfix_entry_t*> entries = hotfix::hotfix_entries();
+
+  os << "<div class=\"section\">\n";
+  os << "<h2 class=\"toggle\">Current hotfixes</h2>\n";
+  os << "<div class=\"toggle-content hide\">\n";
+  os << "<table class=\"sc\">\n";
+  os << "<tr>\n";
+  os << "<th>Tag</th><th colspan=\"5\">Note</th>\n";
+  os << "</tr>\n";
+  for ( size_t i = 0; i < entries.size(); ++i )
+  {
+    const hotfix::hotfix_entry_t* entry = entries[ entries.size() - 1 - i ];
+    os << "<tr>\n";
+    os << "<td class=\"left\">" << entry -> tag_.substr( 0, 10 ) << "</td>\n";
+    os << "<td class=\"left\" colspan=\"5\">" << entry -> note_ << "</td>\n";
+    os << "</tr>\n";
+    if ( const hotfix::effect_hotfix_entry_t* e = dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
+    {
+      os << "<tr class=\"odd\">\n";
+      os << "<td></td>\n";
+      const spelleffect_data_t* effect = s -> dbc.effect( e -> id_ );
+      os << "<td class=\"left\">" << effect -> spell() -> name_cstr() << "</td>\n";
+      os << "<td class=\"left\">" << e -> field_name_ << "</td>\n";
+      os << "<td class=\"left\">" << e -> hotfix_value_ << "</td>\n";
+      os << "<td class=\"left\">" << e -> dbc_value_ << "</td>\n";
+      if ( e -> orig_value_ != -std::numeric_limits<double>::max() )
+      {
+        os << "<td class=\"left\">" << e -> orig_value_ << "</td>";
+      }
+      else
+      {
+        os << "<td></td>\n";
+      }
+      os << "</tr>\n";
+    }
+  }
+  os << "</table>\n";
+  os << "</div>\n";
+  os << "</div>\n";
+}
+
 void print_html_image_load_scripts( report::sc_html_stream& os )
 {
   print_text_array( os, __image_load_script );
@@ -1403,6 +1446,8 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   print_html_masthead( os, sim );
 
   print_html_beta_warning( os );
+
+  print_html_hotfixes( os, sim );
 
   if ( sim -> simulation_length.sum() == 0 ) {
     print_nothing_to_report( os, "Sum of all Simulation Durations is zero." );
