@@ -97,6 +97,8 @@ namespace hotfix
     auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
     auto_dispose< std::vector<spelleffect_data_t*> > effects_[ 2 ];
 
+    ~custom_dbc_data_t();
+
     bool add_spell( spell_data_t* spell, bool ptr = false );
     spell_data_t* get_mutable_spell( unsigned spell_id, bool ptr = false );
     const spell_data_t* find_spell( unsigned spell_id, bool ptr = false ) const;

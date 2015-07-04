@@ -607,6 +607,19 @@ spell_data_t* custom_dbc_data_t::clone_spell( unsigned base_spell_id, bool ptr )
   return get_mutable_spell( base_spell_id, ptr );
 }
 
+custom_dbc_data_t::~custom_dbc_data_t()
+{
+  for ( size_t i = 0; i < spells_[ 0 ].size(); ++i )
+  {
+    delete spells_[ 0 ][ i ] -> _effects;
+  }
+
+  for ( size_t i = 0; i < spells_[ 1 ].size(); ++i )
+  {
+    delete spells_[ 1 ][ i ] -> _effects;
+  }
+}
+
 namespace dbc_override
 {
   custom_dbc_data_t override_db_;
