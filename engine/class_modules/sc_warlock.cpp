@@ -5185,6 +5185,11 @@ warlock( p )
     debuffs_flamelicked = buff_creator_t( *this, "flamelicked", warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
       .default_value( warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( warlock.destruction_trinket -> item ) / 100.0 );
   }
+  else
+  {
+    debuffs_flamelicked = buff_creator_t( *this, "flamelicked" )
+      .chance( 0 );
+  }
 
   target -> callbacks_on_demise.push_back( std::bind( &warlock_td_t::target_demise, this ) );
 }
