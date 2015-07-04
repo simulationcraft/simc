@@ -212,61 +212,10 @@ void dbc::apply_hotfixes()
   }
 
   // Death Knight
-  e = spelleffect_data_t::find( 268168, false );
-  assert( util::round( e -> _m_avg, 6 ) == 0.118555 && "Check Wandering Plague scaling" );
-
-  // 2015-06-29: Reaper's Harvest had its chance to trigger reduced by 6% for Unholy Death Knights.
-  e -> _m_avg *= 0.94;
-
-  // 2015-06-30: Reaper's Harvest chance to trigger reduced by 60% for Unholy Death Knights.
-  e -> _m_avg *= 0.4;
-
-  // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
-  e = spelleffect_data_t::find( 60369, false );
-  assert( e -> _base_value == 96 && "Check Frost Strike Off-hand weapon damage" );
-  e -> _base_value /= 1.2;
-
-  e = spelleffect_data_t::find( 41259, false );
-  assert( e -> _base_value == 96 && "Check Frost Strike weapon damage" );
-  e -> _base_value /= 1.2;
-
-  // 2015-06-26: Howling Blast damage has been reduced by 13.5%.
-  e = spelleffect_data_t::find( 41296, false );
-  assert( util::round( e -> _ap_coeff, 4 ) == 1.1556 && "Check Howling Blast AP coefficient" );
-  e -> _ap_coeff *= 1.0 - 0.135;
-
-  // 2015-06-26: Frost Strike and Obliterate have been reduced to their pre-6.2 damage levels.
-  e = spelleffect_data_t::find( 60373, false );
-  assert( e -> _base_value == 258 && "Check Obliterate Off-hand weapon damage" );
-  e -> _base_value /= 1.2;
-
-  e = spelleffect_data_t::find( 41121, false );
-  assert( e -> _base_value == 258 && "Check Obliterate weapon damage" );
-  e -> _base_value /= 1.2;
-
-  // 2015-06-23: Tier-18 2-piece set bonus for Frost Death Knights now provides a 3% gain to haste
-  // (down from 5%) on critical hits with Obliterate and critical damage is increased by 6% (down
-  // from 10%) on critical hits with Frost Strike.
-  e = spelleffect_data_t::find( 274072, false );
-  assert( e -> _base_value == 5 && "Check Frost DK T18 2pc set bonus" );
-  e -> _base_value = 3;
-
-  e = spelleffect_data_t::find( 274073, false );
-  assert( e -> _base_value == 10 && "Check Frost DK T18 2pc set bonus" );
-  e -> _base_value = 6;
 
   // Enchants
 
   // Item hotfixes
-
-  // 2015-06-22: Empty Drinking Horn proc (Fel Burn) halved in power.
-  e = spelleffect_data_t::find( 267001, false );
-  e -> _m_avg = 0.212250;
-
-  // 2015-06-30: Discordant Chorus damage done by Fel Cleave reduced by 50%.
-  e = spelleffect_data_t::find( 266992, false );
-  assert( util::round( e -> _m_avg, 4 ) == 33.7122 && "Check Discordant Chorus damage" );
-  e -> _m_avg /= 2;
 }
 
 static void generate_class_flags_index( bool ptr = false )
@@ -1804,6 +1753,7 @@ void spelleffect_data_t::link( bool ptr )
 
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
+    ed._trigger_spell -> _driver = ed._spell;
 
     if ( ed._spell -> _effects == 0 )
       ed._spell -> _effects = new std::vector<const spelleffect_data_t*>;
@@ -1869,16 +1819,19 @@ void talent_data_t::link( bool ptr )
 
 double dbc_t::effect_average( unsigned effect_id, unsigned level ) const
 {
-  const spelleffect_data_t* e = effect( effect_id );
+  return effect_average( effect( effect_id ), level );
+}
 
+double dbc_t::effect_average( const spelleffect_data_t* e, unsigned level ) const
+{
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  if ( e -> m_average() != 0 && e -> _spell -> scaling_class() != 0 )
+  if ( e -> m_average() != 0 && e -> spell() -> scaling_class() != 0 )
   {
     unsigned scaling_level = level;
-    if ( e -> _spell -> max_scaling_level() > 0 )
-      scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
+    if ( e -> spell() -> max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, e -> spell() -> max_scaling_level() );
+    double m_scale = spell_scaling( e -> spell() -> scaling_class(), scaling_level );
 
     return e -> m_average() * m_scale;
   }
@@ -1897,19 +1850,19 @@ double dbc_t::effect_average( unsigned effect_id, unsigned level ) const
 
 double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
 {
-  if ( ! effect_id )
-    return 0.0;
+  return effect_delta( effect( effect_id ), level );
+}
 
-  const spelleffect_data_t* e = effect( effect_id );
-
+double dbc_t::effect_delta( const spelleffect_data_t* e, unsigned level ) const
+{
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  if ( e -> m_delta() != 0 && e -> _spell -> scaling_class() != 0 )
+  if ( e -> m_delta() != 0 && e -> spell() -> scaling_class() != 0 )
   {
     unsigned scaling_level = level;
-    if ( e -> _spell -> max_scaling_level() > 0 )
-      scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
+    if ( e -> spell() -> max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, e -> spell() -> max_scaling_level() );
+    double m_scale = spell_scaling( e -> spell() -> scaling_class(), scaling_level );
 
     return e -> m_average() * e -> m_delta() * m_scale;
   }
@@ -1921,19 +1874,19 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
 
 double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) const
 {
-  if ( ! effect_id )
-    return 0.0;
+  return effect_bonus( effect( effect_id ), level );
+}
 
-  const spelleffect_data_t* e = effect( effect_id );
-
+double dbc_t::effect_bonus( const spelleffect_data_t* e, unsigned level ) const
+{
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  if ( e -> m_unk() != 0 && e -> _spell -> scaling_class() != 0 )
+  if ( e -> m_unk() != 0 && e -> spell() -> scaling_class() != 0 )
   {
     unsigned scaling_level = level;
-    if ( e -> _spell -> max_scaling_level() > 0 )
-      scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
+    if ( e -> spell() -> max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, e -> spell() -> max_scaling_level() );
+    double m_scale = spell_scaling( e -> spell() -> scaling_class(), scaling_level );
 
     return e -> m_unk() * m_scale;
   }
@@ -1948,18 +1901,25 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
   if ( ! effect_id )
     return 0.0;
 
-  const spelleffect_data_t* e = effect( effect_id );
+  return effect_min( effect( effect_id ), level );
+}
+
+double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
+{
+  if ( ! e )
+    return 0.0;
+
   double avg, result;
 
   assert( e && ( level > 0 ) );
   assert( ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
-  avg = effect_average( effect_id, level );
+  avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
   {
-    double delta = effect_delta( effect_id, level );
+    double delta = effect_delta( e, level );
     result = avg - ( delta / 2 );
   }
   else
@@ -1987,20 +1947,21 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
 
 double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
 {
-  if ( ! effect_id )
-    return 0.0;
+  return effect_max( effect( effect_id ), level );
+}
 
-  const spelleffect_data_t* e = effect( effect_id );
+double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
+{
   double avg, result;
 
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
-  avg = effect_average( effect_id, level );
+  avg = effect_average( e, level );
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
   {
-    double delta = effect_delta( effect_id, level );
+    double delta = effect_delta( e, level );
 
     result = avg + ( delta / 2 );
   }

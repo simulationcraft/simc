@@ -2368,7 +2368,7 @@ class SpellDataGenerator(DataGenerator):
                 fields += [ '0' ]
             fields += spell.field('rank')
             # Pad struct with empty pointers for direct access to spell effect data
-            fields += [ '0', '0' ]
+            fields += [ '0', '0', '0' ]
 
             s += '  { %s }, /* %s */\n' % (', '.join(fields), ', '.join(effect_ids))
 

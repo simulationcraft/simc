@@ -2728,11 +2728,9 @@ void item::felmouth_frenzy( special_effect_t& effect )
 
 struct fel_burn_t : public debuff_t
 {
-  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    debuff_t( buff_creator_t( p, "fel_burn", source_effect.driver()  )
+  fel_burn_t( const actor_pair_t& p ) :
+    debuff_t( buff_creator_t( p, "fel_burn", p.source -> find_spell( 184256 )  )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
-    // 2015-06-29: Empty Drinking Horn's Fel Burn effect can now stack up to 30 times, down from 50.
-    .max_stack( p.source -> wod_hotfix ? 30 : 50 )
     // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
     // will always have the correct number of stacks.
     .duration( timespan_t::from_seconds( 15.001 ) ) )
@@ -2814,7 +2812,7 @@ struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
     {
       assert( ! td -> debuff.fel_burn );
 
-      td -> debuff.fel_burn = new fel_burn_t( *td, *effect );
+      td -> debuff.fel_burn = new fel_burn_t( *td );
       td -> debuff.fel_burn -> reset();
     }
   }
@@ -4291,6 +4289,28 @@ void unique_gear::register_special_effects()
   register_special_effect( 187688, set_bonus::t18_lfr_4pc_mail_agility  );
   register_special_effect( 187778, set_bonus::t18_lfr_4pc_mail_caster   );
   register_special_effect( 187863, set_bonus::t18_lfr_4pc_leather_melee );
+}
+
+void unique_gear::register_hotfixes()
+{
+  hotfix::register_effect( "2015-06-22", "Empty Drinking Horn proc (Fel Burn) halved in power.", 267001 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_DIV )
+    .modifier( 2 )
+    .verification_value( 0.4245 );
+
+  hotfix::register_effect( "2015-06-30", "Discordant Chorus damage done by Fel Cleave reduced by 50%", 266992 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_DIV )
+    .modifier( 2 )
+    .verification_value( 33.7122 );
+
+  hotfix::register_spell( "2015-06-29", "Empty Drinking Horn's Fel Burn effect can now stack up to "
+                                        "30 times, down from 50.", 184256 )
+    .field( "max_stack" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 30 )
+    .verification_value( 50 );
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )

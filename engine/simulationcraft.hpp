@@ -3065,6 +3065,8 @@ struct sim_t : private sc_thread_t
 
   void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
   { target_data_initializer.push_back( cb ); }
+
+  bool display_hotfixes;
 private:
   void do_pause();
 
@@ -3085,6 +3087,7 @@ struct module_t
   virtual bool valid() const = 0;
   virtual void init( player_t* ) const = 0;
   virtual void static_init() const { }
+  virtual void register_hotfixes() const { }
   virtual void combat_begin( sim_t* ) const = 0;
   virtual void combat_end( sim_t* ) const = 0;
 
@@ -3138,6 +3141,7 @@ struct module_t
       if ( m )
       {
         m -> static_init();
+        m -> register_hotfixes();
       }
     }
   }
@@ -4561,6 +4565,7 @@ struct player_t : public actor_t
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
   int          wod_hotfix; // True until the WoD release hotfixes are in the spell data.
+  int          disable_hotfixes;
   bool scale_player;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
   double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
@@ -7535,6 +7540,7 @@ namespace unique_gear
     { }
   };
 
+void register_hotfixes();
 void register_special_effects();
 void register_special_effect( unsigned spell_id, const std::string& encoded_str );
 void register_special_effect( unsigned spell_id, custom_cb_t callback );
@@ -8020,4 +8026,5 @@ sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 
   return *this;
 }
+
 #endif // SIMULATIONCRAFT_H

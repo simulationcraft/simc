@@ -162,6 +162,7 @@ int sim_t::main( const std::vector<std::string>& args )
   cache_initializer_t cache_init( get_cache_directory() + "/simc_cache.dat" );
   dbc_initializer_t dbc_init;
   module_t::init();
+  unique_gear::register_hotfixes();
   unique_gear::register_special_effects();
 
   sim_control_t control;
@@ -174,6 +175,10 @@ int sim_t::main( const std::vector<std::string>& args )
     std::cerr << "ERROR! Incorrect option format: " << e.what() << std::endl;
     return 1;
   }
+
+  // Hotfixes are applies right before the sim context (control) is created, and simulator setup
+  // begins
+  hotfix::apply();
 
   bool setup_success = true;
   std::string errmsg;
@@ -188,6 +193,12 @@ int sim_t::main( const std::vector<std::string>& args )
 
   util::printf("SimulationCraft %s for World of Warcraft %s %s (build level %s)\n",
       SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
+
+  if ( display_hotfixes )
+  {
+    std::cout << hotfix::to_str();
+    return 0;
+  }
 
   if ( ! setup_success )
   {

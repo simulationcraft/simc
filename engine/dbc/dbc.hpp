@@ -28,6 +28,10 @@ static const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 // ==========================================================================
 
 namespace dbc {
+// Wrapper for fetching spell data through various spell data variants
+const spell_data_t* find_spell( const player_t*, const spell_data_t* spell );
+const spell_data_t* find_spell( const player_t*, unsigned spell_id );
+
 // Initialization
 void apply_hotfixes();
 void init();
@@ -66,6 +70,163 @@ bool valid_gem_color( unsigned color );
 
 // Filtered data access
 const item_data_t* find_potion( bool ptr, const std::function<bool(const item_data_t*)>& finder );
+}
+
+namespace hotfix
+{
+  enum hotfix_op_e
+  {
+    HOTFIX_NONE = 0,
+    HOTFIX_SET,
+    HOTFIX_ADD,
+    HOTFIX_MUL,
+    HOTFIX_DIV
+  };
+
+  enum hotfix_flags_e
+  {
+    HOTFIX_FLAG_LIVE  = 0x1,
+    HOTFIX_FLAG_PTR   = 0x2,
+    HOTFIX_FLAG_QUIET = 0x4,
+
+    HOTFIX_FLAG_DEFAULT = HOTFIX_FLAG_LIVE | HOTFIX_FLAG_PTR
+  };
+
+  struct custom_dbc_data_t
+  {
+    auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
+    auto_dispose< std::vector<spelleffect_data_t*> > effects_[ 2 ];
+
+    bool add_spell( spell_data_t* spell, bool ptr = false );
+    spell_data_t* get_mutable_spell( unsigned spell_id, bool ptr = false );
+    const spell_data_t* find_spell( unsigned spell_id, bool ptr = false ) const;
+
+    bool add_effect( spelleffect_data_t* spell, bool ptr = false );
+    spelleffect_data_t* get_mutable_effect( unsigned effect_id, bool ptr = false );
+    const spelleffect_data_t* find_effect( unsigned effect_id, bool ptr = false ) const;
+
+    // Creates a tree of cloned spells and effects given a spell id, starting from the potential
+    // root spell. If there is no need to clone the tree, return the custom spell instead.
+    spell_data_t* clone_spell( unsigned spell_id, bool ptr = false );
+
+    private:
+    spell_data_t* create_clone( const spell_data_t* s, bool ptr );
+  };
+
+  struct hotfix_entry_t
+  {
+    std::string tag_;
+    std::string note_;
+    unsigned    flags_;
+
+    hotfix_entry_t() :
+      tag_(), note_(), flags_( 0 )
+    { }
+
+    hotfix_entry_t( const std::string& t, const std::string& n, unsigned f ) :
+      tag_( t ), note_( n ), flags_( f )
+    { }
+
+    virtual ~hotfix_entry_t() { }
+
+    virtual void apply() { }
+    virtual std::string to_str() const;
+  };
+
+  struct dbc_hotfix_entry_t : public hotfix_entry_t
+  {
+    unsigned      id_;    // Spell ID
+    std::string   field_name_;  // Field name to override
+    hotfix_op_e   operation_;   // Operation to perform on the current DBC value
+    double        modifier_;    // Modifier to apply to the operation
+    double        orig_value_;  // The value to check against for DBC data changes
+    double        dbc_value_;   // The value in the DBC before applying hotfix
+    double        hotfix_value_; // The DBC value after hotfix applied
+
+    dbc_hotfix_entry_t() :
+      hotfix_entry_t(), id_( 0 ), field_name_(), operation_( HOTFIX_NONE ), modifier_( 0 ),
+      orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
+    { }
+
+    dbc_hotfix_entry_t( const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+      hotfix_entry_t( t, n, f ),
+      id_( id ), field_name_(), operation_( HOTFIX_NONE ), modifier_( 0 ),
+      orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
+    { }
+
+    virtual void apply()
+    {
+      if ( flags_ & HOTFIX_FLAG_LIVE )
+      {
+        apply_hotfix( false );
+      }
+
+#if SC_USE_PTR
+      if ( flags_ & HOTFIX_FLAG_PTR )
+      {
+        apply_hotfix( true );
+      }
+#endif
+    }
+
+    dbc_hotfix_entry_t& field( const std::string& fn )
+    { field_name_ = fn; return *this; }
+
+    dbc_hotfix_entry_t& operation( hotfix::hotfix_op_e op )
+    { operation_ = op; return *this; }
+
+    dbc_hotfix_entry_t& modifier( double m )
+    { modifier_ = m; return *this; }
+
+    dbc_hotfix_entry_t& verification_value( double ov )
+    { orig_value_ = ov; return *this; }
+
+    private:
+    virtual void apply_hotfix( bool ptr = false ) = 0;
+  };
+
+  struct spell_hotfix_entry_t : public dbc_hotfix_entry_t
+  {
+    spell_hotfix_entry_t( const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+      dbc_hotfix_entry_t( t, id, n, f )
+    { }
+
+    std::string to_str() const;
+
+    private:
+    void apply_hotfix( bool ptr );
+  };
+
+  struct effect_hotfix_entry_t : public dbc_hotfix_entry_t
+  {
+    effect_hotfix_entry_t( const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+      dbc_hotfix_entry_t( t, id, n, f )
+    { }
+
+    std::string to_str() const;
+
+    private:
+    void apply_hotfix( bool ptr );
+  };
+
+  bool register_hotfix( const std::string&, const std::string&, unsigned = HOTFIX_FLAG_DEFAULT );
+  spell_hotfix_entry_t& register_spell( const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+  effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+
+  void apply();
+  std::string to_str();
+
+  void add_hotfix_spell( spell_data_t* spell, bool ptr = false );
+  const spell_data_t* find_spell( const spell_data_t* dbc_spell, bool ptr = false );
+  const spelleffect_data_t* find_effect( const spelleffect_data_t* dbc_effect, bool ptr = false );
+}
+
+namespace dbc_override
+{
+  bool register_effect( sim_t*, unsigned, const std::string&, double );
+  bool register_spell( sim_t*, unsigned, const std::string&, double );
+
+  const spell_data_t* find_spell( unsigned, bool ptr = false );
 }
 
 // ==========================================================================
@@ -184,8 +345,8 @@ public:
   int              _die_sides;       // Effect damage range
 
   // Pointers for runtime linking
-  spell_data_t*    _spell;
-  spell_data_t*    _trigger_spell;
+  spell_data_t* _spell;
+  spell_data_t* _trigger_spell;
 
   bool ok() const
   { return _id != 0; }
@@ -315,6 +476,7 @@ public:
   double max( const item_t& item ) const { return max( &item ); }
 
   bool override_field( const std::string& field, double value );
+  double get_field( const std::string& field ) const;
 
   spell_data_t* spell() const;
 
@@ -410,6 +572,8 @@ public:
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
   std::vector<const spellpower_data_t*>*  _power;
+
+  spell_data_t*    _driver; // The triggered spell's driver
 
   // Direct member access functions
   uint32_t category() const
@@ -678,6 +842,7 @@ public:
   { return _class_flags_family; }
 
   bool override_field( const std::string& field, double value );
+  double get_field( const std::string& field ) const;
 
   bool valid_item_enchantment( inventory_type inv_type ) const
   {
@@ -706,6 +871,9 @@ public:
   bool affected_by( const spelleffect_data_t* ) const;
   bool affected_by( const spelleffect_data_t& ) const;
 
+  spell_data_t* driver() const
+  { return _driver ? _driver : spell_data_t::nil(); }
+
   // static functions
   static spell_data_t* nil();
   static spell_data_t* not_found();
@@ -714,7 +882,6 @@ public:
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
   static void de_link( bool ptr = false );
-
 } SC_PACKED_STRUCT;
 #ifdef __OpenBSD__
 #pragma pack()
@@ -808,7 +975,7 @@ public:
   unsigned     _replace_id;  // Talent replaces the following spell id
 
   // Pointers for runtime linking
-  spell_data_t* spell1;
+  const spell_data_t* spell1;
 
   // Direct member access functions
   unsigned id() const
@@ -840,7 +1007,7 @@ public:
 
   // composite access functions
 
-  spell_data_t* spell() const
+  const spell_data_t* spell() const
   { return spell1 ? spell1 : spell_data_t::nil(); }
 
   bool is_class( player_e c ) const
@@ -1061,11 +1228,16 @@ public:
   double   weapon_dps( const item_data_t*, unsigned ilevel = 0 ) const;
 
   double   effect_average( unsigned effect_id, unsigned level ) const;
+  double   effect_average( const spelleffect_data_t* effect, unsigned level ) const;
   double   effect_delta( unsigned effect_id, unsigned level ) const;
+  double   effect_delta( const spelleffect_data_t* effect, unsigned level ) const;
 
   double   effect_min( unsigned effect_id, unsigned level ) const;
+  double   effect_min( const spelleffect_data_t* effect, unsigned level ) const;
   double   effect_max( unsigned effect_id, unsigned level ) const;
+  double   effect_max( const spelleffect_data_t* effect, unsigned level ) const;
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
+  double   effect_bonus( const spelleffect_data_t* effect, unsigned level ) const;
 
   unsigned talent_ability_id( player_e c, specialization_e spec_id, const char* spell_name, bool name_tokenized = false ) const;
   unsigned class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const;

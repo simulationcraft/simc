@@ -40,7 +40,10 @@ int main( int argc, char *argv[] )
 
   dbc::init();
   module_t::init();
+  unique_gear::register_hotfixes();
   unique_gear::register_special_effects();
+
+  hotfix::apply();
 
   QApplication a( argc, argv );
 

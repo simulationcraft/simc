@@ -8583,6 +8583,73 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 184898,           frozen_obliteration );
   }
 
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-06-29", "Reaper's Harvest had its chance to trigger reduced by "
+                                           "6% for Unholy Death Knights.", 268168 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.94 )
+      .verification_value( 0.118555 );
+
+    hotfix::register_effect( "2015-06-30", "Reaper's Harvest chance to trigger reduced by 60% for "
+                                           "Unholy Death Knights.", 268168 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.4 )
+      .verification_value( 0.118555 * 0.94 );
+
+    hotfix::register_effect( "2015-06-26", "Frost Strike and Obliterate have been reduced to their "
+                                           "pre-6.2 damage levels.", 41259 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_DIV )
+      .modifier( 1.2 )
+      .verification_value( 96 );
+
+    hotfix::register_effect( "2015-06-26-1", "Frost Strike and Obliterate have been reduced to their "
+                                             "pre-6.2 damage levels.", 60369 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_DIV )
+      .modifier( 1.2 )
+      .verification_value( 96 );
+
+    hotfix::register_effect( "2015-06-26", "Howling Blast damage has been reduced by 13.5%", 41296 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.0 - 0.135 )
+      .verification_value( 1.15560 );
+
+    hotfix::register_effect( "2015-06-26-2", "Frost Strike and Obliterate have been reduced to their "
+                                             "pre-6.2 damage levels.", 41121 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_DIV )
+      .modifier( 1.2 )
+      .verification_value( 258 );
+
+    hotfix::register_effect( "2015-06-26-3", "Frost Strike and Obliterate have been reduced to their "
+                                             "pre-6.2 damage levels.", 60373 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_DIV )
+      .modifier( 1.2 )
+      .verification_value( 258 );
+
+    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Frost Death Knights now "
+                                           "provides a 3% (down from 5%) gain to haste on critical hits with "
+                                           " Obliterate.", 274072 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 5 );
+
+    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Frost Death Knights now "
+                                           "provides a 6% (down from 10%) gain to critical damage on critical hits with "
+                                           "Frost Strike.", 274073 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6 )
+      .verification_value( 10 );
+  }
+
   virtual void init( player_t* ) const {}
   virtual bool valid() const { return true; }
   virtual void combat_begin( sim_t* ) const {}

@@ -493,10 +493,10 @@ void report::print_spell_query( std::ostream& out, dbc_t& dbc, const spell_data_
     case DATA_EFFECT:
       {
         std::ostringstream sqs;
-        const spell_data_t* spell = dbc.spell( dbc.effect( *i ) -> spell_id() );
+        const spell_data_t* spell = hotfix::find_spell( dbc.spell( dbc.effect( *i ) -> spell_id() ), dbc.ptr );
         if ( spell )
         {
-          spell_info::effect_to_str( dbc, spell, dbc.effect( *i ), sqs );
+          spell_info::effect_to_str( dbc, spell, hotfix::find_effect( dbc.effect( *i ), dbc.ptr ), sqs );
           out << sqs.str();
         }
       }
@@ -506,7 +506,7 @@ void report::print_spell_query( std::ostream& out, dbc_t& dbc, const spell_data_
       break;
     default:
       {
-        const spell_data_t* spell = dbc.spell( *i );
+        const spell_data_t* spell = hotfix::find_spell( dbc.spell( *i ), dbc.ptr );
         out << spell_info::to_str( dbc, spell, level );
       }
     }

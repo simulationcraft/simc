@@ -651,19 +651,19 @@ bool parse_override_spell_data( sim_t*             sim,
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
   {
-    spell_data_t* s = const_cast< spell_data_t* >( sim -> dbc.spell( id ) );
-    if ( s == spell_data_t::nil() )
+    if ( ! dbc_override::register_spell( sim, id, splits[ 2 ], v ) )
+    {
       return false;
-
-    return s -> override_field( splits[ 2 ], v );
+    }
+    return true;
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
-    spelleffect_data_t* s = const_cast< spelleffect_data_t* >( sim -> dbc.effect( id ) );
-    if ( s == spelleffect_data_t::nil() )
+    if ( ! dbc_override::register_effect( sim, id, splits[ 2 ], v ) )
+    {
       return false;
-
-    return s -> override_field( splits[ 2 ], v );
+    }
+    return true;
   }
   else
     return false;
@@ -1111,7 +1111,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Highcharts stuff
   enable_highcharts( false ),
   output_relative_difference( false ),
-  boxplot_percentile( .25 )
+  boxplot_percentile( .25 ),
+  display_hotfixes( false )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -2979,6 +2980,8 @@ void sim_t::create_options()
   add_option( opt_bool( "enable_highcharts", enable_highcharts ) );
   add_option( opt_bool( "chart_show_relative_difference", output_relative_difference ) );
   add_option( opt_float( "chart_boxplot_percentile", boxplot_percentile ) );
+  // Hotfix
+  add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
 }
 
 // sim_t::find_api_key ======================================================
@@ -3395,3 +3398,4 @@ void sim_t::abort()
   errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
   ::abort();
 }
+

@@ -436,8 +436,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( level <= MAX_LEVEL )
   {
-    double v_min = dbc.effect_min( e -> id(), level );
-    double v_max = dbc.effect_max( e -> id(), level );
+    double v_min = dbc.effect_min( e, level );
+    double v_max = dbc.effect_max( e, level );
 
     s << v_min;
     if ( v_min != v_max )
@@ -926,7 +926,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( ! ( effect_id = spell -> effectN( i + 1 ).id() ) )
       continue;
     else
-      e = dbc.effect( effect_id );
+      e = &( spell -> effectN( i + 1 ) );
 
     spell_info::effect_to_str( dbc, spell, e, s, level );
   }

@@ -458,6 +458,7 @@ player_t::player_t( sim_t*             s,
   _spec( SPEC_NONE ),
   bugs( true ),
   wod_hotfix( -1 ),
+  disable_hotfixes( -1 ),
   scale_player( true ),
   death_pct( 0.0 ),
   size( 0 ),
@@ -779,6 +780,12 @@ void player_t::init()
   if ( wod_hotfix == -1 )
   {
     wod_hotfix = ! maybe_ptr( dbc.ptr ) == true ? 1 : 0;
+  }
+
+  // While wod_hotfix exists, set disable_hotfixes to its value, unless explicitly specified
+  if ( disable_hotfixes == -1 )
+  {
+    disable_hotfixes = wod_hotfix;
   }
 }
 
@@ -7364,6 +7371,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
 // player_t::replace_spells =================================================
 
+// TODO: HOTFIX handling
 void player_t::replace_spells()
 {
   uint32_t class_idx, spec_index;
@@ -7499,7 +7507,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
         // We have that talent enabled.
         dbc.add_token( spell_id, token );
 
-        return td -> spell();
+        return dbc::find_spell( this, td -> spell_id() );
       }
     }
   }
@@ -7513,7 +7521,9 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 const spell_data_t* player_t::find_glyph( const std::string& n ) const
 {
   if ( unsigned spell_id = dbc.glyph_spell_id( type, n.c_str() ) )
-    return dbc.spell( spell_id );
+  {
+    return dbc::find_spell( this, spell_id );
+  }
   else
     return spell_data_t::not_found();
 }
@@ -7532,7 +7542,8 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
       {
         if ( dbc::get_token( g -> id() ).empty() )
           dbc.add_token( g -> id(), token );
-        return g;
+
+        return dbc::find_spell( this, g );
       }
     }
   }
@@ -7554,7 +7565,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return spell;
+        return dbc::find_spell( this, spell );
       }
     }
   }
@@ -7575,7 +7586,9 @@ const spell_data_t* player_t::find_perk_spell( const std::string& name, speciali
     {
       const spell_data_t* spell = dbc.spell( spell_id );
       if ( ( ( int )spell -> level() <= true_level ) )
-        return spell;
+      {
+        return dbc::find_spell( this, spell );
+      }
     }
   }
 
@@ -7593,7 +7606,9 @@ const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) 
     {
       const spell_data_t* spell = dbc.spell( spell_id );
       if ( ( ( int )spell -> level() <= true_level ) )
-        return spell;
+      {
+        return dbc::find_spell( this, spell );
+      }
     }
   }
 
@@ -7614,7 +7629,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return spell;
+        return dbc::find_spell( this, spell );
       }
     }
   }
@@ -7676,7 +7691,8 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, const 
     {
       if ( dbc::get_token( spell_id ).empty() )
         dbc.add_token( spell_id, token );
-      return s;
+
+      return dbc::find_spell( this, s );
     }
   }
 
@@ -7697,7 +7713,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return spell;
+        return dbc::find_spell( this, spell );
       }
     }
   }
@@ -7716,7 +7732,7 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
     {
       if ( dbc::get_token( spell_id ).empty() )
         dbc.add_token( spell_id, token );
-      return s;
+      return dbc::find_spell( this, s );
     }
   }
 
@@ -7734,7 +7750,7 @@ const spell_data_t* player_t::find_spell( const unsigned int id, const std::stri
     {
       if ( dbc::get_token( id ).empty() )
         dbc.add_token( id, token );
-      return s;
+      return dbc::find_spell( this, s );
     }
   }
 

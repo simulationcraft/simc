@@ -1864,12 +1864,6 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
       furious_winds_chance = data -> effectN( 2 ).average( player -> furious_winds -> item ) / 100.0;
 
-      // 2015-06-29: Core of the Primal Elements now deals 40% more damage for Enhancement Shaman.
-      if ( player -> wod_hotfix )
-      {
-        damage_value *= 1.4;
-      }
-
       base_multiplier *= 1.0 + damage_value;
     }
   }
@@ -1894,12 +1888,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_miss = may_dodge = may_parry = false;
     weapon = w;
     base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
-
-    // 2015-06-26: Stormstrike/Windstrike now deals 20% more damage.
-    if ( player -> wod_hotfix )
-    {
-      weapon_multiplier *= 1.2;
-    }
   }
 };
 
@@ -2290,12 +2278,6 @@ struct lava_lash_t : public shaman_attack_t
 
     parse_options( options_str );
     weapon              = &( player -> off_hand_weapon );
-
-    // 2015-06-26: Lava Lash now deals 20% more damage.
-    if ( player -> wod_hotfix )
-    {
-      weapon_multiplier *= 1.2;
-    }
 
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
@@ -6660,6 +6642,44 @@ struct shaman_module_t : public module_t
   {
     unique_gear::register_special_effect( 184919, elemental_bellows );
     unique_gear::register_special_effect( 184920, furious_winds     );
+  }
+
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-06-29", "Core of the Primal Elements now deals 40% more damage "
+                                           "for Enhancement Shaman.", 268064 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.4 )
+      .verification_value( 0.515463 );
+
+    hotfix::register_effect( "2015-06-25", "Stormstrike now deals 20% more damage.", 21915 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 400 );
+
+    // Identical tag + note, need to cheat for now to make the combination unique, otherwie hotfix
+    // will not register. TODO: Better uniqueness check.
+    hotfix::register_effect( "2015-06-25-2", "Stormstrike now deals 20% more damage.", 21916 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 400 );
+
+    hotfix::register_effect( "2015-06-25", "Lava Lash now deals 20% more damage.", 53784 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 575 );
+
+    hotfix::register_effect( "2015-06-23", "Tier-18 4-piece set bonus for Enhancement Shaman now "
+                                           "increases damage dealt by Nature spells by an "
+                                           "additional 12% (up from 8%).", 270178 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 12 )
+      .verification_value( 8 );
   }
 
   virtual void combat_begin( sim_t* ) const {}
