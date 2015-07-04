@@ -3214,6 +3214,9 @@ void item::soul_capacitor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+
+const std::string BLADEMASTER_PET_NAME = "mirror_image_(trinket)";
+
 struct felstorm_tick_t : public melee_attack_t
 {
   felstorm_tick_t( pet_t* p ) :
@@ -3232,7 +3235,7 @@ struct felstorm_tick_t : public melee_attack_t
   bool init_finished()
   {
     // Find first blademaster pet, it'll be the first trinket-created pet
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "mirror_image_(trinket)" );
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
     if ( player != main_pet )
     {
       stats = main_pet -> find_action( "felstorm_tick" ) -> stats;
@@ -3255,7 +3258,7 @@ struct felstorm_t : public melee_attack_t
 
   bool init_finished()
   {
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( "mirror_image_(trinket)" );
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
     if ( player != main_pet )
     {
       stats = main_pet -> find_action( "felstorm" ) -> stats;
@@ -3268,7 +3271,7 @@ struct felstorm_t : public melee_attack_t
 struct blademaster_pet_t : public pet_t
 {
   blademaster_pet_t( player_t* owner ) :
-    pet_t( owner -> sim, owner, "mirror_image_(trinket)", true, true )
+    pet_t( owner -> sim, owner, BLADEMASTER_PET_NAME, true, true )
   {
     main_hand_weapon.type = WEAPON_BEAST;
     // Verified 5/11/15, TODO: Check if this is still the same on live
@@ -3303,7 +3306,7 @@ struct blademaster_pet_t : public pet_t
 struct burning_mirror_t : public spell_t
 {
   size_t n_mirrors;
-  std::vector<blademaster_pet_t*> pets;
+  std::vector<pet_t*> pets;
   const spell_data_t* summon_spell;
 
   burning_mirror_t( const special_effect_t& effect ) :
@@ -3321,7 +3324,8 @@ struct burning_mirror_t : public spell_t
 
     for ( size_t i = 0; i < n_mirrors; ++i )
     {
-      pets.push_back( new blademaster_pet_t( effect.player ) );
+      pet_t* blademaster = effect.player -> create_pet( BLADEMASTER_PET_NAME );
+      pets.push_back( blademaster ? blademaster : new blademaster_pet_t( effect.player ) );
 
       // Spawn every other image in front of the target
       if ( i % 2 )

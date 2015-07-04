@@ -657,8 +657,8 @@ struct hunter_pet_t: public pet_t
 public:
   typedef pet_t base_t;
 
-  hunter_pet_t( sim_t& sim, hunter_t& owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false ):
-    base_t( &sim, &owner, pet_name, pt, guardian )
+  hunter_pet_t( sim_t& sim, hunter_t& owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
+    base_t( &sim, &owner, pet_name, pt, guardian, dynamic )
   {
   }
 
@@ -708,6 +708,97 @@ public:
   const hunter_t* o() const
   {
     return static_cast<hunter_t*>( p() -> o() );
+  }
+};
+
+// COPY PASTE of blademaster trinket code so we can support mastery for beastmaster
+const std::string BLADEMASTER_PET_NAME = "mirror_image_(trinket)";
+
+struct felstorm_tick_t : public melee_attack_t
+{
+  felstorm_tick_t( pet_t* p ) :
+    melee_attack_t( "felstorm_tick", p, p -> find_spell( 184280 ) )
+  {
+    school = SCHOOL_PHYSICAL;
+
+    background = special = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    range = data().effectN( 1 ).radius();
+
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  bool init_finished()
+  {
+    // Find first blademaster pet, it'll be the first trinket-created pet
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
+    if ( player != main_pet )
+    {
+      stats = main_pet -> find_action( "felstorm_tick" ) -> stats;
+    }
+
+    return melee_attack_t::init_finished();
+  }
+};
+
+struct felstorm_t : public melee_attack_t
+{
+  felstorm_t( pet_t* p ) :
+    melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
+  {
+    callbacks = may_miss = may_block = may_parry = false;
+    channeled = true;
+
+    tick_action = new felstorm_tick_t( p );
+  }
+
+  bool init_finished()
+  {
+    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
+    if ( player != main_pet )
+    {
+      stats = main_pet -> find_action( "felstorm" ) -> stats;
+    }
+
+    return melee_attack_t::init_finished();
+  }
+};
+
+struct blademaster_pet_t : public hunter_pet_t
+{
+  // hunter_pet_t( sim_t& sim, hunter_t& owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false ):
+
+  blademaster_pet_t( player_t* owner ) :
+    hunter_pet_t( *(owner -> sim), *static_cast<hunter_t*>(owner), BLADEMASTER_PET_NAME, PET_NONE, true, true )
+  {
+    main_hand_weapon.type = WEAPON_BEAST;
+    // Verified 5/11/15, TODO: Check if this is still the same on live
+    owner_coeff.ap_from_ap = 1.0;
+
+    // Magical constants for base damage
+    double damage_range = 0.4;
+    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
+    double min_dps = base_dps * ( 1 - damage_range / 2.0 );
+    double max_dps = base_dps * ( 1 + damage_range / 2.0 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.min_dmg =  min_dps * main_hand_weapon.swing_time.total_seconds();
+    main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
+  }
+
+  void init_action_list()
+  {
+    action_list_str = "felstorm";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "felstorm" ) return new felstorm_t( this );
+
+    return pet_t::create_action( name, options_str );
   }
 };
 
@@ -3753,11 +3844,13 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   if ( p )
     return p;
 
-  pet_e type = util::parse_pet_type( pet_type );
+  using namespace pets;
+  if (pet_name == BLADEMASTER_PET_NAME) return new blademaster_pet_t(this);
 
+  pet_e type = util::parse_pet_type( pet_type );
   if ( type > PET_NONE && type < PET_HUNTER )
     return new pets::hunter_main_pet_t( *sim, *this, pet_name, type );
-  else
+  else if ( pet_type != "" )
   {
     sim -> errorf( "Player %s with pet %s has unknown type %s\n", name(), pet_name.c_str(), pet_type.c_str() );
     sim -> cancel();
