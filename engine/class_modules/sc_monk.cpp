@@ -6359,6 +6359,7 @@ void monk_t::apl_pre_brewmaster()
   }
 
   pre -> add_action( "stance,choose=sturdy_ox" );
+//  pre -> add_action( "legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up" );
   pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim -> allow_potions && true_level >= 80 )
@@ -6412,6 +6413,7 @@ void monk_t::apl_pre_windwalker()
   }
 
   pre -> add_action( "stance,choose=fierce_tiger" );
+//  pre -> add_action( "legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up" );
   pre -> add_action( "snapshot_stats" );
 
   if ( sim -> allow_potions )
@@ -6458,6 +6460,7 @@ void monk_t::apl_pre_mistweaver()
   }
 
   pre -> add_action( "stance,choose=wise_serpent" );
+//  pre -> add_action( "legacy_of_the_emperor,if=!aura.str_agi_int.up" );
   pre -> add_action( "snapshot_stats" );
 
   if ( sim -> allow_potions )
@@ -6615,6 +6618,11 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Tiger Palm", "if=talent.chi_explosion.enabled&(cooldown.fists_of_fury.remains<5|cooldown.fists_of_fury.up)&buff.tiger_power.remains<5" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&buff.serenity.up" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&buff.spirit_shift.up" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&(trinket.proc.agility.react)" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&(trinket.proc.multistrike.react)" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&(trinket.proc.versatility.react)" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&(trinket.proc.crit.react)" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Tigereye Brew", "if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
