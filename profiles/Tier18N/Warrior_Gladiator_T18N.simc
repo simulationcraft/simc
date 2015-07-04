@@ -74,9 +74,9 @@ actions.aoe+=/devastate,cycle_targets=1,if=dot.deep_wounds.remains<5&cooldown.sh
 actions.aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 head=faceguard_of_iron_wrath,id=124334
-neck=choker_of_sneering_superiority,id=124219,enchant=gift_of_mastery
+neck=world_enders_gorget,id=124222,enchant=gift_of_mastery
 shoulders=doomcriers_shoulderplates,id=124343
-back=cloak_of_incendiary_wrath,id=124144,enchant=gift_of_mastery
+back=void_lords_wizened_cloak,id=124147,enchant=gift_of_mastery
 chest=breastplate_of_iron_wrath,id=124319
 wrists=wristplate_of_the_wretched,id=124352
 hands=gauntlets_of_iron_wrath,id=124329
@@ -84,7 +84,7 @@ waist=annihilans_waistplate,id=124349
 legs=legplates_of_iron_wrath,id=124340
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
-finger2=loop_of_beckoned_shadows,id=124199,enchant=gift_of_mastery
+finger2=mannoroths_calcified_eye,id=124204,enchant=gift_of_mastery
 trinket1=anzus_cursed_plume,id=124241
 trinket2=empty_drinking_horn,id=124238
 main_hand=fiendsbreath_warmace,id=124374,enchant_id=5330
@@ -94,11 +94,11 @@ off_hand=fallen_defender_of_argus,id=124355
 # gear_ilvl=700.00
 # gear_strength=3535
 # gear_stamina=4710
-# gear_crit_rating=1582
+# gear_crit_rating=1106
 # gear_haste_rating=595
-# gear_mastery_rating=1459
-# gear_multistrike_rating=816
-# gear_armor=3071
-# gear_bonus_armor=379
+# gear_mastery_rating=1420
+# gear_multistrike_rating=819
+# gear_armor=3068
+# gear_bonus_armor=891
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
