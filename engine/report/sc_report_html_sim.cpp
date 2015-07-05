@@ -1337,36 +1337,60 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
   std::vector<const hotfix::hotfix_entry_t*> entries = hotfix::hotfix_entries();
 
   os << "<div class=\"section\">\n";
-  os << "<h2 class=\"toggle\">Current hotfixes</h2>\n";
+  os << "<h2 class=\"toggle\">Current simulator hotfixes</h2>\n";
   os << "<div class=\"toggle-content hide\">\n";
   os << "<table class=\"sc\">\n";
   os << "<tr>\n";
-  os << "<th>Tag</th><th colspan=\"5\">Note</th>\n";
+  os << "<th>Tag</th>\n";
+  os << "<th class=\"left\">Spell / Effect</th>\n";
+  os << "<th class=\"left\">Field</th>\n";
+  os << "<th class=\"left\">Hotfixed Value</th>\n";
+  os << "<th class=\"left\" colspan=\"2\">DBC Value</th>\n";
   os << "</tr>\n";
   for ( size_t i = 0; i < entries.size(); ++i )
   {
     const hotfix::hotfix_entry_t* entry = entries[ entries.size() - 1 - i ];
     os << "<tr>\n";
-    os << "<td class=\"left\">" << entry -> tag_.substr( 0, 10 ) << "</td>\n";
-    os << "<td class=\"left\" colspan=\"5\">" << entry -> note_ << "</td>\n";
+    os << "<td class=\"left\"><strong>" << entry -> tag_.substr( 0, 10 ) << "</strong></td>\n";
+    os << "<td class=\"left\" colspan=\"5\"><strong>" << entry -> note_ << "</strong></td>\n";
     os << "</tr>\n";
     if ( const hotfix::effect_hotfix_entry_t* e = dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
     {
       os << "<tr class=\"odd\">\n";
       os << "<td></td>\n";
       const spelleffect_data_t* effect = s -> dbc.effect( e -> id_ );
-      os << "<td class=\"left\">Spell: " << effect -> spell() -> name_cstr() << "</td>\n";
-      os << "<td class=\"left\">Field: " << e -> field_name_ << "</td>\n";
-      os << "<td class=\"left\">Hotfixed Value: " << e -> hotfix_value_ << "</td>\n";
-      os << "<td class=\"left\">DBC Value: " << e -> dbc_value_ << "</td>\n";
+
+      std::string name = wowhead::decorated_spell_name( "effect#" + util::to_string( effect -> index() + 1 ),
+                                                        effect -> spell() -> id(),
+                                                        effect -> spell() -> name_cstr(),
+                                                        s -> dbc.ptr ? wowhead::PTR : wowhead::LIVE );
+      os << "<td class=\"left\">" << name << "</td>\n";
+    }
+    else if ( const hotfix::spell_hotfix_entry_t* e = dynamic_cast<const hotfix::spell_hotfix_entry_t*>( entry ) )
+    {
+      os << "<tr class=\"odd\">\n";
+      os << "<td></td>\n";
+      const spell_data_t* spell = s -> dbc.spell( e -> id_ );
+      std::string name = wowhead::decorated_spell_name( spell -> name_cstr(),
+                                                        spell -> id(),
+                                                        spell -> name_cstr(),
+                                                        s -> dbc.ptr ? wowhead::PTR : wowhead::LIVE );
+      os << "<td class=\"left\">" << name << "</td>\n";
+    }
+
+    if ( const hotfix::dbc_hotfix_entry_t* e = dynamic_cast<const hotfix::dbc_hotfix_entry_t*>( entry ) )
+    {
+      os << "<td class=\"left\">" << e -> field_name_ << "</td>\n";
+      os << "<td class=\"left\">" << e -> hotfix_value_ << "</td>\n";
       if ( e -> orig_value_ != -std::numeric_limits<double>::max() &&
            util::round( e -> orig_value_, 6 ) != util::round( e -> dbc_value_, 6 ) )
       {
-        os << "<td class=\"left\"><strong>Verification Failure</strong></td>";
+        os << "<td class=\"left\">" << e -> dbc_value_ << "</td>\n";
+        os << "<td class=\"left\" style=\"color:red;\"><strong>Verification Failure (" << e -> orig_value_ << ")</strong></td>";
       }
       else
       {
-        os << "<td></td>\n";
+        os << "<td colspan=\"2\" class=\"left\">" << e -> dbc_value_ << "</td>\n";
       }
       os << "</tr>\n";
     }
