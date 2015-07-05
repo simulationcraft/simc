@@ -1105,12 +1105,6 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 
       aoe = -1;
 
-      // 2015-06-29: 4-piece set bonus for Damage Dealing Spellcasters had its damage dealt reduced
-      // by 75% and has an 8-second internal cooldown
-      if ( player -> wod_hotfix )
-      {
-        spell_power_mod.direct *= 0.25;
-      }
     }
   };
 
@@ -1156,13 +1150,6 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
   };
 
   effect.proc_flags2_ = PF2_ALL_HIT; // Proc on impact so we can proc on multiple targets
-
-  // 2015-06-29: 4-piece set bonus for Damage Dealing Spellcasters had its damage dealt reduced by
-  // 75% and has an 8-second internal cooldown
-  if ( effect.player -> wod_hotfix )
-  {
-    effect.cooldown_ = timespan_t::from_seconds( 8.0 );
-  }
 
   new electric_orb_cb_t( effect );
 }
@@ -1249,11 +1236,6 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
   }
 
   effect.execute_action = spell;
-  // 2015-06-29: 4-piece set bonus for Damage Dealers now has a 3-second internal cooldown.
-  if ( effect.player -> wod_hotfix )
-  {
-    effect.cooldown_ = timespan_t::from_seconds( 3.0 );
-  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1330,13 +1312,6 @@ void set_bonus::t18_lfr_4pc_mail_agility( special_effect_t& effect )
   }
 
   spell -> aoe = -1;
-  // 2015-06-29: 4-piece set bonus for Physical Damage Dealers no longer scales with Attack Power,
-  // the Fel Explosion effect is now centered on the target, and has a 3-second internal cooldown.
-  if ( effect.player -> wod_hotfix )
-  {
-    effect.cooldown_ = timespan_t::from_seconds( 3.0 );
-    spell -> attack_power_mod.direct = 0;
-  }
 
   effect.execute_action = spell;
 
@@ -1361,12 +1336,6 @@ void set_bonus::t18_lfr_4pc_mail_caster( special_effect_t& effect )
   // Procs on all targets?
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.execute_action = spell;
-  // 2015-06-29: 4-piece set bonus for Damage Dealing Spellcasters now has a 3-second internal
-  // cooldown.
-  if ( effect.player -> wod_hotfix )
-  {
-    effect.cooldown_ = timespan_t::from_seconds( 3.0 );
-  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4311,6 +4280,49 @@ void unique_gear::register_hotfixes()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 30 )
     .verification_value( 50 );
+
+  hotfix::register_effect( "2015-06-29", "4-piece set bonus for Damage Dealing Spellcasters had "
+                                         "its damage dealt reduced by 75%.", 257428 )
+    .field( "sp_coefficient" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 0.25 )
+    .verification_value( 1 );
+
+  hotfix::register_spell( "2015-06-29", "4-piece set bonus for Damage Dealing Spellcasters has "
+                                        "has an 8-second internal cooldown (up from 3 seconds).", 179134 )
+    .field( "internal_cooldown" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 8000 )
+    .verification_value( 0 );
+
+  hotfix::register_spell( "2015-06-29", "4-piece set bonus for Damage Dealers now has "
+                                        "a 3-second internal cooldown.", 187079 )
+    .field( "internal_cooldown" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 3000 )
+    .verification_value( 0 );
+
+  hotfix::register_spell( "2015-06-29", "4-piece set bonus for Physical Damage Dealers "
+                                        "now has a 3-second internal cooldown.", 187688 )
+    .field( "internal_cooldown" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 3000 )
+    .verification_value( 0 );
+
+  hotfix::register_effect( "2015-06-29", "4-piece set bonus for Physical Damage Dealers "
+                                         "no longer scales with Attack Power.", 280261 )
+    .field( "ap_coefficient" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0 )
+    .verification_value( 1 );
+
+  hotfix::register_spell( "2015-06-29", "4-piece set bonus for Damage Dealing Spellcasters has "
+                                        "has a 3-second internal cooldown.", 187778 )
+    .field( "internal_cooldown" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 3000 )
+    .verification_value( 0 );
+
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )

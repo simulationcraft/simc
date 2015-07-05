@@ -2703,7 +2703,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
     if ( p() -> talents.focusing_shot -> ok() )
       background = true;
-    focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
+    focus_gain = p() -> find_spell( 91954 ) -> effectN( 1 ).base_value();
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
@@ -3101,7 +3101,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
     if ( p() -> talents.focusing_shot -> ok() )
       background = true;
 
-    focus_gain = p() -> dbc.spell( 77443 ) -> effectN( 1 ).base_value();
+    focus_gain = p() -> find_spell( 77443 ) -> effectN( 1 ).base_value();
     // Needs testing
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;

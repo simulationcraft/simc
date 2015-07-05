@@ -1863,8 +1863,8 @@ struct ignite_t : public residual_action_t
   ignite_t( mage_t* player ) :
     residual_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
-    dot_duration = player -> dbc.spell( 12654 ) -> duration();
-    base_tick_time = player -> dbc.spell( 12654 ) -> effectN( 1 ).period();
+    dot_duration = dbc::find_spell( player, 12654 ) -> duration();
+    base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
   }
 };

@@ -3700,7 +3700,7 @@ struct chi_brew_t: public monk_spell_t
 struct zen_sphere_damage_t: public monk_spell_t
 {
   zen_sphere_damage_t( monk_t* player ):
-    monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
+    monk_spell_t( "zen_sphere_damage", player, player -> find_spell( 124098 ) )
   {
     background = true;
 

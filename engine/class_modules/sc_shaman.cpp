@@ -1695,7 +1695,7 @@ struct t15_2pc_caster_t : public shaman_spell_t
 struct lightning_charge_t : public shaman_spell_t
 {
   lightning_charge_t( const std::string& n, shaman_t* player ) :
-    shaman_spell_t( n, player, player -> dbc.spell( 26364 ) )
+    shaman_spell_t( n, player, player -> find_spell( 26364 ) )
   {
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
     background       = true;
@@ -1740,7 +1740,7 @@ struct lightning_charge_t : public shaman_spell_t
 struct unleash_flame_spell_t : public shaman_spell_t
 {
   unleash_flame_spell_t( const std::string& name, shaman_t* player ) :
-    shaman_spell_t( name, player, player -> dbc.spell( 73683 ) )
+    shaman_spell_t( name, player, player -> find_spell( 73683 ) )
   {
     harmful              = true;
     background           = true;
@@ -1846,7 +1846,7 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
   double furious_winds_chance;
 
   windfury_weapon_melee_attack_t( const std::string& n, shaman_t* player, weapon_t* w ) :
-    shaman_attack_t( n, player, player -> dbc.spell( 25504 ) ), furious_winds_chance( 0 )
+    shaman_attack_t( n, player, player -> find_spell( 25504 ) ), furious_winds_chance( 0 )
   {
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
@@ -2397,7 +2397,7 @@ struct primal_strike_t : public shaman_attack_t
     parse_options( options_str );
     weapon               = &( p() -> main_hand_weapon );
     cooldown             = p() -> cooldown.strike;
-    cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
+    cooldown -> duration = p() -> find_spell( id ) -> cooldown();
   }
 };
 
@@ -2420,7 +2420,7 @@ struct stormstrike_t : public shaman_attack_t
     weapon_multiplier    = 0.0;
     may_crit             = false;
     cooldown             = p() -> cooldown.strike;
-    cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
+    cooldown -> duration = p() -> find_spell( id ) -> cooldown();
 
     // Actual damaging attacks are done by stormstrike_attack_t
     // stormstrike_attack_t( std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
@@ -2497,7 +2497,7 @@ struct windstrike_t : public shaman_attack_t
     weapon_multiplier    = 0.0;
     may_crit             = false;
     cooldown             = p() -> cooldown.strike;
-    cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
+    cooldown -> duration = p() -> find_spell( id ) -> cooldown();
 
     // Actual damaging attacks are done by stormstrike_attack_t
     windstrike_mh = new windstrike_attack_t( "windstrike_mh", player, data().effectN( 2 ).trigger(), &( player -> main_hand_weapon ) );
@@ -4304,7 +4304,7 @@ struct magma_totem_t : public shaman_totem_pet_t
   magma_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "magma_totem", TOTEM_FIRE )
   {
-    pulse_amplitude = p -> dbc.spell( 8190 ) -> effectN( 2 ).period();
+    pulse_amplitude = p -> find_spell( 8190 ) -> effectN( 2 ).period();
   }
 
   void init_spells()
@@ -6124,14 +6124,14 @@ void shaman_t::arise()
 
   assert( main_hand_attack == melee_mh && off_hand_attack == melee_oh );
 
-  if ( !sim -> overrides.mastery && dbc.spell( 116956 ) -> is_level( true_level ) )
+  if ( !sim -> overrides.mastery && find_spell( 116956 ) -> is_level( true_level ) )
   {
-    double mastery_rating = dbc.spell( 116956 ) -> effectN( 1 ).average( this );
+    double mastery_rating = find_spell( 116956 ) -> effectN( 1 ).average( this );
     if ( ! sim -> auras.mastery -> check() || sim -> auras.mastery -> current_value < mastery_rating )
       sim -> auras.mastery -> trigger( 1, mastery_rating );
   }
 
-  if ( !sim -> overrides.haste && dbc.spell( 116956 ) -> is_level( true_level ) )
+  if ( !sim -> overrides.haste && find_spell( 116956 ) -> is_level( true_level ) )
     sim -> auras.haste -> trigger();
 
   if ( main_hand_weapon.type != WEAPON_NONE )
