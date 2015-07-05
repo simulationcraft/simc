@@ -49,7 +49,8 @@ actions.init_burn=start_burn_phase,if=buff.arcane_charge.stack>=4&(cooldown.pris
 actions.init_burn+=/start_burn_phase,if=target.time_to_die*0.75*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)*1.1<mana.pct-10+(target.time_to_die*1.8%spell_haste)
 
 # Conditions for initiating Prismatic Crystal
-actions.init_crystal=call_action_list,name=conserve,if=buff.arcane_charge.stack<4
+actions.init_crystal=call_action_list,name=conserve,if=buff.arcane_charge.stack<4|(buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20))
+actions.init_crystal+=/arcane_missiles,if=buff.arcane_missiles.react&t18_class_trinket
 actions.init_crystal+=/prismatic_crystal
 
 # Actions while Prismatic Crystal is active

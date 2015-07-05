@@ -5810,8 +5810,10 @@ void mage_t::apl_arcane()
                            "End of fight burn" );
 
 
-  init_crystal -> add_action( "call_action_list,name=conserve,if=buff.arcane_charge.stack<4",
+  init_crystal -> add_action( "call_action_list,name=conserve,if=buff.arcane_charge.stack<4|(buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20))",
                               "Conditions for initiating Prismatic Crystal" );
+  init_crystal -> add_action( this, "Arcane Missiles",
+                              "if=buff.arcane_missiles.react&t18_class_trinket" );
   init_crystal -> add_talent( this, "Prismatic Crystal" );
 
 
