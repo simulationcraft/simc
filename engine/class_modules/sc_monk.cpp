@@ -2341,9 +2341,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = 0;
-    if ( p() -> wod_hotfix && p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      cb_chance += 0.3;
-    else
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
       cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
     return cb_chance;
   }
@@ -2410,9 +2408,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   double combo_breaker_chance()
   {
     double cb_chance = 0;
-    if ( p() -> wod_hotfix && p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      cb_chance += 0.3;
-    else
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
       cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
     return cb_chance;
   }
@@ -7233,6 +7229,18 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 184906, eluding_movements );
     unique_gear::register_special_effect( 184907, soothing_breeze );
     unique_gear::register_special_effect( 184908, furious_sun );
+  }
+
+
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Windwalker Monks "
+                                           "now gives Rising Sun Kick a 30% chance "
+                                           "(down from 40%) to generate Combo Breaker.", 269423 )
+    .field( "base_value" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 30 )
+    .verification_value( 40 );
   }
 
   virtual void init( player_t* p ) const
