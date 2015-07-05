@@ -1355,13 +1355,14 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
       os << "<tr class=\"odd\">\n";
       os << "<td></td>\n";
       const spelleffect_data_t* effect = s -> dbc.effect( e -> id_ );
-      os << "<td class=\"left\">" << effect -> spell() -> name_cstr() << "</td>\n";
-      os << "<td class=\"left\">" << e -> field_name_ << "</td>\n";
-      os << "<td class=\"left\">" << e -> hotfix_value_ << "</td>\n";
-      os << "<td class=\"left\">" << e -> dbc_value_ << "</td>\n";
-      if ( e -> orig_value_ != -std::numeric_limits<double>::max() )
+      os << "<td class=\"left\">Spell: " << effect -> spell() -> name_cstr() << "</td>\n";
+      os << "<td class=\"left\">Field: " << e -> field_name_ << "</td>\n";
+      os << "<td class=\"left\">Hotfixed Value: " << e -> hotfix_value_ << "</td>\n";
+      os << "<td class=\"left\">DBC Value: " << e -> dbc_value_ << "</td>\n";
+      if ( e -> orig_value_ != -std::numeric_limits<double>::max() &&
+           util::round( e -> orig_value_, 6 ) != util::round( e -> dbc_value_, 6 ) )
       {
-        os << "<td class=\"left\">" << e -> orig_value_ << "</td>";
+        os << "<td class=\"left\"><strong>Verification Failure</strong></td>";
       }
       else
       {
