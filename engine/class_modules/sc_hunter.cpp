@@ -3839,13 +3839,15 @@ action_t* hunter_t::create_action( const std::string& name,
 pet_t* hunter_t::create_pet( const std::string& pet_name,
                              const std::string& pet_type )
 {
+  using namespace pets;
+  // Blademaster pets have to always be explicitly created, cannot re-use the same pet as there are
+  // many of them.
+  if (pet_name == BLADEMASTER_PET_NAME) return new blademaster_pet_t(this);
+
   pet_t* p = find_pet( pet_name );
 
   if ( p )
     return p;
-
-  using namespace pets;
-  if (pet_name == BLADEMASTER_PET_NAME) return new blademaster_pet_t(this);
 
   pet_e type = util::parse_pet_type( pet_type );
   if ( type > PET_NONE && type < PET_HUNTER )
