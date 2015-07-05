@@ -1602,7 +1602,7 @@ struct ambush_t : public rogue_attack_t
     if ( p -> from_the_shadows )
     {
       const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
-      base_multiplier *= 1.0 + ( data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0 * ( p -> wod_hotfix ? 1.4 : 1.0 ) );
+      base_multiplier *= 1.0 + ( data -> effectN( 1 ).average( p -> from_the_shadows -> item ) / 100.0 );
     }
   }
 
@@ -2037,7 +2037,7 @@ struct eviscerate_t : public rogue_attack_t
     if ( p -> eviscerating_blade )
     {
       const spell_data_t* data = p -> find_spell( p -> eviscerating_blade -> spell_id );
-      base_multiplier *= 1.0 + ( data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0 * ( p -> wod_hotfix ? 1.28 : 1.0 ) );
+      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0;
 
       range += data -> effectN( 1 ).base_value();
     }
@@ -2256,7 +2256,7 @@ struct garrote_t : public rogue_attack_t
     if ( p -> from_the_shadows )
     {
       const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
-      base_multiplier *= 1.0 + ( data -> effectN( 2 ).average( p -> from_the_shadows -> item ) / 100.0 * ( p -> wod_hotfix ? 1.4 : 1.0 ) );
+      base_multiplier *= 1.0 + ( data -> effectN( 1 ).average( p -> from_the_shadows -> item ) / 100.0 );
     }
 
     initialize_sinister_calling( 168971 );
@@ -4815,7 +4815,7 @@ struct shadow_reflection_pet_t : public pet_t
       if ( o() -> from_the_shadows )
       {
         const spell_data_t* data = p -> find_spell( o() -> from_the_shadows -> spell_id );
-        base_multiplier *= 1.0 + data -> effectN( 2 ).average( o() -> from_the_shadows -> item ) / 100.0 * ( p -> wod_hotfix ? 1.4 : 1.0 );
+        base_multiplier *= 1.0 + data -> effectN( 1 ).average( o() -> from_the_shadows -> item ) / 100.0;
       }
     }
   };
@@ -5265,10 +5265,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
     if ( buffs.deathly_shadows -> up() )
     {
-      if ( wod_hotfix )
-        m *= 1.3;
-      else
-        m *= 1.0 + buffs.deathly_shadows -> data().effectN( 1 ).percent();
+      m *= 1.0 + buffs.deathly_shadows -> data().effectN( 1 ).percent();
     }
   }
 
@@ -6657,6 +6654,31 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 184916, toxic_mutilator    );
     unique_gear::register_special_effect( 184917, eviscerating_blade );
     unique_gear::register_special_effect( 184918, from_the_shadows   );
+  }
+
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Subtlety Rogues now increases all "
+                                           "damage dealt by 30% (up from 10%) for 10 seconds after Vanish "
+                                           "is used.", 275681 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 10 );
+
+    hotfix::register_effect( "2015-06-29", "Bleeding Hollow Toxin Vessel had its effect increased by "
+                                           "40% for Subtlety Rogues.", 268062 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.4 )
+      .verification_value( 0.111682 );
+
+    hotfix::register_effect( "2015-06-29", "Bleeding Hollow Toxin Vessel had its effect increased by "
+                                           "28% for Combat Rogues.", 268533 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.28 )
+      .verification_value( 0.105668 );
   }
 
   virtual void init( player_t* ) const { }

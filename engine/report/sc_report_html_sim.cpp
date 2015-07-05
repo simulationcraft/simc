@@ -1363,7 +1363,7 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
       std::string name;
       if ( s -> wowhead_tooltips == 1 )
       {
-        name =  wowhead::decorated_spell_name( "effect#" + util::to_string( effect -> index() + 1 ),
+        name =  wowhead::decorated_spell_name( effect -> spell() -> name_cstr(),
                                                effect -> spell() -> id(),
                                                effect -> spell() -> name_cstr(),
                                                s -> dbc.ptr ? wowhead::PTR : wowhead::LIVE );
@@ -1371,8 +1371,9 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
       else
       {
         name = effect -> spell() -> name_cstr();
-        name += " (effect#" + util::to_string( effect -> index() + 1 ) + ")";
       }
+
+      name += " (effect#" + util::to_string( effect -> index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
     }
     else if ( const hotfix::spell_hotfix_entry_t* e = dynamic_cast<const hotfix::spell_hotfix_entry_t*>( entry ) )
