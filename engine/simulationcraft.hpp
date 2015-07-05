@@ -3066,7 +3066,7 @@ struct sim_t : private sc_thread_t
   void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
   { target_data_initializer.push_back( cb ); }
 
-  bool display_hotfixes;
+  bool display_hotfixes, disable_hotfixes;
 private:
   void do_pause();
 

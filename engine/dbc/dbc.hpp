@@ -28,10 +28,6 @@ static const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 // ==========================================================================
 
 namespace dbc {
-// Wrapper for fetching spell data through various spell data variants
-const spell_data_t* find_spell( const player_t*, const spell_data_t* spell );
-const spell_data_t* find_spell( const player_t*, unsigned spell_id );
-
 // Initialization
 void apply_hotfixes();
 void init();
@@ -1283,6 +1279,43 @@ public:
   std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value );
 
 };
+
+namespace dbc
+{
+// Wrapper for fetching spell data through various spell data variants
+template <typename T>
+const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
+{
+  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell -> id(), obj -> dbc.ptr ) )
+  {
+    return override_spell;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_spell( spell, obj -> dbc.ptr );
+  }
+
+  return spell;
+}
+
+template <typename T>
+const spell_data_t* find_spell( const T* obj, unsigned spell_id )
+{
+  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell_id, obj -> dbc.ptr ) )
+  {
+    return override_spell;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_spell( obj -> dbc.spell( spell_id ), obj -> dbc.ptr );
+  }
+
+  return obj -> dbc.spell( spell_id );
+}
+} // dbc namespace ends
+
 // ==========================================================================
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
 // ==========================================================================

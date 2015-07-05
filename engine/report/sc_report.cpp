@@ -527,7 +527,7 @@ void report::print_spell_query( xml_node_t* root, FILE* file, dbc_t& dbc, const 
     case DATA_EFFECT:
       {
         std::ostringstream sqs;
-        const spell_data_t* spell = dbc.spell( dbc.effect( *i ) -> spell_id() );
+        const spell_data_t* spell = hotfix::find_spell( dbc.spell( dbc.effect( *i ) -> spell_id() ), dbc.ptr );
         if ( spell )
         {
           spell_info::effect_to_xml( dbc, spell, dbc.effect( *i ), root );
@@ -539,7 +539,7 @@ void report::print_spell_query( xml_node_t* root, FILE* file, dbc_t& dbc, const 
       break;
     default:
       {
-        const spell_data_t* spell = dbc.spell( *i );
+        const spell_data_t* spell = hotfix::find_spell( dbc.spell( *i ), dbc.ptr );
         spell_info::to_xml( dbc, spell, root, level );
       }
     }

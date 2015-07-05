@@ -7,36 +7,6 @@
 
 using namespace hotfix;
 
-const spell_data_t* dbc::find_spell( const player_t* player, const spell_data_t* spell )
-{
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell -> id(), player -> dbc.ptr ) )
-  {
-    return override_spell;
-  }
-
-  if ( ! player -> disable_hotfixes )
-  {
-    return hotfix::find_spell( spell, player -> dbc.ptr );
-  }
-
-  return spell;
-}
-
-const spell_data_t* dbc::find_spell( const player_t* player, unsigned spell_id )
-{
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell_id, player -> dbc.ptr ) )
-  {
-    return override_spell;
-  }
-
-  if ( ! player -> disable_hotfixes )
-  {
-    return hotfix::find_spell( player -> dbc.spell( spell_id ), player -> dbc.ptr );
-  }
-
-  return player -> dbc.spell( spell_id );
-}
-
 // ==========================================================================
 // Spell Data
 // ==========================================================================

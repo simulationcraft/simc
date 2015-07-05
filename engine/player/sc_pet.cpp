@@ -261,7 +261,7 @@ const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::s
 
   dbc.add_token( spell_id, token );
 
-  return ( dbc.spell( spell_id ) );
+  return dbc::find_spell( this, spell_id );
 }
 
 void pet_t::init_resources( bool force )

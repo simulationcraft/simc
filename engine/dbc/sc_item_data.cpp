@@ -1023,7 +1023,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       // Intention: If enchant name contains a linked number ( $ ) or the spell contains a rank_str, use the spell name
       // otherwise use enchant name
       std::string dbc_name = item_enchant.name;
-      const spell_data_t* es = item.player -> dbc.spell( item_enchant.ench_prop[ i ] );
+      const spell_data_t* es = item.player -> find_spell( item_enchant.ench_prop[ i ] );
 
       // Handle All stats enchants
       if ( es )

@@ -2649,7 +2649,7 @@ struct revealing_strike_t : public rogue_attack_t
 
     // Legendary buff increases RS damage
     if ( p -> fof_p1 || p -> fof_p2 || p -> fof_p3 )
-      base_multiplier *= 1.0 + p -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> find_spell( 110211 ) -> effectN( 1 ).percent();
   }
 
   timespan_t gcd() const
@@ -2813,7 +2813,7 @@ struct sinister_strike_t : public rogue_attack_t
     double m = rogue_attack_t::composite_da_multiplier( state );
 
     if ( p() -> fof_p1 || p() -> fof_p2 || p() -> fof_p3 )
-      m *= 1.0 + p() -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> find_spell( 110211 ) -> effectN( 1 ).percent();
 
     m *= 1.0 + p() -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
 
@@ -4622,7 +4622,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       revealing_strike = target -> get_dot( "revealing_strike", source );
 
-      const spell_data_t* vd = source -> dbc.spell( 79140 );
+      const spell_data_t* vd = source -> find_spell( 79140 );
       double vendetta_value = vd -> effectN( 1 ).percent();
       shadow_reflection_pet_t* sr = debug_cast<shadow_reflection_pet_t*>( source -> cast_pet() );
       vendetta_value += sr -> o() -> glyph.vendetta -> effectN( 1 ).percent();
@@ -6411,8 +6411,8 @@ void rogue_t::arise()
   if ( perk.improved_slice_and_dice -> ok() )
     buffs.slice_and_dice -> trigger( 1, buffs.slice_and_dice -> data().effectN( 1 ).percent(), -1.0, timespan_t::zero() );
 
-  if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( true_level ) ) sim -> auras.haste -> trigger();
-  if ( ! sim -> overrides.multistrike && dbc.spell( 113742 ) -> is_level( true_level ) ) sim -> auras.multistrike -> trigger();
+  if ( ! sim -> overrides.haste && find_spell( 113742 ) -> is_level( true_level ) ) sim -> auras.haste -> trigger();
+  if ( ! sim -> overrides.multistrike && find_spell( 113742 ) -> is_level( true_level ) ) sim -> auras.multistrike -> trigger();
 }
 
 // rogue_t::energy_regen_per_second =========================================

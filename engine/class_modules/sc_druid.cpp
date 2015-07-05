@@ -4986,10 +4986,10 @@ struct mark_of_the_wild_t : public druid_spell_t
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
     if ( ! sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, player -> dbc.spell( 79060 ) -> duration() );
+      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 79060 ) -> duration() );
 
     if ( ! sim -> overrides.versatility )
-      sim -> auras.versatility -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, player -> dbc.spell( 79060 ) -> duration() );
+      sim -> auras.versatility -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 79060 ) -> duration() );
   }
 };
 

@@ -1112,7 +1112,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   enable_highcharts( false ),
   output_relative_difference( false ),
   boxplot_percentile( .25 ),
-  display_hotfixes( false )
+  display_hotfixes( false ),
+  disable_hotfixes( false )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -1382,8 +1383,9 @@ void sim_t::combat_begin()
   if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override_buff();
   if ( overrides.critical_strike         ) auras.critical_strike         -> override_buff();
 
+  // TODO: Sim-wide overrides
   if ( overrides.mastery                 )
-    auras.mastery -> override_buff( 1, dbc.effect_average( dbc.spell( 116956 ) -> effectN( 1 ).id(), max_player_level ) );
+    auras.mastery -> override_buff( 1, dbc.effect_average( dbc::find_spell( this, 116956 ) -> effectN( 1 ).id(), max_player_level ) );
 
   if ( overrides.haste                   ) auras.haste                   -> override_buff();
   if ( overrides.multistrike             ) auras.multistrike             -> override_buff();
@@ -2013,49 +2015,49 @@ bool sim_t::init()
   // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
   auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" )
                                   .max_stack( 100 )
-                                  .default_value( dbc.spell( 19506 ) -> effectN( 1 ).percent() )
+                                  .default_value( dbc::find_spell( this, 19506 ) -> effectN( 1 ).percent() )
                                   .add_invalidate( CACHE_ATTACK_POWER );
 
   // Critical Strike, value from Arcane Brilliance (id=1459) (Mage)
   auras.critical_strike = buff_creator_t( this, "critical_strike" )
                           .max_stack( 100 )
-                          .default_value( dbc.spell( 1459 ) -> effectN( 2 ).percent() )
+                          .default_value( dbc::find_spell( this, 1459 ) -> effectN( 2 ).percent() )
                           .add_invalidate( CACHE_CRIT );
 
   // Mastery, value from Grace of Air (id=116956) (Shaman)
   auras.mastery = buff_creator_t( this, "mastery" )
                   .max_stack( 100 )
-                  .default_value( dbc.spell( 116956 ) -> effectN( 1 ).base_value() )
+                  .default_value( dbc::find_spell( this, 116956 ) -> effectN( 1 ).base_value() )
                   .add_invalidate( CACHE_MASTERY );
 
   // Haste, value from Mind Quickening (id=49868) (Priest)
   auras.haste = buff_creator_t( this, "haste" )
                       .max_stack( 100 )
-                      .default_value( dbc.spell( 49868 ) -> effectN( 1 ).percent() )
+                      .default_value( dbc::find_spell( this, 49868 ) -> effectN( 1 ).percent() )
                       .add_invalidate( CACHE_HASTE );
 
   // Multistrike, value from Mind Quickening (id=49868) (Priest)
   auras.multistrike = buff_creator_t( this, "multistrike" )
                       .max_stack( 100 )
-                      .default_value( dbc.spell( 49868 ) -> effectN( 2 ).percent() )
+                      .default_value( dbc::find_spell( this, 49868 ) -> effectN( 2 ).percent() )
                       .add_invalidate( CACHE_MULTISTRIKE );
 
   // Spell Power Multiplier, value from Arcane Brilliance (id=1459) (Mage)
   auras.spell_power_multiplier = buff_creator_t( this, "spell_power_multiplier" )
                                  .max_stack( 100 )
-                                 .default_value( dbc.spell( 1459 ) -> effectN( 1 ).percent() )
+                                 .default_value( dbc::find_spell( this, 1459 ) -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_SPELL_POWER );
 
   // Stamina, value from fortitude (id=21562) (Priest)
   auras.stamina = buff_creator_t( this, "stamina" )
                   .max_stack( 100 )
-                  .default_value( dbc.spell( 21562 ) -> effectN( 1 ).percent() )
+                  .default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
                   .add_invalidate( CACHE_STAMINA );
 
   // Strength, Agility, and Intellect, value from Blessing of Kings (id=20217) (Paladin)
   auras.str_agi_int = buff_creator_t( this, "str_agi_int" )
                       .max_stack( 100 )
-                      .default_value( dbc.spell( 20217 ) -> effectN( 1 ).percent() )
+                      .default_value( dbc::find_spell( this, 20217 ) -> effectN( 1 ).percent() )
                       .add_invalidate( CACHE_STRENGTH )
                       .add_invalidate( CACHE_AGILITY )
                       .add_invalidate( CACHE_INTELLECT );
@@ -2064,7 +2066,7 @@ bool sim_t::init()
   // Warriors will have it.
   auras.versatility = buff_creator_t( this, "versatility" )
                       .max_stack( 100 )
-                      .default_value( dbc.spell( 167188 ) -> effectN ( 1 ).percent() )
+                      .default_value( dbc::find_spell( this, 167188 ) -> effectN ( 1 ).percent() )
                       .add_invalidate( CACHE_VERSATILITY );
 
   // Find Already defined target, otherwise create a new one.
