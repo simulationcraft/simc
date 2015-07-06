@@ -4124,7 +4124,6 @@ void player_t::arise()
   if ( sim -> log )
     sim -> out_log.printf( "%s arises. Spawn Index=%f", name(), actor_spawn_index );
 
-
   init_resources( true );
 
   cache.invalidate_all();

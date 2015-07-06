@@ -1158,8 +1158,11 @@ struct avenging_wrath_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
-    p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
-    p() -> buffs.wings_of_liberty_driver -> trigger();
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
+    {
+      p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
+      p() -> buffs.wings_of_liberty_driver -> trigger();
+    }
   }
 
   bool ready()
