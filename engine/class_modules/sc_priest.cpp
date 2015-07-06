@@ -2278,7 +2278,7 @@ struct mind_blast_t : public priest_spell_t
       cd_duration = cooldown -> duration;
 
     // CD is now always reduced by haste. Documented in the WoD Alpha Patch Notes, unfortunately not in any tooltip!
-    // 2014/06/17
+    // 2014-06-17
     cd_duration = cooldown -> duration * composite_haste();
 
     priest_spell_t::update_ready( cd_duration );
@@ -2295,7 +2295,8 @@ struct mind_blast_t : public priest_spell_t
     }
 
     timespan_t et = priest_spell_t::execute_time();
-    et -= et * priest.buffs.glyph_of_mind_spike -> stack() * 0.5; // Reduction amount not contained in glyph data.
+    // Reduction amount not contained in glyph data.
+    et -= et * priest.buffs.glyph_of_mind_spike -> stack() * 0.5;
 
     return et;
   }
@@ -2463,18 +2464,6 @@ struct mind_spike_t : public priest_spell_t
 
           removed_dot = true;
         }
-
-        // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
-        /*ticksLost = cancel_dot( *td.dots.mind_blast_dot );
-        if ( ticksLost > 0 )
-        {
-          priest.procs.mind_spike_dot_removal_t17_2pc_mind_blast -> occur();
-
-          for (int x = 0; x < ticksLost; x++)
-            priest.procs.mind_spike_dot_removal_t17_2pc_mind_blast_ticks -> occur();
-
-          removed_dot = true;
-        }*/
 
         if ( removed_dot )
           priest.procs.mind_spike_dot_removal -> occur();
@@ -5386,7 +5375,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   if ( priest.active_items.mental_fatigue )
   {
     buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue", priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() )
-      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) * 1.3 / 100.0 ); // 2015/06/29 Hotfix - Twintop
+      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) );
   }
   else
   {
@@ -5786,7 +5775,7 @@ double priest_t::composite_multistrike() const
 
   if ( buffs.premonition -> check() )
   {
-    cm += buffs.premonition -> default_value; //PTR Hotfix 2015/06/19 -- Twintop 2015/06/19 //data().effectN( 1 ).percent();
+    cm += buffs.premonition -> data().effectN( 1 ).percent();
   }
 
   return cm;
@@ -7398,6 +7387,21 @@ struct priest_module_t : public module_t
   {
     items::init();
   }
+  virtual void register_hotfixes() const override
+  {
+    hotfix::register_effect( "2015-06-23", "Priest: Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 16 );
+
+    hotfix::register_effect( "2015-06-29", "Priest: Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.30 )
+      .verification_value( 0.5153989792 );
+  }
+
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
 };
