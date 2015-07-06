@@ -3289,10 +3289,18 @@ struct burning_mirror_t : public spell_t
       n_mirrors /= 2;
     }
 
+    bool use_custom = true;
     for ( size_t i = 0; i < n_mirrors; ++i )
     {
-      pet_t* blademaster = effect.player -> create_pet( BLADEMASTER_PET_NAME );
-      pets.push_back( blademaster ? blademaster : new blademaster_pet_t( effect.player ) );
+      pet_t* blade_master = NULL;
+      if ( use_custom ) 
+        blade_master = effect.player -> create_pet( BLADEMASTER_PET_NAME );
+      if ( blade_master == NULL )
+      { 
+        use_custom = false;
+        blade_master = new blademaster_pet_t( effect.player );
+      }
+      pets.push_back( blade_master );
 
       // Spawn every other image in front of the target
       if ( i % 2 )
