@@ -6667,6 +6667,18 @@ struct shaman_module_t : public module_t
       .modifier( 1.2 )
       .verification_value( 400 );
 
+    hotfix::register_effect( "2015-06-25", "Windstrike now deals 20% more damage.", 129139 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 400 );
+
+    hotfix::register_effect( "2015-06-25-2", "Windstrike now deals 20% more damage.", 129143 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 400 );
+
     hotfix::register_effect( "2015-06-25", "Lava Lash now deals 20% more damage.", 53784 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
