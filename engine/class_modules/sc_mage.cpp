@@ -1018,7 +1018,15 @@ struct prismatic_crystal_t : public pet_t
 
     if ( stats_data[ owner_action -> internal_id ] == 0 )
     {
-      stats_data[ owner_action -> internal_id ] = get_stats( owner_action -> name_str );
+      if ( owner_action -> player -> is_pet() )
+      {
+        stats_data[ owner_action -> internal_id ] = get_stats( owner_action -> name_str + "_" + owner_action -> player -> name_str );
+      }
+      else
+      {
+        stats_data[ owner_action -> internal_id ] = get_stats( owner_action -> name_str );
+      }
+
       stats_data[ owner_action -> internal_id ] -> action_list.push_back( owner_action );
       stats_data[ owner_action -> internal_id ] -> school = owner_action -> school;
     }
