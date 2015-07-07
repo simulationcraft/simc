@@ -2333,8 +2333,8 @@ struct agony_t: public warlock_spell_t
       double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
       double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
 
-      base_tick_time *= 1.0 + ( period_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
-      dot_duration *= 1.0 + ( duration_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
     }
   }
 
@@ -2766,8 +2766,8 @@ struct corruption_t: public warlock_spell_t
       double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
       double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
 
-      base_tick_time *= 1.0 + ( period_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
-      dot_duration *= 1.0 + ( duration_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
     }
   }
 
@@ -2935,8 +2935,8 @@ struct unstable_affliction_t: public warlock_spell_t
       double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
       double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
 
-      base_tick_time *= 1.0 + ( period_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
-      dot_duration *= 1.0 + ( duration_value * ( p -> wod_hotfix ? 1.2 : 1.0 ) );
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
     }
   }
 
@@ -4008,10 +4008,7 @@ struct drain_soul_t: public warlock_spell_t
 
     if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) && p() -> buffs.dark_soul -> check() )
     {
-      if ( rng().roll( 0.1 ) && p() -> wod_hotfix )
-        p() -> buffs.dark_soul -> extend_duration( p(), p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> effectN( 1 ).time_value() );
-
-      if ( rng().roll( p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() ) && !p() -> wod_hotfix )
+      if ( rng().roll( p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() ) )
         p() -> buffs.dark_soul -> extend_duration( p(), p() -> sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> effectN( 1 ).time_value() );
     }
 
@@ -5862,7 +5859,7 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .default_value( find_spell( 145085 ) -> effectN( 1 ).percent() );
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( wod_hotfix ? 0.04 : sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+    .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 void warlock_t::init_rng()
@@ -6556,6 +6553,39 @@ struct warlock_module_t: public module_t
     unique_gear::register_special_effect( 184922, affliction_trinket);
     unique_gear::register_special_effect( 184923, demonology_trinket);
     unique_gear::register_special_effect( 184924, destruction_trinket);
+  }
+
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-06-29", "Fragment of the Dark Star had its effect increased by "
+                                           "20% for Affliction Warlocks.", 268066 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( -0.02792 );
+
+    hotfix::register_effect( "2015-06-29-2", "Fragment of the Dark Star had its effect increased by "
+                                           "20% for Affliction Warlocks.", 268751 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( -0.02792 );
+
+    hotfix::register_spell( "2015-06-23", "Tier-18 2-piece set bonus for Affliction Warlocks now has "
+                                          "a 10% chance (down from 30%) each time Drain Soul deals damage "
+                                          "to extend the duration of Dark Soul: Misery by 2 seconds.", 185882 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 30 );
+
+      hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Demonology Warlocks now causes "
+                                            "Soul Fire to increase damage dealt by Demons by 4% (up from 3%) "
+                                            "for 15 seconds per stack." , 275998 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 3 );
   }
 
   virtual bool valid() const { return true; }
