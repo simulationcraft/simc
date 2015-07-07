@@ -619,14 +619,7 @@ struct water_elemental_pet_t : public pet_t
 
       if ( p -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
       {
-        if ( p -> o() -> wod_hotfix )
-        {
-          dot_duration += timespan_t::from_seconds( 10.0 );
-        }
-        else
-        {
-          dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
-        }
+        dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
       }
     }
 
@@ -3524,11 +3517,6 @@ struct ice_lance_t : public mage_spell_t
       const spell_data_t* data = p -> shatterlance -> driver();
       shatterlance_effect = data -> effectN( 1 ).average( p -> shatterlance -> item );
       shatterlance_effect /= 100.0;
-
-      if ( p -> wod_hotfix )
-      {
-        shatterlance_effect *= 2.0 / 3.0;
-      }
     }
 
     if ( p -> talents.frost_bomb -> ok() )
@@ -3721,11 +3709,6 @@ struct inferno_blast_t : public mage_spell_t
       const spell_data_t* data = p -> pyrosurge -> driver();
       pyrosurge_chance = data -> effectN( 1 ).average( p -> pyrosurge -> item );
       pyrosurge_chance /= 100.0;
-
-      if ( p -> wod_hotfix )
-      {
-        pyrosurge_chance *= 0.94;
-      }
 
       pyrosurge_flamestrike = new flamestrike_t( p, options_str );
       pyrosurge_flamestrike -> background = true;
@@ -7006,6 +6989,36 @@ struct mage_module_t : public module_t
     unique_gear::register_special_effect( 184903, wild_arcanist );
     unique_gear::register_special_effect( 184904, pyrosurge     );
     unique_gear::register_special_effect( 184905, shatterlance  );
+  }
+
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-06-23",
+                             "Frost 4T18 increases Water Jet duration by "
+                             "10 seconds (up from 4 seconds)",
+                             270303 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10000 )
+      .verification_value( 4000 );
+
+    hotfix::register_effect( "2015-06-29",
+                             "Tome of Shifting Words (Pyrosurge) chance to "
+                             "trigger reduced by 6% for Fire",
+                             268044 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.94 )
+      .verification_value( 0.118555 );
+
+    hotfix::register_effect( "2015-06-29",
+                             "Tome of Shifting Words (Shatterlance) effect "
+                             "reduced by 33% for Frost",
+                             268045 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.67 )
+      .verification_value( 0.14639 );
   }
 
   virtual bool valid() const { return true; }
