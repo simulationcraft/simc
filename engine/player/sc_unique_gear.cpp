@@ -3085,6 +3085,7 @@ struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
 
 void item::prophecy_of_fear( special_effect_t& effect )
 {
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new prophecy_of_fear_driver_t( effect );
@@ -3118,7 +3119,6 @@ void item::unblinking_gaze_of_sethe( special_effect_t& effect )
   }
 
   effect.execute_action = action;
-  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.proc_flags2_= PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
