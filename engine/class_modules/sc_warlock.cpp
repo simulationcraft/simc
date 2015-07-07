@@ -6278,17 +6278,17 @@ void warlock_t::apl_destruction()
   single_target -> action_list_str += "/incinerate";
 
   aoe -> action_list_str += "/rain_of_fire,if=!talent.charred_remains.enabled&remains<=tick_time";
-  aoe -> action_list_str += "/havoc,target=2,if=(!talent.charred_remains.enabled|buff.fire_and_brimstone.down)";
+  aoe -> action_list_str += "/havoc,target=2,if=!talent.charred_remains.enabled&buff.fire_and_brimstone.down";
   aoe -> action_list_str += "/shadowburn,if=!talent.charred_remains.enabled&buff.havoc.remains";
   aoe -> action_list_str += "/chaos_bolt,if=!talent.charred_remains.enabled&buff.havoc.remains>cast_time&buff.havoc.stack>=3";
   aoe -> action_list_str += "/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)";
   aoe -> action_list_str += "/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled";
   aoe -> action_list_str += "/cataclysm";
   aoe -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down";
-  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking";
-  aoe -> action_list_str += "/conflagrate,if=buff.fire_and_brimstone.up&charges=2";
-  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)";
-  aoe -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up";
+  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking&(burning_ember>=2|!talent.charred_remains.enabled)";
+  aoe -> action_list_str += "/conflagrate,if=buff.fire_and_brimstone.up&charges=2&(burning_ember>=2|!talent.charred_remains.enabled)";
+  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)&(burning_ember>=2|!talent.charred_remains.enabled)";
+  aoe -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up&burning_ember>=3";
   aoe -> action_list_str += "/incinerate";
 
 }
