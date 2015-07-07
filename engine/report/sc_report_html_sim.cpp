@@ -1351,7 +1351,7 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
   {
     const hotfix::hotfix_entry_t* entry = entries[ entries.size() - 1 - i ];
     os << "<tr>\n";
-    os << "<td class=\"left\"><strong>" << entry -> tag_.substr( 0, 10 ) << "</strong></td>\n";
+    os << "<td class=\"left\" style=\"white-space:nowrap;\"><strong>" << entry -> tag_.substr( 0, 10 ) << "</strong></td>\n";
     os << "<td class=\"left\" colspan=\"5\"><strong>" << entry -> note_ << "</strong></td>\n";
     os << "</tr>\n";
     if ( const hotfix::effect_hotfix_entry_t* e = dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
