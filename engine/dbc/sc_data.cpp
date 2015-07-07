@@ -606,8 +606,10 @@ custom_dbc_data_t::~custom_dbc_data_t()
 namespace dbc_override
 {
   custom_dbc_data_t override_db_;
+  std::vector<dbc_override_entry_t> override_entries_;
 }
 
+// Applies overrides immediately, and records an entry
 bool dbc_override::register_spell( sim_t* sim, unsigned spell_id, const std::string& field, double v )
 {
   spell_data_t* spell = override_db_.get_mutable_spell( spell_id, sim -> dbc.ptr );
@@ -618,6 +620,8 @@ bool dbc_override::register_spell( sim_t* sim, unsigned spell_id, const std::str
 
   assert( spell );
   spell -> override_field( field, v );
+
+  override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_SPELL, field, spell_id, v ) );
 
   return true;
 }
@@ -636,6 +640,8 @@ bool dbc_override::register_effect( sim_t* sim, unsigned effect_id, const std::s
 
   effect -> override_field( field, v );
 
+  override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_EFFECT, field, effect_id, v ) );
+
   return true;
 }
 
@@ -643,3 +649,7 @@ const spell_data_t* dbc_override::find_spell( unsigned spell_id, bool ptr )
 {
   return override_db_.find_spell( spell_id, ptr );
 }
+
+const std::vector<dbc_override::dbc_override_entry_t>& dbc_override::override_entries()
+{ return override_entries_; }
+

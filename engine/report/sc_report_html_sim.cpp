@@ -1418,6 +1418,78 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
   os << "</div>\n";
 }
 
+void print_html_overrides( report::sc_html_stream& os, sim_t* s )
+{
+  const std::vector<dbc_override::dbc_override_entry_t>& entries = dbc_override::override_entries();
+  if ( entries.size() == 0 )
+  {
+    return;
+  }
+
+  os << "<div class=\"section\">\n";
+  os << "<h2 class=\"toggle\">Current simulator-wide DBC data overrides</h2>\n";
+  os << "<div class=\"toggle-content hide\">\n";
+  os << "<table class=\"sc\">\n";
+  os << "<tr>\n";
+  os << "<th class=\"left\">Spell / Effect</th>\n";
+  os << "<th class=\"left\">Field</th>\n";
+  os << "<th class=\"left\">Override Value</th>\n";
+  os << "<th class=\"left\">DBC Value</th>\n";
+  os << "</tr>\n";
+  for ( size_t i = 0; i < entries.size(); ++i )
+  {
+    const dbc_override::dbc_override_entry_t& entry = entries[ i ];
+    os << "<tr>\n";
+    if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
+    {
+      const spell_data_t* spell = s -> dbc.spell( entry.id_ );
+      std::string name;
+      if ( s -> wowhead_tooltips == 1 )
+      {
+        name = wowhead::decorated_spell_name( spell -> name_cstr(),
+                                              spell -> id(),
+                                              spell -> name_cstr(),
+                                              s -> dbc.ptr ? wowhead::PTR : wowhead::LIVE );
+      }
+      else
+      {
+        name = spell -> name_cstr();
+      }
+      os << "<td class=\"left\">" << name << "</td>\n";
+      os << "<td class=\"left\">" << entry.field_ << "</td>\n";
+      os << "<td class=\"left\">" << entry.value_ << "</td>\n";
+      os << "<td class=\"left\">" << spell -> get_field( entry.field_ ) << "</td>\n";
+    }
+    else if ( entry.type_ == dbc_override::DBC_OVERRIDE_EFFECT )
+    {
+      const spelleffect_data_t* effect = s -> dbc.effect( entry.id_ );
+      const spell_data_t* spell = effect -> spell();
+      std::string name;
+      if ( s -> wowhead_tooltips == 1 )
+      {
+        name = wowhead::decorated_spell_name( spell -> name_cstr(),
+                                              spell -> id(),
+                                              spell -> name_cstr(),
+                                              s -> dbc.ptr ? wowhead::PTR : wowhead::LIVE );
+      }
+      else
+      {
+        name = spell -> name_cstr();
+      }
+      name += " (effect#" + util::to_string( effect -> index() + 1 ) + ")";
+      os << "<td class=\"left\">" << name << "</td>\n";
+      os << "<td class=\"left\">" << entry.field_ << "</td>\n";
+      os << "<td class=\"left\">" << entry.value_ << "</td>\n";
+      os << "<td class=\"left\">" << effect -> get_field( entry.field_ ) << "</td>\n";
+    }
+
+    os << "</tr>\n";
+  }
+  os << "</table>\n";
+  os << "</div>\n";
+  os << "</div>\n";
+}
+
 void print_html_image_load_scripts( report::sc_html_stream& os )
 {
   print_text_array( os, __image_load_script );
@@ -1491,6 +1563,7 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   print_html_beta_warning( os );
 
   print_html_hotfixes( os, sim );
+  print_html_overrides( os, sim );
 
   if ( sim -> simulation_length.sum() == 0 ) {
     print_nothing_to_report( os, "Sum of all Simulation Durations is zero." );

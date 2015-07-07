@@ -223,10 +223,30 @@ namespace hotfix
 
 namespace dbc_override
 {
+  enum dbc_override_e
+  {
+    DBC_OVERRIDE_SPELL = 0,
+    DBC_OVERRIDE_EFFECT
+  };
+
+  struct dbc_override_entry_t
+  {
+    dbc_override_e type_;
+    std::string    field_;
+    unsigned       id_;
+    double         value_;
+
+    dbc_override_entry_t( dbc_override_e et, const std::string& f, unsigned i, double v ) :
+      type_( et ), field_( f ), id_( i ), value_( v )
+    { }
+  };
+
   bool register_effect( sim_t*, unsigned, const std::string&, double );
   bool register_spell( sim_t*, unsigned, const std::string&, double );
 
   const spell_data_t* find_spell( unsigned, bool ptr = false );
+
+  const std::vector<dbc_override_entry_t>& override_entries();
 }
 
 // ==========================================================================
