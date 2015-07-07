@@ -2631,6 +2631,7 @@ struct felmouth_frenzy_driver_t : public spell_t
     // Estimated from logs
     base_tick_time = timespan_t::from_millis( 250 );
     dot_behavior = DOT_EXTEND;
+    travel_speed = 0;
 
     tick_action = effect.player -> find_action( "felmouth_frenzy_damage" );
     if ( ! tick_action )
@@ -2650,8 +2651,8 @@ struct felmouth_frenzy_driver_t : public spell_t
 
     // Can't be done on init() for abilities with tick_action() as the parent init() is called
     // before action_t::consolidate_snapshot_flags().
-    snapshot_flags = STATE_AP | STATE_SP | STATE_TGT_MUL_DA;
-    update_flags = STATE_TGT_MUL_DA;
+    snapshot_flags = STATE_AP | STATE_SP | STATE_TGT_MUL_TA;
+    update_flags = STATE_TGT_MUL_TA;
 
     return ret;
   }
