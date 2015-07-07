@@ -6194,7 +6194,7 @@ void mage_t::apl_frost()
   water_jet -> add_action( this, "Ice Lance",
                            "if=set_bonus.tier18_4pc&buff.fingers_of_frost.react>2*set_bonus.tier18_4pc&buff.shatterlance.up" );
   water_jet -> add_action( this, "Frostfire Bolt",
-                           "if=buff.brain_freeze.react=2" );
+                           "if=set_bonus.tier18_4pc&buff.brain_freeze.react=2" );
   water_jet -> add_action( this, "frostbolt",
                            "if=t18_class_trinket&debuff.water_jet.remains>cast_time+travel_time&buff.fingers_of_frost.react&!buff.shatterlance.up" );
   water_jet -> add_action( this, "Ice Lance",

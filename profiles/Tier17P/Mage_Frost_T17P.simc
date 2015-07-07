@@ -82,7 +82,7 @@ actions.init_water_jet+=/frostbolt
 # Water Jet sequence
 actions.water_jet=frostbolt,if=prev_off_gcd.water_jet
 actions.water_jet+=/ice_lance,if=set_bonus.tier18_4pc&buff.fingers_of_frost.react>2*set_bonus.tier18_4pc&buff.shatterlance.up
-actions.water_jet+=/frostfire_bolt,if=buff.brain_freeze.react=2
+actions.water_jet+=/frostfire_bolt,if=set_bonus.tier18_4pc&buff.brain_freeze.react=2
 actions.water_jet+=/frostbolt,if=t18_class_trinket&debuff.water_jet.remains>cast_time+travel_time&buff.fingers_of_frost.react&!buff.shatterlance.up
 actions.water_jet+=/ice_lance,if=!t18_class_trinket&buff.fingers_of_frost.react>=2+2*set_bonus.tier18_4pc&action.frostbolt.in_flight
 actions.water_jet+=/frostbolt,if=!set_bonus.tier18_4pc&debuff.water_jet.remains>cast_time+travel_time
