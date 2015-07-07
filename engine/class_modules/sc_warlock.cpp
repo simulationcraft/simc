@@ -3566,9 +3566,6 @@ struct chaos_bolt_t: public warlock_spell_t
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_execute_time += ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value() );
 
-    // CR Chaos Bolt specifically does not benefit from Flamelicked (Destruction 6.2 class trinket)
-    affected_by_flamelicked = false;
-
     stats = p -> get_stats( "chaos_bolt_fnb", this );
     gain = p -> get_gain( "chaos_bolt_fnb" );
   }
@@ -3628,7 +3625,7 @@ struct chaos_bolt_t: public warlock_spell_t
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
     // Targeted Crit debuffs function as a separate multiplier.
-    state -> result_total *= 1.0 + player -> cache.spell_crit() + state-> target_crit;
+    state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
 
     return state -> result_total;
   }
