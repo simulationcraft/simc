@@ -785,7 +785,7 @@ void player_t::init()
   // While wod_hotfix exists, set disable_hotfixes to its value, unless explicitly specified
   if ( disable_hotfixes == -1 )
   {
-    disable_hotfixes = wod_hotfix;
+    disable_hotfixes = ! wod_hotfix;
   }
 }
 
