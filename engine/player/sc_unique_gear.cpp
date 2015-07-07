@@ -3118,6 +3118,7 @@ void item::unblinking_gaze_of_sethe( special_effect_t& effect )
     action = new darklight_ray_t( effect );
   }
 
+  effect.rppm_scale = RPPM_HASTE;
   effect.execute_action = action;
   effect.proc_flags2_= PF2_ALL_HIT;
 
