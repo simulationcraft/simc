@@ -3118,6 +3118,7 @@ void item::unblinking_gaze_of_sethe( special_effect_t& effect )
   }
 
   effect.execute_action = action;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.proc_flags2_= PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
