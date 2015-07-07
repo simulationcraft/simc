@@ -84,13 +84,12 @@ class DBCParser(object):
             records, fields, record_size, string_block_size = struct.unpack('IIII', f.read(16))
             if is_db2 or is_adb:
                 table_hash, build, timestamp = struct.unpack('III', f.read(12))
-                if build > 12880:
-                    first_id, last_id, locale, unk_5 = struct.unpack('IIII', f.read(16))
-            
-                    # Skip index table before real data starts
-                    if last_id != 0:
-                        f.seek( ( last_id - first_id + 1 ) * 4 + ( last_id - first_id + 1 ) * 2, os.SEEK_CUR )
-                        hdr_size += ( last_id - first_id + 1 ) * 4 + ( last_id - first_id + 1 ) * 2
+                first_id, last_id, locale, unk_5 = struct.unpack('IIII', f.read(16))
+        
+                # Skip index table before real data starts
+                if last_id != 0:
+                    f.seek( ( last_id - first_id + 1 ) * 4 + ( last_id - first_id + 1 ) * 2, os.SEEK_CUR )
+                    hdr_size += ( last_id - first_id + 1 ) * 4 + ( last_id - first_id + 1 ) * 2
                 
                 # print hex(hdr_size), table_hash, build, unk_1, first_id, last_id, locale, unk_5
             
