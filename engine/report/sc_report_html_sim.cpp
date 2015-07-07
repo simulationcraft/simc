@@ -1442,7 +1442,7 @@ void print_html_overrides( report::sc_html_stream& os, sim_t* s )
     os << "<tr>\n";
     if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
     {
-      const spell_data_t* spell = s -> dbc.spell( entry.id_ );
+      const spell_data_t* spell = hotfix::find_spell( s -> dbc.spell( entry.id_ ), s -> dbc.ptr );
       std::string name;
       if ( s -> wowhead_tooltips == 1 )
       {
@@ -1462,7 +1462,7 @@ void print_html_overrides( report::sc_html_stream& os, sim_t* s )
     }
     else if ( entry.type_ == dbc_override::DBC_OVERRIDE_EFFECT )
     {
-      const spelleffect_data_t* effect = s -> dbc.effect( entry.id_ );
+      const spelleffect_data_t* effect = hotfix::find_effect( s -> dbc.effect( entry.id_ ), s -> dbc.ptr );
       const spell_data_t* spell = effect -> spell();
       std::string name;
       if ( s -> wowhead_tooltips == 1 )
