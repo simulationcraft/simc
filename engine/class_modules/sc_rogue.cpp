@@ -5536,7 +5536,7 @@ void rogue_t::init_action_list()
     // Rotation
     def -> add_action( "run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains" );
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
-    def -> add_action( this, "Ambush", "if=talent.anticipation.enabled&combo_points+anticipation_charges<8" );
+    def -> add_action( this, "Ambush", "if=talent.anticipation.enabled&combo_points+anticipation_charges<8&time>2" );
 
     def -> add_action( "run_action_list,name=finisher,if=combo_points=5&(buff.vanish.down|!talent.shadow_focus.enabled)" );
     def -> add_action( "run_action_list,name=generator,if=combo_points<4|(talent.anticipation.enabled&anticipation_charges<3&debuff.find_weakness.down)" );

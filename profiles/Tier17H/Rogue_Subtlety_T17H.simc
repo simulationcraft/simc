@@ -54,7 +54,7 @@ actions+=/vanish,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.a
 actions+=/marked_for_death,if=combo_points=0
 actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains
 actions+=/pool_resource,for_next=1
-actions+=/ambush,if=talent.anticipation.enabled&combo_points+anticipation_charges<8
+actions+=/ambush,if=talent.anticipation.enabled&combo_points+anticipation_charges<8&time>2
 actions+=/run_action_list,name=finisher,if=combo_points=5&(buff.vanish.down|!talent.shadow_focus.enabled)
 actions+=/run_action_list,name=generator,if=combo_points<4|(talent.anticipation.enabled&anticipation_charges<3&debuff.find_weakness.down)
 actions+=/run_action_list,name=pool

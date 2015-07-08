@@ -75,7 +75,7 @@ hands=felfinger_runegloves,id=124254
 waist=waistwrap_of_banishment,id=124276
 legs=felblade_leggings,id=124269
 feet=oppressors_merciless_treads,id=124251
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5325
 finger2=portal_key_signet,id=124189,enchant_id=5325
 trinket1=soul_capacitor,id=124225
 trinket2=bleeding_hollow_toxin_vessel,id=124520
@@ -87,7 +87,7 @@ off_hand=demonblade_eviscerator,id=124368,enchant_id=5337
 # gear_agility=3491
 # gear_stamina=4670
 # gear_crit_rating=803
-# gear_haste_rating=1434
+# gear_haste_rating=1484
 # gear_mastery_rating=787
 # gear_multistrike_rating=1143
 # gear_versatility_rating=200
