@@ -1039,9 +1039,7 @@ enum rppm_scale_e
 {
   RPPM_NONE = 0,
   RPPM_HASTE,
-  RPPM_SPELL_CRIT,
-  RPPM_ATTACK_CRIT,
-  RPPM_HASTE_SPEED
+  RPPM_CRIT,
 };
 
 /* SimulationCraft timeline:
@@ -3545,7 +3543,7 @@ struct special_effect_t
   double stat_amount, discharge_amount, discharge_scaling;
   double proc_chance_;
   double ppm_;
-  rppm_scale_e rppm_scale;
+  rppm_scale_e rppm_scale_;
   timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
   int refresh;
@@ -3608,6 +3606,8 @@ struct special_effect_t
   unsigned proc_flags2() const;
   double ppm() const;
   double rppm() const;
+  rppm_scale_e rppm_scale() const;
+  double rppm_modifier() const;
   double proc_chance() const;
   timespan_t cooldown() const;
 
@@ -7011,15 +7011,11 @@ public:
 
     if ( scales_with == RPPM_HASTE )
       coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
-    else if ( scales_with == RPPM_ATTACK_CRIT )
-      coeff *= 1.0 + player -> cache.attack_crit();
-    else if ( scales_with == RPPM_SPELL_CRIT )
-      coeff *= 1.0 + player -> cache.spell_crit();
-    // TODO: Recheck 6.1, most likely remove
-    else if ( scales_with == RPPM_HASTE_SPEED )
-    {
-      coeff *= 1.0 / std::min( player -> cache.spell_speed(), player -> cache.attack_speed() );
-    }
+    // This might technically be two separate crit values, but this should be sufficient for our
+    // cases. In any case, the client data does not offer information which crit it is (attack or
+    // spell).
+    else if ( scales_with == RPPM_CRIT )
+      coeff *= 1.0 + std::max( player -> cache.attack_crit(), player -> cache.spell_crit() );
 
     double real_ppm = PPM * coeff;
     double old_rppm_chance = real_ppm * ( seconds / 60.0 );
@@ -7045,11 +7041,11 @@ public:
     scales_with( RPPM_NONE )
   { }
 
-  real_ppm_t( player_t& p, double frequency = 0, rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
+  real_ppm_t( player_t& p, double frequency = 0, double mod = 1.0, rppm_scale_e s = RPPM_NONE ) :
     player( &p ),
     freq( frequency ),
-    modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
-    rppm( freq * modifier ),
+    modifier( mod ),
+    rppm( freq * mod ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( -180.0 ) ), // Blizz done lied to us, or changed it without telling. After going through a lot of logs,
                                                                    // it seems that it's actually 3 minutes for the precombat timer.

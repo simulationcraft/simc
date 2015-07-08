@@ -436,7 +436,6 @@ void enchants::mark_of_the_frostwolf( special_effect_t& effect )
 
 void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
 {
-  effect.rppm_scale = RPPM_HASTE;
   effect.trigger_spell_id = 159238;
   effect.name_str = effect.item -> player -> find_spell( 159238 ) -> name_cstr();
 
@@ -481,7 +480,6 @@ void enchants::colossus( special_effect_t& effect )
       .source( effect.item -> player -> get_stats( tokenized_name( spell ) + suffix( effect.item ) ) )
       .activated( false );
 
-  effect.rppm_scale = RPPM_HASTE;
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.item, effect );
@@ -497,7 +495,6 @@ void enchants::rivers_song( special_effect_t& effect )
     buff = stat_buff_creator_t( effect.item -> player, tokenized_name( spell ), spell )
            .activated( false );
 
-  effect.rppm_scale = RPPM_HASTE;
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.item, effect );
@@ -902,7 +899,6 @@ void gem::capacitive_primal( special_effect_t& effect )
 
   // Stacking Buff
   effect.custom_buff = buff_creator_t( p, "capacitance", p -> find_spell( 137596 ) );
-  effect.rppm_scale = RPPM_HASTE;
 
   // Execute Action
   action_t* ls = p -> create_proc_action( "lightning_strike", effect );
@@ -2197,10 +2193,6 @@ void item::flurry_of_xuen( special_effect_t& effect )
     return;
 
   player_t* p = effect.item -> player;
-  const spell_data_t* driver = p -> find_spell( effect.spell_id );
-
-  effect.ppm_        = -1.0 * driver -> real_ppm();
-  effect.rppm_scale = RPPM_HASTE;
   effect.execute_action = new flurry_of_xuen_driver_t( p, p -> create_proc_action( effect.name(), effect ) );
 
   new flurry_of_xuen_cb_t( p, effect );
@@ -2259,10 +2251,7 @@ void item::essence_of_yulon( special_effect_t& effect )
     return;
 
   player_t* p = effect.item -> player;
-  const spell_data_t* driver = p -> find_spell( effect.spell_id );
 
-  effect.ppm_         = -1.0 * driver -> real_ppm();
-  effect.rppm_scale  = RPPM_HASTE;
   effect.execute_action = new essence_of_yulon_driver_t( p );
 
   new essence_of_yulon_cb_t( p, effect );
@@ -2689,7 +2678,6 @@ void item::felmouth_frenzy( special_effect_t& effect )
     a = new felmouth_frenzy_driver_t( effect );
   }
 
-  effect.rppm_scale = RPPM_HASTE;
   effect.execute_action = a;
 
   dbc_proc_callback_t* cb = new dbc_proc_callback_t( effect.player, effect );
@@ -2824,7 +2812,6 @@ void item::discordant_chorus( special_effect_t& effect )
 
   effect.execute_action = action;
   effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.rppm_scale = RPPM_HASTE;
 
   new dbc_proc_callback_t( effect.player, effect );
 }

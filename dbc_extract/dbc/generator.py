@@ -147,8 +147,8 @@ class RealPPMModifierGenerator(DataGenerator):
         output_data = []
 
         for i, data in self._spellprocsperminutemod_db.iteritems():
-            if data.id_chr_spec not in self._specmap.keys() or data.id_chr_spec == 0:
-                continue
+            #if data.id_chr_spec not in self._specmap.keys() or data.id_chr_spec == 0:
+            #    continue
 
             spell_id = 0
             for aopts_id, aopts_data in self._spellauraoptions_db.iteritems():
@@ -161,7 +161,7 @@ class RealPPMModifierGenerator(DataGenerator):
             if spell_id == 0:
                 continue
 
-            output_data.append((data.id_chr_spec, data.coefficient, spell_id))
+            output_data.append((data.id_chr_spec, data.coefficient, spell_id, data.unk_1))
 
         output_data.sort(cmp = lambda l, r: l[2] - r[2])
 
@@ -178,8 +178,8 @@ class RealPPMModifierGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or ''
         )
 
-        for data in output_data + [(0, 0, 0)]:
-            s += '  { %6u, %-20s, %.4f },\n' % (data[2], self._specmap[data[0]], data[1])
+        for data in output_data + [(0, 0, 0, 0)]:
+            s += '  { %6u, %4u, %2u, %.4f },\n' % (data[2], data[0], data[3], data[1])
 
         s += '};\n'
 

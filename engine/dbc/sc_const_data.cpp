@@ -1387,7 +1387,7 @@ unsigned dbc_t::set_bonus_spell_size() const
 #endif
 }
 
-const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned spell_id ) const
+std::vector<const rppm_modifier_t*> dbc_t::real_ppm_modifiers( unsigned spell_id ) const
 {
 #if SC_USE_PTR
   const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
@@ -1395,14 +1395,85 @@ const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned
   const rppm_modifier_t* p = __rppmmodifier_data;
 #endif
 
-  while ( p -> spec != SPEC_NONE )
+  std::vector<const rppm_modifier_t*> data;
+
+  while ( p -> spell_id != 0 )
   {
-    if ( p -> spec == spec && p -> spell_id == spell_id )
-      return *p;
+    if ( p -> spell_id == spell_id )
+    {
+      data.push_back( p );
+    }
     p++;
   }
 
-  return *p;
+  return data;
+}
+
+rppm_scale_e dbc_t::real_ppm_scale( unsigned spell_id ) const
+{
+#if SC_USE_PTR
+  const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
+#else
+  const rppm_modifier_t* p = __rppmmodifier_data;
+#endif
+
+  while ( p -> spell_id != 0 )
+  {
+    if ( p -> spell_id != spell_id )
+    {
+      p++;
+      continue;
+    }
+
+    if ( p -> modifier_type == RPPM_MODIFIER_HASTE )
+    {
+      return RPPM_HASTE;
+    }
+    else if ( p -> modifier_type == RPPM_MODIFIER_CRIT )
+    {
+      return RPPM_CRIT;
+    }
+
+
+    p++;
+  }
+
+  return RPPM_NONE;
+}
+
+double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level ) const
+{
+#if SC_USE_PTR
+  const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
+#else
+  const rppm_modifier_t* p = __rppmmodifier_data;
+#endif
+
+  double modifier = 1.0;
+
+  while ( p -> spell_id != 0 )
+  {
+    if ( p -> spell_id != spell_id )
+    {
+      p++;
+      continue;
+    }
+
+    if ( p -> modifier_type == RPPM_MODIFIER_SPEC &&
+         player -> specialization() == static_cast<specialization_e>( p -> type ) )
+    {
+      modifier *= 1.0 + p -> type;
+    }
+    else if ( p -> modifier_type == RPPM_MODIFIER_ILEVEL )
+    {
+      assert( item_level > 0 && "Ilevel-based RPPM modifier requires non-zero item level parameter" );
+      modifier *= item_database::approx_scale_coefficient( p -> type, item_level );
+    }
+
+    p++;
+  }
+
+  return modifier;
 }
 
 spell_data_t* spell_data_t::list( bool ptr )
@@ -2595,13 +2666,6 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
 
 specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
 { return dbc::spec_by_idx( c, idx ); }
-
-double dbc_t::rppm_coefficient( specialization_e spec, unsigned spell_id ) const
-{
-  const rppm_modifier_t& rppmm = real_ppm_modifier( spec, spell_id );
-  return 1.0 + rppmm.coefficient;
-}
-
 
 // DBC
 

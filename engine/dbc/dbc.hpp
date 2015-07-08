@@ -1151,7 +1151,6 @@ public:
   double regen_spirit( pet_e t, unsigned level ) const;
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
-  double real_ppm_coefficient( specialization_e, unsigned ) const;
   double armor_mitigation_constant( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
@@ -1163,6 +1162,9 @@ public:
   double resolve_level_scaling( unsigned level ) const;
   double avoid_per_str_agi_by_level( unsigned level ) const;
 
+  std::vector<const rppm_modifier_t*> real_ppm_modifiers( unsigned ) const;
+  rppm_scale_e real_ppm_scale( unsigned ) const;
+  double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0 ) const;
 private:
   template <typename T>
   const T* find_by_id( unsigned id ) const
@@ -1207,7 +1209,6 @@ public:
 
   const item_upgrade_t&          item_upgrade( unsigned upgrade_id ) const;
   const item_upgrade_rule_t&     item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const;
-  const rppm_modifier_t&         real_ppm_modifier( specialization_e spec, unsigned spell_id ) const;
 
   std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;
 

@@ -798,23 +798,57 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Real PPM         : " << spell -> real_ppm();
     bool has_modifiers = false;
-    for ( unsigned i = 0; i < specdata::spec_count(); i++ )
+    std::vector<const rppm_modifier_t*> modifiers = dbc.real_ppm_modifiers( spell -> id() );
+    for ( size_t i = 0; i < modifiers.size(); ++i )
     {
-      const rppm_modifier_t& rppmm = dbc.real_ppm_modifier( specdata::spec_id( i ), spell -> id() );
-      if ( rppmm.coefficient != 0 )
-      {
-        if ( ! has_modifiers )
-          s << " (";
+      const rppm_modifier_t* rppm_modifier = modifiers[ i ];
 
-        has_modifiers = true;
-        std::streamsize decimals = 3;
-        double rppm_val = spell -> real_ppm() * ( 1.0 + rppmm.coefficient );
-        if ( rppm_val >= 10 )
-          decimals += 2;
-        else if ( rppm_val >= 1 )
-          decimals += 1;
-        s.precision( decimals );
-        s << util::specialization_string( specdata::spec_id( i ) ) << ": " << rppm_val << ", ";
+      switch ( rppm_modifier -> modifier_type )
+      {
+        case RPPM_MODIFIER_HASTE:
+          if ( ! has_modifiers )
+          {
+            s << " (";
+          }
+          s << "Haste multiplier, ";
+          has_modifiers = true;
+          break;
+        case RPPM_MODIFIER_CRIT:
+          if ( ! has_modifiers )
+          {
+            s << " (";
+          }
+          s << "Crit multiplier, ";
+          has_modifiers = true;
+          break;
+        case RPPM_MODIFIER_ILEVEL:
+          if ( ! has_modifiers )
+          {
+            s << " (";
+          }
+          s << "Itemlevel multiplier [base=" << rppm_modifier -> type << "], ";
+          has_modifiers = true;
+          break;
+        case RPPM_MODIFIER_SPEC:
+        {
+          if ( ! has_modifiers )
+          {
+            s << " (";
+          }
+
+          std::streamsize decimals = 3;
+          double rppm_val = spell -> real_ppm() * ( 1.0 + rppm_modifier -> coefficient );
+          if ( rppm_val >= 10 )
+            decimals += 2;
+          else if ( rppm_val >= 1 )
+            decimals += 1;
+          s.precision( decimals );
+          s << util::specialization_string( static_cast<specialization_e>( rppm_modifier -> type ) ) << ": " << rppm_val << ", ";
+          has_modifiers = true;
+          break;
+        }
+        default:
+          break;
       }
     }
 
@@ -823,7 +857,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       s.seekp( -2, std::ios_base::cur );
       s << ")";
     }
-
     s << std::endl;
   }
 

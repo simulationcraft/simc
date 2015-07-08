@@ -160,7 +160,7 @@ void special_effect_t::reset()
 
   // ppm < 0 = real ppm, ppm > 0 = normal "ppm", min_double off
   ppm_ = std::numeric_limits<double>::min();
-  rppm_scale = RPPM_NONE;
+  rppm_scale_ = RPPM_NONE;
 
   // Must match buff creator defaults for now
   duration_ = timespan_t::min();
@@ -742,6 +742,25 @@ double special_effect_t::rppm() const
   return driver() -> real_ppm();
 }
 
+// special_effect_t::rppm_scale =============================================
+
+rppm_scale_e special_effect_t::rppm_scale() const
+{
+  if ( rppm_scale_ != RPPM_NONE )
+  {
+    return rppm_scale_;
+  }
+
+  return player -> dbc.real_ppm_scale( driver() -> id() );
+}
+
+// special_effect_t::rppm_modifier ==========================================
+
+double special_effect_t::rppm_modifier() const
+{
+  return player -> dbc.real_ppm_modifier( driver() -> id(), player, item ? item -> item_level() : 0 );
+}
+
 // special_effect_t::cooldown ===============================================
 
 // Cooldowns are automatically extracted from the driver spell. However, the
@@ -897,17 +916,14 @@ std::string special_effect_t::to_string() const
 
   if ( rppm() > 0 )
   {
-    s << " rppm=" << rppm();
-    switch ( rppm_scale )
+    s << " rppm=" << rppm() * rppm_modifier();
+    switch ( rppm_scale() )
     {
       case RPPM_HASTE:
         s << " (Haste)";
         break;
-      case RPPM_ATTACK_CRIT:
-        s << " (AttackCrit)";
-        break;
-      case RPPM_SPELL_CRIT:
-        s << " (SpellCrit)";
+      case RPPM_CRIT:
+        s << " (Crit)";
         break;
       default:
         break;
@@ -988,13 +1004,13 @@ bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
         effect.ppm_ = -t.value;
 
       if ( util::str_in_str_ci( t.name, "spellcrit" ) )
-        effect.rppm_scale = RPPM_SPELL_CRIT;
+        effect.rppm_scale_ = RPPM_CRIT;
       else if ( util::str_in_str_ci( t.name, "attackcrit" ) )
-        effect.rppm_scale = RPPM_ATTACK_CRIT;
+        effect.rppm_scale_ = RPPM_CRIT;
       else if ( util::str_in_str_ci( t.name, "haste" ) )
-        effect.rppm_scale = RPPM_HASTE;
+        effect.rppm_scale_ = RPPM_HASTE;
       else
-        effect.rppm_scale = RPPM_NONE;
+        effect.rppm_scale_ = RPPM_NONE;
     }
     else if ( t.name == "duration" || t.name == "dur" )
     {
@@ -1156,7 +1172,7 @@ void dbc_proc_callback_t::initialize()
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.
   if ( effect.rppm() > 0 )
-    rppm = real_ppm_t( *listener, effect.rppm(), effect.rppm_scale, effect.driver() -> id() );
+    rppm = real_ppm_t( *listener, effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
   else if ( effect.ppm() > 0 )
     ppm = effect.ppm();
   else if ( effect.proc_chance() != 0 )
