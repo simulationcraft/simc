@@ -1434,7 +1434,6 @@ void item::rune_of_reorigination( special_effect_t& effect )
 
   maintenance_check( 502 );
 
-  const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
   const spell_data_t* spell = effect.item -> player -> find_spell( 139120 );
 
   std::string buff_name = spell -> name_cstr();
@@ -1447,8 +1446,6 @@ void item::rune_of_reorigination( special_effect_t& effect )
                       .add_stat( STAT_MASTERY_RATING, 0 );
 
   effect.custom_buff  = buff;
-  effect.ppm_         = -1.0 * driver -> real_ppm();
-  effect.ppm_        *= item_database::approx_scale_coefficient( 528, effect.item -> item_level() );
 
   new rune_of_reorigination_callback_t( effect );
 }
@@ -1542,10 +1539,6 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
 
   maintenance_check( 502 );
 
-  const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
-
-  effect.ppm_         = -1.0 * driver -> real_ppm();
-  effect.ppm_        *= item_database::approx_scale_coefficient( 528, effect.item -> item_level() );
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.custom_buff  = new perfect_aim_buff_t( effect.item -> player );
 
@@ -3105,7 +3098,6 @@ void item::unblinking_gaze_of_sethe( special_effect_t& effect )
     action = new darklight_ray_t( effect );
   }
 
-  effect.rppm_scale = RPPM_HASTE;
   effect.execute_action = action;
   effect.proc_flags2_= PF2_ALL_HIT;
 
