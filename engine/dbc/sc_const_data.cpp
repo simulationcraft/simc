@@ -1462,8 +1462,9 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     if ( p -> modifier_type == RPPM_MODIFIER_SPEC &&
          player -> specialization() == static_cast<specialization_e>( p -> type ) )
     {
-      modifier *= 1.0 + p -> type;
+      modifier *= 1.0 + p -> coefficient;
     }
+    // TODO: How does coefficient play into this?
     else if ( p -> modifier_type == RPPM_MODIFIER_ILEVEL )
     {
       assert( item_level > 0 && "Ilevel-based RPPM modifier requires non-zero item level parameter" );
