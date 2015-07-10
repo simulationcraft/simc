@@ -5702,7 +5702,7 @@ void shaman_t::init_action_list()
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1+2*set_bonus.tier18_4pc" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=talent.echo_of_the_elements.enabled&((!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=2&!buff.ascendance.up))|buff.ancestral_swiftness.up)" );
     single -> add_action( this, "Stormstrike", "if=talent.echo_of_the_elements.enabled" );
-    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=1&!buff.ascendance.up))|(set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=5|(buff.maelstrom_weapon.react>=3&!buff.ascendance.up)))|buff.ancestral_swiftness.up" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=1&!buff.ascendance.up))|(set_bonus.tier18_4pc&((talent.unleashed_fury.enabled&buff.unleashed_fury.up)|!talent.unleashed_fury.enabled)&(buff.maelstrom_weapon.react>=5|(buff.maelstrom_weapon.react>=3&!buff.ascendance.up)))|buff.ancestral_swiftness.up" );
     single -> add_action( this, "Searing Totem", "if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
 
     // AoE
