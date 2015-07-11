@@ -4496,7 +4496,7 @@ struct warrior_real_ppm_t: public Base
 struct sudden_death_t: public warrior_real_ppm_t < real_ppm_t >
 {
   sudden_death_t( warrior_t& p ):
-    base_t( p, real_ppm_t( p, p.talents.sudden_death -> real_ppm(), RPPM_HASTE ) )
+    base_t( p, real_ppm_t( p, p.talents.sudden_death -> real_ppm(), 1.0, RPPM_HASTE ) )
   {}
 };
 };

@@ -619,7 +619,7 @@ public:
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
-    balance_t18_2pc( *this, 0, RPPM_NONE ),
+    balance_t18_2pc( *this ),
     active( active_actions_t() ),
     caster_form_weapon(),
     starshards(),
