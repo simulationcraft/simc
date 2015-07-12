@@ -36,12 +36,12 @@ actions+=/kick
 actions+=/shadow_reflection,if=buff.shadow_dance.up|time<2
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/arcane_torrent,if=energy<60&buff.shadow_dance.up
+actions+=/arcane_torrent,if=energy<80&buff.shadow_dance.up
 actions+=/premeditation,if=combo_points<4
 actions+=/vanish,if=set_bonus.tier18_4pc=1&time<1
 actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
 actions+=/pool_resource,for_next=1,extra_amount=50
-actions+=/shadow_dance,if=energy>=50&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
+actions+=/shadow_dance,if=energy>=110&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
 actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=50
@@ -49,7 +49,7 @@ actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_poin
 actions+=/pool_resource,for_next=1,extra_amount=90
 actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=90
-actions+=/vanish,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down
+actions+=/vanish,if=talent.subterfuge.enabled&energy>=100&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down
 actions+=/marked_for_death,if=combo_points=0
 actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains
 actions+=/pool_resource,for_next=1

@@ -5498,15 +5498,15 @@ void rogue_t::init_action_list()
     precombat -> add_action( "honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1",
                              "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
 
+    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up|time<2" );
+
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );
-
-    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up|time<2" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy<60&buff.shadow_dance.up" );
+        def -> add_action( racial_actions[i] + ",if=energy<80&buff.shadow_dance.up" );
       else
         def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
@@ -5517,7 +5517,11 @@ void rogue_t::init_action_list()
     def -> add_action( "wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6" );
 
     def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=50" );
-    def -> add_action( this, "Shadow Dance", "if=energy>=50&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
+
+    if ( find_item( "maalus_the_blood_drinker" ) )
+      def -> add_action( this, "Shadow Dance", "if=energy>=110&buff.stealth.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
+    else
+      def -> add_action( this, "Shadow Dance", "if=energy>=110&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
 
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=50" );
     def -> add_action( "shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
@@ -5528,8 +5532,10 @@ void rogue_t::init_action_list()
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=90" );
     def -> add_action( "shadowmeld,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
 
+    if ( find_item( "maalus_the_blood_drinker" ) )
+      def -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc=1&buff.shadow_reflection.up&combo_points<3");
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=90" );
-    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down" );
+    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=100&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down" );
 
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
@@ -5544,7 +5550,10 @@ void rogue_t::init_action_list()
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
-    gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+set_bonus.tier17_2pc*50+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+15+cooldown.vanish.remains*energy.regen<=energy.max)" );
+    if ( find_item( "maalus_the_blood_drinker" ) )
+      gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&(energy+set_bonus.tier17_2pc*50+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+15+cooldown.vanish.remains*energy.regen<=energy.max)" );
+    else
+      gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+set_bonus.tier17_2pc*50+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+15+cooldown.vanish.remains*energy.regen<=energy.max)" );
     gen -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     gen -> add_action( this, "Ambush" );
     gen -> add_action( this, "Fan of Knives", "if=spell_targets.fan_of_knives>1", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
