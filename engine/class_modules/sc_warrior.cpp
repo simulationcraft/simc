@@ -5842,7 +5842,7 @@ struct warrior_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "2015-06-29", "Arms Warrior T18 2P proc chance reduced to 50%", 185800 )
+    hotfix::register_spell( "2015-06-29", "Arms Warrior T18 2P proc chance reduced to 50%", 185800 )
       .field( "proc_chance" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 50 )
