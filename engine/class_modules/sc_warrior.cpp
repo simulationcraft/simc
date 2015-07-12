@@ -2477,11 +2477,7 @@ struct rend_t: public warrior_attack_t
     tick_may_crit = true;
     base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
-    {
       t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
-      if ( p -> wod_hotfix )
-        t18_2pc_chance = 0.5;
-    }
     add_child( burst );
   }
 
@@ -5843,6 +5839,37 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
   }
+
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-06-29", "Arms Warrior T18 2P proc chance reduced to 50%", 185800 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 50 )
+      .verification_value( 60 );
+
+    hotfix::register_effect( "2015-06-23", "Fury Warrior T18 2P now increases the crit chance of Wild Strike by 100% "
+                                           "while bloodsurge is active, rather than 50%." , 270034 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 50 );
+
+    hotfix::register_effect( "2015-06-23", "Fury Warrior T18 4P now decreases recklessness's cooldown by 25 seconds "
+                                           "per Wild Strike crit instead of 20 seconds." , 270037 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -25000 )
+      .verification_value( -20000 );
+
+    hotfix::register_effect( "2015-06-23", "Protection Warrior T18 4P now increases shield barriers effect by 100% "
+      "during Last Stand, instead of 200%." , 270032 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 200 );
+  }
+
 
   virtual void init( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}

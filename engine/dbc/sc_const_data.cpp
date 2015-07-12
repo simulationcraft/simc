@@ -169,7 +169,19 @@ void dbc::apply_hotfixes()
     assert( e -> _base_value == 14 && "Check warlock fury generation of Mortal Cleave" );
     e -> _base_value = 12;
   }
-  
+
+  // Druid
+  s = spell_data_t::find( 50288, false ); // Starfall probably doesn't take 30 seconds to hit the target.
+  assert( s -> _prj_speed == 0.8 && "Check the speed on Starfall" );
+  s -> _prj_speed = 20;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 50288, true );
+    s -> _prj_speed = 20;
+  }
+
+  // Death Knight
+
   // Warrior
   s = spell_data_t::find( 96103, false );
   assert( s -> _spell_level == 39 && "Check level on Raging Blow" );
@@ -188,30 +200,6 @@ void dbc::apply_hotfixes()
     s = spell_data_t::find( 85384, true );
     s -> _spell_level = 30;
   }
-
-  e = spelleffect_data_t::find( 270034 );
-  assert( e -> _base_value == 50 && "Check T182P Fury" );
-  e -> _base_value = 100;
-
-  e = spelleffect_data_t::find( 270037 );
-  assert( e -> _base_value == -20000 && "Check T184P Fury" );
-  e -> _base_value = -25000;
-
-  e = spelleffect_data_t::find( 270032 );
-  assert( e -> _base_value == 200 && "Check T184P Protection" );
-  e -> _base_value = 100;
-
-  // Druid
-  s = spell_data_t::find( 50288, false ); // Starfall probably doesn't take 30 seconds to hit the target.
-  assert( s -> _prj_speed == 0.8 && "Check the speed on Starfall" );
-  s -> _prj_speed = 20;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 50288, true );
-    s -> _prj_speed = 20;
-  }
-
-  // Death Knight
 
   // Enchants
 
