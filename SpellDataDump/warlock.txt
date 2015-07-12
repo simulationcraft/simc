@@ -1,4 +1,4 @@
-SimulationCraft 620-02 for World of Warcraft 6.2.0 Live (build level 20173)
+SimulationCraft 620-02 for World of Warcraft 6.2.0 Live (build level 20216)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
