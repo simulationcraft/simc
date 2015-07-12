@@ -1,6 +1,6 @@
 rogue="Rogue_Combat_T18H"
 level=100
-race=blood_elf
+race=gnome
 role=attack
 position=back
 talents=3000021
@@ -16,7 +16,7 @@ spec=combat
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=buttered_sturgeon
+actions.precombat+=/food,type=felmouth_frenzy
 actions.precombat+=/apply_poison,lethal=deadly
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats

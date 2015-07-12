@@ -35,7 +35,7 @@ save=Rogue_Assassination_T17P.simc
 # Combat
 rogue="Rogue_Combat_T17P"
 level=100
-race=blood_elf
+race=gnome
 role=attack
 position=back
 talents=3000021

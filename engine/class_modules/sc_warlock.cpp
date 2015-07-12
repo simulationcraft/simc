@@ -5928,8 +5928,10 @@ void warlock_t::apl_precombat()
     // Food
     if ( level() == 100 && specialization() == WARLOCK_DESTRUCTION )
       precombat_list += "/food,type=pickled_eel";
-    else if ( level() == 100 )
+    else if ( level() == 100 && specialization() == WARLOCK_DEMONOLOGY)
       precombat_list += "/food,type=sleeper_sushi";
+    else if ( level() == 100 && specialization() == WARLOCK_AFFLICTION )
+      precombat_list += "/food,type=felmouth_frenzy";
     else if ( level() >= 85 )
       precombat_list += "/food,type=mogu_fish_stew";
   }
