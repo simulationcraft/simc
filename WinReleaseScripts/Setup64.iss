@@ -24,10 +24,10 @@ DefaultDirName={sd}\{#MyAppName}\{#MyAppVersion}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputBaseFilename="SimcSetup-{#MyAppVersion}-Win64"
-SetupIconFile=E:\simulationcraft\qt\icon\Simcraft2.ico
+SetupIconFile=C:\simulationcraft\qt\icon\Simcraft2.ico
 Compression=lzma
 SolidCompression=yes
-OutputDir=E:\Simulationcraft\
+OutputDir=C:\Simulationcraft\
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -37,8 +37,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "E:\simulationcraft\simc-{#MyAppVersion}-win64\SimulationCraft64.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\simulationcraft\simc-{#MyAppVersion}-win64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\simulationcraft\simc-{#MyAppVersion}-win64\SimulationCraft64.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\simulationcraft\simc-{#MyAppVersion}-win64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Dirs]    
