@@ -2617,6 +2617,7 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     // BUG simulate slow velocity of launch
     travel_speed = 18.0;
     add_child( tick );
+    impact_action = tick;
   }
 };
 
