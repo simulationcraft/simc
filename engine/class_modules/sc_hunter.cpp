@@ -2596,8 +2596,7 @@ struct explosive_trap_tick_t: public hunter_ranged_attack_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     // BUG in game it uses the direct damage AP mltiplier for ticks as well.
     attack_power_mod.tick = attack_power_mod.direct;
-    ignore_false_positive = true;
-    ground_aoe = true;
+    ignore_false_positive = ground_aoe = background = true;
   }
 };
 
@@ -2618,7 +2617,7 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     travel_speed = 18.0;
     add_child( tick );
     impact_action = tick;
-  }
+ }
 };
 
 // Chimaera Shot =============================================================
