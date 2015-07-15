@@ -5049,7 +5049,7 @@ struct nithramus_t : public mage_spell_t
   {
     mage_spell_t::init();
 
-    snapshot_flags = STATE_MUL_DA|STATE_TGT_MUL_DA;
+    snapshot_flags = STATE_MUL_DA;
     update_flags = 0;
   }
 
