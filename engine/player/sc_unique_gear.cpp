@@ -4218,7 +4218,7 @@ void unique_gear::register_special_effects()
   /* Profession perks */
   register_special_effect( 105574, profession::zen_alchemist_stone      ); /* Zen Alchemist Stone (stat proc) */
   register_special_effect( 157136, profession::draenor_philosophers_stone ); /* Draenor Philosopher's Stone (stat proc) */
-  register_special_effect(  55004, profession::nitro_boosts             );
+  //register_special_effect(  55004, profession::nitro_boosts             ); FIXME 
 
   /**
    * Gems
