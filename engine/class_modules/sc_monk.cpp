@@ -1134,7 +1134,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_blackout_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "blackout_kick", player, player -> owner -> find_class_spell( "Blackout Kick" ) ),
       dot( new sef_blackout_kick_dot_t( player ) )
-    { }
+    {
+      add_child( dot );
+    }
 
     void impact( action_state_t* state )
     {
@@ -1201,7 +1203,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_rising_sun_kick_trinket_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> spec.rising_sun_kick_trinket ),
       debuff( new sef_rsk_debuff_t( player ) )
-    { }
+    {
+      player -> find_action( "rising_sun_kick" ) -> add_child( this );
+    }
 
     void execute()
     {
@@ -1422,11 +1426,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_zen_sphere_detonation_t : public sef_spell_t
+  struct sef_zen_sphere_explosion_dmg_t : public sef_spell_t
   {
-    sef_zen_sphere_detonation_t( storm_earth_and_fire_pet_t* player ) :
-      sef_spell_t( "zen_sphere_detonation", player, player -> find_spell( 125033 ) )
+    sef_zen_sphere_explosion_dmg_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "zen_sphere_detonate", player, player -> find_spell( 125033 ) )
     {
+      background = dual = true;
       aoe = -1;
     }
 
@@ -1434,7 +1439,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_spell_t::init();
 
-      source_action = o() -> find_action( "zen_sphere_damage" );
+      source_action = o() -> find_action( "zen_sphere_detonate" );
+
       if ( source_action )
       {
         update_flags = source_action -> update_flags;
@@ -1446,11 +1452,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
   // SEF Zen Sphere does not perform healing
   struct sef_zen_sphere_t : public sef_spell_t
   {
-    sef_zen_sphere_detonation_t* detonation;
+    sef_zen_sphere_explosion_dmg_t* detonation;
 
     sef_zen_sphere_t( storm_earth_and_fire_pet_t* player ) :
       sef_spell_t( "zen_sphere", player, player -> o() -> find_talent_spell( "Zen Sphere" ) ),
-      detonation( new sef_zen_sphere_detonation_t( player ) )
+      detonation( new sef_zen_sphere_explosion_dmg_t( player ) )
     {
       add_child( detonation );
     }
@@ -2330,6 +2336,8 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
     trigger_gcd = timespan_t::zero();
+
+    p -> find_action( "rising_sun_kick" ) -> add_child( this );
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
@@ -2394,14 +2402,17 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     rsk_debuff( new rsk_debuff_t( p, p -> spec.rising_sun_kick_debuff ) ),
     rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
+    parse_options( options_str );
+
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
-    parse_options( options_str );
-    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
+
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = rsk_proc -> base_multiplier;
     spell_power_mod.direct = 0.0;
+
+    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
     sef_ability = SEF_RISING_SUN_KICK;
   }
 
@@ -2517,8 +2528,11 @@ struct blackout_kick_t: public monk_melee_attack_t
     rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
   {
     parse_options( options_str );
+    add_child( p -> active_actions.blackout_kick_dot );
+
     if ( p -> talent.chi_explosion -> ok() )
       background = true;
+
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 6.08; // hardcoded into tooltip
@@ -3687,37 +3701,6 @@ struct chi_brew_t: public monk_spell_t
       trigger_brew( p() -> talent.chi_brew -> effectN( 2 ).trigger() -> effectN( 2 ).base_value() );
   }
 };
-
-// ==========================================================================
-// Zen Sphere
-// ==========================================================================
-// Healing tick Co-efficient = 0.156
-
-struct zen_sphere_damage_t: public monk_spell_t
-{
-  zen_sphere_damage_t( monk_t* player ):
-    monk_spell_t( "zen_sphere_damage", player, player -> find_spell( 124098 ) )
-  {
-    background = true;
-
-    attack_power_mod.direct = 0.095;
-    school = SCHOOL_NATURE;
-  }
-};
-
-struct zen_sphere_detonate_damage_t: public monk_spell_t
-{
-  zen_sphere_detonate_damage_t( monk_t* player ):
-    monk_spell_t( "zen_sphere_detonate_damage", player, player -> find_spell( 125033 ) )
-  {
-    background = true;
-    aoe = -1;
-
-    attack_power_mod.direct = 1.25;
-    school = SCHOOL_NATURE;
-  }
-};
-
 // ==========================================================================
 // Chi Wave
 // ==========================================================================
@@ -4923,41 +4906,65 @@ struct surging_mist_t: public monk_heal_t
 
 struct zen_sphere_t: public monk_heal_t
 {
-  monk_spell_t* zen_sphere_damage;
-  monk_spell_t* zen_sphere_detonate_damage;
-
-  struct zen_sphere_detonate_heal_t: public monk_heal_t
+  struct zen_sphere_dot_t: public monk_spell_t
   {
-    zen_sphere_detonate_heal_t( monk_t& player ):
-      monk_heal_t( "zen_sphere_detonate", player, player.find_spell( 124101 ) )
+    zen_sphere_dot_t( monk_t& player ):
+      monk_spell_t( "zen_sphere_dmg", &player, player.find_spell( 124098 ) )
+    {
+      background = dual = true;
+
+      attack_power_mod.direct = 0.095;
+    }
+  };
+
+  struct zen_sphere_explosion_heal_t : public monk_heal_t
+  {
+    zen_sphere_explosion_heal_t( monk_t& p ):
+      monk_heal_t( "zen_sphere_detonate_heal", p, p.find_spell( 124101 ) )
     {
       background = dual = true;
       aoe = -1;
 
       attack_power_mod.direct = 1.25;
-      school = SCHOOL_NATURE;
     }
 
     void impact( action_state_t* s )
     {
       monk_heal_t::impact( s );
+
       summon_gots_orb( 0.20 );
     }
   };
 
-  zen_sphere_detonate_heal_t* zen_sphere_detonate_heal;
+  struct zen_sphere_explosion_dmg_t: public monk_spell_t
+  {
+    zen_sphere_explosion_dmg_t( monk_t& player ):
+      monk_spell_t( "zen_sphere_detonate", &player, player.find_spell( 125033 ) )
+    {
+      background = dual = true;
+      aoe = -1;
+
+      attack_power_mod.direct = 1.25;
+    }
+  };
+
+  zen_sphere_dot_t*            dot;
+  zen_sphere_explosion_heal_t* explosion_heal;
+  zen_sphere_explosion_dmg_t*  explosion_dmg;
 
   zen_sphere_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "zen_sphere", p, p.talent.zen_sphere ),
-    zen_sphere_damage( new spells::zen_sphere_damage_t( &p ) ),
-    zen_sphere_detonate_damage( new spells::zen_sphere_detonate_damage_t( &p ) ),
-    zen_sphere_detonate_heal( new zen_sphere_detonate_heal_t( p ) )
+    dot( new zen_sphere_dot_t( p ) ),
+    explosion_heal( new zen_sphere_explosion_heal_t( p ) ),
+    explosion_dmg( new zen_sphere_explosion_dmg_t( p ) )
   {
     sef_ability = SEF_ZEN_SPHERE;
 
     parse_options( options_str );
 
-    school = SCHOOL_NATURE;
+    add_child( explosion_heal );
+    dot -> add_child( explosion_dmg );
+
     attack_power_mod.tick = 0.095;
     hasted_ticks = false;
 
@@ -4969,7 +4976,7 @@ struct zen_sphere_t: public monk_heal_t
     monk_heal_t::tick( d );
 
     summon_gots_orb( 0.20 );
-    zen_sphere_damage -> execute();
+    dot -> execute();
   }
 
   void last_tick( dot_t* d )
@@ -4978,10 +4985,11 @@ struct zen_sphere_t: public monk_heal_t
 
     if ( ! player -> is_sleeping() )
     {
-      zen_sphere_detonate_damage -> execute();
+      explosion_dmg -> execute();
+
       if ( player -> record_healing() )
       {
-        zen_sphere_detonate_heal -> execute();
+        explosion_heal -> execute();
       }
     }
   }
@@ -6143,8 +6151,11 @@ void monk_t::pre_analyze_hook()
 
   if ( stats_t* zen_sphere = find_stats( "zen_sphere" ) )
   {
-    if ( stats_t* zen_sphere_dmg = find_stats( "zen_sphere_damage" ) )
+    if ( stats_t* zen_sphere_dmg = find_stats( "zen_sphere_dmg" ) )
+    {
       zen_sphere_dmg -> total_execute_time = zen_sphere -> total_execute_time;
+      zen_sphere_dmg -> num_executes       = zen_sphere -> num_executes;
+    }
   }
 }
 
