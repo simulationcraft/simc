@@ -2327,17 +2327,20 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     monk_melee_attack_t( "rising_sun_kick_trinket", p, s ),
     rsk_debuff( new rsk_debuff_t( p, p -> spec.rising_sun_kick_debuff ) )
   {
+    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
+    sef_ability = SEF_RISING_SUN_KICK_TRINKET;
+
     cooldown -> duration = timespan_t::from_millis( 250 );
     background = true;
-    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 10.0; // hardcoded into tooltip
-    spell_power_mod.direct = 0.0;
-    sef_ability = SEF_RISING_SUN_KICK_TRINKET;
     trigger_gcd = timespan_t::zero();
 
-    p -> find_action( "rising_sun_kick" ) -> add_child( this );
+    action_t* rsk = p -> find_action( "rising_sun_kick" );
+    base_multiplier = rsk -> base_multiplier;
+    spell_power_mod.direct = rsk -> spell_power_mod.direct;
+
+    rsk -> add_child( this );
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
@@ -2399,21 +2402,23 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
-    rsk_debuff( new rsk_debuff_t( p, p -> spec.rising_sun_kick_debuff ) ),
-    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
+    rsk_debuff( new rsk_debuff_t( p, p -> spec.rising_sun_kick_debuff ) )
   {
     parse_options( options_str );
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
+    
+    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
+    sef_ability = SEF_RISING_SUN_KICK;
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = rsk_proc -> base_multiplier;
+    base_multiplier = 10.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
-    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
-    sef_ability = SEF_RISING_SUN_KICK;
+    if ( p -> furious_sun )
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
   }
 
   double combo_breaker_chance()
@@ -2524,14 +2529,24 @@ struct blackout_kick_t: public monk_melee_attack_t
   }
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) ),
-    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
+    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( options_str );
-    add_child( p -> active_actions.blackout_kick_dot );
+
+    if ( p -> specialization() == MONK_WINDWALKER )
+    {
+      add_child( p -> active_actions.blackout_kick_dot );
+    }
 
     if ( p -> talent.chi_explosion -> ok() )
+    {
       background = true;
+    }
+
+    if ( p -> furious_sun )
+    {
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+    }
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -2539,7 +2554,9 @@ struct blackout_kick_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
+    {
       aoe = p -> spec.teachings_of_the_monastery -> effectN( 3 ).base_value(); // Tooltip says effect 4, but I think 4 targets is more reasonable than 50.
+    }
 
     sef_ability = SEF_BLACKOUT_KICK;
   }
@@ -2679,13 +2696,15 @@ struct chi_explosion_t: public monk_melee_attack_t
     monk_melee_attack_t( "chi_explosion", p, p -> specialization() == MONK_WINDWALKER ? p -> find_spell( 152174 ) :
     p -> specialization() == MONK_BREWMASTER ? p -> find_spell( 157676 ) : p -> find_spell( 157675 ) ),
     windwalker_chi_explosion_dot( p -> find_spell( 157680 ) ),
-    spirited_crane_chi_explosion( p -> find_spell( 159620 ) ),
-    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
+    spirited_crane_chi_explosion( p -> find_spell( 159620 ) )
   {
     parse_options( options_str );
     may_block = false;
     sef_ability = SEF_CHI_EXPLOSION;
     school = SCHOOL_NATURE;
+
+    if ( p -> furious_sun )
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const
@@ -3069,8 +3088,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
   rising_sun_kick_proc_t* rsk_proc;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury ),
-    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
+    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury )
   {
     parse_options( options_str );
 
@@ -3088,6 +3106,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     cooldown -> duration += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+
+    if ( p -> furious_sun )
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
   }
 
   void consume_resource()
@@ -3144,8 +3165,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
   rising_sun_kick_proc_t* rsk_proc;
 
   hurricane_strike_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike ),
-    rsk_proc( new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket ) )
+    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike )
   {
     sef_ability = SEF_HURRICANE_STRIKE;
 
@@ -3160,6 +3180,9 @@ struct hurricane_strike_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
+
+    if ( p -> furious_sun )
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const
