@@ -4,7 +4,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=0002333
+talents=0001333
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,enchant_id=5319
 shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567
@@ -18,7 +18,7 @@ feet=spiked_throatcrusher_boots,id=124287,bonus_id=567
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5326
 finger2=portal_key_signet,id=124189,bonus_id=567,enchant_id=5326
 trinket1=mirror_of_the_blademaster,id=124224,bonus_id=567
-trinket2=malicious_censer,id=124226,bonus_id=567
+trinket2=talisman_of_the_master_tracker,id=124515,bonus_id=567
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,enchant_id=5383
 save=Hunter_BM_T18M.simc
 
@@ -27,7 +27,7 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=0003332
+talents=0003323
 spec=marksmanship
 distance=45
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567

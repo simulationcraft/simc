@@ -4369,10 +4369,10 @@ void hunter_t::apl_bm()
   add_item_actions( default_list );
   add_racial_actions( default_list );
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-   "if=!talent.stampede.enabled&buff.bestial_wrath.up&target.health.pct<=20|target.time_to_die<=20" );
+   "if=!talent.stampede.enabled&((buff.bestial_wrath.up&(legendary_ring.up|!legendary_ring.has_cooldown)&target.health.pct<=20)|target.time_to_die<=20)" );
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-   "if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=25" );
-  default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=25" );
+   "if=talent.stampede.enabled&((buff.stampede.remains&(legendary_ring.up|!legendary_ring.has_cooldown)&(buff.bloodlust.up|buff.focus_fire.up))|target.time_to_die<=40)" );
+  default_list -> add_talent( this, "Stampede", "if=((buff.bloodlust.up|buff.focus_fire.up)&(legendary_ring.up|!legendary_ring.has_cooldown))|target.time_to_die<=25" );
 
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Focus Fire", "if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)" );

@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=0003332
+talents=0003323
 talent_override=lone_wolf,if=raid_event.adds.count>=3|enemies>1
 spec=marksmanship
 

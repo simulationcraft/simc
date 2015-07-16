@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=0002333
+talents=0001333
 talent_override=steady_focus,if=raid_event.adds.count>=1|enemies>1
 spec=beast_mastery
 
@@ -33,9 +33,9 @@ actions+=/use_item,name=mirror_of_the_blademaster
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&buff.bestial_wrath.up&target.health.pct<=20|target.time_to_die<=20
-actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=25
-actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=25
+actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&((buff.bestial_wrath.up&(legendary_ring.up|!legendary_ring.has_cooldown)&target.health.pct<=20)|target.time_to_die<=20)
+actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&((buff.stampede.remains&(legendary_ring.up|!legendary_ring.has_cooldown)&(buff.bloodlust.up|buff.focus_fire.up))|target.time_to_die<=40)
+actions+=/stampede,if=((buff.bloodlust.up|buff.focus_fire.up)&(legendary_ring.up|!legendary_ring.has_cooldown))|target.time_to_die<=25
 actions+=/dire_beast
 actions+=/focus_fire,if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)
 actions+=/bestial_wrath,if=focus>30&!buff.bestial_wrath.up
@@ -73,18 +73,18 @@ legs=haughty_chain_legguards,id=124300,bonus_id=566
 feet=wayfaring_boots,id=116193,bonus_id=185/618
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5325
 finger2=shifting_taladite_ring,id=115796,bonus_id=139/618,enchant_id=5325
-trinket1=malicious_censer,id=124226,bonus_id=566
+trinket1=talisman_of_the_master_tracker,id=124515,bonus_id=566
 trinket2=mirror_of_the_blademaster,id=124224,bonus_id=566
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5383
 
 # Gear Summary
-# gear_ilvl=713.00
+# gear_ilvl=713.33
 # gear_agility=3972
 # gear_stamina=5335
 # gear_crit_rating=593
 # gear_haste_rating=1191
 # gear_mastery_rating=1370
-# gear_multistrike_rating=2180
+# gear_multistrike_rating=1724
 # gear_versatility_rating=128
 # gear_armor=1579
 # set_bonus=tier18_2pc=1
