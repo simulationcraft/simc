@@ -4279,7 +4279,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Execute", "if=!buff.sudden_death.react&(rage.deficit<48&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
   single_target -> add_action( this, "Rend", "if=target.time_to_die>4&remains<5.4" );
   single_target -> add_action( "wait,sec=cooldown.colossus_smash.remains,if=cooldown.colossus_smash.remains<gcd" );
-  single_target -> add_action( this, "Shockwave", "if=target.health.pct<=20" );
+  single_target -> add_talent( this, "Shockwave", "if=target.health.pct<=20" );
   single_target -> add_action( "wait,sec=0.1,if=target.health.pct<=20" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<40&!set_bonus.tier18_4pc" );
   single_target -> add_talent( this, "Slam", "if=rage>20&!set_bonus.tier18_4pc" );
