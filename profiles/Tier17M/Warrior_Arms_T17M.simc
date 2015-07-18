@@ -53,21 +53,24 @@ actions.movement+=/charge
 actions.movement+=/storm_bolt
 actions.movement+=/heroic_throw
 
-actions.single=rend,if=target.time_to_die>4&dot.rend.remains<5.4
+actions.single=rend,if=target.time_to_die>4&(remains<gcd|(debuff.colossus_smash.down&remains<5.4))
 actions.single+=/ravager,if=cooldown.colossus_smash.remains<4&(!raid_event.adds.exists|raid_event.adds.in>55)
 actions.single+=/colossus_smash,if=debuff.colossus_smash.down
-actions.single+=/mortal_strike,if=target.health.pct>20&(debuff.colossus_smash.up|rage>60)
+actions.single+=/mortal_strike,if=target.health.pct>20
 actions.single+=/colossus_smash
 actions.single+=/bladestorm,if=(((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4))&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))
 actions.single+=/storm_bolt,if=debuff.colossus_smash.down
 actions.single+=/siegebreaker
 actions.single+=/dragon_roar,if=!debuff.colossus_smash.up&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))
 actions.single+=/execute,if=buff.sudden_death.react
-actions.single+=/execute,if=!buff.sudden_death.react&(rage>72&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5
-actions.single+=/impending_victory,if=!set_bonus.tier18_4pc&(rage<40&target.health.pct>20&cooldown.colossus_smash.remains>1)
-actions.single+=/slam,if=(rage>20|cooldown.colossus_smash.remains>gcd)&target.health.pct>20&cooldown.colossus_smash.remains>1&!set_bonus.tier18_4pc
-actions.single+=/thunder_clap,if=(!set_bonus.tier18_4pc|rage.deficit<30)&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled&cooldown.colossus_smash.remains>gcd
-actions.single+=/whirlwind,if=(!set_bonus.tier18_4pc|rage.deficit<30)&!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>gcd
+actions.single+=/execute,if=!buff.sudden_death.react&(rage.deficit<48&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5
+actions.single+=/rend,if=target.time_to_die>4&remains<5.4
+actions.single+=/wait,sec=cooldown.colossus_smash.remains,if=cooldown.colossus_smash.remains<gcd
+actions.single+=/wait,sec=0.1,if=target.health.pct<=20
+actions.single+=/impending_victory,if=rage<40&!set_bonus.tier18_4pc
+actions.single+=/slam,if=rage>20&!set_bonus.tier18_4pc
+actions.single+=/thunder_clap,if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&(!talent.slam.enabled|set_bonus.tier18_4pc)&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled
+actions.single+=/whirlwind,if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&(!talent.slam.enabled|set_bonus.tier18_4pc)&(rage>=40|debuff.colossus_smash.up)
 actions.single+=/shockwave
 
 actions.aoe=sweeping_strikes
@@ -77,13 +80,13 @@ actions.aoe+=/rend,cycle_targets=1,if=dot.rend.remains<5.4&target.time_to_die-re
 actions.aoe+=/ravager,if=buff.bloodbath.up|cooldown.colossus_smash.remains<4
 actions.aoe+=/bladestorm,if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)
 actions.aoe+=/colossus_smash,if=dot.rend.ticking
-actions.aoe+=/execute,cycle_targets=1,if=!buff.sudden_death.react&spell_targets.whirlwind<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)
+actions.aoe+=/execute,cycle_targets=1,if=!buff.sudden_death.react&spell_targets.whirlwind<=8&((rage.deficit<48&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)
 actions.aoe+=/heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down
 # Heroic Charge is an event that makes the warrior heroic leap out of melee range for an instant
-#If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.
-#This can delay autoattacks, but typically the rage gained from charging (Especially with bull rush glyphed) is more than
-#The amount lost from delayed autoattacks. Charge only grants rage from charging a different target than the last time.
-#Which means this is only worth doing on AoE, and only when you cycle your charge target.
+# If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.
+# This can delay autoattacks, but typically the rage gained from charging (Especially with bull rush glyphed) is more than
+# The amount lost from delayed autoattacks. Charge only grants rage from charging a different target than the last time.
+# Which means this is only worth doing on AoE, and only when you cycle your charge target.
 actions.aoe+=/mortal_strike,if=target.health.pct>20&(rage>60|debuff.colossus_smash.up)&spell_targets.whirlwind<=5
 actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.aoe+=/thunder_clap,if=(target.health.pct>20|spell_targets.whirlwind>=9)&glyph.resonating_power.enabled
