@@ -65,7 +65,7 @@ spec=destruction
 talents=0000311
 talent_override=charred_remains,if=enemies>=4
 talent_override=grimoire_of_sacrifice,if=enemies>1&enemies<4|(enemies=1&talent.charred_remains.enabled)
-talent_override=grimoire_of_supremacy,if=(enemies>=4&!talent.demonic_servitude.enabled)|(enemies=1&talent.cataclysm.enabled)
+talent_override=grimoire_of_supremacy,if=(enemies>=4&!raid_event.adds.exists&!talent.demonic_servitude.enabled)|(enemies>=5&!talent.demonic_servitude.enabled)|(enemies=1&talent.cataclysm.enabled)
 talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=magisters_chain,id=109954,bonus_id=524,enchant_id=5317

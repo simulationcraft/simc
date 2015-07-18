@@ -6269,19 +6269,36 @@ void warlock_t::apl_destruction()
   action_list_str +="/run_action_list,name=single_target,if=spell_targets.fire_and_brimstone<6&(!talent.charred_remains.enabled|spell_targets.rain_of_fire<4)";
   action_list_str +="/run_action_list,name=aoe,if=spell_targets.fire_and_brimstone>=6|(talent.charred_remains.enabled&spell_targets.rain_of_fire>=4)";
 
-  single_target -> action_list_str += "/havoc,target=2";
+  single_target -> action_list_str += "/havoc,if=raid_event.adds.exists";
+  single_target -> action_list_str += "/havoc,target=2,if=!raid_event.adds.exists";
+  single_target -> action_list_str += "/shadowburn,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&talent.charred_remains.enabled&target.time_to_die<10";
   single_target -> action_list_str += "/shadowburn,if=talent.charred_remains.enabled&target.time_to_die<10";
   single_target -> action_list_str += "/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)";
   single_target -> action_list_str += "/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled";
   single_target -> action_list_str += "/cataclysm,if=spell_targets.cataclysm>1";
   single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=action.immolate.cast_time&(cooldown.cataclysm.remains>action.immolate.cast_time|!talent.cataclysm.enabled)&spell_targets.fire_and_brimstone>4";
-  single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)";
+  
+  if ( find_item( "fragment_of_the_dark_star" ) )
+  {
+    single_target -> action_list_str += "/immolate,cycle_targets=1,if=raid_event.adds.exists&(sim.target=target|!buff.havoc.remains)&remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)&debuff.flamelicked.remains>=(action.incinerate.execute_time+action.incinerate.travel_time+execute_time)";
+    single_target -> action_list_str += "/immolate,cycle_targets=1,if=!raid_event.adds.exists&remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)";
+  }
+  else
+    single_target -> action_list_str += "/immolate,cycle_targets=1,if=(sim.target=target|!buff.havoc.remains|!raid_event.adds.exists)&remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)";
+  
   single_target -> action_list_str += "/cancel_buff,name=fire_and_brimstone,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time>(dot.immolate.duration*0.3)";
-  single_target -> action_list_str += "/shadowburn,if=buff.havoc.remains";
-  single_target -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";
+  single_target -> action_list_str += "/shadowburn,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains";
+  single_target -> action_list_str += "/chaos_bolt,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains>cast_time&buff.havoc.stack>=3&target.time_to_die>=12";
+  single_target -> action_list_str += "/shadowburn,if=!raid_event.adds.exists&buff.havoc.remains";
+  single_target -> action_list_str += "/chaos_bolt,if=!raid_event.adds.exists&buff.havoc.remains>cast_time&buff.havoc.stack>=3";
+  single_target -> action_list_str += "/conflagrate,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains<=gcd*3&charges=2";
   single_target -> action_list_str += "/conflagrate,if=charges=2";
   single_target -> action_list_str += "/cataclysm";
   single_target -> action_list_str += "/rain_of_fire,if=remains<=tick_time&(spell_targets.rain_of_fire>4|(buff.mannoroths_fury.up&spell_targets.rain_of_fire>2))";
+  
+  if ( find_item( "fragment_of_the_dark_star" ) )
+    single_target -> action_list_str += "/incinerate,if=raid_event.adds.exists&debuff.flamelicked.remains<=execute_time+travel_time+action.chaos_bolt.execute_time";
+
   single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&spell_targets.fire_and_brimstone>1&target.health.pct>20";
   single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5";
 
@@ -6299,8 +6316,10 @@ void warlock_t::apl_destruction()
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.versatility.react&trinket.proc.versatility.remains>cast_time";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time";
   single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)&spell_targets.fire_and_brimstone>4";
-  single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains-cast_time<=(duration*0.3)";
+  single_target -> action_list_str += "/immolate,cycle_targets=1,if=(sim.target=target|!buff.havoc.remains|!raid_event.adds.exists)&remains-cast_time<=(duration*0.3)";
+  single_target -> action_list_str += "/conflagrate,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains<=gcd*3&buff.backdraft.stack=0";
   single_target -> action_list_str += "/conflagrate,if=buff.backdraft.stack=0";
+  single_target -> action_list_str += "/incinerate,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains<=action.incinerate.cast_time*3";
   single_target -> action_list_str += "/incinerate";
 
   aoe -> action_list_str += "/rain_of_fire,if=!talent.charred_remains.enabled&remains<=tick_time";
