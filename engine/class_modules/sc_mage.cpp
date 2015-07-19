@@ -2294,8 +2294,6 @@ struct arcane_orb_t : public mage_spell_t
 
     may_miss       = false;
     may_crit       = false;
-    trigger_gcd    = timespan_t::from_seconds( 1.0 );
-
     add_child( orb_bolt );
   }
 
@@ -2661,7 +2659,6 @@ struct comet_storm_t : public mage_spell_t
 
     may_miss = false;
 
-    trigger_gcd       = timespan_t::from_seconds( 1.0 );
     base_tick_time    = timespan_t::from_seconds( 0.2 );
     dot_duration      = timespan_t::from_seconds( 1.2 );
     hasted_ticks      = false;
@@ -3964,17 +3961,12 @@ struct meteor_t : public mage_spell_t
   {
     add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
-
-    hasted_ticks    = false;
-    callbacks       = false;
+    hasted_ticks = false;
+    callbacks = false;
     may_multistrike = 0;
-    trigger_gcd     = timespan_t::from_seconds( 1.0 );
-
     add_child( meteor_impact );
     add_child( meteor_burn );
-
-    dot_duration = p -> find_spell( 175396 ) -> duration() -
-                   p -> find_spell( 153564 ) -> duration();
+    dot_duration = p -> find_spell( 175396 ) -> duration() - p -> find_spell( 153564 ) -> duration();
     actual_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
   }
