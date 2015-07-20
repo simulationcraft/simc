@@ -1,4 +1,4 @@
-SimulationCraft 620-02 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
