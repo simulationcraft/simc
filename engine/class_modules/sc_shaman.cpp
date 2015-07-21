@@ -573,7 +573,8 @@ struct ascendance_buff_t : public buff_t
   action_t* lava_burst;
 
   ascendance_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, 114051, "ascendance" ) ),
+    buff_t( buff_creator_t( p, "ascendance", p -> find_specialization_spell( "Ascendance" ) )
+            .cd( timespan_t::zero() ) ), // Cooldown is handled by the action
     lava_burst( 0 )
   { }
 
@@ -3760,8 +3761,6 @@ struct ascendance_t : public shaman_spell_t
   {
     harmful = false;
 
-    cooldown -> duration = timespan_t::from_seconds( 180 );
-
     strike_cd = p() -> cooldown.strike;
   }
 
@@ -6646,8 +6645,15 @@ struct shaman_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect("2015-07-20", "Mastery: Molten Earth damage has been increased by 11%."
-                                          , 241705 )
+    hotfix::register_spell( "2015-07-20", "Ascendance now has a 2-minute cooldown (down from 3 minutes) "
+                                          "for Elemental Shaman.", 114050 )
+      .field( "cooldown" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 120000 )
+      .verification_value( 180000 );
+
+    hotfix::register_effect( "2015-07-20", "Mastery: Molten Earth damage has been increased by 11%.",
+                             241705 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.11 )
