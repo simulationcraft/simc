@@ -49,7 +49,7 @@ trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 save=Warlock_Demonology_T18H.simc
 
-warlock="Warlock_Destruction_T18H6"
+warlock="Warlock_Destruction_T18H"
 level=100
 race=dwarf
 role=spell
