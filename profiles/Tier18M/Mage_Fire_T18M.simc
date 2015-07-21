@@ -50,6 +50,8 @@ actions.crystal_sequence=choose_target,name=prismatic_crystal
 actions.crystal_sequence+=/inferno_blast,if=dot.combustion.ticking&active_dot.combustion<active_enemies+1
 # Spread Combustion on multitarget fights
 actions.crystal_sequence+=/inferno_blast,cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies
+actions.crystal_sequence+=/cold_snap,if=!cooldown.dragons_breath.up
+actions.crystal_sequence+=/dragons_breath,if=glyph.dragons_breath.enabled
 actions.crystal_sequence+=/blast_wave
 # Use pyros before PC's expiration
 actions.crystal_sequence+=/pyroblast,if=execute_time=gcd.max&pet.prismatic_crystal.remains<gcd.max+travel_time&pet.prismatic_crystal.remains>travel_time
@@ -86,6 +88,8 @@ actions.combust_sequence+=/combustion
 # Active talents usage
 actions.active_talents=meteor,if=active_enemies>=3|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)
 actions.active_talents+=/call_action_list,name=living_bomb,if=talent.living_bomb.enabled&(active_enemies>1|raid_event.adds.in<10)
+actions.active_talents+=/cold_snap,if=glyph.dragons_breath.enabled&!talent.prismatic_crystal.enabled&!cooldown.dragons_breath.up
+actions.active_talents+=/dragons_breath,if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8)
 actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))
 
 # Living Bomb application
@@ -96,7 +100,7 @@ actions.living_bomb+=/living_bomb,if=target!=pet.prismatic_crystal&(((!talent.in
 actions.aoe=inferno_blast,cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)
 actions.aoe+=/call_action_list,name=active_talents
 actions.aoe+=/pyroblast,if=buff.pyroblast.react|buff.pyromaniac.react
-actions.aoe+=/cold_snap,if=glyph.dragons_breath.enabled&!cooldown.dragons_breath.up
+actions.aoe+=/cold_snap,if=!cooldown.dragons_breath.up
 actions.aoe+=/dragons_breath,if=glyph.dragons_breath.enabled
 actions.aoe+=/flamestrike,if=mana.pct>10&remains<2.4
 

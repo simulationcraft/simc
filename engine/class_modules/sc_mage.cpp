@@ -5988,6 +5988,10 @@ void mage_t::apl_fire()
   crystal_sequence -> add_action( this, "Inferno Blast",
                                   "cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies",
                                   "Spread Combustion on multitarget fights" );
+  crystal_sequence -> add_talent( this, "Cold Snap",
+                                  "if=!cooldown.dragons_breath.up" );
+  crystal_sequence -> add_action( this, "Dragon's Breath",
+                                  "if=glyph.dragons_breath.enabled" );
   crystal_sequence -> add_talent( this, "Blast Wave" );
   crystal_sequence -> add_action( this, "Pyroblast",
                                   "if=execute_time=gcd.max&pet.prismatic_crystal.remains<gcd.max+travel_time&pet.prismatic_crystal.remains>travel_time",
@@ -6035,6 +6039,10 @@ void mage_t::apl_fire()
                                 "if=active_enemies>=3|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)",
                                 "Active talents usage" );
   active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled&(active_enemies>1|raid_event.adds.in<10)" );
+  active_talents -> add_talent( this, "Cold Snap",
+                                "if=glyph.dragons_breath.enabled&!talent.prismatic_crystal.enabled&!cooldown.dragons_breath.up" );
+  active_talents -> add_action( this, "Dragon's Breath",
+                                "if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8)" );
   active_talents -> add_talent( this, "Blast Wave",
                                 "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))" );
 
@@ -6053,9 +6061,8 @@ void mage_t::apl_fire()
   aoe -> add_action( this, "Pyroblast",
                      "if=buff.pyroblast.react|buff.pyromaniac.react" );
   aoe -> add_talent( this, "Cold Snap",
-                     "if=glyph.dragons_breath.enabled&!cooldown.dragons_breath.up" );
-  aoe -> add_action( this, "Dragon's Breath",
-                     "if=glyph.dragons_breath.enabled" );
+                     "if=!cooldown.dragons_breath.up" );
+  aoe -> add_action( this, "Dragon's Breath" );
   aoe -> add_action( this, "Flamestrike",
                      "if=mana.pct>10&remains<2.4"  );
 
