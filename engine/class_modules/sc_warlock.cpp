@@ -6605,21 +6605,21 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "2015-06-29", "Fragment of the Dark Star had its effect increased by "
+    hotfix::register_effect( "Warlock", "2015-06-29", "Fragment of the Dark Star had its effect increased by "
                                            "20% for Affliction Warlocks.", 268066 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( -0.02792 );
 
-    hotfix::register_effect( "2015-06-29-2", "Fragment of the Dark Star had its effect increased by "
+    hotfix::register_effect( "Warlock", "2015-06-29-2", "Fragment of the Dark Star had its effect increased by "
                                            "20% for Affliction Warlocks.", 268751 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( -0.02792 );
 
-    hotfix::register_spell( "2015-06-23", "Tier-18 2-piece set bonus for Affliction Warlocks now has "
+    hotfix::register_spell( "Warlock", "2015-06-23", "Tier-18 2-piece set bonus for Affliction Warlocks now has "
                                           "a 10% chance (down from 30%) each time Drain Soul deals damage "
                                           "to extend the duration of Dark Soul: Misery by 2 seconds.", 185882 )
       .field( "proc_chance" )
@@ -6627,7 +6627,7 @@ struct warlock_module_t: public module_t
       .modifier( 10 )
       .verification_value( 30 );
 
-    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Demonology Warlocks now causes "
+    hotfix::register_effect( "Warlock", "2015-06-23", "Tier-18 2-piece set bonus for Demonology Warlocks now causes "
                                             "Soul Fire to increase damage dealt by Demons by 4% (up from 3%) "
                                             "for 15 seconds per stack." , 275998 )
       .field( "base_value" )
@@ -6635,79 +6635,79 @@ struct warlock_module_t: public module_t
       .modifier( 4 )
       .verification_value( 3 );
 
-    hotfix::register_effect( "2015-07-20", "Chaos Bolt damage increased by 5%.", 132079 )
+    hotfix::register_effect( "Warlock", "2015-07-20", "Chaos Bolt damage increased by 5%.", 132079 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 2.27500 );
 
-    hotfix::register_effect( "2015-07-20-2", "Chaos Bolt damage increased by 5%.", 219895 )
+    hotfix::register_effect( "Warlock", "2015-07-20-2", "Chaos Bolt damage increased by 5%.", 219895 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 2.27500 );
 
-    hotfix::register_effect( "2015-07-20-", "Conflagrate damage increased by 5%.", 9553 )
+    hotfix::register_effect( "Warlock", "2015-07-20-", "Conflagrate damage increased by 5%.", 9553 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 2.04100 );
 
-    hotfix::register_effect( "2015-07-20-2", "Conflagrate damage increased by 5%.", 119851 )
+    hotfix::register_effect( "Warlock", "2015-07-20-2", "Conflagrate damage increased by 5%.", 119851 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 2.04100 );
 
-    hotfix::register_effect( "2015-07-20", "Immolate damage increased by 5%.", 145 )
+    hotfix::register_effect( "Warlock", "2015-07-20", "Immolate damage increased by 5%.", 145 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 0.49500 );
 
-    hotfix::register_effect( "2015-07-20-2", "Immolate damage increased by 5%.", 119854 )
+    hotfix::register_effect( "Warlock", "2015-07-20-2", "Immolate damage increased by 5%.", 119854 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 0.49500 );
 
-    hotfix::register_effect( "2015-07-20", "Incinerate damage increased by 5%.", 19297 )
+    hotfix::register_effect( "Warlock", "2015-07-20", "Incinerate damage increased by 5%.", 19297 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 1.43500 );
 
-    hotfix::register_effect( "2015-07-20-2", "Incinerate damage increased by 5%.", 128057 )
+    hotfix::register_effect( "Warlock", "2015-07-20-2", "Incinerate damage increased by 5%.", 128057 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 1.43500 );
 
-    hotfix::register_effect( "2015-07-20", "Shadowburn damage increased by 5%.", 9475 )
+    hotfix::register_effect( "Warlock", "2015-07-20", "Shadowburn damage increased by 5%.", 9475 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 3.40000 );
 
-    hotfix::register_effect( "2015-07-20", "Haunt damage has been increased by 25%.", 40331 )
+    hotfix::register_effect( "Warlock", "2015-07-20", "Haunt damage has been increased by 25%.", 40331 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.25 )
       .verification_value( 4.12500 );
 
-    hotfix::register_effect( "2015-07-20", "Haunt now increases periodic damage dealt by 35% (up from 30%).", 159995 )
+    hotfix::register_effect( "Warlock", "2015-07-20", "Haunt now increases periodic damage dealt by 35% (up from 30%).", 159995 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 35 )
       .verification_value( 30 );
 
-    hotfix::register_effect( "2015-07-20", "Drain Soul damage has been increased by 50%.", 112098 )
+    hotfix::register_effect( "Warlock", "2015-07-20", "Drain Soul damage has been increased by 50%.", 112098 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.5 )
       .verification_value( 0.20900 );
 
-    hotfix::register_effect( "2015-07-20", "Drain Soul now causes all other damage over time spells to instantly "
+    hotfix::register_effect( "Warlock", "2015-07-20", "Drain Soul now causes all other damage over time spells to instantly "
                                            "deal 50% of their normal damage (up from 40%).", 171007 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )

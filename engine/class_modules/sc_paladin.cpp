@@ -6899,7 +6899,7 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "2015-07-20", "Sword of Light now increases damage dealt with two-handed "
+    hotfix::register_effect( "Paladin", "2015-07-20", "Sword of Light now increases damage dealt with two-handed "
                                            " melee weapons by 30% (up from 25%).", 11193 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )

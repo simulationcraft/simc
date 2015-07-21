@@ -6645,28 +6645,28 @@ struct shaman_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_spell( "2015-07-20", "Ascendance now has a 2-minute cooldown (down from 3 minutes) "
+    hotfix::register_spell( "Shaman", "2015-07-20", "Ascendance now has a 2-minute cooldown (down from 3 minutes) "
                                           "for Elemental Shaman.", 114050 )
       .field( "cooldown" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 120000 )
       .verification_value( 180000 );
 
-    hotfix::register_effect( "2015-07-20", "Mastery: Molten Earth damage has been increased by 11%.",
+    hotfix::register_effect( "Shaman", "2015-07-20", "Mastery: Molten Earth damage has been increased by 11%.",
                              241705 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.11 )
       .verification_value( 1.00000 );
 
-    hotfix::register_effect( "2015-06-29", "Core of the Primal Elements now deals 40% more damage "
+    hotfix::register_effect( "Shaman", "2015-06-29", "Core of the Primal Elements now deals 40% more damage "
                                            "for Enhancement Shaman.", 268064 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.4 )
       .verification_value( 0.515463 );
 
-    hotfix::register_effect( "2015-06-25", "Stormstrike now deals 20% more damage.", 21915 )
+    hotfix::register_effect( "Shaman", "2015-06-25", "Stormstrike now deals 20% more damage.", 21915 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
@@ -6674,31 +6674,31 @@ struct shaman_module_t : public module_t
 
     // Identical tag + note, need to cheat for now to make the combination unique, otherwie hotfix
     // will not register. TODO: Better uniqueness check.
-    hotfix::register_effect( "2015-06-25-2", "Stormstrike now deals 20% more damage.", 21916 )
+    hotfix::register_effect( "Shaman", "2015-06-25-2", "Stormstrike now deals 20% more damage.", 21916 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( 400 );
 
-    hotfix::register_effect( "2015-06-25", "Windstrike now deals 20% more damage.", 129139 )
+    hotfix::register_effect( "Shaman", "2015-06-25", "Windstrike now deals 20% more damage.", 129139 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( 400 );
 
-    hotfix::register_effect( "2015-06-25-2", "Windstrike now deals 20% more damage.", 129143 )
+    hotfix::register_effect( "Shaman", "2015-06-25-2", "Windstrike now deals 20% more damage.", 129143 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( 400 );
 
-    hotfix::register_effect( "2015-06-25", "Lava Lash now deals 20% more damage.", 53784 )
+    hotfix::register_effect( "Shaman", "2015-06-25", "Lava Lash now deals 20% more damage.", 53784 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( 575 );
 
-    hotfix::register_effect( "2015-06-23", "Tier-18 4-piece set bonus for Enhancement Shaman now "
+    hotfix::register_effect( "Shaman", "2015-06-23", "Tier-18 4-piece set bonus for Enhancement Shaman now "
                                            "increases damage dealt by Nature spells by an "
                                            "additional 12% (up from 8%).", 270178 )
       .field( "base_value" )

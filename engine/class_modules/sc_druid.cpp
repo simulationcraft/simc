@@ -8425,7 +8425,7 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_spell( "2015-07-20",
+    hotfix::register_spell( "Druid", "2015-07-20",
                              "Ursa Major now lasts 15 seconds (down from 25 seconds).",
                              159233 )
       .field( "duration" )

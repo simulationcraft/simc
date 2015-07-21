@@ -1339,17 +1339,33 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
   os << "<div class=\"section\">\n";
   os << "<h2 class=\"toggle\">Current simulator hotfixes</h2>\n";
   os << "<div class=\"toggle-content hide\">\n";
-  os << "<table class=\"sc\">\n";
-  os << "<tr>\n";
-  os << "<th>Tag</th>\n";
-  os << "<th class=\"left\">Spell / Effect</th>\n";
-  os << "<th class=\"left\">Field</th>\n";
-  os << "<th class=\"left\">Hotfixed Value</th>\n";
-  os << "<th class=\"left\" colspan=\"2\">DBC Value</th>\n";
-  os << "</tr>\n";
+
+  std::string current_group;
+  bool first_group = true;
+
   for ( size_t i = 0; i < entries.size(); ++i )
   {
     const hotfix::hotfix_entry_t* entry = entries[ entries.size() - 1 - i ];
+    if ( current_group != entry -> group_ )
+    {
+      if ( ! first_group )
+      {
+        os << "</table>\n";
+      }
+
+      os << "<h3>" << entry -> group_ << "</h3>\n";
+      os << "<table class=\"sc\" style=\"max-width:75%\">\n";
+      os << "<tr>\n";
+      os << "<th>Tag</th>\n";
+      os << "<th class=\"left\">Spell / Effect</th>\n";
+      os << "<th class=\"left\">Field</th>\n";
+      os << "<th class=\"left\">Hotfixed Value</th>\n";
+      os << "<th class=\"left\" colspan=\"2\">DBC Value</th>\n";
+      os << "</tr>\n";
+      current_group = entry -> group_;
+      first_group = false;
+    }
+
     os << "<tr>\n";
     os << "<td class=\"left\" style=\"white-space:nowrap;\"><strong>" << entry -> tag_.substr( 0, 10 ) << "</strong></td>\n";
     os << "<td class=\"left\" colspan=\"5\"><strong>" << entry -> note_ << "</strong></td>\n";

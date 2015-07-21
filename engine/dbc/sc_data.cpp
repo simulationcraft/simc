@@ -214,11 +214,19 @@ struct hotfix_sorter_t
 {
   bool operator()( const hotfix_entry_t* l, const hotfix_entry_t* r )
   {
-    return l -> tag_ < r -> tag_;
+    if ( l -> group_ != r -> group_ )
+    {
+      return l -> group_ > r -> group_;
+    }
+    else
+    {
+      return l -> tag_ < r -> tag_;
+    }
   }
 };
 
-bool hotfix::register_hotfix( const std::string& tag,
+bool hotfix::register_hotfix( const std::string& group,
+                              const std::string& tag,
                               const std::string& note,
                               unsigned           flags )
 {
@@ -228,7 +236,7 @@ bool hotfix::register_hotfix( const std::string& tag,
     return false;
   }
 
-  hotfixes_.push_back( new hotfix_entry_t( tag, note, flags ) );
+  hotfixes_.push_back( new hotfix_entry_t( group, tag, note, flags ) );
 
   return true;
 }
@@ -260,7 +268,8 @@ const spelleffect_data_t* hotfix::find_effect( const spelleffect_data_t* dbc_eff
   return dbc_effect;
 }
 
-spell_hotfix_entry_t& hotfix::register_spell( const std::string& tag,
+spell_hotfix_entry_t& hotfix::register_spell( const std::string& group,
+                                              const std::string& tag,
                                               const std::string& note,
                                               unsigned           spell_id,
                                               unsigned           flags )
@@ -272,7 +281,7 @@ spell_hotfix_entry_t& hotfix::register_spell( const std::string& tag,
     return *static_cast<spell_hotfix_entry_t*>( *i );
   }
 
-  spell_hotfix_entry_t* entry = new spell_hotfix_entry_t( tag, spell_id, note, flags );
+  spell_hotfix_entry_t* entry = new spell_hotfix_entry_t( group, tag, spell_id, note, flags );
   hotfixes_.push_back( entry );
 
   std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
@@ -280,7 +289,8 @@ spell_hotfix_entry_t& hotfix::register_spell( const std::string& tag,
   return *entry;
 }
 
-effect_hotfix_entry_t& hotfix::register_effect( const std::string& tag,
+effect_hotfix_entry_t& hotfix::register_effect( const std::string& group,
+                                                const std::string& tag,
                                                 const std::string& note,
                                                 unsigned           effect_id,
                                                 unsigned           flags )
@@ -292,7 +302,7 @@ effect_hotfix_entry_t& hotfix::register_effect( const std::string& tag,
     return *static_cast<effect_hotfix_entry_t*>( *i );
   }
 
-  effect_hotfix_entry_t* entry = new effect_hotfix_entry_t( tag, effect_id, note, flags );
+  effect_hotfix_entry_t* entry = new effect_hotfix_entry_t( group, tag, effect_id, note, flags );
   hotfixes_.push_back( entry );
 
   std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
@@ -303,9 +313,24 @@ effect_hotfix_entry_t& hotfix::register_effect( const std::string& tag,
 std::string hotfix::to_str()
 {
   std::stringstream s;
+  std::string current_group;
+  bool first_group = true;
+
   for ( size_t i = 0; i < hotfixes_.size(); ++i )
   {
-    s << hotfixes_[ hotfixes_.size() - 1 - i ] -> to_str() << std::endl;
+    const hotfix_entry_t* entry = hotfixes_[ hotfixes_.size() - 1 - i ];
+
+    if ( current_group != entry -> group_ )
+    {
+      if ( ! first_group )
+      {
+        s << std::endl;
+      }
+      s << entry -> group_ << std::endl;
+      first_group = false;
+      current_group = entry -> group_;
+    }
+    s << entry -> to_str() << std::endl;
   }
 
   return s.str();

@@ -5061,26 +5061,26 @@ struct hunter_module_t: public module_t
   virtual void register_hotfixes() const
   {
 
-    hotfix::register_effect( "2015-06-29", "Talisman of the Master Tracker had the chance to trigger reduced by 6% "
+    hotfix::register_effect( "Hunter", "2015-06-29", "Talisman of the Master Tracker had the chance to trigger reduced by 6% "
                                            "for Survival Hunters.", 268042 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.94 )
       .verification_value( 0.118555 );
 
-    hotfix::register_effect( "2015-07-20", "Black Arrow damage increased by 25%.", 1289 )
+    hotfix::register_effect( "Hunter", "2015-07-20", "Black Arrow damage increased by 25%.", 1289 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.25 )
       .verification_value( 0.56700 );
 
-    hotfix::register_effect( "2015-07-20", "Serpent Sting damage increased by 25%.", 134592 )
+    hotfix::register_effect( "Hunter", "2015-07-20", "Serpent Sting damage increased by 25%.", 134592 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.25 )
       .verification_value( 0.72500 );
 
-    hotfix::register_spell( "2015-07-20", "Bestial Wrath now lasts 15 seconds (up from 10 seconds).", 19574 )
+    hotfix::register_spell( "Hunter", "2015-07-20", "Bestial Wrath now lasts 15 seconds (up from 10 seconds).", 19574 )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15000 )

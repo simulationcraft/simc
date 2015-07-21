@@ -113,16 +113,17 @@ namespace hotfix
 
   struct hotfix_entry_t
   {
+    std::string group_;
     std::string tag_;
     std::string note_;
     unsigned    flags_;
 
     hotfix_entry_t() :
-      tag_(), note_(), flags_( 0 )
+      group_(), tag_(), note_(), flags_( 0 )
     { }
 
-    hotfix_entry_t( const std::string& t, const std::string& n, unsigned f ) :
-      tag_( t ), note_( n ), flags_( f )
+    hotfix_entry_t( const std::string& g, const std::string& t, const std::string& n, unsigned f ) :
+      group_( g ), tag_( t ), note_( n ), flags_( f )
     { }
 
     virtual ~hotfix_entry_t() { }
@@ -146,8 +147,8 @@ namespace hotfix
       orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
     { }
 
-    dbc_hotfix_entry_t( const std::string& t, unsigned id, const std::string& n, unsigned f ) :
-      hotfix_entry_t( t, n, f ),
+    dbc_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+      hotfix_entry_t( g, t, n, f ),
       id_( id ), field_name_(), operation_( HOTFIX_NONE ), modifier_( 0 ),
       orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
     { }
@@ -185,8 +186,8 @@ namespace hotfix
 
   struct spell_hotfix_entry_t : public dbc_hotfix_entry_t
   {
-    spell_hotfix_entry_t( const std::string& t, unsigned id, const std::string& n, unsigned f ) :
-      dbc_hotfix_entry_t( t, id, n, f )
+    spell_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+      dbc_hotfix_entry_t( g, t, id, n, f )
     { }
 
     std::string to_str() const;
@@ -197,8 +198,8 @@ namespace hotfix
 
   struct effect_hotfix_entry_t : public dbc_hotfix_entry_t
   {
-    effect_hotfix_entry_t( const std::string& t, unsigned id, const std::string& n, unsigned f ) :
-      dbc_hotfix_entry_t( t, id, n, f )
+    effect_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+      dbc_hotfix_entry_t( g, t, id, n, f )
     { }
 
     std::string to_str() const;
@@ -207,9 +208,9 @@ namespace hotfix
     void apply_hotfix( bool ptr );
   };
 
-  bool register_hotfix( const std::string&, const std::string&, unsigned = HOTFIX_FLAG_DEFAULT );
-  spell_hotfix_entry_t& register_spell( const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
-  effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+  bool register_hotfix( const std::string&, const std::string&, const std::string&, unsigned = HOTFIX_FLAG_DEFAULT );
+  spell_hotfix_entry_t& register_spell( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+  effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
 
   void apply();
   std::string to_str();

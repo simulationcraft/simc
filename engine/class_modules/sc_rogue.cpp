@@ -6670,7 +6670,7 @@ struct rogue_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Subtlety Rogues now increases all "
+    hotfix::register_effect( "Rogue", "2015-06-23", "Tier-18 2-piece set bonus for Subtlety Rogues now increases all "
                                            "damage dealt by 30% (up from 10%) for 10 seconds after Vanish "
                                            "is used.", 275681 )
       .field( "base_value" )
@@ -6678,14 +6678,14 @@ struct rogue_module_t : public module_t
       .modifier( 30 )
       .verification_value( 10 );
 
-    hotfix::register_effect( "2015-06-29", "Bleeding Hollow Toxin Vessel had its effect increased by "
+    hotfix::register_effect( "Rogue", "2015-06-29", "Bleeding Hollow Toxin Vessel had its effect increased by "
                                            "40% for Subtlety Rogues.", 268062 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.4 )
       .verification_value( 0.111682 );
 
-    hotfix::register_effect( "2015-06-29", "Bleeding Hollow Toxin Vessel had its effect increased by "
+    hotfix::register_effect( "Rogue", "2015-06-29", "Bleeding Hollow Toxin Vessel had its effect increased by "
                                            "28% for Combat Rogues.", 268533 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
