@@ -2475,7 +2475,7 @@ struct rend_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     tick_may_crit = true;
-    base_tick_time *= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
+    base_tick_time /= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
       t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
     add_child( burst );
@@ -5859,6 +5859,13 @@ struct warrior_module_t: public module_t
       .modifier( 100 )
       .verification_value( 50 );
 
+    hotfix::register_effect( "2015-07-20", "Arms Warrior T18 4P now causes rend to tick 33% more often, rather than 100% ( bugfix + hotfix )"
+                                         , 270053 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 33 ) // Intentional to be positive. This is the "Bugfix" blizzard did, most likely. 
+      .verification_value( -50 );
+
     hotfix::register_effect( "2015-06-23", "Fury Warrior T18 4P now decreases recklessness's cooldown by 25 seconds "
                                            "per Wild Strike crit instead of 20 seconds." , 270037 )
       .field( "base_value" )
@@ -5872,8 +5879,14 @@ struct warrior_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 100 )
       .verification_value( 200 );
-  }
 
+    hotfix::register_effect( "2015-07-20", "Protection Warrior Bastion of Defense now increases block chance by 15%, "
+      "instead of 10%." , 85462 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15 )
+      .verification_value( 10 );
+  }
 
   virtual void init( player_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
