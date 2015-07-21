@@ -7022,7 +7022,7 @@ struct mage_module_t : public module_t
       .verification_value( 0.14639 );
 
     hotfix::register_effect( "2015-07-20",
-                              "Flamestrike damage increased by 50% ",
+                              "Flamestrike impact damage increased by 50% ",
                               126904 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
@@ -7030,7 +7030,15 @@ struct mage_module_t : public module_t
       .verification_value( 0.77700 );
 
     hotfix::register_effect( "2015-07-20",
-                              "Dragon’s Breath damage increased by 150% ",
+                              "Flamestrike DOT damage increased by 50% ",
+                              630 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.50 )
+      .verification_value( 0.10125 );
+
+    hotfix::register_effect( "2015-07-20",
+                              "Dragon's Breath damage increased by 150% ",
                               21276 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
