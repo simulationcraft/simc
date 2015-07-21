@@ -6707,7 +6707,8 @@ struct warlock_module_t: public module_t
       .modifier( 1.5 )
       .verification_value( 0.20900 );
 
-    hotfix::register_effect( "2015-07-20", "Drain Soul now causes all other damage over time spells to instantly deal 50% of their normal damage (up from 40%).", 171007 )
+    hotfix::register_effect( "2015-07-20", "Drain Soul now causes all other damage over time spells to instantly "
+                                           "deal 50% of their normal damage (up from 40%).", 171007 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 50 )

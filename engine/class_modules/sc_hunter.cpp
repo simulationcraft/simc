@@ -2802,6 +2802,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     }
 
     attack_power_mod.tick = 0.47;
+    attack_power_mod.tick *= 1.25; // "HOTFIX, 2015-07-20, Explosive Shot damage increased by 25%."
     attack_power_mod.direct = attack_power_mod.tick;
     // the inital impact is not part of the rolling dot
     dot_duration = timespan_t::zero();
@@ -5056,6 +5057,36 @@ struct hunter_module_t: public module_t
                                     p -> find_spell( 172106 ) )
       .cd( timespan_t::zero() );
   }
+
+  virtual void register_hotfixes() const
+  {
+
+    hotfix::register_effect( "2015-06-29", "Talisman of the Master Tracker had the chance to trigger reduced by 6% "
+                                           "for Survival Hunters.", 268042 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.94 )
+      .verification_value( 0.118555 );
+
+    hotfix::register_effect( "2015-07-20", "Black Arrow damage increased by 25%.", 1289 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.25 )
+      .verification_value( 0.56700 );
+
+    hotfix::register_effect( "2015-07-20", "Serpent Sting damage increased by 25%.", 134592 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.25 )
+      .verification_value( 0.72500 );
+
+    hotfix::register_spell( "2015-07-20", "Bestial Wrath now lasts 15 seconds (up from 10 seconds).", 19574 )
+      .field( "duration" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15000 )
+      .verification_value( 10000 );
+  }
+
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };
