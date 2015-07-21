@@ -7020,6 +7020,24 @@ struct mage_module_t : public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.67 )
       .verification_value( 0.14639 );
+
+    hotfix::register_effect( "2015-07-20",
+                              "Flamestrike damage increased by 50% ",
+                              126904 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.50 )
+      .verification_value( 0.77700 );
+
+    hotfix::register_effect( "2015-07-20",
+                              "Dragon’s Breath damage increased by 150% ",
+                              21276 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 2.50 )
+      .verification_value( 0.86000 );
+
+
   }
 
   virtual bool valid() const { return true; }
