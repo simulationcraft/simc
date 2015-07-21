@@ -8421,6 +8421,17 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 184877, wildcat_celerity );
     unique_gear::register_special_effect( 184878, stalwart_guardian );
     unique_gear::register_special_effect( 184879, flourish );
+  } 
+
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_spell( "2015-07-20",
+                             "Ursa Major now lasts 15 seconds (down from 25 seconds).",
+                             159233 )
+      .field( "duration" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15000 )
+      .verification_value( 25000 );
   }
 
   virtual void combat_begin( sim_t* ) const {}
