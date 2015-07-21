@@ -7268,13 +7268,19 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Windwalker Monks "
-                                           "now gives Rising Sun Kick a 30% chance "
-                                           "(down from 40%) to generate Combo Breaker.", 269423 )
+    hotfix::register_effect( "2015-06-23", "Tier-18 2-piece set bonus for Windwalker Monks now gives Rising Sun Kick "
+                                           "a 30% chance (down from 40%) to generate Combo Breaker.", 269423 )
     .field( "base_value" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 30 )
     .verification_value( 40 );
+
+    hotfix::register_effect("2015-06-23", "Stance of the Fierce Tiger now increases all damage dealt by 10% (up from "
+                                          "5%", 138797 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+     .verification_value( 5 );
   }
 
   virtual void init( player_t* p ) const

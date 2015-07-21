@@ -6646,6 +6646,13 @@ struct shaman_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
+    hotfix::register_effect("2015-07-20", "Mastery: Molten Earth damage has been increased by 11%."
+                                          , 241705 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 1.00000 );
+
     hotfix::register_effect( "2015-06-29", "Core of the Primal Elements now deals 40% more damage "
                                            "for Enhancement Shaman.", 268064 )
       .field( "average" )

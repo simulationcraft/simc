@@ -6897,6 +6897,17 @@ struct paladin_module_t : public module_t
     p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
   }
 
+  virtual void register_hotfixes() const
+  {
+    hotfix::register_effect( "2015-07-20", "Sword of Light now increases damage dealt with two-handed "
+                                           " melee weapons by 30% (up from 25%).", 11193 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 25 );
+
+  }
+
   virtual void combat_begin( sim_t* ) const {}
 
   virtual void combat_end  ( sim_t* ) const {}
