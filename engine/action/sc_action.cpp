@@ -1585,7 +1585,7 @@ void action_t::assess_damage( dmg_e    type,
       }
       // (All?) pets contribute towards the owner's legendary ring.
       // TODO: Check if this is all pets, or just "class pets/guardians".
-      else if ( player -> is_pet() )
+      else if ( player -> is_pet() && player -> cast_pet() -> affects_wod_legendary_ring )
       {
         player_t* owner = player -> cast_pet() -> owner;
         if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )

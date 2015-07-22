@@ -5634,6 +5634,7 @@ struct pet_t : public player_t
   pet_e pet_type;
   event_t* expiration;
   timespan_t duration;
+  bool affects_wod_legendary_ring;
 
   struct owner_coefficients_t
   {

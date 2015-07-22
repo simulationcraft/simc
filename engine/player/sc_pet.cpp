@@ -26,6 +26,7 @@ void pet_t::init_pet_t_()
   full_name_str = owner -> name_str + '_' + name_str;
   expiration = 0;
   duration = timespan_t::zero();
+  affects_wod_legendary_ring = true;
 
   owner -> pet_list.push_back( this );
 
