@@ -6645,6 +6645,30 @@ struct shaman_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
+    hotfix::register_effect( "Shaman", "2015-07-21", "Stormstrike now deals 30% more damage.", 21915 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.3 )
+      .verification_value( 480 );
+
+    hotfix::register_effect( "Shaman", "2015-07-21-2", "Stormstrike now deals 30% more damage.", 21916 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.3 )
+      .verification_value( 480 );
+
+    hotfix::register_effect( "Shaman", "2015-07-21", "Windstrike now deals 30% more damage.", 129139 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.3 )
+      .verification_value( 480 );
+
+    hotfix::register_effect( "Shaman", "2015-07-21-2", "Windstrike now deals 30% more damage.", 129143 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.3 )
+      .verification_value( 480 );
+
     hotfix::register_spell( "Shaman", "2015-07-20", "Ascendance now has a 2-minute cooldown (down from 3 minutes) "
                                           "for Elemental Shaman.", 114050 )
       .field( "cooldown" )
@@ -6666,30 +6690,30 @@ struct shaman_module_t : public module_t
       .modifier( 1.4 )
       .verification_value( 0.515463 );
 
-    hotfix::register_effect( "Shaman", "2015-07-21", "Stormstrike now deals 56% more damage.", 21915 )
+    hotfix::register_effect( "Shaman", "2015-06-25", "Stormstrike now deals 20% more damage.", 21915 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.56 )
+      .modifier( 1.2 )
       .verification_value( 400 );
 
     // Identical tag + note, need to cheat for now to make the combination unique, otherwie hotfix
     // will not register. TODO: Better uniqueness check.
-    hotfix::register_effect( "Shaman", "2015-07-21-2", "Stormstrike now deals 56% more damage.", 21916 )
+    hotfix::register_effect( "Shaman", "2015-06-25-2", "Stormstrike now deals 20% more damage.", 21916 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.56 )
+      .modifier( 1.2 )
       .verification_value( 400 );
 
-    hotfix::register_effect( "Shaman", "2015-07-21", "Windstrike now deals 56% more damage.", 129139 )
+    hotfix::register_effect( "Shaman", "2015-06-25", "Windstrike now deals 20% more damage.", 129139 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.56 )
+      .modifier( 1.2 )
       .verification_value( 400 );
 
-    hotfix::register_effect( "Shaman", "2015-07-21-2", "Windstrike now deals 56% more damage.", 129143 )
+    hotfix::register_effect( "Shaman", "2015-06-25-2", "Windstrike now deals 20% more damage.", 129143 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.56 )
+      .modifier( 1.2 )
       .verification_value( 400 );
 
     hotfix::register_effect( "Shaman", "2015-06-25", "Lava Lash now deals 20% more damage.", 53784 )
