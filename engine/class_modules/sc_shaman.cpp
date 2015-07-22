@@ -1009,7 +1009,10 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( uses_elemental_fusion && p() -> talent.elemental_fusion -> ok() )
     {
-      ef_proc -> occur();
+      for ( int i = 0; i < p() -> buff.elemental_fusion -> check(); ++i )
+      {
+        ef_proc -> occur();
+      }
       p() -> buff.elemental_fusion -> expire();
     }
   }
