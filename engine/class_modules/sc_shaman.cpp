@@ -3927,6 +3927,7 @@ struct shaman_totem_pet_t : public pet_t
     summon_pet( 0 )
   {
     regen_type = REGEN_DISABLED;
+    affects_wod_legendary_ring = false;
   }
 
   virtual void summon( timespan_t = timespan_t::zero() );
@@ -3946,7 +3947,18 @@ struct shaman_totem_pet_t : public pet_t
   { return debug_cast< shaman_t* >( owner ); }
 
   virtual double composite_player_multiplier( school_e school ) const
-  { return owner -> cache.player_multiplier( school ); }
+  {
+    double m = owner -> cache.player_multiplier( school );
+
+    // Shaman offensive totems double-dip on the legendary AOE ring damage buff, but do not
+    // contribute to explosion damage.
+    if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
+    {
+      m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
+    }
+
+    return m;
+  }
 
   virtual double composite_spell_hit() const
   { return owner -> cache.spell_hit(); }
