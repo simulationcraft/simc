@@ -5375,7 +5375,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   if ( priest.active_items.mental_fatigue )
   {
     buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue", priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() )
-      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) / 100.0 );
+      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) / 100.0 / 100.0 );
   }
   else
   {
