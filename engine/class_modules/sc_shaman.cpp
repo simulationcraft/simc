@@ -3954,7 +3954,7 @@ struct shaman_totem_pet_t : public pet_t
     // contribute to explosion damage.
     if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> up() )
     {
-      m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
+      m *= 1.0 + owner -> buffs.legendary_aoe_ring -> default_value;
     }
 
     return m;
