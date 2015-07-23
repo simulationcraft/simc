@@ -8007,6 +8007,24 @@ expr_t* player_t::create_expression( action_t* a,
       return expr;
   }
 
+  if ( splits.size() == 2 && splits[ 0 ] == "equipped" )
+  {
+    unsigned item_id = util::to_unsigned( splits[ 1 ] );
+    for ( size_t i = 0; i < items.size(); ++i )
+    {
+      if ( item_id > 0 && items[ i ].parsed.data.id == item_id )
+      {
+        return expr_t::create_constant( "item_equipped", 1 );
+      }
+      else if ( util::str_compare_ci( items[ i ].name_str, splits[ 1 ] ) )
+      {
+        return expr_t::create_constant( "item_equipped", 1 );
+      }
+    }
+
+    return expr_t::create_constant( "item_equipped", 0 );
+  }
+
   if ( splits.size() == 2 && ( splits[ 0 ] == "main_hand" || splits[ 0 ] == "off_hand" ) )
   {
     double weapon_status = -1;
