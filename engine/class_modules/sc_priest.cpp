@@ -5375,7 +5375,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   if ( priest.active_items.mental_fatigue )
   {
     buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue", priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() )
-      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) / 100.0 / 100.0 );
+      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) * 2 / 100.0 / 100.0 );
   }
   else
   {
@@ -6430,7 +6430,6 @@ void priest_t::create_buffs()
 
   buffs.premonition = buff_creator_t( this, "premonition" )
                        .spell( find_spell( 188779 ) )
-                       .default_value( 0.20 ) //PTR Hotfix 2016/06/19 -- Twintop 2015/06/19
                        .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) )
                        .add_invalidate( CACHE_MULTISTRIKE );
 
