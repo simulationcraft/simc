@@ -5894,11 +5894,11 @@ double priest_t::temporary_movement_modifier() const
   if ( glyphs.free_action -> ok() && buffs.dispersion -> check() )
     speed = std::max( speed, glyphs.free_action -> effectN( 1 ).percent() );
 
-  if ( buffs.glyph_of_levitate -> up() )
+  if ( buffs.glyph_of_levitate -> check() )
     speed = std::max( speed, buffs.glyph_of_levitate -> default_value );
 
-  if ( buffs.glyph_of_mind_flay -> up() )
-    speed = std::max( speed, ( buffs.glyph_of_mind_flay -> default_value * buffs.glyph_of_mind_flay -> stack() ) );
+  if ( buffs.glyph_of_mind_flay -> check() )
+    speed = std::max( speed, ( buffs.glyph_of_mind_flay -> data().effectN( 1 ).percent() * buffs.glyph_of_mind_flay -> check() ) );
 
   return speed;
 }
@@ -6437,9 +6437,8 @@ void priest_t::create_buffs()
   buffs.glyph_of_levitate = buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )
                               .default_value( glyphs.levitate -> effectN( 1 ).percent() );
 
-  buffs.glyph_of_mind_flay = buff_creator_t( this, "glyph_of_mind_flay", glyphs.mind_flay )
-                             .default_value( glyphs.mind_flay -> effectN( 1 ).percent() )
-                             .duration( timespan_t::from_seconds( 5.0 ) );
+  buffs.glyph_of_mind_flay = buff_creator_t( this, "glyph_of_mind_flay", find_spell( 120587 ) )
+                             .chance( glyphs.mind_flay -> ok() ? 1.0 : 0.0 );
 
 
 }
