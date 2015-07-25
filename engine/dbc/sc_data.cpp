@@ -350,23 +350,27 @@ std::vector<const hotfix_entry_t*> hotfix::hotfix_entries()
 template<typename T>
 static void do_hotfix( dbc_hotfix_entry_t* e, T* dbc_data )
 {
+  bool success;
   switch ( e -> operation_ )
   {
     case HOTFIX_SET:
-      dbc_data -> override_field( e -> field_name_, e -> modifier_ );
+      success = dbc_data -> override_field( e -> field_name_, e -> modifier_ );
       break;
     case HOTFIX_ADD:
-      dbc_data -> override_field( e -> field_name_, e -> dbc_value_ + e -> modifier_ );
+      success = dbc_data -> override_field( e -> field_name_, e -> dbc_value_ + e -> modifier_ );
       break;
     case HOTFIX_MUL:
-      dbc_data -> override_field( e -> field_name_, e -> dbc_value_ * e -> modifier_ );
+      success = dbc_data -> override_field( e -> field_name_, e -> dbc_value_ * e -> modifier_ );
       break;
     case HOTFIX_DIV:
-      dbc_data -> override_field( e -> field_name_, e -> dbc_value_ / e -> modifier_ );
+      success = dbc_data -> override_field( e -> field_name_, e -> dbc_value_ / e -> modifier_ );
       break;
     default:
+      success = false;
       break;
   }
+  assert( success && "Could not override field. Wrong field name?" );
+  (void) success;
 
   e -> hotfix_value_ = dbc_data -> get_field( e -> field_name_ );
 }
