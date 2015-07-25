@@ -41,7 +41,7 @@ actions+=/berserking,if=(target.time_to_die<action.berserking.cooldown&target.he
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/mannoroths_fury
-actions+=/use_item,name=nithramus_the_allseer,if=buff.dark_soul.up&(target.time_to_die.remains>120|target.health.pct<20)
+actions+=/use_item,name=nithramus_the_allseer
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
 actions+=/dark_soul,if=(set_bonus.tier18_4pc=1&dot.haunt.remains<=gcd)|!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|buff.nithramus.remains>4|target.time_to_die<40|trinket.proc.any.react|trinket.stacking_proc.any.react))
 actions+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)

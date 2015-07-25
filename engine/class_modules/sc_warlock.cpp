@@ -6039,11 +6039,8 @@ void warlock_t::apl_precombat()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str != "nithramus_the_allseer" || specialization() == WARLOCK_DESTRUCTION )
-      {
         action_list_str += "/use_item,name=";
         action_list_str += items[i].name();
-      }
     }
   }
 
@@ -6054,9 +6051,6 @@ void warlock_t::apl_precombat()
     action_list_str += "/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains>5";
     action_list_str += "/call_action_list,name=opener,if=time<7&talent.demonic_servitude.enabled";
   }
-
-  if ( specialization() == WARLOCK_AFFLICTION && find_item( "nithramus_the_allseer" ) )
-    action_list_str += "/use_item,name=nithramus_the_allseer,if=buff.dark_soul.up&(target.time_to_die.remains>120|target.health.pct<20)";
 
   action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))";
 
@@ -6089,8 +6083,6 @@ void warlock_t::apl_precombat()
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    if ( find_item( "nithramus_the_allseer" ) )
-      action_list_str += "/use_item,name=nithramus_the_allseer,if=buff.dark_soul.remains";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&((cooldown.cataclysm.remains>dot.shadowflame.duration)|!talent.cataclysm.enabled))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1";
