@@ -2769,10 +2769,10 @@ struct shadow_word_death_t : public priest_spell_t
 
   virtual bool ready() override
   {
-    if ( priest_spell_t::ready() && priest.glyphs.shadow_word_death -> ok() )
-      return true;
+    if ( ! priest_spell_t::ready() )
+      return false;
 
-    if ( priest_spell_t::ready() && target -> health_percentage() < 20.0 )
+    if ( priest.glyphs.shadow_word_death -> ok() || target -> health_percentage() < 20.0 )
       return true;
 
     return false;
