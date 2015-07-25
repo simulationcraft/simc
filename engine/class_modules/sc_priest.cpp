@@ -7387,6 +7387,7 @@ struct priest_module_t : public module_t
   }
   virtual void register_hotfixes() const override
   {
+    // Blizzard Hotfixes
     hotfix::register_effect( "Priest", "2015-06-23", "Priest: Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
@@ -7398,6 +7399,15 @@ struct priest_module_t : public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.30 )
       .verification_value( 0.5153989792 );
+
+    // Missing DBC Values
+    hotfix::register_spell( "Priest", "missing", "Priest: Auspicious Spirit travel speed, in yards per second.", 78203 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6.0 )
+      .verification_value( 0.0 );
+
+    // Incorrect DBC Values
   }
 
   virtual void combat_begin( sim_t* ) const override {}
