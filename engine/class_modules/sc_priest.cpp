@@ -2285,6 +2285,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest.buffs.empowered_shadows -> up(); // benefit tracking
     priest.buffs.empowered_shadows -> expire();
+    priest.buffs.glyph_of_mind_spike -> up(); // benefit tracking
   }
 
   virtual timespan_t execute_time() const override
@@ -2295,8 +2296,8 @@ struct mind_blast_t : public priest_spell_t
     }
 
     timespan_t et = priest_spell_t::execute_time();
-    // Reduction amount not contained in glyph data.
-    et -= et * priest.buffs.glyph_of_mind_spike -> stack() * 0.5;
+
+    et *= 1.0 + priest.buffs.glyph_of_mind_spike -> check() * priest.buffs.glyph_of_mind_spike -> data().effectN( 1 ).percent();
 
     return et;
   }
