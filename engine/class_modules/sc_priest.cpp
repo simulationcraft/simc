@@ -2614,6 +2614,7 @@ struct mind_sear_base_t : public priest_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
+    // Mind Sear does on-hit damage only when there is a GCD of another ability between it, so chaining Mind Sears doesn't allow for the on-hit to happen again.
     if ( priest.buffs.mind_sear_on_hit_reset -> check() == 0 )
     {
       priest.buffs.mind_sear_on_hit_reset -> trigger( 2, 1, 1, tick_time( s -> haste ) * 6 );
@@ -2636,15 +2637,6 @@ struct searing_insanity_t : public mind_sear_base_t<true>
   searing_insanity_t( priest_t& p, const std::string& options_str ) :
     base_t( p, options_str, "searing_insanity" )
   {
-  }
-
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double am = base_t::composite_persistent_multiplier( s );
-
-    am *= 2.0;
-
-    return am;
   }
 
   virtual bool ready() override
