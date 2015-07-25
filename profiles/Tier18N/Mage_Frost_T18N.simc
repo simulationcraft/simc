@@ -132,13 +132,13 @@ feet=bloody_daggerheeled_pumps,id=124149
 finger1=loathful_encrusted_band,id=124192,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 trinket1=tome_of_shifting_words,id=124516
-trinket2=prophecy_of_fear,id=124230
+trinket2=unblinking_gaze_of_sethe,id=124229
 main_hand=edict_of_argus,id=124382,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=699.67
+# gear_ilvl=699.33
 # gear_stamina=4689
-# gear_intellect=3522
+# gear_intellect=3504
 # gear_spell_power=1925
 # gear_crit_rating=494
 # gear_haste_rating=1198

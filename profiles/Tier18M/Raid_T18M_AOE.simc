@@ -29,6 +29,7 @@ Mage_Fire_T18M.simc
 talents=1000121
 Mage_Frost_T18M.simc
 talents=1000121
+trinket1=prophecy_of_fear,id=124230,bonus_id=567
 
 # Monk
 Monk_Windwalker_1h_T18M_ChiX.simc
