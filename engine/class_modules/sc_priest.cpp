@@ -1613,7 +1613,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest_td_t& td = get_td( t );
       if ( priest.active_items.mental_fatigue )
       {
-        am *= 1.0 + td.buffs.mental_fatigue -> stack_value();
+        am *= 1.0 + td.buffs.mental_fatigue -> check_stack_value();
       }
     }
 
@@ -1631,8 +1631,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     base_t::impact( s );
 
+    if ( is_mind_spell )
+    {
+      priest_td_t& td = get_td( s -> target );
+      td.buffs.mental_fatigue -> up(); // benefit tracking
+    }
+
     if ( result_is_hit( s -> result ) )
     {
+
       if ( priest.specialization() == PRIEST_SHADOW && priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
       {
         priest.buffs.twist_of_fate -> trigger();
@@ -6073,7 +6080,7 @@ void priest_t::init_base_stats()
 
   if ( specs.shadow_orbs -> ok() )
   {
-    resources.base[ RESOURCE_SHADOW_ORB ] = 3.0;
+    resources.base[ RESOURCE_SHADOW_ORB ] = specs.shadow_orbs -> effectN( 1 ).base_value();
 
     resources.base[ RESOURCE_SHADOW_ORB ] += perks.enhanced_shadow_orbs -> effectN( 1 ).base_value();
   }
@@ -7385,27 +7392,33 @@ struct priest_module_t : public module_t
   virtual void register_hotfixes() const override
   {
     // Blizzard Hotfixes
-    hotfix::register_effect( "Priest", "Hotfix 2015-06-23", "Priest: Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828 )
+    hotfix::register_effect( "Priest", "Hotfix 2015-06-23", "Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20 )
       .verification_value( 16 );
 
-    hotfix::register_effect( "Priest", "Hotfix 2015-06-29", "Priest: Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055 )
+    hotfix::register_effect( "Priest", "Hotfix 2015-06-29", "Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.30 )
       .verification_value( 0.5153989792 );
 
     // Missing DBC Values
-    hotfix::register_spell( "Priest", "missing", "Priest: Auspicious Spirit travel speed, in yards per second.", 78203 )
+    hotfix::register_spell( "Priest", "missing", "Auspicious Spirit travel speed, in yards per second.", 78203 )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 6.0 )
       .verification_value( 0.0 );
 
+    hotfix::register_effect( "Priest", "missing", "Shadow Orbs base number.", 101429 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3.0 )
+      .verification_value( 0.0 );
+
     // Incorrect DBC Values
-    hotfix::register_effect( "Priest", "incorrect", "Priest: Repudiation of War trinket max stack halfed, proc chance doubled.", 268055 )
+    hotfix::register_effect( "Priest", "incorrect", "Repudiation of War trinket max stack halfed, proc chance doubled.", 268055 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 2.0 )

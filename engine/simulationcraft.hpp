@@ -2054,12 +2054,29 @@ public:
     stack();
     return current_value;
   }
+
   /**
    * Get current buff value  multiplied by current stacks + benefit tracking.
    */
   double stack_value()
   {
     return current_stack * value();
+  }
+
+  /**
+   * Get current buff value + NO benefit tracking.
+   */
+  double check_value()
+  {
+    return current_value;
+  }
+
+  /**
+   * Get current buff value  multiplied by current stacks + NO benefit tracking.
+   */
+  double check_stack_value()
+  {
+    return current_stack * check_value();
   }
 
   timespan_t remains() const;

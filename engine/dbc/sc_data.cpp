@@ -430,6 +430,8 @@ void spell_hotfix_entry_t::apply_hotfix( bool ptr )
 {
   spell_data_t* s = hotfix_db_.clone_spell( id_, ptr );
 
+  assert( s && "Could not clone spell to apply hotfix" );
+
   // Record original DBC value before overwriting it
   dbc_value_ = s -> get_field( field_name_ );
 
@@ -453,6 +455,7 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
 
   // Cloning the spell chain will guarantee that the effect is also always cloned
   const spell_data_t* s = hotfix_db_.clone_spell( source_effect -> spell() -> id(), ptr );
+  assert( s && "Could not clone spell to apply hotfix" );
 
   spelleffect_data_t* e = hotfix_db_.get_mutable_effect( id_, ptr );
   assert( e );
