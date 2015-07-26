@@ -68,6 +68,8 @@ struct warlock_t: public player_t
 public:
   player_t* havoc_target;
   player_t* latest_corruption_target;
+  int double_nightfall;
+
 
   // Active Pet
   struct pets_t
@@ -2790,7 +2792,7 @@ struct corruption_t: public warlock_spell_t
     if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target && ! periodic_hit ) //5.4 only the latest corruption procs it
     {
 
-      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10 + p() -> perk.empowered_corruption -> effectN( 1 ).percent() / 10;
+      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10;
 
       if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T17, B2 ) && td( d -> state -> target ) -> dots_drain_soul -> is_ticking() && td( d -> state -> target ) -> dots_agony -> is_ticking() && td( d -> state -> target ) -> dots_unstable_affliction -> is_ticking() ) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
       {
@@ -2799,7 +2801,16 @@ struct corruption_t: public warlock_spell_t
 
       if ( rng().roll( nightfall_chance ) )
       {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+        if ( p() -> double_nightfall == 3 )
+        {
+          p() -> resource_gain( RESOURCE_SOUL_SHARD, 2, p() -> gains.nightfall );
+          p() -> double_nightfall = 0;
+        }
+        else
+        {
+          p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+          p() -> double_nightfall++;
+        }
         // If going from 0 to 1 shard was a surprise, the player would have to react to it
         if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
           p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
@@ -6400,6 +6411,7 @@ void warlock_t::reset()
   shard_react = timespan_t::zero();
   event_t::cancel( demonic_calling_event );
   havoc_target = 0;
+  double_nightfall = 0;
 
   grimoire_of_synergy.reset();
   grimoire_of_synergy_pet.reset();
