@@ -4144,7 +4144,7 @@ struct silence_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    //Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be completely silenced.
+    // Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be completely silenced.
     target -> debuffs.casting -> expire();
   }
 
@@ -5372,7 +5372,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   if ( priest.active_items.mental_fatigue )
   {
     buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue", priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).trigger() )
-      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) * 2 / 100.0 / 100.0 );
+      .default_value( priest.active_items.mental_fatigue -> driver() -> effectN( 1 ).average( priest.active_items.mental_fatigue -> item ) / 100.0 / 100.0 );
   }
   else
   {
@@ -7385,13 +7385,13 @@ struct priest_module_t : public module_t
   virtual void register_hotfixes() const override
   {
     // Blizzard Hotfixes
-    hotfix::register_effect( "Priest", "2015-06-23", "Priest: Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828 )
+    hotfix::register_effect( "Priest", "Hotfix 2015-06-23", "Priest: Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20 )
       .verification_value( 16 );
 
-    hotfix::register_effect( "Priest", "2015-06-29", "Priest: Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055 )
+    hotfix::register_effect( "Priest", "Hotfix 2015-06-29", "Priest: Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055 )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.30 )
@@ -7405,6 +7405,11 @@ struct priest_module_t : public module_t
       .verification_value( 0.0 );
 
     // Incorrect DBC Values
+    hotfix::register_effect( "Priest", "incorrect", "Priest: Repudiation of War trinket max stack halfed, proc chance doubled.", 268055 )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 2.0 )
+      .verification_value( 0.67001867296 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
