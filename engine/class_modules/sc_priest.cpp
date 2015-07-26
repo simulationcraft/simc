@@ -7256,16 +7256,9 @@ void priest_t::target_mitigation( school_e school,
   {
     double extraReduction = 0;
 
-    if ( glyphs.delayed_coalescence && buffs.dispersion -> remains().total_seconds() <= 2.0 )
+    if ( glyphs.delayed_coalescence -> ok() && buffs.dispersion -> remains().total_seconds() <= 2.0 )
     {
-      if ( buffs.dispersion -> remains().total_seconds() < 1.0 )
-      {
-        extraReduction = 0.6;
-      }
-      else
-      {
-        extraReduction = 0.3;
-      }
+      extraReduction = ( 2.0 - floor(buffs.dispersion -> remains().total_seconds()) ) * glyphs.delayed_coalescence -> effectN( 2 ).percent();
     }
 
     s -> result_amount *= 1.0 + ( buffs.dispersion -> data().effectN( 1 ).percent() + extraReduction );
