@@ -2805,135 +2805,139 @@ struct dp_state_t : public shadow_orb_state_t
   }
 };
 
+// Devouring Plague DoT ===================================================
+
+struct devouring_plague_dot_t : public priest_spell_t
+{
+  double heal_to_dmg_coefficient; // proportion of tick heal to tick dmg
+
+  devouring_plague_dot_t( priest_t& p ) :
+    priest_spell_t( "devouring_plague_tick", p, p.find_spell( 158831 ) ),
+    heal_to_dmg_coefficient( 1.0 )
+  {
+    const spell_data_t* parent_spelldata = p.find_class_spell( "Devouring Plague" );
+    heal_to_dmg_coefficient = parent_spelldata -> effectN( 3 ).percent() / parent_spelldata -> effectN( 2 ).percent();
+
+    hasted_ticks = true;
+    tick_may_crit = false;
+    may_multistrike = false;
+    tick_zero = false;
+
+    base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = base_td = 0.0;
+
+    background = true;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  virtual void reset() override
+  { priest_spell_t::reset(); base_ta_adder = 0; }
+
+  virtual action_state_t* new_state() override
+  { return new dp_state_t( this, target ); }
+
+  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
+  {
+    action_state_t* s_ = priest_spell_t::get_state( s );
+
+    if ( !s )
+    {
+      dp_state_t* ds_ = static_cast<dp_state_t*>( s_ );
+      ds_ -> orbs_used = 0;
+      ds_ -> tick_dmg = 0.0;
+    }
+
+    return s_;
+  }
+
+  double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
+  {
+    // We already got the dmg stored, just return it.
+    const dp_state_t* ds = static_cast<const dp_state_t*>( state );
+    return ds -> tick_dmg * dot_multiplier;
+  }
+
+  /* Precondition: dot is ticking!
+   */
+  void append_damage( player_t* target, double dmg )
+  {
+    dot_t* dot = get_dot( target );
+    if ( !dot -> is_ticking() )
+    {
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s could not appended damage because the dot is no longer ticking."
+                                 "( This should only be the case if the dot drops between main impact and multistrike impact. )",
+                                 player -> name() );
+      return;
+    }
+
+    dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
+    ds -> tick_dmg += dmg / dot -> ticks_left();
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s appended %.2f damage / %.2f per tick. New dmg per tick: %.2f",
+                               player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
+  }
+
+  virtual void impact( action_state_t* state ) override
+  {
+    dp_state_t* s = static_cast<dp_state_t*>( state );
+    double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
+    int saved_orbs = s  -> orbs_used;
+
+    s -> result_amount = 0.0;
+    priest_spell_t::impact( s );
+
+    dot_t* dot = get_dot( state -> target );
+    dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
+    assert( ds );
+    ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
+    ds -> orbs_used = saved_orbs;
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick and %.2f heal / %.2f per tick.",
+                               player -> name(), saved_impact_dmg, ds -> tick_dmg, saved_impact_dmg, ds -> tick_dmg );
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    priest_spell_t::tick( d );
+
+    const dp_state_t* ds = static_cast<const dp_state_t*>( d -> state );
+
+    double a = ds -> tick_dmg;
+    priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
+
+    priest.buffs.mental_instinct -> trigger();
+
+    if ( trigger_surge_of_darkness() )
+      priest.procs.surge_of_darkness_from_devouring_plague -> occur();
+  }
+
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // Old Mop Dot Behaviour
+    return dot -> time_to_next_tick() + triggered_duration;
+  }
+};
+
 // Devouring Plague Spell ===================================================
 
 struct devouring_plague_t : public priest_spell_t
 {
-  struct devouring_plague_dot_t : public priest_spell_t
-  {
-    devouring_plague_dot_t( priest_t& p, priest_spell_t* ) :
-      priest_spell_t( "devouring_plague_tick", p, p.find_class_spell( "Devouring Plague" ) )
-    {
-      parse_effect_data( data().effectN( 1 ) );
-
-      base_tick_time = timespan_t::from_seconds( 1.0 );
-      dot_duration = timespan_t::from_seconds( 6.0 );
-      hasted_ticks = true;
-      tick_may_crit = false;
-      may_multistrike = false;
-      tick_zero = false;
-
-      base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
-
-      background = true;
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    {
-      return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
-    }
-
-    void init() override
-    {
-      priest_spell_t::init();
-
-      snapshot_flags = update_flags = 0;
-    }
-
-    virtual void reset() override
-    { priest_spell_t::reset(); base_ta_adder = 0; }
-
-    virtual action_state_t* new_state() override
-    { return new dp_state_t( this, target ); }
-
-    virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
-    {
-      action_state_t* s_ = priest_spell_t::get_state( s );
-
-      if ( !s )
-      {
-        dp_state_t* ds_ = static_cast<dp_state_t*>( s_ );
-        ds_ -> orbs_used = 0;
-        ds_ -> tick_dmg = 0.0;
-      }
-
-      return s_;
-    }
-
-    double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
-    {
-      // We already got the dmg stored, just return it.
-      const dp_state_t* ds = static_cast<const dp_state_t*>( state );
-      return ds -> tick_dmg * dot_multiplier;
-    }
-
-    /* Precondition: dot is ticking!
-     */
-    void append_damage( player_t* target, double dmg )
-    {
-      dot_t* dot = get_dot( target );
-      if ( !dot -> is_ticking() )
-      {
-        if ( sim -> debug )
-          sim -> out_debug.printf( "%s could not appended damage because the dot is no longer ticking."
-                                   "( This should only be the case if the dot drops between main impact and multistrike impact. )",
-                                   player -> name() );
-        return;
-      }
-
-      dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
-      ds -> tick_dmg += dmg / dot -> ticks_left();
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s appended %.2f damage / %.2f per tick. New dmg per tick: %.2f",
-                                 player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
-    }
-
-    virtual void impact( action_state_t* state ) override
-    {
-      dp_state_t* s = static_cast<dp_state_t*>( state );
-      double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
-      int saved_orbs = s  -> orbs_used;
-
-      s -> result_amount = 0.0;
-      priest_spell_t::impact( s );
-
-      dot_t* dot = get_dot( state -> target );
-      dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
-      assert( ds );
-      ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
-      ds -> orbs_used = saved_orbs;
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick and %.2f heal / %.2f per tick.",
-                                 player -> name(), saved_impact_dmg, ds -> tick_dmg, saved_impact_dmg, ds -> tick_dmg );
-    }
-
-    virtual void tick( dot_t* d ) override
-    {
-      priest_spell_t::tick( d );
-
-      const dp_state_t* ds = static_cast<const dp_state_t*>( d -> state );
-
-      double a = ds -> tick_dmg;
-      priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
-
-      priest.buffs.mental_instinct -> trigger();
-
-      if ( trigger_surge_of_darkness() )
-        priest.procs.surge_of_darkness_from_devouring_plague -> occur();
-    }
-
-    virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    {
-      // Old Mop Dot Behaviour
-      return dot -> time_to_next_tick() + triggered_duration;
-    }
-  };
-
   devouring_plague_dot_t* dot_spell;
 
   devouring_plague_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
-    dot_spell( new devouring_plague_dot_t( p, this ) )
+    dot_spell( new devouring_plague_dot_t( p ) )
   {
     parse_options( options_str );
 
@@ -3039,7 +3043,7 @@ struct devouring_plague_t : public priest_spell_t
     if ( dot -> is_ticking() )
     {
       const dp_state_t* ds = debug_cast<const dp_state_t*>( dot -> state );
-      dmg_to_pass_to_dp += ds -> tick_dmg * dot -> ticks_left();
+      dmg_to_pass_to_dp += ds -> tick_dmg * dot -> ticks_left() * data().effectN( 2 ).percent();
 
       if ( sim -> debug )
         sim -> out_debug.printf( "%s DP was still ticking. Added %.2f damage to new dot, and %.4f%% heal%%/tick.",
