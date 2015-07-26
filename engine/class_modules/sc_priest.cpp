@@ -3181,7 +3181,7 @@ struct insanity_t : public mind_flay_base_t<true>
   {
     double am = base_t::composite_persistent_multiplier( s );
 
-    am *= 2.0;
+    am *= 1.0 + priest.talents.insanity -> effectN( 1 ).percent();
 
     return am;
   }
