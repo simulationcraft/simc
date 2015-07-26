@@ -5235,6 +5235,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( 0 ),
     latest_corruption_target( 0 ),
+    double_nightfall( 0 ),
     pets( pets_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
