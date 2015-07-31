@@ -3100,6 +3100,7 @@ struct necrosis_t : public death_knight_spell_t
     death_knight_spell_t( "necrosis", player, player -> spec.necrosis -> effectN( 2 ).trigger() )
   {
     background = true;
+    callbacks = false;
   }
 };
 
