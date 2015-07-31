@@ -2241,7 +2241,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     consume_thrill_of_the_hunt();
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
     {
-      p() -> cooldowns.rapid_fire -> adjust( p() -> sets.set( HUNTER_MARKSMANSHIP, PVP, B4 ) -> effectN( 1 ).time_value() );
+      p() -> cooldowns.rapid_fire -> adjust( -p() -> sets.set( HUNTER_MARKSMANSHIP, PVP, B4 ) -> effectN( 1 ).time_value() );
     }
   }
 };
