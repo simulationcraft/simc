@@ -5312,7 +5312,8 @@ double warrior_t::composite_mastery() const
 {
   double mast = player_t::composite_mastery();
 
-  mast *= 1.0 + buff.gladiator_stance -> data().effectN( 6 ).percent();
+  if ( active.stance == STANCE_GLADIATOR )
+    mast *= 1.0 + buff.gladiator_stance -> data().effectN( 6 ).percent();
 
   return mast;
 }
