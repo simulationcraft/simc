@@ -3302,15 +3302,16 @@ struct barrage_t: public hunter_spell_t
     may_block = false;
     hasted_ticks = false;
     channeled = true;
+
     tick_zero = true;
     dynamic_tick_action = true;
     travel_speed = 0.0;
     tick_action = new barrage_damage_t( player );
-    
+
     starved_proc = player -> get_proc( "starved: barrage" );
   }
-  
-  virtual void schedule_execute( action_state_t* state = 0 )
+
+ void schedule_execute( action_state_t* state = 0 )
   {
     hunter_spell_t::schedule_execute( state );
 
@@ -3324,6 +3325,11 @@ struct barrage_t: public hunter_spell_t
     trigger_tier16_bm_4pc_melee();
     trigger_thrill_of_the_hunt();
     p() -> no_steady_focus();
+  }
+
+ bool usable_moving() const
+  {
+    return true;
   }
 };
 
