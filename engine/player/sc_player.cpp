@@ -8550,14 +8550,21 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
 
     else if ( splits[ 1 ] == "pct" || splits[ 1 ] == "percent" )
     {
-      struct resource_pct_expr_t : public resource_expr_t
+      if ( r == RESOURCE_HEALTH )
       {
-        resource_pct_expr_t( const std::string& n, player_t& p, resource_e r  ) :
-          resource_expr_t( n, p, r ) {}
-        virtual double evaluate()
-        { return player.resources.pct( rt ) * 100.0; }
-      };
-      return new resource_pct_expr_t( name_str, *this, r  );
+        return make_mem_fn_expr( name_str, *this, &player_t::health_percentage );
+      }
+      else
+      {
+        struct resource_pct_expr_t : public resource_expr_t
+        {
+          resource_pct_expr_t( const std::string& n, player_t& p, resource_e r  ) :
+            resource_expr_t( n, p, r ) {}
+          virtual double evaluate()
+          { return player.resources.pct( rt ) * 100.0; }
+        };
+        return new resource_pct_expr_t( name_str, *this, r  );
+      }
     }
 
     else if ( splits[ 1 ] == "max" )
