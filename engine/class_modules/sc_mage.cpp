@@ -1500,9 +1500,9 @@ public:
     {
       state = get_state();
 
-      // If cycle_targets is used, we need to target the spell to the (found)
-      // target of the action, as it was selected during the ready() call.
-      if ( cycle_targets == 1 )
+      // If cycle_targets or target_if option is used, we need to target the spell to the (found)
+      // target of the action, as it was selected during the action_t::ready() call.
+      if ( cycle_targets == 1 || target_if_mode != TARGET_IF_NONE )
         state -> target = target;
       // Put the actor's current target into the state object always.
       else
