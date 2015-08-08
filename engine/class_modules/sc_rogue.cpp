@@ -1595,7 +1595,6 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t( "ambush", p, p -> find_class_spell( "Ambush" ), options_str )
   {
     ability_type      = AMBUSH;
-    requires_position = POSITION_BACK;
     requires_stealth  = true;
 
     // Tier 18 (WoD 6.2) Subtlety trinket effect
@@ -4809,8 +4808,6 @@ struct shadow_reflection_pet_t : public pet_t
     sr_ambush_t( shadow_reflection_pet_t* p ) :
       shadow_reflection_attack_t( "ambush", p, p -> find_spell( 8676 ) )
     {
-      requires_position = POSITION_BACK;
-
       // Shadow Reflection benefits from the Subtlety WoD 6.2 trinket
       if ( o() -> from_the_shadows )
       {
@@ -5516,7 +5513,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Vanish","if=set_bonus.tier18_4pc=1&time<1" );
     def -> add_action( "wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6" );
 
-    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=50" );
+    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=110" );
 
     if ( find_item( "maalus_the_blood_drinker" ) )
       def -> add_action( this, "Shadow Dance", "if=energy>=110&buff.stealth.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
@@ -5534,7 +5531,7 @@ void rogue_t::init_action_list()
 
     if ( find_item( "maalus_the_blood_drinker" ) )
       def -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc=1&buff.shadow_reflection.up&combo_points<3");
-    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=90" );
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=100" );
     def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=100&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down" );
 
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
@@ -5544,7 +5541,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush", "if=talent.anticipation.enabled&combo_points+anticipation_charges<8&time>2" );
 
-    def -> add_action( "run_action_list,name=finisher,if=combo_points=5&(buff.vanish.down|!talent.shadow_focus.enabled)" );
+    def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
     def -> add_action( "run_action_list,name=generator,if=combo_points<4|(talent.anticipation.enabled&anticipation_charges<3&debuff.find_weakness.down)" );
     def -> add_action( "run_action_list,name=pool" );
 
@@ -5560,6 +5557,7 @@ void rogue_t::init_action_list()
     gen -> add_action( this, "Backstab", "if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab", "if=energy.time_to_max<=gcd*2" );
+    gen -> add_action( this, "Hemorrhage", "if=energy.time_to_max<=gcd*1.5&position_front" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Combo point finishers
@@ -5569,7 +5567,7 @@ void rogue_t::init_action_list()
     finisher -> add_talent( this, "Death from Above" );
     finisher -> add_action( this, "Crimson Tempest", "if=(spell_targets.crimson_tempest>=2&debuff.find_weakness.down)|spell_targets.crimson_tempest>=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
     finisher -> add_action( this, "Eviscerate", "if=(energy.time_to_max<=cooldown.death_from_above.remains+action.death_from_above.execute_time)|!talent.death_from_above.enabled" );
-    finisher -> add_action( this, find_class_spell( "Preparation" ), "call_action_list", "name=pool" );
+    finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Resource pooling
     action_priority_list_t* pool = get_action_priority_list( "pool", "Resource pooling" );
