@@ -99,7 +99,7 @@ finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_multistrike
 trinket1=soul_capacitor,id=124225,bonus_id=566
 trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=566
 main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5334
-off_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5334
+off_hand=hammer_of_wicked_infusion,id=124371,bonus_id=566,enchant_id=5334
 
 # Gear Summary
 # gear_ilvl=713.44
