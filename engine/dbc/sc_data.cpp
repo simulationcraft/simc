@@ -467,8 +467,8 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
     std::cerr << "[" << tag_ << "]: Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
                  "\" effect #" << ( e -> index() + 1 ) << " does not match verification value.";
     std::cerr << " Field: " << field_name_;
-    std::cerr << ", DBC: " << util::round( dbc_value_, 6 );
-    std::cerr << ", Verify: " << util::round( orig_value_, 6 );
+    std::cerr << ", DBC: " << std::setprecision( 6 ) << util::round( dbc_value_, 6 );
+    std::cerr << ", Verify: " << std::setprecision( 6 ) << util::round( orig_value_, 6 );
     std::cerr << std::endl;
   }
 

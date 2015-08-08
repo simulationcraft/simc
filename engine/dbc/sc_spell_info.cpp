@@ -331,7 +331,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
                                                std::ostringstream&       s,
                                                int level )
 {
-
+  std::streamsize ssize = s.precision( 7 );
   char tmp_buffer[512],
        tmp_buffer2[64];
 
@@ -543,6 +543,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     }
     s << std::endl;
   }
+
+  s.precision( ssize );
 
   return s;
 }

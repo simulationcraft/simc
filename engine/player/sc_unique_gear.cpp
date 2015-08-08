@@ -2072,6 +2072,15 @@ void item::legendary_ring( special_effect_t& effect )
   else // Tanks
   {
     buff = buff_t::find( p, "sanctus" );
+    if ( ! buff )
+    {
+      const spell_data_t* driver_spell = p -> find_spell( effect.spell_id );
+      const spell_data_t* spell = p -> find_spell( 187617 );
+      buff = buff_creator_t( p, "sanctus", spell )
+        .add_invalidate( CACHE_VERSATILITY )
+        .default_value( driver_spell -> effectN( 1 ).average( effect.item ) / 10000.0 );
+      p -> buffs.legendary_tank_buff = buff;
+    }
   }
 
   effect.custom_buff = buff;
@@ -4338,6 +4347,14 @@ void unique_gear::register_hotfixes()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 3000 )
     .verification_value( 0 );
+
+  hotfix::register_effect( "Item", "2015-08-05", "Sanctus, Sigil of the Unbroken's on-use ability has been "
+      "doubled in effectiveness and now grants 50% to Versatility (up from 25%) on the base ring.", 273595 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 2.0 )
+    .verification_value( 2.958579 );
+
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
