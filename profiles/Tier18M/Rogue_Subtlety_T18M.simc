@@ -66,7 +66,7 @@ actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff
 actions.generator+=/pool_resource,for_next=1
 actions.generator+=/ambush
 # If simulating AoE, it is recommended to use Anticipation as the level 90 talent.
-actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>1
+actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>2
 actions.generator+=/backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
 actions.generator+=/backstab,if=energy.time_to_max<=gcd*2

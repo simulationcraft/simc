@@ -5553,7 +5553,7 @@ void rogue_t::init_action_list()
       gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+set_bonus.tier17_2pc*50+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+15+cooldown.vanish.remains*energy.regen<=energy.max)" );
     gen -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     gen -> add_action( this, "Ambush" );
-    gen -> add_action( this, "Fan of Knives", "if=spell_targets.fan_of_knives>1", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
+    gen -> add_action( this, "Fan of Knives", "if=spell_targets.fan_of_knives>2", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
     gen -> add_action( this, "Backstab", "if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab", "if=energy.time_to_max<=gcd*2" );
