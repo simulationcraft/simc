@@ -105,6 +105,7 @@ event_manager_t::event_manager_t( sim_t* s ) :
   monitor_cpu( false ),
   max_queue_depth( 0 ),
   n_allocated_events( 0 ),
+  n_requested_events( 0 ),
   n_end_insert( 0 ),
   events_traversed( 0 ),
   events_added( 0 )
