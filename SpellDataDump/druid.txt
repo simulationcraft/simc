@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -919,6 +919,9 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=8636)     : Apply Aura (6) | Unknown effect sub type (154)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000
+#2 (id=281942)   : Apply Aura (6) | Unknown effect sub type (109)
+                   Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 20 | Trigger Spell: 69369
+                   Affected Spells: Savage Roar (52610)
 Description      : Reduces the chance enemies have to detect you while Prowl is active.
 
 Name             : Primal Fury (id=16953) 
@@ -986,7 +989,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80
 #3 (id=8660)     : Apply Aura (6) | Unknown effect sub type (109)
                    Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 20 | Trigger Spell: 69369
-                   Affected Spells: Rip (1079), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
+                   Affected Spells: Rip (1079), Ferocious Bite (22568), Maim (22570), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
 Description      : Your finishing moves have a $b3% chance per combo point to make your next Healing Touch, Entangling Roots, or Rebirth instant, free, and castable in all forms.
 
 Name             : Leader of the Pack (id=17007) [Spell Family (7), Passive] 
@@ -1946,7 +1949,7 @@ Spell Level      : 18
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
-Affecting spells : Predatory Swiftness (16974), Berserk (106951), 
+Affecting spells : Feral Instinct (16949), Berserk (106951), 
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ......x. ...x.... 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3423,7 +3426,7 @@ Effects          :
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Wild Mushroom (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
 #2 (id=109138)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Wild Mushroom (81269), Tranquility (157982)
+                   Affected Spells: Lifebloom (33763), Lifebloom (33778), Wild Mushroom (81269), Tranquility (157982)
 Description      : Casting your direct healing spells grants you a $77495s1% bonus to periodic healing for $100977d.
 Tooltip          : Periodic healing increased by $w1%.
 
@@ -5739,7 +5742,7 @@ Range            : 50000 yards
 Velocity         : 0.8 yards/sec
 Affecting spells : Hurricane (16914), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
-                 : ..x..... ........ ........ ......x.   x....... .x...... ....x... ......x. 
+                 : ..x..... ........ ........ ......x.   x....... .x...... ....x... .x....x. 
                  : .......x .......x ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ....x... ........ 
@@ -6453,7 +6456,7 @@ Ursa Major increases your maximum health by $159233s1% for $159233d. When this e
 
 Name             : Ursa Major (id=159233) 
 Class            : Druid
-Duration         : 25 seconds
+Duration         : 15 seconds
 Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -7635,7 +7638,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=268012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 14.9483 (avg=0.057273) | Misc Value: 127
+                   Base Value: 100 | Scaled Value: 14.94825 (avg=0.057273) | Misc Value: 127
 #2 (id=268108)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 127
 #3 (id=268109)   : Apply Aura (6) | Absorb Damage (69)
@@ -7692,7 +7695,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
 Effects          :
 #1 (id=269049)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc184878
 
 Name             : Item - Druid T18 Balance 2P Bonus (id=187875) [Spell Family (7), Passive, Hidden] 

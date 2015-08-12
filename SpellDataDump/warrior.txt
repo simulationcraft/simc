@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -2796,7 +2796,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=85462)    : Apply Aura (6) | Modify Block% (51)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 11
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 11
 #2 (id=85463)    : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11
                    Affected Spells: Shield Wall (871)

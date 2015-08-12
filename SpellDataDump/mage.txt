@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -273,7 +273,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 12 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Ice Floes (108839), Improved Flamestrike (157621)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Ice Floes (108839), Hotfix Passive (137019), Improved Flamestrike (157621)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -282,9 +282,9 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126904)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.456, dl=0.202) | SP Coefficient: 0.77700 | Radius: 8 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.456, dl=0.202) | SP Coefficient: 1.16550 | Radius: 8 yards
 #2 (id=630)      : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.119) | SP Coefficient: 0.10125 | Radius: 8 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.119) | SP Coefficient: 0.15188 | Radius: 8 yards
 #3 (id=225960)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 8 yards
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and an additional $o2 Fire damage over $d and reducing their movement speed by $s3% for the duration.
@@ -1077,7 +1077,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Dragon's Breath (159485)
+Affecting spells : Arcane Power (12042), Shatter (12982), Hotfix Passive (137019), Glyph of Dragon's Breath (159485)
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1086,7 +1086,7 @@ Attributes       : ........ ........ x...x... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21276)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.86000 | Radius: 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 2.15000 | Radius: 12 yards
 #2 (id=21277)    : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards
 Description      : Targets in a cone in front of the caster take $s1 Fire damage and are disoriented for $d.  
@@ -3698,7 +3698,7 @@ Effects          :
 #15 (id=260656)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137019) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137019) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3708,12 +3708,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179702)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=191125)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=191126)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179702)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50
+                   Affected Spells: Flamestrike (2120)
+#2 (id=191125)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22
+                   Affected Spells: Flamestrike (2120)
+#3 (id=191126)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 150 | Scaled Value: 150
+                   Affected Spells: Dragon's Breath (31661)
 #4 (id=191127)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191128)   : Apply Aura (6) | Dummy (4)
@@ -4892,7 +4895,7 @@ Attributes       : ........ ........ x..x.... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281310)   : School Damage: frost (2)
-                   Base Value: 67 | Scaled Value: 68 - 81 | Value Range: 14 | SP Coefficient: 0.50000
+                   Base Value: 39 | Scaled Value: 40 - 49 | Value Range: 10 | SP Coefficient: 0.30000
 #2 (id=281311)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
@@ -4912,7 +4915,7 @@ Attributes       : .x..x... ........ ...x..x. ........   ........ ........ .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=281361)   : School Damage: physical (2)
-                   Base Value: 70 | Scaled Value: 71 - 88 | Value Range: 18 | AP Coefficient: 0.26600
+                   Base Value: 41 | Scaled Value: 42 - 53 | Value Range: 12 | AP Coefficient: 0.15960
 Description      : Shoots at an enemy, inflicting Physical damage.
 
 

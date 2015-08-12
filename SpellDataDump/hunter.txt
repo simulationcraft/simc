@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -355,7 +355,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 20 seconds
 Cooldown         : 24 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Camouflage (119450), Lone Wolf (155228), Guide: Sharpshooting (178549), Black Decay (188400)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Camouflage (119450), Hotfix Passive (137017), Lone Wolf (155228), Guide: Sharpshooting (178549), Black Decay (188400)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -365,7 +365,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=1289)     : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.56700
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.70875
 #2 (id=254557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 Description      : Fires a Black Arrow at the target, dealing $3674o1 damage over $3674d.
@@ -929,9 +929,9 @@ Name             : Bestial Wrath (id=19574) [Spell Family (9)]
 Class            : Beast Mastery Hunter
 Spell Level      : 40
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Camouflage (51755), Camouflage (119450), Item - Hunter T14 4P Bonus (123091), Beastlord (184900), 
+Affecting spells : Camouflage (51755), Camouflage (119450), Item - Hunter T14 4P Bonus (123091), Hotfix Passive (137015), Beastlord (184900), 
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -2020,7 +2020,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 2 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Empowered Explosive Shot (157748), Lock and Load (168980), Black Fire (171103), Guide: Sharpshooting (178549), Black Decay (188400)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Hotfix Passive (137017), Lone Wolf (155228), Empowered Explosive Shot (157748), Lock and Load (168980), Black Fire (171103), Guide: Sharpshooting (178549), Black Decay (188400)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3413,7 +3413,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6
 #2 (id=83836)    : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6
-#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (166)
+#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (167)
                    Base Value: 0 | Scaled Value: 0
 Description      : Your pet's Basic Attacks have a $19623s2% chance to trigger Frenzy, granting $19623s1% increased attack speed for $19615d, stacking up to $19615u times.
 
@@ -4207,7 +4207,7 @@ Spell Level      : 10
 Range            : 100 yards
 Cast Time        : Ranged Shot
 Duration         : 15 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Guide: Sharpshooting (178549), Black Decay (188400)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Hotfix Passive (137017), Guide: Sharpshooting (178549), Black Decay (188400)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ..x..... ........ .x...... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -4217,7 +4217,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.72500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.90625
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
 
@@ -5063,8 +5063,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179698)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179698)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1
+                   Affected Spells: Bestial Wrath (19574)
 #2 (id=191138)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191139)   : Apply Aura (6) | Dummy (4)
@@ -5145,10 +5146,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179700)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=191130)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179700)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 25 | Scaled Value: 25
+                   Affected Spells: Black Arrow (3674), Explosive Shot (53301), Serpent Sting (118253)
+#2 (id=191130)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22
+                   Affected Spells: Black Arrow (3674), Explosive Shot (53301), Serpent Sting (118253)
 #3 (id=191131)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=191132)   : Apply Aura (6) | Dummy (4)

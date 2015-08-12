@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -62,7 +62,7 @@ Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Empowered Immolate (157114), Flamelicked (185229)
+Affecting spells : Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Empowered Immolate (157114), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -71,7 +71,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=145)      : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.49500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.51975
 Description      : Burns the enemy for $s1 Fire damage and an additional $157736o1 Fire damage over $157736d.$?s108647[  Immolate critical strikes generate Burning Embers.][]
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
@@ -682,7 +682,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2157)     : Direct Heal (10)
-                   Base Value: 15 | Scaled Value: 50000.1 (avg=0.294118)
+                   Base Value: 15 | Scaled Value: 50000.06 (avg=0.294118)
 #2 (id=127600)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 30 | Scaled Value: 9999.91 (avg=0.058823)
 Description      : $?s56224[Restores $o2 health over $d.][Instantly restores $m1 health.]
@@ -969,7 +969,7 @@ Resource         : 1 Burning Ember
 Spell Level      : 47
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Havoc (80240), Metamorphosis (103958), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Dark Soul (138483), Flamelicked (185229)
+Affecting spells : Havoc (80240), Metamorphosis (103958), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Dark Soul (138483), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -980,7 +980,7 @@ Effects          :
 #1 (id=9474)     : Trigger Spell: Shadowburn (64)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 29341
 #2 (id=9475)     : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.40000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.57000
 #3 (id=159833)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Instantly blasts a target below 20% health for ${$17877m2*(1+$77220m1*0.01)} Shadow damage.  Generates Burning Embers if the target dies within $29341d.
@@ -993,7 +993,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
-Affecting spells : Glyph of Conflagrate (56235), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
+Affecting spells : Glyph of Conflagrate (56235), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1002,7 +1002,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=9553)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.725, dl=0.1) | SP Coefficient: 2.04100
+                   Base Value: 1 | Scaled Value: 0 (avg=1.725, dl=0.1) | SP Coefficient: 2.14305
 #2 (id=9554)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Target enemy instantly explodes, dealing $s1 Fire damage$?s56235[,  reducing movement speed by $s2% for $d,][] and generating Burning Embers.$?s56235[][  Targets afflicted by Immolate will have $s2% reduced movement speed for $d.]
@@ -1106,7 +1106,7 @@ Duration         : 6 seconds
 Cooldown         : 24 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1322,7 +1322,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Glyph of Imp Swarm (56242), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
+Affecting spells : Glyph of Imp Swarm (56242), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1331,7 +1331,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=19297)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.43500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50675
 Description      : Deals $s1 Fire damage to an enemy$?s108647[ and generates Burning Embers][].
 
 Name             : Soulshatter (id=29858) [Spell Family (5)] 
@@ -1670,13 +1670,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.12500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.44531
 #2 (id=40332)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=40333)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 35 | Scaled Value: 35
 #4 (id=159995)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 35 | Scaled Value: 35
                    Affected Spells: Corruption (172), Drain Life (689), Agony (980), Seed of Corruption (27243), Unstable Affliction (30108), Soul Swap (86121), Drain Soul (103103), Harvest Life (108371), Seed of Corruption (114790), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing damage over time you deal to the target by $s3% for $d.$?s152109[
 
@@ -3184,11 +3184,11 @@ Attributes       : x....... ........ x....... ........   ..x..... ......x. .x...
                  : Channeled (34)
 Effects          :
 #1 (id=112098)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20900
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.47025
 #2 (id=171006)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=171007)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 50 | Scaled Value: 50
 Description      : Drains the target's soul, causing ${(4*$m1)} Shadow damage over $d.  If the target dies and yields experience or honor, one Soul Shard is energized.
 
 When Drain Soul deals damage, it causes all of your other damage over time spells on the target to instantly deal $s3% of their normal damage.
@@ -3886,7 +3886,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
-Affecting spells : Glyph of Conflagrate (56235), Glyph of Hand of Gul'dan (56248), Mastery: Emberstorm (77220), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
+Affecting spells : Glyph of Conflagrate (56235), Glyph of Hand of Gul'dan (56248), Mastery: Emberstorm (77220), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3895,7 +3895,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=119851)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.725) | SP Coefficient: 2.04100 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1.725) | SP Coefficient: 2.14305 | Radius: 0 - 10 yards
 #2 (id=119852)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 10 yards
 Description      : Target enemy instantly explodes, dealing ${35*(100+$77220m1)/100/100*$m1)} Fire damage to all enemies within $A1 yards of the target$?s56235[ and reducing their movement speed by $s2% for $d.][.
@@ -3914,7 +3914,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Affecting spells : Glyph of Hand of Gul'dan (56248), Mastery: Emberstorm (77220), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Empowered Immolate (157114), Flamelicked (185229)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Mastery: Emberstorm (77220), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Empowered Immolate (157114), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3923,7 +3923,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=119854)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.49500 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.51975 | Radius: 0 - 10 yards
 Description      : Burns all enemies within $A1 yards of the target for $s1 Fire damage and then an additional $157736o1 Fire damage over $157736d.$?s108647[
 
 Critical strikes generate Burning Embers.][]
@@ -4690,7 +4690,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Glyph of Imp Swarm (56242), Glyph of Hand of Gul'dan (56248), Mastery: Emberstorm (77220), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
+Affecting spells : Glyph of Imp Swarm (56242), Glyph of Hand of Gul'dan (56248), Mastery: Emberstorm (77220), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Charred Remains (157696), Flamelicked (185229)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4699,7 +4699,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128057)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.43500 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50675 | Radius: 0 - 10 yards
 Description      : Deals ${40*(100+$77220m1)/100/100*($m1+$M1)/2)} Fire damage to all enemies within $A1 yards of the target. $?s108647[
 
 Generates Burning Embers for each target hit. Critical strikes double this effect.][]
@@ -4740,7 +4740,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128246)   : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.21) | SP Coefficient: 0.21000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.21) | SP Coefficient: 0.15750
 #2 (id=128247)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 0 (avg=0.21)
 #3 (id=154323)   : Apply Aura (6) | Dummy (4)
@@ -5094,7 +5094,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Havoc (80240), The Codex of Xerrath (101508), Metamorphosis (103958), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), 
+Affecting spells : Havoc (80240), The Codex of Xerrath (101508), Metamorphosis (103958), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5103,7 +5103,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132079)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.27500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.38875
 #2 (id=177448)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000
 Description      : Unleashes a blast of chaos, causing ${$m1*(1+$77220m1/100*$<masteryMod>)} Shadow damage.  Chaos Bolt always critically strikes and your critical strike chance increases its damage.$?s116858[][
@@ -5504,7 +5504,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=170041)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.13440
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.16800
 Description      : $@spelldesc30108
 Tooltip          : $@spellaura30108
 
@@ -5521,7 +5521,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170042)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01452
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01814
 Description      : $@spelldesc980
 Tooltip          : $@spellaura980
 
@@ -5539,7 +5539,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=170045)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10483
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13104
 Description      : $@spelldesc172
 Tooltip          : $@spellaura172
 
@@ -5556,7 +5556,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=171779)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06300
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.07875
 Description      : $@spelldesc27243
 Tooltip          : Causes $w1 Shadow damage every $?$W2=2[${$t1/2000}.2][$t1] sec. After taking $s3 total damage or dying, Seed of Corruption deals $27285s1 Shadow damage to the caster's enemies within $27285a1 yards.
 
@@ -5740,10 +5740,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179730)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=191023)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179730)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 5 | Scaled Value: 5
+                   Affected Spells: Immolate (348), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Conflagrate (108685), Immolate (108686), Incinerate (114654), Chaos Bolt (116858), Chaos Bolt (157701), Immolate (157736)
+#2 (id=191023)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22
+                   Affected Spells: Immolate (348), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Conflagrate (108685), Immolate (108686), Incinerate (114654), Chaos Bolt (116858), Chaos Bolt (157701), Immolate (157736)
 #3 (id=191024)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=191025)   : Apply Aura (6) | Dummy (4)
@@ -6489,7 +6491,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Glyph of Hand of Gul'dan (56248), The Codex of Xerrath (101508), Metamorphosis (103958), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), 
+Affecting spells : Glyph of Hand of Gul'dan (56248), The Codex of Xerrath (101508), Metamorphosis (103958), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6498,7 +6500,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219895)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.27500 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.38875 | Radius: 0 - 10 yards
 #2 (id=219896)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000
 Description      : Unleashes a blast of chaos, causing ${$m1*(1+$77220m1/100*$<masteryMod>)} Shadow damage to all enemies within $A1 yards of the target.
@@ -6514,7 +6516,7 @@ Class            : Warlock
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Flamelicked (185229)
+Affecting spells : Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Hotfix Passive (137046), Kil'jaeden's Cunning (137587), Flamelicked (185229)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 

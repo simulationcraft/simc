@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -615,7 +615,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6
 #2 (id=83836)    : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6
-#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (166)
+#3 (id=83834)    : Apply Aura (6) | Unknown effect sub type (167)
                    Base Value: 0 | Scaled Value: 0
 Description      : Your pet's Basic Attacks have a $19623s2% chance to trigger Frenzy, granting $19623s1% increased attack speed for $19615d, stacking up to $19615u times.
 
@@ -860,7 +860,7 @@ Effects          :
 #2 (id=128726)   : Apply Aura (6) | Unknown effect sub type (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 115
 #3 (id=138797)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f
 #4 (id=157390)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12
                    Affected Spells: Jab (100780), Jab (108557), Expel Harm (115072)
@@ -1362,7 +1362,7 @@ Effects          :
 #2 (id=138129)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
 #3 (id=177927)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (avg=2.07) | SP Coefficient: 0.13748
+                   Base Value: 0 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.13748
 Description      : You surround the target with healing mists, restoring $?s157398[${$115151m3*12}][${$115151m3*10}] health over $119611d and generating $m2 Chi.
 
 Each time Renewing Mist heals, it also travels to the most injured ally within $<range> yards, up to $115151s1 times.
@@ -2790,7 +2790,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.07) | SP Coefficient: 0.13748
+                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.13748
 #2 (id=177924)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc115151

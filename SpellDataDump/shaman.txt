@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1164,7 +1164,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 480 | Scaled Value: 4.8 | SP Coefficient: 1.00000
+                   Base Value: 972 | Scaled Value: 9.72 | SP Coefficient: 1.00000
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1182,7 +1182,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 480 | Scaled Value: 4.8 | SP Coefficient: 1.00000
+                   Base Value: 972 | Scaled Value: 9.72 | SP Coefficient: 1.00000
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1643,13 +1643,13 @@ Effects          :
 #2 (id=46518)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Healing Surge (8004), Healing Rain (73920), Conductivity (108282), Elemental Blast (117014)
-#3 (id=90327)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#3 (id=90327)    : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
 #4 (id=139281)   : Apply Aura (6) | Unknown effect sub type (272)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Healing Surge (8004), Healing Rain (73920), Conductivity (108282), Elemental Blast (117014)
-#5 (id=220041)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#5 (id=220041)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Elemental Blast (117014)
 Description      : $@spelldesc51530
@@ -2625,7 +2625,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=53784)    : Weapon Damage% (31)
-                   Base Value: 690 | Scaled Value: 6.9
+                   Base Value: 828 | Scaled Value: 8.28
 #2 (id=53785)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=134467)   : Normalized Weapon Damage (121)
@@ -3619,7 +3619,7 @@ Attributes       : ........ ........ ..x..... x..x.x..   ........ ........ .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=109233)   : Energize Power (30)
-                   Base Value: 40 | Scaled Value: 1350.68 (avg=5.175) | Points Per Level: 3 | Misc Value: mana
+                   Base Value: 40 | Scaled Value: 1350.675 (avg=5.175) | Points Per Level: 3 | Misc Value: mana
 Description      : Restores mana to the Shaman following a direct heal critical.
 
 Name             : Lightning Shield (id=101051) 
@@ -3913,7 +3913,7 @@ Class            : Shaman
 Resource         : 2.5% Base Mana (800 @Level 100)
 Spell Level      : 87
 Cooldown         : 180 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326)
+Affecting spells : Mental Quickness (30814), Hotfix Passive (137040), Lucidity (137326)
 Attributes       : ........ x....... x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3939,8 +3939,8 @@ Replaces         : Ascendance (id=114049)
 Class            : Elemental Shaman
 Spell Level      : 87
 Duration         : 15 seconds
-Cooldown         : 180 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326)
+Cooldown         : 120 seconds
+Affecting spells : Mental Quickness (30814), Hotfix Passive (137040), Lucidity (137326)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4191,7 +4191,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 480 | Scaled Value: 4.8
+                   Base Value: 972 | Scaled Value: 9.72
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4210,7 +4210,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 480 | Scaled Value: 4.8
+                   Base Value: 972 | Scaled Value: 9.72
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4676,7 +4676,7 @@ Effects          :
 #15 (id=261006)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137040) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137040) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Shaman
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4686,8 +4686,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179724)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179724)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11
+                   Affected Spells: Ascendance (114049), Ascendance (114050)
 #2 (id=191042)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191043)   : Apply Aura (6) | Dummy (4)
@@ -6029,9 +6030,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=241696)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Misc Value: 24
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | Misc Value: 24
 #2 (id=241697)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 450 | Scaled Value: 450
+                   Base Value: 500 | Scaled Value: 500
 #3 (id=249213)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
                    Affected Spells: Earthquake (61882), Earthquake (77478)
@@ -6069,7 +6070,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=241705)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.11000
 Description      : $@spelldesc170374
 
 Name             : Windfury Attack (id=170512) [Spell Family (11)] 

@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -941,7 +941,7 @@ Effects          :
 #1 (id=41120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=41121)    : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15
+                   Base Value: 179 | Scaled Value: 1.79
 Description      : A brutal attack that deals $sw1 Physical damage and has a $59057h% chance to cause your next Howling Blast or Icy Touch to consume no runes.
 
 Name             : Dancing Rune Weapon (id=49028) [Spell Family (15)] 
@@ -992,7 +992,7 @@ Effects          :
 Description      : Draw upon unholy energy to become Undead for $d, increasing Leech by $s1%, and making you immune to Charm, Fear, and Sleep.
 Tooltip          : Leech increased by $s1% and immune to Charm, Fear and Sleep.  Undead.
 
-Name             : Frost Strike (id=49143) [Scaling Spell (1), Spell Family (15)] 
+Name             : Frost Strike (id=49143) [Spell Family (15)] 
 Replaces         : Death Coil (id=47541)
 Class            : Frost Death Knight
 Resource         : 40 Runic Power
@@ -1010,7 +1010,7 @@ Effects          :
 #1 (id=41258)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=41259)    : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8
+                   Base Value: 66 | Scaled Value: 0.66
 Description      : Instantly strike the enemy, causing $sw1 Frost damage.
 
 Name             : Howling Blast (id=49184) [Spell Family (15)] 
@@ -1031,7 +1031,7 @@ Effects          :
 #1 (id=41295)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #2 (id=41296)    : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.99959 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.86500 | Radius: 0 - 10 yards
 Description      : Blast the target with a frigid wind, dealing $s2 Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within $A2 yards, infecting all targets with Frost Fever.
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -3126,7 +3126,7 @@ Effects          :
                    Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196)
 Description      : When dual-wielding, your Death Strikes, Obliterates, Plague Strikes, and Frost Strikes also deal damage with your off-hand weapon, and your Frost Strike damage is increased by $s3%.
 
-Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Family (15)] 
+Name             : Frost Strike Off-Hand (id=66196) [Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -3141,10 +3141,10 @@ Effects          :
 #1 (id=60368)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=60369)    : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8
+                   Base Value: 66 | Scaled Value: 0.66
 Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
 
-Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Family (15)] 
+Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -3159,7 +3159,7 @@ Effects          :
 #1 (id=60372)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=60373)    : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15
+                   Base Value: 179 | Scaled Value: 1.79
 Description      : A brutal attack with your off-hand weapon that deals $sw2 Physical damage. 
 
 Name             : Plague Strike Off-Hand (id=66216) [Scaling Spell (1), Spell Family (15)] 

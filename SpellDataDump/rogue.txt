@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.0 Live (build level 20216)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2897,7 +2897,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
                    Affected Spells: Rupture (1943), Rupture (168963)
 #2 (id=167162)   : Apply Aura (6) | Proc Trigger Spell: Sanguinary Vein (42)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 18 | Trigger Spell: 124271
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 18 | Trigger Spell: 124271
 Description      : Increases the damage of your Rupture ability by $s1% and causes you to deal $s2% additional damage to targets afflicted by your Rupture, Garrote, $?s146631[Hemorrhage, ][]or Crimson Tempest.
 
 Name             : Energetic Recovery (id=79152) [Spell Family (8), Passive, Hidden] 
@@ -3677,10 +3677,10 @@ Attributes       : .......x x....... ........ ........   .....x.. ..x..... .....
                  : Hidden (7)
 Effects          :
 #1 (id=157252)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 30 | Scaled Value: 30
                    Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Dispatch (157957), Hemorrhage (168908), Rupture (168963), Garrote (168971), Backstab (173458)
 #2 (id=157253)   : Apply Aura (6) | Unknown effect sub type (343)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 30 | Scaled Value: 30
 
 Name             : Glyph of Detection (id=125044) [Spell Family (8), Passive] 
 Class            : Rogue
