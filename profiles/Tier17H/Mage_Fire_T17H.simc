@@ -100,7 +100,7 @@ actions.aoe=inferno_blast,cycle_targets=1,if=(dot.combustion.ticking&active_dot.
 actions.aoe+=/call_action_list,name=active_talents
 actions.aoe+=/pyroblast,if=buff.pyroblast.react|buff.pyromaniac.react
 actions.aoe+=/cold_snap,if=!cooldown.dragons_breath.up
-actions.aoe+=/dragons_breath,if=glyph.dragons_breath.enabled
+actions.aoe+=/dragons_breath
 actions.aoe+=/flamestrike,if=mana.pct>10&remains<2.4
 
 # Single target sequence

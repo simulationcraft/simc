@@ -105,10 +105,10 @@ off_hand=hammer_of_wicked_infusion,id=124371,enchant_id=5334
 # gear_ilvl=699.38
 # gear_agility=3448
 # gear_stamina=4605
-# gear_crit_rating=1204
+# gear_crit_rating=1280
 # gear_haste_rating=545
-# gear_mastery_rating=525
-# gear_multistrike_rating=1906
+# gear_mastery_rating=402
+# gear_multistrike_rating=1953
 # gear_versatility_rating=128
 # gear_armor=1157
 # set_bonus=tier18_2pc=1
