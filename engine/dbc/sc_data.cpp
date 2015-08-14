@@ -310,7 +310,7 @@ effect_hotfix_entry_t& hotfix::register_effect( const std::string& group,
   return *entry;
 }
 
-std::string hotfix::to_str()
+std::string hotfix::to_str( bool ptr )
 {
   std::stringstream s;
   std::string current_group;
@@ -320,6 +320,16 @@ std::string hotfix::to_str()
   {
     const hotfix_entry_t* entry = hotfixes_[ hotfixes_.size() - 1 - i ];
     if ( entry -> flags_ & HOTFIX_FLAG_QUIET )
+    {
+      continue;
+    }
+
+    if ( ptr && ! ( entry -> flags_ & HOTFIX_FLAG_PTR ) )
+    {
+      continue;
+    }
+
+    if ( ! ptr && ! ( entry -> flags_ & HOTFIX_FLAG_LIVE ) )
     {
       continue;
     }

@@ -213,7 +213,7 @@ namespace hotfix
   effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
 
   void apply();
-  std::string to_str();
+  std::string to_str( bool ptr );
 
   void add_hotfix_spell( spell_data_t* spell, bool ptr = false );
   const spell_data_t* find_spell( const spell_data_t* dbc_spell, bool ptr = false );

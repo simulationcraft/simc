@@ -196,7 +196,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   if ( display_hotfixes )
   {
-    std::cout << hotfix::to_str();
+    std::cout << hotfix::to_str( dbc.ptr );
     return 0;
   }
 

@@ -1351,6 +1351,16 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
       continue;
     }
 
+    if ( s -> dbc.ptr && ! ( entry -> flags_ & hotfix::HOTFIX_FLAG_PTR ) )
+    {
+      continue;
+    }
+
+    if ( ! s -> dbc.ptr && ! ( entry -> flags_ & hotfix::HOTFIX_FLAG_LIVE ) )
+    {
+      continue;
+    }
+
     if ( current_group != entry -> group_ )
     {
       if ( ! first_group )
