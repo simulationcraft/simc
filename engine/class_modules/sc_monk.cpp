@@ -1395,7 +1395,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t* player ) :
-      sef_spell_t( "chi_wave_damage", player, player -> o() -> find_talent_spell( "Chi Wave" ) )
+      sef_spell_t( "chi_wave_damage", player, player -> find_spell( 132467 ) )
     {
       dual = true;
     }
