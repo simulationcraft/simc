@@ -355,6 +355,7 @@ public:
     const spell_data_t* thunder;
     const spell_data_t* thunderstorm;
     const spell_data_t* lightning_shield;
+    const spell_data_t* spiritwalkers_focus;
   } glyph;
 
   // Misc Spells
@@ -3506,6 +3507,8 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     shaman_spell_t( "spiritwalkers_grace", player, player -> find_specialization_spell( "Spiritwalker's Grace" ), options_str )
   {
     may_miss = may_crit = harmful = callbacks = false;
+
+    cooldown -> duration += player -> glyph.spiritwalkers_focus -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -4985,6 +4988,7 @@ void shaman_t::init_spells()
   glyph.thunder                      = find_glyph_spell( "Glyph of Thunder" );
   glyph.thunderstorm                 = find_glyph_spell( "Glyph of Thunderstorm" );
   glyph.lightning_shield             = find_glyph_spell( "Glyph of Lightning Shield" );
+  glyph.spiritwalkers_focus          = find_glyph_spell( "Glyph of Spiritwalker's Focus" );
 
   // Misc spells
   spell.ancestral_swiftness          = find_spell( 121617 );
@@ -5405,6 +5409,7 @@ void shaman_t::create_buffs()
                                  .chance( 1.0 )
                                  .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
                                             glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
+                                            glyph.spiritwalkers_focus -> effectN( 2 ).time_value() +
                                             sets.set( SET_HEALER, T13, B4 ) -> effectN( 1 ).time_value() );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
   buff.unleash_flame           = new unleash_flame_buff_t( this );
@@ -5809,11 +5814,13 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&(!totem.fire.active|(pet.searing_totem.remains<=10&!pet.fire_elemental_totem.active&talent.unleashed_fury.enabled)))|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)",
                           "Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds" );
     single -> add_action( this, "Unleash Flame", "if=talent.unleashed_fury.enabled&!buff.ascendance.up|(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&(dot.flame_shock.remains)<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22)))&cooldown.flame_shock.remains<gcd)" );
-    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))" );
+    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))&cooldown.ascendance.remains>cooldown.spiritwalkers_grace.remains" );
 
     single -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
     single -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
     single -> add_action( this, "Lightning Bolt" );
+    single -> add_action( this, "Earth Shock", "moving=1" );
+    single -> add_action( this, "Searing Totem", "if=(!totem.fire.active|(pet.searing_totem.remains<=40&!pet.fire_elemental_totem.active))" );
 
     // AoE
     aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );

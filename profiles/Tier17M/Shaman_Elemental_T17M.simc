@@ -59,10 +59,12 @@ actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldo
 # Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
 actions.single+=/searing_totem,if=(!talent.liquid_magma.enabled&(!totem.fire.active|(pet.searing_totem.remains<=10&!pet.fire_elemental_totem.active&talent.unleashed_fury.enabled)))|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
 actions.single+=/unleash_flame,if=talent.unleashed_fury.enabled&!buff.ascendance.up|(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&(dot.flame_shock.remains)<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22)))&cooldown.flame_shock.remains<gcd)
-actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))
+actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))&cooldown.ascendance.remains>cooldown.spiritwalkers_grace.remains
 actions.single+=/earthquake,cycle_targets=1,if=buff.enhanced_chain_lightning.up
 actions.single+=/chain_lightning,if=spell_targets.chain_lightning>=2
 actions.single+=/lightning_bolt
+actions.single+=/earth_shock,moving=1
+actions.single+=/searing_totem,if=(!totem.fire.active|(pet.searing_totem.remains<=40&!pet.fire_elemental_totem.active))
 
 # Multi target action priority list
 
