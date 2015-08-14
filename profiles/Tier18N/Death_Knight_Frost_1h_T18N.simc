@@ -135,20 +135,20 @@ hands=gauntlets_of_derision,id=124326
 waist=girdle_of_demonic_wrath,id=124350
 legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
-finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
 finger2=congealed_globule_loop,id=124197,enchant=gift_of_mastery
 trinket1=empty_drinking_horn,id=124238
 trinket2=discordant_chorus,id=124237
-main_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_the_fallen_crusader
-off_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_razorice
+main_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_razorice
+off_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=698.75
 # gear_strength=3842
 # gear_stamina=4574
 # gear_crit_rating=451
-# gear_haste_rating=1129
-# gear_mastery_rating=1136
+# gear_haste_rating=1079
+# gear_mastery_rating=1186
 # gear_multistrike_rating=1615
 # gear_armor=2264
 # set_bonus=tier18_2pc=1

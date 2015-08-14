@@ -46,8 +46,8 @@ finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_mastery
 finger2=congealed_globule_loop,id=124197,bonus_id=567,enchant=gift_of_mastery
 trinket1=empty_drinking_horn,id=124238,bonus_id=567
 trinket2=discordant_chorus,id=124237,bonus_id=567
-main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_the_fallen_crusader
-off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_razorice
+main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_razorice
+off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Frost_1h_T18M.simc
 
 deathknight="Death_Knight_Unholy_T18M"

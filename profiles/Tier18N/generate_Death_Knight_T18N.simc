@@ -42,12 +42,12 @@ hands=gauntlets_of_derision,id=124326
 waist=girdle_of_demonic_wrath,id=124350
 legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
-finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
 finger2=congealed_globule_loop,id=124197,enchant=gift_of_mastery
 trinket1=empty_drinking_horn,id=124238
 trinket2=discordant_chorus,id=124237
-main_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_the_fallen_crusader
-off_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_razorice
+main_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_razorice
+off_hand=fiendsbreath_warmace,id=124374,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Frost_1h_T18N.simc
 
 deathknight="Death_Knight_Unholy_T18N"
