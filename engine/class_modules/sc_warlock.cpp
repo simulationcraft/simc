@@ -3814,6 +3814,11 @@ struct activate_t: public warlock_spell_t
 
   virtual bool ready()
   {
+    if ( p() -> specialization() != WARLOCK_DEMONOLOGY )
+    {
+      return false;
+    }
+
     bool r = warlock_spell_t::ready();
 
     if ( p() -> buffs.metamorphosis -> check() ) r = false;
@@ -3843,6 +3848,11 @@ struct cancel_t: public warlock_spell_t
 
   virtual bool ready()
   {
+    if ( p() -> specialization() != WARLOCK_DEMONOLOGY )
+    {
+      return false;
+    }
+
     bool r = warlock_spell_t::ready();
 
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
