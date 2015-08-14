@@ -319,6 +319,10 @@ std::string hotfix::to_str()
   for ( size_t i = 0; i < hotfixes_.size(); ++i )
   {
     const hotfix_entry_t* entry = hotfixes_[ hotfixes_.size() - 1 - i ];
+    if ( entry -> flags_ & HOTFIX_FLAG_QUIET )
+    {
+      continue;
+    }
 
     if ( current_group != entry -> group_ )
     {
@@ -438,7 +442,7 @@ void spell_hotfix_entry_t::apply_hotfix( bool ptr )
   if ( orig_value_ != -std::numeric_limits<double>::max() &&
        util::round( orig_value_, 6 ) != util::round( dbc_value_, 6 ) )
   {
-    std::cerr << "[" << tag_ << "]: Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
+    std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
                  "\" does not match verification value.";
     std::cerr << " Field: " << field_name_;
     std::cerr << ", DBC: " << util::round( dbc_value_, 6 );
@@ -464,7 +468,7 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
   if ( orig_value_ != -std::numeric_limits<double>::max() &&
        util::round( orig_value_, 6 ) != util::round( dbc_value_, 6 ) )
   {
-    std::cerr << "[" << tag_ << "]: Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
+    std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
                  "\" effect #" << ( e -> index() + 1 ) << " does not match verification value.";
     std::cerr << " Field: " << field_name_;
     std::cerr << ", DBC: " << std::setprecision( 6 ) << util::round( dbc_value_, 6 );

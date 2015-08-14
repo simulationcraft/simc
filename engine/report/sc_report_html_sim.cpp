@@ -1346,6 +1346,11 @@ void print_html_hotfixes( report::sc_html_stream& os, sim_t* s )
   for ( size_t i = 0; i < entries.size(); ++i )
   {
     const hotfix::hotfix_entry_t* entry = entries[ entries.size() - 1 - i ];
+    if ( entry -> flags_ & hotfix::HOTFIX_FLAG_QUIET )
+    {
+      continue;
+    }
+
     if ( current_group != entry -> group_ )
     {
       if ( ! first_group )

@@ -7385,33 +7385,33 @@ struct priest_module_t : public module_t
   virtual void register_hotfixes() const override
   {
     // Blizzard Hotfixes
-    hotfix::register_effect( "Priest", "Hotfix 2015-06-23", "Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828 )
+    hotfix::register_effect( "Priest", "2015-06-23", "Tier-18 4-piece set bonus for Shadow Priests now increases Multistrike chance by 20% (up from 16%) with Premonition.", 275828, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20 )
       .verification_value( 16 );
 
-    hotfix::register_effect( "Priest", "Hotfix 2015-06-29", "Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055 )
+    hotfix::register_effect( "Priest", "2015-06-29", "Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055, hotfix::HOTFIX_FLAG_LIVE )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.30 )
       .verification_value( 0.5153989792 );
 
     // Missing DBC Values
-    hotfix::register_spell( "Priest", "missing", "Auspicious Spirit travel speed, in yards per second.", 78203 )
+    hotfix::register_spell( "Priest", "missing", "Auspicious Spirit travel speed, in yards per second.", 78203, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 6.0 )
       .verification_value( 0.0 );
 
-    hotfix::register_effect( "Priest", "missing", "Shadow Orbs base number.", 101429 )
+    hotfix::register_effect( "Priest", "missing", "Shadow Orbs base number.", 101429, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3.0 )
       .verification_value( 0.0 );
 
     // Incorrect DBC Values
-    hotfix::register_effect( "Priest", "incorrect", "Repudiation of War trinket max stack halfed, proc chance doubled.", 268055 )
+    hotfix::register_effect( "Priest", "incorrect", "Repudiation of War trinket max stack halfed, proc chance doubled.", 268055, hotfix::HOTFIX_FLAG_LIVE )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 2.0 )

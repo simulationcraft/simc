@@ -4287,69 +4287,72 @@ void unique_gear::register_special_effects()
 
 void unique_gear::register_hotfixes()
 {
-  hotfix::register_effect( "Item", "2015-06-22", "Empty Drinking Horn proc (Fel Burn) halved in power.", 267001 )
+  hotfix::register_effect( "Item", "2015-06-22", "Empty Drinking Horn proc (Fel Burn) halved in power.",
+                           267001, hotfix::HOTFIX_FLAG_LIVE )
     .field( "average" )
     .operation( hotfix::HOTFIX_DIV )
     .modifier( 2 )
     .verification_value( 0.4245 );
 
-  hotfix::register_effect( "Item", "2015-06-30", "Discordant Chorus damage done by Fel Cleave reduced by 50%", 266992 )
+  hotfix::register_effect( "Item", "2015-06-30", "Discordant Chorus damage done by Fel Cleave reduced by 50%",
+                           266992, hotfix::HOTFIX_FLAG_LIVE )
     .field( "average" )
     .operation( hotfix::HOTFIX_DIV )
     .modifier( 2 )
     .verification_value( 33.7122 );
 
   hotfix::register_spell( "Item", "2015-06-29", "Empty Drinking Horn's Fel Burn effect can now stack up to "
-                                        "30 times, down from 50.", 184256 )
+                          "30 times, down from 50.", 184256, hotfix::HOTFIX_FLAG_LIVE )
     .field( "max_stack" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 30 )
     .verification_value( 50 );
 
   hotfix::register_effect( "Item", "2015-06-29", "4-piece set bonus for Damage Dealing Spellcasters had "
-                                         "its damage dealt reduced by 75%.", 257428 )
+                           "its damage dealt reduced by 75%.", 257428, hotfix::HOTFIX_FLAG_LIVE )
     .field( "sp_coefficient" )
     .operation( hotfix::HOTFIX_MUL )
     .modifier( 0.25 )
     .verification_value( 1 );
 
   hotfix::register_spell( "Item", "2015-06-29", "4-piece set bonus for Damage Dealing Spellcasters has "
-                                        "has an 8-second internal cooldown (up from 3 seconds).", 179134 )
+                          "has an 8-second internal cooldown (up from 3 seconds).", 179134, hotfix::HOTFIX_FLAG_LIVE )
     .field( "internal_cooldown" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 8000 )
     .verification_value( 0 );
 
   hotfix::register_spell( "Item", "2015-06-29", "4-piece set bonus for Damage Dealers now has "
-                                        "a 3-second internal cooldown.", 187079 )
+                          "a 3-second internal cooldown.", 187079, hotfix::HOTFIX_FLAG_LIVE )
     .field( "internal_cooldown" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 3000 )
     .verification_value( 0 );
 
   hotfix::register_spell( "Item", "2015-06-29", "4-piece set bonus for Physical Damage Dealers "
-                                        "now has a 3-second internal cooldown.", 187688 )
+                          "now has a 3-second internal cooldown.", 187688, hotfix::HOTFIX_FLAG_LIVE )
     .field( "internal_cooldown" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 3000 )
     .verification_value( 0 );
 
   hotfix::register_effect( "Item", "2015-06-29", "4-piece set bonus for Physical Damage Dealers "
-                                         "no longer scales with Attack Power.", 280261 )
+                           "no longer scales with Attack Power.", 280261, hotfix::HOTFIX_FLAG_LIVE )
     .field( "ap_coefficient" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 0 )
     .verification_value( 1 );
 
   hotfix::register_spell( "Item", "2015-06-29", "4-piece set bonus for Damage Dealing Spellcasters has "
-                                        "has a 3-second internal cooldown.", 187778 )
+                          "has a 3-second internal cooldown.", 187778, hotfix::HOTFIX_FLAG_LIVE )
     .field( "internal_cooldown" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 3000 )
     .verification_value( 0 );
 
   hotfix::register_effect( "Item", "2015-08-05", "Sanctus, Sigil of the Unbroken's on-use ability has been "
-      "doubled in effectiveness and now grants 50% to Versatility (up from 25%) on the base ring.", 273595 )
+                           "doubled in effectiveness and now grants 50% to Versatility (up from 25%) on the "
+                           "base ring.", 273595, hotfix::HOTFIX_FLAG_LIVE )
     .field( "average" )
     .operation( hotfix::HOTFIX_MUL )
     .modifier( 2.0 )

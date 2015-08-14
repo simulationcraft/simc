@@ -8427,7 +8427,7 @@ struct druid_module_t : public module_t
   {
     hotfix::register_spell( "Druid", "2015-07-20",
                              "Ursa Major now lasts 15 seconds (down from 25 seconds).",
-                             159233 )
+                             159233, hotfix::HOTFIX_FLAG_LIVE )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15000 )

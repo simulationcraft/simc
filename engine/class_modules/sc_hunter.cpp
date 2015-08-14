@@ -5068,7 +5068,7 @@ struct hunter_module_t: public module_t
   {
 
     hotfix::register_effect( "Hunter", "2015-06-29", "Talisman of the Master Tracker had the chance to trigger reduced by 6% "
-                                           "for Survival Hunters.", 268042 )
+                             "for Survival Hunters.", 268042, hotfix::HOTFIX_FLAG_LIVE )
       .field( "average" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 0.94 )

@@ -5847,42 +5847,42 @@ struct warrior_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_spell( "Warrior", "2015-06-29", "Arms Warrior T18 2P proc chance reduced to 50%", 185800 )
+    hotfix::register_spell( "Warrior", "2015-06-29", "Arms Warrior T18 2P proc chance reduced to 50%", 185800, hotfix::HOTFIX_FLAG_LIVE )
       .field( "proc_chance" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 50 )
       .verification_value( 60 );
 
     hotfix::register_effect( "Warrior", "2015-06-23", "Fury Warrior T18 2P now increases the crit chance of Wild Strike by 100% "
-                                           "while bloodsurge is active, rather than 50%." , 270034 )
+                                           "while bloodsurge is active, rather than 50%." , 270034, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 100 )
       .verification_value( 50 );
 
     hotfix::register_effect( "Warrior", "2015-07-20", "Arms Warrior T18 4P now causes rend to tick 33% more often, rather than 100% ( bugfix + hotfix )"
-                                         , 270053 )
+                                         , 270053, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 33 ) // Intentional to be positive. This is the "Bugfix" blizzard did, most likely. 
       .verification_value( -50 );
 
     hotfix::register_effect( "Warrior", "2015-06-23", "Fury Warrior T18 4P now decreases recklessness's cooldown by 25 seconds "
-                                           "per Wild Strike crit instead of 20 seconds." , 270037 )
+                                           "per Wild Strike crit instead of 20 seconds." , 270037, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -25000 )
       .verification_value( -20000 );
 
     hotfix::register_effect( "Warrior", "2015-06-23", "Protection Warrior T18 4P now increases shield barriers effect by 100% "
-      "during Last Stand, instead of 200%." , 270032 )
+      "during Last Stand, instead of 200%." , 270032, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 100 )
       .verification_value( 200 );
 
     hotfix::register_effect( "Warrior", "2015-07-20", "Protection Warrior Bastion of Defense now increases block chance by 15%, "
-      "instead of 10%." , 85462 )
+      "instead of 10%." , 85462, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15 )
