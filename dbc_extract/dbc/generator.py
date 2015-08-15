@@ -4291,3 +4291,29 @@ class ScalingStatDataGenerator(DataGenerator):
 
         return s
 
+class ItemNameDescriptionDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ItemNameDescription' ]
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids):
+        data_str = "%sitem_name_description%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemnamedescription_db.keys()) + 1)
+
+        s += '// Item name descriptions, wow build %d\n' % ( self._options.build )
+
+        s += 'static struct item_name_description_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper())
+
+        for key in sorted(self._itemnamedescription_db.keys()) + [0,]:
+            data = self._itemnamedescription_db[key]
+
+            fields = data.field( 'id', 'desc' )
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '};\n\n'
+
+        return s

@@ -101,6 +101,7 @@ const char* dbc::wow_ptr_status( bool ptr )
 #endif
                      : "Live" ); }
 
+
 const item_set_bonus_t* dbc::set_bonus( bool ptr )
 {
   ( void ) ptr;

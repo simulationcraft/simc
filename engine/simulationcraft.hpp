@@ -3082,6 +3082,7 @@ struct sim_t : private sc_thread_t
   { target_data_initializer.push_back( cb ); }
 
   bool display_hotfixes, disable_hotfixes;
+  bool display_bonus_ids;
 private:
   void do_pause();
 

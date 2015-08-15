@@ -1113,7 +1113,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   output_relative_difference( false ),
   boxplot_percentile( .25 ),
   display_hotfixes( false ),
-  disable_hotfixes( false )
+  disable_hotfixes( false ),
+  display_bonus_ids( false )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -2984,6 +2985,8 @@ void sim_t::create_options()
   add_option( opt_float( "chart_boxplot_percentile", boxplot_percentile ) );
   // Hotfix
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
+  // Bonus ids
+  add_option( opt_bool( "show_bonus_ids", display_bonus_ids ) );
 }
 
 // sim_t::find_api_key ======================================================

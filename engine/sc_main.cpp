@@ -200,6 +200,12 @@ int sim_t::main( const std::vector<std::string>& args )
     return 0;
   }
 
+  if ( display_bonus_ids )
+  {
+    std::cout << dbc::bonus_ids_str( *this );
+    return 0;
+  }
+
   if ( ! setup_success )
   {
     std::cerr <<  "ERROR! Setup failure: " << errmsg << std::endl;

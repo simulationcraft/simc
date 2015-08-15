@@ -64,6 +64,15 @@ bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr )
 unsigned int get_token_id( const std::string& token );
 bool valid_gem_color( unsigned color );
 
+const char* item_name_description( unsigned, bool ptr );
+
+const item_name_description_t* item_name_descriptions( bool ptr );
+std::size_t n_item_name_descriptions( bool ptr );
+
+const item_bonus_entry_t* item_bonus_entries( bool ptr );
+std::size_t n_item_bonuses( bool ptr );
+std::string bonus_ids_str( sim_t& );
+
 // Filtered data access
 const item_data_t* find_potion( bool ptr, const std::function<bool(const item_data_t*)>& finder );
 }

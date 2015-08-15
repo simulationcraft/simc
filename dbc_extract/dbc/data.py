@@ -284,7 +284,7 @@ _DBC_FIELDS = {
           'f21', 'f22', 'f23', 'f24', 'unk_15464'
     ],
     'ItemNameDescription.dbc' : [
-        'id', 'ofs_desc', ( 'flags', '%#.8x' )
+        ( 'id', '%5u' ), 'ofs_desc', ( 'flags', '%#.8x' )
     ],
     'Item-sparse.db2': [
           ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),       ( 'unk_14732', '%#.8x' ),
@@ -1168,6 +1168,13 @@ class ItemNameDescription(DBCRecord):
         else:
             self.desc = ''
 
+    def field(self, *args):
+        f = DBCRecord.field(self, *args)
+        if 'desc' in args:
+            f[args.index('desc')] = '%-30s' % ('"%s"' % self.desc.replace(r'"', r'\"'))
+
+        return f
+
     def __str__(self):
         s = DBCRecord.__str__(self)
         s += 'desc="%s" ' % self.desc
@@ -1344,7 +1351,7 @@ class GameTables(DBCRecord):
         s += DBCRecord.__str__(self)
 
         return s
-        
+
 def initialize_data_model(build, version, obj):
     # First, create base classes, based on build id 0
     for dbc_file_name, field_data in _DBC_FIELDS.iteritems():

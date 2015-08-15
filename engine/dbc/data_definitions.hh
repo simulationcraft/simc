@@ -16,6 +16,12 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct item_name_description_t
+{
+  unsigned id;
+  const char* description;
+};
+
 struct scaling_stat_distribution_t
 {
   unsigned id;
