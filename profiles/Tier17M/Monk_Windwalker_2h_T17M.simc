@@ -88,13 +88,13 @@ actions.st_chix+=/rising_sun_kick
 actions.st_chix+=/chi_wave,if=energy.time_to_max>2
 actions.st_chix+=/chi_burst,if=energy.time_to_max>2
 actions.st_chix+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking
-actions.st_chix+=/tiger_palm,if=chi=4&!buff.combo_breaker_tp.react
-actions.st_chix+=/chi_explosion,if=chi>=3&cooldown.fists_of_fury.remains>4
-actions.st_chix+=/chi_torpedo,if=energy.time_to_max>2
 actions.st_chix+=/expel_harm,if=chi.max-chi>=2&health.percent<95
 actions.st_chix+=/jab,if=chi.max-chi>=2
+actions.st_chix+=/chi_explosion,if=chi>=5&cooldown.fists_of_fury.remains>4
+actions.st_chix+=/chi_torpedo,if=energy.time_to_max>2
+actions.st_chix+=/tiger_palm,if=chi=4&!buff.combo_breaker_tp.react
 
-actions.cleave_chix=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>4
+actions.cleave_chix=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>2
 actions.cleave_chix+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.cleave_chix+=/chi_wave,if=energy.time_to_max>2
 actions.cleave_chix+=/chi_burst,if=energy.time_to_max>2

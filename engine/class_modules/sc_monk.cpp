@@ -6700,14 +6700,14 @@ void monk_t::apl_combat_windwalker()
   st_chix -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   st_chix -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
   st_chix -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking" );
-  st_chix -> add_action( this, "Tiger Palm", "if=chi=4&!buff.combo_breaker_tp.react" );
-  st_chix -> add_talent( this, "Chi Explosion", "if=chi>=3&cooldown.fists_of_fury.remains>4" );
-  st_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2" );
   st_chix -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
   st_chix -> add_action( this, "Jab", "if=chi.max-chi>=2" );
+  st_chix -> add_talent( this, "Chi Explosion", "if=chi>=5&cooldown.fists_of_fury.remains>4" );
+  st_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2" );
+  st_chix -> add_action( this, "Tiger Palm", "if=chi=4&!buff.combo_breaker_tp.react" );
 
   // Chi Explosion Cleave
-  cleave_chix -> add_talent( this, "Chi Explosion", "if=chi>=4&cooldown.fists_of_fury.remains>4" );
+  cleave_chix -> add_talent( this, "Chi Explosion", "if=chi>=4&cooldown.fists_of_fury.remains>2" );
   cleave_chix -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   cleave_chix -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   cleave_chix -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
@@ -7276,7 +7276,7 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect("Monk", "2015-06-23", "Tier-18 2-piece set bonus for Windwalker Monks now gives Rising Sun Kick "
+    hotfix::register_effect( "Monk", "2015-06-23", "Tier-18 2-piece set bonus for Windwalker Monks now gives Rising Sun Kick "
                              "a 30% chance (down from 40%) to generate Combo Breaker.", 269423, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
