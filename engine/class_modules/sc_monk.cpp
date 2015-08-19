@@ -2249,6 +2249,8 @@ struct tiger_palm_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 3.42; // hardcoded into tooltip
+    if ( p -> dbc.ptr )
+      base_multiplier *= 1.20; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Tiger Palm now deals 20% more damage.
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
@@ -2415,6 +2417,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 10.0; // hardcoded into tooltip
+    if ( p -> dbc.ptr )
+      base_multiplier *= 1.10; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Rising Sun Kick now deals 10% more damage.
     spell_power_mod.direct = 0.0;
 
     if ( p -> furious_sun )
@@ -2551,6 +2555,8 @@ struct blackout_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 6.08; // hardcoded into tooltip
+    if ( p -> dbc.ptr )
+      base_multiplier *= 1.10; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Blackout Kick now deals 10% more damage.
     spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
@@ -3099,6 +3105,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     base_multiplier = 7.367; // hardcoded into tooltip
+    if ( p -> dbc.ptr )
+      base_multiplier *= 1.20; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Fists of Fury now deals 20% more damage.
     spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
@@ -7268,7 +7276,7 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "Monk", "2015-06-23", "Tier-18 2-piece set bonus for Windwalker Monks now gives Rising Sun Kick "
+    hotfix::register_effect("Monk", "2015-06-23", "Tier-18 2-piece set bonus for Windwalker Monks now gives Rising Sun Kick "
                              "a 30% chance (down from 40%) to generate Combo Breaker.", 269423, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
@@ -7281,6 +7289,10 @@ struct monk_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 10 )
       .verification_value( 5 );
+    hotfix::register_effect("Monk", "2015-08-19", "Blackout Kick now deals 10% more damage.", hotfix::HOTFIX_FLAG_PTR);
+    hotfix::register_effect("Monk", "2015-08-19", "Rising Sun Kick now deals 10% more damage.", hotfix::HOTFIX_FLAG_PTR);
+    hotfix::register_effect("Monk", "2015-08-19", "Tiger Palm now deals 20% more damage.", hotfix::HOTFIX_FLAG_PTR);
+    hotfix::register_effect("Monk", "2015-08-19", "Fists of Fury now deals 20% more damage.", hotfix::HOTFIX_FLAG_PTR);
   }
 
   virtual void init( player_t* p ) const
