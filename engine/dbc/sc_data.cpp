@@ -696,6 +696,11 @@ const spell_data_t* dbc_override::find_spell( unsigned spell_id, bool ptr )
   return override_db_.find_spell( spell_id, ptr );
 }
 
+const spelleffect_data_t* dbc_override::find_effect( unsigned effect_id, bool ptr )
+{
+  return override_db_.find_effect( effect_id, ptr );
+}
+
 const std::vector<dbc_override::dbc_override_entry_t>& dbc_override::override_entries()
 { return override_entries_; }
 

@@ -255,6 +255,7 @@ namespace dbc_override
   bool register_spell( sim_t*, unsigned, const std::string&, double );
 
   const spell_data_t* find_spell( unsigned, bool ptr = false );
+  const spelleffect_data_t* find_effect( unsigned, bool ptr = false );
 
   const std::vector<dbc_override_entry_t>& override_entries();
 }
@@ -1344,6 +1345,38 @@ const spell_data_t* find_spell( const T* obj, unsigned spell_id )
   }
 
   return obj -> dbc.spell( spell_id );
+}
+
+template <typename T>
+const spelleffect_data_t* find_effect( const T* obj, const spelleffect_data_t* effect )
+{
+  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect -> id(), obj -> dbc.ptr ) )
+  {
+    return override_effect;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_effect( effect, obj -> dbc.ptr );
+  }
+
+  return effect;
+}
+
+template <typename T>
+const spelleffect_data_t* find_effect( const T* obj, unsigned effect_id )
+{
+  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect_id, obj -> dbc.ptr ) )
+  {
+    return override_effect;
+  }
+
+  if ( ! obj -> disable_hotfixes )
+  {
+    return hotfix::find_effect( obj -> dbc.effect( effect_id ), obj -> dbc.ptr );
+  }
+
+  return obj -> dbc.effect( effect_id );
 }
 } // dbc namespace ends
 

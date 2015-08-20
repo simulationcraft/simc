@@ -3291,12 +3291,12 @@ void sim_t::print_spell_query()
     }
     std::shared_ptr<xml_node_t> root( new xml_node_t( "spell_query" ) );
 
-    report::print_spell_query( root.get(), file, dbc, *spell_query, spell_query_level );
+    report::print_spell_query( root.get(), file, *this, *spell_query, spell_query_level );
   }
   else
   {
 
-    report::print_spell_query( std::cout, dbc, *spell_query, spell_query_level );
+    report::print_spell_query( std::cout, *this, *spell_query, spell_query_level );
   }
 }
 

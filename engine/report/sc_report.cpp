@@ -479,7 +479,7 @@ void report::print_profiles( sim_t* sim )
 
 // report::print_spell_query ================================================
 
-void report::print_spell_query( std::ostream& out, dbc_t& dbc, const spell_data_expr_t& sq, unsigned level )
+void report::print_spell_query( std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level )
 {
 
   expr_data_e data_type = sq.data_type;
@@ -488,32 +488,32 @@ void report::print_spell_query( std::ostream& out, dbc_t& dbc, const spell_data_
     switch ( data_type )
     {
     case DATA_TALENT:
-      out << spell_info::talent_to_str( dbc, dbc.talent( *i ) );
+      out << spell_info::talent_to_str( sim.dbc, sim.dbc.talent( *i ) );
       break;
     case DATA_EFFECT:
       {
         std::ostringstream sqs;
-        const spell_data_t* spell = hotfix::find_spell( dbc.spell( dbc.effect( *i ) -> spell_id() ), dbc.ptr );
-        if ( spell )
+        const spelleffect_data_t* base_effect = sim.dbc.effect( *i );
+        if ( const spell_data_t* spell = dbc::find_spell( &( sim ), base_effect -> spell() ) )
         {
-          spell_info::effect_to_str( dbc, spell, hotfix::find_effect( dbc.effect( *i ), dbc.ptr ), sqs );
+          spell_info::effect_to_str( sim.dbc, spell, dbc::find_effect( &( sim ), base_effect ), sqs );
           out << sqs.str();
         }
       }
       break;
     case DATA_SET_BONUS:
-      out << spell_info::set_bonus_to_str( dbc, (dbc::set_bonus( dbc.ptr ) + *i) );
+      out << spell_info::set_bonus_to_str( sim.dbc, dbc::set_bonus( sim.dbc.ptr ) + *i );
       break;
     default:
       {
-        const spell_data_t* spell = hotfix::find_spell( dbc.spell( *i ), dbc.ptr );
-        out << spell_info::to_str( dbc, spell, level );
+        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc.spell( *i ) );
+        out << spell_info::to_str( sim.dbc, spell, level );
       }
     }
   }
 }
 
-void report::print_spell_query( xml_node_t* root, FILE* file, dbc_t& dbc, const spell_data_expr_t& sq, unsigned level )
+void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim, const spell_data_expr_t& sq, unsigned level )
 {
 
   expr_data_e data_type = sq.data_type;
@@ -522,25 +522,25 @@ void report::print_spell_query( xml_node_t* root, FILE* file, dbc_t& dbc, const 
     switch ( data_type )
     {
     case DATA_TALENT:
-      spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
+      spell_info::talent_to_xml( sim.dbc, sim.dbc.talent( *i ), root );
       break;
     case DATA_EFFECT:
       {
         std::ostringstream sqs;
-        const spell_data_t* spell = hotfix::find_spell( dbc.spell( dbc.effect( *i ) -> spell_id() ), dbc.ptr );
-        if ( spell )
+        const spelleffect_data_t* dbc_effect = sim.dbc.effect( *i );
+        if ( const spell_data_t* spell = dbc::find_spell( &( sim ), dbc_effect -> spell() ) )
         {
-          spell_info::effect_to_xml( dbc, spell, dbc.effect( *i ), root );
+          spell_info::effect_to_xml( sim.dbc, spell, dbc::find_effect( &( sim ), dbc_effect ), root );
         }
       }
       break;
     case DATA_SET_BONUS:
-      spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
+      spell_info::talent_to_xml( sim.dbc, sim.dbc.talent( *i ), root );
       break;
     default:
       {
-        const spell_data_t* spell = hotfix::find_spell( dbc.spell( *i ), dbc.ptr );
-        spell_info::to_xml( dbc, spell, root, level );
+        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc.spell( *i ) );
+        spell_info::to_xml( sim.dbc, spell, root, level );
       }
     }
   }

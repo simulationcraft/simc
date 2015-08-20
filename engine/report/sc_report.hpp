@@ -167,8 +167,8 @@ void print_html_sample_data ( report::sc_html_stream&, const player_t*, const ex
 
 bool output_scale_factors( const player_t* p );
 
-void print_spell_query ( std::ostream& out, dbc_t& dbc, const spell_data_expr_t&, unsigned level );
-void print_spell_query ( xml_node_t* out, FILE* file, dbc_t& dbc, const spell_data_expr_t&, unsigned level );
+void print_spell_query ( std::ostream& out, const sim_t& sim, const spell_data_expr_t&, unsigned level );
+void print_spell_query ( xml_node_t* out, FILE* file, const sim_t& sim, const spell_data_expr_t&, unsigned level );
 void print_profiles    ( sim_t* );
 void print_text        ( sim_t*, bool detail );
 void print_html        ( sim_t* );
