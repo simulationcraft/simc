@@ -1057,7 +1057,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       try
       {
         sim -> spell_query -> evaluate();
-        report::print_spell_query( ss, sim -> dbc, *sim -> spell_query, sim -> spell_query_level );
+        report::print_spell_query( ss, *sim, *sim -> spell_query, sim -> spell_query_level );
       }
       catch ( const std::exception& e ){
         ss << "ERROR! Spell Query failure: " << e.what() << std::endl;
