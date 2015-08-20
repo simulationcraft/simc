@@ -7289,10 +7289,10 @@ struct monk_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 10 )
       .verification_value( 5 );
-    hotfix::register_effect("Monk", "2015-08-19", "Blackout Kick now deals 10% more damage.", hotfix::HOTFIX_FLAG_PTR);
-    hotfix::register_effect("Monk", "2015-08-19", "Rising Sun Kick now deals 10% more damage.", hotfix::HOTFIX_FLAG_PTR);
-    hotfix::register_effect("Monk", "2015-08-19", "Tiger Palm now deals 20% more damage.", hotfix::HOTFIX_FLAG_PTR);
-    hotfix::register_effect("Monk", "2015-08-19", "Fists of Fury now deals 20% more damage.", hotfix::HOTFIX_FLAG_PTR);
+    hotfix::register_hotfix("Monk", "2015-08-19", "Blackout Kick now deals 10% more damage.", hotfix::HOTFIX_FLAG_PTR);
+    hotfix::register_hotfix("Monk", "2015-08-19", "Rising Sun Kick now deals 10% more damage.", hotfix::HOTFIX_FLAG_PTR);
+    hotfix::register_hotfix("Monk", "2015-08-19", "Tiger Palm now deals 20% more damage.", hotfix::HOTFIX_FLAG_PTR);
+    hotfix::register_hotfix("Monk", "2015-08-19", "Fists of Fury now deals 20% more damage.", hotfix::HOTFIX_FLAG_PTR);
   }
 
   virtual void init( player_t* p ) const
