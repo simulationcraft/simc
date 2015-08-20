@@ -2171,7 +2171,7 @@ public:
     double chance = ab::weapon -> proc_chance_on_swing( 3.5 );
 
     if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
-      chance *= 1.0 + ( ! ab::p() -> disable_hotfixes ? 0.90 : ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent() );
+      chance *= 1.0 + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent();
 
     int active = ab::p() -> buff.omen_of_clarity -> check();
 
@@ -2732,6 +2732,10 @@ struct rake_t : public cat_attack_t
     ir_counter -> add_buff( p -> buffs.shadowmeld );
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+
+    // 2015/09/01: Rake deals 20% less damage in PvP combat.
+    if ( sim -> pvp_crit )
+      base_multiplier *= 0.8;
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2844,6 +2848,10 @@ struct rip_t : public cat_attack_t
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+
+    // 2015/09/01: Rip deals 20% less damage in PvP combat.
+    if ( sim -> pvp_crit )
+      base_multiplier *= 0.8;
   }
 
   action_state_t* new_state()
@@ -5642,11 +5650,7 @@ struct starsurge_t : public druid_spell_t
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
 
     if ( player -> starshards )
-    {
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
-      if ( ! player -> disable_hotfixes )
-        starshards_chance *= 1.00 / 1.16;
-    }
   }
 
   void execute()
@@ -7309,7 +7313,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
       if ( buff.incarnation -> check() )
         m *= 1.0 + buff.incarnation -> default_value;
       if ( buff.faerie_blessing -> check() )
-        m *= 1.0 + ( ! disable_hotfixes ? 0.06 : buff.faerie_blessing -> data().effectN( 1 ).percent() );
+        m *= 1.0 + buff.faerie_blessing -> data().effectN( 1 ).percent();
     }
   }
   return m;
@@ -8425,13 +8429,81 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
+    hotfix::register_effect( "Druid", "2015-06-23",
+                             "Tier-18 2-piece set bonus for Feral Druids now increases the chance "
+                             "of Omen of Clarity to trigger by 90% (down from 133%).",
+                             270054, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 90 )
+      .verification_value( 133 );
+
+    hotfix::register_effect( "Druid", "2015-06-23",
+                             "Tier-18 4-piece set bonus for Balance Druids now increases Arcane"
+                             "and Nature damage by 6% (down from 8%).",
+                             274376, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6 )
+      .verification_value( 8 );
+
+    hotfix::register_effect( "Druid", "2015-06-29",
+                             "Seed of Creation has had its chance to trigger reduced by 14% for "
+                             "Balance Druids. (The chance to trigger is exactly 100% at Mythic"
+                             "Warforged.",
+                             268010, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "average" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.1119785 ) // value from 6.2.2 PTR
+      .verification_value( 0.129895 );
+
     hotfix::register_spell( "Druid", "2015-07-20",
-                             "Ursa Major now lasts 15 seconds (down from 25 seconds).",
-                             159233, hotfix::HOTFIX_FLAG_LIVE )
+                            "Ursa Major now lasts 15 seconds (down from 25 seconds).",
+                            159233, hotfix::HOTFIX_FLAG_LIVE )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15000 )
       .verification_value( 25000 );
+
+    hotfix::register_effect( "Druid", "2015-09-01",
+                             "Thrash in Cat Form now deals 10% more direct damage.",
+                             117262, hotfix::HOTFIX_FLAG_PTR )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.46640 );
+
+    hotfix::register_effect( "Druid", "2015-09-01",
+                             "Thrash in Cat Form now deals 10% more periodic damage.",
+                             117263, hotfix::HOTFIX_FLAG_PTR )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.33220 );
+
+    hotfix::register_effect( "Druid", "2015-09-01",
+                             "Rip now deals 20% more damage. In PvP combat, Rip now deals 20% less damage.",
+                             390, hotfix::HOTFIX_FLAG_PTR )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.20 )
+      .verification_value( 0.11000 );
+
+    hotfix::register_effect( "Druid", "2015-09-01",
+                             "Rake now deals 20% more direct damage. In PvP combat, Rake now deals 20% less direct damage.",
+                             559, hotfix::HOTFIX_FLAG_PTR )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.20 )
+      .verification_value( 0.51700 );
+
+    hotfix::register_effect( "Druid", "2015-09-01",
+                             "Rake now deals 20% more periodic damage. In PvP combat, Rake now deals 20% less periodic damage.",
+                             216427, hotfix::HOTFIX_FLAG_PTR )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.20 )
+      .verification_value( 0.51700 );
   }
 
   virtual void combat_begin( sim_t* ) const {}
