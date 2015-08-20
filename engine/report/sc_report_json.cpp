@@ -502,7 +502,6 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "ready_type", p.ready_type );
   node.set( "specialization", util::specialization_string( p.specialization() ) );
   node.set( "bugs", p.bugs );
-  node.set( "wod_hotfix", p.wod_hotfix );
   node.set( "scale_player", p.scale_player );
   node.set( "death_pct", p.death_pct );
   node.set( "size", p.size );
