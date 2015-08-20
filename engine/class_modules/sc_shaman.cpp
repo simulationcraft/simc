@@ -957,7 +957,7 @@ public:
       double v = p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
       if ( p -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B4 ) )
       {
-        v += p -> wod_hotfix ? 0.12 : p -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).percent();
+        v += p -> sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).percent();
       }
 
       m *= 1.0 + max_stack * v;

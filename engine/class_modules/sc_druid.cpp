@@ -2171,7 +2171,7 @@ public:
     double chance = ab::weapon -> proc_chance_on_swing( 3.5 );
 
     if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
-      chance *= 1.0 + ( ab::p() -> wod_hotfix ? 0.90 : ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent() );
+      chance *= 1.0 + ( ! ab::p() -> disable_hotfixes ? 0.90 : ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent() );
 
     int active = ab::p() -> buff.omen_of_clarity -> check();
 
@@ -5644,7 +5644,7 @@ struct starsurge_t : public druid_spell_t
     if ( player -> starshards )
     {
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
-      if ( player -> wod_hotfix )
+      if ( ! player -> disable_hotfixes )
         starshards_chance *= 1.00 / 1.16;
     }
   }
@@ -7309,7 +7309,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
       if ( buff.incarnation -> check() )
         m *= 1.0 + buff.incarnation -> default_value;
       if ( buff.faerie_blessing -> check() )
-        m *= 1.0 + ( wod_hotfix ? 0.06 : buff.faerie_blessing -> data().effectN( 1 ).percent() );
+        m *= 1.0 + ( ! disable_hotfixes ? 0.06 : buff.faerie_blessing -> data().effectN( 1 ).percent() );
     }
   }
   return m;

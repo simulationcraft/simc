@@ -4582,7 +4582,6 @@ struct player_t : public actor_t
   int          ready_type;
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
-  int          wod_hotfix; // True until the WoD release hotfixes are in the spell data.
   int          disable_hotfixes;
   bool scale_player;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
