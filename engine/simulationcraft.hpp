@@ -12,8 +12,6 @@
 #define SC_BETA_STR "wod"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 
-// #error "[YYYY-MM-DD] Simulationcraft development has moved to http://github.com/simulationcraft. Please clone the repository from there."
-
 // Platform, compiler and general configuration
 #include "config.hpp"
 #include <algorithm>
@@ -85,6 +83,12 @@ inline std::ostream& operator<<(std::ostream &os, const timespan_t& x )
 
 // mutex, thread
 #include "util/concurrency.hpp"
+
+#if SC_VS
+#pragma message("[2015-08-24] Simulationcraft development has moved to http://github.com/simulationcraft.")
+#else
+#warning "[2015-08-24] Simulationcraft development has moved to http://github.com/simulationcraft."
+#endif
 
 // Forward Declarations =====================================================
 
