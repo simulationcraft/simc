@@ -1,19 +1,74 @@
 # [SimulationCraft](https://github.com/simulationcraft/simc/)
+## Overview
 
-## Getting Started
-Confused on where to start? For most people who are newer to SimulationCraft, the easiest way to get started is to load up the file named "Simulationcraft.exe" in this folder. 
+SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).
+
+It is a multi-player event driven simulator written in C++ that models player character damage-per-second in various raiding scenarios.
+
+Increasing class synergy and the prevalence of proc-based combat modifiers have eroded the accuracy of traditional calculators that rely upon closed-form approximations to model very complex mechanics. The goal of this simulator is to close the accuracy gap while maintaining a performance level high enough to calculate relative stat weights to aid gear selection.
+
+SimulationCraft allows raid/party creation of arbitrary size, generating detailed charts and reports for both individual and raid performance.
+
+A simple graphical interface is included with the tool, allowing players to download and analyze characters from the Armory. It can also be run from the command-line in which case the player profiles are specified via parameter files.
+
+## How Can I Use It?
+
+Go to the downloads page and get the package for your particular platform. The Windows package is not a formal install, but merely an archive that can be extracted on to your desktop. There is no Linux release since it is so ridiculously easy to build it yourself on that platform. Releases occur quite frequently so be sure to check the release notes.
+
+Two executables are shipped: SimulationCraft sports a simple graphical user interface whereas simc uses a command-line interface.
+
+Launching SimulationCraft will present you with an explanation on how to use the tool.
 
 We also have an excellent starters guide on our wiki, which is located at:
 [StartersGuide](../../wiki/StartersGuide)
 
-The full Table of Contents for our Wiki is located at: 
-[DocumentationTOC](../../wiki/_SideBar)
+## How Can I Get Help?
+
+For a simple overview, thoroughly read the Welcome page that is presented upon launching SimulationCraft. In addition, detailed documentation material can be found on our wiki pages. Here you will find a list of features, a starters guide, as well as answers to frequently asked questions.
+
+Our Wiki is located [here](../../wiki/).
+
+If your question is not answered there, then see the Community section below on how to reach other users via IRC and the Elitist Jerks Forums. Please note that the EJ forum moderators are not directly associated with this project and are rather strict about handing out infractions for posts that appear to beg for hand-holding. We periodically scan the WoW, MMO, and Wowhead forums, but we cannot promise swift responses in those arenas.
+
+If you have detailed questions that need to be answered in real time then I recommend you visit the IRC channel detailed in the Community section below. There are active SimulationCraft developers on that channel 24hrs a day.
+
+If you believe that the reported analysis is incorrect please open an issue. If you are unable to download your character, please open an issue. If you feel that the tool is missing features/directives necessary for analysis, please open an issue. Opening an issue (as opposed to an email, forum post, chat msg, etc) is by far the most effective method of getting a swift resolution to your problem.
 
 If you have any issues with running the program, leave a detailed description of your issue at: 
 [Issues](../../issues)
 
 Be sure to check our common issues wiki, located at: 
 [CommonIssues](../../wiki/CommonIssues)
+
+## How Can I Make Changes to the Models?
+
+So you found an error and want to make a quick correction? Perhaps there is an option or feature you wish to add? Time to get your hands dirty!
+
+Each release includes all the source code used to build that release. The platform specific downloads will include both the source and the necessary build scripts. Alternatively, you can live on the bleeding edge of development and extract the very latest updates from the source code repository.
+
+Platform specific building instructions can be found on the How-To-Build wiki.
+
+
+Our Wiki is located [here](../../wiki/).
+## How Can I Contribute?
+
+The SimulationCraft team is comprised of volunteer developers from all over the world. We are always looking for new contributors. While C++ expertise is certainly helpful, we have several key members with limited coding experience. Maintaining optimal talent, gear, and default action priority lists is a huge task and requires virtually zero C++ knowledge.
+
+We are a very laid back group of developers. While certain project members have areas of expertise, there is little in the way of strict responsibility and ownership. Developers are expected to exercise their initiative and help out wherever needed. The Google Code site provides considerable utilities for oversight. The mantra is: Just check it in. Don't ask for permission. If the code needs to be changed for functional (or artistic!) reasons, someone will revert/modify as needed.
+
+If you are interested in joining the team, send an email to natehieter@gmail.com with your contact info. I look forward to working with you!
+
+Checkout the Developers Corner in the wiki, starting [here](../../wiki/Participate).
+
+## Community
+
+IRC: irc.gamers-irc.org (#simulationcraft)
+
+The feedback wiki page can be used to provide simple commentary.
+
+## Important Notice
+
+SimulationCraft is different from SimCraft. Please use the full name SimulationCraft (or SimC) to refer to this project. Visit SimCraft if you are looking for full-motion simulators for SimRacing and FlightSim. 
 
 ## Migrating from GoogleCode to GitHub
 To switch the remote git repository from googlecode to github, execute the following in your simc development folder:
