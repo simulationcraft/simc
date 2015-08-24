@@ -508,7 +508,7 @@ void SC_MainWindow::createLogTab()
 void SC_MainWindow::createHelpTab()
 {
   helpView = new SC_WebView( this );
-  helpView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/wiki/StartersGuide" ) );
+  helpView -> setUrl( QUrl( "https://github.com/simulationcraft/simc/wiki/StartersGuide" ) );
   mainTab -> addTab( helpView, tr( "Help" ) );
 }
 
@@ -715,8 +715,8 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       {
         contents.append( "\nAn Internal server error means an error occurred with the server, trying again later should fix it\n" );
       }
-      contents.append( "\nIf for some reason you cannot resolve this issue, check if it is a known issue at\n https://code.google.com/p/simulationcraft/issues/list\n" );
-      contents.append( "Or try an older version\n https://code.google.com/p/simulationcraft/wiki/Downloads\n" );
+      contents.append( "\nIf for some reason you cannot resolve this issue, check if it is a known issue at\n https://github.com/simulationcraft/simc/issues\n" );
+      contents.append( "Or try an older version\n http://www.simulationcraft.org/download.html\n" );
       contents.append( "And if all else fails you can come talk to us on IRC at\n irc.stratics.com (#simulationcraft)\n" );
     }
 

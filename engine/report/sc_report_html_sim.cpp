@@ -1229,7 +1229,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "<h3>Fight Length</h3>\n"
      << "<p>Fight Length: " << sim -> max_time.total_seconds() << "<br />\n"
      << "Vary Combat Length: " << sim -> vary_combat_length << "</p>\n"
-     << "<p>Fight Length is the specified average fight duration. If vary_combat_length is set, the fight length will vary by +/- that portion of the value. See <a href=\"http://code.google.com/p/simulationcraft/wiki/Options#Combat_Length\" class=\"ext\">Combat Length</a> in the wiki for further details.</p>\n"
+     << "<p>Fight Length is the specified average fight duration. If vary_combat_length is set, the fight length will vary by +/- that portion of the value. See <a href=\"https://github.com/simulationcraft/simc/wiki/Options#combat-length\" class=\"ext\">Combat Length</a> in the wiki for further details.</p>\n"
      << "</div>\n"
      << "</div>\n";
 
@@ -1258,7 +1258,7 @@ void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
     "<span id=\"logo\"></span>\n"
     "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n"
     "<h2>for World of Warcraft %s %s (build level %d)</h2>\n\n",
-    "http://code.google.com/p/simulationcraft/",
+    "http://www.simulationcraft.org/",
     SC_VERSION, sim -> dbc.wow_version(), ( sim -> dbc.ptr ?
 #if SC_BETA
         "BETA"

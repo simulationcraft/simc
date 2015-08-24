@@ -850,7 +850,7 @@ public:
 
 // ==========================================================================
 // The damage formula in action_t::calculate_direct_amount in sc_action.cpp is documented here:
-// https://code.google.com/p/simulationcraft/wiki/DevelopersDocumentation#Damage_Calculations
+// https://github.com/simulationcraft/simc/wiki/DevelopersDocumentation#damage-calculations
 // ==========================================================================
 
 

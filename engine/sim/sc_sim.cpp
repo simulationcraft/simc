@@ -843,7 +843,7 @@ bool parse_maximize_reporting( sim_t*             sim,
  */
 void adjust_threads( int& threads )
 {
-  // This is to resolve https://code.google.com/p/simulationcraft/issues/detail?id=2305
+  // This is to resolve https://github.com/simulationcraft/simc/issues/2304
   int max_threads = sc_thread_t::cpu_thread_count();
   if ( threads <= 0 && max_threads > 0 ) //max_threads will return 0 if it has no clue how many threads it can use.
   {

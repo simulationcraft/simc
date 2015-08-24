@@ -1290,7 +1290,7 @@ void rogue_attack_t::impact( action_state_t* state )
 
     // Legendary Daggers buff handling
     // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
-    // Logic from: http://code.google.com/p/simulationcraft/issues/detail?id=1118
+    // Logic from: https://github.com/simulationcraft/simc/issues/1117
     double fof_chance = ( p() -> specialization() == ROGUE_ASSASSINATION ) ? 0.23139 : ( p() -> specialization() == ROGUE_COMBAT ) ? 0.09438 : 0.28223;
     if ( state -> target && state -> target -> level() > 88 )
     {
