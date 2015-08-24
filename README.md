@@ -65,6 +65,4 @@ SimulationCraft is different from SimCraft. Please use the full name SimulationC
 
 ## Migrating from GoogleCode to GitHub
 To switch the remote git repository from googlecode to github, execute the following in your simc development folder:
-- git remote remove origin
-- git remote add origin https://github.com/simulationcraft/simc.git
-- git push -u origin master
+- git remote set-url origin https://github.com/simulationcraft/simc.git
