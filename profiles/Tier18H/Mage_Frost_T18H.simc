@@ -127,7 +127,7 @@ chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=566
 wrists=powdersinged_bracers,id=124183,bonus_id=566
 hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=566
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
-legs=pantaloons_of_the_arcanic_conclave,id=124165
+legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
 finger1=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
@@ -136,15 +136,15 @@ trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=712.33
-# gear_stamina=5275
-# gear_intellect=3953
+# gear_ilvl=713.33
+# gear_stamina=5344
+# gear_intellect=3999
 # gear_spell_power=2214
 # gear_crit_rating=568
 # gear_haste_rating=1376
-# gear_mastery_rating=1126
-# gear_multistrike_rating=1637
+# gear_mastery_rating=1161
+# gear_multistrike_rating=1662
 # gear_versatility_rating=237
-# gear_armor=974
+# gear_armor=988
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
