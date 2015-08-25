@@ -1129,7 +1129,7 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
     compLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
     // Create Combo Box and add it to the layout
-    choice.comp_type = createChoice( 5 , "None", "Talents", "Glyphs", "Gear", "Rotation" );
+    choice.comp_type = createChoice( 5 , tr( "None" ).toStdString().c_str(), tr( "Talents" ).toStdString().c_str(), tr( "Glyphs" ).toStdString().c_str(), tr( "Gear" ).toStdString().c_str(), tr( "Rotation" ).toStdString().c_str() );
     compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
 
     // Apply the layout to the compGroupBox
@@ -1223,7 +1223,7 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
 
     label.sidebar = new QLabel( tr( "Rotation Abbreviations" ) );
     textbox.sidebar = new SC_TextEdit;
-    textbox.sidebar -> setPlainText( " Stuff Goes Here" );
+    textbox.sidebar -> setPlainText( tr( " Stuff Goes Here" ) );
     gridLayout -> addWidget( label.sidebar,   1, 2, 0 );
     gridLayout -> addWidget( textbox.sidebar, 2, 2, 7, 1, 0 );
 
@@ -1308,8 +1308,8 @@ void SC_AutomationTab::compTypeChanged( const int comp )
   {
     case 0: 
       textbox.advanced -> setDisabled( true );
-      textbox.advanced -> setToolTip( "Choose a comparison type to enable this text box." );
-      label.advanced -> setToolTip( "Choose a comparison type to enable this text box." );
+      textbox.advanced -> setToolTip( tr( "Choose a comparison type to enable this text box." ) );
+      label.advanced -> setToolTip( tr( "Choose a comparison type to enable this text box." ) );
       break;
     case 1:
       textbox.advanced -> setPlainText( advTalent );
