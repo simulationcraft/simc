@@ -34,7 +34,7 @@ install:
 script:
   ## Test SimulationCraft.
   - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then cd tests; fi
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh enemies.bat; fi
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh enemies.bats; fi
   - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh classes.bats; fi
 
   ## Make sure we can install with no issues.
