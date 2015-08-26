@@ -3,15 +3,15 @@
 ### Defaults:
 # Iterations
 if [ -z "${SIMC_ITERATIONS}" ]; then
-  export SIMC_ITERATIONS=100
+  export SIMC_ITERATIONS=20
 fi
 # Simc executable
 if [ -z "${SIMC_CLI_PATH}" ]; then
-  export SIMC_CLI_PATH="/var/lib/jenkins/jobs/simc-cli/workspace/engine/simc"
+  export SIMC_CLI_PATH="../engine/simc"
 fi
 # Profiles directory
 if [ -z "${SIMC_PROFILES_PATH}" ]; then
-  export SIMC_PROFILES_PATH="/var/lib/jenkins/jobs/simc-cli/workspace/profiles"
+  export SIMC_PROFILES_PATH="../profiles"
 fi
 ###
 

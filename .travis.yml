@@ -21,15 +21,21 @@ env:
 #     - os: osx
 #       compiler: gcc
 
-# before_install:
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo add-apt-repository ppa:duggan/bats -y; fi
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo apt-get update -qq; fi
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo apt-get install -qq bats; fi
 
 install:
   - cd engine
   - make -j8
+  - cd ..
 
 script:
   ## Test SimulationCraft.
-  - ctest -j8 --output-on-failure
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then cd tests; fi
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh enemies.bat; fi
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh classes.bats; fi
 
   ## Make sure we can install with no issues.
   ## - sudo make -j8 install
