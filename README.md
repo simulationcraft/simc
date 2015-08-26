@@ -1,4 +1,4 @@
-# [SimulationCraft](http://www.simulationcraft.org/) [![Travis][buildstatus_image_travis]][travisci]
+# [SimulationCraft](http://www.simulationcraft.org/) [![Build Status](https://travis-ci.org/simulationcraft/simc.svg)](https://travis-ci.org/simulationcraft/simc)
 ## Overview
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).
