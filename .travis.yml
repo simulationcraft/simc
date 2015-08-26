@@ -28,7 +28,7 @@ before_install:
 
 install:
   - cd engine
-  - make -j8
+  - make -j2
   - cd ..
 
 script:
