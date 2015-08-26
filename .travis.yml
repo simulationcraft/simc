@@ -22,20 +22,29 @@ env:
 #       compiler: gcc
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo add-apt-repository ppa:duggan/bats -y; fi
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo apt-get update -qq; fi
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo apt-get install -qq bats; fi
+  # Install bats
+  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install bats; fi
+
+branches:
+  only:
+    - master
+
+notifications:
+  irc:
+    channels:
+      - "irc.gamers-irc.org#simulationcraft"
+    template:
+      - "%{repository}/%{branch} (%{commit} - %{author}): %{build_url}: %{message}
 
 install:
+  # Build SimulationCraft
   - cd engine
   - make -j2
   - cd ..
 
 script:
-  ## Test SimulationCraft.
+  # Test SimulationCraft.
   - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then cd tests; fi
   - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh enemies.bats; fi
   - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh classes.bats; fi
-
-  ## Make sure we can install with no issues.
-  ## - sudo make -j8 install
