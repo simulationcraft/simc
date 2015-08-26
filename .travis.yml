@@ -1,0 +1,35 @@
+# This script is used by the Travis-CI (continuous integration) testing
+# framework to run SimulationCrafts tests with every GitHub push or pull-request.
+language: cpp
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+env:
+  # Each line is a separate build in the build matrix. A build in the build
+  # matrix is defined by the environment variables defined on the line, which
+  # should be space-delimited. For example,
+  # - ABC=ON DEF=OFF GHI=ON
+  
+# matrix:
+#   exclude:
+#     - os: osx
+#       compiler: gcc
+
+# before_install:
+
+install:
+  - cd engine
+  - make -j8
+
+script:
+  ## Test SimulationCraft.
+  - ctest -j8 --output-on-failure
+
+  ## Make sure we can install with no issues.
+  ## - sudo make -j8 install
