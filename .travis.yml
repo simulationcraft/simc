@@ -16,14 +16,14 @@ compiler:
   # should be space-delimited. For example,
   # - ABC=ON DEF=OFF GHI=ON
   
-# matrix:
-#   exclude:
-#     - os: osx
-#       compiler: gcc
+matrix:
+ exclude:
+   - os: osx
+     compiler: gcc
 
 before_install:
   # Install bats
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install bats; fi
 
 notifications:
@@ -41,6 +41,6 @@ install:
 
 script:
   # Test SimulationCraft.
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then cd tests; fi
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh enemies.bats; fi
-  - if [[ "$TRAVIS_OS_NAME" = "linux" ]]; then ./run.sh classes.bats; fi
+  - cd tests
+  - ./run.sh enemies.bats
+  - ./run.sh classes.bats; fi
