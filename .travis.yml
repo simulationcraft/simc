@@ -10,7 +10,7 @@ compiler:
   - gcc
   - clang
 
-env:
+#env:
   # Each line is a separate build in the build matrix. A build in the build
   # matrix is defined by the environment variables defined on the line, which
   # should be space-delimited. For example,
@@ -31,7 +31,7 @@ notifications:
     channels:
       - "irc.gamers-irc.org#simulationcraft"
     template:
-      - "%{repository}/%{branch} (%{commit} - %{author}): %{build_url}: %{message}
+      - "%{repository}/%{branch} (%{commit} - %{author}): %{build_url}: %{message}"
 
 install:
   # Build SimulationCraft
