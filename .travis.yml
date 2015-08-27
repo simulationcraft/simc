@@ -44,4 +44,4 @@ script:
   # Test SimulationCraft.
   - cd tests
   - ./run.sh enemies.bats
-  - ./run.sh classes.bats; fi
+  - ./run.sh classes.bats
