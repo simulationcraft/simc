@@ -32,6 +32,7 @@ notifications:
       - "irc.gamers-irc.org#simulationcraft"
     template:
       - "%{repository}/%{branch} (%{commit} - %{author}): %{build_url}: %{message}"
+    on_success: never # default: always
 
 install:
   # Build SimulationCraft
