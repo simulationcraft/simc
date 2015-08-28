@@ -8464,46 +8464,6 @@ struct druid_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 15000 )
       .verification_value( 25000 );
-
-    hotfix::register_effect( "Druid", "2015-09-01",
-                             "Thrash in Cat Form now deals 10% more direct damage.",
-                             117262, hotfix::HOTFIX_FLAG_PTR )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 0.46640 );
-
-    hotfix::register_effect( "Druid", "2015-09-01",
-                             "Thrash in Cat Form now deals 10% more periodic damage.",
-                             117263, hotfix::HOTFIX_FLAG_PTR )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 0.33220 );
-
-    hotfix::register_effect( "Druid", "2015-09-01",
-                             "Rip now deals 20% more damage. In PvP combat, Rip now deals 20% less damage.",
-                             390, hotfix::HOTFIX_FLAG_PTR )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.20 )
-      .verification_value( 0.11000 );
-
-    hotfix::register_effect( "Druid", "2015-09-01",
-                             "Rake now deals 20% more direct damage. In PvP combat, Rake now deals 20% less direct damage.",
-                             559, hotfix::HOTFIX_FLAG_PTR )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.20 )
-      .verification_value( 0.51700 );
-
-    hotfix::register_effect( "Druid", "2015-09-01",
-                             "Rake now deals 20% more periodic damage. In PvP combat, Rake now deals 20% less periodic damage.",
-                             216427, hotfix::HOTFIX_FLAG_PTR )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.20 )
-      .verification_value( 0.51700 );
   }
 
   virtual void combat_begin( sim_t* ) const {}
