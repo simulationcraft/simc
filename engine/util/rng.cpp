@@ -37,16 +37,7 @@
 #  endif
 #endif
 
-#if ( __cplusplus >= 201103L || ( defined(_MSC_VER) && _MSC_VER >= 1700 ) ) && \
-  ! ( ( defined(__APPLE__) || defined(__MACH__) ) && defined( __clang__ ) )
-#define RNG_CXX11
-// Order-of-inclusion bug under MSVC: Include <random> early.
-#if ! defined( SC_OSX ) || ( defined( SC_OSX ) && ! defined( SC_CLANG ) )
 #include <random>
-#else
-#include <tr1/random>
-#endif
-#endif
 
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )
@@ -65,35 +56,6 @@ static double convert_to_double_0_1( uint64_t ui64 )
   return u.d - 1.0;
 }
 
-// ==========================================================================
-// C Standard Library Random Number Generator
-// ==========================================================================
-
-struct rng_rand_t : public rng_t
-{
-  // Whether this RNG works correctly or explodes in your face when
-  // multithreading depends on your particular C library implementation,
-  // since the standard doesn't describe the behavior of seed()/rand() in the
-  // presence of multiple threads. (If it does work, it will likely be very
-  // _slow_).
-
-  virtual const char* name() const override
-  {
-    return "rand";
-  }
-
-  void seed( uint64_t start ) override
-  { 
-    srand( (unsigned) start ); 
-  }
-
-  double real() override
-  { 
-    return rand() * ( 1.0 / ( 1.0 + RAND_MAX ) ); 
-  }
-};
-
-#ifdef RNG_CXX11
 // ==========================================================================
 // C++ 11 Mersenne Twister Random Number Generator
 // ==========================================================================
@@ -123,8 +85,6 @@ struct rng_mt_cxx11_t : public rng_t
     return dist( engine );
   }
 };
-
-#endif // END RNG_CXX11
 
 // ==========================================================================
 // MURMURHASH3 Avalanche Seed Munger
@@ -693,12 +653,7 @@ rng_t* rng_t::create( rng_t::type_e t )
     return new rng_murmurhash_t();
 
   case STD:
-#ifdef RNG_CXX11
     return new rng_mt_cxx11_t();
-#else
-    return new rng_rand_t();
-#endif
-    break;
 
   case SFMT: 
     return new rng_sfmt_t();

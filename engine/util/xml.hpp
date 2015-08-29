@@ -8,11 +8,7 @@
 
 #include "../config.hpp"
 
-#if USE_TR1_NAMESPACE
-  #include <tr1/memory>
-#else
-  #include <memory>
-#endif
+#include <memory>
 
 #include <string>
 #include <vector>

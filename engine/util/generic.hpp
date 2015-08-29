@@ -12,22 +12,13 @@
 
 #include "config.hpp"
 
-#include <algorithm>
-#include "utf8.h"
 #include <cassert>
-
 #include <cmath>
-
-#if USE_TR1_NAMESPACE
-// Use TR1
-#include <tr1/array>
-#include <tr1/type_traits>
-namespace std {using namespace tr1; }
-#else
-// Use C++11
+#include <algorithm>
 #include <array>
 #include <type_traits>
-#endif
+#include "utf8.h"
+
 
 // Type traits and metaprogramming tools ====================================
 

@@ -15,14 +15,7 @@
 #include <limits>
 
 #include "config.hpp"
-#if USE_TR1_NAMESPACE
-// Use TR1
-#include <tr1/type_traits>
-namespace std {using namespace tr1; }
-#else
-// Use C++11
 #include <type_traits>
-#endif
 
 #include "util/generic.hpp"
 

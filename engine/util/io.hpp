@@ -10,15 +10,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
-#if USE_TR1_NAMESPACE
-// Use TR1
-#include <tr1/memory>
-namespace std {using namespace tr1; }
-#else
-// Use C++11
 #include <memory>
-#endif
 
 struct sim_t;
 

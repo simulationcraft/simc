@@ -41,7 +41,7 @@
 #endif
 
 // ==========================================================================
-// Compiler
+// Compiler Definitions
 // ==========================================================================
 
 #if defined( __GNUC__ ) && !defined( __clang__ ) // Do NOT define SC_GCC for Clang
@@ -52,13 +52,25 @@
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
-#  if SC_VS < 11
-#    error "Visual Studio 10 ( 2010 ) or lower not supported"
-#  endif
 #endif
 
 #if defined( SC_WINDOWS ) && !defined( SC_VS )
 #  define SC_MINGW
+#endif
+
+// ==========================================================================
+// Compiler Minimal Limits
+// ==========================================================================
+#if defined( SC_VS ) && SC_VS < 11
+#  error "Visual Studio 10 ( 2010 ) or lower not supported"
+#endif
+
+#if defined( SC_CLANG ) && SC_CLANG < 30100
+#  error "clang++ below version 3.1 not supported"
+#endif
+
+#if defined( SC_GCC ) && SC_GCC < 40600
+#  error "g++ below version 4.6 not supported"
 #endif
 
 // Workaround for LLVM/Clang 3.2+ using glibc headers.
@@ -66,44 +78,12 @@
 # define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
 #endif
 
-// problem with gcc4.4 + -std=c++0x and including <cstdio>. Not sure if it affects 4.4.1 as well.
-// http://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
-#if defined(SC_GCC) && SC_GCC < 40500
-#undef __STRICT_ANSI__
-#endif
-
 // ==========================================================================
 // C++11
 // ==========================================================================
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || !defined(__GXX_EXPERIMENTAL_CXX0X__) || SC_GCC < 40600 ) && ( ! defined( SC_VS ) )
-namespace std {
-class nullptr_t
-{
-public:
-  template <typename T> operator T* () const { return 0; }
-  template <typename T, typename U> operator T U::* () const { return 0; }
-  operator bool () const { return false; }
-};
-}
-#define nullptr ( std::nullptr_t() )
-#endif
 
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || !defined(__GXX_EXPERIMENTAL_CXX0X__) || SC_GCC < 40700 ) && ( ! defined( SC_VS ) )
+#if defined( SC_GCC ) && ( SC_GCC < 40700 )
 #define override
-#endif
-
-#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define static_assert( condition, message )
-#endif
-
-#if ( ! ( ! defined( SC_OSX ) && ( defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) ) ) )
-#define USE_TR1_NAMESPACE 1
-#endif
-
-#if ( defined( _LIBCPP_VERSION ) )
-#ifdef USE_TR1_NAMESPACE
-#undef USE_TR1_NAMESPACE
-#endif
 #endif
 
 // ==========================================================================

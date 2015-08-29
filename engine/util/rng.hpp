@@ -8,14 +8,7 @@
 
 #include "config.hpp"
 
-#if USE_TR1_NAMESPACE
-// Use TR1
-#include <tr1/memory>
-namespace std {using namespace tr1; }
-#else
-// Use C++11
 #include <memory>
-#endif
 
 #include "sc_timespan.hpp"
 

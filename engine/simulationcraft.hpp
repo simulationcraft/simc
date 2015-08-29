@@ -43,26 +43,15 @@
 #include <typeinfo>
 #include <vector>
 #include <bitset>
-#if defined( SC_OSX )
-#include <Availability.h>
-#endif
-
-#if USE_TR1_NAMESPACE
-// Use TR1
-#include <tr1/array>
-#include <tr1/functional>
-#include <tr1/memory>
-#include <tr1/type_traits>
-#include <tr1/unordered_map>
-namespace std {using namespace tr1; }
-#else
-// Use C++11
 #include <array>
 #include <functional>
 #include <memory>
 #include <type_traits>
 #include <unordered_map>
+#if defined( SC_OSX )
+#include <Availability.h>
 #endif
+
 
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
