@@ -1657,7 +1657,7 @@ struct enemy_module_t : public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
     enemy_t* p = new enemy_t( sim, name );
-    p -> report_extension = std::shared_ptr<player_report_extension_t>( new enemy_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>( new enemy_report_t( *p ) );
     return p;
   }
   virtual bool valid() const { return true; }

@@ -6399,7 +6399,7 @@ struct snapshot_stats_t : public action_t
 
 struct wait_fixed_t : public wait_action_base_t
 {
-  std::shared_ptr<expr_t> time_expr;
+  std::unique_ptr<expr_t> time_expr;
 
   wait_fixed_t( player_t* player, const std::string& options_str ) :
     wait_action_base_t( player, "wait" ),
@@ -6412,7 +6412,7 @@ struct wait_fixed_t : public wait_action_base_t
     interrupt_auto_attack = false; //Probably shouldn't interrupt autoattacks while waiting.
     quiet = true;
 
-    time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
+    time_expr = std::unique_ptr<expr_t>( expr_t::parse( this, sec_str ) );
     if ( ! time_expr )
     {
       sim -> errorf( "%s: Unable to generate wait expression from '%s'", player -> name(), options_str.c_str() );

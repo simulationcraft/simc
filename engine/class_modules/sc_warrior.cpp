@@ -257,7 +257,7 @@ public:
 
   struct realppm_t
   {
-    std::shared_ptr<real_ppm_t> sudden_death;
+    std::unique_ptr<real_ppm_t> sudden_death;
   } rppm;
 
   // Spec Passives
@@ -4974,7 +4974,7 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.sudden_death = std::shared_ptr<rppm::sudden_death_t>( new rppm::sudden_death_t( *this ) );
+  rppm.sudden_death = std::unique_ptr<rppm::sudden_death_t>( new rppm::sudden_death_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -5832,7 +5832,7 @@ struct warrior_module_t: public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
     warrior_t* p = new warrior_t( sim, name, r );
-    p -> report_extension = std::shared_ptr<player_report_extension_t>( new warrior_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>( new warrior_report_t( *p ) );
     return p;
   }
 

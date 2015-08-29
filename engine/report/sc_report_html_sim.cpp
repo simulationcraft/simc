@@ -1241,7 +1241,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 void print_html_styles( report::sc_html_stream& os, sim_t* )
 {
   // First select the appropriate style
-  std::shared_ptr<html_style_t> style = std::shared_ptr<html_style_t>( new default_html_style_t() );
+  std::unique_ptr<html_style_t> style( new default_html_style_t() );
 
   // Print
   style -> print_html_styles( os );

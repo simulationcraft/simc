@@ -4488,8 +4488,8 @@ private:
   event_t* _update_event;
   bool _init;
   bool _started;
-  std::shared_ptr<damage_event_list_t >_damage_list;
-  std::shared_ptr<diminishing_returns_list_t> _diminishing_return_list;
+  std::unique_ptr<damage_event_list_t >_damage_list;
+  std::unique_ptr<diminishing_returns_list_t> _diminishing_return_list;
 };
 
 } // resolve
@@ -4772,7 +4772,7 @@ struct player_t : public actor_t
 
   bool quiet;
   // Reporting
-  std::shared_ptr<player_report_extension_t> report_extension;
+  std::unique_ptr<player_report_extension_t> report_extension;
   timespan_t iteration_fight_length, arise_time;
   timespan_t iteration_waiting_time;
   int iteration_executed_foreground_actions;
@@ -5849,7 +5849,7 @@ public:
     gear_stats_t value;
     gear_stats_t error;
   };
-  std::shared_ptr<stats_scaling_t> scaling;
+  std::unique_ptr<stats_scaling_t> scaling;
 
   stats_t( const std::string& name, player_t* );
 

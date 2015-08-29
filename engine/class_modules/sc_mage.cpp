@@ -6988,7 +6988,7 @@ struct mage_module_t : public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
     mage_t* p = new mage_t( sim, name, r );
-    p -> report_extension = std::shared_ptr<player_report_extension_t>( new mage_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>( new mage_report_t( *p ) );
     return p;
   }
 

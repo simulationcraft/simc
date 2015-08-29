@@ -55,8 +55,8 @@ endif
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
-OPTS       = -O3 --std=c++0x
+CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x
+OPTS       = -O3
 
 LINK_LIBS  =
 
