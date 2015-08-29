@@ -56,7 +56,7 @@ endif
 MKDIR      = mkdir
 CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
-OPTS       = -O3 --std=c++11
+OPTS       = -O3 --std=c++0x
 
 LINK_LIBS  =
 
@@ -89,8 +89,8 @@ endif
 ifneq (${C++14},)
   CPP_FLAGS += --std=c++1y
 endif
-ifneq (${C++11},)
-  CPP_FLAGS += --std=c++11
+ifneq (${c++0x},)
+  CPP_FLAGS += --std=c++0x
 endif
 ifneq (${C++03},)
   CPP_FLAGS += --std=c++03
@@ -211,7 +211,7 @@ clean: mostlyclean
 # Unit Tests
 sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp util$(PATHSEP)sc_io.cpp sc_thread.cpp sc_util.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++11 -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
 	-@echo [$@] Linking
@@ -219,11 +219,11 @@ rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
 
 timeline$(MODULE_EXT): util$(PATHSEP)timeline.hpp util$(PATHSEP)timeline.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++11 -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 sample_data$(MODULE_EXT): util$(PATHSEP)sample_data.hpp util$(PATHSEP)sample_data.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++11 -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 sc_expressions$(MODULE_EXT): sim$(PATHSEP)sc_expressions.cpp sc_util.cpp
 	-@echo [$@] Linking

@@ -37,8 +37,6 @@ notifications:
 install:
   # Build SimulationCraft
   - cd engine
-  - g++ -v
-  - clang++ -v
   - make -j2
   - cd ..
 
