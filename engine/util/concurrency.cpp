@@ -303,13 +303,14 @@ private:
 
 // mutex_t::mutex_t() =======================================================
 
-mutex_t::mutex_t() : native_handle( new native_t() )
+mutex_t::mutex_t() :
+    native_handle( new native_t() )
 {}
 
 // mutex_t::~mutex_t() ======================================================
-
+// Keep in .cpp file so that std::unique_ptr deleter can see defined native_t class
 mutex_t::~mutex_t()
-{ delete native_handle; }
+{ }
 
 // mutex_t::lock() ==========================================================
 
@@ -321,15 +322,18 @@ void mutex_t::lock()
 void mutex_t::unlock()
 { native_handle -> unlock(); }
 
+mutex_t::native_t* mutex_t::native_mutex() const
+{ return native_handle.get(); }
+
 // // sc_thread_t::sc_thread_t() ===============================================
 
 sc_thread_t::sc_thread_t() : native_handle( new native_t() )
 {}
 
 // sc_thread_t::~sc_thread_t() ==============================================
-
+// Keep in .cpp file so that std::unique_ptr deleter can see defined native_t class
 sc_thread_t::~sc_thread_t()
-{ delete native_handle; }
+{ }
 
 // sc_thread_t::launch() ====================================================
 

@@ -720,7 +720,7 @@ bool parse_spell_query( sim_t*             sim,
     sq_str = sq_str.substr( 0, lvl_offset );
   }
 
-  sim -> spell_query = spell_data_expr_t::parse( sim, sq_str );
+  sim -> spell_query = std::unique_ptr<spell_data_expr_t>( spell_data_expr_t::parse( sim, sq_str ) );
   return sim -> spell_query != 0;
 }
 
@@ -1068,7 +1068,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ), equalize_plot_weights( false ),
   active_enemies( 0 ), active_allies( 0 ),
-  _rng( 0 ), seed( 0 ), deterministic( false ),
+  _rng(), seed( 0 ), deterministic( false ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -1105,7 +1105,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::BELOW_NORMAL ),
-  spell_query( 0 ), spell_query_level( MAX_LEVEL ),
+  work_queue( new work_queue_t() ),
+  spell_query(), spell_query_level( MAX_LEVEL ),
   pause_mutex( 0 ),
   paused( false ),
   // Highcharts stuff
@@ -1136,7 +1137,6 @@ sim_t::sim_t( sim_t* p, int index ) :
     apikey = std::string(SC_DEFAULT_APIKEY);
 #endif
 
-  work_queue = std::shared_ptr<work_queue_t>( new work_queue_t() );
 
   if ( parent )
   {
@@ -1165,13 +1165,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
-  assert( relatives.size() == 0 );
+  assert( relatives.empty() );
   if( parent ) parent -> remove_relative( this );
-  delete scaling;
-  delete plot;
-  delete reforge_plot;
-  delete spell_query;
-  delete _rng;
 }
 
 // sim_t::add_event (Please use core_event_t::add_event instead) ============

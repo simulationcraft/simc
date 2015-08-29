@@ -645,30 +645,30 @@ rng_t::type_e rng_t::parse_type( const std::string& n )
   return rng_t::DEFAULT;
 }
 
-rng_t* rng_t::create( rng_t::type_e t )
+std::unique_ptr<rng_t> rng_t::create( rng_t::type_e t )
 {
   switch( t )
   {
   case MURMURHASH:
-    return new rng_murmurhash_t();
+    return std::unique_ptr<rng_t>(new rng_murmurhash_t());
 
   case STD:
-    return new rng_mt_cxx11_t();
+    return std::unique_ptr<rng_t>(new rng_mt_cxx11_t());
 
   case SFMT: 
-    return new rng_sfmt_t();
+    return std::unique_ptr<rng_t>(new rng_sfmt_t());
 
   case TINYMT:
-    return new rng_tinymt_t();
+    return std::unique_ptr<rng_t>(new rng_tinymt_t());
 
   case XORSHIFT64: 
-    return new rng_xorshift64_t();
+    return std::unique_ptr<rng_t>(new rng_xorshift64_t());
 
   case XORSHIFT128: 
-    return new rng_xorshift128_t();
+    return std::unique_ptr<rng_t>(new rng_xorshift128_t());
 
   case XORSHIFT1024: 
-    return new rng_xorshift1024_t();
+    return std::unique_ptr<rng_t>(new rng_xorshift1024_t());
 
   case DEFAULT:
   default:

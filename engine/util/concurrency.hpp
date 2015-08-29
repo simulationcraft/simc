@@ -13,13 +13,14 @@
 
 #include "config.hpp"
 #include "generic.hpp"
+#include <memory>
 
 
 class mutex_t : public noncopyable
 {
 private:
   class native_t;
-  native_t* native_handle;
+  std::unique_ptr<native_t> native_handle;
 
 public:
   mutex_t();
@@ -28,15 +29,14 @@ public:
   void lock();
   void unlock();
 
-  native_t* native_mutex() const
-  { return native_handle; }
+  native_t* native_mutex() const;
 };
 
 class sc_thread_t : public noncopyable
 {
 private:
   class native_t;
-  native_t* native_handle;
+  std::unique_ptr<native_t> native_handle;
 
 protected:
   sc_thread_t();

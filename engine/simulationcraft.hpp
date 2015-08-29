@@ -2797,7 +2797,7 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> item_db_sources;
 
   // Random Number Generation
-  rng_t* _rng;
+  std::unique_ptr<rng_t> _rng;
   std::string rng_str;
   uint64_t seed;
   int deterministic;
@@ -2861,9 +2861,9 @@ struct sim_t : private sc_thread_t
 
   // Reporting
   progress_bar_t progress_bar;
-  scaling_t* const scaling;
-  plot_t*    const plot;
-  reforge_plot_t* const reforge_plot;
+  std::unique_ptr<scaling_t> scaling;
+  std::unique_ptr<plot_t> plot;
+  std::unique_ptr<reforge_plot_t> reforge_plot;
   double elapsed_cpu;
   double elapsed_time;
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
@@ -2966,7 +2966,7 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> relatives;
 
   // Spell database access
-  spell_data_expr_t* spell_query;
+  std::unique_ptr<spell_data_expr_t> spell_query;
   unsigned           spell_query_level;
   std::string        spell_query_xml_output_file_str;
 

@@ -24,7 +24,7 @@ struct rng_t
   virtual void seed( uint64_t start ) = 0;
   virtual double real() = 0;
 
-  static rng_t* create( type_e = DEFAULT );
+  static std::unique_ptr<rng_t> create( type_e = DEFAULT );
   static type_e parse_type( const std::string& name );
 
   static double stdnormal_cdf( double );

@@ -141,11 +141,11 @@ void plot_t::analyze_stats()
     {
       if ( sim -> is_canceled() ) break;
 
-      sim_t* delta_sim = 0;
+      std::unique_ptr<sim_t> delta_sim;
 
       if ( j != 0 )
       {
-        delta_sim = new sim_t( sim );
+        delta_sim = std::unique_ptr<sim_t>(new sim_t( sim ));
         if ( dps_plot_iterations > 0 )
         {
           delta_sim -> work_queue -> init( dps_plot_iterations );
@@ -162,7 +162,7 @@ void plot_t::analyze_stats()
         if ( dps_plot_debug )
         {
           sim -> out_debug.raw().printf( "Stat=%s Point=%d\n", util::stat_type_string( i ), j );
-          report::print_text( delta_sim, true );
+          report::print_text( delta_sim.get(), true );
 
         }
       }
@@ -196,8 +196,6 @@ void plot_t::analyze_stats()
 
       if ( delta_sim )
       {
-        delete delta_sim;
-        delta_sim = 0;
         remaining_plot_points--;
       }
     }

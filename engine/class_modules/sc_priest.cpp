@@ -429,11 +429,11 @@ public:
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const override;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
-  virtual double    temporary_movement_modifier() const;
+  virtual double    temporary_movement_modifier() const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
+  virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void      invalidate_cache( cache_e );
+  virtual void      invalidate_cache( cache_e ) override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void      pre_analyze_hook() override;
   virtual void      init_action_list() override;
@@ -759,7 +759,7 @@ struct priest_pet_melee_t : public melee_attack_t
     return melee_attack_t::execute_time();
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 ) override
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     melee_attack_t::schedule_execute( state );
 
@@ -1111,7 +1111,6 @@ private:
       priest.buffs.shadowform  -> expire();
     }
   }
-
 };
 
 // ==========================================================================
@@ -1703,11 +1702,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       if ( priest.buffs.insanity -> up() )
       {
-        priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( priest.buffs.insanity -> default_value * orbs * s -> haste + priest.buffs.insanity -> remains().total_seconds() ) );
+        priest.buffs.insanity -> trigger(1, 0.0, 1.0, timespan_t::from_seconds( priest.buffs.insanity -> default_value * orbs * s -> haste + priest.buffs.insanity -> remains().total_seconds() ) );
       }
       else
       {
-        priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( priest.buffs.insanity -> default_value * orbs * s -> haste ) );
+        priest.buffs.insanity -> trigger(1, 0.0, 1.0, timespan_t::from_seconds( priest.buffs.insanity -> default_value * orbs * s -> haste ) );
       }
     }
   }
