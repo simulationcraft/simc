@@ -47,4 +47,4 @@ script:
   - ./run.sh classes.bats
   
   # Valgrind
-  - valgrind ../engine/simc Raid_T18M.simc iterations=4
+  # - valgrind ../engine/simc Raid_T18M.simc iterations=4
