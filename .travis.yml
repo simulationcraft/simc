@@ -45,3 +45,6 @@ script:
   - cd tests
   - ./run.sh enemies.bats
   - ./run.sh classes.bats
+  
+  # Valgrind
+  - valgrind ../engine/simc Raid_T18M.simc iterations=4
