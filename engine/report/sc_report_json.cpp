@@ -10,8 +10,6 @@
 
 namespace
 {
-#if __cplusplus >= 201103L
-
 js::sc_js_t to_json( const timespan_t& t )
 {
   js::sc_js_t node;
@@ -731,14 +729,6 @@ js::sc_js_t to_json( const sim_t& sim )
 
   return node;
 }
-#else
-js::sc_js_t to_json( const sim_t& )
-{
-  js::sc_js_t node;
-  node.set( "info", "not available without c++11" );
-  return node;
-}
-#endif
 
 js::sc_js_t get_root( const sim_t& sim )
 {

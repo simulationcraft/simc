@@ -9019,9 +9019,9 @@ void player_t::copy_from( player_t* source )
   enchant = source -> enchant;
 }
 
-void player_t::add_option( const option_t& opt )
+void player_t::add_option( std::unique_ptr<option_t> opt )
 {
-  options.insert( options.begin(), opt );
+  options.insert( options.begin(), std::move(opt) );
 }
 
 // class_modules::create::options ===========================================

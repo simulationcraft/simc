@@ -324,12 +324,13 @@ public:
   cache::behavior_e cache;
 
   names_and_options_t( sim_t* sim, const std::string& context,
-                       const std::vector<option_t> client_options, const std::string& input )
+                       std::vector<std::unique_ptr<option_t>> client_options, const std::string& input )
   {
     int use_cache = 0;
 
-    auto_dispose<std::vector<option_t> > options;
-    options.insert( options.begin(), client_options.begin(), client_options.end() );
+    std::vector<std::unique_ptr<option_t>> options;
+    options = std::move(client_options);
+    //options.insert( options.begin(), client_options.begin(), client_options.end() );
     options.push_back( opt_string( "region", region ) );
     options.push_back( opt_string( "server", server ) );
     options.push_back( opt_bool( "cache", use_cache ) );
@@ -391,10 +392,10 @@ bool parse_armory( sim_t*             sim,
   {
     std::string spec = "active";
 
-    std::vector<option_t> options;
+    std::vector<std::unique_ptr<option_t>> options;
     options.push_back( opt_string( "spec", spec ) );
 
-    names_and_options_t stuff( sim, name, options, value );
+    names_and_options_t stuff( sim, name, std::move(options), value );
 
     for ( size_t i = 0; i < stuff.names.size(); ++i )
     {
@@ -464,12 +465,12 @@ bool parse_guild( sim_t*             sim,
     std::string ranks_str;
     int max_rank = 0;
 
-    std::vector<option_t> options;
+    std::vector<std::unique_ptr<option_t>> options;
     options.push_back( opt_string( "class", type_str ) );
     options.push_back( opt_int( "max_rank", max_rank ) );
     options.push_back( opt_string( "ranks", ranks_str ) );
 
-    names_and_options_t stuff( sim, name, options, value );
+    names_and_options_t stuff( sim, name, std::move(options), value );
 
     std::vector<int> ranks_list;
     if ( ! ranks_str.empty() )
@@ -2773,9 +2774,9 @@ void sim_t::print_options()
   out_log.raw() << "\n";
 }
 
-void sim_t::add_option( const option_t& opt )
+void sim_t::add_option( std::unique_ptr<option_t> opt )
 {
-  options.insert( options.begin(), opt );
+  options.insert( options.begin(), std::move(opt) );
 }
 
 // sim_t::create_options ====================================================

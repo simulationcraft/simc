@@ -48,6 +48,7 @@
 #include <memory>
 #include <type_traits>
 #include <unordered_map>
+#include <atomic>
 #if defined( SC_OSX )
 #include <Availability.h>
 #endif
@@ -1357,15 +1358,13 @@ inline std::string from_string( const std::string& v )
 
 // Options ==================================================================
 
-namespace opts {
-
-struct option_base_t
+struct option_t
 {
 public:
-  option_base_t( const std::string& name ) :
+  option_t( const std::string& name ) :
     _name( name )
 { }
-  virtual ~option_base_t() { }
+  virtual ~option_t() { }
   bool parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
   { return parse( sim, n, value ); }
   std::string name() const
@@ -1379,37 +1378,36 @@ private:
   std::string _name;
 };
 
+
+namespace opts {
+
 typedef std::map<std::string, std::string> map_t;
 typedef std::function<bool(sim_t*,const std::string&, const std::string&)> function_t;
 typedef std::vector<std::string> list_t;
+bool parse( sim_t*, const std::vector<std::unique_ptr<option_t>>&, const std::string& name, const std::string& value );
+void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::string& options_str );
+void parse( sim_t*, const std::string& context, const std::vector<std::unique_ptr<option_t>>&, const std::vector<std::string>& strings );
 }
-// unique_ptr anyone?
-typedef opts::option_base_t* option_t;
-namespace opts {
-bool parse( sim_t*, const std::vector<option_t>&, const std::string& name, const std::string& value );
-void parse( sim_t*, const std::string& context, const std::vector<option_t>&, const std::string& options_str );
-void parse( sim_t*, const std::string& context, const std::vector<option_t>&, const std::vector<std::string>& strings );
-}
-inline std::ostream& operator<<( std::ostream& stream, const option_t& opt )
+inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
 { return opt -> print_option( stream ); }
 
-option_t opt_string( const std::string& n, std::string& v );
-option_t opt_append( const std::string& n, std::string& v );
-option_t opt_bool( const std::string& n, int& v );
-option_t opt_bool( const std::string& n, bool& v );
-option_t opt_uint64( const std::string& n, uint64_t& v );
-option_t opt_int( const std::string& n, int& v );
-option_t opt_int( const std::string& n, int& v, int , int );
-option_t opt_uint( const std::string& n, unsigned& v );
-option_t opt_uint( const std::string& n, unsigned& v, unsigned , unsigned  );
-option_t opt_float( const std::string& n, double& v );
-option_t opt_float( const std::string& n, double& v, double , double  );
-option_t opt_timespan( const std::string& n, timespan_t& v );
-option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespan_t  );
-option_t opt_list( const std::string& n, opts::list_t& v );
-option_t opt_map( const std::string& n, opts::map_t& v );
-option_t opt_func( const std::string& n, const opts::function_t& f );
-option_t opt_deprecated( const std::string& n, const std::string& new_option );
+std::unique_ptr<option_t> opt_string( const std::string& n, std::string& v );
+std::unique_ptr<option_t> opt_append( const std::string& n, std::string& v );
+std::unique_ptr<option_t> opt_bool( const std::string& n, int& v );
+std::unique_ptr<option_t> opt_bool( const std::string& n, bool& v );
+std::unique_ptr<option_t> opt_uint64( const std::string& n, uint64_t& v );
+std::unique_ptr<option_t> opt_int( const std::string& n, int& v );
+std::unique_ptr<option_t> opt_int( const std::string& n, int& v, int , int );
+std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v );
+std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v, unsigned , unsigned  );
+std::unique_ptr<option_t> opt_float( const std::string& n, double& v );
+std::unique_ptr<option_t> opt_float( const std::string& n, double& v, double , double  );
+std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v );
+std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespan_t  );
+std::unique_ptr<option_t> opt_list( const std::string& n, opts::list_t& v );
+std::unique_ptr<option_t> opt_map( const std::string& n, opts::map_t& v );
+std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f );
+std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option );
 
 
 // Data Access ==============================================================
@@ -1512,7 +1510,7 @@ struct raid_event_t
 
   timespan_t saved_duration;
   std::vector<player_t*> affected_players;
-  auto_dispose<std::vector<option_t> > options;
+  std::vector<std::unique_ptr<option_t>> options;
 
   raid_event_t( sim_t*, const std::string& );
 private:
@@ -1523,8 +1521,8 @@ public:
 
   virtual bool filter_player( const player_t* );
 
-  void add_option( const option_t& new_option )
-  { options.insert( options.begin(), new_option ); }
+  void add_option( std::unique_ptr<option_t> new_option )
+  { options.insert( options.begin(), std::move(new_option) ); }
   timespan_t cooldown_time();
   timespan_t duration_time();
   timespan_t next_time() { return next; }
@@ -2294,12 +2292,10 @@ struct expr_t
 
   int get_global_id()
   {
-    auto_lock_t lock( unique_id_mutex );
     return ++unique_id;
   }
 
-  static int unique_id;
-  static mutex_t unique_id_mutex;
+  static std::atomic<int> unique_id;
 };
 
 // Reference Expression - ref_expr_t
@@ -2792,7 +2788,7 @@ struct sim_t : private sc_thread_t
   int active_allies;
 
   std::unordered_map<std::string, std::string> var_map;
-  auto_dispose<std::vector<option_t> > options;
+  std::vector<std::unique_ptr<option_t>> options;
   std::vector<std::string> party_encoding;
   std::vector<std::string> item_db_sources;
 
@@ -3011,7 +3007,7 @@ struct sim_t : private sc_thread_t
   void      analyze_error();
   void      analyze_iteration_data();
   void      print_options();
-  void      add_option( const option_t& opt );
+  void      add_option( std::unique_ptr<option_t> opt );
   void      create_options();
   int       find_api_key();
   bool      parse_option( const std::string& name, const std::string& value );
@@ -4530,7 +4526,7 @@ struct action_variable_t
   double current_value_, default_;
 
   action_variable_t( const std::string& name, double def = 0 ) :
-    name_( name ), default_( def )
+    name_( name ), current_value_( def ), default_( def )
   { }
 
   double value() const
@@ -4606,7 +4602,7 @@ struct player_t : public actor_t
   dbc_t       dbc;
 
   // Option Parsing
-  auto_dispose<std::vector<option_t> > options;
+  std::vector<std::unique_ptr<option_t>> options;
 
   // Stat Timelines to Display
   std::vector<stat_e> stat_timelines;
@@ -5280,7 +5276,7 @@ struct player_t : public actor_t
   expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
-  void add_option( const option_t& );
+  void add_option( std::unique_ptr<option_t> );
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
   virtual bool create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
 
@@ -6106,7 +6102,7 @@ struct action_t : public noncopyable
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
-  auto_dispose<std::vector<option_t> > options;
+  std::vector<std::unique_ptr<option_t>> options;
 
   // Movement stuff
   movement_direction_e movement_directionality;
@@ -6125,8 +6121,8 @@ struct action_t : public noncopyable
   void parse_effect_data( const spelleffect_data_t& );
 
   virtual void   parse_options( const std::string& options_str );
-  void add_option( const option_t& new_option )
-  { options.insert( options.begin(), new_option ); }
+  void add_option( std::unique_ptr<option_t> new_option )
+  { options.insert( options.begin(), std::move(new_option) ); }
   virtual double cost() const;
   virtual double cost_per_second( resource_e );
   virtual timespan_t gcd() const;

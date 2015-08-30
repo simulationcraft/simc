@@ -505,7 +505,7 @@ bool item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  auto_dispose<std::vector<option_t> > options;
+  std::vector<std::unique_ptr<option_t>> options;
   options.push_back(opt_uint("id", parsed.data.id));
   options.push_back(opt_int("upgrade", parsed.upgrade_level));
   options.push_back(opt_string("stats", option_stats_str));
