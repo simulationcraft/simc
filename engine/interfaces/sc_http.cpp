@@ -548,7 +548,7 @@ bool url_t::split( url_t&             split,
   if ( url[ pos ] == ':' )
   {
     ++pos;
-    split.port = static_cast<unsigned short>( strtol( &url[ pos ], 0, 10 ) );
+    split.port = static_cast<unsigned short>( strtol( &url[ pos ], nullptr, 10 ) );
     pos = url.find_first_of( '/', pos );
     if ( pos == url.npos )
       return true;

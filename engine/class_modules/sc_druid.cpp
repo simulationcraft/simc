@@ -107,9 +107,9 @@ struct snapshot_counter_t
   bool check_all()
   {
     double n_up = 0;
-    for ( size_t i = 0, end = b.size(); i< end; i++)
+    for (auto & elem : b)
     {
-      if ( b[ i ] -> check() )
+      if ( elem -> check() )
         n_up++;
     }
     if ( n_up == 0 )
@@ -638,10 +638,10 @@ public:
     talent( talents_t() ),
     inflight_starsurge( false )
   {
-    t16_2pc_starfall_bolt = 0;
-    t16_2pc_sun_bolt      = 0;
+    t16_2pc_starfall_bolt = nullptr;
+    t16_2pc_sun_bolt      = nullptr;
     double_dmg_triggered = false;
-    last_target_dot_moonkin = 0;
+    last_target_dot_moonkin = nullptr;
 
     for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
     {
@@ -670,9 +670,9 @@ public:
     cooldown.starfallsurge -> charges = 3;
     cooldown.starfallsurge -> duration = timespan_t::from_seconds( 30.0 );
 
-    caster_melee_attack = 0;
-    cat_melee_attack = 0;
-    bear_melee_attack = 0;
+    caster_melee_attack = nullptr;
+    cat_melee_attack = nullptr;
+    bear_melee_attack = nullptr;
 
     equipped_weapon_dps = 0;
 
@@ -1251,7 +1251,7 @@ struct force_of_nature_feral_t : public pet_t
     druid_t* owner;
     bool first_swing;
     melee_t( force_of_nature_feral_t* p )
-      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 ), first_swing( true )
+      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( nullptr ), first_swing( true )
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
@@ -1302,7 +1302,7 @@ struct force_of_nature_feral_t : public pet_t
     druid_t* owner;
 
     rake_t( force_of_nature_feral_t* p ) :
-      melee_attack_t( "rake", p, p -> find_spell( 150017 ) ), owner( 0 )
+      melee_attack_t( "rake", p, p -> find_spell( 150017 ) ), owner( nullptr )
     {
       special = may_crit = tick_may_crit = true;
       owner            = p -> o();
@@ -1354,7 +1354,7 @@ struct force_of_nature_feral_t : public pet_t
   
   melee_t* melee;
   force_of_nature_feral_t( sim_t* sim, druid_t* p ):
-    pet_t( sim, p, "treant", true, true ), melee( 0 )
+    pet_t( sim, p, "treant", true, true ), melee( nullptr )
   {
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -1428,7 +1428,7 @@ struct force_of_nature_guardian_t : public pet_t
     druid_t* owner;
 
     melee_t( force_of_nature_guardian_t* p )
-      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 )
+      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( nullptr )
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
@@ -1445,7 +1445,7 @@ struct force_of_nature_guardian_t : public pet_t
   };
 
   force_of_nature_guardian_t( sim_t* sim, druid_t* p ):
-    pet_t( sim, p, "treant", true, true ), melee( 0 )
+    pet_t( sim, p, "treant", true, true ), melee( nullptr )
   {
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -1841,9 +1841,9 @@ private:
 
     // Adjust the temporary HP gain
     if ( diff > 0 )
-      druid.stat_gain( STAT_MAX_HEALTH, diff, (gain_t*) 0, (action_t*) 0, true );
+      druid.stat_gain( STAT_MAX_HEALTH, diff, (gain_t*) nullptr, (action_t*) nullptr, true );
     else if ( diff < 0 )
-      druid.stat_loss( STAT_MAX_HEALTH, -diff, (gain_t*) 0, (action_t*) 0, true );
+      druid.stat_loss( STAT_MAX_HEALTH, -diff, (gain_t*) nullptr, (action_t*) nullptr, true );
   }
 };
 
@@ -2043,7 +2043,7 @@ public:
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), attackHit( false ), consume_bloodtalons( false ),
-    bt_counter( 0 ), tf_counter( 0 )
+    bt_counter( nullptr ), tf_counter( nullptr )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -2409,7 +2409,7 @@ public:
     {
       int consumed = (int) p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
-      p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, 0, this );
+      p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
       if ( sim -> log )
         sim -> out_log.printf( "%s consumes %d %s for %s (%d)",
@@ -2716,7 +2716,7 @@ struct rake_t : public cat_attack_t
 
   rake_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str ),
-    ir_counter( 0 )
+    ir_counter( nullptr )
   {
     special = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -3980,7 +3980,7 @@ struct healing_touch_t : public druid_heal_t
     p() -> buff.dream_of_cenarius -> expire();
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  virtual void schedule_execute( action_state_t* state = nullptr )
   {
     druid_heal_t::schedule_execute( state );
 
@@ -4165,7 +4165,7 @@ struct rejuvenation_t : public druid_heal_t
     p() -> active_rejuvenations += 1 ;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  virtual void schedule_execute( action_state_t* state = nullptr )
   {
     druid_heal_t::schedule_execute( state );
 
@@ -4459,7 +4459,7 @@ struct auto_attack_t : public melee_attack_t
     if ( ! player -> main_hand_attack )
       return false;
 
-    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -4922,7 +4922,7 @@ struct hurricane_t : public druid_spell_t
     p() -> buff.hurricane -> expire();
   }
 
-  void schedule_execute( action_state_t* state = 0 )
+  void schedule_execute( action_state_t* state = nullptr )
   {
     druid_spell_t::schedule_execute( state );
 
@@ -5128,7 +5128,7 @@ struct moonfire_base_t : public druid_spell_t
       p() -> buff.lunar_peak -> expire();
   }
 
-  void schedule_execute( action_state_t* state = 0 )
+  void schedule_execute( action_state_t* state = nullptr )
   {
     druid_spell_t::schedule_execute( state );
 
@@ -5679,7 +5679,7 @@ struct stellar_flare_t : public druid_spell_t
 
   stellar_flare_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare ),
-    moonfire_( 0 ), sunfire_( 0 )
+    moonfire_( nullptr ), sunfire_( nullptr )
   {
     parse_options( options_str );
     if ( player -> alternate_stellar_flare )
@@ -5933,7 +5933,7 @@ struct wrath_t : public druid_spell_t
     return casttime;
   }
 
-  void schedule_execute( action_state_t* state = 0 )
+  void schedule_execute( action_state_t* state = nullptr )
   {
     druid_spell_t::schedule_execute( state );
 
@@ -6099,7 +6099,7 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
   using namespace pets;
 
-  return 0;
+  return nullptr;
 }
 
 // druid_t::create_pets =====================================================
@@ -7110,10 +7110,10 @@ bool druid_t::has_t18_class_trinket() const
 {
   switch( specialization() )
   {
-    case DRUID_BALANCE:     return starshards != 0;
-    case DRUID_FERAL:       return wildcat_celerity != 0;
-    case DRUID_GUARDIAN:    return stalwart_guardian != 0;
-    case DRUID_RESTORATION: return flourish != 0;
+    case DRUID_BALANCE:     return starshards != nullptr;
+    case DRUID_FERAL:       return wildcat_celerity != nullptr;
+    case DRUID_GUARDIAN:    return stalwart_guardian != nullptr;
+    case DRUID_RESTORATION: return flourish != nullptr;
     default:                return false;
   }
 }
@@ -7693,7 +7693,7 @@ action_t* druid_t::create_proc_action( const std::string& name, const special_ef
   if ( util::str_compare_ci( name, "flurry_of_xuen" ) && specialization() == DRUID_FERAL )
     return new cat_attacks::flurry_of_xuen_t( this );
 
-  return 0;
+  return nullptr;
 }
 
 // druid_t::create_profile ==================================================
@@ -8407,7 +8407,7 @@ struct druid_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    druid_t* p = new druid_t( sim, name, r );
+    auto  p = new druid_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new druid_report_t( *p ) );
     return p;
   }

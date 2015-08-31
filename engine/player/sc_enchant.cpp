@@ -20,7 +20,7 @@ namespace /* ANONYMOUS NAMESPACE */
  */
 static const enchant_db_item_t __enchant_db[] = {
 
-  { 0,                         0    }
+  { nullptr,                         0    }
 };
 
 } /* ANONYMOUS NAMESPACE */

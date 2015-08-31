@@ -1645,7 +1645,7 @@ struct actor_pair_t
     : target( target ), source( source )
   {}
 
-  actor_pair_t( player_t* p = 0 )
+  actor_pair_t( player_t* p = nullptr )
     : target( p ), source( p )
   {}
 
@@ -1754,9 +1754,9 @@ public:
   buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name );
   buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 
-  buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = 0 );
-  buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name, const item_t* item = 0 );
-  buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = 0 );
+  buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
+  buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name, const item_t* item = nullptr );
+  buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 };
 
 // This helper template is necessary so that reference functions of the classes inheriting from it return the type of the derived class.
@@ -1768,11 +1768,11 @@ struct buff_creator_helper_t : public buff_creator_basics_t
   typedef buff_creator_helper_t base_t;
 
 public:
-  buff_creator_helper_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+  buff_creator_helper_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     buff_creator_basics_t( q, name, s, item ) {}
-  buff_creator_helper_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = 0 ) :
+  buff_creator_helper_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = nullptr ) :
     buff_creator_basics_t( q, id, name, item ) {}
-  buff_creator_helper_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+  buff_creator_helper_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     buff_creator_basics_t( sim, name, s, item ) {}
 
   bufftype& actors( actor_pair_t q )
@@ -1816,11 +1816,11 @@ public:
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
 {
 public:
-  buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+  buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     base_t( q, name, s, item ) {}
-  buff_creator_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = 0 ) :
+  buff_creator_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = nullptr ) :
     base_t( q, id, name, item ) {}
-  buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+  buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     base_t( sim, name, s, item ) {}
 
   operator buff_t* () const;
@@ -1845,9 +1845,9 @@ private:
 
   friend struct ::stat_buff_t;
 public:
-  stat_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+  stat_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     base_t( q, name, s, item ) {}
-  stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+  stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     base_t( sim, name, s, item ) {}
 
   bufftype& add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() )
@@ -1866,14 +1866,14 @@ private:
   std::function< bool( const action_state_t* ) > _eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
   friend struct ::absorb_buff_t;
 public:
-  absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+  absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
     base_t( q, name, s, i ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 ), _high_priority( false )
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( nullptr ), _absorb_gain( nullptr ), _high_priority( false )
   { }
 
-  absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+  absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
     base_t( sim, name, s, i ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 ), _high_priority( false )
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( nullptr ), _absorb_gain( nullptr ), _high_priority( false )
   { }
 
   bufftype& source( stats_t* s )
@@ -1901,12 +1901,12 @@ private:
   school_e _school;
   friend struct ::cost_reduction_buff_t;
 public:
-  cost_reduction_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+  cost_reduction_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
     base_t( q, name, s, i ),
     _amount( 0 ), _school( SCHOOL_NONE )
   {}
 
-  cost_reduction_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+  cost_reduction_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
     base_t( sim, name, s, i ),
     _amount( 0 ), _school( SCHOOL_NONE )
   {}
@@ -1924,7 +1924,7 @@ struct haste_buff_creator_t : public buff_creator_helper_t<haste_buff_creator_t>
 private:
   friend struct ::haste_buff_t;
 public:
-  haste_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+  haste_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = nullptr ) :
     base_t( q, name, s, i )
   { }
 
@@ -2110,14 +2110,14 @@ public:
   static expr_t* create_expression( std::string buff_name,
                                     action_t* action,
                                     const std::string& type,
-                                    buff_t* static_buff = 0 );
+                                    buff_t* static_buff = nullptr );
   std::string to_str() const;
 
   static double DEFAULT_VALUE() { return -std::numeric_limits< double >::min(); }
-  static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source = 0 );
+  static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source = nullptr );
   static buff_t* find(    sim_t*, const std::string& name );
-  static buff_t* find( player_t*, const std::string& name, player_t* source = 0 );
-  static buff_t* find_expressable( const std::vector<buff_t*>&, const std::string& name, player_t* source = 0 );
+  static buff_t* find( player_t*, const std::string& name, player_t* source = nullptr );
+  static buff_t* find_expressable( const std::vector<buff_t*>&, const std::string& name, player_t* source = nullptr );
 
   const char* name() const { return name_str.c_str(); }
   std::string source_name() const;
@@ -2946,7 +2946,7 @@ struct sim_t : private sc_thread_t
       if( ++work == total_work ) projected_work = work;
       return work < total_work;
     }
-    double progress( int* current=0, int* last=0 )
+    double progress( int* current=nullptr, int* last=nullptr )
     {
       AUTO_LOCK(m);
       if( current ) *current = work;
@@ -2966,7 +2966,7 @@ struct sim_t : private sc_thread_t
   unsigned           spell_query_level;
   std::string        spell_query_xml_output_file_str;
 
-  sim_t( sim_t* parent = 0, int thread_index = 0 );
+  sim_t( sim_t* parent = nullptr, int thread_index = 0 );
   virtual ~sim_t();
 
   int       main( const std::vector<std::string>& args );
@@ -2979,8 +2979,8 @@ struct sim_t : private sc_thread_t
   void      interrupt();
   void      add_relative( sim_t* cousin );
   void      remove_relative( sim_t* cousin );
-  double    progress( int* current = 0, int* final = 0, std::string* phase = 0 );
-  double    progress( std::string& phase, std::string* detailed = 0 );
+  double    progress( int* current = nullptr, int* final = nullptr, std::string* phase = nullptr );
+  double    progress( std::string& phase, std::string* detailed = nullptr );
   void      detailed_progress( std::string*, int current_iterations, int total_iterations );
   virtual void combat();
   virtual void combat_begin();
@@ -3128,7 +3128,7 @@ struct module_t
       case TANK_DUMMY:   return tank_dummy_enemy();
       default: break;
     }
-    return NULL;
+    return nullptr;
   }
   static const module_t* get( const std::string& n )
   {
@@ -3188,7 +3188,7 @@ struct scaling_t
   void analyze_lag();
   void normalize();
   void derive();
-  double progress( std::string& phase, std::string* detailed = 0 );
+  double progress( std::string& phase, std::string* detailed = nullptr );
   void create_options();
   bool has_scale_factors();
 };
@@ -3212,7 +3212,7 @@ struct plot_t
 
   void analyze();
   void analyze_stats();
-  double progress( std::string& phase, std::string* detailed = 0 );
+  double progress( std::string& phase, std::string* detailed = nullptr );
   void create_options();
 };
 
@@ -3240,7 +3240,7 @@ struct reforge_plot_t
                            std::vector<int> cur_stat_mods );
   void analyze();
   void analyze_stats();
-  double progress( std::string& phase, std::string* detailed = 0 );
+  double progress( std::string& phase, std::string* detailed = nullptr );
   void create_options();
 };
 
@@ -3708,7 +3708,7 @@ struct item_t
   // Extracted data
   gear_stats_t base_stats, stats;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), unique( false ),
+  item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), unique( false ),
     unique_addon( false ), is_ptr( false ),
     parsed(), xml() { }
   item_t( player_t*, const std::string& options_str );
@@ -3887,7 +3887,7 @@ struct set_bonus_t
     bool enabled;
 
     set_bonus_data_t() :
-      spell( spell_data_t::not_found() ), bonus( 0 ), overridden( -1 ), enabled( false )
+      spell( spell_data_t::not_found() ), bonus( nullptr ), overridden( -1 ), enabled( false )
     { }
   };
 
@@ -4043,7 +4043,7 @@ struct cooldown_t
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
-  static timespan_t cooldown_duration( const cooldown_t* cd, const timespan_t& override_duration = timespan_t::min(), const action_t* cooldown_action = 0 );
+  static timespan_t cooldown_duration( const cooldown_t* cd, const timespan_t& override_duration = timespan_t::min(), const action_t* cooldown_action = nullptr );
 
 private:
   double recharge_multiplier;
@@ -5050,7 +5050,7 @@ struct player_t : public actor_t
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit() const;
   virtual double composite_melee_crit_multiplier() const { return 1.0; }
-  virtual double composite_melee_expertise( weapon_t* w = 0 ) const;
+  virtual double composite_melee_expertise( weapon_t* w = nullptr ) const;
 
   virtual double composite_spell_haste() const; //This is the subset of the old_spell_haste that applies to RPPM
   virtual double composite_spell_speed() const; //This is the old spell_haste and incorporates everything that buffs cast speed
@@ -5089,8 +5089,8 @@ struct player_t : public actor_t
   virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
 
   virtual double composite_player_multiplier   ( school_e ) const;
-  virtual double composite_player_dd_multiplier( school_e,  const action_t* /* a */ = NULL ) const { return 1; }
-  virtual double composite_player_td_multiplier( school_e,  const action_t* a = NULL ) const;
+  virtual double composite_player_dd_multiplier( school_e,  const action_t* /* a */ = nullptr ) const { return 1; }
+  virtual double composite_player_td_multiplier( school_e,  const action_t* a = nullptr ) const;
   // Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const
   { return 1.0; }
@@ -5208,8 +5208,8 @@ struct player_t : public actor_t
   virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
-  virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = 0, action_t* a = 0 );
-  virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = 0, action_t* a = 0 );
+  virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
+  virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void   recalculate_resource_max( resource_e resource_type );
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
   void collect_resource_timeline_information();
@@ -5226,13 +5226,13 @@ struct player_t : public actor_t
   virtual timespan_t time_to_percent(double percent) const;
   timespan_t total_reaction_time();
 
-  void stat_gain( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );
-  void stat_loss( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );
+  void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
+  void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
 
   void modify_current_rating( rating_e stat, double amount );
 
-  virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = 0, action_t* a = 0 );
-  virtual void cost_reduction_loss( school_e school, double amount, action_t* a = 0 );
+  virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = nullptr, action_t* a = nullptr );
+  virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
 
   virtual double get_raw_dps( action_state_t* );
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
@@ -5284,7 +5284,7 @@ struct player_t : public actor_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      create_pets() { }
-  virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
+  virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return nullptr; }
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */ = cache::players() )
@@ -5335,7 +5335,7 @@ struct player_t : public actor_t
   dot_t*      get_dot     ( const std::string& name, player_t* source );
   gain_t*     get_gain    ( const std::string& name );
   proc_t*     get_proc    ( const std::string& name );
-  stats_t*    get_stats   ( const std::string& name, action_t* action = 0 );
+  stats_t*    get_stats   ( const std::string& name, action_t* action = nullptr );
   benefit_t*  get_benefit ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
   luxurious_sample_data_t* get_sample_data( const std::string& name );
@@ -6160,7 +6160,7 @@ struct action_t : public noncopyable
   { return state -> result_type; }
   virtual void   record_data( action_state_t* data );
   virtual int    schedule_multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
-  virtual void   schedule_execute( action_state_t* execute_state = 0 );
+  virtual void   schedule_execute( action_state_t* execute_state = nullptr );
   virtual void   reschedule_execute( timespan_t time );
   virtual void   update_ready( timespan_t cd_duration = timespan_t::min() );
   virtual bool   usable_moving() const;
@@ -6264,7 +6264,7 @@ struct action_t : public noncopyable
   uint32_t update_flags;
 
   virtual action_state_t* new_state();
-  virtual action_state_t* get_state( const action_state_t* = 0 );
+  virtual action_state_t* get_state( const action_state_t* = nullptr );
 private:
   friend struct action_state_t;
   virtual void release_state( action_state_t* );
@@ -6369,7 +6369,7 @@ public:
   virtual double composite_player_critical_multiplier() const
   { return player -> composite_player_critical_damage_multiplier(); }
 
-  event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
+  event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = nullptr );
 
   // Overridable base proc type for direct results, needed for dynamic aoe
   // stuff and such.
@@ -6511,7 +6511,7 @@ struct ranged_attack_t : public attack_t
 
   // Ranged Attack Overrides
   virtual double composite_target_multiplier( player_t* ) const;
-  virtual void schedule_execute( action_state_t* execute_state = 0 );
+  virtual void schedule_execute( action_state_t* execute_state = nullptr );
 
   virtual proc_types proc_type() const;
 };
@@ -6531,7 +6531,7 @@ struct spell_base_t : public action_t
   virtual timespan_t tick_time( double haste ) const;
   virtual result_e   calculate_result( action_state_t* );
   virtual void   execute();
-  virtual void   schedule_execute( action_state_t* execute_state = 0 );
+  virtual void   schedule_execute( action_state_t* execute_state = nullptr );
 
   virtual double composite_crit() const
   { return action_t::composite_crit() + player -> cache.spell_crit(); }
@@ -6733,7 +6733,7 @@ struct sequence_t : public action_t
 
   sequence_t( player_t*, const std::string& sub_action_str );
 
-  virtual void schedule_execute( action_state_t* execute_state = 0 );
+  virtual void schedule_execute( action_state_t* execute_state = nullptr );
   virtual void reset();
   virtual bool ready();
   void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time(); }
@@ -6753,7 +6753,7 @@ struct strict_sequence_t : public action_t
   void reset();
   void cancel();
   void interrupt_action();
-  void schedule_execute( action_state_t* execute_state = 0 );
+  void schedule_execute( action_state_t* execute_state = nullptr );
 };
 
 // Primary proc type of the result (direct (aoe) damage/heal, periodic
@@ -7037,7 +7037,7 @@ public:
   }
 
   real_ppm_t() :
-    player( 0 ), freq( 0 ), modifier( 0 ), rppm( 0 ),
+    player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( -180.0 ) ),
     initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
@@ -7190,21 +7190,21 @@ struct dbc_proc_callback_t : public action_callback_t
   weapon_t* weapon;
 
   dbc_proc_callback_t( const item_t& i, const special_effect_t& e ) :
-    action_callback_t( i.player ), item( i ), effect( e ), cooldown( 0 ),
+    action_callback_t( i.player ), item( i ), effect( e ), cooldown( nullptr ),
     proc_chance( 0 ), ppm( 0 ),
-    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
+    proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
   { }
 
   dbc_proc_callback_t( const item_t* i, const special_effect_t& e ) :
-    action_callback_t( i -> player ), item( *i ), effect( e ), cooldown( 0 ),
+    action_callback_t( i -> player ), item( *i ), effect( e ), cooldown( nullptr ),
     proc_chance( 0 ), ppm( 0 ),
-    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
+    proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
   { }
 
   dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
-    action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( 0 ),
+    action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( nullptr ),
     proc_chance( 0 ), ppm( 0 ),
-    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
+    proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
   { }
 
   virtual void initialize();
@@ -7275,7 +7275,7 @@ private:
    */
   virtual void execute( action_t* /* a */, action_state_t* state )
   {
-    bool triggered = proc_buff == 0;
+    bool triggered = proc_buff == nullptr;
     if ( proc_buff )
       triggered = proc_buff -> trigger();
 
@@ -7535,7 +7535,7 @@ namespace unique_gear
     custom_cb_t custom_cb;
 
     special_effect_db_item_t() :
-      spell_id( 0 ), encoded_options(), custom_cb( 0 )
+      spell_id( 0 ), encoded_options(), custom_cb( nullptr )
     { }
   };
 
@@ -7901,10 +7901,10 @@ inline void player_t::do_dynamic_regen()
 
   if ( dynamic_regen_pets )
   {
-    for ( size_t i = 0, end = active_pets.size(); i < end; i++ )
+    for (auto & elem : active_pets)
     {
-      if ( active_pets[ i ] -> regen_type == REGEN_DYNAMIC )
-        active_pets[ i ] -> do_dynamic_regen();
+      if ( elem -> regen_type == REGEN_DYNAMIC )
+        elem -> do_dynamic_regen();
     }
   }
 }
@@ -7912,7 +7912,7 @@ inline void player_t::do_dynamic_regen()
 inline target_wrapper_expr_t::target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str ) :
   expr_t( name_str ), action( a ), suffix_expr_str( expr_str )
 {
-  proxy_expr.resize( action.sim -> actor_list.size() + 1, 0 );
+  proxy_expr.resize( action.sim -> actor_list.size() + 1, nullptr );
 }
 
 inline double target_wrapper_expr_t::evaluate()
@@ -7921,7 +7921,7 @@ inline double target_wrapper_expr_t::evaluate()
 
   size_t actor_index = target() -> actor_index;
 
-  if ( proxy_expr[ actor_index ] == 0 )
+  if ( proxy_expr[ actor_index ] == nullptr )
   {
     proxy_expr[ actor_index ] = target() -> create_expression( &( action ), suffix_expr_str );
   }
@@ -7937,9 +7937,9 @@ inline player_t* target_wrapper_expr_t::target() const
 inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
   actor_pair_t( target, source ), debuff( atd_debuff_t() ), dot( atd_dot_t() )
 {
-  for ( size_t i = 0, end = source -> sim -> target_data_initializer.size(); i < end; ++i )
+  for (auto & elem : source -> sim -> target_data_initializer)
   {
-    source -> sim -> target_data_initializer[ i ]( this );
+    elem( this );
   }
 }
 

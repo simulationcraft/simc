@@ -296,7 +296,7 @@ struct flask_t : public flask_base_t
       }
     }
 
-    const spell_data_t* spell = 0;
+    const spell_data_t* spell = nullptr;
     for ( size_t i = 0, end = sizeof_array( item -> id_spell ); i < end; i++ )
     {
       if ( item -> trigger_spell[ i ] == ITEM_SPELLTRIGGER_ON_USE )
@@ -817,7 +817,7 @@ struct dbc_potion_t : public action_t
   dbc_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "potion", p ),
     pre_pot_time( timespan_t::from_seconds( 2.0 ) ),
-    stat_buff( 0 )
+    stat_buff( nullptr )
   {
     harmful = callbacks = may_miss = may_crit = may_block = may_glance = may_dodge = may_parry = false;
     proc = true;
@@ -1035,5 +1035,5 @@ action_t* consumable::create_action( player_t*          p,
   if ( name == "oralius_whispering_crystal" ) return new oralius_whispering_crystal_t( p, options_str );
   if ( name == "crystal_of_insanity" ) return new crystal_of_insanity_t( p, options_str );
 
-  return 0;
+  return nullptr;
 }

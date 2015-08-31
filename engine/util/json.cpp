@@ -168,12 +168,12 @@ void json_obj_t::print( FILE* f, int spacing )
   fprintf( f, "{\n" );
   spacing += 2;
   bool first=true;
-  for( std::map<std::string,json_node_t*>::iterator iter=nodes.begin(), end=nodes.end(); iter!=end; ++iter )
+  for(auto & elem : nodes)
   {
     if( ! first ) fprintf( f, ",\n" );
     first = false;
-    fprintf( f, "%*s\"%s\" : ", spacing, "", iter -> first.c_str() );
-    iter -> second -> print( f, spacing );
+    fprintf( f, "%*s\"%s\" : ", spacing, "", elem. -> first.c_str() );
+    elem. -> second -> print( f, spacing );
   }
   spacing -= 2;
   fprintf( f, "\n%*s}", spacing, "" );
@@ -189,12 +189,12 @@ void json_obj_t::format( std::string& buffer, int spacing )
   buffer += "{\n";
   spacing += 2;
   bool first=true;
-  for( std::map<std::string,json_node_t*>::iterator iter=nodes.begin(), end=nodes.end(); iter!=end; ++iter )
+  for(auto & elem : nodes)
   {
     if( ! first ) buffer += ",\n";
     first = false;
-    str::format( buffer, "%*s\"%s\" : ", spacing, "", iter -> first.c_str() );
-    iter -> second -> format( buffer, spacing );
+    str::format( buffer, "%*s\"%s\" : ", spacing, "", elem. -> first.c_str() );
+    elem. -> second -> format( buffer, spacing );
   }
   spacing -= 2;
   str::format( buffer, "\n%*s}", spacing, "" );

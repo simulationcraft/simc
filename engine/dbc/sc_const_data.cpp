@@ -37,7 +37,7 @@ public:
 
     auto_lock_t lock( mutex );
 
-    token_map_t::iterator it = map.find( id_spell );
+    auto it = map.find( id_spell );
     if ( it == map.end() )
       return empty;
 
@@ -48,7 +48,7 @@ public:
   {
     auto_lock_t lock( mutex );
 
-    for ( token_map_t::iterator it = map.begin(); it != map.end(); ++it )
+    for ( auto it = map.begin(); it != map.end(); ++it )
       if ( it -> second == token ) return it -> first;
 
     return 0;
@@ -314,9 +314,9 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   if ( ptr )
     l = &( ptr_class_family_index[ family ] );
 
-  for ( size_t i = 0, end = l -> size(); i < end; i++ )
+  for (auto s : *l)
   {
-    const spell_data_t* s = l -> at( i );
+    
     for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
     {
       if ( effect -> class_flag(j ) && s -> class_flag( j ) )
@@ -346,9 +346,9 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
   if ( ptr )
     l = &( ptr_class_family_index[ spell -> class_family() ] );
 
-  for ( size_t i = 0, end = l -> size(); i < end; i++ )
+  for (auto s : *l)
   {
-    const spell_data_t* s = l -> at( i );
+    
 
     // Skip itself
     if ( s -> id() == spell -> id() )
@@ -812,7 +812,7 @@ bool dbc::is_school( school_e s, school_e s2 )
 
 uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
 {
-  id_map_t::const_iterator it = replaced_ids.find( id_spell );
+  auto it = replaced_ids.find( id_spell );
   if ( it == replaced_ids.end() )
     return 0;
 
@@ -1711,7 +1711,7 @@ spell_data_t* spell_data_t::find( const char* name, bool ptr )
       return p;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 // Always returns non-NULL
@@ -1754,7 +1754,7 @@ talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int c
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 talent_data_t* talent_data_t::find( unsigned id, bool ptr )
@@ -1784,7 +1784,7 @@ talent_data_t* talent_data_t::find( const char* name_cstr, specialization_e spec
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 talent_data_t* talent_data_t::find_tokenized( const char* name, specialization_e spec, bool ptr )
@@ -1797,7 +1797,7 @@ talent_data_t* talent_data_t::find_tokenized( const char* name, specialization_e
       return p;
   }
 
-  return 0;
+  return nullptr;
 }
 
 void spell_data_t::link( bool /* ptr */ )
@@ -1816,7 +1816,7 @@ void spelleffect_data_t::link( bool ptr )
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
     ed._trigger_spell -> _driver = ed._spell;
 
-    if ( ed._spell -> _effects == 0 )
+    if ( ed._spell -> _effects == nullptr )
       ed._spell -> _effects = new std::vector<const spelleffect_data_t*>;
 
     if ( ed._spell -> _effects -> size() < ( ed.index() + 1 ) )
@@ -1838,13 +1838,13 @@ void spell_data_t::de_link( bool ptr )
     {
       // delete dynamically allocated vector with spelleffect_data_t pointers
       delete sd._effects;
-      sd._effects = 0;
+      sd._effects = nullptr;
     }
     if ( sd._power )
     {
       // delete dynamically allocated vector with spellpower_data_t pointers
       delete sd._power;
-      sd._power = 0;
+      sd._power = nullptr;
     }
   }
 }
@@ -1858,7 +1858,7 @@ void spellpower_data_t::link( bool ptr )
     spellpower_data_t& pd = spellpower_data[ i ];
     spell_data_t*      sd = spell_data_t::find( pd._spell_id, ptr );
 
-    if ( sd -> _power == 0 )
+    if ( sd -> _power == nullptr )
       sd -> _power = new std::vector<const spellpower_data_t*>;
 
     sd -> _power -> push_back( &pd );

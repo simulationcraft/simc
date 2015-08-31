@@ -70,7 +70,7 @@ struct rune_t
   rune_t* paired_rune;
   int        slot_number;
 
-  rune_t() : dk( nullptr ), type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number( 0 ) {}
+  rune_t() : dk( nullptr ), type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( nullptr ), slot_number( 0 ) {}
 
   bool is_death() const        { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
   bool is_blood() const        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
@@ -478,10 +478,10 @@ public:
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     antimagic_shell_absorbed( 0.0 ),
-    antimagic_shell( 0 ),
-    unholy_coil( 0 ),
-    frozen_obliteration( 0 ),
-    wandering_plague( 0 ),
+    antimagic_shell( nullptr ),
+    unholy_coil( nullptr ),
+    frozen_obliteration( nullptr ),
+    wandering_plague( nullptr ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
@@ -647,7 +647,7 @@ struct np_spread_event_t : public event_t
       return;
 
     // TODO-WOD: Randomize target selection.
-    player_t* new_target = 0;
+    player_t* new_target = nullptr;
     for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i++ )
     {
       player_t* t = sim().target_non_sleeping_list[ i ];
@@ -716,7 +716,7 @@ static void log_rune_status( const death_knight_t* p, bool debug = false )
 
 static int use_rune( const death_knight_t* p, rune_type rt, const rune_consume_t& use )
 {
-  const rune_t* r = 0;
+  const rune_t* r = nullptr;
   if ( rt == RUNE_TYPE_BLOOD )
     r = &( p -> _runes.slot[ 0 ] );
   else if ( rt == RUNE_TYPE_FROST )
@@ -784,7 +784,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
   if ( p -> buffs.runic_corruption -> check() )
     rps *= 2.0;
 
-  const rune_t* r = 0;
+  const rune_t* r = nullptr;
   if ( rt == RUNE_TYPE_BLOOD )
     r = &( p -> _runes.slot[ 0 ] );
   else if ( rt == RUNE_TYPE_FROST )
@@ -1226,7 +1226,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background                   = true;
     }
 
-    dancing_rune_weapon_td_t* td( player_t* t = 0 ) const
+    dancing_rune_weapon_td_t* td( player_t* t = nullptr ) const
     { return p() -> get_target_data( t ? t : target ); }
 
     dancing_rune_weapon_pet_t* p()
@@ -1537,7 +1537,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
     drw_soul_reaper_t( dancing_rune_weapon_pet_t* p ) :
       drw_melee_attack_t( "soul_reaper", p, p -> owner -> find_spell( 114866 ) ),
-      soul_reaper_dot( 0 )
+      soul_reaper_dot( nullptr )
     {
       weapon = &( p -> main_hand_weapon );
 
@@ -1598,7 +1598,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "dancing_rune_weapon", true ),
-    drw_blood_plague( nullptr ), drw_frost_fever( nullptr ), drw_necrotic_plague( 0 ),
+    drw_blood_plague( nullptr ), drw_frost_fever( nullptr ), drw_necrotic_plague( nullptr ),
     drw_death_coil( nullptr ),
     drw_death_siphon( nullptr ), drw_icy_touch( nullptr ),
     drw_outbreak( nullptr ), drw_blood_boil( nullptr ),
@@ -1782,7 +1782,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
 
     virtual bool ready()
     {
-      return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+      return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
   };
 
@@ -1928,7 +1928,7 @@ struct ghoul_pet_t : public death_knight_pet_t
 
   ghoul_pet_t( sim_t* sim, death_knight_t* owner, const std::string& name, bool guardian ) :
     death_knight_pet_t( sim, owner, name, guardian ),
-    crazed_monstrosity( 0 )
+    crazed_monstrosity( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
@@ -2002,7 +2002,7 @@ struct ghoul_pet_t : public death_knight_pet_t
 
     virtual bool ready()
     {
-      return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+      return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
   };
 
@@ -2180,7 +2180,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
     { player -> main_hand_attack -> schedule_execute(); }
 
     virtual bool ready()
-    { return( player -> main_hand_attack -> execute_event == 0 ); }
+    { return( player -> main_hand_attack -> execute_event == nullptr ); }
   };
 
   struct zandalari_strike_t : public zandalari_melee_attack_t
@@ -2268,9 +2268,9 @@ struct shadow_of_death_t : public buff_t
 
     // Adjust health
     if ( delta > 0 )
-      player -> stat_gain( STAT_MAX_HEALTH, delta, 0, 0, true );
+      player -> stat_gain( STAT_MAX_HEALTH, delta, nullptr, nullptr, true );
     else if ( delta < 0 )
-      player -> stat_loss( STAT_MAX_HEALTH, std::fabs( delta ), 0, 0, true );
+      player -> stat_loss( STAT_MAX_HEALTH, std::fabs( delta ), nullptr, nullptr, true );
 
     // Execute buff, refreshing it to full duration
     buff_t::execute( stacks, value, duration );
@@ -2284,7 +2284,7 @@ struct shadow_of_death_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    player -> stat_loss( STAT_MAX_HEALTH, current_health_gain, 0, 0, true );
+    player -> stat_loss( STAT_MAX_HEALTH, current_health_gain, nullptr, nullptr, true );
     current_health_gain = 0;
   }
 
@@ -2320,7 +2320,7 @@ struct death_knight_action_t : public Base
     convert_runes( 0 )
   {
     range::fill( use, rune_consume_data_t( false, RUNE_TYPE_NONE ) );
-    range::fill( rune_consumed, 0 );
+    range::fill( rune_consumed, nullptr );
 
     action_base_t::may_crit   = true;
     action_base_t::may_glance = false;
@@ -2870,7 +2870,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
   {
     if ( player -> is_moving() )
       return false;
-    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -2918,7 +2918,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
         p() -> _runes.slot[ i ].regen_rune( p(), timespan_t::from_seconds( 5.0 ) );
 
       //simulate RP decay for that 5 seconds
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, 0, 0 );
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, nullptr, nullptr );
     }
     else
     {
@@ -3126,7 +3126,7 @@ struct frozen_runeblade_driver_t : public death_knight_spell_t
 
   frozen_runeblade_driver_t( death_knight_t* player ) :
     death_knight_spell_t( "frozen_runeblade_driver", player, player -> find_spell( 170205 ) ),
-    attack( 0 ), oh_attack( 0 )
+    attack( nullptr ), oh_attack( nullptr )
   {
     background = proc = dual = quiet = true;
     callbacks = may_miss = may_crit = hasted_ticks = tick_may_crit = false;
@@ -3383,7 +3383,7 @@ struct conversion_t : public death_knight_heal_t
   void last_tick( dot_t* dot )
   {
     death_knight_heal_t::last_tick( dot );
-    p() -> active_spells.conversion = 0;
+    p() -> active_spells.conversion = nullptr;
     p() -> buffs.conversion -> expire();
   }
 };
@@ -3805,7 +3805,7 @@ struct death_coil_t : public death_knight_spell_t
 
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> find_class_spell( "Death Coil" ) ),
-    uc( 0 )
+    uc( nullptr )
   {
     parse_options( options_str );
 
@@ -3941,7 +3941,7 @@ struct death_strike_heal_t : public death_knight_heal_t
 
   death_strike_heal_t( death_knight_t* p ) :
     death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) ),
-    blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : 0 )
+    blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr )
   {
     may_crit   = callbacks = false;
     may_multistrike = 0;
@@ -4011,7 +4011,7 @@ struct death_strike_t : public death_knight_melee_attack_t
 
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "death_strike", p, p -> find_class_spell( "Death Strike" ) ),
-    oh_attack( 0 ), heal( new death_strike_heal_t( p ) )
+    oh_attack( nullptr ), heal( new death_strike_heal_t( p ) )
   {
     parse_options( options_str );
     special = true;
@@ -4178,7 +4178,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
   frost_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "frost_strike", p, p -> find_class_spell( "Frost Strike" ) ),
-    oh_attack( 0 )
+    oh_attack( nullptr )
   {
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
@@ -4531,7 +4531,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
   obliterate_offhand_t( death_knight_t* p ) :
     death_knight_melee_attack_t( "obliterate_offhand", p, p -> find_spell( 66198 ) ),
-    fo( 0 )
+    fo( nullptr )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -4572,7 +4572,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
   obliterate_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ),
-    oh_attack( 0 ), fo( 0 )
+    oh_attack( nullptr ), fo( nullptr )
   {
     parse_options( options_str );
     special = true;
@@ -4707,7 +4707,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
 
   blood_boil_spread_t( death_knight_t* p ) :
     death_knight_spell_t( "blood_boil_spread", p, spell_data_t::nil() ),
-    bp( 0 ), ff( 0 ), np( 0 )
+    bp( nullptr ), ff( nullptr ), np( nullptr )
   {
     harmful = may_miss = callbacks = may_crit = may_dodge = may_parry = may_glance = false;
     dual = quiet = background = proc = true;
@@ -4716,11 +4716,11 @@ struct blood_boil_spread_t : public death_knight_spell_t
 
   void select_longest_duration_disease( dot_t*& bp, dot_t*& ff, dot_t*& np ) const
   {
-    bp = ff = np = 0;
+    bp = ff = np = nullptr;
 
-    for ( size_t i = 0, end = target_list().size(); i < end; i++ )
+    for (auto actor : target_list())
     {
-      player_t* actor = target_list()[ i ];
+      
       death_knight_td_t* tdata = td( actor );
 
       if ( tdata -> dots_blood_plague -> is_ticking() && ( ! bp || tdata -> dots_blood_plague -> remains() > bp -> remains() ) )
@@ -4973,7 +4973,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
   plague_strike_offhand_t* oh_attack;
 
   plague_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "plague_strike", p, p -> find_class_spell( "Plague Strike" ) ), oh_attack( 0 )
+    death_knight_melee_attack_t( "plague_strike", p, p -> find_class_spell( "Plague Strike" ) ), oh_attack( nullptr )
   {
     parse_options( options_str );
     special = true;
@@ -5691,7 +5691,7 @@ struct disease_expr_t : public expr_t
   double default_value;
 
   disease_expr_t( const action_t* a, const std::string& expression, type_e t ) :
-    expr_t( "disease_expr" ), type( t ), bp_expr( 0 ), ff_expr( 0 ), np_expr( 0 ),
+    expr_t( "disease_expr" ), type( t ), bp_expr( nullptr ), ff_expr( nullptr ), np_expr( nullptr ),
     default_value( 0 )
   {
     death_knight_t* p = debug_cast< death_knight_t* >( a -> player );
@@ -6144,7 +6144,7 @@ static expr_t* create_ready_in_expression( death_knight_t* player,
   action_t* action = player -> find_action( action_name );
   if ( ! action )
   {
-    return 0;
+    return nullptr;
   }
 
   return new ability_ready_expr_t( action );
@@ -6193,7 +6193,7 @@ static expr_t* create_rune_expression( death_knight_t* player,
 
   if ( rt == RUNE_TYPE_NONE )
   {
-    return 0;
+    return nullptr;
   }
 
   if ( util::str_compare_ci( rune_type_specifier, "death" ) )
@@ -7740,7 +7740,7 @@ double death_knight_t::composite_leech() const
 
 double death_knight_t::composite_melee_expertise( weapon_t* ) const
 {
-  double expertise = player_t::composite_melee_expertise( 0 );
+  double expertise = player_t::composite_melee_expertise( nullptr );
 
   expertise += spec.veteran_of_the_third_war -> effectN( 3 ).percent();
 
@@ -8563,7 +8563,7 @@ struct death_knight_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    death_knight_t* p = new death_knight_t( sim, name, r );
+    auto  p = new death_knight_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
     return p;
   }

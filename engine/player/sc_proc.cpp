@@ -30,7 +30,7 @@ const proc_parse_opt_t __proc_opts[] =
   { "smelee",      PF_MELEE_ABILITY                                            },
   { "wranged",     PF_RANGED                                                   },
   { "sranged",     PF_RANGED_ABILITY                                           },
-  { 0,             0                                                           },
+  { nullptr,             0                                                           },
 };
 
 const proc_parse_opt_t __proc2_opts[] =
@@ -48,14 +48,14 @@ const proc_parse_opt_t __proc2_opts[] =
   { "ms_hit",      PF2_MULTISTRIKE      },
   { "ms_crit",     PF2_MULTISTRIKE_CRIT },
   { "multistrike", PF2_ALL_MULTISTRIKE  },
-  { 0,             0                    },
+  { nullptr,             0                    },
 };
 
 bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
 {
-  for ( size_t i = 0, end = opts.size(); i < end; i++ )
+  for (auto & opt : opts)
   {
-    if ( util::str_compare_ci( opts[ i ], proc ) )
+    if ( util::str_compare_ci( opt, proc ) )
       return true;
   }
   return false;
@@ -186,9 +186,9 @@ void special_effect_t::reset()
   spell_id = 0;
   trigger_spell_id = 0;
 
-  execute_action = 0;
-  custom_buff = 0;
-  custom_init = 0;
+  execute_action = nullptr;
+  custom_buff = nullptr;
+  custom_init = nullptr;
 }
 
 // special_effect_t::driver =================================================
@@ -295,7 +295,7 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   }
 
   stat_buff_creator_t creator( player, name(), spell_data_t::nil(),
-                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
+                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
 
   // Setup the spell for the stat buff
   if ( trigger() -> id() > 0 )
@@ -354,7 +354,7 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
   }
 
   absorb_buff_creator_t creator( player, name(), spell_data_t::nil(),
-                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
+                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
 
   // Setup the spell for the stat buff
   if ( trigger() -> id() > 0 )
@@ -392,7 +392,7 @@ special_effect_buff_e special_effect_t::buff_type() const
 {
   if ( type == SPECIAL_EFFECT_CUSTOM )
     return SPECIAL_EFFECT_BUFF_CUSTOM;
-  else if ( custom_buff != 0 )
+  else if ( custom_buff != nullptr )
     return SPECIAL_EFFECT_BUFF_CUSTOM;
   else if ( is_stat_buff() )
     return SPECIAL_EFFECT_BUFF_STAT;
@@ -415,7 +415,7 @@ buff_t* special_effect_t::create_buff() const
     case SPECIAL_EFFECT_BUFF_ABSORB:
       return initialize_absorb_buff();
     default:
-      return 0;
+      return nullptr;
   }
 }
 
@@ -541,7 +541,7 @@ special_effect_action_e special_effect_t::action_type() const
 {
   if ( type == SPECIAL_EFFECT_CUSTOM )
     return SPECIAL_EFFECT_ACTION_CUSTOM;
-  else if ( execute_action != 0 )
+  else if ( execute_action != nullptr )
     return SPECIAL_EFFECT_ACTION_CUSTOM;
   else if ( is_offensive_spell_action() )
     return SPECIAL_EFFECT_ACTION_SPELL;

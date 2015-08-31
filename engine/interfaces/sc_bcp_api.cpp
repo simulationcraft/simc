@@ -120,7 +120,7 @@ const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talents,
   if ( spec_1.HasMember( "selected" ) )
     spec1_is_active = spec_1[ "selected" ].GetBool();
 
-  const rapidjson::Value* spec = 0;
+  const rapidjson::Value* spec = nullptr;
 
   if ( util::str_compare_ci( specifier, "active" ) )
     spec = spec1_is_active ? &spec_1 : &spec_2;
@@ -611,7 +611,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! profile.valid() )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   if ( sim -> debug && profile.valid() )
@@ -623,7 +623,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! name_obj.valid() || ! name_obj.get_value( player.name, "a/." ) )
   {
     sim -> errorf( "BCP API: Unable to extract player name from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   sc_xml_t class_obj = profile.get_node( "a", "class", "class" );
@@ -632,7 +632,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! class_obj.valid() || ! class_obj.get_value( class_name_data, "href" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
   else
   {
@@ -645,7 +645,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! module || ! module -> valid() )
   {
     sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
-    return 0;
+    return nullptr;
   }
 
   sc_xml_t level_obj = profile.get_node( "span", "class", "level" );
@@ -653,7 +653,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! level_obj.valid() || ! level_obj.get_value( level, "strong/." ) )
   {
     sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   sc_xml_t race_obj = profile.get_node( "a", "class", "race" );
@@ -662,7 +662,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! race_obj.valid() || ! race_obj.get_value( race_name_data, "href" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
   else
   {
@@ -674,7 +674,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( race_type == RACE_NONE )
   {
     sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   std::string name = player.name;
@@ -694,7 +694,7 @@ player_t* parse_player_html( sim_t*             sim,
   {
     sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
                    class_name.c_str(), name.c_str(), player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   p -> true_level = level;
@@ -719,14 +719,14 @@ player_t* parse_player_html( sim_t*             sim,
   {
     sim -> errorf( "BCP API: Unable to extract player talent specialization from '%s'.\n",
         player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   if ( ! parse_player_html_items( sim, p, profile ) )
   {
     sim -> errorf( "BCP API: Unable to extract player items from '%s'.\n",
         player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   return p;
@@ -745,7 +745,7 @@ player_t* parse_player( sim_t*             sim,
   if ( player.local_json.empty() )
   {
     if ( ! http::get( result, player.url, player.cleanurl, caching ) )
-      return 0;
+      return nullptr;
   }
   else
   {
@@ -761,7 +761,7 @@ player_t* parse_player( sim_t*             sim,
   if ( profile.HasParseError() )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   if ( sim -> debug )
@@ -778,7 +778,7 @@ player_t* parse_player( sim_t*             sim,
     sim -> errorf( "BCP API: Unable to download player from '%s', reason: %s\n",
                    player.cleanurl.c_str(),
                    profile[ "reason" ].GetString() );
-    return 0;
+    return nullptr;
   }
 
   if ( profile.HasMember( "name" ) )
@@ -787,25 +787,25 @@ player_t* parse_player( sim_t*             sim,
   if ( ! profile.HasMember( "level" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player level from '%s'. Using fallback method to import armory.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   if ( ! profile.HasMember( "class" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   if ( ! profile.HasMember( "race" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   if ( ! profile.HasMember( "talents" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player talents from '%s'.\n", player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   std::string class_name = util::player_type_string( util::translate_class_id( profile[ "class" ].GetUint() ) );
@@ -815,7 +815,7 @@ player_t* parse_player( sim_t*             sim,
   if ( ! module || ! module -> valid() )
   {
     sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
-    return 0;
+    return nullptr;
   }
 
   std::string name = player.name;
@@ -835,7 +835,7 @@ player_t* parse_player( sim_t*             sim,
   {
     sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
                    class_name.c_str(), name.c_str(), player.cleanurl.c_str() );
-    return 0;
+    return nullptr;
   }
 
   p -> true_level = profile[ "level" ].GetUint();
@@ -859,13 +859,13 @@ player_t* parse_player( sim_t*             sim,
   }
 
   if ( ! parse_talents( p, profile[ "talents" ], player.talent_spec ) )
-    return 0;
+    return nullptr;
 
   if ( ! parse_glyphs( p, profile[ "talents" ], player.talent_spec ) )
-    return 0;
+    return nullptr;
 
   if ( profile.HasMember( "items" ) && ! parse_items( p, profile[ "items" ] ) )
-    return 0;
+    return nullptr;
 
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
@@ -1300,9 +1300,9 @@ bool bcp_api::download_guild( sim_t* sim,
 
   range::sort( names );
 
-  for ( std::size_t i = 0, n = names.size(); i < n; ++i )
+  for (auto & cname : names)
   {
-    const std::string& cname = names[ i ];
+    
     std::cout << "Downloading character: " << cname << std::endl;
     download_player( sim, region, server, cname, "active", caching );
   }
@@ -1320,7 +1320,7 @@ bool bcp_api::download_glyph( player_t*          player,
   const std::string& region =
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
 
-  unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
+  unsigned glyphid = strtoul( glyph_id.c_str(), nullptr, 10 );
   rapidjson::Document js;
   if ( ! download_id( js, region, glyphid, player -> sim -> apikey, caching ) || js.HasParseError() || ! js.HasMember( "name" ) )
   {

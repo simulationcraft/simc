@@ -170,7 +170,7 @@ class tooltip_parser_t
 
 public:
   tooltip_parser_t( const dbc_t& d, int l, const spell_data_t& s, const std::string& t ) :
-    default_spell( s ), dbc( d ), player( 0 ), level( l ), text( t ), pos( t.begin() ) {}
+    default_spell( s ), dbc( d ), player( nullptr ), level( l ), text( t ), pos( t.begin() ) {}
 
   tooltip_parser_t( const player_t& p, const spell_data_t& s, const std::string& t ) :
     default_spell( s ), dbc( p.dbc ), player( &p ), level( p.true_level ), text( t ), pos( t.begin() ) {}
@@ -483,7 +483,7 @@ void report::print_spell_query( std::ostream& out, const sim_t& sim, const spell
 {
 
   expr_data_e data_type = sq.data_type;
-  for ( std::vector<uint32_t>::const_iterator i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
+  for ( auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
   {
     switch ( data_type )
     {
@@ -517,7 +517,7 @@ void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim, 
 {
 
   expr_data_e data_type = sq.data_type;
-  for ( std::vector<uint32_t>::const_iterator i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
+  for ( auto i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
   {
     switch ( data_type )
     {
@@ -895,7 +895,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
 
       highchart::histogram_chart_t chart( tokenized_div_name, p -> sim );
       chart.set_toggle_id( "actor" + util::to_string( p -> index ) + "_" + tokenized_div_name + "_stats_toggle" );
-      if ( chart::generate_distribution( chart, 0, data.distribution, name, data.mean(), data.min(), data.max() ) )
+      if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
       {
         os << chart.to_target_div();
         p -> sim -> add_chart_data( chart );

@@ -542,9 +542,9 @@ public:
     moderate_stagger_threshold( 0.035 ),
     heavy_stagger_threshold( 0.065 ),
     weapon_power_mod( 0 ),
-    eluding_movements( 0 ),
-    soothing_breeze( 0 ),
-    furious_sun( 0 )
+    eluding_movements( nullptr ),
+    soothing_breeze( nullptr ),
+    furious_sun( nullptr )
   {
     // actives
     _active_stance = FIERCE_TIGER;
@@ -713,7 +713,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_action_base_t( const std::string& n,
                        storm_earth_and_fire_pet_t* p,
                        const spell_data_t* data = spell_data_t::nil() ) :
-      BASE( n, p, data ), source_action( 0 )
+      BASE( n, p, data ), source_action( nullptr )
     {
       // Make SEF attacks always background, so they do not consume resources
       // or do anything associated with "foreground actions".
@@ -845,7 +845,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     int n_targets() const
     { return source_action ? source_action -> n_targets() : super_t::n_targets(); }
 
-    void schedule_execute( action_state_t* state = 0 )
+    void schedule_execute( action_state_t* state = nullptr )
     {
       // Never execute an ability if there's no source action. Things will crash.
       if ( ! source_action )
@@ -879,7 +879,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_melee_attack_t( const std::string& n,
                         storm_earth_and_fire_pet_t* p,
                         const spell_data_t* data = spell_data_t::nil(),
-                        weapon_t* w = 0 ) :
+                        weapon_t* w = nullptr ) :
       base_t( n, p, data ),
       // For special attacks, the SEF pets always use the owner's weapons.
       main_hand( ! w ? true : false ), off_hand( ! w ? true : false )
@@ -1088,7 +1088,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       if ( player -> is_moving() ) return false;
 
-      return ( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+      return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
   };
 
@@ -1496,7 +1496,7 @@ public:
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
-    tiger_power( 0 ), attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN )
+    tiger_power( nullptr ), attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1685,7 +1685,7 @@ private:
 
   struct crackling_tiger_lightning_driver_t: public spell_t
   {
-    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ): spell_t( "crackling_tiger_lightning_driver", p, NULL )
+    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ): spell_t( "crackling_tiger_lightning_driver", p, nullptr )
     {
       parse_options( options_str );
 
@@ -1738,7 +1738,7 @@ private:
     {
       if ( player -> is_moving() ) return false;
 
-      return ( player->main_hand_attack -> execute_event == 0 ); // not swinging
+      return ( player->main_hand_attack -> execute_event == nullptr ); // not swinging
     }
   };
 
@@ -2093,7 +2093,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   monk_melee_attack_t( const std::string& n, monk_t* player,
                        const spell_data_t* s = spell_data_t::nil() ):
                        base_t( n, player, s ),
-                       mh( NULL ), oh( NULL )
+                       mh( nullptr ), oh( nullptr )
   {
     special = true;
     may_glance = false;
@@ -2934,7 +2934,7 @@ struct tick_action_t : public monk_melee_attack_t
       {
         p() -> resource_gain( RESOURCE_CHI,
                               p() -> buff.power_strikes -> default_value,
-                              0,
+                              nullptr,
                               this );
       }
       else
@@ -3361,7 +3361,7 @@ struct auto_attack_t: public monk_melee_attack_t
     if ( p() -> current.distance_to_move > 5 )
       return false;
 
-    return( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -3830,7 +3830,7 @@ struct chi_burst_t: public monk_spell_t
   chi_burst_heal_t* heal;
   chi_burst_t( monk_t* player, const std::string& options_str ):
     monk_spell_t( "chi_burst", player, player -> talent.chi_burst ),
-    heal( 0 )
+    heal( nullptr )
   {
     sef_ability = SEF_CHI_BURST;
 
@@ -3862,7 +3862,7 @@ struct chi_torpedo_t: public monk_spell_t
   chi_torpedo_heal_t* heal;
   chi_torpedo_t( monk_t* player, const std::string& options_str ):
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() ),
-    heal( 0 )
+    heal( nullptr )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3907,7 +3907,7 @@ struct summon_pet_t: public monk_spell_t
 public:
   summon_pet_t( const std::string& n, const std::string& pname, monk_t* p, const spell_data_t* sd = spell_data_t::nil() ):
     monk_spell_t( n, p, sd ),
-    summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( 0 )
+    summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( nullptr )
   {
     harmful = false;
   }
@@ -4712,7 +4712,7 @@ struct expel_harm_heal_t : public monk_heal_t
       if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
         p() -> resource_gain( RESOURCE_CHI,
         p() -> buff.power_strikes -> default_value,
-        0, this );
+        nullptr, this );
       else
         p() -> buff.chi_sphere -> trigger();
 
@@ -5197,16 +5197,16 @@ namespace buffs
     // Extra Health is set by current max_health, doesn't change when max_health changes.
     health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.glyph.fortifying_brew -> ok() ? monk.glyph.fortifying_brew -> effectN( 2 ).percent() :
       monk.spec.fortifying_brew -> effectN( 1 ).percent() ) );
-    monk.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
-    monk.stat_gain( STAT_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
+    monk.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    monk.stat_gain( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
-    monk.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
-    monk.stat_loss( STAT_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
+    monk.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    monk.stat_loss( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
   }
 };
 }
@@ -5742,9 +5742,9 @@ bool monk_t::has_t18_class_trinket() const
 {
   switch ( specialization() )
   {
-    case MONK_BREWMASTER:   return eluding_movements != 0;
-    case MONK_MISTWEAVER:   return soothing_breeze != 0;
-    case MONK_WINDWALKER:   return furious_sun != 0;
+    case MONK_BREWMASTER:   return eluding_movements != nullptr;
+    case MONK_MISTWEAVER:   return soothing_breeze != nullptr;
+    case MONK_WINDWALKER:   return furious_sun != nullptr;
     default:                return false;
   }
 }
@@ -7260,7 +7260,7 @@ struct monk_module_t: public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    monk_t* p = new monk_t( sim, name, r );
+    auto  p = new monk_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new monk_report_t( *p ) );
     return p;
   }

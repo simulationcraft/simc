@@ -1046,7 +1046,7 @@ public:
     return false;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 ) override
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     cancel_shadowform();
 
@@ -2050,7 +2050,7 @@ public:
     priest_spell_t( n, p, sd ),
     summoning_duration ( timespan_t::zero() ),
     pet_name( n ),
-    pet( 0 )
+    pet( nullptr )
   {
     harmful = false;
   }
@@ -2266,7 +2266,7 @@ struct mind_blast_t : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 ) override
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     if ( priest.buffs.shadowy_insight -> up() )
     {
@@ -3723,12 +3723,12 @@ public:
   player_t* get_next_player( player_t* currentTarget )
   {
     player_t* t = nullptr;
-    player_t* furthest = 0;
+    player_t* furthest = nullptr;
     double furthest_distance = 0;
     // Get target at first position
     if ( !targets.empty() )
     {
-      for ( std::vector<player_t*>::iterator it = targets.begin(); it != targets.end(); it++ )
+      for ( auto it = targets.begin(); it != targets.end(); it++ )
       {
         t = *it;
 
@@ -4668,7 +4668,7 @@ struct holy_word_t : public priest_spell_t
     hw_serenity -> action_list = action_list;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 ) override
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     action_t* a;
 
@@ -4712,7 +4712,7 @@ struct lightwell_t : public priest_spell_t
   lightwell_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "lightwell", p, p.find_class_spell( "Lightwell" ) ),
     consume_interval( timespan_t::from_seconds( 10 ) ),
-    lightwell_renew_cd( 0 )
+    lightwell_renew_cd( nullptr )
   {
     add_option( opt_timespan( "consume_interval", consume_interval ) );
     parse_options( options_str );
@@ -6587,15 +6587,15 @@ bool priest_t::has_t18_class_trinket() const
 {
   if ( specialization() == PRIEST_DISCIPLINE )
   {
-    return active_items.naarus_discipline != 0;
+    return active_items.naarus_discipline != nullptr;
   }
   else if ( specialization() == PRIEST_HOLY )
   {
-    return active_items.complete_healing != 0;
+    return active_items.complete_healing != nullptr;
   }
   else if ( specialization() == PRIEST_SHADOW )
   {
-    return active_items.mental_fatigue != 0;
+    return active_items.mental_fatigue != nullptr;
   }
 
   return false;
@@ -7365,7 +7365,7 @@ struct priest_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
-    priest_t* p = new priest_t( sim, name, r );
+    auto  p = new priest_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new priest_report_t( *p ) );
     return p;
   }

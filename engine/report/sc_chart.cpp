@@ -1419,7 +1419,7 @@ std::string chart::reforge_dps( player_t* p )
   }
   else if ( num_stats == 3 )
   {
-    if ( max_dps == 0 ) return 0;
+    if ( max_dps == 0 ) return nullptr;
 
     std::vector<std::vector<double> > triangle_points;
     std::vector< std::string > colors;
@@ -1806,7 +1806,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
       case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
-      default: name = 0; break;
+      default: name = nullptr; break;
       }
 
       if ( name )
@@ -2032,7 +2032,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( player_t* p 
       double value = positive_normalizing_value ? p -> scaling[sm].get_stat( i ) : -p -> scaling[sm].get_stat( i );
       if ( value == 0 ) continue;
 
-      const char* name = 0;
+      const char* name = nullptr;
       switch ( i )
       {
       case STAT_STRENGTH:           name = "Strength";break;
@@ -2774,9 +2774,9 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
 
 static void add_color_data( sc_js_t& data, const std::vector<const player_t*>& player_list )
 {
-  for ( size_t i = 0, end = player_list.size(); i < end; ++i )
+  for (auto p : player_list)
   {
-    const player_t* p = player_list[ i ];
+    
     data.set( "__colors." + p -> name_str, color::class_color( p -> type ).str() );
   }
 }
@@ -2848,7 +2848,7 @@ static metric_e populate_player_list( const std::string& type,
                                   std::vector<const player_t*>& pl,
                                   std::string& name )
 {
-  std::vector<player_t*>* source_list = 0;
+  std::vector<player_t*>* source_list = nullptr;
   metric_e m = METRIC_NONE;
 
   if ( util::str_compare_ci( type, "dps" ) )
@@ -2894,7 +2894,7 @@ static metric_e populate_player_list( const std::string& type,
     m = METRIC_VARIANCE;
   }
 
-  if ( source_list != 0 )
+  if ( source_list != nullptr )
   {
     range::remove_copy_if( *source_list, back_inserter( pl ), filter_non_performing_players( type ) );
   }
@@ -2916,7 +2916,7 @@ static double compute_median( const std::vector<const player_t*>& pl, metric_e m
 
   size_t m = pl.size() / 2;
 
-  const extended_sample_data_t* d1 = 0, * d2 = 0;
+  const extended_sample_data_t* d1 = nullptr, * d2 = nullptr;
   double median = 0;
 
   switch ( metric )
@@ -2959,7 +2959,7 @@ static double compute_median( const std::vector<const player_t*>& pl, metric_e m
 
 static std::vector<double> get_data_summary( const player_collected_data_t& container, metric_e metric, double percentile = 0.25 )
 {
-  const extended_sample_data_t* c = 0;
+  const extended_sample_data_t* c = nullptr;
   std::vector<double> data( 5, 0 );
   switch ( metric )
   {
@@ -2996,7 +2996,7 @@ static std::vector<double> get_data_summary( const player_collected_data_t& cont
 
 static double get_data_value( const player_collected_data_t& container, metric_e metric, metric_value_e val )
 {
-  const extended_sample_data_t* c = 0;
+  const extended_sample_data_t* c = nullptr;
   switch ( metric )
   {
     case METRIC_DPS:
@@ -3076,7 +3076,7 @@ struct player_list_comparator_t
 
   bool operator()( const player_t* p1, const player_t* p2 )
   {
-    const extended_sample_data_t* d_p1 = 0, * d_p2 = 0;
+    const extended_sample_data_t* d_p1 = nullptr, * d_p2 = nullptr;
     switch ( metric_ )
     {
       case METRIC_DPS:

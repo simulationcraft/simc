@@ -225,7 +225,7 @@ struct rng_xorshift1024_t : public rng_t
   { 
     rng_xorshift64_t xs64;
     xs64.seed( start );
-    for( int i=0; i<16; i++ ) s[i]=xs64.next();
+    for(auto & elem : s) elem=xs64.next();
     p = 0;
   }
 

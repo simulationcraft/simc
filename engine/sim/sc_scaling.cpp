@@ -97,8 +97,8 @@ struct compare_scale_factors
 // scaling_t::scaling_t =====================================================
 
 scaling_t::scaling_t( sim_t* s ) :
-  sim( s ), baseline_sim( 0 ), ref_sim( 0 ), delta_sim( 0 ), ref_sim2( 0 ),
-  delta_sim2( 0 ),
+  sim( s ), baseline_sim( nullptr ), ref_sim( nullptr ), delta_sim( nullptr ), ref_sim2( nullptr ),
+  delta_sim2( nullptr ),
   scale_stat( STAT_NONE ),
   scale_value( 0 ),
   scale_delta_multiplier( 1.0 ),
@@ -131,7 +131,7 @@ double scaling_t::progress( std::string& phase, std::string* detailed )
   {
     phase = "Baseline";
     if ( ! baseline_sim ) return 0;
-    return baseline_sim -> progress( 0, 0, detailed );
+    return baseline_sim -> progress( nullptr, nullptr, detailed );
   }
 
   phase  = "Scaling - ";
@@ -335,16 +335,16 @@ void scaling_t::analyze_stats()
     if ( ref_sim != baseline_sim && ref_sim != sim )
     {
       delete ref_sim;
-      ref_sim = 0;
+      ref_sim = nullptr;
     }
     delete delta_sim;  
-    delta_sim  = 0;
+    delta_sim  = nullptr;
     remaining_scaling_stats--;
     mutex.unlock();
   }
 
   if ( baseline_sim != sim ) delete baseline_sim;
-  baseline_sim = 0;
+  baseline_sim = nullptr;
 }
 
 /* Creates scale factors for stats_t objects
@@ -433,7 +433,7 @@ void scaling_t::analyze_lag()
 
   if ( ref_sim != sim ) delete ref_sim;
   delete delta_sim;
-  delta_sim = ref_sim = 0;
+  delta_sim = ref_sim = nullptr;
 }
 
 // scaling_t::normalize =====================================================

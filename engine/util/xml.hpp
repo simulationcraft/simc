@@ -33,10 +33,10 @@ struct sc_xml_t
   char *buf;
   xml_node<>* root;
 
-  sc_xml_t() : buf( 0 ), root( 0 )
+  sc_xml_t() : buf( nullptr ), root( nullptr )
   { }
 
-  sc_xml_t( xml_node<>* n ) : buf( 0 ), root( n )
+  sc_xml_t( xml_node<>* n ) : buf( nullptr ), root( n )
   { }
 
   sc_xml_t( xml_node<>* n, char* b ) : buf( b ), root( n )
@@ -48,7 +48,7 @@ struct sc_xml_t
   sc_xml_t( const sc_xml_t& other )
   {
     root = other.root;
-    buf = 0;
+    buf = nullptr;
   }
 
   sc_xml_t& operator=( const sc_xml_t& other )
@@ -58,14 +58,14 @@ struct sc_xml_t
       return *this;
     }
 
-    assert( buf == 0 );
+    assert( buf == nullptr );
     root = other.root;
 
     return *this;
   }
 
   bool valid() const
-  { return root != 0; }
+  { return root != nullptr; }
 
   std::string name() const
   { return root ? std::string( root -> name() ) : std::string(); }

@@ -687,7 +687,7 @@ void absorb_t::assess_damage( dmg_e  /*heal_type*/ , // commented to remove comp
   //s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
 
 
-  if ( target_specific[ s -> target ] == 0 )
+  if ( target_specific[ s -> target ] == nullptr )
     target_specific[ s -> target ] = create_buff( s );
 
   if ( result_is_hit( s -> result ) )

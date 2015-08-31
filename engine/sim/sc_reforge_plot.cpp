@@ -45,7 +45,7 @@ bool is_plot_stat( sim_t* sim,
 
 reforge_plot_t::reforge_plot_t( sim_t* s ) :
   sim( s ),
-  current_reforge_sim( 0 ),
+  current_reforge_sim( nullptr ),
   reforge_plot_step( 20 ),
   reforge_plot_amount( 200 ),
   reforge_plot_iterations( -1 ),
@@ -247,7 +247,7 @@ void reforge_plot_t::analyze_stats()
     if ( current_reforge_sim )
     {
       delete current_reforge_sim;
-      current_reforge_sim = 0;
+      current_reforge_sim = nullptr;
     }
   }
 }

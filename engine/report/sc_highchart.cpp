@@ -280,12 +280,12 @@ void chart_t::add_simple_series( const std::string& type,
   }
 
   rapidjson::Value arr( rapidjson::kArrayType );
-  for ( size_t i = 0, end = series.size(); i < end; ++i )
+  for (auto & serie : series)
   {
     rapidjson::Value pair( rapidjson::kArrayType );
-    pair.PushBack( series[ i ].x_, js_.GetAllocator() );
-    pair.PushBack( series[ i ].v1_, js_.GetAllocator() );
-    pair.PushBack( series[ i ].v2_, js_.GetAllocator() );
+    pair.PushBack( serie.x_, js_.GetAllocator() );
+    pair.PushBack( serie.v1_, js_.GetAllocator() );
+    pair.PushBack( serie.v2_, js_.GetAllocator() );
 
     arr.PushBack( pair, js_.GetAllocator() );
   }
@@ -322,11 +322,11 @@ void chart_t::add_simple_series( const std::string& type,
   }
 
   rapidjson::Value arr( rapidjson::kArrayType );
-  for ( size_t i = 0, end = series.size(); i < end; ++i )
+  for (auto & serie : series)
   {
     rapidjson::Value pair( rapidjson::kArrayType );
-    pair.PushBack( series[ i ].first, js_.GetAllocator() );
-    pair.PushBack( series[ i ].second, js_.GetAllocator() );
+    pair.PushBack( serie.first, js_.GetAllocator() );
+    pair.PushBack( serie.second, js_.GetAllocator() );
 
     arr.PushBack( pair, js_.GetAllocator() );
   }

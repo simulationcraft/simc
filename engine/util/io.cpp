@@ -43,9 +43,9 @@ std::string narrow( const wchar_t* first, const wchar_t* last )
 
 bool contains_non_ascii( const std::string& s )
 {
-  for ( std::string::const_iterator it = s.begin(), itEnd = s.end(); it != itEnd; ++it )
+  for (const auto & elem : s)
   {
-    if ( *it < 0 || ! isprint( *it ) )
+    if ( elem < 0 || ! isprint( elem ) )
       return true;
   }
 
@@ -119,8 +119,8 @@ std::string maybe_latin1_to_utf8( const std::string& str )
   {
     // We hit something invalid. Start over, treating the whole string as Latin-1.
     result.clear();
-    for ( iterator first = str.begin(), last = str.end(); first != last ; ++first )
-      utf8::append( static_cast<unsigned char>( *first ), std::back_inserter( result ) );
+    for (const auto & elem : str)
+      utf8::append( static_cast<unsigned char>( elem ), std::back_inserter( result ) );
   }
 
   return result;

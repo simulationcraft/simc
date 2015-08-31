@@ -39,12 +39,12 @@ const struct proc_map_t _proc_flag_map[] =
   { PF_JUMP,                 "Proc on jump"            },
   { PF_OFFHAND,              "Melee Off-Hand"          },
   { PF_DEATH,                "Death"                   },
-  { 0,                       0                         }
+  { 0,                       nullptr                         }
 };
 
 const struct { const char* name; player_e pt; } _class_map[] =
 {
-  { 0, PLAYER_NONE },
+  { nullptr, PLAYER_NONE },
   { "Warrior", WARRIOR },
   { "Paladin", PALADIN },
   { "Hunter", HUNTER },
@@ -56,12 +56,12 @@ const struct { const char* name; player_e pt; } _class_map[] =
   { "Warlock", WARLOCK },
   { "Monk", MONK },
   { "Druid", DRUID },
-  { 0, PLAYER_NONE },
+  { nullptr, PLAYER_NONE },
 };
 
 const char * _race_strings[] =
 {
-  0,
+  nullptr,
   "Human",
   "Orc",
   "Dwarf",
@@ -73,18 +73,18 @@ const char * _race_strings[] =
   "Goblin",
   "Blood Elf",
   "Draenei",
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
   "Worgen",
   "Pandaren",
   "Pandaren (Alliance)",
   "Pandaren (Horde)",
-  0
+  nullptr
 };
 
 const char * _resource_strings[] =
 {
   "Health", // -2
-  0,
+  nullptr,
   "Base Mana",
   "Rage",
   "Focus",
@@ -95,62 +95,62 @@ const char * _resource_strings[] =
   "Soul Shard",
   "Eclipse",
   "Holy Power",
-  0,
-  0,
+  nullptr,
+  nullptr,
   "Chi",
   "Shadow Orb",
   "Burning Ember",
   "Demonic Fury",
-  0
+  nullptr
 };
 
 const char* _attribute_strings[] =
 {
-  0,                       "Ranged ability",        0,                        0,                     0,                       // 0
-  0,                       "Passive",               "Hidden",                 0,                     0,                       // 5
-  0,                       0,                       0,                        0,                     0,                       // 10
-  0,                       0,                       0,                        0,                     0,                       // 15
-  0,                       0,                       0,                        0,                     0,                       // 20
-  0,                       0,                       0,                        0,                     0,                       // 25
-  0,                       0,                       0,                        0,                     "Channeled",             // 30
-  0,                       0,                       0,                        "Channeled",           0,                       // 35
-  0,                       0,                       0,                        0,                     0,                       // 40
-  0,                       0,                       0,                        0,                     0,                       // 45
-  0,                       0,                       0,                        0,                     0,                       // 50
-  0,                       0,                       0,                        0,                     0,                       // 55
-  0,                       0,                       0,                        0,                     0,                       // 60
-  0,                       0,                       0,                        0,                     0,                       // 65
-  0,                       0,                       0,                        0,                     0,                       // 70
-  0,                       0,                       0,                        0,                     0,                       // 75
-  0,                       0,                       0,                        0,                     0,                       // 80
-  0,                       0,                       0,                        0,                     0,                       // 85
-  0,                       0,                       0,                        0,                     0,                       // 90
-  0,                       0,                       0,                        0,                     0,                       // 95
-  0,                       0,                       0,                        0,                     0,                       // 100
-  "Not a proc",            0,                       0,                        0,                     0,                       // 105
-  0,                       0,                       "Disable player procs",   "Disable target procs",0,                       // 110
-  0,                       0,                       0,                        0,                     0,                       // 115
-  0,                       0,                       0,                        0,                     0,                       // 120
-  0,                       0,                       0,                        0,                     0,                       // 125
-  0,                       0,                       0,                        0,                     0,                       // 130
-  0,                       0,                       0,                        0,                     0,                       // 135
-  0,                       0,                       0,                        0,                     0,                       // 140
-  0,                       0,                       0,                        0,                     0,                       // 145
-  0,                       "Disable weapon procs",  0,                        0,                     0,                       // 150
-  0,                       0,                       0,                        0,                     0,                       // 155
-  0,                       0,                       0,                        0,                     0,                       // 160
+  nullptr,                       "Ranged ability",        nullptr,                        nullptr,                     nullptr,                       // 0
+  nullptr,                       "Passive",               "Hidden",                 nullptr,                     nullptr,                       // 5
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 10
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 15
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 20
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 25
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     "Channeled",             // 30
+  nullptr,                       nullptr,                       nullptr,                        "Channeled",           nullptr,                       // 35
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 40
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 45
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 50
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 55
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 60
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 65
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 70
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 75
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 80
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 85
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 90
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 95
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 100
+  "Not a proc",            nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 105
+  nullptr,                       nullptr,                       "Disable player procs",   "Disable target procs",nullptr,                       // 110
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 115
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 120
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 125
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 130
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 135
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 140
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 145
+  nullptr,                       "Disable weapon procs",  nullptr,                        nullptr,                     nullptr,                       // 150
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 155
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 160
 };
 
 const char * _property_type_strings[] =
 {
   "Generic Modifier",      "Spell Duration",        "Spell Generated Threat", "Spell Effect 1",      "Stack Amount",          // 0
   "Spell Range",           "Spell Radius",          "Spell Critical Chance",  "Spell Tick Time",     "Spell Pushback",        // 5
-  "Spell Cast Time",       "Spell Cooldown",        "Spell Effect 2",         0,                     "Spell Resource Cost",   // 10
+  "Spell Cast Time",       "Spell Cooldown",        "Spell Effect 2",         nullptr,                     "Spell Resource Cost",   // 10
   "Spell Critical Damage", "Spell Penetration",     "Spell Targets",          "Spell Proc Chance",   "Unknown 2",             // 15
   "Spell Target Bonus",    "Spell Global Cooldown", "Spell Periodic Damage",  "Spell Effect 3",      "Spell Power",           // 20
-  0,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", 0,                       // 25
-  0,                       0,                       "Spell Effect 4",         0,                     0,                       // 30
-  0,                       0,                       0,                        0,                     0                        // 35
+  nullptr,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", nullptr,                       // 25
+  nullptr,                       nullptr,                       "Spell Effect 4",         nullptr,                     nullptr,                       // 30
+  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr                        // 35
 };
 
 const char * _effect_type_strings[] =
@@ -163,126 +163,126 @@ const char * _effect_type_strings[] =
   "Weapon Type",        "Defense",                  "Persistent Area Aura", "Summon",                   "Leap",                  // 25
   "Energize Power",     "Weapon Damage%",           "Trigger Missiles",     "Open Lock",                "Summon Item",           // 30
   "Apply Party Aura",   "Learn Spell",              "Spell Defense",        "Dispel",                   "Language",              // 35
-  "Dual Wield",         0,                          0,                      0,                          0,                       // 40
-  0,                    0,                          0,                      "Stealth",                  "Detect",                // 45
-  0,                    0,                          "Guaranteed Hit",       0,                          0,                       // 50
-  0,                    "Summon Pet",               0,                      "Weapon Damage",            0,                       // 55
-  0,                    0,                          "Power Burn",           "Threat",                   "Trigger Spell",         // 60
-  "Apply Raid Aura",    0,                          0,                      "Interrupt Cast",           "Distract",              // 65
-  "Pull",               "Pick Pocket",              0,                      0,                          0,                       // 70
-  0,                    0,                          "Server Side Script",   "Attack",                   0,                       // 75
-  "Add Combo Points",   0,                          0,                      0,                          0,                       // 80
-  "Summon Player",      0,                          0,                      0,                          0,                       // 85
-  0,                    "Threat All",               0,                      0,                          "Self Resurrect",        // 90
-  0,                    "Charge",                   "Summon All Totems",    "Knock Back",               0,                       // 95
-  0,                    "Feed Pet",                 "Dismiss Pet",          0,                          0,                       // 100
-  0,                    0,                          0,                      0,                          "Summon Dead Pet",       // 105
-  "Destroy All Totems", 0,                          0,                      "Resurrect",                0,                       // 110
-  0,                    0,                          0,                      0,                          "Apply Pet Area Aura",   // 115
-  0,                    "Normalized Weapon Damage", 0,                      0,                          "Pull Player",           // 120
-  "Modify Threat",      "Steal Beneficial Aura",    0,                      "Apply Friendly Area Aura", "Apply Enemy Area Aura", // 125
-  "Redirect Threat",    0,                          0,                      0,                          0,                       // 130
-  "Call Pet",           "Direct Heal%",             "Energize Power%",      "Leap Back",                0,                       // 135
-  0,                    0,                          "Trigger Spell w/ Value", "Apply Owner Area Aura",    0,                       // 140
-  0,                    "Activate Rune",            0,                      0,                          0,                       // 145
-  0,                    "Trigger Spell",            0,                      0,                          0,                       // 150
-  "Titan Grip",         "Add Socket",               "Create Item",          0,                          0,                       // 155
-  0,                    0,                          0,                      0,                          0,                       // 160
-  0,                    0,                          0,                                                                           // 165
+  "Dual Wield",         nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 40
+  nullptr,                    nullptr,                          nullptr,                      "Stealth",                  "Detect",                // 45
+  nullptr,                    nullptr,                          "Guaranteed Hit",       nullptr,                          nullptr,                       // 50
+  nullptr,                    "Summon Pet",               nullptr,                      "Weapon Damage",            nullptr,                       // 55
+  nullptr,                    nullptr,                          "Power Burn",           "Threat",                   "Trigger Spell",         // 60
+  "Apply Raid Aura",    nullptr,                          nullptr,                      "Interrupt Cast",           "Distract",              // 65
+  "Pull",               "Pick Pocket",              nullptr,                      nullptr,                          nullptr,                       // 70
+  nullptr,                    nullptr,                          "Server Side Script",   "Attack",                   nullptr,                       // 75
+  "Add Combo Points",   nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 80
+  "Summon Player",      nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 85
+  nullptr,                    "Threat All",               nullptr,                      nullptr,                          "Self Resurrect",        // 90
+  nullptr,                    "Charge",                   "Summon All Totems",    "Knock Back",               nullptr,                       // 95
+  nullptr,                    "Feed Pet",                 "Dismiss Pet",          nullptr,                          nullptr,                       // 100
+  nullptr,                    nullptr,                          nullptr,                      nullptr,                          "Summon Dead Pet",       // 105
+  "Destroy All Totems", nullptr,                          nullptr,                      "Resurrect",                nullptr,                       // 110
+  nullptr,                    nullptr,                          nullptr,                      nullptr,                          "Apply Pet Area Aura",   // 115
+  nullptr,                    "Normalized Weapon Damage", nullptr,                      nullptr,                          "Pull Player",           // 120
+  "Modify Threat",      "Steal Beneficial Aura",    nullptr,                      "Apply Friendly Area Aura", "Apply Enemy Area Aura", // 125
+  "Redirect Threat",    nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 130
+  "Call Pet",           "Direct Heal%",             "Energize Power%",      "Leap Back",                nullptr,                       // 135
+  nullptr,                    nullptr,                          "Trigger Spell w/ Value", "Apply Owner Area Aura",    nullptr,                       // 140
+  nullptr,                    "Activate Rune",            nullptr,                      nullptr,                          nullptr,                       // 145
+  nullptr,                    "Trigger Spell",            nullptr,                      nullptr,                          nullptr,                       // 150
+  "Titan Grip",         "Add Socket",               "Create Item",          nullptr,                          nullptr,                       // 155
+  nullptr,                    nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 160
+  nullptr,                    nullptr,                          nullptr,                                                                           // 165
 };
 
 const char * _effect_subtype_strings[] =
 {
-  "None",                       0,                          "Possess",              "Periodic Damage",          "Dummy",                              // 0
+  "None",                       nullptr,                          "Possess",              "Periodic Damage",          "Dummy",                              // 0
   "Confuse",                    "Charm",                    "Fear",                 "Periodic Heal",            "Attack Speed",                       // 5
   "Threat",                     "Taunt",                    "Stun",                 "Damage Done",              "Damage Taken",                       // 10
   "Damage Shield",              "Stealth",                  "Stealth Detection",    "Invisibility",             "Invisibility Detection",             // 15
-  "Periodic Heal%",             0,                          "Resistance",           "Periodic Trigger Spell",   "Periodic Energize Power",            // 20
+  "Periodic Heal%",             nullptr,                          "Resistance",           "Periodic Trigger Spell",   "Periodic Energize Power",            // 20
   "Pacify",                     "Root",                     "Silence",              "Spell Reflection",         "Attribute",                          // 25
   "Skill",                      "Increase Speed%",          "Increase Mounted Speed%", "Decrease Movement Speed%", "Increase Health",                 // 30
-  "Increase Energy",            "Shapeshift",               "Immunity Against External Movement", 0,            "School Immunity",                    // 35
-  0,                            0,                          "Proc Trigger Spell",   "Proc Trigger Damage",      "Track Creatures",                    // 40
-  0,                            0,                          "Modify Parry%",        0,                          "Modify Dodge%",                      // 45
+  "Increase Energy",            "Shapeshift",               "Immunity Against External Movement", nullptr,            "School Immunity",                    // 35
+  nullptr,                            nullptr,                          "Proc Trigger Spell",   "Proc Trigger Damage",      "Track Creatures",                    // 40
+  nullptr,                            nullptr,                          "Modify Parry%",        nullptr,                          "Modify Dodge%",                      // 45
   "Modify Critical Heal Bonus", "Modify Block%",            "Modify Crit%",         "Periodic Health Leech",    "Modify Hit%",                        // 50
-  "Modify Spell Hit%",          0,                          "Modify Spell Crit%",   0,                          0,                                    // 55
-  "Pacify Silence",             "Scale%",                   0,                      0,                          "Periodic Mana Leech",                // 60
+  "Modify Spell Hit%",          nullptr,                          "Modify Spell Crit%",   nullptr,                          nullptr,                                    // 55
+  "Pacify Silence",             "Scale%",                   nullptr,                      nullptr,                          "Periodic Mana Leech",                // 60
   "Modify Spell Haste%",        "Feign Death",              "Disarm",               "Stalked",                  "Absorb Damage",                      // 65
-  0,                            0,                          "Modify Power Cost%",   "Modify Power Cost",        "Reflect Spells",                     // 70
-  0,                            0,                          "Mechanic Immunity",    0,                          "Modify Damage Done%",   // 75
-  "Modify Attribute%",          0,                          0,                      0,                          0,                       // 80
-  "Modify Power Regeneration",  0,                          "Modify Damage Taken%", 0,                          0,                       // 85
-  0,                            0,                          0,                      0,                          0,                       // 90
-  0,                            0,                          0,                      0,                          "Modify Attack Power",   // 95
-  0,                            "Modify Armor%",            0,                      0,                          "Modify Attack Power",   // 100
-  0,                            0,                          "Add Flat Modifier",    "Add Percent Modifier",     0,                       // 105
-  "Mod Power Regen",                            0,                          0,                      0,                          0,       // 110
-  0,                            0,                          0,                      0,                          0,                       // 115
-  0,                            0,                          0,                      0,                          "Modify Ranged Attack Power", // 120
-  0,                            0,                          0,                      0,                          0,                       // 125
-  0,                            0,                          0,                      0,                          0,                       // 130
-  "Modify Healing Power",       "Modify Healing% Done",     "Modify Total Stat%",   "Modify Melee Haste%",      0,                       // 135
-  "Modify Ranged Haste%",       0,                          "Modify Base Resistance",0,                         0,                       // 140
-  0,                            0,                          0,                      0,                          0,                       // 145
-  0,                            0,                          0,                      0,                          0,                       // 150
-  0,                            0,                          0,                      0,                          0,                       // 155
-  0,                            0,                          0,                      0,                          0,                       // 160
-  0,                            0,                          0,                      0,                          0,                       // 165
-  0,                            0,                          0,                      0,                          0,                       // 170
-  0,                            0,                          0,                      0,                          0,                       // 175
-  0,                            0,                          0,                      0,                          0,                       // 180
-  0,                            0,                          "Modify Attacker Melee Crit Chance",0,              "Modify Rating",         // 185
-  0,                            0,                          "Modify Ranged and Melee Haste%",                   "Modify All Haste%", 0,  // 190
-  0,                            0,                          0,                      0,                          0,                       // 195
-  0,                            0,                          0,                      0,                          0,                       // 200
-  0,                            0,                          0,                      0,                          0,                       // 205
-  0,                            0,                          0,                      0,                          0,                       // 210
-  0,                            0,                          0,                      0,                          0,                       // 215
-  0,                            0,                          0,                      0,                          0,                       // 220
-  0,            "Periodic Dummy",                           0,                      0,                          0,                       // 225
-  0,                            "Trigger Spell with Value", 0,                      0,                          0,                       // 230
-  0,                            0,                          0,                      0,                          0,                       // 235
-  "Modify Expertise%",          0,                          0,                      0,                          0,                       // 240
-  0,                            0,                          0,                      0,                          0,                       // 245
-  "Increase Max Health (Stacking)",0,                       0,                      0,                          0,                       // 250
-  0,                            0,                          0,                      0,                          0,                       // 255
-  0,                            0,                          0,                      0,                          0,                       // 260
-  0,                            0,                          0,                      0,                          0,                       // 265
-  0,                            0,                          0,                      0,                          0,                       // 270
-  0,                            0,                          0,                      0,                          0,                       // 275
-  0,                            0,                          0,                      0,                          0,                       // 280
-  0,                            0,                          0,                      0,                          0,                       // 285
-  "Modify Critical Strike%",    0,                          0,                      0,                          0,                       // 290
-  0,                            0,                          0,                      0,                          0,                       // 295
-  0,                            0,                          0,                      0,                          0,                       // 300
-  0,                            0,                          0,                      0,                          0,                       // 305
-  0,                            0,                          0,                      0,                          0,                       // 310
-  0,                            0,                          0,                      0,                          "Modify Melee Attack Speed%",                       // 315
-  "Modify Ranged Attack Speed%",0,                          0,                      0,                          0,                       // 320
-  0,                            0,                          0,                      0,                          0,                       // 325
-  0,                            0,                          0,                      0,                          0,                       // 330
-  0,                            0,                          0,                      0,                          0,                       // 335
-  0,                            0,                          "Modify Ranged and Melee Attack Speed%", 0,         0,                       // 340
-  0,                            0,                          0,                      0,                          0,                       // 345
-  0,                            0,                          0,                      0,                          0,                       // 350
-  0,                            0,                          0,                      0,                          0,                       // 355
-  0,                            0,                          0,                      0,                          0,                       // 360
-  0,                            "Override Spell Power per Attack Power%",                          0,                      0,                          0,                       // 365
-  0,                            0,                          0,                      0,                          0,                       // 370
-  0,                            0,                          0,                      0,                          0,                       // 375
-  0,                            0,                          0,                      0,                          0,                       // 380
-  0,                            0,                          0,                      0,                          0,                       // 385
-  0,                            0,                          0,                      0,                          0,                       // 390
-  0,                            0,                          0,                      0,                          0,                       // 395
-  0,                            0,                          0,                      0,                          0,                       // 400
-  0,                            0,                          0,                      0,                          0,                       // 405
-  0,                            "Modify Cooldown Charge",   0,                      0,                          0,                       // 410
-  0,                            0,                          0,                      0,                          0,                       // 415
-  0,                            "Modify Absorb% Done",      "Modify Absorb% Done",  0,                          0,                       // 420
-  0,                            0,                          0,                      0,                          0,                       // 425
-  0,                            0,                          0,                      0,                          0,                       // 430
-  0,                            0,                          0,                      0,                          0,                       // 435
-  0,                            "Modify Multistrike%",      0,                      0,                          0,                       // 440
-  0,                            0,                          0,                      0,                          0,                       // 445
+  nullptr,                            nullptr,                          "Modify Power Cost%",   "Modify Power Cost",        "Reflect Spells",                     // 70
+  nullptr,                            nullptr,                          "Mechanic Immunity",    nullptr,                          "Modify Damage Done%",   // 75
+  "Modify Attribute%",          nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 80
+  "Modify Power Regeneration",  nullptr,                          "Modify Damage Taken%", nullptr,                          nullptr,                       // 85
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 90
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          "Modify Attack Power",   // 95
+  nullptr,                            "Modify Armor%",            nullptr,                      nullptr,                          "Modify Attack Power",   // 100
+  nullptr,                            nullptr,                          "Add Flat Modifier",    "Add Percent Modifier",     nullptr,                       // 105
+  "Mod Power Regen",                            nullptr,                          nullptr,                      nullptr,                          nullptr,       // 110
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 115
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          "Modify Ranged Attack Power", // 120
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 125
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 130
+  "Modify Healing Power",       "Modify Healing% Done",     "Modify Total Stat%",   "Modify Melee Haste%",      nullptr,                       // 135
+  "Modify Ranged Haste%",       nullptr,                          "Modify Base Resistance",nullptr,                         nullptr,                       // 140
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 145
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 150
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 155
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 160
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 165
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 170
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 175
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 180
+  nullptr,                            nullptr,                          "Modify Attacker Melee Crit Chance",nullptr,              "Modify Rating",         // 185
+  nullptr,                            nullptr,                          "Modify Ranged and Melee Haste%",                   "Modify All Haste%", nullptr,  // 190
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 195
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 200
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 205
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 210
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 215
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 220
+  nullptr,            "Periodic Dummy",                           nullptr,                      nullptr,                          nullptr,                       // 225
+  nullptr,                            "Trigger Spell with Value", nullptr,                      nullptr,                          nullptr,                       // 230
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 235
+  "Modify Expertise%",          nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 240
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 245
+  "Increase Max Health (Stacking)",nullptr,                       nullptr,                      nullptr,                          nullptr,                       // 250
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 255
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 260
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 265
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 270
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 275
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 280
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 285
+  "Modify Critical Strike%",    nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 290
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 295
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 300
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 305
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 310
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          "Modify Melee Attack Speed%",                       // 315
+  "Modify Ranged Attack Speed%",nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 320
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 325
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 330
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 335
+  nullptr,                            nullptr,                          "Modify Ranged and Melee Attack Speed%", nullptr,         nullptr,                       // 340
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 345
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 350
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 355
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 360
+  nullptr,                            "Override Spell Power per Attack Power%",                          nullptr,                      nullptr,                          nullptr,                       // 365
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 370
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 375
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 380
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 385
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 390
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 395
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 400
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 405
+  nullptr,                            "Modify Cooldown Charge",   nullptr,                      nullptr,                          nullptr,                       // 410
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 415
+  nullptr,                            "Modify Absorb% Done",      "Modify Absorb% Done",  nullptr,                          nullptr,                       // 420
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 425
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 430
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 435
+  nullptr,                            "Modify Multistrike%",      nullptr,                      nullptr,                          nullptr,                       // 440
+  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 445
 };
 
 std::string spell_flags( const spell_data_t* spell )
@@ -340,7 +340,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   s << tmp_buffer;
 
   if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
-       _effect_type_strings[ e -> type() ] != 0 )
+       _effect_type_strings[ e -> type() ] != nullptr )
   {
     s << _effect_type_strings[ e -> type() ];
     // Put some nice handling on some effect types
@@ -370,7 +370,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> subtype() > 0 )
   {
     if (  e -> subtype() < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) &&
-          _effect_subtype_strings[ e -> subtype() ] != 0 )
+          _effect_subtype_strings[ e -> subtype() ] != nullptr )
     {
       s << " | " << _effect_subtype_strings[ e -> subtype() ];
       switch ( e -> subtype() )
@@ -416,7 +416,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
         case A_ADD_FLAT_MODIFIER:
         case A_ADD_PCT_MODIFIER:
           if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
-               _property_type_strings[ e -> misc_value1() ] != 0 )
+               _property_type_strings[ e -> misc_value1() ] != nullptr )
             s << ": " << _property_type_strings[ e -> misc_value1() ];
           break;
         default:
@@ -641,7 +641,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         s << " ";
 
         if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-            _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
+            _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
           s << _resource_strings[ pd -> type() + POWER_OFFSET ];
         else
           s << "Unknown (" << pd -> type() << ")";
@@ -665,7 +665,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         s << " ";
 
         if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-            _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
+            _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
           s << _resource_strings[ pd -> type() + POWER_OFFSET ];
         else
           s << "Unknown (" << pd -> type() << ")";
@@ -1050,7 +1050,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   node -> add_parm( "type", e -> type() );
 
   if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
-       _effect_type_strings[ e -> type() ] != 0 )
+       _effect_type_strings[ e -> type() ] != nullptr )
   {
     node -> add_parm( "type_text", _effect_type_strings[ e -> type() ] );
     // Put some nice handling on some effect types
@@ -1080,7 +1080,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   if ( e -> subtype() > 0 )
   {
     if (  e -> subtype() < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) &&
-          _effect_subtype_strings[ e -> subtype() ] != 0 )
+          _effect_subtype_strings[ e -> subtype() ] != nullptr )
     {
       node -> add_parm( "sub_type_text", _effect_subtype_strings[ e -> subtype() ] );
       switch ( e -> subtype() )
@@ -1117,7 +1117,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
         case A_ADD_FLAT_MODIFIER:
         case A_ADD_PCT_MODIFIER:
           if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
-               _property_type_strings[ e -> misc_value1() ] != 0 )
+               _property_type_strings[ e -> misc_value1() ] != nullptr )
           {
             node -> add_parm( "modifier", e -> misc_value1() );
             node -> add_parm( "modifier_text", _property_type_strings[ e -> misc_value1() ] );
@@ -1308,7 +1308,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
         resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) );
 
       if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-           _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
+           _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
         resource_node -> add_parm( "type_name", _resource_strings[ pd -> type() + POWER_OFFSET ] );
 
       if ( pd -> type() == POWER_MANA )

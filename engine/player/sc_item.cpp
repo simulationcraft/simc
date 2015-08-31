@@ -477,7 +477,7 @@ weapon_t* item_t::weapon() const
 {
   if ( slot == SLOT_MAIN_HAND ) return &( player -> main_hand_weapon );
   if ( slot == SLOT_OFF_HAND  ) return &( player ->  off_hand_weapon );
-  return 0;
+  return nullptr;
 }
 
 // item_t::inv_type =========================================================
@@ -579,9 +579,9 @@ bool item_t::parse_options()
   if ( ! option_bonus_id_str.empty() )
   {
     std::vector<std::string> split = util::string_split( option_bonus_id_str, "/" );
-    for ( size_t i = 0, end = split.size(); i < end; i++ )
+    for (auto & elem : split)
     {
-      int bonus_id = util::to_int( split[ i ] );
+      int bonus_id = util::to_int( elem );
       if ( bonus_id <= 0 )
         continue;
 

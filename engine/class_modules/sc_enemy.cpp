@@ -269,7 +269,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     // create a separate action for each potential target
     for ( size_t i = 0; i < target_list.size(); i++ )
     {
-      child_action_type_t* ch = new child_action_type_t( player, this -> filter_options_list( options_str ) );
+      auto  ch = new child_action_type_t( player, this -> filter_options_list( options_str ) );
       ch -> target = target_list[ i ];
       ch -> background = true;
       ch_list.push_back( ch );
@@ -463,7 +463,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
   virtual bool ready()
   {
     if ( player -> is_moving() || ! player -> main_hand_attack ) return false;
-    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -547,7 +547,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
   virtual bool ready()
   {
     if ( player -> is_moving() ) return false;
-    return( player -> off_hand_attack -> execute_event == 0 ); // not swinging
+    return( player -> off_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -760,7 +760,7 @@ struct summon_add_t : public spell_t
 
   summon_add_t( player_t* p, const std::string& options_str ) :
     spell_t( "summon_add", player, spell_data_t::nil() ),
-    add_name( "" ), summoning_duration( timespan_t::zero() ), pet( 0 )
+    add_name( "" ), summoning_duration( timespan_t::zero() ), pet( nullptr )
   {
     add_option( opt_string( "name", add_name ) );
     add_option( opt_timespan( "duration", summoning_duration ) );
@@ -806,7 +806,7 @@ action_t* enemy_create_action( player_t* p, const std::string& name, const std::
   if ( name == "spell_aoe"   )          return new                   spell_aoe_t( p, options_str );
   if ( name == "summon_add"  )          return new                  summon_add_t( p, options_str );
 
-  return NULL;
+  return nullptr;
 }
 // ==========================================================================
 // Enemy Add
@@ -1350,11 +1350,11 @@ void enemy_t::init_action_list()
 
         // Reconstruct the action_list_str for this tank by appending ",target=Tank_Name"
         // to each action if it doesn't already specify a different target
-        for ( size_t j = 0, jmax = splits.size(); j < jmax; j++ )
+        for (auto & split : splits)
         {
-          tank_str += "/" + splits[ j ];
+          tank_str += "/" + split;
 
-          if ( !util::str_in_str_ci( "target=", splits[ j ] ) )
+          if ( !util::str_in_str_ci( "target=", split ) )
             tank_str += ",target=" + tanks[ i ] -> name_str;
         }
 
@@ -1656,7 +1656,7 @@ struct enemy_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
-    enemy_t* p = new enemy_t( sim, name );
+    auto  p = new enemy_t( sim, name );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new enemy_report_t( *p ) );
     return p;
   }
@@ -1674,7 +1674,7 @@ struct heal_enemy_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
-    heal_enemy_t* p = new heal_enemy_t( sim, name );
+    auto  p = new heal_enemy_t( sim, name );
     return p;
   }
   virtual bool valid() const { return true; }
@@ -1691,7 +1691,7 @@ struct tmi_enemy_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
-    tmi_enemy_t* p = new tmi_enemy_t( sim, name );
+    auto  p = new tmi_enemy_t( sim, name );
     return p;
   }
   virtual bool valid() const { return true; }
@@ -1708,7 +1708,7 @@ struct tank_dummy_enemy_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
-    tank_dummy_enemy_t* p = new tank_dummy_enemy_t( sim, name );
+    auto  p = new tank_dummy_enemy_t( sim, name );
     return p;
   }
   virtual bool valid() const { return true; }

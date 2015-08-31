@@ -375,7 +375,7 @@ public:
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
-    heroic_charge( 0 ),
+    heroic_charge( nullptr ),
     active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -392,15 +392,15 @@ public:
     initial_rage = 0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = true;
-    last_target_charged = 0;
+    last_target_charged = nullptr;
     stance_dance = false;
     player_override_stance_dance = false;
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
 
-    fury_trinket = 0;
-    arms_trinket = 0;
-    prot_trinket = 0;
+    fury_trinket = nullptr;
+    arms_trinket = nullptr;
+    prot_trinket = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -1220,9 +1220,9 @@ struct auto_attack_t: public warrior_attack_t
 
   void execute()
   {
-    if ( p() -> main_hand_attack -> execute_event == 0 )
+    if ( p() -> main_hand_attack -> execute_event == nullptr )
       p() -> main_hand_attack -> schedule_execute();
-    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == 0 )
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == nullptr )
     {
       p() -> off_hand_attack -> schedule_execute();
     }
@@ -1233,9 +1233,9 @@ struct auto_attack_t: public warrior_attack_t
     bool ready = warrior_attack_t::ready();
     if ( ready ) // Range check
     {
-      if ( p() -> main_hand_attack -> execute_event == 0 )
+      if ( p() -> main_hand_attack -> execute_event == nullptr )
         return ready;
-      if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == 0 )
+      if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == nullptr )
         // Don't check for execute_event if we don't have an offhand.
         return ready;
     }
@@ -1273,7 +1273,7 @@ struct bladestorm_t: public warrior_attack_t
   bladestorm_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bladestorm", p, p -> talents.bladestorm ),
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
-    bladestorm_oh( 0 )
+    bladestorm_oh( nullptr )
   {
     parse_options( options_str );
     channeled = tick_zero = true;
@@ -1353,7 +1353,7 @@ struct bloodthirst_t: public warrior_attack_t
   double crit_chance;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
-    bloodthirst_heal( NULL )
+    bloodthirst_heal( nullptr )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
@@ -1967,7 +1967,7 @@ struct impending_victory_t: public warrior_attack_t
   impending_victory_heal_t* impending_victory_heal;
   impending_victory_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "impending_victory", p, p -> talents.impending_victory ),
-    impending_victory_heal( 0 )
+    impending_victory_heal( nullptr )
   {
     parse_options( options_str );
     if ( p -> non_dps_mechanics )
@@ -2078,7 +2078,7 @@ struct heroic_charge_movement_ticker_t: public event_t
       warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
     else
     {
-      warrior -> heroic_charge = 0;
+      warrior -> heroic_charge = nullptr;
       warrior -> buff.heroic_leap_movement -> expire();
     }
   }
@@ -2247,7 +2247,7 @@ struct raging_blow_t: public warrior_attack_t
 
   raging_blow_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
-    mh_attack( NULL ), oh_attack( NULL )
+    mh_attack( nullptr ), oh_attack( nullptr )
   {
     // Parent attack is only to determine miss/dodge/parry
     weapon_multiplier = attack_power_mod.direct = 0;
@@ -2350,7 +2350,7 @@ struct revenge_t: public warrior_attack_t
   double rage_gain;
   revenge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "revenge", p, p -> spec.revenge ),
-    absorb_stats( 0 ), rage_gain( 0 )
+    absorb_stats( nullptr ), rage_gain( 0 )
   {
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -2543,7 +2543,7 @@ struct siegebreaker_t: public warrior_attack_t
   siegebreaker_off_hand_t* oh_attack;
   siegebreaker_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "siegebreaker", p, p -> talents.siegebreaker ),
-    oh_attack( 0 )
+    oh_attack( nullptr )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
@@ -2817,7 +2817,7 @@ struct storm_bolt_t: public warrior_attack_t
   storm_bolt_off_hand_t* oh_attack;
   storm_bolt_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt ),
-    oh_attack( 0 )
+    oh_attack( nullptr )
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
@@ -2949,7 +2949,7 @@ struct whirlwind_t: public warrior_attack_t
   whirlwind_off_hand_t* oh_attack;
   whirlwind_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
-    oh_attack( 0 )
+    oh_attack( nullptr )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
@@ -3342,7 +3342,7 @@ struct shield_block_t: public warrior_spell_t
   cooldown_t* block_cd;
   shield_block_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) ),
-    block_cd( NULL )
+    block_cd( nullptr )
   {
     parse_options( options_str );
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
@@ -3390,7 +3390,7 @@ struct shield_charge_t: public warrior_spell_t
   cooldown_t* shield_charge_cd;
   shield_charge_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) ),
-    movement_speed_increase( 5.0 ), shield_charge_cd( NULL )
+    movement_speed_increase( 5.0 ), shield_charge_cd( nullptr )
   {
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR;
@@ -3862,13 +3862,13 @@ void warrior_t::init_spells()
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
 
   // Active spells
-  active.bloodbath_dot      = 0;
-  active.blood_craze        = 0;
-  active.deep_wounds        = 0;
-  active.sweeping_strikes   = 0;
-  active.aoe_sweeping_strikes = 0;
-  active.enhanced_rend      = 0;
-  active.t16_2pc            = 0;
+  active.bloodbath_dot      = nullptr;
+  active.blood_craze        = nullptr;
+  active.deep_wounds        = nullptr;
+  active.sweeping_strikes   = nullptr;
+  active.aoe_sweeping_strikes = nullptr;
+  active.enhanced_rend      = nullptr;
+  active.t16_2pc            = nullptr;
   active.stance             = STANCE_BATTLE;
 
   if ( spec.blood_craze -> ok() ) active.blood_craze = new blood_craze_t( this );
@@ -3945,15 +3945,15 @@ bool warrior_t::has_t18_class_trinket() const
 {
   if ( specialization() == WARRIOR_FURY )
   {
-    return fury_trinket != 0;
+    return fury_trinket != nullptr;
   }
   else if ( specialization() == WARRIOR_ARMS )
   {
-    return arms_trinket != 0;
+    return arms_trinket != nullptr;
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
-    return prot_trinket != 0;
+    return prot_trinket != nullptr;
   }
   return false;
 }
@@ -4663,13 +4663,13 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * data().effectN( 1 ).percent() ) );
-    warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -4684,13 +4684,13 @@ struct last_stand_t: public warrior_buff_t < buff_t >
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.last_stand -> effectN( 1 ).percent() ) );
-    warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -5150,8 +5150,8 @@ void warrior_t::reset()
     active.stance = STANCE_DEFENSE;
   }
 
-  heroic_charge = 0;
-  last_target_charged = 0;
+  heroic_charge = nullptr;
+  last_target_charged = nullptr;
   if ( rppm.sudden_death )
   {
     rppm.sudden_death -> reset();
@@ -5725,7 +5725,7 @@ struct fel_cleave_t: public warrior_attack_t
 action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& effect )
 {
   if ( util::str_compare_ci( name, "fel_cleave" ) ) return new fel_cleave_t( this, effect ); // This must be added here so that it takes the armor reduction from colossus smash into account.
-  return 0;
+  return nullptr;
 }
 
 // warrior_t::create_profile ================================================
@@ -5831,7 +5831,7 @@ struct warrior_module_t: public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    warrior_t* p = new warrior_t( sim, name, r );
+    auto  p = new warrior_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new warrior_report_t( *p ) );
     return p;
   }

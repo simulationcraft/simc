@@ -151,7 +151,7 @@ std::string output_action_name( stats_t* s, player_t* actor )
   std::string href = "#";
   std::string rel = " rel=\"lvl=" + util::to_string( s -> player -> true_level ) + "\"";
   std::string prefix, suffix, class_attr;
-  action_t* a = 0;
+  action_t* a = nullptr;
   std::string stats_type = util::stats_type_string( s -> type );
 
   if ( s -> player -> sim -> report_details )
@@ -297,7 +297,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
 
 }
 
-void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, stats_t* s, int j, int n_columns, player_t* actor = 0 )
+void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, stats_t* s, int j, int n_columns, player_t* actor = nullptr )
 {
   player_t* p;
   if ( s -> player -> is_pet() )
@@ -329,10 +329,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
     double cAPS    = s -> portion_aps.mean();
     double cAPSpct = s -> portion_amount;
 
-    for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+    for (auto & elem : s -> children)
     {
-      cAPS    += s -> children[ i ] -> portion_apse.mean();
-      cAPSpct += s -> children[ i ] -> portion_amount;
+      cAPS    += elem -> portion_apse.mean();
+      cAPSpct += elem -> portion_amount;
     }
 
     if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&#160;(" + util::to_string( cAPS, 0 ) + ")";
@@ -2108,7 +2108,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
      << "<h3 class=\"toggle\">Action Priority List</h3>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  action_priority_list_t* alist = 0;
+  action_priority_list_t* alist = nullptr;
   int j = 0;
 
   for ( size_t i = 0; i < p -> action_list.size(); ++i )
@@ -3843,9 +3843,9 @@ void output_player_action( report::sc_html_stream& os,
 
   print_html_action_info( os, mask, s, row++, cols );
 
-  for ( size_t child_idx = 0, end = s -> children.size(); child_idx < end; child_idx++ )
+  for (auto child_stats : s -> children)
   {
-    stats_t* child_stats = s -> children[ child_idx ];
+    
     if ( ! is_output_stat( mask, true, child_stats ) )
       continue;
 

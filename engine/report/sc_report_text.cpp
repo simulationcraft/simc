@@ -657,7 +657,7 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
 
 void print_text_performance( FILE* file, sim_t* sim )
 {
-  std::time_t cur_time = std::time( NULL );
+  std::time_t cur_time = std::time( nullptr );
   std::string date_str = std::asctime(std::localtime(&cur_time));
   if ( date_str.size() > 0 && *(date_str.end() - 1) == '\n' )
     date_str = date_str.substr( 0, date_str.size() - 1 );

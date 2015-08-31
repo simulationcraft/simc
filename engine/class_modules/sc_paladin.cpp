@@ -356,23 +356,23 @@ public:
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 )
   {
-    last_judgement_target = 0;
-    last_retribution_trinket_target = 0;
-    retribution_trinket = 0;
-    active_beacon_of_light             = 0;
-    active_censure                     = 0;
-    active_enlightened_judgments       = 0;
-    active_hand_of_light_proc          = 0;
-    active_hand_of_light_multistrike_proc = 0;
-    active_holy_shield_proc            = 0;
-    active_illuminated_healing         = 0;
-    active_protector_of_the_innocent   = 0;
+    last_judgement_target = nullptr;
+    last_retribution_trinket_target = nullptr;
+    retribution_trinket = nullptr;
+    active_beacon_of_light             = nullptr;
+    active_censure                     = nullptr;
+    active_enlightened_judgments       = nullptr;
+    active_hand_of_light_proc          = nullptr;
+    active_hand_of_light_multistrike_proc = nullptr;
+    active_holy_shield_proc            = nullptr;
+    active_illuminated_healing         = nullptr;
+    active_protector_of_the_innocent   = nullptr;
     active_seal                        = SEAL_NONE;
-    active_seal_of_justice_proc        = 0;
-    active_seal_of_insight_proc        = 0;
-    active_seal_of_righteousness_proc  = 0;
-    active_seal_of_truth_proc          = 0;
-    active_shining_protector_proc      = 0;
+    active_seal_of_justice_proc        = nullptr;
+    active_seal_of_insight_proc        = nullptr;
+    active_seal_of_righteousness_proc  = nullptr;
+    active_seal_of_truth_proc          = nullptr;
+    active_shining_protector_proc      = nullptr;
     bok_up                             = false;
     bom_up                             = false;
 
@@ -380,7 +380,7 @@ public:
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
     cooldowns.exorcism = get_cooldown( "exorcism" );
 
-    beacon_target = 0;
+    beacon_target = nullptr;
 
     base.distance = 3;
     regen_type = REGEN_DYNAMIC;
@@ -2161,7 +2161,7 @@ struct holy_light_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  virtual void schedule_execute( action_state_t* state = nullptr )
   {
     paladin_heal_t::schedule_execute( state );
 
@@ -2361,7 +2361,7 @@ struct holy_radiance_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  virtual void schedule_execute( action_state_t* state = nullptr )
   {
     paladin_heal_t::schedule_execute( state );
 
@@ -3453,7 +3453,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     if ( potential_target && potential_target != p() -> main_hand_attack -> target )
       p() -> main_hand_attack -> target = potential_target;
 
-    return( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -4746,7 +4746,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
 
-  action_t* a = 0;
+  action_t* a = nullptr;
   if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
                                                active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this ); return a; }
   if ( name == "seal_of_insight"           ) { a = new paladin_seal_t( this, "seal_of_insight",       SEAL_OF_INSIGHT,       options_str );
@@ -4875,8 +4875,8 @@ void paladin_t::reset()
 {
   player_t::reset();
 
-  last_judgement_target = 0;
-  last_retribution_trinket_target = 0;
+  last_judgement_target = nullptr;
+  last_retribution_trinket_target = nullptr;
   active_seal = SEAL_NONE;
   bok_up      = false;
   bom_up      = false;
@@ -5078,7 +5078,7 @@ bool paladin_t::has_t18_class_trinket() const
 {
   if ( specialization() == PALADIN_RETRIBUTION )
   {
-    return retribution_trinket != 0;
+    return retribution_trinket != nullptr;
   }
   return false;
 }
@@ -6877,7 +6877,7 @@ struct paladin_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    paladin_t* p = new paladin_t( sim, name, r );
+    auto  p = new paladin_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new paladin_report_t( *p ) );
     return p;
   }

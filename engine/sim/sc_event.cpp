@@ -75,7 +75,7 @@ void event_t::cancel( event_t*& e )
 #endif
 
   e -> canceled = true;
-  e = 0;
+  e = nullptr;
 }
 
 // ==========================================================================
@@ -344,9 +344,9 @@ void event_manager_t::cancel()
 
 void event_manager_t::flush()
 {
-  for( size_t i = 0, size = allocated_events.size(); i < size; ++i )
+  for(auto e : allocated_events)
   {
-    event_t* e = allocated_events[ i ];
+    
     if( e -> recycled ) continue;
     event_t* null_e = e; // necessary evil
     event_t::cancel( null_e );

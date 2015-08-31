@@ -395,8 +395,8 @@ public:
     guardian_fire_elemental( nullptr ),
     pet_earth_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
-    elemental_bellows( 0 ),
-    furious_winds( 0 ),
+    elemental_bellows( nullptr ),
+    furious_winds( nullptr ),
     constant(),
     buff(),
     cooldown(),
@@ -409,8 +409,8 @@ public:
     spell(),
     rppm_echo_of_the_elements( *this, 0, RPPM_HASTE )
   {
-    range::fill( pet_feral_spirit, 0 );
-    range::fill( totems, 0 );
+    range::fill( pet_feral_spirit, nullptr );
+    range::fill( totems, nullptr );
 
     // Cooldowns
     cooldown.ancestral_swiftness  = get_cooldown( "ancestral_swiftness"   );
@@ -428,14 +428,14 @@ public:
     cooldown.t16_4pc_melee        = get_cooldown( "t16_4pc_melee"         );
     cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
 
-    melee_mh = 0;
-    melee_oh = 0;
-    ascendance_mh = 0;
-    ascendance_oh = 0;
+    melee_mh = nullptr;
+    melee_oh = nullptr;
+    ascendance_mh = nullptr;
+    ascendance_oh = nullptr;
 
     // Weapon Enchants
-    windfury    = 0;
-    flametongue = 0;
+    windfury    = nullptr;
+    flametongue = nullptr;
 
     regen_type = REGEN_DYNAMIC;
   }
@@ -576,7 +576,7 @@ struct ascendance_buff_t : public buff_t
   ascendance_buff_t( shaman_t* p ) :
     buff_t( buff_creator_t( p, "ascendance", p -> find_specialization_spell( "Ascendance" ) )
             .cd( timespan_t::zero() ) ), // Cooldown is handled by the action
-    lava_burst( 0 )
+    lava_burst( nullptr )
   { }
 
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
@@ -590,7 +590,7 @@ struct unleash_flame_buff_t : public buff_t
 
   unleash_flame_buff_t( shaman_t* p ) :
     buff_t( buff_creator_t( p, 73683, "unleash_flame" ) ),
-    expiration_delay( 0 )
+    expiration_delay( nullptr )
   { }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration );
@@ -635,9 +635,9 @@ public:
     uses_eoe( false ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
-    ef_proc( 0 ),
+    ef_proc( nullptr ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
-    cd_wasted_exec( 0 ), cd_wasted_cumulative( 0 ), cd_wasted_iter( 0 )
+    cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
   }
@@ -758,9 +758,9 @@ public:
         expr_t( "min_remains" ), action_( a )
       {
         action_priority_list_t* list = a -> player -> get_action_priority_list( a -> action_list -> name_str );
-        for ( size_t i = 0, end = list -> foreground_action_list.size(); i < end; i++ )
+        for (auto list_action : list -> foreground_action_list)
         {
-          action_t* list_action = list -> foreground_action_list[ i ];
+          
           // Jump out when we reach this action
           if ( list_action == action_ )
             break;
@@ -827,7 +827,7 @@ public:
     may_proc_windfury( p -> spec.windfury -> ok() ),
     may_proc_flametongue( true ),
     may_proc_maelstrom( p -> spec.maelstrom_weapon -> ok() ),
-    maelstrom_procs( 0 ), maelstrom_procs_wasted( 0 )
+    maelstrom_procs( nullptr ), maelstrom_procs_wasted( nullptr )
   {
     special = may_crit = true;
     may_glance = false;
@@ -908,7 +908,7 @@ public:
   }
 
   void execute();
-  void schedule_execute( action_state_t* state = 0 );
+  void schedule_execute( action_state_t* state = nullptr );
 
   double cost_reduction() const
   {
@@ -1234,7 +1234,7 @@ struct feral_spirit_pet_t : public pet_t
   const spell_data_t* wf_driver;
 
   feral_spirit_pet_t( shaman_t* owner ) :
-    pet_t( owner -> sim, owner, "spirit_wolf", true, true ), melee( 0 )
+    pet_t( owner -> sim, owner, "spirit_wolf", true, true ), melee( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
@@ -1346,7 +1346,7 @@ struct primal_elemental_t : public pet_t
     virtual bool ready()
     {
       if ( player -> is_moving() ) return false;
-      return ( player -> main_hand_attack -> execute_event == 0 );
+      return ( player -> main_hand_attack -> execute_event == nullptr );
     }
   };
 
@@ -2261,7 +2261,7 @@ struct auto_attack_t : public shaman_attack_t
   virtual bool ready()
   {
     if ( p() -> is_moving() ) return false;
-    return ( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return ( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -2415,7 +2415,7 @@ struct stormstrike_t : public shaman_attack_t
 
   stormstrike_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "stormstrike", player, player -> find_class_spell( "Stormstrike" ) ),
-    stormstrike_mh( 0 ), stormstrike_oh( 0 )
+    stormstrike_mh( nullptr ), stormstrike_oh( nullptr )
   {
     check_spec( SHAMAN_ENHANCEMENT );
 
@@ -2491,7 +2491,7 @@ struct windstrike_t : public shaman_attack_t
 
   windstrike_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "windstrike", player, player -> find_spell( 115356 ) ),
-    windstrike_mh( 0 ), windstrike_oh( 0 )
+    windstrike_mh( nullptr ), windstrike_oh( nullptr )
   {
     check_spec( SHAMAN_ENHANCEMENT );
 
@@ -2803,7 +2803,7 @@ struct chain_lightning_t: public shaman_spell_t
     size_t max_attempts = static_cast<size_t>( std::min( ( num_targets - 1.0 ) * 2.0 , 30.0 ) ); // With a lot of targets this can get pretty high. Cap it at 30.
     size_t local_attempts = 0, attempts = 0, chain_number = 1;
     std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
-    std::vector<player_t*>::iterator position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
+    auto position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
     if ( position != targets_left_to_try.end() )
       targets_left_to_try.erase( position );
 
@@ -3641,7 +3641,7 @@ struct flame_shock_t : public shaman_spell_t
 
   flame_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "flame_shock", player, player -> find_class_spell( "Flame Shock" ), options_str ),
-    heal( p() -> glyph.flame_shock -> ok() ? new flame_shock_heal_t( player ) : 0 )
+    heal( p() -> glyph.flame_shock -> ok() ? new flame_shock_heal_t( player ) : nullptr )
   {
     // TODO-WOD: Separate to tick and direct amount to be safe
     base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
@@ -3929,8 +3929,8 @@ struct shaman_totem_pet_t : public pet_t
   shaman_totem_pet_t( shaman_t* p, const std::string& n, totem_e tt ) :
     pet_t( p -> sim, p, n, true ),
     totem_type( tt ),
-    pulse_action( 0 ), pulse_event( 0 ), pulse_amplitude( timespan_t::zero() ),
-    summon_pet( 0 )
+    pulse_action( nullptr ), pulse_event( nullptr ), pulse_amplitude( timespan_t::zero() ),
+    summon_pet( nullptr )
   {
     regen_type = REGEN_DISABLED;
     affects_wod_legendary_ring = false;
@@ -4141,7 +4141,7 @@ void shaman_totem_pet_t::dismiss( bool expired )
     summon_pet -> dismiss();
 
   if ( o() -> totems[ totem_type ] == this )
-    o() -> totems[ totem_type ] = 0;
+    o() -> totems[ totem_type ] = nullptr;
 
   pet_t::dismiss( expired );
 }
@@ -4494,7 +4494,7 @@ struct unleash_flame_expiration_delay_t : public event_t
   {
     // Call real expire after a delay
     buff -> buff_t::expire();
-    buff -> expiration_delay = 0;
+    buff -> expiration_delay = nullptr;
   }
 };
 
@@ -4727,7 +4727,7 @@ action_t* shaman_t::create_proc_action( const std::string& name, const special_e
 {
   if ( util::str_compare_ci( name, "flurry_of_xuen" ) ) return new shaman_flurry_of_xuen_t( this );
 
-  return 0;
+  return nullptr;
 };
 
 // shaman_t::create_pet =====================================================
@@ -4752,7 +4752,7 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   if ( pet_name == "magma_totem"             ) return new magma_totem_t( this );
   if ( pet_name == "searing_totem"           ) return new searing_totem_t( this );
 
-  return 0;
+  return nullptr;
 }
 
 // shaman_t::create_pets ====================================================
@@ -4851,7 +4851,7 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "totem" ) )
   {
     totem_e totem_type = TOTEM_NONE;
-    shaman_totem_pet_t* totem = 0;
+    shaman_totem_pet_t* totem = nullptr;
 
     if ( util::str_compare_ci( splits[ 1 ], "earth" ) )
       totem_type = TOTEM_EARTH;
@@ -4866,10 +4866,10 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
       totem = static_cast< shaman_totem_pet_t* >( find_pet( splits[ 1 ] ) );
 
     // Nothing found
-    if ( totem_type == TOTEM_NONE && totem == 0 )
+    if ( totem_type == TOTEM_NONE && totem == nullptr )
       return player_t::create_expression( a, name );
     // A specific totem name given, and found
-    else if ( totem != 0 )
+    else if ( totem != nullptr )
       return totem -> create_expression( a, splits[ 2 ] );
 
     // Otherwise generic totem school, make custom expressions
@@ -5093,7 +5093,7 @@ void shaman_t::trigger_molten_earth( const action_state_t* state )
 
 void shaman_t::trigger_fulmination_stack( const action_state_t* state )
 {
-  assert( debug_cast< shaman_spell_t* >( state -> action ) != 0 && "Fulmination called on invalid action type" );
+  assert( debug_cast< shaman_spell_t* >( state -> action ) != nullptr && "Fulmination called on invalid action type" );
   shaman_spell_t* spell = debug_cast< shaman_spell_t* >( state -> action );
   if ( ! spell -> may_fulmination )
     return;
@@ -5135,7 +5135,7 @@ void shaman_t::trigger_fulmination_stack( const action_state_t* state )
 
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state -> action ) != 0 && "Windfury Weapon called on invalid action type" );
+  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Windfury Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
   if ( ! attack -> may_proc_windfury )
     return;
@@ -5164,7 +5164,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
 void shaman_t::trigger_maelstrom_weapon( const action_state_t* state, double override_chance )
 {
-  assert( debug_cast< shaman_attack_t* >( state -> action ) != 0 && "Maelstrom Weapon called on invalid action type" );
+  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Maelstrom Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
   if ( ! attack -> may_proc_maelstrom && ! override_chance )
     return;
@@ -5332,7 +5332,7 @@ void shaman_t::trigger_tier18_4pc_elemental( int ls_stack )
 
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state -> action ) != 0 && "Flametongue Weapon called on invalid action type" );
+  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Flametongue Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
   if ( ! attack -> may_proc_flametongue )
     return;
@@ -6171,8 +6171,8 @@ void shaman_t::reset()
   ls_reset = timespan_t::zero();
   lava_surge_during_lvb = false;
   rppm_echo_of_the_elements.reset();
-  for ( size_t i = 0, end = counters.size(); i < end; i++ )
-    counters[ i ] -> reset();
+  for (auto & elem : counters)
+    elem -> reset();
 }
 
 // shaman_t::merge ==========================================================
@@ -6229,8 +6229,8 @@ bool shaman_t::has_t18_class_trinket() const
 {
   switch ( specialization() )
   {
-    case SHAMAN_ENHANCEMENT: return furious_winds != 0;
-    case SHAMAN_ELEMENTAL:   return elemental_bellows != 0;
+    case SHAMAN_ENHANCEMENT: return furious_winds != nullptr;
+    case SHAMAN_ELEMENTAL:   return elemental_bellows != nullptr;
     default:                 return false;
   }
 }
@@ -6371,9 +6371,9 @@ public:
       stats_t* stats = p.stats_list[ i ];
       double n_generated = 0, n_wasted = 0;
 
-      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      for (auto & elem : stats -> action_list)
       {
-        shaman_attack_t* a = dynamic_cast<shaman_attack_t*>( stats -> action_list[ j ] );
+        shaman_attack_t* a = dynamic_cast<shaman_attack_t*>( elem );
         if ( ! a )
           continue;
 
@@ -6441,9 +6441,9 @@ public:
       double n_cast_charges = 0, n_executed_charges = 0;
       bool has_data = false;
 
-      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      for (auto & elem : stats -> action_list)
       {
-        if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( stats -> action_list[ j ] ) )
+        if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( elem ) )
         {
           for ( size_t k = 0, end3 = s -> maelstrom_weapon_cast.size() - 1; k < end3; k++ )
           {
@@ -6641,7 +6641,7 @@ struct shaman_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    shaman_t* p = new shaman_t( sim, name, r );
+    auto  p = new shaman_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new shaman_report_t( *p ) );
     return p;
   }

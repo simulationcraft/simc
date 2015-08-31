@@ -86,7 +86,7 @@ void print_xml_roster( sim_t* sim, xml_writer_t & writer )
   for ( int i = 0; i < num_players; ++i )
   {
     player_t * current_player = sim -> players_by_name[ i ];
-    print_xml_player( sim, writer, current_player, NULL );
+    print_xml_player( sim, writer, current_player, nullptr );
     std::vector<pet_t*>& pl = sim -> players_by_name[ i ] -> pet_list;
     for ( size_t j = 0; j < pl.size(); ++j )
     {
@@ -107,7 +107,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
   for ( size_t i = 0; i < count; ++i )
   {
     player_t * current_player = sim -> targets_by_name[ i ];
-    print_xml_player( sim, writer, current_player, NULL );
+    print_xml_player( sim, writer, current_player, nullptr );
     for ( size_t j = 0; j < current_player -> pet_list.size(); ++j )
     {
       pet_t* pet = current_player -> pet_list[ j ];
@@ -349,9 +349,9 @@ void print_xml_player_gear( xml_writer_t & writer, player_t* p )
   double n_items = 0;
   unsigned ilevel = 0;
   writer.begin_tag( "items" );
-  for ( size_t i = 0, end = p -> items.size(); i < end; i++ )
+  for (auto & elem : p -> items)
   {
-    item_t* item = &( p -> items[ i ] );
+    item_t* item = &( elem );
     if ( ! item -> active() )
       continue;
 
@@ -368,9 +368,9 @@ void print_xml_player_gear( xml_writer_t & writer, player_t* p )
   if ( n_items > 0 )
     writer.print_attribute( "average_ilevel", util::to_string( util::round( ilevel / n_items, 3 ) ) );
 
-  for ( size_t i = 0, end = p -> items.size(); i < end; i++ )
+  for (auto & elem : p -> items)
   {
-    item_t* item = &( p -> items[ i ] );
+    item_t* item = &( elem );
     if ( ! item -> active() )
       continue;
     

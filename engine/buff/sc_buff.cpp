@@ -29,7 +29,7 @@ struct react_ready_trigger_t : public buff_event_t
   { return "react_ready_trigger"; }
   void execute()
   {
-    buff -> stack_react_ready_triggers[ stack ] = 0;
+    buff -> stack_react_ready_triggers[ stack ] = nullptr;
 
     if ( buff -> player )
       buff -> player -> trigger_ready();
@@ -42,7 +42,7 @@ struct expiration_t : public buff_event_t
 
   virtual void execute()
   {
-    buff -> expiration = 0;
+    buff -> expiration = nullptr;
     buff -> expire();
   }
 };
@@ -58,7 +58,7 @@ struct tick_t : public buff_event_t
 
   void execute()
   {
-    buff -> tick_event = 0;
+    buff -> tick_event = nullptr;
 
     // For tick number calculations, always include the +1ms so we get correct
     // tick number labeling on the last tick, just before the buff expires.
@@ -153,7 +153,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   default_chance( 1.0 ),
   buff_period( timespan_t::min() ),
   tick_behavior( BUFF_TICK_NONE ),
-  tick_event( 0 ),
+  tick_event( nullptr ),
   last_start( timespan_t() ),
   last_trigger( timespan_t() ),
   iteration_uptime_sum( timespan_t() ),
@@ -305,9 +305,9 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   if ( params._affects_regen == -1 && player && player -> regen_type == REGEN_DYNAMIC )
   {
-    for ( size_t i = 0, end = params._invalidate_list.size(); i < end; i++ )
+    for (auto & elem : params._invalidate_list)
     {
-      if ( player -> regen_caches[ params._invalidate_list[ i ] ] )
+      if ( player -> regen_caches[ elem ] )
         change_regen_rate = true;
     }
   }
@@ -780,9 +780,9 @@ void buff_t::start( int        stacks,
       if ( actor -> regen_type != REGEN_DYNAMIC || actor -> is_pet() )
         continue;
 
-      for ( size_t j = 0, endinval = invalidate_list.size(); j < endinval; j++ )
+      for (auto & elem : invalidate_list)
       {
-        if ( actor -> regen_caches[ invalidate_list[ j ] ] )
+        if ( actor -> regen_caches[ elem ] )
         {
           actor -> do_dynamic_regen();
           break;
@@ -1016,9 +1016,9 @@ void buff_t::expire( timespan_t delay )
       if ( actor -> regen_type != REGEN_DYNAMIC || actor -> is_pet() )
         continue;
 
-      for ( size_t j = 0, endregen = invalidate_list.size(); j < endregen; j++ )
+      for (auto & elem : invalidate_list)
       {
-        if ( actor -> regen_caches[ invalidate_list[ j ] ] )
+        if ( actor -> regen_caches[ elem ] )
         {
           actor -> do_dynamic_regen();
           break;
@@ -1186,7 +1186,7 @@ buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
         return b;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 namespace
@@ -1215,9 +1215,9 @@ namespace
 
 static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* source )
 {
-  for ( size_t i = 0, end = buffs.size(); i < end; i++ )
+  for (auto b : buffs)
   {
-    buff_t* b = buffs[ i ];
+    
     player_t* p = b -> player;
     if ( b -> data().id() == 0 )
     {
@@ -1236,7 +1236,7 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 buff_t* buff_t::find_expressable( const std::vector<buff_t*>& buffs,
@@ -1433,7 +1433,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     return new cooldown_react_expr_t( buff_name, action, static_buff );
   }
 
-  return 0;
+  return nullptr;
 }
 
 #ifdef SC_STAT_CACHE
@@ -1542,9 +1542,9 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     if ( stats[ i ].check_func && ! stats[ i ].check_func( *this ) ) continue;
     double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
     if ( delta > 0 )
-      player -> stat_gain( stats[ i ].stat, delta, stat_gain, 0, buff_duration > timespan_t::zero() );
+      player -> stat_gain( stats[ i ].stat, delta, stat_gain, nullptr, buff_duration > timespan_t::zero() );
     else if ( delta < 0 )
-      player -> stat_loss( stats[ i ].stat, std::fabs( delta ), stat_gain, 0, buff_duration > timespan_t::zero() );
+      player -> stat_loss( stats[ i ].stat, std::fabs( delta ), stat_gain, nullptr, buff_duration > timespan_t::zero() );
     else
       assert( delta == 0 );
     stats[ i ].current_value += delta;
@@ -1568,9 +1568,9 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     {
       double delta = stats[ i ].amount * stacks;
       if ( delta > 0 )
-        player -> stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, stat_gain, 0, buff_duration > timespan_t::zero() );
+        player -> stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, stat_gain, nullptr, buff_duration > timespan_t::zero() );
       else if ( delta < 0 )
-        player -> stat_gain( stats[ i ].stat, ( delta >= stats[ i ].current_value ) ? std::fabs( delta ) : 0.0, stat_gain, 0, buff_duration > timespan_t::zero() );
+        player -> stat_gain( stats[ i ].stat, ( delta >= stats[ i ].current_value ) ? std::fabs( delta ) : 0.0, stat_gain, nullptr, buff_duration > timespan_t::zero() );
       stats[ i ].current_value -= delta;
     }
     current_stack -= stacks;
@@ -1595,9 +1595,9 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
   for ( size_t i = 0; i < stats.size(); ++i )
   {
     if ( stats[ i ].current_value > 0 )
-      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, stat_gain, 0, buff_duration > timespan_t::zero() );
+      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, stat_gain, nullptr, buff_duration > timespan_t::zero() );
     else if ( stats[ i ].current_value < 0 )
-      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), stat_gain, 0, buff_duration > timespan_t::zero() );
+      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), stat_gain, nullptr, buff_duration > timespan_t::zero() );
     stats[ i ].current_value = 0;
   }
 
@@ -1815,7 +1815,7 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
 
-  std::vector<absorb_buff_t*>::iterator it = range::find( player -> absorb_buff_list, this );
+  auto it = range::find( player -> absorb_buff_list, this );
   if ( it != player -> absorb_buff_list.end() )
     player -> absorb_buff_list.erase( it );
 }

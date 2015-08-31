@@ -129,7 +129,7 @@ void stats_t::add_result( double act_amount,
                           block_result_e block_result,
                           player_t* /* target */ )
 {
-  stats_results_t* r = 0;
+  stats_results_t* r = nullptr;
   if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
     r = &( direct_results[ result ] );
   else
@@ -144,7 +144,7 @@ void stats_t::add_result( double act_amount,
   if ( block_result != BLOCK_RESULT_UNKNOWN )
   {
     full_result_e fulltype = translate_result( result, block_result );
-    stats_results_t* f = 0;
+    stats_results_t* f = nullptr;
     if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
       f = &( direct_results_detail[ fulltype ] );
     else

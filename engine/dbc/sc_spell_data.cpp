@@ -585,7 +585,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   spell_data_filter_expr_t( sim_t* sim, expr_data_e type, const std::string& f_name, bool eq = false ) :
     spell_list_expr_t( sim, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
   {
-    const sdata_field_t      * fields = 0;
+    const sdata_field_t      * fields = nullptr;
     unsigned             fsize;
     if ( type == DATA_TALENT )
     {
@@ -716,7 +716,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
   void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_e t ) const
   {
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
+    for ( auto i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
     {
       // Don't bother comparing if this spell id is already in the result set.
       if ( range::find( res, *i ) != res.end() )
@@ -1234,24 +1234,24 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
       if ( ! e )
       {
         sim -> errorf( "Unable to decode expression function '%s'\n", t.label.c_str() );
-        return 0;
+        return nullptr;
       }
       stack.push_back( e );
     }
     else if ( expression_t::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
-        return 0;
+        return nullptr;
       spell_data_expr_t* right = stack.back(); stack.pop_back();
       spell_data_expr_t* left  = stack.back(); stack.pop_back();
       if ( ! left || ! right )
-        return 0;
+        return nullptr;
       stack.push_back( new sd_expr_binary_t( sim, t.label, t.type, left, right ) );
     }
   }
 
   if ( stack.size() != 1 )
-    return 0;
+    return nullptr;
 
   spell_data_expr_t* res = stack.back();
   stack.pop_back();
@@ -1265,7 +1265,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( splits.empty() || splits.size() > 3 )
-    return 0;
+    return nullptr;
 
   expr_data_e data_type = parse_data_type( splits[ 0 ] );
 
@@ -1279,7 +1279,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   }
 
   if ( data_type == ( expr_data_e ) - 1 )
-    return 0;
+    return nullptr;
 
   // Effect handling, set flag and remove effect keyword from tokens
   bool effect_query = false;
@@ -1288,7 +1288,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     if ( data_type == DATA_EFFECT )
     {
       // "effect.effect"?!?
-      return 0;
+      return nullptr;
     }
     effect_query = true;
     splits.erase( splits.begin() + 1 );
@@ -1335,14 +1335,14 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr_str )
 {
-  if ( expr_str.empty() ) return 0;
+  if ( expr_str.empty() ) return nullptr;
 
-  std::vector<expr_token_t> tokens = expression_t::parse_tokens( 0, expr_str );
+  std::vector<expr_token_t> tokens = expression_t::parse_tokens( nullptr, expr_str );
 
   if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 
@@ -1354,7 +1354,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
   {
     sim -> errorf( "Unable to convert %s into RPN\n", expr_str.c_str() );
     sim -> cancel();
-    return 0;
+    return nullptr;
   }
 
   if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
@@ -1365,7 +1365,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
   {
     sim -> errorf( "Unable to build expression tree from %s\n", expr_str.c_str() );
     sim -> cancel();
-    return 0;
+    return nullptr;
   }
 
   return e;

@@ -40,7 +40,7 @@ struct recharge_event_t : event_t
     }
     else
     {
-      cooldown_ -> recharge_event = 0;
+      cooldown_ -> recharge_event = nullptr;
       cooldown_ -> last_charged = sim().current_time();
     }
 
@@ -71,7 +71,7 @@ struct ready_trigger_event_t : public player_event_t
   { return "ready_trigger_event"; }
   void execute()
   {
-    cooldown -> ready_trigger_event = 0;
+    cooldown -> ready_trigger_event = nullptr;
     p() -> trigger_ready();
   }
 };
@@ -220,8 +220,8 @@ void cooldown_t::reset_init()
 
   current_charge = charges;
 
-  recharge_event = 0;
-  ready_trigger_event = 0;
+  recharge_event = nullptr;
+  ready_trigger_event = nullptr;
 }
 
 void cooldown_t::reset( bool require_reaction )
@@ -314,7 +314,7 @@ void cooldown_t::start( action_t* action, timespan_t _override, timespan_t delay
 
 void cooldown_t::start( timespan_t _override, timespan_t delay )
 {
-  start( 0, _override, delay );
+  start( nullptr, _override, delay );
 }
 
 void cooldown_t::set_recharge_multiplier( double v )

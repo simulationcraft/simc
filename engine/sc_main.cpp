@@ -62,16 +62,16 @@ struct sim_signal_handler_t
     sa.sa_flags = 0;
 
     sa.sa_handler = sigsegv;
-    sigaction( SIGSEGV, &sa, 0 );
+    sigaction( SIGSEGV, &sa, nullptr );
 
     sa.sa_handler = sigint;
-    sigaction( SIGINT,  &sa, 0 );
+    sigaction( SIGINT,  &sa, nullptr );
   }
 
   ~sim_signal_handler_t()
-  { global_sim = 0; }
+  { global_sim = nullptr; }
 };
-sim_t* sim_signal_handler_t::global_sim = 0;
+sim_t* sim_signal_handler_t::global_sim = nullptr;
 #else
 struct sim_signal_handler_t
 {

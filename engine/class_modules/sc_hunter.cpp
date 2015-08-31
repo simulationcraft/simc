@@ -303,16 +303,16 @@ public:
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
     player_t( sim, HUNTER, name, r ),
-    sniper_training( 0 ),
+    sniper_training( nullptr ),
     active( actives_t() ),
     pet_dire_beasts(),
     thunderhawk(),
     action_lightning_arrow_aimed_shot(),
     action_lightning_arrow_arcane_shot(),
     action_lightning_arrow_multi_shot(),
-    beastlord( 0 ),
-    longview( 0 ),
-    blackness( 0 ),
+    beastlord( nullptr ),
+    longview( nullptr ),
+    blackness( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -948,7 +948,7 @@ public:
     case PET_FOX:          return "tailspin";
     default: break;
     }
-    return NULL;
+    return nullptr;
   }
 
   virtual void init_base_stats()
@@ -1244,7 +1244,7 @@ public:
     return static_cast<hunter_t*>( p() -> o() );
   }
 
-  hunter_main_pet_td_t* td( player_t* t = 0 ) const
+  hunter_main_pet_td_t* td( player_t* t = nullptr ) const
   {
     return p() -> get_target_data( t ? t : ab::target );
   }
@@ -1375,7 +1375,7 @@ struct pet_melee_t: public hunter_main_pet_attack_t
 struct pet_auto_attack_t: public hunter_main_pet_attack_t
 {
   pet_auto_attack_t( hunter_main_pet_t* player, const std::string& options_str ):
-    hunter_main_pet_attack_t( "auto_attack", player, 0 )
+    hunter_main_pet_attack_t( "auto_attack", player, nullptr )
   {
     parse_options( options_str );
 
@@ -1391,7 +1391,7 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
 
   virtual bool ready()
   {
-    return( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -2111,7 +2111,7 @@ struct start_attack_t: public hunter_ranged_attack_t
 
   virtual bool ready()
   {
-    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -2666,7 +2666,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
   chimaera_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "chimaera_shot", player, player -> specs.chimaera_shot ),
-    frost( NULL ), nature( NULL )
+    frost( nullptr ), nature( nullptr )
   {
     parse_options( options_str );
     callbacks = false;
@@ -2790,7 +2790,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   shadow_nova_t* t18_4p_surv;
   explosive_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "explosive_shot", player, player -> specs.explosive_shot ),
-    t18_4p_surv( 0 )
+    t18_4p_surv( nullptr )
   {
     parse_options( options_str );
     may_block = false;
@@ -3311,7 +3311,7 @@ struct barrage_t: public hunter_spell_t
     starved_proc = player -> get_proc( "starved: barrage" );
   }
 
- void schedule_execute( action_state_t* state = 0 )
+ void schedule_execute( action_state_t* state = nullptr )
   {
     hunter_spell_t::schedule_execute( state );
 
@@ -3604,9 +3604,9 @@ struct kill_command_t: public hunter_spell_t
 
   bool init_finished()
   {
-    for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
+    for (auto pet : p() -> pet_list)
     {
-      pet_t* pet = p() -> pet_list[i];
+      
       stats -> add_child( pet -> get_stats( "kill_command" ) );
     }
 
@@ -3682,7 +3682,7 @@ struct summon_pet_t: public hunter_spell_t
   pet_t* pet;
   summon_pet_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "summon_pet", player ),
-    pet( 0 )
+    pet( nullptr )
   {
     harmful = false;
     callbacks = false;
@@ -4537,7 +4537,7 @@ void hunter_t::reset()
   active.aspect         = ASPECT_NONE;
   active.ammo           = NO_AMMO;
 
-  sniper_training = 0;
+  sniper_training = nullptr;
   movement_ended = - sniper_training_cd -> duration();
   ppm_tier15_4pc_melee.reset();
   ppm_tier15_2pc_melee.reset();
@@ -5041,7 +5041,7 @@ struct hunter_module_t: public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    hunter_t* p = new hunter_t( sim, name, r );
+    auto  p = new hunter_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
     return p;
   }

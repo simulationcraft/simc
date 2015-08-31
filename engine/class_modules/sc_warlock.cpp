@@ -429,7 +429,7 @@ public:
   virtual double    composite_spell_haste() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_mastery() const;
-  virtual double    resource_gain( resource_e, double, gain_t* = 0, action_t* = 0 );
+  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr );
   virtual double    mana_regen_per_second() const;
   virtual double    composite_armor() const;
 
@@ -652,7 +652,7 @@ struct warlock_pet_melee_t: public melee_attack_t
   off_hand_swing* oh;
 
   warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ):
-    melee_attack_t( name, p, spell_data_t::nil() ), oh( 0 )
+    melee_attack_t( name, p, spell_data_t::nil() ), oh( nullptr )
   {
     school = SCHOOL_PHYSICAL;
     weapon = &( p -> main_hand_weapon );
@@ -1071,7 +1071,7 @@ struct wild_firebolt_t: public warlock_pet_spell_t
 } // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
-pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), special_action_two( 0 ), melee_attack( 0 ), summon_stats( 0 )
+pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr )
 {
   owner_fury_gain = owner -> get_gain( pet_name );
   owner_coeff.ap_from_sp = 1.0;
@@ -1468,7 +1468,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   stats_t* swarm_stats;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( 0 )
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( nullptr )
   {
     owner_coeff.sp_from_sp = 0.75;
   }
@@ -1723,7 +1723,7 @@ struct inner_demon_t : public pet_t
 
   inner_demon_t( warlock_t* owner ) :
     pet_t( owner -> sim, owner, "inner_demon", true ),
-    soul_fire( 0 )
+    soul_fire( nullptr )
   {
     owner_coeff.sp_from_sp = 0.75;
   }
@@ -1833,7 +1833,7 @@ private:
     weapon_multiplier = 0.0;
     gain = player -> get_gain( name_str );
     generate_fury = 0;
-    cost_event = 0;
+    cost_event = nullptr;
     havoc_consume = backdraft_consume = 0;
     fury_in_meta = data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879;
     ds_tick_stats = player -> get_stats( name_str + "_ds", this );
@@ -1841,7 +1841,7 @@ private:
     mg_tick_stats = player -> get_stats( name_str + "_mg", this );
     mg_tick_stats -> school = school;
 
-    havoc_proc = 0;
+    havoc_proc = nullptr;
 
     if ( p() -> destruction_trinket )
     {
@@ -2030,7 +2030,7 @@ public:
     if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
     {
       pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> pets.active ); //get active pet
-      if ( my_pet != NULL )
+      if ( my_pet != nullptr )
       {
         bool procced = p() -> grimoire_of_synergy.trigger();
         if ( procced ) my_pet -> buffs.demonic_synergy -> trigger();
@@ -2067,7 +2067,7 @@ public:
 
       p() -> buffs.havoc -> decrement( havoc_consume );
       if ( p() -> buffs.havoc -> check() == 0 )
-        p() -> havoc_target = 0;
+        p() -> havoc_target = nullptr;
     }
 
     if ( p() -> resources.current[RESOURCE_BURNING_EMBER] < 1.0 )
@@ -2210,7 +2210,7 @@ public:
   void assess_damage( dmg_e type, action_state_t* s )
   {
     warlock_state_t* state = debug_cast<warlock_state_t*>( s );
-    stats_t* tmp = 0;
+    stats_t* tmp = nullptr;
     // ds tick -> adjust the spell's "stats" object so we collect information
     // to a separate SPELL_ds entry in the report
     if ( state -> ds_tick )
@@ -2696,7 +2696,7 @@ struct shadowburn_t: public warlock_spell_t
   resource_event_t* resource_event;
   timespan_t delay;
   shadowburn_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadowburn" ), resource_event( 0 )
+    warlock_spell_t( p, "Shadowburn" ), resource_event( nullptr )
   {
     min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
@@ -2898,7 +2898,7 @@ struct drain_life_t: public warlock_spell_t
   drain_life_heal_t* heal;
 
   drain_life_t( warlock_t* p ):
-    warlock_spell_t( p, "Drain Life" ), heal( 0 )
+    warlock_spell_t( p, "Drain Life" ), heal( nullptr )
   {
     channeled = true;
     hasted_ticks = false;
@@ -3054,7 +3054,7 @@ struct immolate_t: public warlock_spell_t
 
   immolate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
     warlock_spell_t( n, p, spell ),
-    fnb( 0 )
+    fnb( nullptr )
   {
     base_tick_time = p -> find_spell( 157736 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 157736 ) -> duration();
@@ -3207,7 +3207,7 @@ struct conflagrate_t: public warlock_spell_t
 
   conflagrate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
     warlock_spell_t( n, p, spell ),
-    fnb( 0 )
+    fnb( nullptr )
   {
     aoe = -1;
     stats = p -> get_stats( "conflagrate_fnb", this );
@@ -3324,7 +3324,7 @@ struct incinerate_t: public warlock_spell_t
   // Fire and Brimstone incinerate
   incinerate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
     warlock_spell_t( n, p, spell ),
-    fnb( 0 )
+    fnb( nullptr )
   {
     aoe = -1;
     stats = p -> get_stats( "incinerate_fnb", this );
@@ -3441,7 +3441,7 @@ struct soul_fire_t: public warlock_spell_t
   warlock_spell_t* meta_spell;
 
   soul_fire_t( warlock_t* p, bool meta = false ):
-    warlock_spell_t( meta ? "soul_fire_meta" : "soul_fire", p, meta ? p -> find_spell( 104027 ) : p -> find_spell( 6353 ) ), meta_spell( 0 )
+    warlock_spell_t( meta ? "soul_fire_meta" : "soul_fire", p, meta ? p -> find_spell( 104027 ) : p -> find_spell( 6353 ) ), meta_spell( nullptr )
   {
     if ( ! meta )
     {
@@ -3553,7 +3553,7 @@ struct chaos_bolt_t: public warlock_spell_t
     fnb( new chaos_bolt_t( "chaos_bolt", p, p -> find_spell( 157701 ) ) )
   {
     if ( !p -> talents.charred_remains -> ok() )
-      fnb = 0;
+      fnb = nullptr;
 
     havoc_consume = 3;
     backdraft_consume = 3;
@@ -3566,7 +3566,7 @@ struct chaos_bolt_t: public warlock_spell_t
 
   chaos_bolt_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
     warlock_spell_t( n, p, spell ),
-    fnb( 0 )
+    fnb( nullptr )
   {
     aoe = -1;
     backdraft_consume = 3;
@@ -3775,7 +3775,7 @@ struct t: public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    assert( cost_event == 0 );
+    assert( cost_event == nullptr );
     p() -> buffs.metamorphosis -> trigger();
     cost_event = new ( *sim ) cost_event_t( p(), this );
   }
@@ -3880,7 +3880,7 @@ struct chaos_wave_t: public warlock_spell_t
 
   chaos_wave_t( warlock_t* p ):
     warlock_spell_t( "chaos_wave", p, p -> find_spell( 124916 ) ),
-    cw_damage( 0 ),
+    cw_damage( nullptr ),
     demonology_trinket_chance( 0.0 )
   {
     cooldown = p -> cooldowns.hand_of_guldan;
@@ -4547,7 +4547,7 @@ struct immolation_aura_t: public warlock_spell_t
   void last_tick( dot_t* dot )
   {
     warlock_spell_t::last_tick( dot );
-    p() -> spells.immolation_aura = 0;
+    p() -> spells.immolation_aura = nullptr;
     p() -> buffs.immolation_aura -> expire();
   }
 
@@ -4822,7 +4822,7 @@ public:
   summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" ):
     warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ),
     summoning_duration( timespan_t::zero() ),
-    pet_name( sname.empty() ? n : sname ), pet( 0 )
+    pet_name( sname.empty() ? n : sname ), pet( nullptr )
   {
     _init_summon_pet_t();
   }
@@ -4830,7 +4830,7 @@ public:
   summon_pet_t( const std::string& n, warlock_t* p, int id ):
     warlock_spell_t( n, p, p -> find_spell( id ) ),
     summoning_duration( timespan_t::zero() ),
-    pet_name( n ), pet( 0 )
+    pet_name( n ), pet( nullptr )
   {
     _init_summon_pet_t();
   }
@@ -4838,7 +4838,7 @@ public:
   summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd ):
     warlock_spell_t( n, p, sd ),
     summoning_duration( timespan_t::zero() ),
-    pet_name( n ), pet( 0 )
+    pet_name( n ), pet( nullptr )
   {
     _init_summon_pet_t();
   }
@@ -4878,14 +4878,14 @@ struct summon_main_pet_t: public summon_pet_t
     ignore_false_positive = true;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  virtual void schedule_execute( action_state_t* state = nullptr )
   {
     warlock_spell_t::schedule_execute( state );
 
     if ( p() -> pets.active )
     {
       p() -> pets.active -> dismiss();
-      p() -> pets.active = 0;
+      p() -> pets.active = nullptr;
     }
   }
 
@@ -4967,7 +4967,7 @@ struct flames_of_xoroth_t: public warlock_spell_t
     else if ( p() -> pets.active )
     {
       p() -> pets.active -> dismiss();
-      p() -> pets.active = 0;
+      p() -> pets.active = nullptr;
       gain_ember = true;
     }
     else if ( p() -> pets.last )
@@ -4998,7 +4998,7 @@ struct summon_infernal_t: public summon_pet_t
 
   summon_infernal_t( warlock_t* p ):
     summon_pet_t( p -> talents.grimoire_of_supremacy -> ok() ? "abyssal" : "infernal", p ),
-    infernal_awakening( 0 )
+    infernal_awakening( nullptr )
   {
     harmful = false;
 
@@ -5048,7 +5048,7 @@ struct summon_doomguard_t: public warlock_spell_t
 
   summon_doomguard_t( warlock_t* p ):
     warlock_spell_t( p, p -> talents.grimoire_of_supremacy -> ok() ? "Summon Terrorguard" : "Summon Doomguard" ),
-    summon_doomguard2( 0 )
+    summon_doomguard2( nullptr )
   {
     cooldown = p -> cooldowns.doomguard;
     cooldown -> duration = data().cooldown();
@@ -5102,7 +5102,7 @@ struct mortal_coil_t: public warlock_spell_t
   mortal_coil_heal_t* heal;
 
   mortal_coil_t( warlock_t* p ):
-    warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( 0 )
+    warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( nullptr )
   {
     havoc_consume = 1;
     base_dd_min = base_dd_max = 0;
@@ -5141,7 +5141,7 @@ struct grimoire_of_sacrifice_t: public warlock_spell_t
       warlock_spell_t::execute();
 
       p() -> pets.active -> dismiss();
-      p() -> pets.active = 0;
+      p() -> pets.active = nullptr;
       p() -> buffs.grimoire_of_sacrifice -> trigger();
 
       // FIXME: Demonic rebirth should really trigger on any pet death, but this is the only pet death we care about for now
@@ -5243,8 +5243,8 @@ void warlock_td_t::target_demise()
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
-    havoc_target( 0 ),
-    latest_corruption_target( 0 ),
+    havoc_target( nullptr ),
+    latest_corruption_target( nullptr ),
     double_nightfall( 0 ),
     pets( pets_t() ),
     talents( talents_t() ),
@@ -5261,15 +5261,15 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     procs( procs_t() ),
     spells( spells_t() ),
     soul_swap_buffer( soul_swap_buffer_t() ),
-    demonic_calling_event( 0 ),
+    demonic_calling_event( nullptr ),
     initial_burning_embers( 1 ),
     initial_demonic_fury( 200 ),
     default_pet( "" ),
     ember_react( ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max() ),
     shard_react( timespan_t::zero() ),
-    affliction_trinket( 0 ),
-    demonology_trinket( 0 ),
-    destruction_trinket( 0 )
+    affliction_trinket( nullptr ),
+    demonology_trinket( nullptr ),
+    destruction_trinket( nullptr )
 {
   base.distance = 40;
 
@@ -5559,7 +5559,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "service_doomguard"    ) return new   doomguard_pet_t( sim, this, pet_name );
   if ( pet_name == "service_infernal"     ) return new    infernal_pet_t( sim, this, pet_name );
 
-  return 0;
+  return nullptr;
 }
 
 void warlock_t::create_pets()
@@ -6417,11 +6417,11 @@ void warlock_t::reset()
     if ( td ) td -> reset();
   }
 
-  pets.active = 0;
+  pets.active = nullptr;
   ember_react = ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max();
   shard_react = timespan_t::zero();
   event_t::cancel( demonic_calling_event );
-  havoc_target = 0;
+  havoc_target = nullptr;
   double_nightfall = 0;
 
   grimoire_of_synergy.reset();
@@ -6606,7 +6606,7 @@ struct warlock_module_t: public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    warlock_t* p = new warlock_t( sim, name, r );
+    auto  p = new warlock_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new warlock_report_t( *p ) );
     return p;
   }

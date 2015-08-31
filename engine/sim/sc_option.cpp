@@ -563,9 +563,9 @@ void opts::parse( sim_t*                 sim,
     const std::vector<std::unique_ptr<option_t>>& options,
                       const std::vector<std::string>& splits )
 {
-  for ( size_t i = 0, size = splits.size(); i < size; ++i )
+  for (auto & s : splits)
   {
-    const std::string& s = splits[ i ];
+    
     std::string::size_type index = s.find( '=' );
 
     if ( index == std::string::npos )

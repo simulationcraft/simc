@@ -365,16 +365,16 @@ public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
     current_target( target ),
-    icicle( 0 ),
-    icicle_event( 0 ),
-    active_ignite( 0 ),
-    unstable_magic_explosion( 0 ),
-    last_bomb_target( 0 ),
+    icicle( nullptr ),
+    icicle_event( nullptr ),
+    active_ignite( nullptr ),
+    unstable_magic_explosion( nullptr ),
+    last_bomb_target( nullptr ),
     rppm_pyromaniac( *this ),
     rppm_arcane_instability( *this ),
-    wild_arcanist( 0 ),
-    pyrosurge( 0 ),
-    shatterlance( 0 ),
+    wild_arcanist( nullptr ),
+    pyrosurge( nullptr ),
+    shatterlance( nullptr ),
     distance_from_rune( 0.0 ),
     iv_haste( 1.0 ),
     pet_multiplier( 1.0 ),
@@ -484,7 +484,7 @@ public:
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
-  void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = 0 );
+  void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -867,7 +867,7 @@ struct mirror_image_pet_t : public pet_t
 
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "mirror_image", true ),
-    arcane_charge( NULL )
+    arcane_charge( nullptr )
   {
     owner_coeff.sp_from_sp = 1.00;
   }
@@ -934,11 +934,11 @@ struct prismatic_crystal_t : public pet_t
     action_t* owner_action;
 
     prismatic_crystal_aoe_state_t( action_t* action, player_t* target ) :
-      action_state_t( action, target ), owner_action( 0 )
+      action_state_t( action, target ), owner_action( nullptr )
     { }
 
     void initialize()
-    { action_state_t::initialize(); owner_action = 0; }
+    { action_state_t::initialize(); owner_action = nullptr; }
 
     std::ostringstream& debug_str( std::ostringstream& s )
     { action_state_t::debug_str( s ) << " owner_action=" << ( owner_action ? owner_action -> name_str : "unknown" ); return s; }
@@ -997,7 +997,7 @@ struct prismatic_crystal_t : public pet_t
 
   prismatic_crystal_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "prismatic_crystal", true ),
-    aoe_spell( 0 ),
+    aoe_spell( nullptr ),
     damage_taken( owner -> find_spell( 155153 ) ),
     frost_damage_taken( owner -> find_spell( 152087 ) )
   { true_level = 101; }
@@ -1007,9 +1007,9 @@ struct prismatic_crystal_t : public pet_t
     std::vector<stats_t*>& stats_data = proxy_stats[ owner_action -> player -> actor_index ];
 
     if ( stats_data.size() <= owner_action -> internal_id )
-      stats_data.resize( owner_action -> internal_id + 1, 0 );
+      stats_data.resize( owner_action -> internal_id + 1, nullptr );
 
-    if ( stats_data[ owner_action -> internal_id ] == 0 )
+    if ( stats_data[ owner_action -> internal_id ] == nullptr )
     {
       if ( owner_action -> player -> is_pet() )
       {
@@ -1060,9 +1060,9 @@ struct prismatic_crystal_t : public pet_t
       o() -> action_list[i] -> target_cache.is_valid = false;
     }
 
-    for ( size_t i = 0, i_end = o() -> pet_list.size(); i < i_end; i++ )
+    for (auto pet : o() -> pet_list)
     {
-      pet_t* pet = o() -> pet_list[i];
+      
 
       pet -> target = o() -> target;
       for ( size_t j = 0, j_end = pet -> action_list.size(); j < j_end; j++ )
@@ -1183,7 +1183,7 @@ struct temporal_hero_t : public pet_t
         return false;
       }
 
-      return player -> main_hand_attack -> execute_event == 0;
+      return player -> main_hand_attack -> execute_event == nullptr;
     }
   };
 
@@ -1240,7 +1240,7 @@ struct temporal_hero_t : public pet_t
         return false;
       }
 
-      return player -> main_hand_attack -> execute_event == 0;
+      return player -> main_hand_attack -> execute_event == nullptr;
     }
 
     bool init_finished()
@@ -1486,7 +1486,7 @@ public:
     return am;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  virtual void schedule_execute( action_state_t* state = nullptr )
   {
     // If there is no state to schedule, make one and put the actor's current
     // target into it. This guarantees that:
@@ -1496,7 +1496,7 @@ public:
     // If this is a tick action, there's going to be a state object passed to
     // it, that will have the correct target anyhow, since the parent will have
     // had it's target adjusted during its execution.
-    if ( state == 0 )
+    if ( state == nullptr )
     {
       state = get_state();
 
@@ -1617,7 +1617,7 @@ public:
 
   virtual void execute()
   {
-    player_t* original_target = 0;
+    player_t* original_target = nullptr;
     // Mage spells will always have a pre_execute_state defined, because of
     // schedule_execute() trickery.
     //
@@ -1643,7 +1643,7 @@ public:
       if ( pre_execute_state -> result_type == RESULT_TYPE_NONE )
       {
         action_state_t::release( pre_execute_state );
-        pre_execute_state = 0;
+        pre_execute_state = nullptr;
       }
     }
 
@@ -1737,11 +1737,11 @@ struct icicle_state_t : public action_state_t
   stats_t* source;
 
   icicle_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ), source( 0 )
+    action_state_t( action, target ), source( nullptr )
   { }
 
   void initialize()
-  { action_state_t::initialize(); source = 0; }
+  { action_state_t::initialize(); source = nullptr; }
 
   std::ostringstream& debug_str( std::ostringstream& s )
   { action_state_t::debug_str( s ) << " source=" << ( source ? source -> name_str : "unknown" ); return s; }
@@ -2996,7 +2996,7 @@ struct frost_bomb_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> last_bomb_target != 0 &&
+      if ( p() -> last_bomb_target != nullptr &&
            p() -> last_bomb_target != execute_state -> target )
       {
         td( p() -> last_bomb_target ) -> dots.frost_bomb -> cancel();
@@ -3181,8 +3181,8 @@ struct frostfire_bolt_t : public mage_spell_t
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
-    frigid_blast( 0 ),
-    icicle( 0 )
+    frigid_blast( nullptr ),
+    icicle( nullptr )
   {
     parse_options( options_str );
 
@@ -3500,7 +3500,7 @@ struct ice_lance_t : public mage_spell_t
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    frost_bomb_explosion( 0 ),
+    frost_bomb_explosion( nullptr ),
     shatterlance_effect( 0.0 )
   {
     parse_options( options_str );
@@ -4079,7 +4079,7 @@ struct nether_tempest_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> last_bomb_target != 0 &&
+      if ( p() -> last_bomb_target != nullptr &&
            p() -> last_bomb_target != execute_state -> target )
       {
         td( p() -> last_bomb_target ) -> dots.nether_tempest -> cancel();
@@ -4146,7 +4146,7 @@ struct pyroblast_t : public mage_spell_t
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
     is_hot_streak( false ), dot_is_hot_streak( false ),
-    conjure_phoenix( 0 )
+    conjure_phoenix( nullptr )
   {
     parse_options( options_str );
 
@@ -4157,7 +4157,7 @@ struct pyroblast_t : public mage_spell_t
     }
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  virtual void schedule_execute( action_state_t* state = nullptr )
   {
     mage_spell_t::schedule_execute( state );
 
@@ -4540,7 +4540,7 @@ struct choose_target_t : public action_t
 
   choose_target_t( mage_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "choose_target", p ),
-    check_selected( false ), selected_target( 0 ),
+    check_selected( false ), selected_target( nullptr ),
     last_execute( timespan_t::min() )
   {
     add_option( opt_string( "name", target_name ) );
@@ -4628,7 +4628,7 @@ struct choose_target_t : public action_t
     if ( target_if_mode != TARGET_IF_NONE )
     {
       selected_target = select_target_if_target();
-      if ( selected_target == 0 )
+      if ( selected_target == nullptr )
       {
         return false;
       }
@@ -4647,7 +4647,7 @@ struct choose_target_t : public action_t
     if ( p -> current_target == selected_target )
       return false;
 
-    player_t* original_target = 0;
+    player_t* original_target = nullptr;
     if ( check_selected )
     {
       if ( target != selected_target )
@@ -4918,7 +4918,7 @@ struct water_jet_t : public action_t
   pets::water_elemental_pet_t::water_jet_t* action;
 
   water_jet_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "water_jet", p ), action( 0 )
+    action_t( ACTION_OTHER, "water_jet", p ), action( nullptr )
   {
     parse_options( options_str );
 
@@ -5087,7 +5087,7 @@ struct icicle_event_t : public event_t
       if ( mage -> sim -> debug )
         mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping",
             mage -> name(), target -> name() );
-      mage -> icicle_event = 0;
+      mage -> icicle_event = nullptr;
       return;
     }
 
@@ -5107,7 +5107,7 @@ struct icicle_event_t : public event_t
                                mage -> name(), target -> name(), new_state.first, as<unsigned>( mage -> icicles.size() ) );
     }
     else
-      mage -> icicle_event = 0;
+      mage -> icicle_event = nullptr;
   }
 };
 
@@ -5237,7 +5237,7 @@ action_t* mage_t::create_proc_action( const std::string& name, const special_eff
   if ( util::str_compare_ci( name, "doom_nova" ) )     return new     actions::doom_nova_t( this, effect );
   if ( util::str_compare_ci( name, "nithramus" ) )     return new     actions::nithramus_t( this, effect );
 
-  return 0;
+  return nullptr;
 }
 
 
@@ -5647,15 +5647,15 @@ bool mage_t::has_t18_class_trinket() const
 {
   if ( specialization() == MAGE_ARCANE )
   {
-    return wild_arcanist != 0;
+    return wild_arcanist != nullptr;
   }
   else if ( specialization() == MAGE_FIRE )
   {
-    return pyrosurge != 0;
+    return pyrosurge != nullptr;
   }
   else if ( specialization() == MAGE_FROST )
   {
-    return shatterlance != 0;
+    return shatterlance != nullptr;
   }
 
   return false;
@@ -6436,7 +6436,7 @@ void mage_t::reset()
 
   icicles.clear();
   event_t::cancel( icicle_event );
-  last_bomb_target = 0;
+  last_bomb_target = nullptr;
 
   burn_phase.reset();
   pyro_chain.reset();
@@ -6527,7 +6527,7 @@ void mage_t::arise()
 
 action_t* mage_t::select_action( const action_priority_list_t& list )
 {
-  player_t* action_target = 0;
+  player_t* action_target = nullptr;
 
   // Mark this action list as visited with the APL internal id
   visited_apls_ |= list.internal_id_mask;
@@ -6536,10 +6536,10 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
   // call_action_list tree, with nothing to show for it.
   uint64_t _visited = visited_apls_;
 
-  for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
+  for (auto a : list.foreground_action_list)
   {
     visited_apls_ = _visited;
-    action_t* a = list.foreground_action_list[ i ];
+    
 
     if ( a -> background ) continue;
 
@@ -6566,7 +6566,7 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
         if ( action_target )
         {
           a -> target = action_target;
-          action_target = 0;
+          action_target = nullptr;
         }
 
         // If the called APLs bitflag (based on internal id) is up, we're in an
@@ -6576,7 +6576,7 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
           sim -> errorf( "%s action list in infinite loop", name() );
           sim -> cancel_iteration();
           sim -> cancel();
-          return 0;
+          return nullptr;
         }
 
         // We get an action from the call, return it
@@ -6592,11 +6592,11 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
     else if ( action_target )
     {
       a -> target = action_target;
-      action_target = 0;
+      action_target = nullptr;
     }
   }
 
-  return 0;
+  return nullptr;
 }
 // mage_t::create_expression ================================================
 
@@ -6776,7 +6776,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       sicicles_expr_t( mage_t& m ) : mage_expr_t( "shooting_icicles", m )
       { }
       double evaluate()
-      { return mage.icicle_event != 0; }
+      { return mage.icicle_event != nullptr; }
     };
 
     return new sicicles_expr_t( *this );
@@ -6844,11 +6844,11 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
 icicle_data_t mage_t::get_icicle_object()
 {
   if ( icicles.size() == 0 )
-    return icicle_data_t( (double) 0, (stats_t*) 0 );
+    return icicle_data_t( (double) 0, (stats_t*) nullptr );
 
   timespan_t threshold = spec.icicles_driver -> duration();
 
-  std::vector< icicle_tuple_t >::iterator idx = icicles.begin(),
+  auto idx = icicles.begin(),
                                          end = icicles.end();
   for ( ; idx < end; ++idx )
   {
@@ -6867,7 +6867,7 @@ icicle_data_t mage_t::get_icicle_object()
     return d;
   }
 
-  return icicle_data_t( (double) 0, (stats_t*) 0 );
+  return icicle_data_t( (double) 0, (stats_t*) nullptr );
 }
 
 void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, player_t* chain_target )
@@ -6987,7 +6987,7 @@ struct mage_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    mage_t* p = new mage_t( sim, name, r );
+    auto  p = new mage_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new mage_report_t( *p ) );
     return p;
   }

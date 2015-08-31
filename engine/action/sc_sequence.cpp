@@ -168,7 +168,7 @@ void strict_sequence_t::cancel()
   action_t::cancel();
 
   if ( player -> strict_sequence == this )
-    player -> strict_sequence = 0;
+    player -> strict_sequence = nullptr;
 
   current_action = 0;
 }
@@ -178,7 +178,7 @@ void strict_sequence_t::reset()
   action_t::reset();
 
   if ( player -> strict_sequence == this )
-    player -> strict_sequence = 0;
+    player -> strict_sequence = nullptr;
 
   current_action = 0;
 }
@@ -188,7 +188,7 @@ void strict_sequence_t::interrupt_action()
   action_t::interrupt_action();
 
   if ( player -> strict_sequence == this )
-    player -> strict_sequence = 0;
+    player -> strict_sequence = nullptr;
 
   current_action = 0;
 }
@@ -199,9 +199,9 @@ bool strict_sequence_t::ready()
   if ( ! action_t::ready() ) return false;
 
   // Strict sequences need all actions to be usable before it commits
-  for ( size_t i = 0, end = sub_actions.size(); i < end; i++ )
+  for (auto & elem : sub_actions)
   {
-    if ( ! sub_actions[ i ] -> ready() )
+    if ( ! elem -> ready() )
       return false;
   }
 
@@ -238,7 +238,7 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
   // Strict sequence is over, normal APL commences on the next ready event
   if ( current_action == sub_actions.size() )
   {
-    player -> strict_sequence = 0;
+    player -> strict_sequence = nullptr;
     current_action = 0;
   }
 }

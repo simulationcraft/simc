@@ -729,8 +729,8 @@ std::string player_t::base_initial_current_t::to_string()
 
 void player_t::register_callbacks()
 {
-  for ( size_t i = 0, end = callbacks.all_callbacks.size(); i < end; i++ )
-    callbacks.all_callbacks[ i ] -> initialize();
+  for (auto & elem : callbacks.all_callbacks)
+    elem -> initialize();
 }
 
 // player_t::init ===========================================================
@@ -743,12 +743,12 @@ void player_t::init()
   get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." ) -> used = true;
   get_action_priority_list( "default", "Executed every time the actor is available." );
 
-  for ( std::map<std::string, std::string>::iterator it = alist_map.begin(), end = alist_map.end(); it != end; ++it )
+  for (auto & elem : alist_map)
   {
-    if ( it -> first == "default" )
+    if ( elem.first == "default" )
       sim -> errorf( "Ignoring action list named default." );
     else
-      get_action_priority_list( it -> first ) -> action_list_str = it -> second;
+      get_action_priority_list( elem.first ) -> action_list_str = elem.second;
   }
 
   // If the owner is regenerating using dynamic resource regen, we need to
@@ -759,9 +759,9 @@ void player_t::init()
   // cycles.
   if ( regen_type == REGEN_DYNAMIC )
   {
-    for ( size_t i = 0, end = pet_list.size(); i < end; i++ )
+    for (auto pet : pet_list)
     {
-      pet_t* pet = pet_list[ i ];
+      
       if ( pet -> regen_type != REGEN_DYNAMIC )
         continue;
 
@@ -3954,13 +3954,13 @@ void player_t::reset()
 
   resource_threshold_trigger = 0;
 
-  for( size_t i = 0, end = variables.size(); i < end; i++ )
-    variables[ i ].reset();
+  for(auto & elem : variables)
+    elem.reset();
 
 #ifndef NDEBUG
-  for ( size_t i = 0, end = active_dots.size(); i < end; i++ )
+  for (auto & elem : active_dots)
   {
-    assert( active_dots[ i ] == 0 );
+    assert( elem == 0 );
   }
 #endif
 }
@@ -4385,33 +4385,33 @@ void player_t::regen( timespan_t periodicity )
 
 void player_t::collect_resource_timeline_information()
 {
-  for ( size_t j = 0, size = collected_data.resource_timelines.size(); j < size; ++j )
+  for (auto & elem : collected_data.resource_timelines)
   {
-    collected_data.resource_timelines[ j ].timeline.add( sim -> current_time(),
-        resources.current[ collected_data.resource_timelines[ j ].type ] );
+    elem.timeline.add( sim -> current_time(),
+        resources.current[ elem.type ] );
   }
 
-  for ( size_t j = 0, size = collected_data.stat_timelines.size(); j < size; ++j )
+  for (auto & elem : collected_data.stat_timelines)
   {
-    switch ( collected_data.stat_timelines[ j ].type )
+    switch ( elem.type )
     {
       case STAT_STRENGTH:
-        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time(), cache.strength() );
+        elem.timeline.add( sim -> current_time(), cache.strength() );
         break;
       case STAT_AGILITY:
-        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time(), cache.agility() );
+        elem.timeline.add( sim -> current_time(), cache.agility() );
         break;
       case STAT_INTELLECT:
-        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time(), cache.intellect() );
+        elem.timeline.add( sim -> current_time(), cache.intellect() );
         break;
       case STAT_SPELL_POWER:
-        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time(), cache.spell_power( SCHOOL_NONE ) );
+        elem.timeline.add( sim -> current_time(), cache.spell_power( SCHOOL_NONE ) );
         break;
       case STAT_ATTACK_POWER:
-        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time(), cache.attack_power() );
+        elem.timeline.add( sim -> current_time(), cache.attack_power() );
         break;
       default:
-        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time(), 0 );
+        elem.timeline.add( sim -> current_time(), 0 );
         break;
     }
   }
@@ -5533,9 +5533,9 @@ void player_t::copy_action_priority_list( const std::string& old_list, const std
 template <typename T>
 T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 {
-  for ( size_t i = 0, s = list.size(); i < s; ++i )
+  for (auto t : list)
   {
-    T* t = list[ i ];
+    
     if ( t -> name_str == name )
       return t;
   }
@@ -5897,11 +5897,11 @@ struct variable_t : public action_t
     }
 
     // Find the variable
-    for ( size_t i = 0, end = player -> variables.size(); i < end; i++ )
+    for (auto & elem : player -> variables)
     {
-      if ( util::str_compare_ci( player -> variables[ i ].name_, name_ ) )
+      if ( util::str_compare_ci( elem.name_, name_ ) )
       {
-        var = &( player -> variables[ i ] );
+        var = &( elem );
         break;
       }
     }
@@ -7969,11 +7969,11 @@ expr_t* player_t::create_expression( action_t* a,
       variable_expr_t( player_t* p, const std::string& name ) :
         expr_t( "variable" ), player_( p ), var_( 0 )
       {
-        for ( size_t i = 0, end = player_ -> variables.size(); i < end; i++ )
+        for (auto & elem : player_ -> variables)
         {
-          if ( util::str_compare_ci( name, player_ -> variables[ i ].name_ ) )
+          if ( util::str_compare_ci( name, elem.name_ ) )
           {
-            var_ = &( player_ -> variables[ i ] );
+            var_ = &( elem );
             break;
           }
         }
@@ -8874,10 +8874,10 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED,
     };
 
-    for ( int i = 0; i < SLOT_MAX; i++ )
+    for (auto & slot : SLOT_OUT_ORDER)
     {
-      item_t& item = items[ SLOT_OUT_ORDER[ i ] ];
-
+      
+      item_t& item = items[ SLOT_OUT_ORDER[ slot ] ];
       if ( item.active() )
       {
         profile_str += item.slot_name();
@@ -10388,16 +10388,16 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
   double c2 = 450; // N_0, default fight length for normalization
   double c1 = 100000 / D; // health scale factor, determines slope of plot
 
-  for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+  for (auto & elem : weighted_value)
   {
     // weighted_value is the moving average (i.e. 1-second), so multiply by window size to get damage in "window" seconds
-    weighted_value[ j ] *= window;
+    elem *= window;
 
     // calculate exponentially-weighted contribution of this data point using filter strength D
-    weighted_value[ j ] = std::exp( D * weighted_value[ j ] );
+    elem = std::exp( D * elem );
 
     // add to the TMI total; strictly speaking this should be moved outside the for loop and turned into a sort() followed by a sum for numerical accuracy
-    tmi += weighted_value [ j ];
+    tmi += elem;
   }
 
   // multiply by vertical offset factor c2

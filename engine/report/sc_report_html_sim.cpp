@@ -134,9 +134,9 @@ void print_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* 
       s -> player -> collected_data.fight_length.mean() );
   }
 
-  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  for (auto & elem : s -> children)
   {
-    print_raw_action_damage( os, s -> children[ i ], p, j, sim );
+    print_raw_action_damage( os, elem, p, j, sim );
   }
 }
 
@@ -176,7 +176,7 @@ void print( report::sc_html_stream& os, sim_t* sim )
     for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
       stats_t* s = p -> stats_list[ i ];
-      if ( s -> parent == NULL )
+      if ( s -> parent == nullptr )
         print_raw_action_damage( os, s, p, count++, sim );
     }
 
@@ -186,7 +186,7 @@ void print( report::sc_html_stream& os, sim_t* sim )
       for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
       {
         stats_t* s = pet -> stats_list[ i ];
-        if ( s -> parent == NULL )
+        if ( s -> parent == nullptr )
           print_raw_action_damage( os, s, p, count++, sim );
       }
     }
@@ -550,7 +550,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, const sim_r
     else if ( sim -> enable_highcharts )
     {
       highchart::histogram_chart_t chart( "sim_length_dist", sim );
-      if ( chart::generate_distribution( chart, 0, sim -> simulation_length.distribution, "Timeline",
+      if ( chart::generate_distribution( chart, nullptr, sim -> simulation_length.distribution, "Timeline",
             sim -> simulation_length.mean(),
             sim -> simulation_length.min(),
             sim -> simulation_length.max() ) )
@@ -1010,9 +1010,9 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
   }
 
   // cycle through players
-  for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )
+  for (auto p : sim -> players_by_name)
   {
-    player_t* p = sim -> players_by_name[ i ];
+    
 
     // add the absolute value of their stat weights to accumulator element
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )

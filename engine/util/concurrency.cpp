@@ -155,7 +155,7 @@ class mutex_t::native_t : public nonmoveable
   pthread_mutex_t m;
 
 public:
-  native_t()    { pthread_mutex_init( &m, NULL ); }
+  native_t()    { pthread_mutex_init( &m, nullptr ); }
   ~native_t()   { pthread_mutex_destroy( &m ); }
 
   void lock()   { pthread_mutex_lock( &m ); }
@@ -172,13 +172,13 @@ class sc_thread_t::native_t
   static void* execute( void* t )
   {
     static_cast<sc_thread_t*>( t ) -> run();
-    return NULL;
+    return nullptr;
   }
 
 public:
   void launch( sc_thread_t* thr, priority_e prio )
   {
-    int rc = pthread_create( &t, NULL, execute, thr );
+    int rc = pthread_create( &t, nullptr, execute, thr );
     if ( rc != 0 )
     {
       perror( "Could not create thread." );
@@ -187,7 +187,7 @@ public:
     set_priority( prio );
   }
 
-  void join() { pthread_join( t, NULL ); }
+  void join() { pthread_join( t, nullptr ); }
 
   void set_priority( priority_e prio )
   { set_thread_priority( t, prio ); }

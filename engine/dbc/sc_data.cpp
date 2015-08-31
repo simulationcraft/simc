@@ -274,14 +274,14 @@ spell_hotfix_entry_t& hotfix::register_spell( const std::string& group,
                                               unsigned           spell_id,
                                               unsigned           flags )
 {
-  std::vector<hotfix_entry_t*>::iterator i = std::find_if( hotfixes_.begin(),
+  auto i = std::find_if( hotfixes_.begin(),
       hotfixes_.end(), hotfix_comparator_t( tag, note ) );
   if ( i !=  hotfixes_.end() )
   {
     return *static_cast<spell_hotfix_entry_t*>( *i );
   }
 
-  spell_hotfix_entry_t* entry = new spell_hotfix_entry_t( group, tag, spell_id, note, flags );
+  auto  entry = new spell_hotfix_entry_t( group, tag, spell_id, note, flags );
   hotfixes_.push_back( entry );
 
   std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
@@ -295,14 +295,14 @@ effect_hotfix_entry_t& hotfix::register_effect( const std::string& group,
                                                 unsigned           effect_id,
                                                 unsigned           flags )
 {
-  std::vector<hotfix_entry_t*>::iterator i = std::find_if( hotfixes_.begin(),
+  auto i = std::find_if( hotfixes_.begin(),
       hotfixes_.end(), hotfix_comparator_t( tag, note ) );
   if ( i !=  hotfixes_.end() )
   {
     return *static_cast<effect_hotfix_entry_t*>( *i );
   }
 
-  effect_hotfix_entry_t* entry = new effect_hotfix_entry_t( group, tag, effect_id, note, flags );
+  auto  entry = new effect_hotfix_entry_t( group, tag, effect_id, note, flags );
   hotfixes_.push_back( entry );
 
   std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
@@ -499,7 +499,7 @@ spell_data_t* custom_dbc_data_t::get_mutable_spell( unsigned spell_id, bool ptr 
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 const spell_data_t* custom_dbc_data_t::find_spell( unsigned spell_id, bool ptr ) const
@@ -512,7 +512,7 @@ const spell_data_t* custom_dbc_data_t::find_spell( unsigned spell_id, bool ptr )
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 bool custom_dbc_data_t::add_spell( spell_data_t* spell, bool ptr )
@@ -537,7 +537,7 @@ spelleffect_data_t* custom_dbc_data_t::get_mutable_effect( unsigned effect_id, b
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 const spelleffect_data_t* custom_dbc_data_t::find_effect( unsigned effect_id, bool ptr ) const
@@ -550,7 +550,7 @@ const spelleffect_data_t* custom_dbc_data_t::find_effect( unsigned effect_id, bo
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 bool custom_dbc_data_t::add_effect( spelleffect_data_t* effect, bool ptr )

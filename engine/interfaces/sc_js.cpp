@@ -18,7 +18,7 @@ sc_js_t::sc_js_t( const sc_js_t& o )
 rapidjson::Value* sc_js_t::path_value( const std::string& path_str )
 {
   std::vector<std::string> path = util::string_split( path_str, "." );
-  rapidjson::Value* v = 0;
+  rapidjson::Value* v = nullptr;
   if ( path.size() < 1 )
     return v;
 

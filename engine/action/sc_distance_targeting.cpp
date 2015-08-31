@@ -146,14 +146,16 @@
     double max_ = current_target_v;
     double min_ = current_target_v;
 
-    for ( size_t i = 0, end = master_list.size(); i < end; ++i )
+    for (auto player : master_list)
     {
-      target = master_list[i];
+      target = player;
 
       // No need to check current target
       if ( target == original_target )
         continue;
+
       double v = target_if_expr -> evaluate();
+      
 
       // Don't swap to targets that evaluate to identical value than the current target
       if ( v == current_target_v )

@@ -181,9 +181,9 @@ struct adds_event_t : public raid_event_t
 
   void regenerate_cache()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[i];
+      
       // Invalidate target caches
       for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
         p -> action_list[i] -> target_cache.is_valid = false; //Regenerate Cache.
@@ -277,9 +277,9 @@ struct move_enemy_t : public raid_event_t
 
   void regenerate_cache()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[i];
+      
       // Invalidate target caches
       for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
         p -> action_list[i] -> target_cache.is_valid = false; //Regenerate Cache.
@@ -362,18 +362,18 @@ struct distraction_event_t : public raid_event_t
 
   virtual void _start()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       p -> current.skill_debuff += skill;
     }
   }
 
   virtual void _finish()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       p -> current.skill_debuff -= skill;
     }
   }
@@ -453,9 +453,9 @@ struct movement_ticker_t : public event_t
   {
     timespan_t min_time = timespan_t::max();
     bool any_movement = false;
-    for ( size_t i = 0, end = players.size(); i < end; i++ )
+    for (auto player : players)
     {
-      timespan_t time_to_finish = players[ i ] -> time_to_move();
+      timespan_t time_to_finish = player -> time_to_move();
       if ( time_to_finish == timespan_t::zero() )
         continue;
 
@@ -476,9 +476,9 @@ struct movement_ticker_t : public event_t
 
   void execute()
   {
-    for ( size_t i = 0, end = players.size(); i < end; i++ )
+    for (auto p : players)
     {
-      player_t* p = players[ i ];
+      
       if ( p -> is_sleeping() )
         continue;
 
@@ -557,9 +557,9 @@ struct movement_event_t : public raid_event_t
 
     if ( move <= 0.0 ) return;
 
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[i];
+      
       p -> trigger_movement( move, m );
 
       if ( p -> buffs.stunned -> check() ) continue;
@@ -586,9 +586,9 @@ struct stun_event_t : public raid_event_t
 
   virtual void _start()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       p -> buffs.stunned -> increment();
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> stun();
@@ -597,9 +597,9 @@ struct stun_event_t : public raid_event_t
 
   virtual void _finish()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       p -> buffs.stunned -> decrement();
       if ( ! p -> buffs.stunned -> check() )
       {
@@ -623,9 +623,9 @@ struct interrupt_event_t : public raid_event_t
 
   virtual void _start()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       p -> interrupt();
     }
   }
@@ -679,9 +679,9 @@ struct damage_event_t : public raid_event_t
       raid_damage -> init();
     }
 
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       raid_damage -> base_dd_min = raid_damage -> base_dd_max = sim -> rng().range( amount - amount_range, amount + amount_range );
       raid_damage -> target = p;
       raid_damage -> execute();
@@ -714,9 +714,9 @@ struct heal_event_t : public raid_event_t
 
   virtual void _start()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       double x; // amount to heal
 
       // to_pct tells this event to heal each player up to a percent of their max health
@@ -770,9 +770,9 @@ struct damage_taken_debuff_event_t : public raid_event_t
 
   virtual void _start()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
 
       if ( sim -> log ) sim -> out_log.printf( "%s gains %d stacks of damage_taken debuff.", p -> name(), amount );
 
@@ -823,9 +823,9 @@ struct position_event_t : public raid_event_t
 
   virtual void _start()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
       if ( p -> position() == POSITION_BACK )
         p -> change_position( POSITION_FRONT );
       else if ( p -> position() == POSITION_RANGED_BACK )
@@ -835,9 +835,9 @@ struct position_event_t : public raid_event_t
 
   virtual void _finish()
   {
-    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    for (auto p : affected_players)
     {
-      player_t* p = affected_players[ i ];
+      
 
       p -> change_position( p -> initial.position );
     }

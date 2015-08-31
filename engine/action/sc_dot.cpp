@@ -199,7 +199,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
 
   // Shared initialize for the target dot state, independent of the copying
   // method
-  action_state_t* target_state = 0;
+  action_state_t* target_state = nullptr;
   if ( ! other_dot -> state )
   {
     target_state = current_action -> get_state( state );
@@ -379,7 +379,7 @@ expr_t* dot_t::create_expression( action_t* action,
 
       tick_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_tick_dmg", d, a, dynamic ),
-        s( 0 )
+        s( nullptr )
       { }
 
       virtual double evaluate()
@@ -410,7 +410,7 @@ expr_t* dot_t::create_expression( action_t* action,
 
       crit_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_crit_dmg", d, a, dynamic ),
-      s( 0 )
+      s( nullptr )
       { }
 
       virtual double evaluate()
@@ -549,7 +549,7 @@ expr_t* dot_t::create_expression( action_t* action,
     return new dot_crit_pct_expr_t( this, action, dynamic );
   }
 
-  return 0;
+  return nullptr;
 }
 
 /* Remaining dot tick time
@@ -664,7 +664,7 @@ void dot_t::schedule_tick()
     {
       // FIXME: We can probably use "source" instead of "action->player"
 
-      current_action -> player -> channeling = 0;
+      current_action -> player -> channeling = nullptr;
       current_action -> player -> gcd_ready = sim.current_time() + current_action -> gcd();
       current_action -> execute();
       if ( current_action -> result_is_hit( current_action -> execute_state -> result ) )

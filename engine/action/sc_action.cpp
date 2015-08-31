@@ -2764,9 +2764,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
       double evaluate()
       {
         double ret = 0;
-        for ( size_t i = 0, size = expr_list.size(); i < size; i++ )
+        for (auto expr : expr_list)
         {
-          double expr_result = expr_list[ i ] -> eval();
+          double expr_result = expr -> eval();
           if ( expr_result != 0 && ( expr_result < ret || ret == 0 ) )
             ret = expr_result;
         }

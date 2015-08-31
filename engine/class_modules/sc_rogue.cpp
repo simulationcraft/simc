@@ -84,9 +84,9 @@ struct weapon_info_t
   buff_t*              secondary_weapon_uptime;
 
   weapon_info_t() :
-    current_weapon( WEAPON_PRIMARY ), initialized( false ), secondary_weapon_uptime( 0 )
+    current_weapon( WEAPON_PRIMARY ), initialized( false ), secondary_weapon_uptime( nullptr )
   {
-    range::fill( item_data, 0 );
+    range::fill( item_data, nullptr );
   }
 
   weapon_slot_e slot() const;
@@ -422,19 +422,19 @@ struct rogue_t : public player_t
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     poisoned_enemies( 0 ),
-    shadow_reflection( 0 ),
+    shadow_reflection( nullptr ),
     reflection_attack( false ),
-    event_premeditation( 0 ),
-    active_blade_flurry( 0 ),
-    active_lethal_poison( 0 ),
-    active_nonlethal_poison( 0 ),
-    active_main_gauche( 0 ),
-    active_venomous_wound( 0 ),
-    auto_attack( 0 ), melee_main_hand( 0 ), melee_off_hand( 0 ),
-    dfa_mh( 0 ), dfa_oh( 0 ),
-    toxic_mutilator( 0 ),
-    eviscerating_blade( 0 ),
-    from_the_shadows( 0 ),
+    event_premeditation( nullptr ),
+    active_blade_flurry( nullptr ),
+    active_lethal_poison( nullptr ),
+    active_nonlethal_poison( nullptr ),
+    active_main_gauche( nullptr ),
+    active_venomous_wound( nullptr ),
+    auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
+    dfa_mh( nullptr ), dfa_oh( nullptr ),
+    toxic_mutilator( nullptr ),
+    eviscerating_blade( nullptr ),
+    from_the_shadows( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -444,8 +444,8 @@ struct rogue_t : public player_t
     mastery( masteries_t() ),
     glyph( glyphs_t() ),
     procs( procs_t() ),
-    tot_target( 0 ),
-    virtual_hat_callback( 0 ),
+    tot_target( nullptr ),
+    virtual_hat_callback( nullptr ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
   {
     // Cooldowns
@@ -516,7 +516,7 @@ struct rogue_t : public player_t
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_shadow_reflection( const action_state_t* );
-  void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0, bool allow_anticipation = true );
+  void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = nullptr, bool allow_anticipation = true );
   void spend_combo_points( const action_state_t* );
   bool trigger_t17_4pc_combat( const action_state_t* );
   void trigger_anticipation_replenish( const action_state_t* );
@@ -633,7 +633,7 @@ struct rogue_attack_t : public melee_attack_t
     proc_ruthlessness_cp_( data().affected_by( p -> spell.ruthlessness_cp_driver -> effectN( 1 ) ) ),
     proc_ruthlessness_energy_( data().affected_by( p -> spell.ruthlessness_driver -> effectN( 2 ) ) ),
     proc_relentless_strikes_( data().affected_by( p -> spec.relentless_strikes -> effectN( 1 ) ) ),
-    sc_action( 0 )
+    sc_action( nullptr )
   {
     parse_options( options );
 
@@ -685,11 +685,11 @@ struct rogue_attack_t : public melee_attack_t
   }
 
   virtual bool procs_poison() const
-  { return weapon != 0; }
+  { return weapon != nullptr; }
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
-  { return callbacks && ! proc && weapon != 0 && weapon -> slot == SLOT_MAIN_HAND; }
+  { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_MAIN_HAND; }
 
   virtual bool procs_ruthlessness_cp() const
   { return proc_ruthlessness_cp_; }
@@ -993,7 +993,7 @@ struct deadly_poison_t : public rogue_poison_t
 
   deadly_poison_t( rogue_t* player ) :
     rogue_poison_t( "deadly_poison", player, player -> find_class_spell( "Deadly Poison" ) ),
-    proc_instant( 0 ), proc_dot( 0 )
+    proc_instant( nullptr ), proc_dot( nullptr )
   {
     dual = true;
     may_miss = may_crit = false;
@@ -1565,7 +1565,7 @@ struct auto_melee_attack_t : public action_t
     if ( player -> is_moving() )
       return false;
 
-    return ( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -1793,7 +1793,7 @@ struct dispatch_t : public rogue_attack_t
 
   dispatch_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "dispatch", p, p -> find_class_spell( "Dispatch" ), options_str ),
-    toxic_mutilator_crit_chance( 0 ), t18_dispatch( 0 )
+    toxic_mutilator_crit_chance( 0 ), t18_dispatch( nullptr )
   {
     ability_type = DISPATCH;
 
@@ -2347,7 +2347,7 @@ struct killing_spree_t : public rogue_attack_t
 
   killing_spree_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "killing_spree", p, p -> find_class_spell( "Killing Spree" ), options_str ),
-    attack_mh( 0 ), attack_oh( 0 )
+    attack_mh( nullptr ), attack_oh( nullptr )
   {
     ability_type = KILLING_SPREE;
     may_miss  = false;
@@ -2454,7 +2454,7 @@ struct mutilate_t : public rogue_attack_t
 
   mutilate_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "mutilate", p, p -> find_class_spell( "Mutilate" ), options_str ),
-    mh_strike( 0 ), oh_strike( 0 ), toxic_mutilator_crit_chance( 0 )
+    mh_strike( nullptr ), oh_strike( nullptr ), toxic_mutilator_crit_chance( 0 )
   {
     ability_type = MUTILATE;
     may_crit = false;
@@ -2602,7 +2602,7 @@ struct premeditation_t : public rogue_attack_t
     add_points = std::min( add_points, player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
     if ( add_points > 0 )
-      p() -> trigger_combo_point_gain( 0, static_cast<int>( add_points ), p() -> gains.premeditation );
+      p() -> trigger_combo_point_gain( nullptr, static_cast<int>( add_points ), p() -> gains.premeditation );
 
     p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), static_cast<int>( add_points ) );
   }
@@ -3080,8 +3080,8 @@ struct death_from_above_driver_t : public rogue_attack_t
 
   death_from_above_driver_t( rogue_t* p ) :
     rogue_attack_t( "death_from_above_driver", p, p -> talent.death_from_above ),
-    envenom( p -> specialization() == ROGUE_ASSASSINATION ? new envenom_t( p, "" ) : 0 ),
-    eviscerate( p -> specialization() != ROGUE_ASSASSINATION ? new eviscerate_t( p, "" ) : 0 )
+    envenom( p -> specialization() == ROGUE_ASSASSINATION ? new envenom_t( p, "" ) : nullptr ),
+    eviscerate( p -> specialization() != ROGUE_ASSASSINATION ? new eviscerate_t( p, "" ) : nullptr )
   {
     callbacks = tick_may_crit = false;
     quiet = dual = background = harmful = true;
@@ -3296,7 +3296,7 @@ struct honor_among_thieves_t : public action_t
     { return "honor_among_thieves_event"; }
     void execute()
     {
-      rogue -> trigger_combo_point_gain( 0, 1, rogue -> gains.honor_among_thieves );
+      rogue -> trigger_combo_point_gain( nullptr, 1, rogue -> gains.honor_among_thieves );
 
       rogue -> procs.honor_among_thieves_proxy -> occur();
 
@@ -3317,7 +3317,7 @@ struct honor_among_thieves_t : public action_t
 
   honor_among_thieves_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "honor_among_thieves", p, p -> spec.honor_among_thieves ),
-    hat_event( 0 ), cooldown( timespan_t::from_seconds( 2.2 ) ),
+    hat_event( nullptr ), cooldown( timespan_t::from_seconds( 2.2 ) ),
     cooldown_stddev( timespan_t::from_millis( 100 ) )
   {
     dual = quiet = true;
@@ -3348,7 +3348,7 @@ struct honor_among_thieves_t : public action_t
   {
     action_t::reset();
 
-    hat_event = 0;
+    hat_event = nullptr;
   }
 
   bool ready()
@@ -4120,7 +4120,7 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state,
 
   assert( state || cp_override > 0 );
 
-  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : 0;
+  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : nullptr;
   int n_cp = 0;
   if ( cp_override == -1 )
   {
@@ -4147,18 +4147,18 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state,
   }
 
   gain_t* gain_obj = gain;
-  if ( gain_obj == 0 && attack && attack -> cp_gain )
+  if ( gain_obj == nullptr && attack && attack -> cp_gain )
     gain_obj = attack -> cp_gain;
 
   if ( ! talent.anticipation -> ok() || ! allow_anticipation )
   {
-    resource_gain( RESOURCE_COMBO_POINT, n_cp, gain_obj, state ? state -> action : 0 );
+    resource_gain( RESOURCE_COMBO_POINT, n_cp, gain_obj, state ? state -> action : nullptr );
   }
   else
   {
     if ( added > 0 )
     {
-      resource_gain( RESOURCE_COMBO_POINT, added, gain_obj, state ? state -> action : 0 );
+      resource_gain( RESOURCE_COMBO_POINT, added, gain_obj, state ? state -> action : nullptr );
     }
 
     if ( anticipation_added + anticipation_overflow > 0 )
@@ -4213,7 +4213,7 @@ void rogue_t::trigger_anticipation_replenish( const action_state_t* state )
   for ( int i = 0; i < n_overflow; i++ )
     procs.anticipation_wasted -> occur();
 
-  resource_gain( RESOURCE_COMBO_POINT, buffs.anticipation -> check(), 0, state ? state -> action : 0 );
+  resource_gain( RESOURCE_COMBO_POINT, buffs.anticipation -> check(), nullptr, state ? state -> action : nullptr );
   buffs.anticipation -> expire();
 }
 
@@ -4229,7 +4229,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
     return;
 
   state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ] );
-  resource_loss( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ], 0, state ? state -> action : 0 );
+  resource_loss( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ], nullptr, state ? state -> action : nullptr );
 
   if ( event_premeditation )
     event_t::cancel( event_premeditation );
@@ -4640,7 +4640,7 @@ struct shadow_reflection_pet_t : public pet_t
 
     shadow_reflection_attack_t( const std::string& name, player_t* p, const spell_data_t* spell, const std::string& = std::string() ) :
       melee_attack_t( name, p, spell ),
-      source_action( 0 ),
+      source_action( nullptr ),
       requires_position( POSITION_NONE )
     {
       weapon = &( p -> main_hand_weapon );
@@ -4858,7 +4858,7 @@ struct shadow_reflection_pet_t : public pet_t
 
     sr_mutilate_t( shadow_reflection_pet_t* p ) :
       shadow_reflection_attack_t( "mutilate", p, p -> find_spell( 1329 ) ),
-      mh_strike( 0 ), oh_strike( 0 )
+      mh_strike( nullptr ), oh_strike( nullptr )
     {
       may_crit = false;
       weapon_multiplier = 0;
@@ -4995,7 +4995,7 @@ struct shadow_reflection_pet_t : public pet_t
 
     sr_killing_spree_t( shadow_reflection_pet_t* p ) :
       shadow_reflection_attack_t( "killing_spree", p, p -> find_spell( 51690 ) ),
-      attack_mh( 0 ), attack_oh( 0 )
+      attack_mh( nullptr ), attack_oh( nullptr )
     {
       may_miss = may_crit = false;
       channeled = tick_zero = true;
@@ -5841,7 +5841,7 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
 
   void execute( action_t*, action_state_t* )
   {
-    rogue -> trigger_combo_point_gain( 0, 1, rogue -> gains.honor_among_thieves );
+    rogue -> trigger_combo_point_gain( nullptr, 1, rogue -> gains.honor_among_thieves );
 
     rogue -> procs.honor_among_thieves -> occur();
 
@@ -5864,7 +5864,7 @@ void rogue_t::init_procs()
   procs.t16_2pc_melee            = get_proc( "Silent Blades (T16 2PC)" );
   procs.t18_2pc_combat           = get_proc( "Adrenaline Rush (T18 2PC)" );
 
-  bool has_hat_action = find_action( "honor_among_thieves" ) != 0;
+  bool has_hat_action = find_action( "honor_among_thieves" ) != nullptr;
 
   // Register callbacks (real HAT), if there's no proxy HAT action.
   if ( spec.honor_among_thieves -> ok() && ! has_hat_action )
@@ -5872,14 +5872,14 @@ void rogue_t::init_procs()
     for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
     {
       player_t* p = sim -> player_no_pet_list[ i ];
-      special_effect_t* effect = new special_effect_t( p );
+      auto  effect = new special_effect_t( p );
       effect -> spell_id = spec.honor_among_thieves -> id();
       effect -> proc_flags2_ = PF2_CRIT;
       effect -> cooldown_ = timespan_t::zero();
 
       p -> special_effects.push_back( effect );
 
-      honor_among_thieves_callback_t* cb = new honor_among_thieves_callback_t( p, this, *p -> special_effects.back() );
+      auto  cb = new honor_among_thieves_callback_t( p, this, *p -> special_effects.back() );
       cb -> initialize();
     }
   }
@@ -6651,7 +6651,7 @@ struct rogue_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    rogue_t* p = new rogue_t( sim, name, r );
+    auto  p = new rogue_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
     return p;
   }

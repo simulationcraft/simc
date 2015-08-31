@@ -63,7 +63,7 @@ expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
     case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, op, input );
     case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, op, input );
 
-    default: assert( false ); return 0; // throw?
+    default: assert( false ); return nullptr; // throw?
   }
 }
 
@@ -150,7 +150,7 @@ expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t
     case TOK_GT:    return new expr_binary_t<std::greater>       ( name, op, left, right );
     case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, op, left, right );
 
-    default: assert( false ); return 0; // throw?
+    default: assert( false ); return nullptr; // throw?
   }
 }
 
@@ -203,7 +203,7 @@ expr_t* select_analyze_unary( const std::string& name, token_e op, expr_t* input
     case TOK_FLOOR: return new expr_analyze_unary_t<unary::floor>( name, op, input );
     case TOK_CEIL:  return new expr_analyze_unary_t<unary::ceil> ( name, op, input );
 
-    default: assert( false ); return 0; // throw?
+    default: assert( false ); return nullptr; // throw?
   }
 }
 
@@ -583,7 +583,7 @@ expr_t* select_analyze_binary( const std::string& name, token_e op, expr_t* left
     case TOK_GT:    return new expr_analyze_binary_t<std::greater>       ( name, op, left, right );
     case TOK_GTEQ:  return new expr_analyze_binary_t<std::greater_equal> ( name, op, left, right );
 
-    default: assert( false ); return 0; // throw?
+    default: assert( false ); return nullptr; // throw?
   }
 }
 
@@ -941,14 +941,14 @@ static expr_t* build_expression_tree( action_t* action,
       {
         action -> sim -> errorf( "Player %s action %s : Unable to decode expression function '%s'\n",
                                  action -> player -> name(), action -> name(), t.label.c_str() );
-        return 0;
+        return nullptr;
       }
       stack.push_back( e );
     }
     else if ( expression_t::is_unary( t.type ) )
     {
       if ( stack.size() < 1 )
-        return 0;
+        return nullptr;
       expr_t* input = stack.back(); stack.pop_back();
       assert( input );
       expr_t* expr = ( optimize ? 
@@ -959,7 +959,7 @@ static expr_t* build_expression_tree( action_t* action,
     else if ( expression_t::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
-        return 0;
+        return nullptr;
       expr_t* right = stack.back(); stack.pop_back();
       assert( right );
       expr_t* left  = stack.back(); stack.pop_back();
@@ -972,7 +972,7 @@ static expr_t* build_expression_tree( action_t* action,
   }
 
   if ( stack.size() != 1 )
-    return 0;
+    return nullptr;
 
   expr_t* res = stack.back();
   stack.pop_back();
@@ -993,7 +993,7 @@ expr_t* expr_t::parse( action_t* action,
                        const std::string& expr_str,
            bool optimize )
 {
-  if ( expr_str.empty() ) return 0;
+  if ( expr_str.empty() ) return nullptr;
 
   std::vector<expr_token_t> tokens = expression_t::parse_tokens( action, expr_str );
 
@@ -1007,7 +1007,7 @@ expr_t* expr_t::parse( action_t* action,
   {
     action -> sim -> errorf( "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
     action -> sim -> cancel();
-    return 0;
+    return nullptr;
   }
 
   if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
@@ -1017,7 +1017,7 @@ expr_t* expr_t::parse( action_t* action,
 
   action -> sim -> errorf( "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
   action -> sim -> cancel();
-  return 0;
+  return nullptr;
 }
 
 #ifdef UNIT_TEST

@@ -104,7 +104,7 @@ bool parse_active( sim_t*             sim,
   }
   else if ( value == "none" || value == "0" )
   {
-    sim -> active_player = 0;
+    sim -> active_player = nullptr;
   }
   else
   {
@@ -182,18 +182,18 @@ bool parse_player( sim_t*             sim,
     else
       source = sim -> find_player( value.substr( cut_pt + 1 ) );
 
-    if ( source == 0 )
+    if ( source == nullptr )
     {
       sim -> errorf( "Invalid source for profile copy - format is copy=target[,source], source defaults to active player." );
       return false;
     }
 
     sim -> active_player = module_t::get( source -> type ) -> create_player( sim, player_name );
-    if ( sim -> active_player != 0 ) sim -> active_player -> copy_from ( source );
+    if ( sim -> active_player != nullptr ) sim -> active_player -> copy_from ( source );
   }
   else
   {
-    sim -> active_player = 0;
+    sim -> active_player = nullptr;
     const module_t* module = module_t::get( name );
 
     if ( ! module || ! module -> valid() )
@@ -216,7 +216,7 @@ bool parse_player( sim_t*             sim,
   if ( sim -> active_player )
     sim -> active_player -> create_options();
 
-  return sim -> active_player != 0;
+  return sim -> active_player != nullptr;
 }
 
 // parse_proxy ==============================================================
@@ -449,7 +449,7 @@ bool parse_armory( sim_t*             sim,
   if ( sim -> active_player )
     sim -> active_player -> create_options();
 
-  return sim -> active_player != 0;
+  return sim -> active_player != nullptr;
 }
 
 bool parse_guild( sim_t*             sim,
@@ -642,11 +642,11 @@ bool parse_override_spell_data( sim_t*             sim,
   if ( splits.size() != 3 )
     return false;
 
-  unsigned long int id = strtoul( splits[ 1 ].c_str(), 0, 10 );
+  unsigned long int id = strtoul( splits[ 1 ].c_str(), nullptr, 10 );
   if ( id == 0 || id == std::numeric_limits<unsigned long>::max() )
     return false;
 
-  double v = strtod( value.substr( v_pos + 1 ).c_str(), 0 );
+  double v = strtod( value.substr( v_pos + 1 ).c_str(), nullptr );
   if ( v == std::numeric_limits<double>::min() || v == std::numeric_limits<double>::max() )
     return false;
 
@@ -706,7 +706,7 @@ bool parse_spell_query( sim_t*             sim,
   if ( ( lvl_offset = value.rfind( "@" ) ) != std::string::npos )
   {
     std::string lvl_offset_str = value.substr( lvl_offset + 1 );
-    int sq_lvl = strtol( lvl_offset_str.c_str(), 0, 10 );
+    int sq_lvl = strtol( lvl_offset_str.c_str(), nullptr, 10 );
     if ( sq_lvl < 1 )
       return 0;
 
@@ -722,7 +722,7 @@ bool parse_spell_query( sim_t*             sim,
   }
 
   sim -> spell_query = std::unique_ptr<spell_data_expr_t>( spell_data_expr_t::parse( sim, sq_str ) );
-  return sim -> spell_query != 0;
+  return sim -> spell_query != nullptr;
 }
 
 // parse_item_sources =======================================================
@@ -1031,17 +1031,17 @@ sim_t::sim_t( sim_t* p, int index ) :
   current_error( 0 ),
   current_mean( 0 ),
   analyze_error_interval( 100 ),
-  control( 0 ),
+  control( nullptr ),
   parent( p ),
   initialized( false ),
-  target( NULL ),
-  heal_target( NULL ),
+  target( nullptr ),
+  heal_target( nullptr ),
   target_list(),
   target_non_sleeping_list(),
   player_list(),
   player_no_pet_list(),
   player_non_sleeping_list(),
-  active_player( 0 ),
+  active_player( nullptr ),
   num_players( 0 ),
   num_enemies( 0 ), num_tanks( 0 ), enemy_targets( 0 ), healing( 0 ),
   global_spawn_index( 0 ),
@@ -1108,7 +1108,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),
   spell_query(), spell_query_level( MAX_LEVEL ),
-  pause_mutex( 0 ),
+  pause_mutex( nullptr ),
   paused( false ),
   // Highcharts stuff
   enable_highcharts( false ),
@@ -1224,7 +1224,7 @@ void sim_t::remove_relative( sim_t* cousin )
   else
   {
     AUTO_LOCK( relatives_mutex );
-    std::vector<sim_t*>::iterator it = range::find( relatives, cousin );
+    auto it = range::find( relatives, cousin );
     assert( it != relatives.end() && "Could not find relative to remove" );
     *it = relatives.back();
     relatives.pop_back();
@@ -1250,9 +1250,9 @@ void sim_t::cancel()
 
   canceled = 1;
   
-  for ( size_t i = 0, size = relatives.size(); i < size; i++ )
+  for (auto & elem : relatives)
   {
-    relatives[ i ] -> cancel();
+    elem -> cancel();
   }
 }
 
@@ -1262,9 +1262,9 @@ void sim_t::interrupt()
 {
   work_queue -> flush();
 
-  for ( size_t i = 0, size = children.size(); i < size; i++ )
+  for (auto & elem : children)
   {
-    children[ i ] -> interrupt();
+    elem -> interrupt();
   }
 }
 
@@ -1926,9 +1926,9 @@ bool sim_t::init_actor_pets()
   {
     player_t* p = target_list[ i ];
 
-    for ( size_t pet_idx = 0, pet_end = p -> pet_list.size(); pet_idx < pet_end; ++pet_idx )
+    for (auto & elem : p -> pet_list)
     {
-      if ( ! init_actor( p -> pet_list[ pet_idx ] ) )
+      if ( ! init_actor( elem ) )
       {
         actor_init = false;
       }
@@ -1940,9 +1940,9 @@ bool sim_t::init_actor_pets()
     player_t* p = player_no_pet_list[ i ];
 
     p -> create_pets();
-    for ( size_t pet_idx = 0, pet_end = p -> pet_list.size(); pet_idx < pet_end; ++pet_idx )
+    for (auto & elem : p -> pet_list)
     {
-      if ( ! init_actor( p -> pet_list[ pet_idx ] ) )
+      if ( ! init_actor( elem ) )
       {
         actor_init = false;
       }
@@ -2086,7 +2086,7 @@ bool sim_t::init()
   // create additional enemies here
   while ( as<int>(target_list.size()) < desired_targets )
   {
-    active_player = 0;
+    active_player = nullptr;
     active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
     if ( ! active_player )
     {
@@ -2493,7 +2493,7 @@ void sim_t::merge()
     if ( child )
     {
       child -> wait();
-      children[ i ] = 0;
+      children[ i ] = nullptr;
       delete child;
     }
   }
@@ -2543,7 +2543,7 @@ void sim_t::partition()
 
   for ( int i = 0; i < num_children; i++ )
   {
-    sim_t* child = new sim_t( this, i + 1 );
+    auto  child = new sim_t( this, i + 1 );
     assert( child );
     children.push_back( child );
 
@@ -2690,14 +2690,14 @@ expr_t* sim_t::create_expression( action_t* a,
     if ( splits[ 0 ] == "aura" )
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
-      if ( ! buff ) return 0;
+      if ( ! buff ) return nullptr;
       return buff_t::create_expression( splits[ 1 ], a, splits[ 2 ], buff );
     }
   }
   if ( splits.size() >= 3 && splits[ 0 ] == "actors" )
   {
     player_t* actor = sim_t::find_player( splits[ 1 ] );
-    if ( ! target ) return 0;
+    if ( ! target ) return nullptr;
     std::string rest = splits[ 2 ];
     for ( size_t i = 3; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
@@ -2746,7 +2746,7 @@ expr_t* sim_t::create_expression( action_t* a,
       if ( name_str == actor_list[ i ] -> name_str )
         return make_ref_expr( name_str, actor_list[ i ] -> actor_index );
 
-  return 0;
+  return nullptr;
 }
 
 // sim_t::print_options =====================================================
@@ -3237,7 +3237,7 @@ double sim_t::progress( std::string& phase, std::string* detailed )
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";
-    return progress( 0, 0, detailed );
+    return progress( nullptr, nullptr, detailed );
   }
   else if ( current_slot >= 0 )
   {
@@ -3347,7 +3347,7 @@ std::vector<double> sc_timeline_t::build_divisor_timeline( const extended_sample
 void sc_timeline_t::adjust( sim_t& sim )
 {
   // Check if we have divisor timeline cached
-  std::map<double, std::vector<double> >::iterator it = sim.divisor_timeline_cache.find( bin_size );
+  auto it = sim.divisor_timeline_cache.find( bin_size );
   if ( it == sim.divisor_timeline_cache.end() )
   {
     // If we don't have a cached divisor timeline, build one

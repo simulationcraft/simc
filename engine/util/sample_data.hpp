@@ -228,8 +228,8 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in, s
   assert( total_num_entries == std::accumulate( in.begin(), in.end(), size_t() ) );
   double adjust = 1.0 / total_num_entries;
 
-  for ( size_t i = 0, size = in.size(); i < size; ++i )
-    result.push_back( in[ i ] * adjust );
+  for (auto & elem : in)
+    result.push_back( elem * adjust );
 
   return result;
 }

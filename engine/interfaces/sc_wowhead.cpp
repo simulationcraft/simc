@@ -64,7 +64,7 @@ bool wowhead::download_glyph( player_t*          player,
                               wowhead_e          source,
                               cache::behavior_e  caching )
 {
-  unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
+  unsigned glyphid = strtoul( glyph_id.c_str(), nullptr, 10 );
   std::shared_ptr<xml_node_t> node = download_id( player -> sim, glyphid, caching, source );
   if ( ! node || ! node -> get_value( glyph_name, "name/cdata" ) )
   {

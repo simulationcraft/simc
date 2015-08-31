@@ -24,7 +24,7 @@ void pet_t::init_pet_t_()
   target = owner -> target;
   true_level = owner -> true_level;
   full_name_str = owner -> name_str + '_' + name_str;
-  expiration = 0;
+  expiration = nullptr;
   duration = timespan_t::zero();
   affects_wod_legendary_ring = true;
 
@@ -159,7 +159,7 @@ void pet_t::summon( timespan_t summon_duration )
   current.distance = owner -> current.distance;
 
   // Add to active_pets
-  std::vector<pet_t*>::iterator it = range::find( owner -> active_pets, this );
+  auto it = range::find( owner -> active_pets, this );
   if ( it != owner -> active_pets.end() )
     owner -> active_pets.push_back( this );
 
@@ -208,7 +208,7 @@ void pet_t::dismiss( bool expired )
   if ( sim -> log ) sim -> out_log.printf( "%s dismisses %s", owner -> name(), name() );
 
   // Remove from active_pets list
-  std::vector<pet_t*>::iterator it = range::find( owner -> active_pets, this );
+  auto it = range::find( owner -> active_pets, this );
   if ( it != owner -> active_pets.end() )
     erase_unordered( owner -> active_pets, it );
 

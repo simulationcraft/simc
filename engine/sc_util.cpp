@@ -103,7 +103,7 @@ bool pred_ci ( char a, char b )
 
 int vfprintf_helper( FILE *stream, const char *fmt, va_list args )
 {
-  std::string p_locale = setlocale( LC_CTYPE, NULL );
+  std::string p_locale = setlocale( LC_CTYPE, nullptr );
   setlocale( LC_CTYPE, "" );
 
   int retcode = ::fprintf( stream, "%s", str::format( fmt, args ).c_str() );
@@ -161,7 +161,7 @@ void stopwatch_t::now( int64_t* now_sec,
        type == STOPWATCH_THREAD )
   {
     struct timeval tv;
-    gettimeofday( &tv, NULL );
+    gettimeofday( &tv, nullptr );
     *now_sec  = int64_t( tv.tv_sec  );
     *now_usec = int64_t( tv.tv_usec );
   }
@@ -966,7 +966,7 @@ const char* util::weapon_class_string( int it )
     case INVTYPE_RANGEDRIGHT:
       return "Ranged";
     default:
-      return 0;
+      return nullptr;
   }
 }
 
@@ -2442,7 +2442,7 @@ unsigned util::to_unsigned( const char* str )
 {
   errno = 0;
 
-  unsigned l = strtoul( str, 0, 0 );
+  unsigned l = strtoul( str, nullptr, 0 );
   if ( errno != 0 )
     return 0;
 
@@ -2458,7 +2458,7 @@ int util::to_int( const char* str )
 {
   errno = 0;
 
-  long l = strtol( str, 0, 0 );
+  long l = strtol( str, nullptr, 0 );
   if ( errno != 0 )
     return 0;
 
@@ -2715,7 +2715,7 @@ std::string& util::urldecode( std::string& str )
 
     if ( c == '%' && i + 2 < l )
     {
-      long v = strtol( str.substr( i + 1, 2 ).c_str(), 0, 16 );
+      long v = strtol( str.substr( i + 1, 2 ).c_str(), nullptr, 16 );
       if ( v ) temp += ( unsigned char ) v;
       i += 2;
     }
@@ -2964,8 +2964,8 @@ std::string util::inverse_tokenize( const std::string& name )
 
 bool util::is_number( const std::string& s )
 {
-  for ( std::string::size_type i = 0, l = s.length(); i < l; ++i )
-    if ( ! std::isdigit( s[ i ] ) )
+  for (auto & elem : s)
+    if ( ! std::isdigit( elem ) )
       return false;
   return true;
 }
@@ -3120,9 +3120,9 @@ int util::numDigits( T number )
 
 bool util::contains_non_ascii( const std::string& s )
 {
-  for ( std::string::const_iterator it = s.begin(), itEnd = s.end(); it != itEnd; ++it )
+  for (const auto & elem : s)
   {
-    if ( *it < 0 || ! isprint( *it ) )
+    if ( elem < 0 || ! isprint( elem ) )
       return true;
   }
 

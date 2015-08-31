@@ -3580,9 +3580,9 @@ static bool buff_has_stat( const buff_t* buff, stat_e stat )
   if ( stat == STAT_ALL )
     return true;
 
-  for ( size_t i = 0, end = stat_buff -> stats.size(); i < end; i++ )
+  for (auto & elem : stat_buff -> stats)
   {
-    if ( stat_buff -> stats[ i ].stat == stat )
+    if ( elem.stat == stat )
       return true;
   }
 
@@ -3633,9 +3633,9 @@ struct item_effect_expr_t : public item_effect_base_expr_t
   double evaluate()
   {
     double result = 0;
-    for ( size_t i = 0, end = exprs.size(); i < end; i++ )
+    for (auto expr : exprs)
     {
-      double r = exprs[ i ] -> eval();
+      double r = expr -> eval();
       if ( r > result )
         result = r;
     }
@@ -3654,9 +3654,9 @@ struct item_buff_expr_t : public item_effect_expr_t
   item_buff_expr_t( action_t* a, const std::vector<slot_e> slots, stat_e s, bool stacking, const std::string& expr_str ) :
     item_effect_expr_t( a, slots )
   {
-    for ( size_t i = 0, end = effects.size(); i < end; i++ )
+    for (auto e : effects)
     {
-      const special_effect_t* e = effects[ i ];
+      
 
       buff_t* b = buff_t::find( a -> player, e -> name() );
       if ( buff_has_stat( b, s ) && ( ( ! stacking && b -> max_stack() <= 1 ) || ( stacking && b -> max_stack() > 1 ) ) )
@@ -3675,9 +3675,9 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
   item_buff_exists_expr_t( action_t* a, const std::vector<slot_e>& slots, stat_e s ) :
     item_effect_expr_t( a, slots ), v( 0 )
   {
-    for ( size_t i = 0, end = effects.size(); i < end; i++ )
+    for (auto e : effects)
     {
-      const special_effect_t* e = effects[ i ];
+      
 
       buff_t* b = buff_t::find( a -> player, e -> name() );
       if ( buff_has_stat( b, s ) )
@@ -3697,9 +3697,9 @@ struct legendary_item_buff_exists_expr_t : public item_effect_expr_t
   legendary_item_buff_exists_expr_t( action_t* a, const std::vector<slot_e>& slots, const std::string& expr_str ) :
     item_effect_expr_t( a, slots )
   {
-    for ( size_t i = 0, end = effects.size(); i < end; i++ )
+    for (auto e : effects)
     {
-      const special_effect_t* e = effects[i];
+      
 
       buff_t* b = buff_t::find( a -> player, e -> name() );
       if ( b )
@@ -3718,9 +3718,9 @@ struct item_cooldown_expr_t : public item_effect_expr_t
   item_cooldown_expr_t( action_t* a, const std::vector<slot_e> slots, const std::string& expr ) :
     item_effect_expr_t( a, slots )
   {
-    for ( size_t i = 0, end = effects.size(); i < end; i++ )
+    for (auto e : effects)
     {
-      const special_effect_t* e = effects[ i ];
+      
       if ( e -> cooldown() != timespan_t::zero() )
       {
         cooldown_t* cd = a -> player -> get_cooldown( e -> cooldown_name() );
@@ -3738,9 +3738,9 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
   item_cooldown_exists_expr_t( action_t* a, const std::vector<slot_e>& slots ) :
     item_effect_expr_t( a, slots ), v( 0 )
   {
-    for ( size_t i = 0, end = effects.size(); i < end; i++ )
+    for (auto e : effects)
     {
-      const special_effect_t* e = effects[ i ];
+      
       if ( e -> cooldown() != timespan_t::zero() && e -> rppm() == 0 ) // Technically, rppm doesn't have a cooldown.
       {
         v = 1;
@@ -3977,11 +3977,11 @@ static const special_effect_db_item_t __null_db_item;
 
 const special_effect_db_item_t& unique_gear::find_special_effect_db_item( unsigned spell_id )
 {
-  for ( size_t i = 0, end = __special_effect_db.size(); i < end; ++i )
+  for (auto & elem : __special_effect_db)
   {
-    if ( __special_effect_db[ i ].spell_id == spell_id )
+    if ( elem.spell_id == spell_id )
     {
-      return __special_effect_db[ i ];
+      return elem;
     }
   }
 

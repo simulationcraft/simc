@@ -388,8 +388,8 @@ namespace rapidxml
         
         //! Constructs empty pool with default allocator functions.
         memory_pool()
-            : m_alloc_func(0)
-            , m_free_func(0)
+            : m_alloc_func(nullptr)
+            , m_free_func(nullptr)
         {
             init();
         }
@@ -417,7 +417,7 @@ namespace rapidxml
                                     std::size_t name_size = 0, std::size_t value_size = 0)
         {
             void *memory = allocate_aligned(sizeof(xml_node<Ch>));
-            xml_node<Ch> *node = new(memory) xml_node<Ch>(type);
+            auto node = new(memory) xml_node<Ch>(type);
             if (name)
             {
                 if (name_size > 0)
@@ -448,7 +448,7 @@ namespace rapidxml
                                               std::size_t name_size = 0, std::size_t value_size = 0)
         {
             void *memory = allocate_aligned(sizeof(xml_attribute<Ch>));
-            xml_attribute<Ch> *attribute = new(memory) xml_attribute<Ch>;
+            auto attribute = new(memory) xml_attribute<Ch>;
             if (name)
             {
                 if (name_size > 0)

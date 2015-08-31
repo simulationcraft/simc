@@ -325,7 +325,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
 {
   auto_lock_t lock( xml_mutex );
 
-  xml_cache_t::iterator p = xml_cache.find( url );
+  auto p = xml_cache.find( url );
   if ( p != xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
     return p -> second.root;
 
@@ -618,7 +618,7 @@ xml_parm_t* xml_node_t::get_parm( const std::string& parm_name )
       return &( parameters[ i ] );
     }
   }
-  return 0;
+  return nullptr;
 }
 
 // xml_node_t::add_child ====================================================
@@ -641,7 +641,7 @@ xml_writer_t::xml_writer_t( const std::string & filename ) :
 
 bool xml_writer_t::ready() const
 {
-  return file != NULL;
+  return file != nullptr;
 }
 
 int xml_writer_t::printf( const char *format, ... ) const
@@ -1186,14 +1186,14 @@ sc_xml_t sc_xml_t::create( sim_t* sim,
 {
   auto_lock_t lock( xml_mutex );
 
-  new_xml_cache_t::iterator p = new_xml_cache.find( cache_key );
+  auto p = new_xml_cache.find( cache_key );
   if ( p != new_xml_cache.end() )
   {
     return sc_xml_t( *p -> second.root );
   }
 
-  xml_document<>* document = new xml_document<>();
-  char* tmp_buf = new char[ input.size() + 1 ];
+  auto  document = new xml_document<>();
+  auto  tmp_buf = new char[ input.size() + 1 ];
   memset( tmp_buf, 0, input.size() + 1 );
   memcpy( tmp_buf, input.c_str(), input.size() );
 
@@ -1225,7 +1225,7 @@ sc_xml_t sc_xml_t::get( sim_t* sim,
   {
     auto_lock_t lock( xml_mutex );
 
-    new_xml_cache_t::iterator p = new_xml_cache.find( url );
+    auto p = new_xml_cache.find( url );
     if ( p != new_xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
     {
       return sc_xml_t( *p -> second.root );

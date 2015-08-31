@@ -96,9 +96,9 @@ set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
 // Initialize set bonus counts based on the items of the actor
 void set_bonus_t::initialize_items()
 {
-  for ( size_t i = 0, end = actor -> items.size(); i < end; i++ )
+  for (auto & elem : actor -> items)
   {
-    item_t* item = &( actor -> items[ i ] );
+    item_t* item = &( elem );
     if ( item -> parsed.data.id == 0 )
       continue;
 
@@ -143,7 +143,7 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
         const set_bonus_data_t& data = set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
         // Most specs have the fourth specialization empty, or only have
         // limited number of roles, so there's no set bonuses for those entries
-        if ( data.bonus == 0 )
+        if ( data.bonus == nullptr )
           continue;
 
         if ( data.spell -> id() == 0 )
@@ -182,7 +182,7 @@ void set_bonus_t::initialize()
         set_bonus_data_t& data = set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
         // Most specs have the fourth specialization empty, or only have
         // limited number of roles, so there's no set bonuses for those entries
-        if ( data.bonus == 0 )
+        if ( data.bonus == nullptr )
           continue;
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
@@ -248,7 +248,7 @@ std::string set_bonus_t::to_string() const
       for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ idx ][ spec_idx ].size(); bonus_idx++ )
       {
         const set_bonus_data_t& data = set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
-        if ( data.bonus == 0 )
+        if ( data.bonus == nullptr )
           continue;
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
@@ -298,7 +298,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
       for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ idx ][ spec_idx ].size(); bonus_idx++ )
       {
         const set_bonus_data_t& data = set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
-        if ( data.bonus == 0 )
+        if ( data.bonus == nullptr )
           continue;
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
@@ -335,7 +335,7 @@ expr_t* set_bonus_t::create_expression( const player_t* p, const std::string& ty
 
   if ( ! parse_set_bonus_option( type, set_bonus, role, bonus ) )
   {
-    return 0;
+    return nullptr;
   }
 
   double state;

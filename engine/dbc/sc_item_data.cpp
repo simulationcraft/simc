@@ -108,7 +108,7 @@ const char* dbc::item_name_description( unsigned id, bool ptr )
     p++;
   }
 
-  return 0;
+  return nullptr;
 }
 unsigned dbc_t::random_property_max_level() const
 {
@@ -472,7 +472,7 @@ const scaling_stat_distribution_t* dbc_t::scaling_stat_distribution( unsigned id
     table++;
   }
 
-  return 0;
+  return nullptr;
 }
 
 std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsigned curve_id, double value )
@@ -484,7 +484,7 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
   const curve_point_t* table = &__curve_point_data[ 0 ];
 #endif
 
-  const curve_point_t* lower_bound = 0, * upper_bound = 0;
+  const curve_point_t* lower_bound = nullptr, * upper_bound = nullptr;
   while ( table -> curve_id != 0 )
   {
     if ( table -> curve_id != curve_id )
@@ -507,7 +507,7 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
     table++;
   }
 
-  if ( lower_bound == 0 )
+  if ( lower_bound == nullptr )
   {
     lower_bound = upper_bound;
   }
@@ -536,7 +536,7 @@ bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
 
   const scaling_stat_distribution_t* data = item.player -> dbc.scaling_stat_distribution( scaling_id );
   // Unable to find the scaling stat distribution
-  if ( data == 0 )
+  if ( data == nullptr )
   {
     item.sim -> errorf( "%s: Unable to find scaling information for %s scaling id %u",
         item.player -> name(), item.name(), item.parsed.data.id_scaling_distribution );
@@ -1123,13 +1123,13 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       }
 
       // Kludge the rest
-      if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 && es -> rank_str() != 0 ) )
+      if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 && es -> rank_str() != nullptr ) )
       {
         if ( es && es -> id() > 0 )
         {
           enchant_effect = es -> name_cstr(); // Use Spell Name
 
-          if ( es -> rank_str() != 0 ) // If rank str is available, append its number to the enchant name
+          if ( es -> rank_str() != nullptr ) // If rank str is available, append its number to the enchant name
           {
             std::string rank = std::string( es -> rank_str() );
             if (  rank.find( "Rank " ) != rank.npos )
@@ -1188,9 +1188,9 @@ bool item_database::load_item_from_data( item_t& item )
   {
     std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
-    for ( size_t bonus_idx = 0, endbonus = item_bonuses.size(); bonus_idx < endbonus; bonus_idx++ )
+    for (auto & item_bonuse : item_bonuses)
     {
-      if ( ! apply_item_bonus( item, *item_bonuses[ bonus_idx ] ) )
+      if ( ! apply_item_bonus( item, *item_bonuse ) )
         return false;
     }
   }
@@ -1215,7 +1215,7 @@ bool item_database::download_item( item_t& item )
 bool item_database::download_glyph( player_t* player, std::string& glyph_name,
                                     const std::string& glyph_id )
 {
-  long gid                 = strtol( glyph_id.c_str(), 0, 10 );
+  long gid                 = strtol( glyph_id.c_str(), nullptr, 10 );
   const item_data_t* glyph = player -> dbc.item( gid );
 
   if ( gid <= 0 || ! glyph ) return false;

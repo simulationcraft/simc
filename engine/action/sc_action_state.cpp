@@ -7,7 +7,7 @@
 
 action_state_t* action_t::get_state( const action_state_t* other )
 {
-  action_state_t* s = 0;
+  action_state_t* s = nullptr;
 
   if ( state_cache )
   {
@@ -100,7 +100,7 @@ void action_state_t::copy_state( const action_state_t* o )
 }
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
-  next( 0 ), action( a ), target( t ),
+  next( nullptr ), action( a ), target( t ),
   n_targets( 0 ), chain_target( 0 ), original_x( 0 ), original_y( 0 ),
   result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), block_result( BLOCK_RESULT_UNKNOWN ),
   result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ),
@@ -215,7 +215,7 @@ void travel_event_t::execute()
 }
 
 void action_state_t::release( action_state_t*& s )
-{ s -> action -> release_state( s ); s = 0; }
+{ s -> action -> release_state( s ); s = nullptr; }
 
 static std::string& concat_flag_str( std::string& str,
                                      const std::string& flag_str,
