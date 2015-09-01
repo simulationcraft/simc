@@ -8429,41 +8429,6 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "Druid", "2015-06-23",
-                             "Tier-18 2-piece set bonus for Feral Druids now increases the chance "
-                             "of Omen of Clarity to trigger by 90% (down from 133%).",
-                             270054, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 90 )
-      .verification_value( 133 );
-
-    hotfix::register_effect( "Druid", "2015-06-23",
-                             "Tier-18 4-piece set bonus for Balance Druids now increases Arcane"
-                             "and Nature damage by 6% (down from 8%).",
-                             274376, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 8 );
-
-    hotfix::register_effect( "Druid", "2015-06-29",
-                             "Seed of Creation has had its chance to trigger reduced by 14% for "
-                             "Balance Druids. (The chance to trigger is exactly 100% at Mythic"
-                             "Warforged.",
-                             268010, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.1119785 ) // value from 6.2.2 PTR
-      .verification_value( 0.129895 );
-
-    hotfix::register_spell( "Druid", "2015-07-20",
-                            "Ursa Major now lasts 15 seconds (down from 25 seconds).",
-                            159233, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "duration" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15000 )
-      .verification_value( 25000 );
   }
 
   virtual void combat_begin( sim_t* ) const {}

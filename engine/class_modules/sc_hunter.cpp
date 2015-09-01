@@ -5066,14 +5066,6 @@ struct hunter_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-
-    hotfix::register_effect( "Hunter", "2015-06-29", "Talisman of the Master Tracker had the chance to trigger reduced by 6% "
-                             "for Survival Hunters.", 268042, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.118555 );
-
     hotfix::register_effect( "Hunter", "2015-07-20", "Black Arrow damage increased by 25%.", 1289 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_MUL )

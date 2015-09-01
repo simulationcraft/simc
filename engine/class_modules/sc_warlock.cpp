@@ -6620,36 +6620,6 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "Warlock", "2015-06-29", "Fragment of the Dark Star had its effect increased by "
-                                           "20% for Affliction Warlocks.", 268066, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.2 )
-      .verification_value( -0.02792 );
-
-    hotfix::register_effect( "Warlock", "2015-06-29-2", "Fragment of the Dark Star had its effect increased by "
-                                           "20% for Affliction Warlocks.", 268751, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.2 )
-      .verification_value( -0.02792 );
-
-    hotfix::register_spell( "Warlock", "2015-06-23", "Tier-18 2-piece set bonus for Affliction Warlocks now has "
-                                          "a 10% chance (down from 30%) each time Drain Soul deals damage "
-                                          "to extend the duration of Dark Soul: Misery by 2 seconds.", 185882, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "proc_chance" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 10 )
-      .verification_value( 30 );
-
-    hotfix::register_effect( "Warlock", "2015-06-23", "Tier-18 2-piece set bonus for Demonology Warlocks now causes "
-                                            "Soul Fire to increase damage dealt by Demons by 4% (up from 3%) "
-                                            "for 15 seconds per stack." , 275998, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 4 )
-      .verification_value( 3 );
-
     hotfix::register_effect( "Warlock", "2015-07-20", "Chaos Bolt damage increased by 5%.", 132079 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
@@ -6703,31 +6673,6 @@ struct warlock_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 3.40000 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20", "Haunt damage has been increased by 25%.", 40331, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.25 )
-      .verification_value( 4.12500 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20", "Haunt now increases periodic damage dealt by 35% (up from 30%).", 159995, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 35 )
-      .verification_value( 30 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20", "Drain Soul damage has been increased by 50%.", 112098, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.5 )
-      .verification_value( 0.20900 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20", "Drain Soul now causes all other damage over time spells to instantly "
-                                           "deal 50% of their normal damage (up from 40%).", 171007, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 50 )
-      .verification_value( 40 );
   }
 
   virtual bool valid() const { return true; }

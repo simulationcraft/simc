@@ -6899,13 +6899,6 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "Paladin", "2015-07-20", "Sword of Light now increases damage dealt with two-handed "
-                             "melee weapons by 30% (up from 25%).", 11193, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 25 );
-
   }
 
   virtual void combat_begin( sim_t* ) const {}

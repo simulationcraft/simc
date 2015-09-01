@@ -7001,33 +7001,6 @@ struct mage_module_t : public module_t
 
   virtual void register_hotfixes() const
   {
-    hotfix::register_effect( "Mage", "2015-06-23",
-                             "Frost 4T18 increases Water Jet duration by "
-                             "10 seconds (up from 4 seconds)",
-                             270303, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 10000 )
-      .verification_value( 4000 );
-
-    hotfix::register_effect( "Mage", "2015-06-29",
-                             "Tome of Shifting Words (Pyrosurge) chance to "
-                             "trigger reduced by 6% for Fire",
-                             268044, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.94 )
-      .verification_value( 0.118555 );
-
-    hotfix::register_effect( "Mage", "2015-06-29",
-                             "Tome of Shifting Words (Shatterlance) effect "
-                             "reduced by 33% for Frost",
-                             268045, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 2.0/3.0 )
-      .verification_value( 0.14639 );
-
     hotfix::register_effect( "Mage", "2015-07-20",
                               "Flamestrike impact damage increased by 50% ",
                               126904 )
