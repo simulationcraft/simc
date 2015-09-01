@@ -14,14 +14,14 @@
 set /p ask=Build with PGO data? Only applies to 64-bit installation. (y/n)
 @echo on
 
-set simcversion=620-03
+set simcversion=622-01
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
 set simcfiles=C:\Simulationcraft\
 :: Location of source files
 set ssllocation32=C:\OpenSSL-Win32\bin
 set ssllocation64=C:\OpenSSL-Win64\bin
 :: Location of openssl32/64
-set qt_dir=C:\Qt\Qt5.5.0\5.5\
+set qt_dir=C:\Qt\Qt5.5.1\5.5\
 :: Location of QT
 set redist=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\
 :: This is a really standard location for VS2013, but change it if you installed it somewhere else.
