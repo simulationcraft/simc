@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -3368,7 +3368,7 @@ Name             : Arcane Torrent (Racial) (id=80483)
 Class            : Hunter
 Race             : Blood Elf
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

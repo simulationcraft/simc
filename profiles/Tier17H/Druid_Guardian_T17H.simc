@@ -54,16 +54,16 @@ actions+=/lacerate
 head=sorkas_nightshade_cowl,id=113978,bonus_id=566
 neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant=gift_of_mastery
 shoulders=living_wood_spaulders,id=115544,bonus_id=566
-back=gronnstitched_greatcloak,id=113873,bonus_id=566,enchant=gift_of_mastery
+trinket1=blast_furnace_door,id=113893,bonus_id=566
 chest=unrendable_wolfhide_robes,id=113951,bonus_id=566
-wrists=squires_electroplated_bracers,id=113962,bonus_id=566
+back=gronnstitched_greatcloak,id=113873,bonus_id=566,enchant=gift_of_mastery
 hands=cannonball_loaders_grips,id=113949,bonus_id=566
 waist=girdle_of_unconquered_glory,id=113907,bonus_id=566
+wrists=squires_electroplated_bracers,id=113962,bonus_id=566
 legs=living_wood_legguards,id=115543,bonus_id=566
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant=gift_of_mastery
 finger2=stonefist_band,id=113938,bonus_id=566,enchant=gift_of_mastery
-trinket1=blast_furnace_door,id=113893,bonus_id=566
 trinket2=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=566
 main_hand=earthwarped_bladestaff,id=113640,bonus_id=566,enchant=mark_of_the_frostwolf
 

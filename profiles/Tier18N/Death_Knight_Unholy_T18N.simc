@@ -94,16 +94,16 @@ actions.bos+=/death_coil,if=buff.sudden_doom.react
 head=demongaze_helm,id=124332
 neck=corrupted_talonguard_pendant,id=124218,enchant=gift_of_multistrike
 shoulders=demongaze_pauldrons,id=124344
-back=cloak_of_incendiary_wrath,id=124144,enchant=gift_of_multistrike
+trinket1=empty_drinking_horn,id=124238
 chest=demongaze_chestplate,id=124317
-wrists=breachscarred_wristplates,id=124353
+back=cloak_of_incendiary_wrath,id=124144,enchant=gift_of_multistrike
 hands=gauntlets_of_derision,id=124326
 waist=ravenous_girdle,id=124348
+wrists=breachscarred_wristplates,id=124353
 legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,enchant=gift_of_multistrike
-trinket1=empty_drinking_horn,id=124238
 trinket2=discordant_chorus,id=124237
 main_hand=hellrender,id=124360,enchant=rune_of_the_fallen_crusader
 

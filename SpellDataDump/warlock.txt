@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1278,7 +1278,7 @@ Name             : Arcane Torrent (Racial) (id=28730)
 Class            : Priest, Mage, Warlock
 Race             : Blood Elf
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1670,7 +1670,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.44531
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.15625
 #2 (id=40332)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=40333)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
@@ -3184,7 +3184,7 @@ Attributes       : x....... ........ x....... ........   ..x..... ......x. .x...
                  : Channeled (34)
 Effects          :
 #1 (id=112098)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.47025
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.31350
 #2 (id=171006)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=171007)   : Apply Aura (6) | Dummy (4)

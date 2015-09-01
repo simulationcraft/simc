@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -192,7 +192,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13200
 #2 (id=117625)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=117626)   : Dummy (3)
@@ -206,7 +206,7 @@ Description      : Finishing move that causes Bleed damage over $d.  Damage incr
    5 points: ${$floor(5*$<rip>*12)} damage
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 Variables        : $mastery=$?s77493[${((100+$77493m1)/100)}][${1.00}]
-$rip=${0.11*$AP*$<mastery>*(1+$@versadmg)}
+$rip=${0.132*$AP*$<mastery>*(1+$@versadmg)}
 
 Name             : Mark of the Wild (id=1126) [Spell Family (7)] 
 Class            : Druid
@@ -274,7 +274,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=559)      : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.51700
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62000
 #2 (id=560)      : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=561)      : Trigger Spell: Rake (64)
@@ -3942,9 +3942,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=117262)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.46640 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.51300 | Radius: 0 - 8 yards
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.33220 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36500 | Radius: 0 - 8 yards
 #3 (id=216428)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
 Description      : Strikes all enemy targets within $A2 yards, dealing $m1 bleed damage and an additional $o2 damage over $d.
@@ -5873,7 +5873,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.51700
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62000
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 

@@ -54,16 +54,16 @@ actions+=/lacerate
 head=bloodfeather_cowl,id=109976,bonus_id=524
 neck=choker_of_weeping_viscera,id=109969,bonus_id=524,enchant_id=5319
 shoulders=leafmender_mantle,id=109937,bonus_id=524
-back=drape_of_swirling_deflection,id=109916,bonus_id=524,enchant_id=5312
+trinket1=solar_containment_unit,id=110016,bonus_id=524
 chest=bloodfeather_chestwrap,id=109885,bonus_id=524
-wrists=crystalbinder_wristguards,id=109870,bonus_id=522
+back=drape_of_swirling_deflection,id=109916,bonus_id=524,enchant_id=5312
 hands=bloodfeather_grips,id=109849,bonus_id=524
 waist=crystalbinder_belt,id=109831,bonus_id=524
+wrists=crystalbinder_wristguards,id=109870,bonus_id=522
 legs=blackwater_leggings,id=109823,bonus_id=524
 feet=crystalbinder_sandals,id=109789,bonus_id=524
 finger1=bladebinder_ring,id=109775,bonus_id=524,enchant_id=5326
 finger2=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant_id=5326
-trinket1=solar_containment_unit,id=110016,bonus_id=524
 trinket2=enforcers_stun_grenade,id=110017,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5336
 

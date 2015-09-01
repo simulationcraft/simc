@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -5106,7 +5106,7 @@ Name             : Arcane Torrent (Racial) (id=155145)
 Class            : Paladin
 Race             : Blood Elf
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

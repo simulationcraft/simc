@@ -65,16 +65,16 @@ actions+=/cobra_shot
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,enchant_id=5319
 shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567
-back=cloak_of_tangible_dread,id=124135,bonus_id=567,enchant_id=5311
+trinket1=mirror_of_the_blademaster,id=124224,bonus_id=567
 chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=567
-wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567
+back=cloak_of_tangible_dread,id=124135,bonus_id=567,enchant_id=5311
 hands=gloves_of_the_savage_hunt,id=124292,bonus_id=567
 waist=girdle_of_the_legion_general,id=124310,bonus_id=567
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567
 legs=haughty_chain_legguards,id=124300,bonus_id=567
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5326
 finger2=portal_key_signet,id=124189,bonus_id=567,enchant_id=5326
-trinket1=mirror_of_the_blademaster,id=124224,bonus_id=567
 trinket2=talisman_of_the_master_tracker,id=124515,bonus_id=567
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,enchant_id=5383
 

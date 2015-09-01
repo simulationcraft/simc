@@ -76,16 +76,16 @@ actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.i
 head=sorkas_nightshade_cowl,id=113978,bonus_id=567
 neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
 shoulders=living_wood_spaulders,id=115544,bonus_id=567
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_mastery
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
 chest=living_wood_raiment,id=115540,bonus_id=567
-wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_mastery
 hands=living_wood_grips,id=115541,bonus_id=567
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
 legs=living_wood_legguards,id=115543,bonus_id=567
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_mastery
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
 main_hand=headlopper_skullscythe,id=119448,bonus_id=567,enchant_id=mark_of_bleeding_hollow
 

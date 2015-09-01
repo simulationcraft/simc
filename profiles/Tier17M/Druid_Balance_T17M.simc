@@ -62,16 +62,16 @@ actions.aoe+=/starfire
 head=living_wood_headpiece,id=115542,bonus_id=567
 neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=living_wood_spaulders,id=115544,bonus_id=567
-back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=goren_soul_repository,id=119194,bonus_id=567
 chest=living_wood_raiment,id=115540,bonus_id=567
-wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
+back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_critical_strike
 hands=cannonball_loaders_grips,id=113949,bonus_id=567
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
 legs=living_wood_legguards,id=115543,bonus_id=567
 feet=ironflecked_sandals,id=119340,bonus_id=567
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=goren_soul_repository,id=119194,bonus_id=567
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_the_thunderlord
 

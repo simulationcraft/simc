@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1164,7 +1164,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 972 | Scaled Value: 9.72 | SP Coefficient: 1.00000
+                   Base Value: 624 | Scaled Value: 6.24 | SP Coefficient: 1.00000
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1182,7 +1182,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 972 | Scaled Value: 9.72 | SP Coefficient: 1.00000
+                   Base Value: 624 | Scaled Value: 6.24 | SP Coefficient: 1.00000
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -2625,7 +2625,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=53784)    : Weapon Damage% (31)
-                   Base Value: 828 | Scaled Value: 8.28
+                   Base Value: 690 | Scaled Value: 6.9
 #2 (id=53785)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=134467)   : Normalized Weapon Damage (121)
@@ -4191,7 +4191,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 972 | Scaled Value: 9.72
+                   Base Value: 624 | Scaled Value: 6.24
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4210,7 +4210,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 972 | Scaled Value: 9.72
+                   Base Value: 624 | Scaled Value: 6.24
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356

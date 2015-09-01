@@ -62,16 +62,16 @@ actions.aoe+=/starfire
 head=oathclaw_helm,id=124261,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=75haste
 shoulders=oathclaw_mantle,id=124272,bonus_id=566
-back=shawl_of_sanguinary_ritual,id=124137,bonus_id=566,enchant=100haste
+trinket1=iron_reaver_piston,id=124227,bonus_id=566
 chest=oathclaw_vestment,id=124246,bonus_id=566
-wrists=manacles_of_the_multitudes,id=124280,bonus_id=566
+back=shawl_of_sanguinary_ritual,id=124137,bonus_id=566,enchant=100haste
 hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
+wrists=manacles_of_the_multitudes,id=124280,bonus_id=566
 legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=oppressors_merciless_treads,id=124251,bonus_id=566
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50haste
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=50haste
-trinket1=iron_reaver_piston,id=124227,bonus_id=566
 trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 

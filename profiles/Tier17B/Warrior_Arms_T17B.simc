@@ -100,16 +100,16 @@ actions.aoe+=/execute,if=buff.sudden_death.react
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=567/523/448,gem_id=115809
-back=charbreath_firecloak,id=113916,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
+trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/523/448,gem_id=115809
 chest=blackhands_chestguard,id=115582,bonus_id=567/523/448,gem_id=115809
-wrists=bracers_of_visceral_force,id=119331,bonus_id=567/523/448,gem_id=115809
+back=charbreath_firecloak,id=113916,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
 hands=blackhands_handguards,id=115583,bonus_id=567/523/448,gem_id=115809
 waist=ironcrushers_collar,id=113950,bonus_id=567/523/448,gem_id=115809
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567/523/448,gem_id=115809
 legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/523/448,gem_id=115809
 trinket2=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115809
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 

@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -596,7 +596,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.52800 | Chain Multiplier: 0.5
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.74000 | Chain Multiplier: 0.5
 #2 (id=159566)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | AP Coefficient: 1.28000 | Misc Value: rage
 #3 (id=248185)   : Dummy (3)
@@ -1019,7 +1019,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=102316)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5
+                   Base Value: 265 | Scaled Value: 2.65
 #2 (id=11313)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 Description      : Deals $sw1 Physical damage, and has a $46953s1% chance to reset the cooldown on Shield Slam and cause it to generate $/10;50227s1 more Rage.
@@ -1188,7 +1188,7 @@ Effects          :
 #3 (id=156243)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage
 Description      : Slam the target with your shield, causing ${$<shieldslam>} damage$?s58375[, dispelling 1 magical effect,][] and generating $/10;s3 Rage.  Critical strikes with Shield Slam cause your next Heroic Strike to cost no Rage and be a critical strike.
-Variables        : $apmult=${0.366+$gte($PL,80)*0.426+$gte($PL,85)*2.46}
+Variables        : $apmult=${0.561+$gte($PL,80)*0.426+$gte($PL,85)*2.46}
 $gladmult=$?a156291[${1.05}][${1.0}]
 $shieldchargemult=$?a169667[${1.25}][${1.0}]
 $shieldslam=${$AP*$<apmult>*$<gladmult>*$<shieldchargemult>*(1+$@versadmg)}
@@ -2651,7 +2651,7 @@ Name             : Arcane Torrent (Racial) (id=69179)
 Class            : Warrior
 Race             : Blood Elf
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

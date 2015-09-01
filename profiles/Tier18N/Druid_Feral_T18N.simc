@@ -76,16 +76,16 @@ actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.i
 head=oathclaw_helm,id=124261
 neck=choker_of_the_great_betrayer,id=124210,enchant_id=5317
 shoulders=oathclaw_mantle,id=124272
-back=cloak_of_desperate_temerity,id=124134,enchant_id=5310
+trinket1=seed_of_creation,id=124514
 chest=tunic_of_the_soulbinder,id=124245
-wrists=manacles_of_the_multitudes,id=124280
+back=cloak_of_desperate_temerity,id=124134,enchant_id=5310
 hands=oathclaw_gauntlets,id=124255
 waist=waistwrap_of_banishment,id=124276
+wrists=manacles_of_the_multitudes,id=124280
 legs=oathclaw_leggings,id=124267
 feet=spiked_irontoe_slippers,id=124249
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
 finger2=portal_key_signet,id=124189,enchant_id=5324
-trinket1=seed_of_creation,id=124514
 trinket2=soul_capacitor,id=124225
 main_hand=xutenash_glaive_of_ruin,id=124378,enchant_id=5330
 

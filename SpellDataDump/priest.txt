@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20395)
+SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -295,7 +295,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=881)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.64000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.90400
 #2 (id=222398)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=240281)   : Dummy (3)
@@ -483,7 +483,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: shadow_orb
 #3 (id=216147)   : Trigger Spell: Mind Blast Marker (64)
@@ -649,7 +649,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.33000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.39600
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]
@@ -865,7 +865,7 @@ Name             : Arcane Torrent (Racial) (id=28730)
 Class            : Priest, Mage, Warlock
 Race             : Blood Elf
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2573,7 +2573,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66820)    : School Damage: shadowfrost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90800 | Trigger Spell: 87178
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Trigger Spell: 87178
 #2 (id=66821)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Blasts the target for $73510s1 Shadowfrost damage, but extinguishes your damage over time effects on the target.
@@ -4514,7 +4514,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=165362)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | SP Coefficient: 0.33000
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | SP Coefficient: 0.39600
 #2 (id=183258)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]
