@@ -149,10 +149,6 @@ void dbc::apply_hotfixes()
 
   // Paladin
 
-  e = spelleffect_data_t::find( 269763 );
-  assert( e -> _base_value == 6 && "Check T184P Retribution" );
-  e -> _base_value = 5;
-
   // Priest
 
   // Rogue
