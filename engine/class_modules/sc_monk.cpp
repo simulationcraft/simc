@@ -2249,8 +2249,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 3.42; // hardcoded into tooltip
-    if ( p -> dbc.ptr )
-      base_multiplier *= 1.20; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Tiger Palm now deals 20% more damage.
+    base_multiplier *= 1.20; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Tiger Palm now deals 20% more damage.
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
