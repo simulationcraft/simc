@@ -5,9 +5,9 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "620"
-#define SC_MINOR_VERSION "03"
-#define SC_USE_PTR ( 1 )
+#define SC_MAJOR_VERSION "622"
+#define SC_MINOR_VERSION "01"
+#define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
@@ -83,12 +83,6 @@ inline std::ostream& operator<<(std::ostream &os, const timespan_t& x )
 
 // mutex, thread
 #include "util/concurrency.hpp"
-
-#if SC_VS
-#pragma message("[2015-08-24] Simulationcraft development has moved to http://github.com/simulationcraft.")
-#else
-#warning "[2015-08-24] Simulationcraft development has moved to http://github.com/simulationcraft."
-#endif
 
 // Forward Declarations =====================================================
 
