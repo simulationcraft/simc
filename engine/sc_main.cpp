@@ -202,7 +202,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   if ( display_bonus_ids )
   {
-    std::cout << dbc::bonus_ids_str( *this );
+    std::cout << dbc::bonus_ids_str( dbc );
     return 0;
   }
 

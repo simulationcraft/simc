@@ -165,9 +165,7 @@ class RealPPMModifierGenerator(DataGenerator):
 
         output_data.sort(cmp = lambda l, r: l[2] - r[2])
 
-        s = '#include "specialization.hpp"\n'
-        s += '#include "data_definitions.hh"\n\n'
-        s += '#define %sRPPMMOD%s_SIZE (%d)\n\n' % (
+        s = '#define %sRPPMMOD%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(output_data)
@@ -959,8 +957,7 @@ class ItemDataGenerator(DataGenerator):
     def generate(self, ids = None):
         ids.sort()
 
-        s = '#include "data_definitions.hh"\n\n'
-        s += '#define %sITEM%s_SIZE (%d)\n\n' % (
+        s = '#define %sITEM%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
@@ -2255,8 +2252,7 @@ class SpellDataGenerator(DataGenerator):
         effects = set()
         powers = set()
 
-        s = '#include "data_definitions.hh"\n\n'
-        s += '#define %sSPELL%s_SIZE (%d)\n\n' % (
+        s = '#define %sSPELL%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)

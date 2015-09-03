@@ -2,7 +2,7 @@
 #define DATA_DEFINITIONS_HH
 
 #include "data_enums.hh"
-#include "specialization.hpp"
+#include "generated/specialization.hpp"
 
 // Spell.dbc
 

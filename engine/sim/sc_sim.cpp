@@ -652,7 +652,7 @@ bool parse_override_spell_data( sim_t*             sim,
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
   {
-    if ( ! dbc_override::register_spell( sim, id, splits[ 2 ], v ) )
+    if ( ! dbc_override::register_spell( sim -> dbc, id, splits[ 2 ], v ) )
     {
       return false;
     }
@@ -660,7 +660,7 @@ bool parse_override_spell_data( sim_t*             sim,
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
-    if ( ! dbc_override::register_effect( sim, id, splits[ 2 ], v ) )
+    if ( ! dbc_override::register_effect( sim -> dbc, id, splits[ 2 ], v ) )
     {
       return false;
     }

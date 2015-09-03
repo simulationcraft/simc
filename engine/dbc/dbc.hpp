@@ -3,22 +3,27 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#ifndef SIMULATIONCRAFT_H
-static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not defined!" );
-/* This Header cannot stand on its own feet.
- * It only works when included into simulationcraft.hpp at a specific place.
- * The purpose (for now) is only to have it sourced out into a separate file.
- */
-#endif
-
 #ifndef SC_DBC_HPP
 #define SC_DBC_HPP
 
+#include "config.hpp"
+#include "util/generic.hpp"
+#include "sc_timespan.hpp"
+#include <string>
+#include <functional>
+
 #include "data_definitions.hh"
 #include "data_enums.hh"
+#include "generated/specialization.hpp"
 
-// This is a automatically generated header.
-#include "specialization.hpp"
+// ==========================================================================
+// Forward declaration
+// ==========================================================================
+
+struct dbc_t;
+struct player_t;
+struct item_t;
+
 
 static const unsigned NUM_SPELL_FLAGS = 12;
 static const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
@@ -71,7 +76,7 @@ std::size_t n_item_name_descriptions( bool ptr );
 
 const item_bonus_entry_t* item_bonus_entries( bool ptr );
 std::size_t n_item_bonuses( bool ptr );
-std::string bonus_ids_str( sim_t& );
+std::string bonus_ids_str( dbc_t& );
 
 // Filtered data access
 const item_data_t* find_potion( bool ptr, const std::function<bool(const item_data_t*)>& finder );
@@ -251,8 +256,8 @@ namespace dbc_override
     { }
   };
 
-  bool register_effect( sim_t*, unsigned, const std::string&, double );
-  bool register_spell( sim_t*, unsigned, const std::string&, double );
+  bool register_effect( dbc_t&, unsigned, const std::string&, double );
+  bool register_spell( dbc_t&, unsigned, const std::string&, double );
 
   const spell_data_t* find_spell( unsigned, bool ptr = false );
   const spelleffect_data_t* find_effect( unsigned, bool ptr = false );

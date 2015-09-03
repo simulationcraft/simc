@@ -656,12 +656,12 @@ namespace dbc_override
 }
 
 // Applies overrides immediately, and records an entry
-bool dbc_override::register_spell( sim_t* sim, unsigned spell_id, const std::string& field, double v )
+bool dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, const std::string& field, double v )
 {
-  spell_data_t* spell = override_db_.get_mutable_spell( spell_id, sim -> dbc.ptr );
+  spell_data_t* spell = override_db_.get_mutable_spell( spell_id, dbc.ptr );
   if ( ! spell )
   {
-    spell = override_db_.clone_spell( spell_id, sim -> dbc.ptr );
+    spell = override_db_.clone_spell( spell_id, dbc.ptr );
   }
 
   assert( spell );
@@ -672,14 +672,14 @@ bool dbc_override::register_spell( sim_t* sim, unsigned spell_id, const std::str
   return true;
 }
 
-bool dbc_override::register_effect( sim_t* sim, unsigned effect_id, const std::string& field, double v )
+bool dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::string& field, double v )
 {
-  spelleffect_data_t* effect = override_db_.get_mutable_effect( effect_id, sim -> dbc.ptr );
+  spelleffect_data_t* effect = override_db_.get_mutable_effect( effect_id, dbc.ptr );
   if ( ! effect )
   {
-    const spelleffect_data_t* dbc_effect = sim -> dbc.effect( effect_id );
-    override_db_.clone_spell( dbc_effect -> spell() -> id(), sim -> dbc.ptr );
-    effect = override_db_.get_mutable_effect( effect_id, sim -> dbc.ptr );
+    const spelleffect_data_t* dbc_effect = dbc.effect( effect_id );
+    override_db_.clone_spell( dbc_effect -> spell() -> id(), dbc.ptr );
+    effect = override_db_.get_mutable_effect( effect_id, dbc.ptr );
   }
 
   assert( effect );

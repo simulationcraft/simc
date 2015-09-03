@@ -8,7 +8,7 @@
  */
 
 #include "simulationcraft.hpp"
-#include "sc_item_data.inc"
+#include "generated/sc_item_data.inc"
 
 item_data_t* dbc::__items_noptr()
 {

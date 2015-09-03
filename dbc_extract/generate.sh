@@ -4,7 +4,7 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-OUTPATH=`dirname $PWD`/engine/dbc
+OUTPATH=`dirname $PWD`/engine/dbc/generated
 INEXT=DBFilesClient
 
 PTR=

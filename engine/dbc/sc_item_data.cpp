@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-#include "sc_item_data2.inc"
+#include "generated/sc_item_data2.inc"
 #if SC_USE_PTR
 #include "sc_item_data_ptr2.inc"
 #endif
@@ -1402,12 +1402,12 @@ std::vector<std::pair<item_mod_type, double> > get_bonus_id_stats(
   return data;
 }
 
-std::string dbc::bonus_ids_str( sim_t& sim )
+std::string dbc::bonus_ids_str( dbc_t& dbc)
 {
   std::vector<unsigned> bonus_ids;
   std::stringstream s;
 
-  const item_bonus_entry_t* e = dbc::item_bonus_entries( sim.dbc.ptr );
+  const item_bonus_entry_t* e = dbc::item_bonus_entries( dbc.ptr );
   while ( e -> id != 0 )
   {
     if ( std::find( bonus_ids.begin(), bonus_ids.end(), e -> bonus_id ) != bonus_ids.end() )
@@ -1439,13 +1439,13 @@ std::string dbc::bonus_ids_str( sim_t& sim )
 
   for ( size_t i = 0; i < bonus_ids.size(); ++i )
   {
-    std::vector<const item_bonus_entry_t*> entries = sim.dbc.item_bonus( bonus_ids[ i ] );
-    std::string desc = get_bonus_id_desc( sim.dbc.ptr, entries );
-    std::string suffix = get_bonus_id_suffix( sim.dbc.ptr, entries );
+    std::vector<const item_bonus_entry_t*> entries = dbc.item_bonus( bonus_ids[ i ] );
+    std::string desc = get_bonus_id_desc( dbc.ptr, entries );
+    std::string suffix = get_bonus_id_suffix( dbc.ptr, entries );
     int ilevel = get_bonus_id_ilevel( entries );
     int sockets = get_bonus_id_sockets( entries );
     std::vector<std::pair<item_mod_type, double> > stats = get_bonus_id_stats( entries );
-    std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( sim.dbc, entries );
+    std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
 
     std::vector<std::string> fields;
 
