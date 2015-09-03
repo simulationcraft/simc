@@ -5,4 +5,4 @@ vs/msinttypes/* linguist-vendored
 engine/util/rapidjson/* linguist-vendored
 engine/util/rapidxml/* linguist-vendored
 engine/util/utf8* linguist-vendored
-
+locale/*.qm linguist-vendored
