@@ -40,6 +40,8 @@ const item_name_description_t* dbc::item_name_descriptions( bool ptr )
 #if SC_USE_PTR
   if ( ptr )
     p = __ptr_item_name_description_data;
+#else
+  (void)ptr;
 #endif
 
   return p;
@@ -57,6 +59,7 @@ std::size_t dbc::n_item_name_descriptions( bool ptr )
     return ITEM_NAME_DESCRIPTION_SIZE;
   }
 #else
+  (void)ptr;
   return ITEM_NAME_DESCRIPTION_SIZE;
 #endif
 }
@@ -67,6 +70,8 @@ const item_bonus_entry_t* dbc::item_bonus_entries( bool ptr )
 #if SC_USE_PTR
   if ( ptr )
     p = __ptr_item_bonus_data;
+#else
+  (void)ptr;
 #endif
 
   return p;
@@ -84,18 +89,19 @@ std::size_t dbc::n_item_bonuses( bool ptr )
     return ITEM_BONUS_SIZE;
   }
 #else
+  (void)ptr;
   return ITEM_BONUS_SIZE;
 #endif
 }
 
 const char* dbc::item_name_description( unsigned id, bool ptr )
 {
-  ( void ) ptr;
-
   const item_name_description_t* p = __item_name_description_data;
 #if SC_USE_PTR
   if ( ptr )
     p = __ptr_item_name_description_data;
+#else
+  ( void ) ptr;
 #endif
 
   while ( p -> id != 0 )

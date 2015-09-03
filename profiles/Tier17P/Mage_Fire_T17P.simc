@@ -123,16 +123,16 @@ actions.single_target+=/scorch,moving=1
 head=frosttouched_hood,id=109971,bonus_id=524
 neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_critical_strike
 shoulders=felflame_spaulders,id=109948,bonus_id=524
-trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
-chest=robes_of_swirling_light,id=109901,bonus_id=524
 back=drape_of_frozen_dreams,id=109926,bonus_id=524,enchant=gift_of_critical_strike
+chest=robes_of_swirling_light,id=109901,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
 hands=gloves_of_swirling_light,id=109846,bonus_id=524
 waist=frosttouched_cord,id=109825,bonus_id=524
-wrists=frosttouched_wristwraps,id=109865,bonus_id=524
 legs=lightbinder_leggings,id=109807,bonus_id=524
 feet=sandals_of_arcane_mystery,id=109784,bonus_id=524
 finger1=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_critical_strike
 finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_critical_strike
+trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
 trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_the_thunderlord
 

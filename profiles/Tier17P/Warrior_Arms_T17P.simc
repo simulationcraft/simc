@@ -102,16 +102,16 @@ actions.aoe+=/execute,if=buff.sudden_death.react
 head=rivetsealed_casque,id=109989,bonus_id=524
 neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5320
 shoulders=verdant_plate_spaulders,id=109944,bonus_id=524
-trinket1=bonemaws_big_toe,id=110012,bonus_id=524
-chest=gutcrusher_chestplate,id=109895,bonus_id=524
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gem_id=115809,enchant_id=5310
+chest=gutcrusher_chestplate,id=109895,bonus_id=524
+wrists=verdant_plate_wristguards,id=109877,bonus_id=524
 hands=incarnadine_gauntlets,id=109856,bonus_id=524
 waist=rivetsealed_waistplate,id=109841,bonus_id=524
-wrists=verdant_plate_wristguards,id=109877,bonus_id=524
 legs=verdant_plate_legguards,id=109819,bonus_id=524
 feet=verdant_plate_treads,id=109794,bonus_id=524
 finger1=band_of_iron_scale,id=109773,bonus_id=524,enchant_id=5327
 finger2=signet_of_bloody_crystal,id=115385,enchant_id=5327
+trinket1=bonemaws_big_toe,id=110012,bonus_id=524
 trinket2=turbulent_emblem,id=114491
 main_hand=steelforged_greataxe,id=116453,bonus_id=76/525,enchant_id=5330
 

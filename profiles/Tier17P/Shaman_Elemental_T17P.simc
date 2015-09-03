@@ -78,16 +78,16 @@ actions.aoe+=/lightning_bolt
 head=morningscale_cowl,id=109984,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike
 shoulders=rockhide_shoulderguards,id=109941,bonus_id=524
-trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
-chest=lavalink_ringmail,id=109890,bonus_id=524
 back=forgeflame_greatcloak,id=109925,bonus_id=524,enchant=gift_of_multistrike
+chest=lavalink_ringmail,id=109890,bonus_id=524
+wrists=morningscale_bracers,id=109883,bonus_id=524
 hands=sharpeye_gauntlets,id=109853,bonus_id=524
 waist=sharpeye_belt,id=109834,bonus_id=524
-wrists=morningscale_bracers,id=109883,bonus_id=524
 legs=lavalink_legguards,id=109816,bonus_id=524
 feet=rockhide_treads,id=109792,bonus_id=524
 finger1=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_multistrike
 finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_multistrike
+trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
 trinket2=fleshrenders_meathook,id=110002,bonus_id=524
 main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_the_frostwolf
 

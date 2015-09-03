@@ -5360,7 +5360,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   dots.shadow_word_pain      = target -> get_dot( "shadow_word_pain",      &p );
   dots.vampiric_touch        = target -> get_dot( "vampiric_touch",        &p );
   dots.void_entropy          = target -> get_dot( "void_entropy",          &p );
-  //dots.mind_blast_dot        = target -> get_dot( "mind_blast_dot",        &p );    // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
   dots.renew                 = target -> get_dot( "renew",                 &p );
 
   buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", p.find_spell( 47753 ) )
@@ -5596,30 +5595,6 @@ expr_t* priest_t::create_expression( action_t* a,
       }
     };
     return new primary_target_t( *this, *a );
-  }
-  if ( name_str == "natural_shadow_word_death_range" )
-  {
-    struct natural_shadow_word_death_range_t : public expr_t
-    {
-      action_t& action;
-      natural_shadow_word_death_range_t( action_t& act ) :
-        expr_t( "natural_shadow_word_death_range" ), action( act )
-      {
-      }
-
-      virtual double evaluate()
-      {
-        if ( action.target -> health_percentage() < 20.0 )
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-    };
-    return new natural_shadow_word_death_range_t( *a );
   }
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
@@ -6689,16 +6664,16 @@ void priest_t::apl_shadow()
   // Auspicious Spirits + Main APL if you don't have a L100 Talent selected
   main -> add_action( "mindbender,if=talent.mindbender.enabled" );
   main -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  main -> add_action( "shadow_word_death,if=natural_shadow_word_death_range&shadow_orb<=4,cycle_targets=1" );
+  main -> add_action( "shadow_word_death,if=target.health.pct<20&shadow_orb<=4,cycle_targets=1" );
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&shadow_orb<=2&active_enemies<=5&cooldown_react" );
   main -> add_action( "devouring_plague,if=shadow_orb=5&!target.dot.devouring_plague_dot.ticking&(talent.surge_of_darkness.enabled|set_bonus.tier17_4pc),cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb=5" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=3" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=2" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
-  main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc&(!set_bonus.tier18_4pc&!talent.mindbender.enabled))|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc&(!set_bonus.tier18_4pc&!talent.mindbender.enabled))|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc&(!set_bonus.tier18_4pc&!talent.mindbender.enabled))|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))" );
-  main -> add_action( "devouring_plague,if=shadow_orb>=3&!talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc&(!set_bonus.tier18_4pc&!talent.mindbender.enabled))|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=3&!talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc&(!set_bonus.tier18_4pc&!talent.mindbender.enabled))|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&!talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc&(!set_bonus.tier18_4pc&!talent.mindbender.enabled))|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&talent.auspicious_spirits.enabled&set_bonus.tier18_4pc&talent.mindbender.enabled&buff.premonition.up" );
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
@@ -6706,7 +6681,7 @@ void priest_t::apl_shadow()
   main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.3)&target.time_to_die>(18*0.75)&miss_react,cycle_targets=1,max_cycle_targets=7" );
   main -> add_action( "mind_blast,if=cooldown_react" );
   main -> add_action( "insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
-  main -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
+  main -> add_action( "mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   main -> add_action( "searing_insanity,if=buff.insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   main -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   main -> add_action( "insanity,if=buff.insanity.remains<0.5*gcd&active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5)" );
@@ -6726,7 +6701,7 @@ void priest_t::apl_shadow()
   main -> add_action( "divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=24" );
   main -> add_action( "cascade,if=talent.cascade.enabled&!set_bonus.tier18_4pc&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11" );
   main -> add_action( "divine_star,if=talent.divine_star.enabled&!set_bonus.tier18_4pc&target.distance<=24" );
-  main -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=natural_shadow_word_death_range&cooldown.shadow_word_death.remains<0.5&active_enemies<=1,cycle_targets=1" );
+  main -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1,cycle_targets=1" );
   main -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&!set_bonus.tier18_4pc" );
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5&set_bonus.tier18_4pc&(buff.premonition.up|talent.mindbender.enabled)" );
@@ -6755,8 +6730,8 @@ void priest_t::apl_shadow()
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10&active_enemies>2,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<15&active_enemies>3,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20&active_enemies>4,cycle_targets=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&(dot.void_entropy.remains|target.time_to_die<=60)&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&(dot.void_entropy.remains|target.time_to_die<=60)&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies>1,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&(dot.void_entropy.remains|target.time_to_die<=60)&(cooldown.mind_blast.remains<=gcd*2|(target.health.pct<20&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&(dot.void_entropy.remains|target.time_to_die<=60)&(cooldown.mind_blast.remains<=gcd*2|(target.health.pct<20&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies>1,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb>=3&dot.void_entropy.ticking&active_enemies=1&buff.mental_instinct.remains<(gcd*1.4)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   vent -> add_action( "devouring_plague,if=shadow_orb>=3&target.time_to_die<=gcd*4&active_enemies=1" );
   vent -> add_action( "mindbender,if=!set_bonus.tier18_2pc&talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
@@ -6769,9 +6744,9 @@ void priest_t::apl_shadow()
   vent -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb>=3,cycle_targets=1" );
   vent -> add_action( "mind_blast,if=active_enemies<=10&cooldown_react&shadow_orb<=4" );
-  vent -> add_action( "shadow_word_death,if=natural_shadow_word_death_range&cooldown_react&shadow_orb<=4,cycle_targets=1" );
+  vent -> add_action( "shadow_word_death,if=target.health.pct<20&cooldown_react&shadow_orb<=4,cycle_targets=1" );
   vent -> add_action( "insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
-  vent -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
+  vent -> add_action( "mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   vent -> add_action( "searing_insanity,if=buff.insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   vent -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   vent -> add_action( "shadow_word_pain,if=shadow_orb=4&remains<(18*0.50)&set_bonus.tier17_2pc&cooldown.mind_blast.remains<1.2*gcd&cooldown.mind_blast.remains>0.2*gcd" );
@@ -6803,8 +6778,8 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "devouring_plague,if=target.dot.vampiric_touch.ticking&target.dot.shadow_word_pain.ticking&shadow_orb=5&cooldown_react" );
   cop_dotweave -> add_action( "devouring_plague,if=buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   cop_dotweave -> add_action( "devouring_plague,if=(target.dot.vampiric_touch.ticking&target.dot.shadow_word_pain.ticking&!buff.insanity.remains&cooldown.mind_blast.remains>0.4*gcd)" );
-  cop_dotweave -> add_action( "shadow_word_death,if=natural_shadow_word_death_range&!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
-  cop_dotweave -> add_action( "shadow_word_death,if=natural_shadow_word_death_range,cycle_targets=1" );
+  cop_dotweave -> add_action( "shadow_word_death,if=target.health.pct<20&!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
+  cop_dotweave -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
   cop_dotweave -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1" );
   cop_dotweave -> add_action( "mind_blast,if=shadow_orb<=4&cooldown_react" );
   cop_dotweave -> add_action( "shadowfiend,if=!talent.mindbender.enabled&set_bonus.tier18_2pc" );
@@ -6832,7 +6807,7 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "vampiric_touch,if=primary_target=0&(!ticking|remains<=15*0.3+cast_time)&target.time_to_die>(15*0.75+cast_time),cycle_targets=1,max_cycle_targets=5" );
   cop_dotweave -> add_action( "insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_dotweave -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
-  cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
+  cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_dotweave -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop_dotweave -> add_action( "mind_spike" );
   cop_dotweave -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
@@ -6849,18 +6824,18 @@ void priest_t::apl_shadow()
   cop_insanity -> add_action( "devouring_plague,if=buff.mental_instinct.remains<(gcd*1.7)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   cop_insanity -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
   cop_insanity -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  cop_insanity -> add_action( "shadow_word_death,if=natural_shadow_word_death_range&!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
-  cop_insanity -> add_action( "shadow_word_death,if=natural_shadow_word_death_range,cycle_targets=1" );
+  cop_insanity -> add_action( "shadow_word_death,if=target.health.pct<20&!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
+  cop_insanity -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
   cop_insanity -> add_action( "insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
-  cop_insanity -> add_action( "devouring_plague,if=shadow_orb>=3&!set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<gcd|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1" );
-  cop_insanity -> add_action( "devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1" );
+  cop_insanity -> add_action( "devouring_plague,if=shadow_orb>=3&!set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<gcd|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1" );
+  cop_insanity -> add_action( "devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=2|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1" );
   cop_insanity -> add_action( "shadowfiend,if=!talent.mindbender.enabled&set_bonus.tier18_2pc" );
   cop_insanity -> add_action( "mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc" );
   cop_insanity -> add_action( "searing_insanity,if=buff.insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   cop_insanity -> add_action( "searing_insanity,if=active_enemies>=5,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   cop_insanity -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop_insanity -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
+  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_insanity -> add_action( "shadow_word_pain,if=remains<(18*0.3)&target.time_to_die>(18*0.75)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop_insanity -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&target.time_to_die>(15*0.75+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop_insanity -> add_action( "insanity,if=buff.insanity.remains<0.5*gcd&active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|(cooldown.shadow_word_death.remains<=0.1&target.health.pct<20))" );
@@ -6871,7 +6846,7 @@ void priest_t::apl_shadow()
   cop_insanity -> add_action( "halo,if=talent.halo.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=30&target.distance>=17" );
   cop_insanity -> add_action( "cascade,if=talent.cascade.enabled&set_bonus.tier18_4pc&buff.premonition.up&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
   cop_insanity -> add_action( "divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&active_enemies>2&target.distance<=24" );
-  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
+  cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd" );
   cop_insanity -> add_action( "mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick" );
   cop_insanity -> add_action( "mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5" );
   cop_insanity -> add_action( "mind_spike" );
@@ -6902,8 +6877,8 @@ void priest_t::apl_shadow()
   cop -> add_action( "devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&talent.surge_of_darkness.enabled&buff.mental_instinct.remains<(gcd*1.4)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains&(cooldown.mind_blast.remains<=gcd*2|(cooldown.shadow_word_death.remains<=gcd&target.health.pct<20))&primary_target=0&target.time_to_die>=(gcd*4*7%6)&active_enemies=1,cycle_targets=1" );
   cop -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
   cop -> add_action( "mind_blast,if=cooldown_react" );
-  cop -> add_action( "shadow_word_death,if=natural_shadow_word_death_range&!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
-  cop -> add_action( "shadow_word_death,if=natural_shadow_word_death_range,cycle_targets=1" );
+  cop -> add_action( "shadow_word_death,if=target.health.pct<20&!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
+  cop -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
   cop -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   cop -> add_action( "halo,if=talent.halo.enabled&!set_bonus.tier18_4pc&target.distance<=30&target.distance>=17" );
@@ -7383,12 +7358,6 @@ struct priest_module_t : public module_t
   }
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Priest", "2015-06-29", "Repudiation of War had its effect increased by 30% for Shadow Priests.", 268055, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.30 )
-      .verification_value( 0.5153989792 );
-
     // Missing DBC Values
     hotfix::register_spell( "Priest", "missing", "Auspicious Spirit travel speed, in yards per second.", 78203, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
       .field( "prj_speed" )
@@ -7401,13 +7370,6 @@ struct priest_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3.0 )
       .verification_value( 0.0 );
-
-    // Incorrect DBC Values
-    hotfix::register_effect( "Priest", "incorrect", "Repudiation of War trinket max stack halfed, proc chance doubled.", 268055, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "average" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 2.0 )
-      .verification_value( 0.67001867296 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

@@ -122,16 +122,16 @@ actions.single_target+=/ice_lance,moving=1
 head=vilebreath_mask,id=113596,bonus_id=566
 neck=odyssian_choker,id=113833,bonus_id=566,enchant=gift_of_multistrike
 shoulders=arcanoshatter_mantle,id=115551
-trinket1=blackiron_micro_crucible,id=113984
-chest=arcanoshatter_robes,id=115550
 back=runescribed_gronncloak,id=120078,enchant=gift_of_multistrike
+chest=arcanoshatter_robes,id=115550
+wrists=bracers_of_spattered_steel,id=113887
 hands=arcanoshatter_gloves,id=115552
 waist=deckhands_rope_belt,id=113967
-wrists=bracers_of_spattered_steel,id=113887
 legs=arcanoshatter_leggings,id=115554
 feet=inferno_breath_sandals,id=113942
 finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_multistrike
 finger2=signet_of_crystalline_barrage,id=113651,bonus_id=566,enchant=gift_of_multistrike
+trinket1=blackiron_micro_crucible,id=113984
 trinket2=quiescent_runestone,id=113859,bonus_id=566
 main_hand=spire_of_tectus,id=113639,bonus_id=566,enchant=mark_of_the_frostwolf
 

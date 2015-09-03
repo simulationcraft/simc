@@ -74,16 +74,16 @@ actions.aoe+=/cobra_shot
 head=hood_of_the_savage_hunt,id=124296
 neck=choker_of_the_great_betrayer,id=124210,enchant_id=5320
 shoulders=pauldrons_of_the_savage_hunt,id=124307
-trinket1=beating_heart_of_the_mountain,id=113931
-chest=hauberk_of_the_savage_hunt,id=124284
 back=cloak_of_desperate_temerity,id=124134,enchant_id=5313
+chest=hauberk_of_the_savage_hunt,id=124284
+wrists=bracers_of_fel_empowerment,id=124314
 hands=eredar_felchain_gloves,id=124291
 waist=girdle_of_the_legion_general,id=124310
-wrists=bracers_of_fel_empowerment,id=124314
 legs=leggings_of_the_savage_hunt,id=124301
 feet=spiked_throatcrusher_boots,id=124287
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5327
 finger2=portal_key_signet,id=124189,enchant_id=5327
+trinket1=beating_heart_of_the_mountain,id=113931
 trinket2=malicious_censer,id=124226
 main_hand=cursed_demonbone_longbow,id=124361,enchant_id=5275
 

@@ -67,7 +67,7 @@ QTBINDIR=$$replace(QTBINDIR, //, /)
 RESOURCES += \
     qt/simcqt.qrc
 
-QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+QMAKE_CXXFLAGS_RELEASE += -DNDEBUG -std=c++0x
 QMAKE_CXXFLAGS += $$OPTS
 
 ! isEmpty( SC_DEFAULT_APIKEY ) {
@@ -99,7 +99,7 @@ macx {
     QMAKE_DISTCLEAN += simc *.dmg
   }
 
-  SIMC_RELEASE_OPTS = OPTS=\"-fPIE -mmacosx-version-min=10.6 -std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\"
+  SIMC_RELEASE_OPTS = OPTS=\"-fPIE -mmacosx-version-min=10.7 -std=c++0x -stdlib=libc++ -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\"
   ! isEmpty( SC_DEFAULT_APIKEY ) {
     SIMC_RELEASE_OPTS += SC_DEFAULT_APIKEY=\"$${SC_DEFAULT_APIKEY}\"
   }

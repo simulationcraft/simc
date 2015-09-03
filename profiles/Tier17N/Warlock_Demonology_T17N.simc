@@ -125,16 +125,16 @@ actions.meta+=/cancel_metamorphosis
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant_id=5319
 shoulders=shadow_councils_mantle,id=115589
-trinket1=blackiron_micro_crucible,id=113984
-chest=shadow_councils_robes,id=115588
 back=runefrenzy_greatcloak,id=113937,enchant_id=5312
+chest=shadow_councils_robes,id=115588
+wrists=hexweave_bracers,id=114814,bonus_id=117/559
 hands=toothbreaker_grips,id=113876
 waist=hexweave_belt,id=114816,bonus_id=118/559
-wrists=hexweave_bracers,id=114814,bonus_id=117/559
 legs=shadow_councils_leggings,id=115587
 feet=hexweave_slippers,id=114815,bonus_id=118/559
 finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5326
 finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5326
+trinket1=blackiron_micro_crucible,id=113984
 trinket2=goren_soul_repository,id=119194
 main_hand=infernoflame_staff,id=113869,enchant_id=5384
 

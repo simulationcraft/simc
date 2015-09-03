@@ -124,16 +124,16 @@ actions.single_target+=/ice_lance,moving=1
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike
 shoulders=mantle_of_arcane_mystery,id=109930,bonus_id=524
-trinket1=fleshrenders_meathook,id=110002,bonus_id=524
-chest=lightbinder_robes,id=109902,bonus_id=524
 back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_multistrike
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=felflame_bracers,id=109881,bonus_id=524
 hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
 waist=lightbinder_girdle,id=109827,bonus_id=524
-wrists=felflame_bracers,id=109881,bonus_id=524
 legs=leggings_of_swirling_light,id=109806,bonus_id=524
 feet=lightbinder_treads,id=109796,bonus_id=524
 finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_multistrike
 finger2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_multistrike
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
 trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_the_frostwolf
 

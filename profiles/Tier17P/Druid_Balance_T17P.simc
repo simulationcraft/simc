@@ -64,16 +64,16 @@ actions.aoe+=/starfire
 head=bloodfeather_cowl,id=109976
 neck=magisters_chain,id=109954,enchant=gift_of_critical_strike
 shoulders=blackwater_spaulders,id=109938
-trinket1=fleshrenders_meathook,id=110002
-chest=bloodfeather_chestwrap,id=109885
 back=drape_of_frozen_dreams,id=109926,enchant=gift_of_critical_strike
+chest=bloodfeather_chestwrap,id=109885
+wrists=bracers_of_burning_focus,id=109868
 hands=crystalbinder_gloves,id=109850
 waist=crystalhide_belt,id=115379
-wrists=bracers_of_burning_focus,id=109868
 legs=bloodfeather_leggings,id=109810
 feet=boots_of_burning_focus,id=109787
 finger1=darkflame_loop,id=109766,enchant=gift_of_critical_strike
 finger2=mark_of_ice,id=109764,enchant=gift_of_critical_strike
+trinket1=fleshrenders_meathook,id=110002
 trinket2=ragewings_firefang,id=110003
 main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_the_thunderlord
 
