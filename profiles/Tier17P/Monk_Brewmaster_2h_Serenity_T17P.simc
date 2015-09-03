@@ -88,16 +88,16 @@ actions.aoe+=/tiger_palm
 head=blackwater_helm,id=109979,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_versatility
 shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524
-trinket1=torias_unseeing_eye,id=110015,bonus_id=524
-chest=chestguard_of_burning_focus,id=109884,bonus_id=524
 back=threeclefthoof_cape,id=109917,bonus_id=524,enchant=gift_of_versatility
+chest=chestguard_of_burning_focus,id=109884,bonus_id=524
+wrists=leafmender_wraps,id=109871,bonus_id=524
 hands=blackwater_grips,id=109862,bonus_id=524
 waist=leafmender_girdle,id=109832,bonus_id=524
-wrists=leafmender_wraps,id=109871,bonus_id=524
 legs=bloodfeather_leggings,id=109810,bonus_id=524
 feet=crystalbinder_sandals,id=109789,bonus_id=524
 finger1=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant=gift_of_versatility
 finger2=signet_of_the_glorious_protector,id=109778,bonus_id=524,enchant=gift_of_versatility
+trinket1=torias_unseeing_eye,id=110015,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5352
 

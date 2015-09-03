@@ -288,16 +288,16 @@ actions.cop+=/devouring_plague,moving=1
 head=soul_priests_hood,id=115563,bonus_id=566
 neck=choker_of_bloody_flame,id=120077,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561,bonus_id=566
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-chest=soul_priests_raiment,id=115560,bonus_id=566
 back=runescribed_gronncloak,id=120078,bonus_id=566,enchant=gift_of_critical_strike
+chest=soul_priests_raiment,id=115560,bonus_id=566
+wrists=bracers_of_spattered_steel,id=113887,bonus_id=566
 hands=soul_priests_gloves,id=115562,bonus_id=566
 waist=deckhands_rope_belt,id=113967,bonus_id=566
-wrists=bracers_of_spattered_steel,id=113887,bonus_id=566
 legs=turret_mechanics_legwraps,id=113970,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
 finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_critical_strike
 finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
 

@@ -53,16 +53,16 @@ actions+=/lacerate
 head=oathclaw_helm,id=124261
 neck=world_enders_gorget,id=124222,enchant=gift_of_mastery
 shoulders=oathclaw_mantle,id=124272
-trinket1=anzus_cursed_plume,id=124241
-chest=oathclaw_vestment,id=124246
 back=void_lords_wizened_cloak,id=124147,enchant=gift_of_mastery
+chest=oathclaw_vestment,id=124246
+wrists=manacles_of_the_multitudes,id=124280
 hands=felfinger_runegloves,id=124254
 waist=waistwrap_of_banishment,id=124276
-wrists=manacles_of_the_multitudes,id=124280
 legs=oathclaw_leggings,id=124267
 feet=toxicologists_treated_boots,id=124250
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_mastery
 finger2=mannoroths_calcified_eye,id=124204,enchant=gift_of_mastery
+trinket1=anzus_cursed_plume,id=124241
 trinket2=blast_furnace_door,id=113893,bonus_id=566
 main_hand=xutenash_glaive_of_ruin,id=124378,enchant=mark_of_bleeding_hollow
 

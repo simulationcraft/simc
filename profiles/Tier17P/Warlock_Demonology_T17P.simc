@@ -125,16 +125,16 @@ actions.meta+=/cancel_metamorphosis
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=arcane_masters_chain,id=114477,bonus_id=488,enchant_id=5319
 shoulders=felflame_spaulders,id=109948,bonus_id=524
-trinket1=tovras_lightning_repository,id=110001,bonus_id=524
-chest=lightbinder_robes,id=109902,bonus_id=524
 back=purifiers_silken_cape,id=114484,bonus_id=488,enchant_id=5312
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
 hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
 waist=frosttouched_cord,id=109825,bonus_id=524
-wrists=frosttouched_wristwraps,id=109865,bonus_id=524
 legs=leggings_of_swirling_light,id=109806,bonus_id=524
 feet=lightbinder_treads,id=109796,bonus_id=524
 finger1=mindstalker_seal,id=114471,bonus_id=117,enchant_id=5326
 finger2=darkflame_loop,id=109766,bonus_id=524,enchant_id=5326
+trinket1=tovras_lightning_repository,id=110001,bonus_id=524
 trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant_id=5384
 

@@ -8876,8 +8876,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
     for (auto & slot : SLOT_OUT_ORDER)
     {
-      
-      item_t& item = items[ SLOT_OUT_ORDER[ slot ] ];
+      item_t& item = items[ slot ];
       if ( item.active() )
       {
         profile_str += item.slot_name();

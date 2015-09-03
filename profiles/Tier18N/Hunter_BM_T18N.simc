@@ -64,16 +64,16 @@ actions+=/cobra_shot
 head=hood_of_the_savage_hunt,id=124296
 neck=chain_of_lidless_eyes,id=124209,enchant_id=5319
 shoulders=pauldrons_of_the_savage_hunt,id=124307
-trinket1=talisman_of_the_master_tracker,id=124515
-chest=hauberk_of_the_savage_hunt,id=124284
 back=cloak_of_tangible_dread,id=124135,enchant_id=5311
+chest=hauberk_of_the_savage_hunt,id=124284
+wrists=bracers_of_fel_empowerment,id=124314
 hands=gloves_of_the_savage_hunt,id=124292
 waist=girdle_of_the_legion_general,id=124310
-wrists=bracers_of_fel_empowerment,id=124314
 legs=haughty_chain_legguards,id=124300
 feet=spiked_throatcrusher_boots,id=124287
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
 finger2=portal_key_signet,id=124189,enchant_id=5326
+trinket1=talisman_of_the_master_tracker,id=124515
 trinket2=mirror_of_the_blademaster,id=124224
 main_hand=cursed_demonbone_longbow,id=124361,enchant_id=5383
 

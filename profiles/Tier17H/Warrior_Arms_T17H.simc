@@ -101,16 +101,16 @@ actions.aoe+=/execute,if=buff.sudden_death.react
 head=blackhands_faceguard,id=115584,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=566
-trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=566
-chest=blackhands_chestguard,id=115582,bonus_id=566
 back=cloak_of_sanguine_terror,id=113972,bonus_id=566,enchant=gift_of_critical_strike
+chest=blackhands_chestguard,id=115582,bonus_id=566
+wrists=fleshmelter_bracers,id=113896,bonus_id=566
 hands=blackhands_handguards,id=115583,bonus_id=566
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566
-wrists=fleshmelter_bracers,id=113896,bonus_id=566
 legs=blackhands_legguards,id=115580,bonus_id=566
 feet=doomslag_greatboots,id=119341,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
+trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=566
 trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566
 main_hand=the_black_hand,id=113979,bonus_id=566,enchant=mark_of_the_thunderlord
 
