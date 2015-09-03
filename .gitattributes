@@ -1,0 +1,3 @@
+engine/dbc/*.inc linguist-vendored
+engine/dbc/specialization.hpp linguist-vendored
+dbc_extract/cache/* linguist-vendored
