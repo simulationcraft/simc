@@ -5,7 +5,7 @@ APP_NAME = SimulationCraft
 CONFIG(qt) {
   TARGET = SimulationCraft
 
-  QT += core gui network c++11
+  QT += core gui network
   
   lessThan( QT_MAJOR_VERSION, 5 ) {
     error( "SimulationCraft requires QT 5 or higher." )
@@ -50,7 +50,7 @@ CONFIG(console) {
   CONFIG   -= app_bundle
   CONFIG   -= qt
   TARGET = simc
-  CONFIG += static staticlib c++11
+  CONFIG += static staticlib
   OBJECTS_DIR = engine
 }
 
@@ -67,7 +67,7 @@ QTBINDIR=$$replace(QTBINDIR, //, /)
 RESOURCES += \
     qt/simcqt.qrc
 
-QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+QMAKE_CXXFLAGS_RELEASE += -DNDEBUG -std=c++0x
 QMAKE_CXXFLAGS += $$OPTS
 
 ! isEmpty( SC_DEFAULT_APIKEY ) {
