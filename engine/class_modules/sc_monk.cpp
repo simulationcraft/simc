@@ -3628,6 +3628,61 @@ struct stance_t: public monk_spell_t
   }
 };
 
+// Legacy of the Emperor Spell ===================================================
+
+struct legacy_of_the_emperor_t : public monk_spell_t
+{
+  legacy_of_the_emperor_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "legacy_of_the_emperor", player, player -> find_specialization_spell( "Legacy of the Emperor" ) )
+  {
+    parse_options( options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    ignore_false_positive = true;
+    background = sim -> overrides.str_agi_int != 0;
+  }
+
+  void execute()
+  {
+    monk_spell_t::execute();
+
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+
+    if ( !sim -> overrides.str_agi_int )
+      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 115921 ) -> duration() );
+  }
+};
+
+// Legacy of the White Tiger Spell ===================================================
+
+struct legacy_of_the_white_tiger_t : public monk_spell_t
+{
+  legacy_of_the_white_tiger_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "legacy_of_the_white_tiger", player, player -> find_specialization_spell( "Legacy of the White Tiger" ) )
+  {
+    parse_options( options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    ignore_false_positive = true;
+    background = ( sim -> overrides.str_agi_int != 0 && sim -> overrides.critical_strike != 0 );
+  }
+
+  void execute()
+  {
+    monk_spell_t::execute();
+
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+
+    if ( !sim -> overrides.str_agi_int )
+      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 116781 ) -> duration() );
+
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 116781 ) -> duration() );
+  }
+};
+
 // ==========================================================================
 // Tigereye Brew
 // ==========================================================================
@@ -5237,51 +5292,53 @@ action_t* monk_t::create_action( const std::string& name,
 {
   using namespace actions;
   // Melee Attacks
-  if ( name == "auto_attack" ) return new            auto_attack_t( this, options_str );
-  if ( name == "jab" ) return new                    jab_t( this, options_str );
-  if ( name == "expel_harm" ) return new             expel_harm_heal_t( *this, options_str );
-  if ( name == "tiger_palm" ) return new             tiger_palm_t( this, options_str );
-  if ( name == "blackout_kick" ) return new          blackout_kick_t( this, options_str );
-  if ( name == "spinning_crane_kick" ) return new    spinning_crane_kick_t( this, options_str );
-  if ( name == "fists_of_fury" ) return new          fists_of_fury_t( this, options_str );
-  if ( name == "rising_sun_kick" ) return new        rising_sun_kick_t( this, options_str );
-  if ( name == "stance" ) return new                 stance_t( this, options_str );
-  if ( name == "tigereye_brew" ) return new          tigereye_brew_t( this, options_str );
-  if ( name == "touch_of_karma" ) return new         touch_of_karma_t( this, options_str );
-  if ( name == "energizing_brew" ) return new        energizing_brew_t( this, options_str );
-  if ( name == "provoke" ) return new                provoke_t( this, options_str );
-  if ( name == "touch_of_death" ) return new         touch_of_death_t( this, options_str );
-  if ( name == "storm_earth_and_fire" ) return new   storm_earth_and_fire_t( this, options_str );
+  if (name == "legacy_of_the_emperor") return new       legacy_of_the_emperor_t( this, options_str );
+  if (name == "legacy_of_the_white_tiger") return new   legacy_of_the_white_tiger_t( this, options_str );
+  if (name == "auto_attack") return new                 auto_attack_t(this, options_str);
+  if ( name == "jab" ) return new                       jab_t( this, options_str );
+  if ( name == "expel_harm" ) return new                expel_harm_heal_t( *this, options_str );
+  if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
+  if ( name == "blackout_kick" ) return new             blackout_kick_t( this, options_str );
+  if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
+  if ( name == "fists_of_fury" ) return new             fists_of_fury_t( this, options_str );
+  if ( name == "rising_sun_kick" ) return new           rising_sun_kick_t( this, options_str );
+  if ( name == "stance" ) return new                    stance_t( this, options_str );
+  if ( name == "tigereye_brew" ) return new             tigereye_brew_t( this, options_str );
+  if ( name == "touch_of_karma" ) return new            touch_of_karma_t( this, options_str );
+  if ( name == "energizing_brew" ) return new           energizing_brew_t( this, options_str );
+  if ( name == "provoke" ) return new                   provoke_t( this, options_str );
+  if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
+  if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
   // Brewmaster
-  if ( name == "breath_of_fire" ) return new         breath_of_fire_t( *this, options_str );
-  if ( name == "keg_smash" ) return new              keg_smash_t( *this, options_str );
-  if ( name == "dizzying_haze" ) return new          dizzying_haze_t( *this, options_str );
-  if ( name == "guard" ) return new                  guard_t( *this, options_str );
-  if ( name == "fortifying_brew" ) return new        fortifying_brew_t( *this, options_str );
-  if ( name == "elusive_brew" ) return new           elusive_brew_t( *this, options_str );
-  if ( name == "purifying_brew" ) return new         purifying_brew_t( *this, options_str );
-  if ( name == "gift_of_the_ox" ) return new         gift_of_the_ox_t( *this, options_str );
+  if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
+  if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
+  if ( name == "dizzying_haze" ) return new             dizzying_haze_t( *this, options_str );
+  if ( name == "guard" ) return new                     guard_t( *this, options_str );
+  if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
+  if ( name == "elusive_brew" ) return new              elusive_brew_t( *this, options_str );
+  if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
+  if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   // Mistweaver
-  if ( name == "enveloping_mist" ) return new        enveloping_mist_t( *this, options_str );
-  if ( name == "mana_tea" ) return new               mana_tea_t( *this, options_str );
-  if ( name == "renewing_mist" ) return new          renewing_mist_t( *this, options_str );
-  if ( name == "soothing_mist" ) return new          soothing_mist_t( *this, options_str );
-  if ( name == "surging_mist" ) return new           surging_mist_t( *this, options_str );
-  if ( name == "crackling_jade_lightning" ) return new crackling_jade_lightning_t( *this, options_str );
+  if ( name == "enveloping_mist" ) return new           enveloping_mist_t( *this, options_str );
+  if ( name == "mana_tea" ) return new                  mana_tea_t( *this, options_str );
+  if ( name == "renewing_mist" ) return new             renewing_mist_t( *this, options_str );
+  if ( name == "soothing_mist" ) return new             soothing_mist_t( *this, options_str );
+  if ( name == "surging_mist" ) return new              surging_mist_t( *this, options_str );
+  if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   // Talents
-  if ( name == "chi_wave" ) return new               chi_wave_t( this, options_str );
-  if ( name == "zen_sphere" ) return new             zen_sphere_t( *this, options_str );
-  if ( name == "chi_burst" ) return new              chi_burst_t( this, options_str );
-  if ( name == "chi_sphere" ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
-  if ( name == "chi_brew" ) return new               chi_brew_t( this, options_str );
-  if ( name == "dampen_harm" ) return new            dampen_harm_t( *this, options_str );
-  if ( name == "diffuse_magic" ) return new          diffuse_magic_t( *this, options_str );
-  if ( name == "rushing_jade_wind" ) return new      rushing_jade_wind_t( this, options_str );
-  if ( name == "invoke_xuen" ) return new            xuen_spell_t( this, options_str );
-  if ( name == "chi_torpedo" ) return new            chi_torpedo_t( this, options_str );
-  if ( name == "hurricane_strike" ) return new       hurricane_strike_t( this, options_str );
-  if ( name == "chi_explosion" ) return new          chi_explosion_t( this, options_str );
-  if ( name == "serenity" ) return new               serenity_t( this, options_str );
+  if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
+  if ( name == "zen_sphere" ) return new                zen_sphere_t( *this, options_str );
+  if ( name == "chi_burst" ) return new                 chi_burst_t( this, options_str );
+  if ( name == "chi_sphere" ) return new                chi_sphere_t( this, options_str ); // For Power Strikes
+  if ( name == "chi_brew" ) return new                  chi_brew_t( this, options_str );
+  if ( name == "dampen_harm" ) return new               dampen_harm_t( *this, options_str );
+  if ( name == "diffuse_magic" ) return new             diffuse_magic_t( *this, options_str );
+  if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
+  if ( name == "invoke_xuen" ) return new               xuen_spell_t( this, options_str );
+  if ( name == "chi_torpedo" ) return new               chi_torpedo_t( this, options_str );
+  if ( name == "hurricane_strike" ) return new          hurricane_strike_t( this, options_str );
+  if ( name == "chi_explosion" ) return new             chi_explosion_t( this, options_str );
+  if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
 
