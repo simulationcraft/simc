@@ -20,7 +20,7 @@
 // Forward declaration
 // ==========================================================================
 
-struct dbc_t;
+class dbc_t;
 struct player_t;
 struct item_t;
 
