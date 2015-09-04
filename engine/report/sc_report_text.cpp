@@ -1063,7 +1063,7 @@ void print_text_player( FILE* file, player_t* p )
 
 }
 
-void print_text_report(FILE* file, sim_t* sim )
+void print_text_report(FILE* file, sim_t* sim, bool detail )
 {
 #if SC_BETA
   util::fprintf( file, "\n" );
@@ -1190,7 +1190,7 @@ void print_text( sim_t* sim, bool detail )
   try
   {
     Timer t("text report");
-    print_text_report( report_f, sim );
+    print_text_report( file, sim, detail );
   } catch ( const std::exception& e )
   {
     sim -> errorf( "Failed to print text output! %s", e.what() );
