@@ -356,6 +356,7 @@ public:
     const spell_data_t* healing_sphere;
     const spell_data_t* leather_specialization;
     const spell_data_t* legacy_of_the_white_tiger;
+    const spell_data_t* legacy_of_the_emperor;
     const spell_data_t* rising_sun_kick;
     const spell_data_t* rising_sun_kick_debuff;
     const spell_data_t* spinning_crane_kick;
@@ -3633,7 +3634,7 @@ struct stance_t: public monk_spell_t
 struct legacy_of_the_emperor_t : public monk_spell_t
 {
   legacy_of_the_emperor_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "legacy_of_the_emperor", player, player -> find_specialization_spell( "Legacy of the Emperor" ) )
+    monk_spell_t( "legacy_of_the_emperor", player, player -> spec.legacy_of_the_emperor )
   {
     parse_options( options_str );
 
@@ -3647,10 +3648,8 @@ struct legacy_of_the_emperor_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-
     if ( !sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 115921 ) -> duration() );
+      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spec.legacy_of_the_emperor -> duration() );
   }
 };
 
@@ -3659,7 +3658,7 @@ struct legacy_of_the_emperor_t : public monk_spell_t
 struct legacy_of_the_white_tiger_t : public monk_spell_t
 {
   legacy_of_the_white_tiger_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "legacy_of_the_white_tiger", player, player -> find_specialization_spell( "Legacy of the White Tiger" ) )
+    monk_spell_t( "legacy_of_the_white_tiger", player, player -> spec.legacy_of_the_white_tiger )
   {
     parse_options( options_str );
 
@@ -3673,13 +3672,11 @@ struct legacy_of_the_white_tiger_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-
     if ( !sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 116781 ) -> duration() );
+      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spec.legacy_of_the_white_tiger -> duration() );
 
     if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 116781 ) -> duration() );
+      sim -> auras.critical_strike -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spec.legacy_of_the_white_tiger -> duration() );
   }
 };
 
