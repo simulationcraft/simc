@@ -400,7 +400,6 @@ public:
     const spell_data_t* focus_and_harmony; // To-do: Implement
     const spell_data_t* internal_medicine;
     const spell_data_t* jade_mists;
-    const spell_data_t* legacy_of_the_emperor;
     const spell_data_t* life_cocoon;
     const spell_data_t* mana_meditation;
     const spell_data_t* mana_tea;
