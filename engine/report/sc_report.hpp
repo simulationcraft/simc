@@ -15,6 +15,33 @@ struct player_processed_report_information_t;
 struct sim_report_information_t;
 struct spell_data_expr_t;
 
+#include <chrono>
+/**
+ * Automatic Timer reporting the time between construction and desctruction of the object.
+ */
+struct Timer
+{
+private:
+  std::string title;
+  std::ostream& out;
+  std::chrono::time_point<std::chrono::high_resolution_clock> start;
+public:
+  Timer(std::string title, std::ostream& out = std::cout) :
+      title(std::move(title)),
+      out(out),
+      start(std::chrono::high_resolution_clock::now())
+  {
+
+  }
+  ~Timer()
+  {
+    auto end = std::chrono::high_resolution_clock::now();
+    auto diff = end - start;
+    using float_seconds = std::chrono::duration<double>;
+    out << title << " took " << std::chrono::duration_cast<float_seconds>(diff).count() << "seconds." << std::endl;
+  }
+};
+
 #define MAX_PLAYERS_PER_CHART 20
 
 #define LOOTRANK_ENABLED 0 // The website works, but the link we send out is not usable. If anyone ever fixes it, just set this to 1.

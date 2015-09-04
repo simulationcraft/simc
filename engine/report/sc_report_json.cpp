@@ -113,7 +113,8 @@ js::sc_js_t to_json( const spell_data_t& sd )
   node.set( "cooldown", to_json( sd.cooldown() ) );
   node.set( "charges", sd.charges() );
   node.set( "charge_cooldown", to_json( sd.charge_cooldown() ) );
-  node.set( "desc", sd.desc() );
+  if ( sd.desc() )
+    node.set( "desc", sd.desc() );
   if ( sd.desc_vars() )
     node.set( "desc_vars", sd.desc_vars() );
   node.set( "duration", to_json( sd.duration() ) );
@@ -203,7 +204,7 @@ js::sc_js_t to_json( result_e i, const stats_t::stats_results_t& sr )
   node.set( "pct", sr.pct );
   return node;
 }
-/*
+
 js::sc_js_t to_json( const benefit_t& b )
 {
   js::sc_js_t node;
@@ -211,7 +212,7 @@ js::sc_js_t to_json( const benefit_t& b )
   node.set( "ration", to_json( b.ratio ) );
   return node;
 }
-*/
+
 js::sc_js_t to_json( const proc_t& p )
 {
   js::sc_js_t node;
@@ -419,12 +420,12 @@ js::sc_js_t to_json( const player_collected_data_t& cd )
     rnode.set( "resource", util::resource_type_string( r ) );
     rnode.set( "data", to_json( cd.resource_gained[r] ) );
     node.add( "resource_gained", rnode );
+    node.add( "combat_end_resource", to_json( cd.combat_end_resource[r] ) );
   }
   for ( const auto& rtl : cd.resource_timelines )
   {
     node.add( "resource_timelines", to_json( rtl ) );
   }
-  // std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
   for ( const auto& stl : cd.stat_timelines )
   {
     node.add( "stat_timelines", to_json( stl ) );
@@ -579,10 +580,22 @@ js::sc_js_t to_json( const raid_event_t& re )
   return node;
 }
 
-js::sc_js_t to_json( const sim_t::overrides_t& /* o */ )
+js::sc_js_t to_json( const sim_t::overrides_t& o )
 {
   js::sc_js_t node;
-  // TODO
+  node.set( "attack_power_multiplier", o.attack_power_multiplier );
+  node.set( "critical_strike", o.critical_strike );
+  node.set( "mastery", o.mastery );
+  node.set( "haste", o.haste );
+  node.set( "multistrike", o.multistrike );
+  node.set( "spell_power_multiplier", o.spell_power_multiplier );
+  node.set( "stamina", o.stamina );
+  node.set( "str_agi_int", o.str_agi_int );
+  node.set( "versatility", o.versatility );
+  node.set( "mortal_wounds", o.mortal_wounds );
+  node.set( "bleeding", o.bleeding );
+  node.set( "bloodlust", o.bloodlust );
+  node.set( "target_health", o.target_health );
   return node;
 }
 
@@ -749,8 +762,8 @@ void print_json_raw( FILE* o, const sim_t& sim )
   rapidjson::FileWriteStream b( o, buffer.data(), buffer.size() );
   rapidjson::Writer<rapidjson::FileWriteStream> writer( b );
   root.js_.Accept( writer );
-}
-*/
+}*/
+
 void print_json_pretty( FILE* o, const sim_t& sim )
 {
   js::sc_js_t root = get_root( sim );
@@ -787,7 +800,6 @@ void print_json( sim_t& sim )
 {
   if ( sim.json_file_str.empty() )
     return;
-
 // Setup file stream and open file
   io::cfile s( sim.json_file_str, "w" );
   if ( !s )
@@ -799,6 +811,7 @@ void print_json( sim_t& sim )
 // Print JSON report
   try
   {
+    Timer t("JSON report");
     print_json_pretty( s, sim );
   } catch ( const std::exception& e )
   {

@@ -1063,22 +1063,8 @@ void print_text_player( FILE* file, player_t* p )
 
 }
 
-} // UNNAMED NAMESPACE ====================================================
-
-
-namespace report {
-
-void print_text( sim_t* sim, bool detail )
+void print_text_report(FILE* file, sim_t* sim )
 {
-  std::flush( *sim -> out_std.get_stream() );
-  FILE* file = stdout;
-  io::cfile report_f( sim -> output_file_str, "a" );
-  if ( report_f )
-    file = report_f;
-
-
-  if ( sim -> simulation_length.mean() == 0 ) return;
-
 #if SC_BETA
   util::fprintf( file, "\n" );
   for ( size_t i = 0; i < sizeof_array( beta_warnings ); ++i )
@@ -1177,6 +1163,39 @@ void print_text( sim_t* sim, bool detail )
   }
 
   util::fprintf( file, "\n" );
+}
+} // UNNAMED NAMESPACE ====================================================
+
+
+namespace report {
+
+void print_text( sim_t* sim, bool detail )
+{
+  std::flush( *sim -> out_std.get_stream() );
+  FILE* file = stdout;
+  io::cfile report_f( sim -> output_file_str, "a" );
+  if ( !report_f )
+  {
+    sim -> errorf( "Failed to open text output file '%s'.\nUsing stdout.", sim -> output_file_str.c_str() );
+  }
+  else
+  {
+    file = report_f;
+  }
+
+
+  if ( sim -> simulation_length.mean() == 0 )
+    return;
+
+  try
+  {
+    Timer t("text report");
+    print_text_report( report_f, sim );
+  } catch ( const std::exception& e )
+  {
+    sim -> errorf( "Failed to print text output! %s", e.what() );
+  }
+
 }
 
 } // END report NAMESPACE

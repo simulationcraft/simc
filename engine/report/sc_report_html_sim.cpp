@@ -1741,6 +1741,8 @@ void print_html( sim_t* sim )
 {
   if ( sim -> html_file_str.empty() ) return;
 
+  Timer t("html report");
+
   // Setup file stream and open file
   report::sc_html_stream s;
   s.open( sim -> html_file_str );
