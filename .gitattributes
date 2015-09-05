@@ -1,8 +1,8 @@
-engine/dbc/*.inc linguist-vendored
-engine/dbc/specialization.hpp linguist-vendored
+engine/dbc/generated/* linguist-vendored
 dbc_extract/cache/* linguist-vendored
 vs/msinttypes/* linguist-vendored
 engine/util/rapidjson/* linguist-vendored
 engine/util/rapidxml/* linguist-vendored
-engine/util/utf8* linguist-vendored
+engine/util/utf8.h linguist-vendored
+engine/util/utf8/* linguist-vendored
 locale/*.qm linguist-vendored
