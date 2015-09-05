@@ -2026,8 +2026,17 @@ struct arcane_blast_t : public mage_spell_t
   {
     timespan_t t = mage_spell_t::gcd();
 
+    if ( p() -> perks.enhanced_arcane_blast -> ok() )
+    {
+      t *= ( 1 - p() -> buffs.arcane_charge -> stack() *
+                 p() -> perks.enhanced_arcane_blast -> effectN( 1 ).percent());
+      t = std::max( timespan_t::from_seconds( 1.0 ), t );
+    }
+
     if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
     {
+      // Hidden GCD cap on ToSW
+      t = std::max( timespan_t::from_seconds( 1.2 ), t );
       t *= 1.0 - wild_arcanist_effect;
     }
 
