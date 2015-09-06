@@ -6934,20 +6934,36 @@ inline void dot_tick_event_t::execute()
     return;
 
   assert ( dot -> ticking );
-  expr_t* expr = dot -> current_action -> interrupt_if_expr;
-  if ( ( dot -> current_action -> channeled &&
-         dot -> current_action -> player -> gcd_ready <= sim().current_time() &&
-         ( dot -> current_action -> interrupt || ( expr && expr -> success() ) ) &&
-         dot -> is_higher_priority_action_available() ) )
+  if ( dot->current_action->channeled )
   {
-    // cancel dot
-    dot -> last_tick();
+    bool interrupt = dot->current_action->interrupt;
+    if ( !interrupt )
+    {
+      expr_t* expr = dot->current_action->interrupt_if_expr;
+      if ( expr )
+      {
+        interrupt = expr->success();
+        if ( sim().debug )
+          sim().out_debug.printf("Dot interrupt expression check=%d", interrupt);
+      }
+    }
+    if ( interrupt )
+    {
+      bool gcd_ready = dot->current_action->player->gcd_ready <= sim().current_time();
+      bool action_available = dot->is_higher_priority_action_available();
+      if ( sim().debug )
+        sim().out_debug.printf("Dot interrupt check: gcd_ready=%d action_available=%d.", gcd_ready, action_available);
+      if ( gcd_ready && action_available )
+      {
+        // cancel dot
+        dot->last_tick();
+        return;
+      }
+    }
   }
-  else
-  {
-    // continue ticking
-    dot -> schedule_tick();
-  }
+
+  // continue ticking
+  dot->schedule_tick();
 }
 
 inline dot_end_event_t::dot_end_event_t( dot_t* d, timespan_t time_to_end ) :

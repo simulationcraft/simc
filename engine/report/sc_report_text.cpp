@@ -1172,15 +1172,19 @@ namespace report {
 void print_text( sim_t* sim, bool detail )
 {
   std::flush( *sim -> out_std.get_stream() );
-  FILE* file = stdout;
-  io::cfile report_f( sim -> output_file_str, "a" );
-  if ( !report_f )
+  FILE* text_out = stdout;
+  io::cfile file;
+  if ( !sim->output_file_str.empty() )
   {
-    sim -> errorf( "Failed to open text output file '%s'.\nUsing stdout.", sim -> output_file_str.c_str() );
+    file = io::fopen( sim->output_file_str, "a" );
+    if ( !file )
+    {
+      sim->errorf( "Failed to open text output file '%s'.\nUsing stdout.", sim->output_file_str.c_str() );
+    }
   }
-  else
+  if ( file )
   {
-    file = report_f;
+    text_out = file;
   }
 
 
@@ -1190,7 +1194,7 @@ void print_text( sim_t* sim, bool detail )
   try
   {
     Timer t("text report");
-    print_text_report( file, sim, detail );
+    print_text_report( text_out, sim, detail );
   } catch ( const std::exception& e )
   {
     sim -> errorf( "Failed to print text output! %s", e.what() );
