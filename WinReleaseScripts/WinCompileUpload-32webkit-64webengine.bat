@@ -87,7 +87,7 @@ robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Core.dll
 robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt54.dll icuin54.dll icuuc54.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll Qt5WebChannel.dll Qt5Positioning.dll
 robocopy winreleasescripts\ %install%\ qt.conf
-robocopy %qt_dir%msvc2013_64\ %install%\ icudtl.dat
+robocopy %qt_dir%msvc2013_64\ %install%\ icudtl.dat qtwebengine_resources.pak qtwebengine_resources_100p.pak qtwebengine_resources_200p.pak
 robocopy %qt_dir%msvc2013_64\plugins\platforms %install%\platforms\ qwindows.dll
 robocopy %qt_dir%msvc2013_64\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
