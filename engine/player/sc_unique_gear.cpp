@@ -4287,6 +4287,32 @@ void unique_gear::register_special_effects()
 
 void unique_gear::register_hotfixes()
 {
+  hotfix::register_effect( "General", "2015-09-01",
+                           "Touch of the Grave now scales its damage based on 50% of the "
+                           "character's Attack Power or Spell Power, whichever is greater.",
+                           162610 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0 )
+    .verification_value( 8 );
+
+  hotfix::register_effect( "General", "2015-09-01-2",
+                           "Touch of the Grave now scales its damage based on 50% of the "
+                           "character's Attack Power or Spell Power, whichever is greater.",
+                           162610, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "ap_coefficient" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0.5 )
+    .verification_value( 0 );
+
+  hotfix::register_effect( "General", "2015-09-01-3",
+                           "Touch of the Grave now scales its damage based on 50% of the "
+                           "character's Attack Power or Spell Power, whichever is greater.",
+                           162610, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "sp_coefficient" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0.5 )
+    .verification_value( 0 );
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )

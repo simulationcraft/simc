@@ -1195,6 +1195,36 @@ void player_t::init_weapon( weapon_t& w )
 
 // player_t::init_special_effects ===============================================
 
+struct touch_of_the_grave_spell_t : public spell_t
+{
+  touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
+    spell_t( "touch_of_the_grave", p, spell )
+  {
+    background = true;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const
+  {
+    if ( composite_attack_power() >= composite_spell_power() )
+    {
+      return attack_power_mod.direct;
+    }
+
+    return 0;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const
+  {
+    if ( composite_spell_power() > composite_attack_power() )
+    {
+      return spell_power_mod.direct;
+    }
+
+    return 0;
+  }
+};
+
+
 void player_t::init_special_effects()
 {
   if ( is_pet() || is_enemy() )
@@ -1210,6 +1240,7 @@ void player_t::init_special_effects()
     special_effect_t* effect = new special_effect_t( this );
     effect -> type = SPECIAL_EFFECT_EQUIP;
     effect -> spell_id = totg -> id();
+    // effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
     special_effects.push_back( effect );
   }
 
