@@ -42,9 +42,9 @@ public:
   std::string id_str_;
   std::string toggle_id_str_;
   size_t height_, width_;
-  const sim_t* sim_;
+  const sim_t& sim_;
 
-  chart_t( const std::string& id_str, const sim_t* sim );
+  chart_t( const std::string& id_str, const sim_t& sim );
   virtual ~chart_t() { }
 
   void set_toggle_id( const std::string& tid ) { toggle_id_str_ = tid; }
@@ -79,7 +79,7 @@ struct time_series_t : public chart_t
 private:
   time_series_t( const time_series_t& );
 public:
-  time_series_t( const std::string& id_str, const sim_t* sim );
+  time_series_t( const std::string& id_str, const sim_t& sim );
 
   time_series_t& set_mean( double value_, const std::string& color = std::string() );
   time_series_t& set_max( double value_, const std::string& color = std::string() );
@@ -87,26 +87,26 @@ public:
 
 struct bar_chart_t : public chart_t
 {
-  bar_chart_t( const std::string& id_str, const sim_t* sim );
+  bar_chart_t( const std::string& id_str, const sim_t& sim );
 };
 
 struct pie_chart_t : public chart_t
 {
-  pie_chart_t( const std::string& id_str, const sim_t* sim );
+  pie_chart_t( const std::string& id_str, const sim_t& sim );
 };
 
 struct histogram_chart_t : public chart_t
 {
-  histogram_chart_t( const std::string& id_str, const sim_t* sim );
+  histogram_chart_t( const std::string& id_str, const sim_t& sim );
 };
 
 // Custom data formatter, we need to output doubles in a different way to save some room.
 template<typename Stream>
 struct sc_json_writer_t : public rapidjson::Writer<Stream>
 {
-  const sim_t* sim;
+  const sim_t& sim;
 
-  sc_json_writer_t( Stream& stream, const sim_t* s );
+  sc_json_writer_t( Stream& stream, const sim_t& s );
   bool Double( double d );
 };
 

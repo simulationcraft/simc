@@ -550,7 +550,7 @@ void report::print_suite( sim_t* sim )
 
   report::print_text( sim, sim -> report_details != 0 );
 
-  report::print_html( sim );
+  report::print_html( *sim );
   report::print_xml( sim );
   report::print_json( *sim );
   report::print_profiles( sim );
@@ -1075,27 +1075,27 @@ void report::generate_player_charts( player_t& p, player_processed_report_inform
   ri.charts_generated = true;
 }
 
-void report::generate_sim_report_information( sim_t* s , sim_report_information_t& ri )
+void report::generate_sim_report_information( const sim_t& sim , sim_report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
 
-  if ( s -> enable_highcharts )
+  if ( sim.enable_highcharts )
     return;
 
-  ri.downtime_chart = chart::raid_downtime( s -> players_by_name );
+  ri.downtime_chart = chart::raid_downtime( sim.players_by_name );
   
-  chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, "dps" );
-  chart::raid_aps     ( ri.priority_dps_charts, s, s -> players_by_priority_dps, "prioritydps" );
-  chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps_plus_aps, "hps" );
-  chart::raid_aps     ( ri.dtps_charts, s, s -> players_by_dtps, "dtps" );
-  chart::raid_aps     ( ri.tmi_charts, s, s -> players_by_tmi, "tmi" );
-  chart::raid_aps     ( ri.apm_charts, s, s -> players_by_apm, "apm" );
-  chart::raid_dpet    ( ri.dpet_charts, s );
-  ri.timeline_chart = chart::distribution( s -> simulation_length.distribution, "Timeline",
-                                           s -> simulation_length.mean(),
-                                           s -> simulation_length.min(),
-                                           s -> simulation_length.max() );
+  chart::raid_aps     ( ri.dps_charts, sim, sim.players_by_dps, "dps" );
+  chart::raid_aps     ( ri.priority_dps_charts, sim, sim.players_by_priority_dps, "prioritydps" );
+  chart::raid_aps     ( ri.hps_charts, sim, sim.players_by_hps_plus_aps, "hps" );
+  chart::raid_aps     ( ri.dtps_charts, sim, sim.players_by_dtps, "dtps" );
+  chart::raid_aps     ( ri.tmi_charts, sim, sim.players_by_tmi, "tmi" );
+  chart::raid_aps     ( ri.apm_charts, sim, sim.players_by_apm, "apm" );
+  chart::raid_dpet    ( ri.dpet_charts, sim );
+  ri.timeline_chart = chart::distribution( sim.simulation_length.distribution, "Timeline",
+                                           sim.simulation_length.mean(),
+                                           sim.simulation_length.min(),
+                                           sim.simulation_length.max() );
 
   ri.charts_generated = true;
 }

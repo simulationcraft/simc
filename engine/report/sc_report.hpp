@@ -50,10 +50,10 @@ namespace chart
 {
 enum chart_e { HORIZONTAL_BAR_STACKED, HORIZONTAL_BAR, VERTICAL_BAR, PIE, LINE, XY_LINE };
 
-std::string raid_downtime ( std::vector<player_t*> &players_by_name );
-size_t raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>&, std::string type );
-size_t raid_dpet( std::vector<std::string>& images, sim_t* );
-size_t raid_gear( std::vector<std::string>& images, sim_t* );
+std::string raid_downtime ( const std::vector<player_t*> &players_by_name );
+size_t raid_aps ( std::vector<std::string>& images, const sim_t&, const std::vector<player_t*>&, std::string type );
+size_t raid_dpet( std::vector<std::string>& images, const sim_t& );
+size_t raid_gear( std::vector<std::string>& images, const sim_t& );
 
 std::string action_dpet        ( const player_t& );
 std::string aps_portion        ( const player_t& );
@@ -74,9 +74,9 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights_pawn      ( const player_
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_askmrrobot( const player_t& );
 
 // Highcharts stuff
-bool generate_raid_gear( highchart::bar_chart_t&, sim_t* );
-bool generate_raid_downtime( highchart::bar_chart_t&, sim_t* );
-bool generate_raid_aps( highchart::bar_chart_t&, sim_t*, const std::string& type );
+bool generate_raid_gear( highchart::bar_chart_t&, const sim_t& );
+bool generate_raid_downtime( highchart::bar_chart_t&, const sim_t& );
+bool generate_raid_aps( highchart::bar_chart_t&, const sim_t&, const std::string& type );
 bool generate_distribution( highchart::histogram_chart_t&, const player_t* p,
                                  const std::vector<size_t>& dist_data,
                                  const std::string& distribution_name,
@@ -86,7 +86,7 @@ bool generate_spent_time( highchart::pie_chart_t&, const player_t& );
 bool generate_stats_sources( highchart::pie_chart_t&, const player_t&, const std::string title, const std::vector<stats_t*>& stats_list );
 bool generate_damage_stats_sources( highchart::pie_chart_t&, const player_t& );
 bool generate_heal_stats_sources( highchart::pie_chart_t&, const player_t& );
-bool generate_raid_dpet( highchart::bar_chart_t&, sim_t* );
+bool generate_raid_dpet( highchart::bar_chart_t&, const sim_t& );
 bool generate_action_dpet( highchart::bar_chart_t&, const player_t& );
 bool generate_apet( highchart::bar_chart_t&, const std::vector<stats_t*>& );
 highchart::time_series_t& generate_stats_timeline( highchart::time_series_t&, const stats_t& );
@@ -188,7 +188,7 @@ typedef io::ofstream sc_html_stream;
 
 void generate_player_charts         ( player_t&, player_processed_report_information_t& );
 void generate_player_buff_lists     ( player_t&, player_processed_report_information_t& );
-void generate_sim_report_information( sim_t*, sim_report_information_t& );
+void generate_sim_report_information( const sim_t&, sim_report_information_t& );
 
 void print_html_sample_data ( report::sc_html_stream&, const player_t&, const extended_sample_data_t&, const std::string& name, int& td_counter, int columns = 1 );
 
@@ -198,7 +198,7 @@ void print_spell_query ( std::ostream& out, const sim_t& sim, const spell_data_e
 void print_spell_query ( xml_node_t* out, FILE* file, const sim_t& sim, const spell_data_expr_t&, unsigned level );
 void print_profiles    ( sim_t* );
 void print_text        ( sim_t*, bool detail );
-void print_html        ( sim_t* );
+void print_html        ( sim_t& );
 void print_json        ( sim_t& );
 void print_html_player ( report::sc_html_stream&, player_t&, int );
 void print_xml         ( sim_t* );

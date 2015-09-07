@@ -376,7 +376,7 @@ public:
 // Chart
 // ==========================================================================
 
-std::string chart::raid_downtime( std::vector<player_t*>& players_by_name )
+std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name )
 {
   // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
 
@@ -478,8 +478,8 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name )
 // chart::raid_dps ==========================================================
 
 size_t chart::raid_aps( std::vector<std::string>& images,
-                        sim_t* sim,
-                        std::vector<player_t*>& players_by_aps,
+                        const sim_t& sim,
+                        const std::vector<player_t*>& players_by_aps,
                         std::string type )
 {
   size_t num_players = players_by_aps.size();
@@ -586,7 +586,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      std::string formatted_name = util::google_image_chart_encode( p -> name_str + ( sim -> ilevel_raid_report ? ( "_" + util::to_string( util::get_avg_itemlvl( *p ), 1 ) ) : "" ) );
+      std::string formatted_name = util::google_image_chart_encode( p -> name_str + ( sim.ilevel_raid_report ? ( "_" + util::to_string( util::get_avg_itemlvl( *p ), 1 ) ) : "" ) );
       util::urlencode( formatted_name );
       double player_mean = 0.0;
       if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
@@ -614,20 +614,16 @@ size_t chart::raid_aps( std::vector<std::string>& images,
 // chart::raid_dpet =========================================================
 
 size_t chart::raid_dpet( std::vector<std::string>& images,
-                         sim_t* sim )
+                         const sim_t& sim )
 {
-  size_t num_players = sim -> players_by_dps.size();
-
-  if ( num_players == 0 )
+  if ( sim.players_by_dps.empty() )
     return 0;
 
   std::vector<stats_t*> stats_list;
 
 
-  for ( size_t i = 0; i < num_players; i++ )
+  for ( const auto& p : sim.players_by_dps )
   {
-    player_t* p = sim -> players_by_dps[ i ];
-
     // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
     range::remove_copy_if( p -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
   }
@@ -2245,15 +2241,14 @@ std::string chart::dps_error( player_t& p )
   return chart::normal_distribution( p.collected_data.dps.mean(), p.collected_data.dps.mean_std_dev, p.sim -> confidence, p.sim -> confidence_estimator );
 }
 
-bool chart::generate_raid_downtime( highchart::bar_chart_t& bc, sim_t* sim )
+bool chart::generate_raid_downtime( highchart::bar_chart_t& bc, const sim_t& sim )
 {
   std::vector<const player_t*> players;
-  for ( size_t i = 0; i < sim -> players_by_name.size(); ++i )
+  for ( const auto& player : sim.players_by_name )
   {
-    const player_t* p = sim -> players_by_name[ i ];
-    if ( ( p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() ) > 0.01 )
+    if ( ( player -> collected_data.waiting_time.mean() / player -> collected_data.fight_length.mean() ) > 0.01 )
     {
-      players.push_back( p );
+      players.push_back( player );
     }
   }
 
@@ -2287,9 +2282,9 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc, sim_t* sim )
   return true;
 }
 
-bool chart::generate_raid_gear( highchart::bar_chart_t& bc, sim_t* sim )
+bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
 {
-  if ( sim -> players_by_name.size() == 0 )
+  if ( sim.players_by_name.empty() )
   {
     return false;
   }
@@ -2299,19 +2294,17 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, sim_t* sim )
   size_t n_stats = 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    data_points[ i ].reserve( sim -> players_by_name.size() + 1 );
-    for ( size_t j = 0; j < sim -> players_by_name.size(); j++ )
+    data_points[ i ].reserve( sim.players_by_name.size() + 1 );
+    for ( const auto& player: sim.players_by_name )
     {
-      player_t* p = sim -> players_by_name[ j ];
-
-      if ( p -> gear.get_stat( i ) + p -> enchant.get_stat( i ) > 0 )
+      if ( player -> gear.get_stat( i ) + player -> enchant.get_stat( i ) > 0 )
       {
         has_stat[ i ] = true;
       }
 
-      data_points[ i ].push_back( ( p -> gear.   get_stat( i ) +
-                                    p -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i ) );
-      bc.add( "xAxis.categories", report::decorate_html_string( p -> name_str, color::class_color( p -> type ) ) );
+      data_points[ i ].push_back( ( player -> gear.   get_stat( i ) +
+                                    player -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i ) );
+      bc.add( "xAxis.categories", report::decorate_html_string( player -> name_str, color::class_color( player -> type ) ) );
     }
 
     if ( has_stat[ i ] )
@@ -2339,15 +2332,15 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, sim_t* sim )
 
     std::string series_str = "series." + util::to_string( series_idx );
     bc.add( series_str + ".name", util::stat_type_abbrev( i ) );
-    for ( size_t j = 0; j < data_points[ i ].size(); j++ )
+    for ( const auto& data_point : data_points[ i ] )
     {
-      bc.add( series_str + ".data", data_points[ i ][ j ] );
+      bc.add( series_str + ".data", data_point );
     }
 
     series_idx++;
   }
 
-  bc.height_ = 95 + sim -> players_by_name.size() * 24 + 55;
+  bc.height_ = 95 + sim.players_by_name.size() * 24 + 55;
 
   bc.set_title( "Raid Gear" );
   bc.set_yaxis_title( "Cumulative stat amount" );
@@ -2781,53 +2774,53 @@ static double compute_player_burst_max( const sc_timeline_t& container )
 }
 
 static metric_e populate_player_list( const std::string& type,
-                                  sim_t* sim,
+                                  const sim_t& sim,
                                   std::vector<const player_t*>& pl,
                                   std::string& name )
 {
-  std::vector<player_t*>* source_list = nullptr;
+  const std::vector<player_t*>* source_list = nullptr;
   metric_e m = METRIC_NONE;
 
   if ( util::str_compare_ci( type, "dps" ) )
   {
     name = "Damage per Second";
-    source_list = &sim -> players_by_dps;
+    source_list = &sim.players_by_dps;
     m = METRIC_DPS;
   }
   else  if ( util::str_compare_ci( type, "prioritydps" ) )
   {
     name = "Priority Target/Boss Damage ";
-    source_list = &sim -> players_by_priority_dps;
+    source_list = &sim.players_by_priority_dps;
     m = METRIC_PDPS;
   }
   else if ( util::str_compare_ci( type, "hps" ) )
   {
     name = "Heal & Absorb per Second";
-    source_list = &sim -> players_by_hps;
+    source_list = &sim.players_by_hps;
     m = METRIC_HPS;
   }
   else if ( util::str_compare_ci( type, "dtps" ) )
   {
     name = "Damage Taken per Second";
-    source_list = &sim -> players_by_dtps;
+    source_list = &sim.players_by_dtps;
     m = METRIC_DTPS;
   }
   else if ( util::str_compare_ci( type, "tmi" ) )
   {
     name = "Theck-Meloree Index";
-    source_list = &sim -> players_by_tmi;
+    source_list = &sim.players_by_tmi;
     m = METRIC_TMI;
   }
   else if ( util::str_compare_ci( type, "apm" ) )
   {
     name = "Actions Per Minute";
-    source_list = &sim -> players_by_apm;
+    source_list = &sim.players_by_apm;
     m = METRIC_APM;
   }
   else if ( util::str_compare_ci( type, "variance" ) )
   {
     name = "DPS Variance Percentage";
-    source_list = &sim -> players_by_variance;
+    source_list = &sim.players_by_variance;
     m = METRIC_VARIANCE;
   }
 
@@ -3085,7 +3078,7 @@ static std::string get_metric_value_name( metric_value_e val )
 }
 
 bool chart::generate_raid_aps( highchart::bar_chart_t& bc,
-                                                sim_t* s,
+                                                const sim_t& s,
                                     const std::string& type )
 {
   // Prepare list, based on the selected metric
@@ -3164,7 +3157,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc,
 
       if ( vm == VALUE_MEAN )
       {
-        std::vector<double> boxplot_data = get_data_summary( p -> collected_data, chart_metric, s -> boxplot_percentile );
+        std::vector<double> boxplot_data = get_data_summary( p -> collected_data, chart_metric, s.boxplot_percentile );
         if ( boxplot_data[ 2 ] != 0 && boxplot_data[ 0 ] != boxplot_data[ 2 ] )
         {
           candlebars = true;
@@ -3226,7 +3219,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc,
     n_chars++;
   }
 
-  if ( s -> output_relative_difference && has_diff )
+  if ( s.output_relative_difference && has_diff )
   {
     n_chars += 5;
   }
@@ -3313,7 +3306,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc,
 
   // If relative difference is used, print out a absolutevalue (relative difference%) label
   std::string formatter = "function() {";
-  if ( s -> output_relative_difference )
+  if ( s.output_relative_difference )
   {
     formatter += "var fmt = '<span style=\"color:' + this.series.chart.options.__colors[this.point.name] + ';\">';";
     formatter += "if (this.point.reldiff === undefined || this.point.reldiff === 0) { fmt += Highcharts.numberFormat(this.point.y, " + util::to_string( precision ) + "); }";
@@ -3347,7 +3340,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc,
   return true;
 }
 
-bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, sim_t* s )
+bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
 {
   bc.set_title( "Raid Damage per Execute Time" );
   bc.set( "plotOptions.bar.pointWidth", 30 );
@@ -3356,12 +3349,10 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, sim_t* s )
 
   // Prepare stats list
   std::vector<stats_t*> stats_list;
-  for ( size_t i = 0; i < s -> players_by_dps.size(); i++ )
+  for ( const auto& player : s.players_by_dps )
   {
-    player_t* p = s -> players_by_dps[ i ];
-
     // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
-    range::remove_copy_if( p -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
+    range::remove_copy_if( player -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *player ) );
   }
   range::sort( stats_list, compare_apet() );
 

@@ -119,7 +119,7 @@ std::string highchart::build_id( const buff_t& buff, const std::string& suffix )
 }
 
 // Init default (shared) json structure
-chart_t::chart_t( const std::string& id_str, const sim_t* sim ) :
+chart_t::chart_t( const std::string& id_str, const sim_t& sim ) :
   sc_js_t(), id_str_( id_str ), height_( 250 ), width_( 575 ), sim_( sim )
 {
   assert( ! id_str_.empty() );
@@ -416,7 +416,7 @@ chart_t& chart_t::add_yplotline( double value_,
   return *this;
 }
 
-time_series_t::time_series_t( const std::string& id_str, const sim_t* sim ) :
+time_series_t::time_series_t( const std::string& id_str, const sim_t& sim ) :
   chart_t( id_str, sim )
 {
   set( "chart.type", "area" );
@@ -445,7 +445,7 @@ time_series_t& time_series_t::set_max( double value_, const std::string& color )
   return *this;
 }
 
-bar_chart_t::bar_chart_t( const std::string& id_str, const sim_t* sim ) :
+bar_chart_t::bar_chart_t( const std::string& id_str, const sim_t& sim ) :
     chart_t( id_str, sim )
 {
   set( "chart.type", "bar" );
@@ -457,7 +457,7 @@ bar_chart_t::bar_chart_t( const std::string& id_str, const sim_t* sim ) :
   set( "xAxis.offset", -10 );
 }
 
-pie_chart_t::pie_chart_t( const std::string& id_str, const sim_t* sim ) :
+pie_chart_t::pie_chart_t( const std::string& id_str, const sim_t& sim ) :
     chart_t( id_str, sim )
 {
   height_ = 300; // Default Pie Chart height
@@ -467,7 +467,7 @@ pie_chart_t::pie_chart_t( const std::string& id_str, const sim_t* sim ) :
   //set( "plotOptions.bar.states.hover.lineWidth", 1 );
 }
 
-histogram_chart_t::histogram_chart_t( const std::string& id_str, const sim_t* sim ) :
+histogram_chart_t::histogram_chart_t( const std::string& id_str, const sim_t& sim ) :
     chart_t( id_str, sim )
 {
   height_ = 300;
@@ -480,7 +480,7 @@ histogram_chart_t::histogram_chart_t( const std::string& id_str, const sim_t* si
 
 
 template<typename Stream>
-sc_json_writer_t<Stream>::sc_json_writer_t( Stream& stream, const sim_t* s )
+sc_json_writer_t<Stream>::sc_json_writer_t( Stream& stream, const sim_t& s )
   : rapidjson::Writer< Stream >( stream ), sim( s )
 { }
 
@@ -489,7 +489,7 @@ bool sc_json_writer_t<Stream>::Double( double d )
 {
   this -> Prefix( rapidjson::kNumberType );
   char buffer[100];
-  int ret = util::snformat( buffer, sizeof( buffer ), "%.*f", sim -> report_precision, d);
+  int ret = util::snformat( buffer, sizeof( buffer ), "%.*f", sim.report_precision, d);
   RAPIDJSON_ASSERT(ret >= 1);
   for ( int i = 0; i < ret; ++i )
      this -> os_ -> Put( buffer[ i ] );
