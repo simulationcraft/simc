@@ -2646,7 +2646,7 @@ double player_t::composite_melee_crit() const
 
 // player_t::composite_melee_expertise =====================================
 
-double player_t::composite_melee_expertise( weapon_t* ) const
+double player_t::composite_melee_expertise( const weapon_t* ) const
 {
   double e = current.expertise;
 
@@ -5575,7 +5575,7 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 
 // player_t::find_action_priority_list( const std::string& name ) ===========
 
-action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
+action_priority_list_t* player_t::find_action_priority_list( const std::string& name ) const
 { return find_vector_member( action_priority_list, name ); }
 
 pet_t* player_t::find_pet( const std::string& name ) const
@@ -8789,14 +8789,12 @@ void player_t::recreate_talent_str( talent_format_e format )
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
+std::string player_t::create_profile( save_e stype )
 {
+  std::string profile_str;
   std::string term;
 
-  if ( save_html )
-    term = "<br>\n";
-  else
-    term = "\n";
+  term = "\n";
 
   if ( ! report_information.comment_str.empty() )
   {
@@ -8880,15 +8878,11 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
         const std::string& encoded_comment = a -> signature -> comment_;
 
         if ( ! encoded_comment.empty() )
-          profile_str += "# " + ( save_html ? util::encode_html( encoded_comment ) : encoded_comment ) + term;
+          profile_str += "# " + ( encoded_comment ) + term;
         profile_str += "actions";
         if ( a -> action_list && a -> action_list -> name_str != "default" )
           profile_str += "." + a -> action_list -> name_str;
         profile_str += j ? "+=/" : "=";
-        if ( save_html )
-        {
-          util::encode_html( encoded_action );
-        }
         profile_str += encoded_action + term;
         j++;
       }
@@ -8922,7 +8916,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     }
 
     profile_str += "\n# Gear Summary" + term;
-    double avg_ilvl = util::round( util::get_avg_itemlvl( this ), 2 );
+    double avg_ilvl = util::round( util::get_avg_itemlvl( *this ), 2 );
     profile_str += "# gear_ilvl=" + util::to_string( avg_ilvl, 2 ) + term;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
@@ -9010,8 +9004,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     if ( enchant.resource[ RESOURCE_RUNIC_POWER  ] != 0 )  profile_str += "enchant_runic="
          + util::to_string( enchant.resource[ RESOURCE_RUNIC_POWER  ] ) + term;
   }
-
-  return true;
+  return profile_str;
 }
 
 

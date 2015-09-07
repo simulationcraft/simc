@@ -425,7 +425,7 @@ public:
   virtual double    composite_block_reduction() const;
   virtual double    composite_parry_rating() const;
   virtual double    composite_parry() const;
-  virtual double    composite_melee_expertise( weapon_t* ) const;
+  virtual double    composite_melee_expertise( const weapon_t* ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_mastery() const;
@@ -444,7 +444,7 @@ public:
   virtual void      init_rng();
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& );
-  virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
+  virtual std::string      create_profile( save_e type );
   virtual void      invalidate_cache( cache_e );
   virtual double    temporary_movement_modifier() const;
   virtual bool      has_t18_class_trinket() const;
@@ -5296,7 +5296,7 @@ double warrior_t::composite_armor_multiplier() const
 
 // warrior_t::composite_melee_expertise =====================================
 
-double warrior_t::composite_melee_expertise( weapon_t* ) const
+double warrior_t::composite_melee_expertise( const weapon_t* ) const
 {
   double e = player_t::composite_melee_expertise();
 
@@ -5730,12 +5730,12 @@ action_t* warrior_t::create_proc_action( const std::string& name, const special_
 
 // warrior_t::create_profile ================================================
 
-bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save_html )
+std::string warrior_t::create_profile( save_e type )
 {
   if ( specialization() == WARRIOR_PROTECTION && primary_role() == ROLE_TANK )
     position_str = "front";
 
-  return player_t::create_profile( profile_str, type, save_html );
+  return player_t::create_profile( type );
 }
 
 // warrior_t::copy_from =====================================================

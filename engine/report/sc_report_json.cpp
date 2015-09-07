@@ -204,7 +204,7 @@ js::sc_js_t to_json( result_e i, const stats_t::stats_results_t& sr )
   node.set( "pct", sr.pct );
   return node;
 }
-
+/*
 js::sc_js_t to_json( const benefit_t& b )
 {
   js::sc_js_t node;
@@ -212,7 +212,7 @@ js::sc_js_t to_json( const benefit_t& b )
   node.set( "ration", to_json( b.ratio ) );
   return node;
 }
-
+*/
 js::sc_js_t to_json( const proc_t& p )
 {
   js::sc_js_t node;

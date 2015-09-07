@@ -1057,7 +1057,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
     }
     os.format(
       "<td class=\"small\"><a href=\"%s\" class=\"ext\"> wowhead </a></td>\n",
-      chart::gear_weights_wowhead( p )[sm].c_str() );
+      chart::gear_weights_wowhead( *p )[sm].c_str() );
 #if LOOTRANK_ENABLED == 1
     os.format(
       "<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n",
@@ -1596,19 +1596,17 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   int k = 0; // Counter for both players and enemies, without pets.
 
   // Report Players
-  for ( size_t i = 0; i < num_players; ++i )
+  for ( auto& player : sim -> players_by_name )
   {
-    report::print_html_player( os, sim -> players_by_name[ i ], k );
+    report::print_html_player( os, *player, k );
 
     // Pets
     if ( sim -> report_pets_separately )
     {
-      std::vector<pet_t*>& pl = sim -> players_by_name[ i ] -> pet_list;
-      for ( size_t j = 0; j < pl.size(); ++j )
+      for ( auto& pet : player -> pet_list )
       {
-        pet_t* pet = pl[ j ];
         if ( pet -> summoned && !pet -> quiet )
-          report::print_html_player( os, pet, 1 );
+          report::print_html_player( os, *pet, 1 );
       }
     }
   }
@@ -1621,20 +1619,18 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   // Report Targets
   if ( sim -> report_targets )
   {
-    for ( size_t i = 0; i < sim -> targets_by_name.size(); ++i )
+    for ( auto& player : sim -> targets_by_name )
     {
-      report::print_html_player( os, sim -> targets_by_name[ i ], k );
+      report::print_html_player( os, *player, k );
       ++k;
 
       // Pets
       if ( sim -> report_pets_separately )
       {
-        std::vector<pet_t*>& pl = sim -> targets_by_name[ i ] -> pet_list;
-        for ( size_t j = 0; j < pl.size(); ++j )
+        for ( auto& pet : player -> pet_list )
         {
-          pet_t* pet = pl[ j ];
           //if ( pet -> summoned )
-          report::print_html_player( os, pet, 1 );
+          report::print_html_player( os, *pet, 1 );
         }
       }
     }

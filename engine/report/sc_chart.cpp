@@ -135,14 +135,11 @@ player_e get_player_or_owner_type( player_t* p )
   return p -> type;
 }
 
-std::string get_color( player_t* p )
+std::string get_color( const player_t& p )
 {
-  player_e type;
-  if ( p -> is_pet() )
-    type = p -> cast_pet() -> owner -> type;
-  else
-    type = p -> type;
-  return color::class_color( type ).hex_str();
+  const player_t* a = p.get_owner_or_self();
+  assert( a );
+  return color::class_color( a -> type ).hex_str();
 }
 
 unsigned char simple_encoding( int number )
@@ -465,7 +462,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name )
 
     s << "%25++" << formatted_name.c_str(); // Insert player name
 
-    s << "," << get_color( p ); // Insert player class text color
+    s << "," << get_color( *p ); // Insert player class text color
 
     s << "," << i; // Series Index
 
@@ -582,14 +579,14 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       if ( i ) s += ",";
-      s += get_color( player_list[ i ] );
+      s += get_color( *player_list[ i ] );
     }
     s += amp;
     s += "chm=";
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      std::string formatted_name = util::google_image_chart_encode( p -> name_str + ( sim -> ilevel_raid_report ? ( "_" + util::to_string( util::get_avg_itemlvl( p ), 1 ) ) : "" ) );
+      std::string formatted_name = util::google_image_chart_encode( p -> name_str + ( sim -> ilevel_raid_report ? ( "_" + util::to_string( util::get_avg_itemlvl( *p ), 1 ) ) : "" ) );
       util::urlencode( formatted_name );
       double player_mean = 0.0;
       if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
@@ -599,7 +596,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
       else if ( type == "apm" ) { player_mean = p -> collected_data.fight_length.mean() ? 60.0 * p -> collected_data.executed_foreground_actions.mean() / p -> collected_data.fight_length.mean() : 0; }
       std::string tmi_letter = ( type == "tmi" ) ? "k" : "";
-      str::format( s, "%st++%.0f%s++%s,%s,%d,0,15", ( i ? "|" : "" ), player_mean, tmi_letter.c_str(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); 
+      str::format( s, "%st++%.0f%s++%s,%s,%d,0,15", ( i ? "|" : "" ), player_mean, tmi_letter.c_str(), formatted_name.c_str(), get_color( *p ).c_str(), ( int )i );
     }
     s += amp;
 
@@ -683,7 +680,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
 
       str::format( s, "%st++%.0f++%s+(%s),%s,%d,0,10", ( i ? "|" : "" ),
 		   st -> apet, st -> name_str.c_str(), formatted_name.c_str(), 
-		   get_color( st -> player ).c_str(), ( int )i );
+		   get_color( *(st -> player) ).c_str(), ( int )i );
     }
     s += amp;
     if ( chart == 0 )
@@ -705,12 +702,12 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
 
 // chart::action_dpet =======================================================
 
-std::string chart::action_dpet(  player_t* p )
+std::string chart::action_dpet( const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
-  // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
-  range::remove_copy_if( p -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
+  // Copy all stats* from p.stats_list to stats_list, which satisfy the filter
+  range::remove_copy_if( p.stats_list, back_inserter( stats_list ), filter_stats_dpet( p ) );
 
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 )
@@ -718,7 +715,7 @@ std::string chart::action_dpet(  player_t* p )
 
   range::sort( stats_list, compare_apet() );
 
-  std::string formatted_name = util::google_image_chart_encode( p -> name_str );
+  std::string formatted_name = util::google_image_chart_encode( p.name_str );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + " Damage Per Execute Time", HORIZONTAL_BAR );
   chart.set_height( num_stats * 30 + 30 );
@@ -744,7 +741,7 @@ std::string chart::action_dpet(  player_t* p )
     std::string school = color::school_color( stats_list[ i ] -> school ).hex_str();
     if ( school.empty() )
     {
-      p -> sim -> errorf( "chart_t::action_dpet assertion error! School color unknown, stats %s from %s. School %s\n", stats_list[ i ] -> name_str.c_str(), p -> name(), util::school_type_string( stats_list[ i ] -> school ) );
+      p.sim -> errorf( "chart_t::action_dpet assertion error! School color unknown, stats %s from %s. School %s\n", stats_list[ i ] -> name_str.c_str(), p.name(), util::school_type_string( stats_list[ i ] -> school ) );
       assert( 0 );
     }
     s += school;
@@ -763,28 +760,28 @@ std::string chart::action_dpet(  player_t* p )
 
 // chart::action_dmg ========================================================
 
-std::string chart::aps_portion(  player_t* p )
+std::string chart::aps_portion( const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  for ( size_t i = 0; i < p.stats_list.size(); ++i )
   {
-    stats_t* st = p -> stats_list[ i ];
+    stats_t* st = p.stats_list[ i ];
     if ( st -> quiet ) continue;
     if ( st -> actual_amount.mean() <= 0 ) continue;
-    if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
+    if ( ( p.primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
     stats_list.push_back( st );
   }
 
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  for ( size_t i = 0; i < p.pet_list.size(); ++i )
   {
-    pet_t* pet = p -> pet_list[ i ];
+    pet_t* pet = p.pet_list[ i ];
     for ( size_t j = 0; j < pet -> stats_list.size(); ++j )
     {
       stats_t* st = pet -> stats_list[ j ];
       if ( st -> quiet ) continue;
       if ( st -> actual_amount.mean() <= 0 ) continue;
-      if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
+      if ( ( p.primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
       stats_list.push_back( st );
     }
   }
@@ -795,9 +792,9 @@ std::string chart::aps_portion(  player_t* p )
 
   range::sort( stats_list, compare_amount() );
 
-  std::string formatted_name = util::google_image_chart_encode(  p -> name() );
+  std::string formatted_name = util::google_image_chart_encode(  p.name() );
   util::urlencode( formatted_name );
-  sc_chart chart( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE );
+  sc_chart chart( formatted_name + ( p.primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE );
   chart.set_height( 275 );
 
   std::string s = chart.create();
@@ -805,7 +802,7 @@ std::string chart::aps_portion(  player_t* p )
   for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    str::format( s, "%s%.0f", ( i ? "," : "" ), 100.0 * st -> actual_amount.mean() / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> collected_data.heal.mean() : p -> collected_data.dmg.mean() ) );
+    str::format( s, "%s%.0f", ( i ? "," : "" ), 100.0 * st -> actual_amount.mean() / ( ( p.primary_role() == ROLE_HEAL ) ? p.collected_data.heal.mean() : p.collected_data.dmg.mean() ) );
   }
   s += amp;
   s += "chds=0,100";
@@ -820,7 +817,7 @@ std::string chart::aps_portion(  player_t* p )
     std::string school = color::school_color( stats_list[ i ] -> school ).hex_str();
     if ( school.empty() )
     {
-      p -> sim -> errorf( "chart_t::action_dmg assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
+      p.sim -> errorf( "chart_t::action_dmg assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p.name() );
       assert( 0 );
     }
     s += school;
@@ -845,20 +842,20 @@ std::string chart::aps_portion(  player_t* p )
 
 // chart::spent_time ========================================================
 
-std::string chart::time_spent( player_t* p )
+std::string chart::time_spent( const player_t& p )
 {
   std::vector<stats_t*> filtered_waiting_stats;
 
   // Filter stats we do not want in the chart ( quiet, background, zero total_time ) and copy them to filtered_waiting_stats
-  range::remove_copy_if( p -> stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
+  range::remove_copy_if( p.stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
 
   size_t num_stats = filtered_waiting_stats.size();
-  if ( num_stats == 0 && p -> collected_data.waiting_time.mean() == 0 )
+  if ( num_stats == 0 && p.collected_data.waiting_time.mean() == 0 )
     return std::string();
 
   range::sort( filtered_waiting_stats, compare_stats_time() );
 
-  std::string formatted_name = util::google_image_chart_encode(  p -> name() );
+  std::string formatted_name = util::google_image_chart_encode(  p.name() );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + " Spent Time", PIE );
   chart.set_height( 275 );
@@ -868,12 +865,12 @@ std::string chart::time_spent( player_t* p )
   s += "chd=t:";
   for ( size_t i = 0; i < num_stats; i++ )
   {
-    str::format( s, "%s%.1f", ( i ? "," : "" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> collected_data.fight_length.mean() );
+    str::format( s, "%s%.1f", ( i ? "," : "" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p.collected_data.fight_length.mean() );
 
   }
-  if ( p -> collected_data.waiting_time.mean() > 0 )
+  if ( p.collected_data.waiting_time.mean() > 0 )
   {
-    str::format( s, "%s%.1f", ( num_stats > 0 ? "," : "" ), 100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() );
+    str::format( s, "%s%.1f", ( num_stats > 0 ? "," : "" ), 100.0 * p.collected_data.waiting_time.mean() / p.collected_data.fight_length.mean() );
 
   }
   s += amp;
@@ -889,12 +886,12 @@ std::string chart::time_spent( player_t* p )
     std::string school = color::school_color( filtered_waiting_stats[ i ] -> school ).hex_str();
     if ( school.empty() )
     {
-      p -> sim -> errorf( "chart_t::time_spent assertion error! School unknown, stats %s from %s.\n", filtered_waiting_stats[ i ] -> name_str.c_str(), p -> name() );
+      p.sim -> errorf( "chart_t::time_spent assertion error! School unknown, stats %s from %s.\n", filtered_waiting_stats[ i ] -> name_str.c_str(), p.name() );
       assert( 0 );
     }
     s += school;
   }
-  if ( p -> collected_data.waiting_time.mean() > 0 )
+  if ( p.collected_data.waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 ) s += ",";
     s += "ffffff";
@@ -908,11 +905,11 @@ std::string chart::time_spent( player_t* p )
     s += st -> name_str.c_str();
     str::format( s, " %.1fs", st -> total_time.total_seconds() );
   }
-  if ( p -> collected_data.waiting_time.mean() > 0 )
+  if ( p.collected_data.waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 )s += "|";
     s += "waiting";
-    str::format( s, " %.1fs", p -> collected_data.waiting_time.mean() );
+    str::format( s, " %.1fs", p.collected_data.waiting_time.mean() );
   }
   s += amp;
 
@@ -921,15 +918,15 @@ std::string chart::time_spent( player_t* p )
 
 // chart::gains =============================================================
 
-std::string chart::gains( player_t* p, resource_e type )
+std::string chart::gains( const player_t& p, resource_e type )
 {
   std::vector<gain_t*> gains_list;
 
   double total_gain = 0;
 
-  for ( size_t i = 0; i < p -> gain_list.size(); ++i )
+  for ( size_t i = 0; i < p.gain_list.size(); ++i )
   {
-    gain_t* g = p -> gain_list[ i ];
+    gain_t* g = p.gain_list[ i ];
     if ( g -> actual[ type ] <= 0 ) continue;
     total_gain += g -> actual[ type ];
     gains_list.push_back( g );
@@ -944,7 +941,7 @@ std::string chart::gains( player_t* p, resource_e type )
   std::ostringstream s;
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
 
-  std::string formatted_name = util::google_image_chart_encode( p -> name_str );
+  std::string formatted_name = util::google_image_chart_encode( p.name_str );
   util::urlencode( formatted_name );
   std::string r = util::resource_type_string( type );
   util::inverse_tokenize( r );
@@ -960,7 +957,7 @@ std::string chart::gains( player_t* p, resource_e type )
   {
     gain_t* g = gains_list[ i ];
     s << ( i ? "," : "" );
-    s << std::setprecision( p -> sim -> report_precision / 2 ) << 100.0 * ( g -> actual[ type ] / total_gain );
+    s << std::setprecision( p.sim -> report_precision / 2 ) << 100.0 * ( g -> actual[ type ] / total_gain );
   }
   s << "&amp;";
 
@@ -987,16 +984,16 @@ std::string chart::gains( player_t* p, resource_e type )
 
 // chart::scale_factors =====================================================
 
-std::string chart::scale_factors( player_t* p )
+std::string chart::scale_factors( const player_t& p )
 {
   std::vector<stat_e> scaling_stats;
   // load the data from whatever the default metric is set 
   // TODO: eventually show all data
-  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+  scale_metric_e sm = p.sim -> scaling -> scaling_metric;
 
-  for ( std::vector<stat_e>::const_iterator it = p -> scaling_stats[ sm ].begin(), end = p -> scaling_stats[ sm ].end(); it != end; ++it )
+  for ( std::vector<stat_e>::const_iterator it = p.scaling_stats[ sm ].begin(), end = p.scaling_stats[ sm ].end(); it != end; ++it )
   {
-    if ( p -> scales_with[ *it ] )
+    if ( p.scales_with[ *it ] )
       scaling_stats.push_back( *it );
   }
 
@@ -1004,7 +1001,7 @@ std::string chart::scale_factors( player_t* p )
   if ( num_scaling_stats == 0 )
     return std::string();
 
-  std::string formatted_name = util::google_image_chart_encode( p -> scaling_for_metric( sm ).name );
+  std::string formatted_name = util::google_image_chart_encode( p.scaling_for_metric( sm ).name );
   util::urlencode( formatted_name );
 
   sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR );
@@ -1015,23 +1012,23 @@ std::string chart::scale_factors( player_t* p )
   str::format( s, "chd=t%i:" , 1 );
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
-    str::format( s, "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor );
+    double factor = p.scaling[ sm ].get_stat( scaling_stats[ i ] );
+    str::format( s, "%s%.*f", ( i ? "," : "" ), p.sim -> report_precision, factor );
   }
   s += "|";
 
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) - fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
+    double factor = p.scaling[ sm ].get_stat( scaling_stats[ i ] ) - fabs( p.scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
 
-    str::format( s, "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor );
+    str::format( s, "%s%.*f", ( i ? "," : "" ), p.sim -> report_precision, factor );
   }
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) + fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
+    double factor = p.scaling[ sm ].get_stat( scaling_stats[ i ] ) + fabs( p.scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
 
-    str::format( s, "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor );
+    str::format( s, "%s%.*f", ( i ? "," : "" ), p.sim -> report_precision, factor );
   }
   s += amp;
   s += "chco=";
@@ -1041,10 +1038,10 @@ std::string chart::scale_factors( player_t* p )
   s += "E,FF0000,1:0,,1:20|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
+    double factor = p.scaling[ sm ].get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
     str::format( s, "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i ? "|" : "" ),
-		 p -> sim -> report_precision, factor, name, get_color( p ).c_str(),
+		 p.sim -> report_precision, factor, name, get_color( p ).c_str(),
 		 ( int )i, factor > 0 ? "e" : "s" /* If scale factor is positive, position the text right of the bar, otherwise at the base */
 		 );
   }
@@ -1054,8 +1051,8 @@ std::string chart::scale_factors( player_t* p )
   double lowest_value = 0, highest_value = 0;
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double value = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
-    double error = fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
+    double value = p.scaling[ sm ].get_stat( scaling_stats[ i ] );
+    double error = fabs( p.scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
     double high_value = std::max( value * 1.2, value + error ); // add enough space to display stat name
     if ( high_value > highest_value )
       highest_value = high_value;
@@ -1072,13 +1069,13 @@ std::string chart::scale_factors( player_t* p )
 
 // chart::scaling_dps =======================================================
 
-std::string chart::scaling_dps( player_t* p )
+std::string chart::scaling_dps( const player_t& p )
 {
   double max_dps = 0, min_dps = std::numeric_limits<double>::max();
 
-  for ( size_t i = 0; i < p -> dps_plot_data.size(); ++i )
+  for ( size_t i = 0; i < p.dps_plot_data.size(); ++i )
   {
-    std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
+    const std::vector<plot_data_t>& pd = p.dps_plot_data[ i ];
     size_t size = pd.size();
     for ( size_t j = 0; j < size; j++ )
     {
@@ -1089,12 +1086,12 @@ std::string chart::scaling_dps( player_t* p )
   if ( max_dps <= 0 )
     return std::string();
 
-  double step = p -> sim -> plot -> dps_plot_step;
-  int range = p -> sim -> plot -> dps_plot_points / 2;
+  double step = p.sim -> plot -> dps_plot_step;
+  int range = p.sim -> plot -> dps_plot_points / 2;
   const int end = 2 * range;
   size_t num_points = 1 + 2 * range;
 
-  scaling_metric_data_t scaling_data = p -> scaling_for_metric( SCALE_METRIC_DPS );
+  scaling_metric_data_t scaling_data = p.scaling_for_metric( SCALE_METRIC_DPS );
   std::string formatted_name = util::google_image_chart_encode( scaling_data.name );
   util::urlencode( formatted_name );
 
@@ -1107,7 +1104,7 @@ std::string chart::scaling_dps( player_t* p )
   bool first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
+    const std::vector<plot_data_t>& pd = p.dps_plot_data[ i ];
     size_t size = pd.size();
     if ( size == 0 )
     {
@@ -1127,28 +1124,28 @@ std::string chart::scaling_dps( player_t* p )
   s += amp;
   s += "chxt=x,y";
   s += amp;
-  if ( p -> sim -> plot -> dps_plot_positive )
+  if ( p.sim -> plot -> dps_plot_positive )
   {
     const int start = 0;  // start and end only used for dps_plot_positive
     str::format( s, "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f", ( start + ( 1.0 / 4 )*end )*step, ( start + ( 2.0 / 4 )*end )*step, ( start + ( 3.0 / 4 )*end )*step, ( start + end )*step, min_dps, max_dps );
   }
-  else if ( p -> sim -> plot -> dps_plot_negative )
+  else if ( p.sim -> plot -> dps_plot_negative )
   {
-    const int start = (int) - ( p -> sim -> plot -> dps_plot_points * p -> sim -> plot -> dps_plot_step );
+    const int start = (int) - ( p.sim -> plot -> dps_plot_points * p.sim -> plot -> dps_plot_step );
     str::format( s, "chxl=0:|%d|%.0f|%.0f|%.0f|0|1:|%.0f|%.0f", start, start * 0.75, start * 0.5, start * 0.25, min_dps, max_dps );
   }
   else
   {
-    str::format( s, "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range * step ), ( -range * step ) / 2, ( +range * step ) / 2, ( +range * step ), min_dps, p -> collected_data.dps.mean(), max_dps );
+    str::format( s, "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range * step ), ( -range * step ) / 2, ( +range * step ) / 2, ( +range * step ), min_dps, p.collected_data.dps.mean(), max_dps );
     s += amp;
-    str::format( s, "chxp=1,1,%.0f,100", 100.0 * ( p -> collected_data.dps.mean() - min_dps ) / ( max_dps - min_dps ) );
+    str::format( s, "chxp=1,1,%.0f,100", 100.0 * ( p.collected_data.dps.mean() - min_dps ) / ( max_dps - min_dps ) );
   }
   s += amp;
   s += "chdl=";
   first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    size_t size = p -> dps_plot_data[ i ].size();
+    size_t size = p.dps_plot_data[ i ].size();
     if ( size == 0 )
     {
       continue;
@@ -1165,7 +1162,7 @@ std::string chart::scaling_dps( player_t* p )
   first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    size_t size = p -> dps_plot_data[ i ].size();
+    size_t size = p.dps_plot_data[ i ].size();
     if ( size == 0 )
     {
       continue;
@@ -1184,12 +1181,9 @@ std::string chart::scaling_dps( player_t* p )
 
 // chart::reforge_dps =======================================================
 
-std::string chart::reforge_dps( player_t* p )
+std::string chart::reforge_dps( const player_t& p )
 {
-  if ( ! p )
-    return std::string();
-
-  std::vector< std::vector<plot_data_t> >& pd = p -> reforge_plot_data;
+  const std::vector< std::vector<plot_data_t> >& pd = p.reforge_plot_data;
   if ( pd.empty() )
     return std::string();
 
@@ -1198,7 +1192,7 @@ std::string chart::reforge_dps( player_t* p )
   size_t num_stats = pd[ 0 ].size() - 1;
   if ( num_stats != 3 && num_stats != 2 )
   {
-    p -> sim -> errorf( "You must choose 2 or 3 stats to generate a reforge plot.\n" );
+    p.sim -> errorf( "You must choose 2 or 3 stats to generate a reforge plot.\n" );
     return std::string();
   }
 
@@ -1218,8 +1212,8 @@ std::string chart::reforge_dps( player_t* p )
   if ( num_stats == 2 )
   {
     int num_points = ( int ) pd.size();
-    std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
-    plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
+    std::vector<stat_e> stat_indices = p.sim -> reforge_plot -> reforge_plot_stat_indices;
+    const plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
     double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
     double max_ydelta = std::max( min_delta, max_delta );
@@ -1244,7 +1238,7 @@ std::string chart::reforge_dps( player_t* p )
     int negative_mod = static_cast<int>( std::max( std::ceil( negative_steps / 4 ), 4.0 ) );
     int positive_mod = static_cast<int>( std::max( std::ceil( positive_steps / 4 ), 4.0 ) );
 
-    scaling_metric_data_t scaling_data = p -> scaling_for_metric( SCALE_METRIC_DPS );
+    scaling_metric_data_t scaling_data = p.scaling_for_metric( SCALE_METRIC_DPS );
     std::string formatted_name = util::google_image_chart_encode( scaling_data.name );
     util::urlencode( formatted_name );
 
@@ -1395,7 +1389,7 @@ std::string chart::reforge_dps( player_t* p )
     for ( int i = 0; i < ( int ) pd.size(); i++ )
     {
       std::vector<plot_data_t> scaled_dps = pd[ i ];
-      int ref_plot_amount = p -> sim -> reforge_plot -> reforge_plot_amount;
+      int ref_plot_amount = p.sim -> reforge_plot -> reforge_plot_amount;
       for ( int j = 0; j < 3; j++ )
         scaled_dps[ j ].value = ( scaled_dps[ j ].value + ref_plot_amount ) / ( 3. * ref_plot_amount );
       triangle_points.push_back( ternary_coords( scaled_dps ) );
@@ -1442,7 +1436,7 @@ std::string chart::reforge_dps( player_t* p )
     s << "\n";
     s << "<input type='hidden' name='chg' value='5,10,1,3'";
     s << "\n";
-    std::string formatted_name = p -> name_str;
+    std::string formatted_name = p.name_str;
     util::urlencode( formatted_name );
     s << "<input type='hidden' name='chtt' value='";
     s << formatted_name;
@@ -1451,7 +1445,7 @@ std::string chart::reforge_dps( player_t* p )
     s << "<input type='hidden' name='chts' value='dddddd,18' />";
     s << "\n";
     s << "<input type='hidden' name='chem' value='";
-    std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    std::vector<stat_e> stat_indices = p.sim -> reforge_plot -> reforge_plot_stat_indices;
     s << "y;s=text_outline;d=FF9473,18,l,000000,_,";
     s << util::stat_type_string( stat_indices[ 0 ] );
     s << ";py=1.0;po=0.0,0.01;";
@@ -1473,8 +1467,7 @@ std::string chart::reforge_dps( player_t* p )
 
 // chart::timeline ==========================================================
 
-std::string chart::timeline(  player_t* p,
-                              const std::vector<double>& timeline_data,
+std::string chart::timeline(  const std::vector<double>& timeline_data,
                               const std::string& timeline_name,
                               double avg,
                               std::string color,
@@ -1563,10 +1556,10 @@ std::string chart::timeline(  player_t* p,
 
 // chart::timeline_dps_error ================================================
 
-std::string chart::timeline_dps_error( player_t* p )
+std::string chart::timeline_dps_error( const player_t& p )
 {
   static const size_t min_data_number = 50;
-  size_t max_buckets = p -> dps_convergence_error.size();
+  size_t max_buckets = p.dps_convergence_error.size();
   if ( max_buckets <= min_data_number )
     return std::string();
 
@@ -1578,7 +1571,7 @@ std::string chart::timeline_dps_error( player_t* p )
     increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
   }
 
-  double dps_max_error = *std::max_element( p -> dps_convergence_error.begin() + min_data_number, p -> dps_convergence_error.end() );
+  double dps_max_error = *std::max_element( p.dps_convergence_error.begin() + min_data_number, p.dps_convergence_error.end() );
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max_error;
 
@@ -1595,7 +1588,7 @@ std::string chart::timeline_dps_error( player_t* p )
     if ( i < min_data_number )
       s += simple_encoding( 0 );
     else
-      s += simple_encoding( ( int ) ( p -> dps_convergence_error[ i ] * dps_adjust ) );
+      s += simple_encoding( ( int ) ( p.dps_convergence_error[ i ] * dps_adjust ) );
   }
   s += amp;
   s += "chxt=x,y";
@@ -1607,7 +1600,7 @@ std::string chart::timeline_dps_error( player_t* p )
     if ( !j ) continue;
     if ( j >= max_buckets ) j = as<unsigned>( max_buckets - 1 );
     if ( i > 1 ) s += "|";
-    str::format( s, "t%.1f,FFFFFF,0,%d,10", p -> dps_convergence_error[ j ], int( j / increment ) );
+    str::format( s, "t%.1f,FFFFFF,0,%d,10", p.dps_convergence_error[ j ], int( j / increment ) );
 
   }
   s += amp;
@@ -1660,7 +1653,7 @@ std::string chart::distribution( const std::vector<size_t>& dist_data,
 
 // chart::gear_weights_lootrank =============================================
 
-std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t* p )
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( const player_t& p )
 {
   std::array<std::string, SCALE_METRIC_MAX> sa;
 
@@ -1668,7 +1661,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
   {
     std::string s = "http://www.guildox.com/go/wr.asp?";
 
-    switch ( p -> type )
+    switch ( p.type )
     {
     case DEATH_KNIGHT: s += "Cla=2048"; break;
     case DRUID:        s += "Cla=1024"; break;
@@ -1681,10 +1674,10 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
     case SHAMAN:       s += "Cla=64";   break;
     case WARLOCK:      s += "Cla=256";  break;
     case WARRIOR:      s += "Cla=1";    break;
-    default: p -> sim -> errorf( "%s", util::player_type_string( p -> type ) ); assert( 0 ); break;
+    default: assert( false ); break;
     }
 
-    switch ( p -> type )
+    switch ( p.type )
     {
     case WARRIOR:
     case PALADIN:
@@ -1732,10 +1725,10 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
     default: break;
     }
     */
-    bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
+    bool positive_normalizing_value = p.scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
+      double value = positive_normalizing_value ? p.scaling[ sm ].get_stat( i ) : -p.scaling[ sm ].get_stat( i );
       if ( value == 0 ) continue;
 
       const char* name;
@@ -1756,19 +1749,19 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
       case STAT_ARMOR:                    name = "Arm";  break;
       case STAT_BONUS_ARMOR:              name = "bar";  break;
       case STAT_WEAPON_DPS:
-        if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
+        if ( HUNTER == p.type ) name = "rdps"; else name = "dps";  break;
       case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
       default: name = nullptr; break;
       }
 
       if ( name )
       {
-	str::format( s, "&%s=%.*f", name, p -> sim -> report_precision, value );
+	str::format( s, "&%s=%.*f", name, p.sim -> report_precision, value );
       }
     }
 
     // Set the trinket style choice
-    switch ( p -> specialization() )
+    switch ( p.specialization() )
     {
     case DEATH_KNIGHT_BLOOD:
     case DRUID_GUARDIAN:
@@ -1829,24 +1822,24 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
 
     s += "&Gem=3"; // FIXME: Remove this when epic gems become available
     s += "&Ver=7";
-    str::format( s, "&maxlv=%d", p -> true_level );
+    str::format( s, "&maxlv=%d", p.true_level );
 
-    if ( p -> items[ 0 ].parsed.data.id ) s += "&t1=" + util::to_string( p -> items[ 0 ].parsed.data.id );
-    if ( p -> items[ 1 ].parsed.data.id ) s += "&t2=" + util::to_string( p -> items[ 1 ].parsed.data.id );
-    if ( p -> items[ 2 ].parsed.data.id ) s += "&t3=" + util::to_string( p -> items[ 2 ].parsed.data.id );
-    if ( p -> items[ 4 ].parsed.data.id ) s += "&t5=" + util::to_string( p -> items[ 4 ].parsed.data.id );
-    if ( p -> items[ 5 ].parsed.data.id ) s += "&t8=" + util::to_string( p -> items[ 5 ].parsed.data.id );
-    if ( p -> items[ 6 ].parsed.data.id ) s += "&t9=" + util::to_string( p -> items[ 6 ].parsed.data.id );
-    if ( p -> items[ 7 ].parsed.data.id ) s += "&t10=" + util::to_string( p -> items[ 7 ].parsed.data.id );
-    if ( p -> items[ 8 ].parsed.data.id ) s += "&t6=" + util::to_string( p -> items[ 8 ].parsed.data.id );
-    if ( p -> items[ 9 ].parsed.data.id ) s += "&t7=" + util::to_string( p -> items[ 9 ].parsed.data.id );
-    if ( p -> items[ 10 ].parsed.data.id ) s += "&t11=" + util::to_string( p -> items[ 10 ].parsed.data.id );
-    if ( p -> items[ 11 ].parsed.data.id ) s += "&t31=" + util::to_string( p -> items[ 11 ].parsed.data.id );
-    if ( p -> items[ 12 ].parsed.data.id ) s += "&t12=" + util::to_string( p -> items[ 12 ].parsed.data.id );
-    if ( p -> items[ 13 ].parsed.data.id ) s += "&t32=" + util::to_string( p -> items[ 13 ].parsed.data.id );
-    if ( p -> items[ 14 ].parsed.data.id ) s += "&t4=" + util::to_string( p -> items[ 14 ].parsed.data.id );
-    if ( p -> items[ 15 ].parsed.data.id ) s += "&t14=" + util::to_string( p -> items[ 15 ].parsed.data.id );
-    if ( p -> items[ 16 ].parsed.data.id ) s += "&t15=" + util::to_string( p -> items[ 16 ].parsed.data.id );
+    if ( p.items[ 0 ].parsed.data.id ) s += "&t1=" + util::to_string( p.items[ 0 ].parsed.data.id );
+    if ( p.items[ 1 ].parsed.data.id ) s += "&t2=" + util::to_string( p.items[ 1 ].parsed.data.id );
+    if ( p.items[ 2 ].parsed.data.id ) s += "&t3=" + util::to_string( p.items[ 2 ].parsed.data.id );
+    if ( p.items[ 4 ].parsed.data.id ) s += "&t5=" + util::to_string( p.items[ 4 ].parsed.data.id );
+    if ( p.items[ 5 ].parsed.data.id ) s += "&t8=" + util::to_string( p.items[ 5 ].parsed.data.id );
+    if ( p.items[ 6 ].parsed.data.id ) s += "&t9=" + util::to_string( p.items[ 6 ].parsed.data.id );
+    if ( p.items[ 7 ].parsed.data.id ) s += "&t10=" + util::to_string( p.items[ 7 ].parsed.data.id );
+    if ( p.items[ 8 ].parsed.data.id ) s += "&t6=" + util::to_string( p.items[ 8 ].parsed.data.id );
+    if ( p.items[ 9 ].parsed.data.id ) s += "&t7=" + util::to_string( p.items[ 9 ].parsed.data.id );
+    if ( p.items[ 10 ].parsed.data.id ) s += "&t11=" + util::to_string( p.items[ 10 ].parsed.data.id );
+    if ( p.items[ 11 ].parsed.data.id ) s += "&t31=" + util::to_string( p.items[ 11 ].parsed.data.id );
+    if ( p.items[ 12 ].parsed.data.id ) s += "&t12=" + util::to_string( p.items[ 12 ].parsed.data.id );
+    if ( p.items[ 13 ].parsed.data.id ) s += "&t32=" + util::to_string( p.items[ 13 ].parsed.data.id );
+    if ( p.items[ 14 ].parsed.data.id ) s += "&t4=" + util::to_string( p.items[ 14 ].parsed.data.id );
+    if ( p.items[ 15 ].parsed.data.id ) s += "&t14=" + util::to_string( p.items[ 15 ].parsed.data.id );
+    if ( p.items[ 16 ].parsed.data.id ) s += "&t15=" + util::to_string( p.items[ 16 ].parsed.data.id );
 
     util::urlencode( s );
 
@@ -1857,7 +1850,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
 
 // chart::gear_weights_wowhead ==============================================
 
-std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t* p )
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( const player_t& p )
 {
   std::array<std::string, SCALE_METRIC_MAX> sa;
 
@@ -1867,14 +1860,14 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
 
     std::string s = "http://";
     
-    if ( maybe_ptr( p -> dbc.ptr ) )
+    if ( maybe_ptr( p.dbc.ptr ) )
       s += "ptr.";
     else
       s += "www.";
 
     s += "wowhead.com/?items&amp;filter=";
 
-    switch ( p -> type )
+    switch ( p.type )
     {
     case DEATH_KNIGHT: s += "ub=6;";  break;
     case DRUID:        s += "ub=11;"; break;
@@ -1897,9 +1890,9 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
     s += "minle=600;";
 
     // Filter to the appropriately flagged loot for the specialization.
-    switch ( p -> role )
+    switch ( p.role )
     {
-    case ROLE_ATTACK: if ( p -> type == DEATH_KNIGHT || p -> type == PALADIN || p -> type == WARRIOR )
+    case ROLE_ATTACK: if ( p.type == DEATH_KNIGHT || p.type == PALADIN || p.type == WARRIOR )
                         s += "ro=3;";
                       else
                         s += "ro=1;";
@@ -1913,11 +1906,11 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
     std::string    id_string = "";
     std::string value_string = "";
 
-    bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
+    bool positive_normalizing_value = p.scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
 
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
+      double value = positive_normalizing_value ? p.scaling[ sm ].get_stat( i ) : -p.scaling[ sm ].get_stat( i );
       if ( value == 0 ) continue;
 
       int id = 0;
@@ -1938,7 +1931,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
       case STAT_VERSATILITY_RATING:       id = 215; break;
       case STAT_MULTISTRIKE_RATING:       id = 200; break;
       case STAT_WEAPON_DPS:
-        if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
+        if ( HUNTER == p.type ) id = 138; else id = 32;  break;
       default: break;
       }
 
@@ -1952,7 +1945,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
         first = false;
 
         str::format( id_string, "%d", id );
-        str::format( value_string, "%.*f", p -> sim -> report_precision, value );
+        str::format( value_string, "%.*f", p.sim -> report_precision, value );
       }
     }
 
@@ -1966,7 +1959,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
 
 // chart::gear_weights_pawn =================================================
 
-std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( player_t* p )
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( const player_t& p )
 {
   std::array<std::string, SCALE_METRIC_MAX> sa;
 
@@ -1974,14 +1967,14 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( player_t* p 
   {
     bool first = true;
     std::string s = "( Pawn: v1: \"";
-    s += p -> name();
+    s += p.name();
     s += "\": ";
 
 
-    bool positive_normalizing_value = p -> scaling[sm].get_stat( p -> normalize_by() ) >= 0;
+    bool positive_normalizing_value = p.scaling[sm].get_stat( p.normalize_by() ) >= 0;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      double value = positive_normalizing_value ? p -> scaling[sm].get_stat( i ) : -p -> scaling[sm].get_stat( i );
+      double value = positive_normalizing_value ? p.scaling[sm].get_stat( i ) : -p.scaling[sm].get_stat( i );
       if ( value == 0 ) continue;
 
       const char* name = nullptr;
@@ -2012,7 +2005,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( player_t* p 
           s += ",";
         }
         first = false;
-        str::format( s, " %s=%.*f", name, p -> sim -> report_precision, value );
+        str::format( s, " %s=%.*f", name, p.sim -> report_precision, value );
       }
     }
     s += " )";
@@ -2026,7 +2019,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_pawn( player_t* p 
 
 // chart::gear_weights_askmrrobot ===========================================
 
-std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player_t* p )
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( const player_t& p )
 {
   std::array<std::string, SCALE_METRIC_MAX> sa;
 
@@ -2036,9 +2029,9 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     std::stringstream ss;
     // AMR's origin_str provided from their SimC export is a valid base for appending stat weights.
     // If the origin has askmrrobot in it, just use that, but replace wow/player/ with wow/optimize/
-    if ( util::str_in_str_ci( p -> origin_str, "askmrrobot" ) )
+    if ( util::str_in_str_ci( p.origin_str, "askmrrobot" ) )
     {
-      std::string origin = p -> origin_str;
+      std::string origin = p.origin_str;
       util::replace_all( origin, "wow/player", "wow/optimize" );
       ss << origin;
     }
@@ -2049,14 +2042,14 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
       ss << "http://www.askmrrobot.com/wow";
 
       // Use valid names if we are provided those
-      if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
-        ss << "/optimize/" << p -> region_str << '/' << p -> server_str << '/' << p -> name_str;
+      if ( ! p.region_str.empty() && ! p.server_str.empty() && ! p.name_str.empty() )
+        ss << "/optimize/" << p.region_str << '/' << p.server_str << '/' << p.name_str;
 
       // otherwise try to reconstruct it from the origin string
       else
       {
         std::string region_str, server_str, name_str;
-        if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+        if ( util::parse_origin( region_str, server_str, name_str, p.origin_str ) )
           ss << "/optimize/" << region_str << '/' << server_str << '/' << name_str;
         // if we can't reconstruct, default to a generic character
         // this uses the base followed by /[spec]#[weightsHash]
@@ -2072,7 +2065,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     std::string spec;
 
     // Player type
-    switch ( p -> type )
+    switch ( p.type )
     {
     case DEATH_KNIGHT: spec += "DeathKnight";  break;
     case DRUID:        spec += "Druid"; break;
@@ -2089,12 +2082,12 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     default: assert( 0 ); break;
     }
     // Player spec
-    switch ( p -> specialization() )
+    switch ( p.specialization() )
     {
     case DEATH_KNIGHT_BLOOD:    spec += "Blood"; break;
     case DEATH_KNIGHT_FROST:
     {
-      if ( p -> main_hand_weapon.type == WEAPON_2H ) { spec += "Frost2H"; break; }
+      if ( p.main_hand_weapon.type == WEAPON_2H ) { spec += "Frost2H"; break; }
       else { spec += "FrostDw"; break; }
     }
     case DEATH_KNIGHT_UNHOLY:   spec += "Unholy"; break;
@@ -2110,13 +2103,13 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     case MAGE_FROST:            spec += "Frost"; break;
     case MONK_BREWMASTER:
     {
-      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { spec += "Brewmaster2h"; break; }
+      if ( p.main_hand_weapon.type == WEAPON_STAFF || p.main_hand_weapon.type == WEAPON_POLEARM ) { spec += "Brewmaster2h"; break; }
       else { spec += "BrewmasterDw"; break; }
     }
     case MONK_MISTWEAVER:       spec += "Mistweaver"; break;
     case MONK_WINDWALKER:
     {
-      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { spec += "Windwalker2h"; break; }
+      if ( p.main_hand_weapon.type == WEAPON_STAFF || p.main_hand_weapon.type == WEAPON_POLEARM ) { spec += "Windwalker2h"; break; }
       else { spec += "WindwalkerDw"; break; }
     }
     case PALADIN_HOLY:          spec += "Holy"; break;
@@ -2137,7 +2130,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     case WARRIOR_ARMS:          spec += "Arms"; break;
     case WARRIOR_FURY:
     {
-      if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM )
+      if ( p.main_hand_weapon.type == WEAPON_SWORD_2H || p.main_hand_weapon.type == WEAPON_AXE_2H || p.main_hand_weapon.type == WEAPON_MACE_2H || p.main_hand_weapon.type == WEAPON_POLEARM )
       {
         spec += "Fury2H"; break;
       }
@@ -2159,10 +2152,10 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     ss << "weights=";
 
     // check for negative normalizer
-    bool positive_normalizing_value = p -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) >= 0;
+    bool positive_normalizing_value = p.scaling_normalized[ sm ].get_stat( p.normalize_by() ) >= 0;
 
     // AMR accepts a max precision of 2 decimal places
-    ss.precision( std::min( p -> sim -> report_precision + 1, 2 ) );
+    ss.precision( std::min( p.sim -> report_precision + 1, 2 ) );
 
     // flag for skipping the first comma
     bool skipFirstComma = false;
@@ -2171,7 +2164,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
     {
       // get stat weight value
-      double value = positive_normalizing_value ? p -> scaling_normalized[ sm ].get_stat( i ) : -p -> scaling_normalized[ sm ].get_stat( i );
+      double value = positive_normalizing_value ? p.scaling_normalized[ sm ].get_stat( i ) : -p.scaling_normalized[ sm ].get_stat( i );
 
       // if the weight is negative or AMR won't recognize the stat type string, skip this stat
       if ( value <= 0 || util::str_compare_ci( util::stat_type_askmrrobot( i ), "unknown" ) ) continue;
@@ -2366,45 +2359,44 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, sim_t* sim )
   return true;
 }
 
-bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t* p )
+bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
 {
-  const std::vector< std::vector<plot_data_t> >& pd = p -> reforge_plot_data;
-  if ( pd.empty() )
+  if ( p.reforge_plot_data.empty() )
   {
     return false;
   }
 
   double max_dps = 0, min_dps = std::numeric_limits<double>::max(), baseline = 0;
-  size_t num_stats = pd[ 0 ].size() - 1;
+  size_t num_stats = p.reforge_plot_data.front().size() - 1;
 
-  for ( size_t i = 0; i < pd.size(); i++ )
+  for ( const auto& pdata : p.reforge_plot_data )
   {
-    assert( num_stats < pd[ i ].size() );
-    if ( pd[ i ][ num_stats ].value < min_dps )
-      min_dps = pd[ i ][ num_stats ].value;
-    if ( pd[ i ][ num_stats ].value > max_dps )
-      max_dps = pd[ i ][ num_stats ].value;
+    assert( num_stats < pdata.size() );
+    if ( pdata[ num_stats ].value < min_dps )
+      min_dps = pdata[ num_stats ].value;
+    if ( pdata[ num_stats ].value > max_dps )
+      max_dps = pdata[ num_stats ].value;
 
-    if ( pd[ i ][ 0 ].value == 0 && pd[ i ][ 1 ].value == 0 )
+    if ( pdata[ 0 ].value == 0 && pdata[ 1 ].value == 0 )
     {
-      baseline = pd[ i ][ num_stats ].value;
+      baseline = pdata[ num_stats ].value;
     }
   }
 
   double yrange = std::max( std::fabs( baseline - min_dps ), std::fabs( max_dps - baseline ) );
 
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    ac.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    ac.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
-  ac.set_title( p -> name_str + " Reforge Plot" );
+  ac.set_title( p.name_str + " Reforge Plot" );
   ac.set_yaxis_title( "Damage Per Second" );
   std::string from_stat, to_stat, from_color, to_color;
-  from_stat = util::stat_type_abbrev( p -> sim -> reforge_plot -> reforge_plot_stat_indices[ 0 ] );
-  to_stat = util::stat_type_abbrev( p -> sim -> reforge_plot -> reforge_plot_stat_indices[ 1 ] );
-  from_color = color::stat_color( p -> sim -> reforge_plot -> reforge_plot_stat_indices[ 0 ] );
-  to_color = color::stat_color( p -> sim -> reforge_plot -> reforge_plot_stat_indices[ 1 ] );
+  from_stat = util::stat_type_abbrev( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 0 ] );
+  to_stat = util::stat_type_abbrev( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 1 ] );
+  from_color = color::stat_color( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 0 ] );
+  to_color = color::stat_color( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 1 ] );
 
   std::string span_from_stat = "<span style=\"color:" + from_color + ";font-weight:bold;\">" + from_stat + "</span>";
   std::string span_from_stat_abbrev = "<span style=\"color:" + from_color + ";font-weight:bold;\">" + from_stat.substr( 0, 2 ) + "</span>";
@@ -2432,11 +2424,11 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t* p )
   std::vector<std::pair<double, double> > mean;
   std::vector<highchart::data_triple_t> range;
 
-  for ( size_t i = 0; i < pd.size(); i++ )
+  for ( const auto& pdata : p.reforge_plot_data )
   {
-    double x = util::round( pd[ i ][ 0 ].value, p -> sim -> report_precision );
-    double v = util::round( pd[ i ][ 2 ].value, p -> sim -> report_precision );
-    double e = util::round( pd[ i ][ 2 ].error / 2, p -> sim -> report_precision );
+    double x = util::round( pdata[ 0 ].value, p.sim -> report_precision );
+    double v = util::round( pdata[ 2 ].value, p.sim -> report_precision );
+    double e = util::round( pdata[ 2 ].error / 2, p.sim -> report_precision );
 
     mean.push_back( std::make_pair( x, v ) );
     range.push_back( highchart::data_triple_t( x, v + e, v - e ) );
@@ -2527,17 +2519,16 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc,
   return true;
 }
 
-bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t* p, resource_e type )
+bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p, resource_e type )
 {
   std::string resource_name = util::inverse_tokenize( util::resource_type_string( type ) );
 
   // Build gains List
   std::vector<gain_t*> gains_list;
-  for ( size_t i = 0; i < p -> gain_list.size(); ++i )
+  for ( const auto& gain : p.gain_list )
   {
-    gain_t* g = p -> gain_list[ i ];
-    if ( g -> actual[ type ] <= 0 ) continue;
-    gains_list.push_back( g );
+    if ( gain -> actual[ type ] <= 0 ) continue;
+    gains_list.push_back( gain );
   }
   range::sort( gains_list, compare_gain() );
 
@@ -2546,10 +2537,10 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t* p, resou
     return false;
   }
 
-  pc.set_title( p -> name_str + " " + resource_name + " Gains" );
+  pc.set_title( p.name_str + " " + resource_name + " Gains" );
   pc.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.y:.1f}" );
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
-    pc.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+  if ( p.sim -> player_no_pet_list.size() > 1 )
+    pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
 
   for ( size_t i = 0; i < gains_list.size(); ++i )
   {
@@ -2557,7 +2548,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t* p, resou
 
     sc_js_t e;
     e.set( "color", color::resource_color( type ).str() );
-    e.set( "y", util::round( gain -> actual[ type ], p -> sim -> report_precision ) );
+    e.set( "y", util::round( gain -> actual[ type ], p.sim -> report_precision ) );
     e.set( "name", gain -> name_str );
 
     pc.add( "series.0.data", e );
@@ -2566,22 +2557,22 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t* p, resou
   return true;
 }
 
-bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t* p )
+bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 {
-  pc.set_title( p -> name_str + " Spent Time" );
+  pc.set_title( p.name_str + " Spent Time" );
   pc.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.y:.1f}s" );
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    pc.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
   std::vector<stats_t*> filtered_waiting_stats;
 
   // Filter stats we do not want in the chart ( quiet, background, zero total_time ) and copy them to filtered_waiting_stats
-  range::remove_copy_if( p -> stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
+  range::remove_copy_if( p.stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
 
   size_t num_stats = filtered_waiting_stats.size();
-  if ( num_stats == 0 && p -> collected_data.waiting_time.mean() == 0 )
+  if ( num_stats == 0 && p.collected_data.waiting_time.mean() == 0 )
     return false;
 
   range::sort( filtered_waiting_stats, compare_stats_time() );
@@ -2595,25 +2586,25 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t* p )
        std::string color = color::school_color( stats -> school );
        if ( color.empty() )
        {
-         p -> sim -> errorf( "chart::generate_stats_sources assertion error! School color unknown, stats %s from %s. School %s\n",
-                             stats -> name_str.c_str(), p -> name(), util::school_type_string( stats -> school ) );
+         p.sim -> errorf( "chart::generate_stats_sources assertion error! School color unknown, stats %s from %s. School %s\n",
+                             stats -> name_str.c_str(), p.name(), util::school_type_string( stats -> school ) );
          assert( 0 );
        }
 
        sc_js_t e;
        e.set( "color", color );
-       e.set( "y", util::round( stats -> total_time.total_seconds(), p -> sim -> report_precision ) );
+       e.set( "y", util::round( stats -> total_time.total_seconds(), p.sim -> report_precision ) );
        e.set( "name", report::decorate_html_string( stats -> name_str, color ) );
 
        pc.add( "series.0.data", e );
      }
    }
 
-   if ( p -> collected_data.waiting_time.mean() > 0 )
+   if ( p.collected_data.waiting_time.mean() > 0 )
    {
      sc_js_t e;
      e.set( "color", color::WHITE.str() );
-     e.set( "y", util::round( p -> collected_data.waiting_time.mean(), p -> sim -> report_precision ) );
+     e.set( "y", util::round( p.collected_data.waiting_time.mean(), p.sim -> report_precision ) );
      e.set( "name", "waiting_time" );
      pc.add( "series.0.data", e );
    }
@@ -2621,7 +2612,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t* p )
   return true;
 }
 
-bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t* p, const std::string title, const std::vector<stats_t*>& stats_list )
+bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, const std::string title, const std::vector<stats_t*>& stats_list )
 {
   if ( stats_list.empty() )
   {
@@ -2630,9 +2621,9 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t* 
 
   pc.set_title( title );
   pc.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.percentage:.1f}%" );
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    pc.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
@@ -2651,29 +2642,26 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t* 
   return true;
 }
 
-bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const player_t* p )
+bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
-   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+   for ( const auto& stat : p.stats_list )
    {
-     stats_t* st = p -> stats_list[ i ];
-     if ( st -> quiet ) continue;
-     if ( st -> actual_amount.mean() <= 0 ) continue;
-     if ( st -> type != STATS_DMG ) continue;
-     stats_list.push_back( st );
+     if ( stat -> quiet ) continue;
+     if ( stat -> actual_amount.mean() <= 0 ) continue;
+     if ( stat -> type != STATS_DMG ) continue;
+     stats_list.push_back( stat );
    }
 
-   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+   for ( const auto& pet : p.pet_list )
    {
-     pet_t* pet = p -> pet_list[ i ];
-     for ( size_t j = 0; j < pet -> stats_list.size(); ++j )
+     for ( const auto& stat : pet->stats_list )
      {
-       stats_t* st = pet -> stats_list[ j ];
-       if ( st -> quiet ) continue;
-       if ( st -> actual_amount.mean() <= 0 ) continue;
-       if ( st -> type != STATS_DMG ) continue;
-       stats_list.push_back( st );
+       if ( stat -> quiet ) continue;
+       if ( stat -> actual_amount.mean() <= 0 ) continue;
+       if ( stat -> type != STATS_DMG ) continue;
+       stats_list.push_back( stat );
      }
    }
 
@@ -2682,35 +2670,32 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const 
   if ( stats_list.size() == 0 )
     return false;
 
-  generate_stats_sources( chart, p, p -> name_str + " Damage Sources", stats_list );
+  generate_stats_sources( chart, p, p.name_str + " Damage Sources", stats_list );
   chart.set( "series.0.name", "Damage" );
   chart.set( "plotOptions.pie.tooltip.pointFormat", "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>%<br/>" );
   return true;
 }
 
-bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const player_t* p )
+bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  for ( const auto& stat : p.stats_list )
   {
-    stats_t* st = p -> stats_list[ i ];
-    if ( st -> quiet ) continue;
-    if ( st -> actual_amount.mean() <= 0 ) continue;
-    if ( st -> type == STATS_DMG ) continue;
-    stats_list.push_back( st );
+    if ( stat -> quiet ) continue;
+    if ( stat -> actual_amount.mean() <= 0 ) continue;
+    if ( stat -> type == STATS_DMG ) continue;
+    stats_list.push_back( stat );
   }
 
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  for ( const auto& pet : p.pet_list )
   {
-    pet_t* pet = p -> pet_list[ i ];
-    for ( size_t j = 0; j < pet -> stats_list.size(); ++j )
+    for ( const auto& stat : pet->stats_list )
     {
-      stats_t* st = pet -> stats_list[ j ];
-      if ( st -> quiet ) continue;
-      if ( st -> actual_amount.mean() <= 0 ) continue;
-      if ( st -> type == STATS_DMG ) continue;
-      stats_list.push_back( st );
+      if ( stat -> quiet ) continue;
+      if ( stat -> actual_amount.mean() <= 0 ) continue;
+      if ( stat -> type == STATS_DMG ) continue;
+      stats_list.push_back( stat );
     }
   }
 
@@ -2719,7 +2704,7 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
 
   range::sort( stats_list, compare_amount() );
 
-  generate_stats_sources( chart, p, p -> name_str + " Healing Sources", stats_list );
+  generate_stats_sources( chart, p, p.name_str + " Healing Sources", stats_list );
 
   return true;
 }
@@ -3445,22 +3430,22 @@ bool chart::generate_apet( highchart::bar_chart_t& bc, const std::vector<stats_t
   return true;
 }
 
-bool chart::generate_action_dpet( highchart::bar_chart_t& bc, const player_t* p )
+bool chart::generate_action_dpet( highchart::bar_chart_t& bc, const player_t& p )
 {
   std::vector<stats_t*> stats_list;
 
   // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
-  range::remove_copy_if( p -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
+  range::remove_copy_if( p.stats_list, back_inserter( stats_list ), filter_stats_dpet( p ) );
   range::sort( stats_list, compare_apet() );
 
   if ( stats_list.size() == 0 )
     return false;
 
-  bc.set_title( p -> name_str + " Damage per Execute Time" );
+  bc.set_title( p.name_str + " Damage per Execute Time" );
   bc.set_yaxis_title( "Damage per Execute Time" );
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    bc.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    bc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
   generate_apet( bc, stats_list );
@@ -3468,13 +3453,13 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc, const player_t* p 
   return true;
 }
 
-bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t* p, scale_metric_e metric )
+bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p, scale_metric_e metric )
 {
   double max_dps = 0, min_dps = std::numeric_limits<double>::max();
 
-  for ( size_t i = 0; i < p -> dps_plot_data.size(); ++i )
+  for ( size_t i = 0; i < p.dps_plot_data.size(); ++i )
   {
-    const std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
+    const std::vector<plot_data_t>& pd = p.dps_plot_data[ i ];
     size_t size = pd.size();
     for ( size_t j = 0; j < size; j++ )
     {
@@ -3488,7 +3473,7 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t* p, sc
     return false;
   }
 
-  scaling_metric_data_t scaling_data = p -> scaling_for_metric( metric );
+  scaling_metric_data_t scaling_data = p.scaling_for_metric( metric );
 
   ac.set_title( scaling_data.name + " Scaling Plot" );
   ac.set_yaxis_title( util::scale_metric_type_string( metric ) );
@@ -3498,14 +3483,14 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t* p, sc
   ac.set( "legend.margin", 5 );
   ac.set( "legend.padding", 0 );
   ac.set( "legend.itemMarginBottom", 5 );
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    ac.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    ac.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    const std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
+    const std::vector<plot_data_t>& pd = p.dps_plot_data[ i ];
     // Odds of metric value being 0 is pretty far, so lets just use that to
     // determine if we need to plot the stat or not
     if ( pd.size() == 0 )
@@ -3519,10 +3504,9 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t* p, sc
 
     ac.add( "colors", color );
 
-    for ( size_t j = 0; j < pd.size(); j++ )
+    for ( const auto& pdata : pd )
     {
-      data.push_back( std::pair<double, double>( pd[ j ].plot_step, 
-                                                 util::round( pd[ j ].value, p -> sim -> report_precision ) ) );
+      data.push_back( std::make_pair( pdata.plot_step, util::round( pdata.value, p.sim -> report_precision ) ) );
     }
 
     ac.add_simple_series( "", "", util::stat_type_abbrev( i ), data );
@@ -3533,18 +3517,17 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t* p, sc
 
 // chart::generate_scale_factors ===========================================
 
-bool chart::generate_scale_factors( highchart::bar_chart_t& bc, const player_t* p, scale_metric_e metric )
+bool chart::generate_scale_factors( highchart::bar_chart_t& bc, const player_t& p, scale_metric_e metric )
 {
   std::vector<stat_e> scaling_stats;
 
-  for ( size_t i = 0, end = p -> scaling_stats[ metric ].size(); i < end; ++i )
+  for ( auto stat : p.scaling_stats[ metric ] )
   {
-    if ( ! p -> scales_with[ p -> scaling_stats[ metric ][ i ] ] )
+    if ( ! p.scales_with[ stat ] )
     {
       continue;
     }
-
-    scaling_stats.push_back( p -> scaling_stats[ metric ][ i ] );
+    scaling_stats.push_back( stat );
   }
 
   if ( scaling_stats.size() == 0 )
@@ -3552,11 +3535,11 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc, const player_t* 
     return false;
   }
 
-  scaling_metric_data_t scaling_data = p -> scaling_for_metric( metric );
+  scaling_metric_data_t scaling_data = p.scaling_for_metric( metric );
 
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    bc.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    bc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
   bc.set_title( scaling_data.name + " Scale Factors" );
@@ -3572,96 +3555,96 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc, const player_t* 
 
   std::vector<double> data;
   std::vector<std::pair<double, double> > error;
-  for ( size_t i = 0; i < scaling_stats.size(); ++i )
+  for ( auto stat : scaling_stats )
   {
 
-    double value = util::round( p -> scaling[ metric ].get_stat( scaling_stats[ i ] ), p -> sim -> report_precision );
-    double error_value = util::round( p -> scaling_error[ metric ].get_stat( scaling_stats[ i ] ), p -> sim -> report_precision );
+    double value = util::round( p.scaling[ metric ].get_stat( stat ), p.sim -> report_precision );
+    double error_value = util::round( p.scaling_error[ metric ].get_stat( stat ), p.sim -> report_precision );
     data.push_back( value );
     error.push_back( std::pair<double, double>( value - fabs( error_value ), value + fabs( error_value ) ) );
 
-    std::string category_str = util::stat_type_abbrev( scaling_stats[ i ] );
-    category_str += " (" + util::to_string( util::round( value, p -> sim -> report_precision ), p -> sim -> report_precision ) + ")";
+    std::string category_str = util::stat_type_abbrev( stat );
+    category_str += " (" + util::to_string( util::round( value, p.sim -> report_precision ), p.sim -> report_precision ) + ")";
 
     bc.add( "xAxis.categories", category_str );
   }
 
-  bc.add_simple_series( "bar", color::class_color( p -> type ), util::scale_metric_type_abbrev( metric ) + std::string( " per point" ), data );
+  bc.add_simple_series( "bar", color::class_color( p.type ), util::scale_metric_type_abbrev( metric ) + std::string( " per point" ), data );
   bc.add_simple_series( "errorbar", "", "Error", error );
 
   return true;
 }
 
 // Generate a "standard" timeline highcharts object as a string based on a stats_t object
-highchart::time_series_t& chart::generate_stats_timeline( highchart::time_series_t& ts, const stats_t* s )
+highchart::time_series_t& chart::generate_stats_timeline( highchart::time_series_t& ts, const stats_t& s )
 {
   sc_timeline_t timeline_aps;
-  s -> timeline_amount.build_derivative_timeline( timeline_aps );
-  std::string stats_type = util::stats_type_string( s -> type );
-  ts.set_toggle_id( "actor" + util::to_string( s -> player -> index ) + "_" + s -> name_str + "_" + stats_type + "_toggle" );
+  s.timeline_amount.build_derivative_timeline( timeline_aps );
+  std::string stats_type = util::stats_type_string( s.type );
+  ts.set_toggle_id( "actor" + util::to_string( s.player -> index ) + "_" + s.name_str + "_" + stats_type + "_toggle" );
 
   ts.height_ = 200;
   ts.set( "yAxis.min", 0 );
-  if ( s -> type == STATS_DMG )
+  if ( s.type == STATS_DMG )
   {
     ts.set_yaxis_title( "Damage per second" );
-    if ( s -> action_list.size() > 0 && s -> action_list[ 0 ] -> s_data -> id() != 0 )
-      ts.set_title( std::string( s -> action_list[ 0 ] -> s_data -> name_cstr() ) + " Damage per second" );
+    if ( s.action_list.size() > 0 && s.action_list[ 0 ] -> s_data -> id() != 0 )
+      ts.set_title( std::string( s.action_list[ 0 ] -> s_data -> name_cstr() ) + " Damage per second" );
     else
-      ts.set_title( s -> name_str + " Damage per second" );
+      ts.set_title( s.name_str + " Damage per second" );
   }
   else
     ts.set_yaxis_title( "Healing per second" );
 
   std::string area_color = color::YELLOW;
-  if ( s -> action_list.size() > 0 )
-    area_color = color::school_color( s -> action_list[ 0 ] -> school );
+  if ( s.action_list.size() > 0 )
+    area_color = color::school_color( s.action_list[ 0 ] -> school );
 
-  ts.add_simple_series( "area", area_color, s -> type == STATS_DMG ? "DPS" : "HPS", timeline_aps.data() );
-  ts.set_mean( util::round( s -> portion_aps.mean(), s -> player -> sim -> report_precision ) );
+  ts.add_simple_series( "area", area_color, s.type == STATS_DMG ? "DPS" : "HPS", timeline_aps.data() );
+  ts.set_mean( util::round( s.portion_aps.mean(), s.player -> sim -> report_precision ) );
 
   return ts;
 }
 
-bool chart::generate_actor_dps_series( highchart::time_series_t& ts, const player_t* p )
+bool chart::generate_actor_dps_series( highchart::time_series_t& ts, const player_t& p )
 {
-  if ( p -> collected_data.dps.mean() <= 0 )
+  if ( p.collected_data.dps.mean() <= 0 )
   {
     return false;
   }
 
   sc_timeline_t timeline_dps;
-  p -> collected_data.timeline_dmg.build_derivative_timeline( timeline_dps );
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  p.collected_data.timeline_dmg.build_derivative_timeline( timeline_dps );
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    ts.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    ts.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
   ts.set( "yAxis.min", 0 );
   ts.set_yaxis_title( "Damage per second" );
-  ts.set_title( p -> name_str + " Damage per second" );
-  ts.add_simple_series( "area", color::class_color( p -> type ), "DPS", timeline_dps.data() );
-  ts.set_mean( util::round( p -> collected_data.dps.mean(), p -> sim -> report_precision ) );
+  ts.set_title( p.name_str + " Damage per second" );
+  ts.add_simple_series( "area", color::class_color( p.type ), "DPS", timeline_dps.data() );
+  ts.set_mean( util::round( p.collected_data.dps.mean(), p.sim -> report_precision ) );
 
   return false;
 }
 
 highchart::time_series_t& chart::generate_actor_timeline( highchart::time_series_t& ts,
-                                                          const player_t*      p,
+                                                          const player_t&      p,
                                                           const std::string&   attribute,
                                                           const std::string&   series_color,
                                                           const sc_timeline_t& data )
 {
   std::string attr_str = util::inverse_tokenize( attribute );
 
-  if ( p -> sim -> player_no_pet_list.size() > 1 )
+  if ( p.sim -> player_no_pet_list.size() > 1 )
   {
-    ts.set_toggle_id( "player" + util::to_string( p -> index ) + "toggle" );
+    ts.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
-  ts.set_title( p -> name_str + " " + attr_str );
+  ts.set_title( p.name_str + " " + attr_str );
   ts.set_yaxis_title( "Average " + attr_str );
   ts.add_simple_series( "area", series_color, attr_str, data.data() );
-  ts.set_xaxis_max( p -> sim -> simulation_length.max() );
+  ts.set_xaxis_max( p.sim -> simulation_length.max() );
 
   return ts;
 }

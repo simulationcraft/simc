@@ -410,7 +410,7 @@ std::string wowhead::decorated_action_name( const std::string& name,
 }
 
 std::string wowhead::decorated_buff_name( const std::string& name,
-                                          buff_t* buff,
+                                          const buff_t& buff,
                                           wowhead_e domain, 
                                           const std::string& href_parm,
                                           bool affix )
@@ -418,10 +418,10 @@ std::string wowhead::decorated_buff_name( const std::string& name,
   std::string spell_name;
   unsigned spell_id = 0;
 
-  if ( buff -> data().id() > 0 )
+  if ( buff.data().id() > 0 )
   {
-    spell_id = buff -> data().id();
-    spell_name = buff -> data().name_cstr();
+    spell_id = buff.data().id();
+    spell_name = buff.data().name_cstr();
   }
 
   util::tokenize( spell_name );

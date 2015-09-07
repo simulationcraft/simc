@@ -994,7 +994,7 @@ void print_text_monitor_cpu( FILE* file, sim_t* sim )
 
 void print_text_player( FILE* file, player_t* p )
 {
-  report::generate_player_buff_lists( p, p->report_information );
+  report::generate_player_buff_lists( *p, p->report_information );
 
   const player_collected_data_t& cd = p -> collected_data;
 

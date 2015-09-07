@@ -407,7 +407,7 @@ public:
   virtual double    composite_bonus_armor() const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_crit() const;
-  virtual double    composite_melee_expertise( weapon_t* weapon ) const;
+  virtual double    composite_melee_expertise( const weapon_t* weapon ) const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_melee_speed() const;
   virtual double    composite_spell_crit() const;
@@ -6024,7 +6024,7 @@ double paladin_t::composite_melee_crit() const
 
 // paladin_t::composite_melee_expertise =====================================
 
-double paladin_t::composite_melee_expertise( weapon_t* w ) const
+double paladin_t::composite_melee_expertise( const weapon_t* w ) const
 {
   double expertise = player_t::composite_melee_expertise( w );
 

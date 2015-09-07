@@ -720,7 +720,7 @@ public:
   virtual double    composite_parry() const { return 0; }
   virtual double    composite_block() const { return 0; }
   virtual double    composite_crit_avoidance() const;
-  virtual double    composite_melee_expertise( weapon_t* ) const;
+  virtual double    composite_melee_expertise( const weapon_t* ) const;
   virtual double    composite_dodge() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual expr_t*   create_expression( action_t*, const std::string& name );
@@ -736,7 +736,7 @@ public:
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& );
-  virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
+  virtual std::string      create_profile( save_e type = SAVE_ALL );
   virtual void      recalculate_resource_max( resource_e r );
   virtual void      copy_from( player_t* source );
 
@@ -7332,7 +7332,7 @@ double druid_t::composite_player_heal_multiplier( const action_state_t* s ) cons
 
 // druid_t::composite_melee_expertise( weapon_t* ) ==========================
 
-double druid_t::composite_melee_expertise( weapon_t* ) const
+double druid_t::composite_melee_expertise( const weapon_t* ) const
 {
   double exp = player_t::composite_melee_expertise();
 
@@ -7698,11 +7698,9 @@ action_t* druid_t::create_proc_action( const std::string& name, const special_ef
 
 // druid_t::create_profile ==================================================
 
-bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_html )
+std::string druid_t::create_profile( save_e type )
 {
-  player_t::create_profile( profile_str, type, save_html );
-
-  return true;
+  return player_t::create_profile( type );
 }
 
 // druid_t::recalculate_resource_max ========================================

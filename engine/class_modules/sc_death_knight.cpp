@@ -536,7 +536,7 @@ public:
   virtual double    composite_dodge() const;
   virtual double    composite_multistrike() const;
   virtual double    composite_leech() const;
-  virtual double    composite_melee_expertise( weapon_t* ) const;
+  virtual double    composite_melee_expertise( const weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    composite_crit_avoidance() const;
@@ -7738,7 +7738,7 @@ double death_knight_t::composite_leech() const
 
 // death_knight_t::composite_melee_expertise ===============================
 
-double death_knight_t::composite_melee_expertise( weapon_t* ) const
+double death_knight_t::composite_melee_expertise( const weapon_t* ) const
 {
   double expertise = player_t::composite_melee_expertise( nullptr );
 

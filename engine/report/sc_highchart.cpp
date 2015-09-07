@@ -88,31 +88,31 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
   return json;
 }
 
-std::string highchart::build_id( const stats_t* stats, const std::string& suffix )
+std::string highchart::build_id( const stats_t& stats, const std::string& suffix )
 {
   std::string s;
 
-  s += "actor" + util::to_string( stats -> player -> index );
-  s += "_" + stats -> name_str;
+  s += "actor" + util::to_string( stats.player -> index );
+  s += "_" + stats.name_str;
   s += "_";
-  s += util::stats_type_string( stats -> type );
+  s += util::stats_type_string( stats.type );
   s += suffix;
 
   return s;
 }
 
-std::string highchart::build_id( const player_t* actor, const std::string& suffix )
+std::string highchart::build_id( const player_t& actor, const std::string& suffix )
 {
-  std::string s = "actor" + util::to_string( actor -> index );
+  std::string s = "actor" + util::to_string( actor.index );
   s += suffix;
   return s;
 }
 
-std::string highchart::build_id( const buff_t* buff, const std::string& suffix )
+std::string highchart::build_id( const buff_t& buff, const std::string& suffix )
 {
-  std::string s = "buff_" + buff -> name_str;
-  if ( buff -> player )
-    s += "_actor" + util::to_string( buff -> player -> index );
+  std::string s = "buff_" + buff.name_str;
+  if ( buff.player )
+    s += "_actor" + util::to_string( buff.player -> index );
 
   s += suffix;
   return s;

@@ -635,7 +635,7 @@ void item_t::encoded_item( xml_writer_t& writer )
   writer.end_tag( "item" );
 }
 
-std::string item_t::encoded_item()
+std::string item_t::encoded_item() const
 {
   std::ostringstream s;
 
@@ -810,7 +810,7 @@ std::string item_t::encoded_comment()
 
 // item_t::encoded_gems =====================================================
 
-std::string item_t::encoded_gems()
+std::string item_t::encoded_gems() const
 {
   if ( ! option_gems_str.empty() )
     return option_gems_str;
@@ -838,7 +838,7 @@ std::string item_t::encoded_gems()
 
 // item_t::encoded_enchant ==================================================
 
-std::string item_t::encoded_enchant()
+std::string item_t::encoded_enchant() const
 {
   if ( ! option_enchant_str.empty() )
     return option_enchant_str;
@@ -851,7 +851,7 @@ std::string item_t::encoded_enchant()
 
 // item_t::encoded_addon ====================================================
 
-std::string item_t::encoded_addon()
+std::string item_t::encoded_addon() const
 {
   if ( ! option_addon_str.empty() )
     return option_addon_str;
@@ -864,7 +864,7 @@ std::string item_t::encoded_addon()
 
 // item_t::encoded_upgrade_level ============================================
 
-std::string item_t::encoded_upgrade_level()
+std::string item_t::encoded_upgrade_level() const
 {
   std::string upgrade_level_str;
   if ( parsed.upgrade_level > 0 )
@@ -875,7 +875,7 @@ std::string item_t::encoded_upgrade_level()
 
 // item_t::encoded_random_suffix_id =========================================
 
-std::string item_t::encoded_random_suffix_id()
+std::string item_t::encoded_random_suffix_id() const
 {
   std::string str;
 
@@ -887,7 +887,7 @@ std::string item_t::encoded_random_suffix_id()
 
 // item_t::encoded_stats ====================================================
 
-std::string item_t::encoded_stats()
+std::string item_t::encoded_stats() const
 {
   if ( ! option_stats_str.empty() )
     return option_stats_str;
@@ -915,7 +915,7 @@ std::string item_t::encoded_stats()
 
 // item_t::encoded_weapon ===================================================
 
-std::string item_t::encoded_weapon()
+std::string item_t::encoded_weapon() const
 {
   if ( ! option_weapon_str.empty() )
     return option_weapon_str;

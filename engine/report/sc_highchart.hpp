@@ -9,9 +9,9 @@
 
 namespace highchart
 {
-std::string build_id( const stats_t* stats, const std::string& suffix = "" );
-std::string build_id( const player_t* actor, const std::string& suffix );
-std::string build_id( const buff_t* buff, const std::string& suffix );
+std::string build_id( const stats_t& stats, const std::string& suffix = "" );
+std::string build_id( const player_t& actor, const std::string& suffix );
+std::string build_id( const buff_t& buff, const std::string& suffix );
 
 enum highchart_theme_e
 {

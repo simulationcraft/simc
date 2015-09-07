@@ -405,7 +405,7 @@ public:
   virtual void      init_resources( bool force ) override;
   virtual void      reset() override;
   virtual void      create_options() override;
-  virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false ) override;
+  virtual std::string      create_profile( save_e = SAVE_ALL ) override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
@@ -7270,9 +7270,9 @@ void priest_t::create_options()
 
 // priest_t::create_profile =================================================
 
-bool priest_t::create_profile( std::string& profile_str, save_e type, bool save_html )
+std::string priest_t::create_profile( save_e type )
 {
-  base_t::create_profile( profile_str, type, save_html );
+  std::string profile_str = base_t::create_profile( type );
 
   if ( type == SAVE_ALL )
   {
@@ -7290,7 +7290,7 @@ bool priest_t::create_profile( std::string& profile_str, save_e type, bool save_
     }
   }
 
-  return true;
+  return profile_str;
 }
 
 // priest_t::copy_from ======================================================

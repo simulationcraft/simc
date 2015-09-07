@@ -416,7 +416,7 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
+  virtual std::string      create_profile( save_e = SAVE_ALL );
   virtual void      copy_from( player_t* source );
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const     { return ROLE_SPELL; }
@@ -6438,9 +6438,9 @@ void warlock_t::create_options()
   add_option( opt_string( "default_pet", default_pet ) );
 }
 
-bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
+std::string warlock_t::create_profile( save_e stype )
 {
-  player_t::create_profile( profile_str, stype, save_html );
+  std::string profile_str = player_t::create_profile( stype );
 
   if ( stype == SAVE_ALL )
   {
@@ -6449,7 +6449,7 @@ bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool sav
     if ( ! default_pet.empty() )       profile_str += "default_pet=" + default_pet + "\n";
   }
 
-  return true;
+  return profile_str;
 }
 
 void warlock_t::copy_from( player_t* source )

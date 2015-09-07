@@ -121,7 +121,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
 
 void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
 {
-  report::generate_player_charts( p, p->report_information );
+  report::generate_player_charts( *p, p->report_information );
 
   const player_collected_data_t& cd = p -> collected_data;
   double dps_error = sim_t::distribution_mean_error( *sim, cd.dps );
@@ -465,10 +465,10 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       {
         if ( s -> has_direct_amount_results() || s -> has_tick_amount_results() )
         {
-          highchart::time_series_t ts( highchart::build_id( s ), s -> player -> sim );
+          highchart::time_series_t ts( highchart::build_id( *s ), s -> player -> sim );
           writer.begin_tag( "chart" );
           writer.print_attribute( "type", "timeline_aps" );
-          writer.print_text( chart::generate_stats_timeline( ts, s ).to_xml() );
+          writer.print_text( chart::generate_stats_timeline( ts, *s ).to_xml() );
           writer.end_tag( "chart" );
         }
       }
@@ -891,8 +891,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
   {
     if ( ! p -> stats_list.empty() )
     {
-      highchart::bar_chart_t bc( highchart::build_id( p, "dpet" ), p -> sim );
-      if ( chart::generate_action_dpet( bc, p ) )
+      highchart::bar_chart_t bc( highchart::build_id( *p, "dpet" ), p -> sim );
+      if ( chart::generate_action_dpet( bc, *p ) )
       {
         writer.begin_tag( "chart" );
         writer.print_attribute( "type", "dpet" );
@@ -900,8 +900,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
         writer.end_tag( "chart" );
       }
 
-      highchart::pie_chart_t pc( highchart::build_id( p, "dps_sources" ), p -> sim );
-      if ( chart::generate_damage_stats_sources( pc, p ) )
+      highchart::pie_chart_t pc( highchart::build_id( *p, "dps_sources" ), p -> sim );
+      if ( chart::generate_damage_stats_sources( pc, *p ) )
       {
         writer.begin_tag( "chart" );
         writer.print_attribute( "type", "dps_sources" );
@@ -909,8 +909,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
         writer.end_tag( "chart" );
       }
 
-      highchart::pie_chart_t pc2( highchart::build_id( p, "hps_sources" ), p -> sim );
-      if ( chart::generate_heal_stats_sources( pc2, p ) )
+      highchart::pie_chart_t pc2( highchart::build_id( *p, "hps_sources" ), p -> sim );
+      if ( chart::generate_heal_stats_sources( pc2, *p ) )
       {
         writer.begin_tag( "chart" );
         writer.print_attribute( "type", "hps_sources" );
@@ -919,8 +919,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
       }
     }
 
-    highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ), p -> sim );
-    if ( chart::generate_scaling_plot( scaling_plot, p, p -> sim -> scaling -> scaling_metric ) )
+    highchart::chart_t scaling_plot( highchart::build_id( *p, "scaling_plot" ), p -> sim );
+    if ( chart::generate_scaling_plot( scaling_plot, *p, p -> sim -> scaling -> scaling_metric ) )
     {
       writer.begin_tag( "chart" );
       writer.print_attribute( "type", "scaling_dps" );
@@ -928,8 +928,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
       writer.end_tag( "chart" );
     }
 
-    highchart::chart_t reforge( highchart::build_id( p, "reforge_plot" ), p -> sim );
-    if ( chart::generate_reforge_plot( reforge, p ) )
+    highchart::chart_t reforge( highchart::build_id( *p, "reforge_plot" ), p -> sim );
+    if ( chart::generate_reforge_plot( reforge, *p ) )
     {
       writer.begin_tag( "chart" );
       writer.print_attribute( "type", "reforge_dps" );
@@ -940,8 +940,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
     scaling_metric_data_t scaling_data = p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
     std::string scale_factor_id = "scale_factor_";
     scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
-    highchart::bar_chart_t bc( highchart::build_id( p, scale_factor_id ), p -> sim );
-    if ( chart::generate_scale_factors( bc, p, scaling_data.metric ) )
+    highchart::bar_chart_t bc( highchart::build_id( *p, scale_factor_id ), p -> sim );
+    if ( chart::generate_scale_factors( bc, *p, scaling_data.metric ) )
     {
       writer.begin_tag( "chart" );
       writer.print_attribute( "type", "scale_factors" );
@@ -951,8 +951,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
 
     if ( p -> collected_data.dps.mean() > 0 )
     {
-      highchart::time_series_t ts( highchart::build_id( p, "dps" ), p -> sim );
-      if ( chart::generate_actor_dps_series( ts, p ) )
+      highchart::time_series_t ts( highchart::build_id( *p, "dps" ), p -> sim );
+      if ( chart::generate_actor_dps_series( ts, *p ) )
       {
         writer.begin_tag( "chart" );
         writer.print_attribute( "type", "timeline_dps" );
@@ -962,7 +962,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
     }
 
     {
-      highchart::histogram_chart_t chart( highchart::build_id( p, "dps_dist" ), p -> sim );
+      highchart::histogram_chart_t chart( highchart::build_id( *p, "dps_dist" ), p -> sim );
       chart::generate_distribution( chart, p, p -> collected_data.dps.distribution, p -> name_str + " DPS",
           p -> collected_data.dps.mean(),
           p -> collected_data.dps.min(),
@@ -973,7 +973,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
       writer.end_tag( "chart" );
     }
     {
-      highchart::histogram_chart_t chart( highchart::build_id( p, "hps_dist" ), p -> sim );
+      highchart::histogram_chart_t chart( highchart::build_id( *p, "hps_dist" ), p -> sim );
       chart::generate_distribution( chart, p, p -> collected_data.hps.distribution, p -> name_str + " HPS",
           p -> collected_data.hps.mean(),
           p -> collected_data.hps.min(),
@@ -984,8 +984,8 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
       writer.end_tag( "chart" );
     }
 
-    highchart::pie_chart_t time_spent( highchart::build_id( p, "time_spent" ), p -> sim );
-    if ( chart::generate_spent_time( time_spent, p ) )
+    highchart::pie_chart_t time_spent( highchart::build_id( *p, "time_spent" ), p -> sim );
+    if ( chart::generate_spent_time( time_spent, *p ) )
     {
       writer.begin_tag( "chart" );
       writer.print_attribute( "type", "dpet" );

@@ -1283,7 +1283,7 @@ std::string& urlencode( std::string& str );
 std::string& urldecode( std::string& str );
 std::string uchar_to_hex( unsigned char );
 std::string google_image_chart_encode( const std::string& str );
-std::string create_blizzard_talent_url( const player_t* p );
+std::string create_blizzard_talent_url( const player_t& p );
 
 bool str_compare_ci( const std::string& l, const std::string& r );
 std::string& glyph_name( std::string& n );
@@ -1294,7 +1294,7 @@ double floor( double X, unsigned int decplaces = 0 );
 double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
 double approx_sqrt( double X );
-double get_avg_itemlvl( const player_t* p );
+double get_avg_itemlvl( const player_t& p );
 
 std::string& tolower( std::string& str );
 
@@ -3729,17 +3729,17 @@ struct item_t
   int stat_value( size_t idx ) const;
   bool has_item_stat( stat_e stat ) const;
 
-  std::string encoded_item();
+  std::string encoded_item() const;
   void encoded_item( xml_writer_t& writer );
   std::string encoded_comment();
 
-  std::string encoded_stats();
-  std::string encoded_weapon();
-  std::string encoded_gems();
-  std::string encoded_enchant();
-  std::string encoded_addon();
-  std::string encoded_upgrade_level();
-  std::string encoded_random_suffix_id();
+  std::string encoded_stats() const;
+  std::string encoded_weapon() const;
+  std::string encoded_gems() const;
+  std::string encoded_enchant() const;
+  std::string encoded_addon() const;
+  std::string encoded_upgrade_level() const;
+  std::string encoded_random_suffix_id() const;
 
   bool decode_stats();
   bool decode_gems();
@@ -5047,7 +5047,7 @@ struct player_t : public actor_t
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit() const;
   virtual double composite_melee_crit_multiplier() const { return 1.0; }
-  virtual double composite_melee_expertise( weapon_t* w = nullptr ) const;
+  virtual double composite_melee_expertise( const weapon_t* w = nullptr ) const;
 
   virtual double composite_spell_haste() const; //This is the subset of the old_spell_haste that applies to RPPM
   virtual double composite_spell_speed() const; //This is the old spell_haste and incorporates everything that buffs cast speed
@@ -5275,7 +5275,7 @@ struct player_t : public actor_t
   virtual void create_options();
   void add_option( std::unique_ptr<option_t> );
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
-  virtual bool create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
+  virtual std::string create_profile( save_e = SAVE_ALL );
 
   virtual void copy_from( player_t* source );
 
@@ -5301,7 +5301,17 @@ struct player_t : public actor_t
   bool is_sleeping() const { return _is_sleeping( this ); }
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
+  const pet_t* cast_pet() const { return debug_cast<const pet_t*>( this ); }
   bool is_my_pet( player_t* t ) const;
+
+  /**
+   * Returns owner if available, otherwise the player itself.
+   */
+  virtual const player_t* get_owner_or_self() const
+  { return this; }
+
+  player_t* get_owner_or_self()
+  { return const_cast<player_t*>(static_cast<const player_t*>(this) -> get_owner_or_self()); }
 
   bool      in_gcd() const { return gcd_ready > sim -> current_time(); }
   bool      recent_cast();
@@ -5312,7 +5322,7 @@ struct player_t : public actor_t
   // T18 Hellfire Citadel class trinket detection
   virtual bool has_t18_class_trinket() const;
 
-  action_priority_list_t* find_action_priority_list( const std::string& name );
+  action_priority_list_t* find_action_priority_list( const std::string& name ) const;
   void                    clear_action_priority_lists() const;
   void                    copy_action_priority_list( const std::string& old_list, const std::string& new_list );
 
@@ -5657,6 +5667,8 @@ public:
   virtual void combat_begin();
 
   virtual const char* name() const { return full_name_str.c_str(); }
+  virtual const player_t* get_owner_or_self() const override
+  { return owner; }
 
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 
@@ -5676,7 +5688,7 @@ public:
   virtual double composite_movement_speed() const
   { return owner -> composite_movement_speed(); }
 
-  virtual double composite_melee_expertise( weapon_t* ) const
+  virtual double composite_melee_expertise( const weapon_t* ) const
   { return hit_exp(); }
   virtual double composite_melee_hit() const
   { return hit_exp(); }
@@ -7610,7 +7622,7 @@ std::string decorated_action_name( const std::string& name,
                                   const std::string& href_parm = std::string(),
                                   bool affix = true );
 std::string decorated_buff_name( const std::string& name,
-                                 buff_t* buff,
+                                 const buff_t& buff,
                                  wowhead_e domain,
                                  const std::string& href_parm = std::string(),
                                  bool affix = true );

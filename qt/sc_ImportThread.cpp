@@ -90,8 +90,7 @@ void SC_ImportThread::run()
 
     if ( sim->init() )
     {
-      std::string buffer = "";
-      player -> create_profile( buffer );
+      std::string buffer = player -> create_profile();
       profile = QString::fromUtf8( buffer.c_str() );
     }
     else player = 0;

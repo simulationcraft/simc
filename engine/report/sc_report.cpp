@@ -57,16 +57,14 @@ struct buff_comp
   }
 };
 
-size_t player_chart_length( player_t* p )
+size_t player_chart_length( const player_t& p )
 {
-  if ( pet_t* is_pet = dynamic_cast<pet_t*>( p ) )
-    p = is_pet -> owner;
+  const player_t* a = p.get_owner_or_self();
+  assert( a );
 
-  assert( p );
+  if ( ! a ) return 0; // For release builds.
 
-  if ( ! p ) return 0; // For release builds.
-
-  return static_cast<size_t>( p -> collected_data.fight_length.max() );
+  return static_cast<size_t>( a -> collected_data.fight_length.max() );
 }
 
 char stat_type_letter( stats_e type )
@@ -371,8 +369,7 @@ void report::print_profiles( sim_t* sim )
       }
       else
       {
-        std::string profile_str = "";
-        p -> create_profile( profile_str, SAVE_GEAR );
+        std::string profile_str = p -> create_profile( SAVE_GEAR );
         fprintf( file, "%s", profile_str.c_str() );
       }
     }
@@ -386,8 +383,7 @@ void report::print_profiles( sim_t* sim )
       }
       else
       {
-        std::string profile_str = "";
-        p -> create_profile( profile_str, SAVE_TALENTS );
+        std::string profile_str = p -> create_profile( SAVE_TALENTS );
         fprintf( file, "%s", profile_str.c_str() );
       }
     }
@@ -401,8 +397,7 @@ void report::print_profiles( sim_t* sim )
       }
       else
       {
-        std::string profile_str = "";
-        p -> create_profile( profile_str, SAVE_ACTIONS );
+        std::string profile_str = p -> create_profile( SAVE_ACTIONS );
         fprintf( file, "%s", profile_str.c_str() );
       }
     }
@@ -431,8 +426,7 @@ void report::print_profiles( sim_t* sim )
       continue;
     }
 
-    std::string profile_str = "";
-    p -> create_profile( profile_str );
+    std::string profile_str = p -> create_profile();
     fprintf( file, "%s", profile_str.c_str() );
   }
 
@@ -562,7 +556,7 @@ void report::print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void report::print_html_sample_data( report::sc_html_stream& os, const player_t* p, const extended_sample_data_t& data, const std::string& name, int& td_counter, int columns )
+void report::print_html_sample_data( report::sc_html_stream& os, const player_t& p, const extended_sample_data_t& data, const std::string& name, int& td_counter, int columns )
 {
   // Print Statistics of a Sample Data Container
   os << "\t\t\t\t\t\t\t<tr";
@@ -573,7 +567,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
   td_counter++;
   os << ">\n";
   os << "\t\t\t\t\t\t\t\t<td class=\"left small\" colspan=\"" << columns << "\">";
-  if ( ! p -> sim -> enable_highcharts )
+  if ( ! p.sim -> enable_highcharts )
   {
     os.format( "<a class=\"toggle-details\">%s</a></td>\n",
                name.c_str() );
@@ -583,7 +577,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
     std::string tokenized_name = name;
     util::tokenize( tokenized_name );
     os.format( "<a id=\"actor%d_%s_stats_toggle\" class=\"toggle-details\">%s</a></td>\n",
-               p -> index, tokenized_name.c_str(), name.c_str() );
+               p.index, tokenized_name.c_str(), name.c_str() );
   }
 
   os << "\t\t\t\t\t\t\t\t</tr>\n";
@@ -765,7 +759,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
       data.mean_std_dev );
 
     ++i;
-    double mean_error = data.mean_std_dev * p -> sim -> confidence_estimator;
+    double mean_error = data.mean_std_dev * p.sim -> confidence_estimator;
     ++i;
     os << "\t\t\t\t\t\t\t\t<tr";
     if ( !( i & 1 ) )
@@ -777,7 +771,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
-      p -> sim -> confidence * 100.0,
+      p.sim -> confidence * 100.0,
       data.mean() - mean_error,
       data.mean() + mean_error );
 
@@ -792,7 +786,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
-      p -> sim -> confidence * 100.0,
+      p.sim -> confidence * 100.0,
       data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
       data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
 
@@ -880,7 +874,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
 
   if ( ! data.simple )
   {
-    if ( ! p -> sim -> enable_highcharts )
+    if ( ! p.sim -> enable_highcharts )
     {
       std::string dist_chart = chart::distribution( data.distribution, name, data.mean(), data.min(), data.max() );
 
@@ -893,12 +887,12 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
       std::string tokenized_div_name = data.name_str + "_dist";
       util::tokenize( tokenized_div_name );
 
-      highchart::histogram_chart_t chart( tokenized_div_name, p -> sim );
-      chart.set_toggle_id( "actor" + util::to_string( p -> index ) + "_" + tokenized_div_name + "_stats_toggle" );
+      highchart::histogram_chart_t chart( tokenized_div_name, p.sim );
+      chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_div_name + "_stats_toggle" );
       if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
       {
         os << chart.to_target_div();
-        p -> sim -> add_chart_data( chart );
+        p.sim -> add_chart_data( chart );
       }
     }
   }
@@ -908,23 +902,22 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
      << "\t\t\t\t\t\t\t</tr>\n";
 }
 
-void report::generate_player_buff_lists( player_t*  p, player_processed_report_information_t& ri )
+void report::generate_player_buff_lists( player_t&  p, player_processed_report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
     return;
 
-  // Append p -> buff_list to ri.buff_list
-  ri.buff_list.insert( ri.buff_list.end(), p -> buff_list.begin(), p -> buff_list.end() );
+  // Append p.buff_list to ri.buff_list
+  ri.buff_list.insert( ri.buff_list.end(), p.buff_list.begin(), p.buff_list.end() );
 
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  for ( const auto& pet : p.pet_list )
   {
-    pet_t* pet = p -> pet_list[ i ];
     // Append pet -> buff_list to ri.buff_list
     ri.buff_list.insert( ri.buff_list.end(), pet -> buff_list.begin(), pet -> buff_list.end() );
   }
 
-  // Append p -> sim -> buff_list to ri.buff_list
-  ri.buff_list.insert( ri.buff_list.end(), p -> sim -> buff_list.begin(), p -> sim -> buff_list.end() );
+  // Append p.sim -> buff_list to ri.buff_list
+  ri.buff_list.insert( ri.buff_list.end(), p.sim -> buff_list.begin(), p.sim -> buff_list.end() );
 
   // Filter out non-dynamic buffs, copy them into ri.dynamic_buffs and sort
   //range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
@@ -938,14 +931,14 @@ void report::generate_player_buff_lists( player_t*  p, player_processed_report_i
   ri.buff_lists_generated = true;
 }
 
-void report::generate_player_charts( player_t* p, player_processed_report_information_t& ri )
+void report::generate_player_charts( player_t& p, player_processed_report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
 
-  if ( ! p -> sim -> enable_highcharts )
+  if ( ! p.sim -> enable_highcharts )
   {
-    const player_collected_data_t& cd = p -> collected_data;
+    const player_collected_data_t& cd = p.collected_data;
 
     // Pet Chart Adjustment ===================================================
     size_t max_buckets = player_chart_length( p );
@@ -953,17 +946,17 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     // Stats Charts
     std::vector<stats_t*> stats_list;
 
-    // Append p -> stats_list to stats_list
-    stats_list.insert( stats_list.end(), p -> stats_list.begin(), p -> stats_list.end() );
+    // Append p.stats_list to stats_list
+    stats_list.insert( stats_list.end(), p.stats_list.begin(), p.stats_list.end() );
 
-    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    for ( size_t i = 0; i < p.pet_list.size(); ++i )
     {
-      pet_t* pet = p -> pet_list[ i ];
+      pet_t* pet = p.pet_list[ i ];
       // Append pet -> stats_list to stats_list
       stats_list.insert( stats_list.end(), pet -> stats_list.begin(), pet -> stats_list.end() );
     }
 
-    if ( ! p -> is_pet() )
+    if ( ! p.is_pet() )
     {
       for ( size_t i = 0; i < stats_list.size(); i++ )
       {
@@ -972,7 +965,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
         // Create Stats Timeline Chart
         sc_timeline_t timeline_aps;
         s -> timeline_amount.build_derivative_timeline( timeline_aps );
-        s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", timeline_aps.mean() );
+        s -> timeline_aps_chart = chart::timeline( timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", timeline_aps.mean() );
         s -> aps_distribution_chart = chart::distribution( s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
                                                            s -> portion_aps.mean(), s -> portion_aps.min(), s -> portion_aps.max() );
       }
@@ -987,19 +980,19 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     ri.reforge_dps_chart    = chart::reforge_dps  ( p );
     ri.scale_factors_chart  = chart::scale_factors( p );
 
-    std::string encoded_name = util::google_image_chart_encode( p -> name_str );
+    std::string encoded_name = util::google_image_chart_encode( p.name_str );
     util::urlencode( encoded_name );
 
     {
       sc_timeline_t timeline_dps;
-      p -> collected_data.timeline_dmg.build_derivative_timeline( timeline_dps );
-      ri.timeline_dps_chart = chart::timeline( p, timeline_dps.data(), encoded_name + " DPS", cd.dps.mean() );
+      p.collected_data.timeline_dmg.build_derivative_timeline( timeline_dps );
+      ri.timeline_dps_chart = chart::timeline( timeline_dps.data(), encoded_name + " DPS", cd.dps.mean() );
     }
 
     ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
-    ri.dps_error_chart = chart::dps_error( *p );
+    ri.dps_error_chart = chart::dps_error( p );
 
-    if ( p -> primary_role() == ROLE_HEAL )
+    if ( p.primary_role() == ROLE_HEAL )
     {
       ri.distribution_dps_chart = chart::distribution( cd.hps.distribution, encoded_name + " HPS",
                                                        cd.hps.mean(),
@@ -1024,8 +1017,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     {
       resource_e rt = cd.resource_timelines[ i ].type;
       ri.timeline_resource_chart[ rt ] =
-        chart::timeline( p,
-                         cd.resource_timelines[ i ].timeline.data(),
+        chart::timeline( cd.resource_timelines[ i ].timeline.data(),
                          encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
                          cd.resource_timelines[ i ].timeline.mean(),
                          color::resource_color( rt ).hex_str(),
@@ -1040,8 +1032,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
       if ( cd.stat_timelines[ i ].timeline.mean() >  0 )
       {
         ri.timeline_stat_chart[ st ] =
-          chart::timeline( p,
-                           cd.stat_timelines[ i ].timeline.data(),
+          chart::timeline( cd.stat_timelines[ i ].timeline.data(),
                            encoded_name + ' ' + util::inverse_tokenize( util::stat_type_string( st ) ),
                            cd.stat_timelines[ i ].timeline.mean(),
                            color::stat_color( st ).hex_str(),
@@ -1049,22 +1040,20 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
       }
     }
 
-    if ( ! p -> is_pet() && p -> primary_role() == ROLE_TANK )
+    if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
     {
       ri.health_change_chart =
-        chart::timeline( p,
-                         cd.health_changes.merged_timeline.data(),
+        chart::timeline( cd.health_changes.merged_timeline.data(),
                          encoded_name + ' ' + "Health Change",
                          cd.health_changes.merged_timeline.mean(),
                          color::resource_color( RESOURCE_HEALTH ).hex_str(),
                          max_buckets );
 
       sc_timeline_t sliding_average_tl;
-      cd.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, (int)p -> tmi_window );
+      cd.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, (int)p.tmi_window );
       ri.health_change_sliding_chart =
-        chart::timeline( p,
-                         sliding_average_tl.data(),
-                         encoded_name + ' ' + "Health Change (" + util::to_string( p -> tmi_window, 2 ) + "s moving avg.)",
+        chart::timeline( sliding_average_tl.data(),
+                         encoded_name + ' ' + "Health Change (" + util::to_string( p.tmi_window, 2 ) + "s moving avg.)",
                          sliding_average_tl.mean(),
                          color::resource_color( RESOURCE_HEALTH ).hex_str(),
                          max_buckets );
@@ -1072,7 +1061,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   }
 
   // Scaling charts
-  if ( ! ( ( p -> sim -> scaling -> num_scaling_stats <= 0 ) || p -> quiet || p -> is_pet() || p -> is_enemy() || p -> is_add() || p -> type == HEALING_ENEMY ) )
+  if ( ! ( ( p.sim -> scaling -> num_scaling_stats <= 0 ) || p.quiet || p.is_pet() || p.is_enemy() || p.is_add() || p.type == HEALING_ENEMY ) )
   {
     ri.gear_weights_lootrank_link        = chart::gear_weights_lootrank   ( p );
     ri.gear_weights_wowhead_std_link     = chart::gear_weights_wowhead    ( p );
@@ -1081,7 +1070,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   }
 
   // Create html profile str
-  p -> create_profile( ri.html_profile_str, SAVE_ALL, true );
+  ri.html_profile_str = p.create_profile( SAVE_ALL );
 
   ri.charts_generated = true;
 }

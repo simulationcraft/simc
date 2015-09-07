@@ -2625,13 +2625,12 @@ std::string util::google_image_chart_encode( const std::string& str )
 
 // get_avg_itemlvl ==========================================================
 
-double util::get_avg_itemlvl( const player_t* p )
+double util::get_avg_itemlvl( const player_t& p )
 {
   double avg_ilvl = 0.0;
   int num_ilvl_items = 0;
-  for ( size_t i = 0; i < p->items.size(); i++ )
+  for ( const auto& item : p.items )
   {
-    const item_t& item = p->items[i];
     if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD
         && item.slot != SLOT_RANGED && item.active() )
     {
@@ -2648,10 +2647,10 @@ double util::get_avg_itemlvl( const player_t* p )
 
 // create_blizzard_talent_url ===============================================
 
-std::string util::create_blizzard_talent_url( const player_t* p )
+std::string util::create_blizzard_talent_url( const player_t& p )
 {
   std::string url = "http://us.battle.net/wow/en/tool/talent-calculator#";
-  switch ( p -> specialization() )
+  switch ( p.specialization() )
   {
    case DEATH_KNIGHT_BLOOD:   url += "daa"; break;
    case DEATH_KNIGHT_FROST:   url += "dZa"; break;
@@ -2692,8 +2691,8 @@ std::string util::create_blizzard_talent_url( const player_t* p )
   url += "!";
   for ( int i = 0; i < MAX_TALENT_ROWS; i++ )
   {
-    if ( p -> talent_points.choice( i ) >= 0 )
-      url += util::to_string( p -> talent_points.choice( i ) );
+    if ( p.talent_points.choice( i ) >= 0 )
+      url += util::to_string( p.talent_points.choice( i ) );
     else
       url += ".";  
   }
