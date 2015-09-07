@@ -216,30 +216,6 @@ void print_text_array( report::sc_html_stream& os, const T ( & data )[N]  )
   }
 }
 
-struct html_style_t
-{
-  virtual void print_html_styles( report::sc_html_stream& os) = 0;
-  virtual ~html_style_t() {}
-};
-
-struct mop_html_style_t : public html_style_t
-{
-  void print_html_styles( report::sc_html_stream& os) override
-  {
-    // Logo
-    os << "<style type=\"text/css\" media=\"all\">\n"
-        << "#logo {display: block;position: absolute;top: 7px;left: 15px;width: 375px;height: 153px;background: ";
-    print_text_array( os, __logo );
-    os << " 0px 0px no-repeat; }\n"
-        << "</style>\n";
-
-    // Rest
-    print_text_array( os, __mop_stylesheet );
-  }
-};
-
-typedef mop_html_style_t default_html_style_t;
-
 // print_html_contents ======================================================
 
 void print_html_contents( report::sc_html_stream& os, const sim_t* sim )
@@ -1238,13 +1214,17 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
 // print_html_styles ========================================================
 
-void print_html_styles( report::sc_html_stream& os, sim_t* )
+void print_html_style( report::sc_html_stream& os, const sim_t& )
 {
-  // First select the appropriate style
-  std::unique_ptr<html_style_t> style( new default_html_style_t() );
+  // Logo
+  os << "<style type=\"text/css\" media=\"all\">\n"
+      << "#logo {display: block;position: absolute;top: 7px;left: 15px;width: 375px;height: 153px;background: ";
+  print_text_array( os, __logo );
+  os << " 0px 0px no-repeat; }\n"
+      << "</style>\n";
 
-  // Print
-  style -> print_html_styles( os );
+  // Rest
+  print_text_array( os, __mop_stylesheet );
 }
 
 // print_html_masthead ======================================================
@@ -1526,25 +1506,25 @@ void print_html_image_load_scripts( report::sc_html_stream& os )
   print_text_array( os, __image_load_script );
 }
 
-void print_html_head( report::sc_html_stream& os, sim_t* sim )
+void print_html_head( report::sc_html_stream& os, const sim_t& sim )
 {
   os << "<title>Simulationcraft Results</title>\n";
   os << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
-  if ( sim -> enable_highcharts )
+  if ( sim.enable_highcharts )
   {
      os << "<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.11.3.min.js\"></script>\n"
      << "<script src=\"http://code.highcharts.com/highcharts.js\"></script>\n"
      << "<script src=\"http://code.highcharts.com/highcharts-more.js\"></script>\n";
   }
-  if ( sim -> wowhead_tooltips )
+  if ( sim.wowhead_tooltips )
   {
    os << "<script type=\"text/javascript\" src=\"http://static.wowhead.com/widgets/power.js\"></script>\n"
       << "<script>var wowhead_tooltips = { \"colorlinks\": true, \"iconizelinks\": true, \"renamelinks\": true }</script>\n";
   }
 
-  print_html_styles( os, sim );
+  print_html_style( os, sim );
 
-  if ( sim -> enable_highcharts )
+  if ( sim.enable_highcharts )
   {
     js::sc_js_t highcharts_theme;
     highchart::theme( highcharts_theme, highchart::THEME_DEFAULT );
@@ -1574,7 +1554,7 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   os << "<html>\n";
 
   os << "<head>\n";
-  print_html_head( os, sim );
+  print_html_head( os, *sim );
   os << "</head>\n\n";
 
   os << "<body>\n";

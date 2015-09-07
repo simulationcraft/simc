@@ -339,7 +339,6 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "World Lag" ), choice.world_lag = createChoice( 5, "Super Low - 25 ms", "Low - 50 ms", "Medium - 100 ms", "High - 150 ms", "Australia - 200 ms" ) );
   globalsLayout_right -> addRow( tr( "Generate Debug" ), choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
-  globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
   globalsLayout_right -> addRow( tr( "Statistics Level" ),   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Auto-Save Reports" ), choice.auto_save = createChoice( 3, "No", "Use current date/time", "Ask for filename on each simulation" ) );
@@ -675,7 +674,6 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "debug", choice.debug, "None" );
   load_setting( settings, "target_level", choice.target_level );
   load_setting( settings, "report_pets", choice.report_pets, "No" );
-  load_setting( settings, "print_style", choice.print_style );
   load_setting( settings, "statistics_level", choice.statistics_level, "1" );
   load_setting( settings, "deterministic_rng", choice.deterministic_rng, "No" );
   load_setting( settings, "challenge_mode", choice.challenge_mode );
@@ -766,7 +764,6 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "target_level", choice.target_level -> currentText() );
   settings.setValue( "pvp_crit", choice.pvp_crit -> currentText() );
   settings.setValue( "report_pets", choice.report_pets -> currentText() );
-  settings.setValue( "print_style", choice.print_style -> currentText() );
   settings.setValue( "statistics_level", choice.statistics_level -> currentText() );
   settings.setValue( "deterministic_rng", choice.deterministic_rng -> currentText() );
   settings.setValue( "center_scale_delta", choice.center_scale_delta -> currentText() );
@@ -888,8 +885,6 @@ void SC_OptionsTab::createToolTips()
                                       "ETMI includes all sources of healing and absorption, and ignores overhealing." ) );
 
   choice.report_pets -> setToolTip( tr( "Specify if pets get reported separately in detail." ) );
-
-  choice.print_style -> setToolTip( tr( "Specify HTML report print style." ) );
 
   choice.statistics_level -> setToolTip( tr( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
                                              " Higher Statistics Level require more memory." ) + "\n" +
@@ -1209,13 +1204,6 @@ QString SC_OptionsTab::mergeOptions()
   if ( choice.report_pets->currentIndex() != 1 )
   {
     options += "report_pets_separately=1\n";
-  }
-
-  if ( choice.print_style -> currentIndex() != 0 )
-  {
-    options += "print_styles=";
-    options += util::to_string( choice.print_style -> currentIndex() ).c_str();
-    options += "\n";
   }
 
   options += "### End GUI options ###\n"

@@ -1089,7 +1089,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0.5 ) ),
   // Report
   report_precision( 2 ), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
-  report_rng( 0 ), hosted_html( 0 ), print_styles( 0 ),
+  report_rng( 0 ), hosted_html( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
   wowhead_tooltips( -1 ),
   allow_potions( true ),
@@ -2955,7 +2955,6 @@ void sim_t::create_options()
   add_option( opt_float( "default_enchant_focus", enchant.resource[RESOURCE_FOCUS] ) );
   add_option( opt_float( "default_enchant_runic", enchant.resource[RESOURCE_RUNIC_POWER] ) );
   // Report
-  add_option( opt_int( "print_styles", print_styles ) );
   add_option( opt_int( "report_precision", report_precision ) );
   add_option( opt_bool( "report_pets_separately", report_pets_separately ) );
   add_option( opt_bool( "report_targets", report_targets ) );

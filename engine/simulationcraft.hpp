@@ -2897,7 +2897,6 @@ struct sim_t : private sc_thread_t
   int report_raw_abilities;
   int report_rng;
   int hosted_html;
-  int print_styles;
   int save_raid_summary;
   int save_gear_comments;
   int statistics_level;

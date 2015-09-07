@@ -2685,7 +2685,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
         // Tmp Debug Visualization
         histogram tmi_hist;
         tmi_hist.create_histogram( p -> collected_data.theck_meloree_index, 50 );
-        std::string dist_chart = chart::distribution( p -> sim -> print_styles, tmi_hist.data(), "TMI", p -> collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
+        std::string dist_chart = chart::distribution( tmi_hist.data(), "TMI", p -> collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
         os << "<img src=\"" << dist_chart << "\" alt=\"Theck meloree distribution Chart\" />\n";
       }
     }

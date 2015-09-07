@@ -154,16 +154,9 @@ unsigned char simple_encoding( int number )
   return encoding[ number ];
 }
 
-std::string chart_bg_color( int print_styles )
+std::string chart_bg_color()
 {
-  if ( print_styles == 1 )
-  {
-    return "666666";
-  }
-  else
-  {
-    return "dddddd";
-  }
+  return "dddddd";
 }
 
 // ternary_coords ===========================================================
@@ -283,7 +276,6 @@ class sc_chart
 private:
   std::string _name;
   chart::chart_e _type;
-  int print_style;
   struct {unsigned width, height; } _size;
   unsigned _num_axes;
   struct {double min, max; } _text_scaling;
@@ -295,17 +287,7 @@ private:
   std::string fill()
   {
     std::string s;
-    if ( print_style == 1 )
-    {
-      if ( _type == chart::LINE || _type == chart::VERTICAL_BAR )
-      {
-        s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2"; s += amp;
-      }
-    }
-    else
-    {
-      s += fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
-    }
+    s += fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
     return s;
   }
 
@@ -313,7 +295,7 @@ private:
   { return chart_title( _name ); }
 
   std::string title_formating()
-  { return chart_title_formatting( chart_bg_color( print_style ), 18 ); }
+  { return chart_title_formatting( chart_bg_color(), 18 ); }
 
   std::string size()
   {
@@ -336,11 +318,7 @@ private:
     if ( _num_axes == 0 )
       return std::string();
 
-    std::string color;
-    if ( print_style == 1 )
-      color = "000000";
-    else
-      color = "FFFFFF";
+    std::string color = "FFFFFF";
 
     std::string s = "chxs=";
     for ( unsigned i = 0; i < _num_axes; ++i )
@@ -353,8 +331,8 @@ private:
   }
 
 public:
-  sc_chart( std::string name, chart::chart_e t, int style, int num_axes = -1 ) :
-    _name( name ), _type( t ), print_style( style ), _size(), _num_axes(), _text_scaling()
+  sc_chart( std::string name, chart::chart_e t, int num_axes = -1 ) :
+    _name( name ), _type( t ), _size(), _num_axes(), _text_scaling()
   {
     _size.width = 550; _size.height = 250;
     if ( num_axes < 0 )
@@ -401,7 +379,7 @@ public:
 // Chart
 // ==========================================================================
 
-std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int print_styles )
+std::string chart::raid_downtime( std::vector<player_t*>& players_by_name )
 {
   // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
 
@@ -437,7 +415,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
   }
 
   // Set up chart
-  sc_chart chart( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + "Player Waiting Time", HORIZONTAL_BAR, print_styles );
+  sc_chart chart( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + "Player Waiting Time", HORIZONTAL_BAR );
   chart.set_height( as<unsigned>( waiting_list.size() ) * 30 + 30 );
 
   std::ostringstream s;
@@ -577,7 +555,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     }
 
     std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( title_str ) + " Ranking" ) : "";
-    sc_chart chart( chart_name, HORIZONTAL_BAR, sim -> print_styles );
+    sc_chart chart( chart_name, HORIZONTAL_BAR );
     chart.set_height( as<unsigned>( num_players ) * 20 + ( first ? 20 : 0 ) );
 
     s = chart.create();
@@ -677,10 +655,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     s += chart_size( 500, as<unsigned>( num_stats ) * 15 + ( chart == 0 ? 20 : -10 ) ); // Set chart size
     s += "cht=bhg";
     s += amp;
-    if ( ! ( sim -> print_styles == 1 ) )
-    {
-      s += fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
-    }
+    s += fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
     s += "chbh=10";
     s += amp;
     s += "chd=t:";
@@ -716,7 +691,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
       s += chart_title( "Raid Damage Per Execute Time" ); // Set chart title
     }
 
-    s += chart_title_formatting( chart_bg_color( sim -> print_styles ), 18 );
+    s += chart_title_formatting( chart_bg_color(), 18 );
 
     images.push_back( s );
 
@@ -745,7 +720,7 @@ std::string chart::action_dpet(  player_t* p )
 
   std::string formatted_name = util::google_image_chart_encode( p -> name_str );
   util::urlencode( formatted_name );
-  sc_chart chart( formatted_name + " Damage Per Execute Time", HORIZONTAL_BAR, p -> sim -> print_styles );
+  sc_chart chart( formatted_name + " Damage Per Execute Time", HORIZONTAL_BAR );
   chart.set_height( num_stats * 30 + 30 );
 
   std::string s = chart.create();
@@ -822,7 +797,7 @@ std::string chart::aps_portion(  player_t* p )
 
   std::string formatted_name = util::google_image_chart_encode(  p -> name() );
   util::urlencode( formatted_name );
-  sc_chart chart( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE, p -> sim -> print_styles );
+  sc_chart chart( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE );
   chart.set_height( 275 );
 
   std::string s = chart.create();
@@ -885,7 +860,7 @@ std::string chart::time_spent( player_t* p )
 
   std::string formatted_name = util::google_image_chart_encode(  p -> name() );
   util::urlencode( formatted_name );
-  sc_chart chart( formatted_name + " Spent Time", PIE, p -> sim -> print_styles );
+  sc_chart chart( formatted_name + " Spent Time", PIE );
   chart.set_height( 275 );
 
   std::string s = chart.create();
@@ -922,7 +897,7 @@ std::string chart::time_spent( player_t* p )
   if ( p -> collected_data.waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 ) s += ",";
-    s += p -> sim -> print_styles == 1 ? "EEEEE2" : "ffffff";
+    s += "ffffff";
   }
   s += amp;
   s += "chl=";
@@ -974,7 +949,7 @@ std::string chart::gains( player_t* p, resource_e type )
   std::string r = util::resource_type_string( type );
   util::inverse_tokenize( r );
 
-  sc_chart chart( formatted_name + "+" + r + " Gains", PIE, p -> sim -> print_styles );
+  sc_chart chart( formatted_name + "+" + r + " Gains", PIE );
   chart.set_height( 200 + num_gains * 10 );
 
   s <<  chart.create();
@@ -1032,7 +1007,7 @@ std::string chart::scale_factors( player_t* p )
   std::string formatted_name = util::google_image_chart_encode( p -> scaling_for_metric( sm ).name );
   util::urlencode( formatted_name );
 
-  sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR, p -> sim -> print_styles );
+  sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR );
   chart.set_height( static_cast<unsigned>( num_scaling_stats ) * 30 + 60 );
 
   std::string s = chart.create();
@@ -1123,7 +1098,7 @@ std::string chart::scaling_dps( player_t* p )
   std::string formatted_name = util::google_image_chart_encode( scaling_data.name );
   util::urlencode( formatted_name );
 
-  sc_chart chart( "Stat Scaling|" + formatted_name, LINE, p -> sim -> print_styles );
+  sc_chart chart( "Stat Scaling|" + formatted_name, LINE );
   chart.set_height( 300 );
 
   std::string s = chart.create();
@@ -1184,11 +1159,8 @@ std::string chart::scaling_dps( player_t* p )
     first = false;
   }
   s += amp;
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-  {
-    s += "chdls=dddddd,12";
-    s += amp;
-  }
+  s += "chdls=dddddd,12";
+  s += amp;
   s += "chco=";
   first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
@@ -1276,7 +1248,7 @@ std::string chart::reforge_dps( player_t* p )
     std::string formatted_name = util::google_image_chart_encode( scaling_data.name );
     util::urlencode( formatted_name );
 
-    sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE, p -> sim -> print_styles );
+    sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE );
     chart.set_height( 400 );
 
     s << chart.create();
@@ -1397,11 +1369,8 @@ std::string chart::reforge_dps( player_t* p )
     s << amp;
 
     // Chart legend
-    if ( ! ( p -> sim -> print_styles == 1 ) )
-    {
-      s << "chdls=dddddd,12";
-      s << amp;
-    }
+    s << "chdls=dddddd,12";
+    s << amp;
 
     // Chart color
     s << "chco=";
@@ -1440,11 +1409,8 @@ std::string chart::reforge_dps( player_t* p )
     s << "\n";
     s << "<input type='hidden' name='cht' value='s' />";
     s << "\n";
-    if ( ! ( p -> sim -> print_styles == 1 ) )
-    {
-      s << "<input type='hidden' name='chf' value='bg,s,333333' />";
-      s << "\n";
-    }
+    s << "<input type='hidden' name='chf' value='bg,s,333333' />";
+    s << "\n";
 
     s << "<input type='hidden' name='chd' value='t:";
     for ( size_t j = 0; j < 2; j++ )
@@ -1471,11 +1437,8 @@ std::string chart::reforge_dps( player_t* p )
     s << "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
     s << "\n";
 
-    if ( ! ( p -> sim -> print_styles == 1 ) )
-    {
-      s << "<input type='hidden' name='chdls' value='dddddd,12' />";
-      s << "\n";
-    }
+    s << "<input type='hidden' name='chdls' value='dddddd,12' />";
+    s << "\n";
     s << "\n";
     s << "<input type='hidden' name='chg' value='5,10,1,3'";
     s << "\n";
@@ -1485,14 +1448,7 @@ std::string chart::reforge_dps( player_t* p )
     s << formatted_name;
     s << "+Reforge+Scaling' />";
     s << "\n";
-    if ( p -> sim -> print_styles == 1 )
-    {
-      s << "<input type='hidden' name='chts' value='666666,18' />";
-    }
-    else
-    {
-      s << "<input type='hidden' name='chts' value='dddddd,18' />";
-    }
+    s << "<input type='hidden' name='chts' value='dddddd,18' />";
     s << "\n";
     s << "<input type='hidden' name='chem' value='";
     std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
@@ -1551,7 +1507,7 @@ std::string chart::timeline(  player_t* p,
   double encoding_adjust = encoding_range / ( timeline_max - timeline_min );
 
 
-  sc_chart chart( timeline_name + " Timeline", LINE, p -> sim -> print_styles );
+  sc_chart chart( timeline_name + " Timeline", LINE );
   chart.set_height( 200 );
 
   std::ostringstream s;
@@ -1564,11 +1520,8 @@ std::string chart::timeline(  player_t* p,
   }
   s << amp;
 
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-  {
-    s << "chco=" << color;
-    s << amp;
-  }
+  s << "chco=" << color;
+  s << amp;
 
   s << "chds=0," << util::to_string( encoding_range, 0 );
   s << amp;
@@ -1629,7 +1582,7 @@ std::string chart::timeline_dps_error( player_t* p )
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max_error;
 
-  sc_chart chart( "Standard Error Confidence ( n >= 50 )", LINE, p -> sim -> print_styles );
+  sc_chart chart( "Standard Error Confidence ( n >= 50 )", LINE );
   chart.set_height( 185 );
 
   std::string s = chart.create();
@@ -1669,8 +1622,7 @@ std::string chart::timeline_dps_error( player_t* p )
 
 // chart::distribution_dps ==================================================
 
-std::string chart::distribution( int print_style,
-                                 const std::vector<size_t>& dist_data,
+std::string chart::distribution( const std::vector<size_t>& dist_data,
                                  const std::string& distribution_name,
                                  double avg, double min, double max )
 {
@@ -1681,7 +1633,7 @@ std::string chart::distribution( int print_style,
 
   size_t count_max = *range::max_element( dist_data );
 
-  sc_chart chart( distribution_name + " Distribution", VERTICAL_BAR, print_style );
+  sc_chart chart( distribution_name + " Distribution", VERTICAL_BAR );
   chart.set_height( 185 );
 
   std::string s = chart.create();
@@ -2251,7 +2203,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
  *
  * If tolerance interval is 0, it will be calculated from the given confidence level
  */
-std::string chart::normal_distribution( double mean, double std_dev, double confidence, double tolerance_interval, int print_styles )
+std::string chart::normal_distribution( double mean, double std_dev, double confidence, double tolerance_interval )
 {
   std::ostringstream s;
 
@@ -2260,7 +2212,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   if ( tolerance_interval == 0.0 && confidence > 0 )
     tolerance_interval =  rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  sc_chart chart( util::to_string( confidence * 100.0, 2 ) + "%25" + " Confidence Interval", LINE, print_styles, 4 );
+  sc_chart chart( util::to_string( confidence * 100.0, 2 ) + "%25" + " Confidence Interval", LINE, 4 );
   chart.set_height( 185 );
 
   s <<  chart.create();
@@ -2277,7 +2229,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   s << "chxl=1:|DPS|3:|p";
   s << amp;
 
-  s << chart_title_formatting( chart_bg_color( print_styles ), 18 );
+  s << chart_title_formatting( chart_bg_color(), 18 );
 
   // create the normal distribution function
   s << "chfd=0,x," << mean - std_dev * 4 << "," << mean + std_dev * 4 << "," << std_dev / 100.0 << ",100*exp(-(x-" << mean << ")^2/(2*" << std_dev << "^2))";
@@ -2297,7 +2249,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
  */
 std::string chart::dps_error( player_t& p )
 {
-  return chart::normal_distribution( p.collected_data.dps.mean(), p.collected_data.dps.mean_std_dev, p.sim -> confidence, p.sim -> confidence_estimator, p.sim -> print_styles );
+  return chart::normal_distribution( p.collected_data.dps.mean(), p.collected_data.dps.mean_std_dev, p.sim -> confidence, p.sim -> confidence_estimator );
 }
 
 bool chart::generate_raid_downtime( highchart::bar_chart_t& bc, sim_t* sim )

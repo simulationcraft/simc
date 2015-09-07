@@ -1091,7 +1091,6 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "config" );
 
-  writer.print_tag( "style", sim -> print_styles ? "print" : "not-specified" );
   writer.print_tag( "has_scale_factors", sim -> scaling -> has_scale_factors() ? "true" : "false" );
   writer.print_tag( "report_pets_separately", sim -> report_pets_separately ? "true" : "false" );
   writer.print_tag( "report_details", sim -> report_details ? "true" : "false" );

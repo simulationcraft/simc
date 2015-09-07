@@ -882,7 +882,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t*
   {
     if ( ! p -> sim -> enable_highcharts )
     {
-      std::string dist_chart = chart::distribution( p -> sim -> print_styles, data.distribution, name, data.mean(), data.min(), data.max() );
+      std::string dist_chart = chart::distribution( data.distribution, name, data.mean(), data.min(), data.max() );
 
       os.format(
         "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
@@ -973,7 +973,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
         sc_timeline_t timeline_aps;
         s -> timeline_amount.build_derivative_timeline( timeline_aps );
         s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", timeline_aps.mean() );
-        s -> aps_distribution_chart = chart::distribution( p -> sim -> print_styles, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
+        s -> aps_distribution_chart = chart::distribution( s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
                                                            s -> portion_aps.mean(), s -> portion_aps.min(), s -> portion_aps.max() );
       }
     }
@@ -1001,23 +1001,20 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
 
     if ( p -> primary_role() == ROLE_HEAL )
     {
-      ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
-                                                       cd.hps.distribution, encoded_name + " HPS",
+      ri.distribution_dps_chart = chart::distribution( cd.hps.distribution, encoded_name + " HPS",
                                                        cd.hps.mean(),
                                                        cd.hps.min(),
                                                        cd.hps.max() );
     }
     else
     {
-      ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
-                                                       cd.dps.distribution, encoded_name + " DPS",
+      ri.distribution_dps_chart = chart::distribution( cd.dps.distribution, encoded_name + " DPS",
                                                        cd.dps.mean(),
                                                        cd.dps.min(),
                                                        cd.dps.max() );
     }
 
-    ri.distribution_deaths_chart = chart::distribution( p -> sim -> print_styles,
-                                                        cd.deaths.distribution, encoded_name + " Death",
+    ri.distribution_deaths_chart = chart::distribution( cd.deaths.distribution, encoded_name + " Death",
                                                         cd.deaths.mean(),
                                                         cd.deaths.min(),
                                                         cd.deaths.max() );
@@ -1097,7 +1094,7 @@ void report::generate_sim_report_information( sim_t* s , sim_report_information_
   if ( s -> enable_highcharts )
     return;
 
-  ri.downtime_chart = chart::raid_downtime( s -> players_by_name, s -> print_styles );
+  ri.downtime_chart = chart::raid_downtime( s -> players_by_name );
   
   chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, "dps" );
   chart::raid_aps     ( ri.priority_dps_charts, s, s -> players_by_priority_dps, "prioritydps" );
@@ -1106,8 +1103,7 @@ void report::generate_sim_report_information( sim_t* s , sim_report_information_
   chart::raid_aps     ( ri.tmi_charts, s, s -> players_by_tmi, "tmi" );
   chart::raid_aps     ( ri.apm_charts, s, s -> players_by_apm, "apm" );
   chart::raid_dpet    ( ri.dpet_charts, s );
-  ri.timeline_chart = chart::distribution( s -> print_styles,
-                                           s -> simulation_length.distribution, "Timeline",
+  ri.timeline_chart = chart::distribution( s -> simulation_length.distribution, "Timeline",
                                            s -> simulation_length.mean(),
                                            s -> simulation_length.min(),
                                            s -> simulation_length.max() );

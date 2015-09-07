@@ -50,10 +50,10 @@ namespace chart
 {
 enum chart_e { HORIZONTAL_BAR_STACKED, HORIZONTAL_BAR, VERTICAL_BAR, PIE, LINE, XY_LINE };
 
-std::string raid_downtime ( std::vector<player_t*> &players_by_name, int print_styles = 0 );
+std::string raid_downtime ( std::vector<player_t*> &players_by_name );
 size_t raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>&, std::string type );
 size_t raid_dpet( std::vector<std::string>& images, sim_t* );
-size_t raid_gear( std::vector<std::string>& images, sim_t*, int print_styles = 0 );
+size_t raid_gear( std::vector<std::string>& images, sim_t* );
 
 std::string action_dpet        ( player_t* );
 std::string aps_portion        ( player_t* );
@@ -64,8 +64,8 @@ std::string timeline_dps_error ( player_t* );
 std::string scale_factors      ( player_t* );
 std::string scaling_dps        ( player_t* );
 std::string reforge_dps        ( player_t* );
-std::string distribution       ( int /*print_style*/, const std::vector<size_t>& /*dist_data*/, const std::string&, double, double, double );
-std::string normal_distribution(  double mean, double std_dev, double confidence, double tolerance_interval = 0, int print_styles = 0  );
+std::string distribution       ( const std::vector<size_t>& /*dist_data*/, const std::string&, double, double, double );
+std::string normal_distribution(  double mean, double std_dev, double confidence, double tolerance_interval = 0  );
 std::string dps_error( player_t& );
 
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank  ( player_t* );
