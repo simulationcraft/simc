@@ -1175,8 +1175,8 @@ private slots:
     // Wowhead links tend to crash the gui, so we'll send them to an external browser.
     // AMR and Lootrank links are nice to load externally too so we don't lose sim results
     // In general, we err towards opening things externally because we are not Mozilla
-    // google.com is needed for our help tab; battle.net (us/eu) and battlenet (china) cover armory
-    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( "battlenet" ) || clickedurl.contains( "google.com" ) )
+    // github.com is needed for our help tab; battle.net (us/eu) and battlenet (china) cover armory
+    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( "battlenet" ) || clickedurl.contains( "github.com" ) )
       load( url );
     else
       QDesktopServices::openUrl( url );
