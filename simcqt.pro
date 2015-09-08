@@ -1,7 +1,9 @@
 TEMPLATE = app
 ORG_NAME = SimulationCraft
 APP_NAME = SimulationCraft
-  
+
+CONFIG += c++11
+
 CONFIG(qt) {
   TARGET = SimulationCraft
 
