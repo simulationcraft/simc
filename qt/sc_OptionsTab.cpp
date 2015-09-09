@@ -1219,12 +1219,15 @@ QString SC_OptionsTab::mergeOptions()
   options += "### Begin overrides ###\n";
   options += mainWindow -> overridesText -> toPlainText();
   options += "\n";
-  options += "### End overrides ###\n"
+  options += "### End overrides ###\n";
 
-      "### Begin command line ###\n";
-  options += mainWindow -> cmdLine -> commandLineText();
-  options += "\n"
-      "### End command line ###\n"
+/* Disabled by scamille 2015-09-09: Unclear advantage of feature with override tab available;
+ * potential to cause hard to understand problems for user, see https://github.com/simulationcraft/simc/issues/2618
+ */
+//      "### Begin command line ###\n";
+//  options += mainWindow -> cmdLine -> commandLineText();
+//  options += "\n"
+//      "### End command line ###\n"
 
       "### Begin final options ###\n";
 #if SC_USE_PTR
