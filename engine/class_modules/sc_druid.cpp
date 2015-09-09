@@ -8373,6 +8373,8 @@ static void wildcat_celerity( special_effect_t& effect )
 static double stalwart_guardian_handler( const action_state_t* s )
 {
   druid_t* p = static_cast<druid_t*>( s -> target );
+  assert( p -> active.stalwart_guardian );
+  assert( s );
 
   // Pass incoming damage value so the absorb can be calculated.
   // TOCHECK: Does this use result_amount or result_mitigated?
@@ -8388,6 +8390,11 @@ static void stalwart_guardian( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
   do_trinket_init( s, DRUID_GUARDIAN, s -> stalwart_guardian, effect );
+
+  if ( !s -> stalwart_guardian )
+  {
+    return;
+  }
 
   effect.player -> instant_absorb_list[ 184878 ] =
     new instant_absorb_t( s, s -> find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler );
