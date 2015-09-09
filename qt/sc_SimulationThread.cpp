@@ -50,7 +50,11 @@ void SC_SimulateThread::run()
     report::print_suite( sim );
   }
 }
-void SC_SimulateThread::start( sim_t* s, const QByteArray& o )
+void SC_SimulateThread::start( sim_t* s, const QByteArray& o, QString t )
 {
-    sim = s; utf8_options = o; success = false; QThread::start();
+    sim = s;
+    utf8_options = o;
+    success = false;
+    tabName = t;
+    QThread::start();
 }

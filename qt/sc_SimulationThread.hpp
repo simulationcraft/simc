@@ -12,15 +12,18 @@ class SC_SimulateThread : public QThread
   SC_MainWindow* mainWindow;
   sim_t* sim;
   QByteArray utf8_options;
+  QString tabName;
   QString error_str;
 
 public:
   bool success;
   SC_SimulateThread( SC_MainWindow* );
-  void start( sim_t* s, const QByteArray& o );
+  void start( sim_t* s, const QByteArray& o, QString tab_name );
   virtual void run();
   QString getError() const
   { return error_str; }
+  QString getTabName() const
+  { return tabName; }
 
 private slots:
   void sim_finished()

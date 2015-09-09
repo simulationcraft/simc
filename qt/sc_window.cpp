@@ -19,6 +19,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 #include <QStandardPaths>
+#include <QDateTime>
 
 static int SC_GUI_HISTORY_VERSION = 650;
 
@@ -866,6 +867,7 @@ void SC_MainWindow::startSim()
   }
   optionsTab -> encodeOptions();
   importTab -> automationTab -> encodeSettings();
+  QString tab_name = simulateTab -> tabText(simulateTab -> currentIndex());
 
   // Clear log text on success so users don't get confused if there is
   // an error from previous attempts
@@ -900,7 +902,7 @@ void SC_MainWindow::startSim()
   {
     cmdLine -> setState( SC_MainWindowCommandLine::SIMULATING );
   }
-  simulateThread -> start( sim, utf8_profile );
+  simulateThread -> start( sim, utf8_profile, tab_name );
 
   cmdLineText = "";
   timer -> start( 100 );
@@ -1073,7 +1075,9 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   }
   else
   {
-    QString resultsName = tr( "Results %1" ).arg( ++simResults );
+    QDateTime now = QDateTime::currentDateTime();
+    QString datetime = now.toString(Qt::ISODate);
+    QString resultsName = simulateThread -> getTabName();
     SC_SingleResultTab* resultsEntry = new SC_SingleResultTab( this, resultsTab );
     if ( resultsTab -> count() != 0 )
     {
@@ -1089,7 +1093,8 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       resultsEntry -> addIgnoreKeyPressEvent( Qt::Key_Tab, s );
       resultsEntry -> addIgnoreKeyPressEvent( Qt::Key_Backtab, emptyList );
     }
-    resultsTab -> addTab( resultsEntry, resultsName );
+    int index = resultsTab -> addTab( resultsEntry, resultsName );
+    resultsTab -> setTabToolTip( index, datetime );
     if ( ++consecutiveSimulationsRun == 1 )
     {
       // only switch to the new tab if we are the first simulation in queue
