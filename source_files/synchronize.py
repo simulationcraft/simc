@@ -8,17 +8,23 @@
 import re
 import sys
 import os
+import logging
+import traceback
 
 
 def parse_qt(filename):
-    f = open(filename, "r")
     out = []
-    if f:
+    with open(filename, "r") as f:
         for line in f:
             match = re.search(r"(\s*)(SOURCES|HEADERS|PRECOMPILED_HEADER)(\s*\+?\=\s*)([\w\/]*?)([\w]*)(\.\w*)", line)
             if match:
-                out.append((match.group(2), match.group(4) + match.group(5) + match.group(6), match.group(4), match.group(5), match.group(6)))
-        f.close()
+                file_type = match.group(2)
+                fullpath = match.group(4) + match.group(5) + match.group(6)
+                dirname = match.group(4)
+                corename = match.group(5)
+                ending = match.group(6)
+                result = (file_type, fullpath, dirname, corename, ending)
+                out.append(result)
     return out
 
 
@@ -38,17 +44,15 @@ def header(system):
 
 
 def write_to_file(filename, out):
-    f = open(filename, "w")
-    if f:
+    with open(filename, "w") as f:
         f.write(out)
-        f.close()
 
 
 def create_qt_str(entries):
     prepare = header("QT")
-    for entry in entries:
-        if entry[0] == "SOURCES" or entry[0] == "HEADERS" or entry[0] == "PRECOMPILED_HEADER":
-            prepare += "\n " + entry[0] + " += " + entry[1]
+    for file_type, fullpath, _dirname, _corename, _ending in entries:
+        if file_type in ("SOURCES", "HEADERS", "PRECOMPILED_HEADER"):
+            prepare += "\n " + file_type + " += " + fullpath
     return prepare
 
 
@@ -57,9 +61,9 @@ def create_make_str(entries):
     modified_input = replace(modified_input, r"/", r"$(PATHSEP)")
     prepare = header("Makefile")
     prepare += "SRC += \\"
-    for entry in modified_input:
-        if entry[0] == "SOURCES" or entry[0] == "HEADERS":
-            prepare += "\n    " + entry[1] + " \\"
+    for file_type, fullpath in modified_input:
+        if file_type in ("SOURCES", "HEADERS"):
+            prepare += "\n    " + fullpath + " \\"
     return prepare
 
 
@@ -97,17 +101,16 @@ def create_vs_str(entries, gui=False):
     prepare = header("VS")
     prepare += """<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 \t<ItemGroup>"""
-    for entry in modified_input:
-        if re.search(r"sc_io.cpp", entry[1]):
-            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\">\n\t\t\t" + VS_use_precompiled_header(entry[1]) + "\n\t\t</ClCompile>"
-        elif entry[0] == "HEADERS":
-            prepare += VS_header_str(entry[1], gui)
-        elif entry[0] == "SOURCES":
-            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\">\n\t\t\t" + VS_use_precompiled_header(entry[1]) + "\n\t\t</ClCompile>"
+    for file_type, fullpath in modified_input:
+        if re.search(r"sc_io.cpp", fullpath):
+            prepare += "\n\t\t<ClCompile Include=\"" + fullpath + "\">\n\t\t\t" + VS_use_precompiled_header(fullpath) + "\n\t\t</ClCompile>"
+        elif file_type == "HEADERS":
+            prepare += VS_header_str(fullpath, gui)
+        elif file_type == "SOURCES":
+            prepare += "\n\t\t<ClCompile Include=\"" + fullpath + "\">\n\t\t\t" + VS_use_precompiled_header(fullpath) + "\n\t\t</ClCompile>"
     prepare += "\n\t</ItemGroup>"
 
     if gui:
-
         # Gui Resources
         prepare += "\n\n\t<!--Resources -->"
         prepare += "\n\t<ItemGroup>"
@@ -178,24 +181,29 @@ def sort_by_name(entries):
 
 
 def create_file(file_type, build_systems):
-    result = parse_qt("QT_" + file_type + ".pri")
-    # print result
-    sort_by_name(result)
-    if "make" in build_systems:
-        write_to_file(file_type + "_make", create_make_str(result))
-    if "VS" in build_systems:
-        write_to_file("VS_" + file_type + ".props", create_vs_str(result))
-    if "VS_GUI" in build_systems:
-        write_to_file("VS_" + file_type + ".props", create_vs_str(result, True))
-    if "QT" in build_systems:
-        write_to_file("QT_" + file_type + ".pri", create_qt_str(result))
+    try:
+        result = parse_qt("QT_" + file_type + ".pri")
+        # print result
+        sort_by_name(result)
+        if "make" in build_systems:
+            write_to_file(file_type + "_make", create_make_str(result))
+        if "VS" in build_systems:
+            write_to_file("VS_" + file_type + ".props", create_vs_str(result))
+        if "VS_GUI" in build_systems:
+            write_to_file("VS_" + file_type + ".props", create_vs_str(result, True))
+        if "QT" in build_systems:
+            write_to_file("QT_" + file_type + ".pri", create_qt_str(result))
+    except Exception as e:
+        logging.error("Could not synchronize '{}' files: {}".format(file_type, e))
+        logging.debug(traceback.format_exc())
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
     create_file("engine", ["make", "VS", "QT"])
     create_file("engine_main", ["make", "VS", "QT"])
     create_file("gui", ["QT", "VS_GUI"])  # TODO: finish mocing part of VS_GUI
-    print("done")
+    logging.info("Done")
 
 
 if __name__ == "__main__":
