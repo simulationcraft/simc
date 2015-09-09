@@ -15,16 +15,13 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   {
     for ( int i = 1; i < args.size(); ++i )
     {
-      if ( i > 1 )
-        w.simulateTab -> current_Text() -> appendPlainText( "\n" );
-
       QFile file( args[ i ] );
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         QTextStream ts( &file );
         ts.setCodec( "UTF-8" );
         ts.setAutoDetectUnicode( true );
-        w.simulateTab -> current_Text() -> appendPlainText( ts.readAll() );
+        w.simulateTab -> add_Text( ts.readAll(), args[i] );
         file.close();
       }
     }
