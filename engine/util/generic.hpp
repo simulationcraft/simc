@@ -95,6 +95,12 @@ template <typename T, std::size_t N>
 inline std::size_t sizeof_array( const std::array<T, N>& )
 { return N; }
 
+/**
+ * @brief helper class to make a class non-copyable
+ *
+ * To make your class A non-copyable, define it as such:
+ * class A : private noncopyable {}
+ */
 class noncopyable
 {
 protected:
@@ -105,6 +111,12 @@ protected:
   noncopyable& operator = ( const noncopyable& ) = delete;
 };
 
+/**
+ * @brief helper class to make a class non-moveable
+ *
+ * To make your class A non-moveable, define it as such:
+ * class A : private nonmoveable {}
+ */
 class nonmoveable : private noncopyable
 {
 protected:
@@ -354,8 +366,10 @@ public:
   void dispose()  { dispose_(); Container::clear(); }
 };
 
-// Fancy type-casting function to use when we "know" what type an object pointer
-// really is. Makes sure we are right when debugging.
+/**
+ * Fancy type-casting function to use when we "know" what type an object pointer
+ * really is. Makes sure we are right when debugging.
+ */
 template <typename To, typename From>
 inline To debug_cast( From* ptr )
 {
@@ -368,8 +382,10 @@ inline To debug_cast( From* ptr )
 #endif
 }
 
-// Fancy type-casting function to convert between types of different size and signedness.
-// When debugging, verifies that the value is representable by both types.
+/**
+ * Fancy type-casting function to convert between types of different size and signedness.
+ * When debugging, verifies that the value is representable by both types.
+ */
 template <typename To, typename From>
 inline To as( From f )
 {
@@ -391,8 +407,10 @@ inline T clamp( T value, T low, T high )
   return ( value < low ? low : ( high < value ? high : value ) );
 }
 
-// Remove in O(1) by copying the last element over the element to be
-// erased and shrinking the sequence. DOES NOT PRESERVE ELEMENT ORDERING.
+/**
+ * Remove in O(1) by copying the last element over the element to be
+ * erased and shrinking the sequence. DOES NOT PRESERVE ELEMENT ORDERING.
+ */
 template <typename Sequence>
 void erase_unordered( Sequence& s, typename Sequence::iterator pos )
 {
