@@ -18,9 +18,6 @@ set simcversion=622-01-webkit
 :: For bumping the minor version, just change the above line. Make sure to also change setup32.iss and setup64.iss as well. 
 set simcfiles=C:\Simulationcraft\
 :: Location of source files
-set ssllocation32=C:\OpenSSL-Win32\bin
-set ssllocation64=C:\OpenSSL-Win64\bin
-:: Location of openssl32/64
 set qt_dir=C:\Qt\Qt5.5.1\5.5\
 :: Location of QT
 set redist=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\
@@ -59,15 +56,12 @@ if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configurati
 
 robocopy "%redist%x64\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
-robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Core.dll
-robocopy %qt_dir%msvc2013_64\bin\ %install%\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt54.dll icuin54.dll icuuc54.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
-robocopy %qt_dir%msvc2013_64\ %install%\ icudtl.dat
-robocopy %qt_dir%msvc2013_64\plugins\platforms %install%\platforms\ qwindows.dll
-robocopy %qt_dir%msvc2013_64\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
-robocopy %ssllocation64% %install%\ libeay32.dll ssleay32.dll 
 robocopy Profiles\ %install%\profiles\ *.* /S
+cd %install%
+%qt_dir%\msvc2013_64\bin\windeployqt.exe simulationcraft64.exe
+cd ..
 
 cd winreleasescripts
 iscc.exe "setup64.iss"
@@ -81,15 +75,12 @@ set install=simc-%simcversion%-win32
 
 robocopy "%redist%x86\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
-robocopy %qt_dir%msvc2013\bin\ %install%\ Qt5Core.dll
-robocopy %qt_dir%msvc2013\bin\ %install%\ Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt54.dll icuin54.dll icuuc54.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
 robocopy winreleasescripts\ %install%\ qt.conf
-robocopy %qt_dir%msvc2013\ %install%\ icudtl.dat
-robocopy %qt_dir%msvc2013\plugins\platforms %install%\platforms\ qwindows.dll
-robocopy %qt_dir%msvc2013\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
-robocopy %ssllocation32% %install%\ libeay32.dll ssleay32.dll 
 robocopy Profiles\ %install%\profiles\ *.* /S
+cd %install%
+%qt_dir%\msvc2013\bin\windeployqt.exe simulationcraft.exe
+cd ..
 
 cd winreleasescripts
 iscc.exe "setup32.iss"
