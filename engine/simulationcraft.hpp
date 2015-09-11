@@ -2121,7 +2121,7 @@ public:
   std::string source_name() const;
   int max_stack() const { return _max_stack; }
 
-  rng_t& rng();
+  rng::rng_t& rng();
 
   bool change_regen_rate;
 };
@@ -2791,14 +2791,14 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> item_db_sources;
 
   // Random Number Generation
-  std::unique_ptr<rng_t> _rng;
+  std::unique_ptr<rng::rng_t> _rng;
   std::string rng_str;
   uint64_t seed;
   int deterministic;
   int average_range, average_gauss;
   int convergence_scale;
 
-  rng_t& rng() const { return *_rng; }
+  rng::rng_t& rng() const { return *_rng; }
   double averaged_range( double min, double max );
 
   // Raid Events
@@ -3282,8 +3282,8 @@ struct event_t
   { return _sim; }
   const sim_t& sim() const
   { return _sim; }
-  rng_t& rng() { return sim().rng(); }
-  rng_t& rng() const { return sim().rng(); }
+  rng::rng_t& rng() { return sim().rng(); }
+  rng::rng_t& rng() const { return sim().rng(); }
 
   virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
   virtual const char* name() const
@@ -5376,8 +5376,8 @@ struct player_t : public actor_t
   virtual bool requires_data_collection() const
   { return active_during_iteration; }
 
-  rng_t& rng() { return sim -> rng(); }
-  rng_t& rng() const { return sim -> rng(); }
+  rng::rng_t& rng() { return sim -> rng(); }
+  rng::rng_t& rng() const { return sim -> rng(); }
   std::vector<action_variable_t> variables;
   // Add 1ms of time to ensure that we finish this run. This is necessary due
   // to the millisecond accuracy in our timing system.
@@ -6404,8 +6404,8 @@ public:
   virtual bool consume_cost_per_second( timespan_t tick_time );
   virtual bool need_to_trigger_costs_per_second() const
   { return std::accumulate( base_costs_per_second.begin(), base_costs_per_second.end(), 0.0 ) != 0; }
-  rng_t& rng() { return sim -> rng(); }
-  rng_t& rng() const { return sim -> rng(); }
+  rng::rng_t& rng() { return sim -> rng(); }
+  rng::rng_t& rng() const { return sim -> rng(); }
 
   virtual bool has_movement_directionality() const
   {
@@ -7267,7 +7267,7 @@ struct dbc_proc_callback_t : public action_callback_t
     }
   }
 private:
-  rng_t& rng() const
+  rng::rng_t& rng() const
   { return listener -> rng(); }
 
   bool roll( action_t* action )
@@ -7884,7 +7884,7 @@ inline std::string buff_t::source_name() const
   if ( player ) return player -> name_str;
   return "noone";
 }
-inline rng_t& buff_t::rng()
+inline rng::rng_t& buff_t::rng()
 { return sim -> rng(); }
 // sim_t inlines
 

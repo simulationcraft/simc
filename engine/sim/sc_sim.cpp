@@ -1979,7 +1979,7 @@ bool sim_t::init()
       seed += static_cast< int >( usec / 1000 );
     }
   }
-  _rng = rng_t::create( rng_t::parse_type( rng_str ) );
+  _rng = rng::create( rng::parse_type( rng_str ) );
   _rng -> seed( seed + thread_index );
 
   if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;
@@ -1987,7 +1987,7 @@ bool sim_t::init()
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
-  confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
+  confidence_estimator = rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
   if ( challenge_mode && scale_to_itemlevel < 0 )
   {

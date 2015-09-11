@@ -549,7 +549,7 @@ js::sc_js_t to_json( const player_t& p )
   return node;
 }
 
-js::sc_js_t to_json( const rng_t& rng )
+js::sc_js_t to_json( const rng::rng_t& rng )
 {
   js::sc_js_t node;
   node.set( "name", rng.name() );

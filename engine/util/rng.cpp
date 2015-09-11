@@ -40,15 +40,12 @@
 
 #include <random>
 
-#ifndef M_PI
-#define M_PI ( 3.14159265358979323846 )
-#endif
+namespace rng {
 
-// ==========================================================================
-// MAGIC! http://en.wikipedia.org/wiki/Double-precision_floating-point_format
-// ==========================================================================
+namespace {
 
-static double convert_to_double_0_1( uint64_t ui64 )
+/// MAGIC! http://en.wikipedia.org/wiki/Double-precision_floating-point_format
+double convert_to_double_0_1( uint64_t ui64 )
 {
   ui64 &= 0x000fffffffffffff;
   ui64 |= 0x3ff0000000000000;
@@ -57,11 +54,10 @@ static double convert_to_double_0_1( uint64_t ui64 )
   return u.d - 1.0;
 }
 
-// ==========================================================================
-// C++ 11 Mersenne Twister Random Number Generator
-// ==========================================================================
 
-/*
+/**
+ * @brief STL Mersenne twister MT19937
+ *
  * This integrates a C++11 random number generator into our native rng_t concept
  * The advantage of this container is the extremely small code, with nearly no
  * maintenance cost.
@@ -87,14 +83,12 @@ struct rng_mt_cxx11_t : public rng_t
   }
 };
 
-// ==========================================================================
-// MURMURHASH3 Avalanche Seed Munger
-// ==========================================================================
 
-/*
+/**
+ * @brief MURMURHASH3 Avalanche Seed Munger
+ *
  * All credit goes to https://code.google.com/p/smhasher
  */
-
 struct rng_murmurhash_t : public rng_t
 {
   uint64_t x; /* The state must be seeded with a nonzero value. */
@@ -122,15 +116,13 @@ struct rng_murmurhash_t : public rng_t
   }
 };
 
-// ==========================================================================
-// XORSHIFT-64 Random Number Generator
-// ==========================================================================
 
-/*
+/**
+ * @brief XORSHIFT-64 Random Number Generator
+ *
  * All credit goes to Sebastiano Vigna (vigna@acm.org) @2014
  * http://xorshift.di.unimi.it/
  */
-
 struct rng_xorshift64_t : public rng_t
 {
   uint64_t x; /* The state must be seeded with a nonzero value. */
@@ -157,15 +149,13 @@ struct rng_xorshift64_t : public rng_t
   }
 };
 
-// ==========================================================================
-// XORSHIFT-128 Random Number Generator
-// ==========================================================================
 
-/*
+/**
+ * @brief XORSHIFT-128 Random Number Generator
+ *
  * All credit goes to Sebastiano Vigna (vigna@acm.org) @2014
  * http://xorshift.di.unimi.it/
  */
-
 struct rng_xorshift128_t : public rng_t
 {
   uint64_t s[ 2 ];
@@ -196,15 +186,13 @@ struct rng_xorshift128_t : public rng_t
   }
 };
 
-// ==========================================================================
-// XORSHIFT-1024 Random Number Generator
-// ==========================================================================
 
-/*
+/**
+ * @brief XORSHIFT-1024 Random Number Generator
+ *
  * All credit goes to Sebastiano Vigna (vigna@acm.org) @2014
  * http://xorshift.di.unimi.it/
  */
-
 struct rng_xorshift1024_t : public rng_t
 {
   uint64_t s[ 16 ]; 
@@ -236,25 +224,20 @@ struct rng_xorshift1024_t : public rng_t
   }
 };
 
-// ==========================================================================
-// SFMT Random Number Generator
-// ==========================================================================
 
 /**
- * SIMD oriented Fast Mersenne Twister(SFMT) pseudorandom number generator
+ * @brief SIMD oriented Fast Mersenne Twister(SFMT) pseudorandom number generator
  *
+ * WARNING: ALWAYS ALLOCATE THROUGH NEW
  * @author Mutsuo Saito (Hiroshima University)
  * @author Makoto Matsumoto (Hiroshima University)
+ * URL: http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/
  *
  * Copyright (C) 2006, 2007 Mutsuo Saito, Makoto Matsumoto and Hiroshima
  * University. All rights reserved.
  *
  * The new BSD License is applied to this software.
  */
-
-// http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/
-
-// ALWAYS ALLOCATE THROUGH NEW
 struct rng_sfmt_t : public rng_t
 {
   /** 128-bit data structure */
@@ -347,7 +330,6 @@ struct rng_sfmt_t : public rng_t
    * floating point pseudorandom numbers of the IEEE 754 format.
    * @param dsfmt dsfmt state vector.
    */
-
   void dsfmt_gen_rand_all( dsfmt_t *dsfmt )
   {
     int i;
@@ -519,19 +501,13 @@ struct rng_sfmt_t : public rng_t
   {
     uint64_t s = dsfmt_genrand_uint32( &dsfmt_global_data );
     seed( s );
-    gauss_pair_value = 0;
-    gauss_pair_use = false;
+    reset();
     return s;
   }
-
 };
 
-// ==========================================================================
-// TinyMT Mersenne Twister Random Number Generator
-// ==========================================================================
 
 /**
- *
  * @brief Tiny Mersenne Twister only 127 bit internal state
  *
  * @author Mutsuo Saito (Hiroshima University)
@@ -541,7 +517,6 @@ struct rng_sfmt_t : public rng_t
  * Hiroshima University and The University of Tokyo.
  * All rights reserved.
  */
-
 struct rng_tinymt_t : public rng_t
 {
   static const uint64_t TINYMT64_SH0  = 12;
@@ -629,62 +604,13 @@ struct rng_tinymt_t : public rng_t
   }
 };
 
-// ==========================================================================
-// RNG Engine Broker
-// ==========================================================================
-
-rng_t::type_e rng_t::parse_type( const std::string& n )
-{
-  if( n == "murmurhash"   ) return rng_t::MURMURHASH;
-  if( n == "sfmt"         ) return rng_t::SFMT;
-  if( n == "std"          ) return rng_t::STD;
-  if( n == "tinymt"       ) return rng_t::TINYMT;
-  if( n == "xorshift64"   ) return rng_t::XORSHIFT64;
-  if( n == "xorshift128"  ) return rng_t::XORSHIFT128;
-  if( n == "xorshift1024" ) return rng_t::XORSHIFT1024;
-
-  return rng_t::DEFAULT;
-}
-
-std::unique_ptr<rng_t> rng_t::create( rng_t::type_e t )
-{
-  switch( t )
-  {
-  case MURMURHASH:
-    return std::unique_ptr<rng_t>(new rng_murmurhash_t());
-
-  case STD:
-    return std::unique_ptr<rng_t>(new rng_mt_cxx11_t());
-
-  case SFMT: 
-    return std::unique_ptr<rng_t>(new rng_sfmt_t());
-
-  case TINYMT:
-    return std::unique_ptr<rng_t>(new rng_tinymt_t());
-
-  case XORSHIFT64: 
-    return std::unique_ptr<rng_t>(new rng_xorshift64_t());
-
-  case XORSHIFT128: 
-    return std::unique_ptr<rng_t>(new rng_xorshift128_t());
-
-  case XORSHIFT1024: 
-    return std::unique_ptr<rng_t>(new rng_xorshift1024_t());
-
-  case DEFAULT:
-  default:
-    break;
-  }
-
-  return create( rng_t::SFMT );
-}
+} // unnamed
 
 // ==========================================================================
 // Probability Distributions
 // ==========================================================================
 
-// Bernoulli Distribution ===================================================
-
+/// Bernoulli Distribution
 bool rng_t::roll( double chance )
 {
   if ( chance <= 0 ) return false;
@@ -692,26 +618,27 @@ bool rng_t::roll( double chance )
   return real() < chance;
 }
 
-// Uniform distribution in the range [min max] ==============================
-
+/// Uniform distribution in the range [min max]
 double rng_t::range( double min, double max )
 {
   assert( min <= max );
   return min + real() * ( max - min );
 }
 
-// Gaussian Distribution ====================================================
-
+/**
+ * @brief Gaussian Distribution
+ *
+ * This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
+ * Implements the Polar form of the Box-Muller Transformation
+ *
+ * (c) Copyright 1994, Everett F. Carter Jr.
+ *     Permission is granted by the author to use
+ *     this software for any application provided this
+ *     copyright notice is preserved.
+ */
 double rng_t::gauss( double mean, double stddev, bool truncate_low_end )
 {
-  /* This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
-   * Implements the Polar form of the Box-Muller Transformation
-   *
-   * (c) Copyright 1994, Everett F. Carter Jr.
-   *     Permission is granted by the author to use
-   *     this software for any application provided this
-   *     copyright notice is preserved.
-   */
+
   
   double z;
 
@@ -754,8 +681,7 @@ double rng_t::gauss( double mean, double stddev, bool truncate_low_end )
   return result;
 }
 
-// Exponential Distribution =================================================
-
+/// Exponential Distribution
 double rng_t::exponential( double nu )
 {
   double x;
@@ -763,8 +689,7 @@ double rng_t::exponential( double nu )
   return - std::log( 1 - x ) * nu;
 }
 
-// Exponentially Modified Gaussian Distribution =============================
-
+/// Exponentially Modified Gaussian Distribution
 double rng_t::exgauss( double gauss_mean, 
 		       double gauss_stddev, 
 		       double exp_nu )
@@ -772,33 +697,115 @@ double rng_t::exgauss( double gauss_mean,
   return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); 
 }
 
-// Reseed using current state.  =============================================
+/// timespan uniform distribution in the range [min max]
+timespan_t rng_t::range( timespan_t min, timespan_t max )
+{
+  return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
+                                         static_cast<double>( timespan_t::to_native( max ) ) ) );
+}
 
+/// timespan Gaussian Distribution
+timespan_t rng_t::gauss( timespan_t mean, timespan_t stddev )
+{
+  return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
+                                         static_cast<double>( timespan_t::to_native( stddev ) ) ) );
+}
+
+/// tiemspan exponentially Modified Gaussian Distribution
+timespan_t rng_t::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
+{
+  return timespan_t::from_native( exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
+             static_cast<double>( timespan_t::to_native( stddev ) ),
+             static_cast<double>( timespan_t::to_native( nu ) ) ) );
+}
+
+/// Reseed using current state
 uint64_t rng_t::reseed()
 {
   union { uint64_t s; double d; } w;
   w.d = real();
   seed( w.s );
-  gauss_pair_value = 0;
-  gauss_pair_use = false;
+  reset();
   return w.s;
 }
 
-// stdnormal_cdf ============================================================
+/// reset any state
+void rng_t::reset()
+{
+  gauss_pair_value = 0;
+  gauss_pair_use = false;
+}
 
-// Source of the next 2 functions: http://home.online.no/~pjacklam/notes/invnorm/
+rng_t::rng_t() :
+    gauss_pair_value( 0.0 ), gauss_pair_use( false )
+{
+}
 
-/*
- * The standard normal CDF, for one random variable.
+// ==========================================================================
+// RNG Engine Broker
+// ==========================================================================
+
+/// parse rng type from string
+rng_t::type_e parse_type( const std::string& n )
+{
+  if( n == "murmurhash"   ) return rng_t::MURMURHASH;
+  if( n == "sfmt"         ) return rng_t::SFMT;
+  if( n == "std"          ) return rng_t::STD;
+  if( n == "tinymt"       ) return rng_t::TINYMT;
+  if( n == "xorshift64"   ) return rng_t::XORSHIFT64;
+  if( n == "xorshift128"  ) return rng_t::XORSHIFT128;
+  if( n == "xorshift1024" ) return rng_t::XORSHIFT1024;
+
+  return rng_t::DEFAULT;
+}
+
+/**
+ * Factory method to create a rng object with given rng-engine type
+ */
+std::unique_ptr<rng_t> create( rng_t::type_e t )
+{
+  switch( t )
+  {
+  case rng_t::MURMURHASH:
+    return std::unique_ptr<rng_t>(new rng_murmurhash_t());
+
+  case rng_t::STD:
+    return std::unique_ptr<rng_t>(new rng_mt_cxx11_t());
+
+  case rng_t::SFMT:
+    return std::unique_ptr<rng_t>(new rng_sfmt_t());
+
+  case rng_t::TINYMT:
+    return std::unique_ptr<rng_t>(new rng_tinymt_t());
+
+  case rng_t::XORSHIFT64:
+    return std::unique_ptr<rng_t>(new rng_xorshift64_t());
+
+  case rng_t::XORSHIFT128:
+    return std::unique_ptr<rng_t>(new rng_xorshift128_t());
+
+  case rng_t::XORSHIFT1024:
+    return std::unique_ptr<rng_t>(new rng_xorshift1024_t());
+
+  case rng_t::DEFAULT:
+  default:
+    break;
+  }
+
+  return create( rng_t::SFMT );
+}
+
+/**
+ * @brief The standard normal CDF, for one random variable.
  *
  *   Author:  W. J. Cody
- *   URL:   http://www.netlib.org/specfun/erf
+ *   URL:     http://www.netlib.org/specfun/erf
+ *   Source:  http://home.online.no/~pjacklam/notes/invnorm/
  *
  * This is the erfc() routine only, adapted by the
  * transform stdnormal_cdf(u)=(erfc(-u/sqrt(2))/2;
  */
-
-double rng_t::stdnormal_cdf( double u )
+double stdnormal_cdf( double u )
 {
   if ( u == std::numeric_limits<double>::infinity() )
     return ( u < 0 ? 0.0 : 1.0 );
@@ -880,23 +887,21 @@ double rng_t::stdnormal_cdf( double u )
   return ( u < 0.0 ? y : 1 - y );
 }
 
-// stdnormal_inv ============================================================
-
-// This is used to get the normal distribution inverse for our user-specifiable confidence levels
-// For example for the default 95% confidence level, this function will return the well known number of
-// 1.96, so we know that 95% of the distribution is between -1.96 and +1.96 std deviations from the mean.
-
-/*
- * The inverse standard normal distribution.
+/**
+ * @brief The inverse standard normal distribution.
+ *
+ * This is used to get the normal distribution inverse for our user-specifiable confidence levels.
+ * For example for the default 95% confidence level, this function will return the well known number of
+ * 1.96, so we know that 95% of the distribution is between -1.96 and +1.96 std deviations from the mean.
  *
  *   Author:      Peter John Acklam <pjacklam@online.no>
  *   URL:         http://home.online.no/~pjacklam
+ *   Source:      http://home.online.no/~pjacklam/notes/invnorm/
  *
  * This function is based on the MATLAB code from the address above,
  * translated to C, and adapted for our purposes.
  */
-
-double rng_t::stdnormal_inv( double p )
+double stdnormal_inv( double p )
 {
   if ( p > 1.0 || p < 0.0 )
   {
@@ -965,6 +970,7 @@ double rng_t::stdnormal_inv( double p )
   return ( p > 0.5 ? -u : u );
 }
 
+} // rng
 #ifdef UNIT_TEST
 // Code to test functionality and performance of our RNG implementations
 

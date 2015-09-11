@@ -3,75 +3,61 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#ifndef RNG_HPP
-#define RNG_HPP
+#pragma once
+
+/*! \file rng.hpp */
+/*! \defgroup SC_RNG Random Number Generator */
 
 #include "config.hpp"
-
 #include <memory>
-
 #include "sc_timespan.hpp"
 
-// ==========================================================================
-// Random Number Generator
-// ==========================================================================
-
+/** \ingroup SC_RNG
+ * Random number generation
+ */
+namespace rng {
+/**
+ * @brief Random number generator base class
+ *
+ * Implements different rng-engines, selectable through a factory,
+ * as well as different distribution outputs ( uniform, gauss, etc. )
+ */
 struct rng_t
 {
+  /// rng engines
   enum type_e { DEFAULT, MURMURHASH, SFMT, STD, TINYMT, XORSHIFT64, XORSHIFT128, XORSHIFT1024 };
 
+  virtual ~rng_t() {}
+  /// name of rng engine
   virtual const char* name() const = 0;
+  /// seed rng engine
   virtual void seed( uint64_t start ) = 0;
+  /// uniform distribution in range [0,1]
   virtual double real() = 0;
-
-  static std::unique_ptr<rng_t> create( type_e = DEFAULT );
-  static type_e parse_type( const std::string& name );
-
-  static double stdnormal_cdf( double );
-  static double stdnormal_inv( double );
-
-  // bernoulli distribution
-  bool roll( double chance );
-
-  // uniform distribution in the range [min max]
-  double range( double min, double max );
-
-  // gaussian distribution
-  double gauss( double mean, double stddev, bool truncate_low_end = false );
-
-  // exponential distribution
-  double exponential( double nu );
-
-  // Exponentially modified Gaussian distribution
-  double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
-  
-  // Reseed using current state.  Helpful for replaying from a specific point.
   virtual uint64_t reseed();
+  virtual void reset();
 
-  // Convenience timespan_t helper functions
-  timespan_t range( timespan_t min, timespan_t max )
-  {
-    return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
-                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
-  }
-  timespan_t gauss( timespan_t mean, timespan_t stddev )
-  {
-    return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
-  }
-  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-  {
-    return timespan_t::from_native( exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-					     static_cast<double>( timespan_t::to_native( stddev ) ),
-					     static_cast<double>( timespan_t::to_native( nu ) ) ) );
-  }
-
+  bool roll( double chance );
+  double range( double min, double max );
+  double gauss( double mean, double stddev, bool truncate_low_end = false );
+  double exponential( double nu );
+  double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
+  timespan_t range( timespan_t min, timespan_t max );
+  timespan_t gauss( timespan_t mean, timespan_t stddev );
+  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
+protected:
+  rng_t();
+private:
   // Allow re-use of unused ( but necessary ) random number of a previous call to gauss()  
   double gauss_pair_value; 
   bool   gauss_pair_use;
 
-  rng_t() : gauss_pair_value( 0.0 ), gauss_pair_use( false ) {}
-  virtual ~rng_t() {}
 };
 
-#endif // RNG_HPP
+std::unique_ptr<rng_t> create( rng_t::type_e = rng_t::DEFAULT );
+rng_t::type_e parse_type( const std::string& name );
+
+double stdnormal_cdf( double );
+double stdnormal_inv( double );
+
+} // rng
