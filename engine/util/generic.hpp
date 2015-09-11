@@ -95,31 +95,22 @@ template <typename T, std::size_t N>
 inline std::size_t sizeof_array( const std::array<T, N>& )
 { return N; }
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( ( defined(SC_GCC) && SC_GCC >= 40600 ) || ( defined(SC_CLANG) && SC_CLANG >= 30000 ) ) // Improved compile-time diagnostics.
 class noncopyable
 {
-public:
+protected:
   noncopyable() = default;
   noncopyable( noncopyable&& ) = default;
   noncopyable& operator = ( noncopyable && ) = default;
   noncopyable( const noncopyable& ) = delete;
   noncopyable& operator = ( const noncopyable& ) = delete;
 };
-#else
-class noncopyable
+
+class nonmoveable : private noncopyable
 {
-public:
-  noncopyable() {}
-private:
-  noncopyable( const noncopyable& );
-  noncopyable& operator = ( const noncopyable& );
-};
-#endif
-class nonmoveable : public noncopyable
-{
-private:
-  // nonmoveable( nonmoveable&& ) = delete;
-  // nonmoveable& operator = ( nonmoveable&& ) = delete;
+protected:
+  nonmoveable() = default;
+  nonmoveable( nonmoveable&& ) = delete;
+  nonmoveable& operator = ( nonmoveable&& ) = delete;
 };
 
 // Adapted from (read "stolen") boost::checked_deleter

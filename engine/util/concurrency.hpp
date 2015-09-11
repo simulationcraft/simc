@@ -16,7 +16,7 @@
 #include <memory>
 
 
-class mutex_t : public noncopyable
+class mutex_t : private noncopyable
 {
 private:
   class native_t;
@@ -32,7 +32,7 @@ public:
   native_t* native_mutex() const;
 };
 
-class sc_thread_t : public noncopyable
+class sc_thread_t : private noncopyable
 {
 private:
   class native_t;

@@ -90,7 +90,7 @@ bool download( url_cache_entry_t& entry,
 {
   // Requires cache_mutex to be held.
 
-  class InetWrapper : public noncopyable
+  class InetWrapper : private noncopyable
   {
   public:
     HINTERNET handle;

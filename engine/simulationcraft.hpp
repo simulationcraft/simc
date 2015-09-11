@@ -1450,7 +1450,7 @@ void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, 
  * intended to be used in class modules for custom reporting.
  * Iteration based sampling
  */
-struct luxurious_sample_data_t : public extended_sample_data_t, public noncopyable
+struct luxurious_sample_data_t : public extended_sample_data_t, private noncopyable
 {
   luxurious_sample_data_t( player_t& p, std::string n );
 
@@ -1935,7 +1935,7 @@ using namespace buff_creation;
 
 // Buffs ====================================================================
 
-struct buff_t : public noncopyable
+struct buff_t : private noncopyable
 {
 public:
   sim_t* const sim;
@@ -3786,7 +3786,7 @@ struct item_t
 
 // Benefit ==================================================================
 
-struct benefit_t : public noncopyable
+struct benefit_t : private noncopyable
 {
 private:
   int up, down;
@@ -3813,7 +3813,7 @@ public:
 
 // Proc =====================================================================
 
-struct proc_t : public noncopyable
+struct proc_t : private noncopyable
 {
 private:
   sim_t& sim;
@@ -4435,7 +4435,7 @@ private:
  * having a name and some event-related helper functionality.
  */
 
-struct actor_t : public noncopyable
+struct actor_t : private noncopyable
 {
   sim_t* sim; // owner
   std::string name_str;
@@ -5755,7 +5755,7 @@ public:
 
 // Gain =====================================================================
 
-struct gain_t : public noncopyable
+struct gain_t : private noncopyable
 {
 public:
   std::array<double, RESOURCE_MAX> actual, overflow, count;
@@ -5784,7 +5784,7 @@ public:
 
 // Stats ====================================================================
 
-struct stats_t : public noncopyable
+struct stats_t : private noncopyable
 {
 private:
   sim_t& sim;
@@ -5876,7 +5876,7 @@ public:
   bool has_tick_amount_results() const;
 };
 
-struct action_state_t : public noncopyable
+struct action_state_t : private noncopyable
 {
   action_state_t* next;
   // Source action, target actor
@@ -5991,7 +5991,7 @@ struct action_state_t : public noncopyable
 
 // Action ===================================================================
 
-struct action_t : public noncopyable
+struct action_t : private noncopyable
 {
   const spell_data_t* s_data;
   sim_t* const sim;
@@ -6841,7 +6841,7 @@ private:
   dot_t* dot;
 };
 
-struct dot_t : public noncopyable
+struct dot_t : private noncopyable
 {
 private:
   sim_t& sim;

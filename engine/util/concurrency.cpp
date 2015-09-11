@@ -56,7 +56,7 @@ public:
 
 // mutex_t::native_t ========================================================
 
-class mutex_t::native_t : public nonmoveable
+class mutex_t::native_t : private nonmoveable
 {
   HANDLE mutex_;
 
@@ -150,7 +150,7 @@ private:
 
 // mutex_t::native_t ========================================================
 
-class mutex_t::native_t : public nonmoveable
+class mutex_t::native_t : private nonmoveable
 {
   pthread_mutex_t m;
 
@@ -244,7 +244,7 @@ private:
 #include <mutex>
 #include <chrono>
 
-class mutex_t::native_t : public nonmoveable
+class mutex_t::native_t : private nonmoveable
 {
   std::mutex m;
 
@@ -305,7 +305,8 @@ private:
 
 mutex_t::mutex_t() :
     native_handle( new native_t() )
-{}
+{
+}
 
 // mutex_t::~mutex_t() ======================================================
 // Keep in .cpp file so that std::unique_ptr deleter can see defined native_t class

@@ -13,7 +13,7 @@
 #include "sc_timespan.hpp"
 
 /** \ingroup SC_RNG
- * Random number generation
+ * @brief Random number generation
  */
 namespace rng {
 /**
