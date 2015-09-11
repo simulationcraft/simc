@@ -3303,7 +3303,7 @@ struct event_t
   static void* operator new( std::size_t size, sim_t& sim ) { return sim.event_mgr.allocate_event( size ); }
 
   // DO NOT USE ANY OF THE FOLLOWING!
-  static void  operator delete( void*, sim_t& ) = delete;
+  static void  operator delete( void*, sim_t& ) { std::terminate(); }
   static void  operator delete( void* ) { std::terminate(); }  // DO NOT USE!
   static void* operator new( std::size_t ) = delete;
 };
