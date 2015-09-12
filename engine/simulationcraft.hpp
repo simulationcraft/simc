@@ -2930,7 +2930,7 @@ struct sim_t : private sc_thread_t
   int threads;
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
-  sc_thread_t::priority_e thread_priority;
+  computer_process::priority_e process_priority;
   struct sim_progress_t
   {
     int current_iterations;

@@ -775,38 +775,38 @@ bool parse_item_sources( sim_t*             sim,
   return true;
 }
 
-bool parse_thread_priority( sim_t*             sim,
+bool parse_process_priority( sim_t*             sim,
                                    const std::string& /* name */,
                                    const std::string& value )
 {
-  sc_thread_t::priority_e pr = sc_thread_t::BELOW_NORMAL;
+  computer_process::priority_e pr = computer_process::BELOW_NORMAL;
 
   if ( util::str_compare_ci( value, "normal" ) )
   {
-    pr = sc_thread_t::NORMAL;
+    pr = computer_process::NORMAL;
   }
-  else if ( util::str_compare_ci( value, "above_normal" ) || util::str_compare_ci( value, "high" ) )
+  else if ( util::str_compare_ci( value, "above_normal" ) )
   {
-    pr = sc_thread_t::ABOVE_NORMAL;
+    pr = computer_process::ABOVE_NORMAL;
   }
-  else if ( util::str_compare_ci( value, "below_normal" ) || util::str_compare_ci( value, "low" ) )
+  else if ( util::str_compare_ci( value, "below_normal" ) )
   {
-    pr = sc_thread_t::BELOW_NORMAL;
+    pr = computer_process::BELOW_NORMAL;
   }
-  else if ( util::str_compare_ci( value, "highest" ) )
+  else if ( util::str_compare_ci( value, "high" ) )
   {
-    pr = sc_thread_t::HIGHEST;
+    pr = computer_process::HIGH;
   }
-  else if ( util::str_compare_ci( value, "lowest" ) )
+  else if ( util::str_compare_ci( value, "low" ) )
   {
-    pr = sc_thread_t::LOWEST;
+    pr = computer_process::LOW;
   }
   else
   {
     sim -> errorf( "Could not set thread priority to %s. Defaulting to below_normal priority.", value.c_str() );
   }
 
-  sim -> thread_priority = pr;
+  sim -> process_priority = pr;
 
   return true;
 }
@@ -1307,7 +1307,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling_normalized( 1.0 ),
   report_information(),
   // Multi-Threading
-  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::BELOW_NORMAL ),
+  threads( 0 ), thread_index( index ), process_priority( computer_process::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),
   spell_query(), spell_query_level( MAX_LEVEL ),
   pause_mutex( nullptr ),
@@ -2544,10 +2544,10 @@ void sim_t::partition()
     child -> report_progress = 0;
   }
 
-  sc_thread_t::set_calling_thread_priority( thread_priority ); // Set main thread priority
+  computer_process::set_priority( process_priority ); // Set main thread priority
 
   for ( auto & child : children )
-    child -> launch( thread_priority );
+    child -> launch();
 }
 
 // sim_t::execute ===========================================================
@@ -2759,7 +2759,7 @@ void sim_t::create_options()
   add_option( opt_int( "iterations", iterations ) );
   add_option( opt_float( "target_error", target_error ) );
   add_option( opt_int( "analyze_error_interval", analyze_error_interval ) );
-  add_option( opt_func( "thread_priority", parse_thread_priority ) );
+  add_option( opt_func( "process_priority", parse_process_priority ) );
   add_option( opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_bool( "fixed_time", fixed_time ) );
   add_option( opt_float( "vary_combat_length", vary_combat_length, 0.0, 1.0 ) );

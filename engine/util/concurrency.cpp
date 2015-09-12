@@ -81,8 +81,8 @@ int translate_thread_priority( sc_thread_t::priority_e prio )
   case sc_thread_t::NORMAL: return THREAD_PRIORITY_NORMAL;
   case sc_thread_t::ABOVE_NORMAL: return THREAD_PRIORITY_HIGHEST-1;
   case sc_thread_t::BELOW_NORMAL: return THREAD_PRIORITY_LOWEST+1;
-  case sc_thread_t::HIGHEST: return THREAD_PRIORITY_HIGHEST;
-  case sc_thread_t::LOWEST: return THREAD_PRIORITY_IDLE;
+  case sc_thread_t::HIGH: return THREAD_PRIORITY_HIGHEST;
+  case sc_thread_t::LOW: return THREAD_PRIORITY_IDLE;
   default: assert( false && "invalid thread priority" ); break;
   }
   return THREAD_PRIORITY_LOWEST+1;
@@ -147,6 +147,8 @@ private:
 #include <cstdio>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/time.h>
+//#include <sys/resource.h>
 
 // mutex_t::native_t ========================================================
 
@@ -176,7 +178,7 @@ class sc_thread_t::native_t
   }
 
 public:
-  void launch( sc_thread_t* thr, priority_e prio )
+  void launch( sc_thread_t* thr)
   {
     int rc = pthread_create( &t, nullptr, execute, thr );
     if ( rc != 0 )
@@ -184,60 +186,14 @@ public:
       perror( "Could not create thread." );
       std::abort();
     }
-    set_priority( prio );
   }
 
   void join() { pthread_join( t, nullptr ); }
 
-  void set_priority( priority_e prio )
-  { set_thread_priority( t, prio ); }
-
-  static void set_calling_thread_priority( priority_e prio )
-  { set_thread_priority( pthread_self(), prio ); }
-
   static void sleep_seconds( double t )
-  { ::sleep( ( unsigned int )t ); }
-
-private:
-  static void set_thread_priority( pthread_t t, priority_e prio )
-  {
-    pthread_attr_t attr;
-    int sched_policy;
-    if ( pthread_attr_init(&attr) != 0 )
-    {
-      perror( "Could not init default thread attributes");
-      return;
-    }
-    if (pthread_attr_getschedpolicy(&attr, &sched_policy) != 0 )
-    {
-      if ( errno != 0 )
-      {
-        perror( "Could not get schedule policy");
-      }
-      pthread_attr_destroy(&attr);
-      return;
-    }
-
-    // Translate our priority enum to posix priority values
-    int prio_min = sched_get_priority_min(sched_policy);
-    int prio_max = sched_get_priority_max(sched_policy);
-    int posix_prio = static_cast<int>( prio ) / 7.0 * ( prio_max - prio_min );
-    posix_prio += prio_min;
-
-    sched_param sp;
-    sp.sched_priority = posix_prio;
-
-    if ( pthread_setschedparam( t, sched_policy, &sp) != 0 )
-    {
-      if ( errno != 0 )
-      {
-        perror( "Could not set thread priority" );
-      }
-    }
-
-    pthread_attr_destroy(&attr);
-  }
+  { ::usleep( static_cast<::useconds_t>(t * 1000.0) ); }
 };
+
 
 #elif __cplusplus >= 201103L
 #include <thread>
@@ -338,15 +294,8 @@ sc_thread_t::~sc_thread_t()
 
 // sc_thread_t::launch() ====================================================
 
-void sc_thread_t::launch( priority_e prio )
-{ native_handle -> launch( this, prio ); }
-
-
-void sc_thread_t::set_priority( priority_e prio )
-{ native_handle -> set_priority( prio ); }
-
-void sc_thread_t::set_calling_thread_priority( priority_e prio )
-{ native_t::set_calling_thread_priority( prio ); }
+void sc_thread_t::launch()
+{ native_handle -> launch( this ); }
 
 // sc_thread_t::wait() ======================================================
 
@@ -388,3 +337,66 @@ int sc_thread_t::cpu_thread_count()
 #endif // SC_WINDOWS
   return 0;
 }
+
+#if defined(SC_WINDOWS)
+#include <windows.h>
+
+DWORD translate_priority( computer_process::priority_e p )
+{
+  switch ( p )
+  {
+  case computer_process::NORMAL: return NORMAL_PRIORITY_CLASS;
+  case computer_process::ABOVE_NORMAL: return ABOVE_NORMAL_PRIORITY_CLASS;
+  case computer_process::BELOW_NORMAL: return BELOW_NORMAL_PRIORITY_CLASS;
+  case computer_process::HIGH: return HIGH_PRIORITY_CLASS;
+  case computer_process::LOW: return IDLE_PRIORITY_CLASS;
+  default: assert( false && "invalid process priority" ); break;
+  }
+  return NORMAL_PRIORITY_CLASS;
+}
+
+void computer_process::set_priority( priority_e p )
+{
+
+ DWORD priority = translate_priority(p);
+ if ( ! SetPriorityClass(GetCurrentProcess(), priority) )
+ {
+   DWORD dwError = GetLastError();
+   std::cerr << "Failed to set process priority: " << dwError << std::endl;
+ }
+}
+
+#elif defined(_POSIX_VERSION)
+#include <sys/time.h>
+#include <sys/resource.h>
+
+int translate_priority( computer_process::priority_e p )
+{
+  switch ( p )
+  {
+  case computer_process::NORMAL: return 0;
+  case computer_process::ABOVE_NORMAL: return -5;
+  case computer_process::BELOW_NORMAL: return 5;
+  case computer_process::HIGH: return -10;
+  case computer_process::LOW: 10;
+  default: assert( false && "invalid process priority" ); break;
+  }
+  return 0;
+}
+
+void computer_process::set_priority( priority_e p )
+{
+
+  int priority = translate_priority(p);
+  assert( priority <= 19 && priority >= -20 ); // POSIX limits
+  if ( setpriority(PRIO_PROCESS, 0 /* calling process */, priority) != 0 )
+  {
+    perror("Could not set process priority.");
+  }
+}
+#else
+void computer_process::set_priority( priority_e p )
+{
+  // do nothing
+}
+#endif

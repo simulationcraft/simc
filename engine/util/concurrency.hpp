@@ -42,21 +42,12 @@ protected:
   sc_thread_t();
   virtual ~sc_thread_t();
 public:
-  enum priority_e {
-    NORMAL = 3,
-    ABOVE_NORMAL = 4,
-    BELOW_NORMAL = 2,
-    HIGHEST = 5,
-    LOWEST = 0
-  };
+
   virtual void run() = 0;
 
-  void launch( priority_e = NORMAL );
+  void launch();
   void wait();
-  void set_priority( priority_e );
-
   static void sleep_seconds( double );
-  static void set_calling_thread_priority( priority_e );
   static int cpu_thread_count();
 };
 
@@ -70,3 +61,16 @@ public:
 };
 
 #define AUTO_LOCK( m ) auto_lock_t auto_lock( m );
+
+namespace computer_process {
+
+enum priority_e {
+  NORMAL,
+  ABOVE_NORMAL,
+  BELOW_NORMAL,
+  HIGH,
+  LOW
+};
+void set_priority( priority_e);
+
+} // computer_process
