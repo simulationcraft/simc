@@ -33,6 +33,7 @@ SRC += \
     sim$(PATHSEP)sc_scaling.cpp \
     sim$(PATHSEP)sc_reforge_plot.cpp \
     sim$(PATHSEP)sc_raid_event.cpp \
+    sim$(PATHSEP)sc_progress_bar.cpp \
     sim$(PATHSEP)sc_plot.cpp \
     sim$(PATHSEP)sc_option.cpp \
     sim$(PATHSEP)sc_gear_stats.cpp \

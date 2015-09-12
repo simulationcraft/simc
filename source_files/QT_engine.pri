@@ -34,6 +34,7 @@
  SOURCES += engine/sim/sc_scaling.cpp
  SOURCES += engine/sim/sc_reforge_plot.cpp
  SOURCES += engine/sim/sc_raid_event.cpp
+ SOURCES += engine/sim/sc_progress_bar.cpp
  SOURCES += engine/sim/sc_plot.cpp
  SOURCES += engine/sim/sc_option.cpp
  SOURCES += engine/sim/sc_gear_stats.cpp

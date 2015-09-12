@@ -131,7 +131,7 @@ double scaling_t::progress( std::string& phase, std::string* detailed )
   {
     phase = "Baseline";
     if ( ! baseline_sim ) return 0;
-    return baseline_sim -> progress( nullptr, nullptr, detailed );
+    return baseline_sim -> progress(detailed ).pct();
   }
 
   phase  = "Scaling - ";
@@ -145,11 +145,11 @@ double scaling_t::progress( std::string& phase, std::string* detailed )
 
   double divisor = num_scaling_stats * 2.0;
 
-  if ( ref_sim  ) stat_progress += divisor * ref_sim  -> progress();
-  if ( ref_sim2 ) stat_progress += divisor * ref_sim2 -> progress();
+  if ( ref_sim  ) stat_progress += divisor * ref_sim  -> progress().pct();
+  if ( ref_sim2 ) stat_progress += divisor * ref_sim2 -> progress().pct();
 
-  if ( delta_sim  ) stat_progress += divisor * delta_sim  -> progress();
-  if ( delta_sim2 ) stat_progress += divisor * delta_sim2 -> progress();
+  if ( delta_sim  ) stat_progress += divisor * delta_sim  -> progress().pct();
+  if ( delta_sim2 ) stat_progress += divisor * delta_sim2 -> progress().pct();
 
   return stat_progress;
 }

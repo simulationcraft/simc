@@ -206,8 +206,7 @@ double stopwatch_t::elapsed()
 double util::wall_time() { return wall_sw.elapsed(); }
 double util::cpu_time() { return cpu_sw.elapsed(); }
 
-// str_compare_ci ===========================================================
-
+/// case-insensitive string comparison
 bool util::str_compare_ci( const std::string& l,
                            const std::string& r )
 {

@@ -176,16 +176,16 @@ template <typename T>
 struct traits
 {
   typedef typename iterator_type<T>::type iterator;
-  static iterator begin( T& t ) { return t.begin(); }
-  static iterator end( T& t ) { return t.end(); }
+  static iterator begin( T& t ) { return std::begin(t); }
+  static iterator end( T& t ) { return std::end(t); }
 };
 
 template <typename T, size_t N>
 struct traits<T[N]>
 {
   typedef T* iterator;
-  static iterator begin( T ( &t )[N] ) { return &t[0]; }
-  static iterator end( T ( &t )[N] ) { return begin( t ) + N; }
+  static iterator begin( T ( &t )[N] ) { return std::begin(t); }
+  static iterator end( T ( &t )[N] ) { return std::end(t); }
 };
 
 template <typename T>
@@ -259,6 +259,11 @@ template <typename Range>
 inline typename range::traits<Range>::iterator
 find( Range& r, typename range::value_type<Range>::type const& t )
 { return std::find( range::begin( r ), range::end( r ), t ); }
+
+template <typename Range, typename UnaryPredicate>
+inline typename range::traits<Range>::iterator
+find_if( Range& r, UnaryPredicate p )
+{ return std::find_if( range::begin( r ), range::end( r ), p ); }
 
 template <typename Range, typename F>
 inline F for_each( Range& r, F f )

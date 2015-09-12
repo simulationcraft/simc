@@ -1194,8 +1194,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   disable_hotfixes( false ),
   display_bonus_ids( false )
 {
-  item_db_sources.assign( range::begin( default_item_db_sources ),
-                          range::end( default_item_db_sources ) );
+  item_db_sources.assign( std::begin( default_item_db_sources ),
+                          std::end( default_item_db_sources ) );
 
   max_time = timespan_t::from_seconds( 450 );
   vary_combat_length = 0.2;
@@ -1252,7 +1252,8 @@ double sim_t::iteration_time_adjust() const
   if ( current_iteration == 0 )
     return 1.0;
 
-  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * work_queue -> progress();
+  auto progress = work_queue -> progress();
+  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * progress.pct();
 }
 
 // sim_t::expected_max_time =================================================
@@ -1721,30 +1722,38 @@ void sim_t::analyze_error()
     }
     else
     {
-      int current = 0, total = 0;
-      work_queue -> progress( &current, &total );
-      work_queue -> project( static_cast<int>( current * ( ( current_error * current_error ) /
+      auto progress = work_queue -> progress();
+      work_queue -> project( static_cast<int>( progress.current_iterations * ( ( current_error * current_error ) /
         ( target_error *  target_error ) ) ) );
     }
   }
 }
 
-// sim_t::check_actors() ========================================================
-// This function just checks that the sim has at least 1 active player, and sets
-// fixed_time automatically if the only role present is a ROLE_HEAL.  Called in sim_t::init_actors()
-
+/**
+ * @brief check for active player
+ *
+ * This function just checks that the sim has at least 1 active player, and sets
+ * fixed_time automatically if the only role present is a ROLE_HEAL.  Called in sim_t::init_actors()
+ */
 bool sim_t::check_actors()
 {
   bool too_quiet = true; // Check for at least 1 active player
-  bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
+  bool zero_dds = true; // Check for at least 1 player != HEAL
 
-  for ( size_t i = 0; i < actor_list.size(); i++ )
+  for ( const auto& p : actor_list )
   {
-    player_t* p = actor_list[ i ];
-    if ( p -> is_pet() || p -> is_enemy() ) continue;
-    if ( p -> type == HEALING_ENEMY ) continue;
-    if ( ! p -> quiet ) too_quiet = false;
-    if ( p -> primary_role() != ROLE_HEAL && ! p -> is_pet() ) zero_dds = false;
+    if ( p -> is_pet() || p -> is_enemy() )
+      continue;
+    if ( p -> type == HEALING_ENEMY )
+      continue;
+    if ( ! p -> quiet )
+    {
+      too_quiet = false;
+    }
+    if ( p -> primary_role() != ROLE_HEAL && ! p -> is_pet() )
+    {
+      zero_dds = false;
+    }
   }
 
   if ( too_quiet && ! debug )
@@ -1755,107 +1764,73 @@ bool sim_t::check_actors()
 
   // Set Fixed_Time when there are no DD's present
   if ( zero_dds && ! debug )
+  {
     fixed_time = true;
+  }
 
   return true;
 }
 
-// sim_t::init_parties =============================================================
-// This function... builds parties? I guess it assigns each player in player_list to
-// a party based on party_encoding. Called in sim_t::init_actors()
-
+/**
+ * @brief configure parties
+ *
+ * This function... builds parties? I guess it assigns each player in player_list to
+ * a party based on party_encoding. Called in sim_t::init_actors()
+ */
 bool sim_t::init_parties()
 {
-  // Parties
   if ( debug )
     out_debug.printf( "Building Parties." );
 
   int party_index = 0;
-  for ( size_t i = 0; i < party_encoding.size(); i++ )
+  for ( const auto& party_str : party_encoding )
   {
-    std::string& party_str = party_encoding[ i ];
-
-    if ( party_str == "reset" )
+    if (util::str_compare_ci(party_str, "reset"))
     {
       party_index = 0;
-      for ( size_t j = 0; j < player_list.size(); ++j )
-        player_list[ j ] -> party = 0;
-    }
-    else if ( party_str == "all" )
-    {
-      for ( size_t j = 0; j < player_list.size(); ++j )
+      for ( auto& player : player_list )
       {
-        player_t* p = player_list[ j ];
-        p -> party = 1;
+        player -> party = 0;
+      }
+    }
+    else if (util::str_compare_ci(party_str, "all"))
+    {
+      for ( auto& player : player_list )
+      {
+        player -> party = 1;
       }
     }
     else
     {
       party_index++;
 
-      std::vector<std::string> player_names = util::string_split( party_str, ",;/" );
+      auto player_names = util::string_split( party_str, ",;/" );
 
-      for ( size_t j = 0; j < player_names.size(); j++ )
+      for ( const auto& player_name : player_names )
       {
-        player_t* p = find_player( player_names[ j ] );
+        player_t* p = find_player( player_name );
         if ( ! p )
         {
-          errorf( "Unable to find player %s for party creation.\n", player_names[ j ].c_str() );
+          errorf( "Unable to find player %s for party creation.\n", player_name.c_str() );
           return false;
         }
         p -> party = party_index;
-        for ( size_t k = 0; k < p -> pet_list.size(); ++k )
+        for ( auto& pet : p -> pet_list )
         {
-          pet_t* pet = p -> pet_list[ k ];
           pet -> party = party_index;
         }
       }
     }
   }
-
   return true;
 }
 
-// init_items ===============================================================
-// This is a helper function that loops through each actor and calls its respective
-// player_t::init_items() method.
-
-bool sim_t::init_items()
-{
-  bool success = true;
-
-  for ( size_t i = 0; i < actor_list.size(); i++ )
-  {
-    if ( ! actor_list[ i ] -> init_items() )
-      success = false;
-  }
-  return success;
-}
-
-// init_actions =============================================================
-// This is a helper function that loops through each actor and calls its respective
-// player_t::init_actions() method.
-
-bool sim_t::init_actions()
-{
-  bool success = true;
-
-  for ( size_t i = 0; i < actor_list.size(); i++ )
-  {
-    if ( ! actor_list[ i ] -> init_actions() )
-      success = false;
-  }
-  return success;
-
-}
-
-// sim_t::init_actors =======================================================
-
+/// Initialize actors
 bool sim_t::init_actors()
 {
   if ( debug )
   {
-    out_debug.printf( "Initializing Enemies." );
+    out_debug.printf( "Initializing actors." );
   }
 
   bool actor_init = true;
@@ -2202,9 +2177,9 @@ bool sim_t::init()
 
   simulation_length.reserve( std::min( iterations, 10000 ) );
 
-  for ( size_t i = 0, end = player_list.size(); i < end; i++ )
+  for ( const auto& player : player_list )
   {
-    if ( player_list[ i ] -> regen_type == REGEN_STATIC )
+    if ( player -> regen_type == REGEN_STATIC )
     {
       requires_regen_event = true;
       break;
@@ -2217,10 +2192,10 @@ bool sim_t::init()
   {
     bool ret = true;
 
-    for ( size_t i = 0, end = actor_list.size(); i < end; ++i )
+    for ( auto& actor : actor_list )
     {
 
-      if ( ! actor_list[ i ] -> init_finished() )
+      if ( ! actor -> init_finished() )
       {
         ret = false;
       }
@@ -2353,10 +2328,10 @@ void sim_t::analyze()
   analyze_iteration_data();
 }
 
-// sim_t::analyze_iteration_data ============================================
-
-// Build a N-highest/lowest iteration table for deterministic so they can be
-// replayed
+/**
+ * Build a N-highest/lowest iteration table for deterministic so they can be
+ * replayed
+ */
 void sim_t::analyze_iteration_data()
 {
   // Only enabled for deterministic simulations for now
@@ -2379,82 +2354,18 @@ void sim_t::analyze_iteration_data()
   }
 
   std::copy( iteration_data.begin(), iteration_data.begin() + n_entries, std::back_inserter( low_iteration_data ) );
-  std::sort( low_iteration_data.begin(), low_iteration_data.end(), iteration_data_cmp_r );
+  range::sort( low_iteration_data, iteration_data_cmp_r );
   std::copy( iteration_data.end() - n_entries, iteration_data.end(), std::back_inserter( high_iteration_data ) );
-  std::sort( high_iteration_data.begin(), high_iteration_data.end(), iteration_data_cmp );
+  range::sort( high_iteration_data, iteration_data_cmp );
 }
 
-// progress_bar_t ===========================================================
-
-progress_bar_t::progress_bar_t( sim_t& s ) :
-  sim( s ), steps( 20 ), updates( 100 ), interval( 0 ), start_time( 0 ) {}
-
-void progress_bar_t::init()
-{
-  start_time = util::wall_time();
-  interval = ( sim.target_error > 0 ) ? sim.analyze_error_interval : ( sim.work_queue -> size() / updates );
-  if ( interval == 0 ) interval = 1;
-}
-
-bool progress_bar_t::update( bool finished )
-{
-  if ( sim.thread_index != 0 ) return false;
-  if ( ! sim.report_progress ) return false;
-  if ( ! sim.current_iteration ) return false;
-
-  if ( ! finished )
-    if ( sim.current_iteration % interval ) 
-      return false;
-
-  int current, last;
-  double pct = sim.progress( &current, &last );
-  if ( pct <= 0 ) return false;
-  if ( finished ) pct = 1.0;
-
-  size_t prev_size = status.size();
-
-  status = "[";
-  status.insert( 1, steps, '.' );
-  status += "]";
-
-  int length = ( int ) ( steps * pct + 0.5 );
-  for ( int i = 1; i < length + 1; i++ ) status[ i ] = '=';
-  if ( length > 0 ) status[ length ] = '>';
-
-  double current_time = util::wall_time() - start_time;
-  double total_time = current_time / pct;
-
-  int remaining_sec = int( total_time - current_time );
-  int remaining_min = remaining_sec / 60;
-  remaining_sec -= remaining_min * 60;
-
-  str::format( status, " %d/%d", finished ? last : current, last );
-
-  if( sim.target_error > 0 )
-  {
-    str::format( status, " Mean=%.0f Error=%.3f%%", sim.current_mean, sim.current_error );
-  }
-
-  if ( remaining_min > 0 )
-  {
-    str::format( status, " %dmin", remaining_min );
-  }
-
-  if ( remaining_sec > 0 )
-  {
-    str::format( status, " %dsec", remaining_sec );
-  }
-
-  if ( prev_size > status.size()  ) status.insert( status.end(), ( prev_size - status.size() ), ' ' );
-
-  return true;
-}
 
 // sim_t::iterate ===========================================================
 
 bool sim_t::iterate()
 {
-  if ( ! init() ) return false;
+  if ( ! init() )
+    return false;
 
   progress_bar.init();
 
@@ -2487,7 +2398,10 @@ bool sim_t::iterate()
   return iterations > 0;
 }
 
-/* Sit in an external pause mutex (lock) of the first simulator thread until
+/**
+ * @brief pause simulator
+ *
+ * Sit in an external pause mutex (lock) of the first simulator thread until
  * it's our turn to lock/unlock it. In theory can have racing issues, but in
  * practice all iterations do enough work for it not to matter.
  *
@@ -2509,8 +2423,7 @@ void sim_t::do_pause()
   }
 }
 
-// sim_t::merge =============================================================
-
+/// merge sims
 void sim_t::merge( sim_t& other_sim )
 {
   auto_lock_t auto_lock( merge_mutex );
@@ -2526,28 +2439,29 @@ void sim_t::merge( sim_t& other_sim )
   raid_aps.merge( other_sim.raid_aps );
   event_mgr.merge( other_sim.event_mgr );
 
-  for ( size_t i = 0; i < buff_list.size(); ++i )
+  for ( auto & buff : buff_list )
   {
-    if ( buff_t* otherbuff = buff_t::find( &other_sim, buff_list[ i ] -> name_str.c_str() ) )
-      buff_list[ i ] -> merge( *otherbuff );
+    if ( buff_t* otherbuff = buff_t::find( &other_sim, buff -> name_str.c_str() ) )
+    {
+      buff -> merge( *otherbuff );
+    }
   }
 
-  for ( size_t i = 0; i < actor_list.size(); i++ )
+  for ( auto & player : actor_list )
   {
-    player_t* p = actor_list[ i ];
-    player_t* other_p = other_sim.find_player( p -> index );
+    player_t* other_p = other_sim.find_player( player -> index );
     assert( other_p );
-    p -> merge( *other_p );
+    player -> merge( *other_p );
   }
 
   range::append( iteration_data, other_sim.iteration_data );
 }
 
-// sim_t::merge =============================================================
-
+/// merge all sims together
 void sim_t::merge()
 {
-  if ( children.empty() ) return;
+  if ( children.empty() )
+    return;
 
   merge_mutex.unlock();
 
@@ -2581,8 +2495,10 @@ void sim_t::partition()
 {
   iterations = work_queue -> size();
 
-  if ( threads <= 1 ) return;
-  if ( iterations < threads ) return;
+  if ( threads <= 1 )
+    return;
+  if ( iterations < threads )
+    return;
 
 #if defined( NO_THREADS )
   errorf( "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
@@ -2631,8 +2547,8 @@ void sim_t::partition()
 
   sc_thread_t::set_calling_thread_priority( thread_priority ); // Set main thread priority
 
-  for ( int i = 0; i < num_children; i++ )
-    children[ i ] -> launch( thread_priority );
+  for ( auto & child : children )
+    child -> launch( thread_priority );
 }
 
 // sim_t::execute ===========================================================
@@ -2645,7 +2561,8 @@ bool sim_t::execute()
   partition();
   bool success = iterate();
   merge(); // Always merge, even in cases of unsuccessful simulation!
-  if( success ) analyze();
+  if( success )
+    analyze();
 
   elapsed_cpu  = util::cpu_time()  - start_cpu_time;
   elapsed_time = util::wall_time() - start_wall_time;
@@ -2653,29 +2570,21 @@ bool sim_t::execute()
   return true;
 }
 
-// sim_t::find_player =======================================================
-
-player_t* sim_t::find_player( const std::string& name )
+/// find player in sim by name
+player_t* sim_t::find_player( const std::string& name ) const
 {
-  for ( size_t i = 0, actors = actor_list.size(); i < actors; ++i )
-  {
-    player_t* p = actor_list[ i ];
-    if ( name == p -> name() )
-      return p;
-  }
+  auto it = range::find_if( actor_list, [name](const player_t* p) { return name == p -> name(); });
+  if ( it != actor_list.end())
+    return *it;
   return nullptr;
 }
 
-// sim_t::find_player =======================================================
-
-player_t* sim_t::find_player( int index )
+/// find player in sim by actor index
+player_t* sim_t::find_player( int index ) const
 {
-  for ( size_t i = 0, actors = actor_list.size(); i < actors; ++i )
-  {
-    player_t* p = actor_list[ i ];
-    if ( index == p -> index )
-      return p;
-  }
+  auto it = range::find_if( actor_list, [index](const player_t* p) { return index == p -> index; });
+  if ( it != actor_list.end())
+    return *it;
   return nullptr;
 }
 
@@ -3074,14 +2983,13 @@ void sim_t::setup( sim_control_t* c )
   if ( ! parent ) cache::advance_era();
 
   // Global Options
-  for ( size_t i = 0; i < control -> options.size(); i++ )
+  for ( const auto& option : control -> options )
   {
-    const option_tuple_t& o = control -> options[ i ];
-    if ( o.scope != "global" ) continue;
-    if ( ! parse_option( o.name, o.value ) )
+    if ( option.scope != "global" ) continue;
+    if ( ! parse_option( option.name, option.value ) )
     {
       std::stringstream s;
-      s << "Unknown option '" << o.name << "' with value '" << o.value << "'";
+      s << "Unknown option '" << option.name << "' with value '" << option.value << "'";
       throw std::invalid_argument( s.str() );
     }
   }
@@ -3206,36 +3114,27 @@ void sim_t::setup( sim_control_t* c )
 
 // sim_t::progress ==========================================================
 
-double sim_t::progress( int* current,
-                        int* last,
-                        std::string* detailed )
+sim_t::sim_progress_t sim_t::progress( std::string* detailed )
 {
-  int total_current_iterations=0;
-  int total_iterations=0;
-
-  work_queue -> progress( &total_current_iterations, &total_iterations );
+  auto progress = work_queue -> progress();
 
   if ( deterministic )
   {
     AUTO_LOCK( relatives_mutex );
-    for ( size_t i = 0; i < children.size(); i++ )
+    for ( const auto& child : children )
     {
-      if ( children[ i ] )
+      if ( child )
       {
-        int tci=0, ti=0;
-        children[ i ] -> work_queue -> progress( &tci, &ti );
-        total_current_iterations += tci;
-        total_iterations += ti;
+        auto progress = child -> work_queue -> progress();
+        progress.current_iterations += progress.current_iterations;
+        progress.total_iterations += progress.total_iterations;
       }
     }
   }
 
-  if ( current ) *current = total_current_iterations;
-  if ( last    ) *last    = total_iterations;
+  detailed_progress( detailed, progress.current_iterations, progress.total_iterations );
 
-  detailed_progress( detailed, total_current_iterations, total_iterations );
-
-  return total_current_iterations / ( double ) total_iterations;
+  return progress;
 }
 
 double sim_t::progress( std::string& phase, std::string* detailed )
@@ -3264,7 +3163,7 @@ double sim_t::progress( std::string& phase, std::string* detailed )
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";
-    return progress( nullptr, nullptr, detailed );
+    return progress(detailed ).pct();
   }
   else if ( current_slot >= 0 )
   {

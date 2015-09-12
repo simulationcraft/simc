@@ -2523,6 +2523,15 @@ public:
       _callbacks.push_back( c );
   }
 
+  typename std::vector<T>::iterator begin()
+  { return _data.begin(); }
+  typename std::vector<T>::const_iterator begin() const
+  { return _data.begin(); }
+  typename std::vector<T>::iterator end()
+  { return _data.end(); }
+  typename std::vector<T>::const_iterator end() const
+  { return _data.end(); }
+
   void trigger_callbacks(T v) const
   {
     for ( size_t i = 0; i < _callbacks.size(); ++i )
@@ -2925,6 +2934,13 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   sc_thread_t::priority_e thread_priority;
+  struct sim_progress_t
+  {
+    int current_iterations;
+    int total_iterations;
+    double pct() const
+    { return current_iterations / static_cast<double>(total_iterations); }
+  };
   struct work_queue_t
   {
     private:
@@ -2943,12 +2959,10 @@ struct sim_t : private sc_thread_t
       if( ++work == total_work ) projected_work = work;
       return work < total_work;
     }
-    double progress( int* current=nullptr, int* last=nullptr )
+    sim_progress_t progress()
     {
       AUTO_LOCK(m);
-      if( current ) *current = work;
-      if( last ) *last = projected_work;
-      return work / (double) projected_work;
+      return sim_progress_t{work, projected_work };
     }
   };
   std::shared_ptr<work_queue_t> work_queue;
@@ -2976,7 +2990,7 @@ struct sim_t : private sc_thread_t
   void      interrupt();
   void      add_relative( sim_t* cousin );
   void      remove_relative( sim_t* cousin );
-  double    progress( int* current = nullptr, int* final = nullptr, std::string* phase = nullptr );
+  sim_progress_t progress(std::string* phase = nullptr );
   double    progress( std::string& phase, std::string* detailed = nullptr );
   void      detailed_progress( std::string*, int current_iterations, int total_iterations );
   virtual void combat();
@@ -2990,9 +3004,6 @@ struct sim_t : private sc_thread_t
   bool      init_actors();
   bool      init_actor( player_t* );
   bool      init_actor_pets();
- private:
-  bool      init_items();
-  bool      init_actions();
  public:
   bool      init();
   void      analyze();
@@ -3010,8 +3021,8 @@ struct sim_t : private sc_thread_t
   void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
-  player_t* find_player( const std::string& name ) ;
-  player_t* find_player( int index ) ;
+  player_t* find_player( const std::string& name ) const;
+  player_t* find_player( int index ) const;
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t*   create_expression( action_t*, const std::string& name );

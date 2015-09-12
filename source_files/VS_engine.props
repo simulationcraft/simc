@@ -54,6 +54,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\sim\sc_raid_event.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\sim\sc_progress_bar.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_plot.cpp">
 			
 		</ClCompile>
