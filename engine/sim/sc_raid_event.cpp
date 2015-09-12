@@ -1111,28 +1111,28 @@ void raid_event_t::parse_options( const std::string& options_str )
 
 // raid_event_t::create =====================================================
 
-raid_event_t* raid_event_t::create( sim_t* sim,
+std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim,
                                     const std::string& name,
                                     const std::string& options_str )
 {
-  if ( name == "adds"         ) return new         adds_event_t( sim, options_str );
-  if ( name == "move_enemy"   ) return new         move_enemy_t( sim, options_str );
-  if ( name == "casting"      ) return new      casting_event_t( sim, options_str );
-  if ( name == "distraction"  ) return new  distraction_event_t( sim, options_str );
-  if ( name == "invul"        ) return new invulnerable_event_t( sim, options_str );
-  if ( name == "invulnerable" ) return new invulnerable_event_t( sim, options_str );
-  if ( name == "interrupt"    ) return new    interrupt_event_t( sim, options_str );
-  if ( name == "movement"     ) return new     movement_event_t( sim, options_str );
-  if ( name == "moving"       ) return new     movement_event_t( sim, options_str );
-  if ( name == "damage"       ) return new       damage_event_t( sim, options_str );
-  if ( name == "heal"         ) return new         heal_event_t( sim, options_str );
-  if ( name == "stun"         ) return new         stun_event_t( sim, options_str );
-  if ( name == "vulnerable"   ) return new   vulnerable_event_t( sim, options_str );
-  if ( name == "position_switch" ) return new  position_event_t( sim, options_str );
-  if ( name == "flying" )       return new       flying_event_t( sim, options_str );
-  if ( name == "damage_taken_debuff" ) return new   damage_taken_debuff_event_t( sim, options_str );
+  if ( name == "adds"         ) return std::unique_ptr<raid_event_t>(new         adds_event_t( sim, options_str ));
+  if ( name == "move_enemy"   ) return std::unique_ptr<raid_event_t>(new         move_enemy_t( sim, options_str ));
+  if ( name == "casting"      ) return std::unique_ptr<raid_event_t>(new      casting_event_t( sim, options_str ));
+  if ( name == "distraction"  ) return std::unique_ptr<raid_event_t>(new  distraction_event_t( sim, options_str ));
+  if ( name == "invul"        ) return std::unique_ptr<raid_event_t>(new invulnerable_event_t( sim, options_str ));
+  if ( name == "invulnerable" ) return std::unique_ptr<raid_event_t>(new invulnerable_event_t( sim, options_str ));
+  if ( name == "interrupt"    ) return std::unique_ptr<raid_event_t>(new    interrupt_event_t( sim, options_str ));
+  if ( name == "movement"     ) return std::unique_ptr<raid_event_t>(new     movement_event_t( sim, options_str ));
+  if ( name == "moving"       ) return std::unique_ptr<raid_event_t>(new     movement_event_t( sim, options_str ));
+  if ( name == "damage"       ) return std::unique_ptr<raid_event_t>(new       damage_event_t( sim, options_str ));
+  if ( name == "heal"         ) return std::unique_ptr<raid_event_t>(new         heal_event_t( sim, options_str ));
+  if ( name == "stun"         ) return std::unique_ptr<raid_event_t>(new         stun_event_t( sim, options_str ));
+  if ( name == "vulnerable"   ) return std::unique_ptr<raid_event_t>(new   vulnerable_event_t( sim, options_str ));
+  if ( name == "position_switch" ) return std::unique_ptr<raid_event_t>(new  position_event_t( sim, options_str ));
+  if ( name == "flying" )       return std::unique_ptr<raid_event_t>(new       flying_event_t( sim, options_str ));
+  if ( name == "damage_taken_debuff" ) return std::unique_ptr<raid_event_t>(new   damage_taken_debuff_event_t( sim, options_str ));
 
-  return 0;
+  return std::unique_ptr<raid_event_t>();
 }
 
 // raid_event_t::init =======================================================
@@ -1156,19 +1156,19 @@ void raid_event_t::init( sim_t* sim )
       name    = name.substr( 0, cut_pt );
     }
 
-    raid_event_t* e = create( sim, name, options );
+    auto raid_event = create( sim, name, options );
 
-    if ( ! e )
+    if ( ! raid_event )
     {
       sim -> errorf( "Unknown raid event: %s\n", splits[ i ].c_str() );
       sim -> cancel();
       continue;
     }
 
-    assert( e -> cooldown > timespan_t::zero() );
-    assert( e -> cooldown > e -> cooldown_stddev );
+    assert( raid_event -> cooldown > timespan_t::zero() );
+    assert( raid_event -> cooldown > raid_event -> cooldown_stddev );
 
-    sim -> raid_events.push_back( e );
+    sim -> raid_events.push_back( std::move(raid_event) );
   }
 }
 
@@ -1176,9 +1176,9 @@ void raid_event_t::init( sim_t* sim )
 
 void raid_event_t::reset( sim_t* sim )
 {
-  for ( size_t i = 0; i < sim -> raid_events.size(); i++ )
+  for ( auto& raid_event : sim -> raid_events )
   {
-    sim -> raid_events[ i ] -> reset();
+    raid_event -> reset();
   }
 }
 
@@ -1186,9 +1186,9 @@ void raid_event_t::reset( sim_t* sim )
 
 void raid_event_t::combat_begin( sim_t* sim )
 {
-  for ( size_t i = 0; i < sim -> raid_events.size(); i++ )
+  for ( auto& raid_event : sim -> raid_events )
   {
-    sim -> raid_events[ i ] -> schedule();
+    raid_event -> schedule();
   }
 }
 
@@ -1224,16 +1224,13 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
   if ( util::str_compare_ci( type, "damage" ) )
     type = "raid_damage_";
 
-  // fetch raid event list
-  const std::vector<raid_event_t*> raid_events = s -> raid_events;
-
   // filter the list for raid events that match the type requested
   std::vector<raid_event_t*> matching_type;
-  for ( size_t i = 0; i < raid_events.size(); i++ )
-    if ( util::str_prefix_ci( raid_events[ i ] -> name(), type ) )
-      matching_type.push_back( raid_events[ i ] );
+  for ( const auto& raid_event : s -> raid_events )
+    if ( util::str_prefix_ci( raid_event -> name(), type ) )
+      matching_type.push_back( raid_event.get() );
 
-  if ( matching_type.size() == 0 )
+  if ( matching_type.empty() )
   {
     if ( util::str_compare_ci( filter, "in" ) || util::str_compare_ci( filter, "cooldown" ) )
       return 1.0e10; // ridiculously large number

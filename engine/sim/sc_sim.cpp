@@ -1083,6 +1083,132 @@ std::string get_api_key()
   return std::string();
 }
 
+/// Setup a periodic check for Bloodlust
+struct bloodlust_check_t : public event_t
+ {
+   bloodlust_check_t( sim_t& sim ) :
+     event_t( sim )
+   {
+     add_event( timespan_t::from_seconds( 1.0 ) );
+   }
+
+   virtual const char* name() const override
+   { return "Bloodlust Check"; }
+
+   virtual void execute()
+   {
+     sim_t& sim = this -> sim();
+     player_t* t = sim.target;
+     if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
+          ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
+          ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time() >  sim.bloodlust_time ) )
+     {
+       for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
+       {
+         player_t* p = sim.player_non_sleeping_list[ i ];
+         if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
+           continue;
+
+         p -> buffs.bloodlust -> trigger();
+         p -> buffs.exhaustion -> trigger();
+       }
+     }
+     else
+     {
+       new ( sim ) bloodlust_check_t( sim );
+     }
+   }
+ };
+
+// compare_dps ==============================================================
+
+struct compare_dps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.dps.mean() > r -> collected_data.dps.mean();
+  }
+};
+
+// compare_priority_dps ==============================================================
+
+struct compare_priority_dps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.prioritydps.mean() > r -> collected_data.prioritydps.mean();
+  }
+};
+
+// compare_apm ==============================================================
+
+struct compare_apm
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return ( l -> collected_data.fight_length.mean() ? 60.0 * l -> collected_data.executed_foreground_actions.mean() / l -> collected_data.fight_length.mean() : 0 ) >
+      ( r -> collected_data.fight_length.mean() ? 60.0 * r -> collected_data.executed_foreground_actions.mean() / r -> collected_data.fight_length.mean() : 0 );
+  }
+};
+
+// compare_hps ==============================================================
+
+struct compare_hps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.hps.mean() > r -> collected_data.hps.mean();
+  }
+};
+
+// compare_hps_plus_aps ====================================================
+
+struct compare_hps_plus_aps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return ( l -> collected_data.hps.mean() + l -> collected_data.aps.mean() ) > ( r -> collected_data.hps.mean() + r -> collected_data.aps.mean() );
+  }
+};
+
+// compare_dtps ==============================================================
+
+struct compare_dtps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.dtps.mean() < r -> collected_data.dtps.mean();
+  }
+};
+
+// compare_tmi==============================================================
+
+struct compare_tmi
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.theck_meloree_index.mean() < r -> collected_data.theck_meloree_index.mean();
+  }
+};
+
+// compare_name =============================================================
+
+struct compare_name
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    if ( l -> type != r -> type )
+    {
+      return l -> type < r -> type;
+    }
+    if ( l -> specialization() != r -> specialization() )
+    {
+      return l -> specialization() < r -> specialization();
+    }
+    return l -> name_str < r -> name_str;
+  }
+};
+
 } // UNNAMED NAMESPACE ===================================================
 
 // ==========================================================================
@@ -1164,7 +1290,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0.5 ) ),
   // Report
-  report_precision( 2 ), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
+  report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
   wowhead_tooltips( -1 ),
@@ -1231,7 +1357,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 sim_t::~sim_t()
 {
   assert( relatives.empty() );
-  if( parent ) parent -> remove_relative( this );
+  if( parent )
+    parent -> remove_relative( this );
 }
 
 // sim_t::add_event (Please use core_event_t::add_event instead) ============
@@ -1296,8 +1423,7 @@ void sim_t::remove_relative( sim_t* cousin )
   }
 }
 
-// sim_t::cancel ============================================================
-
+/// Cancel simulation.
 void sim_t::cancel()
 {
   if ( canceled ) return;
@@ -1315,9 +1441,9 @@ void sim_t::cancel()
 
   canceled = 1;
   
-  for (auto & elem : relatives)
+  for (auto & relative : relatives)
   {
-    elem -> cancel();
+    relative -> cancel();
   }
 }
 
@@ -1327,9 +1453,9 @@ void sim_t::interrupt()
 {
   work_queue -> flush();
 
-  for (auto & elem : children)
+  for (auto & child : children)
   {
-    elem -> interrupt();
+    child -> interrupt();
   }
 }
 
@@ -1344,7 +1470,8 @@ bool sim_t::is_canceled() const
 
 void sim_t::cancel_iteration()
 {
-  if ( debug ) out_debug << "Iteration canceled.";
+  if ( debug )
+    out_debug << "Iteration canceled.";
 
   event_mgr.cancel();
 }
@@ -1366,42 +1493,39 @@ void sim_t::combat()
   combat_end();
 }
 
-// sim_t::reset =============================================================
-
+/// Reset simulation.
 void sim_t::reset()
 {
-  if ( debug ) out_debug << "Resetting Simulator";
+  if ( debug )
+    out_debug << "Resetting Simulator";
 
-  if( deterministic ) seed = rng().reseed();
+  if( deterministic )
+    seed = rng().reseed();
 
   event_mgr.reset();
 
   expected_iteration_time = max_time * iteration_time_adjust();
 
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ] -> reset();
+  for ( auto& buff : buff_list )
+    buff -> reset();
 
-  for ( size_t i = 0; i < target_list.size(); ++i )
+  for ( auto& target : target_list )
+    target -> reset();
+
+  for ( auto& player : player_no_pet_list )
   {
-    player_t* t = target_list[ i ];
-    t -> reset();
-  }
-  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
-  {
-    player_t& p = *player_no_pet_list[ i ];
-    p.reset();
+    player -> reset();
     // Make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
-    for ( size_t j = 0; j < p.pet_list.size(); ++j )
+    for ( auto& pet : player -> pet_list )
     {
-      pet_t& pet = *p.pet_list[ j ];
-      pet.reset();
+      pet -> reset();
     }
   }
+
   raid_event_t::reset( this );
 }
 
-// sim_t::combat_begin ======================================================
-
+/// Start combat.
 void sim_t::combat_begin()
 {
   if ( debug_each )
@@ -1436,17 +1560,17 @@ void sim_t::combat_begin()
   // Always call begin() to ensure various counters are initialized.
   datacollection_begin();
 
-  for ( size_t i = 0; i < target_list.size(); ++i )
-  {
-    player_t* t = target_list[ i ];
-    t -> combat_begin();
-  }
+  for ( auto& target : target_list )
+    target -> combat_begin();
 
-  if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override_buff();
-  if ( overrides.critical_strike         ) auras.critical_strike         -> override_buff();
+  if ( overrides.attack_power_multiplier )
+    auras.attack_power_multiplier -> override_buff();
+
+  if ( overrides.critical_strike )
+    auras.critical_strike         -> override_buff();
 
   // TODO: Sim-wide overrides
-  if ( overrides.mastery                 )
+  if ( overrides.mastery )
     auras.mastery -> override_buff( 1, dbc.effect_average( dbc::find_spell( this, 116956 ) -> effectN( 1 ).id(), max_player_level ) );
 
   if ( overrides.haste                   ) auras.haste                   -> override_buff();
@@ -1482,43 +1606,7 @@ void sim_t::combat_begin()
 
   if ( overrides.bloodlust )
   {
-    // Setup a periodic check for Bloodlust
-
-    struct bloodlust_check_t : public event_t
-    {
-      bloodlust_check_t( sim_t& sim ) :
-        event_t( sim )
-      {
-        add_event( timespan_t::from_seconds( 1.0 ) );
-      }
-      virtual const char* name() const override
-      { return "Bloodlust Check"; }
-      virtual void execute()
-      {
-        sim_t& sim = this -> sim();
-        player_t* t = sim.target;
-        if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
-             ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
-             ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time() >  sim.bloodlust_time ) )
-        {
-          for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
-          {
-            player_t* p = sim.player_non_sleeping_list[ i ];
-            if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
-              continue;
-
-            p -> buffs.bloodlust -> trigger();
-            p -> buffs.exhaustion -> trigger();
-          }
-        }
-        else
-        {
-          new ( sim ) bloodlust_check_t( sim );
-        }
-      }
-    };
-
-    new ( *this ) bloodlust_check_t( *this );
+     new ( *this ) bloodlust_check_t( *this );
   }
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
@@ -2211,95 +2299,6 @@ bool sim_t::init()
 
   return canceled ? false : true;
 }
-
-// compare_dps ==============================================================
-
-struct compare_dps
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    return l -> collected_data.dps.mean() > r -> collected_data.dps.mean();
-  }
-};
-
-// compare_priority_dps ==============================================================
-
-struct compare_priority_dps
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    return l -> collected_data.prioritydps.mean() > r -> collected_data.prioritydps.mean();
-  }
-};
-
-// compare_apm ==============================================================
-
-struct compare_apm
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    return ( l -> collected_data.fight_length.mean() ? 60.0 * l -> collected_data.executed_foreground_actions.mean() / l -> collected_data.fight_length.mean() : 0 ) >
-      ( r -> collected_data.fight_length.mean() ? 60.0 * r -> collected_data.executed_foreground_actions.mean() / r -> collected_data.fight_length.mean() : 0 );
-  }
-};
-
-// compare_hps ==============================================================
-
-struct compare_hps
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    return l -> collected_data.hps.mean() > r -> collected_data.hps.mean();
-  }
-};
-
-// compare_hps_plus_aps ====================================================
-
-struct compare_hps_plus_aps
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    return ( l -> collected_data.hps.mean() + l -> collected_data.aps.mean() ) > ( r -> collected_data.hps.mean() + r -> collected_data.aps.mean() );
-  }
-};
-
-// compare_dtps ==============================================================
-
-struct compare_dtps
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    return l -> collected_data.dtps.mean() < r -> collected_data.dtps.mean();
-  }
-};
-
-// compare_tmi==============================================================
-
-struct compare_tmi
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    return l -> collected_data.theck_meloree_index.mean() < r -> collected_data.theck_meloree_index.mean();
-  }
-};
-
-// compare_name =============================================================
-
-struct compare_name
-{
-  bool operator()( player_t* l, player_t* r ) const
-  {
-    if ( l -> type != r -> type )
-    {
-      return l -> type < r -> type;
-    }
-    if ( l -> specialization() != r -> specialization() )
-    {
-      return l -> specialization() < r -> specialization();
-    }
-    return l -> name_str < r -> name_str;
-  }
-};
 
 
 // sim_t::analyze ===========================================================
@@ -3201,6 +3200,35 @@ void sim_t::errorf( const char* fmt, ... )
   error_list.push_back( s );
 }
 
+void sim_t::abort()
+{
+  std::stringstream s;
+  for ( size_t i = 0; i < target_list.size(); ++i )
+  {
+    s << std::fixed << target_list[ i ] -> resources.initial[ RESOURCE_HEALTH ];
+    if ( i < target_list.size() - 1 )
+    {
+      s << '/';
+    }
+  }
+
+  errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
+  std::terminate();
+}
+
+/// add chart to sim for end of report processing
+void sim_t::add_chart_data( const highchart::chart_t& chart )
+{
+  if ( chart.toggle_id_str_.empty() )
+  {
+    on_ready_chart_data.push_back( chart.to_aggregate_string( false ) );
+  }
+  else
+  {
+    chart_data[ chart.toggle_id_str_ ].push_back( chart.to_data() );
+  }
+}
+
 void sim_t::print_spell_query()
 {
   if ( ! spell_query_xml_output_file_str.empty() )
@@ -3217,7 +3245,6 @@ void sim_t::print_spell_query()
   }
   else
   {
-
     report::print_spell_query( std::cout, *this, *spell_query, spell_query_level );
   }
 }
@@ -3267,6 +3294,7 @@ std::vector<double> sc_timeline_t::build_divisor_timeline( const extended_sample
 
   return divisor_timeline;
 }
+
 /* This function adjusts the timeline by a appropriate divisor_timeline.
  * Each bucket of the timeline is divided by the "amount of simulation time spent in that bucket"
  */
@@ -3309,20 +3337,3 @@ sim_ostream_t& sim_ostream_t::printf( const char* fmt, ... )
 
   return *this;
 }
-
-void sim_t::abort()
-{
-  std::stringstream s;
-  for ( size_t i = 0; i < target_list.size(); ++i )
-  {
-    s << std::fixed << target_list[ i ] -> resources.initial[ RESOURCE_HEALTH ];
-    if ( i < target_list.size() - 1 )
-    {
-      s << '/';
-    }
-  }
-
-  errorf( "Force abort, seed=%llu target_health=%s", seed, s.str().c_str() );
-  ::abort();
-}
-

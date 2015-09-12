@@ -1533,7 +1533,7 @@ public:
   void finish();
   void set_next( timespan_t t ) { next = t; }
   void parse_options( const std::string& options_str );
-  static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
+  static std::unique_ptr<raid_event_t> create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
@@ -2807,11 +2807,8 @@ struct sim_t : private sc_thread_t
   int average_range, average_gauss;
   int convergence_scale;
 
-  rng::rng_t& rng() const { return *_rng; }
-  double averaged_range( double min, double max );
-
   // Raid Events
-  auto_dispose< std::vector<raid_event_t*> > raid_events;
+  std::vector<std::unique_ptr<raid_event_t>> raid_events;
   std::string raid_events_str;
   std::string fight_style;
 
@@ -2966,7 +2963,6 @@ struct sim_t : private sc_thread_t
     }
   };
   std::shared_ptr<work_queue_t> work_queue;
-  virtual void run();
 
   // Related Simulations
   mutex_t relatives_mutex;
@@ -2977,9 +2973,34 @@ struct sim_t : private sc_thread_t
   unsigned           spell_query_level;
   std::string        spell_query_xml_output_file_str;
 
+  mutex_t* pause_mutex; // External pause mutex, instantiated an external entity (in our case the GUI).
+  bool paused;
+
+  // Highcharts stuff
+
+  // Vector of on-ready charts. These receive individual jQuery handlers in the HTML report (at the
+  // end of the report) to load the highcharts into the target div.
+  std::vector<std::string> on_ready_chart_data;
+
+  // A map of highcharts data, added as a json object into the HTML report. JQuery installs handlers
+  // to correct elements (toggled elements in the HTML report) based on the data.
+  std::map<std::string, std::vector<std::string> > chart_data;
+
+  bool enable_highcharts;
+  bool output_relative_difference;
+  double boxplot_percentile;
+
+  // List of callbacks to call when an actor_target_data_t object is created. Currently used to
+  // initialize the generic targetdata debuffs/dots we have.
+  std::vector<std::function<void(actor_target_data_t*)> > target_data_initializer;
+
+  bool display_hotfixes, disable_hotfixes;
+  bool display_bonus_ids;
+
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
   virtual ~sim_t();
 
+  virtual void run() override;
   int       main( const std::vector<std::string>& args );
   void      add_event( event_t*, timespan_t delta_time );
   double    iteration_time_adjust() const;
@@ -2993,9 +3014,6 @@ struct sim_t : private sc_thread_t
   sim_progress_t progress(std::string* phase = nullptr );
   double    progress( std::string& phase, std::string* detailed = nullptr );
   void      detailed_progress( std::string*, int current_iterations, int total_iterations );
-  virtual void combat();
-  virtual void combat_begin();
-  virtual void combat_end();
   void      datacollection_begin();
   void      datacollection_end();
   void      reset();
@@ -3004,7 +3022,6 @@ struct sim_t : private sc_thread_t
   bool      init_actors();
   bool      init_actor( player_t* );
   bool      init_actor_pets();
- public:
   bool      init();
   void      analyze();
   void      merge( sim_t& other_sim );
@@ -3027,57 +3044,27 @@ struct sim_t : private sc_thread_t
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t*   create_expression( action_t*, const std::string& name );
   void      errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2, 3);
+  void abort();
+  void combat();
+  void combat_begin();
+  void combat_end();
+  void add_chart_data( const highchart::chart_t& chart );
 
-  timespan_t current_time() const { return event_mgr.current_time; }
-
+  timespan_t current_time() const
+  { return event_mgr.current_time; }
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
-
-  // External pause mutex, instantiated an external entity (in our case the
-  // GUI).
-  mutex_t* pause_mutex;
-  bool paused;
-
-
-  void abort();
-  // Highcharts stuff
-
-  // Vector of on-ready charts. These receive individual jQuery handlers in the HTML report (at the
-  // end of the report) to load the highcharts into the target div.
-  std::vector<std::string> on_ready_chart_data;
-
-  // A map of highcharts data, added as a json object into the HTML report. JQuery installs handlers
-  // to correct elements (toggled elements in the HTML report) based on the data.
-  std::map<std::string, std::vector<std::string> > chart_data;
-
-  void add_chart_data( const highchart::chart_t& chart )
-  {
-    if ( chart.toggle_id_str_.empty() )
-    {
-      on_ready_chart_data.push_back( chart.to_aggregate_string( false ) );
-    }
-    else
-    {
-      chart_data[ chart.toggle_id_str_ ].push_back( chart.to_data() );
-    }
-  }
-
-  bool enable_highcharts;
-  bool output_relative_difference;
-  double boxplot_percentile;
-
-  // List of callbacks to call when an actor_target_data_t object is created. Currently used to
-  // initialize the generic targetdata debuffs/dots we have.
-  std::vector<std::function<void(actor_target_data_t*)> > target_data_initializer;
-
   void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
   { target_data_initializer.push_back( cb ); }
-
-  bool display_hotfixes, disable_hotfixes;
-  bool display_bonus_ids;
+  rng::rng_t& rng() const
+  { return *_rng; }
+  double averaged_range( double min, double max )
+  {
+    if ( average_range ) return ( min + max ) / 2.0;
+    return rng().range( min, max );
+  }
 private:
   void do_pause();
-
   void print_spell_query();
 };
 
@@ -7896,13 +7883,6 @@ inline std::string buff_t::source_name() const
 inline rng::rng_t& buff_t::rng()
 { return sim -> rng(); }
 // sim_t inlines
-
-inline double sim_t::averaged_range( double min, double max )
-{
-  if ( average_range ) return ( min + max ) / 2.0;
-
-  return rng().range( min, max );
-}
 
 inline buff_creator_t::operator buff_t* () const
 { return new buff_t( *this ); }

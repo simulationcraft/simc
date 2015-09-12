@@ -1936,10 +1936,9 @@ void player_t::init_scaling()
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
     bool has_movement = false;
-    for ( size_t i = 0; i < sim -> raid_events.size(); i++ )
+    for ( const auto& raid_event : sim -> raid_events )
     {
-      //std::string curr_event = sim -> raid_events[ i ] -> name();
-      if ( util::str_in_str_ci( sim -> raid_events[ i ] -> name(), "movement" ) )
+      if ( util::str_in_str_ci( raid_event -> name(), "movement" ) )
         has_movement = true;
     }
 
