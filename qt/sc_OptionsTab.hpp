@@ -67,7 +67,6 @@ public:
     QComboBox* show_etmi;
     QComboBox* debug;
     QComboBox* report_pets;
-    QComboBox* print_style;
     QComboBox* statistics_level;
     QComboBox* deterministic_rng;
     QComboBox* center_scale_delta;
