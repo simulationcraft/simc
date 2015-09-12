@@ -191,7 +191,7 @@ public:
   void join() { pthread_join( t, nullptr ); }
 
   static void sleep_seconds( double t )
-  { ::usleep( static_cast<::useconds_t>(t * 1000.0) ); }
+  { ::usleep( static_cast<useconds_t >(t * 1000.0) ); }
 };
 
 
