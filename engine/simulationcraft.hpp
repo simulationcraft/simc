@@ -3006,7 +3006,6 @@ struct sim_t : private sc_thread_t
   void      print_options();
   void      add_option( std::unique_ptr<option_t> opt );
   void      create_options();
-  int       find_api_key();
   bool      parse_option( const std::string& name, const std::string& value );
   void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );

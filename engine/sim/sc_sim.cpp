@@ -1007,6 +1007,82 @@ struct regen_event_t : public event_t
   }
 };
 
+/// List of files from which to look for Blizzard API key
+std::vector<std::string> get_api_key_locations()
+{
+  std::vector<std::string> key_locations;
+  key_locations.push_back( "./apikey.txt" );
+
+  // unix home
+  if ( char* home_path = getenv( "HOME" ) )
+  {
+    std::string home_apikey(home_path);
+    home_apikey += "/.simc_apikey";
+    key_locations.push_back( home_apikey );
+  }
+
+  // windows home
+  if ( char* home_drive = getenv( "HOMEDRIVE" ) )
+  {
+    if ( char* home_path = getenv( "HOMEPATH" ) )
+    {
+      std::string home_apikey(home_drive);
+      home_apikey += home_path;
+      home_apikey += "/apikey.txt";
+      key_locations.push_back( home_apikey );
+    }
+  }
+
+  return key_locations;
+}
+
+/// Check if api key is valid
+bool validate_api_key( const std::string& key )
+{
+  // no better check for now than to measure its length.
+  return key.size() == 32;
+}
+
+/**
+ * @brief Try to get user-supplied api key
+ *
+ * We will include a simc default api key for people who do not wish to register their own.
+ * This will be done at the time of compilation, as we do not want to post our key on git for everyone to see.
+ * However, the default setting will always check to see if the user has put their own 32-character key in.
+ * If this is true, then the apikey that they enter will overwrite the default.
+ * in predetermined locations to see if they have saved the key to a file named 'api_key.txt'. The gui has a entry field setup
+ * That will update the apikey variable whenever the user enters a key there.
+ */
+std::string get_api_key()
+{
+  auto key_locations = get_api_key_locations();
+
+  for ( const auto& filename : key_locations )
+  {
+    std::ifstream myfile( filename );
+    if ( ! myfile.is_open() )
+    {
+      continue;
+    }
+
+    std::string line;
+    std::getline( myfile,line );
+    if ( validate_api_key( line ) )
+    {
+      return line;
+    }
+    else
+    {
+      std::cerr << "Blizzard API Key '" << line << "' from file '" << filename << "was not properly entered." << std::endl;
+    }
+  }
+
+#if defined(SC_DEFAULT_APIKEY)
+  return std::string(SC_DEFAULT_APIKEY);
+#endif
+  return std::string();
+}
+
 } // UNNAMED NAMESPACE ===================================================
 
 // ==========================================================================
@@ -1098,7 +1174,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
-  apikey( "" ),
+  apikey( get_api_key() ),
   ilevel_raid_report( false ),
   distance_targeting_enabled( false ),
   enable_dps_healing( false ),
@@ -1126,18 +1202,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   use_optimal_buffs_and_debuffs( 1 );
 
   create_options();
-  find_api_key(); // We will include a simc default api key for people who do not wish to register their own.
-  // This will be done at the time of compilation, as we do not want to post our key on git for everyone to see.
-  // However, the default setting will always check to see if the user has put their own 32-character key in.
-  // If this is true, then the apikey that they enter will overwrite the default.
-  // create_options will check to see if they have used apikey= in their simulation options, find_api_key searches
-  // in predetermined locations to see if they have saved the key to a file named 'api_key.txt'. The gui has a entry field setup
-  // That will update the apikey variable whenever the user enters a key there.
-#ifdef SC_DEFAULT_APIKEY
-  if ( apikey.size() != 32 )
-    apikey = std::string(SC_DEFAULT_APIKEY);
-#endif
-
 
   if ( parent )
   {
@@ -2982,42 +3046,6 @@ void sim_t::create_options()
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
   // Bonus ids
   add_option( opt_bool( "show_bonus_ids", display_bonus_ids ) );
-}
-
-// sim_t::find_api_key ======================================================
-
-int sim_t::find_api_key()
-{
-  std::string line;
-  std::vector<std::string> key_locations;
-#ifdef SC_WINDOWS
-  key_locations.push_back( ".\\apikey.txt" );
-#else
-  key_locations.push_back( "./apikey.txt" );
-  char* home_path = getenv( "HOME" );
-  std::string home_apikey = home_path;
-  home_apikey += "/.simc_apikey";
-  key_locations.push_back( home_apikey );
-#endif
-
-  std::ifstream myfile;
-  for ( size_t i = 0; i < key_locations.size() && ! myfile.is_open(); i++ )
-  {
-    myfile.open( key_locations[ i ].c_str() );
-  }
-
-  if ( myfile.is_open() )
-  {
-    getline( myfile,line );
-    myfile.close();
-    if ( line.size() == 32 ) // api keys are 32 characters long.
-      apikey = line;
-    else
-    {
-      std::cerr << "Blizzard API Key '" << line << "' was not properly entered." << std::endl;
-    }
-  }
-  return 0;
 }
 
 // sim_t::parse_option ======================================================
