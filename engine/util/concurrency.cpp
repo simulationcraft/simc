@@ -33,11 +33,8 @@ public:
 class sc_thread_t::native_t
 {
 public:
-  void launch( sc_thread_t* thr, priority_e ) { thr -> run(); }
+  void launch( sc_thread_t* thr ) { thr -> run(); }
   void join() {}
-  void set_priority( priority_e  ) {}
-  static void set_calling_thread_priority( priority_e ) {}
-
   static void sleep_seconds( double t )
   {
     std::time_t finish = std::time( 0 ) + t;
