@@ -70,26 +70,6 @@ public:
   HANDLE primitive() { return mutex_; }
 };
 
-namespace { // unnamed namespace
-/* Convert our priority enumerations to WinAPI Thread Priority values
- * http://msdn.microsoft.com/en-us/library/windows/desktop/ms686277(v=vs.85).aspx
- */
-int translate_thread_priority( sc_thread_t::priority_e prio )
-{
-  switch ( prio )
-  {
-  case sc_thread_t::NORMAL: return THREAD_PRIORITY_NORMAL;
-  case sc_thread_t::ABOVE_NORMAL: return THREAD_PRIORITY_HIGHEST-1;
-  case sc_thread_t::BELOW_NORMAL: return THREAD_PRIORITY_LOWEST+1;
-  case sc_thread_t::HIGH: return THREAD_PRIORITY_HIGHEST;
-  case sc_thread_t::LOW: return THREAD_PRIORITY_IDLE;
-  default: assert( false && "invalid thread priority" ); break;
-  }
-  return THREAD_PRIORITY_LOWEST+1;
-}
-
-} // unnamed namespace
-
 // sc_thread_t::native_t ====================================================
 
 class sc_thread_t::native_t
@@ -106,20 +86,13 @@ class sc_thread_t::native_t
   }
 
 public:
-  void launch( sc_thread_t* thr, priority_e prio )
+  void launch( sc_thread_t* thr)
   {
     // MinGW wiki suggests using _beginthreadex over CreateThread,
     // and there's no reason NOT to do so with MSVC.
     handle = reinterpret_cast<HANDLE>( _beginthreadex( NULL, 0, execute,
                                                        thr, 0, NULL ) );
-    set_priority( prio );
   }
-
-  void set_priority( priority_e prio )
-  { set_thread_priority( handle, prio ); }
-
-  static void set_calling_thread_priority( priority_e prio )
-  { set_thread_priority( GetCurrentThread(), prio ); }
 
   void join()
   {
@@ -129,15 +102,6 @@ public:
 
   static void sleep_seconds( double t )
   { ::Sleep( ( DWORD ) t * 1000 ); }
-
-private:
-  static void set_thread_priority( HANDLE handle, priority_e prio )
-  {
-    if( !SetThreadPriority( handle, translate_thread_priority( prio ) ) )
-    {
-      std::cerr << "Could not set process priority: " << GetLastError() << "\n";
-    }
-  }
 };
 
 
