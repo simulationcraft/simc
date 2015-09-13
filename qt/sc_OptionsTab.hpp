@@ -53,7 +53,7 @@ public:
     QComboBox* num_target;
     QComboBox* player_skill;
     QComboBox* threads;
-    QComboBox* thread_priority;
+    QComboBox* process_priority;
     QComboBox* auto_save;
     QComboBox* pvp_crit;
     QComboBox* armory_region;

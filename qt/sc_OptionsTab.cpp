@@ -259,7 +259,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.target_level,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.target_race,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.threads,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.thread_priority,    SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.process_priority,    SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.auto_save,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.version,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.world_lag,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -334,7 +334,7 @@ void SC_OptionsTab::createGlobalsTab()
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout_right -> addRow( tr( "Threads" ), choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoiceFromRange( 1, QThread::idealThreadCount() ) ) );
-  globalsLayout_right -> addRow( tr( "Thread Priority" ), choice.thread_priority = createChoice( 5, "Highest", "High", "Normal", "Lower", "Lowest" ) );
+  globalsLayout_right -> addRow( tr( "Process Priority" ), choice.process_priority = createChoice( 5, "Highest", "High", "Normal", "Lower", "Lowest" ) );
   globalsLayout_right -> addRow( tr( "World Lag" ), choice.world_lag = createChoice( 5, "Super Low - 25 ms", "Low - 50 ms", "Medium - 100 ms", "High - 150 ms", "Australia - 200 ms" ) );
   globalsLayout_right -> addRow( tr( "Generate Debug" ), choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
@@ -656,7 +656,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "num_target", choice.num_target );
   load_setting( settings, "player_skill", choice.player_skill );
   load_setting( settings, "threads", choice.threads, QString::number( QThread::idealThreadCount() ) );
-  load_setting( settings, "thread_priority", choice.thread_priority, "Lowest" );
+  load_setting( settings, "process_priority", choice.process_priority, "Lowest" );
   load_setting( settings, "auto_save", choice.auto_save, "No" );
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
@@ -746,7 +746,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "num_target", choice.num_target -> currentText() );
   settings.setValue( "player_skill", choice.player_skill -> currentText() );
   settings.setValue( "threads", choice.threads -> currentText() );
-  settings.setValue( "thread_priority", choice.thread_priority -> currentText() );
+  settings.setValue( "process_priority", choice.process_priority -> currentText() );
   settings.setValue( "auto_save", choice.auto_save -> currentText() );
   settings.setValue( "armory_region", choice.armory_region -> currentText() );
   settings.setValue( "gui_localization", choice.gui_localization -> currentText() );
@@ -853,7 +853,7 @@ void SC_OptionsTab::createToolTips()
   choice.threads -> setToolTip( tr( "Match the number of CPUs for optimal performance.\n"
                                     "Most modern desktops have at least two CPU cores." ) );
    
-  choice.thread_priority -> setToolTip( tr( "This can allow for a more responsive computer while simulations are running.\n"
+  choice.process_priority -> setToolTip( tr( "This can allow for a more responsive computer while simulations are running.\n"
                                             "When set to 'Lowest', it will be possible to use your computer as normal while SimC runs in the background." ) );
 
   choice.auto_save -> setToolTip( tr( "This will allow automatic saving of html reports to the simc folder." ) );
@@ -1092,7 +1092,7 @@ QString SC_OptionsTab::mergeOptions()
 
   options += get_globalSettings();
   options += "threads=" + choice.threads -> currentText() + "\n";
-  options += "thread_priority=" + choice.thread_priority -> currentText() + "\n";
+  options += "process_priority=" + choice.process_priority -> currentText() + "\n";
 
   QList<QAbstractButton*> buttons = scalingButtonGroup -> buttons();
 
