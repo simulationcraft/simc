@@ -28,8 +28,6 @@ public:
 
   void lock();
   void unlock();
-
-  native_t* native_mutex() const;
 };
 
 class sc_thread_t : private noncopyable
@@ -48,7 +46,7 @@ public:
   void launch();
   void wait();
   static void sleep_seconds( double );
-  static int cpu_thread_count();
+  static unsigned cpu_thread_count();
 };
 
 class auto_lock_t

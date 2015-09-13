@@ -2499,11 +2499,6 @@ void sim_t::partition()
   if ( iterations < threads )
     return;
 
-#if defined( NO_THREADS )
-  errorf( "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
-  exit( 0 );
-#endif
-
   merge_mutex.lock(); // parent sim is locked until parent merge() is called
 
   int remainder = iterations % threads;
