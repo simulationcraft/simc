@@ -57,6 +57,9 @@ trinket2=prophecy_of_fear,id=124230
 # Rogue
 Rogue_Assassination_T18N.simc
 Rogue_Combat_T18N.simc
+default_actions=1
+trinket1=mirror_of_the_blademaster,id=124224
+main_hand=fang_of_the_pit,id=124367,enchant_id=5337
 Rogue_Subtlety_T18H.simc
 
 # Shaman

@@ -36,38 +36,40 @@ actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/blade_flurry,if=(spell_targets.blade_flurry>=2&!buff.blade_flurry.up)|(spell_targets.blade_flurry<2&buff.blade_flurry.up)
 actions+=/shadow_reflection,if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up
+actions+=/pool_resource,for_next=1
 actions+=/ambush
-actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<90&energy>=15)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
-actions+=/shadowmeld,if=time>10&energy>=60&buff.adrenaline_rush.down&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|((target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<12)&buff.deep_insight.down)
-actions+=/call_action_list,name=adrenaline_rush,if=cooldown.killing_spree.remains>10
-actions+=/call_action_list,name=killing_spree,if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)
+actions+=/vanish,if=time>25&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&((talent.shadow_focus.enabled&energy.time_to_max>2.5&energy>=15)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2&(dot.revealing_strike.ticking|time>10)|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<12&buff.deep_insight.down)
+actions+=/call_action_list,name=adrenaline_rush,if=dot.revealing_strike.ticking&buff.adrenaline_rush.down
+actions+=/call_action_list,name=killing_spree,if=energy.time_to_max>6&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>8)
 actions+=/marked_for_death,if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)
-actions+=/call_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking|(talent.anticipation.enabled&anticipation_charges<3&buff.deep_insight.down)
 actions+=/call_action_list,name=finisher,if=combo_points=5&dot.revealing_strike.ticking&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=3))
+actions+=/call_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking|(talent.anticipation.enabled&anticipation_charges<3&buff.deep_insight.down)
 
-actions.adrenaline_rush=adrenaline_rush,if=target.time_to_die>=44
-actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<44&(buff.archmages_greater_incandescence_agi.react|trinket.proc.any.react|trinket.stacking_proc.any.react)
-actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<=buff.adrenaline_rush.duration*1.5
+# Adrenaline Rush Handler
 
-actions.killing_spree=killing_spree,if=target.time_to_die>=44
-actions.killing_spree+=/killing_spree,if=target.time_to_die<44&buff.archmages_greater_incandescence_agi.react&buff.archmages_greater_incandescence_agi.remains>=buff.killing_spree.duration
-actions.killing_spree+=/killing_spree,if=target.time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration
-actions.killing_spree+=/killing_spree,if=target.time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration
-actions.killing_spree+=/killing_spree,if=target.time_to_die<=buff.killing_spree.duration*1.5
+actions.adrenaline_rush=adrenaline_rush,if=target.time_to_die>=75
+actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<75&(buff.maalus.up|trinket.proc.any.react|trinket.stacking_proc.any.react)
+actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<=buff.adrenaline_rush.duration*2
 
-# Combo point generators
+# Killing Spree Handler
 
-actions.generator=revealing_strike,if=(combo_points=4&dot.revealing_strike.remains<7.2&(target.time_to_die>dot.revealing_strike.remains+7.2)|(target.time_to_die<dot.revealing_strike.remains+7.2&ticks_remain<2))|!ticking
-actions.generator+=/sinister_strike,if=dot.revealing_strike.ticking
+actions.killing_spree=killing_spree,if=target.time_to_die>=25
+actions.killing_spree+=/killing_spree,if=target.time_to_die<25&(buff.maalus.up&buff.maalus.remains>=buff.killing_spree.duration|trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration|trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration)
+actions.killing_spree+=/killing_spree,if=target.time_to_die<=buff.killing_spree.duration*5
 
-# Combo point finishers
+# Combo Point Finishers
 
 actions.finisher=death_from_above
 actions.finisher+=/eviscerate,if=(!talent.death_from_above.enabled|cooldown.death_from_above.remains)
 
+# Combo Point Generators
+
+actions.generator=revealing_strike,if=(combo_points=4&dot.revealing_strike.remains<7.2&(target.time_to_die>dot.revealing_strike.remains+7.2)|(target.time_to_die<dot.revealing_strike.remains+7.2&ticks_remain<2))|!ticking
+actions.generator+=/sinister_strike,if=dot.revealing_strike.ticking
+
 head=felblade_hood,id=124263,bonus_id=567
-neck=chain_of_lidless_eyes,id=124209,bonus_id=567,enchant_id=5318
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5318
 shoulders=felblade_spaulders,id=124274,bonus_id=567
 back=cloak_of_tangible_dread,id=124135,bonus_id=567,enchant_id=5311
 chest=felblade_chestguard,id=124248,bonus_id=567
@@ -78,19 +80,19 @@ legs=felblade_leggings,id=124269,bonus_id=567
 feet=oppressors_merciless_treads,id=124251,bonus_id=567
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5325
 finger2=portal_key_signet,id=124189,bonus_id=567,enchant_id=5325
-trinket1=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567
-trinket2=soul_capacitor,id=124225,bonus_id=567
+trinket1=soul_capacitor,id=124225,bonus_id=567
+trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567
 main_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant_id=5337
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=729.69
-# gear_agility=4569
-# gear_stamina=6101
-# gear_crit_rating=1127
-# gear_haste_rating=1949
-# gear_mastery_rating=1242
-# gear_multistrike_rating=1216
+# gear_ilvl=730.00
+# gear_agility=4581
+# gear_stamina=6119
+# gear_crit_rating=1258
+# gear_haste_rating=1729
+# gear_mastery_rating=1145
+# gear_multistrike_rating=1418
 # gear_versatility_rating=154
 # gear_armor=1382
 # set_bonus=tier18_2pc=1
