@@ -1244,9 +1244,17 @@ bool item_t::decode_random_suffix()
     // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
     for ( size_t j = 0; j < sizeof_array( enchant_data.ench_type ); j++ )
     {
-      if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
+      stat_pair_t stat( STAT_NONE, -1 );
 
-      stat_pair_t stat = item_database::item_enchantment_effect_stats( enchant_data, as<int>( j ) );
+      if ( enchant_data.ench_type[ j ] == ITEM_ENCHANTMENT_STAT )
+      {
+        stat = item_database::item_enchantment_effect_stats( enchant_data, as<int>( j ) );
+      }
+      else if ( enchant_data.ench_type[ j ] == ITEM_ENCHANTMENT_RESISTANCE )
+      {
+        stat = stat_pair_t( STAT_BONUS_ARMOR, j );
+      }
+
       if ( stat.stat == STAT_NONE )
         continue;
 

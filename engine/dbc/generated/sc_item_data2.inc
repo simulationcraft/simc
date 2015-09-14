@@ -1005,7 +1005,7 @@ static struct random_prop_data_t __rand_prop_points_data[] = {
   {   0, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 } },
 };
 
-#define RAND_SUFFIX_SIZE (430)
+#define RAND_SUFFIX_SIZE (450)
 
 // Random "cataclysm" item suffixes, wow build 20444
 static struct random_suffix_data_t __rand_suffix_data[] = {
@@ -1035,6 +1035,11 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
   {   28, "of Stamina"                              , {  2803,     0,     0,     0,     0 }, { 15000,     0,     0,     0,     0 } }, // Stamina
   {   29, "of Eluding"                              , {  2815,  2802,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Eluding
   {   30, "of Spirit"                               , {  2806,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Spirit
+  {   31, "of Arcane Protection"                    , {  2803,  2817,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Arcane Protection
+  {   32, "of Fire Protection"                      , {  2803,  2818,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Fire Protection
+  {   33, "of Frost Protection"                     , {  2803,  2819,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Frost Protection
+  {   34, "of Nature Protection"                    , {  2803,  2820,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Nature Protection
+  {   35, "of Shadow Protection"                    , {  2803,  2821,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Shadow Protection
   {   36, "of the Sorcerer"                         , {  2803,  2804,  3726,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Sorcerer
   {   37, "of the Seer"                             , {  2803,  2804,  2822,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Seer
   {   38, "of the Prophet"                          , {  2804,  2806,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Prophet
@@ -1291,7 +1296,17 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
   {  314, "TMP of Agi/Exp"                          , {  2802,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Agi/Exp
   {  315, "TMP of Stam/Exp"                         , {  2803,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Stam/Exp
   {  316, "TMP of Str/Parry"                        , {  2805,  4060,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Str/Parry
+  {  317, "of Nature Protection"                    , {  2803,  2820,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Nature Protection (<60)
+  {  318, "of Arcane Protection"                    , {  2803,  2817,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Arcane Protection (<60)
+  {  319, "of Fire Protection"                      , {  2803,  2818,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Fire Protection (<60)
+  {  320, "of Frost Protection"                     , {  2803,  2819,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Frost Protection (<60)
+  {  321, "of Shadow Protection"                    , {  2803,  2821,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Shadow Protection (<60)
+  {  324, "of Arcane Resistance"                    , {  2817,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Arcane Resistance
   {  325, "of Dodge"                                , {  2815,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Dodge
+  {  326, "of Fire Resistance"                      , {  2818,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Fire Resistance
+  {  327, "of Frost Resistance"                     , {  2819,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Frost Resistance
+  {  328, "of Nature Resistance"                    , {  2820,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Nature Resistance
+  {  329, "of Shadow Resistance"                    , {  2821,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Shadow Resistance
   {  330, "of Restoration"                          , {  2803,  2804,  2806,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Restoration <60
   {  331, "of Striking"                             , {  2803,  2825,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Striking
   {  332, "of Sorcery"                              , {  2803,  2804,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Sorcery
@@ -1310,6 +1325,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
   {  347, "of the Savant"                           , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Mastery
   {  348, "of the Impatient"                        , {  3726,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Haste
   {  349, "of the Bladewall"                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Crit (old: Parry)
+  {  350, "of the Bladewall"                        , {  5280,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Dodge
   {  351, "of the Savant"                           , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Mastery (old: Spirit)
   {  352, "of the Landslide"                        , {     0,     0,  3726,  2822,     0 }, {     0,     0,  3506,  3506,     0 } }, // 5.3 Landslide - Str Versa
   {  353, "of the Stormblast"                       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Stormblast - Agi
@@ -1355,6 +1371,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
   {  398, "of the Faultline"                        , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Faultline - Str DPS
   {  399, "of the Mountainbed"                      , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Mountainbed - Str Vers
   {  400, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Bedrock - Str Tank
+  {  401, "of the Bouldercrag"                      , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Bouldercrag - Str Tank
   {  402, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Rockslab - Str Tank
   {  403, "of the Earthshaker"                      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Earthshaker - Str DPS
   {  404, "of the Earthfall"                        , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Earthfall - Str DPS
@@ -1382,6 +1399,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
   {  426, "of the Faultline"                        , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Faultline - Str DPS
   {  427, "of the Mountainbed"                      , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Mountainbed - Str Vers
   {  428, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Bedrock - Str Tank
+  {  429, "of the Bouldercrag"                      , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Bouldercrag - Str Tank
   {  430, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Rockslab - Str Tank
   {  431, "of the Earthshaker"                      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Earthshaker - Str DPS
   {  432, "of the Earthfall"                        , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Earthfall - Str DPS
@@ -1409,6 +1427,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
   {  454, "of the Faultline"                        , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Faultline - Str DPS
   {  455, "of the Mountainbed"                      , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Mountainbed - Str Vers
   {  456, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Bedrock - Str Tank
+  {  457, "of the Bouldercrag"                      , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Bouldercrag - Str Tank
   {  458, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Rockslab - Str Tank
   {  459, "of the Earthshaker"                      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Earthshaker - Str DPS
   {  460, "of the Earthfall"                        , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Earthfall - Str DPS
@@ -1436,6 +1455,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
   {  482, "of the Faultline"                        , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Faultline - Str DPS
   {  483, "of the Mountainbed"                      , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Mountainbed - Str Vers
   {  484, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Bedrock - Str Tank
+  {  485, "of the Bouldercrag"                      , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Bouldercrag - Str Tank
   {  486, "of the Rockslab"                         , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Rockslab - Str Tank
   {  487, "of the Earthshaker"                      , {     0,     0,  4058,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Earthshaker - Str DPS
   {  488, "of the Earthfall"                        , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Earthfall - Str DPS

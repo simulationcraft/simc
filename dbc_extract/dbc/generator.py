@@ -3853,13 +3853,13 @@ class RandomSuffixGenerator(DataGenerator):
             has_non_stat_enchant = False
             # For now, naively presume type_1 of SpellItemEnchantment will tell us
             # if it's a relevant enchantment for us (ie. a stat one )
-            for i in xrange(1,4):
+            for i in xrange(1,5):
                 item_ench = self._spellitemenchantment_db.get( getattr(data, 'id_property_%d' % i) )
                 if not item_ench:
                     self.debug( "No item enchantment found for %s (%s)" % (data.name_sfx, data.name_int) )
                     continue
 
-                if item_ench.type_1 != 5:
+                if item_ench.type_1 not in [4, 5]:
                     has_non_stat_enchant = True
                     break
 
