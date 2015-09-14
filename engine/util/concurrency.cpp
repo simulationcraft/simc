@@ -141,7 +141,7 @@ void computer_process::set_priority( priority_e p )
  }
 }
 
-#elif defined(_POSIX_VERSION)
+#elif defined(SC_OSX) || defined(__unix__)
 #include <sys/time.h>
 #include <sys/resource.h>
 
@@ -170,7 +170,7 @@ void computer_process::set_priority( priority_e p )
   }
 }
 #else
-void computer_process::set_priority( priority_e p )
+void computer_process::set_priority( priority_e )
 {
   // do nothing
 }
