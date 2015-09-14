@@ -16,7 +16,7 @@
  * @brief Random number generation
  */
 namespace rng {
-/**
+/**\ingroup SC_RNG
  * @brief Random number generator base class
  *
  * Implements different rng-engines, selectable through a factory,
@@ -42,9 +42,6 @@ struct rng_t
   double gauss( double mean, double stddev, bool truncate_low_end = false );
   double exponential( double nu );
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
-//  timespan_t range( timespan_t min, timespan_t max );
-//  timespan_t gauss( timespan_t mean, timespan_t stddev );
-//  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
 
   /// timespan uniform distribution in the range [min max]
   timespan_t range( timespan_t min, timespan_t max )
@@ -67,7 +64,6 @@ struct rng_t
                static_cast<double>( timespan_t::to_native( stddev ) ),
                static_cast<double>( timespan_t::to_native( nu ) ) ) );
   }
-
 protected:
   rng_t();
 private:

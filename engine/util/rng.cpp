@@ -696,28 +696,6 @@ double rng_t::exgauss( double gauss_mean,
 { 
   return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); 
 }
-//
-///// timespan uniform distribution in the range [min max]
-//timespan_t rng_t::range( timespan_t min, timespan_t max )
-//{
-//  return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
-//                                         static_cast<double>( timespan_t::to_native( max ) ) ) );
-//}
-//
-///// timespan Gaussian Distribution
-//timespan_t rng_t::gauss( timespan_t mean, timespan_t stddev )
-//{
-//  return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-//                                         static_cast<double>( timespan_t::to_native( stddev ) ) ) );
-//}
-//
-///// tiemspan exponentially Modified Gaussian Distribution
-//timespan_t rng_t::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-//{
-//  return timespan_t::from_native( exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-//             static_cast<double>( timespan_t::to_native( stddev ) ),
-//             static_cast<double>( timespan_t::to_native( nu ) ) ) );
-//}
 
 /// Reseed using current state
 uint64_t rng_t::reseed()
