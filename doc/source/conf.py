@@ -23,7 +23,6 @@ autodoc_path = os.path.abspath('./../../engine/')
 print("autodoc_path", autodoc_path)
 sys.path.insert(0, autodoc_path)
 
-sys.path.append( os.path.abspath("./../ext/breathe/") )
 
 # -- General configuration ------------------------------------------------
 
@@ -37,11 +36,14 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
-    'breathe',
 ]
 
-breathe_projects = { "SimulationCraft": os.path.abspath("./../doxygen/xml/") }
-breathe_default_project = "SimulationCraft"
+enable_breath = True
+if enable_breath:
+    extensions.append('breathe')
+    sys.path.append( os.path.abspath("./../ext/breathe/") )
+    breathe_projects = { "SimulationCraft": os.path.abspath("./../doxygen/xml/") }
+    breathe_default_project = "SimulationCraft"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
