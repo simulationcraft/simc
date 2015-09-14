@@ -27,6 +27,9 @@ casc_extract/cache/
 vs/int_gui/
 x64/
 x86/
+doc/build/
+doc/doxygen/
+doc/ext/breathe/
 
 /simc
 /SimulationCraft
