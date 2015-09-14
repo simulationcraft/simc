@@ -606,9 +606,6 @@ struct base_fiend_pet_t : public priest_pet_t
 
   virtual void summon( timespan_t duration ) override
   {
-    // TODO: Why is there extra duration added? This messes up pet spawning with T18 set bonus.
-    //duration += timespan_t::from_seconds( 0.01 );
-
     priest_pet_t::summon( duration );
 
     if ( shadowcrawl_action )
@@ -1585,7 +1582,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   atonement_heal_t* atonement;
   bool can_trigger_atonement;
-  bool is_mind_spell; // TODO: activate on relevant spells, see spell query affected list.
+  bool is_mind_spell;
 
   priest_spell_t( const std::string& n, priest_t& player,
                   const spell_data_t* s = spell_data_t::nil() ) :

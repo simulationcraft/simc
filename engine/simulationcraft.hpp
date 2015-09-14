@@ -3002,7 +3002,6 @@ struct sim_t : private sc_thread_t
 
   virtual void run() override;
   int       main( const std::vector<std::string>& args );
-  void      add_event( event_t*, timespan_t delta_time );
   double    iteration_time_adjust() const;
   double    expected_max_time() const;
   bool      is_canceled() const;
@@ -5614,7 +5613,7 @@ struct player_demise_event_t : public player_event_t
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Demise Event: %s", p.name() );
 
-    sim().add_event( this, delta_time );
+    add_event( delta_time );
   }
   virtual const char* name() const override
   { return "Player-Demise"; }
@@ -6911,7 +6910,7 @@ inline dot_tick_event_t::dot_tick_event_t( dot_t* d, timespan_t time_to_tick ) :
     sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.4f",
                 d -> source -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
-  sim().add_event( this, time_to_tick );
+  add_event( time_to_tick );
 }
 
 
@@ -6981,7 +6980,7 @@ inline dot_end_event_t::dot_end_event_t( dot_t* d, timespan_t time_to_end ) :
     sim().out_debug.printf( "New DoT End Event: %s %s %.3f",
                 d -> source -> name(), dot -> name(), time_to_end.total_seconds() );
 
-  sim().add_event( this, time_to_end );
+  add_event( time_to_end );
 }
 
 inline void dot_end_event_t::execute()
@@ -7400,7 +7399,7 @@ struct multistrike_execute_event_t : public event_t
     // Hots/Dots will be scheduled immediately, direct damage multistrikes will
     // jump through hoops .. below
     if ( state -> result_type == DMG_OVER_TIME || state -> result_type == HEAL_OVER_TIME )
-      sim().add_event( this, timespan_t::zero() + multistrike_offset );
+      add_event( timespan_t::zero() + multistrike_offset );
 
     // Direct damage/heal multistrikes need to take into account the travel
     // time of the "real" spell, and impact at the same time(?), so ..
@@ -7412,7 +7411,7 @@ struct multistrike_execute_event_t : public event_t
       // timestamp
       if ( state -> action -> travel_time() == timespan_t::zero() )
       {
-        sim().add_event( this, timespan_t::zero() + multistrike_offset );
+        add_event( timespan_t::zero() + multistrike_offset );
       }
       // Travel time spell, schedule_travel() has inserted a new entry into the
       // action's travel events (at the end of the vector), so use it's
@@ -7422,7 +7421,7 @@ struct multistrike_execute_event_t : public event_t
       {
         assert( state -> action -> current_travel_events().size() > 0 );
         timespan_t time_to_travel = state -> action -> current_travel_events().back() -> remains();
-        sim().add_event( this, time_to_travel + multistrike_offset );
+        add_event( time_to_travel + multistrike_offset );
       }
     }
     else

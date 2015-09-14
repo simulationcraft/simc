@@ -637,7 +637,7 @@ struct np_spread_event_t : public event_t
     event_t( *dot_ -> source -> sim ),
     dot( dot_ )
   {
-    sim().add_event( this, timespan_t::zero() );
+    add_event( timespan_t::zero() );
   }
   virtual const char* name() const override
   { return "necrotic_plague_spread"; }
@@ -7457,7 +7457,7 @@ struct vottw_regen_event_t : public event_t
     event_t( *player ),
     dk( player )
   {
-    sim().add_event( this, timespan_t::from_seconds( 1 ) );
+    add_event( timespan_t::from_seconds( 1 ) );
   }
   virtual const char* name() const override
   { return "veteran_of_the_third_war"; }

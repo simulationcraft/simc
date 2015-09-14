@@ -19,7 +19,7 @@ struct player_gcd_event_t : public player_event_t
     if ( sim().debug )
       sim().out_debug << "New Player-Ready-GCD Event: " << p.name();
 
-    sim().add_event( this, delta_time );
+    add_event( delta_time );
   }
   virtual const char* name() const override
   { return "Player-Ready-GCD"; }
@@ -81,7 +81,7 @@ struct action_execute_event_t : public player_event_t
                   ( state ) ? state -> target -> name() : a -> target -> name(), 
                   ( a -> marker ) ? a -> marker : '0' );
 
-    sim().add_event( this, time_to_execute );
+    add_event( time_to_execute );
   }
   virtual const char* name() const override
   { return "Action-Execute"; }
@@ -3269,7 +3269,7 @@ action_cost_tick_event_t::action_cost_tick_event_t( action_t& a, timespan_t time
     action( a ),
     time_to_tick( time_to_tick )
 {
-  sim().add_event( this, time_to_tick );
+  add_event( time_to_tick );
 }
 
 void action_cost_tick_event_t::execute()

@@ -868,7 +868,7 @@ struct proxy_cast_check_t : public event_t
     event_t( s ),
     uses( u ), _override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
-    sim().add_event( this, i );
+    add_event( i );
   }
   virtual const char* name() const override
   { return "proxy_cast_check"; }
@@ -919,7 +919,7 @@ struct sim_end_event_t : event_t
   sim_end_event_t( sim_t& s, timespan_t end_time ) :
     event_t( s )
   {
-    sim().add_event( this, end_time );
+    add_event( end_time );
   }
   virtual const char* name() const override
   { return "sim_end_expected_time"; }
@@ -952,7 +952,7 @@ struct resource_timeline_collect_event_t : public event_t
   resource_timeline_collect_event_t( sim_t& s ) :
     event_t( s )
   {
-    sim().add_event( this, timespan_t::from_seconds( 1 ) );
+    add_event( timespan_t::from_seconds( 1 ) );
   }
   virtual const char* name() const override
   { return "resource_timeline_collect_event_t"; }
@@ -1359,14 +1359,6 @@ sim_t::~sim_t()
   assert( relatives.empty() );
   if( parent )
     parent -> remove_relative( this );
-}
-
-// sim_t::add_event (Please use core_event_t::add_event instead) ============
-
-void sim_t::add_event( event_t* e,
-                       timespan_t delta_time )
-{
-  event_mgr.add_event( e, delta_time );
 }
 
 // sim_t::iteration_time_adjust =============================================

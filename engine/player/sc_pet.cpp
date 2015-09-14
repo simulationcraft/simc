@@ -182,7 +182,7 @@ void pet_t::summon( timespan_t summon_duration )
         event_t( p ),
         pet( p )
       {
-        sim().add_event( this, duration );
+        add_event( duration );
       }
       virtual const char* name() const override
       { return "pet_summon_duration"; }

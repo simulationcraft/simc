@@ -20,7 +20,7 @@ struct player_ready_event_t : public player_event_t
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
 
-    sim().add_event( this, delta_time );
+    add_event( delta_time );
   }
   virtual const char* name() const override
   { return "Player-Ready"; }
@@ -386,7 +386,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
         sim().out_debug.printf( "%s %s residual_action delay_event_start amount=%f",
                                 a -> player -> name(), action -> name(), amount );
 
-      sim().add_event( this, delay_duration );
+      add_event( delay_duration );
     }
     virtual const char* name() const override
     { return "residual_action_delay_event"; }
@@ -10776,7 +10776,7 @@ struct manager_t::update_event_t : public player_event_t
   update_event_t( player_t& p ) :
     player_event_t( p )
   {
-    sim().add_event( this, timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
+    add_event( timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
   }
   virtual const char* name() const override
   { return "resolve_update_event_t"; }

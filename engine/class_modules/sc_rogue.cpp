@@ -106,7 +106,7 @@ struct shadow_reflect_event_t : public player_event_t
     player_event_t( *a -> player ),
     combo_points( cp ), source_action( a )
   {
-    sim().add_event( this, timespan_t::from_seconds( 8 ) );
+    add_event( timespan_t::from_seconds( 8 ) );
   }
   virtual const char* name() const override
   { return "shadow_reflect_event"; }
