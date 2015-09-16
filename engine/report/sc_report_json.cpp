@@ -490,6 +490,41 @@ js::sc_js_t to_json( const dbc_t& dbc )
   return node;
 }
 
+js::sc_js_t to_json( const player_t::base_initial_current_t& )
+{
+  js::sc_js_t node;
+  // TODO
+  return node;
+}
+
+js::sc_js_t to_json( const player_t::diminishing_returns_constants_t& )
+{
+  js::sc_js_t node;
+  // TODO
+  return node;
+}
+
+js::sc_js_t to_json( const weapon_t& )
+{
+  js::sc_js_t node;
+  // TODO
+  return node;
+}
+
+js::sc_js_t to_json( const player_t::resources_t& )
+{
+  js::sc_js_t node;
+  // TODO
+  return node;
+}
+
+js::sc_js_t to_json( const player_t::consumables_t& )
+{
+  js::sc_js_t node;
+  // TODO
+  return node;
+}
+
 js::sc_js_t to_json( const player_t& p )
 {
   js::sc_js_t node;
@@ -525,8 +560,33 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "world_lag_override", p.world_lag_override );
   node.set( "world_lag_stddev_override", p.world_lag_stddev_override );
   node.set( "dbc", to_json( p.dbc ) );
+  for( const auto& glyph : p.glyph_list )
+  {
+    node.add( "glyphst", to_json( glyph ) );
+  }
+  for( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
+  {
+    js::sc_js_t pnode;
+    if ( p.profession[ i ] > 0 )
+    {
+      pnode.set(util::profession_type_string( i ), p.profession[ i ] );
+    }
+    node.add( "professions", pnode );
+  }
+  node.set("base_stats", to_json(p.base) );
+  node.set("initial_stats", to_json(p.initial) );
+  node.set("current_stats", to_json(p.current) );
+  node.set( "base_energy_regen_per_second", p.base_energy_regen_per_second );
+  node.set( "base_focus_regen_per_second", p.base_focus_regen_per_second );
+  node.set( "base_chi_regen_per_second", p.base_chi_regen_per_second );
+  node.set("diminishing_returns_constants", to_json(p.def_dr) );
+  node.set("main_hand_weapon", to_json(p.main_hand_weapon) );
+  node.set("off_hand_weapon", to_json(p.off_hand_weapon) );
+  node.set("resources", to_json(p.resources) );
+  node.set("consumables", to_json(p.consumables) );
 
   // TODO
+
   node.set( "collected_data", to_json( p.collected_data ) );
   // TODO
 
