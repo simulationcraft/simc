@@ -1051,7 +1051,7 @@ struct leader_of_the_pack_t : public heal_t
     target = p;
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
-    pct_heal = data().effectN( 1 ).percent();
+    base_pct_heal = data().effectN( 1 ).percent();
   }
 };
 
@@ -1087,7 +1087,7 @@ struct yseras_gift_t : public heal_t
 
   // Override calculate_tick_amount for unique mechanic (heals smart target for % of own health)
   // This might not be the best way to do this, but it works.
-  virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) // dmg_multiplier is unused, this removes compiler warning.
+  virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) const
   {
     double amount = state -> action -> player -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
     
@@ -2536,7 +2536,7 @@ struct ferocious_bite_t : public cat_attack_t
       harmful = false;
 
       const spell_data_t* glyph = p -> find_glyph_spell( "Glyph of Ferocious Bite" );
-      pct_heal = glyph -> effectN( 1 ).percent() / 10.0;
+      base_pct_heal = glyph -> effectN( 1 ).percent() / 10.0;
       energy_divisor = glyph -> effectN( 2 ).resource( RESOURCE_ENERGY );
     }
 

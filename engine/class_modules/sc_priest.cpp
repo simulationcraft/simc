@@ -2863,7 +2863,7 @@ struct devouring_plague_dot_t : public priest_spell_t
     return s_;
   }
 
-  double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
+  double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const override
   {
     // We already got the dmg stored, just return it.
     const dp_state_t* ds = static_cast<const dp_state_t*>( state );
@@ -3812,7 +3812,7 @@ public:
     }
   }
 
-  virtual double calculate_direct_amount( action_state_t* s )
+  virtual double calculate_direct_amount( action_state_t* s ) const
   {
     cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
     double cda = action_t::calculate_direct_amount( s );
@@ -3915,7 +3915,7 @@ public:
     return timespan_t::from_seconds( s -> action -> player -> get_player_distance( *s -> target ) / ab::travel_speed );
   }
 
-  virtual double calculate_direct_amount( action_state_t* s )
+  virtual double calculate_direct_amount( action_state_t* s ) const
   {
     double cda = action_t::calculate_direct_amount( s );
 

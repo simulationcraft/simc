@@ -3324,7 +3324,7 @@ struct conversion_heal_t : public death_knight_heal_t
     resource_current = RESOURCE_RUNIC_POWER;
     base_costs[ RESOURCE_RUNIC_POWER ] = 15;
     target = p;
-    pct_heal = data().effectN( 1 ).percent();
+    base_pct_heal = data().effectN( 1 ).percent();
   }
 
   void execute()
@@ -5671,7 +5671,7 @@ struct death_pact_t : public death_knight_heal_t
   {
     may_crit = false;
     may_multistrike = 0;
-    pct_heal = data().effectN( 1 ).percent();
+    base_pct_heal = data().effectN( 1 ).percent();
 
     parse_options( options_str );
   }
@@ -5979,8 +5979,8 @@ void runeforge::fallen_crusader( special_effect_t& effect )
         target = player;
         callbacks = may_crit = false;
         may_multistrike = 0;
-        pct_heal = data -> effectN( 2 ).percent();
-        pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
+        base_pct_heal = data -> effectN( 2 ).percent();
+        base_pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
       }
 
       // Procs by default target the target of the action that procced them.

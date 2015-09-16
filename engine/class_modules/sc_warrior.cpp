@@ -850,7 +850,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       trigger_sweeping_strikes( execute_state );
   }
 
-  virtual double calculate_weapon_damage( double attack_power )
+  virtual double calculate_weapon_damage( double attack_power ) const
   {
     double dmg = base_t::calculate_weapon_damage( attack_power );
 
@@ -1318,30 +1318,33 @@ struct bladestorm_t: public warrior_attack_t
 
 struct bloodthirst_heal_t: public warrior_heal_t
 {
-  double base_pct_heal;
   bloodthirst_heal_t( warrior_t* p ):
-    warrior_heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) ),
-    base_pct_heal( 0 )
+    warrior_heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) )
   {
-    pct_heal = data().effectN( 1 ).percent();
-    pct_heal *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
-    base_pct_heal = pct_heal;
+    base_pct_heal = data().effectN( 1 ).percent();
+    base_pct_heal *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
     background = true;
   }
 
   resource_e current_resource() const { return RESOURCE_NONE; }
 
-  double calculate_direct_amount( action_state_t* state )
+  virtual double composite_pct_heal( const action_state_t* s ) const override
   {
-    pct_heal = base_pct_heal;
+    double b = warrior_heal_t::composite_pct_heal( s );
 
-    if ( p() -> buff.raging_blow_glyph -> up() )
+    if ( p() -> buff.raging_blow_glyph -> check() )
     {
-      pct_heal *= 1.0 + p() -> buff.raging_blow_glyph -> data().effectN( 1 ).percent();
-      p() -> buff.raging_blow_glyph -> expire();
+      b *= 1.0 + p() -> buff.raging_blow_glyph -> data().effectN( 1 ).percent();
     }
+    return b;
+  }
 
-    return warrior_heal_t::calculate_direct_amount( state );
+  virtual void execute()
+  {
+    p() -> buff.raging_blow_glyph -> up(); // benefit tracking
+    warrior_heal_t::execute();
+    p() -> buff.raging_blow_glyph -> expire();
+
   }
 };
 
@@ -1940,26 +1943,35 @@ struct tier16_2pc_tank_heal_t: public warrior_heal_t
 
 struct impending_victory_heal_t: public warrior_heal_t
 {
-  double base_pct_heal;
   impending_victory_heal_t( warrior_t* p ):
     warrior_heal_t( "impending_victory_heal", p, p -> find_spell( 118340 ) )
   {
-    pct_heal = data().effectN( 1 ).percent();
-    base_pct_heal = pct_heal;
+    base_pct_heal = data().effectN( 1 ).percent();
     background = true;
   }
 
-  double calculate_direct_amount( action_state_t* state )
+  virtual double composite_pct_heal( const action_state_t* s ) const override
   {
-    pct_heal = base_pct_heal;
+    double b = warrior_heal_t::composite_pct_heal( s );
 
     if ( p() -> buff.tier15_2pc_tank -> check() )
-      pct_heal += p() -> buff.tier15_2pc_tank -> value();
+    {
+      b += p() -> buff.tier15_2pc_tank -> current_value;
+    }
 
-    return warrior_heal_t::calculate_direct_amount( state );
+    return b;
   }
 
-  resource_e current_resource() const { return RESOURCE_NONE; }
+  virtual void execute() override
+  {
+    p() -> buff.tier15_2pc_tank -> up(); // benefit tracking
+    warrior_heal_t::execute();
+  }
+
+  resource_e current_resource() const
+  {
+    return RESOURCE_NONE;
+  }
 };
 
 struct impending_victory_t: public warrior_attack_t
@@ -2422,7 +2434,7 @@ struct enraged_regeneration_t: public warrior_heal_t
     dot_duration = data().duration();
     range = -1;
     base_tick_time = data().effectN( 2 ).period();
-    pct_heal = data().effectN( 1 ).percent();
+    base_pct_heal = data().effectN( 1 ).percent();
     tick_pct_heal = data().effectN( 2 ).percent();
   }
 
@@ -2883,7 +2895,7 @@ struct victory_rush_heal_t: public warrior_heal_t
   victory_rush_heal_t( warrior_t* p ):
     warrior_heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
   {
-    pct_heal = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
+    base_pct_heal = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
     background = true;
   }
   resource_e current_resource() const { return RESOURCE_NONE; }

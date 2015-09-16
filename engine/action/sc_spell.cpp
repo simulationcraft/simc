@@ -235,7 +235,7 @@ heal_t::heal_t( const std::string&  token,
                 const spell_data_t* s ) :
   spell_base_t( ACTION_HEAL, token, p, s ),
   group_only(),
-  pct_heal(),
+  base_pct_heal(),
   tick_pct_heal(),
   heal_gain( p -> get_gain( name() ) )
 {
@@ -267,7 +267,7 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
   {
     if ( e.type() == E_HEAL_PCT )
     {
-      pct_heal = e.percent();
+      base_pct_heal = e.percent();
     }
     else if ( e.subtype() == A_OBS_MOD_HEALTH )
       tick_pct_heal = e.percent();
@@ -310,10 +310,16 @@ dmg_e heal_t::report_amount_type( const action_state_t* state ) const
   return result_type;
 }
 
+double heal_t::composite_pct_heal( const action_state_t* ) const
+{
+  return base_pct_heal;
+}
+
 // heal_t::calculate_direct_amount ==========================================
 
-double heal_t::calculate_direct_amount( action_state_t* state )
+double heal_t::calculate_direct_amount( action_state_t* state ) const
 {
+  double pct_heal = composite_pct_heal( state );
   if ( pct_heal )
   {
     double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
@@ -347,7 +353,7 @@ double heal_t::calculate_direct_amount( action_state_t* state )
 
 // heal_t::calculate_tick_amount ============================================
 
-double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multiplier )
+double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const
 {
   if ( tick_pct_heal )
   {

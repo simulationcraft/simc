@@ -2570,7 +2570,7 @@ struct combustion_t : public mage_spell_t
   { return new residual_periodic_state_t( this, target ); }
 
   virtual double calculate_tick_amount( action_state_t* state,
-                                        double dmg_multiplier )
+                                        double dmg_multiplier ) const
   {
     double amount = 0.0;
 

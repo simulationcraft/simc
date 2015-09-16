@@ -117,9 +117,9 @@ namespace monk_util
 // set, instead of the classical action_t::weapon Damage is divided instead of
 // multiplied by the weapon speed, AP portion is not multiplied by weapon
 // speed.  Both MH and OH are directly weaved into one damage number
-double monk_weapon_damage( action_t* action,
-                           weapon_t* mh,
-                           weapon_t* oh,
+double monk_weapon_damage( const action_t* action,
+                           const weapon_t* mh,
+                           const weapon_t* oh,
                            double weapon_power_mod,
                            double ap )
 {
@@ -541,7 +541,6 @@ public:
     light_stagger_threshold( 0 ),
     moderate_stagger_threshold( 0.035 ),
     heavy_stagger_threshold( 0.065 ),
-    weapon_power_mod( 0 ),
     eluding_movements( nullptr ),
     soothing_breeze( nullptr ),
     furious_sun( nullptr )
@@ -904,7 +903,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     // SEF uses the "normal" monk weapon damage calculation, except for auto
     // attacks.
-    double calculate_weapon_damage( double attack_power )
+    double calculate_weapon_damage( double attack_power ) const
     {
       // Actual weapon damage calculation is done with the OWNER weapons for
       // special attacks, not SEF specific ones.
@@ -2112,11 +2111,8 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
   // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
   // Both MH and OH are directly weaved into one damage number
-  virtual double calculate_weapon_damage( double ap )
+  virtual double calculate_weapon_damage( double ap ) const
   {
-    // For use with the spell Expel Harm since Weapon Power Mod does not seem to be available for spells
-    if (p() -> weapon_power_mod == 0)
-      p() -> weapon_power_mod = weapon_power_mod;
     // Use monk specific weapon damage calculation if mh or oh (monk specific weapons) are
     // specificed.
     if ( mh || oh )
@@ -4673,6 +4669,8 @@ struct expel_harm_heal_t : public monk_heal_t
 
     base_multiplier = 7.5;
 
+    weapon_power_mod = 1.0 / 3.5;
+
     if ( p.glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p.glyph.targeted_expulsion -> effectN( 2 ).percent();
 
@@ -4734,7 +4732,7 @@ struct expel_harm_heal_t : public monk_heal_t
     weapon_t mh = p() -> main_hand_weapon;
     weapon_t oh = p() -> off_hand_weapon;
 
-    base_dd_min = base_dd_max = monk_util::monk_weapon_damage( this, &( mh ), &( oh ), p() -> weapon_power_mod,
+    base_dd_min = base_dd_max = monk_util::monk_weapon_damage( this, &( mh ), &( oh ), weapon_power_mod,
       ( p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
 
     monk_heal_t::execute();
@@ -5111,7 +5109,7 @@ struct healing_elixirs_t: public monk_heal_t
     background = true;
     may_multistrike = 0;
     trigger_gcd = timespan_t::zero();
-    pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
+    base_pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
     cooldown -> duration = data().effectN( 1 ).period();
   }
 };

@@ -3629,7 +3629,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return c;
   }
 
-  double calculate_direct_amount( action_state_t* state )
+  double calculate_direct_amount( action_state_t* state ) const
   {
     warlock_spell_t::calculate_direct_amount( state );
 

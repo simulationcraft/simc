@@ -206,7 +206,7 @@ struct enemy_action_t : public ACTION_TYPE
     return tl.size();
   }
 
-  double calculate_direct_amount( action_state_t* s )
+  double calculate_direct_amount( action_state_t* s ) const
   {
     // force boss attack size to vary regardless of whether the sim itself does
     int previous_average_range_state = this -> sim -> average_range;

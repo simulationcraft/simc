@@ -774,7 +774,7 @@ struct health_stone_t : public heal_t
     harmful = false;
     may_crit = true;
 
-    pct_heal = 0.2;
+    base_pct_heal = 0.2;
 
     target = player;
   }
@@ -796,7 +796,7 @@ struct health_stone_t : public heal_t
 
     if ( ! if_expr )
     {
-      if ( player -> resources.pct( RESOURCE_HEALTH ) > ( 1 - pct_heal ) )
+      if ( player -> resources.pct( RESOURCE_HEALTH ) > ( 1 - base_pct_heal ) )
         return false;
     }
 

@@ -21,8 +21,10 @@ struct player_gcd_event_t : public player_event_t
 
     add_event( delta_time );
   }
+
   virtual const char* name() const override
   { return "Player-Ready-GCD"; }
+
   virtual void execute()
   {
     for ( std::vector<action_t*>::const_iterator i = p() -> active_off_gcd_list -> off_gcd_actions.begin();
@@ -83,17 +85,18 @@ struct action_execute_event_t : public player_event_t
 
     add_event( time_to_execute );
   }
+
   virtual const char* name() const override
   { return "Action-Execute"; }
-  // Ensure we properly release the carried execute_state even if this event
-  // is never executed.
+
+
   ~action_execute_event_t()
   {
+    // Ensure we properly release the carried execute_state even if this event
+    // is never executed.
     if ( execute_state )
       action_state_t::release( execute_state );
   }
-
-  // action_execute_event_t::execute ========================================
 
   virtual void execute()
   {
@@ -143,12 +146,12 @@ struct action_execute_event_t : public player_event_t
     if ( ! p() -> channeling )
       p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::zero() );
   }
-
 };
 
 struct aoe_target_list_callback_t
 {
   action_t* action;
+
   aoe_target_list_callback_t( action_t* a ) :
     action( a ) {}
 
@@ -158,40 +161,59 @@ struct aoe_target_list_callback_t
     action -> target_cache.is_valid = false;
   }
 };
-struct power_entry_without_aura {
-  bool operator()( const spellpower_data_t* p ) {return p -> aura_id() == 0;}
+
+struct power_entry_without_aura
+{
+  bool operator()( const spellpower_data_t* p )
+  {
+    return p -> aura_id() == 0;
+  }
 };
-} // end anonymous namespace
+
+} // unnamed namespace
 
 
-// action_priority_list_t::add_action =======================================
-
-// Anything goes to action priority list.
+/**
+ * @brief add to action list without restriction
+ *
+ * Anything goes to action priority list.
+ */
 action_priority_t* action_priority_list_t::add_action( const std::string& action_priority_str,
                                                        const std::string& comment )
 {
-  if ( action_priority_str.empty() ) return 0;
+  if ( action_priority_str.empty() )
+    return nullptr;
   action_list.push_back( action_priority_t( action_priority_str, comment ) );
   return &( action_list.back() );
 }
 
-// Check the validity of spell data before anything goes to action priority list
+/**
+ * @brief add to action list & check spelldata
+ *
+ * Check the validity of spell data before anything goes to action priority list
+ */
 action_priority_t* action_priority_list_t::add_action( const player_t* p,
                                                        const spell_data_t* s,
                                                        const std::string& action_name,
                                                        const std::string& action_options,
                                                        const std::string& comment )
 {
-  if ( ! s || ! s -> ok() || ! s -> is_level( p -> true_level ) ) return 0;
+  if ( ! s || ! s -> ok() || ! s -> is_level( p -> true_level ) )
+    return nullptr;
 
   std::string str = action_name;
-  if ( ! action_options.empty() ) str += "," + action_options;
+  if ( ! action_options.empty() )
+    str += "," + action_options;
 
   return add_action( str, comment );
 }
 
-// Check the availability of a class spell of "name" and the validity of it's
-// spell data before anything goes to action priority list
+/**
+ * @brief add to action list & check class spell with given name
+ *
+ * Check the availability of a class spell of "name" and the validity of it's
+ * spell data before anything goes to action priority list
+ */
 action_priority_t* action_priority_list_t::add_action( const player_t* p,
                                                        const std::string& name,
                                                        const std::string& action_options,
@@ -203,17 +225,19 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
   return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
 }
 
-// action_priority_list_t::add_talent =======================================
-
-// Check the availability of a talent spell of "name" and the validity of it's
-// spell data before anything goes to action priority list. Note that this will
-// ignore the actual talent check so we can make action list entries for
-// talents, even though the profile does not have a talent.
-//
-// In addition, the method automatically checks for the presence of an if
-// expression that includes the "talent guard", i.e., "talent.X.enabled" in it.
-// If omitted, it will be automatically added to the if expression (or
-// if expression will be created if it is missing).
+/**
+ * @brief add talent action to action list & check talent availability
+ *
+ * Check the availability of a talent spell of "name" and the validity of it's
+ * spell data before anything goes to action priority list. Note that this will
+ * ignore the actual talent check so we can make action list entries for
+ * talents, even though the profile does not have a talent.
+ *
+ * In addition, the method automatically checks for the presence of an if
+ * expression that includes the "talent guard", i.e., "talent.X.enabled" in it.
+ * If omitted, it will be automatically added to the if expression (or
+ * if expression will be created if it is missing).
+ */
 action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& name,
                                                        const std::string& action_options,
@@ -222,8 +246,6 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
   const spell_data_t* s = p -> find_talent_spell( name, "", SPEC_NONE, false, false );
   return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
 }
-
-// action_t::action_t =======================================================
 
 action_t::action_t( action_e       ty,
                     const std::string&  token,
@@ -478,8 +500,9 @@ action_t::~action_t()
   }
 }
 
-// action_t::parse_data =====================================================
-
+/**
+ * Parse spell data values and write them into corresponding action_t members.
+ */
 void action_t::parse_spell_data( const spell_data_t& spell_data )
 {
   if ( ! spell_data.ok() )
@@ -814,7 +837,7 @@ double action_t::total_crit_bonus() const
 
 // action_t::calculate_weapon_damage ========================================
 
-double action_t::calculate_weapon_damage( double attack_power )
+double action_t::calculate_weapon_damage( double attack_power ) const
 {
   if ( ! weapon || weapon_multiplier <= 0 ) return 0;
 
@@ -841,7 +864,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 
 // action_t::calculate_tick_amount ==========================================
 
-double action_t::calculate_tick_amount( action_state_t* state, double dot_multiplier )
+double action_t::calculate_tick_amount( action_state_t* state, double dot_multiplier ) const
 {
   double amount = 0;
 
@@ -889,7 +912,7 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
 
 // action_t::calculate_direct_amount ========================================
 
-double action_t::calculate_direct_amount( action_state_t* state )
+double action_t::calculate_direct_amount( action_state_t* state ) const
 {
   double amount = sim -> averaged_range( base_da_min( state ), base_da_max( state ) );
 

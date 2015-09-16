@@ -6292,10 +6292,10 @@ struct action_t : private noncopyable
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual result_e calculate_multistrike_result( action_state_t* /* state */, dmg_e /* type */ );
   virtual block_result_e calculate_block_result( action_state_t* s );
-  virtual double calculate_direct_amount( action_state_t* state );
-  virtual double calculate_tick_amount( action_state_t* state, double multiplier );
+  virtual double calculate_direct_amount( action_state_t* state ) const;
+  virtual double calculate_tick_amount( action_state_t* state, double multiplier ) const;
 
-  virtual double calculate_weapon_damage( double attack_power );
+  virtual double calculate_weapon_damage( double attack_power ) const;
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
   virtual double cooldown_reduction() const { return base_cooldown_reduction; }
@@ -6729,19 +6729,20 @@ struct heal_t : public spell_base_t
 public:
   typedef spell_base_t base_t;
   bool group_only;
-  double pct_heal;
+  double base_pct_heal;
   double tick_pct_heal;
   gain_t* heal_gain;
 
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
+  virtual double composite_pct_heal( const action_state_t* ) const;
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
   virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const;
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual void init_target_cache();
-  virtual double calculate_direct_amount( action_state_t* state );
-  virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier );
+  virtual double calculate_direct_amount( action_state_t* state ) const;
+  virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const;
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
@@ -6780,7 +6781,7 @@ public:
 
     if ( player -> resolve_manager.is_started() )
     {
-      if ( ( state -> result_type == HEAL_OVER_TIME && tick_pct_heal == 0.0 ) || ( state -> result_type == HEAL_DIRECT && pct_heal == 0.0 ) )
+      if ( ( state -> result_type == HEAL_OVER_TIME && tick_pct_heal == 0.0 ) || ( state -> result_type == HEAL_DIRECT && base_pct_heal == 0.0 ) )
       {
         // apply -60% healing effect
         // m *= 1.0 + player -> resolve_manager.resolve -> effectN( 3 ).percent();

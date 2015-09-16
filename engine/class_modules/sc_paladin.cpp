@@ -1508,14 +1508,14 @@ struct glyph_of_divine_shield_t : public paladin_heal_t
   glyph_of_divine_shield_t( paladin_t* p )
     : paladin_heal_t( "glyph_of_divine_shield", p, p -> find_glyph_spell( "Glyph of Divine Shield" ) )
   {
-    pct_heal = 0.0;
+    base_pct_heal = 0.0;
     background = true;
     target = p;
   }
 
   void set_num_destroyed( int n )
   {
-    pct_heal = std::min( data().effectN( 1 ).percent() * n,
+    base_pct_heal = std::min( data().effectN( 1 ).percent() * n,
                          data().effectN( 1 ).percent() * data().effectN( 2 ).base_value() );
   }
 
@@ -4792,7 +4792,7 @@ void paladin_t::trigger_shining_protector( action_state_t* s )
   if ( s -> action -> type == ACTION_HEAL )
   {
     heal_t* heal_cast = debug_cast<heal_t*>( s -> action );
-    if ( ( s -> result_type == HEAL_DIRECT && heal_cast -> pct_heal > 0 ) || ( s -> result_type == HEAL_OVER_TIME && heal_cast -> tick_pct_heal > 0 ) )
+    if ( ( s -> result_type == HEAL_DIRECT && heal_cast -> base_pct_heal > 0 ) || ( s -> result_type == HEAL_OVER_TIME && heal_cast -> tick_pct_heal > 0 ) )
       return;
   }
 
