@@ -10178,7 +10178,8 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
 
 player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
   fight_length( player_name + " Fight Length", s.statistics_level < 2 ),
-  waiting_time(), executed_foreground_actions(),
+  waiting_time(player_name + " Waiting Time", s.statistics_level < 4),
+  executed_foreground_actions(player_name + " Executed Foreground Actions", s.statistics_level < 4),
   dmg( player_name + " Damage", s.statistics_level < 2 ),
   compound_dmg( player_name + " Total Damage", s.statistics_level < 2 ),
   prioritydps( player_name + " Priority Target Damage Per Second", s.statistics_level < 1 ),

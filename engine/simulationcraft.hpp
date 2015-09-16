@@ -4222,7 +4222,7 @@ struct player_processed_report_information_t
 struct player_collected_data_t
 {
   extended_sample_data_t fight_length;
-  simple_sample_data_t waiting_time, executed_foreground_actions;
+  extended_sample_data_t waiting_time, executed_foreground_actions;
 
   // DMG
   extended_sample_data_t dmg;
