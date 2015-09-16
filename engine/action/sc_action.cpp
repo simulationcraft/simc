@@ -242,7 +242,6 @@ action_t::action_t( action_e       ty,
   internal_id( static_cast<int>( p -> get_action_id( name_str ) ) ),
   resource_current( RESOURCE_NONE ),
   aoe(),
-  pre_combat( 0 ),
   may_multistrike( -1 ),
   instant_multistrike( 1 ),
   dual(),
@@ -287,6 +286,8 @@ action_t::action_t( action_e       ty,
   base_tick_time( timespan_t::zero() ),
   dot_duration( timespan_t::zero() ),
   base_cooldown_reduction( 1.0 ),
+  movement_directionality( MOVEMENT_NONE ),
+  base_teleport_distance( 0.0 ),
   cost_tick_event( nullptr ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
@@ -358,8 +359,6 @@ action_t::action_t( action_e       ty,
   execute_state = 0;
   pre_execute_state = 0;
   action_list = 0;
-  movement_directionality = MOVEMENT_NONE;
-  base_teleport_distance = 0;
   parent_dot = 0;
   ground_aoe = false;
   state_cache = 0;
@@ -458,7 +457,6 @@ action_t::action_t( action_e       ty,
   add_option( opt_bool( "wait_on_ready", wait_on_ready ) );
   add_option( opt_string( "target", target_str ) );
   add_option( opt_string( "label", label_str ) );
-  add_option( opt_bool( "precombat", pre_combat ) );
   add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
   add_option( opt_float( "action_skill", action_skill ) );
 }
@@ -2031,7 +2029,7 @@ void action_t::init()
     update_flags &= ~STATE_HASTE;
   }
 
-  if ( !(background || sequence) && (pre_combat || (action_list && action_list -> name_str == "precombat")) )
+  if ( !(background || sequence) && (action_list && action_list -> name_str == "precombat") )
   {
     if ( harmful )
     {

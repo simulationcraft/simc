@@ -6020,43 +6020,172 @@ struct action_t : private noncopyable
     TARGET_IF_MAX
   };
 
-  school_e school; // What type of damage - Fire, Physical, etc.
+  /// What type of damage this spell does.
+  school_e school;
+
   uint32_t id;
-  unsigned internal_id; // Every action -- even actions without spelldata -- is given an internal_id
+
+  /**
+   * Every action -- even actions without spelldata -- is given an internal_id
+   */
+  unsigned internal_id;
+
+  /// What resource does this ability use.
   resource_e resource_current;
-  int aoe; // Number of targets the action will impact. -1 = no target limit.
-  int pre_combat, may_multistrike;
-  int instant_multistrike; // -1 = autodetect (NYI), 0 = multistrikes have a delay, 1 = multistrikes occur immediately
-  bool dual; // true if this action should not be counted for executes.
-  bool callbacks; // When set to false, action will not trigger trinkets, enchants, rppm.
-  bool special, channeled, sequence; // Special - Not an autoattack
-  bool quiet; // When set to true, action will not show up in raid report or count towards executes.
-  bool background; // Background actions cannot be executed via action list, but can be triggered by other actions. Background actions do not count for executes.
-  bool use_off_gcd; // When set to true, will check every 100 ms to see if this action needs to be used, rather than waiting until the next gcd.
-  bool interrupt_auto_attack; // true if channeled action does not reschedule autoattacks, used on abilities such as bladestorm.
-  bool ignore_false_positive; // Used for actions that will do awful things to the sim when a "false positive" skill roll happens.
-  double action_skill; // Skill is now done per ability, with the default being set to the player option.
-  bool direct_tick; // Used with DoT Drivers, tells simc that the direct hit is actually a tick.
-  bool periodic_hit, repeating, harmful;
-  bool proc; // Procs do not consume resources.
+
+  /// The amount of targets that an ability impacts on. -1 will hit all targets.
+  int aoe;
+
+  /**
+   * @brief If the ability can proc multistrikes.
+   *
+   * 0 disables multistrikes, 1 enables, and -1 enables/disables multistrikes based on if the ability can crit or not.
+   */
+  int may_multistrike;
+
+  /**
+   * @brief Does Multistrike occur instantly?
+   *
+   * -1 = autodetect (NYI), 0 = multistrikes have a delay, 1 = multistrikes occur immediately
+   */
+  int instant_multistrike;
+
+  /// If set to true, this action will not be counted toward total amount of executes in reporting. Useful for abilities with parent/children attacks.
+  bool dual;
+
+  /// enables/disables proc callback system on the action, like trinkets, enchants, rppm.
+  bool callbacks;
+
+  /// Whether or not the spell uses the yellow attack hit table.
+  bool special;
+
+  /// Tells the sim to not perform any other actions, as the ability is channeled.
+  bool channeled;
+
+  bool sequence;
+
+  /**
+   * @brief Disables/enables reporting of this action.
+   *
+   * When set to true, action will not show up in raid report or count towards executes.
+   */
+  bool quiet;
+
+  /**
+   * @brief Enables/Disables direct execution of the ability in an action list.
+   *
+   * Background actions cannot be executed via action list, but can be triggered by other actions.
+   * Background actions do not count for executes.
+   * Abilities with background = true can still be called upon by other actions,
+   * example being deep wounds and how it is activated by devastate.
+   */
+  bool background;
+
+  /**
+   * @brief Check if action is executable between GCD's
+   *
+   * When set to true, will check every 100 ms to see if this action needs to be used,
+   * rather than waiting until the next gcd.
+   * Slows simulation down significantly.
+   */
+  bool use_off_gcd;
+
+  /// true if channeled action does not reschedule autoattacks, used on abilities such as bladestorm.
+  bool interrupt_auto_attack;
+
+  /// Used for actions that will do awful things to the sim when a "false positive" skill roll happens.
+  bool ignore_false_positive;
+
+  /// Skill is now done per ability, with the default being set to the player option.
+  double action_skill;
+
+  /// Used with DoT Drivers, tells simc that the direct hit is actually a tick.
+  bool direct_tick;
+
+  bool periodic_hit;
+
+  /// Used for abilities that repeat themselves without user interaction, only used on autoattacks.
+  bool repeating;
+
+  /**
+   * Simplified: Will the ability pull the boss if used.
+   * Also determines whether ability can be used precombat without counting towards the 1 harmful spell limit
+   */
+  bool harmful;
+
+  /**
+   * @brief Whether or not this ability is a proc.
+   *
+   * Procs do not consume resources.
+   */
+  bool proc;
+
   bool initialized;
-  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
-  bool tick_may_crit, tick_zero, hasted_ticks;
+
+  /// Self explanatory.
+  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
+
+  /// Whether or not the ability/dot ticks immediately on usage.
+  bool tick_zero;
+
+  /**
+   * @brief Whether or not ticks scale with haste.
+   *
+   * Generally only used for bleeds that do not scale with haste,
+   * or with ability drivers that deal damage every x number of seconds.
+   */
+  bool hasted_ticks;
+
+  /**
+   * @brief Behavior of dot.
+   *
+   * Acceptable inputs are DOT_CLIP, DOT_REFRESH, and DOT_EXTEND.
+   */
   dot_behavior_e dot_behavior;
+
   timespan_t ability_lag, ability_lag_stddev;
+
+  /// Deathknight specific, how much runic power is gained.
   double rp_gain;
-  timespan_t min_gcd, trigger_gcd;
-  double range; // This is how far away the target can be from the player, and still be hit or targeted.
-  double radius; // This is used for AoE abilities to show their area of influence. Typically anything that has a radius, but not a range, is based on the players location. 
+
+  /// The minimum gcd triggered no matter the haste.
+  timespan_t min_gcd;
+
+  /// Length of unhasted gcd triggered when used.
+  timespan_t trigger_gcd;
+
+  /// This is how far away the target can be from the player, and still be hit or targeted.
+  double range;
+
+  /**
+   * @brief AoE ability area of influence.
+   *
+   * Typically anything that has a radius, but not a range, is based on the players location.
+   */
+  double radius;
+
   double weapon_power_mod;
+
+  /// Attack/Spell power scaling of the ability.
   struct {
   double direct, tick;
   } attack_power_mod, spell_power_mod;
+
   double amount_delta;
-  timespan_t base_execute_time; // Unbuffed cast time
-  timespan_t base_tick_time; // Unbuffed tick time
+
+  /// Amount of time the ability uses to execute before modifiers.
+  timespan_t base_execute_time;
+
+  /// Amount of time the ability uses between ticks.
+  timespan_t base_tick_time;
+
+  /// Default full duration of dot.
   timespan_t dot_duration;
+
+  /// Cost of using the ability.
   std::array< double, RESOURCE_MAX > base_costs;
+
+  // Cost of using ability per second.
   std::array< double, RESOURCE_MAX > base_costs_per_second;
   double base_dd_min, base_dd_max, base_td;
   double base_dd_multiplier, base_td_multiplier;
@@ -6065,12 +6194,43 @@ struct action_t : private noncopyable
   double base_dd_adder;
   double base_ta_adder;
   weapon_t* weapon;
+
+  /// Weapon damage for the ability.
   double weapon_multiplier;
   double base_add_multiplier;
   double base_aoe_multiplier; // Static reduction of damage for AoE
   bool split_aoe_damage; // Split damage evenly between targets
   bool normalize_weapon_speed;
   double base_cooldown_reduction;
+
+
+  /**
+   * @brief Movement Direction
+   * @code
+   * movement_directionality = MOVEMENT_OMNI; // Can move in any direction, ex: Heroic Leap, Blink. Generally set movement skills to this.
+   * movement_directionality = MOVEMENT_TOWARDS; // Can only be used towards enemy target. ex: Charge
+   * movement_directionality = MOVEMENT_AWAY; // Can only be used away from target. Ex: ????
+   * @endcode
+   */
+  movement_direction_e movement_directionality;
+
+  /// Maximum distance that the ability can travel. Used on abilities that instantly move you, or nearly instantly move you to a location.
+  double base_teleport_distance;
+
+  /// This is used to cache/track spells that have a parent driver, such as most channeled/ground aoe abilities.
+  dot_t* parent_dot;
+
+  /// This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
+  bool ground_aoe;
+
+  /**
+   * @brief Used to manipulate cooldown duration and charges.
+   *
+   * @code
+   * cooldown -> duration = timespan_t::from_seconds( 20 ); //Ability has a cooldown of 20 seconds.
+   * cooldown -> charges = 3; // Ability has 3 charges.
+   * @endcode
+   */
   cooldown_t* cooldown;
   stats_t* stats;
   event_t* execute_event;
@@ -6107,12 +6267,6 @@ struct action_t : private noncopyable
   cooldown_t line_cooldown;
   const action_priority_t* signature;
   std::vector<std::unique_ptr<option_t>> options;
-
-  // Movement stuff
-  movement_direction_e movement_directionality;
-  double base_teleport_distance;
-  dot_t* parent_dot; // This is used to cache/track spells that have a parent driver, such as most channeled/ground aoe abilities.
-  bool ground_aoe; // This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
