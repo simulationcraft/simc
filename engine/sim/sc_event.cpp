@@ -9,14 +9,6 @@
 // Event
 // ==========================================================================
 
-event_t::event_t( sim_t& s ) :
-  _sim( s ), next( nullptr ),  time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
-#if ACTOR_EVENT_BOOKKEEPING
-  ,actor( nullptr )
-#endif
-{}
-
 event_t::event_t( sim_t& s, actor_t* a ) :
   _sim( s ), next( nullptr ), time( timespan_t::zero() ),
   reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )

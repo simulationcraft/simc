@@ -3265,8 +3265,7 @@ struct event_t
 #if ACTOR_EVENT_BOOKKEEPING
   actor_t*    actor;
 #endif
-  event_t( sim_t& s );
-  event_t( sim_t& s, actor_t* p );
+  event_t( sim_t& s, actor_t* p = nullptr);
   event_t( actor_t& p );
 
   timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
