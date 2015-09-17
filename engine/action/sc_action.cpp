@@ -261,7 +261,7 @@ action_t::action_t( action_e       ty,
   target_cache(),
   school( SCHOOL_NONE ),
   id(),
-  internal_id( static_cast<int>( p -> get_action_id( name_str ) ) ),
+  internal_id( as<unsigned>( p -> get_action_id( name_str ) ) ),
   resource_current( RESOURCE_NONE ),
   aoe(),
   may_multistrike( -1 ),
@@ -277,7 +277,6 @@ action_t::action_t( action_e       ty,
   interrupt_auto_attack( true ),
   ignore_false_positive( false ),
   direct_tick(),
-  periodic_hit(),
   repeating(),
   harmful( true ),
   proc(),
@@ -1451,7 +1450,7 @@ void action_t::tick( dot_t* d )
     schedule_multistrike( d -> state, amount_type( d -> state, true ), d -> get_last_tick_factor() );
   }
 
-  if ( ! periodic_hit ) stats -> add_tick( d -> time_to_tick, d -> state -> target );
+  stats -> add_tick( d -> time_to_tick, d -> state -> target );
 
   player -> trigger_ready();
 }

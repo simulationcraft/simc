@@ -202,11 +202,6 @@ dmg_e spell_t::report_amount_type( const action_state_t* state ) const
       }
     }
   }
-  else if ( result_type == DMG_OVER_TIME )
-  {
-    if ( periodic_hit )
-      result_type = DMG_OVER_TIME;
-  }
 
   return result_type;
 }
@@ -300,11 +295,6 @@ dmg_e heal_t::report_amount_type( const action_state_t* state ) const
         result_type = HEAL_OVER_TIME;
       }
     }
-  }
-  else if ( result_type == DMG_OVER_TIME )
-  {
-    if ( periodic_hit )
-      result_type = DMG_OVER_TIME;
   }
 
   return result_type;

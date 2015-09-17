@@ -1801,24 +1801,34 @@ struct warlock_heal_t: public heal_t
 struct warlock_state_t: public action_state_t
 {
   bool ds_tick;
+  bool periodic_hit;
 
   warlock_state_t( action_t* a, player_t* target ):
-    action_state_t( a, target ), ds_tick( false )
+    action_state_t( a, target ), ds_tick( false ),
+    periodic_hit( false )
   { }
 
   void initialize()
   {
-    action_state_t::initialize(); ds_tick = false;
+    action_state_t::initialize();
+    ds_tick = false;
+    periodic_hit = false;
   }
 
   std::ostringstream& debug_str( std::ostringstream& ds )
   {
-    action_state_t::debug_str( ds ); ds << " ds_tick=" << ds_tick; return ds;
+    action_state_t::debug_str( ds );
+    ds << " ds_tick=" << ds_tick;
+    ds << " periodic_hit=" << periodic_hit;
+    return ds;
   }
 
   void copy_state( const action_state_t* other )
   {
-    action_state_t::copy_state( other ); ds_tick = debug_cast<const warlock_state_t*>( other ) -> ds_tick;
+    action_state_t::copy_state( other );
+    auto other_c = debug_cast<const warlock_state_t*>( other );
+    ds_tick = other_c -> ds_tick;
+    periodic_hit = other_c -> periodic_hit;
   }
 };
 
@@ -2239,15 +2249,16 @@ public:
     dot -> state -> ta_multiplier *= multiplier;
 
     // Carry "ds tickness" in the state, so it works across events etc
-    debug_cast<warlock_state_t*>( dot -> state ) -> ds_tick = true;
+    auto w_state = debug_cast<warlock_state_t*>( dot -> state );
+    w_state -> ds_tick = true;
 
     snapshot_internal( dot -> state, update_flags | STATE_CRIT, tmp_state -> result_type );
 
     tempmulti = dot -> current_action -> base_multiplier;
-    dot -> current_action -> periodic_hit = true;
+    w_state -> periodic_hit = true;
     dot -> current_action -> base_multiplier = multiplier;
     dot -> current_action -> tick( dot );
-    dot -> current_action -> periodic_hit = false;
+    w_state -> periodic_hit = false;
 
     action_state_t::release( dot -> state );
     dot -> state = tmp_state;
@@ -2789,7 +2800,9 @@ struct corruption_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target && ! periodic_hit ) //5.4 only the latest corruption procs it
+    auto w_state = debug_cast<warlock_state_t*>( d -> state );
+
+    if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target && ! w_state -> periodic_hit ) //5.4 only the latest corruption procs it
     {
 
       double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10;

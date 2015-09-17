@@ -77,11 +77,6 @@ dmg_e attack_t::report_amount_type( const action_state_t* state ) const
       }
     }
   }
-  else if ( result_type == DMG_OVER_TIME )
-  {
-    if ( periodic_hit )
-      result_type = DMG_OVER_TIME;
-  }
 
   return result_type;
 }

@@ -5439,7 +5439,7 @@ struct player_t : public actor_t
 
   size_t get_action_id( const std::string& name )
   {
-    for ( size_t i = 0; i < action_map.size(); i++ )
+    for ( size_t i = 0; i < action_map.size(); ++i )
     {
       if ( util::str_compare_ci( name, action_map[ i ] ) )
         return i;
@@ -5992,13 +5992,18 @@ struct action_t : private noncopyable
   const action_e type;
   std::string name_str;
   player_t* const player;
-  // Default target is needed, otherwise there's a chance that cycle_targets
-  // option will _MAJORLY_ mess up the action list for the actor, as there's no
-  // guarantee cycle_targets will end up on the "initial target" when an
-  // iteration ends.
-  player_t* target, * default_target;
 
-  /* Target Cache System
+  player_t* target;
+  /**
+   * Default target is needed, otherwise there's a chance that cycle_targets
+   * option will _MAJORLY_ mess up the action list for the actor, as there's no
+   * guarantee cycle_targets will end up on the "initial target" when an
+   * iteration ends.
+   */
+  player_t* default_target;
+
+  /**
+   * Target Cache System
    * - list: contains the cached target pointers
    * - callback: unique_Ptr to callback
    * - is_valid: gets invalidated by the callback from the target list source.
@@ -6022,9 +6027,12 @@ struct action_t : private noncopyable
   /// What type of damage this spell does.
   school_e school;
 
+  /// Spell id if available, 0 otherwise
   uint32_t id;
 
   /**
+   * @brief player & action-name unique id.
+   *
    * Every action -- even actions without spelldata -- is given an internal_id
    */
   unsigned internal_id;
@@ -6061,6 +6069,7 @@ struct action_t : private noncopyable
   /// Tells the sim to not perform any other actions, as the ability is channeled.
   bool channeled;
 
+  /// mark this as a sequence_t action
   bool sequence;
 
   /**
@@ -6101,6 +6110,7 @@ struct action_t : private noncopyable
   /// Used with DoT Drivers, tells simc that the direct hit is actually a tick.
   bool direct_tick;
 
+  /// Dont record tick interval stats???
   bool periodic_hit;
 
   /// Used for abilities that repeat themselves without user interaction, only used on autoattacks.
@@ -6119,6 +6129,7 @@ struct action_t : private noncopyable
    */
   bool proc;
 
+  /// Is the action initialized? (action_t::init ran successfully)
   bool initialized;
 
   /// Self explanatory.
@@ -6142,6 +6153,7 @@ struct action_t : private noncopyable
    */
   dot_behavior_e dot_behavior;
 
+  /// Ability specific extra player ready delay
   timespan_t ability_lag, ability_lag_stddev;
 
   /// Deathknight specific, how much runic power is gained.
@@ -6163,6 +6175,7 @@ struct action_t : private noncopyable
    */
   double radius;
 
+  /// Weapon AP multiplier.
   double weapon_power_mod;
 
   /// Attack/Spell power scaling of the ability.
