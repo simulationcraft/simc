@@ -79,7 +79,7 @@ endif
 # detection seems to not be 100% accurate. Disable for now.
 COMPILER_STR := $(shell ${CXX} -v 2>&1)
 ifneq ($(findstring clang,${COMPILER_STR}),)
-COMPILER_VERSION := $(shell gcc -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
+COMPILER_VERSION := $(shell ${CXX} -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
 ifneq ($(shell expr ${COMPILER_VERSION} \>= 40000),"1")
   CPP_FLAGS += -Wno-inconsistent-missing-override
 endif
