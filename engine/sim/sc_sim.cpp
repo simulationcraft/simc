@@ -2461,7 +2461,7 @@ void sim_t::merge()
     sim_t* child = children[ i ];
     if ( child )
     {
-      child -> wait();
+      child -> join();
       children[ i ] = nullptr;
       delete child;
     }

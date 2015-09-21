@@ -18,7 +18,7 @@ attack_t::attack_t( const std::string&  n,
   action_t( ACTION_ATTACK, n, p, s ),
   base_attack_expertise( 0 ),
   auto_attack( false ),
-  num_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
+  attack_table()
 {
   crit_bonus = 1.0;
 
@@ -142,20 +142,21 @@ double attack_t::crit_block_chance( action_state_t* s ) const
 
 // attack_t::build_table ====================================================
 
-void attack_t::build_table( double miss_chance, double dodge_chance,
+void attack_t::attack_table_t::build_table( double miss_chance, double dodge_chance,
                             double parry_chance, double glance_chance,
-                            double crit_chance )
+                            double crit_chance, sim_t* sim )
 {
   if ( sim -> debug )
-    sim -> out_debug.printf( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
-                   name(), miss_chance, dodge_chance, parry_chance, glance_chance, crit_chance );
+    sim -> out_debug.printf( "attack_t::build_table: miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
+                   miss_chance, dodge_chance, parry_chance, glance_chance, crit_chance );
 
   assert( crit_chance >= 0 && crit_chance <= 1.0 );
 
   double sum = miss_chance + dodge_chance + parry_chance + crit_chance;
 
   // Only recalculate attack table if the stats have changed
-  if ( attack_table_sum == sum ) return;
+  if ( attack_table_sum == sum )
+    return;
   attack_table_sum = sum;
 
   double limit = 1.0;
@@ -213,7 +214,7 @@ void attack_t::build_table( double miss_chance, double dodge_chance,
 
 // attack_t::calculate_result ===============================================
 
-result_e attack_t::calculate_result( action_state_t* s )
+result_e attack_t::calculate_result( action_state_t* s ) const
 {
   result_e result = RESULT_NONE;
 
@@ -229,13 +230,13 @@ result_e attack_t::calculate_result( action_state_t* s )
   // Specials are 2-roll calculations, so only pass crit chance to
   // build_table for non-special attacks
 
-  build_table( miss, dodge, parry,
-               may_glance ? glance_chance( delta_level ) : 0,
-               ! special ? std::min( 1.0, crit ) : 0 );
+  attack_table.build_table( miss, dodge, parry,
+               may_glance ? glance_chance( delta_level ) : 0.0,
+               ! special ? std::min( 1.0, crit ) : 0.0, sim );
 
-  if ( num_results == 1 )
+  if ( attack_table.num_results == 1 )
   {
-    result = results[ 0 ];
+    result = attack_table.results[ 0 ];
   }
   else
   {
@@ -243,11 +244,11 @@ result_e attack_t::calculate_result( action_state_t* s )
 
     double random = rng().real();
 
-    for ( int i = 0; i < num_results; i++ )
+    for ( int i = 0; i < attack_table.num_results; i++ )
     {
-      if ( random <= chances[ i ] )
+      if ( random <= attack_table.chances[ i ] )
       {
-        result = results[ i ];
+        result = attack_table.results[ i ];
         break;
       }
     }

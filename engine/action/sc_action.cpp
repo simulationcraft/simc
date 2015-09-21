@@ -725,7 +725,7 @@ double action_t::cost() const
   return floor( c );
 }
 
-double action_t::cost_per_second( resource_e r )
+double action_t::cost_per_second( resource_e r ) const
 {
   return base_costs_per_second[ r ];
 }
@@ -946,7 +946,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount *= pow( base_add_multiplier, state -> chain_target );
 
   // AoE with static reduced damage per target
-  if ( state -> chain_target > 0 && base_aoe_multiplier != 1.0 )
+  if ( state -> chain_target > 0 )
     amount *= base_aoe_multiplier;
 
   // Spell splits damage across all targets equally
@@ -1052,7 +1052,7 @@ void action_t::consume_resource()
 
 // action_t::num_targets  ==================================================
 
-int action_t::num_targets()
+int action_t::num_targets() const
 {
   int count = 0;
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
@@ -1141,7 +1141,7 @@ player_t* action_t::find_target_by_number( int number ) const
 // block_chance() and crit_block_chance() govern whether any given attack can
 // be blocked or not (zero return if not)
 
-block_result_e action_t::calculate_block_result( action_state_t* s )
+block_result_e action_t::calculate_block_result( action_state_t* s ) const
 {
   block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
 
@@ -1320,7 +1320,7 @@ void action_t::execute()
 
 // action_t::calculate_multistrike_result ===================================
 
-result_e action_t::calculate_multistrike_result( action_state_t* s, dmg_e amount_type )
+result_e action_t::calculate_multistrike_result( action_state_t* s, dmg_e amount_type ) const
 {
   if ( ! s -> target ) return RESULT_NONE;
   if ( ! may_multistrike ) return RESULT_NONE;
@@ -3284,6 +3284,48 @@ bool action_t::consume_cost_per_second( timespan_t tick_time )
   return true;
 }
 
+dot_t* action_t::get_dot( player_t* t )
+{
+  if ( ! t ) t = target;
+  if ( ! t ) return nullptr;
+
+  dot_t*& dot = target_specific_dot[ t ];
+  if ( ! dot ) dot = t -> get_dot( name_str, player );
+  return dot;
+}
+
+dot_t* action_t::find_dot( player_t* t ) const
+{
+  if ( ! t ) return nullptr;
+  return target_specific_dot[ t ];
+}
+
+void action_t::add_child( action_t* child )
+{
+  child -> parent_dot = target -> get_dot( name_str, player );
+  if ( child -> parent_dot && range > 0 && child -> radius > 0 && child -> is_aoe() )
+   // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely also has a range.
+   // This will allow distance_target_t to correctly determine spells that radiate from the target, instead of the player.
+     child -> range = range;
+  stats -> add_child( child -> stats );
+}
+
+bool action_t::has_movement_directionality() const
+{
+  // If ability has no movement restrictions, it'll be usable
+  if ( movement_directionality == MOVEMENT_OMNI || movement_directionality == MOVEMENT_NONE )
+    return true;
+  else
+  {
+    movement_direction_e m = player -> movement_direction();
+
+    // If player isnt moving, allow everything
+    if ( m == MOVEMENT_NONE )
+      return true;
+    else
+      return m == movement_directionality;
+  }
+}
 action_cost_tick_event_t::action_cost_tick_event_t( action_t& a, timespan_t time_to_tick ) :
     event_t( *a.player ),
     action( a ),

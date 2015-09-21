@@ -467,7 +467,7 @@ public:
   virtual void      arise();
   virtual action_t* select_action( const action_priority_list_t& );
 
-  target_specific_t<mage_td_t*> target_data;
+  target_specific_t<mage_td_t> target_data;
 
   virtual mage_td_t* get_target_data( player_t* target ) const
   {
@@ -703,7 +703,7 @@ struct water_elemental_pet_t : public pet_t
   water_elemental_pet_td_t* td( player_t* t ) const
   { return get_target_data( t ); }
 
-  target_specific_t<water_elemental_pet_td_t*> target_data;
+  target_specific_t<water_elemental_pet_td_t> target_data;
 
   virtual water_elemental_pet_td_t* get_target_data( player_t* target ) const
   {
@@ -4590,10 +4590,10 @@ struct choose_target_t : public action_t
     return tl.size();
   }
 
-  result_e calculate_result( action_state_t* )
+  result_e calculate_result( action_state_t* ) const
   { return RESULT_HIT; }
 
-  block_result_e calculate_block_result( action_state_t* )
+  block_result_e calculate_block_result( action_state_t* ) const
   { return BLOCK_RESULT_UNBLOCKED; }
 
   void execute()

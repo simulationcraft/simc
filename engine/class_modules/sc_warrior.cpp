@@ -464,7 +464,7 @@ public:
   virtual void       assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void       copy_from( player_t* source );
 
-  target_specific_t<warrior_td_t*> target_data;
+  target_specific_t<warrior_td_t> target_data;
 
   virtual warrior_td_t* get_target_data( player_t* target ) const
   {

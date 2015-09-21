@@ -907,7 +907,7 @@ struct dbc_potion_t : public action_t
   }
 
   // Needed to satisfy normal execute conditions
-  result_e calculate_result( action_state_t* )
+  result_e calculate_result( action_state_t* ) const
   { return RESULT_HIT; }
 
   void execute()

@@ -35,16 +35,13 @@ class sc_thread_t : private noncopyable
 private:
   class native_t;
   std::unique_ptr<native_t> native_handle;
-
+  virtual void run() = 0;
 protected:
   sc_thread_t();
   virtual ~sc_thread_t();
 public:
-
-  virtual void run() = 0;
-
   void launch();
-  void wait();
+  void join();
   static void sleep_seconds( double );
   static unsigned cpu_thread_count();
 };

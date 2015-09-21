@@ -396,7 +396,7 @@ public:
   void              add_racial_actions( action_priority_list_t* list );
   void              add_potion_action( action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options = std::string() );
 
-  target_specific_t<hunter_td_t*> target_data;
+  target_specific_t<hunter_td_t> target_data;
 
   virtual hunter_td_t* get_target_data( player_t* target ) const
   {
@@ -1189,7 +1189,7 @@ public:
     return m;
   }
 
-  target_specific_t<hunter_main_pet_td_t*> target_data;
+  target_specific_t<hunter_main_pet_td_t> target_data;
 
   virtual hunter_main_pet_td_t* get_target_data( player_t* target ) const
   {

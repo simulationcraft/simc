@@ -451,7 +451,7 @@ public:
   void    generate_action_prio_list_holy();
   void    generate_action_prio_list_holy_dps();
 
-  target_specific_t<paladin_td_t*> target_data;
+  target_specific_t<paladin_td_t> target_data;
 
   virtual paladin_td_t* get_target_data( player_t* target ) const
   {

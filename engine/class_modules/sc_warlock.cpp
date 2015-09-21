@@ -442,7 +442,7 @@ public:
     return mastery_spells.emberstorm -> effectN( 3 ).sp_coeff() / mastery_spells.emberstorm -> effectN( 1 ).sp_coeff();
   }
 
-  target_specific_t<warlock_td_t*> target_data;
+  target_specific_t<warlock_td_t> target_data;
 
   virtual warlock_td_t* get_target_data( player_t* target ) const
   {

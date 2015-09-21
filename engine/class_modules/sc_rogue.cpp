@@ -521,7 +521,7 @@ struct rogue_t : public player_t
   bool trigger_t17_4pc_combat( const action_state_t* );
   void trigger_anticipation_replenish( const action_state_t* );
 
-  target_specific_t<rogue_td_t*> target_data;
+  target_specific_t<rogue_td_t> target_data;
 
   virtual rogue_td_t* get_target_data( player_t* target ) const
   {
@@ -3329,10 +3329,10 @@ struct honor_among_thieves_t : public action_t
     parse_options( options_str );
   }
 
-  result_e calculate_result( action_state_t* )
+  result_e calculate_result( action_state_t* ) const
   { return RESULT_HIT; }
 
-  block_result_e calculate_block_result( action_state_t* )
+  block_result_e calculate_block_result( action_state_t* ) const
   { return BLOCK_RESULT_UNBLOCKED; }
 
   void execute()
@@ -3440,10 +3440,10 @@ struct weapon_swap_t : public action_t
     }
   }
 
-  result_e calculate_result( action_state_t* )
+  result_e calculate_result( action_state_t* ) const
   { return RESULT_HIT; }
 
-  block_result_e calculate_block_result( action_state_t* )
+  block_result_e calculate_block_result( action_state_t* ) const
   { return BLOCK_RESULT_UNBLOCKED; }
 
   void execute()
@@ -5032,7 +5032,7 @@ struct shadow_reflection_pet_t : public pet_t
   };
 
   std::vector<shadow_reflection_attack_t*> attacks;
-  target_specific_t<shadow_reflection_td_t*> target_data;
+  target_specific_t<shadow_reflection_td_t> target_data;
 
   shadow_reflection_pet_t( rogue_t* owner ) :
     pet_t( owner -> sim, owner, "shadow_reflection", true, true ),

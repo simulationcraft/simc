@@ -579,7 +579,7 @@ public:
   void      default_apl_frost();
 
 
-  target_specific_t<death_knight_td_t*> target_data;
+  target_specific_t<death_knight_td_t> target_data;
 
   virtual death_knight_td_t* get_target_data( player_t* target ) const
   {
@@ -1579,7 +1579,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  target_specific_t<dancing_rune_weapon_td_t*> target_data;
+  target_specific_t<dancing_rune_weapon_td_t> target_data;
 
   spell_t*        drw_blood_plague;
   spell_t*        drw_frost_fever;
@@ -1845,10 +1845,10 @@ struct gargoyle_pet_t : public death_knight_pet_t
       dual = true;
     }
 
-    result_e calculate_result( action_state_t* /* s */ )
+    result_e calculate_result( action_state_t* /* s */ ) const
     { return RESULT_HIT; }
 
-    block_result_e calculate_block_result( action_state_t* )
+    block_result_e calculate_block_result( action_state_t* ) const
     { return BLOCK_RESULT_UNBLOCKED; }
 
     void execute()

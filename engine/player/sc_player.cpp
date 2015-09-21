@@ -5943,10 +5943,10 @@ struct variable_t : public action_t
     }
   }
 
-  result_e calculate_result( action_state_t* )
+  result_e calculate_result( action_state_t* ) const
   { return RESULT_HIT; }
 
-  block_result_e calculate_block_result( action_state_t* )
+  block_result_e calculate_block_result( action_state_t* ) const
   { return BLOCK_RESULT_UNBLOCKED; }
 
   void execute()
@@ -9043,14 +9043,15 @@ void player_t::copy_from( player_t* source )
 
 void player_t::add_option( std::unique_ptr<option_t> opt )
 {
-  options.insert( options.begin(), std::move(opt) );
+  options.push_back( std::move(opt) );
 }
 
 // class_modules::create::options ===========================================
 
 void player_t::create_options()
 {
-  add_option( opt_string( "name", name_str ) );
+  options.reserve(180);
+    add_option( opt_string( "name", name_str ) );
     add_option( opt_func( "origin", parse_origin ) );
     add_option( opt_string( "region", region_str ) );
     add_option( opt_string( "server", server_str ) );

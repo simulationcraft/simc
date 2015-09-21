@@ -519,7 +519,7 @@ public:
   } user_options;
 
 private:
-  target_specific_t<monk_td_t*> target_data;
+  target_specific_t<monk_td_t> target_data;
 public:
 
   monk_t( sim_t* sim, const std::string& name, race_e r ):
@@ -1490,7 +1490,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   std::vector<sef_spell_t*> spells;
 
 private:
-  target_specific_t<sef_td_t*> target_data;
+  target_specific_t<sef_td_t> target_data;
 public:
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):

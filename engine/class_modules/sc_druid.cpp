@@ -750,7 +750,7 @@ public:
   virtual void      init_action_list();
   virtual bool      has_t18_class_trinket() const;
 
-  target_specific_t<druid_td_t*> target_data;
+  target_specific_t<druid_td_t> target_data;
 
   virtual druid_td_t* get_target_data( player_t* target ) const
   {

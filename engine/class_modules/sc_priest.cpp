@@ -457,7 +457,7 @@ private:
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   priest_td_t* find_target_data( player_t* target ) const;
 
-  target_specific_t<priest_td_t*> _target_data;
+  target_specific_t<priest_td_t> _target_data;
 };
 
 namespace pets {

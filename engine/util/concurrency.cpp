@@ -35,10 +35,9 @@ class sc_thread_t::native_t
 private:
   std::unique_ptr<std::thread> t;
 
-  static void* execute( sc_thread_t* t )
+  static void execute( sc_thread_t* t )
   {
     t -> run();
-    return nullptr;
   }
 public:
   native_t() :
@@ -51,7 +50,7 @@ public:
   }
 
   void join() {
-    if ( t ) {
+    if ( t && t -> joinable() ) {
       t -> join();
     }
   }
@@ -98,15 +97,30 @@ sc_thread_t::~sc_thread_t()
 void sc_thread_t::launch()
 { native_handle -> launch( this ); }
 
-// sc_thread_t::wait() ======================================================
+/**
+ * @brief Wait for thread to finish its execution.
+ */
+void sc_thread_t::join()
+{
+  native_handle -> join();
+}
 
-void sc_thread_t::wait()
-{ native_handle -> join(); }
-
+/**
+ * @brief put calling thread to sleep
+ * @param t time in seconds
+ */
 void sc_thread_t::sleep_seconds( double t )
-{ native_t::sleep_seconds( t ); }
+{
+  native_t::sleep_seconds( t );
+}
 
-/// Get the number of concurrent threads supported by the CPU.
+/**
+ * @brief Get the number of concurrent threads supported by the CPU.
+ *
+ * If the value is not well defined or not computable, returns ​0​.
+ *
+ * @return number of concurrent threads supported.
+ */
 unsigned sc_thread_t::cpu_thread_count()
 { return native_t::cpu_thread_count(); }
 

@@ -547,10 +547,8 @@ bool opts::parse( sim_t*                 sim,
                       const std::string&     name,
                       const std::string&     value )
 {
-  size_t num_options = options.size();
-
-  for ( size_t i = 0; i < num_options; i++ )
-    if ( options[ i ] -> parse_option( sim, name, value ) )
+  for ( auto& option : options )
+    if ( option -> parse_option( sim, name, value ) )
       return true;
 
   return false;
@@ -566,7 +564,7 @@ void opts::parse( sim_t*                 sim,
   for (auto & s : splits)
   {
     
-    std::string::size_type index = s.find( '=' );
+    auto index = s.find_first_of( '=' );
 
     if ( index == std::string::npos )
     {

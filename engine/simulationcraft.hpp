@@ -3495,6 +3495,14 @@ struct weapon_t
     return WEAPON_NONE;
   }
 
+  /**
+   * Normalized weapon speed for weapon damage calculations
+   *
+   * * WEAPON_SMALL: 1.7s
+   * * WEAPON_1H: 2.4s
+   * * WEAPON_2h: 3.3s
+   * * WEAPON_RANGED: 2.8s
+   */
   timespan_t get_normalized_speed()
   {
     weapon_e g = group();
@@ -5568,7 +5576,7 @@ public:
   target_specific_t( bool owner = true ) : owner_( owner )
   { }
 
-  T& operator[](  const player_t* target ) const
+  T*& operator[](  const player_t* target ) const
   {
     assert( target );
     if ( data.empty() )
@@ -5583,7 +5591,7 @@ public:
       range::dispose( data );
   }
 private:
-  mutable std::vector<T> data;
+  mutable std::vector<T*> data;
 };
 
 struct player_event_t : public event_t
@@ -5987,6 +5995,7 @@ struct action_state_t : private noncopyable
 
 struct action_t : private noncopyable
 {
+public:
   const spell_data_t* s_data;
   sim_t* const sim;
   const action_e type;
@@ -6110,9 +6119,6 @@ struct action_t : private noncopyable
   /// Used with DoT Drivers, tells simc that the direct hit is actually a tick.
   bool direct_tick;
 
-  /// Dont record tick interval stats???
-  bool periodic_hit;
-
   /// Used for abilities that repeat themselves without user interaction, only used on autoattacks.
   bool repeating;
 
@@ -6183,6 +6189,13 @@ struct action_t : private noncopyable
   double direct, tick;
   } attack_power_mod, spell_power_mod;
 
+  /**
+   * @brief full damage variation in %
+   *
+   * Amount of variation of the full raw damage (base damage + AP/SP modified).
+   * Example: amount_delta = 0.1 means variation between 95% and 105%.
+   * Parsed from spell data.
+   */
   double amount_delta;
 
   /// Amount of time the ability uses to execute before modifiers.
@@ -6197,24 +6210,55 @@ struct action_t : private noncopyable
   /// Cost of using the ability.
   std::array< double, RESOURCE_MAX > base_costs;
 
-  // Cost of using ability per second.
+  /// Cost of using ability per second.
   std::array< double, RESOURCE_MAX > base_costs_per_second;
-  double base_dd_min, base_dd_max, base_td;
-  double base_dd_multiplier, base_td_multiplier;
-  double base_multiplier, base_hit, base_crit;
+
+  /// Minimum base direct damage
+  double base_dd_min;
+
+
+  /// Maximum base direct damage
+  double base_dd_max;
+
+  /// Base tick damage
+  double base_td;
+
+  /// base direct damage multiplier
+  double base_dd_multiplier;
+
+  /// base tick damage multiplier
+  double base_td_multiplier;
+
+  /// base damage multiplier (direct and tick damage)
+  double base_multiplier;
+  double base_hit, base_crit;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
+
+  /// Weapon used for this ability. If set extra weapon damage is calculated.
   weapon_t* weapon;
 
   /// Weapon damage for the ability.
   double weapon_multiplier;
-  double base_add_multiplier;
-  double base_aoe_multiplier; // Static reduction of damage for AoE
-  bool split_aoe_damage; // Split damage evenly between targets
-  bool normalize_weapon_speed;
-  double base_cooldown_reduction;
 
+  /// Damage reduction for chained/AoE, exponentially increased by number of target hit.
+  double base_add_multiplier;
+
+  /// Static reduction of damage for AoE
+  double base_aoe_multiplier;
+
+  /// Split damage evenly between targets
+  bool split_aoe_damage;
+
+  /**
+   * @brief Normalize weapon speed for weapon damage calculations
+   *
+   * \sa weapon_t::get_normalized_speed()
+   */
+  bool normalize_weapon_speed;
+
+  double base_cooldown_reduction;
 
   /**
    * @brief Movement Direction
@@ -6235,6 +6279,24 @@ struct action_t : private noncopyable
   /// This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
   bool ground_aoe;
 
+  /// Missile travel speed in yards / second
+  double travel_speed;
+
+  /// Round spell base damage to integer before using
+  bool round_base_dmg;
+
+  /// Used with tick_action, tells tick_action to update state on every tick.
+  bool dynamic_tick_action;
+
+  /// This action will execute every tick
+  action_t* tick_action;
+
+  /// This action will execute every execute
+  action_t* execute_action;
+
+  /// This action will execute every impact - Useful for AoE debuffs
+  action_t* impact_action;
+
   /**
    * @brief Used to manipulate cooldown duration and charges.
    *
@@ -6248,9 +6310,10 @@ struct action_t : private noncopyable
   event_t* execute_event;
   action_cost_tick_event_t* cost_tick_event;
   timespan_t time_to_execute, time_to_travel;
-  double travel_speed, resource_consumed;
+  double resource_consumed;
+  char marker;
+  // options
   int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number;
-  bool round_base_dmg;
   std::string if_expr_str;
   expr_t* if_expr;
   std::string target_if_str;
@@ -6262,89 +6325,421 @@ struct action_t : private noncopyable
   expr_t* early_chain_if_expr;
   std::string sync_str;
   action_t* sync_action;
-  char marker;
   std::string signature_str;
   std::string target_str;
   std::string label_str;
   timespan_t last_reaction_time;
-  target_specific_t<dot_t*> target_specific_dot;
+  target_specific_t<dot_t> target_specific_dot;
   action_priority_list_t* action_list;
-  //std::string action_list;
-  action_t* tick_action; // This action will execute every tick
-  action_t* execute_action; // This action will execute every execute
-  action_t* impact_action; // This action will execute every impact - Useful for AoE debuffs
-  bool dynamic_tick_action; // Used with tick_action, tells tick_action to update state on every tick.
   proc_t* starved_proc;
   int64_t total_executions;
-  cooldown_t line_cooldown;
+  cooldown_t line_cooldown; // specific to action_t object, not shared by name
   const action_priority_t* signature;
   std::vector<std::unique_ptr<option_t>> options;
 
+  action_state_t* state_cache;
+  action_state_t* execute_state; /* State of the last execute() */
+  action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
+  uint32_t snapshot_flags;
+  uint32_t update_flags;
+private:
+  std::vector<travel_event_t*> travel_events;
+
+public:
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual ~action_t();
 
-  void init_dot( const std::string& dot_name );
   player_t* select_target_if_target();
   const spell_data_t& data() const { return ( *s_data ); }
   void parse_spell_data( const spell_data_t& );
   void parse_effect_data( const spelleffect_data_t& );
-
-  virtual void   parse_options( const std::string& options_str );
+  void parse_options( const std::string& options_str );
   void add_option( std::unique_ptr<option_t> new_option )
   { options.insert( options.begin(), std::move(new_option) ); }
+  void   check_spec( specialization_e );
+  void   check_spell( const spell_data_t* );
+  dot_t* get_dot( player_t* target = nullptr );
+  dot_t* find_dot( player_t* target ) const;
+  void add_child( action_t* child );
+  void add_travel_event( travel_event_t* e )
+  { travel_events.push_back( e ); }
+
+  void remove_travel_event( travel_event_t* e );
+
+  rng::rng_t& rng()
+  { return sim -> rng(); }
+
+  rng::rng_t& rng() const
+  { return sim -> rng(); }
+
+  // =======================
+  // Const virtual functions
+  // =======================
   virtual double cost() const;
-  virtual double cost_per_second( resource_e );
+
+  virtual double cost_per_second( resource_e ) const;
+
   virtual timespan_t gcd() const;
+
   virtual double false_positive_pct() const;
+
   virtual double false_negative_pct() const;
-  virtual timespan_t execute_time() const { return base_execute_time; }
+
+  virtual timespan_t execute_time() const
+  { return base_execute_time; }
+
   virtual timespan_t tick_time( double haste ) const;
+
   virtual timespan_t travel_time() const;
+
   virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const;
-  virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
-  virtual result_e calculate_multistrike_result( action_state_t* /* state */, dmg_e /* type */ );
-  virtual block_result_e calculate_block_result( action_state_t* s );
+
+  virtual result_e calculate_result( action_state_t* /* state */ ) const
+  {
+    assert( false );
+    return RESULT_UNKNOWN;
+  }
+
+  virtual result_e calculate_multistrike_result( action_state_t* /* state */, dmg_e /* type */ ) const;
+  virtual block_result_e calculate_block_result( action_state_t* s ) const;
   virtual double calculate_direct_amount( action_state_t* state ) const;
+
   virtual double calculate_tick_amount( action_state_t* state, double multiplier ) const;
 
   virtual double calculate_weapon_damage( double attack_power ) const;
+
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
-  virtual double cooldown_reduction() const { return base_cooldown_reduction; }
-  virtual void   consume_resource();
-  virtual resource_e current_resource() const { return resource_current; }
-  virtual int n_targets() const { return aoe; }
-  bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
-  virtual void   execute();
-  virtual void   tick( dot_t* d );
+
+  virtual double cooldown_reduction() const
+  { return base_cooldown_reduction; }
+
+  virtual resource_e current_resource() const
+  { return resource_current; }
+
+  virtual int n_targets() const
+  { return aoe; }
+
+  bool is_aoe() const
+  { return n_targets() == -1 || n_targets() > 0; }
+
   virtual double last_tick_factor( const dot_t* d, const timespan_t& time_to_tick, const timespan_t& duration ) const;
-  virtual void   multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double dmg_multiplier = 1.0 );
-  virtual void   multistrike_direct( const action_state_t* state, action_state_t* ms_state );
-  virtual void   last_tick( dot_t* d );
-  virtual void   update_resolve( dmg_e, action_state_t* assess_state );
-  virtual void   assess_damage( dmg_e, action_state_t* assess_state );
-  virtual dmg_e  amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
+
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
   { return RESULT_TYPE_NONE; }
-  virtual dmg_e  report_amount_type( const action_state_t* state ) const
+
+  virtual dmg_e report_amount_type( const action_state_t* state ) const
   { return state -> result_type; }
-  virtual void   record_data( action_state_t* data );
-  virtual int    schedule_multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
-  virtual void   schedule_execute( action_state_t* execute_state = nullptr );
-  virtual void   reschedule_execute( timespan_t time );
-  virtual void   update_ready( timespan_t cd_duration = timespan_t::min() );
-  virtual bool   usable_moving() const;
-  virtual bool   ready();
-  virtual void   init();
-  virtual bool   init_finished();
-  virtual void   init_target_cache();
-  virtual void   reset();
-  virtual void   cancel();
-  virtual void   interrupt_action();
-  void   check_spec( specialization_e );
-  void   check_spell( const spell_data_t* );
-  const char* name() const { return name_str.c_str(); }
-  virtual school_e get_school() const { return school; } // Use when damage schools change during runtime.
+
+  const char* name() const
+  { return name_str.c_str(); }
+
+  /// Use when damage schools change during runtime.
+  virtual school_e get_school() const
+  { return school; }
+
+  virtual double miss_chance( double /* hit */, player_t* /* target */ ) const
+  { return 0; }
+
+  virtual double dodge_chance( double /* expertise */, player_t* /* target */ ) const
+  { return 0; }
+
+  virtual double parry_chance( double /* expertise */, player_t* /* target */ ) const
+  { return 0; }
+
+  virtual double glance_chance( int /* delta_level */ ) const
+  { return 0; }
+
+  virtual double block_chance( action_state_t* /* state */ ) const
+  { return 0; }
+
+  virtual double crit_block_chance( action_state_t* /* state */  ) const
+  { return 0; }
+
+  virtual double total_crit_bonus() const; // Check if we want to move this into the stateless system.
+
+  virtual int num_targets() const;
+
+  virtual size_t available_targets( std::vector< player_t* >& ) const;
+
+  virtual std::vector< player_t* >& target_list() const;
+
+  virtual player_t* find_target_by_number( int number ) const;
+
+  virtual bool execute_targeting( action_t* action ) const;
+
+  virtual bool impact_targeting( action_state_t* s ) const;
+
+  virtual std::vector<player_t*> targets_in_range_list( std::vector< player_t* >& tl ) const;
+
+  virtual std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const;
+
+  virtual double ppm_proc_chance( double PPM ) const;
+
+  virtual bool usable_moving() const;
+
+  virtual double composite_multistrike_multiplier( const action_state_t* t ) const
+  { return ( t -> result_type == DMG_DIRECT || t -> result_type == DMG_OVER_TIME )
+      ? player -> composite_player_multistrike_damage_multiplier()
+      : player -> composite_player_multistrike_healing_multiplier();
+  }
+
+  virtual timespan_t composite_dot_duration( const action_state_t* ) const;
+
+  virtual double attack_direct_power_coefficient( const action_state_t* ) const
+  { return attack_power_mod.direct; }
+
+  virtual double amount_delta_modifier( const action_state_t* ) const
+  { return amount_delta; }
+
+  virtual double attack_tick_power_coefficient( const action_state_t* ) const
+  { return attack_power_mod.tick; }
+
+  virtual double spell_direct_power_coefficient( const action_state_t* ) const
+  { return spell_power_mod.direct; }
+
+  virtual double spell_tick_power_coefficient( const action_state_t* ) const
+  { return spell_power_mod.tick; }
+
+  virtual double base_da_min( const action_state_t* ) const
+  { return base_dd_min; }
+
+  virtual double base_da_max( const action_state_t* ) const
+  { return base_dd_max; }
+
+  virtual double base_ta( const action_state_t* ) const
+  { return base_td; }
+
+  virtual double bonus_da( const action_state_t* ) const
+  { return base_dd_adder; }
+
+  virtual double bonus_ta( const action_state_t* ) const
+  { return base_ta_adder; }
+
+  virtual double range_() const
+  { return range; }
+
+  virtual double radius_() const
+  { return radius; }
+
+  virtual double action_multiplier() const
+  { return base_multiplier; }
+
+  virtual double action_da_multiplier() const
+  { return base_dd_multiplier; }
+
+  virtual double action_ta_multiplier() const
+  { return base_td_multiplier; }
+
+  virtual double composite_hit() const
+  { return base_hit; }
+
+  virtual double composite_crit() const
+  { return base_crit; }
+
+  virtual double composite_crit_multiplier() const
+  { return 1.0; }
+
+  virtual double composite_haste() const
+  { return 1.0; }
+
+  virtual double composite_attack_power() const
+  { return player -> cache.attack_power(); }
+
+  virtual double composite_spell_power() const
+  { return player -> cache.spell_power( get_school() ); }
+
+  virtual double composite_target_crit( player_t* /* target */ ) const;
+
+  virtual double composite_target_multiplier( player_t* target ) const
+  { return target -> composite_player_vulnerability( get_school() ); }
+
+  virtual double composite_multistrike() const
+  { return player -> cache.multistrike(); }
+
+  virtual double composite_readiness() const
+  { return player -> cache.readiness(); }
+
+  virtual double composite_versatility( const action_state_t* ) const
+  { return 1.0; }
+
+  virtual double composite_resolve( const action_state_t* ) const
+  { return 1.0; }
+
+  virtual double composite_leech( const action_state_t* ) const
+  { return player -> cache.leech(); }
+
+  virtual double composite_run_speed() const
+  { return player -> cache.run_speed(); }
+
+  virtual double composite_avoidance() const
+  { return player -> cache.avoidance(); }
+
+  /// Direct amount multiplier due to debuffs on the target
+  virtual double composite_target_da_multiplier( player_t* target ) const
+  { return composite_target_multiplier( target ); }
+
+  /// Tick amount multiplier due to debuffs on the target
+  virtual double composite_target_ta_multiplier( player_t* target ) const
+  { return composite_target_multiplier( target ); }
+
+  virtual double composite_da_multiplier( const action_state_t* s ) const
+  {
+    return action_multiplier() * action_da_multiplier() *
+           player -> cache.player_multiplier( s -> action -> get_school() ) *
+           player -> composite_player_dd_multiplier( s -> action -> get_school() , this );
+  }
+
+  /// Normal ticking modifiers that are updated every tick
+  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  {
+    return action_multiplier() * action_ta_multiplier() *
+           player -> cache.player_multiplier( s -> action -> get_school() ) *
+           player -> composite_player_td_multiplier( s -> action -> get_school() , this );
+  }
+
+  /// Persistent modifiers that are snapshot at the start of the spell cast
+  virtual double composite_persistent_multiplier( const action_state_t* ) const
+  { return player -> composite_persistent_multiplier( get_school() ); }
+
+  /**
+   * @brief Generic aoe multiplier for the action.
+   *
+   * Used in action_t::calculate_direct_amount, and applied after
+   * other (passive) aoe multipliers are applied.
+   */
+  virtual double composite_aoe_multiplier( const action_state_t* ) const
+  { return 1.0; }
+
+  virtual double composite_target_mitigation( player_t* t, school_e s ) const
+  { return t -> composite_mitigation_multiplier( s ); }
+
+  virtual double composite_player_critical_multiplier() const
+  { return player -> composite_player_critical_damage_multiplier(); }
+
+  /// Action proc type, needed for dynamic aoe stuff and such.
+  virtual proc_types proc_type() const
+  { return PROC1_INVALID; }
+
+  bool has_amount_result() const
+  {
+    return attack_power_mod.direct > 0 || attack_power_mod.tick > 0
+        || spell_power_mod.direct > 0 || spell_power_mod.tick > 0
+        || (weapon && weapon_multiplier > 0);
+  }
+
+  bool has_travel_events() const
+  { return ! travel_events.empty(); }
+
+  size_t get_num_travel_events() const
+  { return travel_events.size(); }
+
+  bool has_travel_events_for( const player_t* target ) const;
+
+  const std::vector<travel_event_t*>& current_travel_events() const
+  { return travel_events; }
+
+  virtual bool need_to_trigger_costs_per_second() const
+  {
+    return std::accumulate(base_costs_per_second.begin(),
+        base_costs_per_second.end(), 0.0) != 0;
+  }
+
+  virtual bool has_movement_directionality() const;
+
+  virtual double composite_teleport_distance( const action_state_t* ) const
+  { return base_teleport_distance; }
+
+  virtual timespan_t calculate_dot_refresh_duration(const dot_t*,
+      timespan_t triggered_duration) const;
+
+  // ==========================
+  // mutating virtual functions
+  // ==========================
+
+  virtual void consume_resource();
+
+  virtual void execute();
+
+  virtual void tick(dot_t* d);
+
+  virtual void multistrike_tick(const action_state_t* source_state,
+      action_state_t* ms_state, double dmg_multiplier = 1.0);
+
+  virtual void multistrike_direct(const action_state_t* state,
+      action_state_t* ms_state);
+
+  virtual void last_tick(dot_t* d);
+
+  virtual void update_resolve(dmg_e, action_state_t* assess_state);
+
+  virtual void assess_damage(dmg_e, action_state_t* assess_state);
+
+  virtual void record_data(action_state_t* data);
+
+  virtual int schedule_multistrike(action_state_t* state, dmg_e type,
+      double dmg_multiplier = 1.0);
+
+  virtual void schedule_execute(action_state_t* execute_state = nullptr);
+
+  virtual void reschedule_execute(timespan_t time);
+
+  virtual void update_ready(timespan_t cd_duration = timespan_t::min());
+
+  virtual bool ready();
+
+  virtual void init();
+
+  virtual bool init_finished();
+
+  virtual void init_target_cache();
+
+  virtual void reset();
+
+  virtual void cancel();
+
+  virtual void interrupt_action();
+
+  virtual expr_t* create_expression(const std::string& name);
+
+  virtual action_state_t* new_state();
+
+  virtual action_state_t* get_state(const action_state_t* = nullptr);
+private:
+  friend struct action_state_t;
+  virtual void release_state( action_state_t* );
+public:
+  virtual void do_schedule_travel( action_state_t*, const timespan_t& );
+
+  virtual void schedule_travel( action_state_t* );
+
+  virtual void impact( action_state_t* );
+
+  virtual void trigger_dot( action_state_t* );
+
+  virtual void snapshot_internal( action_state_t*, uint32_t, dmg_e );
+
+  virtual void snapshot_state( action_state_t* s, dmg_e rt )
+  { snapshot_internal( s, snapshot_flags, rt ); }
+
+  virtual void update_state( action_state_t* s, dmg_e rt )
+  { snapshot_internal( s, update_flags, rt ); }
+
+  virtual void consolidate_snapshot_flags();
+
+  event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = nullptr );
+
+  virtual void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0 ) );
+
+  virtual bool consume_cost_per_second( timespan_t tick_time );
+
+  virtual void do_teleport( action_state_t* );
+
+
+  // ================
+  // Static functions
+  // ================
 
   static bool result_is_hit( result_e r )
   {
@@ -6376,221 +6771,6 @@ struct action_t : private noncopyable
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
-  virtual double       miss_chance( double /* hit */, player_t* /* target */ ) const { return 0; }
-  virtual double      dodge_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
-  virtual double      parry_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
-  virtual double     glance_chance( int /* delta_level */ ) const { return 0; }
-  virtual double      block_chance( action_state_t* /* state */ ) const { return 0; }
-  virtual double crit_block_chance( action_state_t* /* state */  ) const { return 0; }
-
-  virtual double total_crit_bonus() const; // Check if we want to move this into the stateless system.
-
-  // Some actions require different multipliers for the "direct" and "tick" portions.
-
-  virtual expr_t* create_expression( const std::string& name );
-
-  virtual double ppm_proc_chance( double PPM ) const;
-
-  dot_t* get_dot( player_t* t = nullptr )
-  {
-    if ( ! t ) t = target;
-    if ( ! t ) return nullptr;
-
-    dot_t*& dot = target_specific_dot[ t ];
-    if ( ! dot ) dot = t -> get_dot( name_str, player );
-    return dot;
-  }
-
-  dot_t* find_dot( player_t* t ) const
-  {
-    if ( ! t ) return nullptr;
-    return target_specific_dot[ t ];
-  }
-
-  void add_child( action_t* child ) 
-  {
-    child -> parent_dot = target -> get_dot( name_str, player );
-    if ( child -> parent_dot && range > 0 && child -> radius > 0 && child -> is_aoe() ) 
-     // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely also has a range.
-     // This will allow distance_target_t to correctly determine spells that radiate from the target, instead of the player.
-       child -> range = range;
-    stats -> add_child( child -> stats ); 
-  }
-
-  virtual int num_targets();
-  virtual size_t available_targets( std::vector< player_t* >& ) const;
-  virtual std::vector< player_t* >& target_list() const;
-  virtual player_t* find_target_by_number( int number ) const;
-
-  virtual bool execute_targeting( action_t* action ) const;
-  virtual bool impact_targeting( action_state_t* s ) const;
-  virtual std::vector<player_t*> targets_in_range_list( std::vector< player_t* >& tl ) const;
-  virtual std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const;
-
-  action_state_t* state_cache;
-  action_state_t* execute_state; /* State of the last execute() */
-  action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
-  uint32_t snapshot_flags;
-  uint32_t update_flags;
-
-  virtual action_state_t* new_state();
-  virtual action_state_t* get_state( const action_state_t* = nullptr );
-private:
-  friend struct action_state_t;
-  virtual void release_state( action_state_t* );
-public:
-  virtual void do_schedule_travel( action_state_t*, const timespan_t& );
-  virtual void schedule_travel( action_state_t* );
-  virtual void impact( action_state_t* );
-  virtual void trigger_dot( action_state_t* );
-
-  virtual void snapshot_internal( action_state_t*, uint32_t, dmg_e );
-  virtual void snapshot_state( action_state_t* s, dmg_e rt )
-  { snapshot_internal( s, snapshot_flags, rt ); }
-  virtual void update_state( action_state_t* s, dmg_e rt )
-  { snapshot_internal( s, update_flags, rt ); }
-  virtual void consolidate_snapshot_flags();
-
-  virtual double composite_multistrike_multiplier( const action_state_t* t ) const
-  { return ( t -> result_type == DMG_DIRECT || t -> result_type == DMG_OVER_TIME ) 
-      ? player -> composite_player_multistrike_damage_multiplier()
-      : player -> composite_player_multistrike_healing_multiplier();
-  }
-
-  virtual timespan_t composite_dot_duration( const action_state_t* ) const;
-  virtual double attack_direct_power_coefficient( const action_state_t* ) const
-  { return attack_power_mod.direct; }
-  virtual double amount_delta_modifier( const action_state_t* ) const
-  { return amount_delta; }
-  virtual double attack_tick_power_coefficient( const action_state_t* ) const
-  { return attack_power_mod.tick; }
-  virtual double spell_direct_power_coefficient( const action_state_t* ) const
-  { return spell_power_mod.direct; }
-  virtual double spell_tick_power_coefficient( const action_state_t* ) const
-  { return spell_power_mod.tick; }
-  virtual double base_da_min( const action_state_t* ) const
-  { return base_dd_min; }
-  virtual double base_da_max( const action_state_t* ) const
-  { return base_dd_max; }
-  virtual double base_ta( const action_state_t* ) const
-  { return base_td; }
-  virtual double bonus_da( const action_state_t* ) const
-  { return base_dd_adder; }
-  virtual double bonus_ta( const action_state_t* ) const
-  { return base_ta_adder; }
-  virtual double range_() const { return range; }
-  virtual double radius_() const { return radius; }
-
-  virtual double action_multiplier() const { return base_multiplier; }
-  virtual double action_da_multiplier() const { return base_dd_multiplier; }
-  virtual double action_ta_multiplier() const { return base_td_multiplier; }
-
-  virtual double composite_hit() const { return base_hit; }
-  virtual double composite_crit() const { return base_crit; }
-  virtual double composite_crit_multiplier() const { return 1.0; }
-  virtual double composite_haste() const { return 1.0; }
-  virtual double composite_attack_power() const { return player -> cache.attack_power(); }
-  virtual double composite_spell_power() const
-  { return player -> cache.spell_power( get_school() ); }
-  virtual double composite_target_crit( player_t* /* target */ ) const;
-  virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( get_school() ); }
-  virtual double composite_multistrike() const { return player -> cache.multistrike(); }
-  virtual double composite_readiness() const { return player -> cache.readiness(); }
-  virtual double composite_versatility( const action_state_t* ) const { return 1.0; }
-  virtual double composite_resolve( const action_state_t* ) const { return 1.0; }
-  virtual double composite_leech( const action_state_t* ) const { return player -> cache.leech(); }
-  virtual double composite_run_speed() const { return player -> cache.run_speed(); }
-  virtual double composite_avoidance() const { return player -> cache.avoidance(); }
-
-  // the direct amount multiplier due to debuffs on the target
-  virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
-
-  // the tick amount multiplier due to debuffs on the target
-  virtual double composite_target_ta_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
-
-  virtual double composite_da_multiplier( const action_state_t* s ) const
-  {
-    return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_multiplier( s -> action -> get_school() ) *
-           player -> composite_player_dd_multiplier( s -> action -> get_school() , this );
-  }
-
-  // Normal ticking modifiers that are updated every tick
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
-  {
-    return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_multiplier( s -> action -> get_school() ) *
-           player -> composite_player_td_multiplier( s -> action -> get_school() , this );
-  }
-
-  // Persistent modifiers that are snapshot at the start of the spell cast
-  virtual double composite_persistent_multiplier( const action_state_t* ) const
-  { return player -> composite_persistent_multiplier( get_school() ); }
-
-  // Generic aoe multiplier for the action. Used in
-  // action_t::calculate_direct_amount, and applied after other (passive) aoe
-  // multipliers are applied.
-  virtual double composite_aoe_multiplier( const action_state_t* ) const
-  { return 1.0; }
-
-  virtual double composite_target_mitigation( player_t* t, school_e s ) const
-  { return t -> composite_mitigation_multiplier( s ); }
-
-  virtual double composite_player_critical_multiplier() const
-  { return player -> composite_player_critical_damage_multiplier(); }
-
-  event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = nullptr );
-
-  // Overridable base proc type for direct results, needed for dynamic aoe
-  // stuff and such.
-  virtual proc_types proc_type() const
-  { return PROC1_INVALID; }
-
-  bool has_amount_result() const
-  {
-    return attack_power_mod.direct > 0 || attack_power_mod.tick > 0 || spell_power_mod.direct > 0 || spell_power_mod.tick > 0 || ( weapon && weapon_multiplier > 0 );
-  }
-
-private:
-  std::vector<travel_event_t*> travel_events;
-public:
-  void add_travel_event( travel_event_t* e ) { travel_events.push_back( e ); }
-  void remove_travel_event( travel_event_t* e );
-  bool has_travel_events() const { return ! travel_events.empty(); }
-  size_t get_num_travel_events() const { return travel_events.size(); }
-  bool has_travel_events_for( const player_t* target ) const;
-  const std::vector<travel_event_t*>& current_travel_events() const
-  { return travel_events; }
-  virtual void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0 ) );
-  virtual bool consume_cost_per_second( timespan_t tick_time );
-  virtual bool need_to_trigger_costs_per_second() const
-  { return std::accumulate( base_costs_per_second.begin(), base_costs_per_second.end(), 0.0 ) != 0; }
-  rng::rng_t& rng() { return sim -> rng(); }
-  rng::rng_t& rng() const { return sim -> rng(); }
-
-  virtual bool has_movement_directionality() const
-  {
-    // If ability has no movement restrictions, it'll be usable
-    if ( movement_directionality == MOVEMENT_OMNI || movement_directionality == MOVEMENT_NONE )
-      return true;
-    else
-    {
-      movement_direction_e m = player -> movement_direction();
-
-      // If player isnt moving, allow everything
-      if ( m == MOVEMENT_NONE )
-        return true;
-      else
-        return m == movement_directionality;
-    }
-  }
-
-  virtual double composite_teleport_distance( const action_state_t* ) const
-  { return base_teleport_distance; }
-
-  virtual void do_teleport( action_state_t* );
-
-  virtual timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const;
 };
 
 struct call_action_list_t : public action_t
@@ -6614,7 +6794,7 @@ struct attack_t : public action_t
   // Attack Overrides
   virtual timespan_t execute_time() const;
   virtual void execute();
-  virtual result_e calculate_result( action_state_t* );
+  virtual result_e calculate_result( action_state_t* ) const;
   virtual void   init();
 
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
@@ -6646,17 +6826,32 @@ struct attack_t : public action_t
   virtual void reschedule_auto_attack( double old_swing_haste );
 
   virtual void reset()
-  { num_results = 0; attack_table_sum = std::numeric_limits<double>::min(); action_t::reset(); }
+  {
+    attack_table.reset();
+    action_t::reset();
+  }
 
 private:
-  std::array<double, RESULT_MAX> chances;
-  std::array<result_e, RESULT_MAX> results;
-  int num_results;
-  double attack_table_sum; // Used to check whether we can use cached values or not.
+  /// attack table generator with caching
+  struct attack_table_t{
+    std::array<double, RESULT_MAX> chances;
+    std::array<result_e, RESULT_MAX> results;
+    int num_results;
+    double attack_table_sum; // Used to check whether we can use cached values or not.
 
-  void build_table( double miss_chance, double dodge_chance,
-                    double parry_chance, double glance_chance,
-                    double crit_chance );
+    attack_table_t()
+    {reset(); }
+
+    void reset()
+    { attack_table_sum = std::numeric_limits<double>::min(); }
+
+    void build_table( double miss_chance, double dodge_chance,
+                      double parry_chance, double glance_chance,
+                      double crit_chance, sim_t* );
+  };
+  mutable attack_table_t attack_table;
+
+
 };
 
 // Melee Attack ===================================================================
@@ -6699,7 +6894,7 @@ struct spell_base_t : public action_t
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const;
   virtual timespan_t tick_time( double haste ) const;
-  virtual result_e   calculate_result( action_state_t* );
+  virtual result_e   calculate_result( action_state_t* ) const;
   virtual void   execute();
   virtual void   schedule_execute( action_state_t* execute_state = nullptr );
 
@@ -6761,7 +6956,7 @@ public:
   player_t* find_lowest_player();
   std::vector < player_t* > find_lowest_players( int num_players ) const;
   player_t* smart_target() const; // Find random injured healing target, preferring non-pets // Might need to move up hierarchy if there are smart absorbs
-  virtual int num_targets();
+  virtual int num_targets() const;
   virtual void   parse_effect_data( const spelleffect_data_t& );
 
   virtual double composite_da_multiplier( const action_state_t* s ) const
@@ -6814,7 +7009,7 @@ public:
 
 struct absorb_t : public spell_base_t
 {
-  target_specific_t<absorb_buff_t*> target_specific;
+  target_specific_t<absorb_buff_t> target_specific;
   absorb_buff_creator_t creator_;
 
   absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
@@ -6851,7 +7046,7 @@ struct absorb_t : public spell_base_t
   virtual void impact( action_state_t* );
   virtual void init_target_cache();
   virtual size_t available_targets( std::vector< player_t* >& ) const;
-  virtual int num_targets();
+  virtual int num_targets() const;
   virtual void multistrike_direct( const action_state_t*, action_state_t* ms_state );
   virtual void multistrike_tick( const action_state_t*, action_state_t* ms_state, double tick_multiplier );
 
@@ -7999,10 +8194,13 @@ public:
   // The damage of the tick is simply the tick_amount in the state
   virtual double base_ta( const action_state_t* s ) const
   {
-    dot_t* d = ab::find_dot( s -> target );
-    residual_periodic_state_t* rd_state = debug_cast<residual_periodic_state_t*>( d -> state );
-
-    return d ? rd_state -> tick_amount : 0.0;
+    auto dot = ab::find_dot( s -> target );
+    if ( dot )
+    {
+      auto rd_state = debug_cast<const residual_periodic_state_t*>( dot -> state );
+      return rd_state -> tick_amount;
+    }
+    return 0.0;
   }
 
   // Ensure that not travel time exists for the ignite ability. Delay is

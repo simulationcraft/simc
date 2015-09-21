@@ -69,7 +69,7 @@ timespan_t spell_base_t::tick_time( double haste ) const
   return action_t::tick_time( haste );
 }
 
-result_e spell_base_t::calculate_result( action_state_t* s )
+result_e spell_base_t::calculate_result( action_state_t* s ) const
 {
   result_e result = RESULT_NONE;
 
@@ -570,7 +570,7 @@ player_t* heal_t::smart_target() const
 
 // heal_t::num_targets ======================================================
 
-int heal_t::num_targets()
+int heal_t::num_targets() const
 {
   int count = 0;
 
@@ -730,7 +730,7 @@ void absorb_t::multistrike_tick( const action_state_t* source_state, action_stat
 
 // absorb_t::available_targets ==============================================
 
-int absorb_t::num_targets()
+int absorb_t::num_targets() const
 {
   int count = 0;
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )

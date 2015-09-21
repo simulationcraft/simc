@@ -499,7 +499,7 @@ public:
   virtual void     datacollection_end();
   virtual bool     has_t18_class_trinket() const;
 
-  target_specific_t<shaman_td_t*> target_data;
+  target_specific_t<shaman_td_t> target_data;
 
   virtual shaman_td_t* get_target_data( player_t* target ) const
   {
@@ -3263,7 +3263,7 @@ struct elemental_blast_t : public shaman_spell_t
     p() -> trigger_fulmination_stack( state );
   }
 
-  result_e calculate_result( action_state_t* s )
+  result_e calculate_result( action_state_t* s ) const
   {
     if ( ! s -> target )
       return RESULT_NONE;
@@ -3307,7 +3307,7 @@ struct elemental_blast_t : public shaman_spell_t
 
     // Re-snapshot state here, after we have procced a buff spell. The new state
     // is going to be used to calculate the damage of this spell already
-    snapshot_state( s, DMG_DIRECT );
+    const_cast<elemental_blast_t*>(this) -> snapshot_state( s, DMG_DIRECT );
     if ( sim -> debug )
       s -> debug();
 
