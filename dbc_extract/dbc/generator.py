@@ -1,6 +1,6 @@
 import sys, os, re, types, HTMLParser, urllib2
 
-import parser, db, data, constants
+import parser, db, data, constants, json
 
 def _rune_cost(generator, filter_data, record, *args):
     cost = 0
@@ -955,6 +955,16 @@ class ItemDataGenerator(DataGenerator):
         return ids
 
     def generate(self, ids = None):
+        if (self._options.output_type == 'cpp'):
+            s = self.generate_cpp(ids)
+        elif (self._options.output_type == 'js'):
+            s = self.generate_json(ids)
+        else:
+            s = "Unknown output type"
+        return s
+
+    def generate_cpp(self, ids = None):
+        sys.stderr.write('generate_cpp')
         ids.sort()
 
         s = '#define %sITEM%s_SIZE (%d)\n\n' % (
@@ -1038,6 +1048,120 @@ class ItemDataGenerator(DataGenerator):
 
             index += 1
         s += '};\n\n'
+
+        return s
+    
+    def generate_json(self, ids = None):
+
+        ids.sort()
+
+        s2 = dict()
+        s2['wow_build'] = self._options.build
+        s2['min_ilevel'] = self._options.min_ilevel
+        s2['max_ilevel'] = self._options.max_ilevel
+        s2['num_items'] = len(ids)
+
+        s2['items'] = list()
+
+        for id in ids + [0]:
+            item = self._item_sparse_db[id]
+            item2 = self._item_db[id]
+
+            if not item.id and id > 0:
+                sys.stderr.write('Item id %d not found\n' % id)
+                continue
+
+            # Aand, hack classs 12 (quest item) to be 0, 6
+            # so we get item enchants clumped in the same category, sigh ..
+            if item2.classs == 12:
+                item2.classs = 0
+                item2.subclass = 6
+
+            item_entry = dict()
+            item_entry['id'] = int(item.field('id')[0])
+            item_entry['name'] = item.field('name')[0].strip()
+
+            # put the flags in as strings instead of converting them to ints.
+            # this makes it more readable
+            item_entry['flags'] = item.field('flags')[0].strip()
+            item_entry['flags_2'] = item.field('flags_2')[0].strip()
+            
+            flag_types = 0x00
+
+            if hasattr(item, 'journal'):
+                if item.journal.flags_1 == 0x10:
+                    flag_types |= self._type_flags['Raid Finder']
+                elif item.journal.flags_1 == 0xC:
+                    flag_types |= self._type_flags['Heroic']
+
+            desc = self._itemnamedescription_db[item.id_name_desc]
+            flag_types |= self._type_flags.get(desc.desc, 0)
+
+            # put the flags in as strings instead of converting them to ints.
+            # this makes it more readable
+            item_entry['flag_types'] = '%#.2x' % flag_types
+            item_entry['ilevel'] = int(item.field('ilevel')[0])
+            item_entry['req_level'] = int(item.field('req_level')[0])
+            item_entry['req_skill'] = int(item.field('req_skill')[0])
+            item_entry['req_skill_rank'] = int(item.field('req_skill_rank')[0])
+            item_entry['quality'] = int(item.field('quality')[0])
+            item_entry['inv_type'] = int(item.field('inv_type')[0])
+
+            item_entry['classs'] = int(item2.field('classs')[0])
+            item_entry['subclass'] = int(item2.field('subclass')[0])
+
+            item_entry['bonding'] = int(item.field('bonding')[0])
+            item_entry['delay'] = int(item.field('delay')[0])
+            item_entry['weapon_damage_range'] = float(item.field('weapon_damage_range')[0])
+            item_entry['item_damage_modifier'] = float(item.field('item_damage_modifier')[0])
+
+            # put the masks in as strings instead of converting them to ints.
+            # this makes it more readable
+            item_entry['race_mask'] = item.field("race_mask")[0].strip()
+            item_entry['class_mask'] = item.field("class_mask")[0].strip()
+
+            item_entry['stats'] = list()
+            for i in xrange(1,10):
+                type = int(item.field('stat_type_%d' % i)[0])
+                if type != -1 and type != 0:
+                    stats = dict()
+                    stats['type'] = type
+                    stats['val'] = int(item.field('stat_val_%d' % i)[0])
+                    stats['alloc'] = int(item.field('stat_alloc_%d' % i)[0])
+                    stats['socket_mul'] = float(item.field('stat_socket_mul_%d' % i)[0])
+                    item_entry['stats'].append(stats)
+
+            spells = self._itemeffect_db[0].field('id_spell') * 5
+            trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
+            cooldown_category = self._itemeffect_db[0].field('cooldown_category') * 5
+            cooldown_value = self._itemeffect_db[0].field('cooldown_category_duration') * 5
+            cooldown_group = self._itemeffect_db[0].field('cooldown_group') * 5
+            cooldown_shared = self._itemeffect_db[0].field('cooldown_group_duration') * 5
+            if len(item.spells) > 0:
+                item_entry['spells'] = list()
+                for spell in item.spells:
+                    spl = dict();
+                    spl['id'] = int(spell.field('id_spell')[0])
+                    spl['trigger_type'] = int(spell.field('trigger_type')[0])
+                    spl['cooldown_category'] = int(spell.field('cooldown_category')[0])
+                    spl['cooldown_category_duration'] = int(spell.field('cooldown_category_duration')[0])
+                    spl['cooldown_group'] = int(spell.field('cooldown_group')[0])
+                    spl['cooldown_group_duration'] = int(spell.field('cooldown_group_duration')[0])
+                    item_entry['spells'].append(spl)
+
+            item_entry['sockets'] = list()
+            for i in xrange(1,3):
+                item_entry['sockets'].append(int(item.field('socket_color_%d' % i)[0]))
+
+            item_entry['gem_props'] = int(item.field('gem_props')[0])
+            item_entry['socket_bonus'] = int(item.field('socket_bonus')[0])
+            item_entry['item_set'] = int(item.field('item_set')[0])
+            item_entry['rand_suffix'] = int(item.field('rand_suffix')[0])
+            item_entry['scale_stat_dist'] = int(item.field('scale_stat_dist')[0])
+
+            s2['items'].append(item_entry)
+
+        s = json.dumps(s2)
 
         return s
 
