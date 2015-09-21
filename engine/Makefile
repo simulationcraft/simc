@@ -79,8 +79,10 @@ endif
 # detection seems to not be 100% accurate. Disable for now.
 COMPILER_STR := $(shell ${CXX} -v 2>&1)
 ifneq ($(findstring clang,${COMPILER_STR}),)
-COMPILER_VERSION := $(shell ${CXX} -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
-ifneq ($(shell expr ${COMPILER_VERSION} \>= 40000),"1")
+# OS X clang spits out a substring "clang-x.y.z" on the first line of the version output, where x is
+# the major version. Not all clang frontends report versions like this, but it should work for OS X.
+COMPILER_VERSION := $(shell echo "${COMPILER_STR}" | head -1 | sed -Ee 's/.+clang-([0-9]+).+/\1/g')
+ifeq ($(shell expr ${COMPILER_VERSION} \>= 700),1)
   CPP_FLAGS += -Wno-inconsistent-missing-override
 endif
 endif
