@@ -920,7 +920,7 @@ void gem::courageous_primal( special_effect_t& effect )
   struct courageous_primal_proc_t : public dbc_proc_callback_t
   {
     courageous_primal_proc_t( const special_effect_t& data ) :
-      dbc_proc_callback_t( effect.item -> player, data )
+      dbc_proc_callback_t( data.player, data )
     { }
 
     virtual void trigger( action_t* action, void* call_data ) override
