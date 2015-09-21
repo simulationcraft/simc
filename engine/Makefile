@@ -81,7 +81,7 @@ COMPILER_STR := $(shell ${CXX} -v 2>&1)
 ifneq ($(findstring clang,${COMPILER_STR}),)
 # OS X clang spits out a substring "clang-x.y.z" on the first line of the version output, where x is
 # the major version. Not all clang frontends report versions like this, but it should work for OS X.
-COMPILER_VERSION := $(shell echo "${COMPILER_STR}" | head -1 | sed -Ee 's/.+clang-([0-9]+).+/\1/g')
+COMPILER_VERSION := $(shell echo "${COMPILER_STR}" | grep clang | sed -Ee 's/.+clang-([0-9]+).+/\1/g')
 ifeq ($(shell expr ${COMPILER_VERSION} \>= 700),1)
   CPP_FLAGS += -Wno-inconsistent-missing-override
 endif
