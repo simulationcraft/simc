@@ -75,11 +75,14 @@ ifeq (${FLAVOR},Darwin)
 ifeq (${OPENSSL},)
   LINK_LIBS += -framework Security -framework CoreFoundation
 endif
-COMPILER_STR = $(shell $(CXX) -v 2>&1)
-ifneq ($(findstring clang-700,${COMPILER_STR}),)
-  # OSX Clang 7.0 started complaining about inconsistent missing override specifiers, but the
-  # detection seems to not be 100% accurate. Disable for now.
+# OSX Clang 7.0 started complaining about inconsistent missing override specifiers, but the
+# detection seems to not be 100% accurate. Disable for now.
+COMPILER_STR := $(shell ${CXX} -v 2>&1)
+ifneq ($(findstring clang,${COMPILER_STR}),)
+COMPILER_VERSION := $(shell gcc -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
+ifneq ($(shell expr ${COMPILER_VERSION} \>= 40000),"1")
   CPP_FLAGS += -Wno-inconsistent-missing-override
+endif
 endif
 endif
 
