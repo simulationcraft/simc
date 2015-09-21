@@ -9243,14 +9243,6 @@ player_t* player_t::create( sim_t*,
 
 namespace { // UNNAMED NAMESPACE
 
-struct compare_stats_name
-{
-  bool operator()( stats_t* l, stats_t* r ) const
-  {
-    return l -> name_str <= r -> name_str;
-  }
-};
-
 void player_convergence( int convergence_scale,
                          double confidence_estimator,
                          extended_sample_data_t& dps,
@@ -9327,7 +9319,7 @@ void player_t::analyze( sim_t& s )
   for ( size_t i = 0; i < buff_list.size(); i++ )
     buff_list[ i ] -> analyze();
 
-  range::sort(  stats_list, compare_stats_name() );
+  range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l -> name_str < r -> name_str; } );
 
   if (  quiet ) return;
   if (  collected_data.fight_length.mean() == 0 ) return;
