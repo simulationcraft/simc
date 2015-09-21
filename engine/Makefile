@@ -76,7 +76,7 @@ ifeq (${OPENSSL},)
   LINK_LIBS += -framework Security -framework CoreFoundation
 endif
 COMPILER_STR = $(shell $(CXX) -v 2>&1)
-ifneq ($(findstring clang,${COMPILER_STR}),)
+ifneq ($(findstring clang-700,${COMPILER_STR}),)
   # OSX Clang 7.0 started complaining about inconsistent missing override specifiers, but the
   # detection seems to not be 100% accurate. Disable for now.
   CPP_FLAGS += -Wno-inconsistent-missing-override
