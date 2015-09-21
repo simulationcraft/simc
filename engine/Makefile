@@ -75,6 +75,9 @@ ifeq (${FLAVOR},Darwin)
 ifeq (${OPENSSL},)
   LINK_LIBS += -framework Security -framework CoreFoundation
 endif
+# OSX Clang 7.0 started complaining about inconsistent missing override specifiers, but the
+# detection seems to not be 100% accurate. Disable for now.
+CPP_FLAGS += -Wno-inconsistent-missing-override
 endif
 
 ifneq (${DEBUG},)
