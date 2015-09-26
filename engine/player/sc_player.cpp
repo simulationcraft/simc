@@ -8810,6 +8810,9 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "thumbnail=\"" + report_information.thumbnail_url + '"' + term;
     profile_str += "level=" + util::to_string( true_level ) + term;
     profile_str += "race=" + race_str + term;
+    if ( race == RACE_NIGHT_ELF ) {
+      profile_str += "timeofday=" + util::to_string( timeofday == player_t::NIGHT_TIME ? "night" : "day" ) + term;
+    }
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
