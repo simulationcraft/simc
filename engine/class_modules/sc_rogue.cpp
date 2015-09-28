@@ -5455,7 +5455,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush" );
     def -> add_action( this, "Vanish", "if=time>25&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&((talent.shadow_focus.enabled&energy.time_to_max>2.5&energy>=15)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
-    def -> add_action( this, "Shadowmeld", "if=(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&energy>=60" );
+    def -> add_action( "shadowmeld,if=(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&energy>=60" );
 
     // Rotation
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2&(dot.revealing_strike.ticking|time>10)|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<12&buff.deep_insight.down)" );
@@ -5526,10 +5526,11 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Vanish","if=set_bonus.tier18_4pc=1&time<1" );
     def -> add_action( "wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6" );
 
+    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "if=energy<110&cooldown.shadow_dance.remains<3.5" );
     def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=110" );
 
     if ( find_item( "maalus_the_blood_drinker" ) )
-      def -> add_action( this, "Shadow Dance", "if=energy>=110&buff.stealth.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
+      def -> add_action( this, "Shadow Dance", "if=energy>=110&buff.stealth.down|((buff.bloodlust.up|buff.deathly_shadows.up)&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
     else
       def -> add_action( this, "Shadow Dance", "if=energy>=110&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
 
@@ -5584,7 +5585,7 @@ void rogue_t::init_action_list()
 
     // Resource pooling
     action_priority_list_t* pool = get_action_priority_list( "pool", "Resource pooling" );
-    pool -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
+    pool -> add_action( this, "Preparation", "if=!buff.vanish.up&!buff.shadow_dance.up&cooldown.vanish.remains>50" );
   }
 
   use_default_action_list = true;

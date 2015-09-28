@@ -1,6 +1,7 @@
 monk="Monk_Brewmaster_1h_Serenity_T17H"
 level=100
 race=night_elf
+timeofday=night
 role=tank
 position=front
 talents=0130123

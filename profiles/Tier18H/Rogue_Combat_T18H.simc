@@ -1,6 +1,7 @@
 rogue="Rogue_Combat_T18H"
 level=100
-race=gnome
+race=night_elf
+timeofday=night
 role=attack
 position=back
 talents=3000021
@@ -38,6 +39,7 @@ actions+=/shadow_reflection,if=(cooldown.killing_spree.remains<10&combo_points>3
 actions+=/pool_resource,for_next=1
 actions+=/ambush
 actions+=/vanish,if=time>25&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&((talent.shadow_focus.enabled&energy.time_to_max>2.5&energy>=15)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
+actions+=/shadowmeld,if=(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&energy>=60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2&(dot.revealing_strike.ticking|time>10)|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<12&buff.deep_insight.down)
 actions+=/call_action_list,name=adrenaline_rush,if=dot.revealing_strike.ticking&buff.adrenaline_rush.down
 actions+=/call_action_list,name=killing_spree,if=energy.time_to_max>6&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>8)

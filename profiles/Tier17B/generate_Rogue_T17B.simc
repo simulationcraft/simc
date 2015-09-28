@@ -39,7 +39,8 @@ save=Rogue_Assassination_T17B.simc
 # Combat
 rogue="Rogue_Combat_T17B"
 level=100
-race=troll
+race=night_elf
+timeofday=night
 role=attack
 position=back
 talents=3000031
@@ -67,6 +68,7 @@ save=Rogue_Combat_T17B.simc
 rogue="Rogue_Subtlety_T17B"
 level=100
 race=night_elf
+timeofday=night
 role=attack
 position=back
 spec=subtlety

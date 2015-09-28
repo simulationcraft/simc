@@ -1,6 +1,7 @@
 druid="Druid_Feral_T17P"
 level=100
 race=night_elf
+timeofday=night
 role=attack
 position=back
 talents=3002002

@@ -1,6 +1,7 @@
 rogue="Rogue_Subtlety_T17M"
 level=100
 race=night_elf
+timeofday=night
 role=attack
 position=back
 talents=2000022
@@ -41,6 +42,7 @@ actions+=/arcane_torrent,if=energy<80&buff.shadow_dance.up
 actions+=/premeditation,if=combo_points<4
 actions+=/vanish,if=set_bonus.tier18_4pc=1&time<1
 actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
+actions+=/pool_resource,if=energy<110&cooldown.shadow_dance.remains<3.5
 actions+=/pool_resource,for_next=1,extra_amount=110
 actions+=/shadow_dance,if=energy>=110&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
 actions+=/pool_resource,for_next=1,extra_amount=50
@@ -83,7 +85,7 @@ actions.finisher+=/run_action_list,name=pool
 
 # Resource pooling
 
-actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+actions.pool=preparation,if=!buff.vanish.up&!buff.shadow_dance.up&cooldown.vanish.remains>50
 
 head=poisoners_helmet,id=115572,bonus_id=567
 neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_multistrike
