@@ -334,7 +334,7 @@ void SC_OptionsTab::createGlobalsTab()
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout_right -> addRow( tr( "Threads" ), choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoiceFromRange( 1, QThread::idealThreadCount() ) ) );
-  globalsLayout_right -> addRow( tr( "Process Priority" ), choice.process_priority = createChoice( 5, "Highest", "High", "Normal", "Lower", "Lowest" ) );
+  globalsLayout_right -> addRow( tr( "Process Priority" ), choice.process_priority = createChoice( 5, "High", "Above_normal", "Normal", "Below_normal", "Low" ) );
   globalsLayout_right -> addRow( tr( "World Lag" ), choice.world_lag = createChoice( 5, "Super Low - 25 ms", "Low - 50 ms", "Medium - 100 ms", "High - 150 ms", "Australia - 200 ms" ) );
   globalsLayout_right -> addRow( tr( "Generate Debug" ), choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
@@ -1228,7 +1228,7 @@ QString SC_OptionsTab::mergeOptions()
 //  options += "\n"
 //      "### End command line ###\n"
 
-      "### Begin final options ###\n";
+  options += "### Begin final options ###\n";
 #if SC_USE_PTR
   if ( choice.version->currentIndex() == 2 )
   {
