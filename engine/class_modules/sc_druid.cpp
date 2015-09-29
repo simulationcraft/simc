@@ -6795,12 +6795,6 @@ void druid_t::apl_feral()
 
   def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)" );
   def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
-
-  if ( race == RACE_NIGHT_ELF )
-  {
-    def -> add_action( "shadowmeld,if=energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.incarnation.up" );
-  }
-
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)" );
@@ -6824,6 +6818,10 @@ void druid_t::apl_feral()
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3" );
 
   // DoT Maintenance
+  if ( race == RACE_NIGHT_ELF )
+  {
+    maintain -> add_action( "shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up" );
+  }
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
   maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5" );
