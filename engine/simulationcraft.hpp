@@ -3661,10 +3661,11 @@ struct item_t
     item_data_t              data;
     auto_dispose< std::vector<special_effect_t*> > special_effects;
     std::vector<std::string> source_list;
+    timespan_t               initial_cd;
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
-      armor( 0 ), data()
+      armor( 0 ), initial_cd( timespan_t::zero() ), data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
@@ -3703,6 +3704,7 @@ struct item_t
   std::string option_addon_id_str;
   std::string option_gem_id_str;
   std::string option_bonus_id_str;
+  double option_initial_cd;
 
   // Extracted data
   gear_stats_t base_stats, stats;

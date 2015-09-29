@@ -529,6 +529,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("enchant_id", option_enchant_id_str));
   options.push_back(opt_string("addon_id", option_addon_id_str));
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
+  options.push_back(opt_float("initial_cd", option_initial_cd));
 
   try
   {
@@ -588,6 +589,9 @@ bool item_t::parse_options()
       parsed.bonus_id.push_back( bonus_id );
     }
   }
+
+  if ( option_initial_cd > 0.0 )
+    parsed.initial_cd = timespan_t::from_seconds( option_initial_cd );
 
   return true;
 }

@@ -4170,8 +4170,21 @@ void player_t::arise()
 
   if ( has_foreground_actions( *this ) )
     schedule_ready();
-
+   
   active_during_iteration = true;
+
+  for ( int i = 0; i < callbacks.all_callbacks.size(); i++ ) {
+    dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( callbacks.all_callbacks[ i ] );
+
+    if ( cb -> cooldown && &( cb -> effect.item -> parsed.initial_cd ) > 0 ) {
+      cb -> cooldown -> start( cb -> effect.item -> parsed.initial_cd );
+      if ( sim -> log )
+        sim -> out_log.printf( "%s sets initial cooldown for %s to %.2f seconds.",
+          name(),
+          cb -> effect.name().c_str(),
+          cb -> effect.item -> parsed.initial_cd.total_seconds() );
+    }
+  }
 }
 
 // player_t::demise =========================================================
