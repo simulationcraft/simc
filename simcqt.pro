@@ -90,6 +90,9 @@ macx {
     LIBS += -framework CoreFoundation -framework AppKit -framework Security
     DEFINES += SIMC_NO_AUTOUPDATE
 
+    # Silence annoying warning for now
+    QMAKE_CXXFLAGS += -Wno-inconsistent-missing-override
+
     Resources.files = Welcome.html Welcome.png Error.html
     Resources.path = Contents/Resources
     Profiles.files = profiles/Tier17P profiles/Tier17N profiles/Tier17H profiles/Tier17M profiles/Tier17B profiles/Tier18N profiles/Tier18H profiles/Tier18M
