@@ -19,6 +19,7 @@ spec=brewmaster
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/stance,choose=sturdy_ox
+actions.precombat+=/legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_armor
