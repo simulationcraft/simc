@@ -1256,7 +1256,7 @@ bool item_t::decode_random_suffix()
       }
       else if ( enchant_data.ench_type[ j ] == ITEM_ENCHANTMENT_RESISTANCE )
       {
-        stat = stat_pair_t( STAT_BONUS_ARMOR, j );
+        stat = stat_pair_t( STAT_BONUS_ARMOR, static_cast<int>( j ) );
       }
 
       if ( stat.stat == STAT_NONE )

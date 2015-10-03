@@ -60,7 +60,7 @@ robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
-%qt_dir%\msvc2013_64\bin\windeployqt.exe simulationcraft64.exe
+%qt_dir%\msvc2013_64\bin\windeployqt.exe --no-translations simulationcraft64.exe
 cd ..
 
 cd winreleasescripts
@@ -79,7 +79,7 @@ robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
-%qt_dir%\msvc2013\bin\windeployqt.exe simulationcraft.exe
+C:\Qt\Qt5.5.1.32\5.5\msvc2013\bin\windeployqt.exe --no-translations simulationcraft.exe
 cd ..
 
 cd winreleasescripts
