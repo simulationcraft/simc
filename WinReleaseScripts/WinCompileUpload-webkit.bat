@@ -14,7 +14,7 @@
 set /p ask=Build with PGO data? Only applies to 64-bit installation.  (y/n)
 @echo on
 
-set simcversion=622-01-webkit
+set simcversion=622-01
 :: For bumping the minor version, just change the above line. Make sure to also change setup32.iss and setup64.iss as well. 
 set simcfiles=C:\Simulationcraft\
 :: Location of source files
