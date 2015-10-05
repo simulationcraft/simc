@@ -1240,7 +1240,7 @@ void player_t::init_special_effects()
     special_effect_t* effect = new special_effect_t( this );
     effect -> type = SPECIAL_EFFECT_EQUIP;
     effect -> spell_id = totg -> id();
-    // effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
+    effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
     special_effects.push_back( effect );
   }
 
