@@ -658,9 +658,8 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
 void print_text_performance( FILE* file, sim_t* sim )
 {
   std::time_t cur_time = std::time( nullptr );
-  std::string date_str = std::asctime(std::localtime(&cur_time));
-  if ( date_str.size() > 0 && *(date_str.end() - 1) == '\n' )
-    date_str = date_str.substr( 0, date_str.size() - 1 );
+  char date_str[sizeof "2011-10-08T07:07:09+0000"];
+  std::strftime(date_str, sizeof date_str, "%FT%T%z", std::localtime(&cur_time));
   util::fprintf( file,
                  "\nBaseline Performance:\n"
                  "  RNG Engine    = %s%s\n"
@@ -695,7 +694,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                  sim -> elapsed_cpu,
                  sim -> elapsed_time,
                  sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu,
-                 date_str.c_str(),
+                 date_str,
                  static_cast<double>( cur_time ) );
 #ifdef EVENT_QUEUE_DEBUG
   double total_p = 0;
