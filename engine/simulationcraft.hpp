@@ -347,7 +347,7 @@ private:
 
 // Raid Event
 
-struct raid_event_t
+struct raid_event_t : private noncopyable
 {
   sim_t* sim;
   std::string name_str;
@@ -2117,7 +2117,7 @@ struct plot_data_t
 // (2) There is 1 * sizeof( event_t ) space available to extend the sub-class
 // (3) sim_t is responsible for deleting the memory associated with allocated events
 
-struct event_t
+struct event_t : private noncopyable
 {
   sim_t& _sim;
   event_t*    next;
@@ -6355,7 +6355,7 @@ public:
 
 // Action Callback ==========================================================
 
-struct action_callback_t
+struct action_callback_t : private noncopyable
 {
   player_t* listener;
   bool active;
