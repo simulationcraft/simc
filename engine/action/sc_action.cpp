@@ -382,6 +382,7 @@ action_t::action_t( action_e       ty,
   action_list = 0;
   parent_dot = 0;
   ground_aoe = false;
+  state_cache = 0;
 
   range::fill( base_costs, 0.0 );
   range::fill( base_costs_per_second, 0.0 );
@@ -489,6 +490,13 @@ action_t::~action_t()
   delete target_if_expr;
   delete interrupt_if_expr;
   delete early_chain_if_expr;
+
+  while ( state_cache != 0 )
+  {
+    action_state_t* s = state_cache;
+    state_cache = s -> next;
+    delete s;
+  }
 }
 
 /**
