@@ -10,11 +10,12 @@
 #ifndef SC_TIMESPAN_HPP
 #define SC_TIMESPAN_HPP
 
+#include "config.hpp"
+
 #include <cmath>
 #include <numeric>
 #include <limits>
-
-#include "config.hpp"
+#include <iostream>
 #include <type_traits>
 
 #include "util/generic.hpp"
