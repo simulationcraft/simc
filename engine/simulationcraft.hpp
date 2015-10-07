@@ -4665,7 +4665,7 @@ public:
 
 struct action_state_t : private noncopyable
 {
-  action_state_t* next;
+  //action_state_t* next;
   // Source action, target actor
   action_t*       action;
   player_t*       target;
@@ -5122,7 +5122,7 @@ public:
   const action_priority_t* signature;
   std::vector<std::unique_ptr<option_t>> options;
 
-  action_state_t* state_cache;
+  auto_dispose<std::vector<action_state_t*>> state_cache;
   action_state_t* execute_state; /* State of the last execute() */
   action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
   uint32_t snapshot_flags;
