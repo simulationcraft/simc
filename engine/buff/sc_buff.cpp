@@ -1439,7 +1439,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
   return nullptr;
 }
 
-#ifdef SC_STAT_CACHE
+#if defined(SC_USE_STAT_CACHE)
 
 // buff_t::invalidate_cache =================================================
 

@@ -17,6 +17,7 @@
  HEADERS += engine/dbc/dbc.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp
  HEADERS += engine/simulationcraft.hpp
+ HEADERS += engine/sc_util.hpp
  HEADERS += engine/sc_timespan.hpp
  HEADERS += engine/sc_enums.hpp
  HEADERS += engine/config.hpp

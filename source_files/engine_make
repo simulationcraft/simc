@@ -16,6 +16,7 @@ SRC += \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \
+    sc_util.hpp \
     sc_timespan.hpp \
     sc_enums.hpp \
     config.hpp \

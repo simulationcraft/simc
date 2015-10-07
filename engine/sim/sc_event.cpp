@@ -192,7 +192,7 @@ void event_manager_t::add_event( event_t* e,
   }
 
   // Determine the timing wheel position to which the event will belong
-#ifdef SC_USE_INTEGER_TIME
+#if defined(SC_USE_INTEGER_TIME)
   uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> wheel_shift ) & wheel_mask;
 #else
   uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
@@ -360,7 +360,7 @@ void event_manager_t::init()
 
   wheel_time = timespan_t::from_seconds( wheel_seconds );
 
-#ifdef SC_USE_INTEGER_TIME
+#if defined(SC_USE_INTEGER_TIME)
   wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> wheel_shift );
 #else
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );

@@ -629,7 +629,7 @@ inline void rune_t::fill_rune()
 
 // Event to spread Necrotic Plague from a source actor to a target actor
 
-template<typename TARGETDATA>
+template<typename PLAYER>
 struct np_spread_event_t : public event_t
 {
   dot_t* dot;
@@ -646,6 +646,7 @@ struct np_spread_event_t : public event_t
     if ( dot -> target -> is_sleeping() )
       return;
 
+    auto p = debug_cast<PLAYER*>( dot -> source );
     // TODO-WOD: Randomize target selection.
     player_t* new_target = nullptr;
     for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i++ )
@@ -654,7 +655,7 @@ struct np_spread_event_t : public event_t
       if ( t == dot -> state -> target )
         continue;
 
-      TARGETDATA* tdata = debug_cast<TARGETDATA*>( dot -> source -> get_target_data( t ) );
+      auto tdata = p -> get_target_data( t );
       if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
       {
         new_target = t;
@@ -672,8 +673,8 @@ struct np_spread_event_t : public event_t
             new_target -> name() );
       dot -> copy( new_target, DOT_COPY_CLONE );
 
-      TARGETDATA* source_tdata = debug_cast<TARGETDATA*>( dot -> source -> get_target_data( dot -> state -> target ) );
-      TARGETDATA* tdata = debug_cast<TARGETDATA*>( dot -> source -> get_target_data( new_target ) );
+      auto source_tdata = p -> get_target_data( dot -> state -> target );
+      auto tdata = p -> get_target_data( new_target );
       assert( ! tdata -> debuffs_necrotic_plague -> check() );
       tdata -> debuffs_necrotic_plague -> trigger( source_tdata -> debuffs_necrotic_plague -> check() );
     }
@@ -1355,7 +1356,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
         if ( sim -> debug )
           sim -> out_debug.printf( "%s %s stack %d",
               player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
-        new ( *sim ) np_spread_event_t<dancing_rune_weapon_td_t>( dot );
+        new ( *sim ) np_spread_event_t<dancing_rune_weapon_pet_t>( dot );
       }
     }
 
@@ -3064,7 +3065,7 @@ struct necrotic_plague_t : public disease_t
       if ( sim -> debug )
         sim -> out_debug.printf( "%s %s stack %d",
             player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
-      new ( *sim ) np_spread_event_t<death_knight_td_t>( dot );
+      new ( *sim ) np_spread_event_t<death_knight_t>( dot );
     }
   }
 };

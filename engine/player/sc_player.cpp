@@ -3337,7 +3337,7 @@ double player_t::composite_mastery_value() const
   return composite_mastery() * mastery_coefficient();
 }
 
-#ifdef SC_STAT_CACHE
+#if defined(SC_USE_STAT_CACHE)
 
 // player_t::invalidate_cache ===============================================
 
@@ -9694,7 +9694,7 @@ double player_stat_cache_t::get_attribute( attribute_e a ) const
   return 0.0;
 }
 
-#ifdef SC_STAT_CACHE
+#if defined(SC_USE_STAT_CACHE)
 // player_stat_cache_t::strength ============================================
 
 double player_stat_cache_t::strength() const

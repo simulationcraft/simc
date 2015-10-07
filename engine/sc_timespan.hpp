@@ -28,7 +28,7 @@ namespace timespan_adl_barrier { // =========================================
 
 class timespan_t
 {
-#ifdef SC_USE_INTEGER_TIME
+#if defined(SC_USE_INTEGER_TIME)
 private:
   // CAREFUL: Using int32_t implies that no overflowing happens during calculation.
   typedef int64_t time_t;
@@ -52,7 +52,7 @@ public:
     return *this;
   }
 
-#else // !SC_USE_INTEGER_TIME
+#else // !defined(SC_USE_INTEGER_TIME)
 
 private:
   typedef double time_t;

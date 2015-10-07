@@ -11,10 +11,14 @@
 #include "sc_timespan.hpp"
 #include <string>
 #include <functional>
+#include <unordered_map>
+#include <iostream>
 
 #include "data_definitions.hh"
 #include "data_enums.hh"
 #include "specialization.hpp"
+#include "sc_enums.hpp"
+#include "sc_util.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -25,8 +29,18 @@ struct player_t;
 struct item_t;
 
 
-static const unsigned NUM_SPELL_FLAGS = 12;
-static const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
+const unsigned NUM_SPELL_FLAGS = 12;
+const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
+const bool SC_USE_PTR = false;
+
+struct stat_data_t
+{
+  double strength;
+  double agility;
+  double stamina;
+  double intellect;
+  double spirit;
+};
 
 // ==========================================================================
 // General Database
@@ -1384,6 +1398,8 @@ const spelleffect_data_t* find_effect( const T* obj, unsigned effect_id )
   return obj -> dbc.effect( effect_id );
 }
 } // dbc namespace ends
+
+
 
 // ==========================================================================
 // Indices to provide log time, constant space access to spells, effects, and talents by id.

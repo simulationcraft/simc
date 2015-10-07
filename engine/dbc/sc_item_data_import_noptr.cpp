@@ -7,7 +7,7 @@
  * Separated to reduce compile memory onsumption.
  */
 
-#include "simulationcraft.hpp"
+#include "dbc.hpp"
 #include "generated/sc_item_data.inc"
 
 item_data_t* dbc::__items_noptr()

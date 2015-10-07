@@ -19,6 +19,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
+		<ClInclude Include="..\engine\sc_util.hpp" />
 		<ClInclude Include="..\engine\sc_timespan.hpp" />
 		<ClInclude Include="..\engine\sc_enums.hpp" />
 		<ClInclude Include="..\engine\config.hpp" />
@@ -149,7 +150,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_item_data_import_noptr.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_item_data.cpp">
 			
