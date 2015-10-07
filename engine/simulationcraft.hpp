@@ -51,6 +51,7 @@
 #include <type_traits>
 #include <unordered_map>
 #include <atomic>
+#include <random>
 #if defined( SC_OSX )
 #include <Availability.h>
 #endif
