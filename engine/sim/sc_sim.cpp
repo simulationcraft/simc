@@ -2091,11 +2091,8 @@ bool sim_t::init()
     }
     else
     {
-      int64_t sec, usec;
-      stopwatch_t sw( STOPWATCH_WALL );
-      sw.now( &sec, &usec );
-      seed  = static_cast< int >(  sec * 1000 );
-      seed += static_cast< int >( usec / 1000 );
+      std::random_device rd;
+      seed  = uint64_t(rd()) | (uint64_t(rd()) << 32);
     }
   }
   _rng = rng::create( rng::parse_type( rng_str ) );

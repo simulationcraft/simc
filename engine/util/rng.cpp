@@ -83,6 +83,25 @@ struct rng_mt_cxx11_t : public rng_t
   }
 };
 
+struct rng_mt_cxx11_64_t : public rng_t
+{
+  std::mt19937_64 engine; // Mersenne twister MT19937
+
+  rng_mt_cxx11_64_t() = default;
+
+  virtual const char* name() const override { return "mt_cxx11_64"; }
+
+  virtual void seed( uint64_t start ) override
+  {
+    engine.seed( start );
+  }
+
+  virtual double real() override
+  {
+    return convert_to_double_0_1(engine());
+  }
+};
+
 
 /**
  * @brief MURMURHASH3 Avalanche Seed Munger
@@ -955,6 +974,7 @@ double stdnormal_inv( double p )
 #include <iostream>
 #include <iomanip>
 
+namespace rng {
 static int64_t milliseconds()
 {
   return 1000 * clock() / CLOCKS_PER_SEC;
@@ -1019,16 +1039,27 @@ static void monte_carlo( rng_t* rng, uint64_t n )
                ", numbers/sec = " << static_cast<uint64_t>( n * 1000.0 / elapsed_cpu ) << "\n\n";
 }
 
+} // namespace rng
+
 int main( int /*argc*/, char** /*argv*/ )
 {
-  rng_t* rng_rand   = new rng_rand_t();
+  using namespace rng;
+  rng_t* rng_mt_cxx11   = new rng_mt_cxx11_t();
+  rng_t* rng_mt_cxx11_64   = new rng_mt_cxx11_64_t();
+  rng_t* rng_murmurhash   = new rng_murmurhash_t();
   rng_t* rng_sfmt   = new rng_sfmt_t();
   rng_t* rng_tinymt = new rng_tinymt_t();
   rng_t* rng_xs128  = new rng_xorshift128_t();
   rng_t* rng_xs1024 = new rng_xorshift1024_t();
 
-  uint64_t seed = M_PI * 1000000;
-  rng_rand   -> seed( seed );
+  std::random_device rd;
+  uint64_t seed  = uint64_t(rd()) | (uint64_t(rd()) << 32);
+  std::cout << "Seed: " << seed << "\n\n";
+  //uint64_t seed = M_PI * 1000000;
+
+  rng_mt_cxx11   -> seed( seed );
+  rng_mt_cxx11_64   -> seed( seed );
+  rng_murmurhash   -> seed( seed );
   rng_sfmt   -> seed( seed );
   rng_tinymt -> seed( seed );
   rng_xs128  -> seed( seed );
@@ -1036,31 +1067,30 @@ int main( int /*argc*/, char** /*argv*/ )
 
   uint64_t n = 100000000;
 
-  test_one( rng_rand,   n );
+  test_one( rng_mt_cxx11,   n );
+  test_one( rng_mt_cxx11_64,   n );
+  test_one( rng_murmurhash,   n );
   test_one( rng_sfmt,   n );
   test_one( rng_tinymt, n );
   test_one( rng_xs128,  n );
   test_one( rng_xs1024, n );
 
-  monte_carlo( rng_rand,   n );
+  monte_carlo( rng_mt_cxx11,   n );
+  monte_carlo( rng_murmurhash,   n );
   monte_carlo( rng_sfmt,   n );
   monte_carlo( rng_tinymt, n );
   monte_carlo( rng_xs128,  n );
   monte_carlo( rng_xs1024, n );
 
-  test_seed( rng_rand,   100000 );
+  test_seed( rng_mt_cxx11,   100000 );
+  test_seed( rng_murmurhash,   100000 );
   test_seed( rng_sfmt,   100000 );
   test_seed( rng_tinymt, 100000 );
   test_seed( rng_xs128,  100000 );
   test_seed( rng_xs1024, 100000 );
 
-#ifdef RNG_CXX11
-  rng_t* rng_mt_cxx11 = new rng_mt_cxx11_t();
-  rng_mt_cxx11 -> seed( seed );
-  test_one( rng_mt_cxx11, n );
-  monte_carlo( rng_mt_cxx11, n );
-  test_seed( rng_mt_cxx11, 100000 );
-#endif // END RNG_CXX11
+
+  std::cout << "random device: min=" << rd.min() << " max=" << rd.max() << "\n\n";
 
   rng_t* rng = rng_tinymt;
 
@@ -1142,8 +1172,8 @@ int main( int /*argc*/, char** /*argv*/ )
   std::cout << "\n";
   std::cout << "M_PI=" << M_PI << "\n";
   std::cout << "calls to rng::stdnormal_inv( double x )\n";
-  std::cout << "x=0.975: " << rng_t::stdnormal_inv( 0.975 ) << " should be equal to 1.959964\n";
-  std::cout << "x=0.995: " << rng_t::stdnormal_inv( 0.995 ) << " should be equal to 2.5758293\n";
+  std::cout << "x=0.975: " << rng::stdnormal_inv( 0.975 ) << " should be equal to 1.959964\n";
+  std::cout << "x=0.995: " << rng::stdnormal_inv( 0.995 ) << " should be equal to 2.5758293\n";
 }
 
 #endif // UNIT_TEST
