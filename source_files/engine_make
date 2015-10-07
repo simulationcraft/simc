@@ -12,6 +12,7 @@ SRC += \
     util$(PATHSEP)generic.hpp \
     util$(PATHSEP)concurrency.hpp \
     util$(PATHSEP)cache.hpp \
+    sim$(PATHSEP)sc_option.hpp \
     report$(PATHSEP)sc_report.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \

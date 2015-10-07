@@ -12,6 +12,7 @@
  HEADERS += engine/util/generic.hpp
  HEADERS += engine/util/concurrency.hpp
  HEADERS += engine/util/cache.hpp
+ HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/report/sc_report.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp

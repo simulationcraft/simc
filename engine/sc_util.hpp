@@ -7,7 +7,12 @@
 
 #include "config.hpp"
 
+#include "sc_enums.hpp"
+#include "dbc/data_enums.hh"
+#include "dbc/specialization.hpp"
 #include <sstream>
+#include <vector>
+#include <string>
 
 // Forward delcarations
 struct player_t;

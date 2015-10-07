@@ -200,7 +200,11 @@ public:
       return timespan_t( std::numeric_limits<time_t>::min() );
   }
 };
-
+inline std::ostream& operator<<(std::ostream &os, const timespan_t& x )
+{
+  os << x.total_seconds() << "seconds";
+  return os;
+}
 } // namespace timespan_adl_barrier =========================================
 
 using timespan_adl_barrier::timespan_t;

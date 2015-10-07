@@ -3,7 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sc_option.hpp"
+
+#include <sstream>
+#include <iostream>
+
+#include "util/io.hpp"
+#include "sc_util.hpp"
 
 namespace { // UNNAMED NAMESPACE ============================================
 

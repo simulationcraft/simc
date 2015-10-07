@@ -15,6 +15,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\util\generic.hpp" />
 		<ClInclude Include="..\engine\util\concurrency.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
+		<ClInclude Include="..\engine\sim\sc_option.hpp" />
 		<ClInclude Include="..\engine\report\sc_report.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
@@ -63,7 +64,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_option.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_gear_stats.cpp">
 			
@@ -147,7 +148,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_item_data_import_ptr.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\sc_item_data_import_noptr.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
