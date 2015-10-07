@@ -379,14 +379,23 @@ enum full_result_e
   FULLTYPE_MAX
 };
 
-#define RESULT_HIT_MASK   ( (1<<RESULT_GLANCE) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
-#define RESULT_CRIT_MASK  ( (1<<RESULT_CRIT) )
-#define RESULT_MISS_MASK  ( (1<<RESULT_MISS) )
-#define RESULT_DODGE_MASK ( (1<<RESULT_DODGE) )
-#define RESULT_PARRY_MASK ( (1<<RESULT_PARRY) )
-#define RESULT_NONE_MASK  ( (1<<RESULT_NONE) )
-#define RESULT_MULTISTRIKE_MASK ( (1<<RESULT_MULTISTRIKE) | (1<<RESULT_MULTISTRIKE_CRIT) )
-#define RESULT_ALL_MASK  -1
+const unsigned RESULT_HIT_MASK = (1 << RESULT_GLANCE) | (1 << RESULT_CRIT)
+    | (1 << RESULT_HIT);
+
+const unsigned RESULT_CRIT_MASK = (1 << RESULT_CRIT);
+
+const unsigned RESULT_MISS_MASK = (1 << RESULT_MISS);
+
+const unsigned RESULT_DODGE_MASK = (1 << RESULT_DODGE);
+
+const unsigned RESULT_PARRY_MASK = (1 << RESULT_PARRY);
+
+const unsigned RESULT_NONE_MASK = (1 << RESULT_NONE);
+
+const unsigned RESULT_MULTISTRIKE_MASK = (1 << RESULT_MULTISTRIKE)
+    | (1 << RESULT_MULTISTRIKE_CRIT);
+
+const unsigned RESULT_ALL_MASK = -1;
 
 enum special_effect_e
 {
@@ -536,7 +545,8 @@ const int64_t SCHOOL_MAGIC_MASK(
         | (int64_t(1) << SCHOOL_FROST) | (int64_t(1) << SCHOOL_FROSTFIRE)
         | (int64_t(1) << SCHOOL_HOLY) | (int64_t(1) << SCHOOL_NATURE)
         | (int64_t(1) << SCHOOL_SHADOW));
-#define SCHOOL_ALL_MASK    ( int64_t( -1 ) )
+
+const int64_t SCHOOL_ALL_MASK( -1 );
 
 enum weapon_e
 {
