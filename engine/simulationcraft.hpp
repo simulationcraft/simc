@@ -3665,7 +3665,7 @@ struct item_t
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
-      armor( 0 ), initial_cd( timespan_t::zero() ), data()
+      armor( 0 ), data(), initial_cd( timespan_t::zero() )
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
