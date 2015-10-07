@@ -13,7 +13,7 @@ SRC += \
     util$(PATHSEP)concurrency.hpp \
     util$(PATHSEP)cache.hpp \
     report$(PATHSEP)sc_report.hpp \
-    dbc$(PATHSEP)generated$(PATHSEP)specialization.hpp \
+    dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \
     sc_timespan.hpp \

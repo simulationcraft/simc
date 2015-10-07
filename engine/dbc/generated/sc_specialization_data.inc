@@ -1,9 +1,3 @@
-// ==========================================================================
-// Dedmonwakeen's Raid DPS/TPS Simulator.
-// Send questions to natehieter@gmail.com
-// ==========================================================================
-#ifndef SPECIALIZATION_HPP
-#define SPECIALIZATION_HPP
 
 enum specialization_e {
   SPEC_NONE            = 0,
@@ -49,6 +43,7 @@ enum specialization_e {
 
 namespace specdata {
 static const unsigned n_specs = 37;
+static const unsigned spec_to_idx_map_len = 271;
 static const specialization_e __specs[37] = {
   PET_FEROCITY, 
   PET_TENACITY, 
@@ -103,16 +98,4 @@ static const int __idx_specs[271] = {
    0,  1,  2,  0,  1,  2,  0,  1,  2,  0,  1,  2,  0,  1,  2,  0,  1,  2,  0,  2,  1
 };
 
-inline unsigned spec_count()
-{ return n_specs; }
-
-inline specialization_e spec_id( unsigned idx )
-{ assert( idx < n_specs ); return __specs[ idx ]; }
-
-inline int spec_idx( specialization_e spec )
-{ assert( spec < 271 ); return __idx_specs[ spec ]; }
-
-}
-
-#endif
-
+} // namespace specdata

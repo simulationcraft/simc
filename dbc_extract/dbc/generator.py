@@ -281,13 +281,11 @@ class SpecializationEnumGenerator(DataGenerator):
 
         # Ugliness abound, but the easiest way to iterate over all specs is this ...
         s += 'namespace specdata {\n';
-        s += 'static const unsigned n_specs = %u;\n' % len(spec_arr);
+        s += 'static const unsigned n_specs = %u;\n\n' % len(spec_arr);
+        s += 'static const unsigned spec_to_idx_map_len = %u;\n\n' % len(spec_to_idx_map)
         s += 'static const specialization_e __specs[%u] = {\n  %s\n};\n\n' % (len(spec_arr), ', \n  '.join(spec_arr))
         s += 'static const int __idx_specs[%u] = {%s\n};\n\n' % (len(spec_to_idx_map), spec_idx_str)
-        s += 'inline unsigned spec_count()\n{ return n_specs; }\n\n';
-        s += 'inline specialization_e spec_id( unsigned idx )\n{ assert( idx < n_specs ); return __specs[ idx ]; }\n\n'
-        s += 'inline int spec_idx( specialization_e spec )\n{ assert( spec < %d ); return __idx_specs[ spec ]; }\n\n' % len(spec_to_idx_map)
-        s += '}\n'
+        s += '} // namespace specdata\n'
 
         return s
 

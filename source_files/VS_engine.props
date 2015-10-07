@@ -16,7 +16,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\util\concurrency.hpp" />
 		<ClInclude Include="..\engine\util\cache.hpp" />
 		<ClInclude Include="..\engine\report\sc_report.hpp" />
-		<ClInclude Include="..\engine\dbc\generated\specialization.hpp" />
+		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
 		<ClInclude Include="..\engine\simulationcraft.hpp" />
 		<ClInclude Include="..\engine\sc_timespan.hpp" />

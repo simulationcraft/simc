@@ -14,7 +14,7 @@
 
 #include "data_definitions.hh"
 #include "data_enums.hh"
-#include "generated/specialization.hpp"
+#include "specialization.hpp"
 
 // ==========================================================================
 // Forward declaration

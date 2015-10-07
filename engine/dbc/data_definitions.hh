@@ -1,8 +1,10 @@
 #ifndef DATA_DEFINITIONS_HH
 #define DATA_DEFINITIONS_HH
 
+#include "config.hpp"
 #include "data_enums.hh"
-#include "generated/specialization.hpp"
+#include "specialization.hpp"
+#include <cstddef>
 
 // Spell.dbc
 

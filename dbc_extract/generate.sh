@@ -63,20 +63,6 @@ fi
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_scaling           >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_name_desc         >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 
-(
-cat << zz1234
-// ==========================================================================
-// Dedmonwakeen's Raid DPS/TPS Simulator.
-// Send questions to natehieter@gmail.com
-// ==========================================================================
-#ifndef SPECIALIZATION_HPP
-#define SPECIALIZATION_HPP
+./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD -t spec_enum >> $OUTPATH/sc_specialization_data.inc
 
-zz1234
-) > $OUTPATH/specialization.hpp
-
-./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD -t spec_enum >> $OUTPATH/specialization.hpp
-
-echo "#endif" >> $OUTPATH/specialization.hpp
-echo "" >> $OUTPATH/specialization.hpp
 
