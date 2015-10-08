@@ -42,28 +42,9 @@ struct rng_t
   double gauss( double mean, double stddev, bool truncate_low_end = false );
   double exponential( double nu );
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
-
-  /// timespan uniform distribution in the range [min max]
-  timespan_t range( timespan_t min, timespan_t max )
-  {
-    return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
-                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
-  }
-
-  /// timespan Gaussian Distribution
-  timespan_t gauss( timespan_t mean, timespan_t stddev )
-  {
-    return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
-  }
-
-  /// tiemspan exponentially Modified Gaussian Distribution
-  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-  {
-    return timespan_t::from_native( exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-               static_cast<double>( timespan_t::to_native( stddev ) ),
-               static_cast<double>( timespan_t::to_native( nu ) ) ) );
-  }
+  timespan_t range( timespan_t min, timespan_t max );
+  timespan_t gauss( timespan_t mean, timespan_t stddev );
+  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
 protected:
   rng_t();
 private:
