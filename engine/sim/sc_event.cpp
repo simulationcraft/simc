@@ -192,11 +192,8 @@ void event_manager_t::add_event( event_t* e,
   }
 
   // Determine the timing wheel position to which the event will belong
-#if defined(SC_USE_INTEGER_TIME)
-  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> wheel_shift ) & wheel_mask;
-#else
-  uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
-#endif
+  // Only valid for integer based timespan_t
+  uint32_t slice = static_cast<uint32_t>(( e -> time.total_millis() >> wheel_shift ) & wheel_mask);
 
   // Insert event into the event list at the appropriate time
   event_t** prev = &( timing_wheel[ slice ] );
@@ -360,11 +357,8 @@ void event_manager_t::init()
 
   wheel_time = timespan_t::from_seconds( wheel_seconds );
 
-#if defined(SC_USE_INTEGER_TIME)
+  // Only valid for integer based timespan_t
   wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> wheel_shift );
-#else
-  wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
-#endif
 
   // Round up the wheel depth to the nearest power of 2 to enable a fast "mod" operation.
   for ( wheel_mask = 2; wheel_mask < wheel_size; wheel_mask *= 2 ) { continue; }

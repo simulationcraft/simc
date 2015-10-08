@@ -14,7 +14,6 @@
 #endif
 
 #define SC_USE_STAT_CACHE
-#define SC_USE_INTEGER_TIME
 
 // Platform, compiler and general configuration
 #include "config.hpp"
