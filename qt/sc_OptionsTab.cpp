@@ -656,7 +656,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "num_target", choice.num_target );
   load_setting( settings, "player_skill", choice.player_skill );
   load_setting( settings, "threads", choice.threads, QString::number( QThread::idealThreadCount() ) );
-  load_setting( settings, "process_priority", choice.process_priority, "Lowest" );
+  load_setting( settings, "process_priority", choice.process_priority, "Low" );
   load_setting( settings, "auto_save", choice.auto_save, "No" );
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
