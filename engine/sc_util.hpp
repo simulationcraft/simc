@@ -10,9 +10,11 @@
 #include "sc_enums.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/specialization.hpp"
+#include "sc_timespan.hpp"
 #include <sstream>
 #include <vector>
 #include <string>
+#include <cstdarg>
 
 // Forward delcarations
 struct player_t;
@@ -29,7 +31,6 @@ double cpu_time();
 template <typename T>
 T ability_rank( int player_level, T ability_value, int ability_level, ... );
 double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
-
 const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
 const char* flask_type_string         ( flask_e type );
@@ -58,10 +59,8 @@ const char* special_effect_string     ( special_effect_e type );
 const char* special_effect_source_string( special_effect_source_e type );
 const char* scale_metric_type_abbrev  ( scale_metric_e );
 const char* scale_metric_type_string  ( scale_metric_e );
-
 bool is_match_slot( slot_e slot );
 item_subclass_armor matching_armor_type ( player_e ptype );
-
 const char* slot_type_string          ( slot_e type );
 const char* stat_type_string          ( stat_e type );
 const char* stat_type_abbrev          ( stat_e type );
@@ -71,13 +70,10 @@ const char* stat_type_askmrrobot      ( stat_e type );
 const char* weapon_type_string        ( weapon_e type );
 const char* weapon_class_string       ( int class_ );
 const char* weapon_subclass_string    ( int subclass );
-
 const char* item_quality_string       ( int item_quality );
 const char* specialization_string     ( specialization_e spec );
-
 resource_e  translate_power_type      ( power_e );
 stat_e      power_type_to_stat        ( power_e );
-
 attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
 flask_e parse_flask_type         ( const std::string& name );
@@ -96,17 +92,12 @@ slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 scale_metric_e parse_scale_metric( const std::string& name );
 specialization_e parse_specialization_type( const std::string &name );
-
 const char* movement_direction_string( movement_direction_e );
 movement_direction_e parse_movement_direction( const std::string& name );
-
 item_subclass_armor parse_armor_type( const std::string& name );
 weapon_e parse_weapon_type       ( const std::string& name );
-
 int parse_item_quality                ( const std::string& quality );
-
 bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
-
 int class_id_mask( player_e type );
 int class_id( player_e type );
 unsigned race_mask( race_e type );
@@ -114,7 +105,6 @@ unsigned race_id( race_e type );
 unsigned pet_mask( pet_e type );
 unsigned pet_id( pet_e type );
 player_e pet_class_type( pet_e type );
-
 const char* class_id_string( player_e type );
 player_e translate_class_id( int cid );
 player_e translate_class_str( const std::string& s );
@@ -128,7 +118,6 @@ slot_e translate_invtype( inventory_type inv_type );
 weapon_e translate_weapon_subclass( int weapon_subclass );
 item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
-
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 double stat_itemization_weight( stat_e s );
@@ -140,9 +129,7 @@ std::string& replace_all( std::string& s, const std::string&, const std::string&
 std::string& erase_all( std::string& s, const std::string& from );
 
 template <typename T>
-std::string to_string( const T& t )
-{ std::stringstream s; s << t; return s.str(); }
-
+std::string to_string( const T& t );
 std::string to_string( double f );
 std::string to_string( double f, int precision );
 
@@ -235,3 +222,40 @@ inline std::string from_string( const std::string& v )
 }
 
 } // namespace util
+
+
+/* Simple String to Number function, using stringstream
+ * This will NOT translate all numbers in the string to a number,
+ * but stops at the first non-numeric character.
+ */
+template <typename T>
+T util::str_to_num ( const std::string& text )
+{
+  std::istringstream ss( text );
+  T result;
+  return ss >> result ? result : T();
+}
+
+// ability_rank =====================================================
+template <typename T>
+T util::ability_rank( int player_level,
+                      T   ability_value,
+                      int ability_level, ... )
+{
+  va_list vap;
+  va_start( vap, ability_level );
+
+  while ( player_level < ability_level )
+  {
+    ability_value = va_arg( vap, T );
+    ability_level = va_arg( vap, int );
+  }
+
+  va_end( vap );
+
+  return ability_value;
+}
+
+template <typename T>
+std::string util::to_string( const T& t )
+{ std::stringstream s; s << t; return s.str(); }

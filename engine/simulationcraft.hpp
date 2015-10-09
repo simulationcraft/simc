@@ -7149,38 +7149,6 @@ public:
   }
 };
 
-/* Simple String to Number function, using stringstream
- * This will NOT translate all numbers in the string to a number,
- * but stops at the first non-numeric character.
- */
-template <typename T>
-T util::str_to_num ( const std::string& text )
-{
-  std::istringstream ss( text );
-  T result;
-  return ss >> result ? result : T();
-}
-
-// ability_rank =====================================================
-template <typename T>
-T util::ability_rank( int player_level,
-                      T   ability_value,
-                      int ability_level, ... )
-{
-  va_list vap;
-  va_start( vap, ability_level );
-
-  while ( player_level < ability_level )
-  {
-    ability_value = va_arg( vap, T );
-    ability_level = va_arg( vap, int );
-  }
-
-  va_end( vap );
-
-  return ability_value;
-}
-
 template <class T>
 sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 {
