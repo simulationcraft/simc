@@ -951,9 +951,14 @@ protected:
     errorReturn -> baseUrl = errorOption -> url;
     return true;
   }
-#elif ( QT_VERSION >= QT_VERSION_CHECK( 5, 5, 0 ) ) // Functionality added to webengine in qt 5.5
-  bool acceptNavigationRequest( const QUrl &url, NavigationType, bool )
+#elif defined( SC_USE_WEBENGINE ) && ( QT_VERSION >= QT_VERSION_CHECK( 5, 5, 0 ) ) // Functionality added to webengine in qt 5.5
+  bool acceptNavigationRequest( const QUrl &url, NavigationType, bool isMainFrame )
   {
+    if ( ! isMainFrame )
+    {
+      return false;
+    }
+
     QString url_to_show = url.toString();
     if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( "battlenet" ) || url_to_show.contains( "github.com" ) )
       return true;
