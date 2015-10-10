@@ -5,6 +5,10 @@
 #include "sc_SimulateTab.hpp"
 #include <locale>
 
+#if 0
+#include <fstream>
+#endif
+
 /* Parse additional arguments
  * 1. Argument is parsed as a file name, complete content goes into simulate tab.
  * Following arguments are appended as new lines.
@@ -29,8 +33,24 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   }
 }
 
+#if 0
+namespace
+{
+std::ofstream debugStream("debug.log");
+
+void messageOutput(QtMsgType /* type */, const QMessageLogContext& context, const QString& message)
+{
+  debugStream << context.file << ":" << context.line << ": " << message.toStdString() << std::endl;
+}
+}
+#endif
+
 int main( int argc, char *argv[] )
 {
+#if 0
+  qInstallMessageHandler(messageOutput);
+#endif
+
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
