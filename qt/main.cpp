@@ -1,9 +1,10 @@
-﻿#include "simulationcraft.hpp"
-#include "simulationcraftqt.hpp"
-#include <QLocale>
+﻿#include <QLocale>
 #include <QtWidgets/QApplication>
-#include "sc_SimulateTab.hpp"
 #include <locale>
+
+#include "simulationcraft.hpp"
+#include "simulationcraftqt.hpp"
+#include "sc_SimulateTab.hpp"
 
 #if 0
 #include <fstream>
@@ -84,7 +85,12 @@ int main( int argc, char *argv[] )
   qDebug() << "[Localization]: Seleced gui language: " << lang;
   if ( lang == "auto" )
   {
-    lang = QLocale::system().name().split('_').at(1).toLower();
+    QString langName = QLocale::system().name();
+    QStringList spl = langName.split( '_' );
+    if ( spl.length() >= 2 )
+    {
+      lang = spl[ 1 ].toLower();
+    }
     qDebug() << "[Localization]: QLocale system language: " << lang;
   }
   QTranslator myappTranslator;
