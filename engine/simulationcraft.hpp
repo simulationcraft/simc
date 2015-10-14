@@ -4823,7 +4823,7 @@ public:
   school_e school;
 
   /// Spell id if available, 0 otherwise
-  uint32_t id;
+  unsigned id;
 
   /**
    * @brief player & action-name unique id.
@@ -5044,6 +5044,7 @@ public:
    */
   bool normalize_weapon_speed;
 
+  /// Static action cooldown duration multiplier
   double base_cooldown_reduction;
 
   /**
@@ -5092,11 +5093,16 @@ public:
    * @endcode
    */
   cooldown_t* cooldown;
+
+  /// action statistics, merged by action-name
   stats_t* stats;
   event_t* execute_event;
   action_cost_tick_event_t* cost_tick_event;
   timespan_t time_to_execute, time_to_travel;
   double resource_consumed;
+  timespan_t last_reaction_time;
+
+  /// Marker for sample action priority list reporting
   char marker;
   // options
   int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number;
@@ -5113,21 +5119,38 @@ public:
   action_t* sync_action;
   std::string signature_str;
   std::string target_str;
-  std::string label_str;
-  timespan_t last_reaction_time;
   target_specific_t<dot_t> target_specific_dot;
   action_priority_list_t* action_list;
+
+  /**
+   * @brief Resource starvation tracking.
+   *
+   * Tracking proc triggered on resource-starved ready() calls.
+   * Can be overridden by class modules for tracking purposes.
+   */
   proc_t* starved_proc;
-  int64_t total_executions;
-  cooldown_t line_cooldown; // specific to action_t object, not shared by name
+  uint_least64_t total_executions;
+
+  /**
+   * @brief Cooldown for specific APL line.
+   *
+   * Tied to a action_t object, and not shared by action-name,
+   * this cooldown helps articifally restricting usage of a specific line
+   * in the APL.
+   */
+  cooldown_t line_cooldown;
   const action_priority_t* signature;
   std::vector<std::unique_ptr<option_t>> options;
 
   action_state_t* state_cache;
-  action_state_t* execute_state; /* State of the last execute() */
-  action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
-  uint32_t snapshot_flags;
-  uint32_t update_flags;
+
+  /// State of the last execute()
+  action_state_t* execute_state;
+
+  /// Optional - if defined before execute(), will be copied into execute_state
+  action_state_t* pre_execute_state;
+  unsigned snapshot_flags;
+  unsigned update_flags;
 private:
   std::vector<travel_event_t*> travel_events;
 
@@ -5137,7 +5160,19 @@ public:
   virtual ~action_t();
 
   player_t* select_target_if_target();
-  const spell_data_t& data() const { return ( *s_data ); }
+
+  /**
+   * @brief Spell Data associated with the action.
+   *
+   * spell_data_t::nil() if no spell data is available,
+   * spell_data_t::not_found if spell given was not found.
+   *
+   * This means that if no spell data is available/found (eg. talent not available),
+   * all spell data fields will be filled with 0 and can thus be used directly
+   * without checking specifically for the spell_data_t::ok()
+   */
+  const spell_data_t& data() const
+  { return ( *s_data ); }
   void parse_spell_data( const spell_data_t& );
   void parse_effect_data( const spelleffect_data_t& );
   virtual void parse_options( const std::string& options_str );
@@ -5504,7 +5539,7 @@ public:
 
   virtual void trigger_dot( action_state_t* );
 
-  virtual void snapshot_internal( action_state_t*, uint32_t, dmg_e );
+  virtual void snapshot_internal( action_state_t*, unsigned flags, dmg_e );
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt )
   { snapshot_internal( s, snapshot_flags, rt ); }
@@ -5556,7 +5591,6 @@ public:
   {
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
-
 };
 
 struct call_action_list_t : public action_t

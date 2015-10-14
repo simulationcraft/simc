@@ -401,7 +401,7 @@ std::string wowhead::decorated_action_name( const std::string& name,
   {
     spell_id = action -> id;
     if ( spell_id > 1 )
-      spell_name = action -> s_data -> name_cstr();
+      spell_name = action -> data().name_cstr();
   }
 
   util::tokenize( spell_name );

@@ -838,32 +838,34 @@ struct dbc_potion_t : public action_t
     }
 
     // Setup the stat buff, use the first available spell in the potion item
-    for ( size_t i = 0, end = sizeof_array( item -> id_spell ); i < end; i++ )
+    for ( const auto id_spell : item -> id_spell )
     {
-      if ( item -> id_spell[ i ] > 0 )
+      if ( id_spell <= 0 )
+        continue;
+
+      // Safe cast, as we check for positive above
+      const unsigned id = static_cast< unsigned >(id_spell);
+
+      const spell_data_t* spell = p -> find_spell( id );
+      if ( spell -> id() != id )
+        continue;
+
+      std::string spell_name = spell -> name_cstr();
+      util::tokenize( spell_name );
+      buff_t* existing_buff = buff_t::find( p -> buff_list, spell_name );
+      if ( ! existing_buff )
+        stat_buff = stat_buff_creator_t( p, spell_name, spell );
+      else
       {
-        const spell_data_t* spell = p -> find_spell( item -> id_spell[ i ] );
-        // Safe cast, as we check for positive above
-        if ( spell -> id() != static_cast< unsigned >( item -> id_spell[ i ] ) )
-          continue;
-
-        std::string spell_name = spell -> name_cstr();
-        util::tokenize( spell_name );
-        buff_t* existing_buff = buff_t::find( p -> buff_list, spell_name );
-        if ( ! existing_buff )
-          stat_buff = stat_buff_creator_t( p, spell_name, spell );
-        else
-        {
-          assert( dynamic_cast< stat_buff_t* >( existing_buff ) && "Potion stat buff is not stat_buff_t" );
-          stat_buff = static_cast< stat_buff_t* >( existing_buff );
-        }
-
-        id = spell -> id();
-        s_data = spell;
-
-        stats = player -> get_stats( spell_name, this );
-        break;
+        assert( dynamic_cast< stat_buff_t* >( existing_buff ) && "Potion stat buff is not stat_buff_t" );
+        stat_buff = static_cast< stat_buff_t* >( existing_buff );
       }
+
+      this -> id = spell -> id();
+      s_data = spell;
+
+      stats = player -> get_stats( spell_name, this );
+      break;
     }
 
     if ( ! stat_buff )

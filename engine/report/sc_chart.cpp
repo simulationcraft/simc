@@ -3582,8 +3582,8 @@ highchart::time_series_t& chart::generate_stats_timeline( highchart::time_series
   if ( s.type == STATS_DMG )
   {
     ts.set_yaxis_title( "Damage per second" );
-    if ( s.action_list.size() > 0 && s.action_list[ 0 ] -> s_data -> id() != 0 )
-      ts.set_title( std::string( s.action_list[ 0 ] -> s_data -> name_cstr() ) + " Damage per second" );
+    if ( s.action_list.size() > 0 && s.action_list[ 0 ] -> data().id() != 0 )
+      ts.set_title( std::string( s.action_list[ 0 ] -> data().name_cstr() ) + " Damage per second" );
     else
       ts.set_title( s.name_str + " Damage per second" );
   }

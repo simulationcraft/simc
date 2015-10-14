@@ -404,7 +404,7 @@ action_t::action_t( action_e       ty,
   }
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
+    sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( data().ok() ? data().id() : -1 ) );
 
   if ( !player -> initialized )
   {
@@ -463,6 +463,7 @@ action_t::action_t( action_e       ty,
   add_option( opt_deprecated( "time>", "if=time>=" ) );
   add_option( opt_deprecated( "travel_speed", "if=travel_speed" ) );
   add_option( opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ) );
+  add_option( opt_deprecated( "label", "N/A" ) );
 
   add_option( opt_string( "if", if_expr_str ) );
   add_option( opt_string( "interrupt_if", interrupt_if_expr_str ) );
@@ -477,7 +478,6 @@ action_t::action_t( action_e       ty,
   add_option( opt_string( "sync", sync_str ) );
   add_option( opt_bool( "wait_on_ready", wait_on_ready ) );
   add_option( opt_string( "target", target_str ) );
-  add_option( opt_string( "label", label_str ) );
   add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
   add_option( opt_float( "action_skill", action_skill ) );
 }
@@ -2957,7 +2957,7 @@ timespan_t action_t::tick_time( double haste ) const
 
 // action_t::snapshot_internal ==============================================
 
-void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt )
 {
   assert( state );
 
