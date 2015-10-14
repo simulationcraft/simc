@@ -7,6 +7,8 @@
 
 #if defined(SC_WINDOWS)
 #include <windows.h>
+#undef min
+#undef max
 #endif
 
 #if !defined(SC_WINDOWS)
@@ -151,13 +153,15 @@ void stopwatch_t::now( int64_t* now_sec,
   else if ( type == STOPWATCH_CPU )
   {
     FILETIME lpCreationTime, lpExitTime, lpKernelTime, lpUserTime;
-    if ( GetProcessTimes( GetCurrentProcess(), &lpCreationTime, &lpExitTime, &lpKernelTime, &lpUserTime ) != 0 )
+    if ( GetProcessTimes( GetCurrentProcess(), &lpCreationTime, &lpExitTime, &lpKernelTime, &lpUserTime ) )
     {
-      //  Returns total user time.
+      //  Returns total user time in 100-ns ticks
       //  Can be tweaked to include kernel times as well.
-      auto t = lpUserTime.dwLowDateTime | ( (unsigned long long) lpUserTime.dwHighDateTime << 32 ); // 100-ns
-      *now_sec = t / 10000000;
-      *now_usec = ( t % 10000000 ) / 10;
+      ULARGE_INTEGER t;
+      t.LowPart = lpUserTime.dwLowDateTime;
+      t.HighPart = lpUserTime.dwHighDateTime;
+      *now_sec = t.QuadPart / 10000000;
+      *now_usec = ( t.QuadPart % 10000000 ) / 10;
     }
     else
     {
@@ -169,13 +173,15 @@ void stopwatch_t::now( int64_t* now_sec,
   else if ( type == STOPWATCH_THREAD )
    {
      FILETIME lpCreationTime, lpExitTime, lpKernelTime, lpUserTime;
-     if ( GetThreadTimes( GetCurrentThread(), &lpCreationTime, &lpExitTime, &lpKernelTime, &lpUserTime ) != 0 )
+     if ( GetThreadTimes( GetCurrentThread(), &lpCreationTime, &lpExitTime, &lpKernelTime, &lpUserTime ) )
      {
-       //  Returns total user time.
+       //  Returns total user time in 100-ns ticks
        //  Can be tweaked to include kernel times as well.
-       auto t = lpUserTime.dwLowDateTime | ( (unsigned long long) lpUserTime.dwHighDateTime << 32 ); // 100-ns
-       *now_sec = t / 10000000;
-       *now_usec = ( t % 10000000 ) / 10;
+       ULARGE_INTEGER t;
+       t.LowPart = lpUserTime.dwLowDateTime;
+       t.HighPart = lpUserTime.dwHighDateTime;
+       *now_sec = t.QuadPart / 10000000;
+       *now_usec = ( t.QuadPart % 10000000 ) / 10;
      }
      else
      {
