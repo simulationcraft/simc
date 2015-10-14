@@ -7211,6 +7211,27 @@ void player_t::create_talents_wowhead()
   talents_str = result;
 }
 
+/// Get average item level the player is wearing
+double player_t::avg_item_level() const
+{
+  double avg_ilvl = 0.0;
+  int num_ilvl_items = 0;
+  for ( const auto& item : items )
+  {
+    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD
+        && item.slot != SLOT_RANGED && item.active() )
+    {
+      avg_ilvl += item.item_level();
+      num_ilvl_items++;
+    }
+  }
+
+  if ( num_ilvl_items > 1 )
+    avg_ilvl /= num_ilvl_items;
+
+  return avg_ilvl;
+}
+
 void player_t::create_talents_armory()
 {
   if ( is_enemy() ) return;
@@ -8937,7 +8958,7 @@ std::string player_t::create_profile( save_e stype )
     }
 
     profile_str += "\n# Gear Summary" + term;
-    double avg_ilvl = util::round( util::get_avg_itemlvl( *this ), 2 );
+    double avg_ilvl = util::round( avg_item_level(), 2 );
     profile_str += "# gear_ilvl=" + util::to_string( avg_ilvl, 2 ) + term;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {

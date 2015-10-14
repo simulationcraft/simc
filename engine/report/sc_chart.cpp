@@ -586,7 +586,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      std::string formatted_name = util::google_image_chart_encode( p -> name_str + ( sim.ilevel_raid_report ? ( "_" + util::to_string( util::get_avg_itemlvl( *p ), 1 ) ) : "" ) );
+      std::string formatted_name = util::google_image_chart_encode( p -> name_str + ( sim.ilevel_raid_report ? ( "_" + util::to_string( p -> avg_item_level(), 1 ) ) : "" ) );
       util::urlencode( formatted_name );
       double player_mean = 0.0;
       if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
@@ -2140,7 +2140,10 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( const 
 
     // if we're using a generic character, need spec
     if ( use_generic )
-      ss << util::tolower( spec );
+    {
+      util::tolower( spec );
+      ss << spec;
+    }
 
     ss << "#spec=" << spec << ";";
 

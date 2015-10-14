@@ -4136,6 +4136,7 @@ struct player_t : public actor_t
   double      get_player_distance( player_t& );
   double      get_ground_aoe_distance( action_state_t& );
   double      get_position_distance( double m = 0, double v = 0 );
+  double avg_item_level() const;
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
 
   // Targetdata stuff

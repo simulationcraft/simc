@@ -1166,8 +1166,7 @@ const char* util::slot_type_string( slot_e slot )
   }
 }
 
-// is_match_slot ============================================================
-
+/// Slots with matching type of armour (cloth/leather/mail/plate)
 bool util::is_match_slot( slot_e s )
 {
   switch ( s )
@@ -2273,7 +2272,7 @@ size_t util::string_split_allow_quotes( std::vector<std::string>& results, const
 
 /* replaces all occurrences of 'from' in the string 's', with 'to'
  */
-std::string& util::replace_all( std::string& s, const std::string& from, const std::string& to )
+void util::replace_all( std::string& s, const std::string& from, const std::string& to )
 {
   std::string::size_type pos;
   if ( ( pos = s.find( from ) ) != s.npos )
@@ -2287,13 +2286,11 @@ std::string& util::replace_all( std::string& s, const std::string& from, const s
     }
     while ( ( pos = s.find( from, pos ) ) != s.npos );
   }
-
-  return s;
 }
 
 // erase_all ================================================================
 
-std::string& util::erase_all( std::string& s, const std::string& from )
+void util::erase_all( std::string& s, const std::string& from )
 {
   std::string::size_type pos;
 
@@ -2305,8 +2302,6 @@ std::string& util::erase_all( std::string& s, const std::string& from )
     }
     while ( ( pos = s.find( from ) ) != s.npos );
   }
-
-  return s;
 }
 
 // item_quality_string ======================================================
@@ -2464,13 +2459,6 @@ int util::to_int( const char* str )
   return l;
 }
 
-// milliseconds =============================================================
-
-int64_t util::milliseconds()
-{
-  return 1000 * clock() / CLOCKS_PER_SEC;
-}
-
 // parse_date ===============================================================
 
 int64_t util::parse_date( const std::string& month_day_year )
@@ -2567,14 +2555,14 @@ int util::vprintf( const char *format, va_list fmtargs )
 
 // urlencode ================================================================
 
-std::string& util::urlencode( std::string& str )
+void util::urlencode( std::string& str )
 {
-  std::string::size_type l = str.length();
-  if ( ! l ) return str;
+  if ( str.empty() )
+    return;
 
   std::string temp;
 
-  for ( std::string::size_type i = 0; i < l; ++i )
+  for ( std::string::size_type i = 0, l = str.length(); i < l; ++i )
   {
     unsigned char c = str[ i ];
 
@@ -2592,8 +2580,6 @@ std::string& util::urlencode( std::string& str )
   }
 
   str.swap( temp );
-
-  return str;
 }
 
 // google image chart encoding ================================================
@@ -2620,28 +2606,6 @@ std::string util::google_image_chart_encode( const std::string& str )
   }
 
   return temp;
-}
-
-// get_avg_itemlvl ==========================================================
-
-double util::get_avg_itemlvl( const player_t& p )
-{
-  double avg_ilvl = 0.0;
-  int num_ilvl_items = 0;
-  for ( const auto& item : p.items )
-  {
-    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD
-        && item.slot != SLOT_RANGED && item.active() )
-    {
-      avg_ilvl += item.item_level();
-      num_ilvl_items++;
-    }
-  }
-
-  if ( num_ilvl_items > 1 )
-    avg_ilvl /= num_ilvl_items;
-
-  return avg_ilvl;
 }
 
 // create_blizzard_talent_url ===============================================
@@ -2700,14 +2664,14 @@ std::string util::create_blizzard_talent_url( const player_t& p )
 
 // urldecode ================================================================
 
-std::string& util::urldecode( std::string& str )
+void util::urldecode( std::string& str )
 {
-  std::string::size_type l = str.length();
-  if ( ! l ) return str;
+  if ( str.empty() )
+    return;
 
   std::string temp;
 
-  for ( std::string::size_type i = 0; i < l; ++i )
+  for ( std::string::size_type i = 0, l = str.length(); i < l; ++i )
   {
     unsigned char c = ( unsigned char ) str[ i ];
 
@@ -2724,8 +2688,6 @@ std::string& util::urldecode( std::string& str )
   }
 
   str.swap( temp );
-
-  return str;
 }
 
 // decode_html ==============================================================
@@ -2885,11 +2847,10 @@ double util::round( double X, unsigned int decplaces )
 
 // tolower ==================================================================
 
-std::string& util::tolower( std::string& str )
+void util::tolower( std::string& str )
 {
   // Transform all chars to lower case
   range::transform_self( str, ( int( * )( int ) ) std::tolower );
-  return str;
 }
 
 // tokenize =================================================================

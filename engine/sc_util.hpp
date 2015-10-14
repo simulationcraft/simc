@@ -31,6 +31,7 @@ double cpu_time();
 template <typename T>
 T ability_rank( int player_level, T ability_value, int ability_level, ... );
 double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
+
 const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
 const char* flask_type_string         ( flask_e type );
@@ -48,7 +49,6 @@ const char* result_type_string        ( result_e type );
 const char* block_result_type_string  ( block_result_e type );
 const char* full_result_type_string   ( full_result_e type );
 const char* amount_type_string        ( dmg_e type );
-uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 const char* school_type_string        ( school_e type );
 const char* armor_type_string         ( int type );
 const char* armor_type_string         ( item_subclass_armor type );
@@ -59,8 +59,6 @@ const char* special_effect_string     ( special_effect_e type );
 const char* special_effect_source_string( special_effect_source_e type );
 const char* scale_metric_type_abbrev  ( scale_metric_e );
 const char* scale_metric_type_string  ( scale_metric_e );
-bool is_match_slot( slot_e slot );
-item_subclass_armor matching_armor_type ( player_e ptype );
 const char* slot_type_string          ( slot_e type );
 const char* stat_type_string          ( stat_e type );
 const char* stat_type_abbrev          ( stat_e type );
@@ -72,8 +70,15 @@ const char* weapon_class_string       ( int class_ );
 const char* weapon_subclass_string    ( int subclass );
 const char* item_quality_string       ( int item_quality );
 const char* specialization_string     ( specialization_e spec );
+const char* movement_direction_string( movement_direction_e );
+const char* class_id_string( player_e type );
+
+uint32_t    school_type_component     ( school_e s_type, school_e c_type );
+bool is_match_slot( slot_e slot );
+item_subclass_armor matching_armor_type ( player_e ptype );
 resource_e  translate_power_type      ( power_e );
 stat_e      power_type_to_stat        ( power_e );
+
 attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
 flask_e parse_flask_type         ( const std::string& name );
@@ -92,10 +97,10 @@ slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 scale_metric_e parse_scale_metric( const std::string& name );
 specialization_e parse_specialization_type( const std::string &name );
-const char* movement_direction_string( movement_direction_e );
 movement_direction_e parse_movement_direction( const std::string& name );
 item_subclass_armor parse_armor_type( const std::string& name );
 weapon_e parse_weapon_type       ( const std::string& name );
+
 int parse_item_quality                ( const std::string& quality );
 bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
 int class_id_mask( player_e type );
@@ -105,7 +110,6 @@ unsigned race_id( race_e type );
 unsigned pet_mask( pet_e type );
 unsigned pet_id( pet_e type );
 player_e pet_class_type( pet_e type );
-const char* class_id_string( player_e type );
 player_e translate_class_id( int cid );
 player_e translate_class_str( const std::string& s );
 race_e translate_race_id( int rid );
@@ -121,12 +125,14 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 double stat_itemization_weight( stat_e s );
+std::string& glyph_name( std::string& n );
+
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
 size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );
 size_t string_split( const std::string& str, const char* delim, const char* format, ... );
 void string_strip_quotes( std::string& str );
-std::string& replace_all( std::string& s, const std::string&, const std::string& );
-std::string& erase_all( std::string& s, const std::string& from );
+void replace_all( std::string& s, const std::string&, const std::string& );
+void erase_all( std::string& s, const std::string& from );
 
 template <typename T>
 std::string to_string( const T& t );
@@ -138,7 +144,6 @@ unsigned to_unsigned( const char* str );
 int to_int( const std::string& str );
 int to_int( const char* str );
 
-int64_t milliseconds();
 int64_t parse_date( const std::string& month_day_year );
 
 int printf( const char *format, ... ) PRINTF_ATTRIBUTE( 1, 2 );
@@ -148,14 +153,13 @@ int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1, 0 );
 
 std::string encode_html( const std::string& );
 std::string decode_html( const std::string& str );
-std::string& urlencode( std::string& str );
-std::string& urldecode( std::string& str );
+void urlencode( std::string& str );
+void urldecode( std::string& str );
 std::string uchar_to_hex( unsigned char );
 std::string google_image_chart_encode( const std::string& str );
 std::string create_blizzard_talent_url( const player_t& p );
 
 bool str_compare_ci( const std::string& l, const std::string& r );
-std::string& glyph_name( std::string& n );
 bool str_in_str_ci ( const std::string& l, const std::string& r );
 bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 
@@ -163,9 +167,8 @@ double floor( double X, unsigned int decplaces = 0 );
 double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
 double approx_sqrt( double X );
-double get_avg_itemlvl( const player_t& p );
 
-std::string& tolower( std::string& str );
+void tolower( std::string& str );
 
 void tokenize( std::string& name );
 std::string inverse_tokenize( const std::string& name );
