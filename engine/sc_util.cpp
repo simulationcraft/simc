@@ -6,9 +6,8 @@
 #include "simulationcraft.hpp"
 
 #if defined(SC_WINDOWS)
+#define NOMINMAX
 #include <windows.h>
-#undef min
-#undef max
 #endif
 
 #if !defined(SC_WINDOWS)
