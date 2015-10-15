@@ -6,6 +6,10 @@
 #ifndef JSON_HPP
 #define JSON_HPP
 
+#include <string>
+#include <vector>
+#include <map>
+
 enum json_e { 
   JSON_UNKNOWN=0,
   JSON_NUM,
@@ -35,32 +39,32 @@ struct json_num_t : public json_node_t
   double num;
   int precision;
   json_num_t( double n, int p=-1 ) : json_node_t(JSON_NUM), num(n), precision(p) {}
-  void print( FILE* f=0, int spacing=0 );
-  void format( std::string& buffer, int spacing=0 );
+  void print( FILE* f=0, int spacing=0 ) override;
+  void format( std::string& buffer, int spacing=0 ) override;
 };
 
 struct json_str_t : public json_node_t
 {
   std::string str;
   json_str_t( const std::string& s ) : json_node_t(JSON_STR), str(s) {}
-  void print( FILE* f=0, int spacing=0 );
-  void format( std::string& buffer, int spacing=0 );
+  void print( FILE* f=0, int spacing=0 ) override;
+  void format( std::string& buffer, int spacing=0 ) override;
 };
 
 struct json_bool_t : public json_node_t
 {
   bool value;
   json_bool_t( bool v ) : json_node_t(JSON_BOOL), value(v) {}
-  void print( FILE* f=0, int spacing=0 );
-  void format( std::string& buffer, int spacing=0 );
+  void print( FILE* f=0, int spacing=0 ) override;
+  void format( std::string& buffer, int spacing=0 ) override;
 };
 
 struct json_array_t : public json_node_t
 {
   std::vector<json_node_t*> nodes;
   json_array_t() : json_node_t(JSON_ARRAY) {}
-  void print( FILE* f=0, int spacing=0 );
-  void format( std::string& buffer, int spacing=0 );
+  void print( FILE* f=0, int spacing=0 ) override;
+  void format( std::string& buffer, int spacing=0 ) override;
   json_num_t*   add_num  ( double num, int precision=-1 );
   json_str_t*   add_str  ( const std::string& str );
   json_bool_t*  add_bool ( bool value );
@@ -72,8 +76,8 @@ struct json_obj_t : public json_node_t
 {
   std::map<std::string,json_node_t*> nodes;
   json_obj_t() : json_node_t(JSON_OBJ) {}
-  void print( FILE* f=0, int spacing=0 );
-  void format( std::string& buffer, int spacing=0 );
+  void print( FILE* f=0, int spacing=0 ) override;
+  void format( std::string& buffer, int spacing=0 ) override;
   json_num_t*   add_num  ( const std::string& name, double num, int precision=-1 );
   json_str_t*   add_str  ( const std::string& name, const std::string& str );
   json_bool_t*  add_bool ( const std::string& name, bool value );

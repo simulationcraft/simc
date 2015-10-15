@@ -218,7 +218,7 @@ struct flask_base_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), player -> consumables.flask -> name() );
@@ -226,7 +226,7 @@ struct flask_base_t : public action_t
     player -> consumables.flask -> trigger();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! player -> sim -> allow_flasks )
       return false;
@@ -339,7 +339,7 @@ struct flask_t : public flask_base_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( alchemist )
     {
@@ -424,7 +424,7 @@ struct elixir_t : public action_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player_t& p = *player;
 
@@ -445,7 +445,7 @@ struct elixir_t : public action_t
     if ( sim -> log ) sim -> out_log.printf( "%s uses elixir %s", p.name(), data -> name.c_str() );
 
   }
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! player -> sim -> allow_flasks )
       return false;
@@ -597,7 +597,7 @@ struct food_t : public action_t
     return stat;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log )
       sim -> out_log.printf( "%s uses Food %s", player -> name(), util::food_type_string( type ) );
@@ -686,7 +686,7 @@ struct food_t : public action_t
     player -> consumables.food -> trigger();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! player -> sim -> allow_food )
       return false;
@@ -734,7 +734,7 @@ struct mana_potion_t : public action_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log ) sim -> out_log.printf( "%s uses Mana potion", player -> name() );
     double gain = rng().range( min, max );
@@ -742,7 +742,7 @@ struct mana_potion_t : public action_t
     player -> potion_used = true;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> potion_used )
       return false;
@@ -779,17 +779,17 @@ struct health_stone_t : public heal_t
     target = player;
   }
 
-  virtual void reset()
+  virtual void reset() override
   { charges = 3; }
 
-  virtual void execute()
+  virtual void execute() override
   {
     assert( charges > 0 );
     --charges;
     heal_t::execute();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( charges <= 0 )
       return false;
@@ -897,7 +897,7 @@ struct dbc_potion_t : public action_t
     pre_pot_time = std::max( timespan_t::zero(), std::min( pre_pot_time, stat_buff -> data().duration() ) );
   }
 
-  void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration ) override
   {
     // If the player is in combat, just make a very long CD
     if ( player -> in_combat )
@@ -909,10 +909,10 @@ struct dbc_potion_t : public action_t
   }
 
   // Needed to satisfy normal execute conditions
-  result_e calculate_result( action_state_t* ) const
+  result_e calculate_result( action_state_t* ) const override
   { return RESULT_HIT; }
 
-  void execute()
+  void execute() override
   {
     action_t::execute();
 
@@ -961,7 +961,7 @@ struct augmentation_t : public action_t
 
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     assert( player -> consumables.augmentation );
 
@@ -971,7 +971,7 @@ struct augmentation_t : public action_t
       sim -> out_log.printf( "%s uses augmentation.", player -> name() );
 
   }
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! player -> consumables.augmentation )
       return false;

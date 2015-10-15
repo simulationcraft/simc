@@ -6068,7 +6068,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
       {
       }
 
-      double evaluate()
+      double evaluate() override
       {
         priest_td_t& td = *player.get_target_data( action.target );
 
@@ -6088,7 +6088,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
       {
       }
 
-      double evaluate()
+      double evaluate() override
       {
         if ( player.target == action.target )
         {
@@ -6112,7 +6112,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
       {
       }
 
-      double evaluate()
+      double evaluate() override
       {
         if ( !priest.active_spells.shadowy_apparitions )
           return 0.0;

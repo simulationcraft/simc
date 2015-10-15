@@ -30,7 +30,7 @@ struct react_ready_trigger_t : public buff_event_t
   {}
   virtual const char* name() const override
   { return "react_ready_trigger"; }
-  void execute()
+  void execute() override
   {
     buff -> stack_react_ready_triggers[ stack ] = nullptr;
 
@@ -43,7 +43,7 @@ struct expiration_t : public buff_event_t
 {
   expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ) {}
 
-  virtual void execute()
+  virtual void execute() override
   {
     buff -> expiration = nullptr;
     buff -> expire();
@@ -59,7 +59,7 @@ struct tick_t : public buff_event_t
     buff_event_t( b, d ), current_value( value ), current_stacks( stacks )
   { }
 
-  void execute()
+  void execute() override
   {
     buff -> tick_event = nullptr;
 
@@ -106,7 +106,7 @@ struct buff_delay_t : public buff_event_t
     value( value ), duration( d ), stacks( stacks )
   {}
 
-  virtual void execute()
+  virtual void execute() override
   {
     // Add a Cooldown check here to avoid extra processing due to delays
     if ( buff -> cooldown -> remains() ==  timespan_t::zero() )
@@ -121,7 +121,7 @@ struct expiration_delay_t : public buff_event_t
     buff_event_t( b, d )
   { }
 
-  virtual void execute()
+  virtual void execute() override
   {
     buff -> expiration_delay = nullptr;
     // Call real expire after a delay
@@ -1313,7 +1313,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       duration_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_duration", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> buff_duration.total_seconds(); }
+      virtual double evaluate() override { return buff() -> buff_duration.total_seconds(); }
     };
     return new duration_expr_t( buff_name, action, static_buff );
   }
@@ -1323,7 +1323,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       remains_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_remains", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> remains().total_seconds(); }
+      virtual double evaluate() override { return buff() -> remains().total_seconds(); }
     };
     return new remains_expr_t( buff_name, action, static_buff );
   }
@@ -1333,7 +1333,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       cooldown_remains_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_cooldown_remains", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> cooldown -> remains().total_seconds(); }
+      virtual double evaluate() override { return buff() -> cooldown -> remains().total_seconds(); }
     };
     return new cooldown_remains_expr_t( buff_name, action, static_buff );
   }
@@ -1343,7 +1343,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       up_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_up", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> check() > 0; }
+      virtual double evaluate() override { return buff() -> check() > 0; }
     };
     return new up_expr_t( buff_name, action, static_buff );
   }
@@ -1353,7 +1353,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       down_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_down", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> check() <= 0; }
+      virtual double evaluate() override { return buff() -> check() <= 0; }
     };
     return new down_expr_t( buff_name, action, static_buff );
   }
@@ -1363,7 +1363,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       stack_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_stack", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> check(); }
+      virtual double evaluate() override { return buff() -> check(); }
     };
     return new stack_expr_t( buff_name, action, static_buff );
   }
@@ -1373,7 +1373,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       stack_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_stack_pct", bn, a, b ) {}
-      virtual double evaluate() { return 100.0 * buff() -> check() / buff() -> max_stack(); }
+      virtual double evaluate() override { return 100.0 * buff() -> check() / buff() -> max_stack(); }
     };
     return new stack_pct_expr_t( buff_name, action, static_buff );
   }
@@ -1383,7 +1383,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       max_stack_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_max_stack", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> max_stack(); }
+      virtual double evaluate() override { return buff() -> max_stack(); }
     };
     return new max_stack_expr_t( buff_name, action, static_buff );
   }
@@ -1393,7 +1393,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       value_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_value", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> value(); }
+      virtual double evaluate() override { return buff() -> value(); }
     };
     return new value_expr_t( buff_name, action, static_buff );
   }
@@ -1403,7 +1403,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       react_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_react", bn, a, b ) {}
-      virtual double evaluate() { return buff() -> stack_react(); }
+      virtual double evaluate() override { return buff() -> stack_react(); }
     };
     static_buff -> reactable = true;
     return new react_expr_t( buff_name, action, static_buff );
@@ -1414,7 +1414,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       react_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_react_pct", bn, a, b ) {}
-      virtual double evaluate() { return 100.0 * buff() -> stack_react() / buff() -> max_stack(); }
+      virtual double evaluate() override { return 100.0 * buff() -> stack_react() / buff() -> max_stack(); }
     };
     static_buff -> reactable = true;
     return new react_pct_expr_t( buff_name, action, static_buff );
@@ -1425,7 +1425,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       cooldown_react_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_cooldown_react", bn, a, b ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         if ( buff() -> check() && ! buff() -> may_react() )
           return 0;

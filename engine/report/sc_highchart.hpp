@@ -7,6 +7,11 @@
 
 #include "interfaces/sc_js.hpp"
 
+struct sim_t;
+struct stats_t;
+struct player_t;
+struct buff_t;
+
 namespace highchart
 {
 std::string build_id( const stats_t& stats, const std::string& suffix = "" );

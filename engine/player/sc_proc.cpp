@@ -485,21 +485,21 @@ struct proc_resource_t : public spell_t
     gain = player -> get_gain( token );
   }
 
-  void init()
+  void init() override
   {
     spell_t::init();
 
     snapshot_flags = update_flags = 0;
   }
 
-  void execute()
+  void execute() override
   {
     spell_t::execute();
 
     player -> resource_gain( gain_resource, gain_da, gain );
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     spell_t::tick( d );
 

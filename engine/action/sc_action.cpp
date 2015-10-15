@@ -25,7 +25,7 @@ struct player_gcd_event_t : public player_event_t
   virtual const char* name() const override
   { return "Player-Ready-GCD"; }
 
-  virtual void execute()
+  virtual void execute() override
   {
     for ( std::vector<action_t*>::const_iterator i = p() -> active_off_gcd_list -> off_gcd_actions.begin();
           i < p() -> active_off_gcd_list -> off_gcd_actions.end(); ++i )
@@ -98,7 +98,7 @@ struct action_execute_event_t : public player_event_t
       action_state_t::release( execute_state );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player_t* target = action -> target;
 
@@ -2300,7 +2300,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       state -> result       = result_type;
     }
 
-    virtual double evaluate()
+    virtual double evaluate() override
     {
       action.snapshot_state( state, amount_type );
       state -> target = action.target;
@@ -2328,7 +2328,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       target_expr_t( action_t& a ) : action_expr_t( "target", a )
       { }
 
-      double evaluate()
+      double evaluate() override
       { return static_cast<double>( action.target -> actor_index ); }
     };
     return new target_expr_t( *this );
@@ -2345,7 +2345,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         action_expr_t( "execute_time", a ), state( a.get_state() ), action( a )
       { }
 
-      double evaluate()
+      double evaluate() override
       {
         if ( action.channeled )
         {
@@ -2371,7 +2371,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct tick_time_expr_t : public action_expr_t
     {
       tick_time_expr_t( action_t& a ) : action_expr_t( "tick_time", a ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         dot_t* dot = action.get_dot();
         if ( dot -> is_ticking() )
@@ -2387,7 +2387,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct new_tick_time_expr_t : public action_expr_t
     {
       new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         return action.tick_time( action.player -> cache.spell_speed() ).total_seconds();
       }
@@ -2406,7 +2406,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct miss_react_expr_t : public action_expr_t
     {
       miss_react_expr_t( action_t& a ) : action_expr_t( "miss_react", a ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         dot_t* dot = action.get_dot();
         if ( dot -> miss_time < timespan_t::zero() ||
@@ -2423,7 +2423,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct cooldown_react_expr_t : public action_expr_t
     {
       cooldown_react_expr_t( action_t& a ) : action_expr_t( "cooldown_react", a ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         return action.cooldown -> up() &&
                action.cooldown -> reset_react <= action.sim -> current_time();
@@ -2436,7 +2436,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct cast_delay_expr_t : public action_expr_t
     {
       cast_delay_expr_t( action_t& a ) : action_expr_t( "cast_delay", a ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         if ( action.sim -> debug )
         {
@@ -2470,7 +2470,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         state -> chain_target = 0;
       }
 
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         action -> snapshot_state( state, RESULT_TYPE_NONE );
         state -> target = action -> target;
@@ -2498,7 +2498,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         state -> chain_target = 0;
       }
 
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         action -> snapshot_state( state, RESULT_TYPE_NONE );
         state -> target = action -> target;
@@ -2557,7 +2557,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         state -> n_targets = 1;
         state -> chain_target = 0;
       }
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         state -> target = action -> target;
         action -> snapshot_state( state, RESULT_TYPE_NONE );
@@ -2592,7 +2592,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             num_targets = 0;
           }
 
-          double evaluate()
+          double evaluate() override
           {
             num_targets = 0;
             for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
@@ -2625,7 +2625,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         prev_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev", a ),
           prev( a.player -> find_action( prev_action ) )
         {}
-        virtual double evaluate()
+        virtual double evaluate() override
         {
           if ( action.player -> last_foreground_action )
             return action.player -> last_foreground_action -> internal_id == prev -> internal_id;
@@ -2643,7 +2643,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           previously_used( a.player -> find_action( prev_action ) )
         {
         }
-        virtual double evaluate()
+        virtual double evaluate() override
         {
           if ( action.player -> last_gcd_action )
             return action.player -> last_gcd_action -> internal_id == previously_used -> internal_id;
@@ -2661,7 +2661,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           previously_off_gcd( a.player -> find_action( offgcdaction ) )
         {
         }
-        virtual double evaluate()
+        virtual double evaluate() override
         {
           if ( action.player -> off_gcdactions.size() > 0 )
           {
@@ -2687,7 +2687,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           gcd_time( 0 )
           {
           }
-          double evaluate()
+          double evaluate() override
           {
             gcd_time = action.player -> base_gcd.total_seconds();
             if ( action.player -> cache.attack_haste() < action.player -> cache.spell_haste() )
@@ -2711,7 +2711,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           gcd_remains( 0 )
           {
           }
-          double evaluate()
+          double evaluate() override
           {
             gcd_remains = ( action.player -> gcd_ready - action.sim -> current_time() ).total_seconds();
             return gcd_remains;
@@ -2736,7 +2736,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           if ( ! spell )
             a.sim -> errorf( "Warning: %s used invalid spell_targets action \"%s\"", a.player -> name(), spell_name[1].c_str() );
         }
-        double evaluate()
+        double evaluate() override
         {
           if ( spell )
           {
@@ -2781,7 +2781,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
       }
 
-      double evaluate()
+      double evaluate() override
       {
         double ret = 0;
         for (auto expr : expr_list)
@@ -2866,7 +2866,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         proxy_expr.resize( a.sim -> actor_list.size() + 1, 0 );
       }
 
-      double evaluate()
+      double evaluate() override
       {
         if ( proxy_expr[ action.target -> actor_index ] == 0 )
         {
@@ -2907,7 +2907,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct ok_expr_t : public action_expr_t
     {
       ok_expr_t( action_t& a ) : action_expr_t( "enabled", a ) {}
-      virtual double evaluate() { return action.data().found(); }
+      virtual double evaluate() override { return action.data().found(); }
     };
     return new ok_expr_t( *this );
   }
@@ -2916,7 +2916,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct executing_expr_t : public action_expr_t
     {
       executing_expr_t( action_t& a ) : action_expr_t( "executing", a ) {}
-      virtual double evaluate() { return action.execute_event != 0; }
+      virtual double evaluate() override { return action.execute_event != 0; }
     };
     return new executing_expr_t( *this );
   }

@@ -100,7 +100,9 @@ struct travel_event_t;
 struct xml_node_t;
 struct action_cost_tick_event_t;
 class xml_writer_t;
-
+namespace highchart {
+  struct chart_t;
+}
 
 
 #include "dbc/data_enums.hh"
@@ -935,9 +937,9 @@ struct stat_buff_t : public buff_t
   std::vector<buff_stat_t> stats;
   gain_t* stat_gain;
 
-  virtual void bump     ( int stacks = 1, double value = -1.0 );
-  virtual void decrement( int stacks = 1, double value = -1.0 );
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
+  virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
+  virtual void decrement( int stacks = 1, double value = -1.0 ) override;
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   virtual double value() override{ stack(); return stats[ 0 ].current_value; }
 
 protected:
@@ -962,8 +964,8 @@ protected:
   virtual void absorb_used( double /* amount */ ) {}
 
 public:
-  virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
+  virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
   double consume( double amount );
 };
@@ -977,9 +979,9 @@ protected:
   cost_reduction_buff_t( const cost_reduction_buff_creator_t& params );
   friend struct buff_creation::cost_reduction_buff_creator_t;
 public:
-  virtual void bump     ( int stacks = 1, double value = -1.0 );
-  virtual void decrement( int stacks = 1, double value = -1.0 );
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
+  virtual void bump     ( int stacks = 1, double value = -1.0 ) override;
+  virtual void decrement( int stacks = 1, double value = -1.0 ) override;
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
 struct haste_buff_t : public buff_t
@@ -988,8 +990,8 @@ protected:
   haste_buff_t( const haste_buff_creator_t& params );
   friend struct buff_creation::haste_buff_creator_t;
 public:
-  virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
+  virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() ) override;
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
 struct debuff_t : public buff_t
@@ -1101,7 +1103,7 @@ public:
   {}
 private:
   const T& t;
-  virtual double evaluate() { return coerce( t ); }
+  virtual double evaluate() override { return coerce( t ); }
 
 };
 
@@ -1121,7 +1123,7 @@ public:
 private:
   F f;
 
-  virtual double evaluate() { return coerce( f() ); }
+  virtual double evaluate() override { return coerce( f() ); }
 
 };
 
@@ -1134,7 +1136,7 @@ struct target_wrapper_expr_t : public expr_t
   // Inlined
   target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str );
   virtual player_t* target() const;
-  double evaluate();
+  double evaluate() override;
 
   ~target_wrapper_expr_t()
   { range::dispose( proxy_expr ); }
@@ -3755,7 +3757,7 @@ struct player_t : public actor_t
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e );
 
-  virtual const char* name() const { return name_str.c_str(); }
+  virtual const char* name() const override { return name_str.c_str(); }
 
   virtual void init();
   virtual void override_talent( std::string override_str );
@@ -4402,7 +4404,7 @@ struct player_demise_event_t : public player_event_t
   }
   virtual const char* name() const override
   { return "Player-Demise"; }
-  virtual void execute()
+  virtual void execute() override
   {
     p() -> demise();
   }
@@ -4437,98 +4439,98 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
 
-  virtual void init();
-  virtual void init_base_stats();
-  virtual void init_target();
-  virtual void reset();
+  virtual void init() override;
+  virtual void init_base_stats() override;
+  virtual void init_target() override;
+  virtual void reset() override;
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
-  virtual void assess_damage( school_e, dmg_e, action_state_t* s );
-  virtual void combat_begin();
+  virtual void assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  virtual void combat_begin() override;
 
-  virtual const char* name() const { return full_name_str.c_str(); }
+  virtual const char* name() const override { return full_name_str.c_str(); }
   virtual const player_t* get_owner_or_self() const override
   { return owner; }
 
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 
-  virtual double composite_attribute( attribute_e attr ) const;
-  virtual double composite_player_multiplier( school_e ) const;
+  virtual double composite_attribute( attribute_e attr ) const override;
+  virtual double composite_player_multiplier( school_e ) const override;
 
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
 
   double hit_exp() const;
   
-  virtual double composite_player_multistrike_damage_multiplier() const
+  virtual double composite_player_multistrike_damage_multiplier() const override
   { return owner -> composite_player_multistrike_damage_multiplier(); }
-  virtual double composite_player_multistrike_healing_multiplier() const
+  virtual double composite_player_multistrike_healing_multiplier() const override
   { return owner -> composite_player_multistrike_healing_multiplier(); }
 
-  virtual double composite_movement_speed() const
+  virtual double composite_movement_speed() const override
   { return owner -> composite_movement_speed(); }
 
-  virtual double composite_melee_expertise( const weapon_t* ) const
+  virtual double composite_melee_expertise( const weapon_t* ) const override
   { return hit_exp(); }
-  virtual double composite_melee_hit() const
+  virtual double composite_melee_hit() const override
   { return hit_exp(); }
-  virtual double composite_spell_hit() const
+  virtual double composite_spell_hit() const override
   { return hit_exp() * 2.0; }
 
   double pet_crit() const;
 
-  virtual double composite_melee_crit() const
+  virtual double composite_melee_crit() const override
   { return pet_crit(); }
-  virtual double composite_spell_crit() const
+  virtual double composite_spell_crit() const override
   { return pet_crit(); }
 
-  virtual double composite_melee_speed() const
+  virtual double composite_melee_speed() const override
   { return owner -> cache.attack_speed(); }
 
-  virtual double composite_melee_haste() const
+  virtual double composite_melee_haste() const override
   { return owner -> cache.attack_haste(); }
 
-  virtual double composite_spell_haste() const
+  virtual double composite_spell_haste() const override
   { return owner -> cache.spell_haste(); }
 
-  virtual double composite_spell_speed() const
+  virtual double composite_spell_speed() const override
   { return owner -> cache.spell_speed(); }
 
-  virtual double composite_multistrike() const
+  virtual double composite_multistrike() const override
   { return owner -> cache.multistrike(); }
 
-  virtual double composite_readiness() const
+  virtual double composite_readiness() const override
   { return owner -> cache.readiness(); }
 
-  virtual double composite_bonus_armor() const
+  virtual double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }
 
-  virtual double composite_damage_versatility() const
+  virtual double composite_damage_versatility() const override
   { return owner -> cache.damage_versatility(); }
 
-  virtual double composite_heal_versatility() const
+  virtual double composite_heal_versatility() const override
   { return owner -> cache.heal_versatility(); }
 
-  virtual double composite_mitigation_versatility() const
+  virtual double composite_mitigation_versatility() const override
   { return owner -> cache.mitigation_versatility(); }
 
-  virtual double composite_melee_attack_power() const;
+  virtual double composite_melee_attack_power() const override;
 
-  virtual double composite_spell_power( school_e school ) const;
+  virtual double composite_spell_power( school_e school ) const override;
 
   // Assuming diminishing returns are transfered to the pet as well
-  virtual double composite_dodge() const
+  virtual double composite_dodge() const override
   { return owner -> cache.dodge(); }
 
-  virtual double composite_parry() const
+  virtual double composite_parry() const override
   { return owner -> cache.parry(); }
 
   // Influenced by coefficients [ 0, 1 ]
-  virtual double composite_armor() const
+  virtual double composite_armor() const override
   { return owner -> cache.armor() * owner_coeff.armor; }
 
-  virtual void init_resources( bool force );
-  virtual bool requires_data_collection() const
+  virtual void init_resources( bool force ) override;
+  virtual bool requires_data_collection() const override
   { return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 ); }
 };
 
@@ -5590,7 +5592,7 @@ struct call_action_list_t : public action_t
   action_priority_list_t* alist;
 
   call_action_list_t( player_t*, const std::string& );
-  virtual void execute()
+  virtual void execute() override
   { assert( 0 ); }
 };
 
@@ -5604,40 +5606,40 @@ struct attack_t : public action_t
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Attack Overrides
-  virtual timespan_t execute_time() const;
-  virtual void execute();
-  virtual result_e calculate_result( action_state_t* ) const;
-  virtual void   init();
+  virtual timespan_t execute_time() const override;
+  virtual void execute() override;
+  virtual result_e calculate_result( action_state_t* ) const override;
+  virtual void   init() override;
 
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
-  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const;
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
+  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
 
-  virtual double  miss_chance( double hit, player_t* t ) const;
-  virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
-  virtual double  block_chance( action_state_t* s ) const;
-  virtual double  crit_block_chance( action_state_t* s ) const;
+  virtual double  miss_chance( double hit, player_t* t ) const override;
+  virtual double  dodge_chance( double /* expertise */, player_t* t ) const override;
+  virtual double  block_chance( action_state_t* s ) const override;
+  virtual double  crit_block_chance( action_state_t* s ) const override;
 
-  virtual double composite_hit() const
+  virtual double composite_hit() const override
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
-  virtual double composite_crit_multiplier() const
+  virtual double composite_crit_multiplier() const override
   { return action_t::composite_crit_multiplier() * player -> composite_melee_crit_multiplier(); }
 
-  virtual double composite_haste() const
+  virtual double composite_haste() const override
   { return action_t::composite_haste() * player -> cache.attack_haste(); }
 
   virtual double composite_expertise() const
   { return base_attack_expertise + player -> cache.attack_expertise(); }
 
-  virtual double composite_versatility( const action_state_t* state ) const
+  virtual double composite_versatility( const action_state_t* state ) const override
   { return action_t::composite_versatility( state ) + player -> cache.damage_versatility(); }
 
   virtual void reschedule_auto_attack( double old_swing_haste );
 
-  virtual void reset()
+  virtual void reset() override
   {
     attack_table.reset();
     action_t::reset();
@@ -5673,11 +5675,11 @@ struct melee_attack_t : public attack_t
   melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Melee Attack Overrides
-  virtual void init();
-  virtual double parry_chance( double /* expertise */, player_t* t ) const;
-  virtual double glance_chance( int delta_level ) const;
+  virtual void init() override;
+  virtual double parry_chance( double /* expertise */, player_t* t ) const override;
+  virtual double glance_chance( int delta_level ) const override;
 
-  virtual proc_types proc_type() const;
+  virtual proc_types proc_type() const override;
 };
 
 // Ranged Attack ===================================================================
@@ -5687,10 +5689,10 @@ struct ranged_attack_t : public attack_t
   ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
-  virtual double composite_target_multiplier( player_t* ) const;
-  virtual void schedule_execute( action_state_t* execute_state = nullptr );
+  virtual double composite_target_multiplier( player_t* ) const override;
+  virtual void schedule_execute( action_state_t* execute_state = nullptr ) override;
 
-  virtual proc_types proc_type() const;
+  virtual proc_types proc_type() const override;
 };
 
 // Spell Base ====================================================================
@@ -5703,23 +5705,23 @@ struct spell_base_t : public action_t
   spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Spell Base Overrides
-  virtual timespan_t gcd() const;
-  virtual timespan_t execute_time() const;
-  virtual timespan_t tick_time( double haste ) const;
-  virtual result_e   calculate_result( action_state_t* ) const;
-  virtual void   execute();
-  virtual void   schedule_execute( action_state_t* execute_state = nullptr );
+  virtual timespan_t gcd() const override;
+  virtual timespan_t execute_time() const override;
+  virtual timespan_t tick_time( double haste ) const override;
+  virtual result_e   calculate_result( action_state_t* ) const override;
+  virtual void   execute() override;
+  virtual void   schedule_execute( action_state_t* execute_state = nullptr ) override;
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   { return action_t::composite_crit() + player -> cache.spell_crit(); }
 
-  virtual double composite_haste() const
+  virtual double composite_haste() const override
   { return action_t::composite_haste() * player -> cache.spell_speed(); }
 
-  virtual double composite_crit_multiplier() const
+  virtual double composite_crit_multiplier() const override
   { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
 
-  virtual proc_types proc_type() const;
+  virtual proc_types proc_type() const override;
 };
 
 // Harmful Spell ====================================================================
@@ -5730,15 +5732,15 @@ public:
   spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
-  virtual void   assess_damage( dmg_e, action_state_t* );
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
-  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const;
-  virtual void   execute();
-  virtual double miss_chance( double hit, player_t* t ) const;
-  virtual void   init();
-  virtual double composite_hit() const
+  virtual void   assess_damage( dmg_e, action_state_t* ) override;
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
+  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
+  virtual void   execute() override;
+  virtual double miss_chance( double hit, player_t* t ) const override;
+  virtual void   init() override;
+  virtual double composite_hit() const override
   { return action_t::composite_hit() + player -> cache.spell_hit(); }
-  virtual double composite_versatility( const action_state_t* state ) const
+  virtual double composite_versatility( const action_state_t* state ) const override
   { return spell_base_t::composite_versatility( state ) + player -> cache.damage_versatility(); }
 };
 
@@ -5756,22 +5758,22 @@ public:
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual double composite_pct_heal( const action_state_t* ) const;
-  virtual void assess_damage( dmg_e, action_state_t* );
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
-  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const;
-  virtual size_t available_targets( std::vector< player_t* >& ) const;
-  virtual void init_target_cache();
-  virtual double calculate_direct_amount( action_state_t* state ) const;
-  virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const;
-  virtual void execute();
+  virtual void assess_damage( dmg_e, action_state_t* ) override;
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
+  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
+  virtual size_t available_targets( std::vector< player_t* >& ) const override;
+  virtual void init_target_cache() override;
+  virtual double calculate_direct_amount( action_state_t* state ) const override;
+  virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override;
+  virtual void execute() override;
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   std::vector < player_t* > find_lowest_players( int num_players ) const;
   player_t* smart_target() const; // Find random injured healing target, preferring non-pets // Might need to move up hierarchy if there are smart absorbs
-  virtual int num_targets() const;
+  virtual int num_targets() const override;
   virtual void   parse_effect_data( const spelleffect_data_t& );
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = action_multiplier() * action_da_multiplier() *
            player -> cache.player_heal_multiplier( s ) *
@@ -5780,7 +5782,7 @@ public:
     return m;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = action_multiplier() * action_ta_multiplier() *
            player -> cache.player_heal_multiplier( s ) *
@@ -5789,13 +5791,13 @@ public:
     return m;
   }
 
-  virtual double composite_player_critical_multiplier() const
+  virtual double composite_player_critical_multiplier() const override
   { return player -> composite_player_critical_healing_multiplier(); }
 
-  virtual double composite_versatility( const action_state_t* state ) const
+  virtual double composite_versatility( const action_state_t* state ) const override
   { return spell_base_t::composite_versatility( state ) + player -> cache.heal_versatility(); }
 
-  virtual double composite_resolve( const action_state_t* state ) const
+  virtual double composite_resolve( const action_state_t* state ) const override
   {
     double m = 1.0;
 
@@ -5814,7 +5816,7 @@ public:
     return m;
   }
 
-  virtual expr_t* create_expression( const std::string& name );
+  virtual expr_t* create_expression( const std::string& name ) override;
 };
 
 // Absorb ===================================================================
@@ -5851,35 +5853,35 @@ struct absorb_t : public spell_base_t
     return creator();
   }
 
-  virtual void execute();
-  virtual void assess_damage( dmg_e, action_state_t* );
-  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
+  virtual void execute() override;
+  virtual void assess_damage( dmg_e, action_state_t* ) override;
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override
   { return ABSORB; }
-  virtual void impact( action_state_t* );
-  virtual void init_target_cache();
-  virtual size_t available_targets( std::vector< player_t* >& ) const;
-  virtual int num_targets() const;
-  virtual void multistrike_direct( const action_state_t*, action_state_t* ms_state );
-  virtual void multistrike_tick( const action_state_t*, action_state_t* ms_state, double tick_multiplier );
+  virtual void impact( action_state_t* ) override;
+  virtual void init_target_cache() override;
+  virtual size_t available_targets( std::vector< player_t* >& ) const override;
+  virtual int num_targets() const override;
+  virtual void multistrike_direct( const action_state_t*, action_state_t* ms_state ) override;
+  virtual void multistrike_tick( const action_state_t*, action_state_t* ms_state, double tick_multiplier ) override;
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = action_multiplier() * action_da_multiplier() *
            player -> composite_player_absorb_multiplier( s );
 
     return m;
   }
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = action_multiplier() * action_ta_multiplier() *
            player -> composite_player_absorb_multiplier( s );
 
     return m;
   }
-  virtual double composite_versatility( const action_state_t* state ) const
+  virtual double composite_versatility( const action_state_t* state ) const override
   { return spell_base_t::composite_versatility( state ) + player -> cache.heal_versatility(); }
 
-  virtual double composite_resolve( const action_state_t* state ) const
+  virtual double composite_resolve( const action_state_t* state ) const override
   {
     double m = 1.0;
 
@@ -5911,9 +5913,9 @@ struct sequence_t : public action_t
 
   sequence_t( player_t*, const std::string& sub_action_str );
 
-  virtual void schedule_execute( action_state_t* execute_state = nullptr );
-  virtual void reset();
-  virtual bool ready();
+  virtual void schedule_execute( action_state_t* execute_state = nullptr ) override;
+  virtual void reset() override;
+  virtual bool ready() override;
   void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time(); }
   bool can_restart()
   { return ! restarted && last_restart < sim -> current_time(); }
@@ -5927,11 +5929,11 @@ struct strict_sequence_t : public action_t
 
   strict_sequence_t( player_t*, const std::string& opts );
 
-  bool ready();
-  void reset();
-  void cancel();
-  void interrupt_action();
-  void schedule_execute( action_state_t* execute_state = nullptr );
+  bool ready() override;
+  void reset() override;
+  void cancel() override;
+  void interrupt_action() override;
+  void schedule_execute( action_state_t* execute_state = nullptr ) override;
 };
 
 // Primary proc type of the result (direct (aoe) damage/heal, periodic
@@ -6401,16 +6403,16 @@ struct dbc_proc_callback_t : public action_callback_t
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
   { }
 
-  virtual void initialize();
+  virtual void initialize() override;
 
-  void reset()
+  void reset() override
   {
     action_callback_t::reset();
     if ( rppm.get_frequency() > 0 )
       rppm.reset();
   }
 
-  void trigger( action_t* a, void* call_data )
+  void trigger( action_t* a, void* call_data ) override
   {
     if ( cooldown && cooldown -> down() ) return;
 
@@ -6539,7 +6541,7 @@ struct travel_event_t : public event_t
   action_state_t* state;
   travel_event_t( action_t* a, action_state_t* state, timespan_t time_to_travel );
   virtual ~travel_event_t() { if ( state && canceled ) action_state_t::release( state ); }
-  virtual void execute();
+  virtual void execute() override;
   virtual const char* name() const override
   { return "Stateless Action Travel"; }
 };
@@ -6613,7 +6615,7 @@ struct multistrike_execute_event_t : public event_t
       action_state_t::release( state );
   }
 
-  void execute()
+  void execute() override
   {
     if ( ! state -> target -> is_sleeping() )
     {
@@ -6871,7 +6873,7 @@ struct wait_action_base_t : public action_t
     interrupt_auto_attack = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   { player -> iteration_waiting_time += time_to_execute; }
 };
 
@@ -6882,8 +6884,8 @@ struct wait_for_cooldown_t : public wait_action_base_t
   cooldown_t* wait_cd;
   action_t* a;
   wait_for_cooldown_t( player_t* player, const std::string& cd_name );
-  virtual bool usable_moving() const { return a -> usable_moving(); }
-  virtual timespan_t execute_time() const;
+  virtual bool usable_moving() const override { return a -> usable_moving(); }
+  virtual timespan_t execute_time() const override;
 };
 
 // Namespace for a ignite like action. Not mandatory, but encouraged to use it.

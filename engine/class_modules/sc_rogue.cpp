@@ -110,7 +110,7 @@ struct shadow_reflect_event_t : public player_event_t
   }
   virtual const char* name() const override
   { return "shadow_reflect_event"; }
-  void execute();
+  void execute() override;
 };
 
 // ==========================================================================
@@ -464,43 +464,43 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
-  virtual void      init_spells();
-  virtual void      init_base_stats();
-  virtual void      init_gains();
-  virtual void      init_procs();
-  virtual void      init_scaling();
-  virtual void      init_resources( bool force );
-  virtual bool      init_items();
-  virtual void      init_special_effects();
-  virtual bool      init_finished();
-  virtual void      create_buffs();
-  virtual void      create_options();
-  virtual void      copy_from( player_t* source );
-  virtual std::string      create_profile( save_e stype );
-  virtual void      init_action_list();
-  virtual void      register_callbacks();
-  virtual void      reset();
-  virtual void      arise();
-  virtual void      regen( timespan_t periodicity );
-  virtual timespan_t available() const;
-  virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
-  virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
-  virtual role_e    primary_role() const  { return ROLE_ATTACK; }
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual void      create_pets();
+  virtual void      init_spells() override;
+  virtual void      init_base_stats() override;
+  virtual void      init_gains() override;
+  virtual void      init_procs() override;
+  virtual void      init_scaling() override;
+  virtual void      init_resources( bool force ) override;
+  virtual bool      init_items() override;
+  virtual void      init_special_effects() override;
+  virtual bool      init_finished() override;
+  virtual void      create_buffs() override;
+  virtual void      create_options() override;
+  virtual void      copy_from( player_t* source ) override;
+  virtual std::string      create_profile( save_e stype ) override;
+  virtual void      init_action_list() override;
+  virtual void      register_callbacks() override;
+  virtual void      reset() override;
+  virtual void      arise() override;
+  virtual void      regen( timespan_t periodicity ) override;
+  virtual timespan_t available() const override;
+  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
+  virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
+  virtual resource_e primary_resource() const override { return RESOURCE_ENERGY; }
+  virtual role_e    primary_role() const override  { return ROLE_ATTACK; }
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
+  virtual void      create_pets() override;
 
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
-  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
-  virtual double    composite_melee_speed() const;
-  virtual double    composite_melee_crit() const;
-  virtual double    composite_spell_crit() const;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    energy_regen_per_second() const;
-  virtual double    passive_movement_modifier() const;
-  virtual double    temporary_movement_modifier() const;
+  virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
+  virtual double    composite_melee_speed() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual double    composite_attack_power_multiplier() const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    energy_regen_per_second() const override;
+  virtual double    passive_movement_modifier() const override;
+  virtual double    temporary_movement_modifier() const override;
 
   bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
@@ -523,7 +523,7 @@ struct rogue_t : public player_t
 
   target_specific_t<rogue_td_t> target_data;
 
-  virtual rogue_td_t* get_target_data( player_t* target ) const
+  virtual rogue_td_t* get_target_data( player_t* target ) const override
   {
     rogue_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -581,13 +581,13 @@ struct rogue_attack_state_t : public action_state_t
     action_state_t( action, target ), cp( 0 )
   { }
 
-  void initialize()
+  void initialize() override
   { action_state_t::initialize(); cp = 0; }
 
-  std::ostringstream& debug_str( std::ostringstream& s )
+  std::ostringstream& debug_str( std::ostringstream& s ) override
   { action_state_t::debug_str( s ) << " cp=" << cp; return s; }
 
-  void copy_state( const action_state_t* o )
+  void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
     const rogue_attack_state_t* st = debug_cast<const rogue_attack_state_t*>( o );
@@ -663,7 +663,7 @@ struct rogue_attack_t : public melee_attack_t
     }
   }
 
-  void init()
+  void init() override
   {
     melee_attack_t::init();
 
@@ -671,7 +671,7 @@ struct rogue_attack_t : public melee_attack_t
       cp_gain = player -> get_gain( name_str );
   }
 
-  virtual void snapshot_state( action_state_t* state, dmg_e rt )
+  virtual void snapshot_state( action_state_t* state, dmg_e rt ) override
   {
     melee_attack_t::snapshot_state( state, rt );
 
@@ -704,7 +704,7 @@ struct rogue_attack_t : public melee_attack_t
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  action_state_t* new_state()
+  action_state_t* new_state() override
   { return new rogue_attack_state_t( this, target ); }
 
   static const rogue_attack_state_t* cast_state( const action_state_t* st )
@@ -726,57 +726,57 @@ struct rogue_attack_t : public melee_attack_t
   rogue_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  virtual double cost() const;
-  virtual void   execute();
-  virtual void   consume_resource();
-  virtual bool   ready();
-  virtual void   impact( action_state_t* state );
+  virtual double cost() const override;
+  virtual void   execute() override;
+  virtual void   consume_resource() override;
+  virtual bool   ready() override;
+  virtual void   impact( action_state_t* state ) override;
 
-  virtual double target_armor( player_t* ) const;
+  virtual double target_armor( player_t* ) const override;
 
-  virtual double attack_direct_power_coefficient( const action_state_t* s ) const
+  virtual double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return attack_power_mod.direct * cast_state( s ) -> cp;
     return melee_attack_t::attack_direct_power_coefficient( s );
   }
 
-  virtual double attack_tick_power_coefficient( const action_state_t* s ) const
+  virtual double attack_tick_power_coefficient( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return attack_power_mod.tick * cast_state( s ) -> cp;
     return melee_attack_t::attack_tick_power_coefficient( s );
   }
 
-  virtual double spell_direct_power_coefficient( const action_state_t* s ) const
+  virtual double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return spell_power_mod.direct * cast_state( s ) -> cp;
     return melee_attack_t::spell_direct_power_coefficient( s );
   }
 
-  virtual double spell_tick_power_coefficient( const action_state_t* s ) const
+  virtual double spell_tick_power_coefficient( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return spell_power_mod.tick * cast_state( s ) -> cp;
     return melee_attack_t::spell_tick_power_coefficient( s );
   }
 
-  virtual double bonus_da( const action_state_t* s ) const
+  virtual double bonus_da( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return base_dd_adder * cast_state( s ) -> cp;
     return melee_attack_t::bonus_da( s );
   }
 
-  virtual double bonus_ta( const action_state_t* s ) const
+  virtual double bonus_ta( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return base_ta_adder * cast_state( s ) -> cp;
     return melee_attack_t::bonus_ta( s );
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
@@ -786,7 +786,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* state ) const
+  virtual double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = melee_attack_t::composite_ta_multiplier( state );
 
@@ -796,7 +796,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = melee_attack_t::composite_target_multiplier( target );
 
@@ -819,7 +819,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = melee_attack_t::action_multiplier();
 
@@ -862,7 +862,7 @@ struct rogue_poison_t : public rogue_attack_t
     proc_chance_ += p -> spec.improved_poisons -> effectN( 1 ).percent();
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   { return timespan_t::zero(); }
 
   virtual double proc_chance( const action_state_t* source_state )
@@ -893,7 +893,7 @@ struct rogue_poison_t : public rogue_attack_t
     execute();
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_da_multiplier() const override
   {
     double m = rogue_attack_t::action_da_multiplier();
 
@@ -906,7 +906,7 @@ struct rogue_poison_t : public rogue_attack_t
     return m;
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier() const override
   {
     double m = rogue_attack_t::action_ta_multiplier();
 
@@ -931,7 +931,7 @@ struct venomous_wound_t : public rogue_poison_t
     proc             = true;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = rogue_poison_t::composite_da_multiplier( state );
 
@@ -963,7 +963,7 @@ struct deadly_poison_t : public rogue_poison_t
       harmful        = true;
     }
 
-    void impact( action_state_t* state )
+    void impact( action_state_t* state ) override
     {
       if ( ! p() -> poisoned_enemy( state -> target ) && result_is_hit( state -> result ) )
       {
@@ -973,7 +973,7 @@ struct deadly_poison_t : public rogue_poison_t
       rogue_poison_t::impact( state );
     }
 
-    void last_tick( dot_t* d )
+    void last_tick( dot_t* d ) override
     {
       player_t* t = d -> state -> target;
 
@@ -1002,7 +1002,7 @@ struct deadly_poison_t : public rogue_poison_t
     proc_dot     = new deadly_poison_dot_t( player );
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     bool is_up = ( td( state -> target ) -> dots.deadly_poison -> is_ticking() != 0 );
 
@@ -1033,7 +1033,7 @@ struct instant_poison_t : public rogue_poison_t
       harmful = true;
     }
 
-    void impact( action_state_t* state )
+    void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
 
@@ -1055,7 +1055,7 @@ struct instant_poison_t : public rogue_poison_t
     proc_instant = new instant_poison_dd_t( player );
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     rogue_poison_t::impact( state );
 
@@ -1077,7 +1077,7 @@ struct wound_poison_t : public rogue_poison_t
       harmful          = true;
     }
 
-    void impact( action_state_t* state )
+    void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
 
@@ -1102,7 +1102,7 @@ struct wound_poison_t : public rogue_poison_t
     proc_dd = new wound_poison_dd_t( player );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_poison_t::impact( state );
 
@@ -1121,7 +1121,7 @@ struct crippling_poison_t : public rogue_poison_t
       rogue_poison_t( "crippling_poison", rogue, rogue -> find_spell( 3409 ) )
     { }
 
-    void impact( action_state_t* state )
+    void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
 
@@ -1139,7 +1139,7 @@ struct crippling_poison_t : public rogue_poison_t
     may_miss = may_crit = false;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_poison_t::impact( state );
 
@@ -1158,7 +1158,7 @@ struct leeching_poison_t : public rogue_poison_t
       rogue_poison_t( "leeching_poison", rogue, rogue -> find_spell( 112961 ) )
     { }
 
-    void impact( action_state_t* state )
+    void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
 
@@ -1176,7 +1176,7 @@ struct leeching_poison_t : public rogue_poison_t
     may_miss = may_crit = false;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_poison_t::impact( state );
 
@@ -1242,14 +1242,14 @@ struct apply_poison_t : public action_t
     }
   }
 
-  void reset()
+  void reset() override
   {
     action_t::reset();
 
     executed = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     executed = true;
 
@@ -1257,7 +1257,7 @@ struct apply_poison_t : public action_t
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     return ! executed;
   }
@@ -1483,14 +1483,14 @@ struct melee_t : public rogue_attack_t
     p -> auto_attack = this;
   }
 
-  void reset()
+  void reset() override
   {
     rogue_attack_t::reset();
 
     first = true;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = rogue_attack_t::execute_time();
     if ( first )
@@ -1552,7 +1552,7 @@ struct auto_melee_attack_t : public action_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player -> main_hand_attack -> schedule_execute();
 
@@ -1560,7 +1560,7 @@ struct auto_melee_attack_t : public action_t
       player -> off_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> is_moving() )
       return false;
@@ -1579,7 +1579,7 @@ struct adrenaline_rush_t : public rogue_attack_t
     harmful = may_miss = may_crit = false;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -1605,7 +1605,7 @@ struct ambush_t : public rogue_attack_t
     }
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
@@ -1615,7 +1615,7 @@ struct ambush_t : public rogue_attack_t
     return m;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = rogue_attack_t::cost();
 
@@ -1630,7 +1630,7 @@ struct ambush_t : public rogue_attack_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -1639,7 +1639,7 @@ struct ambush_t : public rogue_attack_t
     p() -> buffs.enhanced_vendetta -> expire();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -1654,7 +1654,7 @@ struct ambush_t : public rogue_attack_t
       p() -> trigger_sinister_calling( state );
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = rogue_attack_t::composite_crit();
 
@@ -1665,7 +1665,7 @@ struct ambush_t : public rogue_attack_t
     return c;
   }
 
-  bool ready()
+  bool ready() override
   {
     bool rd;
 
@@ -1695,7 +1695,7 @@ struct backstab_t : public rogue_attack_t
     requires_position = POSITION_BACK;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = rogue_attack_t::cost();
     c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
@@ -1704,7 +1704,7 @@ struct backstab_t : public rogue_attack_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -1714,7 +1714,7 @@ struct backstab_t : public rogue_attack_t
       p() -> buffs.sleight_of_hand -> trigger();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -1722,7 +1722,7 @@ struct backstab_t : public rogue_attack_t
       p() -> trigger_sinister_calling( state );
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
@@ -1743,7 +1743,7 @@ struct blade_flurry_t : public rogue_attack_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -1769,14 +1769,14 @@ struct dispatch_t : public rogue_attack_t
       may_multistrike = 1;
     }
 
-    void init()
+    void init() override
     {
       melee_attack_t::init();
 
       snapshot_flags = update_flags = STATE_MUL_DA;
     }
 
-    double action_da_multiplier() const
+    double action_da_multiplier() const override
     {
       double m = melee_attack_t::action_da_multiplier();
 
@@ -1820,7 +1820,7 @@ struct dispatch_t : public rogue_attack_t
     }
   }
 
-  double cost() const
+  double cost() const override
   {
     if ( p() -> buffs.blindside -> check() )
       return 0;
@@ -1834,7 +1834,7 @@ struct dispatch_t : public rogue_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -1851,7 +1851,7 @@ struct dispatch_t : public rogue_attack_t
     p() -> buffs.enhanced_vendetta -> expire();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -1865,7 +1865,7 @@ struct dispatch_t : public rogue_attack_t
     }
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = rogue_attack_t::composite_crit();
 
@@ -1881,7 +1881,7 @@ struct dispatch_t : public rogue_attack_t
     return c;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
@@ -1892,7 +1892,7 @@ struct dispatch_t : public rogue_attack_t
     return m;
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() > 35 )
       return false;
@@ -1919,7 +1919,7 @@ struct envenom_t : public rogue_attack_t
     proc_relentless_strikes_ = true;
   }
 
-  void consume_resource()
+  void consume_resource() override
   {
     melee_attack_t::consume_resource();
 
@@ -1933,7 +1933,7 @@ struct envenom_t : public rogue_attack_t
       p() -> trigger_energy_refund( execute_state );
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
@@ -1943,7 +1943,7 @@ struct envenom_t : public rogue_attack_t
     return m;
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = rogue_attack_t::cost();
 
@@ -1956,7 +1956,7 @@ struct envenom_t : public rogue_attack_t
     return c;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = rogue_attack_t::composite_crit();
 
@@ -1967,7 +1967,7 @@ struct envenom_t : public rogue_attack_t
     return c;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     rogue_attack_t::execute();
 
@@ -1987,7 +1987,7 @@ struct envenom_t : public rogue_attack_t
     p() -> buffs.enhanced_vendetta -> expire();
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_da_multiplier() const override
   {
     double m = rogue_attack_t::action_da_multiplier();
 
@@ -1997,7 +1997,7 @@ struct envenom_t : public rogue_attack_t
     return m;
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -2042,7 +2042,7 @@ struct eviscerate_t : public rogue_attack_t
     }
   }
 
-  timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -2052,7 +2052,7 @@ struct eviscerate_t : public rogue_attack_t
     return t;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
@@ -2062,7 +2062,7 @@ struct eviscerate_t : public rogue_attack_t
     return m;
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = rogue_attack_t::cost();
 
@@ -2078,7 +2078,7 @@ struct eviscerate_t : public rogue_attack_t
     return c;
   }
 
-  void consume_resource()
+  void consume_resource() override
   {
     melee_attack_t::consume_resource();
 
@@ -2092,7 +2092,7 @@ struct eviscerate_t : public rogue_attack_t
       p() -> trigger_energy_refund( execute_state );
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2104,7 +2104,7 @@ struct eviscerate_t : public rogue_attack_t
     }
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -2136,7 +2136,7 @@ struct fan_of_knives_t: public rogue_attack_t
     adds_combo_points = 1;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
     // Don't generate a combo point on the first target hit, since that's
@@ -2157,7 +2157,7 @@ struct feint_t : public rogue_attack_t
   {
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
     p() -> buffs.feint -> trigger();
@@ -2178,17 +2178,17 @@ struct crimson_tempest_t : public rogue_attack_t
       initialize_sinister_calling( 168952 );
     }
 
-    action_state_t* new_state()
+    action_state_t* new_state() override
     { return new residual_periodic_state_t( this, target ); }
 
     // Sinister Calling procs for Crimson Tempest don't need to snapshot anything, the damage is
     // going to be current pooled tick amount.
-    double sinister_calling_damage( const dot_t* d ) const
+    double sinister_calling_damage( const dot_t* d ) const override
     {
       return debug_cast<const residual_periodic_state_t*>( d -> state ) -> tick_amount;
     }
 
-    void initialize_sinister_calling( unsigned spell_id )
+    void initialize_sinister_calling( unsigned spell_id ) override
     {
       residual_periodic_action_t<rogue_attack_t>::initialize_sinister_calling( spell_id );
 
@@ -2217,13 +2217,13 @@ struct crimson_tempest_t : public rogue_attack_t
   }
 
   // Apparently Crimson Tempest does not trigger Main Gauche?
-  bool procs_main_gauche() const
+  bool procs_main_gauche() const override
   { return false; }
 
-  bool procs_poison() const
+  bool procs_poison() const override
   { return false; }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     rogue_attack_t::impact( s );
 
@@ -2261,7 +2261,7 @@ struct garrote_t : public rogue_attack_t
     initialize_sinister_calling( 168971 );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -2286,7 +2286,7 @@ struct hemorrhage_t : public rogue_attack_t
     initialize_sinister_calling( 168908 );
   }
 
-  double action_da_multiplier() const
+  double action_da_multiplier() const override
   {
     double m = rogue_attack_t::action_da_multiplier();
 
@@ -2314,7 +2314,7 @@ struct kick_t : public rogue_attack_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
@@ -2336,7 +2336,7 @@ struct killing_spree_tick_t : public rogue_attack_t
     direct_tick = true;
   }
 
-  bool procs_main_gauche() const
+  bool procs_main_gauche() const override
   { return true; }
 };
 
@@ -2367,7 +2367,7 @@ struct killing_spree_t : public rogue_attack_t
     }
   }
 
-  double composite_target_da_multiplier( player_t* target ) const
+  double composite_target_da_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_da_multiplier( target );
 
@@ -2379,17 +2379,17 @@ struct killing_spree_t : public rogue_attack_t
     return m;
   }
 
-  timespan_t tick_time( double ) const
+  timespan_t tick_time( double ) const override
   { return base_tick_time; }
 
-  virtual void execute()
+  virtual void execute() override
   {
     p() -> buffs.killing_spree -> trigger();
 
     rogue_attack_t::execute();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
@@ -2416,7 +2416,7 @@ struct marked_for_death_t : public rogue_attack_t
   }
 
   // Defined after marked_for_death_debuff_t. Sigh.
-  void impact( action_state_t* state );
+  void impact( action_state_t* state ) override;
 };
 
 
@@ -2432,7 +2432,7 @@ struct mutilate_strike_t : public rogue_attack_t
     may_miss = may_dodge = may_parry = false;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -2484,7 +2484,7 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = rogue_attack_t::cost();
     if ( p() -> buffs.t16_2pc_melee -> up() )
@@ -2496,7 +2496,7 @@ struct mutilate_t : public rogue_attack_t
     return c;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
@@ -2507,7 +2507,7 @@ struct mutilate_t : public rogue_attack_t
     return m;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = rogue_attack_t::composite_crit();
 
@@ -2523,7 +2523,7 @@ struct mutilate_t : public rogue_attack_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2543,7 +2543,7 @@ struct mutilate_t : public rogue_attack_t
     p() -> buffs.enhanced_vendetta -> expire();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -2569,7 +2569,7 @@ struct premeditation_t : public rogue_attack_t
     }
     virtual const char* name() const override
     { return "premeditation"; }
-    void execute()
+    void execute() override
     {
       rogue_t* p = static_cast< rogue_t* >( player() );
 
@@ -2593,7 +2593,7 @@ struct premeditation_t : public rogue_attack_t
     adds_combo_points = 0;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -2622,14 +2622,14 @@ struct recuperate_t : public rogue_attack_t
   virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
   { return 2 * cast_state( s ) -> cp * base_tick_time; }
 
-  virtual void execute()
+  virtual void execute() override
   {
     rogue_attack_t::execute();
 
     p() -> buffs.recuperate -> trigger();
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     p() -> buffs.recuperate -> expire();
 
@@ -2651,7 +2651,7 @@ struct revealing_strike_t : public rogue_attack_t
       base_multiplier *= 1.0 + p -> find_spell( 110211 ) -> effectN( 1 ).percent();
   }
 
-  timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -2677,7 +2677,7 @@ struct rupture_t : public rogue_attack_t
     initialize_sinister_calling( 168963 );
   }
 
-  timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -2687,7 +2687,7 @@ struct rupture_t : public rogue_attack_t
     return t;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2710,7 +2710,7 @@ struct rupture_t : public rogue_attack_t
     return duration;
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
@@ -2731,7 +2731,7 @@ struct shadowstep_t : public rogue_attack_t
     movement_directionality = MOVEMENT_OMNI;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
     p() -> buffs.shadowstep -> trigger();
@@ -2753,7 +2753,7 @@ struct shiv_t : public rogue_attack_t
     may_crit          = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     rogue_t* p = cast();
 
@@ -2773,7 +2773,7 @@ struct shuriken_toss_t : public rogue_attack_t
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
   }
 
-  bool procs_poison() const
+  bool procs_poison() const override
   { return true; }
 };
 
@@ -2788,7 +2788,7 @@ struct sinister_strike_t : public rogue_attack_t
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
   }
 
-  timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -2798,7 +2798,7 @@ struct sinister_strike_t : public rogue_attack_t
     return t;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = rogue_attack_t::cost();
     c -= 15 * p() -> buffs.t16_2pc_melee -> stack();
@@ -2807,7 +2807,7 @@ struct sinister_strike_t : public rogue_attack_t
     return c;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
@@ -2819,14 +2819,14 @@ struct sinister_strike_t : public rogue_attack_t
     return m;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     rogue_attack_t::execute();
 
     p() -> buffs.t16_2pc_melee -> expire();
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
@@ -2863,7 +2863,7 @@ struct slice_and_dice_t : public rogue_attack_t
     dot_duration = timespan_t::zero();
   }
 
-  timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -2873,7 +2873,7 @@ struct slice_and_dice_t : public rogue_attack_t
     return t;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2888,7 +2888,7 @@ struct slice_and_dice_t : public rogue_attack_t
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> perk.improved_slice_and_dice -> ok() )
       return false;
@@ -2911,7 +2911,7 @@ struct preparation_t : public rogue_attack_t
     cooldown_list.push_back( p -> get_cooldown( "vanish" ) );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2930,7 +2930,7 @@ struct shadow_dance_t : public rogue_attack_t
     harmful = may_miss = may_crit = false;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2955,7 +2955,7 @@ struct burst_of_speed_t: public rogue_attack_t
     cooldown -> duration = p -> buffs.burst_of_speed -> data().duration();
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2975,7 +2975,7 @@ struct sprint_t: public rogue_attack_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -2997,7 +2997,7 @@ struct vanish_t : public rogue_attack_t
     cooldown -> duration += p -> glyph.disappearance -> effectN( 1 ).time_value();
   }
 
-  void init()
+  void init() override
   {
     rogue_attack_t::init();
 
@@ -3007,7 +3007,7 @@ struct vanish_t : public rogue_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -3042,7 +3042,7 @@ struct vendetta_t : public rogue_attack_t
     harmful = may_miss = may_crit = false;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -3063,7 +3063,7 @@ struct shadow_reflection_t : public rogue_attack_t
     harmful = may_miss = may_crit = callbacks = false;
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -3090,7 +3090,7 @@ struct death_from_above_driver_t : public rogue_attack_t
     base_costs[ RESOURCE_ENERGY ] = 0;
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
@@ -3188,7 +3188,7 @@ struct death_from_above_t : public rogue_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -3237,7 +3237,7 @@ struct stealth_t : public spell_t
     parse_options( options_str );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     rogue_t* p = debug_cast< rogue_t* >( player );
 
@@ -3248,12 +3248,12 @@ struct stealth_t : public spell_t
     used = true;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     return ! used;
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     spell_t::reset();
     used = false;
@@ -3294,7 +3294,7 @@ struct honor_among_thieves_t : public action_t
     }
     virtual const char* name() const override
     { return "honor_among_thieves_event"; }
-    void execute()
+    void execute() override
     {
       rogue -> trigger_combo_point_gain( nullptr, 1, rogue -> gains.honor_among_thieves );
 
@@ -3329,13 +3329,13 @@ struct honor_among_thieves_t : public action_t
     parse_options( options_str );
   }
 
-  result_e calculate_result( action_state_t* ) const
+  result_e calculate_result( action_state_t* ) const override
   { return RESULT_HIT; }
 
-  block_result_e calculate_block_result( action_state_t* ) const
+  block_result_e calculate_block_result( action_state_t* ) const override
   { return BLOCK_RESULT_UNBLOCKED; }
 
-  void execute()
+  void execute() override
   {
     action_t::execute();
 
@@ -3344,14 +3344,14 @@ struct honor_among_thieves_t : public action_t
     hat_event = new ( *sim ) hat_event_t( this, true );
   }
 
-  void reset()
+  void reset() override
   {
     action_t::reset();
 
     hat_event = nullptr;
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( hat_event )
       return false;
@@ -3440,13 +3440,13 @@ struct weapon_swap_t : public action_t
     }
   }
 
-  result_e calculate_result( action_state_t* ) const
+  result_e calculate_result( action_state_t* ) const override
   { return RESULT_HIT; }
 
-  block_result_e calculate_block_result( action_state_t* ) const
+  block_result_e calculate_block_result( action_state_t* ) const override
   { return BLOCK_RESULT_UNBLOCKED; }
 
-  void execute()
+  void execute() override
   {
     action_t::execute();
 
@@ -3465,7 +3465,7 @@ struct weapon_swap_t : public action_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( swap_type == SWAP_MAIN_HAND &&
          rogue -> weapon_data[ WEAPON_MAIN_HAND ].current_weapon == swap_to_type )
@@ -3505,7 +3505,7 @@ struct main_gauche_t : public rogue_attack_t
     proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
   }
 
-  bool procs_poison() const
+  bool procs_poison() const override
   { return false; }
 };
 
@@ -3528,15 +3528,15 @@ struct blade_flurry_attack_t : public rogue_attack_t
     snapshot_flags |= STATE_MUL_DA;
   }
 
-  bool procs_main_gauche() const
+  bool procs_main_gauche() const override
   { return false; }
 
-  double composite_da_multiplier( const action_state_t* ) const
+  double composite_da_multiplier( const action_state_t* ) const override
   {
     return p() -> spec.blade_flurry -> effectN( 3 ).percent();
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     rogue_attack_t::available_targets( tl );
 
@@ -3565,7 +3565,7 @@ struct sinister_calling_proc_t : public rogue_attack_t
     weapon_power_mod = 0;
   }
 
-  void init()
+  void init() override
   {
     rogue_attack_t::init();
 
@@ -3575,7 +3575,7 @@ struct sinister_calling_proc_t : public rogue_attack_t
     update_flags = 0;
   }
 
-  double target_armor( player_t* ) const
+  double target_armor( player_t* ) const override
   { return 0; }
 };
 
@@ -4275,7 +4275,7 @@ struct shadow_dance_t : public buff_t
                        p -> perk.enhanced_shadow_dance -> effectN( 1 ).time_value() ) )
   { }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -4289,7 +4289,7 @@ struct shadow_reflection_t : public buff_t
     buff_t( buff_creator_t( p, "shadow_reflection", p -> talent.shadow_reflection ).cd( timespan_t::zero() ) )
   { }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
 
@@ -4306,7 +4306,7 @@ struct fof_fod_t : public buff_t
     buff_t( buff_creator_t( p, "legendary_daggers" ).duration( timespan_t::from_seconds( 6.0 ) ).cd( timespan_t::zero() ) )
   { }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -4327,7 +4327,7 @@ struct insight_buff_t : public buff_t
     buff_t( creator ), p( player ), insight_elevate( false )
   { }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -4335,7 +4335,7 @@ struct insight_buff_t : public buff_t
       p -> buffs.bandits_guile -> expire();
   }
 
-  void reset()
+  void reset() override
   {
     buff_t::reset();
 
@@ -4359,7 +4359,7 @@ struct bandits_guile_t : public buff_t
             .chance( p -> find_specialization_spell( "Bandit's Guile" ) -> proc_chance() /* 0 */ ) )
   { }
 
-  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
   {
     rogue_t* p = debug_cast< rogue_t* >( player );
 
@@ -4386,7 +4386,7 @@ struct bandits_guile_t : public buff_t
     }
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     rogue_t* p = debug_cast< rogue_t* >( player );
 
@@ -4407,7 +4407,7 @@ struct subterfuge_t : public buff_t
     rogue( r )
   { }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
     // The Glyph of Vanish bug is back, so if Vanish is still up when
@@ -4434,7 +4434,7 @@ struct vanish_t : public buff_t
     buff_duration += r -> glyph.vanish -> effectN( 1 ).time_value();
   }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
 
@@ -4454,7 +4454,7 @@ struct stealth_t : public buff_t
     rogue( r )
   { }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
 
@@ -4462,7 +4462,7 @@ struct stealth_t : public buff_t
     rogue -> buffs.master_of_subtlety_passive -> trigger();
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -4477,7 +4477,7 @@ struct rogue_poison_buff_t : public buff_t
     buff_t( buff_creator_t( r, name, spell ) )
   { }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     rogue_t* rogue = debug_cast< rogue_t* >( source );
     if ( ! rogue -> poisoned_enemy( player ) )
@@ -4486,7 +4486,7 @@ struct rogue_poison_buff_t : public buff_t
     buff_t::execute( stacks, value, duration );
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -4538,7 +4538,7 @@ struct marked_for_death_debuff_t : public debuff_t
     mod_cd( r.source -> get_cooldown( "marked_for_death" ) )
   { }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     if ( remaining_duration > timespan_t::zero() )
     {
@@ -4671,7 +4671,7 @@ struct shadow_reflection_pet_t : public pet_t
     shadow_reflection_td_t* td( player_t* t ) const
     { return p() -> get_target_data( t ); }
 
-    double composite_target_multiplier( player_t* target ) const
+    double composite_target_multiplier( player_t* target ) const override
     {
       double m = melee_attack_t::composite_target_multiplier( target );
 
@@ -4684,7 +4684,7 @@ struct shadow_reflection_pet_t : public pet_t
       return m;
     }
 
-    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt ) override
     {
       assert( source_action );
 
@@ -4724,34 +4724,34 @@ struct shadow_reflection_pet_t : public pet_t
     static const rogue_attack_state_t* cast_state( const action_state_t* st )
     { return debug_cast< const rogue_attack_state_t* >( st ); }
 
-    action_state_t* new_state()
+    action_state_t* new_state() override
     { return new rogue_attack_state_t( this, target ); }
 
     rogue_t* o()
     { return debug_cast<rogue_t*>( player -> cast_pet() -> owner ); }
 
-    double attack_direct_power_coefficient( const action_state_t* s ) const
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
     {
       if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return attack_power_mod.direct * cast_state( s ) -> cp;
       return melee_attack_t::attack_direct_power_coefficient( s );
     }
 
-    double attack_tick_power_coefficient( const action_state_t* s ) const
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
     {
       if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return attack_power_mod.tick * cast_state( s ) -> cp;
       return melee_attack_t::attack_tick_power_coefficient( s );
     }
 
-    double bonus_da( const action_state_t* s ) const
+    double bonus_da( const action_state_t* s ) const override
     {
       if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return base_dd_adder * cast_state( s ) -> cp;
       return melee_attack_t::bonus_da( s );
     }
 
-    double bonus_ta( const action_state_t* s ) const
+    double bonus_ta( const action_state_t* s ) const override
     {
       if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return base_ta_adder * cast_state( s ) -> cp;
@@ -4760,7 +4760,7 @@ struct shadow_reflection_pet_t : public pet_t
 
     // Always ready to serve the master, except when an ability requires a
     // position we dont have!
-    bool ready()
+    bool ready() override
     {
       if ( requires_position != POSITION_NONE && player -> position() != requires_position )
         return false;
@@ -4769,11 +4769,11 @@ struct shadow_reflection_pet_t : public pet_t
     }
 
     // Shadow Reflection has no cooldowns on abilities I imagine ...
-    void update_ready( timespan_t )
+    void update_ready( timespan_t ) override
     { }
 
     // Shadow Reflection does not consume resources, it has none ..
-    void consume_resource()
+    void consume_resource() override
     { }
   };
 
@@ -4873,7 +4873,7 @@ struct shadow_reflection_pet_t : public pet_t
       add_child( oh_strike );
     }
 
-    void execute()
+    void execute() override
     {
       shadow_reflection_attack_t::execute();
 
@@ -4937,7 +4937,7 @@ struct shadow_reflection_pet_t : public pet_t
       weapon_multiplier = 0;
     }
 
-    void execute()
+    void execute() override
     {
       shadow_reflection_attack_t::execute();
 
@@ -4953,7 +4953,7 @@ struct shadow_reflection_pet_t : public pet_t
         residual_periodic_action_t<attack_t>( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
       { }
 
-      action_state_t* new_state()
+      action_state_t* new_state() override
       { return new residual_periodic_state_t( this, target ); }
     };
 
@@ -4970,7 +4970,7 @@ struct shadow_reflection_pet_t : public pet_t
       add_child( dot );
     }
 
-    void impact( action_state_t* s )
+    void impact( action_state_t* s ) override
     {
       shadow_reflection_attack_t::impact( s );
 
@@ -5013,10 +5013,10 @@ struct shadow_reflection_pet_t : public pet_t
       }
     }
 
-    timespan_t tick_time( double ) const
+    timespan_t tick_time( double ) const override
     { return base_tick_time; }
 
-    virtual void tick( dot_t* d )
+    virtual void tick( dot_t* d ) override
     {
       shadow_reflection_attack_t::tick( d );
 
@@ -5049,7 +5049,7 @@ struct shadow_reflection_pet_t : public pet_t
     off_hand_weapon.swing_time = timespan_t::from_seconds( 1.8 );
   }
 
-  shadow_reflection_td_t* get_target_data( player_t* target ) const
+  shadow_reflection_td_t* get_target_data( player_t* target ) const override
   {
     shadow_reflection_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -5062,7 +5062,7 @@ struct shadow_reflection_pet_t : public pet_t
   rogue_t* o()
   { return debug_cast<rogue_t*>( owner ); }
 
-  void init_spells()
+  void init_spells() override
   {
     pet_t::init_spells();
 
@@ -5831,7 +5831,7 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
     dbc_proc_callback_t( player, effect ), rogue( r )
   { }
 
-  void trigger( action_t* a, void* call_data )
+  void trigger( action_t* a, void* call_data ) override
   {
     if ( ! rogue -> in_combat )
       return;
@@ -5853,7 +5853,7 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
     execute( a, static_cast<action_state_t*>( call_data ) );
   }
 
-  void execute( action_t*, action_state_t* )
+  void execute( action_t*, action_state_t* ) override
   {
     rogue -> trigger_combo_point_gain( nullptr, 1, rogue -> gains.honor_among_thieves );
 
@@ -6663,30 +6663,30 @@ struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new rogue_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
     return p;
   }
 
-  virtual bool valid() const
+  virtual bool valid() const override
   { return true; }
 
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184916, toxic_mutilator    );
     unique_gear::register_special_effect( 184917, eviscerating_blade );
     unique_gear::register_special_effect( 184918, from_the_shadows   );
   }
 
-  virtual void register_hotfixes() const
+  virtual void register_hotfixes() const override
   {
   }
 
-  virtual void init( player_t* ) const { }
-  virtual void combat_begin( sim_t* ) const {}
-  virtual void combat_end( sim_t* ) const {}
+  virtual void init( player_t* ) const override { }
+  virtual void combat_begin( sim_t* ) const override {}
+  virtual void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

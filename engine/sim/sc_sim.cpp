@@ -876,7 +876,7 @@ struct proxy_cast_check_t : public event_t
   virtual void proxy_execute() = 0;
   virtual proxy_cast_check_t* proxy_schedule( timespan_t interval ) = 0;
 
-  virtual void execute()
+  virtual void execute() override
   {
     timespan_t interval = timespan_t::from_seconds( 0.25 );
 
@@ -923,7 +923,7 @@ struct sim_end_event_t : event_t
   }
   virtual const char* name() const override
   { return "sim_end_expected_time"; }
-  virtual void execute()
+  virtual void execute() override
   {
     sim().cancel_iteration();
   }
@@ -939,7 +939,7 @@ struct sim_safeguard_end_event_t : public sim_end_event_t
   { }
   virtual const char* name() const override
   { return "sim_end_twice_expected_time"; }
-  virtual void execute()
+  virtual void execute() override
   {
     sim().errorf( "Simulation has been forcefully cancelled at %.2f because twice the expected combat length has been exceeded.", sim().current_time().total_seconds() );
 
@@ -956,7 +956,7 @@ struct resource_timeline_collect_event_t : public event_t
   }
   virtual const char* name() const override
   { return "resource_timeline_collect_event_t"; }
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim().iterations == 1 || sim().current_iteration > 0 )
     {
@@ -991,7 +991,7 @@ struct regen_event_t : public event_t
   }
   virtual const char* name() const override
   { return "Regen Event"; }
-  virtual void execute()
+  virtual void execute() override
   {
     // targets do not get any resource regen for performance reasons
     for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
@@ -1095,7 +1095,7 @@ struct bloodlust_check_t : public event_t
    virtual const char* name() const override
    { return "Bloodlust Check"; }
 
-   virtual void execute()
+   virtual void execute() override
    {
      sim_t& sim = this -> sim();
      player_t* t = sim.target;
@@ -2685,7 +2685,7 @@ expr_t* sim_t::create_expression( action_t* a,
         expr_t( "raid_event" ), s( s ), type( type ), filter( filter )
       {}
 
-      double evaluate()
+      double evaluate() override
       {
         return raid_event_t::evaluate_raid_event_expression( s, type, filter );
       }

@@ -331,7 +331,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       ticks_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_ticks", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> current_tick; }
+      virtual double evaluate() override { return dot() -> current_tick; }
     };
     return new ticks_expr_t( this, action, dynamic );
   }
@@ -341,7 +341,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       extended_time_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "extended_time", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> extended_time.total_seconds(); }
+      virtual double evaluate() override { return dot() -> extended_time.total_seconds(); }
     };
     return new extended_time_expr_t( this, action, dynamic );
   }
@@ -352,7 +352,7 @@ expr_t* dot_t::create_expression( action_t* action,
       // DoT duration expression, returns total duration of current dot.
       duration_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_duration", d, a, dynamic ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         dot_t* dot = this -> dot();
         if ( ! dot -> state ) return 0; // DoT isn't active, return 0. Doing otherwise would require some effort.
@@ -367,7 +367,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       remains_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_remains", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> remains().total_seconds(); }
+      virtual double evaluate() override { return dot() -> remains().total_seconds(); }
     };
     return new remains_expr_t( this, action, dynamic );
   }
@@ -382,7 +382,7 @@ expr_t* dot_t::create_expression( action_t* action,
         s( nullptr )
       { }
 
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         if ( dot() -> state )
         {
@@ -413,7 +413,7 @@ expr_t* dot_t::create_expression( action_t* action,
       s( nullptr )
       { }
 
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         if ( dot() -> state )
         {
@@ -436,7 +436,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       tick_time_remain_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_tick_time_remain", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> is_ticking() ? dot() -> tick_event -> remains().total_seconds() : 0; }
+      virtual double evaluate() override { return dot() -> is_ticking() ? dot() -> tick_event -> remains().total_seconds() : 0; }
     };
     return new tick_time_remain_expr_t( this, action, dynamic );
   }
@@ -446,7 +446,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       ticks_remain_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_ticks_remain", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> ticks_left(); }
+      virtual double evaluate() override { return dot() -> ticks_left(); }
     };
     return new ticks_remain_expr_t( this, action, dynamic );
   }
@@ -456,7 +456,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       ticking_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_ticking", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> ticking; }
+      virtual double evaluate() override { return dot() -> ticking; }
     };
     return new ticking_expr_t( this, action, dynamic );
   }
@@ -466,7 +466,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_spell_power_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_spell_power", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> composite_spell_power() : 0; }
+      virtual double evaluate() override { return dot() -> state ? dot() -> state -> composite_spell_power() : 0; }
     };
     return new dot_spell_power_expr_t( this, action, dynamic );
   }
@@ -476,7 +476,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_attack_power_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_attack_power", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> composite_attack_power() : 0; }
+      virtual double evaluate() override { return dot() -> state ? dot() -> state -> composite_attack_power() : 0; }
     };
     return new dot_attack_power_expr_t( this, action, dynamic );
   }
@@ -486,7 +486,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_multiplier_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_multiplier", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> ta_multiplier : 0; }
+      virtual double evaluate() override { return dot() -> state ? dot() -> state -> ta_multiplier : 0; }
     };
     return new dot_multiplier_expr_t( this, action, dynamic );
   }
@@ -496,7 +496,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_pmultiplier_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_pmultiplier", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> persistent_multiplier : 0; }
+      virtual double evaluate() override { return dot() -> state ? dot() -> state -> persistent_multiplier : 0; }
     };
     return new dot_pmultiplier_expr_t( this, action, dynamic );
   }
@@ -520,7 +520,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_haste_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_haste_pct", d, a, dynamic ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         return dot() -> state ?
           ( 1.0 / dot() -> state -> haste - 1.0 ) * 100 : 0;
@@ -534,7 +534,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       current_ticks_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_current_ticks", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> num_ticks; }
+      virtual double evaluate() override { return dot() -> num_ticks; }
     };
     return new current_ticks_expr_t( this, action, dynamic );
   }
@@ -544,7 +544,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_crit_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_crit_pct", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> crit * 100.0 : 0; }
+      virtual double evaluate() override { return dot() -> state ? dot() -> state -> crit * 100.0 : 0; }
     };
     return new dot_crit_pct_expr_t( this, action, dynamic );
   }

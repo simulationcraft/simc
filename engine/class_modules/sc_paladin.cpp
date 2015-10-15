@@ -386,57 +386,57 @@ public:
     regen_type = REGEN_DYNAMIC;
   }
 
-  virtual void      init_base_stats();
-  virtual void      init_gains();
-  virtual void      init_procs();
-  virtual void      init_scaling();
-  virtual void      create_buffs();
-  virtual void      init_spells();
-  virtual void      init_action_list();
-  virtual void      reset();
-  virtual void      arise();
-  virtual expr_t*   create_expression( action_t*, const std::string& name );
+  virtual void      init_base_stats() override;
+  virtual void      init_gains() override;
+  virtual void      init_procs() override;
+  virtual void      init_scaling() override;
+  virtual void      create_buffs() override;
+  virtual void      init_spells() override;
+  virtual void      init_action_list() override;
+  virtual void      reset() override;
+  virtual void      arise() override;
+  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
   
   // player stat functions
-  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
-  virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_mastery() const;
-  virtual double    composite_mastery_rating() const;
-  virtual double    composite_multistrike() const;
-  virtual double    composite_bonus_armor() const;
-  virtual double    composite_melee_attack_power() const;
-  virtual double    composite_melee_crit() const;
-  virtual double    composite_melee_expertise( const weapon_t* weapon ) const;
-  virtual double    composite_melee_haste() const;
-  virtual double    composite_melee_speed() const;
-  virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_haste() const;
-  virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_spell_power( school_e school ) const;
-  virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_crit_avoidance() const;
-  virtual double    composite_parry_rating() const;
-  virtual double    composite_block() const;
-  virtual double    composite_block_reduction() const;
-  virtual double    temporary_movement_modifier() const;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
+  virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual double    composite_attack_power_multiplier() const override;
+  virtual double    composite_mastery() const override;
+  virtual double    composite_mastery_rating() const override;
+  virtual double    composite_multistrike() const override;
+  virtual double    composite_bonus_armor() const override;
+  virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_melee_expertise( const weapon_t* weapon ) const override;
+  virtual double    composite_melee_haste() const override;
+  virtual double    composite_melee_speed() const override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
+  virtual double    composite_spell_power( school_e school ) const override;
+  virtual double    composite_spell_power_multiplier() const override;
+  virtual double    composite_crit_avoidance() const override;
+  virtual double    composite_parry_rating() const override;
+  virtual double    composite_block() const override;
+  virtual double    composite_block_reduction() const override;
+  virtual double    temporary_movement_modifier() const override;
 
   // combat outcome functions
-  virtual void      assess_damage( school_e, dmg_e, action_state_t* );
-  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
-  virtual void      assess_heal( school_e, dmg_e, action_state_t* );
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
 
-  virtual void      invalidate_cache( cache_e );
-  virtual void      create_options();
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_e    primary_role() const;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual void      regen( timespan_t periodicity );
-  virtual void      combat_begin();
+  virtual void      invalidate_cache( cache_e ) override;
+  virtual void      create_options() override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
+  virtual role_e    primary_role() const override;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
+  virtual void      regen( timespan_t periodicity ) override;
+  virtual void      combat_begin() override;
 
   int     holy_power_stacks() const;
   double  get_hand_of_light();
@@ -445,7 +445,7 @@ public:
   void    trigger_grand_crusader();
   void    trigger_shining_protector( action_state_t* );
   void    trigger_holy_shield( action_state_t* s );
-  virtual bool has_t18_class_trinket() const;
+  virtual bool has_t18_class_trinket() const override;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
@@ -453,7 +453,7 @@ public:
 
   target_specific_t<paladin_td_t> target_data;
 
-  virtual paladin_td_t* get_target_data( player_t* target ) const
+  virtual paladin_td_t* get_target_data( player_t* target ) const override
   {
     paladin_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -491,7 +491,7 @@ namespace buffs {
     {
     }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -516,7 +516,7 @@ namespace buffs {
       oneup_triggered = true;
     }
 
-    virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -615,7 +615,7 @@ namespace buffs {
       cooldown -> duration = timespan_t::zero();
     }
 
-    virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -888,7 +888,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
   bool benefits_from_seal_of_insight;
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
@@ -898,7 +898,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     return am;
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier() const override
   {
     double am = base_t::action_ta_multiplier();
 
@@ -908,7 +908,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     return am;
   }
     
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = base_t::composite_target_multiplier( t );
 
@@ -923,7 +923,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
   }
   
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
@@ -1026,7 +1026,7 @@ struct ardent_defender_t : public paladin_spell_t
       cooldown -> duration = data().cooldown() + p -> sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).time_value();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -1063,7 +1063,7 @@ struct avengers_shield_t : public paladin_spell_t
   }
 
   // Multiplicative damage effects
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_spell_t::action_multiplier();
 
@@ -1074,7 +1074,7 @@ struct avengers_shield_t : public paladin_spell_t
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -1142,7 +1142,7 @@ struct avenging_wrath_t : public paladin_heal_t
     }
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     // override for this just in case Avenging Wrath were to get canceled or removed
     // early, or if there's a duration mismatch (unlikely, but...)
@@ -1153,7 +1153,7 @@ struct avenging_wrath_t : public paladin_heal_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     paladin_heal_t::execute();
 
@@ -1165,7 +1165,7 @@ struct avenging_wrath_t : public paladin_heal_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buffs.avenging_wrath -> check() )
       return false;
@@ -1195,7 +1195,7 @@ struct beacon_of_light_t : public paladin_heal_t
     dot_duration = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_heal_t::execute();
 
@@ -1233,7 +1233,7 @@ struct blessing_of_kings_t : public paladin_spell_t
     background = ( sim -> overrides.str_agi_int != 0 );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -1266,7 +1266,7 @@ struct blessing_of_might_t : public paladin_spell_t
     background = ( sim -> overrides.mastery != 0 );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -1326,7 +1326,7 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
     accumulated_damage += amount;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     base_td = healing_multiplier * accumulated_damage * dot_duration / base_tick_time;
 
@@ -1366,7 +1366,7 @@ struct consecration_t : public paladin_spell_t
     tick_action = new consecration_tick_t( p );
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     if ( d -> state -> target -> debuffs.flying -> check() )
     {
@@ -1378,7 +1378,7 @@ struct consecration_t : public paladin_spell_t
     }
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier() const override
   {
     double am = paladin_spell_t::action_ta_multiplier();
 
@@ -1406,7 +1406,7 @@ struct daybreak_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> perk.improved_daybreak -> effectN( 1 ).percent();
   }
 
-  virtual void init()
+  virtual void init() override
   {
     paladin_heal_t::init();
     // add snapshot flags to allow for action_multiplier() to be called
@@ -1417,7 +1417,7 @@ struct daybreak_t : public paladin_heal_t
   // Daybreak ignores the target of the holy_shock_heal_t that procs it. 
   // This is the standard heal_t::available_targets() with tl.push_back( target ) removed
   // (since we don't want to include the target) and an unnecessary group_only check removed
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     tl.clear();
 
@@ -1432,7 +1432,7 @@ struct daybreak_t : public paladin_heal_t
     return tl.size();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     // override action_multiplier(), as this amount is set by the triggering Holy Shock
     return base_multiplier;
@@ -1453,7 +1453,7 @@ struct devotion_aura_t : public paladin_spell_t
       cooldown -> duration += timespan_t::from_millis( p -> glyphs.devotion_aura -> effectN( 1 ).base_value() );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -1494,7 +1494,7 @@ struct divine_protection_t : public paladin_spell_t
       p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
     
@@ -1541,7 +1541,7 @@ struct divine_shield_t : public paladin_spell_t
       glyph_heal = new glyph_of_divine_shield_t( p );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -1576,7 +1576,7 @@ struct divine_shield_t : public paladin_spell_t
     p() -> debuffs.forbearance -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration  );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> debuffs.forbearance -> check() )
       return false;
@@ -1596,7 +1596,7 @@ struct denounce_t : public paladin_spell_t
     may_crit = true;
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t cast_time = paladin_spell_t::execute_time();
 
@@ -1605,7 +1605,7 @@ struct denounce_t : public paladin_spell_t
     return cast_time;
   }
 
-  void execute()
+  void execute() override
   {
     paladin_spell_t::execute();
     p() -> buffs.glyph_of_denounce -> expire();
@@ -1628,7 +1628,7 @@ struct eternal_flame_hot_t : public paladin_heal_t
     hopo = 0;
   }
   
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     paladin_heal_t::impact( s );
 
@@ -1636,14 +1636,14 @@ struct eternal_flame_hot_t : public paladin_heal_t
 
   }
   
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     td( d -> state -> target ) -> buffs.eternal_flame -> expire();
 
     paladin_heal_t::last_tick( d );
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier() const override
   {
     // this scales just the ticks
     double am = paladin_heal_t::action_ta_multiplier();
@@ -1672,7 +1672,7 @@ struct eternal_flame_hot_t : public paladin_heal_t
     return dot_duration * hopo;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
 
     paladin_heal_t::execute();
@@ -1718,7 +1718,7 @@ struct eternal_flame_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     // check for T16 4-pc tank effect
     if ( p() -> buffs.bastion_of_power -> check() && target == player )
@@ -1727,7 +1727,7 @@ struct eternal_flame_t : public paladin_heal_t
     return paladin_heal_t::cost();
   }
 
-  virtual void consume_free_hp_effects()
+  virtual void consume_free_hp_effects() override
   {
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
@@ -1741,7 +1741,7 @@ struct eternal_flame_t : public paladin_heal_t
     paladin_heal_t::consume_free_hp_effects();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     // this scales both the base heal and the ticks
     double am = paladin_heal_t::action_multiplier();
@@ -1763,7 +1763,7 @@ struct eternal_flame_t : public paladin_heal_t
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     double hopo = ( ( p() -> holy_power_stacks() <= 3  && cost() > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
@@ -1838,7 +1838,7 @@ struct stay_of_execution_t : public paladin_heal_t
 
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = paladin_heal_t::composite_target_multiplier( target );
 
@@ -1900,7 +1900,7 @@ struct execution_sentence_t : public paladin_spell_t
       background = true;
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = paladin_spell_t::composite_target_multiplier( target );
 
@@ -1913,7 +1913,7 @@ struct execution_sentence_t : public paladin_spell_t
     return m;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( target -> is_enemy() )
     {
@@ -1939,7 +1939,7 @@ struct flash_of_light_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   { 
     // selfless healer reduces mana cost by 35% per stack
     double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
@@ -1947,7 +1947,7 @@ struct flash_of_light_t : public paladin_heal_t
     return ( paladin_heal_t::cost() * cost_multiplier );
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     // Selfless Healer reduces cast time by 35% per stack
     double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
@@ -1955,7 +1955,7 @@ struct flash_of_light_t : public paladin_heal_t
     return ( paladin_heal_t::execute_time() * cast_multiplier );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_heal_t::action_multiplier();
     
@@ -1972,7 +1972,7 @@ struct flash_of_light_t : public paladin_heal_t
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_heal_t::execute();
 
@@ -1985,7 +1985,7 @@ struct flash_of_light_t : public paladin_heal_t
 
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     paladin_heal_t::impact( s );
 
@@ -2018,7 +2018,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2044,7 +2044,7 @@ struct hand_of_purity_t : public paladin_spell_t
       background = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2103,7 +2103,7 @@ struct hand_of_sacrifice_t : public paladin_spell_t
       p -> active.hand_of_sacrifice_redirect = new hand_of_sacrifice_redirect_t( p );
   }
 
-  virtual void execute();
+  virtual void execute() override;
 
 };
 
@@ -2123,7 +2123,7 @@ struct holy_avenger_t : public paladin_spell_t
       background = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2141,7 +2141,7 @@ struct holy_light_t : public paladin_heal_t
     parse_options( options_str );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_heal_t::execute();
 
@@ -2151,7 +2151,7 @@ struct holy_light_t : public paladin_heal_t
     p() -> buffs.enhanced_holy_shock -> trigger();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = paladin_heal_t::execute_time();
 
@@ -2161,14 +2161,14 @@ struct holy_light_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr )
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     paladin_heal_t::schedule_execute( state );
 
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     paladin_heal_t::impact( s );
     
@@ -2287,7 +2287,7 @@ struct holy_prism_t : public paladin_spell_t
       background = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( target -> is_enemy() )
     {
@@ -2336,14 +2336,14 @@ struct holy_radiance_t : public paladin_heal_t
     aoe = data().effectN( 2 ).base_value();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     paladin_heal_t::tick( d );
 
     hot -> execute();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_heal_t::execute();
 
@@ -2351,7 +2351,7 @@ struct holy_radiance_t : public paladin_heal_t
     p() -> buffs.daybreak -> trigger();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = paladin_heal_t::execute_time();
 
@@ -2361,7 +2361,7 @@ struct holy_radiance_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr )
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     paladin_heal_t::schedule_execute( state );
 
@@ -2394,7 +2394,7 @@ struct holy_shock_damage_t : public paladin_spell_t
     spell_power_mod.direct *= 1.0 + p -> glyphs.holy_shock -> effectN( 2 ).percent();
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = paladin_spell_t::composite_crit();
 
@@ -2409,7 +2409,7 @@ struct holy_shock_damage_t : public paladin_spell_t
     return cc;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2456,7 +2456,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     spell_power_mod.direct *= 1.0 + p -> glyphs.holy_shock -> effectN( 2 ).percent();
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = paladin_heal_t::composite_crit();
 
@@ -2471,7 +2471,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     return cc;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_heal_t::execute();
 
@@ -2494,7 +2494,7 @@ struct holy_shock_heal_t : public paladin_heal_t
 
   }
 
-  virtual void impact ( action_state_t* s )
+  virtual void impact ( action_state_t* s ) override
   {
     paladin_heal_t::impact( s );
 
@@ -2547,7 +2547,7 @@ struct holy_shock_t : public paladin_heal_t
     add_child( heal );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( dmg )
     {
@@ -2575,7 +2575,7 @@ struct holy_shock_t : public paladin_heal_t
     paladin_heal_t::execute();
   }
 
-  double cooldown_multiplier()
+  double cooldown_multiplier() override
   {
     double cdm = paladin_heal_t::cooldown_multiplier();
     
@@ -2607,7 +2607,7 @@ struct holy_wrath_t : public paladin_spell_t
     hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_spell_t::action_multiplier();
 
@@ -2619,7 +2619,7 @@ struct holy_wrath_t : public paladin_spell_t
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2670,7 +2670,7 @@ struct lay_on_hands_t : public paladin_heal_t
       mana_return_pct = p -> find_spell( 54986 ) -> effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     base_dd_min = base_dd_max = p() -> resources.max[RESOURCE_HEALTH];
 
@@ -2682,7 +2682,7 @@ struct lay_on_hands_t : public paladin_heal_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( target -> debuffs.forbearance -> check() )
       return false;
@@ -2717,7 +2717,7 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
     may_crit = true;
   }
   
-  std::vector< player_t* >& target_list() const
+  std::vector< player_t* >& target_list() const override
   {
     target_cache.list = paladin_heal_t::target_list();
     target_cache.list = find_lowest_players( aoe );
@@ -2763,10 +2763,10 @@ struct lights_hammer_t : public paladin_spell_t
       background = true;
   }
 
-  virtual timespan_t travel_time() const
+  virtual timespan_t travel_time() const override
   { return travel_time_; }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     // trigger healing and damage ticks
     lh_heal_tick -> schedule_execute();
@@ -2793,7 +2793,7 @@ struct light_of_dawn_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_heal_t::action_multiplier();
 
@@ -2886,14 +2886,14 @@ struct sacred_shield_t : public paladin_heal_t
 
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {    
     td( d -> state -> target ) -> buffs.sacred_shield -> expire();
 
     paladin_heal_t::last_tick( d );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_heal_t::execute();
     
@@ -2939,7 +2939,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     target = player;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( rng().roll( proc_chance ) )
     {
@@ -2976,10 +2976,10 @@ struct seraphim_t : public paladin_spell_t
   }
 
   // Seraphim cannot trigger free HP effects
-  virtual void trigger_free_hp_effects( double /* c */ )
+  virtual void trigger_free_hp_effects( double /* c */ ) override
     {}
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2999,7 +2999,7 @@ struct speed_of_light_t: public paladin_spell_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
@@ -3026,7 +3026,7 @@ struct shining_protector_t : public paladin_heal_t
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything  
-  virtual void init()
+  virtual void init() override
   {
     paladin_heal_t::init();
     // disable the snapshot_flags for all multipliers, but specifically allow 
@@ -3035,7 +3035,7 @@ struct shining_protector_t : public paladin_heal_t
     snapshot_flags |= STATE_MUL_DA;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
 
@@ -3043,7 +3043,7 @@ struct shining_protector_t : public paladin_heal_t
   }
   
 
-  virtual void execute()
+  virtual void execute() override
   {
     proc_tracker -> occur();
 
@@ -3078,14 +3078,14 @@ struct uthers_insight_t : public paladin_heal_t
     // base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     p() -> buffs.uthers_insight -> trigger();
 
     paladin_heal_t::execute();
   }
   
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     paladin_heal_t::tick( d );
   }  
@@ -3133,7 +3133,7 @@ struct word_of_glory_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     // check for T16 4-pc tank effect
     if ( p() -> buffs.bastion_of_power -> check() && target == player )
@@ -3142,7 +3142,7 @@ struct word_of_glory_t : public paladin_heal_t
     return paladin_heal_t::cost();
   }
 
-  virtual void consume_free_hp_effects()
+  virtual void consume_free_hp_effects() override
   {
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
@@ -3156,7 +3156,7 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_heal_t::consume_free_hp_effects();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_heal_t::action_multiplier();
     double c = cost();
@@ -3180,7 +3180,7 @@ struct word_of_glory_t : public paladin_heal_t
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     double hopo = ( ( p() -> holy_power_stacks() <= 3  && cost() > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
@@ -3231,7 +3231,7 @@ struct harsh_word_t : public paladin_spell_t
     }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_spell_t::action_multiplier();
     double c = cost();
@@ -3242,7 +3242,7 @@ struct harsh_word_t : public paladin_spell_t
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     double hopo = ( ( p() -> holy_power_stacks() <= 3  && cost() > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
@@ -3296,7 +3296,7 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     }
   }
 
-  virtual timespan_t gcd() const
+  virtual timespan_t gcd() const override
   {
 
     if ( hasted_gcd )
@@ -3333,7 +3333,7 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     p() -> buffs.retribution_trinket -> trigger();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     base_t::execute();
 
@@ -3388,7 +3388,7 @@ struct melee_t : public paladin_melee_attack_t
     base_execute_time     = p -> main_hand_weapon.swing_time;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( ! player -> in_combat ) return timespan_t::from_seconds( 0.01 );
     if ( first )
@@ -3397,7 +3397,7 @@ struct melee_t : public paladin_melee_attack_t
       return paladin_melee_attack_t::execute_time();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( first )
       first = false;
@@ -3439,12 +3439,12 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     parse_options( options_str );
   }
 
-  void execute()
+  void execute() override
   {
     p() -> main_hand_attack -> schedule_execute();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> is_moving() ) 
       return false;
@@ -3479,7 +3479,7 @@ struct censure_t : public paladin_melee_attack_t
       base_multiplier /= 5;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
     {
@@ -3490,7 +3490,7 @@ struct censure_t : public paladin_melee_attack_t
     paladin_melee_attack_t::impact( s );
   }
 
-  double composite_target_multiplier( player_t* t ) const
+  double composite_target_multiplier( player_t* t ) const override
   {
     // since we don't support stacking debuffs, we handle the stack size in paladin_td buffs.debuffs_censure
     // and apply the stack size as an action multiplier
@@ -3501,7 +3501,7 @@ struct censure_t : public paladin_melee_attack_t
     return am;
   }
 
-  void last_tick( dot_t* d )
+  void last_tick( dot_t* d ) override
   {
     // if this is the last tick, expire the debuff locally
     // (this shouldn't happen ... ever? ... under normal operation)
@@ -3534,13 +3534,13 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
   }
 
-  void execute()
+  void execute() override
   {
     paladin_melee_attack_t::execute();
     retribution_trinket_trigger();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3553,7 +3553,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     return am;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
@@ -3619,13 +3619,13 @@ struct divine_storm_t: public paladin_melee_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     paladin_melee_attack_t::execute();
     p() -> buffs.final_verdict -> expire();
   }
 
-  double cost() const
+  double cost() const override
   {
     // check for the T16 4-pc melee buff
     if ( p() -> buffs.divine_crusader -> check() )
@@ -3634,7 +3634,7 @@ struct divine_storm_t: public paladin_melee_attack_t
     return paladin_melee_attack_t::cost();
   }
 
-  void consume_free_hp_effects()
+  void consume_free_hp_effects() override
   {
     // order of operations: T16 4-pc melee, then Divine Purpose
 
@@ -3649,7 +3649,7 @@ struct divine_storm_t: public paladin_melee_attack_t
     paladin_melee_attack_t::consume_free_hp_effects();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3662,7 +3662,7 @@ struct divine_storm_t: public paladin_melee_attack_t
     return am;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
@@ -3698,7 +3698,7 @@ struct exorcism_t : public paladin_melee_attack_t
     cooldown -> duration = data().cooldown();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
     
@@ -3711,7 +3711,7 @@ struct exorcism_t : public paladin_melee_attack_t
     return am;
   }
 
-  void execute()
+  void execute() override
   {
     paladin_melee_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) )
@@ -3738,7 +3738,7 @@ struct exorcism_t : public paladin_melee_attack_t
     }
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
     {
@@ -3787,7 +3787,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3799,7 +3799,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     return am;
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     paladin_melee_attack_t::available_targets( tl );
 
@@ -3814,7 +3814,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     return tl.size();
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
@@ -3840,7 +3840,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     add_child( hotr_aoe );
   }
 
-  void execute()
+  void execute() override
   {
     paladin_melee_attack_t::execute();
 
@@ -3870,7 +3870,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     }
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3883,7 +3883,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     return am;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
     if ( result_is_hit_or_multistrike( s -> result ) )
@@ -3917,7 +3917,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_melee_attack_t::execute();
 
@@ -3928,7 +3928,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   }
 
   // Special things that happen with Hammer of Wrath damages target
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
     if ( result_is_hit( s -> result ) )
@@ -3953,7 +3953,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       trigger_hand_of_light( s );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3966,7 +3966,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     return am;
   }
 
-  double cooldown_multiplier()
+  double cooldown_multiplier() override
   {
     double cdm = paladin_melee_attack_t::cooldown_multiplier();
     
@@ -3976,7 +3976,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     return cdm;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     // this checks whether we're able to cast it (ignoring cooldowns)
     // if so, continue to the standard ready() function for cooldowns/etc.
@@ -4016,7 +4016,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
   }
 
   // Disable multipliers in init() so that it doesn't double-dip on anything  
-  virtual void init()
+  virtual void init() override
   {
     paladin_melee_attack_t::init();
     // Disable the snapshot_flags for all multipliers, but specifically allow factors in
@@ -4031,7 +4031,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     // STATE_VERSATILITY (and any other relevant flags) individually.
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
     
@@ -4070,7 +4070,7 @@ struct hand_of_light_multistrike_proc_t : public paladin_melee_attack_t
   }
 
   // Disable multipliers in init() so that it doesn't double-dip on anything  
-  virtual void init()
+  virtual void init() override
   {
     paladin_melee_attack_t::init();
     // Disable the snapshot_flags for all multipliers, but specifically allow factors in
@@ -4085,7 +4085,7 @@ struct hand_of_light_multistrike_proc_t : public paladin_melee_attack_t
     // STATE_VERSATILITY (and any other relevant flags) individually.
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
     
@@ -4128,7 +4128,7 @@ struct judgment_t : public paladin_melee_attack_t
       uthers_insight = new uthers_insight_t( p );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_melee_attack_t::execute();
 
@@ -4162,7 +4162,7 @@ struct judgment_t : public paladin_melee_attack_t
   }
 
   // Special things that happen when Judgment damages target
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
@@ -4198,7 +4198,7 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -4220,7 +4220,7 @@ struct judgment_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     // Only usable if a seal is active
     if ( p() -> active_seal == SEAL_NONE ) return false;
@@ -4245,7 +4245,7 @@ struct rebuke_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
@@ -4265,7 +4265,7 @@ struct reckoning_t: public paladin_melee_attack_t
     use_off_gcd = true;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -4293,7 +4293,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
     consume_resource();
@@ -4343,7 +4343,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
     // if we've swapped to or from Seal of Insight, we'll need to refresh spell haste cache
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> active_seal == seal_type ) return false;
     return paladin_melee_attack_t::ready();
@@ -4441,7 +4441,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_melee_attack_t::execute();
 
@@ -4480,7 +4480,7 @@ struct final_verdict_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
 
-  virtual void execute ()
+  virtual void execute () override
   {
     // store cost for potential refunding (see below)
     double c = cost();
@@ -4495,7 +4495,7 @@ struct final_verdict_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
@@ -4530,7 +4530,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     background = p -> talents.final_verdict -> ok();
   }
 
-  virtual school_e get_school() const
+  virtual school_e get_school() const override
   {
     // T15 Retribution 4-piece proc turns damage from physical into Holy damage
     if ( p() -> buffs.tier15_4pc_melee -> up() )
@@ -4539,7 +4539,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
       return paladin_melee_attack_t::get_school();
   }
 
-  virtual void execute ()
+  virtual void execute () override
   {
     // store cost for potential refunding (see below)
     double c = cost();
@@ -4554,7 +4554,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
 
@@ -4607,7 +4607,7 @@ struct hand_of_sacrifice_t : public buff_t
   }
 
   // Misuse functions as the redirect callback for damage onto the source
-  virtual bool trigger( int, double value, double, timespan_t )
+  virtual bool trigger( int, double value, double, timespan_t ) override
   {
     assert( source );
 
@@ -4624,7 +4624,7 @@ struct hand_of_sacrifice_t : public buff_t
     return true;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -4632,7 +4632,7 @@ struct hand_of_sacrifice_t : public buff_t
     source_health_pool = 0.0;
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     buff_t::reset();
 
@@ -4651,7 +4651,7 @@ struct divine_protection_t : public buff_t
     cooldown -> duration = timespan_t::zero();
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -6706,7 +6706,7 @@ expr_t* paladin_t::create_expression( action_t* a,
     seal_e rt;
     seal_expr_t( const std::string& n, paladin_t& p, seal_e r ) :
       paladin_expr_t( n, p ), rt( r ) {}
-    virtual double evaluate() { return paladin.active_seal == rt; }
+    virtual double evaluate() override { return paladin.active_seal == rt; }
   };
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -6727,7 +6727,7 @@ expr_t* paladin_t::create_expression( action_t* a,
   {
     double_jeopardy_expr_t( const std::string& n, paladin_t& p ) :
       paladin_expr_t( n, p ) {}
-    virtual double evaluate() { return paladin.last_judgement_target ? (double)paladin.last_judgement_target -> actor_index : -1; }
+    virtual double evaluate() override { return paladin.last_judgement_target ? (double)paladin.last_judgement_target -> actor_index : -1; }
   };
 
   if ( splits[ 0 ] == "last_judgment_target" )
@@ -6751,7 +6751,7 @@ expr_t* paladin_t::create_expression( action_t* a,
       how_cd( p.get_cooldown( "hammer_of_wrath" ) ), hs_cd( p.get_cooldown( "holy_shock" ) )
     { }
 
-    virtual double evaluate()
+    virtual double evaluate() override
     {
       timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time();
       gcd_ready = std::max( gcd_ready, timespan_t::zero() );
@@ -6875,21 +6875,21 @@ struct paladin_module_t : public module_t
 {
   paladin_module_t() : module_t( PALADIN ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new paladin_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new paladin_report_t( *p ) );
     return p;
   }
 
-  virtual bool valid() const { return true; }
+  virtual bool valid() const override { return true; }
 
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184911, retribution_trinket );
   }
 
-  virtual void init( player_t* p ) const
+  virtual void init( player_t* p ) const override
   {
     p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
     p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
@@ -6897,13 +6897,13 @@ struct paladin_module_t : public module_t
     p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
   }
 
-  virtual void register_hotfixes() const
+  virtual void register_hotfixes() const override
   {
   }
 
-  virtual void combat_begin( sim_t* ) const {}
+  virtual void combat_begin( sim_t* ) const override {}
 
-  virtual void combat_end  ( sim_t* ) const {}
+  virtual void combat_end  ( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

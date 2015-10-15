@@ -289,7 +289,7 @@ void enchants::mark_of_shadowmoon( special_effect_t& effect )
       dbc_proc_callback_t( i, effect )
     { }
 
-    void trigger( action_t* a, void* call_data )
+    void trigger( action_t* a, void* call_data ) override
     {
       if ( listener -> resources.pct( RESOURCE_MANA ) > 0.5 )
         return;
@@ -311,7 +311,7 @@ void enchants::mark_of_blackrock( special_effect_t& effect )
       dbc_proc_callback_t( i, effect )
     { }
 
-    void trigger( action_t* a, void* call_data )
+    void trigger( action_t* a, void* call_data ) override
     {
       if ( listener -> resources.pct( RESOURCE_HEALTH ) >= 0.6 )
         return;
@@ -348,7 +348,7 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       extensions( 0 ), max_extensions( max_ext )
     { }
 
-    void extend_duration( player_t* p, timespan_t extend_duration )
+    void extend_duration( player_t* p, timespan_t extend_duration ) override
     {
       if ( extensions < max_extensions )
       {
@@ -357,13 +357,13 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       }
     }
 
-    void execute( int stacks, double value, timespan_t duration )
+    void execute( int stacks, double value, timespan_t duration ) override
     { stat_buff_t::execute( stacks, value, duration ); extensions = 0; }
 
-    void reset()
+    void reset() override
     { stat_buff_t::reset(); extensions = 0; }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     { stat_buff_t::expire_override( expiration_stacks, remaining_duration ); extensions = 0; }
   };
 
@@ -401,7 +401,7 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       dbc_proc_callback_t( item, effect )
     { }
 
-    void trigger( action_t* a, void* call_data )
+    void trigger( action_t* a, void* call_data ) override
     {
       if ( proc_buff -> check() )
       {
@@ -409,7 +409,7 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       }
     }
 
-    void execute( action_t*, action_state_t* )
+    void execute( action_t*, action_state_t* ) override
     {
       if ( proc_buff -> check() )
         proc_buff -> extend_duration( listener, timespan_t::from_seconds( 2 ) );
@@ -449,7 +449,7 @@ void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
       tick_may_crit = false;
     }
 
-    double target_armor( player_t* ) const
+    double target_armor( player_t* ) const override
     { return 0.0; }
   };
 
@@ -568,7 +568,7 @@ struct windsong_callback_t : public dbc_proc_callback_t
     haste( hb ), crit( cb ), mastery( mb )
   { }
 
-  void execute( action_t* /* a */, action_state_t* /* call_data */ )
+  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
   {
     stat_buff_t* buff;
 
@@ -613,7 +613,7 @@ struct hurricane_spell_proc_t : public dbc_proc_callback_t
     mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
   { }
 
-  void execute( action_t* /* a */, action_state_t* /* call_data */ )
+  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
   {
     if ( mh_buff && mh_buff -> check() )
       mh_buff -> trigger();
@@ -683,10 +683,10 @@ struct nitro_boosts_action_t : public action_t
     cooldown = p -> get_cooldown( "potion" );
   }
 
-  result_e calculate_result( action_state_t* /* state */ ) const
+  result_e calculate_result( action_state_t* /* state */ ) const override
   { return RESULT_HIT; }
 
-  void execute()
+  void execute() override
   {
     action_t::execute();
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
@@ -694,7 +694,7 @@ struct nitro_boosts_action_t : public action_t
     player -> buffs.nitro_boosts-> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! player -> buffs.raid_movement -> check() )
       return false;
@@ -885,7 +885,7 @@ void gem::capacitive_primal( special_effect_t& effect )
       }
     }
 
-    void trigger( action_t* action, void* call_data )
+    void trigger( action_t* action, void* call_data ) override
     {
       // Flurry of Xuen and Capacitance cannot proc Capacitance
       if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
@@ -1032,14 +1032,14 @@ void set_bonus::t17_lfr_4pc_leacaster( special_effect_t& effect )
       dot( new natures_fury_t( data.player ) )
     { }
 
-    void reset()
+    void reset() override
     {
       dbc_proc_callback_t::reset();
 
       deactivate();
     }
 
-    void execute( action_t* /* a */, action_state_t* state )
+    void execute( action_t* /* a */, action_state_t* state ) override
     {
       if ( state -> result_amount == 0 )
       {
@@ -1060,14 +1060,14 @@ void set_bonus::t17_lfr_4pc_leacaster( special_effect_t& effect )
       callback( cb )
     { }
 
-    void start( int stacks, double value, timespan_t duration )
+    void start( int stacks, double value, timespan_t duration ) override
     {
       buff_t::start( stacks, value, duration );
 
       callback -> activate();
     }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -1118,7 +1118,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
     }
     virtual const char* name() const override
     { return "electric_orb_event"; }
-    void execute()
+    void execute() override
     {
       aoe -> target = target;
       aoe -> execute();
@@ -1139,7 +1139,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
       aoe( new electric_orb_aoe_t( data.player ) )
     { }
 
-    void execute( action_t* /* a */, action_state_t* state )
+    void execute( action_t* /* a */, action_state_t* state ) override
     {
       new ( *listener -> sim ) electric_orb_event_t(*listener -> sim, aoe, state -> target, 0 );
     }
@@ -1366,7 +1366,7 @@ void item::rune_of_reorigination( special_effect_t& effect )
       buff = static_cast< stat_buff_t* >( effect.custom_buff );
     }
 
-    virtual void execute( action_t* action, action_state_t* /* state */ )
+    virtual void execute( action_t* action, action_state_t* /* state */ ) override
     {
       // We can never allow this trinket to refresh, so force the trinket to 
       // always expire, before we proc a new one.
@@ -1476,7 +1476,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
                .quiet( true );
     }
 
-    void execute( action_t* /* action */, action_state_t* /* state */ )
+    void execute( action_t* /* action */, action_state_t* /* state */ ) override
     {
       sparks -> trigger();
 
@@ -1499,7 +1499,7 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
       buff_t( buff_creator_t( p, "perfect_aim", p -> find_spell( 138963 ) ).activated( false ) )
     { }
 
-    void execute( int stacks, double value, timespan_t duration )
+    void execute( int stacks, double value, timespan_t duration ) override
     {
       if ( current_stack == 0 )
       {
@@ -1511,7 +1511,7 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
       buff_t::execute( stacks, value, duration );
     }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -1527,7 +1527,7 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
       dbc_proc_callback_t( data.item -> player, data )
     { }
 
-    void initialize()
+    void initialize() override
     {
       dbc_proc_callback_t::initialize();
 
@@ -1996,7 +1996,7 @@ void item::legendary_ring( special_effect_t& effect )
       update_flags = 0;
     }
 
-    double composite_da_multiplier( const action_state_t* ) const
+    double composite_da_multiplier( const action_state_t* ) const override
     {
       return damage_coeff;
     }
@@ -2025,7 +2025,7 @@ void item::legendary_ring( special_effect_t& effect )
         originaleffect.player -> buffs.legendary_aoe_ring = this;
       }
 
-      void expire_override( int expiration_stacks, timespan_t remaining_duration )
+      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
       {
         double cv = current_value;
 
@@ -2159,7 +2159,7 @@ struct flurry_of_xuen_driver_t : public attack_t
 
   // Don't use tick action here, so we can get class specific snapshotting, if
   // there is a custom proc action crated. Hack and workaround and ugly.
-  void tick( dot_t* )
+  void tick( dot_t* ) override
   {
     if ( ac )
       ac -> schedule_execute();
@@ -2174,7 +2174,7 @@ struct flurry_of_xuen_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( p, effect )
   { }
 
-  void trigger( action_t* action, void* call_data )
+  void trigger( action_t* action, void* call_data ) override
   {
     // Flurry of Xuen, and Lightning Strike cannot proc Flurry of Xuen
     if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
@@ -2233,7 +2233,7 @@ struct essence_of_yulon_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( p, effect )
   { }
 
-  void trigger( action_t* action, void* call_data )
+  void trigger( action_t* action, void* call_data ) override
   {
     if ( action -> id == 148008 ) // dot direct damage ticks can't proc itself
       return;
@@ -2479,7 +2479,7 @@ void item::cleave( special_effect_t& effect )
 
     }
 
-    void execute( action_t* action, action_state_t* state )
+    void execute( action_t* action, action_state_t* state ) override
     {
       action_t* a = 0;
 
@@ -2535,7 +2535,7 @@ void item::heartpierce( special_effect_t& effect )
       target = player;
     }
 
-    void tick( dot_t* d )
+    void tick( dot_t* d ) override
     {
       spell_t::tick( d );
 
@@ -2591,7 +2591,7 @@ struct felmouth_frenzy_driver_t : public spell_t
       spell_power_mod.direct = attack_power_mod.direct = 0.424;
     }
 
-    double attack_direct_power_coefficient( const action_state_t* s ) const
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
     {
       if ( s -> composite_spell_power() > s -> composite_attack_power() )
         return 0;
@@ -2599,7 +2599,7 @@ struct felmouth_frenzy_driver_t : public spell_t
       return spell_t::attack_direct_power_coefficient( s );
     }
 
-    double spell_direct_power_coefficient( const action_state_t* s ) const
+    double spell_direct_power_coefficient( const action_state_t* s ) const override
     {
       if ( s -> composite_spell_power() <= s -> composite_attack_power() )
         return 0;
@@ -2636,7 +2636,7 @@ struct felmouth_frenzy_driver_t : public spell_t
     }
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     bool ret = spell_t::init_finished();
 
@@ -2648,14 +2648,14 @@ struct felmouth_frenzy_driver_t : public spell_t
     return ret;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     size_t n_ticks = bolt_min + static_cast<size_t>( rng().real() * bolt_range );
     assert( n_ticks >= 4 && n_ticks <= 6 );
     return base_tick_time * n_ticks;
   }
 
-  double composite_spell_power() const
+  double composite_spell_power() const override
   {
     // Fel Lash uses the player's highest primary school spellpower.
     double csp = 0.0;
@@ -2708,7 +2708,7 @@ struct empty_drinking_horn_damage_t : public melee_attack_t
     weapon_multiplier = 0;
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = melee_attack_t::composite_target_multiplier( target );
 
@@ -2738,7 +2738,7 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
     }
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state )
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
     actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
     assert( td );
@@ -2761,7 +2761,7 @@ struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
     item_targetdata_initializer_t( iid, s )
   { }
 
-  void operator()( actor_target_data_t* td ) const
+  void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
     if ( ! effect )
@@ -2828,10 +2828,10 @@ struct hammering_blows_buff_t : public stat_buff_t
       event_t( *cb -> listener ), driver( cb )
     { add_event( timespan_t::zero() ); }
 
-    const char* name() const
+    const char* name() const override
     { return "hammering_blows_enable_event"; }
 
-    void execute()
+    void execute() override
     {
       driver -> activate();
     }
@@ -2846,7 +2846,7 @@ struct hammering_blows_buff_t : public stat_buff_t
     stack_driver( 0 )
   { }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     bool state_change = current_stack == 0;
     stat_buff_t::execute( stacks, value, duration );
@@ -2857,14 +2857,14 @@ struct hammering_blows_buff_t : public stat_buff_t
     }
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     stat_buff_t::expire_override( expiration_stacks, remaining_duration );
 
     stack_driver -> deactivate();
   }
 
-  void reset()
+  void reset() override
   {
     stat_buff_t::reset();
 
@@ -2878,7 +2878,7 @@ struct hammering_blows_driver_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect )
   { }
 
-  void execute( action_t* /* a */, action_state_t* /* state */ )
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
     int stack = proc_buff -> check();
 
@@ -2952,7 +2952,7 @@ struct mark_of_doom_damage_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
   { }
 
-  void trigger( action_t* a, void* call_data )
+  void trigger( action_t* a, void* call_data ) override
   {
     const action_state_t* s = static_cast<const action_state_t*>( call_data );
     if ( s -> target != target )
@@ -2963,7 +2963,7 @@ struct mark_of_doom_damage_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t::trigger( a, call_data );
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state )
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
     damage -> target = trigger_state -> target;
     damage -> execute();
@@ -2995,21 +2995,21 @@ struct mark_of_doom_t : public debuff_t
     driver_cb -> initialize();
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     debuff_t::expire_override( expiration_stacks, remaining_duration );
 
     driver_cb -> deactivate();
   }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     debuff_t::execute( stacks, value, duration );
 
     driver_cb -> activate();
   }
 
-  void reset()
+  void reset() override
   {
     debuff_t::reset();
 
@@ -3024,7 +3024,7 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect )
   { }
 
-  void initialize()
+  void initialize() override
   {
     dbc_proc_callback_t::initialize();
 
@@ -3041,7 +3041,7 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
     }
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state )
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
     actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
     assert( td );
@@ -3055,7 +3055,7 @@ struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
     item_targetdata_initializer_t( iid, s )
   { }
 
-  void operator()( actor_target_data_t* td ) const
+  void operator()( actor_target_data_t* td ) const override
   {
     const special_effect_t* effect = find_effect( td -> source );
     if ( effect == 0 )
@@ -3136,7 +3136,7 @@ struct soul_capacitor_explosion_t : public spell_t
     update_flags = 0;
   }
 
-  double composite_da_multiplier( const action_state_t* ) const
+  double composite_da_multiplier( const action_state_t* ) const override
   { return explosion_multiplier; }
 };
 
@@ -3165,7 +3165,7 @@ struct soul_capacitor_buff_t : public buff_t
     player -> sim -> target_non_sleeping_list.register_callback( spirit_shift_explode_callback_t( this ) );
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -3216,7 +3216,7 @@ struct felstorm_tick_t : public melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     // Find first blademaster pet, it'll be the first trinket-created pet
     pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
@@ -3240,7 +3240,7 @@ struct felstorm_t : public melee_attack_t
     tick_action = new felstorm_tick_t( p );
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
     if ( player != main_pet )
@@ -3271,7 +3271,7 @@ struct blademaster_pet_t : public pet_t
     main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
   }
 
-  void init_action_list()
+  void init_action_list() override
   {
     action_list_str = "felstorm";
 
@@ -3279,7 +3279,7 @@ struct blademaster_pet_t : public pet_t
   }
 
   action_t* create_action( const std::string& name,
-                           const std::string& options_str )
+                           const std::string& options_str ) override
   {
     if ( name == "felstorm" ) return new felstorm_t( this );
 
@@ -3325,7 +3325,7 @@ struct burning_mirror_t : public spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     spell_t::execute();
 
@@ -3630,7 +3630,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
   // Evaluates automatically to the maximum value out of all expressions, may
   // not be wanted in all situations. Best case? We should allow internal
   // operators here somehow
-  double evaluate()
+  double evaluate() override
   {
     double result = 0;
     for (auto expr : exprs)
@@ -3688,7 +3688,7 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
     }
   }
 
-  double evaluate()
+  double evaluate() override
   { return v; }
 };
 
@@ -3749,7 +3749,7 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
     }
   }
 
-  double evaluate()
+  double evaluate() override
   { return v; }
 };
 

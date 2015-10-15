@@ -405,49 +405,49 @@ public:
   }
 
   // Character Definition
-  virtual void      init_spells();
-  virtual void      init_base_stats();
-  virtual void      init_scaling();
-  virtual void      create_buffs();
-  virtual void      init_gains();
-  virtual void      init_position();
-  virtual void      init_procs();
-  virtual void      init_resources( bool );
-  virtual void      arise();
-  virtual void      combat_begin();
-  virtual double    composite_attribute( attribute_e attr ) const;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
-  virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual double    composite_melee_haste() const;
-  virtual double    composite_armor_multiplier() const;
-  virtual double    composite_block() const;
-  virtual double    composite_block_reduction() const;
-  virtual double    composite_parry_rating() const;
-  virtual double    composite_parry() const;
-  virtual double    composite_melee_expertise( const weapon_t* ) const;
-  virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_melee_attack_power() const;
-  virtual double    composite_mastery() const;
-  virtual double    composite_crit_block() const;
-  virtual double    composite_crit_avoidance() const;
-  virtual double    composite_melee_speed() const;
-  virtual double    composite_melee_crit() const;
-  virtual double    composite_spell_crit() const;
-  virtual double    composite_player_critical_damage_multiplier() const;
-  virtual double    composite_leech() const;
-  virtual void      teleport( double yards, timespan_t duration );
-  virtual void      trigger_movement( double distance, movement_direction_e direction );
-  virtual void      interrupt();
-  virtual void      reset();
-  virtual void      moving();
-  virtual void      init_rng();
-  virtual void      create_options();
-  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& );
-  virtual std::string      create_profile( save_e type );
-  virtual void      invalidate_cache( cache_e );
-  virtual double    temporary_movement_modifier() const;
-  virtual bool      has_t18_class_trinket() const;
+  virtual void      init_spells() override;
+  virtual void      init_base_stats() override;
+  virtual void      init_scaling() override;
+  virtual void      create_buffs() override;
+  virtual void      init_gains() override;
+  virtual void      init_position() override;
+  virtual void      init_procs() override;
+  virtual void      init_resources( bool ) override;
+  virtual void      arise() override;
+  virtual void      combat_begin() override;
+  virtual double    composite_attribute( attribute_e attr ) const override;
+  virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual double    composite_melee_haste() const override;
+  virtual double    composite_armor_multiplier() const override;
+  virtual double    composite_block() const override;
+  virtual double    composite_block_reduction() const override;
+  virtual double    composite_parry_rating() const override;
+  virtual double    composite_parry() const override;
+  virtual double    composite_melee_expertise( const weapon_t* ) const override;
+  virtual double    composite_attack_power_multiplier() const override;
+  virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_mastery() const override;
+  virtual double    composite_crit_block() const override;
+  virtual double    composite_crit_avoidance() const override;
+  virtual double    composite_melee_speed() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    composite_player_critical_damage_multiplier() const override;
+  virtual double    composite_leech() const override;
+  virtual void      teleport( double yards, timespan_t duration ) override;
+  virtual void      trigger_movement( double distance, movement_direction_e direction ) override;
+  virtual void      interrupt() override;
+  virtual void      reset() override;
+  virtual void      moving() override;
+  virtual void      init_rng() override;
+  virtual void      create_options() override;
+  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
+  virtual std::string      create_profile( save_e type ) override;
+  virtual void      invalidate_cache( cache_e ) override;
+  virtual double    temporary_movement_modifier() const override;
+  virtual bool      has_t18_class_trinket() const override;
 
   void              apl_precombat();
   void              apl_default();
@@ -455,18 +455,18 @@ public:
   void              apl_arms();
   void              apl_prot();
   void              apl_glad();
-  virtual void      init_action_list();
+  virtual void      init_action_list() override;
 
-  virtual action_t*  create_action( const std::string& name, const std::string& options );
-  virtual resource_e primary_resource() const { return RESOURCE_RAGE; }
-  virtual role_e     primary_role() const;
-  virtual stat_e     convert_hybrid_stat( stat_e s ) const;
-  virtual void       assess_damage( school_e, dmg_e, action_state_t* s );
-  virtual void       copy_from( player_t* source );
+  virtual action_t*  create_action( const std::string& name, const std::string& options ) override;
+  virtual resource_e primary_resource() const override { return RESOURCE_RAGE; }
+  virtual role_e     primary_role() const override;
+  virtual stat_e     convert_hybrid_stat( stat_e s ) const override;
+  virtual void       assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  virtual void       copy_from( player_t* source ) override;
 
   target_specific_t<warrior_td_t> target_data;
 
-  virtual warrior_td_t* get_target_data( player_t* target ) const
+  virtual warrior_td_t* get_target_data( player_t* target ) const override
   {
     warrior_td_t*& td = target_data[target];
 
@@ -833,7 +833,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     special = true;
   }
 
-  virtual void assess_damage( dmg_e type, action_state_t* s )
+  virtual void assess_damage( dmg_e type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
 
@@ -843,14 +843,14 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     base_t::execute();
     if ( p() -> buff.sweeping_strikes -> up() )
       trigger_sweeping_strikes( execute_state );
   }
 
-  virtual double calculate_weapon_damage( double attack_power ) const
+  virtual double calculate_weapon_damage( double attack_power ) const override
   {
     double dmg = base_t::calculate_weapon_damage( attack_power );
 
@@ -930,7 +930,7 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
     cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     warrior_attack_t::available_targets( tl );
 
@@ -945,7 +945,7 @@ struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
     return tl.size();
   }
 
-  void execute()
+  void execute() override
   {
     attack_t::execute();
 
@@ -978,7 +978,7 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
     return 1; // No double dipping
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     warrior_attack_t::available_targets( tl );
 
@@ -993,7 +993,7 @@ struct sweeping_strikes_attack_t: public warrior_attack_t
     return tl.size();
   }
 
-  void execute()
+  void execute() override
   {
     base_dd_max *= pct_damage; //Deals 50% of original damage
     base_dd_min *= pct_damage;
@@ -1014,7 +1014,7 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < war
     dual = true;
   }
 
-  void trigger_bloodbath_dot( player_t*, double ) // Bloodbath doesn't trigger itself.
+  void trigger_bloodbath_dot( player_t*, double ) override // Bloodbath doesn't trigger itself.
   {}
 };
 
@@ -1049,14 +1049,14 @@ struct melee_t: public warrior_attack_t
     }
   }
 
-  void reset()
+  void reset() override
   {
     warrior_attack_t::reset();
     mh_lost_melee_contact = true;
     oh_lost_melee_contact = true;
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t t = warrior_attack_t::execute_time();
     if ( weapon -> slot == SLOT_MAIN_HAND && mh_lost_melee_contact )
@@ -1067,7 +1067,7 @@ struct melee_t: public warrior_attack_t
       return t;
   }
 
-  void schedule_execute( action_state_t* s )
+  void schedule_execute( action_state_t* s ) override
   {
     warrior_attack_t::schedule_execute( s );
     if ( weapon -> slot == SLOT_MAIN_HAND )
@@ -1076,7 +1076,7 @@ struct melee_t: public warrior_attack_t
       oh_lost_melee_contact = false;
   }
 
-  void execute()
+  void execute() override
   {
     if ( p() -> current.distance_to_move > 5 )
     { // Cancel autoattacks, auto_attack_t will restart them when we're back in range.
@@ -1122,7 +1122,7 @@ struct melee_t: public warrior_attack_t
     }
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
 
@@ -1218,7 +1218,7 @@ struct auto_attack_t: public warrior_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  void execute()
+  void execute() override
   {
     if ( p() -> main_hand_attack -> execute_event == nullptr )
       p() -> main_hand_attack -> schedule_execute();
@@ -1228,7 +1228,7 @@ struct auto_attack_t: public warrior_attack_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     bool ready = warrior_attack_t::ready();
     if ( ready ) // Range check
@@ -1255,7 +1255,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1290,13 +1290,13 @@ struct bladestorm_t: public warrior_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     p() -> buff.bladestorm -> trigger();
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
     bladestorm_mh -> execute();
@@ -1305,13 +1305,13 @@ struct bladestorm_t: public warrior_attack_t
       bladestorm_oh -> execute();
   }
 
-  void last_tick( dot_t*d )
+  void last_tick( dot_t*d ) override
   {
     warrior_attack_t::last_tick( d );
     p() -> buff.bladestorm -> expire();
   }
   // Bladestorm is not modified by haste effects
-  double composite_haste() const { return 1.0; }
+  double composite_haste() const override { return 1.0; }
 };
 
 // Bloodthirst Heal =========================================================
@@ -1326,7 +1326,7 @@ struct bloodthirst_heal_t: public warrior_heal_t
     background = true;
   }
 
-  resource_e current_resource() const { return RESOURCE_NONE; }
+  resource_e current_resource() const override { return RESOURCE_NONE; }
 
   virtual double composite_pct_heal( const action_state_t* s ) const override
   {
@@ -1339,7 +1339,7 @@ struct bloodthirst_heal_t: public warrior_heal_t
     return b;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     p() -> buff.raging_blow_glyph -> up(); // benefit tracking
     warrior_heal_t::execute();
@@ -1375,7 +1375,7 @@ struct bloodthirst_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = warrior_attack_t::composite_crit();
 
@@ -1390,7 +1390,7 @@ struct bloodthirst_t: public warrior_attack_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     p() -> buff.tier16_4pc_death_sentence -> trigger();
@@ -1455,7 +1455,7 @@ struct charge_t: public warrior_attack_t
       cooldown -> duration += p -> talents.juggernaut -> effectN( 1 ).time_value();
   }
 
-  void execute()
+  void execute() override
   {
     if ( p() -> current.distance_to_move > 5 )
     {
@@ -1484,13 +1484,13 @@ struct charge_t: public warrior_attack_t
     }
   }
 
-  void reset()
+  void reset() override
   {
     action_t::reset();
     first_charge = true;
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( first_charge ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
@@ -1519,7 +1519,7 @@ struct colossus_smash_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -1556,7 +1556,7 @@ struct demoralizing_shout: public warrior_attack_t
     parse_options( options_str );
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
     td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
@@ -1575,7 +1575,7 @@ struct devastate_t: public warrior_attack_t
     impact_action = p -> active.deep_wounds;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -1592,7 +1592,7 @@ struct devastate_t: public warrior_attack_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( !p() -> has_shield_equipped() )
       return false;
@@ -1613,11 +1613,11 @@ struct dragon_roar_t: public warrior_attack_t
     may_dodge = may_parry = may_block = false;
   }
 
-  double target_armor( player_t* ) const { return 0; }
+  double target_armor( player_t* ) const override { return 0; }
 
-  double composite_crit() const { return 1.0; }
+  double composite_crit() const override { return 1.0; }
 
-  double composite_target_crit( player_t* ) const { return 0.0; }
+  double composite_target_crit( player_t* ) const override { return 0.0; }
 };
 
 // Execute ==================================================================
@@ -1669,7 +1669,7 @@ struct execute_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1693,7 +1693,7 @@ struct execute_t: public warrior_attack_t
     return am;
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = warrior_attack_t::cost();
 
@@ -1718,7 +1718,7 @@ struct execute_t: public warrior_attack_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -1730,7 +1730,7 @@ struct execute_t: public warrior_attack_t
     p() -> buff.tier16_4pc_death_sentence -> expire();
   }
 
-  void anger_management( double )
+  void anger_management( double ) override
   {
     double newrage = resource_consumed;
     if ( p() -> buff.sudden_death -> check() )
@@ -1739,7 +1739,7 @@ struct execute_t: public warrior_attack_t
     base_t::anger_management( newrage );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -1786,7 +1786,7 @@ struct heroic_strike_t: public warrior_attack_t
     use_off_gcd = true;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1796,7 +1796,7 @@ struct heroic_strike_t: public warrior_attack_t
     return am;
   }
 
-  void anger_management( double )
+  void anger_management( double ) override
   {
     if ( p() -> buff.ultimatum -> check() ) // Ultimatum does not grant cooldown reduction from anger management.
       return;
@@ -1804,7 +1804,7 @@ struct heroic_strike_t: public warrior_attack_t
     base_t::anger_management( anger_management_rage ); // However, unyielding strikes grants cooldown reduction based on the original cost of heroic strike.
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = warrior_attack_t::cost();
 
@@ -1816,7 +1816,7 @@ struct heroic_strike_t: public warrior_attack_t
     return c;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double cc = warrior_attack_t::composite_crit();
 
@@ -1826,14 +1826,14 @@ struct heroic_strike_t: public warrior_attack_t
     return cc;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
     p() -> buff.ultimatum -> expire();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -1857,7 +1857,7 @@ struct heroic_throw_t: public warrior_attack_t
       cooldown -> duration = timespan_t::zero();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> current.distance_to_move > range ||
          p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
@@ -1894,12 +1894,12 @@ struct heroic_leap_t: public warrior_attack_t
     cooldown -> duration *= p -> buffs.cooldown_reduction -> default_value;
   }
 
-  timespan_t travel_time() const
+  timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 0.25 );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     if ( p() -> current.distance_to_move > 0 && !p() -> buff.heroic_leap_movement -> check() )
@@ -1910,7 +1910,7 @@ struct heroic_leap_t: public warrior_attack_t
     }
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( p() -> current.distance_to_move > heroic_leap_damage -> effectN( 1 ).radius() )
       s -> result_amount = 0;
@@ -1920,7 +1920,7 @@ struct heroic_leap_t: public warrior_attack_t
     p() -> buff.heroic_leap_glyph -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.intervene_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.shield_charge -> check() )
       return false;
@@ -1936,7 +1936,7 @@ struct tier16_2pc_tank_heal_t: public warrior_heal_t
   tier16_2pc_tank_heal_t( warrior_t* p ):
     warrior_heal_t( "tier16_2pc_tank_heal", p )
   {}
-  resource_e current_resource() const { return RESOURCE_NONE; }
+  resource_e current_resource() const override { return RESOURCE_NONE; }
 };
 
 // Impending Victory ========================================================
@@ -1968,7 +1968,7 @@ struct impending_victory_heal_t: public warrior_heal_t
     warrior_heal_t::execute();
   }
 
-  resource_e current_resource() const
+  resource_e current_resource() const override
   {
     return RESOURCE_NONE;
   }
@@ -1989,7 +1989,7 @@ struct impending_victory_t: public warrior_attack_t
     parse_effect_data( data().effectN( 2 ) ); //Both spell effects list an ap coefficient, #2 is correct.
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -2020,7 +2020,7 @@ struct intervene_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     if ( p() -> current.distance_to_move > 0 )
@@ -2031,7 +2031,7 @@ struct intervene_t: public warrior_attack_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.shield_charge -> check() )
       return false;
@@ -2080,7 +2080,7 @@ struct heroic_charge_movement_ticker_t: public event_t
       return min_time;
   }
 
-  void execute()
+  void execute() override
   {
     if ( warrior -> time_to_move() > timespan_t::zero() )
       warrior -> update_movement( duration );
@@ -2109,7 +2109,7 @@ struct heroic_charge_t: public warrior_attack_t
     callbacks = may_crit = false;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -2131,7 +2131,7 @@ struct heroic_charge_t: public warrior_attack_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
       return warrior_attack_t::ready();
@@ -2156,7 +2156,7 @@ struct mortal_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) && sim -> overrides.mortal_wounds )
@@ -2164,7 +2164,7 @@ struct mortal_strike_t: public warrior_attack_t
     p() -> buff.tier16_4pc_death_sentence -> trigger();
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double cc = warrior_attack_t::composite_crit();
 
@@ -2177,7 +2177,7 @@ struct mortal_strike_t: public warrior_attack_t
     return cc;
   }
 
-  double cooldown_reduction() const
+  double cooldown_reduction() const override
   {
     double cdr = warrior_attack_t::cooldown_reduction();
 
@@ -2187,7 +2187,7 @@ struct mortal_strike_t: public warrior_attack_t
     return cdr;
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2230,7 +2230,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     radius = 10; // Meat cleaver RBs have a 10 yard range. Not found in spell data. 
   }
 
-  void execute()
+  void execute() override
   {
     aoe = p() -> buff.meat_cleaver -> stack();
     if ( aoe ) ++aoe;
@@ -2238,7 +2238,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     warrior_attack_t::execute();
   }
   
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
     if ( s -> result == RESULT_CRIT )
@@ -2275,7 +2275,7 @@ struct raging_blow_t: public warrior_attack_t
     add_child( oh_attack );
   }
 
-  void execute()
+  void execute() override
   {
     // check attack
     attack_t::execute();
@@ -2292,7 +2292,7 @@ struct raging_blow_t: public warrior_attack_t
     p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack doesn't land.
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( !p() -> buff.raging_blow -> check() )
       return false;
@@ -2318,7 +2318,7 @@ struct ravager_tick_t: public warrior_attack_t
     ground_aoe = true;
   }
 
-  void trigger_sweeping_strikes( action_state_t* ) // Ravager doesn't proc Sweeping Strikes. Check after each patch because this could change without Blizzard telling us.
+  void trigger_sweeping_strikes( action_state_t* ) override // Ravager doesn't proc Sweeping Strikes. Check after each patch because this could change without Blizzard telling us.
   {}
 };
 
@@ -2337,7 +2337,7 @@ struct ravager_t: public warrior_attack_t
     add_child( ravager );
   }
 
-  void execute()
+  void execute() override
   {
     if ( p() -> specialization() == WARRIOR_PROTECTION )
       p() -> buff.ravager_protection -> trigger();
@@ -2347,7 +2347,7 @@ struct ravager_t: public warrior_attack_t
     warrior_attack_t::execute();
   }
 
-  void tick( dot_t*d )
+  void tick( dot_t*d ) override
   {
     ravager -> execute();
     warrior_attack_t::tick( d );
@@ -2371,7 +2371,7 @@ struct revenge_t: public warrior_attack_t
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2381,7 +2381,7 @@ struct revenge_t: public warrior_attack_t
     return am;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -2400,7 +2400,7 @@ struct revenge_t: public warrior_attack_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2438,7 +2438,7 @@ struct enraged_regeneration_t: public warrior_heal_t
     tick_pct_heal = data().effectN( 2 ).percent();
   }
 
-  void execute()
+  void execute() override
   {
     warrior_heal_t::execute();
     p() -> buff.enraged_regeneration -> trigger();
@@ -2455,7 +2455,7 @@ struct enhanced_rend_t: public warrior_attack_t
     background = true;
   }
 
-  double target_armor( player_t* ) const
+  double target_armor( player_t* ) const override
   {
     return 0.0;
   }
@@ -2469,7 +2469,7 @@ struct rend_burst_t: public warrior_attack_t
     dual = true;
   }
 
-  double target_armor( player_t* ) const
+  double target_armor( player_t* ) const override
   {
     return 0.0;
   }
@@ -2493,7 +2493,7 @@ struct rend_t: public warrior_attack_t
     add_child( burst );
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
     {
@@ -2504,7 +2504,7 @@ struct rend_t: public warrior_attack_t
     warrior_attack_t::impact( s );
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
 
@@ -2519,7 +2519,7 @@ struct rend_t: public warrior_attack_t
     }
   }
 
-  void last_tick( dot_t* d )
+  void last_tick( dot_t* d ) override
   {
     if ( d -> ticks_left() == 0 && !target -> is_sleeping() )
     {
@@ -2528,7 +2528,7 @@ struct rend_t: public warrior_attack_t
     warrior_attack_t::last_tick( d );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2568,7 +2568,7 @@ struct siegebreaker_t: public warrior_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute(); // for fury, this is the MH attack
 
@@ -2577,7 +2577,7 @@ struct siegebreaker_t: public warrior_attack_t
          oh_attack -> execute();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2598,7 +2598,7 @@ struct shield_charge_2pc_t: public warrior_attack_t
     cooldown -> duration = timespan_t::zero();
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     if ( p() -> buff.shield_charge -> check() )
@@ -2618,7 +2618,7 @@ struct shield_block_2pc_t: public warrior_attack_t
     cooldown -> duration = timespan_t::zero();
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     if ( p() -> buff.shield_block -> check() )
@@ -2650,7 +2650,7 @@ struct shield_slam_t: public warrior_attack_t
     //Shield slam is just the best.
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2665,7 +2665,7 @@ struct shield_slam_t: public warrior_attack_t
     return am;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = warrior_attack_t::composite_crit();
 
@@ -2678,7 +2678,7 @@ struct shield_slam_t: public warrior_attack_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -2725,7 +2725,7 @@ struct shield_slam_t: public warrior_attack_t
       p() -> gain.tier15_4pc_tank );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( !p() -> has_shield_equipped() )
       return false;
@@ -2747,14 +2747,14 @@ struct slam_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] = 10;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
     p() -> buff.debuffs_slam -> trigger( 1 );
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = warrior_attack_t::cost();
 
@@ -2763,7 +2763,7 @@ struct slam_t: public warrior_attack_t
     return c;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2773,7 +2773,7 @@ struct slam_t: public warrior_attack_t
     return am;
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2794,7 +2794,7 @@ struct shockwave_t: public warrior_attack_t
     aoe = -1;
   }
 
-  void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration ) override
   {
     cd_duration = cooldown -> duration;
 
@@ -2843,7 +2843,7 @@ struct storm_bolt_t: public warrior_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute(); // for fury, this is the MH attack
 
@@ -2852,7 +2852,7 @@ struct storm_bolt_t: public warrior_attack_t
          oh_attack -> execute();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2877,7 +2877,7 @@ struct thunder_clap_t: public warrior_attack_t
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = base_t::cost();
 
@@ -2898,7 +2898,7 @@ struct victory_rush_heal_t: public warrior_heal_t
     base_pct_heal = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
     background = true;
   }
-  resource_e current_resource() const { return RESOURCE_NONE; }
+  resource_e current_resource() const override { return RESOURCE_NONE; }
 };
 
 struct victory_rush_t: public warrior_attack_t
@@ -2915,14 +2915,14 @@ struct victory_rush_t: public warrior_attack_t
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
     p() -> buff.tier15_2pc_tank -> decrement();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.tier15_2pc_tank -> check() )
       return true;
@@ -2945,7 +2945,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     weapon = &( p -> off_hand_weapon );
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2986,7 +2986,7 @@ struct whirlwind_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2996,7 +2996,7 @@ struct whirlwind_t: public warrior_attack_t
     return am;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -3009,7 +3009,7 @@ struct whirlwind_t: public warrior_attack_t
     p() -> buff.raging_wind -> expire();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -3033,7 +3033,7 @@ struct wild_strike_t: public warrior_attack_t
     min_gcd = data().gcd();
   }
 
-  timespan_t gcd() const
+  timespan_t gcd() const override
   { // Wild strike has an unwieldy gcd of 0.75, which results in some lost gcd time due to an average humans ability to
     // Spam the key quickly enough for ability queue to catch it. If the lag tolerance is set high enough so that it functions normally, it 
     // leads to accidentally double-triggering the ability when the player does not want to.
@@ -3045,7 +3045,7 @@ struct wild_strike_t: public warrior_attack_t
       return t;
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = warrior_attack_t::cost();
 
@@ -3055,7 +3055,7 @@ struct wild_strike_t: public warrior_attack_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
 
@@ -3065,7 +3065,7 @@ struct wild_strike_t: public warrior_attack_t
     p() -> buff.bloodsurge -> decrement();
   }
 
-  double total_crit_bonus() const
+  double total_crit_bonus() const override
   {
     double bonus = warrior_attack_t::total_crit_bonus();
 
@@ -3075,7 +3075,7 @@ struct wild_strike_t: public warrior_attack_t
     return bonus;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = warrior_attack_t::composite_crit();
 
@@ -3087,7 +3087,7 @@ struct wild_strike_t: public warrior_attack_t
     return c;
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> off_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -3110,7 +3110,7 @@ struct avatar_t: public warrior_spell_t
     parse_options( options_str );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3131,7 +3131,7 @@ struct battle_shout_t: public warrior_spell_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3152,7 +3152,7 @@ struct berserker_rage_t: public warrior_spell_t
     range = -1; // Just in case anyone wants to use berserker rage + enraged speed glyph to get somewhere a little faster... I guess.
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3172,7 +3172,7 @@ struct bloodbath_t: public warrior_spell_t
     parse_options( options_str );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3193,7 +3193,7 @@ struct commanding_shout_t: public warrior_spell_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3214,13 +3214,13 @@ struct die_by_the_sword_t: public warrior_spell_t
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
     p() -> buff.die_by_the_sword -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -3243,7 +3243,7 @@ struct last_stand_t: public warrior_spell_t
     cooldown -> duration *= 1.0 + p -> sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 1 ).percent();
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
     p() -> buff.last_stand -> trigger();
@@ -3261,7 +3261,7 @@ struct rallying_cry_t: public warrior_spell_t
     range = -1;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
     p() -> buff.rallying_cry -> trigger();
@@ -3287,7 +3287,7 @@ struct recklessness_t: public warrior_spell_t
     callbacks = false;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3314,12 +3314,12 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     attack_power_mod.direct = 1.4; // No spell data.
   }
 
-  double cost() const
+  double cost() const override
   {
     return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     //1) Buff does not stack with itself.
     //2) Will overwrite existing buff if new one is bigger.
@@ -3338,7 +3338,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( !p() -> has_shield_equipped() && p() -> specialization() == WARRIOR_PROTECTION )
       return false;
@@ -3365,7 +3365,7 @@ struct shield_block_t: public warrior_spell_t
     block_cd -> duration = timespan_t::from_seconds( 1.5 );
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = warrior_spell_t::cost();
 
@@ -3374,7 +3374,7 @@ struct shield_block_t: public warrior_spell_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
     block_cd -> start();
@@ -3385,7 +3385,7 @@ struct shield_block_t: public warrior_spell_t
       p() -> buff.shield_block -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( !p() -> has_shield_equipped() || !block_cd -> up() )
       return false;
@@ -3414,7 +3414,7 @@ struct shield_charge_t: public warrior_spell_t
     shield_charge_cd -> duration = timespan_t::from_seconds( 1.5 );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3437,7 +3437,7 @@ struct shield_charge_t: public warrior_spell_t
     shield_charge_cd -> start();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( !shield_charge_cd -> up() || !p() -> has_shield_equipped() )
       return false;
@@ -3464,7 +3464,7 @@ struct shield_wall_t: public warrior_spell_t
     cooldown -> duration += p -> glyphs.shield_wall -> effectN( 1 ).time_value();
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
 
@@ -3552,7 +3552,7 @@ struct stance_t: public warrior_spell_t
     callbacks = harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     switch ( p() -> active.stance )
     {
@@ -3607,7 +3607,7 @@ struct stance_t: public warrior_spell_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> in_combat && p() -> talents.gladiators_resolve -> ok() )
       return false;
@@ -3632,7 +3632,7 @@ struct sweeping_strikes_t: public warrior_spell_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     warrior_spell_t::execute();
     p() -> buff.sweeping_strikes -> trigger();
@@ -3652,7 +3652,7 @@ struct taunt_t: public warrior_spell_t
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -4572,25 +4572,25 @@ struct bloodsurge_t: public warrior_buff_t < buff_t >
     .chance( p.spec.bloodsurge -> effectN( 1 ).percent() ) ), wasted( 0 )
   {}
 
-  void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t ) override
   {
     wasted = 2;
     base_t::execute( a, b, t );
   }
 
-  void decrement( int a, double b )
+  void decrement( int a, double b ) override
   {
     wasted--;
     base_t::decrement( a, b );
   }
 
-  void reset()
+  void reset() override
   {
     base_t::reset();
     wasted = 0;
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     if ( wasted > 0 )
     {
@@ -4625,7 +4625,7 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .period( timespan_t::from_seconds( 3 ) ) )
   {}
 
-  void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t ) override
   {
     warrior.active.stance = STANCE_DEFENSE;
     base_t::execute( a, b, t );
@@ -4640,7 +4640,7 @@ struct battle_stance_t: public warrior_buff_t < buff_t >
     .can_cancel( false ) )
   {}
 
-  void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t ) override
   {
     warrior.active.stance = STANCE_BATTLE;
     base_t::execute( a, b, t );
@@ -4657,7 +4657,7 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_MASTERY ) )
   {}
 
-  void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t ) override
   {
     warrior.active.stance = STANCE_GLADIATOR;
     base_t::execute( a, b, t );
@@ -4672,14 +4672,14 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_LEECH ) ), health_gain( 0 )
   {}
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * data().effectN( 1 ).percent() ) );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     base_t::expire_override( expiration_stacks, remaining_duration );
@@ -4693,14 +4693,14 @@ struct last_stand_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s ).cd( timespan_t::zero() ) ), health_gain( 0 )
   {}
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.last_stand -> effectN( 1 ).percent() ) );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     base_t::expire_override( expiration_stacks, remaining_duration );
@@ -4715,7 +4715,7 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
     default_value = data().effectN( 1 ).percent();
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     if ( warrior.sets.has_set_bonus( SET_TANK, T16, B4 ) )
       warrior.buff.tier16_reckless_defense -> trigger();
@@ -5730,7 +5730,7 @@ struct fel_cleave_t: public warrior_attack_t
     weapon_multiplier = 0;
     aoe = -1;
   }
-  void trigger_bloodbath_dot( player_t*, double )
+  void trigger_bloodbath_dot( player_t*, double ) override
   {}
 };
 
@@ -5841,29 +5841,29 @@ struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new warrior_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new warrior_report_t( *p ) );
     return p;
   }
 
-  virtual bool valid() const { return true; }
+  virtual bool valid() const override { return true; }
 
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184926, fury_trinket );
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
   }
 
-  virtual void register_hotfixes() const
+  virtual void register_hotfixes() const override
   {
   }
 
-  virtual void init( player_t* ) const {}
-  virtual void combat_begin( sim_t* ) const {}
-  virtual void combat_end( sim_t* ) const {}
+  virtual void init( player_t* ) const override {}
+  virtual void combat_begin( sim_t* ) const override {}
+  virtual void combat_end( sim_t* ) const override {}
 };
 } // UNNAMED NAMESPACE
 

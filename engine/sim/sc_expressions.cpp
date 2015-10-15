@@ -19,10 +19,10 @@ public:
   const_expr_t( const std::string& name, double value_ ) :
     expr_t( name, TOK_NUM ), value( value_ ) {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { return value; }
 
-  bool is_constant( double* v ) // override
+  bool is_constant( double* v ) override // override
   { *v = value; return true; }
 };
 
@@ -40,7 +40,7 @@ public:
 
   ~expr_unary_t() { delete input; }
 
-  double evaluate() // override
+  double evaluate() override // override
   { return F( input -> eval() ); }
 };
 
@@ -92,7 +92,7 @@ public:
     binary_base_t( n, TOK_AND, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { return left -> eval() && right -> eval(); }
 };
 
@@ -103,7 +103,7 @@ public:
     binary_base_t( n, TOK_OR, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { return left -> eval() || right -> eval(); }
 };
 
@@ -114,7 +114,7 @@ public:
     binary_base_t( n, TOK_XOR, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { return bool( left -> eval() != 0 ) != bool( right -> eval() != 0 ); }
 };
 
@@ -126,7 +126,7 @@ public:
     binary_base_t( n, o, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { return F<double>()( left -> eval(), right -> eval() ); }
 };
 
@@ -168,12 +168,12 @@ public:
 
   ~expr_analyze_unary_t() {  }
 
-  double evaluate() // override
+  double evaluate() override // override
   { 
     return F( input -> eval() ); 
   }
 
-  expr_t* optimize( int spacing ) // override
+  expr_t* optimize( int spacing ) override // override
   {
     if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s )\n", spacing, id_, name().c_str(), input -> name().c_str() );
     input = input -> optimize( spacing+2 );
@@ -245,7 +245,7 @@ public:
     analyze_binary_base_t( n, TOK_AND, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { 
     left_result  = left  -> eval();
     right_result = right -> eval(); 
@@ -254,7 +254,7 @@ public:
     return result;
   }
 
-  expr_t* optimize( int spacing ) // override
+  expr_t* optimize( int spacing ) override // override
   {
     if ( EXPRESSION_DEBUG )
     {
@@ -333,7 +333,7 @@ public:
     analyze_binary_base_t( n, TOK_OR, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { 
     left_result  = left  -> eval();
     right_result = right -> eval(); 
@@ -342,7 +342,7 @@ public:
     return result;
   }
 
-  expr_t* optimize( int spacing ) // override
+  expr_t* optimize( int spacing ) override // override
   {
     if ( EXPRESSION_DEBUG )
     {
@@ -421,7 +421,7 @@ public:
     analyze_binary_base_t( n, TOK_XOR, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { 
     left_result  = left  -> eval();
     right_result = right -> eval(); 
@@ -430,7 +430,7 @@ public:
     return result;
   }
 
-  expr_t* optimize( int spacing ) // override
+  expr_t* optimize( int spacing ) override // override
   {
     if( EXPRESSION_DEBUG ) printf( "%*d xor ( %s %s )\n", spacing, id_, left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
@@ -503,13 +503,13 @@ public:
     analyze_binary_base_t( n, o, l, r )
   {}
 
-  double evaluate() // override
+  double evaluate() override // override
   { 
     result = F<double>()( left -> eval(), right -> eval() );
     return result;
   }
   
-  expr_t* optimize( int spacing ) // override
+  expr_t* optimize( int spacing ) override // override
   {
     if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s %s )\n", spacing, id_, name().c_str(), left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
@@ -535,7 +535,7 @@ public:
   double left;
   expr_t* right;
   left_reduced_t( const std::string& n, token_e o, double l, expr_t* r ) : expr_t( n, o ), left(l), right(r) {}
-  double evaluate() { return F<double>()( left, right -> eval() ); }
+  double evaluate() override { return F<double>()( left, right -> eval() ); }
       };
       expr_t* reduced = new left_reduced_t( name(), op_, left_value, right );
       delete left;
@@ -550,7 +550,7 @@ public:
   expr_t* left;
   double right;
   right_reduced_t( const std::string& n, token_e o, expr_t* l, double r ) : expr_t( n, o ), left(l), right(r) {}
-  double evaluate() { return F<double>()( left -> eval(), right ); }
+  double evaluate() override { return F<double>()( left -> eval(), right ); }
       };
       expr_t* reduced = new right_reduced_t( name(), op_, left, right_value );
       delete right;

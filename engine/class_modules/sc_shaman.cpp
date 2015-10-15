@@ -459,49 +459,49 @@ public:
   void trigger_tier18_4pc_elemental( int );
 
   // Character Definition
-  virtual void      init_spells();
-  virtual void      init_base_stats();
-  virtual void      init_scaling();
-  virtual void      create_buffs();
-  virtual void      init_gains();
-  virtual void      init_procs();
-  virtual void      init_action_list();
-  virtual void      moving();
-  virtual void      invalidate_cache( cache_e c );
-  virtual double    temporary_movement_modifier() const;
-  virtual double    composite_melee_haste() const;
-  virtual double    composite_melee_speed() const;
-  virtual double    composite_melee_crit() const;
-  virtual double    composite_spell_haste() const;
-  virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_power( school_e school ) const;
-  virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
-  virtual double    composite_multistrike() const;  
+  virtual void      init_spells() override;
+  virtual void      init_base_stats() override;
+  virtual void      init_scaling() override;
+  virtual void      create_buffs() override;
+  virtual void      init_gains() override;
+  virtual void      init_procs() override;
+  virtual void      init_action_list() override;
+  virtual void      moving() override;
+  virtual void      invalidate_cache( cache_e c ) override;
+  virtual double    temporary_movement_modifier() const override;
+  virtual double    composite_melee_haste() const override;
+  virtual double    composite_melee_speed() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_power( school_e school ) const override;
+  virtual double    composite_spell_power_multiplier() const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual double    composite_multistrike() const override;  
   virtual double    composite_player_multistrike_damage_multiplier() const override;
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual void      create_options();
-  virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& );
-  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
-  virtual void      create_pets();
-  virtual expr_t* create_expression( action_t*, const std::string& name );
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_e primary_role() const;
-  virtual stat_e convert_hybrid_stat( stat_e s ) const;
-  virtual void      arise();
-  virtual void      reset();
-  virtual void      merge( player_t& other );
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual void      create_options() override;
+  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
+  virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
+  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
+  virtual void      create_pets() override;
+  virtual expr_t* create_expression( action_t*, const std::string& name ) override;
+  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
+  virtual role_e primary_role() const override;
+  virtual stat_e convert_hybrid_stat( stat_e s ) const override;
+  virtual void      arise() override;
+  virtual void      reset() override;
+  virtual void      merge( player_t& other ) override;
 
-  virtual void     datacollection_begin();
-  virtual void     datacollection_end();
-  virtual bool     has_t18_class_trinket() const;
+  virtual void     datacollection_begin() override;
+  virtual void     datacollection_end() override;
+  virtual bool     has_t18_class_trinket() const override;
 
   target_specific_t<shaman_td_t> target_data;
 
-  virtual shaman_td_t* get_target_data( player_t* target ) const
+  virtual shaman_td_t* get_target_data( player_t* target ) const override
   {
     shaman_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -565,8 +565,8 @@ struct maelstrom_weapon_buff_t : public buff_t
   using buff_t::trigger;
 
   bool trigger( shaman_attack_t* action, int stacks, double chance );
-  void execute( int stacks, double value, timespan_t duration );
-  void reset();
+  void execute( int stacks, double value, timespan_t duration ) override;
+  void reset() override;
 };
 
 struct ascendance_buff_t : public buff_t
@@ -580,8 +580,8 @@ struct ascendance_buff_t : public buff_t
   { }
 
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
-  bool trigger( int stacks, double value, double chance, timespan_t duration );
-  void expire_override( int expiration_stacks, timespan_t remaining_duration );
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
 struct unleash_flame_buff_t : public buff_t
@@ -593,8 +593,8 @@ struct unleash_flame_buff_t : public buff_t
     expiration_delay( nullptr )
   { }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration );
-  void reset();
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+  void reset() override;
 };
 
 // ==========================================================================
@@ -782,7 +782,7 @@ public:
         }
       }
 
-      double evaluate()
+      double evaluate() override
       {
         if ( cd_.size() == 0 )
           return 0;
@@ -833,7 +833,7 @@ public:
     may_glance = false;
   }
 
-  void init()
+  void init() override
   {
     ab::init();
 
@@ -844,7 +844,7 @@ public:
     }
   }
 
-  timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
 
@@ -861,7 +861,7 @@ public:
     return g;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     base_t::impact( state );
 
@@ -997,14 +997,14 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent() + p -> perk.improved_critical_strikes -> effectN( 1 ).percent();
   }
 
-  virtual void execute();
+  virtual void execute() override;
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     base_t::impact( state );
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     base_t::consume_resource();
 
@@ -1018,7 +1018,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
   }
 
-  virtual bool usable_moving() const
+  virtual bool usable_moving() const override
   {
     if ( p() -> buff.spiritwalkers_grace -> check() || execute_time() == timespan_t::zero() )
       return true;
@@ -1026,7 +1026,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return base_t::usable_moving();
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = base_t::composite_target_multiplier( target );
 
@@ -1037,7 +1037,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = base_t::composite_da_multiplier( state );
 
@@ -1047,7 +1047,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = base_t::composite_persistent_multiplier( state );
 
@@ -1095,7 +1095,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     parse_options( options );
   }
 
-  double composite_spell_power() const
+  double composite_spell_power() const override
   {
     double sp = base_t::composite_spell_power();
 
@@ -1105,21 +1105,21 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return sp;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = base_t::composite_da_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
     return m;
   }
 
-  double composite_ta_multiplier( const action_state_t* state ) const
+  double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = base_t::composite_ta_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
     return m;
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = base_t::composite_target_multiplier( target );
     if ( target -> buffs.earth_shield -> up() )
@@ -1127,9 +1127,9 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return m;
   }
 
-  void impact( action_state_t* s );
+  void impact( action_state_t* s ) override;
 
-  void execute()
+  void execute() override
   {
     base_t::execute();
 
@@ -1166,7 +1166,7 @@ struct feral_spirit_pet_t : public pet_t
 
     feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
 
-    void init()
+    void init() override
     {
       melee_attack_t::init();
       if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
@@ -1193,14 +1193,14 @@ struct feral_spirit_pet_t : public pet_t
 
     feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
 
-    void init()
+    void init() override
     {
       melee_attack_t::init();
       if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
         stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
     }
 
-    virtual void impact( action_state_t* state )
+    virtual void impact( action_state_t* state ) override
     {
       melee_attack_t::impact( state );
 
@@ -1251,20 +1251,20 @@ struct feral_spirit_pet_t : public pet_t
 
   shaman_t* o() const { return static_cast<shaman_t*>( owner ); }
 
-  void arise()
+  void arise() override
   {
     pet_t::arise();
     schedule_ready();
   }
 
-  void init_action_list()
+  void init_action_list() override
   {
     pet_t::init_action_list();
 
     melee = new melee_t( this );
   }
 
-  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override
   {
     if ( ! melee -> execute_event )
       melee -> schedule_execute();
@@ -1272,7 +1272,7 @@ struct feral_spirit_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1294,10 +1294,10 @@ struct primal_elemental_t : public pet_t
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
-    void execute() { player -> current.distance = 1; }
-    timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
-    bool ready() { return ( player -> current.distance > 1 ); }
-    bool usable_moving() const { return true; }
+    void execute() override { player -> current.distance = 1; }
+    timespan_t execute_time() const override { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+    bool ready() override { return ( player -> current.distance > 1 ); }
+    bool usable_moving() const override { return true; }
   };
 
   struct melee_t : public melee_attack_t
@@ -1321,7 +1321,7 @@ struct primal_elemental_t : public pet_t
     shaman_t* o() const
     { return debug_cast<shaman_t*>( debug_cast< pet_t* > ( player ) -> owner ); }
 
-    void execute()
+    void execute() override
     {
       // If we're casting, we should clip a swing
       if ( time_to_execute > timespan_t::zero() && player -> executing )
@@ -1340,10 +1340,10 @@ struct primal_elemental_t : public pet_t
       player -> main_hand_attack = new melee_t( player, school, multiplier );
     }
 
-    void execute()
+    void execute() override
     { player -> main_hand_attack -> schedule_execute(); }
 
-    virtual bool ready()
+    virtual bool ready() override
     {
       if ( player -> is_moving() ) return false;
       return ( player -> main_hand_attack -> execute_event == nullptr );
@@ -1384,10 +1384,10 @@ struct primal_elemental_t : public pet_t
   shaman_t* o() const
   { return static_cast< shaman_t* >( owner ); }
 
-  resource_e primary_resource() const
+  resource_e primary_resource() const override
   { return RESOURCE_MANA; }
 
-  void init_spells()
+  void init_spells() override
   {
     pet_t::init_spells();
 
@@ -1395,14 +1395,14 @@ struct primal_elemental_t : public pet_t
   }
 
   action_t* create_action( const std::string& name,
-                           const std::string& options_str )
+                           const std::string& options_str ) override
   {
     if ( name == "travel"      ) return new travel_t( this );
 
     return pet_t::create_action( name, options_str );
   }
 
-  double composite_attack_power_multiplier() const
+  double composite_attack_power_multiplier() const override
   {
     double m = pet_t::composite_attack_power_multiplier();
 
@@ -1412,7 +1412,7 @@ struct primal_elemental_t : public pet_t
     return m;
   }
 
-  double composite_spell_power_multiplier() const
+  double composite_spell_power_multiplier() const override
   {
     double m = pet_t::composite_spell_power_multiplier();
 
@@ -1422,7 +1422,7 @@ struct primal_elemental_t : public pet_t
     return m;
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1449,7 +1449,7 @@ struct earth_elemental_t : public primal_elemental_t
     primal_elemental_t( owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
   { }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     primal_elemental_t::init_base_stats();
 
@@ -1462,7 +1462,7 @@ struct earth_elemental_t : public primal_elemental_t
     owner_coeff.ap_from_sp = 0.05;
   }
 
-  void init_action_list()
+  void init_action_list() override
   {
     // Simple as it gets, travel to target, kick off melee
     action_list_str = "travel/auto_attack,moving=0";
@@ -1471,7 +1471,7 @@ struct earth_elemental_t : public primal_elemental_t
   }
 
   virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
+                                   const std::string& options_str ) override
   {
     // EE seems to use 130% weapon multiplier on attacks, while inheriting 5% SP as AP
     if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL );
@@ -1502,7 +1502,7 @@ struct fire_elemental_t : public primal_elemental_t
     {
     }
 
-    bool usable_moving() const
+    bool usable_moving() const override
     { return true; }
   };
 
@@ -1519,7 +1519,7 @@ struct fire_elemental_t : public primal_elemental_t
     primal_elemental_t( owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian )
   { }
 
-  void init_base_stats()
+  void init_base_stats() override
   {
     primal_elemental_t::init_base_stats();
 
@@ -1533,7 +1533,7 @@ struct fire_elemental_t : public primal_elemental_t
     owner_coeff.sp_from_sp = 0.25;
   }
 
-  void init_action_list()
+  void init_action_list() override
   {
     action_list_str = "travel/auto_attack/fire_blast/fire_nova,if=spell_targets.fire_nova>=3";
     if ( type == PLAYER_PET )
@@ -1543,7 +1543,7 @@ struct fire_elemental_t : public primal_elemental_t
   }
 
   action_t* create_action( const std::string& name,
-                           const std::string& options_str )
+                           const std::string& options_str ) override
   {
     if ( name == "auto_attack" ) return new auto_attack_t( this, SCHOOL_FIRE );
     if ( name == "fire_blast"  ) return new fire_blast_t( this, options_str );
@@ -1574,7 +1574,7 @@ struct storm_elemental_t : public primal_elemental_t
       primal_elemental_spell_t( "call_lightning", player, player -> find_spell( 157348 ), options )
     { }
 
-    void execute()
+    void execute() override
     {
       primal_elemental_spell_t::execute();
 
@@ -1590,7 +1590,7 @@ struct storm_elemental_t : public primal_elemental_t
     gains_damage = false;
   }
 
-  void init_base_stats()
+  void init_base_stats() override
   {
     primal_elemental_t::init_base_stats();
 
@@ -1600,14 +1600,14 @@ struct storm_elemental_t : public primal_elemental_t
     owner_coeff.sp_from_sp = 1.0000;
   }
 
-  void init_action_list()
+  void init_action_list() override
   {
     action_list_str = "call_lightning/wind_gust";
 
     primal_elemental_t::init_action_list();
   }
 
-  void create_buffs()
+  void create_buffs() override
   {
     primal_elemental_t::create_buffs();
 
@@ -1615,7 +1615,7 @@ struct storm_elemental_t : public primal_elemental_t
                      .cd( timespan_t::zero() );
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = primal_elemental_t::composite_player_multiplier( school );
 
@@ -1627,7 +1627,7 @@ struct storm_elemental_t : public primal_elemental_t
   }
 
   action_t* create_action( const std::string& name,
-                           const std::string& options_str )
+                           const std::string& options_str ) override
   {
     if ( name == "call_lightning" ) return new call_lightning_t( this, options_str );
     if ( name == "wind_gust"      ) return new wind_gust_t( this, options_str );
@@ -1647,7 +1647,7 @@ struct lightning_elemental_t : public pet_t
       may_crit = true;
     }
 
-    double composite_haste() const
+    double composite_haste() const override
     { return 1.0; }
   };
 
@@ -1658,26 +1658,26 @@ struct lightning_elemental_t : public pet_t
     regen_type = REGEN_DISABLED;
   }
 
-  void init_base_stats()
+  void init_base_stats() override
   {
     pet_t::init_base_stats();
     owner_coeff.sp_from_sp = 0.75;
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str )
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "lightning_blast" ) return new lightning_blast_t( this );
     return pet_t::create_action( name, options_str );
   }
 
-  void init_action_list()
+  void init_action_list() override
   {
     action_list_str = "lightning_blast";
 
     pet_t::init_action_list();
   }
 
-  resource_e primary_resource() const
+  resource_e primary_resource() const override
   { return RESOURCE_MANA; }
 };
 
@@ -1713,7 +1713,7 @@ struct lightning_charge_t : public shaman_spell_t
     cooldown -> duration = timespan_t::zero();
   }
 
-  double composite_target_crit( player_t* target ) const
+  double composite_target_crit( player_t* target ) const override
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
@@ -1727,7 +1727,7 @@ struct lightning_charge_t : public shaman_spell_t
     return c;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
@@ -1755,7 +1755,7 @@ struct unleash_flame_spell_t : public shaman_spell_t
     cooldown -> duration = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
   }
@@ -1787,7 +1787,7 @@ struct molten_earth_spell_t : public shaman_spell_t
   }
 
   // Placeholder until mastery_value() works correctly
-  double spell_direct_power_coefficient( const action_state_t* ) const
+  double spell_direct_power_coefficient( const action_state_t* ) const override
   { return data().effectN( 1 ).sp_coeff() * player -> cache.mastery_value(); }
 };
 
@@ -1804,10 +1804,10 @@ struct molten_earth_driver_t : public spell_t
     nuke = new molten_earth_spell_t( p );
   }
 
-  timespan_t tick_time( double haste ) const
+  timespan_t tick_time( double haste ) const override
   { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * haste ) ); }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     spell_t::tick( d );
 
@@ -1832,14 +1832,14 @@ struct ancestral_awakening_t : public shaman_heal_t
     background = proc = true;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_heal_t::composite_da_multiplier( state );
     m *= p() -> spec.ancestral_awakening -> effectN( 1 ).percent();
     return m;
   }
 
-  void execute()
+  void execute() override
   {
     target = find_lowest_player();
     shaman_heal_t::execute();
@@ -1873,7 +1873,7 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
     }
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     shaman_attack_t::impact( state );
 
@@ -1902,7 +1902,7 @@ struct windstrike_attack_t : public stormstrike_attack_t
     stormstrike_attack_t( n, player, s, w )
   { }
 
-  double target_armor( player_t* ) const
+  double target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -1920,10 +1920,10 @@ struct windlash_t : public shaman_attack_t
     trigger_gcd       = timespan_t::zero();
   }
 
-  double target_armor( player_t* ) const
+  double target_armor( player_t* ) const override
   { return 0.0; }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t t = shaman_attack_t::execute_time();
 
@@ -1939,7 +1939,7 @@ struct windlash_t : public shaman_attack_t
       return t;
   }
 
-  void execute()
+  void execute() override
   {
     if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
@@ -1979,7 +1979,7 @@ struct shaman_flurry_of_xuen_t : public shaman_attack_t
   // and custom state objects do not mesh at all really. They technically
   // work, but in reality we are doing naughty things in the code that are
   // not safe.
-  action_state_t* new_state()
+  action_state_t* new_state() override
   { return new action_state_t( this, target ); }
 };
 
@@ -2158,14 +2158,14 @@ struct melee_t : public shaman_attack_t
       base_hit -= 0.19;
   }
 
-  void reset()
+  void reset() override
   {
     shaman_attack_t::reset();
 
     first = true;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = shaman_attack_t::execute_time();
     if ( first )
@@ -2184,7 +2184,7 @@ struct melee_t : public shaman_attack_t
       return t;
   }
 
-  void execute()
+  void execute() override
   {
     if ( first )
     {
@@ -2251,14 +2251,14 @@ struct auto_attack_t : public shaman_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     p() -> main_hand_attack -> schedule_execute();
     if ( p() -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> is_moving() ) return false;
     return ( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
@@ -2290,7 +2290,7 @@ struct lava_lash_t : public shaman_attack_t
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     shaman_attack_t::impact( state );
 
@@ -2319,7 +2319,7 @@ struct improved_lava_lash_t : public shaman_spell_t
   }
 
   // Exclude targets with your flame shock on
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     tl.clear();
 
@@ -2340,7 +2340,7 @@ struct improved_lava_lash_t : public shaman_spell_t
     return tl.size();
   }
 
-  std::vector< player_t* >& target_list() const
+  std::vector< player_t* >& target_list() const override
   {
     size_t total_targets = available_targets( target_cache.list );
 
@@ -2376,7 +2376,7 @@ struct improved_lava_lash_t : public shaman_spell_t
 
   // A simple impact method that triggers the proxy flame shock application
   // on the selected target of the lava lash spread driver
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     if ( sim -> debug )
       sim -> out_debug.printf( "%s spreads Flame Shock (off of %s) on %s",
@@ -2441,7 +2441,7 @@ struct stormstrike_t : public shaman_attack_t
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
-  void execute()
+  void execute() override
   {
     shaman_attack_t::execute();
 
@@ -2458,7 +2458,7 @@ struct stormstrike_t : public shaman_attack_t
       p() -> cooldown.feral_spirits -> adjust( - p() -> sets.set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
     // are handled by stormstrike_attack_t
@@ -2473,7 +2473,7 @@ struct stormstrike_t : public shaman_attack_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.ascendance -> check() )
       return false;
@@ -2521,7 +2521,7 @@ struct windstrike_t : public shaman_attack_t
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
-  void execute()
+  void execute() override
   {
     shaman_attack_t::execute();
 
@@ -2536,7 +2536,7 @@ struct windstrike_t : public shaman_attack_t
       p() -> cooldown.feral_spirits -> adjust( - p() -> sets.set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
     // are handled by stormstrike_attack_t
@@ -2551,7 +2551,7 @@ struct windstrike_t : public shaman_attack_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! p() -> buff.ascendance -> check() )
       return false;
@@ -2574,7 +2574,7 @@ struct unleash_elements_t : public shaman_attack_t
     callbacks    = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_attack_t::execute();
 
@@ -2618,7 +2618,7 @@ struct bloodlust_t : public shaman_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -2632,7 +2632,7 @@ struct bloodlust_t : public shaman_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( sim -> overrides.bloodlust )
       return false;
@@ -2659,10 +2659,10 @@ struct chain_lightning_t: public shaman_spell_t
       action_state_t( action, target ), ms_results( 0 )
     { }
 
-    void initialize()
+    void initialize() override
     { action_state_t::initialize(); ms_results = 0; }
 
-    void copy_state( const action_state_t* other )
+    void copy_state( const action_state_t* other ) override
     {
       action_state_t::copy_state( other );
 
@@ -2670,7 +2670,7 @@ struct chain_lightning_t: public shaman_spell_t
       ms_results = s -> ms_results;
     }
 
-    std::ostringstream& debug_str( std::ostringstream& s )
+    std::ostringstream& debug_str( std::ostringstream& s ) override
     {
       action_state_t::debug_str( s );
       s << " ms_results=" << ms_results;
@@ -2691,13 +2691,13 @@ struct chain_lightning_t: public shaman_spell_t
   }
 
   // Make Chain Lightning a single target spell for procs
-  proc_types proc_type() const
+  proc_types proc_type() const override
   { return PROC1_SPELL; }
 
-  action_state_t* new_state()
+  action_state_t* new_state() override
   { return new chain_lightning_state_t( this, target ); }
 
-  double composite_target_crit( player_t* target ) const
+  double composite_target_crit( player_t* target ) const override
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
@@ -2710,7 +2710,7 @@ struct chain_lightning_t: public shaman_spell_t
     return c;
   }
 
-  void execute()
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -2718,7 +2718,7 @@ struct chain_lightning_t: public shaman_spell_t
     p() -> trigger_enhanced_chain_lightning( execute_state );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
@@ -2727,7 +2727,7 @@ struct chain_lightning_t: public shaman_spell_t
     p() -> trigger_tier16_4pc_caster( state );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> specialization() == SHAMAN_ELEMENTAL && p() -> buff.ascendance -> check() )
       return false;
@@ -2740,7 +2740,7 @@ struct chain_lightning_t: public shaman_spell_t
   // independent. Spcialize schedulemultistrike so that on the first target
   // (chain target is 0), we compute how many multistrikes happen, and schedule
   // that many on each schedule_multistrike call.
-  void schedule_travel( action_state_t* state )
+  void schedule_travel( action_state_t* state ) override
   {
     chain_lightning_state_t* cls = debug_cast<chain_lightning_state_t*>( state );
     if ( state -> chain_target == 0 )
@@ -2762,7 +2762,7 @@ struct chain_lightning_t: public shaman_spell_t
     shaman_spell_t::schedule_travel( state );
   }
 
-  int schedule_multistrike( action_state_t* state, dmg_e, double )
+  int schedule_multistrike( action_state_t* state, dmg_e, double ) override
   {
     chain_lightning_state_t* cls = debug_cast<chain_lightning_state_t*>( state );
     for ( int i = 0; i < cls -> ms_results; i++ )
@@ -2785,7 +2785,7 @@ struct chain_lightning_t: public shaman_spell_t
     return cls -> ms_results;
   }
 
-  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
   { // check_distance_targeting is only called when distance_targeting_enabled is true. Otherwise, available_targets is called.
     // The following code is intended to generate a target list that properly accounts for range from each target during chain lightning.
     // On a very basic level, it starts at the original target, and then finds a path that will hit 4 more, if possible.
@@ -2875,7 +2875,7 @@ struct lava_beam_t : public shaman_spell_t
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
 
-  void execute()
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -2883,7 +2883,7 @@ struct lava_beam_t : public shaman_spell_t
     p() -> trigger_enhanced_chain_lightning( execute_state );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
@@ -2891,7 +2891,7 @@ struct lava_beam_t : public shaman_spell_t
     p() -> trigger_tier15_2pc_caster( state );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! p() -> buff.ascendance -> check() )
       return false;
@@ -2912,7 +2912,7 @@ struct elemental_mastery_t : public shaman_spell_t
     may_miss  = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -2932,7 +2932,7 @@ struct ancestral_swiftness_t : public shaman_spell_t
     harmful = may_crit = may_miss = callbacks = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -2966,14 +2966,14 @@ struct fire_nova_explosion_t : public shaman_spell_t
     dual = true;
   }
 
-  void init()
+  void init() override
   {
     shaman_spell_t::init();
 
     stats = player -> get_stats( "fire_nova" );
   }
 
-  void execute()
+  void execute() override
   {
     // The explosion has to regenerate target cache every time
     target_cache.is_valid = false;
@@ -2981,7 +2981,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
   }
 
   // Fire nova does not damage the main target.
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     shaman_spell_t::available_targets( tl );
 
@@ -3010,10 +3010,10 @@ struct fire_nova_t : public shaman_spell_t
 
   // Override assess_damage, as fire_nova_explosion is going to do all the
   // damage for us.
-  void assess_damage( dmg_e type, action_state_t* s )
+  void assess_damage( dmg_e type, action_state_t* s ) override
   { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! td( target ) -> dot.flame_shock -> is_ticking() )
       return false;
@@ -3021,7 +3021,7 @@ struct fire_nova_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  void execute()
+  void execute() override
   {
     if ( p() -> buff.unleash_flame -> check() )
       p() -> proc.uf_fire_nova -> occur();
@@ -3030,7 +3030,7 @@ struct fire_nova_t : public shaman_spell_t
   }
 
   // Fire nova is emitted on all targets with a flame shock from us .. so
-  std::vector< player_t* >& target_list() const
+  std::vector< player_t* >& target_list() const override
   {
     target_cache.list.clear();
     int fire_nova_targets = 0;
@@ -3068,7 +3068,7 @@ struct lava_burst_t : public shaman_spell_t
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
@@ -3078,7 +3078,7 @@ struct lava_burst_t : public shaman_spell_t
     return m;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
 
@@ -3088,10 +3088,10 @@ struct lava_burst_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_target_crit( player_t* ) const
+  virtual double composite_target_crit( player_t* ) const override
   { return 1.0; }
 
-  virtual void update_ready( timespan_t /* cd_duration */ )
+  virtual void update_ready( timespan_t /* cd_duration */ ) override
   {
     timespan_t d = cooldown -> duration;
 
@@ -3106,7 +3106,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::update_ready( d );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( p() -> buff.unleash_flame -> check() )
       p() -> proc.uf_lava_burst -> occur();
@@ -3123,7 +3123,7 @@ struct lava_burst_t : public shaman_spell_t
     p() -> lava_surge_during_lvb = false;
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
@@ -3134,7 +3134,7 @@ struct lava_burst_t : public shaman_spell_t
   }
 
   //overwrite MS behavior for blizzards new idea of helping crit's value
-  int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier )
+  int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier ) override
   {
     if ( state -> result_amount <= 0 )
       return 0;
@@ -3171,7 +3171,7 @@ struct lava_burst_t : public shaman_spell_t
     return n_strikes + shaman_spell_t::schedule_multistrike( state, type, tick_multiplier );
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( p() -> buff.lava_surge -> up() )
       return timespan_t::zero();
@@ -3194,7 +3194,7 @@ struct lightning_bolt_t : public shaman_spell_t
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
@@ -3206,7 +3206,7 @@ struct lightning_bolt_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_target_crit( player_t* target ) const
+  virtual double composite_target_crit( player_t* target ) const override
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
@@ -3219,14 +3219,14 @@ struct lightning_bolt_t : public shaman_spell_t
     return c;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
     return m;
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
@@ -3248,7 +3248,7 @@ struct elemental_blast_t : public shaman_spell_t
     base_multiplier *= 1.0 + player -> spec.mental_quickness -> effectN( 5 ).percent();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( p() -> buff.unleash_flame -> check() )
       p() -> proc.uf_elemental_blast -> occur();
@@ -3256,14 +3256,14 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t::execute();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
     p() -> trigger_fulmination_stack( state );
   }
 
-  result_e calculate_result( action_state_t* s ) const
+  result_e calculate_result( action_state_t* s ) const override
   {
     if ( ! s -> target )
       return RESULT_NONE;
@@ -3314,7 +3314,7 @@ struct elemental_blast_t : public shaman_spell_t
     return result;
   }
 
-  virtual double composite_target_crit( player_t* target ) const
+  virtual double composite_target_crit( player_t* target ) const override
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
@@ -3339,7 +3339,7 @@ struct shamanistic_rage_t : public shaman_spell_t
     harmful   = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -3357,7 +3357,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
     harmful   = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -3401,7 +3401,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     ground_aoe = true;
   }
 
-  virtual double composite_spell_power() const
+  virtual double composite_spell_power() const override
   {
     double sp = shaman_spell_t::composite_spell_power();
 
@@ -3410,7 +3410,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     return sp;
   }
 
-  virtual double target_armor( player_t* ) const
+  virtual double target_armor( player_t* ) const override
   { return 0; }
 };
 
@@ -3431,7 +3431,7 @@ struct earthquake_t : public shaman_spell_t
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
-  void init()
+  void init() override
   {
     shaman_spell_t::init();
 
@@ -3441,14 +3441,14 @@ struct earthquake_t : public shaman_spell_t
   //timespan_t composite_dot_duration( const action_state_t* state ) const
   //{ return dot_duration * state -> haste; }
 
-  void consume_resource()
+  void consume_resource() override
   {
     shaman_spell_t::consume_resource();
 
     p() -> buff.enhanced_chain_lightning -> expire();
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t et = shaman_spell_t::execute_time();
 
@@ -3460,7 +3460,7 @@ struct earthquake_t : public shaman_spell_t
     return et;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
 
@@ -3469,7 +3469,7 @@ struct earthquake_t : public shaman_spell_t
     return m;
   }
 
-  double composite_persistent_multiplier( const action_state_t* state) const
+  double composite_persistent_multiplier( const action_state_t* state) const override
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
 
@@ -3490,7 +3490,7 @@ struct unleash_flame_t : public shaman_spell_t
     callbacks = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -3511,7 +3511,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     cooldown -> duration += player -> glyph.spiritwalkers_focus -> effectN( 1 ).time_value();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -3530,7 +3530,7 @@ struct spirit_walk_t : public shaman_spell_t
     may_miss = may_crit = harmful = callbacks = false;
   }
 
-  void execute()
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -3558,7 +3558,7 @@ struct earth_shock_t : public shaman_spell_t
     stats -> add_child ( player -> get_stats( "fulmination" ) );
   }
 
-  double composite_target_crit( player_t* target ) const
+  double composite_target_crit( player_t* target ) const override
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
@@ -3571,7 +3571,7 @@ struct earth_shock_t : public shaman_spell_t
     return c;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     int consuming_stacks = p() -> buff.lightning_shield -> stack() - 1;
     // Tier17 2PC set bonus affects the Fulmination that procs it
@@ -3621,7 +3621,7 @@ struct flame_shock_heal_t : public heal_t
     target = player;
   }
 
-  void init()
+  void init() override
   {
     heal_t::init();
 
@@ -3631,7 +3631,7 @@ struct flame_shock_heal_t : public heal_t
   // No way for our generic system to know this is an "amount heal", so we
   // override the proc type to explicitly tell it's a heal, and as a
   // consequence, procs healing effects (trinkets).
-  proc_types proc_type() const
+  proc_types proc_type() const override
   { return PROC1_HEAL; }
 };
 
@@ -3666,7 +3666,7 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     if ( p() -> buff.unleash_flame -> check() )
       p() -> proc.uf_flame_shock -> occur();
@@ -3680,7 +3680,7 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     shaman_spell_t::tick( d );
 
@@ -3727,7 +3727,7 @@ struct frost_shock_t : public shaman_spell_t
     shock      = true;
   }
 
-  void execute()
+  void execute() override
   {
     timespan_t tmp_cd = cooldown -> duration;
     cooldown -> duration = data().cooldown() + p() -> glyph.frost_shock -> effectN( 1 ).time_value();
@@ -3749,7 +3749,7 @@ struct wind_shear_t : public shaman_spell_t
     ignore_false_positive = true;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() ) return false;
     return shaman_spell_t::ready();
@@ -3770,7 +3770,7 @@ struct ascendance_t : public shaman_spell_t
     strike_cd = p() -> cooldown.strike;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
     strike_cd -> reset( false );
@@ -3789,7 +3789,7 @@ struct healing_surge_t : public shaman_heal_t
     resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = shaman_heal_t::composite_crit();
 
@@ -3813,7 +3813,7 @@ struct healing_wave_t : public shaman_heal_t
     resurgence_gain = p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t c = shaman_heal_t::execute_time();
 
@@ -3837,7 +3837,7 @@ struct greater_healing_wave_t : public shaman_heal_t
     resurgence_gain = p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t c = shaman_heal_t::execute_time();
 
@@ -3874,7 +3874,7 @@ struct chain_heal_t : public shaman_heal_t
     resurgence_gain = 0.333 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  double composite_target_da_multiplier( player_t* t) const
+  double composite_target_da_multiplier( player_t* t) const override
   {
     double m = shaman_heal_t::composite_target_da_multiplier( t );
 
@@ -3936,10 +3936,10 @@ struct shaman_totem_pet_t : public pet_t
     affects_wod_legendary_ring = false;
   }
 
-  virtual void summon( timespan_t = timespan_t::zero() );
-  virtual void dismiss( bool expired = false );
+  virtual void summon( timespan_t = timespan_t::zero() ) override;
+  virtual void dismiss( bool expired = false ) override;
 
-  bool init_finished()
+  bool init_finished() override
   {
     if ( ! pet_name.empty() )
     {
@@ -3952,7 +3952,7 @@ struct shaman_totem_pet_t : public pet_t
   shaman_t* o()
   { return debug_cast< shaman_t* >( owner ); }
 
-  virtual double composite_player_multiplier( school_e school ) const
+  virtual double composite_player_multiplier( school_e school ) const override
   {
     double m = owner -> cache.player_multiplier( school );
 
@@ -3966,19 +3966,19 @@ struct shaman_totem_pet_t : public pet_t
     return m;
   }
 
-  virtual double composite_spell_hit() const
+  virtual double composite_spell_hit() const override
   { return owner -> cache.spell_hit(); }
 
-  virtual double composite_spell_crit() const
+  virtual double composite_spell_crit() const override
   { return owner -> cache.spell_crit(); }
 
-  virtual double composite_spell_power( school_e school ) const
+  virtual double composite_spell_power( school_e school ) const override
   { return owner -> cache.spell_power( school ); }
 
-  virtual double composite_spell_power_multiplier() const
+  virtual double composite_spell_power_multiplier() const override
   { return owner -> composite_spell_power_multiplier(); }
 
-  virtual expr_t* create_expression( action_t* a, const std::string& name )
+  virtual expr_t* create_expression( action_t* a, const std::string& name ) override
   {
     if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, duration );
@@ -3986,7 +3986,7 @@ struct shaman_totem_pet_t : public pet_t
     return pet_t::create_expression( a, name );
   }
 
-  virtual void init_spells();
+  virtual void init_spells() override;
 };
 
 struct shaman_totem_t : public shaman_spell_t
@@ -4003,20 +4003,20 @@ struct shaman_totem_t : public shaman_spell_t
     ignore_false_positive = true;
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     totem_pet = debug_cast< shaman_totem_pet_t* >( player -> find_pet( name() ) );
 
     return shaman_spell_t::init_finished();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
     totem_pet -> summon( totem_duration );
   }
 
-  virtual expr_t* create_expression( const std::string& name )
+  virtual expr_t* create_expression( const std::string& name ) override
   {
     // Redirect active/remains to "pet.<totem name>.active/remains" so things work ok with the
     // pet initialization order shenanigans. Otherwise, at this point in time (when
@@ -4031,7 +4031,7 @@ struct shaman_totem_t : public shaman_spell_t
     return shaman_spell_t::create_expression( name );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! totem_pet )
     {
@@ -4057,7 +4057,7 @@ struct totem_pulse_action_t : public spell_t
     crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + totem -> o() -> perk.improved_critical_strikes -> effectN( 1 ).percent();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = spell_t::action_multiplier();
 
@@ -4066,7 +4066,7 @@ struct totem_pulse_action_t : public spell_t
     return m;
   }
 
-  void init()
+  void init() override
   {
     spell_t::init();
 
@@ -4074,7 +4074,7 @@ struct totem_pulse_action_t : public spell_t
     crit_multiplier *= util::crit_multiplier( totem -> o() -> meta_gem );
   }
 
-  void reset()
+  void reset() override
   {
     spell_t::reset();
     pulse_multiplier = 1.0;
@@ -4097,7 +4097,7 @@ struct totem_pulse_event_t : public event_t
   }
   virtual const char* name() const override
   { return  "totem_pulse"; }
-  virtual void execute()
+  virtual void execute() override
   {
     if ( totem -> pulse_action )
       totem -> pulse_action -> execute();
@@ -4178,7 +4178,7 @@ struct liquid_magma_t: public shaman_spell_t
     tick_action = new liquid_magma_aoe_t( player );
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     // Liquid Magma never has partial ticks
     d -> last_tick_factor = 1;
@@ -4186,14 +4186,14 @@ struct liquid_magma_t: public shaman_spell_t
     shaman_spell_t::tick( d );
   }
 
-  void execute()
+  void execute() override
   {
     shaman_spell_t::execute();
 
     p() -> buff.liquid_magma -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! p() -> totems[ TOTEM_FIRE ] )
       return false;
@@ -4222,7 +4222,7 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
     shaman_totem_t( "earth_elemental_totem", player, options_str, player -> find_class_spell( "Earth Elemental Totem" ) )
   { }
 
-  void execute()
+  void execute() override
   {
     shaman_totem_t::execute();
 
@@ -4257,7 +4257,7 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
     totem_duration       *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 2 ).percent();
   }
 
-  void execute()
+  void execute() override
   {
     shaman_totem_t::execute();
 
@@ -4290,7 +4290,7 @@ struct storm_elemental_totem_spell_t : public shaman_totem_t
   { }
 
   // TODO-WOD: Cooldown sharing with FE/EE?
-  void execute()
+  void execute() override
   {
     shaman_totem_t::execute();
 
@@ -4324,7 +4324,7 @@ struct magma_totem_t : public shaman_totem_pet_t
     pulse_amplitude = p -> find_spell( 8190 ) -> effectN( 2 ).period();
   }
 
-  void init_spells()
+  void init_spells() override
   {
     if ( find_spell( 8187 ) -> ok() )
       pulse_action = new magma_totem_pulse_t( this );
@@ -4355,7 +4355,7 @@ struct searing_totem_t : public shaman_totem_pet_t
     pulse_amplitude = p -> find_spell( 3606 ) -> cast_time( p -> level() );
   }
 
-  void init_spells()
+  void init_spells() override
   {
     if ( find_spell( 3606 ) -> ok() )
       pulse_action = new searing_totem_pulse_t( this );
@@ -4383,7 +4383,7 @@ struct earthliving_weapon_t : public shaman_spell_t
     may_miss     = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -4392,7 +4392,7 @@ struct earthliving_weapon_t : public shaman_spell_t
     p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   };
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> main_hand_weapon.buff_type != EARTHLIVING_IMBUE )
       return true;
@@ -4417,7 +4417,7 @@ struct lightning_shield_t : public shaman_spell_t
     player -> active_lightning_charge = new lightning_charge_t( player -> specialization() == SHAMAN_ELEMENTAL ? "fulmination" : "lightning_shield", player );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     shaman_spell_t::execute();
 
@@ -4490,7 +4490,7 @@ struct unleash_flame_expiration_delay_t : public event_t
   }
   virtual const char* name() const override
   { return  "unleash_flame_expiration_delay"; }
-  virtual void execute()
+  virtual void execute() override
   {
     // Call real expire after a delay
     buff -> buff_t::expire();
@@ -4884,7 +4884,7 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
           expr_t( "totem_active" ), p( p ), totem_type( tt )
         { }
 
-        virtual double evaluate()
+        virtual double evaluate() override
         {
           return p.totems[ totem_type ] && ! p.totems[ totem_type ] -> is_sleeping();
         }
@@ -6639,14 +6639,14 @@ struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new shaman_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new shaman_report_t( *p ) );
     return p;
   }
-  virtual bool valid() const { return true; }
-  virtual void init( player_t* p ) const
+  virtual bool valid() const override { return true; }
+  virtual void init( player_t* p ) const override
   {
     p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                             .max_stack( 1 );
@@ -6659,13 +6659,13 @@ struct shaman_module_t : public module_t
                             .quiet( true );
   }
 
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184919, elemental_bellows );
     unique_gear::register_special_effect( 184920, furious_winds     );
   }
 
-  virtual void register_hotfixes() const
+  virtual void register_hotfixes() const override
   {
     hotfix::register_spell( "Shaman", "2015-07-20", "Ascendance now has a 2-minute cooldown (down from 3 minutes) "
                                           "for Elemental Shaman.", 114050 )
@@ -6682,8 +6682,8 @@ struct shaman_module_t : public module_t
       .verification_value( 1.00000 );
   }
 
-  virtual void combat_begin( sim_t* ) const {}
-  virtual void combat_end( sim_t* ) const {}
+  virtual void combat_begin( sim_t* ) const override {}
+  virtual void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

@@ -685,61 +685,61 @@ public:
   virtual           ~druid_t();
 
   // Character Definition
-  virtual void      arise();
-  virtual void      init();
-  virtual void      init_spells();
-  virtual void      init_base_stats();
-  virtual void      create_buffs();
-  virtual void      init_scaling();
-  virtual void      init_gains();
-  virtual void      init_procs();
-  virtual void      init_resources( bool );
-  virtual void      init_rng();
-  virtual void      init_absorb_priority();
-  virtual void      invalidate_cache( cache_e );
-  virtual void      combat_begin();
-  virtual void      reset();
-  virtual void      merge( player_t& other );
-  virtual void      regen( timespan_t periodicity );
-  virtual timespan_t available() const;
-  virtual double    composite_armor_multiplier() const;
-  virtual double    composite_melee_attack_power() const;
-  virtual double    composite_melee_crit() const;
-  virtual double    composite_attack_power_multiplier() const;
-  virtual double    temporary_movement_modifier() const;
-  virtual double    passive_movement_modifier() const;
-  virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_power( school_e school ) const;
-  virtual double    composite_attribute( attribute_e attr ) const;
-  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual double    composite_damage_versatility() const;
-  virtual double    composite_heal_versatility() const;
-  virtual double    composite_mitigation_versatility() const;
-  virtual double    composite_parry() const { return 0; }
-  virtual double    composite_block() const { return 0; }
-  virtual double    composite_crit_avoidance() const;
-  virtual double    composite_melee_expertise( const weapon_t* ) const;
-  virtual double    composite_dodge() const;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
-  virtual expr_t*   create_expression( action_t*, const std::string& name );
-  virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
-  virtual void      create_pets();
-  virtual resource_e primary_resource() const;
-  virtual role_e    primary_role() const;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual double    mana_regen_per_second() const;
-  virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
-  virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
-  virtual void      assess_heal( school_e, dmg_e, action_state_t* );
-  virtual void      create_options();
-  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& );
-  virtual std::string      create_profile( save_e type = SAVE_ALL );
-  virtual void      recalculate_resource_max( resource_e r );
-  virtual void      copy_from( player_t* source );
+  virtual void      arise() override;
+  virtual void      init() override;
+  virtual void      init_spells() override;
+  virtual void      init_base_stats() override;
+  virtual void      create_buffs() override;
+  virtual void      init_scaling() override;
+  virtual void      init_gains() override;
+  virtual void      init_procs() override;
+  virtual void      init_resources( bool ) override;
+  virtual void      init_rng() override;
+  virtual void      init_absorb_priority() override;
+  virtual void      invalidate_cache( cache_e ) override;
+  virtual void      combat_begin() override;
+  virtual void      reset() override;
+  virtual void      merge( player_t& other ) override;
+  virtual void      regen( timespan_t periodicity ) override;
+  virtual timespan_t available() const override;
+  virtual double    composite_armor_multiplier() const override;
+  virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_attack_power_multiplier() const override;
+  virtual double    temporary_movement_modifier() const override;
+  virtual double    passive_movement_modifier() const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_power( school_e school ) const override;
+  virtual double    composite_attribute( attribute_e attr ) const override;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual double    composite_damage_versatility() const override;
+  virtual double    composite_heal_versatility() const override;
+  virtual double    composite_mitigation_versatility() const override;
+  virtual double    composite_parry() const override { return 0; }
+  virtual double    composite_block() const override { return 0; }
+  virtual double    composite_crit_avoidance() const override;
+  virtual double    composite_melee_expertise( const weapon_t* ) const override;
+  virtual double    composite_dodge() const override;
+  virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
+  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
+  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
+  virtual void      create_pets() override;
+  virtual resource_e primary_resource() const override;
+  virtual role_e    primary_role() const override;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
+  virtual double    mana_regen_per_second() const override;
+  virtual void      assess_damage( school_e school, dmg_e, action_state_t* ) override;
+  virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
+  virtual void      create_options() override;
+  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
+  virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
+  virtual void      recalculate_resource_max( resource_e r ) override;
+  virtual void      copy_from( player_t* source ) override;
 
   void              apl_precombat();
   void              apl_default();
@@ -747,12 +747,12 @@ public:
   void              apl_balance();
   void              apl_guardian();
   void              apl_restoration();
-  virtual void      init_action_list();
-  virtual bool      has_t18_class_trinket() const;
+  virtual void      init_action_list() override;
+  virtual bool      has_t18_class_trinket() const override;
 
   target_specific_t<druid_td_t> target_data;
 
-  virtual druid_td_t* get_target_data( player_t* target ) const
+  virtual druid_td_t* get_target_data( player_t* target ) const override
   {
     assert( target );
     druid_td_t*& td = target_data[ target ];
@@ -810,7 +810,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     residual_action::residual_periodic_action_t<attack_t>::tick( d );
 
@@ -842,7 +842,7 @@ struct natures_vigil_proc_t : public spell_t
       dmg_coeff  = p -> talent.natures_vigil -> effectN( 4 ).percent();
     }
 
-    virtual void init()
+    virtual void init() override
     {
       heal_t::init();
       // Disable the snapshot_flags for all multipliers, but specifically allow factors in
@@ -851,7 +851,7 @@ struct natures_vigil_proc_t : public spell_t
       snapshot_flags |= STATE_MUL_DA;
     }
 
-    virtual double action_multiplier() const
+    virtual double action_multiplier() const override
     {
       double am = heal_t::action_multiplier();
       
@@ -863,7 +863,7 @@ struct natures_vigil_proc_t : public spell_t
       return am;
     }
 
-    virtual void execute()
+    virtual void execute() override
     {
       target = smart_target();
 
@@ -1009,7 +1009,7 @@ struct ursocs_vigor_t : public heal_t
     execute();
   }
 
-  virtual void tick( dot_t *d )
+  virtual void tick( dot_t *d ) override
   {
     heal_t::tick( d );
 
@@ -1030,7 +1030,7 @@ struct cenarion_ward_hot_t : public heal_t
     hasted_ticks = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     heal_t::execute();
 
@@ -1078,7 +1078,7 @@ struct yseras_gift_t : public heal_t
       tick_pct_heal *= 0.5;
   }
 
-  virtual void init()
+  virtual void init() override
   {
     heal_t::init();
 
@@ -1087,7 +1087,7 @@ struct yseras_gift_t : public heal_t
 
   // Override calculate_tick_amount for unique mechanic (heals smart target for % of own health)
   // This might not be the best way to do this, but it works.
-  virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) const
+  virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) const override
   {
     double amount = state -> action -> player -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
     
@@ -1114,7 +1114,7 @@ struct yseras_gift_t : public heal_t
     return amount;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( player -> health_percentage() < 100 )
       target = player;
@@ -1163,7 +1163,7 @@ namespace pets {
       regen_type = REGEN_DISABLED;
     }
 
-    void init_base_stats()
+    void init_base_stats() override
     {
       pet_t::init_base_stats();
 
@@ -1177,14 +1177,14 @@ namespace pets {
       action_list_str = "fey_missile";
     }
 
-    void summon( timespan_t duration )
+    void summon( timespan_t duration ) override
     {
       pet_t::summon( duration );
       o() -> buff.faerie_blessing -> trigger();
     }
 
     action_t* create_action( const std::string& name,
-      const std::string& options_str )
+      const std::string& options_str ) override
     {
       if ( name == "fey_missile"  ) return new fey_missile_t( this );
       return pet_t::create_action( name, options_str );
@@ -1219,7 +1219,7 @@ struct force_of_nature_balance_t : public pet_t
     regen_type = REGEN_DISABLED;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     pet_t::init_base_stats();
 
@@ -1232,10 +1232,10 @@ struct force_of_nature_balance_t : public pet_t
     stamina_per_owner = 0;
   }
 
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
 
   virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
+                                   const std::string& options_str ) override
   {
     if ( name == "wrath"  ) return new wrath_t( this );
 
@@ -1269,7 +1269,7 @@ struct force_of_nature_feral_t : public pet_t
     force_of_nature_feral_t* p()
     { return static_cast<force_of_nature_feral_t*>( player ); }
 
-    timespan_t execute_time() const
+    timespan_t execute_time() const override
     {
       timespan_t t = melee_attack_t::execute_time();
       if ( first_swing )
@@ -1277,20 +1277,20 @@ struct force_of_nature_feral_t : public pet_t
       return t;
     }
 
-    void execute()
+    void execute() override
     {
       melee_attack_t::execute();
       if ( first_swing )
         first_swing = false;
     }
 
-    void reset()
+    void reset() override
     {
       melee_attack_t::reset();
       first_swing = true;
     }
 
-    void init()
+    void init() override
     {
       melee_attack_t::init();
       if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_force_of_nature[ 0 ] )
@@ -1314,14 +1314,14 @@ struct force_of_nature_feral_t : public pet_t
     const force_of_nature_feral_t* p() const
     { return static_cast<force_of_nature_feral_t*>( player ); }
 
-    void init()
+    void init() override
     {
       melee_attack_t::init();
       if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_force_of_nature[ 0 ] )
         stats = p() -> o() -> pet_force_of_nature[ 0 ] -> get_stats( name(), this );
     }
 
-    virtual double composite_ta_multiplier( const action_state_t* state ) const
+    virtual double composite_ta_multiplier( const action_state_t* state ) const override
     {
       double m = melee_attack_t::composite_ta_multiplier( state );
 
@@ -1333,7 +1333,7 @@ struct force_of_nature_feral_t : public pet_t
 
     // Treat direct damage as "bleed"
     // Must use direct damage because tick_zeroes cannot be blocked, and this attack is going to get blocked occasionally.
-    double composite_da_multiplier( const action_state_t* state ) const
+    double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = melee_attack_t::composite_da_multiplier( state );
 
@@ -1343,10 +1343,10 @@ struct force_of_nature_feral_t : public pet_t
       return m;
     }
 
-    virtual double target_armor( player_t* ) const
+    virtual double target_armor( player_t* ) const override
     { return 0.0; }
 
-    virtual void execute()
+    virtual void execute() override
     {
       melee_attack_t::execute();
       p() -> change_position( POSITION_BACK ); // After casting it's "opener" ability, move behind the target.
@@ -1374,7 +1374,7 @@ struct force_of_nature_feral_t : public pet_t
   const druid_t* o() const
   { return static_cast<const druid_t* >( owner ); }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     pet_t::init_base_stats();
 
@@ -1385,7 +1385,7 @@ struct force_of_nature_feral_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void init_action_list()
+  virtual void init_action_list() override
   {
     action_list_str = "rake";
 
@@ -1393,20 +1393,20 @@ struct force_of_nature_feral_t : public pet_t
   }
   
   action_t* create_action( const std::string& name,
-                           const std::string& options_str )
+                           const std::string& options_str ) override
   {
     if ( name == "rake" ) return new rake_t( this );
 
     return pet_t::create_action( name, options_str );
   }
 
-  virtual void summon( timespan_t duration = timespan_t::zero() )
+  virtual void summon( timespan_t duration = timespan_t::zero() ) override
   {
     pet_t::summon( duration );
     this -> change_position( POSITION_FRONT ); // Emulate Treant spawning in front of the target.
   }
 
-  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override
   {
     if ( melee && !melee -> execute_event )
     {
@@ -1464,7 +1464,7 @@ struct force_of_nature_guardian_t : public pet_t
   druid_t* o()
   { return static_cast< druid_t* >( owner ); }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     pet_t::init_base_stats();
 
@@ -1475,13 +1475,13 @@ struct force_of_nature_guardian_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void summon( timespan_t duration = timespan_t::zero() )
+  virtual void summon( timespan_t duration = timespan_t::zero() ) override
   {
     pet_t::summon( duration );
     schedule_ready();
   }
 
-  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override
   {
     pet_t::schedule_ready( delta_time, waiting );
     if ( ! melee -> execute_event ) melee -> execute();
@@ -1534,7 +1534,7 @@ struct astral_communion_t : public druid_buff_t < buff_t >
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -1560,7 +1560,7 @@ public:
     add_invalidate( CACHE_ARMOR );
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -1574,7 +1574,7 @@ public:
       druid.resolve_manager.stop();
   }
 
-  virtual void start( int stacks, double value, timespan_t duration )
+  virtual void start( int stacks, double value, timespan_t duration ) override
   {
     druid.buff.moonkin_form -> expire();
     druid.buff.cat_form -> expire();
@@ -1611,7 +1611,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
       .cd( timespan_t::from_seconds( 0.0 ) ) // Cooldown handled by ability
     ) {}
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool refresh = druid.buff.berserk -> check() != 0;
 
@@ -1631,7 +1631,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
     return success;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     druid.max_fb_energy /= 1.0 + druid.spell.berserk_cat -> effectN( 1 ).percent();
 
@@ -1661,7 +1661,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
       quiet = true;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
     
@@ -1672,7 +1672,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
     sim -> auras.critical_strike -> decrement();
   }
 
-  virtual void start( int stacks, double value, timespan_t duration )
+  virtual void start( int stacks, double value, timespan_t duration ) override
   {
     druid.buff.bear_form -> expire();
     druid.buff.moonkin_form -> expire();
@@ -1701,7 +1701,7 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
     tick_behavior = BUFF_TICK_NONE;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -1718,14 +1718,14 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   { }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
     sim -> auras.mastery -> decrement();
   }
 
-  virtual void start( int stacks, double value, timespan_t duration )
+  virtual void start( int stacks, double value, timespan_t duration ) override
   {
     druid.buff.bear_form -> expire();
     druid.buff.cat_form  -> expire();
@@ -1811,21 +1811,21 @@ struct ursa_major_t : public druid_buff_t < buff_t >
     ), health_gain( 0 )
   {}
 
-  virtual void start( int stacks, double value, timespan_t duration )
+  virtual void start( int stacks, double value, timespan_t duration ) override
   {
     base_t::start( stacks, value, duration );
 
     recalculate_temporary_health( value );
   }
 
-  virtual void refresh( int stacks, double value, timespan_t duration )
+  virtual void refresh( int stacks, double value, timespan_t duration ) override
   {
     base_t::refresh( stacks, value, duration );
     
     recalculate_temporary_health( value );
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -2016,7 +2016,7 @@ public:
       lacerate_stack_expr_t( action_t& a, druid_t& p ) :
         expr_t( "stack" ), druid( p ), action( a )
       {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         return druid.get_target_data( action.target ) -> lacerate_stack;
       }
@@ -2218,7 +2218,7 @@ struct druid_melee_t : public caster_attack_t
     triggers_natures_vigil = false;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -2280,7 +2280,7 @@ private:
     }
   }
 public:
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = base_t::cost();
 
@@ -2332,7 +2332,7 @@ public:
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     base_t::execute();
 
@@ -2368,7 +2368,7 @@ public:
     }
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
@@ -2387,7 +2387,7 @@ public:
     }
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
     if ( base_t::cost() > 0 && consume_ooc && p() -> buff.omen_of_clarity -> up() )
@@ -2427,7 +2427,7 @@ public:
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! base_t::ready() )
       return false;
@@ -2444,7 +2444,7 @@ public:
     return true;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double pm = base_t::composite_persistent_multiplier( s );
 
@@ -2454,7 +2454,7 @@ public:
     return pm;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double tm = base_t::composite_ta_multiplier( s );
 
@@ -2471,7 +2471,7 @@ public:
     player -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     base_t::tick( d );
 
@@ -2498,7 +2498,7 @@ struct cat_melee_t : public cat_attack_t
     triggers_natures_vigil = false;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -2506,7 +2506,7 @@ struct cat_melee_t : public cat_attack_t
     return cat_attack_t::execute_time();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double cm = cat_attack_t::action_multiplier();
 
@@ -2543,14 +2543,14 @@ struct ferocious_bite_t : public cat_attack_t
     druid_t* p() const
     { return static_cast<druid_t*>( player ); }
 
-    void init()
+    void init() override
     {
       heal_t::init();
 
       snapshot_flags |= STATE_MUL_DA;
     }
 
-    double action_multiplier() const
+    double action_multiplier() const override
     {
       double am = heal_t::action_multiplier();
 
@@ -2559,7 +2559,7 @@ struct ferocious_bite_t : public cat_attack_t
       return am;
     }
 
-    void execute()
+    void execute() override
     {
       if ( energy_spent <= 0 )
         return;
@@ -2567,7 +2567,7 @@ struct ferocious_bite_t : public cat_attack_t
       heal_t::execute();
     }
 
-    void impact( action_state_t* s )
+    void impact( action_state_t* s ) override
     {
       heal_t::impact( s );
 
@@ -2599,7 +2599,7 @@ struct ferocious_bite_t : public cat_attack_t
 
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( max_energy && p() -> resources.current[ RESOURCE_ENERGY ] < p() -> max_fb_energy )
       return false;
@@ -2607,7 +2607,7 @@ struct ferocious_bite_t : public cat_attack_t
     return cat_attack_t::ready();
   }
 
-  void execute()
+  void execute() override
   {
     // Berserk does affect the additional energy consumption.
     if ( p() -> buff.berserk -> check() )
@@ -2624,7 +2624,7 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy = -1 * data().effectN( 2 ).base_value();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     cat_attack_t::impact( state );
 
@@ -2649,7 +2649,7 @@ struct ferocious_bite_t : public cat_attack_t
     }
   }
 
-  void consume_resource()
+  void consume_resource() override
   {
     // Extra energy consumption happens first.
     // In-game it happens before the skill even casts but let's not do that because its dumb.
@@ -2662,7 +2662,7 @@ struct ferocious_bite_t : public cat_attack_t
     cat_attack_t::consume_resource();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = cat_attack_t::action_multiplier();
 
@@ -2673,7 +2673,7 @@ struct ferocious_bite_t : public cat_attack_t
     return am;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = cat_attack_t::composite_crit();
 
@@ -2683,7 +2683,7 @@ struct ferocious_bite_t : public cat_attack_t
     return c;
   }
 
-  double composite_crit_multiplier() const
+  double composite_crit_multiplier() const override
   {
     double cm = cat_attack_t::composite_crit_multiplier();
 
@@ -2739,7 +2739,7 @@ struct rake_t : public cat_attack_t
       base_multiplier *= 0.8;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
@@ -2752,7 +2752,7 @@ struct rake_t : public cat_attack_t
   /* Treat direct damage as "bleed"
      Must use direct damage because tick_zeroes cannot be blocked, and
      this attack can be blocked if the druid is in front of the target. */
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double dm = cat_attack_t::composite_da_multiplier( state );
 
@@ -2763,10 +2763,10 @@ struct rake_t : public cat_attack_t
   }
 
   // Bleed damage penetrates armor.
-  virtual double target_armor( player_t* ) const
+  virtual double target_armor( player_t* ) const override
   { return 0.0; }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
 
@@ -2774,7 +2774,7 @@ struct rake_t : public cat_attack_t
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     // 05/05/2015: Triggers regardless of action outcome
     if ( p() -> glyph.savage_roar -> ok() && prowling() )
@@ -2790,7 +2790,7 @@ struct rake_t : public cat_attack_t
       p() -> buff.incarnation -> up();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     cat_attack_t::tick( d );
 
@@ -2811,21 +2811,21 @@ struct rip_t : public cat_attack_t
       action_state_t( a, target ), combo_points( 0 ), druid( p )
     { }
 
-    void initialize()
+    void initialize() override
     {
       action_state_t::initialize();
 
       combo_points = (int) druid -> resources.current[ RESOURCE_COMBO_POINT ];
     }
 
-    void copy_state( const action_state_t* state )
+    void copy_state( const action_state_t* state ) override
     {
       action_state_t::copy_state( state );
       const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
       combo_points = rip_state -> combo_points;
     }
 
-    std::ostringstream& debug_str( std::ostringstream& s )
+    std::ostringstream& debug_str( std::ostringstream& s ) override
     {
       action_state_t::debug_str( s );
 
@@ -2855,10 +2855,10 @@ struct rip_t : public cat_attack_t
       base_multiplier *= 0.8;
   }
 
-  action_state_t* new_state()
+  action_state_t* new_state() override
   { return new rip_state_t( p(), this, target ); }
 
-  double attack_tick_power_coefficient( const action_state_t* s ) const
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
   {
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
 
@@ -2898,7 +2898,7 @@ struct savage_roar_t : public cat_attack_t
     return d;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     // Grab duration before we go and spend all of our combo points.
     timespan_t d = duration();
@@ -2908,7 +2908,7 @@ struct savage_roar_t : public cat_attack_t
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> glyph.savagery -> ok() )
       return false;
@@ -2931,7 +2931,7 @@ struct shred_t : public cat_attack_t
     special = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     // 05/05/2015: Triggers regardless of action outcome
     if ( p() -> glyph.savage_roar -> ok() && stealthed() )
@@ -2947,7 +2947,7 @@ struct shred_t : public cat_attack_t
       p() -> buff.incarnation -> up();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
 
@@ -2960,7 +2960,7 @@ struct shred_t : public cat_attack_t
     }
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
@@ -2970,7 +2970,7 @@ struct shred_t : public cat_attack_t
     return tm;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = cat_attack_t::composite_crit();
 
@@ -2980,7 +2980,7 @@ struct shred_t : public cat_attack_t
     return c;
   }
 
-  double composite_crit_multiplier() const
+  double composite_crit_multiplier() const override
   {
     double cm = cat_attack_t::composite_crit_multiplier();
 
@@ -2990,7 +2990,7 @@ struct shred_t : public cat_attack_t
     return cm;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = cat_attack_t::action_multiplier();
 
@@ -3021,7 +3021,7 @@ public:
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
 
@@ -3029,7 +3029,7 @@ public:
       attackCritical = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     attackCritical = false;
 
@@ -3051,7 +3051,7 @@ public:
       p() -> buff.feral_tier15_4pc -> decrement();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = cat_attack_t::action_multiplier();
 
@@ -3061,7 +3061,7 @@ public:
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
@@ -3071,7 +3071,7 @@ public:
     return tm;
   }
 
-  double composite_crit() const
+  double composite_crit() const override
   {
     double c = cat_attack_t::composite_crit();
 
@@ -3096,7 +3096,7 @@ struct thrash_cat_t : public cat_attack_t
   }
 
   // Treat direct damage as "bleed"
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = cat_attack_t::composite_da_multiplier( state );
 
@@ -3106,7 +3106,7 @@ struct thrash_cat_t : public cat_attack_t
     return m;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
 
@@ -3115,7 +3115,7 @@ struct thrash_cat_t : public cat_attack_t
   }
 
   // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* ) const
+  virtual double target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -3144,17 +3144,17 @@ struct shattered_bleed_t : public cat_attack_t
       tick_may_crit = false;
     }
 
-    void init()
+    void init() override
     {
       cat_attack_t::init();
 
       snapshot_flags |= STATE_MUL_TA;
     }
 
-    double target_armor( player_t* ) const
+    double target_armor( player_t* ) const override
     { return 0.0; }
 
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
     {
       timespan_t new_duration = std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration;
       timespan_t period_mod = new_duration % base_tick_time;
@@ -3163,7 +3163,7 @@ struct shattered_bleed_t : public cat_attack_t
       return new_duration;
     }
 
-    double action_multiplier() const
+    double action_multiplier() const override
     {
       double am = cat_attack_t::action_multiplier();
 
@@ -3175,11 +3175,11 @@ struct shattered_bleed_t : public cat_attack_t
     }
     
     // Override to prevent benefitting from mastery.
-    double composite_ta_multiplier( const action_state_t* /*s*/ ) const
+    double composite_ta_multiplier( const action_state_t* /*s*/ ) const override
     { return action_multiplier(); }
     
     // Benefit from Savage Roar and Tiger's Fury is not persistent.
-    double composite_persistent_multiplier( const action_state_t* /*s*/ ) const
+    double composite_persistent_multiplier( const action_state_t* /*s*/ ) const override
     { return 1.0; }
 };
 
@@ -3202,7 +3202,7 @@ public:
     rage_tick_amount( 0.0 ),  rage_gain( p -> get_gain( name() ) )
   {}
 
-  virtual timespan_t gcd() const
+  virtual timespan_t gcd() const override
   {
     if ( p() -> specialization() != DRUID_GUARDIAN )
       return base_t::gcd();
@@ -3220,7 +3220,7 @@ public:
     return t;
   }
 
-  virtual double cooldown_reduction() const
+  virtual double cooldown_reduction() const override
   {
     double cdr = base_t::cooldown_reduction();
 
@@ -3229,7 +3229,7 @@ public:
     return cdr;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
@@ -3247,14 +3247,14 @@ public:
     }
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     base_t::tick( d );
 
     p() -> resource_gain( RESOURCE_RAGE, rage_tick_amount, rage_gain );
   }
 
-  virtual bool ready() 
+  virtual bool ready() override 
   {
     if ( ! p() -> buff.bear_form -> check() )
       return false;
@@ -3281,7 +3281,7 @@ struct bear_melee_t : public bear_attack_t
     triggers_natures_vigil = false;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -3289,7 +3289,7 @@ struct bear_melee_t : public bear_attack_t
     return bear_attack_t::execute_time();
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     bear_attack_t::impact( state );
 
@@ -3317,7 +3317,7 @@ struct lacerate_t : public bear_attack_t
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     if ( result_is_hit( state -> result ) )
     {
@@ -3332,10 +3332,10 @@ struct lacerate_t : public bear_attack_t
   }
 
   // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* ) const
+  virtual double target_armor( player_t* ) const override
   { return 0.0; }
 
-  virtual double composite_target_ta_multiplier( player_t* t ) const
+  virtual double composite_target_ta_multiplier( player_t* t ) const override
   {
     double tm = bear_attack_t::composite_target_ta_multiplier( t );
 
@@ -3344,14 +3344,14 @@ struct lacerate_t : public bear_attack_t
     return tm;
   }
 
-  virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier )
+  virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier ) override
   {
     bear_attack_t::multistrike_tick( src_state, ms_state, multiplier );
 
     trigger_ursa_major();
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     bear_attack_t::last_tick( d );
 
@@ -3378,7 +3378,7 @@ struct mangle_t : public bear_attack_t
     }
   }
 
-  void update_ready( timespan_t )
+  void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
 
@@ -3388,7 +3388,7 @@ struct mangle_t : public bear_attack_t
     bear_attack_t::update_ready( cd );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     int base_aoe = aoe;
     if ( p() -> buff.berserk -> up() )
@@ -3399,7 +3399,7 @@ struct mangle_t : public bear_attack_t
     aoe = base_aoe;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
 
@@ -3431,7 +3431,7 @@ struct maul_t : public bear_attack_t
       attack_power_mod.direct = 2.40;
     }
 
-    virtual void impact( action_state_t* s )
+    virtual void impact( action_state_t* s ) override
     {
       if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
         p() -> buff.guardian_tier17_4pc -> increment();
@@ -3464,7 +3464,7 @@ struct maul_t : public bear_attack_t
     normalize_weapon_speed = false;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = bear_attack_t::cost();
 
@@ -3474,7 +3474,7 @@ struct maul_t : public bear_attack_t
     return c;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
 
@@ -3484,7 +3484,7 @@ struct maul_t : public bear_attack_t
     return tm;
   }
 
-  virtual void update_ready( timespan_t )
+  virtual void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
 
@@ -3494,7 +3494,7 @@ struct maul_t : public bear_attack_t
     bear_attack_t::update_ready( cd );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
 
@@ -3509,7 +3509,7 @@ struct maul_t : public bear_attack_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     // Benefit tracking
     p() -> buff.tooth_and_claw -> up();
@@ -3532,7 +3532,7 @@ struct pulverize_t : public bear_attack_t
     normalize_weapon_speed = false;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
 
@@ -3546,7 +3546,7 @@ struct pulverize_t : public bear_attack_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     // Call bear_attack_t::ready() first for proper targeting support.
     if ( bear_attack_t::ready() && td( target ) -> lacerate_stack >= 3 )
@@ -3574,7 +3574,7 @@ struct thrash_bear_t : public bear_attack_t
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
 
@@ -3583,7 +3583,7 @@ struct thrash_bear_t : public bear_attack_t
   }
 
   // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* ) const
+  virtual double target_armor( player_t* ) const override
   { return 0.0; }
 };
 
@@ -3660,7 +3660,7 @@ protected:
   void init_living_seed();
 
 public:
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buff.heart_of_the_wild -> heals_are_free() && current_resource() == RESOURCE_MANA )
       return 0;
@@ -3668,7 +3668,7 @@ public:
     return base_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     base_t::execute();
 
@@ -3688,7 +3688,7 @@ public:
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( p() -> buff.natures_swiftness -> check() )
       return timespan_t::zero();
@@ -3696,7 +3696,7 @@ public:
     return base_t::execute_time();
   }
 
-  virtual double composite_haste() const
+  virtual double composite_haste() const override
   {
     double h = base_t::composite_haste();
 
@@ -3705,7 +3705,7 @@ public:
     return h;
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_da_multiplier() const override
   {
     double adm = base_t::action_da_multiplier();
 
@@ -3721,7 +3721,7 @@ public:
     return adm;
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier() const override
   {
     double adm = base_t::action_ta_multiplier();
 
@@ -3779,7 +3779,7 @@ struct living_seed_t : public druid_heal_t
     school     = SCHOOL_NATURE;
   }
 
-  double composite_da_multiplier( const action_state_t* ) const
+  double composite_da_multiplier( const action_state_t* ) const override
   {
     return data().effectN( 1 ).percent();
   }
@@ -3824,7 +3824,7 @@ public:
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] =
       std::min( p() -> resources.current[ RESOURCE_RAGE ], max_rage_cost() );
@@ -3832,7 +3832,7 @@ public:
     return druid_heal_t::cost();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = druid_heal_t::action_multiplier();
 
@@ -3842,7 +3842,7 @@ public:
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     // Benefit tracking
     p() -> buff.guardian_tier17_4pc -> up();
@@ -3856,7 +3856,7 @@ public:
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! p() -> buff.bear_form -> check() )
       return false;
@@ -3890,17 +3890,17 @@ struct healing_touch_t : public druid_heal_t
       attack_power_mod.direct = spell_power_mod.direct;
   }
 
-  double spell_direct_power_coefficient( const action_state_t* /* state */ ) const
+  double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
     return spell_power_mod.direct * ! p() -> buff.dream_of_cenarius -> check();
   }
 
-  double attack_direct_power_coefficient( const action_state_t* /* state */ ) const
+  double attack_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
     return attack_power_mod.direct * p() -> buff.dream_of_cenarius -> check();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buff.predatory_swiftness -> check() )
       return 0;
@@ -3914,7 +3914,7 @@ struct healing_touch_t : public druid_heal_t
     return druid_heal_t::cost();
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     // Prevent from consuming Omen of Clarity unnecessarily
     if ( p() -> buff.predatory_swiftness -> check() )
@@ -3926,7 +3926,7 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t::consume_resource();
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_da_multiplier() const override
   {
     double adm = base_t::action_da_multiplier();
 
@@ -3943,7 +3943,7 @@ struct healing_touch_t : public druid_heal_t
     return adm;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( p() -> buff.predatory_swiftness -> check() || p() -> buff.dream_of_cenarius -> up() )
       return timespan_t::zero();
@@ -3951,7 +3951,7 @@ struct healing_touch_t : public druid_heal_t
     return druid_heal_t::execute_time();
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     druid_heal_t::impact( state );
     
@@ -3967,7 +3967,7 @@ struct healing_touch_t : public druid_heal_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     druid_heal_t::execute();
 
@@ -3981,7 +3981,7 @@ struct healing_touch_t : public druid_heal_t
     p() -> buff.dream_of_cenarius -> expire();
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr )
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     druid_heal_t::schedule_execute( state );
 
@@ -3995,7 +3995,7 @@ struct healing_touch_t : public druid_heal_t
     }
   }
 
-  virtual timespan_t gcd() const
+  virtual timespan_t gcd() const override
   {
     const druid_t& p = *this -> p();
     if ( p.buff.cat_form -> check() )
@@ -4020,7 +4020,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     attack_power_mod.tick   = 0;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
@@ -4029,7 +4029,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     return ctm;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double cdm = druid_heal_t::composite_da_multiplier( state );
 
@@ -4051,7 +4051,7 @@ struct lifebloom_t : public druid_heal_t
     ignore_false_positive = true;
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     // Cancel Dot/td-buff on all targets other than the one we impact on
     for ( size_t i = 0; i < sim -> actor_list.size(); ++i )
@@ -4069,7 +4069,7 @@ struct lifebloom_t : public druid_heal_t
       td( state -> target ) -> buffs.lifebloom -> trigger();
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     if ( ! d -> state -> target -> is_sleeping() ) // Prevent crash at end of simulation
       bloom -> execute();
@@ -4078,7 +4078,7 @@ struct lifebloom_t : public druid_heal_t
     druid_heal_t::last_tick( d );
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     druid_heal_t::tick( d );
 
@@ -4105,7 +4105,7 @@ struct regrowth_t : public druid_heal_t
     init_living_seed();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buff.omen_of_clarity -> check() )
       return 0;
@@ -4113,7 +4113,7 @@ struct regrowth_t : public druid_heal_t
     return druid_heal_t::cost();
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     druid_heal_t::consume_resource();
     double c = druid_heal_t::cost();
@@ -4126,7 +4126,7 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     druid_heal_t::impact( state );
 
@@ -4140,7 +4140,7 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_RESTORATION )
       return timespan_t::zero();
@@ -4160,13 +4160,13 @@ struct rejuvenation_t : public druid_heal_t
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     druid_heal_t::execute(); 
     p() -> active_rejuvenations += 1 ;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr )
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     druid_heal_t::schedule_execute( state );
 
@@ -4176,7 +4176,7 @@ struct rejuvenation_t : public druid_heal_t
       p() -> buff.bear_form -> expire();
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier() const override
   {
     double atm = base_t::action_ta_multiplier();
 
@@ -4186,7 +4186,7 @@ struct rejuvenation_t : public druid_heal_t
     return atm;
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     p() -> active_rejuvenations -= 1;
     druid_heal_t::last_tick( d );
@@ -4205,14 +4205,14 @@ struct renewal_t : public druid_heal_t
     may_multistrike = 0;
   }
 
-  virtual void init()
+  virtual void init() override
   {
     druid_heal_t::init();
 
     snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     base_dd_min = base_dd_max = p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
 
@@ -4250,7 +4250,7 @@ struct swiftmend_t : public druid_heal_t
     init_living_seed();
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* state ) override
   {
     druid_heal_t::impact( state );
 
@@ -4266,7 +4266,7 @@ struct swiftmend_t : public druid_heal_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     player_t* t = ( execute_state ) ? execute_state -> target : target;
 
@@ -4307,7 +4307,7 @@ struct wild_growth_t : public druid_heal_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     int save = aoe;
     if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_RESTORATION )
@@ -4338,7 +4338,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     parse_options( options );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     // Adjust buffs and cooldowns if we're in precombat.
     if ( ! p() -> in_combat )
@@ -4368,7 +4368,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     spell_t::execute();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = spell_t::action_multiplier();
 
@@ -4399,7 +4399,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     return m;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( harmful && p() -> buff.heart_of_the_wild -> damage_spells_are_free() )
       return 0;
@@ -4407,7 +4407,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     return base_t::cost();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> specialization() == DRUID_BALANCE )
       p() -> balance_tracker();
@@ -4445,14 +4445,14 @@ struct auto_attack_t : public melee_attack_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
     player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
     player -> main_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> is_moving() )
       return false;
@@ -4478,18 +4478,18 @@ struct astral_communion_t : public druid_spell_t
     base_tick_time = timespan_t::from_millis( 100 );
   }
 
-  double composite_haste() const
+  double composite_haste() const override
   {
     return 1.0;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute(); // Do not move the buff trigger in front of this.
     p() -> buff.astral_communion -> trigger();
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
     if ( p() -> specialization() == DRUID_BALANCE )
@@ -4506,7 +4506,7 @@ struct astral_communion_t : public druid_spell_t
     }
   }
 
-  void last_tick( dot_t* d )
+  void last_tick( dot_t* d ) override
   {
     druid_spell_t::last_tick( d );
     p() -> buff.astral_communion -> expire();
@@ -4524,7 +4524,7 @@ struct barkskin_t : public druid_spell_t
     use_off_gcd = true;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4552,14 +4552,14 @@ struct bear_form_t : public druid_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
-  void execute()
+  void execute() override
   {
     spell_t::execute();
 
     p() -> buff.bear_form -> start();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.bear_form -> check() )
       return false;
@@ -4578,7 +4578,7 @@ struct berserk_t : public druid_spell_t
     harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4607,7 +4607,7 @@ struct bristling_fur_t : public druid_spell_t
     harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4638,14 +4638,14 @@ struct cat_form_t : public druid_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
-  void execute()
+  void execute() override
   {
     spell_t::execute();
 
     p() -> buff.cat_form -> start();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.cat_form -> check() )
       return false;
@@ -4668,7 +4668,7 @@ struct celestial_alignment_t : public druid_spell_t
     dot_duration = timespan_t::zero();
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute(); // Do not change the order here. 
     p() -> buff.celestial_alignment -> trigger();
@@ -4685,7 +4685,7 @@ struct cenarion_ward_t : public druid_spell_t
     harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4706,7 +4706,7 @@ struct dash_t : public druid_spell_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4728,7 +4728,7 @@ struct displacer_beast_t : public druid_spell_t
     movement_directionality = MOVEMENT_OMNI;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4748,7 +4748,7 @@ struct faerie_fire_t : public druid_spell_t
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
   }
 
-  void update_ready( timespan_t )
+  void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
 
@@ -4760,7 +4760,7 @@ struct faerie_fire_t : public druid_spell_t
     druid_spell_t::update_ready( cd );
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = druid_spell_t::action_multiplier();
 
@@ -4772,7 +4772,7 @@ struct faerie_fire_t : public druid_spell_t
     return am;
   }
 
-  resource_e current_resource() const
+  resource_e current_resource() const override
   {
     if ( p() -> buff.bear_form -> check() )
       return RESOURCE_RAGE;
@@ -4797,7 +4797,7 @@ struct force_of_nature_spell_t : public druid_spell_t
     cooldown -> duration = timespan_t::from_seconds( 20.0 );
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
     if ( p() -> pet_force_of_nature[0] )
@@ -4830,7 +4830,7 @@ struct growl_t: public druid_spell_t
     use_off_gcd = true;
   }
 
-  void update_ready( timespan_t )
+  void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
 
@@ -4840,7 +4840,7 @@ struct growl_t: public druid_spell_t
     druid_spell_t::update_ready( cd );
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -4848,7 +4848,7 @@ struct growl_t: public druid_spell_t
     druid_spell_t::impact( s );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! p() -> buff.bear_form -> check() )
       return false;
@@ -4868,7 +4868,7 @@ struct heart_of_the_wild_t : public druid_spell_t
     harmful = may_hit = may_crit = false;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
     p() -> buff.heart_of_the_wild -> trigger();
@@ -4900,7 +4900,7 @@ struct hurricane_t : public druid_spell_t
     ignore_false_positive = true;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = druid_spell_t::action_multiplier();
 
@@ -4909,7 +4909,7 @@ struct hurricane_t : public druid_spell_t
     return m;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4917,13 +4917,13 @@ struct hurricane_t : public druid_spell_t
 
   }
 
-  void last_tick( dot_t * d )
+  void last_tick( dot_t * d ) override
   {
     druid_spell_t::last_tick( d );
     p() -> buff.hurricane -> expire();
   }
 
-  void schedule_execute( action_state_t* state = nullptr )
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     druid_spell_t::schedule_execute( state );
 
@@ -4949,7 +4949,7 @@ struct incarnation_t : public druid_spell_t
     harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -4988,7 +4988,7 @@ struct mark_of_the_wild_t : public druid_spell_t
     background  = ( sim -> overrides.str_agi_int != 0 && sim -> overrides.versatility != 0 );
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5023,7 +5023,7 @@ struct sunfire_base_t: public druid_spell_t
       aoe = -1;
   }
 
-  double spell_direct_power_coefficient( const action_state_t* s ) const
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( s -> target != s -> action -> target || p() -> stellar_flare_cast )
       return 0; // Sunfire will not deal direct damage to the targets that the dot is spread to.
@@ -5031,7 +5031,7 @@ struct sunfire_base_t: public druid_spell_t
     return druid_spell_t::spell_direct_power_coefficient( s );
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = druid_spell_t::action_multiplier();
 
@@ -5041,7 +5041,7 @@ struct sunfire_base_t: public druid_spell_t
     return am;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5051,7 +5051,7 @@ struct sunfire_base_t: public druid_spell_t
       p() -> buff.solar_peak -> expire();
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
 
@@ -5062,7 +5062,7 @@ struct sunfire_base_t: public druid_spell_t
       trigger_balance_t18_2pc();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> eclipse_amount >= 0 )
       return false;
@@ -5090,7 +5090,7 @@ struct moonfire_base_t : public druid_spell_t
     base_td_multiplier           *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
   }
 
-  double spell_direct_power_coefficient( const action_state_t* s ) const
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     if ( p() -> stellar_flare_cast )
       return 0; // With this proposed stellar flare change, it does not deal direct damage.
@@ -5098,7 +5098,7 @@ struct moonfire_base_t : public druid_spell_t
     return druid_spell_t::spell_direct_power_coefficient( s );
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
 
@@ -5109,7 +5109,7 @@ struct moonfire_base_t : public druid_spell_t
       trigger_balance_t18_2pc();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = druid_spell_t::action_multiplier();
 
@@ -5119,7 +5119,7 @@ struct moonfire_base_t : public druid_spell_t
     return am;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5129,7 +5129,7 @@ struct moonfire_base_t : public druid_spell_t
       p() -> buff.lunar_peak -> expire();
   }
 
-  void schedule_execute( action_state_t* state = nullptr )
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     druid_spell_t::schedule_execute( state );
 
@@ -5137,7 +5137,7 @@ struct moonfire_base_t : public druid_spell_t
     p() -> buff.cat_form -> expire();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> eclipse_amount < 0 )
       return false;
@@ -5220,7 +5220,7 @@ struct moonfire_cat_t : public druid_spell_t
     parse_options( options_str );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
 
@@ -5236,7 +5236,7 @@ struct moonfire_cat_t : public druid_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! p() -> talent.lunar_inspiration -> ok() )
       return false;
@@ -5260,14 +5260,14 @@ struct moonkin_form_t : public druid_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
-  void execute()
+  void execute() override
   {
     spell_t::execute();
 
     p() -> buff.moonkin_form -> start();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.moonkin_form -> check() )
       return false;
@@ -5288,14 +5288,14 @@ struct druids_swiftness_t : public druid_spell_t
     harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
     p() -> buff.natures_swiftness -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.natures_swiftness -> check() )
       return false;
@@ -5315,7 +5315,7 @@ struct natures_vigil_t : public druid_spell_t
     harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     // Don't call druid_spell_t::execute() because the spell data has some weird stuff in it.
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
@@ -5339,7 +5339,7 @@ struct prowl_t : public druid_spell_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
@@ -5347,7 +5347,7 @@ struct prowl_t : public druid_spell_t
     p() -> buff.prowl -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.prowl -> check() )
       return false;
@@ -5387,7 +5387,7 @@ public:
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5402,7 +5402,7 @@ public:
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 
-  double cooldown_reduction() const
+  double cooldown_reduction() const override
   {
     double cdr = druid_spell_t::cooldown_reduction();
 
@@ -5412,7 +5412,7 @@ public:
     return cdr;
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = druid_spell_t::cost();
 
@@ -5427,7 +5427,7 @@ public:
     return c;
   }
 
-  bool ready() 
+  bool ready() override 
   {
     if ( p() -> cooldown.savage_defense_use -> down() )
       return false;
@@ -5453,7 +5453,7 @@ struct skull_bash_t : public druid_spell_t
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5461,7 +5461,7 @@ struct skull_bash_t : public druid_spell_t
       p() -> cooldown.tigers_fury -> reset( false );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
@@ -5483,7 +5483,7 @@ struct stampeding_roar_t : public druid_spell_t
     harmful = false;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5509,7 +5509,7 @@ struct starfire_t : public druid_spell_t
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = druid_spell_t::action_multiplier();
 
@@ -5520,7 +5520,7 @@ struct starfire_t : public druid_spell_t
     return m;
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t casttime = druid_spell_t::execute_time();
 
@@ -5530,7 +5530,7 @@ struct starfire_t : public druid_spell_t
     return casttime;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5543,7 +5543,7 @@ struct starfire_t : public druid_spell_t
     p() -> buff.lunar_empowerment -> decrement();
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
 
@@ -5654,7 +5654,7 @@ struct starsurge_t : public druid_spell_t
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5694,7 +5694,7 @@ struct stellar_flare_t : public druid_spell_t
     }
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = base_t::action_multiplier();
 
@@ -5714,7 +5714,7 @@ struct stellar_flare_t : public druid_spell_t
     return m;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
     if ( p() -> alternate_stellar_flare )
@@ -5743,7 +5743,7 @@ struct survival_instincts_t : public druid_spell_t
     cooldown -> charges = 2;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5769,7 +5769,7 @@ struct tigers_fury_t : public druid_spell_t
       duration *= 1.0 + p -> wildcat_celerity -> driver() -> effectN( 1 ).average( p -> wildcat_celerity -> item ) / 100.0;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5840,7 +5840,7 @@ struct wild_charge_t : public druid_spell_t
     trigger_gcd = timespan_t::zero();
   }
 
-  void schedule_execute( action_state_t* execute_state )
+  void schedule_execute( action_state_t* execute_state ) override
   {
     druid_spell_t::schedule_execute( execute_state );
 
@@ -5854,7 +5854,7 @@ struct wild_charge_t : public druid_spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     if ( p() -> current.distance_to_move > data().min_range() )
     {
@@ -5865,7 +5865,7 @@ struct wild_charge_t : public druid_spell_t
     druid_spell_t::execute();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge if the target is too close.
       return false;
@@ -5887,7 +5887,7 @@ struct wild_mushroom_t : public druid_spell_t
     ignore_false_positive = true;
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5906,7 +5906,7 @@ struct wrath_t : public druid_spell_t
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = druid_spell_t::action_multiplier();
 
@@ -5924,7 +5924,7 @@ struct wrath_t : public druid_spell_t
     return m;
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     timespan_t casttime = druid_spell_t::execute_time();
 
@@ -5934,7 +5934,7 @@ struct wrath_t : public druid_spell_t
     return casttime;
   }
 
-  void schedule_execute( action_state_t* state = nullptr )
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     druid_spell_t::schedule_execute( state );
 
@@ -5953,7 +5953,7 @@ struct wrath_t : public druid_spell_t
     p() -> buff.bear_form -> expire();
   }
 
-  void execute()
+  void execute() override
   {
     druid_spell_t::execute();
 
@@ -5966,7 +5966,7 @@ struct wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> decrement();
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
 
@@ -7608,7 +7608,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
       druid_expr_t( n, p ), rt( r )
     {
     }
-    virtual double evaluate() { return druid.eclipse_direction == rt; }
+    virtual double evaluate() override { return druid.eclipse_direction == rt; }
   };
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -8409,21 +8409,21 @@ struct druid_module_t : public module_t
 {
   druid_module_t() : module_t( DRUID ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new druid_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new druid_report_t( *p ) );
     return p;
   }
-  virtual bool valid() const { return true; }
-  virtual void init( player_t* p ) const
+  virtual bool valid() const override { return true; }
+  virtual void init( player_t* p ) const override
   {
     p -> buffs.stampeding_roar = buff_creator_t( p, "stampeding_roar", p -> find_spell( 77764 ) )
                                  .max_stack( 1 )
                                  .duration( timespan_t::from_seconds( 8.0 ) );
   }
 
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184876, starshards );
     unique_gear::register_special_effect( 184877, wildcat_celerity );
@@ -8431,12 +8431,12 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 184879, flourish );
   } 
 
-  virtual void register_hotfixes() const
+  virtual void register_hotfixes() const override
   {
   }
 
-  virtual void combat_begin( sim_t* ) const {}
-  virtual void combat_end( sim_t* ) const {}
+  virtual void combat_begin( sim_t* ) const override {}
+  virtual void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

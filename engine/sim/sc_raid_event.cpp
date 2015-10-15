@@ -190,7 +190,7 @@ struct adds_event_t : public raid_event_t
     }
   }
 
-  void _start()
+  void _start() override
   {
     adds_to_remove = static_cast<size_t>( util::round( std::max( 0.0, sim -> rng().range( count - count_range, count + count_range ) ) ) );
 
@@ -236,7 +236,7 @@ struct adds_event_t : public raid_event_t
     regenerate_cache();
   }
 
-  void _finish()
+  void _finish() override
   {
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
@@ -295,7 +295,7 @@ struct move_enemy_t : public raid_event_t
     }
   }
 
-  void _start()
+  void _start() override
   {
     if ( enemy )
     {
@@ -307,7 +307,7 @@ struct move_enemy_t : public raid_event_t
     }
   }
 
-  void _finish()
+  void _finish() override
   {
     if ( enemy )
     {
@@ -328,7 +328,7 @@ struct casting_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     sim -> target -> debuffs.casting -> increment();
     for ( size_t i = 0; i < sim -> player_list.size(); ++i )
@@ -338,7 +338,7 @@ struct casting_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
     sim -> target -> debuffs.casting -> decrement();
   }
@@ -360,7 +360,7 @@ struct distraction_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     for (auto p : affected_players)
     {
@@ -369,7 +369,7 @@ struct distraction_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
     for (auto p : affected_players)
     {
@@ -389,7 +389,7 @@ struct invulnerable_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     sim -> target -> debuffs.invulnerable -> increment();
 
@@ -403,7 +403,7 @@ struct invulnerable_event_t : public raid_event_t
     sim -> target -> clear_debuffs();
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
     sim -> target -> debuffs.invulnerable -> decrement();
   }
@@ -419,12 +419,12 @@ struct flying_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     sim -> target -> debuffs.flying -> increment();
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
     sim -> target -> debuffs.flying -> decrement();
   }
@@ -474,7 +474,7 @@ struct movement_ticker_t : public event_t
       return min_time;
   }
 
-  void execute()
+  void execute() override
   {
     for (auto p : players)
     {
@@ -538,7 +538,7 @@ struct movement_event_t : public raid_event_t
     if ( !move_direction.empty() ) direction = util::parse_movement_direction( move_direction );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     movement_direction_e m = direction;
     if ( direction == MOVEMENT_RANDOM )
@@ -570,7 +570,7 @@ struct movement_event_t : public raid_event_t
     if ( affected_players.size() > 0 ) new ( *sim ) movement_ticker_t( *sim, affected_players );
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {}
 };
 
@@ -584,7 +584,7 @@ struct stun_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     for (auto p : affected_players)
     {
@@ -595,7 +595,7 @@ struct stun_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
     for (auto p : affected_players)
     {
@@ -621,7 +621,7 @@ struct interrupt_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     for (auto p : affected_players)
     {
@@ -630,7 +630,7 @@ struct interrupt_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {}
 };
 
@@ -659,7 +659,7 @@ struct damage_event_t : public raid_event_t
     damage_type = util::parse_school_type( type_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     if ( ! raid_damage )
     {
@@ -688,7 +688,7 @@ struct damage_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {}
 };
 
@@ -712,7 +712,7 @@ struct heal_event_t : public raid_event_t
     assert( duration == timespan_t::zero() );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     for (auto p : affected_players)
     {
@@ -749,7 +749,7 @@ struct heal_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {}
 };
 
@@ -768,7 +768,7 @@ struct damage_taken_debuff_event_t : public raid_event_t
     assert( duration == timespan_t::zero() );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     for (auto p : affected_players)
     {
@@ -781,7 +781,7 @@ struct damage_taken_debuff_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
   }
 };
@@ -799,12 +799,12 @@ struct vulnerable_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     sim -> target -> debuffs.vulnerable -> increment( 1, multiplier );
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
     sim -> target -> debuffs.vulnerable -> decrement();
   }
@@ -821,7 +821,7 @@ struct position_event_t : public raid_event_t
     parse_options( options_str );
   }
 
-  virtual void _start()
+  virtual void _start() override
   {
     for (auto p : affected_players)
     {
@@ -833,7 +833,7 @@ struct position_event_t : public raid_event_t
     }
   }
 
-  virtual void _finish()
+  virtual void _finish() override
   {
     for (auto p : affected_players)
     {
@@ -990,7 +990,7 @@ void raid_event_t::schedule()
     }
     virtual const char* name() const override
     { return raid_event -> name(); }
-    virtual void execute()
+    virtual void execute() override
     {
       raid_event -> finish();
     }
@@ -1009,7 +1009,7 @@ void raid_event_t::schedule()
     }
     virtual const char* name() const override
     { return raid_event -> name(); }
-    virtual void execute()
+    virtual void execute() override
     {
       raid_event -> saved_duration = raid_event -> duration_time();
       raid_event -> start();

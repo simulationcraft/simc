@@ -186,7 +186,7 @@ void pet_t::summon( timespan_t summon_duration )
       }
       virtual const char* name() const override
       { return "pet_summon_duration"; }
-      virtual void execute()
+      virtual void execute() override
       {
         pet.expiration = nullptr;
         if ( ! pet.is_sleeping() )

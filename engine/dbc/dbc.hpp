@@ -181,7 +181,7 @@ namespace hotfix
       orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
     { }
 
-    virtual void apply()
+    virtual void apply() override
     {
       if ( flags_ & HOTFIX_FLAG_LIVE )
       {
@@ -218,10 +218,10 @@ namespace hotfix
       dbc_hotfix_entry_t( g, t, id, n, f )
     { }
 
-    std::string to_str() const;
+    std::string to_str() const override;
 
     private:
-    void apply_hotfix( bool ptr );
+    void apply_hotfix( bool ptr ) override;
   };
 
   struct effect_hotfix_entry_t : public dbc_hotfix_entry_t
@@ -230,10 +230,10 @@ namespace hotfix
       dbc_hotfix_entry_t( g, t, id, n, f )
     { }
 
-    std::string to_str() const;
+    std::string to_str() const override;
 
     private:
-    void apply_hotfix( bool ptr );
+    void apply_hotfix( bool ptr ) override;
   };
 
   bool register_hotfix( const std::string&, const std::string&, const std::string&, unsigned = HOTFIX_FLAG_DEFAULT );

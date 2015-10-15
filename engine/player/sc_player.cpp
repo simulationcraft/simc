@@ -24,7 +24,7 @@ struct player_ready_event_t : public player_event_t
   }
   virtual const char* name() const override
   { return "Player-Ready"; }
-  virtual void execute()
+  virtual void execute() override
   {
     // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
     event_t::cancel( p() -> off_gcd );
@@ -66,7 +66,7 @@ struct resource_threshold_event_t : public event_t
   const char* name() const override
   { return "Resource-Threshold"; }
 
-  void execute()
+  void execute() override
   {
     player -> trigger_ready();
     player -> resource_threshold_trigger = 0;
@@ -390,7 +390,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
     }
     virtual const char* name() const override
     { return "residual_action_delay_event"; }
-    virtual void execute()
+    virtual void execute() override
     {
       // Don't ignite on targets that are not active
       if ( target -> is_sleeping() )
@@ -1203,7 +1203,7 @@ struct touch_of_the_grave_spell_t : public spell_t
     background = true;
   }
 
-  double attack_direct_power_coefficient( const action_state_t* ) const
+  double attack_direct_power_coefficient( const action_state_t* ) const override
   {
     if ( composite_attack_power() >= composite_spell_power() )
     {
@@ -1213,7 +1213,7 @@ struct touch_of_the_grave_spell_t : public spell_t
     return 0;
   }
 
-  double spell_direct_power_coefficient( const action_state_t* ) const
+  double spell_direct_power_coefficient( const action_state_t* ) const override
   {
     if ( composite_spell_power() > composite_attack_power() )
     {
@@ -1359,7 +1359,7 @@ struct execute_pet_action_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     pet = player -> find_pet( pet_name );
     // No pet found, finish init early, the action will never be ready() and never executed.
@@ -1388,12 +1388,12 @@ struct execute_pet_action_t : public action_t
     return action_t::init_finished();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     pet_action -> execute();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! pet )
     {
@@ -1782,7 +1782,7 @@ void player_t::init_spells()
       may_multistrike = 0;
     }
 
-    void init()
+    void init() override
     {
       heal_t::init();
 
@@ -2463,7 +2463,7 @@ void player_t::create_buffs()
       buff_t( buff_creator_t( p, "raid_movement" ).max_stack( 1 ) )
     { }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
       player -> finish_moving();
@@ -5813,7 +5813,7 @@ struct start_moving_t : public action_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player -> buffs.self_movement -> trigger();
 
@@ -5823,7 +5823,7 @@ struct start_moving_t : public action_t
     update_ready();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> buffs.self_movement -> check() )
       return false;
@@ -5844,7 +5844,7 @@ struct stop_moving_t : public action_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player -> buffs.self_movement -> expire();
 
@@ -5852,7 +5852,7 @@ struct stop_moving_t : public action_t
     update_ready();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! player -> buffs.self_movement -> check() )
       return false;
@@ -5965,13 +5965,13 @@ struct variable_t : public action_t
     }
   }
 
-  result_e calculate_result( action_state_t* ) const
+  result_e calculate_result( action_state_t* ) const override
   { return RESULT_HIT; }
 
-  block_result_e calculate_block_result( action_state_t* ) const
+  block_result_e calculate_block_result( action_state_t* ) const override
   { return BLOCK_RESULT_UNBLOCKED; }
 
-  void execute()
+  void execute() override
   {
     action_t::execute();
 
@@ -6000,7 +6000,7 @@ struct variable_t : public action_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     // For state change operations, return false if the variable would be
     // unchanged, allows easier way to handle infinite action list issues due
@@ -6032,7 +6032,7 @@ struct racial_spell_t : public spell_t
     parse_options( options );
   }
 
-  void init()
+  void init() override
   {
     spell_t::init();
 
@@ -6049,7 +6049,7 @@ struct shadowmeld_t : public racial_spell_t
     racial_spell_t( p, "shadowmeld", p -> find_racial_spell( "Shadowmeld" ), options_str )
   { }
 
-  void execute()
+  void execute() override
   {
     racial_spell_t::execute();
 
@@ -6092,7 +6092,7 @@ struct arcane_torrent_t : public racial_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( resource == RESOURCE_MANA )
       gain = player -> resources.max [ RESOURCE_MANA ] * data().effectN( 2 ).resource( resource );
@@ -6113,7 +6113,7 @@ struct berserking_t : public racial_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     racial_spell_t::execute();
 
@@ -6131,7 +6131,7 @@ struct blood_fury_t : public racial_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     racial_spell_t::execute();
 
@@ -6149,7 +6149,7 @@ struct darkflight_t : public racial_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     racial_spell_t::execute();
 
@@ -6178,7 +6178,7 @@ struct stoneform_t : public racial_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     racial_spell_t::execute();
 
@@ -6203,7 +6203,7 @@ struct restart_sequence_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void init()
+  virtual void init() override
   {
     action_t::init();
 
@@ -6232,14 +6232,14 @@ struct restart_sequence_t : public action_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> debug )
       sim -> out_debug.printf( "%s restarting sequence %s", player -> name(), seq_name_str.c_str() );
     seq -> restart();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool ret = seq && seq -> can_restart();
     if ( ret ) return action_t::ready();
@@ -6264,7 +6264,7 @@ struct restore_mana_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     double mana_missing = player -> resources.max[ RESOURCE_MANA ] - player -> resources.current[ RESOURCE_MANA ];
     double mana_gain = mana;
@@ -6311,7 +6311,7 @@ struct snapshot_stats_t : public action_t
     }
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     player_t* p = player;
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
@@ -6328,7 +6328,7 @@ struct snapshot_stats_t : public action_t
     return action_t::init_finished();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player_t* p = player;
 
@@ -6433,14 +6433,14 @@ struct snapshot_stats_t : public action_t
     }
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     action_t::reset();
 
     completed = false;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( completed || sim -> current_iteration > 0 ) return false;
     return action_t::ready();
@@ -6472,7 +6472,7 @@ struct wait_fixed_t : public wait_action_base_t
     }
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t wait = timespan_t::from_seconds( time_expr -> eval() );
     if ( wait <= timespan_t::zero() ) wait = player -> available();
@@ -6492,7 +6492,7 @@ struct wait_until_ready_t : public wait_fixed_t
     quiet = true;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t wait = wait_fixed_t::execute_time();
     timespan_t remains = timespan_t::zero();
@@ -6629,7 +6629,7 @@ struct use_item_t : public action_t
     player -> item_cooldown.start( duration );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     bool triggered = buff == 0;
     if ( buff )
@@ -6658,7 +6658,7 @@ struct use_item_t : public action_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! item ) return false;
 
@@ -6686,10 +6686,10 @@ struct use_item_t : public action_t
         v( state ? 1.0 : 0 )
       { }
 
-      bool is_constant( double* )
+      bool is_constant( double* ) override
       { return true; }
 
-      double evaluate()
+      double evaluate() override
       { return v; }
     };
 
@@ -6709,7 +6709,7 @@ struct use_item_t : public action_t
     return new use_item_buff_type_expr_t( e.stat_type() == stat );
   }
 
-  expr_t* create_expression( const std::string& name_str )
+  expr_t* create_expression( const std::string& name_str ) override
   {
     std::vector<std::string> split = util::string_split( name_str, "." );
     if ( expr_t* e = create_special_effect_expr( split ) )
@@ -6762,13 +6762,13 @@ struct cancel_buff_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log ) sim -> out_log.printf( "%s cancels buff %s", player -> name(), buff -> name() );
     buff -> expire();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! buff || ! buff -> check() )
       return false;
@@ -6810,13 +6810,13 @@ struct swap_action_list_t : public action_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log ) sim -> out_log.printf( "%s swaps to action list %s", player -> name(), alist -> name_str.c_str() );
     player -> activate_action_list( alist );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> active_action_list == alist )
       return false;
@@ -6834,7 +6834,7 @@ struct run_action_list_t : public swap_action_list_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log ) sim -> out_log.printf( "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
 
@@ -6880,7 +6880,7 @@ struct pool_resource_t : public action_t
     }
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     action_t::reset();
 
@@ -6909,7 +6909,7 @@ struct pool_resource_t : public action_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
@@ -6917,12 +6917,12 @@ struct pool_resource_t : public action_t
     player -> iteration_waiting_time += wait;
   }
 
-  virtual timespan_t gcd() const
+  virtual timespan_t gcd() const override
   {
     return wait;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool rd = action_t::ready();
     if ( ! rd )
@@ -7844,7 +7844,7 @@ struct position_expr_t : public player_expr_t
   int mask;
   position_expr_t( const std::string& n, player_t& p, int m ) :
     player_expr_t( n, p ), mask( m ) {}
-  virtual double evaluate() { return ( 1 << player.position() ) & mask; }
+  virtual double evaluate() override { return ( 1 << player.position() ) & mask; }
 };
 }
 
@@ -7866,7 +7866,7 @@ expr_t* player_t::create_expression( action_t* a,
       action_t& action;
       multiplier_expr_t( player_t& p, action_t* a ) :
         player_expr_t( "multiplier", p ), action( *a ) { assert( a ); }
-      virtual double evaluate() { return player.cache.player_multiplier( action.get_school() ); }
+      virtual double evaluate() override { return player.cache.player_multiplier( action.get_school() ); }
     };
     return new multiplier_expr_t( *this, a );
   }
@@ -7907,7 +7907,7 @@ expr_t* player_t::create_expression( action_t* a,
           expr_t( n ), percent( percent ), player( p )
         { }
 
-        double evaluate()
+        double evaluate() override
         {
           double time;
           time = player -> time_to_percent( percent ).total_seconds();
@@ -7968,7 +7968,7 @@ expr_t* player_t::create_expression( action_t* a,
       {
       }
 
-      double evaluate()
+      double evaluate() override
       {
         return player -> calculate_time_to_bloodlust();
       }
@@ -7987,7 +7987,7 @@ expr_t* player_t::create_expression( action_t* a,
     {
       t18_class_trinket_expr_t( player_t& p ) :
         player_expr_t( "t18_class_trinket", p ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         return player.has_t18_class_trinket();
       }
@@ -8019,7 +8019,7 @@ expr_t* player_t::create_expression( action_t* a,
         {
         }
 
-        double evaluate()
+        double evaluate() override
         {
           return player -> compute_incoming_damage( duration );
         }
@@ -8052,7 +8052,7 @@ expr_t* player_t::create_expression( action_t* a,
         }
       }
 
-      double evaluate()
+      double evaluate() override
       { return var_ -> current_value_; }
     };
 
@@ -8135,7 +8135,7 @@ expr_t* player_t::create_expression( action_t* a,
       race_expr_t( player_t& p, const std::string& n ) :
         expr_t( "race" ), player( p ), race_name( n )
       { }
-      virtual double evaluate() { return player.race_str == race_name; }
+      virtual double evaluate() override { return player.race_str == race_name; }
     };
     return new race_expr_t( *this, splits[ 1 ] );
   }
@@ -8150,7 +8150,7 @@ expr_t* player_t::create_expression( action_t* a,
       role_expr_t( player_t& p, const std::string& r ) :
         expr_t( "role" ), player( p ), role( r )
       {}
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         std::string player_role = util::role_type_string( player.primary_role() );
         return util::str_compare_ci( player_role, role );
@@ -8189,7 +8189,7 @@ expr_t* player_t::create_expression( action_t* a,
           pet_active_expr_t( pet_t* p ) : pet_expr_t( "pet_active", *p )
           { }
 
-          double evaluate()
+          double evaluate() override
           { return ! pet.is_sleeping(); }
         };
 
@@ -8202,7 +8202,7 @@ expr_t* player_t::create_expression( action_t* a,
           pet_remains_expr_t( pet_t* p ) : pet_expr_t( "pet_remains", *p )
           { }
 
-          double evaluate()
+          double evaluate() override
           {
             if ( pet.expiration && pet.expiration -> remains() > timespan_t::zero() )
               return pet.expiration -> remains().total_seconds();
@@ -8238,7 +8238,7 @@ expr_t* player_t::create_expression( action_t* a,
       struct spell_haste_expr_t : public player_expr_t
       {
         spell_haste_expr_t( player_t& p ) : player_expr_t( "spell_haste", p ) { }
-        double evaluate() { return 1.0 / player.cache.spell_haste() - 1.0; }
+        double evaluate() override { return 1.0 / player.cache.spell_haste() - 1.0; }
       };
       return new spell_haste_expr_t( *this );
     }
@@ -8247,7 +8247,7 @@ expr_t* player_t::create_expression( action_t* a,
       struct ms_expr_t : public player_expr_t
       {
         ms_expr_t( player_t& p ) : player_expr_t( "ms_pct", p ) { }
-        double evaluate() { return player.cache.multistrike() * 100.0; }
+        double evaluate() override { return player.cache.multistrike() * 100.0; }
       };
       return new ms_expr_t( *this );
     }
@@ -8266,7 +8266,7 @@ expr_t* player_t::create_expression( action_t* a,
           attribute_e attr;
           attr_expr_t( const std::string& name, player_t& p, attribute_e a ) :
             player_expr_t( name, p ), attr( a ) {}
-          virtual double evaluate()
+          virtual double evaluate() override
           { return player.cache.get_attribute( attr ); }
         };
         return new attr_expr_t( expression_str, *this, static_cast<attribute_e>( stat ) );
@@ -8278,7 +8278,7 @@ expr_t* player_t::create_expression( action_t* a,
         {
           sp_expr_t( const std::string& name, player_t& p ) :
             player_expr_t( name, p ) {}
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             return player.cache.spell_power( SCHOOL_MAX ) * player.composite_spell_power_multiplier();
           }
@@ -8292,7 +8292,7 @@ expr_t* player_t::create_expression( action_t* a,
         {
           ap_expr_t( const std::string& name, player_t& p ) :
             player_expr_t( name, p ) {}
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             return player.cache.attack_power() * player.composite_attack_power_multiplier();
           }
@@ -8335,7 +8335,7 @@ expr_t* player_t::create_expression( action_t* a,
         is_match = util::str_compare_ci( apl_str, use_apl );
       }
 
-      double evaluate()
+      double evaluate() override
       {
         return is_match;
       }
@@ -8381,7 +8381,7 @@ expr_t* player_t::create_expression( action_t* a,
           slot_e slot;
           swing_remains_expr_t( player_t& p, slot_e s ) :
             player_expr_t( "swing_remains", p ), slot( s ) {}
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? player.main_hand_attack : player.off_hand_attack;
             if ( attack && attack -> execute_event ) return attack -> execute_event -> remains().total_seconds();
@@ -8399,7 +8399,7 @@ expr_t* player_t::create_expression( action_t* a,
         const std::string name;
         player_t& player;
         spell_exists_expr_t( const std::string& n, player_t& p ) : expr_t( n ), name( n ), player( p ) {}
-        virtual double evaluate() { return player.find_spell( name ) -> ok(); }
+        virtual double evaluate() override { return player.find_spell( name ) -> ok(); }
       };
       return new spell_exists_expr_t( splits[ 1 ], *this );
     }
@@ -8420,7 +8420,7 @@ expr_t* player_t::create_expression( action_t* a,
           expr_t( "active_dot_expr" ), player( p ), id( action_id )
         { }
 
-        double evaluate()
+        double evaluate() override
         { return player.get_active_dots( id ); }
       };
 
@@ -8448,7 +8448,7 @@ expr_t* player_t::create_expression( action_t* a,
             raid_movement_expr_t( n, p )
           { }
 
-          double evaluate()
+          double evaluate() override
           {
             if ( player -> current.distance_to_move > 0 )
               return ( player -> current.distance_to_move / player -> composite_movement_speed() );
@@ -8467,7 +8467,7 @@ expr_t* player_t::create_expression( action_t* a,
             raid_movement_expr_t( n, p )
           { }
 
-          double evaluate()
+          double evaluate() override
           { return player -> current.distance_to_move; }
         };
 
@@ -8486,7 +8486,7 @@ expr_t* player_t::create_expression( action_t* a,
 
       s_expr_t( const std::string& name, player_t& p, spell_data_t* sp ) :
         player_expr_t( name, p ), s( sp ) {}
-      virtual double evaluate()
+      virtual double evaluate() override
       { return ( s && s -> ok() ); }
     };
 
@@ -8540,7 +8540,7 @@ expr_t* player_t::create_expression( action_t* a,
           const std::vector<action_t*> action_list;
           in_flight_multi_expr_t( const std::vector<action_t*>& al ) :
             expr_t( "in_flight" ), action_list( al ) {}
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             for ( size_t i = 0; i < action_list.size(); i++ )
             {
@@ -8561,7 +8561,7 @@ expr_t* player_t::create_expression( action_t* a,
 
           in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a ) :
             expr_t( "in_flight_to_target" ), action_list( al ), action( a ) {}
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             for ( size_t i = 0; i < action_list.size(); i++ )
             {
@@ -8608,7 +8608,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
       {
         resource_deficit_expr_t( const std::string& n, player_t& p, resource_e r ) :
           resource_expr_t( n, p, r ) {}
-        virtual double evaluate()
+        virtual double evaluate() override
         { return player.resources.max[ rt ] - player.resources.current[ rt ]; }
       };
       return new resource_deficit_expr_t( name_str, *this, r );
@@ -8626,7 +8626,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
         {
           resource_pct_expr_t( const std::string& n, player_t& p, resource_e r  ) :
             resource_expr_t( n, p, r ) {}
-          virtual double evaluate()
+          virtual double evaluate() override
           { return player.resources.pct( rt ) * 100.0; }
         };
         return new resource_pct_expr_t( name_str, *this, r  );
@@ -8645,7 +8645,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
       {
         resource_pct_nonproc_expr_t( const std::string& n, player_t& p, resource_e r ) :
           resource_expr_t( n, p, r ) {}
-        virtual double evaluate()
+        virtual double evaluate() override
         { return player.resources.current[ rt ] / player.collected_data.buffed_stats_snapshot.resource[ rt ] * 100.0; }
       };
       return new resource_pct_nonproc_expr_t( name_str, *this, r );
@@ -8656,7 +8656,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
       {
         resource_net_regen_expr_t( const std::string& n, player_t& p, resource_e r ) :
           resource_expr_t( n, p, r ) {}
-        virtual double evaluate()
+        virtual double evaluate() override
         {
           timespan_t now = player.sim -> current_time();
           if ( now != timespan_t::zero() )
@@ -8687,7 +8687,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
             resource_expr_t( "time_to_max_energy", p, r )
           {
           }
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             return ( player.resources.max[RESOURCE_ENERGY] -
               player.resources.current[RESOURCE_ENERGY] ) /
@@ -8704,7 +8704,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
             resource_expr_t( "time_to_max_focus", p, r )
           {
           }
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             return ( player.resources.max[RESOURCE_FOCUS] -
               player.resources.current[RESOURCE_FOCUS] ) /
@@ -8721,7 +8721,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
             resource_expr_t( "time_to_max_mana", p, r )
           {
           }
-          virtual double evaluate()
+          virtual double evaluate() override
           {
             return ( player.resources.max[RESOURCE_MANA] -
               player.resources.current[RESOURCE_MANA] ) /

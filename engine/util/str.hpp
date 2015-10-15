@@ -6,6 +6,8 @@
 #ifndef STR_HPP
 #define STR_HPP
 
+#include <string>
+
 namespace str {
 
 // These functions will concatenate to buffer.

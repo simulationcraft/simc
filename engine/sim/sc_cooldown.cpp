@@ -28,7 +28,7 @@ struct recharge_event_t : event_t
   {
     add_event( event_duration_ );
   }
-  virtual void execute()
+  virtual void execute() override
   {
     assert( cooldown_ -> current_charge < cooldown_ -> charges );
     cooldown_ -> current_charge++;
@@ -69,7 +69,7 @@ struct ready_trigger_event_t : public player_event_t
   }
   virtual const char* name() const override
   { return "ready_trigger_event"; }
-  void execute()
+  void execute() override
   {
     cooldown -> ready_trigger_event = nullptr;
     p() -> trigger_ready();
@@ -354,7 +354,7 @@ expr_t* cooldown_t::create_expression( action_t*, const std::string& name_str )
         expr_t( "charges_fractional" ), cd( c )
       { }
 
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         double charges = cd -> current_charge;
         if ( cd -> recharge_event )
@@ -376,7 +376,7 @@ expr_t* cooldown_t::create_expression( action_t*, const std::string& name_str )
         expr_t( "recharge_time" ), cd( c )
       { }
 
-      virtual double evaluate()
+      virtual double evaluate() override
       {
         if ( cd -> recharge_event )
           return cd -> recharge_event -> remains().total_seconds();

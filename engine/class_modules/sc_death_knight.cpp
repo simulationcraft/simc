@@ -512,52 +512,52 @@ public:
   }
 
   // Character Definition
-  virtual void      init_spells();
-  virtual void      init_action_list();
-  virtual bool      init_actions();
-  virtual void      init_rng();
-  virtual void      init_base_stats();
-  virtual void      init_scaling();
-  virtual void      create_buffs();
-  virtual void      init_gains();
-  virtual void      init_procs();
-  virtual void      init_resources( bool force );
-  virtual double    composite_armor_multiplier() const;
-  virtual double    composite_melee_attack_power() const;
-  virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_melee_speed() const;
-  virtual double    composite_melee_haste() const;
-  virtual double    composite_spell_haste() const;
-  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
-  virtual double    composite_rating_multiplier( rating_e ) const;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual double    composite_parry_rating() const;
-  virtual double    composite_parry() const;
-  virtual double    composite_dodge() const;
-  virtual double    composite_multistrike() const;
-  virtual double    composite_leech() const;
-  virtual double    composite_melee_expertise( const weapon_t* ) const;
-  virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_critical_damage_multiplier() const;
-  virtual double    composite_crit_avoidance() const;
-  virtual double    passive_movement_modifier() const;
-  virtual double    temporary_movement_modifier() const;
-  virtual void      regen( timespan_t periodicity );
-  virtual void      reset();
-  virtual void      arise();
-  virtual void      assess_heal( school_e, dmg_e, action_state_t* );
-  virtual void      assess_damage( school_e, dmg_e, action_state_t* );
-  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
-  virtual void      combat_begin();
-  virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual expr_t*   create_expression( action_t*, const std::string& name );
-  virtual void      create_pets();
-  virtual void      create_options();
-  virtual resource_e primary_resource() const { return RESOURCE_RUNIC_POWER; }
-  virtual role_e    primary_role() const;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual void      invalidate_cache( cache_e );
+  virtual void      init_spells() override;
+  virtual void      init_action_list() override;
+  virtual bool      init_actions() override;
+  virtual void      init_rng() override;
+  virtual void      init_base_stats() override;
+  virtual void      init_scaling() override;
+  virtual void      create_buffs() override;
+  virtual void      init_gains() override;
+  virtual void      init_procs() override;
+  virtual void      init_resources( bool force ) override;
+  virtual double    composite_armor_multiplier() const override;
+  virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_attack_power_multiplier() const override;
+  virtual double    composite_melee_speed() const override;
+  virtual double    composite_melee_haste() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
+  virtual double    composite_rating_multiplier( rating_e ) const override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual double    composite_parry_rating() const override;
+  virtual double    composite_parry() const override;
+  virtual double    composite_dodge() const override;
+  virtual double    composite_multistrike() const override;
+  virtual double    composite_leech() const override;
+  virtual double    composite_melee_expertise( const weapon_t* ) const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_critical_damage_multiplier() const override;
+  virtual double    composite_crit_avoidance() const override;
+  virtual double    passive_movement_modifier() const override;
+  virtual double    temporary_movement_modifier() const override;
+  virtual void      regen( timespan_t periodicity ) override;
+  virtual void      reset() override;
+  virtual void      arise() override;
+  virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  virtual void      combat_begin() override;
+  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
+  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
+  virtual void      create_pets() override;
+  virtual void      create_options() override;
+  virtual resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
+  virtual role_e    primary_role() const override;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
+  virtual void      invalidate_cache( cache_e ) override;
 
   double    runes_per_second() const;
   void      trigger_runic_empowerment( double rpcost );
@@ -581,7 +581,7 @@ public:
 
   target_specific_t<death_knight_td_t> target_data;
 
-  virtual death_knight_td_t* get_target_data( player_t* target ) const
+  virtual death_knight_td_t* get_target_data( player_t* target ) const override
   {
     death_knight_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -641,7 +641,7 @@ struct np_spread_event_t : public event_t
   }
   virtual const char* name() const override
   { return "necrotic_plague_spread"; }
-  void execute()
+  void execute() override
   {
     if ( dot -> target -> is_sleeping() )
       return;
@@ -1277,7 +1277,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       hasted_ticks     = false;
     }
 
-    virtual double composite_crit() const
+    virtual double composite_crit() const override
     { return action_t::composite_crit() + player -> cache.attack_crit(); }
   };
 
@@ -1292,7 +1292,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       tick_may_crit    = true;
     }
 
-    virtual double composite_crit() const
+    virtual double composite_crit() const override
     { return action_t::composite_crit() + player -> cache.attack_crit(); }
   };
 
@@ -1306,7 +1306,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background = tick_may_crit = true;
     }
 
-    double composite_target_multiplier( player_t* target ) const
+    double composite_target_multiplier( player_t* target ) const override
     {
       double m = drw_spell_t::composite_target_multiplier( target );
 
@@ -1317,7 +1317,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       return m;
     }
 
-    void last_tick( dot_t* dot )
+    void last_tick( dot_t* dot ) override
     {
       drw_spell_t::last_tick( dot );
       td( dot -> target ) -> debuffs_necrotic_plague -> expire();
@@ -1325,13 +1325,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
     // Spread Necrotic Plagues use the source NP dot's duration on the target,
     // and never pandemic-extnd the dot on the target.
-    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const override
     { return triggered_duration; }
 
     // Necrotic Plague duration will not be refreshed if it is already ticking on
     // the target, only the stack count will go up. Only Festering Strike is
     // allowed to extend the duration of the Necrotic Plague dot.
-    void trigger_dot( action_state_t* s )
+    void trigger_dot( action_state_t* s ) override
     {
       dancing_rune_weapon_td_t* tdata = td( s -> target );
       if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
@@ -1344,7 +1344,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
             player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
     }
 
-    void tick( dot_t* dot )
+    void tick( dot_t* dot ) override
     {
       drw_spell_t::tick( dot );
 
@@ -1360,7 +1360,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       }
     }
 
-    double composite_crit() const
+    double composite_crit() const override
     { return action_t::composite_crit() + player -> cache.attack_crit(); }
   };
 
@@ -1398,7 +1398,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       attack_power_mod.direct = 0.319;
     }
 
-    virtual void impact( action_state_t* s )
+    virtual void impact( action_state_t* s ) override
     {
       drw_spell_t::impact( s );
 
@@ -1426,7 +1426,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       aoe = -1;
     }
 
-    virtual void impact( action_state_t* s )
+    virtual void impact( action_state_t* s ) override
     {
       drw_spell_t::impact( s );
 
@@ -1465,7 +1465,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       may_crit = false;
     }
 
-    virtual void execute()
+    virtual void execute() override
     {
       drw_spell_t::execute();
 
@@ -1496,7 +1496,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       weapon = &( p -> main_hand_weapon );
     }
 
-    virtual void impact( action_state_t* s )
+    virtual void impact( action_state_t* s ) override
     {
       drw_melee_attack_t::impact( s );
 
@@ -1527,7 +1527,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
         weapon_multiplier = 0;
       }
 
-      virtual void init()
+      virtual void init() override
       {
         drw_melee_attack_t::init();
         stats = p() -> get_stats( name(), this );
@@ -1547,14 +1547,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
       add_child( tick_action );
     }
 
-    void init()
+    void init() override
     {
       drw_melee_attack_t::init();
 
       snapshot_flags |= STATE_MUL_TA;
     }
 
-    void tick( dot_t* dot )
+    void tick( dot_t* dot ) override
     {
       int pct = 35;
       if ( o() -> perk.improved_soul_reaper -> ok() )
@@ -1622,7 +1622,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   dancing_rune_weapon_td_t* td( player_t* t ) const
   { return get_target_data( t ); }
 
-  virtual dancing_rune_weapon_td_t* get_target_data( player_t* target ) const
+  virtual dancing_rune_weapon_td_t* get_target_data( player_t* target ) const override
   {
     dancing_rune_weapon_td_t*& td = target_data[ target ];
     if ( ! td )
@@ -1630,7 +1630,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     return td;
   }
 
-  virtual void init_spells()
+  virtual void init_spells() override
   {
     pet_t::init_spells();
 
@@ -1656,13 +1656,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
     type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
 
-  void summon( timespan_t duration = timespan_t::zero() )
+  void summon( timespan_t duration = timespan_t::zero() ) override
   {
     pet_t::summon( duration );
     drw_melee -> schedule_execute();
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1697,7 +1697,7 @@ struct death_knight_pet_t : public pet_t
   death_knight_t* o()
   { return debug_cast<death_knight_t*>( owner ); }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1742,7 +1742,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     army_ghoul_pet_t* p() const
     { return static_cast<army_ghoul_pet_t*>( player ); }
 
-    void init()
+    void init() override
     {
       melee_attack_t::init();
 
@@ -1776,12 +1776,12 @@ struct army_ghoul_pet_t : public death_knight_pet_t
       special = true;
     }
 
-    virtual void execute()
+    virtual void execute() override
     {
       player -> main_hand_attack -> schedule_execute();
     }
 
-    virtual bool ready()
+    virtual bool ready() override
     {
       return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
@@ -1796,7 +1796,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     }
   };
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
@@ -1804,9 +1804,9 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 0.0415;
   }
 
-  virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
+  virtual resource_e primary_resource() const override { return RESOURCE_ENERGY; }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "auto_attack"    ) return new  army_ghoul_pet_auto_melee_attack_t( this );
     if ( name == "claw"           ) return new         army_ghoul_pet_claw_t( this );
@@ -1814,7 +1814,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  timespan_t available() const
+  timespan_t available() const override
   {
     double energy = resources.current[ RESOURCE_ENERGY ];
 
@@ -1846,19 +1846,19 @@ struct gargoyle_pet_t : public death_knight_pet_t
       dual = true;
     }
 
-    result_e calculate_result( action_state_t* /* s */ ) const
+    result_e calculate_result( action_state_t* /* s */ ) const override
     { return RESULT_HIT; }
 
-    block_result_e calculate_block_result( action_state_t* ) const
+    block_result_e calculate_block_result( action_state_t* ) const override
     { return BLOCK_RESULT_UNBLOCKED; }
 
-    void execute()
+    void execute() override
     {
       action_t::execute();
       executed = true;
     }
 
-    void cancel()
+    void cancel() override
     {
       action_t::cancel();
       executed = false;
@@ -1866,10 +1866,10 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     // ~3 seconds seems to be the optimal initial delay
     // FIXME: Verify if behavior still exists on 5.3 PTR
-    timespan_t execute_time() const
+    timespan_t execute_time() const override
     { return timespan_t::from_seconds( const_cast<travel_t*>( this ) -> rng().gauss( 2.9, 0.2 ) ); }
 
-    bool ready()
+    bool ready() override
     { return ! executed; }
   };
 
@@ -1884,7 +1884,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       school             = SCHOOL_SHADOWSTORM;
     }
 
-    double composite_da_multiplier( const action_state_t* state ) const
+    double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = spell_t::composite_da_multiplier( state );
 
@@ -1900,7 +1900,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t( sim, owner, "gargoyle", true )
   { regen_type = REGEN_DISABLED; }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     action_list_str = "travel/gargoyle_strike";
 
@@ -1909,7 +1909,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   }
 
   virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
+                                   const std::string& options_str ) override
   {
     if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this );
     if ( name == "travel"          ) return new travel_t( this );
@@ -1948,7 +1948,7 @@ struct ghoul_pet_t : public death_knight_pet_t
       may_crit = true;
     }
 
-    virtual double action_multiplier() const
+    virtual double action_multiplier() const override
     {
       double am = melee_attack_t::action_multiplier();
 
@@ -1996,12 +1996,12 @@ struct ghoul_pet_t : public death_knight_pet_t
       special = true;
     }
 
-    virtual void execute()
+    virtual void execute() override
     {
       player -> main_hand_attack -> schedule_execute();
     }
 
-    virtual bool ready()
+    virtual bool ready() override
     {
       return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
@@ -2024,7 +2024,7 @@ struct ghoul_pet_t : public death_knight_pet_t
       special = true;
     }
 
-    bool ready()
+    bool ready() override
     {
       ghoul_pet_t* p = debug_cast<ghoul_pet_t*>( player );
 
@@ -2044,7 +2044,7 @@ struct ghoul_pet_t : public death_knight_pet_t
       special = true;
     }
 
-    virtual bool ready()
+    virtual bool ready() override
     {
       death_knight_t* dk = debug_cast<ghoul_pet_t*>( player ) -> o();
 
@@ -2055,7 +2055,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     }
   };
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
@@ -2063,12 +2063,12 @@ struct ghoul_pet_t : public death_knight_pet_t
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual resource_e primary_resource() const
+  virtual resource_e primary_resource() const override
   {
     return RESOURCE_ENERGY;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "auto_attack"    ) return new    ghoul_pet_auto_melee_attack_t( this );
     if ( name == "claw"           ) return new           ghoul_pet_claw_t( this );
@@ -2078,7 +2078,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  void create_buffs()
+  void create_buffs() override
   {
     pet_t::create_buffs();
 
@@ -2087,7 +2087,7 @@ struct ghoul_pet_t : public death_knight_pet_t
                          .chance( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
   }
 
-  timespan_t available() const
+  timespan_t available() const override
   {
     double energy = resources.current[ RESOURCE_ENERGY ];
 
@@ -2101,7 +2101,7 @@ struct ghoul_pet_t : public death_knight_pet_t
            );
   }
 
-  double composite_melee_speed() const
+  double composite_melee_speed() const override
   {
     double s = pet_t::composite_melee_speed();
 
@@ -2113,7 +2113,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     return s;
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -2146,7 +2146,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
       weapon   = &( p -> main_hand_weapon );
     }
 
-    void init()
+    void init() override
     {
       melee_attack_t::init();
       fallen_zandalari_t* p = debug_cast< fallen_zandalari_t* >( player );
@@ -2177,10 +2177,10 @@ struct fallen_zandalari_t : public death_knight_pet_t
       trigger_gcd = timespan_t::zero();
     }
 
-    virtual void execute()
+    virtual void execute() override
     { player -> main_hand_attack -> schedule_execute(); }
 
-    virtual bool ready()
+    virtual bool ready() override
     { return( player -> main_hand_attack -> execute_event == nullptr ); }
   };
 
@@ -2193,7 +2193,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
     }
   };
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
@@ -2207,10 +2207,10 @@ struct fallen_zandalari_t : public death_knight_pet_t
     action_list_str = "auto_attack/strike";
   }
 
-  virtual resource_e primary_resource() const
+  virtual resource_e primary_resource() const override
   { return RESOURCE_ENERGY; }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "auto_attack" ) return new zandalari_auto_attack_t( this );
     if ( name == "strike"        ) return new    zandalari_strike_t( this );
@@ -2218,7 +2218,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
     return death_knight_pet_t::create_action( name, options_str );
   }
 
-  timespan_t available() const
+  timespan_t available() const override
   {
     double energy = resources.current[ RESOURCE_ENERGY ];
 
@@ -2247,7 +2247,7 @@ struct shadow_of_death_t : public buff_t
     current_health_gain( 0 )
   { }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     double new_multiplier = data().effectN( 1 ).percent();
 
@@ -2281,7 +2281,7 @@ struct shadow_of_death_t : public buff_t
     current_value = new_multiplier;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -2289,7 +2289,7 @@ struct shadow_of_death_t : public buff_t
     current_health_gain = 0;
   }
 
-  void reset()
+  void reset() override
   {
     buff_t::reset();
 
@@ -2541,11 +2541,11 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     }
   }
 
-  virtual void   consume_resource();
-  virtual void   execute();
-  virtual void   impact( action_state_t* state );
+  virtual void   consume_resource() override;
+  virtual void   execute() override;
+  virtual void   impact( action_state_t* state ) override;
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = base_t::composite_da_multiplier( state );
 
@@ -2558,7 +2558,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     return m;
   }
 
-  virtual bool   ready();
+  virtual bool   ready() override;
 };
 
 // ==========================================================================
@@ -2579,18 +2579,18 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
     may_crit = true;
   }
 
-  virtual void   consume_resource();
-  virtual void   execute();
-  virtual void   impact( action_state_t* state );
+  virtual void   consume_resource() override;
+  virtual void   execute() override;
+  virtual void   impact( action_state_t* state ) override;
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = base_t::composite_da_multiplier( state );
 
     return m;
   }
 
-  virtual bool   ready();
+  virtual bool   ready() override;
 };
 
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
@@ -2748,14 +2748,14 @@ struct melee_t : public death_knight_melee_attack_t
       base_hit -= 0.19;
   }
 
- void reset()
+ void reset() override
   {
     death_knight_melee_attack_t::reset();
 
     first = true;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = death_knight_melee_attack_t::execute_time();
 
@@ -2765,7 +2765,7 @@ struct melee_t : public death_knight_melee_attack_t
       return t;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( first )
       first = false;
@@ -2774,7 +2774,7 @@ struct melee_t : public death_knight_melee_attack_t
   }
 
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
 
@@ -2858,7 +2858,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     player -> main_hand_attack -> schedule_execute();
     if ( player -> off_hand_attack )
@@ -2867,7 +2867,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> is_moving() )
       return false;
@@ -2891,14 +2891,14 @@ struct army_of_the_dead_t : public death_knight_spell_t
     harmful     = false;
   }
 
-  virtual void schedule_execute( action_state_t* s )
+  virtual void schedule_execute( action_state_t* s ) override
   {
     death_knight_spell_t::schedule_execute( s );
 
     p() -> buffs.army_of_the_dead -> trigger( 1, p() -> cache.dodge() + p() -> cache.parry() );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -2929,7 +2929,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> pets.army_ghoul[ 0 ] && ! p() -> pets.army_ghoul[ 0 ] -> is_sleeping() )
       return false;
@@ -2972,10 +2972,10 @@ struct disease_t : public death_knight_spell_t
   }
 
   // WODO-TOD: Crit suppression hijinks?
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
-  void assess_damage( dmg_e type, action_state_t* s )
+  void assess_damage( dmg_e type, action_state_t* s ) override
   {
     death_knight_spell_t::assess_damage( type, s );
 
@@ -3015,7 +3015,7 @@ struct necrotic_plague_t : public disease_t
     disease_t( p, "necrotic_plague", 155159 )
   { }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
 
@@ -3026,7 +3026,7 @@ struct necrotic_plague_t : public disease_t
     return m;
   }
 
-  void last_tick( dot_t* dot )
+  void last_tick( dot_t* dot ) override
   {
     death_knight_spell_t::last_tick( dot );
     td( dot -> target ) -> debuffs_necrotic_plague -> expire();
@@ -3034,13 +3034,13 @@ struct necrotic_plague_t : public disease_t
 
   // Spread Necrotic Plagues use the source NP dot's duration on the target,
   // and never pandemic-extnd the dot on the target.
-  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const override
   { return triggered_duration; }
 
   // Necrotic Plague duration will not be refreshed if it is already ticking on
   // the target, only the stack count will go up. Only Festering Strike is
   // allowed to extend the duration of the Necrotic Plague dot.
-  void trigger_dot( action_state_t* s )
+  void trigger_dot( action_state_t* s ) override
   {
     death_knight_td_t* tdata = td( s -> target );
     if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
@@ -3053,7 +3053,7 @@ struct necrotic_plague_t : public disease_t
           player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
   }
 
-  void tick( dot_t* dot )
+  void tick( dot_t* dot ) override
   {
     death_knight_spell_t::tick( dot );
 
@@ -3085,7 +3085,7 @@ struct wandering_plague_t : public death_knight_spell_t
     aoe = -1;
   }
 
-  void init()
+  void init() override
   {
     death_knight_spell_t::init();
 
@@ -3117,7 +3117,7 @@ struct frozen_runeblade_attack_t : public melee_attack_t
     weapon = w;
   }
 
-  bool usable_moving() const
+  bool usable_moving() const override
   { return true; }
 };
 
@@ -3147,7 +3147,7 @@ struct frozen_runeblade_driver_t : public death_knight_spell_t
     }
   }
 
-  void tick( dot_t* dot )
+  void tick( dot_t* dot ) override
   {
     death_knight_spell_t::tick( dot );
 
@@ -3177,7 +3177,7 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     weapon_multiplier = 0;
   }
 
-  void execute()
+  void execute() override
   {
     death_knight_melee_attack_t::execute();
 
@@ -3186,7 +3186,7 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
       p() -> buffs.shadow_infusion -> trigger( p() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 1 ).base_value() );
   }
 
-  void multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
+  void multistrike_direct( const action_state_t* source_state, action_state_t* ms_state ) override
   {
     death_knight_melee_attack_t::multistrike_direct( source_state, ms_state );
 
@@ -3208,7 +3208,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     tick_action = new soul_reaper_dot_t( p );
   }
 
-  double false_positive_pct() const
+  double false_positive_pct() const override
   {
     if ( target -> health_percentage() > 40 )
       return 0;
@@ -3216,7 +3216,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       return death_knight_melee_attack_t::false_positive_pct();
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
     if ( player -> sets.has_set_bonus( SET_MELEE, T15, B4 ) && p() -> buffs.killing_machine -> check() )
@@ -3224,21 +3224,21 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     return cc;
   }
 
-  void init()
+  void init() override
   {
     death_knight_melee_attack_t::init();
 
     snapshot_flags |= STATE_MUL_TA;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
 
     p() -> trigger_necrosis( state );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_melee_attack_t::execute();
     if ( player -> sets.has_set_bonus( SET_MELEE, T15, B4 ) && p() -> buffs.killing_machine -> check() )
@@ -3261,7 +3261,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     }
   }
 
-  void tick( dot_t* dot )
+  void tick( dot_t* dot ) override
   {
     int pct = p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) ? p() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() : 35;
     if ( p() -> perk.improved_soul_reaper -> ok() )
@@ -3297,7 +3297,7 @@ struct death_siphon_t : public death_knight_spell_t
 
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
@@ -3328,7 +3328,7 @@ struct conversion_heal_t : public death_knight_heal_t
     base_pct_heal = data().effectN( 1 ).percent();
   }
 
-  void execute()
+  void execute() override
   {
     death_knight_heal_t::execute();
 
@@ -3366,7 +3366,7 @@ struct conversion_t : public death_knight_heal_t
     target = p;
   }
 
-  void execute()
+  void execute() override
   {
     dot_t* d = get_dot( target );
 
@@ -3381,7 +3381,7 @@ struct conversion_t : public death_knight_heal_t
     }
   }
 
-  void last_tick( dot_t* dot )
+  void last_tick( dot_t* dot ) override
   {
     death_knight_heal_t::last_tick( dot );
     p() -> active_spells.conversion = nullptr;
@@ -3404,7 +3404,7 @@ struct blood_tap_t : public death_knight_spell_t
     consume_charges = ( int  ) p -> find_spell( 114851 ) -> effectN( 1 ).base_value();
   }
 
-  void execute()
+  void execute() override
   {
     // Blood tap prefers to refresh runes that are least valuable to you
     int selected_rune = random_depleted_rune( p() );
@@ -3441,7 +3441,7 @@ struct blood_tap_t : public death_knight_spell_t
     death_knight_spell_t::execute();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buffs.blood_charge -> check() < consume_charges )
       return false;
@@ -3476,7 +3476,7 @@ struct bone_shield_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     size_t max_stacks = p() -> buffs.bone_shield -> data().initial_stacks() +
                         p() -> buffs.bone_wall -> stack();
@@ -3520,7 +3520,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -3552,7 +3552,7 @@ struct dark_command_t: public death_knight_spell_t
     use_off_gcd = true;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -3579,7 +3579,7 @@ struct dark_transformation_t : public death_knight_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -3591,7 +3591,7 @@ struct dark_transformation_t : public death_knight_spell_t
     p() -> pets.ghoul_pet -> crazed_monstrosity -> trigger();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> buffs.shadow_infusion -> check() != p() -> buffs.shadow_infusion -> max_stack() )
       return false;
@@ -3624,7 +3624,7 @@ struct death_and_decay_t : public death_knight_spell_t
     ground_aoe = true;
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return;
@@ -3632,14 +3632,14 @@ struct death_and_decay_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return 0;
     return death_knight_spell_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -3647,7 +3647,7 @@ struct death_and_decay_t : public death_knight_spell_t
       p() -> buffs.crimson_scourge -> expire();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     if ( s -> target -> debuffs.flying -> check() )
     {
@@ -3659,7 +3659,7 @@ struct death_and_decay_t : public death_knight_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! spell_t::ready() )
       return false;
@@ -3700,10 +3700,10 @@ struct defile_t : public death_knight_spell_t
 
   // Defile very likely counts as direct damage, as it procs certain trinkets that are flagged for
   // "aoe harmful spell", but not "periodic".
-  dmg_e amount_type( const action_state_t*, bool ) const
+  dmg_e amount_type( const action_state_t*, bool ) const override
   { return DMG_DIRECT; }
 
-  double composite_ta_multiplier( const action_state_t* state ) const
+  double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_spell_t::composite_ta_multiplier( state );
 
@@ -3717,7 +3717,7 @@ struct defile_t : public death_knight_spell_t
     return m;
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return;
@@ -3725,14 +3725,14 @@ struct defile_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return 0;
     return death_knight_spell_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -3740,14 +3740,14 @@ struct defile_t : public death_knight_spell_t
       p() -> buffs.crimson_scourge -> expire();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  virtual void update_ready( timespan_t cd_duration ) override
   {
     death_knight_spell_t::update_ready( cd_duration );
 
     dnd_cd -> start( data().cooldown() );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     if ( s -> target -> debuffs.flying -> check() )
     {
@@ -3759,7 +3759,7 @@ struct defile_t : public death_knight_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! spell_t::ready() )
       return false;
@@ -3788,10 +3788,10 @@ struct unholy_coil_t : public death_knight_heal_t
     heal_multiplier = data -> effectN( 1 ).average( p -> unholy_coil -> item ) / 100.0;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   { return heal_multiplier; }
 
-  void init()
+  void init() override
   {
     death_knight_heal_t::init();
 
@@ -3821,7 +3821,7 @@ struct death_coil_t : public death_knight_spell_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buffs.sudden_doom -> check() )
       return 0;
@@ -3829,7 +3829,7 @@ struct death_coil_t : public death_knight_spell_t
     return death_knight_spell_t::cost();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
@@ -3840,7 +3840,7 @@ struct death_coil_t : public death_knight_spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -3886,7 +3886,7 @@ struct blood_shield_buff_t : public absorb_buff_t
 
   // Clamp shield value so that if T17 4PC is used, we have at least 5% of
   // current max health of absorb left, if Vampiric Blood is up
-  void absorb_used( double )
+  void absorb_used( double ) override
   {
     death_knight_t* p = debug_cast<death_knight_t*>( player );
     if ( p -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B4 ) && p -> buffs.vampiric_blood -> up() )
@@ -3925,10 +3925,10 @@ struct blood_shield_t : public absorb_t
   }
 
   // Self only so we can do this in a simple way
-  absorb_buff_t* create_buff( const action_state_t* )
+  absorb_buff_t* create_buff( const action_state_t* ) override
   { return debug_cast<death_knight_t*>( player ) -> buffs.blood_shield; }
 
-  void init()
+  void init() override
   {
     absorb_t::init();
 
@@ -3950,7 +3950,7 @@ struct death_strike_heal_t : public death_knight_heal_t
     target     = p;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = death_knight_heal_t::action_multiplier();
 
@@ -3959,14 +3959,14 @@ struct death_strike_heal_t : public death_knight_heal_t
     return m;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     death_knight_heal_t::impact( state );
 
     trigger_blood_shield( state );
   }
 
-  void consume_resource()
+  void consume_resource() override
   {
     death_knight_heal_t::consume_resource();
 
@@ -4033,7 +4033,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     if ( p() -> buffs.deathbringer -> check() )
       return;
@@ -4041,7 +4041,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::consume_resource();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buffs.deathbringer -> check() )
       return 0;
@@ -4049,7 +4049,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     return death_knight_melee_attack_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_melee_attack_t::execute();
 
@@ -4075,7 +4075,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     p() -> buffs.deathbringer -> decrement();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! melee_attack_t::ready() )
       return false;
@@ -4099,7 +4099,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -4128,7 +4128,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
       convert_runes = 1.0;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
 
@@ -4163,7 +4163,7 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -4197,7 +4197,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
 
@@ -4207,7 +4207,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     return c;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_melee_attack_t::execute();
 
@@ -4234,7 +4234,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -4257,7 +4257,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();  // 10 RP gain happens in here
 
@@ -4281,7 +4281,7 @@ struct howling_blast_t : public death_knight_spell_t
     assert( p -> active_spells.frost_fever );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = death_knight_spell_t::action_multiplier();
 
@@ -4291,7 +4291,7 @@ struct howling_blast_t : public death_knight_spell_t
     return m;
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     if ( p() -> buffs.rime -> check() )
       return;
@@ -4299,7 +4299,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     // Rime also prevents getting RP because there are no runes used!
     if ( p() -> buffs.rime -> check() )
@@ -4307,14 +4307,14 @@ struct howling_blast_t : public death_knight_spell_t
     return death_knight_spell_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
     p() -> buffs.rime -> decrement();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
@@ -4327,7 +4327,7 @@ struct howling_blast_t : public death_knight_spell_t
       td( s -> target ) -> debuffs_biting_cold -> trigger();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> buffs.rime -> check() )
     {
@@ -4384,7 +4384,7 @@ struct chains_of_ice_t : public death_knight_spell_t
     }
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
@@ -4408,7 +4408,7 @@ struct icy_touch_t : public death_knight_spell_t
       convert_runes = 1.0;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = death_knight_spell_t::action_multiplier();
 
@@ -4418,7 +4418,7 @@ struct icy_touch_t : public death_knight_spell_t
     return m;
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     // We only consume resources when rime is not up
     if ( p() -> buffs.rime -> check() )
@@ -4427,7 +4427,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     // Rime also prevents getting RP because there are no runes used!
     if ( p() -> buffs.rime -> check() )
@@ -4435,7 +4435,7 @@ struct icy_touch_t : public death_knight_spell_t
     return death_knight_spell_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -4445,7 +4445,7 @@ struct icy_touch_t : public death_knight_spell_t
     p() -> buffs.rime -> decrement();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
@@ -4453,7 +4453,7 @@ struct icy_touch_t : public death_knight_spell_t
       p() -> apply_diseases( s, DISEASE_FROST_FEVER );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> buffs.rime -> check() )
     {
@@ -4480,7 +4480,7 @@ struct mind_freeze_t : public death_knight_spell_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
@@ -4504,7 +4504,7 @@ struct frozen_obliteration_t : public death_knight_melee_attack_t
     may_crit = false;
   }
 
-  void init()
+  void init() override
   {
     death_knight_melee_attack_t::init();
 
@@ -4546,7 +4546,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -4555,7 +4555,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     return cc;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
 
@@ -4597,7 +4597,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_melee_attack_t::execute();
 
@@ -4620,7 +4620,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     p() -> trigger_t18_2pc_frost( execute_state );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
 
@@ -4653,7 +4653,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -4678,7 +4678,7 @@ struct outbreak_t : public death_knight_spell_t
     base_costs[ RESOURCE_RUNIC_POWER ] += p -> glyph.outbreak -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -4750,7 +4750,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     // Select suitable diseases, with and without Scent of Blood. With Scent of
     // Blood, it is used to decide if diseases are going to be refreshed,
@@ -4761,7 +4761,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
     death_knight_spell_t::execute();
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
@@ -4857,7 +4857,7 @@ struct blood_boil_t : public death_knight_spell_t
     aoe = -1;
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return;
@@ -4865,14 +4865,14 @@ struct blood_boil_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return 0;
     return death_knight_spell_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -4897,14 +4897,14 @@ struct blood_boil_t : public death_knight_spell_t
     }
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
     p() -> trigger_necrosis( state );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! death_knight_spell_t::ready() )
       return false;
@@ -4934,7 +4934,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -4946,7 +4946,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
     p() -> buffs.frozen_runeblade -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! spell_t::ready() )
       return false;
@@ -4987,7 +4987,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_melee_attack_t::execute();
 
@@ -4998,7 +4998,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
       oh_attack -> execute();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
 
@@ -5030,18 +5030,18 @@ struct presence_t : public death_knight_spell_t
     harmful     = false;
   }
 
-  virtual resource_e current_resource() const
+  virtual resource_e current_resource() const override
   {
     return RESOURCE_RUNIC_POWER;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     // Presence changes consume all runic power
     return p() -> resources.current [ RESOURCE_RUNIC_POWER ] * ( 1.0 - p() -> glyph.shifting_presences -> effectN( 1 ).percent() );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -5068,7 +5068,7 @@ struct presence_t : public death_knight_spell_t
       p() -> resource_gain( RESOURCE_HEALTH, p() -> resources.max[ RESOURCE_HEALTH ] - p() -> resources.current[ RESOURCE_HEALTH ] );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> active_presence == switch_to_presence )
       return false;
@@ -5127,7 +5127,7 @@ struct deaths_advance_t: public death_knight_spell_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -5145,7 +5145,7 @@ struct lichborne_t: public death_knight_spell_t
     parse_options( options_str );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -5165,14 +5165,14 @@ struct raise_dead_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
     p() -> pets.ghoul_pet -> summon( timespan_t::zero() );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> is_sleeping() )
       return false;
@@ -5197,7 +5197,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       school = SCHOOL_SHADOW;
     }
 
-    void impact( action_state_t* state )
+    void impact( action_state_t* state ) override
     {
       death_knight_melee_attack_t::impact( state );
 
@@ -5220,7 +5220,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     add_child( scourge_strike_shadow );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
 
@@ -5247,7 +5247,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -5270,7 +5270,7 @@ struct unholy_blight_tick_t : public death_knight_spell_t
     may_miss   = false;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
@@ -5305,7 +5305,7 @@ struct plague_leech_t : public death_knight_spell_t
     parse_options( options_str );
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
@@ -5330,7 +5330,7 @@ struct plague_leech_t : public death_knight_spell_t
     td( state -> target ) -> dots_necrotic_plague -> cancel();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ( ! p() -> talent.necrotic_plague -> ok() && (
          ( ! td( target ) -> dots_frost_fever -> is_ticking() || ! td( target ) -> dots_blood_plague -> is_ticking() ) ) ) ||
@@ -5384,7 +5384,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     background = true;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( s -> target == target )
       death_knight_spell_t::impact( s );
@@ -5429,22 +5429,22 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 
   // Breath of Sindragosa very likely counts as direct damage, as it procs certain trinkets that are
   // flagged for "aoe harmful spell", but not "periodic".
-  dmg_e amount_type( const action_state_t*, bool ) const
+  dmg_e amount_type( const action_state_t*, bool ) const override
   { return DMG_DIRECT; }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return player -> sim -> expected_iteration_time * 2;
   }
 
-  void cancel()
+  void cancel() override
   {
     death_knight_spell_t::cancel();
     if ( dot_t* d = get_dot( target ) )
       d -> cancel();
   }
 
-  bool consume_cost_per_second( timespan_t tick_time )
+  bool consume_cost_per_second( timespan_t tick_time ) override
   {
     bool ret = death_knight_spell_t::consume_cost_per_second( tick_time );
 
@@ -5456,7 +5456,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     return ret;
   }
 
-  void execute()
+  void execute() override
   {
     dot_t* d = get_dot( target );
 
@@ -5468,7 +5468,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     }
   }
 
-  void init()
+  void init() override
   {
     death_knight_spell_t::init();
 
@@ -5486,14 +5486,14 @@ struct antimagic_shell_buff_t : public buff_t
                               .cd( timespan_t::zero() ) )
   { }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
     p -> antimagic_shell_absorbed = 0.0;
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
     death_knight_t* p = debug_cast< death_knight_t* >( player );
@@ -5553,7 +5553,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     if ( damage > 0 )
     {
@@ -5595,7 +5595,7 @@ struct vampiric_blood_t : public death_knight_spell_t
     base_dd_min = base_dd_max = 0;
   }
 
-  void execute()
+  void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -5619,7 +5619,7 @@ struct icebound_fortitude_t : public death_knight_spell_t
       base_costs[ RESOURCE_RUNIC_POWER ] = 0;
   }
 
-  void execute()
+  void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -5644,7 +5644,7 @@ struct rune_tap_t : public death_knight_spell_t
     use_off_gcd = true;
   }
 
-  void execute()
+  void execute() override
   {
     death_knight_spell_t::execute();
     ability_cooldown -> start();
@@ -5652,7 +5652,7 @@ struct rune_tap_t : public death_knight_spell_t
     p() -> buffs.rune_tap -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ability_cooldown -> up() )
       return death_knight_spell_t::ready();
@@ -5710,7 +5710,7 @@ struct disease_expr_t : public expr_t
       default_value = std::numeric_limits<double>::min();
   }
 
-  double evaluate()
+  double evaluate() override
   {
     double ret = default_value;
 
@@ -5815,7 +5815,7 @@ struct vampiric_blood_buff_t : public buff_t
     health_gain ( 0 )
   { }
 
-  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
   {
     buff_t::execute( stacks, value, duration );
 
@@ -5828,7 +5828,7 @@ struct vampiric_blood_buff_t : public buff_t
     }
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -5850,14 +5850,14 @@ struct frozen_runeblade_buff_t : public buff_t
     stack_count( 0 )
   { }
 
-  void execute( int stacks, double value, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
 
     stack_count = current_stack;
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     // Stack_count - 1 is used, because Simulationcraft uses the initial stack
     // to "enable" the bonus when Pillar of Frost is used.
@@ -5873,7 +5873,7 @@ struct frozen_runeblade_buff_t : public buff_t
     stack_count = 0;
   }
 
-  void reset()
+  void reset() override
   {
     buff_t::reset();
     stack_count = 0;
@@ -5888,7 +5888,7 @@ struct killing_machine_buff_t : public buff_t
                            .chance( p -> find_specialization_spell( "Killing Machine" ) -> proc_chance() ) )
   { }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     if ( remaining_duration == timespan_t::zero() )
     {
@@ -5926,7 +5926,7 @@ void runeforge::razorice_attack( special_effect_t& effect )
     }
 
     // No double dipping to Frost Vulnerability
-    double composite_target_multiplier( player_t* t ) const
+    double composite_target_multiplier( player_t* t ) const override
     {
       double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
@@ -5950,7 +5950,7 @@ void runeforge::razorice_debuff( special_effect_t& effect )
      dbc_proc_callback_t( effect.item, effect )
     { }
 
-    void execute( action_t* a, action_state_t* state )
+    void execute( action_t* a, action_state_t* state ) override
     {
       debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> trigger();
       if ( a -> sim -> current_time() < timespan_t::from_seconds( 0.01 ) )
@@ -5985,7 +5985,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
       }
 
       // Procs by default target the target of the action that procced them.
-      void execute()
+      void execute() override
       {
         target = player;
 
@@ -6133,7 +6133,7 @@ static expr_t* create_ready_in_expression( death_knight_t* player,
       action( debug_cast<death_knight_melee_attack_t*>( a ) )
     { }
 
-    double evaluate()
+    double evaluate() override
     {
       return ready_in( action -> p(),
                        action -> cost_blood,
@@ -6173,7 +6173,7 @@ static expr_t* create_rune_expression( death_knight_t* player,
       myaction( myaction_ )
     { }
 
-    virtual double evaluate()
+    virtual double evaluate() override
     {
       switch ( myaction )
       {
@@ -7462,7 +7462,7 @@ struct vottw_regen_event_t : public event_t
   }
   virtual const char* name() const override
   { return "veteran_of_the_third_war"; }
-  void execute()
+  void execute() override
   {
     dk -> resource_gain( RESOURCE_RUNIC_POWER,
                          dk -> spec.veteran_of_the_third_war -> effectN( 8 ).base_value(),
@@ -8562,14 +8562,14 @@ struct death_knight_module_t : public module_t
 {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new death_knight_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
     return p;
   }
 
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     unique_gear::register_special_effect(  50401,    runeforge::razorice_attack );
     unique_gear::register_special_effect(  51714,    runeforge::razorice_debuff );
@@ -8583,14 +8583,14 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 184898,           frozen_obliteration );
   }
 
-  virtual void register_hotfixes() const
+  virtual void register_hotfixes() const override
   {
   }
 
-  virtual void init( player_t* ) const {}
-  virtual bool valid() const { return true; }
-  virtual void combat_begin( sim_t* ) const {}
-  virtual void combat_end( sim_t* ) const {}
+  virtual void init( player_t* ) const override {}
+  virtual bool valid() const override { return true; }
+  virtual void combat_begin( sim_t* ) const override {}
+  virtual void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

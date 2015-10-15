@@ -623,7 +623,7 @@ expr_t* heal_t::create_expression( const std::string& name )
     struct active_allies_expr_t : public heal_expr_t
     {
       active_allies_expr_t( heal_t& h ) : heal_expr_t( "active_allies", h ) {}
-      virtual double evaluate() { return heal.num_targets(); }
+      virtual double evaluate() override { return heal.num_targets(); }
     };
     return new active_allies_expr_t( *this );
   }

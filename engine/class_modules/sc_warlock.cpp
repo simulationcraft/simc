@@ -378,7 +378,7 @@ public:
     }
     virtual const char* name() const override
     { return  "demonic_calling"; }
-    virtual void execute()
+    virtual void execute() override
     {
       warlock_t* p = static_cast<warlock_t*>( player() );
       p -> demonic_calling_event = new ( sim() ) demonic_calling_event_t( p,
@@ -402,40 +402,40 @@ public:
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
   // Character Definition
-  virtual void      init_spells();
-  virtual void      init_base_stats();
-  virtual void      init_scaling();
-  virtual void      create_buffs();
-  virtual void      init_gains();
-  virtual void      init_procs();
-  virtual void      init_rng();
-  virtual void      init_action_list();
-  virtual void      init_resources( bool force );
-  virtual void      reset();
-  virtual void      create_options();
-  virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
-  virtual void      create_pets();
-  virtual std::string      create_profile( save_e = SAVE_ALL );
-  virtual void      copy_from( player_t* source );
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_e    primary_role() const     { return ROLE_SPELL; }
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
-  virtual void      invalidate_cache( cache_e );
-  virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_haste() const;
-  virtual double    composite_melee_crit() const;
-  virtual double    composite_mastery() const;
-  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr );
-  virtual double    mana_regen_per_second() const;
-  virtual double    composite_armor() const;
+  virtual void      init_spells() override;
+  virtual void      init_base_stats() override;
+  virtual void      init_scaling() override;
+  virtual void      create_buffs() override;
+  virtual void      init_gains() override;
+  virtual void      init_procs() override;
+  virtual void      init_rng() override;
+  virtual void      init_action_list() override;
+  virtual void      init_resources( bool force ) override;
+  virtual void      reset() override;
+  virtual void      create_options() override;
+  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
+  virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  virtual void      create_pets() override;
+  virtual std::string      create_profile( save_e = SAVE_ALL ) override;
+  virtual void      copy_from( player_t* source ) override;
+  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
+  virtual role_e    primary_role() const override     { return ROLE_SPELL; }
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual void      invalidate_cache( cache_e ) override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_mastery() const override;
+  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+  virtual double    mana_regen_per_second() const override;
+  virtual double    composite_armor() const override;
 
-  virtual void      halt();
-  virtual void      combat_begin();
-  virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
+  virtual void      halt() override;
+  virtual void      combat_begin() override;
+  virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
 
   double emberstorm_e3_from_e1() const
   {
@@ -444,7 +444,7 @@ public:
 
   target_specific_t<warlock_td_t> target_data;
 
-  virtual warlock_td_t* get_target_data( player_t* target ) const
+  virtual warlock_td_t* get_target_data( player_t* target ) const override
   {
     warlock_td_t*& td = target_data[target];
     if ( ! td )
@@ -554,14 +554,14 @@ namespace pets {
     struct travel_t: public action_t
     {
       travel_t( player_t* player ): action_t( ACTION_OTHER, "travel", player ) {}
-      void execute() { player -> current.distance = 1; }
-      timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
-      bool ready() { return ( player -> current.distance > 1 ); }
-      bool usable_moving() const { return true; }
+      void execute() override { player -> current.distance = 1; }
+      timespan_t execute_time() const override { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+      bool ready() override { return ( player -> current.distance > 1 ); }
+      bool usable_moving() const override { return true; }
     };
 
     action_t* create_action( const std::string& name,
-      const std::string& options_str )
+      const std::string& options_str ) override
     {
       if ( name == "travel" ) return new travel_t( this );
 
@@ -663,7 +663,7 @@ struct warlock_pet_melee_t: public melee_attack_t
       oh = new off_hand_swing( p );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( ! player -> executing && ! player -> channeling )
     {
@@ -735,7 +735,7 @@ struct firebolt_t: public warlock_pet_spell_t
       min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = warlock_pet_spell_t::execute_time();
 
@@ -758,7 +758,7 @@ struct legion_strike_t: public warlock_pet_melee_attack_t
     weapon           = &( p -> main_hand_weapon );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> special_action -> get_dot() -> is_ticking() ) return false;
 
@@ -792,21 +792,21 @@ struct felstorm_t: public warlock_pet_melee_attack_t
     tick_action = new felstorm_tick_t( p, data() );
   }
 
-  virtual void cancel()
+  virtual void cancel() override
   {
     warlock_pet_melee_attack_t::cancel();
 
     get_dot() -> cancel();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_pet_melee_attack_t::execute();
 
     p() -> melee_attack -> cancel();
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     warlock_pet_melee_attack_t::last_tick( d );
 
@@ -856,7 +856,7 @@ struct felbolt_t: public warlock_pet_spell_t
       min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = warlock_pet_spell_t::execute_time();
 
@@ -876,7 +876,7 @@ struct mortal_cleave_t: public warlock_pet_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> special_action -> get_dot() -> is_ticking() ) return false;
 
@@ -910,21 +910,21 @@ struct wrathstorm_t: public warlock_pet_melee_attack_t
     tick_action = new wrathstorm_tick_t( p, data() );
   }
 
-  virtual void cancel()
+  virtual void cancel() override
   {
     warlock_pet_melee_attack_t::cancel();
 
     get_dot() -> cancel();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_pet_melee_attack_t::execute();
 
     p() -> melee_attack -> cancel();
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     warlock_pet_melee_attack_t::last_tick( d );
 
@@ -981,7 +981,7 @@ struct immolation_t: public warlock_pet_spell_t
     tick_action = new immolation_tick_t( p, data() );
   }
 
-  void init()
+  void init() override
   {
     warlock_pet_spell_t::init();
 
@@ -989,12 +989,12 @@ struct immolation_t: public warlock_pet_spell_t
     snapshot_flags |= STATE_HASTE;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return player -> sim -> expected_iteration_time * 2;
   }
 
-  virtual void cancel()
+  virtual void cancel() override
   {
     dot_t* dot = find_dot( target );
     if ( dot && dot -> is_ticking() )
@@ -1012,7 +1012,7 @@ struct doom_bolt_t: public warlock_pet_spell_t
   {
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
@@ -1041,7 +1041,7 @@ struct wild_firebolt_t: public warlock_pet_spell_t
   {
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_pet_spell_t::impact( s );
 
@@ -1051,7 +1051,7 @@ struct wild_firebolt_t: public warlock_pet_spell_t
          p() -> o() -> buffs.molten_core -> trigger();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_pet_spell_t::execute();
 
@@ -1062,7 +1062,7 @@ struct wild_firebolt_t: public warlock_pet_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     return spell_t::ready();
   }
@@ -1233,7 +1233,7 @@ struct imp_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 1.0;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "firebolt" ) return new actions::firebolt_t( this );
 
@@ -1250,7 +1250,7 @@ struct felguard_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 1.0;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
@@ -1258,7 +1258,7 @@ struct felguard_pet_t: public warlock_pet_t
     special_action = new actions::felstorm_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "legion_strike" ) return new actions::legion_strike_t( this );
 
@@ -1276,7 +1276,7 @@ struct t18_illidari_satyr_t: public warlock_pet_t
     action_list_str = "travel";
   }
 
-  void init_base_stats()
+  void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
@@ -1296,7 +1296,7 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
     action_list_str = "travel";
   }
 
-  void init_base_stats()
+  void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
@@ -1305,7 +1305,7 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
       melee_attack -> stats = o() -> pets.t18_prince_malchezaar[0] -> get_stats( "melee" );
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = warlock_pet_t::composite_player_multiplier( school );
     m *= 9.45; // Prince deals 9.45 times normal damage.. you know.. for reasons.
@@ -1323,7 +1323,7 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
     action_list_str = "travel";
   }
 
-  void init_base_stats()
+  void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
@@ -1344,14 +1344,14 @@ struct felhunter_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 1.0;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "shadow_bite" ) return new actions::shadow_bite_t( this );
 
@@ -1368,7 +1368,7 @@ struct succubus_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 0.5;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
@@ -1378,7 +1378,7 @@ struct succubus_pet_t: public warlock_pet_t
       special_action = new actions::whiplash_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "lash_of_pain" ) return new actions::lash_of_pain_t( this );
 
@@ -1395,14 +1395,14 @@ struct voidwalker_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 1.0;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "torment" ) return new actions::torment_t( this );
 
@@ -1418,7 +1418,7 @@ struct infernal_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 0.065934;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
     action_list_str = "immolation,if=!ticking";
@@ -1428,7 +1428,7 @@ struct infernal_pet_t: public warlock_pet_t
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
     if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
@@ -1446,14 +1446,14 @@ struct doomguard_pet_t: public warlock_pet_t
     action_list_str = "doom_bolt";
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "doom_bolt" ) return new actions::doom_bolt_t( this );
 
@@ -1473,7 +1473,7 @@ struct wild_imp_pet_t: public warlock_pet_t
     owner_coeff.sp_from_sp = 0.75;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
@@ -1484,7 +1484,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   }
 
   virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
+                                   const std::string& options_str ) override
   {
     if ( name == "firebolt" )
     {
@@ -1527,7 +1527,7 @@ struct fel_imp_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 1;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "felbolt" ) return new actions::felbolt_t( this );
 
@@ -1543,7 +1543,7 @@ struct wrathguard_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 0.66599;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
@@ -1555,7 +1555,7 @@ struct wrathguard_pet_t: public warlock_pet_t
     special_action_two = new actions::mortal_cleave_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "mortal_cleave" ) return new actions::mortal_cleave_t( this );
     if ( name == "wrathstorm" ) return new actions::wrathstorm_t( this );
@@ -1573,14 +1573,14 @@ struct observer_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 1.0;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "tongue_lash" ) return new actions::tongue_lash_t( this );
 
@@ -1597,7 +1597,7 @@ struct shivarra_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 0.33333333333333333333;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
@@ -1609,7 +1609,7 @@ struct shivarra_pet_t: public warlock_pet_t
     special_action = new actions::fellash_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "bladedance" ) return new actions::bladedance_t( this );
 
@@ -1626,14 +1626,14 @@ struct voidlord_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 1;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "torment" ) return new actions::torment_t( this );
 
@@ -1649,7 +1649,7 @@ struct abyssal_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 0.065934;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
     action_list_str = "immolation,if=!ticking";
@@ -1661,7 +1661,7 @@ struct abyssal_pet_t: public warlock_pet_t
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
     if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
@@ -1679,14 +1679,14 @@ struct terrorguard_pet_t: public warlock_pet_t
     owner_coeff.ap_from_sp = 0.065934;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "doom_bolt" ) return new actions::doom_bolt_t( this );
 
@@ -1705,12 +1705,12 @@ struct inner_demon_t : public pet_t
       may_crit = true;
     }
 
-    bool usable_moving() const
+    bool usable_moving() const override
     { return true; }
 
     // Add ability lag through different means, because guardians in WoD do not
     // suffer from it, except this one does.
-    timespan_t execute_time() const
+    timespan_t execute_time() const override
     {
       timespan_t cast_time = spell_t::execute_time();
       cast_time += rng().gauss( timespan_t::from_seconds( 0.2 ), timespan_t::from_seconds( 0.025 ) );
@@ -1728,7 +1728,7 @@ struct inner_demon_t : public pet_t
     owner_coeff.sp_from_sp = 0.75;
   }
 
-  void init_spells()
+  void init_spells() override
   {
     pet_t::init_spells();
 
@@ -1740,14 +1740,14 @@ struct inner_demon_t : public pet_t
   const warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
 
-  void init_action_list()
+  void init_action_list() override
   {
     pet_t::init_action_list();
 
     action_list_str = "soul_fire";
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str )
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "soul_fire" ) return soul_fire;
 
@@ -1755,7 +1755,7 @@ struct inner_demon_t : public pet_t
   }
 
   // TODO: Orc racial?
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1768,7 +1768,7 @@ struct inner_demon_t : public pet_t
     return m;
   }
 
-  void summon( timespan_t duration )
+  void summon( timespan_t duration ) override
   {
     // Enable Soul Fire cast on the next spell execute of the Warlock
     soul_fire -> background = true;
@@ -1808,14 +1808,14 @@ struct warlock_state_t: public action_state_t
     periodic_hit( false )
   { }
 
-  void initialize()
+  void initialize() override
   {
     action_state_t::initialize();
     ds_tick = false;
     periodic_hit = false;
   }
 
-  std::ostringstream& debug_str( std::ostringstream& ds )
+  std::ostringstream& debug_str( std::ostringstream& ds ) override
   {
     action_state_t::debug_str( ds );
     ds << " ds_tick=" << ds_tick;
@@ -1823,7 +1823,7 @@ struct warlock_state_t: public action_state_t
     return ds;
   }
 
-  void copy_state( const action_state_t* other )
+  void copy_state( const action_state_t* other ) override
   {
     action_state_t::copy_state( other );
     auto other_c = debug_cast<const warlock_state_t*>( other );
@@ -1893,7 +1893,7 @@ public:
     }
     virtual const char* name() const override
     { return  "cost_event"; }
-    virtual void execute()
+    virtual void execute() override
     {
       spell -> cost_event = new ( sim() ) cost_event_t( p(), spell, resource );
       p() -> resource_loss( resource, spell -> base_costs_per_second[resource], spell -> gain );
@@ -1930,7 +1930,7 @@ public:
     return p() -> get_target_data( t );
   }
 
-  action_state_t* new_state()
+  action_state_t* new_state() override
   {
     return new warlock_state_t( this, target );
   }
@@ -1957,7 +1957,7 @@ public:
     return true;
   }
 
-  virtual bool usable_moving() const
+  virtual bool usable_moving() const override
   {
     bool um = spell_t::usable_moving();
 
@@ -1967,7 +1967,7 @@ public:
     return um;
   }
 
-  virtual void init()
+  virtual void init() override
   {
     spell_t::init();
 
@@ -1979,14 +1979,14 @@ public:
     }
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     spell_t::reset();
 
     event_t::cancel( cost_event );
   }
 
-  virtual int n_targets() const
+  virtual int n_targets() const override
   {
     if ( aoe == 0 && use_havoc() )
       return 2;
@@ -1994,7 +1994,7 @@ public:
     return spell_t::n_targets();
   }
 
-  virtual std::vector< player_t* >& target_list() const
+  virtual std::vector< player_t* >& target_list() const override
   {
     if ( use_havoc() )
     {
@@ -2014,7 +2014,7 @@ public:
       return spell_t::target_list();
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = spell_t::cost();
 
@@ -2030,7 +2030,7 @@ public:
     return c;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     spell_t::execute();
 
@@ -2050,7 +2050,7 @@ public:
     p() -> trigger_demonology_t17_2pc_cast();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t h = spell_t::execute_time();
 
@@ -2060,7 +2060,7 @@ public:
     return h;
   }
 
-  void consume_resource()
+  void consume_resource() override
   {
     spell_t::consume_resource();
 
@@ -2087,7 +2087,7 @@ public:
       p() -> buffs.backdraft -> decrement( backdraft_consume );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> buffs.metamorphosis -> check() && p() -> resources.current[RESOURCE_DEMONIC_FURY] < META_FURY_MINIMUM )
       p() -> spells.metamorphosis -> cancel();
@@ -2095,7 +2095,7 @@ public:
     return spell_t::ready();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     spell_t::tick( d );
 
@@ -2105,14 +2105,14 @@ public:
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
 
     trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double m = 1.0;
 
@@ -2133,7 +2133,7 @@ public:
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double pm = spell_t::action_multiplier();
 
@@ -2146,7 +2146,7 @@ public:
     return pm;
   }
 
-  virtual resource_e current_resource() const
+  virtual resource_e current_resource() const override
   {
     if ( fury_in_meta && p() -> buffs.metamorphosis -> data().ok() )
     {
@@ -2159,7 +2159,7 @@ public:
       return spell_t::current_resource();
   }
 
-  virtual double composite_target_crit( player_t* target ) const
+  virtual double composite_target_crit( player_t* target ) const override
   {
     double c = spell_t::composite_target_crit( target );
     if ( affected_by_flamelicked && p() -> destruction_trinket )
@@ -2192,7 +2192,7 @@ public:
     }
   }
 
-  bool consume_cost_per_second( timespan_t tick_time )
+  bool consume_cost_per_second( timespan_t tick_time ) override
   {
     bool consume = spell_t::consume_cost_per_second( tick_time );
 
@@ -2206,7 +2206,7 @@ public:
 
   // ds_tick is set, and we will record the damage as "direct", even if it is
   // from extra ticks
-  dmg_e report_amount_type( const action_state_t* state ) const
+  dmg_e report_amount_type( const action_state_t* state ) const override
   {
     if ( debug_cast<const warlock_state_t*>( state ) -> ds_tick )
       return DMG_DIRECT;
@@ -2217,7 +2217,7 @@ public:
   // DS extra ticks can multistrike, so we need to do the stats juggling in
   // it's correct place, since multistrikes do not strike immediately, but
   // rather on their own event
-  void assess_damage( dmg_e type, action_state_t* s )
+  void assess_damage( dmg_e type, action_state_t* s ) override
   {
     warlock_state_t* state = debug_cast<warlock_state_t*>( s );
     stats_t* tmp = nullptr;
@@ -2351,13 +2351,13 @@ struct agony_t: public warlock_spell_t
     }
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     td( d -> state -> target ) -> agony_stack = 1;
     warlock_spell_t::last_tick( d );
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     if ( td( d -> state -> target ) -> agony_stack < ( 10 ) ) 
       td( d -> state -> target ) -> agony_stack++;
@@ -2366,7 +2366,7 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
@@ -2375,7 +2375,7 @@ struct agony_t: public warlock_spell_t
     return m;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2395,7 +2395,7 @@ struct doom_t: public warlock_spell_t
     base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = spell_t::action_multiplier();
 
@@ -2405,7 +2405,7 @@ struct doom_t: public warlock_spell_t
     return am;
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
 
@@ -2415,7 +2415,7 @@ struct doom_t: public warlock_spell_t
       p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -2432,7 +2432,7 @@ struct kiljaedens_cunning_t: public warlock_spell_t
   {
   }
 
-  void execute()
+  void execute() override
   {
     warlock_spell_t::execute();
     p() -> buffs.kiljaedens_cunning -> trigger();
@@ -2446,14 +2446,14 @@ struct demonbolt_t: public warlock_spell_t
   {
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = warlock_spell_t::cost();
     c *= 1.0 + p() -> buffs.demonbolt -> stack() * p() -> talents.demonbolt -> effectN( 3 ).percent();
     return c;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -2463,7 +2463,7 @@ struct demonbolt_t: public warlock_spell_t
 
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = warlock_spell_t::action_multiplier();
 
@@ -2472,7 +2472,7 @@ struct demonbolt_t: public warlock_spell_t
     return am;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -2494,7 +2494,7 @@ struct havoc_t: public warlock_spell_t
     cooldown -> charges = data().charges() + p -> glyphs.havoc -> effectN( 1 ).base_value();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -2514,12 +2514,12 @@ struct shadowflame_t: public warlock_spell_t
     spell_power_mod.tick *= 0.8; // Check
   }
 
-  virtual timespan_t travel_time() const
+  virtual timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 1.5 );
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
 
@@ -2527,7 +2527,7 @@ struct shadowflame_t: public warlock_spell_t
       p() -> buffs.molten_core -> trigger();
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
@@ -2536,7 +2536,7 @@ struct shadowflame_t: public warlock_spell_t
     return m;
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     warlock_spell_t::last_tick( d );
 
@@ -2572,12 +2572,12 @@ struct hand_of_guldan_t: public warlock_spell_t
     }
   }
 
-  virtual timespan_t travel_time() const
+  virtual timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 1.5 );
   }
 
-  void schedule_travel( action_state_t* s )
+  void schedule_travel( action_state_t* s ) override
   {
     /* Executed at the same time as HoG and given a travel time,
     so that it can snapshot meta at the appropriate time. */
@@ -2586,7 +2586,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     warlock_spell_t::schedule_travel( s );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -2603,7 +2603,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -2612,7 +2612,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     return r;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -2636,7 +2636,7 @@ struct shadow_bolt_t: public warlock_spell_t
     generate_fury = data().effectN( 2 ).base_value();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -2646,7 +2646,7 @@ struct shadow_bolt_t: public warlock_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -2670,7 +2670,7 @@ struct shadow_bolt_t: public warlock_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -2695,7 +2695,7 @@ struct shadowburn_t: public warlock_spell_t
     }
     virtual const char* name() const override
     { return "shadowburn_execute_gain"; }
-    virtual void execute()
+    virtual void execute() override
     {
       if (target -> is_sleeping()) //if it is dead return ember, else return mana
       {
@@ -2714,14 +2714,14 @@ struct shadowburn_t: public warlock_spell_t
     delay = data().effectN( 1 ).trigger() -> duration();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
     resource_event = new ( *sim ) resource_event_t( p(), this, s -> target );
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = warlock_spell_t::cost();
 
@@ -2731,7 +2731,7 @@ struct shadowburn_t: public warlock_spell_t
     return c;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2743,14 +2743,14 @@ struct shadowburn_t: public warlock_spell_t
     return m;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -2784,19 +2784,19 @@ struct corruption_t: public warlock_spell_t
     }
   }
 
-  timespan_t travel_time() const
+  timespan_t travel_time() const override
   {
     return timespan_t::from_millis( 100 );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     p() -> latest_corruption_target = target;
 
     warlock_spell_t::execute();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
 
@@ -2858,7 +2858,7 @@ struct corruption_t: public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2868,7 +2868,7 @@ struct corruption_t: public warlock_spell_t
     return m;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -2893,7 +2893,7 @@ struct drain_life_heal_t: public warlock_heal_t
     soulburned_data = p -> find_spell( 89420 );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     double heal_pct = real_data -> effectN( 2 ).percent();
 
@@ -2921,7 +2921,7 @@ struct drain_life_t: public warlock_spell_t
     heal = new drain_life_heal_t( p );
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     spell_t::tick( d );
 
@@ -2933,7 +2933,7 @@ struct drain_life_t: public warlock_spell_t
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = warlock_spell_t::action_multiplier();
 
@@ -2964,7 +2964,7 @@ struct unstable_affliction_t: public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2974,7 +2974,7 @@ struct unstable_affliction_t: public warlock_spell_t
     return m;
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
 
@@ -2995,7 +2995,7 @@ struct haunt_t: public warlock_spell_t
     dot_duration += p -> perk.enhanced_haunt -> effectN( 1 ).time_value();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3012,7 +3012,7 @@ struct haunt_t: public warlock_spell_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
 
     warlock_spell_t::impact( s );
@@ -3030,14 +3030,14 @@ struct haunt_t: public warlock_spell_t
     }
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void last_tick( dot_t* d ) override
   {
     warlock_spell_t::last_tick( d );
 
     try_to_trigger_soul_shard_refund();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( p() -> talents.soulburn_haunt -> ok() && p() -> buffs.soulburn -> up() )
     {
@@ -3079,7 +3079,7 @@ struct immolate_t: public warlock_spell_t
     gain = p -> get_gain( "immolate_fnb" );
   }
 
-  void schedule_travel( action_state_t* s )
+  void schedule_travel( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
     { // Embers are granted on execute, but are granted depending on the amount of targets hit. 
@@ -3092,13 +3092,13 @@ struct immolate_t: public warlock_spell_t
     warlock_spell_t::schedule_travel( s );
   }
 
-  void init()
+  void init() override
   {
     warlock_spell_t::init();
     spell_power_mod.direct *= 1.0 + p() -> perk.empowered_immolate -> effectN( 1 ).percent();
   }
 
-  void schedule_execute( action_state_t* state )
+  void schedule_execute( action_state_t* state ) override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
       fnb -> schedule_execute( state );
@@ -3106,7 +3106,7 @@ struct immolate_t: public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  double cost() const
+  double cost() const override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> cost();
@@ -3114,7 +3114,7 @@ struct immolate_t: public warlock_spell_t
     return warlock_spell_t::cost();
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = warlock_spell_t::composite_crit();
 
@@ -3124,7 +3124,7 @@ struct immolate_t: public warlock_spell_t
     return cc;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = warlock_spell_t::composite_persistent_multiplier( state );
 
@@ -3137,7 +3137,7 @@ struct immolate_t: public warlock_spell_t
     return m;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* state ) const
+  virtual double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = warlock_spell_t::composite_ta_multiplier( state );
 
@@ -3153,7 +3153,7 @@ struct immolate_t: public warlock_spell_t
     return m;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3177,7 +3177,7 @@ struct immolate_t: public warlock_spell_t
   }
   */
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
 
@@ -3229,7 +3229,7 @@ struct conflagrate_t: public warlock_spell_t
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
   }
 
-  void schedule_execute( action_state_t* state )
+  void schedule_execute( action_state_t* state ) override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
       fnb -> schedule_execute( state );
@@ -3237,7 +3237,7 @@ struct conflagrate_t: public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  double cost() const
+  double cost() const override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> cost();
@@ -3245,7 +3245,7 @@ struct conflagrate_t: public warlock_spell_t
     return warlock_spell_t::cost();
   }
 
-  void init()
+  void init() override
   {
     warlock_spell_t::init();
 
@@ -3253,7 +3253,7 @@ struct conflagrate_t: public warlock_spell_t
     cooldown -> charges = 2;
   }
 
-  void schedule_travel( action_state_t* s )
+  void schedule_travel( action_state_t* s ) override
   {
     if ( p() -> talents.charred_remains -> ok() )
     {
@@ -3264,7 +3264,7 @@ struct conflagrate_t: public warlock_spell_t
     warlock_spell_t::schedule_travel( s );
   }
 
-  void execute()
+  void execute() override
   {
     warlock_spell_t::execute();
 
@@ -3272,7 +3272,7 @@ struct conflagrate_t: public warlock_spell_t
       p() -> buffs.backdraft -> trigger( 3 );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3289,7 +3289,7 @@ struct conflagrate_t: public warlock_spell_t
     return m;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
     // TODO: FIXME
@@ -3309,7 +3309,7 @@ struct conflagrate_t: public warlock_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> ready();
@@ -3349,7 +3349,7 @@ struct incinerate_t: public warlock_spell_t
     }
   }
 
-  void init()
+  void init() override
   {
     warlock_spell_t::init();
 
@@ -3357,7 +3357,7 @@ struct incinerate_t: public warlock_spell_t
     base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 2 ).percent();
   }
 
-  void schedule_execute( action_state_t* state )
+  void schedule_execute( action_state_t* state ) override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
       fnb -> schedule_execute( state );
@@ -3365,7 +3365,7 @@ struct incinerate_t: public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  double cost() const
+  double cost() const override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> cost();
@@ -3373,7 +3373,7 @@ struct incinerate_t: public warlock_spell_t
     return warlock_spell_t::cost();
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = warlock_spell_t::composite_crit();
 
@@ -3383,7 +3383,7 @@ struct incinerate_t: public warlock_spell_t
     return cc;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3402,7 +3402,7 @@ struct incinerate_t: public warlock_spell_t
     return m;
   }
 
-  void schedule_travel( action_state_t * s )
+  void schedule_travel( action_state_t * s ) override
   {
     if ( result_is_hit( s -> result ) )
     {
@@ -3419,7 +3419,7 @@ struct incinerate_t: public warlock_spell_t
     warlock_spell_t::schedule_travel( s );
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -3441,7 +3441,7 @@ struct incinerate_t: public warlock_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> ready();
@@ -3467,13 +3467,13 @@ struct soul_fire_t: public warlock_spell_t
     }
   }
 
-  virtual void parse_options( const std::string& options_str )
+  virtual void parse_options( const std::string& options_str ) override
   {
     warlock_spell_t::parse_options( options_str );
     if ( meta_spell ) meta_spell -> parse_options( options_str );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( meta_spell && p() -> buffs.metamorphosis -> check() )
     {
@@ -3498,7 +3498,7 @@ struct soul_fire_t: public warlock_spell_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -3513,7 +3513,7 @@ struct soul_fire_t: public warlock_spell_t
     }
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     timespan_t t = warlock_spell_t::execute_time();
 
@@ -3524,17 +3524,17 @@ struct soul_fire_t: public warlock_spell_t
   }
 
   // Soul fire always crits
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     return 1.0;
   }
 
-  virtual double composite_target_crit( player_t* ) const
+  virtual double composite_target_crit( player_t* ) const override
   {
     return 0.0;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3543,7 +3543,7 @@ struct soul_fire_t: public warlock_spell_t
     return m;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     double c = warlock_spell_t::cost();
 
@@ -3553,7 +3553,7 @@ struct soul_fire_t: public warlock_spell_t
     return c;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     return ( meta_spell && p() -> buffs.metamorphosis -> check() ) ? meta_spell -> ready() : warlock_spell_t::ready();
   }
@@ -3595,7 +3595,7 @@ struct chaos_bolt_t: public warlock_spell_t
     gain = p -> get_gain( "chaos_bolt_fnb" );
   }
 
-  void schedule_execute( action_state_t* state )
+  void schedule_execute( action_state_t* state ) override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
       fnb -> schedule_execute( state );
@@ -3603,7 +3603,7 @@ struct chaos_bolt_t: public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  void consume_resource()
+  void consume_resource() override
   {
     bool t18_procced = rng().roll( p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent() );
     double base_cost = 0;
@@ -3624,13 +3624,13 @@ struct chaos_bolt_t: public warlock_spell_t
   }
 
   // Force spell to always crit
-  double composite_crit() const
+  double composite_crit() const override
   {
     return 1.0;
   }
 
   // Record non-crit suppressed target-based crit% to state object
-  double composite_target_crit( player_t* target ) const
+  double composite_target_crit( player_t* target ) const override
   {
     double c = warlock_spell_t::composite_target_crit( target );
 
@@ -3643,7 +3643,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return c;
   }
 
-  double calculate_direct_amount( action_state_t* state ) const
+  double calculate_direct_amount( action_state_t* state ) const override
   {
     warlock_spell_t::calculate_direct_amount( state );
 
@@ -3655,7 +3655,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return state -> result_total;
   }
 
-  void multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
+  void multistrike_direct( const action_state_t* source_state, action_state_t* ms_state ) override
   {
     warlock_spell_t::multistrike_direct( source_state, ms_state );
 
@@ -3666,7 +3666,7 @@ struct chaos_bolt_t: public warlock_spell_t
     ms_state -> result_amount = ms_state -> result_total;
   }
 
-  double cost() const
+  double cost() const override
   {
     double c = warlock_spell_t::cost();
 
@@ -3679,7 +3679,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return c;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3698,7 +3698,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return m;
   }
 
-  void execute()
+  void execute() override
   {
     warlock_spell_t::execute();
 
@@ -3708,7 +3708,7 @@ struct chaos_bolt_t: public warlock_spell_t
   }
 
   //overwrite MS behavior for the T17 4pc buff
-  int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier )
+  int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier ) override
   {
     if ( !may_multistrike )
       return 0;
@@ -3761,7 +3761,7 @@ struct life_tap_t: public warlock_spell_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -3785,7 +3785,7 @@ struct t: public warlock_spell_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -3794,7 +3794,7 @@ struct t: public warlock_spell_t
     cost_event = new ( *sim ) cost_event_t( p(), this );
   }
 
-  virtual void cancel()
+  virtual void cancel() override
   {
     warlock_spell_t::cancel();
 
@@ -3821,12 +3821,12 @@ struct activate_t: public warlock_spell_t
     if ( ! p -> spells.metamorphosis ) p -> spells.metamorphosis = new t( p );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( ! p() -> buffs.metamorphosis -> check() ) p() -> spells.metamorphosis -> execute();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> specialization() != WARLOCK_DEMONOLOGY )
     {
@@ -3853,14 +3853,14 @@ struct cancel_t: public warlock_spell_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
     p() -> spells.metamorphosis -> cancel();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> specialization() != WARLOCK_DEMONOLOGY )
     {
@@ -3910,7 +3910,7 @@ struct chaos_wave_t: public warlock_spell_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     warlock_spell_t::execute();
 
@@ -3928,12 +3928,12 @@ struct chaos_wave_t: public warlock_spell_t
     }
   }
 
-  virtual timespan_t travel_time() const
+  virtual timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 1.5 );
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -3957,7 +3957,7 @@ struct touch_of_chaos_t: public warlock_spell_t
     base_tick_time = timespan_t::from_seconds( 2.0 ); //FIX: It got lost in some dbc update. Somebody should try to find it correctly in the dbc.
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -3968,7 +3968,7 @@ struct touch_of_chaos_t: public warlock_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -3997,7 +3997,7 @@ struct touch_of_chaos_t: public warlock_spell_t
 
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -4026,7 +4026,7 @@ struct drain_soul_t: public warlock_spell_t
       haunt_t18_4p_bonus = true;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
@@ -4036,7 +4036,7 @@ struct drain_soul_t: public warlock_spell_t
     return m;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -4051,7 +4051,7 @@ struct drain_soul_t: public warlock_spell_t
     return m;
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
 
@@ -4088,7 +4088,7 @@ struct dark_intent_t: public warlock_spell_t
     background = ( sim -> overrides.spell_power_multiplier != 0 );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -4106,14 +4106,14 @@ struct soulburn_t: public warlock_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     p() -> buffs.soulburn -> trigger();
 
     warlock_spell_t::execute();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -4154,14 +4154,14 @@ struct dark_soul_t: public warlock_spell_t
 
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
     p() -> buffs.dark_soul -> trigger();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -4185,7 +4185,7 @@ struct imp_swarm_t: public warlock_spell_t
     stats -> add_child( p -> get_stats( "firebolt" ) );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     cooldown -> duration = base_cooldown * composite_haste();
 
@@ -4218,7 +4218,7 @@ struct fire_and_brimstone_t: public warlock_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     assert( player -> resources.current[RESOURCE_BURNING_EMBER] >= 1.0 );
 
@@ -4230,7 +4230,7 @@ struct fire_and_brimstone_t: public warlock_spell_t
       p() -> buffs.fire_and_brimstone -> trigger();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( player -> resources.current[RESOURCE_BURNING_EMBER] < 1 )
       return false;
@@ -4252,7 +4252,7 @@ struct seed_of_corruption_aoe_t: public warlock_spell_t
     callbacks = false;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -4263,7 +4263,7 @@ struct seed_of_corruption_aoe_t: public warlock_spell_t
     return m;
   }
 
-  virtual void init()
+  virtual void init() override
   {
     warlock_spell_t::init();
 
@@ -4288,7 +4288,7 @@ struct soulburn_seed_of_corruption_aoe_t: public warlock_spell_t
     corruption -> base_costs[RESOURCE_MANA] = 0;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -4296,7 +4296,7 @@ struct soulburn_seed_of_corruption_aoe_t: public warlock_spell_t
     p() -> shard_react = p() -> sim -> current_time();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -4316,7 +4316,7 @@ struct soulburn_seed_of_corruption_t: public warlock_spell_t
     background = true;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -4347,7 +4347,7 @@ struct seed_of_corruption_t: public warlock_spell_t
     soulburn_spell -> stats = stats;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -4361,7 +4361,7 @@ struct seed_of_corruption_t: public warlock_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( p() -> buffs.soulburn -> up() )
     {
@@ -4410,19 +4410,19 @@ struct rain_of_fire_t: public warlock_spell_t
     tick_action = new rain_of_fire_tick_t( p, data() );
   }
 
-  bool consume_cost_per_second( timespan_t tick_time )
+  bool consume_cost_per_second( timespan_t tick_time ) override
   {
     if ( channeled )
       return false;
     return warlock_spell_t::consume_cost_per_second( tick_time );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* state ) const
+  timespan_t composite_dot_duration( const action_state_t* state ) const override
   { return tick_time( state -> haste ) * ( data().duration() / base_tick_time ); }
 
   // TODO: Bring Back dot duration haste scaling ?
 
-  virtual double composite_target_ta_multiplier( player_t* t ) const
+  virtual double composite_target_ta_multiplier( player_t* t ) const override
   {
     double m = warlock_spell_t::composite_target_ta_multiplier( t );
 
@@ -4449,7 +4449,7 @@ struct hellfire_tick_t: public warlock_spell_t
   }
 
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -4474,7 +4474,7 @@ struct hellfire_t: public warlock_spell_t
     tick_action = new hellfire_tick_t( p, data() );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -4485,12 +4485,12 @@ struct hellfire_t: public warlock_spell_t
     return m;
   }
 
-  virtual bool usable_moving() const
+  virtual bool usable_moving() const override
   {
     return true;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -4513,7 +4513,7 @@ struct immolation_aura_tick_t: public warlock_spell_t
     resource_current = RESOURCE_DEMONIC_FURY;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -4538,13 +4538,13 @@ struct immolation_aura_t: public warlock_spell_t
     tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = base_costs_per_second[RESOURCE_DEMONIC_FURY];
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t tt = tick_time( s -> haste );
     return tt * 10.0;
   }
 
-  void execute()
+  void execute() override
   {
     dot_t* d = get_dot( target );
 
@@ -4558,14 +4558,14 @@ struct immolation_aura_t: public warlock_spell_t
     }
   }
 
-  void last_tick( dot_t* dot )
+  void last_tick( dot_t* dot ) override
   {
     warlock_spell_t::last_tick( dot );
     p() -> spells.immolation_aura = nullptr;
     p() -> buffs.immolation_aura -> expire();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -4617,7 +4617,7 @@ struct cataclysm_t: public warlock_spell_t
     //stats -> add_child(p -> get_stats("agony_cata", this));
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -4652,7 +4652,7 @@ struct cataclysm_t: public warlock_spell_t
 
     }
   }
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -4695,7 +4695,7 @@ struct soul_swap_t: public warlock_spell_t
     seed_of_corruption  -> base_costs[RESOURCE_MANA] = 0;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -4789,7 +4789,7 @@ struct soul_swap_t: public warlock_spell_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     bool r = warlock_spell_t::ready();
 
@@ -4857,20 +4857,20 @@ public:
     _init_summon_pet_t();
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     pet = debug_cast<pets::warlock_pet_t*>( player -> find_pet( pet_name ) );
     return warlock_spell_t::init_finished();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     pet -> summon( summoning_duration );
 
     warlock_spell_t::execute();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! pet )
     {
@@ -4892,7 +4892,7 @@ struct summon_main_pet_t: public summon_pet_t
     ignore_false_positive = true;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr )
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     warlock_spell_t::schedule_execute( state );
 
@@ -4903,7 +4903,7 @@ struct summon_main_pet_t: public summon_pet_t
     }
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( p() -> pets.active == pet )
       return false;
@@ -4918,7 +4918,7 @@ struct summon_main_pet_t: public summon_pet_t
     return summon_pet_t::ready();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time() const override
   {
     if ( p() -> buffs.soulburn -> check() || p() -> buffs.demonic_rebirth -> check() || p() -> buffs.metamorphosis -> check() )
       return timespan_t::zero();
@@ -4926,7 +4926,7 @@ struct summon_main_pet_t: public summon_pet_t
     return warlock_spell_t::execute_time();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     summon_pet_t::execute();
 
@@ -4959,7 +4959,7 @@ struct flames_of_xoroth_t: public warlock_spell_t
     harmful = false;
   }
 
-  virtual double cost() const
+  virtual double cost() const override
   {
     if ( p() -> pets.active || p() -> buffs.grimoire_of_sacrifice -> check() )
       return 0;
@@ -4967,7 +4967,7 @@ struct flames_of_xoroth_t: public warlock_spell_t
       return warlock_spell_t::cost();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -5029,7 +5029,7 @@ struct summon_infernal_t: public summon_pet_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     summon_pet_t::execute();
 
@@ -5072,7 +5072,7 @@ struct summon_doomguard_t: public warlock_spell_t
     summon_doomguard2 -> stats = stats;
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     if ( summon_doomguard2 -> pet )
     {
@@ -5082,7 +5082,7 @@ struct summon_doomguard_t: public warlock_spell_t
     return warlock_spell_t::init_finished();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -5102,7 +5102,7 @@ struct mortal_coil_heal_t: public warlock_heal_t
     may_miss = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     double heal_pct = data().effectN( 1 ).percent();
     base_dd_min = base_dd_max = player -> resources.max[RESOURCE_HEALTH] * heal_pct;
@@ -5123,7 +5123,7 @@ struct mortal_coil_t: public warlock_spell_t
     heal = new mortal_coil_heal_t( p, data() );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -5141,14 +5141,14 @@ struct grimoire_of_sacrifice_t: public warlock_spell_t
     ignore_false_positive = true;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( ! p() -> pets.active ) return false;
 
     return warlock_spell_t::ready();
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( p() -> pets.active )
     {
@@ -5177,7 +5177,7 @@ struct grimoire_of_service_t: public summon_pet_t
     summoning_duration = data().duration();
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     if ( pet )
       pet -> summon_stats = stats;
@@ -5194,7 +5194,7 @@ struct mannoroths_fury_t: public warlock_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     warlock_spell_t::execute();
 
@@ -5796,7 +5796,7 @@ struct havoc_buff_t : public buff_t
     buff_t( buff_creator_t( p, "havoc", p -> find_specialization_spell( "Havoc" ) ).cd( timespan_t::zero() ) )
   { }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -5821,7 +5821,7 @@ struct molten_core_t : public buff_t
     illidari_satyr_duration = p -> find_spell( 189297 ) -> duration();
   }
 
-  void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t ) override
   {
     warlock_t* p = debug_cast<warlock_t*>( player );
     bool trigger_t18_4p = true;
@@ -6551,7 +6551,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       warlock_t& player;
       ember_react_expr_t( warlock_t& p ):
         expr_t( "ember_react" ), player( p ) { }
-      virtual double evaluate() { return player.resources.current[RESOURCE_BURNING_EMBER] >= 1 && player.sim -> current_time() >= player.ember_react; }
+      virtual double evaluate() override { return player.resources.current[RESOURCE_BURNING_EMBER] >= 1 && player.sim -> current_time() >= player.ember_react; }
     };
     return new ember_react_expr_t( *this );
   }
@@ -6562,7 +6562,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       warlock_t& player;
       shard_react_expr_t( warlock_t& p ):
         expr_t( "shard_react" ), player( p ) { }
-      virtual double evaluate() { return player.resources.current[RESOURCE_SOUL_SHARD] >= 1 && player.sim -> current_time() >= player.shard_react; }
+      virtual double evaluate() override { return player.resources.current[RESOURCE_SOUL_SHARD] >= 1 && player.sim -> current_time() >= player.shard_react; }
     };
     return new shard_react_expr_t( *this );
   }
@@ -6573,7 +6573,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       pets::warlock_pet_t* felguard;
       felstorm_is_ticking_expr_t( pets::warlock_pet_t* f ):
         expr_t( "felstorm_is_ticking" ), felguard( f ) { }
-      virtual double evaluate() { return ( felguard ) ? felguard -> special_action -> get_dot() -> is_ticking() : false; }
+      virtual double evaluate() override { return ( felguard ) ? felguard -> special_action -> get_dot() -> is_ticking() : false; }
     };
     return new felstorm_is_ticking_expr_t( debug_cast<pets::warlock_pet_t*>( find_pet( "felguard" ) ) );
   }
@@ -6618,21 +6618,21 @@ struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new warlock_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new warlock_report_t( *p ) );
     return p;
   }
 
-  virtual void static_init() const
+  virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184922, affliction_trinket);
     unique_gear::register_special_effect( 184923, demonology_trinket);
     unique_gear::register_special_effect( 184924, destruction_trinket);
   }
 
-  virtual void register_hotfixes() const
+  virtual void register_hotfixes() const override
   {
     hotfix::register_effect( "Warlock", "2015-07-20", "Chaos Bolt damage increased by 5%.", 132079 )
       .field( "sp_coefficient" )
@@ -6689,10 +6689,10 @@ struct warlock_module_t: public module_t
       .verification_value( 3.40000 );
   }
 
-  virtual bool valid() const { return true; }
-  virtual void init( player_t* ) const {}
-  virtual void combat_begin( sim_t* ) const {}
-  virtual void combat_end( sim_t* ) const {}
+  virtual bool valid() const override { return true; }
+  virtual void init( player_t* ) const override {}
+  virtual void combat_begin( sim_t* ) const override {}
+  virtual void combat_end( sim_t* ) const override {}
 };
 
 } // end unnamed namespace

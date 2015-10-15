@@ -6,11 +6,19 @@
 #ifndef SC_REPORT_HPP
 #define SC_REPORT_HPP
 
-#include "simulationcraft.hpp"
-#include "sc_highchart.hpp"
 #include <fstream>
+#include <iostream>
+#include <array>
+
+#include "sc_highchart.hpp"
+#include "sc_enums.hpp"
+#include "util/io.hpp"
 
 struct player_t;
+struct xml_node_t;
+struct sc_timeline_t;
+struct spell_data_t;
+class extended_sample_data_t;
 struct player_processed_report_information_t;
 struct sim_report_information_t;
 struct spell_data_expr_t;
