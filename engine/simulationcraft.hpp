@@ -6963,7 +6963,7 @@ public:
   virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
   { return dot -> time_to_next_tick() + triggered_duration; }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     // Residual periodic actions + tick_zero does not work
     assert( ! ab::tick_zero );
@@ -7006,7 +7006,7 @@ public:
   }
 
   // The damage of the tick is simply the tick_amount in the state
-  virtual double base_ta( const action_state_t* s ) const
+  virtual double base_ta( const action_state_t* s ) const override
   {
     auto dot = ab::find_dot( s -> target );
     if ( dot )
@@ -7019,16 +7019,16 @@ public:
 
   // Ensure that not travel time exists for the ignite ability. Delay is
   // handled in the trigger via a custom event
-  virtual timespan_t travel_time() const
+  virtual timespan_t travel_time() const override
   { return timespan_t::zero(); }
 
   // This object is not "executable" normally. Instead, the custom event
   // handles the triggering of ignite
-  virtual void execute()
+  virtual void execute() override
   { assert( 0 ); }
 
   // Ensure that the ignite action snapshots nothing
-  void init()
+  void init() override
   {
     ab::init();
 

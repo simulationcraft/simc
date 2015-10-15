@@ -4032,7 +4032,7 @@ public:
     return new cascade_state_t( this, ab::target );
   }
 
-  timespan_t distance_targeting_travel_time( action_state_t* s ) const
+  timespan_t distance_targeting_travel_time( action_state_t* s ) const override
   {
     cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
     if ( cs->source_target )
