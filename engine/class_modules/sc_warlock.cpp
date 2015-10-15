@@ -3502,10 +3502,11 @@ struct soul_fire_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    p() -> buffs.tier18_2pc_demonology -> trigger();
-
     if ( result_is_hit( s -> result ) )
+    {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
+      p() -> buffs.tier18_2pc_demonology -> trigger();
+    }
     if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       p() -> buffs.tier16_2pc_fiery_wrath -> trigger();
