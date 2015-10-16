@@ -18,6 +18,10 @@
 #include <windows.h>
 #endif
 
+#if !defined(SC_WINDOWS)
+#include <sys/time.h>
+#endif
+
 // If you turn this on, you will need to add -lrt to LINK_LIBS in Makefile
 // #define SC_HIGH_PRECISION_STOPWATCH
 #if defined(SC_HIGH_PRECISION_STOPWATCH)
