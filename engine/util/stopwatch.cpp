@@ -124,28 +124,28 @@ stopwatch_t::time_point_t stopwatch_t::now() const
   {
     struct timespec ts;
     clock_gettime( CLOCK_REALTIME, &ts );
-    now_time.sec = int64_t( ts.tv_sec );
-    now_time.usec = int64_t( ts.tv_nsec / 1000 );
+    stopwatch_t::time_point_t out;
+    out.sec = int64_t( ts.tv_sec );
+    out.usec = int64_t( ts.tv_nsec / 1000 );
+    return out;
   }
   else if ( type == STOPWATCH_CPU )
   {
     struct rusage ru;
     getrusage( RUSAGE_SELF, &ru );
-    now_time.sec = ru.ru_utime.tv_sec;
-    now_time.usec = ru.ru_utime.tv_usec;
+    stopwatch_t::time_point_t out;
+    out.sec = ru.ru_utime.tv_sec;
+    out.usec = ru.ru_utime.tv_usec;
+    return out;
   }
   else if ( type == STOPWATCH_THREAD )
   {
     struct rusage ru;
     getrusage( RUSAGE_THREAD, &ru );
-    now_time.sec = ru.ru_utime.tv_sec;
-    now_time.usec = ru.ru_utime.tv_usec;
-  }
-  else
-  {
-    now_time.sec = 0;
-    now_time.usec = 0;
-    assert( 0 );
+    stopwatch_t::time_point_t out;
+    out.sec = ru.ru_utime.tv_sec;
+    out.usec = ru.ru_utime.tv_usec;
+    return out;
   }
 #else
   if ( type == STOPWATCH_WALL ||
@@ -153,19 +153,16 @@ stopwatch_t::time_point_t stopwatch_t::now() const
   {
     struct timeval tv;
     gettimeofday( &tv, nullptr );
-    now_time.sec = int64_t( tv.tv_sec );
-    now_time.usec = int64_t( tv.tv_usec );
+    stopwatch_t::time_point_t out;
+    out.sec = int64_t( tv.tv_sec );
+    out.usec = int64_t( tv.tv_usec );
+    return out;
   }
   else if ( type == STOPWATCH_CPU )
   {
-    now_time.sec = 0;
-    now_time.usec = int64_t( clock() ) * 1e6 / CLOCKS_PER_SEC;
-  }
-  else
-  {
-    now_time.sec = 0;
-    now_time.usec = 0;
-    assert( 0 );
+    stopwatch_t::time_point_t out;
+    out.sec = 0;
+    out.usec = int64_t( clock() ) * 1e6 / CLOCKS_PER_SEC;
   }
 #endif
 #endif
