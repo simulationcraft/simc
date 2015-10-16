@@ -207,21 +207,9 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 }
 #endif
 
-enum stopwatch_e { STOPWATCH_CPU, STOPWATCH_WALL, STOPWATCH_THREAD };
-
-struct stopwatch_t
-{
-  stopwatch_e type;
-  int64_t start_sec, sec;
-  int64_t start_usec, usec;
-  void now( int64_t* now_sec, int64_t* now_usec );
-  void mark() { now( &start_sec, &start_usec ); }
-  void accumulate();
-  double current();
-  double elapsed();
-  stopwatch_t( stopwatch_e t = STOPWATCH_CPU ) : type( t ) { mark(); }
-};
 #include "sc_util.hpp"
+
+#include "util/stopwatch.hpp"
 #include "sim/sc_option.hpp"
 
 // Data Access ==============================================================
@@ -1432,6 +1420,7 @@ struct sim_report_information_t
 #else
 #define ACTOR_EVENT_BOOKKEEPING 0
 #endif
+
 // Event Manager ============================================================
 
 struct event_manager_t

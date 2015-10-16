@@ -5,21 +5,11 @@
 
 #include "simulationcraft.hpp"
 
-#if defined(SC_WINDOWS)
-#define NOMINMAX
-#include <windows.h>
-#endif
-
 #if !defined(SC_WINDOWS)
 #include <sys/time.h>
 #endif
 
-// If you turn this on, you will need to add -lrt to LINK_LIBS in Makefile
-// #define SC_HIGH_PRECISION_STOPWATCH
-#if defined(SC_HIGH_PRECISION_STOPWATCH)
-#include <sys/resource.h>
-#include <sys/times.h>
-#endif
+
 #include <cerrno>
 
 namespace { // anonymous namespace ==========================================
@@ -30,7 +20,7 @@ struct spec_map_t
   const char* name;
 };
 
-static spec_map_t spec_map[] =
+const spec_map_t spec_map[] =
 {
   { WARRIOR_ARMS,         "Arms Warrior"         },
   { WARRIOR_FURY,         "Fury Warrior"         },
@@ -122,153 +112,6 @@ stopwatch_t wall_sw( STOPWATCH_WALL );
 stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 
 } // anonymous namespace ============================================
-
-// stopwatch_t ==============================================================
-
-void stopwatch_t::now( int64_t* now_sec,
-                       int64_t* now_usec )
-{
-#if defined(SC_WINDOWS)
-  // Credit to http://stackoverflow.com/a/17440673
-  if ( type == STOPWATCH_WALL )
-  {
-    LARGE_INTEGER time, freq;
-    if ( !QueryPerformanceFrequency( &freq ) )
-    {
-      //  Handle error
-      *now_sec = 0;
-      *now_usec = 0;
-    }
-    if ( !QueryPerformanceCounter( &time ) )
-    {
-      //  Handle error
-      *now_sec = 0;
-      *now_usec = 0;
-    }
-    double t = static_cast<double>(time.QuadPart) / freq.QuadPart;
-    *now_sec = static_cast<int64_t>(t);
-    *now_usec = static_cast<int64_t>(std::fmod(t, 1.0) * 1e6 );
-  }
-  else if ( type == STOPWATCH_CPU )
-  {
-    FILETIME lpCreationTime, lpExitTime, lpKernelTime, lpUserTime;
-    if ( GetProcessTimes( GetCurrentProcess(), &lpCreationTime, &lpExitTime, &lpKernelTime, &lpUserTime ) )
-    {
-      //  Returns total user time in 100-ns ticks
-      //  Can be tweaked to include kernel times as well.
-      ULARGE_INTEGER t;
-      t.LowPart = lpUserTime.dwLowDateTime;
-      t.HighPart = lpUserTime.dwHighDateTime;
-      *now_sec = t.QuadPart / 10000000;
-      *now_usec = ( t.QuadPart % 10000000 ) / 10;
-    }
-    else
-    {
-      //  Handle error
-      *now_sec = 0;
-      *now_usec = 0;
-    }
-  }
-  else if ( type == STOPWATCH_THREAD )
-   {
-     FILETIME lpCreationTime, lpExitTime, lpKernelTime, lpUserTime;
-     if ( GetThreadTimes( GetCurrentThread(), &lpCreationTime, &lpExitTime, &lpKernelTime, &lpUserTime ) )
-     {
-       //  Returns total user time in 100-ns ticks
-       //  Can be tweaked to include kernel times as well.
-       ULARGE_INTEGER t;
-       t.LowPart = lpUserTime.dwLowDateTime;
-       t.HighPart = lpUserTime.dwHighDateTime;
-       *now_sec = t.QuadPart / 10000000;
-       *now_usec = ( t.QuadPart % 10000000 ) / 10;
-     }
-     else
-     {
-       //  Handle error
-       *now_sec = 0;
-       *now_usec = 0;
-     }
-  }
-  else
-  {
-    *now_sec = 0;
-    *now_usec = 0;
-    assert( 0 );
-  }
-#else
-#if defined(SC_HIGH_PRECISION_STOPWATCH)
-  if ( type == STOPWATCH_WALL )
-  {
-    struct timespec ts;
-    clock_gettime( CLOCK_REALTIME, &ts );
-    *now_sec  = int64_t( ts.tv_sec  );
-    *now_usec = int64_t( ts.tv_nsec / 1000 );
-  }
-  else if ( type == STOPWATCH_CPU )
-  {
-    struct rusage ru;
-    getrusage( RUSAGE_SELF, &ru );
-    *now_sec  = ru.ru_utime.tv_sec;
-    *now_usec = ru.ru_utime.tv_usec;
-  }
-  else if ( type == STOPWATCH_THREAD )
-  {
-    struct rusage ru;
-    getrusage( RUSAGE_THREAD, &ru );
-    *now_sec  = ru.ru_utime.tv_sec;
-    *now_usec = ru.ru_utime.tv_usec;
-  }
-  else
-  {
-    *now_sec = 0;
-    *now_usec = 0;
-    assert( 0 );
-  }
-#else
-  if ( type == STOPWATCH_WALL ||
-       type == STOPWATCH_THREAD )
-  {
-    struct timeval tv;
-    gettimeofday( &tv, nullptr );
-    *now_sec  = int64_t( tv.tv_sec  );
-    *now_usec = int64_t( tv.tv_usec );
-  }
-  else if ( type == STOPWATCH_CPU )
-  {
-    *now_sec  = 0;
-    *now_usec = int64_t( clock() ) * 1e6 / CLOCKS_PER_SEC;
-  }
-  else
-  {
-    *now_sec = 0;
-    *now_usec = 0;
-    assert( 0 );
-  }
-#endif
-#endif
-}
-
-void stopwatch_t::accumulate()
-{
-  int64_t now_sec, now_usec;
-  now( &now_sec, &now_usec );
-  sec  += ( now_sec  - start_sec  );
-  usec += ( now_usec - start_usec );
-}
-
-double stopwatch_t::current()
-{
-  return( double( sec ) +
-          double( usec ) / 1e6 );
-}
-
-double stopwatch_t::elapsed()
-{
-  int64_t now_sec, now_usec;
-  now( &now_sec, &now_usec );
-  return( double( now_sec  - start_sec ) +
-          double( now_usec - start_usec ) / 1e6 );
-}
 
 
 double util::wall_time() { return wall_sw.elapsed(); }

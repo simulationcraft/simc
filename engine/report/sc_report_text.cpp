@@ -975,17 +975,21 @@ void print_text_monitor_cpu( FILE* file, sim_t* sim )
   if ( ! sim -> event_mgr.monitor_cpu ) return;
 
   util::fprintf( file, "\nEvent Monitor CPU Report:\n" );
-
-  util::fprintf( file, "%10.2fsec : Global Events\n", sim -> event_mgr.event_stopwatch.current() );
-
   std::vector<player_t*> sorted_p = sim -> player_list.data();
+
+  double total_event_time = sim -> event_mgr.event_stopwatch.current();
+  for ( const auto & player : sorted_p ) {
+    total_event_time += player -> event_stopwatch.current();
+  }
+  util::fprintf( file, "%10.2fsec / %5.2f%% : Global Events\n", sim -> event_mgr.event_stopwatch.current(), sim -> event_mgr.event_stopwatch.current() / total_event_time * 100.0 );
+
 
   range::sort( sorted_p, sort_by_event_stopwatch() );
   for ( size_t i = 0; i < sorted_p.size(); ++i )
   {
     player_t* p = sorted_p[ i ];
 
-    util::fprintf( file, "%10.2fsec : %s\n", p -> event_stopwatch.current(), p -> name() );
+    util::fprintf( file, "%10.3fsec / %5.2f%% : %s\n", p -> event_stopwatch.current(), p -> event_stopwatch.current() / total_event_time * 100.0, p -> name() );
   }
 }
 

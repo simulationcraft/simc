@@ -5,6 +5,7 @@ SRC += \
     util$(PATHSEP)xml.hpp \
     util$(PATHSEP)timeline.hpp \
     util$(PATHSEP)str.hpp \
+    util$(PATHSEP)stopwatch.hpp \
     util$(PATHSEP)sc_resourcepaths.hpp \
     util$(PATHSEP)sample_data.hpp \
     util$(PATHSEP)rng.hpp \
@@ -29,6 +30,7 @@ SRC += \
     util$(PATHSEP)utf8.h \
     util$(PATHSEP)xml.cpp \
     util$(PATHSEP)str.cpp \
+    util$(PATHSEP)stopwatch.cpp \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)concurrency.cpp \
