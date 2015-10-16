@@ -7,7 +7,7 @@
 
 #include "generated/sc_item_data2.inc"
 #if SC_USE_PTR
-#include "sc_item_data_ptr2.inc"
+#include "generated/sc_item_data_ptr2.inc"
 #endif
 
 namespace {
