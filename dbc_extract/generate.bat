@@ -52,11 +52,7 @@ python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_bo
 python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_scaling           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_name_desc         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 
-
-
-echo.>> %OUTPATH%\sc_specialization_data.inc
-python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_enum                  	   >> %OUTPATH%\specialization.hpp
-echo #endif>> %OUTPATH%\specialization.hpp
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_enum > %OUTPATH%\sc_specialization_data.inc
 
 echo Done!
 

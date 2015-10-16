@@ -63,6 +63,6 @@ fi
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_scaling           >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item_name_desc         >> $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 
-./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD -t spec_enum >> $OUTPATH/sc_specialization_data.inc
+./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD -t spec_enum > $OUTPATH/sc_specialization_data.inc
 
 
