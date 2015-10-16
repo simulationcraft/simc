@@ -167,6 +167,7 @@ stopwatch_t::time_point_t stopwatch_t::now() const
     stopwatch_t::time_point_t out;
     out.sec = 0;
     out.usec = int64_t( clock() ) * 1e6 / CLOCKS_PER_SEC;
+    return out;
   }
 #endif
 #endif
