@@ -1438,10 +1438,10 @@ struct event_manager_t
   double wheel_granularity;
   timespan_t wheel_time;
   std::vector<event_t*> allocated_events;
+
   stopwatch_t event_stopwatch;
   bool monitor_cpu;
   bool canceled;
-
 #ifdef EVENT_QUEUE_DEBUG
   unsigned max_queue_depth, n_allocated_events, n_end_insert, n_requested_events;
   uint64_t events_traversed, events_added;
@@ -3217,7 +3217,10 @@ struct actor_t : private noncopyable
   std::string name_str;
   int event_counter; // safety counter. Shall never be less than zero
 
+#if defined(ACTOR_EVENT_BOOKKEEPING)
+  /// Measure cpu time for actor-specific events.
   stopwatch_t event_stopwatch;
+#endif // ACTOR_EVENT_BOOKKEEPING
 
   actor_t( sim_t* s, const std::string& name ) :
     sim( s ), name_str( name ),

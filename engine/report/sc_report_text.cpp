@@ -972,6 +972,7 @@ struct sort_by_event_stopwatch {
 };
 void print_text_monitor_cpu( FILE* file, sim_t* sim )
 {
+#if defined(ACTOR_EVENT_BOOKKEEPING)
   if ( ! sim -> event_mgr.monitor_cpu ) return;
 
   util::fprintf( file, "\nEvent Monitor CPU Report:\n" );
@@ -991,6 +992,7 @@ void print_text_monitor_cpu( FILE* file, sim_t* sim )
 
     util::fprintf( file, "%10.3fsec / %5.2f%% : %s\n", p -> event_stopwatch.current(), p -> event_stopwatch.current() / total_event_time * 100.0, p -> name() );
   }
+#endif // ACTOR_EVENT_BOOKKEEPING
 }
 
 // print_text_player ========================================================
