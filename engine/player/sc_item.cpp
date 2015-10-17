@@ -636,6 +636,9 @@ void item_t::encoded_item( xml_writer_t& writer )
   if ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() )
     writer.print_attribute( "addon", encoded_addon() );
 
+  if ( parsed.item_level > 0 )
+    writer.print_attribute( "item_level", std::to_string( item_level() ) );
+
   writer.end_tag( "item" );
 }
 
