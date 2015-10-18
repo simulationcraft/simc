@@ -5,9 +5,8 @@
 
 #include "simulationcraft.hpp"
 
-namespace
-{  // UNNAMED NAMESPACE
-
+namespace  // UNNAMED NAMESPACE
+{
 /* Forward declarations
  */
 struct priest_t;
@@ -19,7 +18,8 @@ struct shadowy_apparition_spell_t;
 }
 }
 
-/* Priest target data
+/**
+ * Priest target data
  * Contains target specific things
  */
 struct priest_td_t : public actor_target_data_t
@@ -6038,29 +6038,21 @@ role_e priest_t::primary_role() const
   return ROLE_SPELL;
 }
 
-// priest_t::convert_hybrid_stat ==============================================
-
+/**
+ * @brief Convert hybrid stats
+ *
+ *  Converts hybrid stats that either morph based on spec or only work
+ *  for certain specs into the appropriate "basic" stats
+ */
 stat_e priest_t::convert_hybrid_stat( stat_e s ) const
 {
-  // this converts hybrid stats that either morph based on spec or only work
-  // for certain specs into the appropriate "basic" stats
   switch ( s )
   {
-    // This is all a guess at how the hybrid primaries will work, since they
-    // don't actually appear on cloth gear yet. TODO: confirm behavior
-    case STAT_STR_AGI_INT:
     case STAT_STR_INT:
     case STAT_AGI_INT:
       return STAT_INTELLECT;
     case STAT_STR_AGI:
-      return STAT_NONE;
-    case STAT_SPIRIT:
-      if ( specialization() != PRIEST_SHADOW )
-        return s;
-      else
-        return STAT_NONE;
-    case STAT_BONUS_ARMOR:
-      return STAT_NONE;
+      return STAT_AGILITY;
     default:
       return s;
   }
