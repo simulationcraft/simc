@@ -2333,11 +2333,21 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
 
-    action_t* rsk = p -> find_action( "rising_sun_kick" );
-    base_multiplier = rsk -> base_multiplier;
-    spell_power_mod.direct = rsk -> spell_power_mod.direct;
+  }
 
-    rsk -> add_child( this );
+  bool init_finished()
+  {
+    bool ret = monk_melee_attack_t::init_finished();
+    action_t* rsk = player -> find_action( "rising_sun_kick" );
+    if ( rsk )
+    {
+      base_multiplier = rsk -> base_multiplier;
+      spell_power_mod.direct = rsk -> spell_power_mod.direct;
+
+      rsk -> add_child( this );
+    }
+
+    return ret;
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
