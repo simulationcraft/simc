@@ -766,7 +766,6 @@ public:
   void createLogTab();
   void createSpellQueryTab();
   void createTabShortcuts();
-  void createSampleProfilesTab();
   void createCustomTab();
 
 #ifdef SC_PAPERDOLL

@@ -13,6 +13,7 @@ class SC_SimulateThread : public QThread
   sim_t* sim;
   QByteArray utf8_options;
   QString tabName;
+  QString error_category;
   QString error_str;
 
 public:
@@ -20,6 +21,10 @@ public:
   SC_SimulateThread( SC_MainWindow* );
   void start( sim_t* s, const QByteArray& o, QString tab_name );
   virtual void run();
+  QByteArray getOptions() const
+  { return utf8_options; }
+  QString getErrorCategory() const
+  { return error_category; }
   QString getError() const
   { return error_str; }
   QString getTabName() const

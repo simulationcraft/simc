@@ -397,7 +397,9 @@ void SC_MainWindow::createImportTab()
   battleNetView -> disableKeyboardNavigation();
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
-  createSampleProfilesTab();
+  SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
+  connect( bisTab -> tree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
+  importTab -> addTab( bisTab, tr( "Sample Profiles" ) );
 
   historyList = new QListWidget();
   historyList -> setSortingEnabled( true );
@@ -418,12 +420,6 @@ void SC_MainWindow::createImportTab()
   // createCustomTab();
 }
 
-void SC_MainWindow::createSampleProfilesTab()
-{
-  SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
-  connect( bisTab -> tree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
-  importTab -> addTab( bisTab, tr( "Sample Profiles" ) );
-}
 
 void SC_MainWindow::createCustomTab()
 {
@@ -465,7 +461,6 @@ void SC_MainWindow::createSimulateTab()
 void SC_MainWindow::createOverridesTab()
 {
   overridesText = new SC_OverridesTab( this );
-
   mainTab -> addTab( overridesText, tr( "Overrides" ) );
 }
 
@@ -487,7 +482,6 @@ void SC_MainWindow::createHelpTab()
 void SC_MainWindow::createResultsTab()
 {
   resultsTab = new SC_ResultTab( this );
-  resultsTab -> setTabsClosable( true );
   connect( resultsTab, SIGNAL( currentChanged( int ) ), this, SLOT( resultsTabChanged( int ) ) );
   connect( resultsTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( resultsTabCloseRequest( int ) ) );
   mainTab -> addTab( resultsTab, tr( "Results" ) );
@@ -516,25 +510,6 @@ void SC_MainWindow::createTabShortcuts()
   }
   connect( &mainTabSignalMapper, SIGNAL( mapped( int ) ), mainTab, SLOT( setCurrentIndex( int ) ) );
 }
-
-#ifdef SC_PAPERDOLL
-void SC_MainWindow::createPaperdoll()
-{
-  QWidget* paperdollTab = new QWidget( this );
-  QHBoxLayout* paperdollMainLayout = new QHBoxLayout();
-  paperdollMainLayout -> setAlignment( Qt::AlignLeft | Qt::AlignTop );
-  paperdollTab -> setLayout( paperdollMainLayout );
-
-  paperdollProfile = new PaperdollProfile();
-  paperdoll = new Paperdoll( this, paperdollProfile, paperdollTab );
-  ItemSelectionWidget* items = new ItemSelectionWidget( paperdollProfile, paperdollTab );
-
-  paperdollMainLayout -> addWidget( items );
-  paperdollMainLayout -> addWidget( paperdoll );
-
-  mainTab -> addTab( paperdollTab, tr("Paperdoll") );
-}
-#endif
 
 void SC_MainWindow::updateWebView( SC_WebView* wv )
 {
@@ -888,6 +863,7 @@ void SC_MainWindow::stopSim()
     }
   }
 }
+
 void SC_MainWindow::stopAllSim()
 {
   stopSim();
@@ -898,7 +874,23 @@ bool SC_MainWindow::simRunning()
   return ( sim != 0 );
 }
 
-#ifdef SC_PAPERDOLL
+#if defined(SC_PAPERDOLL)
+void SC_MainWindow::createPaperdoll()
+{
+  QWidget* paperdollTab = new QWidget( this );
+  QHBoxLayout* paperdollMainLayout = new QHBoxLayout();
+  paperdollMainLayout -> setAlignment( Qt::AlignLeft | Qt::AlignTop );
+  paperdollTab -> setLayout( paperdollMainLayout );
+
+  paperdollProfile = new PaperdollProfile();
+  paperdoll = new Paperdoll( this, paperdollProfile, paperdollTab );
+  ItemSelectionWidget* items = new ItemSelectionWidget( paperdollProfile, paperdollTab );
+
+  paperdollMainLayout -> addWidget( items );
+  paperdollMainLayout -> addWidget( paperdoll );
+
+  mainTab -> addTab( paperdollTab, tr("Paperdoll") );
+}
 
 player_t* SC_MainWindow::init_paperdoll_sim( sim_t*& sim )
 {
@@ -997,7 +989,51 @@ void SC_MainWindow::start_paperdoll_sim()
     simProgress = 0;
   }
 }
-#endif
+
+void SC_MainWindow::paperdollFinished()
+{
+  timer -> stop();
+  simPhase = "%p%";
+  simProgress = 100;
+  progressBar -> setFormat( simPhase.c_str() );
+  progressBar -> setValue( simProgress );
+
+  simProgress = 100;
+
+  timer -> start( 100 );
+}
+
+void PaperdollThread::run()
+{
+  cache::advance_era();
+
+  sim -> iterations = 100;
+
+  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
+
+  std::vector<std::string> args;
+  for ( int i = 0; i < stringList.count(); ++i )
+    args.push_back( stringList[ i ].toUtf8().constData() );
+  sim_control_t description;
+
+  success = description.options.parse_args( args );
+
+  if ( success )
+  {
+    success = sim -> setup( &description );
+  }
+  if ( success )
+  {
+    for ( unsigned int i = 0; i < 10; ++i )
+    {
+      sim -> current_iteration = 0;
+      sim -> execute();
+      player_t::scales_over_t s = player -> scales_over();
+      mainWindow -> paperdoll -> setCurrentDPS( s.name, s.value, s.stddev * sim -> confidence_estimator );
+    }
+  }
+}
+#endif // SC_PAPERDOLL
 
 void SC_MainWindow::simulateFinished( sim_t* sim )
 {
@@ -1013,9 +1049,29 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     if ( mainTab -> currentTab() != TAB_SPELLQUERY )
       mainTab -> setCurrentTab( TAB_LOG );
 
-    qDebug() << "sim failed!" << simulateThread -> getError();
-    logText -> appendPlainText( simulateThread -> getError() );
-    logText -> appendPlainText( tr("Simulation failed!") );
+    QString errorText;
+    errorText += tr("SimulationCraft encountered an error!");
+    errorText += "<br><br>";
+    errorText += "<i>" + simulateThread -> getErrorCategory() + ":</i>";
+    errorText += "<br>";
+    errorText += "<b>" + simulateThread -> getError() + "</b>";
+    errorText += "<br><br>";
+    errorText += tr("Please open a ticket, copying the detailed text below.<br>"
+                    "It contains all the input options of the last simulation"
+                    " and helps us reproduce the issue.<br>");
+
+    // Use simulation options used, same as goes to simc_gui.simc
+    QString errorDetails = simulateThread -> getOptions();
+
+    QMessageBox mBox;
+    mBox.setWindowTitle(simulateThread -> getErrorCategory());
+    mBox.setText( errorText );
+    mBox.setDetailedText( errorDetails );
+    mBox.exec();
+
+    // print to log as well.
+    logText -> appendHtml( errorText );
+    logText -> appendPlainText( errorDetails );
 
     // Spell Query
     if ( mainTab -> currentTab() == TAB_SPELLQUERY )
@@ -1142,21 +1198,6 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   }
 }
 
-#ifdef SC_PAPERDOLL
-void SC_MainWindow::paperdollFinished()
-{
-  timer -> stop();
-  simPhase = "%p%";
-  simProgress = 100;
-  progressBar -> setFormat( simPhase.c_str() );
-  progressBar -> setValue( simProgress );
-
-  simProgress = 100;
-
-  timer -> start( 100 );
-}
-#endif
-
 // ==========================================================================
 // Save Results
 // ==========================================================================
@@ -1251,7 +1292,7 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
     break;
   case TAB_LOG: saveLog(); break;
   case TAB_RESULTS: saveResults(); break;
-  case TAB_SPELLQUERY: spellQueryTab -> run_spell_query();
+  case TAB_SPELLQUERY: spellQueryTab -> run_spell_query(); break;
 #ifdef SC_PAPERDOLL
   case TAB_PAPERDOLL: start_paperdoll_sim(); break;
 #endif
@@ -1363,7 +1404,7 @@ void SC_MainWindow::reloadButtonClicked( bool )
 
 void SC_MainWindow::mainTabChanged( int index )
 {
-  visibleWebView = 0;
+  visibleWebView = nullptr;
   if ( index == TAB_IMPORT )
   {
     cmdLine -> setTab( static_cast<import_tabs_e>( importTab -> currentIndex() ) );
@@ -1616,41 +1657,41 @@ void SC_ReforgeButtonGroup::setSelected( int id, bool checked )
 void PersistentCookieJar::save()
 {
   QFile file( fileName );
-  if ( file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly ) )
   {
-    QDataStream out( &file );
-    QList<QNetworkCookie> cookies = allCookies();
-    qint32 count = (qint32)cookies.count();
-    out << count;
-    for ( int i = 0; i < count; i++ )
-    {
-      const QNetworkCookie& c = cookies.at( i );
-      out << c.name();
-      out << c.value();
-    }
-    file.close();
+    return;
+  }
+
+  QDataStream out( &file );
+  const QList<QNetworkCookie>& cookies = allCookies();
+  out << static_cast<int>(cookies.count());
+  for ( const auto& cookie : cookies )
+  {
+    out << cookie.name();
+    out << cookie.value();
   }
 }
 
 void PersistentCookieJar::load()
 {
   QFile file( fileName );
-  if ( file.open( QIODevice::ReadOnly ) )
+  if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QDataStream in( &file );
-    QList<QNetworkCookie> cookies;
-    qint32 count;
-    in >> count;
-    for ( int i = 0; i < count; i++ )
-    {
-      QByteArray name, value;
-      in >> name;
-      in >> value;
-      cookies.append( QNetworkCookie( name, value ) );
-    }
-    setAllCookies( cookies );
-    file.close();
+    return;
   }
+
+  QDataStream in( &file );
+  QList<QNetworkCookie> cookies;
+  int count;
+  in >> count;
+  for ( int i = 0; i < count; i++ )
+  {
+    QByteArray name, value;
+    in >> name;
+    in >> value;
+    cookies.append( QNetworkCookie( name, value ) );
+  }
+  setAllCookies( cookies );
 }
 
 void SC_SingleResultTab::save_result()
@@ -1746,40 +1787,9 @@ SC_ResultTab::SC_ResultTab( SC_MainWindow* mw ):
 SC_RecentlyClosedTab( mw ),
 mainWindow( mw )
 {
+
+  setTabsClosable( true );
   setMovable( true );
   enableDragHoveredOverTabSignal( true );
   connect( this, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SLOT( setCurrentIndex( int ) ) );
 }
-
-#ifdef SC_PAPERDOLL
-void PaperdollThread::run()
-{
-  cache::advance_era();
-
-  sim -> iterations = 100;
-
-  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
-
-  std::vector<std::string> args;
-  for ( int i = 0; i < stringList.count(); ++i )
-    args.push_back( stringList[ i ].toUtf8().constData() );
-  sim_control_t description;
-
-  success = description.options.parse_args( args );
-
-  if ( success )
-  {
-    success = sim -> setup( &description );
-  }
-  if ( success )
-  {
-    for ( unsigned int i = 0; i < 10; ++i )
-    {
-      sim -> current_iteration = 0;
-      sim -> execute();
-      player_t::scales_over_t s = player -> scales_over();
-      mainWindow -> paperdoll -> setCurrentDPS( s.name, s.value, s.stddev * sim -> confidence_estimator );
-    }
-  }
-}
-#endif
