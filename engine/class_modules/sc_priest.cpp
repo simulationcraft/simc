@@ -398,49 +398,49 @@ public:
   }
 
   // player_t overrides
-  virtual void      init_base_stats() override;
-  virtual void      init_spells() override;
-  virtual void      create_buffs() override;
-  virtual void      init_scaling() override;
-  virtual void      init_resources( bool force ) override;
-  virtual void      reset() override;
-  virtual void      create_options() override;
-  virtual std::string      create_profile( save_e = SAVE_ALL ) override;
-  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
-  virtual void      create_pets() override;
-  virtual void      copy_from( player_t* source ) override;
-  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
-  virtual role_e    primary_role() const override;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-  virtual double    composite_armor() const override;
-  virtual double    composite_melee_haste() const override;
-  virtual double    composite_melee_speed() const override;
-  virtual double    composite_spell_haste() const override;
-  virtual double    composite_spell_speed() const override;
-  virtual double    composite_spell_power( school_e school )  const override;
-  virtual double    composite_spell_power_multiplier() const override;
-  virtual double    composite_spell_crit() const override;
-  virtual double    composite_melee_crit() const override;
-  virtual double    composite_multistrike() const override;
-  virtual double    composite_player_multistrike_damage_multiplier() const override;
-  virtual double    composite_player_multistrike_healing_multiplier() const override;
-  virtual double    spirit() const;
-  virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const override;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
-  virtual double    temporary_movement_modifier() const override;
-  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double    composite_rating_multiplier( rating_e rating ) const override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void      invalidate_cache( cache_e ) override;
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
-  virtual void      pre_analyze_hook() override;
-  virtual void      init_action_list() override;
-  virtual priest_td_t* get_target_data( player_t* target ) const override;
-  virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
-  virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
-  virtual bool      has_t18_class_trinket() const override;
+  void      init_base_stats() override;
+  void      init_spells() override;
+  void      create_buffs() override;
+  void      init_scaling() override;
+  void      init_resources( bool force ) override;
+  void      reset() override;
+  void      create_options() override;
+  std::string      create_profile( save_e = SAVE_ALL ) override;
+  action_t* create_action( const std::string& name, const std::string& options ) override;
+  pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  void      create_pets() override;
+  void      copy_from( player_t* source ) override;
+  resource_e primary_resource() const override { return RESOURCE_MANA; }
+  role_e    primary_role() const override;
+  stat_e    convert_hybrid_stat( stat_e s ) const override;
+  double    composite_armor() const override;
+  double    composite_melee_haste() const override;
+  double    composite_melee_speed() const override;
+  double    composite_spell_haste() const override;
+  double    composite_spell_speed() const override;
+  double    composite_spell_power( school_e school )  const override;
+  double    composite_spell_power_multiplier() const override;
+  double    composite_spell_crit() const override;
+  double    composite_melee_crit() const override;
+  double    composite_multistrike() const override;
+  double    composite_player_multistrike_damage_multiplier() const override;
+  double    composite_player_multistrike_healing_multiplier() const override;
+  double    spirit() const;
+  double    composite_player_multiplier( school_e school ) const override;
+  double    composite_player_absorb_multiplier( const action_state_t* s ) const override;
+  double    composite_player_heal_multiplier( const action_state_t* s ) const override;
+  double    temporary_movement_modifier() const override;
+  double    composite_attribute_multiplier( attribute_e attr ) const override;
+  double    composite_rating_multiplier( rating_e rating ) const override;
+  double    matching_gear_multiplier( attribute_e attr ) const override;
+  void      invalidate_cache( cache_e ) override;
+  void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  void      pre_analyze_hook() override;
+  void      init_action_list() override;
+  priest_td_t* get_target_data( player_t* target ) const override;
+  expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
+  void assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
+  bool      has_t18_class_trinket() const override;
 
 private:
   void create_cooldowns();
@@ -486,7 +486,7 @@ struct priest_pet_t : public pet_t
   };
 
 
-  virtual void init_base_stats() override
+  void init_base_stats() override
   {
     pet_t::init_base_stats();
 
@@ -511,7 +511,7 @@ struct priest_pet_t : public pet_t
       base.stats.attribute = pet_base_stats[ i ].stats;
   }
 
-  virtual void schedule_ready( timespan_t delta_time, bool waiting ) override
+  void schedule_ready( timespan_t delta_time, bool waiting ) override
   {
     if ( main_hand_attack && ! main_hand_attack -> execute_event )
     {
@@ -521,7 +521,7 @@ struct priest_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual double composite_player_multiplier( school_e school ) const override
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -531,7 +531,7 @@ struct priest_pet_t : public pet_t
     return m;
   }
 
-  virtual resource_e primary_resource() const override
+  resource_e primary_resource() const override
   { return RESOURCE_ENERGY; }
 
   priest_t& o() const
@@ -572,16 +572,16 @@ struct base_fiend_pet_t : public priest_pet_t
 
   virtual double mana_return_percent() const = 0;
 
-  virtual void init_action_list() override;
+  void init_action_list() override;
 
-  virtual void create_buffs() override
+  void create_buffs() override
   {
     priest_pet_t::create_buffs();
 
     buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl", find_pet_spell( "Shadowcrawl" ) );
   }
 
-  virtual void init_gains() override
+  void init_gains() override
   {
     priest_pet_t::init_gains();
 
@@ -596,7 +596,7 @@ struct base_fiend_pet_t : public priest_pet_t
     }
   }
 
-  virtual void init_resources( bool force ) override
+  void init_resources( bool force ) override
   {
     priest_pet_t::init_resources( force );
 
@@ -604,7 +604,7 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  virtual void summon( timespan_t duration ) override
+  void summon( timespan_t duration ) override
   {
     priest_pet_t::summon( duration );
 
@@ -617,7 +617,7 @@ struct base_fiend_pet_t : public priest_pet_t
     }
   }
 
-  virtual void dismiss( bool expired ) override
+  void dismiss( bool expired ) override
   {
     // T18 Shadow 4pc; don't trigger if the we're at the end of the iteration (owner demise is in
     // progress)
@@ -629,7 +629,7 @@ struct base_fiend_pet_t : public priest_pet_t
     priest_pet_t::dismiss( expired );
   }
 
-  virtual action_t* create_action( const std::string& name,
+  action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override;
 };
 
@@ -650,7 +650,7 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
-  virtual double mana_return_percent() const override
+  double mana_return_percent() const override
   { return 0.0; }
 };
 
@@ -673,7 +673,7 @@ struct mindbender_pet_t : public base_fiend_pet_t
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
-  virtual double mana_return_percent() const override
+  double mana_return_percent() const override
   {
     double m  = mindbender_spell -> effectN( 2 ).percent();
     return m / 100;
@@ -708,10 +708,10 @@ public:
     owner_coeff.sp_from_sp = 1.0;
   }
 
-  virtual action_t* create_action( const std::string& name,
+  action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override;
 
-  virtual void summon( timespan_t duration ) override
+  void summon( timespan_t duration ) override
   {
     charges = 15 + o().glyphs.deep_wells -> effectN( 1 ).base_value();
 
@@ -741,13 +741,13 @@ struct priest_pet_melee_t : public melee_attack_t
     repeating   = true;
   }
 
-  virtual void reset() override
+  void reset() override
   {
     melee_attack_t::reset();
     first_swing = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     // First swing comes instantly after summoning the pet
     if ( first_swing )
@@ -756,7 +756,7 @@ struct priest_pet_melee_t : public melee_attack_t
     return melee_attack_t::execute_time();
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     melee_attack_t::schedule_execute( state );
 
@@ -802,7 +802,7 @@ struct shadowcrawl_t : public priest_pet_spell_t
   const base_fiend_pet_t& p() const
   { return static_cast<base_fiend_pet_t&>( *player ); }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_pet_spell_t::execute();
 
@@ -827,7 +827,7 @@ struct fiend_melee_t : public priest_pet_melee_t
   const base_fiend_pet_t& p() const
   { return static_cast<base_fiend_pet_t&>( *player ); }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_pet_melee_t::action_multiplier();
 
@@ -836,7 +836,7 @@ struct fiend_melee_t : public priest_pet_melee_t
     return am;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_pet_melee_t::impact( s );
 
@@ -867,7 +867,7 @@ struct lightwell_renew_t : public heal_t
   const lightwell_pet_t& p() const
   { return static_cast<lightwell_pet_t&>( *player ); }
 
-  virtual void execute() override
+  void execute() override
   {
     p().charges--;
 
@@ -876,7 +876,7 @@ struct lightwell_renew_t : public heal_t
     heal_t::execute();
   }
 
-  virtual void last_tick( dot_t* d ) override
+  void last_tick( dot_t* d ) override
   {
     heal_t::last_tick( d );
 
@@ -886,7 +886,7 @@ struct lightwell_renew_t : public heal_t
       new ( *sim ) player_demise_event_t( p() );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p().charges <= 0 )
       return false;
@@ -1043,14 +1043,14 @@ public:
     return false;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     cancel_shadowform();
 
     ab::schedule_execute( state );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! ab::ready() )
       return false;
@@ -1061,7 +1061,7 @@ public:
     return true;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = ab::cost();
 
@@ -1074,7 +1074,7 @@ public:
     return c;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     ab::consume_resource();
 
@@ -1127,7 +1127,7 @@ public:
     may_miss          = false;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
@@ -1168,7 +1168,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       snapshot_flags |= STATE_MUL_DA;
     }
 
-    virtual void impact( action_state_t* s ) override
+    void impact( action_state_t* s ) override
     {
       absorb_buff_t& buff = *get_td( s -> target ).buffs.divine_aegis;
       // Divine Aegis caps absorbs at 40% of target's health
@@ -1219,7 +1219,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
     }
 
-    virtual double action_multiplier() const override // override
+    double action_multiplier() const override // override
     {
       double am;
 
@@ -1230,7 +1230,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
              ( 1 + trigger_crit_multiplier * 0.3 );      // ( 1 + crit * 30% "DA factor" )
     }
 
-    virtual void impact( action_state_t* s ) override
+    void impact( action_state_t* s ) override
     {
       // Spirit Shell caps absorbs at 60% of target's health
       buff_t& spirit_shell = *get_td( s -> target ).buffs.spirit_shell;
@@ -1256,7 +1256,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   unsigned divine_aegis_trigger_mask;
   bool can_trigger_EoL, can_trigger_spirit_shell;
 
-  virtual void init() override
+  void init() override
   {
     base_t::init();
 
@@ -1278,7 +1278,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     can_trigger_EoL( true ), can_trigger_spirit_shell( false )
   {}
 
-  virtual double composite_crit() const override
+  double composite_crit() const override
   {
     double cc = base_t::composite_crit();
 
@@ -1288,7 +1288,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return cc;
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  double composite_target_crit( player_t* t ) const override
   {
     double ctc = base_t::composite_target_crit( t );
 
@@ -1298,7 +1298,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return ctc;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
@@ -1307,14 +1307,14 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return am;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = base_t::composite_target_multiplier( t );
 
     return ctm;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( can_trigger_spirit_shell )
       may_crit = priest.buffs.spirit_shell -> check() == 0;
@@ -1324,7 +1324,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     may_crit = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( ss && priest.buffs.spirit_shell -> up() )
     {
@@ -1352,7 +1352,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
       }
     }
   }
-  virtual void assess_damage( dmg_e    type,
+
+  void assess_damage( dmg_e    type,
                                 action_state_t* s ) override
   {
     remove_crit_amount_divine_aegis( s );
@@ -1546,7 +1547,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       execute();
     }
 
-    virtual double composite_target_multiplier( player_t* target ) const override
+    double composite_target_multiplier( player_t* target ) const override
     {
       double m = priest_heal_t::composite_target_multiplier( target );
       if ( target == player )
@@ -1554,10 +1555,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
       return m;
     }
 
-    virtual double total_crit_bonus() const override
+    double total_crit_bonus() const override
     { return 0; }
 
-    virtual void execute() override
+    void execute() override
     {
       player_t* saved_target = target;
       if ( ! target )
@@ -1568,7 +1569,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       target = saved_target;
     }
 
-    virtual void tick( dot_t* d ) override
+    void tick( dot_t* d ) override
     {
       player_t* saved_target = target;
       if ( ! target )
@@ -1592,7 +1593,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     weapon_multiplier = 0.0;
   }
 
-  virtual void init() override
+  void init() override
   {
     base_t::init();
 
@@ -1600,7 +1601,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       atonement = new atonement_heal_t( "atonement_" + name_str, priest );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
     double am = base_t::composite_target_multiplier( t );
 
@@ -1616,7 +1617,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     return am;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     double save_health_percentage = s -> target -> health_percentage();
 
@@ -1643,7 +1644,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  virtual void assess_damage( dmg_e type,
+  void assess_damage( dmg_e type,
                               action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
@@ -1682,7 +1683,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  virtual void trigger_atonement( dmg_e type, action_state_t* s )
+  void trigger_atonement( dmg_e type, action_state_t* s )
   {
     atonement -> trigger( s -> result_amount, direct_tick ? DMG_OVER_TIME : type, s -> result );
   }
@@ -1756,7 +1757,7 @@ struct angelic_feather_t : public priest_spell_t
     castable_in_shadowform = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
@@ -1775,7 +1776,7 @@ struct archangel_t : public priest_spell_t
     harmful = may_hit = may_crit = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
     priest.buffs.archangel -> trigger();
@@ -1784,7 +1785,7 @@ struct archangel_t : public priest_spell_t
       priest.buffs.clear_thoughts -> trigger();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! priest.buffs.holy_evangelism -> check() )
       return false;
@@ -1834,7 +1835,7 @@ struct chakra_chastise_t : public chakra_base_t
     chakra_base_t( p, p.find_class_spell( "Chakra: Chastise" ), options_str )
   { }
 
-  virtual void execute() override
+  void execute() override
   {
     chakra_base_t::execute();
     switch_to( priest.buffs.chakra_chastise );
@@ -1847,7 +1848,7 @@ struct chakra_sanctuary_t : public chakra_base_t
     chakra_base_t( p, p.find_class_spell( "Chakra: Sanctuary" ), options_str )
   {}
 
-  virtual void execute() override
+  void execute() override
   {
     chakra_base_t::execute();
     switch_to( priest.buffs.chakra_sanctuary );
@@ -1860,7 +1861,7 @@ struct chakra_serenity_t : public chakra_base_t
     chakra_base_t( p, p.find_class_spell( "Chakra: Serenity" ), options_str )
   { }
 
-  virtual void execute() override
+  void execute() override
   {
     chakra_base_t::execute();
     switch_to( priest.buffs.chakra_serenity );
@@ -1888,7 +1889,7 @@ struct dispersion_t : public priest_spell_t
     cooldown -> duration = data().cooldown() + priest.glyphs.dispersion -> effectN( 1 ).time_value();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -1900,7 +1901,7 @@ struct dispersion_t : public priest_spell_t
       return timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value();
   }
 
-  virtual void last_tick( dot_t* d ) override
+  void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
     priest.buffs.dispersion -> expire();
@@ -1922,7 +1923,7 @@ struct fortitude_t : public priest_spell_t
     background = ( sim -> overrides.stamina != 0 );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -1942,7 +1943,7 @@ struct levitate_t : public priest_spell_t
     ignore_false_positive = true;
   }
 
-  virtual void execute()
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -1968,7 +1969,7 @@ struct pain_suppression_t : public priest_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -1987,7 +1988,7 @@ struct power_infusion_t : public priest_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
     priest.buffs.power_infusion -> trigger();
@@ -2007,7 +2008,7 @@ struct shadowform_t : public priest_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -2026,7 +2027,7 @@ struct spirit_shell_t : public priest_spell_t
     harmful = may_hit = may_crit = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -2052,21 +2053,21 @@ public:
     harmful = false;
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     pet = player -> find_pet( pet_name );
 
     return priest_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     pet -> summon( summoning_duration );
 
     priest_spell_t::execute();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! pet )
     {
@@ -2134,7 +2135,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     school            = SCHOOL_SHADOW;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
@@ -2164,7 +2165,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     }
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
@@ -2206,14 +2207,14 @@ struct mind_blast_t : public priest_spell_t
       priest.cooldowns.mind_blast -> duration += priest.talents.clarity_of_power -> effectN( 3 ).time_value(); //Now Effect #3... wod.wowhead.com/spell=155246
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
     casted_with_shadowy_insight = false;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
@@ -2255,7 +2256,7 @@ struct mind_blast_t : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     if ( priest.buffs.shadowy_insight -> check() )
       return 0.0;
@@ -2263,7 +2264,7 @@ struct mind_blast_t : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     if ( priest.buffs.shadowy_insight -> up() )
     {
@@ -2275,7 +2276,7 @@ struct mind_blast_t : public priest_spell_t
     priest.buffs.shadowy_insight -> expire();
   }
 
-  virtual void update_ready( timespan_t cd_duration ) override
+  void update_ready( timespan_t cd_duration ) override
   {
     if ( cd_duration < timespan_t::zero() )
       cd_duration = cooldown -> duration;
@@ -2291,7 +2292,7 @@ struct mind_blast_t : public priest_spell_t
     priest.buffs.glyph_of_mind_spike -> up(); // benefit tracking
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     if ( priest.buffs.shadowy_insight -> check() || priest.talents.clarity_of_power -> ok() )
     {
@@ -2305,14 +2306,14 @@ struct mind_blast_t : public priest_spell_t
     return et;
   }
 
-  virtual void reset() override
+  void reset() override
   {
     priest_spell_t::reset();
 
     casted_with_shadowy_insight = false;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
@@ -2367,12 +2368,12 @@ struct mind_spike_t : public priest_spell_t
     is_mind_spell = true;
   }
 
-  virtual action_state_t* new_state() override
+  action_state_t* new_state() override
   {
     return new mind_spike_state_t( this, target );
   }
 
-  virtual action_state_t* get_state( const action_state_t* s ) override
+  action_state_t* get_state( const action_state_t* s ) override
   {
     action_state_t* s_ = priest_spell_t::get_state( s );
 
@@ -2385,7 +2386,7 @@ struct mind_spike_t : public priest_spell_t
     return s_;
   }
 
-  virtual void snapshot_state( action_state_t* state, dmg_e type ) override
+  void snapshot_state( action_state_t* state, dmg_e type ) override
   {
     mind_spike_state_t* ms_s = static_cast<mind_spike_state_t*>( state );
 
@@ -2394,14 +2395,14 @@ struct mind_spike_t : public priest_spell_t
     priest_spell_t::snapshot_state( state, type );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
     casted_with_surge_of_darkness = false;
   }
 
-  virtual void update_ready( timespan_t cd_duration ) override
+  void update_ready( timespan_t cd_duration ) override
   {
     priest_spell_t::update_ready( cd_duration );
 
@@ -2409,7 +2410,7 @@ struct mind_spike_t : public priest_spell_t
     priest.buffs.empowered_shadows -> expire();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
@@ -2480,7 +2481,7 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void schedule_execute( action_state_t* state ) override
+  void schedule_execute( action_state_t* state ) override
   {
     if ( priest.buffs.surge_of_darkness -> up() )
     {
@@ -2509,7 +2510,7 @@ struct mind_spike_t : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
@@ -2533,7 +2534,7 @@ struct mind_spike_t : public priest_spell_t
     return d;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     if ( priest.buffs.surge_of_darkness -> check() )
       return 0.0;
@@ -2541,7 +2542,7 @@ struct mind_spike_t : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     if ( priest.buffs.surge_of_darkness -> check() )
     {
@@ -2551,7 +2552,7 @@ struct mind_spike_t : public priest_spell_t
     return priest_spell_t::execute_time();
   }
 
-  virtual void reset() override
+  void reset() override
   {
     priest_spell_t::reset();
     casted_with_surge_of_darkness = false;
@@ -2594,7 +2595,7 @@ struct mind_sear_base_t : public priest_spell_t
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( insanity ? "Searing Insanity" : "Mind Sear" ) );
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_spell_t::action_multiplier();
 
@@ -2605,7 +2606,7 @@ struct mind_sear_base_t : public priest_spell_t
     return am;
   }
 
-  virtual void last_tick( dot_t* d ) override
+  void last_tick( dot_t* d ) override
   {
     if ( d -> current_tick == d -> num_ticks )
     {
@@ -2615,7 +2616,7 @@ struct mind_sear_base_t : public priest_spell_t
     priest_spell_t::last_tick( d );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     // Mind Sear does on-hit damage only when there is a GCD of another ability between it, so chaining Mind Sears doesn't allow for the on-hit to happen again.
     if ( priest.buffs.mind_sear_on_hit_reset -> check() == 0 )
@@ -2642,9 +2643,17 @@ struct searing_insanity_t : public mind_sear_base_t<true>
   {
   }
 
-  virtual bool ready() override
+  void execute() override
   {
-    if ( !priest.buffs.insanity -> up() )
+    // benefit tracking
+    priest.buffs.insanity -> up();
+
+    base_t::execute();
+  }
+
+  bool ready() override
+  {
+    if ( !priest.buffs.insanity -> check() )
       return false;
 
     return base_t::ready();
@@ -2676,17 +2685,17 @@ struct shadow_word_death_t : public priest_spell_t
       ability_lag_stddev = sim -> default_aura_delay_stddev;
     }
 
-    virtual void init() override
+    void init() override
     {
       priest_spell_t::init();
 
       stats -> type = STATS_NEUTRAL;
     }
 
-    virtual double composite_spell_power() const override
+    double composite_spell_power() const override
     { return spellpower; }
 
-    virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
+    double composite_da_multiplier( const action_state_t* /* state */ ) const override
     {
       double d = multiplier;
 
@@ -2707,7 +2716,7 @@ struct shadow_word_death_t : public priest_spell_t
     base_multiplier *= 1.0 + p.sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     bool below_20 = ( target -> health_percentage() < 20.0 );
 
@@ -2720,7 +2729,7 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void update_ready( timespan_t cd_duration ) override
+  void update_ready( timespan_t cd_duration ) override
   {
     priest_spell_t::update_ready( cd_duration );
 
@@ -2728,7 +2737,7 @@ struct shadow_word_death_t : public priest_spell_t
     priest.buffs.empowered_shadows -> expire();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     s -> result_amount = floor( s -> result_amount );
 
@@ -2756,7 +2765,7 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::impact( s );
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
@@ -2770,7 +2779,7 @@ struct shadow_word_death_t : public priest_spell_t
     return d;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! priest_spell_t::ready() )
       return false;
@@ -2843,13 +2852,13 @@ struct devouring_plague_dot_t : public priest_spell_t
     snapshot_flags = update_flags = 0;
   }
 
-  virtual void reset() override
+  void reset() override
   { priest_spell_t::reset(); base_ta_adder = 0; }
 
-  virtual action_state_t* new_state() override
+  action_state_t* new_state() override
   { return new dp_state_t( this, target ); }
 
-  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
+  action_state_t* get_state( const action_state_t* s = nullptr ) override
   {
     action_state_t* s_ = priest_spell_t::get_state( s );
 
@@ -2891,7 +2900,7 @@ struct devouring_plague_dot_t : public priest_spell_t
                                player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
   }
 
-  virtual void impact( action_state_t* state ) override
+  void impact( action_state_t* state ) override
   {
     dp_state_t* s = static_cast<dp_state_t*>( state );
     double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
@@ -2910,7 +2919,7 @@ struct devouring_plague_dot_t : public priest_spell_t
                                player -> name(), saved_impact_dmg, ds -> tick_dmg, saved_impact_dmg, ds -> tick_dmg );
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
@@ -2925,7 +2934,7 @@ struct devouring_plague_dot_t : public priest_spell_t
       priest.procs.surge_of_darkness_from_devouring_plague -> occur();
   }
 
-  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
   {
     // Old Mop Dot Behaviour
     return dot -> time_to_next_tick() + triggered_duration;
@@ -2955,10 +2964,10 @@ struct devouring_plague_t : public priest_spell_t
     add_child( dot_spell );
   }
 
-  virtual action_state_t* new_state() override
+  action_state_t* new_state() override
   { return new shadow_orb_state_t( this, target ); }
 
-  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
+  action_state_t* get_state( const action_state_t* s = nullptr ) override
   {
     action_state_t* s_ = priest_spell_t::get_state( s );
 
@@ -2971,7 +2980,7 @@ struct devouring_plague_t : public priest_spell_t
     return s_;
   }
 
-  virtual void snapshot_state( action_state_t* s, dmg_e type ) override
+  void snapshot_state( action_state_t* s, dmg_e type ) override
   {
     shadow_orb_state_t* ds = static_cast<shadow_orb_state_t*>( s );
 
@@ -2987,7 +2996,7 @@ struct devouring_plague_t : public priest_spell_t
     snapshot_flags |= STATE_HASTE;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     resource_consumed = cost();
 
@@ -3025,7 +3034,7 @@ struct devouring_plague_t : public priest_spell_t
     priest.buffs.empowered_shadows -> trigger(1, resource_consumed * 0.2);
   }
 
-  virtual double action_da_multiplier() const override
+  double action_da_multiplier() const override
   {
     double m = priest_spell_t::action_da_multiplier();
 
@@ -3077,7 +3086,7 @@ struct devouring_plague_t : public priest_spell_t
     dot_spell -> append_damage( state -> target, state -> result_amount );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
@@ -3111,7 +3120,7 @@ struct devouring_plague_t : public priest_spell_t
     }
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     // WoD Alpha 2014/06/19 added by twintop
     if ( priest.resources.current[ RESOURCE_SHADOW_ORB ] < 3.0 )
@@ -3142,7 +3151,7 @@ struct mind_flay_base_t: public priest_spell_t
     }
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_spell_t::action_multiplier();
 
@@ -3154,7 +3163,7 @@ struct mind_flay_base_t: public priest_spell_t
     return am;
   }
 
-  virtual void tick( dot_t * d )
+  void tick( dot_t * d ) override
   {
     priest_spell_t::tick( d );
     priest.buffs.glyph_of_mind_flay -> trigger();
@@ -3180,7 +3189,7 @@ struct insanity_t : public mind_flay_base_t<true>
   {
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double am = base_t::composite_persistent_multiplier( s );
 
@@ -3189,7 +3198,7 @@ struct insanity_t : public mind_flay_base_t<true>
     return am;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !priest.buffs.insanity -> up() )
       return false;
@@ -3227,7 +3236,7 @@ struct shadow_word_pain_t : public priest_spell_t
     }
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
@@ -3257,13 +3266,13 @@ struct vampiric_embrace_t : public priest_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
     priest.buffs.vampiric_embrace -> trigger();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( priest.buffs.vampiric_embrace -> check() )
       return false;
@@ -3290,7 +3299,7 @@ struct vampiric_touch_t : public priest_spell_t
     }
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
@@ -3338,17 +3347,17 @@ struct holy_fire_base_t : public priest_spell_t
       ability_lag_stddev = sim -> default_aura_delay_stddev;
     }
 
-    virtual void init() override
+    void init() override
     {
       priest_spell_t::init();
 
       stats -> type = STATS_NEUTRAL;
     }
 
-    virtual double composite_spell_power() const override
+    double composite_spell_power() const override
     { return spellpower; }
 
-    virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
+    double composite_da_multiplier( const action_state_t* /* state */ ) const override
     {
       double d = multiplier;
       d /= 5;
@@ -3373,14 +3382,14 @@ struct holy_fire_base_t : public priest_spell_t
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
     priest.buffs.holy_evangelism -> trigger();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double m = priest_spell_t::action_multiplier();
 
@@ -3389,7 +3398,7 @@ struct holy_fire_base_t : public priest_spell_t
     return m;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = priest_spell_t::cost();
 
@@ -3399,7 +3408,7 @@ struct holy_fire_base_t : public priest_spell_t
     return c;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( backlash && priest.glyphs.inquisitor -> ok() && ( s -> result == RESULT_HIT || s -> result == RESULT_CRIT ) )
     {
@@ -3430,7 +3439,7 @@ struct power_word_solace_t : public holy_fire_base_t
     can_trigger_atonement = true; // works for both disc and holy
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     holy_fire_base_t::impact( s );
 
@@ -3474,7 +3483,7 @@ struct penance_t : public priest_spell_t
         atonement -> stats = player -> get_stats( "atonement_penance" );
     }
 
-    virtual void impact( action_state_t* state ) override
+    void impact( action_state_t* state ) override
     {
       priest_spell_t::impact( state );
 
@@ -3514,17 +3523,17 @@ struct penance_t : public priest_spell_t
     tick_action = new penance_tick_t( p, stats );
   }
 
-  virtual void init() override
+  void init() override
   {
     priest_spell_t::init();
     if ( atonement )
       atonement -> channeled = true;
   }
 
-  virtual bool usable_moving() const override
+  bool usable_moving() const override
   { return priest.glyphs.penance -> ok(); }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = priest_spell_t::cost();
 
@@ -3533,7 +3542,7 @@ struct penance_t : public priest_spell_t
     return c;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
     priest.buffs.holy_evangelism -> trigger(); // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
@@ -3582,7 +3591,7 @@ struct smite_t : public priest_spell_t
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -3592,7 +3601,7 @@ struct smite_t : public priest_spell_t
     trigger_surge_of_light();
   }
 
-  virtual void update_ready( timespan_t cd_duration ) override
+  void update_ready( timespan_t cd_duration ) override
   {
     priest_spell_t::update_ready( cd_duration );
     assert( execute_state );
@@ -3619,7 +3628,7 @@ struct smite_t : public priest_spell_t
     return glyph_benefit;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = priest_spell_t::composite_target_multiplier( target );
 
@@ -3629,10 +3638,10 @@ struct smite_t : public priest_spell_t
     return m;
   }
 
-  virtual action_state_t* new_state() override
+  action_state_t* new_state() override
   { return new state_t( this, target ); }
 
-  virtual void snapshot_state( action_state_t* s, dmg_e type ) override
+  void snapshot_state( action_state_t* s, dmg_e type ) override
   {
     state_t& state = static_cast<state_t&>( *s );
 
@@ -3641,7 +3650,7 @@ struct smite_t : public priest_spell_t
     priest_spell_t::snapshot_state( s, type );
   }
 
-  virtual void trigger_atonement( dmg_e type, action_state_t* s ) override
+  void trigger_atonement( dmg_e type, action_state_t* s )
   {
     double atonement_dmg = s -> result_amount; // Normal dmg
 
@@ -3653,7 +3662,7 @@ struct smite_t : public priest_spell_t
   }
 
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = priest_spell_t::cost();
 
@@ -3687,8 +3696,6 @@ public:
 
   std::vector<player_t*> targets; // List of available targets to jump to, created once at execute() and static during the jump process.
 
-  virtual ~cascade_base_t() {}
-
   cascade_base_t( const std::string& n, priest_t& p, const std::string& options_str, const spell_data_t* scaling_data ) :
     ab( n, p, p.find_talent_spell( "Cascade" ) )
   {
@@ -3704,12 +3711,12 @@ public:
     ab::range        = 0;
   }
 
-  virtual action_state_t* new_state() override
+  action_state_t* new_state() override
   {
     return new cascade_state_t( this, ab::target );
   }
 
-  virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const
+  timespan_t distance_targeting_travel_time( action_state_t* s ) const
   {
     cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
     if ( cs -> source_target )
@@ -3755,7 +3762,7 @@ public:
 
   virtual void populate_target_list() = 0;
 
-  virtual void execute() override
+  void execute() override
   {
     // Clear and populate targets list
     targets.clear();
@@ -3764,7 +3771,7 @@ public:
     ab::execute();
   }
 
-  virtual void impact( action_state_t* q ) override
+  void impact( action_state_t* q ) override
   {
     ab::impact( q );
 
@@ -3812,7 +3819,7 @@ public:
     }
   }
 
-  virtual double calculate_direct_amount( action_state_t* s ) const
+  double calculate_direct_amount( action_state_t* s ) const override
   {
     cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
     double cda = action_t::calculate_direct_amount( s );
@@ -3851,7 +3858,7 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
     instant_multistrike = 0;
   }
 
-  virtual void populate_target_list() override
+  void populate_target_list() override
   {
     for ( size_t i = 0; i < target_list().size(); ++i )
     {
@@ -3908,14 +3915,13 @@ public:
     ab::radius = 30;
     ab::range = 0;
   }
-  virtual ~halo_base_t() {}
 
-  virtual timespan_t distance_targeting_travel_time( action_state_t* s ) const
+  timespan_t distance_targeting_travel_time( action_state_t* s ) const override
   {
     return timespan_t::from_seconds( s -> action -> player -> get_player_distance( *s -> target ) / ab::travel_speed );
   }
 
-  virtual double calculate_direct_amount( action_state_t* s ) const
+  double calculate_direct_amount( action_state_t* s ) const override
   {
     double cda = action_t::calculate_direct_amount( s );
 
@@ -3947,7 +3953,7 @@ struct halo_t : public priest_spell_t
     add_child( _base_spell );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -3997,7 +4003,7 @@ public:
   // aren't moving such that it would miss the target on the way out and/or
   // back), it will hit twice. Threshold is 24 yards, per tooltip and tests
   // for 2 hits. 28 yards is the threshold for 1 hit.
-  virtual void execute() override
+  void execute() override
   {
     double distance;
 
@@ -4030,14 +4036,14 @@ struct divine_star_t : public priest_spell_t
     add_child( _base_spell );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
     _base_spell -> execute();
   }
 
-  virtual bool usable_moving() const override
+  bool usable_moving() const override
   {
     // Holy/Disc version is usable while moving, Shadow version is instant cast anyway.
     return true;
@@ -4071,7 +4077,7 @@ struct void_entropy_t : public priest_spell_t
     instant_multistrike = 0;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     resource_consumed = cost();
 
@@ -4106,12 +4112,12 @@ struct void_entropy_t : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     //Only usable with 3 orbs, per Celestalon in Theorycraft thread - Twintop 2014/07/27
     if ( priest.resources.current[ RESOURCE_SHADOW_ORB ] < 3.0 )
@@ -4143,7 +4149,7 @@ struct silence_t : public priest_spell_t
 
   }
 
-  virtual void execute()
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -4151,7 +4157,7 @@ struct silence_t : public priest_spell_t
     target -> debuffs.casting -> expire();
   }
 
-  virtual bool ready()
+  bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() || cooldown -> remains() > timespan_t::zero() )
       return false;
@@ -4181,7 +4187,7 @@ struct binding_heal_t : public priest_heal_t
     aoe = 2;
   }
 
-  virtual void init() override
+  void init() override
   {
     priest_heal_t::init();
 
@@ -4190,7 +4196,7 @@ struct binding_heal_t : public priest_heal_t
     target_cache.list.push_back( player );
   }
 
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const override
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     assert( tl.size() == 2 );
 
@@ -4200,7 +4206,7 @@ struct binding_heal_t : public priest_heal_t
     return tl.size();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4223,7 +4229,7 @@ struct circle_of_healing_t : public priest_heal_t
     aoe = p.glyphs.circle_of_healing -> ok() ? 6 : 5;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     cooldown -> duration = data().cooldown();
     cooldown -> duration += priest.sets.set( SET_HEALER, T14, B4 ) -> effectN( 2 ).time_value();
@@ -4239,7 +4245,7 @@ struct circle_of_healing_t : public priest_heal_t
     trigger_surge_of_light();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4292,7 +4298,7 @@ struct divine_hymn_t : public priest_heal_t
     add_child( tick_action );
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4302,7 +4308,7 @@ struct divine_hymn_t : public priest_heal_t
     return am;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4335,7 +4341,7 @@ struct flash_heal_t : public priest_heal_t
     castable_in_shadowform = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4344,7 +4350,7 @@ struct flash_heal_t : public priest_heal_t
     trigger_surge_of_light();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
@@ -4354,7 +4360,7 @@ struct flash_heal_t : public priest_heal_t
     trigger_naarus_discipline( s );
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     if ( priest.buffs.surge_of_light -> check() )
       return timespan_t::zero();
@@ -4362,7 +4368,7 @@ struct flash_heal_t : public priest_heal_t
     return priest_heal_t::execute_time();
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     if ( priest.buffs.surge_of_light -> check() )
       return 0.0;
@@ -4388,7 +4394,7 @@ struct guardian_spirit_t : public priest_heal_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
     target -> buffs.guardian_spirit -> trigger();
@@ -4408,7 +4414,7 @@ struct _heal_t : public priest_heal_t
     can_trigger_spirit_shell = true;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4417,7 +4423,7 @@ struct _heal_t : public priest_heal_t
     trigger_divine_insight();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
@@ -4427,7 +4433,7 @@ struct _heal_t : public priest_heal_t
     trigger_naarus_discipline( s );
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4442,7 +4448,7 @@ struct _heal_t : public priest_heal_t
     return am;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = priest_heal_t::cost();
 
@@ -4458,7 +4464,7 @@ struct _heal_t : public priest_heal_t
     return c;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t et = priest_heal_t::execute_time();
 
@@ -4491,7 +4497,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
       can_trigger_EoL = false; // http://us.battle.net/wow/en/forum/topic/5889309137?page=107#2137
     }
 
-    virtual double action_multiplier() const override
+    double action_multiplier() const override
     {
       double am = priest_heal_t::action_multiplier();
 
@@ -4521,7 +4527,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     cooldown -> duration *= 1.0 + p.sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4530,7 +4536,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     trigger_surge_of_light();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! priest.buffs.chakra_sanctuary -> check() )
       return false;
@@ -4558,14 +4564,14 @@ struct holy_word_chastise_t : public priest_spell_t
     castable_in_shadowform = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
     priest.buffs.absolution -> expire();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_spell_t::action_multiplier();
 
@@ -4575,7 +4581,7 @@ struct holy_word_chastise_t : public priest_spell_t
     return am;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( priest.buffs.chakra_sanctuary -> check() )
       return false;
@@ -4602,7 +4608,7 @@ struct holy_word_serenity_t : public priest_heal_t
     cooldown -> duration = data().cooldown() * ( 1.0 + p.sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2 );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4611,7 +4617,7 @@ struct holy_word_serenity_t : public priest_heal_t
     trigger_surge_of_light();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4621,14 +4627,14 @@ struct holy_word_serenity_t : public priest_heal_t
     return am;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
     get_td( s -> target ).buffs.holy_word_serenity -> trigger();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! priest.buffs.chakra_serenity -> check() )
       return false;
@@ -4656,7 +4662,7 @@ struct holy_word_t : public priest_spell_t
     castable_in_shadowform = false;
   }
 
-  virtual void init() override
+  void init() override
   {
     priest_spell_t::init();
 
@@ -4665,7 +4671,7 @@ struct holy_word_t : public priest_spell_t
     hw_serenity -> action_list = action_list;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     action_t* a;
 
@@ -4680,12 +4686,12 @@ struct holy_word_t : public priest_spell_t
     a -> schedule_execute( state );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     assert( false );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( priest.buffs.chakra_serenity -> check() )
       return hw_serenity -> ready();
@@ -4721,14 +4727,14 @@ struct lightwell_t : public priest_spell_t
     assert( consume_interval > timespan_t::zero() && consume_interval < cooldown -> duration );
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     lightwell_renew_cd = priest.pets.lightwell -> get_cooldown( "lightwell_renew" );
 
     return priest_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_spell_t::execute();
 
@@ -4755,14 +4761,14 @@ struct penance_heal_t : public priest_heal_t
       stats = player.get_stats( "penance_heal", this );
     }
 
-    virtual void init() override
+    void init() override
     {
       priest_heal_t::init();
 
       snapshot_flags |= STATE_MUL_TA;
     }
 
-    virtual void impact( action_state_t* state ) override
+    void impact( action_state_t* state ) override
     {
       priest_heal_t::impact( state );
 
@@ -4796,7 +4802,7 @@ struct penance_heal_t : public priest_heal_t
     tick_action = new penance_heal_tick_t( p );
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = priest_heal_t::cost();
 
@@ -4805,7 +4811,7 @@ struct penance_heal_t : public priest_heal_t
     return c;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
@@ -4861,7 +4867,7 @@ struct power_word_shield_t : public priest_absorb_t
     castable_in_shadowform = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_absorb_t::impact( s );
 
@@ -4878,7 +4884,7 @@ struct power_word_shield_t : public priest_absorb_t
       glyph_pws -> trigger( s );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !ignore_debuff && target -> buffs.weakened_soul -> check() )
       return false;
@@ -4900,7 +4906,7 @@ struct prayer_of_healing_t : public priest_heal_t
     can_trigger_spirit_shell = true;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4909,13 +4915,13 @@ struct prayer_of_healing_t : public priest_heal_t
     trigger_divine_insight();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
     trigger_naarus_discipline( s );
   }
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4927,7 +4933,7 @@ struct prayer_of_healing_t : public priest_heal_t
     return am;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = priest_heal_t::cost();
 
@@ -4940,7 +4946,7 @@ struct prayer_of_healing_t : public priest_heal_t
     return c;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t et = priest_heal_t::execute_time();
 
@@ -4950,7 +4956,7 @@ struct prayer_of_healing_t : public priest_heal_t
     return et;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( priest.talents.clarity_of_purpose -> ok() )
       return false; //Clarity of Purpose replaces Prayer of Healing
@@ -4983,7 +4989,7 @@ struct prayer_of_mending_t : public priest_heal_t
     castable_in_shadowform = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -4992,7 +4998,7 @@ struct prayer_of_mending_t : public priest_heal_t
     trigger_serendipity( true );
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -5002,7 +5008,7 @@ struct prayer_of_mending_t : public priest_heal_t
     return am;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = priest_heal_t::composite_target_multiplier( t );
 
@@ -5042,7 +5048,7 @@ struct renew_t : public priest_heal_t
       trigger_surge_of_light();
     }
 
-    virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
+    double composite_da_multiplier( const action_state_t* /* state */ ) const override
     { return 1.0; }
   };
   rapid_renewal_t* rr;
@@ -5070,7 +5076,7 @@ struct renew_t : public priest_heal_t
     castable_in_shadowform = true;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -5080,7 +5086,7 @@ struct renew_t : public priest_heal_t
     return am;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
@@ -5120,7 +5126,7 @@ struct clarity_of_purpose_t : public priest_heal_t
     // TODO: implement mechanic
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
@@ -5137,28 +5143,27 @@ struct saving_grace_t : public priest_heal_t
     // can_trigger_spirit_shell = true; ?
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
 
     priest.buffs.saving_grace_penalty -> trigger();
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t et = priest_heal_t::execute_time();
 
     return et;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     priest_heal_t::execute();
 
     trigger_surge_of_light();
   }
 };
-
 
 
 } // NAMESPACE heals
@@ -5204,7 +5209,7 @@ struct shadowform_t : public priest_buff_t<buff_t>
                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   { }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
@@ -5217,7 +5222,7 @@ struct shadowform_t : public priest_buff_t<buff_t>
     return r;
   }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -5245,7 +5250,7 @@ struct archangel_t : public priest_buff_t<buff_t>
     }
   }
 
-  virtual bool trigger( int stacks, double /* value */, double chance, timespan_t duration ) override
+  bool trigger( int stacks, double /* value */, double chance, timespan_t duration ) override
   {
     stacks = priest.buffs.holy_evangelism -> stack();
     double archangel_value = default_value * stacks;
@@ -5265,7 +5270,7 @@ struct dispersion_t : public priest_buff_t<buff_t>
 
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     priest.buffs.shadow_power -> trigger();
     buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -5278,7 +5283,7 @@ struct spirit_shell_t : public priest_buff_t<buff_t>
     base_t( p, buff_creator_t( &p, "spirit_shell" ).spell( p.find_class_spell( "Spirit Shell" ) ).cd( timespan_t::zero() ) )
   { }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool success = base_t::trigger( stacks, value, chance, duration );
 
@@ -5559,7 +5564,7 @@ expr_t* priest_t::create_expression( action_t* a,
       {
       }
 
-      virtual double evaluate()
+      double evaluate()
       {
         priest_td_t& td = *player.get_target_data( action.target );
 
@@ -5579,7 +5584,7 @@ expr_t* priest_t::create_expression( action_t* a,
       {
       }
 
-      virtual double evaluate()
+      double evaluate()
       {
         if ( player.target == action.target )
         {
@@ -5603,7 +5608,7 @@ expr_t* priest_t::create_expression( action_t* a,
       {
       }
 
-      virtual double evaluate()
+      double evaluate()
       {
         if ( !priest.active_spells.shadowy_apparitions )
           return 0.0;
@@ -7313,7 +7318,7 @@ public:
 
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
     (void) p;
     /*// Custom Class Section
@@ -7335,25 +7340,25 @@ struct priest_module_t : public module_t
 {
   priest_module_t() : module_t( PRIEST ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new priest_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new priest_report_t( *p ) );
     return p;
   }
-  virtual bool valid() const override { return true; }
-  virtual void init( player_t* p ) const override
+  bool valid() const override { return true; }
+  void init( player_t* p ) const override
   {
     p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
     p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
     p -> buffs.naarus_discipline  = buff_creator_t( p, "naarus_discipline", p -> find_spell( 185103 ) );
     p -> buffs.weakened_soul    = new buffs::weakened_soul_t( p );
   }
-  virtual void static_init() const override
+  void static_init() const override
   {
     items::init();
   }
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
     // Missing DBC Values
     hotfix::register_spell( "Priest", "missing", "Auspicious Spirit travel speed, in yards per second.", 78203, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
@@ -7369,8 +7374,8 @@ struct priest_module_t : public module_t
       .verification_value( 0.0 );
   }
 
-  virtual void combat_begin( sim_t* ) const override {}
-  virtual void combat_end( sim_t* ) const override {}
+  void combat_begin( sim_t* ) const override {}
+  void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE
