@@ -272,6 +272,8 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( reforgeplotsButtonGroup,   SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
 
   connect( itemDbOrder,               SIGNAL( itemSelectionChanged() ), this, SLOT( _optionsChanged() ) );
+
+  createToolTips();
 }
 
 void SC_OptionsTab::createGlobalsTab()

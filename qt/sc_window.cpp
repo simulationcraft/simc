@@ -11,6 +11,7 @@
 #include "sc_SampleProfilesTab.hpp"
 #include "sc_SimulateTab.hpp"
 #include "sc_AutomationTab.hpp"
+#include "sc_WelcomeTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #ifdef SC_PAPERDOLL
 #include "sc_PaperDoll.hpp"
@@ -42,6 +43,7 @@ struct HtmlOutputFunctor
       qint64 ret = file.write(out_utf8);
       file.close();
       assert(ret == htmlOutput.size());
+      (void)ret;
     }
   }
 };
@@ -267,7 +269,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   TmpDir( "." ),
   consecutiveSimulationsRun( 0 )
 {
-  setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() );
+  setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() + " " + webEngineName());
   setAttribute( Qt::WA_AlwaysShowToolTips );
 
 #if defined( Q_OS_MAC )
@@ -306,7 +308,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
   createSpellQueryTab();
   createCmdLine();
-  createToolTips();
 #if defined( Q_OS_MAC )
   createTabShortcuts();
 #endif
@@ -383,36 +384,6 @@ void SC_MainWindow::createOptionsTab()
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
-}
-
-#if ! defined( SC_USE_WEBKIT )
-void SC_WelcomeTabWidget::welcomeLoadSlot()
-{
-  setUrl( welcome_uri );
-  welcome_timer -> deleteLater();
-}
-#endif
-
-SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
-  SC_WebEngineView( parent )
-{
-  QString welcomeFile = SC_PATHS::getDataPath() + "/Welcome.html";
-
-#ifndef SC_USE_WEBKIT
-  welcome_uri = "file:///" + welcomeFile;
-  welcome_timer = new QTimer( this );
-  welcome_timer -> setSingleShot( true );
-  welcome_timer -> setInterval( 500 );
-
-  connect( welcome_timer, SIGNAL( timeout() ), this, SLOT( welcomeLoadSlot() ) );
-  welcome_timer -> start();
-
-  connect( this, SIGNAL( urlChanged(const QUrl& ) ), this, SLOT( urlChangedSlot(const QUrl&) ) );
-#else
-  setUrl( "file:///" + welcomeFile );
-  page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-  connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
-#endif
 }
 
 void SC_MainWindow::createImportTab()
@@ -526,11 +497,6 @@ void SC_MainWindow::createSpellQueryTab()
 {
   spellQueryTab = new SC_SpellQueryTab( this );
   mainTab -> addTab( spellQueryTab, tr( "Spell Query" ) );
-}
-
-void SC_MainWindow::createToolTips()
-{
-  optionsTab -> createToolTips();
 }
 
 void SC_MainWindow::createTabShortcuts()

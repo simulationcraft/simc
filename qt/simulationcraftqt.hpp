@@ -85,6 +85,15 @@ typedef QWebView SC_WebEngineView;
 typedef QWebPage SC_WebEnginePage;
 #endif
 
+inline QString webEngineName()
+{
+#if defined(SC_USE_WEBKIT)
+  return "WebKit";
+#else
+  return "WebEngine";
+#endif
+}
+
 struct SC_PATHS
 {
     static QString getDataPath();
@@ -453,41 +462,6 @@ public:
 };
 
 // ============================================================================
-// SC_WelcomeTabWidget
-// ============================================================================
-
-class SC_WelcomeTabWidget: public SC_WebEngineView
-{
-  Q_OBJECT
-  public:
-  SC_WelcomeTabWidget( SC_MainWindow* parent = 0 );
-
-private slots:
-#if defined ( SC_USE_WEBENGINE )
-  void urlChangedSlot( const QUrl& url )
-  {
-    if ( url.isLocalFile() )
-    {
-      return;
-    }
-    else
-    {
-      page() -> triggerAction( QWebEnginePage::Stop );
-      QDesktopServices::openUrl( url );
-      page() -> triggerAction( QWebEnginePage::Back );
-    }
-  }
-public:
-  QString welcome_uri;
-  QTimer* welcome_timer;
-public slots:
-  void welcomeLoadSlot();
-#else
-  void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
-#endif
-};
-
-// ============================================================================
 // SC_ResultTabWidget
 // ============================================================================
 
@@ -791,7 +765,6 @@ public:
   void createHelpTab();
   void createLogTab();
   void createSpellQueryTab();
-  void createToolTips();
   void createTabShortcuts();
   void createSampleProfilesTab();
   void createCustomTab();

@@ -10,6 +10,7 @@
  HEADERS += qt/util/sc_mainwindowcommandline.hpp
  HEADERS += qt/util/sc_hoverarea.hpp
  HEADERS += qt/simulationcraftqt.hpp
+ HEADERS += qt/sc_WelcomeTab.hpp
  HEADERS += qt/sc_SpellQueryTab.hpp
  HEADERS += qt/sc_SimulationThread.hpp
  HEADERS += qt/sc_SimulateTab.hpp
@@ -23,6 +24,7 @@
  SOURCES += qt/util/sc_recentlyclosed.cpp
  SOURCES += qt/util/sc_mainwindowcommandline.cpp
  SOURCES += qt/sc_window.cpp
+ SOURCES += qt/sc_WelcomeTab.cpp
  SOURCES += qt/sc_SpellQueryTab.cpp
  SOURCES += qt/sc_SimulationThread.cpp
  SOURCES += qt/sc_SimulateTab.cpp
