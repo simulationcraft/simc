@@ -15,7 +15,8 @@ enum regen_type_e
   /**
    * @brief Old resource regeneration model.
    *
-   * Actors regen every 'periodicity' seconds through a single global event. Default.
+   * Actors regen every 'periodicity' seconds through a single global event.
+   * Default.
    */
   REGEN_STATIC,
 
@@ -62,7 +63,8 @@ enum buff_refresh_behavior_e
   /// Refresh to given duration plus remaining duration
   BUFF_REFRESH_EXTEND,
 
-  /// Refresh to given duration plus min( 0.3 * new_duration, remaining_duration )
+  /// Refresh to given duration plus min( 0.3 * new_duration, remaining_duration
+  /// )
   BUFF_REFRESH_PANDEMIC,
 
   /// Refresh to given duration plus ongoing tick time
@@ -80,7 +82,7 @@ enum movement_direction_e
   MOVEMENT_TOWARDS,
   MOVEMENT_AWAY,
   MOVEMENT_BOOMERANG,
-  MOVEMENT_RANDOM, // Reserved for raid event
+  MOVEMENT_RANDOM,  // Reserved for raid event
   MOVEMENT_DIRECTION_MAX,
   MOVEMENT_RANDOM_MIN = MOVEMENT_OMNI,
   MOVEMENT_RANDOM_MAX = MOVEMENT_RANDOM
@@ -125,7 +127,7 @@ enum race_e
   RACE_UNKNOWN
 };
 
-inline bool is_pandaren(race_e r)
+inline bool is_pandaren( race_e r )
 {
   return RACE_PANDAREN <= r && r <= RACE_PANDAREN_HORDE;
 }
@@ -136,8 +138,8 @@ enum player_e
   PLAYER_SPECIAL_SCALE4 = -4,
   PLAYER_SPECIAL_SCALE3 = -3,
   PLAYER_SPECIAL_SCALE2 = -2,
-  PLAYER_SPECIAL_SCALE = -1,
-  PLAYER_NONE = 0,
+  PLAYER_SPECIAL_SCALE  = -1,
+  PLAYER_NONE           = 0,
   DEATH_KNIGHT,
   DRUID,
   HUNTER,
@@ -253,8 +255,8 @@ enum pet_e
 enum dmg_e
 {
   RESULT_TYPE_NONE = -1,
-  DMG_DIRECT = 0,
-  DMG_OVER_TIME = 1,
+  DMG_DIRECT       = 0,
+  DMG_OVER_TIME    = 1,
   HEAL_DIRECT,
   HEAL_OVER_TIME,
   ABSORB
@@ -333,7 +335,7 @@ enum resource_e
 enum result_e
 {
   RESULT_UNKNOWN = -1,
-  RESULT_NONE = 0,
+  RESULT_NONE    = 0,
   RESULT_MISS,
   RESULT_DODGE,
   RESULT_PARRY,
@@ -347,7 +349,7 @@ enum result_e
 
 enum block_result_e
 {
-  BLOCK_RESULT_UNKNOWN = -1,
+  BLOCK_RESULT_UNKNOWN   = -1,
   BLOCK_RESULT_UNBLOCKED = 0,
   BLOCK_RESULT_BLOCKED,
   BLOCK_RESULT_CRIT_BLOCKED,
@@ -357,7 +359,7 @@ enum block_result_e
 enum full_result_e
 {
   FULLTYPE_UNKNOWN = -1,
-  FULLTYPE_NONE = 0,
+  FULLTYPE_NONE    = 0,
   FULLTYPE_MISS,
   FULLTYPE_DODGE,
   FULLTYPE_PARRY,
@@ -379,21 +381,21 @@ enum full_result_e
   FULLTYPE_MAX
 };
 
-const unsigned RESULT_HIT_MASK = (1 << RESULT_GLANCE) | (1 << RESULT_CRIT)
-    | (1 << RESULT_HIT);
+const unsigned RESULT_HIT_MASK =
+    ( 1 << RESULT_GLANCE ) | ( 1 << RESULT_CRIT ) | ( 1 << RESULT_HIT );
 
-const unsigned RESULT_CRIT_MASK = (1 << RESULT_CRIT);
+const unsigned RESULT_CRIT_MASK = ( 1 << RESULT_CRIT );
 
-const unsigned RESULT_MISS_MASK = (1 << RESULT_MISS);
+const unsigned RESULT_MISS_MASK = ( 1 << RESULT_MISS );
 
-const unsigned RESULT_DODGE_MASK = (1 << RESULT_DODGE);
+const unsigned RESULT_DODGE_MASK = ( 1 << RESULT_DODGE );
 
-const unsigned RESULT_PARRY_MASK = (1 << RESULT_PARRY);
+const unsigned RESULT_PARRY_MASK = ( 1 << RESULT_PARRY );
 
-const unsigned RESULT_NONE_MASK = (1 << RESULT_NONE);
+const unsigned RESULT_NONE_MASK = ( 1 << RESULT_NONE );
 
-const unsigned RESULT_MULTISTRIKE_MASK = (1 << RESULT_MULTISTRIKE)
-    | (1 << RESULT_MULTISTRIKE_CRIT);
+const unsigned RESULT_MULTISTRIKE_MASK =
+    ( 1 << RESULT_MULTISTRIKE ) | ( 1 << RESULT_MULTISTRIKE_CRIT );
 
 const unsigned RESULT_ALL_MASK = -1;
 
@@ -505,46 +507,57 @@ enum school_e
 enum school_mask_e
 {
   SCHOOL_MASK_PHYSICAL = 0x01,
-  SCHOOL_MASK_HOLY = 0x02,
-  SCHOOL_MASK_FIRE = 0x04,
-  SCHOOL_MASK_NATURE = 0x08,
-  SCHOOL_MASK_FROST = 0x10,
-  SCHOOL_MASK_SHADOW = 0x20,
-  SCHOOL_MASK_ARCANE = 0x40,
+  SCHOOL_MASK_HOLY     = 0x02,
+  SCHOOL_MASK_FIRE     = 0x04,
+  SCHOOL_MASK_NATURE   = 0x08,
+  SCHOOL_MASK_FROST    = 0x10,
+  SCHOOL_MASK_SHADOW   = 0x20,
+  SCHOOL_MASK_ARCANE   = 0x40,
 };
 
-const int64_t SCHOOL_ATTACK_MASK = ((int64_t(1) << SCHOOL_PHYSICAL)
-    | (int64_t(1) << SCHOOL_HOLYSTRIKE) | (int64_t(1) << SCHOOL_FLAMESTRIKE)
-    | (int64_t(1) << SCHOOL_STORMSTRIKE) | (int64_t(1) << SCHOOL_FROSTSTRIKE)
-    | (int64_t(1) << SCHOOL_SHADOWSTRIKE) | (int64_t(1) << SCHOOL_SPELLSTRIKE));
+const int64_t SCHOOL_ATTACK_MASK = ( ( int64_t( 1 ) << SCHOOL_PHYSICAL ) |
+                                     ( int64_t( 1 ) << SCHOOL_HOLYSTRIKE ) |
+                                     ( int64_t( 1 ) << SCHOOL_FLAMESTRIKE ) |
+                                     ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
+                                     ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) |
+                                     ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
+                                     ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) );
 // SCHOOL_CHAOS should probably be added here too.
 
 const int64_t SCHOOL_SPELL_MASK(
-    (int64_t(1) << SCHOOL_ARCANE) | (int64_t(1) << SCHOOL_CHAOS)
-        | (int64_t(1) << SCHOOL_FIRE) | (int64_t(1) << SCHOOL_FROST)
-        | (int64_t(1) << SCHOOL_FROSTFIRE) | (int64_t(1) << SCHOOL_HOLY)
-        | (int64_t(1) << SCHOOL_NATURE) | (int64_t(1) << SCHOOL_SHADOW)
-        | (int64_t(1) << SCHOOL_HOLYSTRIKE) | (int64_t(1) << SCHOOL_FLAMESTRIKE)
-        | (int64_t(1) << SCHOOL_HOLYFIRE) | (int64_t(1) << SCHOOL_STORMSTRIKE)
-        | (int64_t(1) << SCHOOL_HOLYSTORM) | (int64_t(1) << SCHOOL_FIRESTORM)
-        | (int64_t(1) << SCHOOL_FROSTSTRIKE) | (int64_t(1) << SCHOOL_HOLYFROST)
-        | (int64_t(1) << SCHOOL_FROSTSTORM)
-        | (int64_t(1) << SCHOOL_SHADOWSTRIKE)
-        | (int64_t(1) << SCHOOL_SHADOWLIGHT)
-        | (int64_t(1) << SCHOOL_SHADOWFLAME)
-        | (int64_t(1) << SCHOOL_SHADOWSTORM)
-        | (int64_t(1) << SCHOOL_SHADOWFROST)
-        | (int64_t(1) << SCHOOL_SPELLSTRIKE) | (int64_t(1) << SCHOOL_DIVINE)
-        | (int64_t(1) << SCHOOL_SPELLFIRE) | (int64_t(1) << SCHOOL_SPELLSTORM)
-        | (int64_t(1) << SCHOOL_SPELLFROST) | (int64_t(1) << SCHOOL_SPELLSHADOW)
-        | (int64_t(1) << SCHOOL_ELEMENTAL) | (int64_t(1) << SCHOOL_CHROMATIC)
-        | (int64_t(1) << SCHOOL_MAGIC));
+    ( int64_t( 1 ) << SCHOOL_ARCANE ) | ( int64_t( 1 ) << SCHOOL_CHAOS ) |
+    ( int64_t( 1 ) << SCHOOL_FIRE ) | ( int64_t( 1 ) << SCHOOL_FROST ) |
+    ( int64_t( 1 ) << SCHOOL_FROSTFIRE ) | ( int64_t( 1 ) << SCHOOL_HOLY ) |
+    ( int64_t( 1 ) << SCHOOL_NATURE ) | ( int64_t( 1 ) << SCHOOL_SHADOW ) |
+    ( int64_t( 1 ) << SCHOOL_HOLYSTRIKE ) |
+    ( int64_t( 1 ) << SCHOOL_FLAMESTRIKE ) |
+    ( int64_t( 1 ) << SCHOOL_HOLYFIRE ) |
+    ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
+    ( int64_t( 1 ) << SCHOOL_HOLYSTORM ) |
+    ( int64_t( 1 ) << SCHOOL_FIRESTORM ) |
+    ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) |
+    ( int64_t( 1 ) << SCHOOL_HOLYFROST ) |
+    ( int64_t( 1 ) << SCHOOL_FROSTSTORM ) |
+    ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
+    ( int64_t( 1 ) << SCHOOL_SHADOWLIGHT ) |
+    ( int64_t( 1 ) << SCHOOL_SHADOWFLAME ) |
+    ( int64_t( 1 ) << SCHOOL_SHADOWSTORM ) |
+    ( int64_t( 1 ) << SCHOOL_SHADOWFROST ) |
+    ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) | ( int64_t( 1 ) << SCHOOL_DIVINE ) |
+    ( int64_t( 1 ) << SCHOOL_SPELLFIRE ) |
+    ( int64_t( 1 ) << SCHOOL_SPELLSTORM ) |
+    ( int64_t( 1 ) << SCHOOL_SPELLFROST ) |
+    ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
+    ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) |
+    ( int64_t( 1 ) << SCHOOL_CHROMATIC ) | ( int64_t( 1 ) << SCHOOL_MAGIC ) );
 
-const int64_t SCHOOL_MAGIC_MASK(
-    (int64_t(1) << SCHOOL_ARCANE) | (int64_t(1) << SCHOOL_FIRE)
-        | (int64_t(1) << SCHOOL_FROST) | (int64_t(1) << SCHOOL_FROSTFIRE)
-        | (int64_t(1) << SCHOOL_HOLY) | (int64_t(1) << SCHOOL_NATURE)
-        | (int64_t(1) << SCHOOL_SHADOW));
+const int64_t SCHOOL_MAGIC_MASK( ( int64_t( 1 ) << SCHOOL_ARCANE ) |
+                                 ( int64_t( 1 ) << SCHOOL_FIRE ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROST ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROSTFIRE ) |
+                                 ( int64_t( 1 ) << SCHOOL_HOLY ) |
+                                 ( int64_t( 1 ) << SCHOOL_NATURE ) |
+                                 ( int64_t( 1 ) << SCHOOL_SHADOW ) );
 
 const int64_t SCHOOL_ALL_MASK( -1 );
 
@@ -583,34 +596,34 @@ enum glyph_e
   GLYPH_MAX
 };
 
-enum slot_e   // these enum values match armory settings
+enum slot_e  // these enum values match armory settings
 {
-  SLOT_INVALID = -1,
-  SLOT_HEAD = 0,
-  SLOT_NECK = 1,
+  SLOT_INVALID   = -1,
+  SLOT_HEAD      = 0,
+  SLOT_NECK      = 1,
   SLOT_SHOULDERS = 2,
-  SLOT_SHIRT = 3,
-  SLOT_CHEST = 4,
-  SLOT_WAIST = 5,
-  SLOT_LEGS = 6,
-  SLOT_FEET = 7,
-  SLOT_WRISTS = 8,
-  SLOT_HANDS = 9,
-  SLOT_FINGER_1 = 10,
-  SLOT_FINGER_2 = 11,
+  SLOT_SHIRT     = 3,
+  SLOT_CHEST     = 4,
+  SLOT_WAIST     = 5,
+  SLOT_LEGS      = 6,
+  SLOT_FEET      = 7,
+  SLOT_WRISTS    = 8,
+  SLOT_HANDS     = 9,
+  SLOT_FINGER_1  = 10,
+  SLOT_FINGER_2  = 11,
   SLOT_TRINKET_1 = 12,
   SLOT_TRINKET_2 = 13,
-  SLOT_BACK = 14,
+  SLOT_BACK      = 14,
   SLOT_MAIN_HAND = 15,
-  SLOT_OFF_HAND = 16,
-  SLOT_RANGED = 17,
-  SLOT_TABARD = 18,
-  SLOT_MAX = 19,
-  SLOT_MIN = 0
+  SLOT_OFF_HAND  = 16,
+  SLOT_RANGED    = 17,
+  SLOT_TABARD    = 18,
+  SLOT_MAX       = 19,
+  SLOT_MIN       = 0
 };
 
 // Tiers 13..19 + PVP
-const unsigned N_TIER = 6;
+const unsigned N_TIER   = 6;
 const unsigned MIN_TIER = 13;
 
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
@@ -620,14 +633,14 @@ const unsigned N_TIER_BONUS = 8;
 enum set_bonus_e
 {
   B_NONE = -1,
-  B2 = 0,
-  B4 = 1
+  B2     = 0,
+  B4     = 1
 };
 
 enum set_role_e
 {
   SET_ROLE_NONE = -1,
-  SET_TANK = 0,
+  SET_TANK      = 0,
   SET_HEALER,
   SET_MELEE,
   SET_CASTER
@@ -791,23 +804,24 @@ enum stat_e
   STAT_ALL,
   STAT_MAX
 };
-#define check(x) static_assert( static_cast<int>( STAT_##x ) == static_cast<int>( ATTR_##x ), \
-                                "stat_e and attribute_e must be kept in sync" )
-check(STRENGTH);
-check(AGILITY);
-check(STAMINA);
-check(INTELLECT);
-check(SPIRIT);
-check(AGI_INT);
-check(STR_AGI);
-check(STR_INT);
-check(STR_AGI_INT);
+#define check( x )                                                             \
+  static_assert( static_cast<int>( STAT_##x ) == static_cast<int>( ATTR_##x ), \
+                 "stat_e and attribute_e must be kept in sync" )
+check( STRENGTH );
+check( AGILITY );
+check( STAMINA );
+check( INTELLECT );
+check( SPIRIT );
+check( AGI_INT );
+check( STR_AGI );
+check( STR_INT );
+check( STR_AGI_INT );
 #undef check
 
-inline stat_e stat_from_attr(attribute_e a)
+inline stat_e stat_from_attr( attribute_e a )
 {
   // Assumes that ATTR_X == STAT_X
-  return static_cast<stat_e>(a);
+  return static_cast<stat_e>( a );
 }
 
 enum scale_metric_e
@@ -879,69 +893,71 @@ enum cache_e
   CACHE_MAX
 };
 
-#define check(x) static_assert( static_cast<int>( CACHE_##x ) == static_cast<int>( ATTR_##x ), \
-                                "cache_e and attribute_e must be kept in sync" )
-check(STRENGTH);
-check(AGILITY);
-check(STAMINA);
-check(INTELLECT);
-check(SPIRIT);
-check(AGI_INT);
-check(STR_AGI);
-check(STR_INT);
+#define check( x )                                                   \
+  static_assert(                                                     \
+      static_cast<int>( CACHE_##x ) == static_cast<int>( ATTR_##x ), \
+      "cache_e and attribute_e must be kept in sync" )
+check( STRENGTH );
+check( AGILITY );
+check( STAMINA );
+check( INTELLECT );
+check( SPIRIT );
+check( AGI_INT );
+check( STR_AGI );
+check( STR_INT );
 #undef check
 
-inline cache_e cache_from_stat(stat_e st)
+inline cache_e cache_from_stat( stat_e st )
 {
-  switch (st)
-  {
-    case STAT_STRENGTH:
-    case STAT_AGILITY:
-    case STAT_STAMINA:
-    case STAT_INTELLECT:
-    case STAT_SPIRIT:
-      return static_cast<cache_e>(st);
-    case STAT_SPELL_POWER:
-      return CACHE_SPELL_POWER;
-    case STAT_ATTACK_POWER:
-      return CACHE_ATTACK_POWER;
-    case STAT_EXPERTISE_RATING:
-    case STAT_EXPERTISE_RATING2:
-      return CACHE_EXP;
-    case STAT_HIT_RATING:
-    case STAT_HIT_RATING2:
-      return CACHE_HIT;
-    case STAT_CRIT_RATING:
-      return CACHE_CRIT;
-    case STAT_HASTE_RATING:
-      return CACHE_HASTE;
-    case STAT_MASTERY_RATING:
-      return CACHE_MASTERY;
-    case STAT_DODGE_RATING:
-      return CACHE_DODGE;
-    case STAT_PARRY_RATING:
-      return CACHE_PARRY;
-    case STAT_BLOCK_RATING:
-      return CACHE_BLOCK;
-    case STAT_ARMOR:
-      return CACHE_ARMOR;
-    case STAT_BONUS_ARMOR:
-      return CACHE_BONUS_ARMOR;
-    case STAT_MULTISTRIKE_RATING:
-      return CACHE_MULTISTRIKE;
-    case STAT_READINESS_RATING:
-      return CACHE_READINESS;
-    case STAT_VERSATILITY_RATING:
-      return CACHE_VERSATILITY;
-    case STAT_LEECH_RATING:
-      return CACHE_LEECH;
-    case STAT_SPEED_RATING:
-      return CACHE_RUN_SPEED;
-    case STAT_AVOIDANCE_RATING:
-      return CACHE_AVOIDANCE;
-    default:
-      break;
-  }
+  switch ( st )
+    {
+      case STAT_STRENGTH:
+      case STAT_AGILITY:
+      case STAT_STAMINA:
+      case STAT_INTELLECT:
+      case STAT_SPIRIT:
+        return static_cast<cache_e>( st );
+      case STAT_SPELL_POWER:
+        return CACHE_SPELL_POWER;
+      case STAT_ATTACK_POWER:
+        return CACHE_ATTACK_POWER;
+      case STAT_EXPERTISE_RATING:
+      case STAT_EXPERTISE_RATING2:
+        return CACHE_EXP;
+      case STAT_HIT_RATING:
+      case STAT_HIT_RATING2:
+        return CACHE_HIT;
+      case STAT_CRIT_RATING:
+        return CACHE_CRIT;
+      case STAT_HASTE_RATING:
+        return CACHE_HASTE;
+      case STAT_MASTERY_RATING:
+        return CACHE_MASTERY;
+      case STAT_DODGE_RATING:
+        return CACHE_DODGE;
+      case STAT_PARRY_RATING:
+        return CACHE_PARRY;
+      case STAT_BLOCK_RATING:
+        return CACHE_BLOCK;
+      case STAT_ARMOR:
+        return CACHE_ARMOR;
+      case STAT_BONUS_ARMOR:
+        return CACHE_BONUS_ARMOR;
+      case STAT_MULTISTRIKE_RATING:
+        return CACHE_MULTISTRIKE;
+      case STAT_READINESS_RATING:
+        return CACHE_READINESS;
+      case STAT_VERSATILITY_RATING:
+        return CACHE_VERSATILITY;
+      case STAT_LEECH_RATING:
+        return CACHE_LEECH;
+      case STAT_SPEED_RATING:
+        return CACHE_RUN_SPEED;
+      case STAT_AVOIDANCE_RATING:
+        return CACHE_AVOIDANCE;
+      default:
+        break;
+    }
   return CACHE_NONE;
 }
 
@@ -1135,26 +1151,26 @@ enum save_e
 
 enum power_e
 {
-  POWER_HEALTH = -2,
-  POWER_MANA = 0,
-  POWER_RAGE = 1,
-  POWER_FOCUS = 2,
-  POWER_ENERGY = 3,
-  POWER_MONK_ENERGY = 4, // translated to RESOURCE_ENERGY
-  POWER_RUNE = 5,
+  POWER_HEALTH      = -2,
+  POWER_MANA        = 0,
+  POWER_RAGE        = 1,
+  POWER_FOCUS       = 2,
+  POWER_ENERGY      = 3,
+  POWER_MONK_ENERGY = 4,  // translated to RESOURCE_ENERGY
+  POWER_RUNE        = 5,
   POWER_RUNIC_POWER = 6,
   POWER_SOUL_SHARDS = 7,
   // Not yet used
   POWER_HOLY_POWER = 9,
   // Not yet used (MoP Monk deprecated resource #1)
   // Not yet used
-  POWER_CHI = 12,
-  POWER_SHADOW_ORB = 13,
+  POWER_CHI           = 12,
+  POWER_SHADOW_ORB    = 13,
   POWER_BURNING_EMBER = 14,
-  POWER_DEMONIC_FURY = 15,
+  POWER_DEMONIC_FURY  = 15,
   // Helpers
-  POWER_MAX = 16,
-  POWER_NONE = 0xFFFFFFFF, // None.
+  POWER_MAX    = 16,
+  POWER_NONE   = 0xFFFFFFFF,  // None.
   POWER_OFFSET = 2,
 };
 
@@ -1162,19 +1178,20 @@ enum power_e
 enum snapshot_state_e
 {
   STATE_HASTE = 0x000001,
-  STATE_CRIT = 0x000002,
-  STATE_AP = 0x000004,
-  STATE_SP = 0x000008,
+  STATE_CRIT  = 0x000002,
+  STATE_AP    = 0x000004,
+  STATE_SP    = 0x000008,
 
-  STATE_MUL_DA = 0x000010,
-  STATE_MUL_TA = 0x000020,
+  STATE_MUL_DA      = 0x000010,
+  STATE_MUL_TA      = 0x000020,
   STATE_VERSATILITY = 0x000040,
-  STATE_MUL_PERSISTENT = 0x000080, // Persistent modifier for the few abilities that snapshot
+  STATE_MUL_PERSISTENT =
+      0x000080,  // Persistent modifier for the few abilities that snapshot
 
-  STATE_TGT_CRIT = 0x000100,
+  STATE_TGT_CRIT   = 0x000100,
   STATE_TGT_MUL_DA = 0x000200,
   STATE_TGT_MUL_TA = 0x000400,
-  STATE_RESOLVE = 0x000800,
+  STATE_RESOLVE    = 0x000800,
 
   STATE_USER_1 = 0x001000,
   STATE_USER_2 = 0x002000,
@@ -1183,21 +1200,21 @@ enum snapshot_state_e
 
   STATE_TGT_MITG_DA = 0x010000,
   STATE_TGT_MITG_TA = 0x020000,
-  STATE_TGT_ARMOR = 0x040000,
+  STATE_TGT_ARMOR   = 0x040000,
 
   // No multiplier herlper, use in action_t::init() (after parent init) by
   // issuing snapshot_flags &= STATE_NO_MULTIPLIER (and/or update_flags &=
   // STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including
   // versatility, resolve, and any/all persistent multipliers the action would
   // use.
-  STATE_NO_MULTIPLIER = ~(STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY
-      | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA
-      | STATE_RESOLVE | STATE_TGT_ARMOR)
+  STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY |
+                           STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
+                           STATE_TGT_MUL_TA | STATE_RESOLVE | STATE_TGT_ARMOR )
 };
 
 enum ready_e
 {
-  READY_POLL = 0,
+  READY_POLL    = 0,
   READY_TRIGGER = 1
 };
 
