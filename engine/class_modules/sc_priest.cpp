@@ -4044,38 +4044,35 @@ public:
 
   player_t* get_next_player( player_t* currentTarget )
   {
-    player_t* t              = nullptr;
+    if ( targets.empty() )
+    {
+      return nullptr;
+    }
     player_t* furthest       = nullptr;
     double furthest_distance = 0;
+
     // Get target at first position
-    if ( !targets.empty() )
+    for ( auto it = targets.begin(); it != targets.end(); it++ )
     {
-      for ( auto it = targets.begin(); it != targets.end(); it++ )
+      player_t* t = *it;
+      if ( t == currentTarget )
+        continue;
+
+      if ( currentTarget->sim->distance_targeting_enabled )
       {
-        t = *it;
-
-        if ( t == currentTarget )
-          continue;
-        if ( currentTarget->sim->distance_targeting_enabled )
+        double current_distance = t->get_player_distance( *currentTarget );
+        if ( current_distance <= 40 && current_distance > furthest_distance )
         {
-          double current_distance = t->get_player_distance( *currentTarget );
-          if ( current_distance <= 40 && current_distance > furthest_distance )
-          {
-            furthest_distance = current_distance;
-            furthest          = t;
-          }
-          continue;
+          furthest_distance = current_distance;
+          furthest          = t;
         }
-        targets.erase( it );
-        return t;
+        continue;
       }
-
-      t = nullptr;
+      targets.erase( it );
+      return t;
     }
 
-    if ( furthest )
-      return furthest;
-    return t;
+    return furthest;
   }
 
   virtual void populate_target_list() = 0;

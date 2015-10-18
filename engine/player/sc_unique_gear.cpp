@@ -2039,11 +2039,11 @@ void item::legendary_ring( special_effect_t& effect )
       }
   };
 
-  const spell_data_t* buffspell = 0;
-  const spell_data_t* actionspell = 0;
 
   if ( effect.spell_id != 187613 )
   {
+    const spell_data_t* buffspell = nullptr;
+    const spell_data_t* actionspell = nullptr;
     switch ( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
     {
     case STAT_STRENGTH:

@@ -249,16 +249,22 @@ inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
 template <typename T, size_t N>
 inline T ( &fill( T ( &r )[N], const T& t ) )[N]
 {
-  for ( size_t i = 0; i < N; i++ )
+  for ( size_t i = 0; i < N; ++i )
+  {
     r[ i ] = t;
+  }
   return r;
 }
 #endif
 
-template <typename Range>
+template <typename Range, typename T>
 inline typename range::traits<Range>::iterator
-find( Range& r, typename range::value_type<Range>::type const& t )
-{ return std::find( range::begin( r ), range::end( r ), t ); }
+find( Range& r, T const& t )
+{ 
+  // Static assert for human-readable error message. Not 100% technically correct, since "comparability" is enough, but for our purposes convertible is good enough.
+  static_assert( std::is_convertible<T, typename range::value_type<Range>::type>::value, "Object to find must be convertible to value type of range" );
+  return std::find( range::begin( r ), range::end( r ), t );
+}
 
 template <typename Range, typename UnaryPredicate>
 inline typename range::traits<Range>::iterator

@@ -1350,7 +1350,10 @@ struct execute_pet_action_t : public action_t
 
   execute_pet_action_t( player_t* player, const std::string& name, const std::string& as, const std::string& options_str ) :
     action_t( ACTION_OTHER, "execute_" + name + "_" + as, player ),
-    pet_action( 0 ), action_str( as ), pet_name( name )
+    pet_action( nullptr ),
+    pet( nullptr ),
+    action_str( as ),
+    pet_name( name )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
@@ -6023,7 +6026,7 @@ struct variable_t : public action_t
 
 struct racial_spell_t : public spell_t
 {
-  racial_spell_t( player_t* p, const std::string token, const spell_data_t* spell, const std::string& options ) :
+  racial_spell_t( player_t* p, const std::string& token, const spell_data_t* spell, const std::string& options ) :
     spell_t( token, p, spell )
   {
     parse_options( options );
@@ -10549,12 +10552,13 @@ void player_collected_data_t::collect_data( const player_t& p )
     resolve_timeline.merged_timeline.merge( resolve_timeline.iteration_timeline );
 
   // Health Change Calculations - only needed for tanks
-  double tmi = 0; // TMI result
-  double etmi = 0; // ETMI result
-  double max_spike = 0; // Maximum spike size
   double tank_metric = 0;
   if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
   {
+
+    double tmi = 0; // TMI result
+    double etmi = 0; // ETMI result
+    double max_spike = 0; // Maximum spike size
     health_changes.merged_timeline.merge( health_changes.timeline );
     health_changes_tmi.merged_timeline.merge( health_changes_tmi.timeline );
 
@@ -10755,13 +10759,10 @@ private:
   // method for finding actor - used while cycling through list
   std::vector<actor_entry_t>::iterator find_actor( int actor_spawn_index )
   {
-    std::vector<actor_entry_t>::iterator iter = actor_list.begin();
-    for ( ; iter != actor_list.end(); iter++ )
-    {
-      if ( ( *iter ).actor_spawn_index == actor_spawn_index )
-        return iter;
-    }
-    return iter;
+    return range::find_if( actor_list,
+                        [actor_spawn_index]( const actor_entry_t& ae ) {
+                          return ae.actor_spawn_index == actor_spawn_index;
+                        } );
   }
 
   // method to update_actor_entry

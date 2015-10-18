@@ -327,7 +327,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
   return s;
 }
 
-expr_t* set_bonus_t::create_expression( const player_t* p, const std::string& type )
+expr_t* set_bonus_t::create_expression( const player_t* , const std::string& type )
 {
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_role_e role = SET_ROLE_NONE;
@@ -338,26 +338,14 @@ expr_t* set_bonus_t::create_expression( const player_t* p, const std::string& ty
     return nullptr;
   }
 
-  double state;
+  bool state;
 
   if ( role_set_bonus( set_bonus ) )
     state = set_bonus_spec_data[ set_bonus ][ role ][ bonus ].spell -> id() > 0;
   else
     state = set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( actor -> specialization() ) ][ bonus ].spell -> id() > 0;
 
-  struct set_bonus_expr_t : public expr_t
-  {
-    double state_;
-
-    set_bonus_expr_t( bool state ) :
-      expr_t( "set_bonus_expr" ), state_( state ) { }
-    double evaluate() { return state_; }
-  };
-
-  if ( p -> sim -> optimize_expressions )
-    return expr_t::create_constant( type, state );
-  else
-    return new set_bonus_expr_t( state != 0 );
+  return expr_t::create_constant( type, static_cast<double>(state) );
 }
 
 bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,

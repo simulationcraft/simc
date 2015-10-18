@@ -1526,7 +1526,8 @@ public:
     }
   }
 
-  const T* get( bool ptr, const std::function<bool(const T*)> f ) const
+  template<typename UnaryPredicate>
+  const T* get( bool ptr, UnaryPredicate f ) const
   {
     for ( citerator i = begin( ptr ), e = end( ptr ); i < e; ++i )
     {
