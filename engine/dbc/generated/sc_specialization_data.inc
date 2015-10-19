@@ -1,4 +1,3 @@
-
 enum specialization_e {
   SPEC_NONE            = 0,
   SPEC_PET             = 1,
@@ -43,7 +42,9 @@ enum specialization_e {
 
 namespace specdata {
 static const unsigned n_specs = 37;
+
 static const unsigned spec_to_idx_map_len = 271;
+
 static const specialization_e __specs[37] = {
   PET_FEROCITY, 
   PET_TENACITY, 
@@ -99,3 +100,4 @@ static const int __idx_specs[271] = {
 };
 
 } // namespace specdata
+

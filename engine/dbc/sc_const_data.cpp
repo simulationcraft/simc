@@ -87,11 +87,11 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 20444 : 20444;
+  return maybe_ptr( ptr ) ? 20601 : 20444;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "6.2.2" : "6.2.2"; }
+{ return maybe_ptr( ptr ) ? "6.2.3" : "6.2.2"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ?
