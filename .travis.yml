@@ -2,6 +2,10 @@
 # framework to run SimulationCrafts tests with every GitHub push or pull-request.
 language: cpp
 
+branches:
+  only:
+    - master
+
 os:
   - linux
   - osx
