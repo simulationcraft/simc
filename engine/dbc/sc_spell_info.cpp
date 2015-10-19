@@ -612,7 +612,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << "Race             : ";
     for ( unsigned int i = 0; i < 24; i++ )
     {
-      if ( ( spell -> race_mask() & ( 1 << ( i - 1 ) ) ) && _race_strings[ i ] )
+      if ( ( spell -> race_mask() & ( 1 << i ) ) && _race_strings[ i ] )
         s << _race_strings[ i ] << ", ";
     }
 
@@ -1262,7 +1262,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 
     for ( unsigned int i = 0; i < 12; i++ )
     {
-      if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
+      if ( spell -> class_mask() & ( 1 << i ) )
       {
         xml_node_t* class_node = node -> add_child( "class" );
         class_node -> add_parm( "id", _class_map[ i ].pt );
@@ -1280,7 +1280,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
   {
     for ( unsigned int i = 0; i < 24; i++ )
     {
-      if ( spell -> race_mask() & ( 1 << ( i - 1 ) ) )
+      if ( spell -> race_mask() & ( 1 << i ) )
       {
         xml_node_t* race_node = node -> add_child( "race" );
         race_node -> add_parm( "id", i );
