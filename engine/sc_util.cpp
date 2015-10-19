@@ -2445,6 +2445,7 @@ int util::snformat( char* buf, size_t size, const char* fmt, ... )
   va_start( ap, fmt );
   std::string buffer;
   str::format( buffer, fmt, ap );
+  va_end( ap );
   assert( size > buffer.size() );
   strncpy( buf, buffer.c_str(), size-1 );
   return static_cast<int>( buffer.size() );

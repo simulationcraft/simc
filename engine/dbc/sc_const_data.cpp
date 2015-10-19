@@ -1764,10 +1764,10 @@ talent_data_t* talent_data_t::find( unsigned id, bool ptr )
 
 talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool ptr )
 {
-  ( void )confirmation;
 
   talent_data_t* p = find( id, ptr );
-  assert( ! strcmp( confirmation, p -> name_cstr() ) );
+  assert( !confirmation || (strcmp( confirmation, p -> name_cstr() ) == 0) );
+  ( void )confirmation;
   return p;
 }
 
