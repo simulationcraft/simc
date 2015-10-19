@@ -989,6 +989,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data
     s << "Class        : ";
     for ( unsigned int i = 1; i < 12; i++ )
     {
+      assert( i < sizeof_array(_class_map) );
       if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
         s << _class_map[ i ].name << ", ";
     }
@@ -1261,8 +1262,9 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 
     for ( unsigned int i = 1; i <= 12; i++ )
     {
-      if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) && _class_map[ i ].name )
+      if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
+        assert( i < sizeof_array(_class_map) );
         xml_node_t* class_node = node -> add_child( "class" );
         class_node -> add_parm( "id", _class_map[ i ].pt );
         class_node -> add_parm( "name", _class_map[ i ].name );
@@ -1279,8 +1281,9 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
   {
     for ( unsigned int i = 0; i < 24; i++ )
     {
-      if ( spell -> race_mask() & ( 1 << i ) && _race_strings[ i ] )
+      if ( ( spell -> race_mask() & ( 1 << i ) ) && _race_strings[ i ] )
       {
+        assert( i < sizeof_array(_race_strings) );
         xml_node_t* race_node = node -> add_child( "race" );
         race_node -> add_parm( "id", i );
         race_node -> add_parm( "name", _race_strings[ i ] );
