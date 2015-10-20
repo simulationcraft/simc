@@ -1370,6 +1370,7 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
     if ( entries[ i ] -> type == ITEM_BONUS_SCALING )
     {
       const scaling_stat_distribution_t* data = dbc.scaling_stat_distribution( entries[ i ] -> value_1 );
+      assert( data );
       std::pair<const curve_point_t*, const curve_point_t*> curve_data_min = dbc.curve_point( data -> curve_id, data -> min_level );
       std::pair<const curve_point_t*, const curve_point_t*> curve_data_max = dbc.curve_point( data -> curve_id, data -> max_level );
 
