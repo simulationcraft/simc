@@ -1191,8 +1191,7 @@ void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
     return;
   }
 
-  effect.proc_flags_ = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE;
 
   std::string spell_name = spell -> name_cstr();
   util::tokenize( spell_name );
@@ -1214,8 +1213,7 @@ void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
 
 void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
 {
-  // "Damaging spell cast", needs testing if this means "direct damage".
-  effect.proc_flags2_ = PF2_CAST;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE;
 
   action_t* spell = effect.player -> find_action( "fel_meteor" );
   if ( ! spell )

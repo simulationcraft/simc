@@ -1290,19 +1290,23 @@ void action_t::execute()
       execute_action -> schedule_execute( execute_action -> get_state( execute_state ) );
     }
 
-    // New callback system; proc abilities on execute. 
-    if ( callbacks )
+    // Proc generic abilities on execute.
+    proc_types pt;
+    if ( callbacks && ( pt = execute_state -> proc_type() ) != PROC1_INVALID )
     {
-      proc_types pt = execute_state -> proc_type();
-      proc_types2 pt2 = execute_state -> execute_proc_type2();
+      proc_types2 pt2;
 
-      // "On spell cast"
-      if ( ! background && pt != PROC1_INVALID )
-        action_callback_t::trigger( player -> callbacks.procs[ pt ][ PROC2_CAST ], this, execute_state );
+      // "On spell cast", only performed for foreground actions
+      if ( ( pt2 = execute_state -> cast_proc_type2() ) != PROC2_INVALID )
+      {
+        action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
 
       // "On an execute result"
-      if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      if ( ( pt2 = execute_state -> execute_proc_type2() ) != PROC2_INVALID )
+      {
         action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
     }
   }
 

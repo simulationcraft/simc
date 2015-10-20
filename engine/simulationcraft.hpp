@@ -4769,6 +4769,8 @@ struct action_state_t : private noncopyable
 
     return PROC2_INVALID;
   }
+
+  virtual proc_types2 cast_proc_type2() const;
 };
 
 // Action ===================================================================
@@ -5965,6 +5967,30 @@ inline proc_types2 action_state_t::execute_proc_type2() const
     return PROC2_MISS;
 
   return PROC2_INVALID;
+}
+
+inline proc_types2 action_state_t::cast_proc_type2() const
+{
+  // Only foreground actions may trigger the "on cast" procs
+  if ( action -> background )
+  {
+    return PROC2_INVALID;
+  }
+
+  if ( action -> attack_direct_power_coefficient( this ) ||
+       action -> attack_tick_power_coefficient( this ) ||
+       action -> spell_direct_power_coefficient( this ) ||
+       action -> spell_tick_power_coefficient( this ) ||
+       action -> base_ta( this ) || action -> base_da_min( this ) ||
+       action -> bonus_ta( this ) || action -> bonus_da( this ) )
+  {
+    // This is somewhat naive way to differentiate, better way would be to classify based on the
+    // actual proc types, but it will serve our purposes for now.
+    return action -> harmful ? PROC2_CAST_DAMAGE : PROC2_CAST_HEAL;
+  }
+
+  // Generic fallback "on any cast"
+  return PROC2_CAST;
 }
 
 // DoT ======================================================================
