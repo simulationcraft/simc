@@ -20,8 +20,6 @@ namespace {
     }
   };
 
-  item_upgrade_t nil_iu;
-  item_upgrade_rule_t nil_iur;
   item_data_t nil_item_data;
   random_suffix_data_t nil_rsd;
   item_enchantment_data_t nil_ied;
@@ -247,42 +245,6 @@ const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
 #endif
 }
 
-const item_upgrade_t& dbc_t::item_upgrade( unsigned upgrade_id ) const
-{
-#if SC_USE_PTR
-  const item_upgrade_t* p = ptr ? __ptr_item_upgrade_data : __item_upgrade_data;
-#else
-  const item_upgrade_t* p = __item_upgrade_data;
-#endif
-
-  do
-  {
-    if ( p -> id == upgrade_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_iu;
-}
-
-const item_upgrade_rule_t& dbc_t::item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const
-{
-#if SC_USE_PTR
-  const item_upgrade_rule_t* p = ptr ? __ptr_item_upgrade_rule_data : __item_upgrade_rule_data;
-#else
-  const item_upgrade_rule_t* p = __item_upgrade_rule_data;
-#endif
-
-  do
-  {
-    if ( p -> item_id == item_id && p -> upgrade_ilevel == upgrade_level )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_iur;
-}
-
 std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
 {
 #if SC_USE_PTR
@@ -301,6 +263,62 @@ std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) co
   }
 
   return entries;
+}
+
+std::vector<const item_upgrade_t*> dbc_t::item_upgrades( unsigned item_id ) const
+{
+#if SC_USE_PTR
+  const item_upgrade_rule_t* upgrade_data = ptr ? __ptr_item_upgrade_rule_data : __item_upgrade_rule_data;
+  const item_upgrade_t* upgrade_data2 = ptr ? __ptr_upgrade_rule_data : __upgrade_rule_data,
+         * upgrade_data3 = upgrade_data2;
+#else
+  const item_upgrade_rule_t* upgrade_data = __item_upgrade_rule_data;
+  const item_upgrade_t* upgrade_data2 = __upgrade_rule_data, * upgrade_data3 = upgrade_data2;
+#endif
+
+  std::vector<const item_upgrade_t*> data;
+  unsigned upgrade_group = 0;
+
+  // Find the correct upgrade rule, so we can figure out the base upgrade id
+  while ( upgrade_data -> id != 0 )
+  {
+    if ( upgrade_data -> item_id == item_id )
+    {
+      break;
+    }
+
+    upgrade_data++;
+  }
+
+  // Find the upgrade group from the upgrade id
+  while ( upgrade_data2 -> id != 0 )
+  {
+    if ( upgrade_data2 -> id == upgrade_data -> upgrade_id )
+    {
+      upgrade_group = upgrade_data2 -> upgrade_group;
+      break;
+    }
+
+    upgrade_data2++;
+  }
+
+  // Collect all upgrade levels into the vector in the upgrade group
+  while ( upgrade_data3 -> id != 0 )
+  {
+    if ( upgrade_data3 -> upgrade_group == upgrade_group )
+    {
+      data.push_back( upgrade_data3 );
+    }
+
+    upgrade_data3++;
+  }
+
+  // Sort based on the previous upgrade id. The base will have 0, and subsequent levels the previous
+  // level's id. Results in a 0->N ilevel upgrades in however many steps in the vector.
+  range::sort( data, []( const item_upgrade_t* l, const item_upgrade_t* r )
+      { return l -> previous_upgrade_id < r -> previous_upgrade_id; } );
+
+  return data;
 }
 
 const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
@@ -1234,12 +1252,25 @@ bool item_database::download_glyph( player_t* player, std::string& glyph_name,
 // item_database::upgrade_ilevel ============================================
 
 // TODO: DBC Based upgrading system would be safer, this works for now, probably
-unsigned item_database::upgrade_ilevel( const item_data_t& item, unsigned upgrade_level )
+int item_database::upgrade_ilevel( const item_t& item, unsigned upgrade_level )
 {
-  if ( item.quality == 3 ) return upgrade_level * 8;
-  if ( item.quality == 4 ) return upgrade_level * 4;
-  if ( item.quality == 5 ) return upgrade_level * 4;
-  return 0;
+  if ( upgrade_level == 0 )
+  {
+    return 0;
+  }
+
+  std::vector<const item_upgrade_t*> upgrades = item.player->dbc.item_upgrades( item.parsed.data.id );
+  if ( upgrades.size() < upgrade_level )
+  {
+    if ( item.player -> sim -> debug )
+    {
+      item.player -> sim -> out_debug.printf( "%s %s too high upgrade level specified, %u given, max is %u",
+          item.player -> name(), item.name(), upgrade_level, upgrades.size() );
+    }
+    return 0;
+  }
+
+  return upgrades[ upgrade_level ] -> ilevel_delta;
 }
 
 double item_database::item_budget( const item_t* item, unsigned max_ilevel )

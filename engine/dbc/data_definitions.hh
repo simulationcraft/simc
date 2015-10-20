@@ -143,14 +143,15 @@ struct rppm_modifier_t {
 
 struct item_upgrade_rule_t {
   unsigned id;
-  unsigned upgrade_ilevel;
   unsigned upgrade_id;
   unsigned item_id;
 };
 
 struct item_upgrade_t {
   unsigned id;
-  unsigned ilevel;
+  unsigned upgrade_group;
+  unsigned previous_upgrade_id;
+  unsigned ilevel_delta;
 };
 
 struct random_prop_data_t {

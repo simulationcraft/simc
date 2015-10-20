@@ -170,7 +170,8 @@ elif options.type == 'item_upgrade':
     g = dbc.generator.RulesetItemUpgradeGenerator(options)
     if not g.initialize():
         sys.exit(1)
-    print g.generate()
+    ids = g.filter()
+    print g.generate(ids)
 
     g = dbc.generator.ItemUpgradeDataGenerator(options)
     if not g.initialize():

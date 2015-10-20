@@ -1195,6 +1195,8 @@ public:
   std::vector<const rppm_modifier_t*> real_ppm_modifiers( unsigned ) const;
   rppm_scale_e real_ppm_scale( unsigned ) const;
   double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0 ) const;
+
+  std::vector<const item_upgrade_t*> item_upgrades(unsigned ) const;
 private:
   template <typename T>
   const T* find_by_id( unsigned id ) const
@@ -1236,9 +1238,6 @@ public:
   const item_scale_data_t&       item_armor_shield( unsigned ilevel ) const;
   const item_armor_type_data_t&  item_armor_total( unsigned ilevel ) const;
   const item_armor_type_data_t&  item_armor_inv_type( unsigned inv_type ) const;
-
-  const item_upgrade_t&          item_upgrade( unsigned upgrade_id ) const;
-  const item_upgrade_rule_t&     item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const;
 
   std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;
 

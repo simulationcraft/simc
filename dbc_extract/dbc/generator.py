@@ -718,14 +718,34 @@ class RulesetItemUpgradeGenerator(DataGenerator):
 
         DataGenerator.__init__(self, options)
 
+    def filter(self):
+        ids = {}
+
+        # There's two entries for most items in RulesetItemUpgrade that point to the same data. For
+        # now, just use the higher "upgrade level" value in the dbc to grab the correct data.
+        for id, entry in self._rulesetitemupgrade_db.iteritems():
+            if entry.id_item not in ids:
+                ids[entry.id_item] = { 'id': entry.id, 'level': entry.upgrade_level }
+            elif entry.upgrade_level > ids[entry.id_item]['level']:
+                ids[entry.id_item]['id'] = entry.id
+
+        ids2 = []
+        for k, v in ids.iteritems():
+            ids2.append(v['id'])
+
+        return sorted(ids2)
+
     def generate(self, ids = None):
-        s = 'static item_upgrade_rule_t __%s_data[] = {\n' % (
-            self.format_str( 'item_upgrade_rule' ),
+        s = '// Item upgrade rules, wow build level %d\n' % self._options.build
+
+        s += 'static struct item_upgrade_rule_t __%sitem_upgrade_rule%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or ''
         )
 
-        for id_ in sorted(self._rulesetitemupgrade_db.keys()) + [ 0 ]:
+        for id_ in ids + [ 0 ]:
             rule = self._rulesetitemupgrade_db[id_]
-            s += '  { %s },\n' % (', '.join(rule.field('id', 'upgrade_level', 'id_upgrade_base', 'id_item')))
+            s += '  { %s },\n' % (', '.join(rule.field('id', 'id_upgrade_base', 'id_item')))
 
         s += '};\n\n'
 
@@ -738,13 +758,16 @@ class ItemUpgradeDataGenerator(DataGenerator):
         DataGenerator.__init__(self, options)
 
     def generate(self, ids = None):
-        s = 'static item_upgrade_t __%s_data[] = {\n' % (
-            self.format_str( 'item_upgrade' ),
+        s = '// Upgrade rule data, wow build level %d\n' % self._options.build
+
+        s += 'static struct item_upgrade_t __%supgrade_rule%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or ''
         )
 
         for id_ in sorted(self._itemupgrade_db.keys()) + [ 0 ]:
             upgrade = self._itemupgrade_db[id_]
-            s += '  { %s },\n' % (', '.join(upgrade.field('id', 'upgrade_ilevel')))
+            s += '  { %s },\n' % (', '.join(upgrade.field('id', 'upgrade_group', 'prev_id', 'upgrade_ilevel')))
 
         s += '};\n\n'
 

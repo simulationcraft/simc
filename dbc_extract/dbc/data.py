@@ -348,7 +348,7 @@ _DBC_FIELDS = {
         'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
     ],
     'ItemUpgrade.db2' : [
-          ( 'id', '%5u' ), 'f1', ( 'upgrade_ilevel', '%4u' ), 'prev_id', 'id_currency_type', 'cost'
+          ( 'id', '%5u' ), ( 'upgrade_group', '%4u' ), ( 'upgrade_ilevel', '%3d' ), ( 'prev_id', '%5u' ), 'id_currency_type', 'cost'
     ],
     'ItemUpgradePath.dbc' : [
         'id'
@@ -366,7 +366,10 @@ _DBC_FIELDS = {
           ( 'uncm_points_1', '%4u' ), ( 'uncm_points_2', '%4u' ), ( 'uncm_points_3', '%4u' ), ( 'uncm_points_4', '%4u' ), ( 'uncm_points_5', '%4u' ),
     ],
     'RulesetItemUpgrade.db2' : [
-        ( 'id', '%5u' ), 'upgrade_level', ( 'id_upgrade_base', '%5u' ), ( 'id_item', '%5u' )
+        ( 'id', '%5u' ), 'upgrade_level', ( 'id_upgrade_base', '%5u' ), ( 'id_item', '%6u' )
+    ],
+    'RulesetRaidLootUpgrade.db2' : [
+        'id', 'f1', 'f2', 'f3', 'f4'
     ],
     'RulesetRaidOverride.dbc' : [
         'id', 'f1', 'f2', 'f3', 'f4', 'f5'

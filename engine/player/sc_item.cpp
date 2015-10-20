@@ -244,7 +244,7 @@ std::string item_t::to_string() const
   s << " upgrade_level=" << upgrade_level();
   s << " ilevel=" << item_level();
   if ( sim -> scale_to_itemlevel > 0 )
-    s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() ) ) << ")";
+    s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( *this, upgrade_level() ) ) << ")";
   else if ( upgrade_level() > 0 )
     s << " (" << parsed.data.level << ")";
   if ( parsed.data.lfr() )
@@ -408,7 +408,7 @@ unsigned item_t::item_level() const
   if ( parsed.item_level > 0 )
     ilvl = parsed.item_level;
   else
-    ilvl = parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() );
+    ilvl = parsed.data.level + item_database::upgrade_ilevel( *this, upgrade_level() );
 
   if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
