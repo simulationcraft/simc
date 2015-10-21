@@ -14,7 +14,7 @@ shallow_clone: true
 platform: x64
 
 build_script:
-  - MSBuild.exe simc_vs2013.sln /t:simc
+  - MSBuild.exe simc_vs2013.sln /m /t:simc
 
 test_script:
   ## pass
