@@ -46,6 +46,23 @@ bool item_t::has_stats() const
   return false;
 }
 
+// item_t::has_scaling_stat_bonus_id =======================================
+
+bool item_t::has_scaling_stat_bonus_id() const
+{
+  for ( auto bonus_id : parsed.bonus_id )
+  {
+    std::vector<const item_bonus_entry_t*> bonuses = player -> dbc.item_bonus( bonus_id );
+    if ( std::find_if( bonuses.begin(), bonuses.end(), []( const item_bonus_entry_t* e )
+          { return e -> type == ITEM_BONUS_SCALING; } ) != bonuses.end() )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // item_t::socket_color_match ==============================================
 
 bool item_t::socket_color_match() const
@@ -1159,9 +1176,12 @@ bool item_t::decode_stats()
 
   // If scaling fails, then there's some issue with the scaling data, and the item stats will be
   // wrong.
-  if ( ! item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution ) )
+  if ( ! has_scaling_stat_bonus_id() )
   {
-    return false;
+    if ( ! item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution ) )
+    {
+      return false;
+    }
   }
 
   for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
