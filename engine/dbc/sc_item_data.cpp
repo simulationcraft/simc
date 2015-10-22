@@ -1288,11 +1288,11 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
   const random_prop_data_t& budget = item -> player -> dbc.random_property( scaling_level );
 
   if ( item -> parsed.data.quality >= 4 )
-    m_scale = budget.p_epic[ 0 ];
+    m_scale = budget.p_epic.front();
   else if ( item -> parsed.data.quality == 3 )
-    m_scale = budget.p_rare[ 0 ];
+    m_scale = budget.p_rare.front();
   else
-    m_scale = budget.p_uncommon[ 0 ];
+    m_scale = budget.p_uncommon.front();
 
   return m_scale;
 }

@@ -102,7 +102,7 @@ std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantm
     enchant_name = enchant.name;
     util::tokenize( enchant_name );
 
-    for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+    for ( size_t i = 0; i < enchant.ench_prop.size(); i++ )
     {
       if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
         continue;
@@ -211,7 +211,7 @@ bool enchant::initialize_item_enchant( item_t& item,
     }
   }
 
-  for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+  for ( size_t i = 0; i < enchant.ench_prop.size(); i++ )
   {
     special_effect_t effect( &item );
     effect.source = source;

@@ -445,7 +445,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   else
   {
     const random_prop_data_t& ilevel_data = dbc.random_property( level );
-    double item_budget = ilevel_data.p_epic[ 0 ];
+    double item_budget = ilevel_data.p_epic.front();
 
     s << item_budget * e -> m_average();
   }
@@ -1021,9 +1021,9 @@ std::string spell_info::set_bonus_to_str( const dbc_t&, const item_set_bonus_t* 
   s << "Class         : " << util::player_type_string( player_type ) << std::endl;
   s << "Tier          : " << set_bonus -> tier << std::endl;
   s << "Bonus Level   : " << set_bonus -> bonus << std::endl;
-  for( size_t i = 0; i < sizeof_array( set_bonus -> spec_guess ); ++i )
+  for( size_t i = 0; i < set_bonus -> spec_guesses.size(); ++i )
   {
-    specialization_e spec = static_cast<specialization_e>( set_bonus -> spec_guess[ i ] );
+    specialization_e spec = static_cast<specialization_e>( set_bonus -> spec_guesses[ i ] );
     if ( spec == SPEC_NONE )
       continue;
     s << "Specc Guess " << i << " : " << util::specialization_string( spec ) << std::endl;
@@ -1144,7 +1144,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   else
   {
     const random_prop_data_t& ilevel_data = dbc.random_property( level );
-    double item_budget = ilevel_data.p_epic[ 0 ];
+    double item_budget = ilevel_data.p_epic.front();
 
     node -> add_parm( "scaled_value", item_budget * e -> m_average() );
   }
@@ -1476,9 +1476,9 @@ void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_
   node -> add_parm( "class", util::player_type_string( player_type ) );
   node -> add_parm( "tier", set_bonus -> tier );
   node -> add_parm( "bonus_level", set_bonus -> bonus );
-  for( size_t i = 0; i < sizeof_array( set_bonus -> spec_guess ); ++i )
+  for( size_t i = 0; i < set_bonus -> spec_guesses.size(); ++i )
   {
-    specialization_e spec = static_cast<specialization_e>( set_bonus -> spec_guess[ i ] );
+    specialization_e spec = static_cast<specialization_e>( set_bonus -> spec_guesses[ i ] );
     if ( spec == SPEC_NONE )
       continue;
     node -> add_parm( std::string("spec_guess_") + util::to_string( i ), util::specialization_string( spec ) );

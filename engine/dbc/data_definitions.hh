@@ -67,8 +67,6 @@ struct item_bonus_entry_t
 };
 
 struct item_set_bonus_t {
-#define SPEC_GUESS_MAX ( 4 )
-#define SET_BONUS_ITEM_ID_MAX ( 10 )
   const char* set_name;
   const char* set_opt_name;
   unsigned    enum_id; // tier_e enum value.
@@ -76,11 +74,11 @@ struct item_set_bonus_t {
   unsigned    tier;
   unsigned    bonus;
   int         class_id;
-  int         spec_guess[SPEC_GUESS_MAX];
+  std::array<int, 4>         spec_guesses;
   int         role; // 0 tank, 1 healer, 2 meleedps/hunter, 3 caster, -1 "all"
   int         spec; // -1 "all"
   unsigned    spell_id;
-  unsigned    item_ids[SET_BONUS_ITEM_ID_MAX];
+  std::array<unsigned, 10>    item_ids;
 
   bool has_spec( int spec_id ) const
   {
@@ -97,11 +95,11 @@ struct item_set_bonus_t {
       }
     }
     // Check guessed specs
-    else if ( spec_guess[ 0 ] > 0 )
+    else if ( spec_guesses.front() > 0 )
     {
-      for ( size_t i = 0, end = SPEC_GUESS_MAX; i < end; i++ )
+      for ( const int spec_guess : spec_guesses )
       {
-        if ( spec_guess[ i ] == spec_id )
+        if ( spec_guess == spec_id )
         {
           return true;
         }
@@ -122,12 +120,12 @@ struct item_set_bonus_t {
 
   bool has_item( unsigned item_id ) const
   {
-    for ( size_t i = 0; i < SET_BONUS_ITEM_ID_MAX; i++ )
+    for ( const unsigned id : item_ids )
     {
-      if ( item_ids[ i ] == item_id )
+      if ( id == item_id )
         return true;
 
-      if ( item_ids[ i ] == 0 )
+      if ( id == 0 )
         break;
     }
     return false;
@@ -156,21 +154,21 @@ struct item_upgrade_t {
 
 struct random_prop_data_t {
   unsigned ilevel;
-  double   p_epic[5];
-  double   p_rare[5];
-  double   p_uncommon[5];
+  std::array<double, 5>   p_epic;
+  std::array<double, 5>   p_rare;
+  std::array<double, 5>   p_uncommon;
 };
 
 struct random_suffix_data_t {
   unsigned    id;
   const char* suffix;
-  unsigned    enchant_id[5];
-  unsigned    enchant_alloc[5];
+  std::array<unsigned, 5>    enchant_id;
+  std::array<unsigned, 5>    enchant_alloc;
 };
 
 struct random_suffix_group_t {
   unsigned    id;
-  unsigned    suffix_id[48];
+  std::array<unsigned, 48>    suffix_id;
 };
 
 struct item_enchantment_data_t {
@@ -182,10 +180,10 @@ struct item_enchantment_data_t {
   unsigned    max_scaling_level;
   unsigned    req_skill;
   unsigned    req_skill_value;
-  unsigned    ench_type[3];        // item_enchantment
-  int         ench_amount[3];
-  unsigned    ench_prop[3];        // item_mod_type
-  double      ench_coeff[3];       // item enchant scaling multiplier for data table
+  std::array<unsigned, 3>    ench_type;        // item_enchantment
+  std::array<int, 3>         ench_amount;
+  std::array<unsigned, 3>    ench_prop;        // item_mod_type
+  std::array<double, 3>      ench_coeff;       // item enchant scaling multiplier for data table
   unsigned    id_spell;            // reverse mapped spell id for this enchant
   const char* name;
 };
@@ -245,12 +243,12 @@ struct item_data_t {
 
 struct item_scale_data_t {
   unsigned ilevel;
-  double   values[7];             // quality based values for dps
+  std::array<double,7>   values;             // quality based values for dps
 };
 
 struct item_armor_type_data_t {
   unsigned ilevel;
-  double   armor_type[4];
+  std::array<double,4>   armor_type;
 };
 
 struct item_socket_cost_data_t {

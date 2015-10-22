@@ -1245,7 +1245,7 @@ bool item_t::decode_random_suffix()
                    name(), parsed.suffix_id, item_level(), parsed.data.quality, f );
   }
 
-  for ( size_t i = 0; i < sizeof_array( suffix_data.enchant_id ); i++ )
+  for ( size_t i = 0; i < suffix_data.enchant_id.size(); i++ )
   {
     unsigned enchant_id;
     if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
@@ -1269,7 +1269,7 @@ bool item_t::decode_random_suffix()
 
     // Loop through enchantment stats, adding valid ones to the stats of the item.
     // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
-    for ( size_t j = 0; j < sizeof_array( enchant_data.ench_type ); j++ )
+    for ( size_t j = 0; j < enchant_data.ench_type.size(); j++ )
     {
       stat_pair_t stat( STAT_NONE, -1 );
 
