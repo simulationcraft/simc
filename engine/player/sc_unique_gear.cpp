@@ -3957,9 +3957,9 @@ const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned s
 {
   for ( const item_data_t* item = dbc::items( maybe_ptr( dbc.ptr ) ); item -> id != 0; item++ )
   {
-    for ( size_t spell_idx = 0, end = sizeof_array( item -> id_spell ); spell_idx < end; spell_idx++ )
+    for ( const int id : item -> id_spell )
     {
-      if ( item -> id_spell[ spell_idx ] == static_cast<int>( spell_id ) )
+      if ( id == static_cast<int>( spell_id ) )
         return item;
     }
   }

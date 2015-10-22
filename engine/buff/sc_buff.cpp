@@ -1203,15 +1203,9 @@ namespace
 
     bool operator()( const item_data_t* item ) const
     {
-      for ( size_t spell_idx = 0, end = sizeof_array( item -> id_spell ); spell_idx < end; spell_idx++ )
-      {
-        if ( item -> id_spell[ spell_idx ] == static_cast<int>( spell_id ) )
-        {
-          return true;
-        }
-      }
-
-      return false;
+      auto it = range::find_if(
+          item->id_spell, [this]( int id ) { return id == as<int>(spell_id); } );
+      return it != item->id_spell.end();
     }
   };
 }

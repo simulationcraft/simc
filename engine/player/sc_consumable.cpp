@@ -297,7 +297,7 @@ struct flask_t : public flask_base_t
     }
 
     const spell_data_t* spell = nullptr;
-    for ( size_t i = 0, end = sizeof_array( item -> id_spell ); i < end; i++ )
+    for ( size_t i = 0; i < item -> id_spell.size(); i++ )
     {
       if ( item -> trigger_spell[ i ] == ITEM_SPELLTRIGGER_ON_USE )
       {
@@ -877,7 +877,7 @@ struct dbc_potion_t : public action_t
 
     // Setup cooldown
     cooldown = p -> get_cooldown( "potion" );
-    for ( size_t i = 0, end = sizeof_array( item -> cooldown_category ); i < end; i++ )
+    for ( size_t i = 0; i < item -> cooldown_category.size(); ++i )
     {
       if ( item -> cooldown_group[ i ] > 0 && item -> cooldown_group_duration[ i ] > 0 )
       {
