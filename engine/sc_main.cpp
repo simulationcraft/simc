@@ -33,7 +33,7 @@ struct sim_signal_handler_t
     if ( global_sim )
     {
       report( signal );
-      if( global_sim -> scaling -> calculate_scale_factors )
+      if( global_sim -> scaling -> calculate_scale_factors || global_sim -> reforge_plot -> current_reforge_sim || global_sim -> plot -> current_plot_stat != STAT_NONE )
       {
 	global_sim -> cancel();
       }
