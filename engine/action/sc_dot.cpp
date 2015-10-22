@@ -590,6 +590,46 @@ void dot_t::tick_zero()
   tick();
 }
 
+/**
+ * Check if channeling action should be interrupted and do so
+ *
+ * @return true if action gets interrupted
+ */
+bool dot_t::channel_interrupt()
+{
+
+  assert ( ticking );
+  if ( current_action->channeled )
+  {
+    bool interrupt = current_action -> interrupt != 0;
+    if ( !interrupt )
+    {
+      expr_t* expr = current_action->interrupt_if_expr;
+      if ( expr )
+      {
+        interrupt = expr->success();
+        if ( sim.debug )
+          sim.out_debug.printf( "Dot interrupt expression check=%d", interrupt );
+      }
+    }
+    if ( interrupt )
+    {
+      bool gcd_ready = current_action->player->gcd_ready <= sim.current_time();
+      bool action_available = is_higher_priority_action_available();
+      if ( sim.debug )
+        sim.out_debug.printf( "Dot interrupt check: gcd_ready=%d action_available=%d.", gcd_ready, action_available );
+      if ( gcd_ready && action_available )
+      {
+        // cancel dot
+        last_tick();
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 /* Called each time the dot ticks.
  */
 void dot_t::tick()
