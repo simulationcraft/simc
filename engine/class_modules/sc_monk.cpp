@@ -226,6 +226,8 @@ public:
 
   double track_chi_consumption;
 
+  bool track_jade;
+
   struct buffs_t
   {
     absorb_buff_t* guard;
@@ -343,7 +345,7 @@ public:
     const spell_data_t* soul_dance;
     const spell_data_t* hurricane_strike;
     const spell_data_t* chi_explosion;
-    const spell_data_t* path_of_mists;
+    const spell_data_t* pool_of_mists;
     const spell_data_t* serenity;
   } talent;
 
@@ -526,6 +528,7 @@ public:
     player_t( sim, MONK, name, r ),
     active_actions( active_actions_t() ),
     track_chi_consumption( 0.0 ),
+    track_jade( false ),
     buff( buffs_t() ),
     stance_data( stance_data_t() ),
     gain( gains_t() ),
@@ -2416,6 +2419,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
     
+    if( p -> talent.pool_of_mists -> ok() )
+      cooldown -> charges += p -> talent.pool_of_mists -> effectN( 2 ).base_value();
+
     stancemask = FIERCE_TIGER | SPIRITED_CRANE;
     sef_ability = SEF_RISING_SUN_KICK;
 
@@ -2427,6 +2433,16 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> talent.pool_of_mists -> ok() )
+      am *= 1.0 + p() -> talent.pool_of_mists -> effectN( 4 ).percent();
+
+    return am;
   }
 
   double combo_breaker_chance()
@@ -2460,6 +2476,20 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       if ( p() -> buff.combo_breaker_tp -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
         p() -> proc.combo_breaker_tp -> occur();
     }
+    // TODO: Need a better way of handling this cooldown reset.
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      if ( p() -> track_jade == false )
+      {
+        if ( rng().roll( p() -> cache.multistrike()) )
+        {
+          cooldown -> reset( true );
+          p() -> track_jade = true;
+        }
+      }
+      else
+  		  p() -> track_jade = false;
+	  }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3249,8 +3279,11 @@ struct melee_t: public monk_melee_attack_t
 
     if ( player -> dual_wield() )
     {
-      base_hit -= 0.19;
       base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+      if ( player -> specialization() == MONK_MISTWEAVER )
+        base_multiplier *= 1.0 + player -> spec.mana_meditation -> effectN( 2 ).percent();
+      else
+        base_hit -= 0.19;
     }
   }
 
@@ -3264,7 +3297,7 @@ struct melee_t: public monk_melee_attack_t
   {
     timespan_t t = monk_melee_attack_t::execute_time();
 
-    if ( ! p() -> dual_wield() )
+    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       t *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 
     if ( first )
@@ -3920,6 +3953,7 @@ struct chi_torpedo_t: public monk_spell_t
 
     heal = new chi_torpedo_heal_t( *player );
     execute_action = heal;
+    trigger_gcd = timespan_t::zero();
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
     cooldown -> duration += p() -> talent.celerity -> effectN( 1 ).time_value();
@@ -5415,7 +5449,7 @@ void monk_t::init_spells()
   talent.soul_dance                  = find_talent_spell( "Soul Dance" );
   talent.hurricane_strike            = find_talent_spell( "Hurricane Strike" );
   talent.chi_explosion               = find_talent_spell( "Chi Explosion" );
-  talent.path_of_mists               = find_talent_spell( "Path of Mists" );
+  talent.pool_of_mists               = find_talent_spell( "Pool of Mists" );
   talent.serenity                    = find_talent_spell( "Serenity" );
 
   // PERKS
@@ -6834,33 +6868,43 @@ void monk_t::apl_combat_windwalker()
 void monk_t::apl_combat_mistweaver()
 {
   action_priority_list_t* def = get_action_priority_list( "default" );
-
+  action_priority_list_t* st = get_action_priority_list( "st" );
   std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-  std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
   def -> add_action( "auto_attack" );
+  def -> add_action( "invoke_xuen" );
   def -> add_talent( this, "Chi Brew", "if=chi=0" );
-  def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=25" );
+  def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=5" );
+  def -> add_action( "use_item,name=mirror_of_the_blademaster" );
+  def -> add_action( "use_item,name=intuitions_gift" );
 
   if ( sim -> allow_potions )
   {
-    if ( true_level >= 85 )
-      def -> add_action( "/potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60" );
+    if ( true_level == 100 )
+      def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=60" );
+    else if ( true_level >= 85 )
+      def -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
-  def -> add_talent( this, "Invoke Xuen" );
+  def -> add_action( this, "Fortifying Brew", "if=target.health.percent<10&cooldown.touch_of_death.remains=0&(glyph.touch_of_death.enabled|chi>=3)" );
+  def -> add_action( this, "Touch of Death", "if=target.health.percent<10&(glyph.touch_of_death.enabled|chi>=3)" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
-  def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 
-  st_list_str += "/crackling_jade_lightning,if=buff.bloodlust.up&buff.lucidity.up";
-  st_list_str += "/tiger_palm,if=buff.lucidity.up";
-  st_list_str += "/jab,if=buff.lucidity.up";
-  st_list_str += "/tiger_palm,if=!buff.tiger_power.up";
-  st_list_str += "/blackout_kick,if=buff.tiger_power.up&chi>1";
-  st_list_str += "/tiger_palm,if=buff.tiger_power.up";
-  st_list_str += "/chi_wave,if=talent.chi_wave.enabled";
-  st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
-  st_list_str += "/jab";
+  st -> add_action( this, "Tiger Palm", "if=!buff.tiger_power.up" );
+  st -> add_action( this, "Blackout Kick", "if=!buff.cranes_zeal.up" );
+  st -> add_action( this, "Rising Sun Kick", "if=debuff.rising_sun_kick.down" );
+  st -> add_talent( this, "Chi Wave" );
+  st -> add_talent( this, "Chi Burst" );
+  st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=!dot.zen_sphere.ticking" );
+  st -> add_action( this, "Surging Mist", "if=buff.vital_mists.stack=5&chi.max-chi>2" );
+  st -> add_action( this, "Blackout Kick", "if=buff.cranes_zeal.remains<3" );
+  st -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<6.6" );
+  st -> add_action( this, "Rising Sun Kick" );
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>2&health.percent<80" );
+  st -> add_action( this, "Jab", "if=chi.max-chi>2" );
+  st -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains-6.6<buff.cranes_zeal.remains" );
+  st -> add_action( this, "Blackout Kick" );
 
   aoe_list_str += "/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
   aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
