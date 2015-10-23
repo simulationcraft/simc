@@ -5644,6 +5644,13 @@ void monk_t::init_scaling()
     scales_with[STAT_AGILITY] = true;
     scales_with[STAT_WEAPON_DPS] = true;
   }
+  else
+  {
+    scales_with[STAT_AGILITY] = false;
+	scales_with[STAT_MASTERY_RATING] = false;
+	scales_with[STAT_ATTACK_POWER] = false;
+	scales_with[STAT_SPIRIT] = true;
+  }
   scales_with[STAT_STRENGTH] = false;
 
   if ( specialization() == MONK_BREWMASTER )
@@ -6573,7 +6580,7 @@ void monk_t::apl_pre_mistweaver()
     if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_intellect_flask" );
     // Flask
-    if ( true_level >= 85 )
+    else if ( true_level >= 85 )
       pre -> add_action( "flask,type=warm_sun" );
     else if ( true_level > 80 )
       pre -> add_action( "flask,type=draconic_mind" );
