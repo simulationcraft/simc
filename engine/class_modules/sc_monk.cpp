@@ -277,7 +277,7 @@ public:
   {
     gain_t* chi_brew;
     gain_t* chi_refund;
-    gain_t* chi_sphere;
+    gain_t* power_strikes;
     gain_t* combo_breaker_ce;
     gain_t* combo_breaker_bok;
     gain_t* combo_breaker_tp;
@@ -298,6 +298,7 @@ public:
     gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
     gain_t* tier16_4pc_tank;
+    gain_t* tier17_2pc_healer;
     gain_t* healing_elixirs;
     gain_t* fortuitous_spheres;
   } gain;
@@ -4185,7 +4186,7 @@ struct chi_sphere_t: public monk_spell_t
     if ( p() -> buff.chi_sphere -> up() )
     {
       // Only use 1 Orb per execution
-      player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.chi_sphere, this );
+      player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.power_strikes, this );
 
       p() -> buff.chi_sphere -> decrement();
     }
@@ -5000,10 +5001,12 @@ struct surging_mist_t: public monk_heal_t
   {
     monk_heal_t::execute();
 
-
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
       player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
+      if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) && p() -> buff.vital_mists -> current_stack == 5)
+        player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.power_strikes, this );
+
       reset_swing();
     }
 
@@ -5745,7 +5748,7 @@ void monk_t::create_buffs()
 
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" )
-    .max_stack( 5 );
+    .max_stack( 8 );
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
 
@@ -5785,7 +5788,7 @@ void monk_t::init_gains()
 
   gain.chi_brew                 = get_gain( "chi_brew" );
   gain.chi_refund               = get_gain( "chi_refund" );
-  gain.chi_sphere               = get_gain( "chi_sphere" );
+  gain.power_strikes            = get_gain( "power_strikes" );
   gain.combo_breaker_ce         = get_gain( "combo_breaker_chi_explosion" );
   gain.combo_breaker_bok        = get_gain( "combo_breaker_blackout_kick" );
   gain.combo_breaker_tp         = get_gain( "combo_breaker_tiger_palm" );
@@ -5805,6 +5808,7 @@ void monk_t::init_gains()
   gain.tier15_2pc_melee         = get_gain( "tier15_2pc_melee" );
   gain.tier16_4pc_melee         = get_gain( "tier16_4pc_melee" );
   gain.tier16_4pc_tank          = get_gain( "tier16_4pc_tank" );
+  gain.tier17_2pc_healer        = get_gain( "tier17_2pc_healer" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
 }
 
@@ -6890,6 +6894,8 @@ void monk_t::apl_combat_mistweaver()
   def -> add_action( this, "Touch of Death", "if=target.health.percent<10&(glyph.touch_of_death.enabled|chi>=3)" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<chi.max" );
+
 
   st -> add_action( this, "Tiger Palm", "if=!buff.tiger_power.up" );
   st -> add_action( this, "Blackout Kick", "if=!buff.cranes_zeal.up" );
