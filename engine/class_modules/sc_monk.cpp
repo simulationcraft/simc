@@ -5005,7 +5005,7 @@ struct surging_mist_t: public monk_heal_t
     {
       player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
       if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) && p() -> buff.vital_mists -> current_stack == 5)
-        player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.power_strikes, this );
+        player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.tier17_2pc_healer, this );
 
       reset_swing();
     }
