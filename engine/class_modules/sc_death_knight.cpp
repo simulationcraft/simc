@@ -4368,9 +4368,9 @@ struct chains_of_ice_t : public death_knight_spell_t
       base_dd_max = p -> glyph.chains_of_ice -> effectN( 1 ).max( p );
     }
 
-    for ( const int id: p -> items[ SLOT_HANDS ].parsed.data.id_spell )
+    for ( size_t i = 0, end = sizeof_array( p -> items[ SLOT_HANDS ].parsed.data.id_spell ); i < end; i++ )
     {
-      if ( id == static_cast<int>( pvp_bonus -> id() ) )
+      if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
       {
         rp_gain += pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
         break;

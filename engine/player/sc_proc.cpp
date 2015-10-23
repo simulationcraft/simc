@@ -775,10 +775,10 @@ timespan_t special_effect_t::cooldown() const
   // spell cooldown may be
   if ( item )
   {
-    for ( const int duration : item -> parsed.data.cooldown_category_duration )
+    for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown_category_duration ); i < end; i++ )
     {
-      if ( duration > 0 )
-        return timespan_t::from_millis( duration );
+      if ( item -> parsed.data.cooldown_category_duration[ i ] > 0 )
+        return timespan_t::from_millis( item -> parsed.data.cooldown_category_duration[ i ] );
     }
   }
 

@@ -37,9 +37,9 @@ item_t::item_t( player_t* p, const std::string& o ) :
 
 bool item_t::has_stats() const
 {
-  for ( const int stat_type : parsed.data.stat_type_e )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
-    if ( stat_type > 0 )
+    if ( parsed.data.stat_type_e[ i ] > 0 )
       return true;
   }
 
@@ -67,7 +67,7 @@ bool item_t::has_scaling_stat_bonus_id() const
 
 bool item_t::socket_color_match() const
 {
-  for ( size_t i = 0; i < parsed.data.socket_color.size(); i++ )
+  for ( size_t i = 0, end = sizeof_array( parsed.data.socket_color ); i < end; i++ )
   {
     if ( parsed.data.socket_color[ i ] == SOCKET_COLOR_NONE )
       continue;
@@ -122,7 +122,7 @@ std::string item_t::item_stats_str() const
   else if ( item_database::armor_value( *this ) )
     s << item_database::armor_value( *this ) << " Armor, ";
 
-  for ( size_t i = 0; i < parsed.data.stat_val.size(); i++ )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] <= 0 )
       continue;
@@ -353,9 +353,9 @@ std::string item_t::to_string() const
     s << " source=" << source_str;
 
   bool has_spells = false;
-  for ( const int id : parsed.data.id_spell )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.id_spell ); i++ )
   {
-    if ( id > 0 )
+    if ( parsed.data.id_spell[ i ] > 0 )
     {
       has_spells = true;
       break;
@@ -365,7 +365,7 @@ std::string item_t::to_string() const
   if ( has_spells )
   {
     s << " proc_spells={ ";
-    for ( size_t i = 0; i < parsed.data.id_spell.size(); i++ )
+    for ( size_t i = 0; i < sizeof_array( parsed.data.id_spell ); i++ )
     {
       if ( parsed.data.id_spell[ i ] <= 0 )
         continue;
@@ -397,9 +397,9 @@ std::string item_t::to_string() const
 
 bool item_t::has_item_stat( stat_e stat ) const
 {
-  for ( const int stat_type : parsed.data.stat_type_e )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
   {
-    if ( util::translate_item_mod( stat_type ) == stat )
+    if ( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) == stat )
       return true;
   }
 
@@ -447,7 +447,7 @@ unsigned item_t::base_item_level() const
 
 stat_e item_t::stat( size_t idx ) const
 {
-  if ( idx >= parsed.data.stat_type_e.size() )
+  if ( idx >= sizeof_array( parsed.data.stat_type_e ) )
     return STAT_NONE;
 
   return util::translate_item_mod( parsed.data.stat_type_e[ idx ] );
@@ -455,7 +455,7 @@ stat_e item_t::stat( size_t idx ) const
 
 int item_t::stat_value( size_t idx ) const
 {
-  if ( idx >= parsed.data.stat_val.size() - 1 )
+  if ( idx >= sizeof_array( parsed.data.stat_val ) - 1 )
     return -1;
 
   return item_database::scaled_stat( *this, player -> dbc, idx, item_level() );
@@ -918,7 +918,7 @@ std::string item_t::encoded_stats() const
 
   std::vector<std::string> stats;
 
-  for ( size_t i = 0; i < parsed.data.stat_type_e.size(); i++ )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] < 0 )
       continue;
@@ -1153,7 +1153,7 @@ bool item_t::decode_stats()
     size_t num_tokens = item_database::parse_tokens( tokens, option_stats_str );
     size_t stat = 0;
 
-    for ( size_t i = 0; i < num_tokens && stat < parsed.data.stat_val.size(); i++ )
+    for ( size_t i = 0; i < num_tokens && stat < sizeof_array( parsed.data.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
@@ -1184,7 +1184,7 @@ bool item_t::decode_stats()
     }
   }
 
-  for ( size_t i = 0; i < parsed.data.stat_val.size(); i++ )
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
   {
     stat_e s = stat( i );
     if ( s == STAT_NONE ) continue;
@@ -1288,9 +1288,9 @@ bool item_t::decode_random_suffix()
       bool has_stat = false;
       size_t free_idx = 0;
 
-      for ( size_t k = 0; k < parsed.data.stat_val.size(); k++ )
+      for ( size_t k = 0; k < sizeof_array( parsed.data.stat_val ); k++ )
       {
-        if ( parsed.data.stat_type_e[ k ] == as<int>( enchant_data.ench_prop[ j ] ) )
+        if ( parsed.data.stat_type_e[ k ] == ( int ) enchant_data.ench_prop[ j ] )
           has_stat = true;
 
         if ( parsed.data.stat_type_e[ k ] <= 0 )
@@ -1441,7 +1441,7 @@ bool item_t::decode_equip_effect()
   // Otherwise, use fancy schmancy database
   else
   {
-    for ( size_t i = 0; i < parsed.data.id_spell.size(); i++ )
+    for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; i++ )
     {
       if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
         continue;
@@ -1503,7 +1503,7 @@ bool item_t::decode_use_effect()
   // Otherwise, use fancy schmancy database
   else
   {
-    for ( size_t i = 0; i < parsed.data.id_spell.size(); i++ )
+    for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; i++ )
     {
       if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
         continue;
