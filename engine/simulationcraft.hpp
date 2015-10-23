@@ -1305,6 +1305,8 @@ public:
   typename std::vector<T>::const_iterator end() const
   { return _data.end(); }
 
+  typedef typename std::vector<T>::iterator iterator;
+
   void trigger_callbacks(T v) const
   {
     for ( size_t i = 0; i < _callbacks.size(); ++i )
@@ -1964,6 +1966,7 @@ struct scaling_t
 
 struct plot_t
 {
+public:
   sim_t* sim;
   std::string dps_plot_stat_str;
   double dps_plot_step;
@@ -1976,10 +1979,11 @@ struct plot_t
   bool   dps_plot_positive, dps_plot_negative;
 
   plot_t( sim_t* s );
-
   void analyze();
-  void analyze_stats();
   double progress( std::string& phase, std::string* detailed = nullptr );
+private:
+  void analyze_stats();
+  void write_output_file();
   void create_options();
 };
 

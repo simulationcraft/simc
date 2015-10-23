@@ -5,36 +5,30 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // UNNAMED NAMESPACE ==========================================
+namespace
+{  // UNNAMED NAMESPACE ==========================================
 
 // is_plot_stat =============================================================
 
-bool is_plot_stat( sim_t* sim,
-                          stat_e stat )
+bool is_plot_stat( sim_t* sim, stat_e stat )
 {
-  if ( ! sim -> plot -> dps_plot_stat_str.empty() )
+  if ( !sim->plot->dps_plot_stat_str.empty() )
   {
-    std::vector<std::string> stat_list = util::string_split( sim -> plot -> dps_plot_stat_str, ",:;/|" );
-    bool found = false;
-    for ( size_t i = 0; i < stat_list.size() && ! found; i++ )
-    {
-      found = ( util::parse_stat_type( stat_list[ i ] ) == stat );
-    }
-    if ( ! found ) return false;
+    auto stat_list =
+        util::string_split( sim->plot->dps_plot_stat_str, ",:;/|" );
+    auto it = range::find_if( stat_list, [stat]( const std::string& s ) {
+      return stat == util::parse_stat_type( s );
+    } );
+    return it != stat_list.end();
   }
 
-  for ( size_t i = 0; i < sim -> player_no_pet_list.size(); ++i )
-  {
-    player_t* p = sim -> player_no_pet_list[ i ];
-    if ( p -> quiet ) continue;
-
-    if ( p -> scales_with[ stat ] ) return true;
-  }
-
-  return false;
+  auto it = range::find_if( sim->player_no_pet_list, [stat]( player_t* p ) {
+    return !p->quiet && p->scales_with[ stat ];
+  } );
+  return it != sim->player_no_pet_list.end();
 }
 
-} // UNNAMED NAMESPACE ====================================================
+}  // UNNAMED NAMESPACE ====================================================
 
 // ==========================================================================
 // Plot
@@ -42,48 +36,66 @@ bool is_plot_stat( sim_t* sim,
 
 // plot_t::plot_t ===========================================================
 
-plot_t::plot_t( sim_t* s ) :
-  sim( s ),
-  dps_plot_step( 160.0 ),
-  dps_plot_points( 20 ),
-  dps_plot_iterations( -1 ),
-  dps_plot_target_error( 0 ),
-  dps_plot_debug( 0 ),
-  current_plot_stat( STAT_NONE ),
-  num_plot_stats( 0 ),
-  remaining_plot_stats( 0 ),
-  remaining_plot_points( 0 ),
-  dps_plot_positive( 0 ),
-  dps_plot_negative( 0 )
+plot_t::plot_t( sim_t* s )
+  : sim( s ),
+    dps_plot_step( 160.0 ),
+    dps_plot_points( 20 ),
+    dps_plot_iterations( -1 ),
+    dps_plot_target_error( 0 ),
+    dps_plot_debug( 0 ),
+    current_plot_stat( STAT_NONE ),
+    num_plot_stats( 0 ),
+    remaining_plot_stats( 0 ),
+    remaining_plot_points( 0 ),
+    dps_plot_positive( 0 ),
+    dps_plot_negative( 0 )
 {
   create_options();
+}
+
+/// execute plotting
+void plot_t::analyze()
+{
+  if ( sim->is_canceled() )
+    return;
+
+  if ( dps_plot_stat_str.empty() )
+    return;
+
+  analyze_stats();
+
+  write_output_file();
 }
 
 // plot_t::progress =========================================================
 
 double plot_t::progress( std::string& phase, std::string* detailed )
 {
-  if ( dps_plot_stat_str.empty() ) return 1.0;
+  if ( dps_plot_stat_str.empty() )
+    return 1.0;
 
-  if ( num_plot_stats <= 0 ) return 1;
+  if ( num_plot_stats <= 0 )
+    return 1;
 
-  if ( current_plot_stat <= 0 ) return 0;
+  if ( current_plot_stat <= 0 )
+    return 0;
 
-  phase  = "Plot - ";
+  phase = "Plot - ";
   phase += util::stat_type_abbrev( current_plot_stat );
 
   int completed_plot_stats = ( num_plot_stats - remaining_plot_stats );
 
-  double stat_progress = completed_plot_stats / ( double ) num_plot_stats;
+  double stat_progress = completed_plot_stats / (double)num_plot_stats;
 
   int completed_plot_points = ( dps_plot_points - remaining_plot_points );
 
-  double point_progress = completed_plot_points / ( double ) dps_plot_points;
+  double point_progress = completed_plot_points / (double)dps_plot_points;
 
   stat_progress += point_progress / num_plot_stats;
 
-  sim -> detailed_progress( detailed, completed_plot_stats + completed_plot_points,
-                                      num_plot_stats + dps_plot_points );
+  sim->detailed_progress( detailed,
+                          completed_plot_stats + completed_plot_points,
+                          num_plot_stats + dps_plot_points );
 
   return stat_progress;
 }
@@ -92,10 +104,11 @@ double plot_t::progress( std::string& phase, std::string* detailed )
 
 void plot_t::analyze_stats()
 {
-  if ( dps_plot_stat_str.empty() ) return;
+  if ( dps_plot_stat_str.empty() )
+    return;
 
-  size_t num_players = sim -> players_by_name.size();
-  if ( num_players == 0 ) return;
+  if ( sim->players_by_name.empty() )
+    return;
 
   remaining_plot_stats = 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
@@ -105,15 +118,18 @@ void plot_t::analyze_stats()
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( sim -> is_canceled() ) break;
+    if ( sim->is_canceled() )
+      break;
 
-    if ( ! is_plot_stat( sim, i ) ) continue;
+    if ( !is_plot_stat( sim, i ) )
+      continue;
 
     current_plot_stat = i;
 
-    if ( sim -> report_progress )
+    if ( sim->report_progress )
     {
-      util::fprintf( stdout, "\nGenerating DPS Plot for %s...\n", util::stat_type_string( i ) );
+      util::fprintf( stdout, "\nGenerating DPS Plot for %s...\n",
+                     util::stat_type_string( i ) );
       fflush( stdout );
     }
 
@@ -124,74 +140,80 @@ void plot_t::analyze_stats()
     if ( dps_plot_positive )
     {
       start = 0;
-      end = dps_plot_points;
+      end   = dps_plot_points;
     }
     else if ( dps_plot_negative )
     {
       start = -dps_plot_points;
-      end = 0;
+      end   = 0;
     }
     else
     {
-      start = - dps_plot_points / 2;
-      end = - start;
+      start = -dps_plot_points / 2;
+      end   = -start;
     }
 
     for ( int j = start; j <= end; j++ )
     {
-      if ( sim -> is_canceled() ) break;
+      if ( sim->is_canceled() )
+        break;
 
       std::unique_ptr<sim_t> delta_sim;
 
       if ( j != 0 )
       {
-        delta_sim = std::unique_ptr<sim_t>(new sim_t( sim ));
+        delta_sim = std::unique_ptr<sim_t>( new sim_t( sim ) );
         if ( dps_plot_iterations > 0 )
         {
-          delta_sim -> work_queue -> init( dps_plot_iterations );
+          delta_sim->work_queue->init( dps_plot_iterations );
         }
-        if ( dps_plot_target_error > 0 ) delta_sim -> target_error = dps_plot_target_error;
-        delta_sim -> enchant.add_stat( i, j * dps_plot_step );
-        if ( sim -> report_progress )
+        if ( dps_plot_target_error > 0 )
+          delta_sim->target_error = dps_plot_target_error;
+        delta_sim->enchant.add_stat( i, j * dps_plot_step );
+        if ( sim->report_progress )
         {
-          std::stringstream  stat_name; stat_name.width( 12 );
-          stat_name << std::left << std::string( util::stat_type_abbrev( i ) ) + ":";
-          delta_sim -> sim_phase_str = util::to_string( j * dps_plot_step ) + " " + stat_name.str();
+          std::stringstream stat_name;
+          stat_name.width( 12 );
+          stat_name << std::left
+                    << std::string( util::stat_type_abbrev( i ) ) + ":";
+          delta_sim->sim_phase_str =
+              util::to_string( j * dps_plot_step ) + " " + stat_name.str();
         }
-        delta_sim -> execute();
+        delta_sim->execute();
         if ( dps_plot_debug )
         {
-          sim -> out_debug.raw().printf( "Stat=%s Point=%d\n", util::stat_type_string( i ), j );
+          sim->out_debug.raw().printf( "Stat=%s Point=%d\n",
+                                       util::stat_type_string( i ), j );
           report::print_text( delta_sim.get(), true );
-
         }
       }
 
-      for ( size_t k = 0; k < num_players; k++ )
+      for ( player_t* p : sim->players_by_name )
       {
-        player_t* p = sim -> players_by_name[ k ];
-
-        if ( ! p -> scales_with[ i ] ) continue;
+        if ( !p->scales_with[ i ] )
+          continue;
 
         plot_data_t data;
 
         if ( delta_sim )
         {
-          player_t* delta_p = delta_sim -> find_player( p -> name() );
+          player_t* delta_p = delta_sim->find_player( p->name() );
 
-          scaling_metric_data_t scaling_data = delta_p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
+          scaling_metric_data_t scaling_data =
+              delta_p->scaling_for_metric( p->sim->scaling->scaling_metric );
 
           data.value = scaling_data.value;
-          data.error = scaling_data.stddev * delta_sim -> confidence_estimator;
+          data.error = scaling_data.stddev * delta_sim->confidence_estimator;
         }
         else
         {
-          scaling_metric_data_t scaling_data = p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
+          scaling_metric_data_t scaling_data =
+              p->scaling_for_metric( p->sim->scaling->scaling_metric );
           data.value = scaling_data.value;
-          data.error = scaling_data.stddev * sim -> confidence_estimator;
+          data.error = scaling_data.stddev * sim->confidence_estimator;
         }
         data.plot_step = j * dps_plot_step;
-        p -> dps_plot_data[ i ].push_back( data );
+        p->dps_plot_data[ i ].push_back( data );
       }
 
       if ( delta_sim )
@@ -204,56 +226,42 @@ void plot_t::analyze_stats()
   }
 }
 
-// plot_t::analyze ==========================================================
-
-void plot_t::analyze()
+void plot_t::write_output_file()
 {
-  if ( sim -> is_canceled() ) return;
-
-  if ( dps_plot_stat_str.empty() ) return;
-
-  analyze_stats();
-
-  if ( sim -> reforge_plot_output_file_str.empty() )
+  if ( sim->reforge_plot_output_file_str.empty() )
   {
-    sim -> errorf( "No reforge plot output file specified.\n" );
     return;
   }
 
-  io::cfile file( sim -> reforge_plot_output_file_str, "w" );
-  if ( ! file )
+  io::ofstream out;
+  out.open( sim->reforge_plot_output_file_str );
+  if ( !out.is_open() )
   {
-    sim -> errorf( "Unable to open output file '%s' . \n", sim -> reforge_plot_output_file_str.c_str() );
+    sim->errorf( "Unable to open output file '%s' . \n",
+                 sim->reforge_plot_output_file_str.c_str() );
     return;
   }
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( player_t* player : sim->player_list )
   {
-    player_t* p = sim -> player_list[ i ];
-    if ( p -> quiet ) continue;
+    if ( player->quiet )
+      continue;
 
-    util::fprintf( file, "%s Plot Results:\n", p -> name_str.c_str() );
+    out << player->name_str << " Plot Results:\n";
 
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( sim -> is_canceled() ) break;
+      if ( !is_plot_stat( sim, j ) )
+        continue;
 
-      if ( ! is_plot_stat( sim, j ) ) continue;
+      out << util::stat_type_string( j ) << ", DPS, DPS-Error\n";
 
-      current_plot_stat = j;
-
-      util::fprintf( file, "%s, DPS, DPS-Error\n", util::stat_type_string( j ) );
-
-      for ( size_t k = 0; k < p -> dps_plot_data[ j ].size(); k++ )
+      for ( const plot_data_t& p_data : player->dps_plot_data[ j ] )
       {
-        util::fprintf( file, "%f, ",
-                       p -> dps_plot_data[ j ][ k ].plot_step );
-        util::fprintf( file, "%f, ",
-                       p -> dps_plot_data[ j ][ k ].value );
-        util::fprintf( file, "%f\n",
-                       p -> dps_plot_data[ j ][ k ].error );
+        out << p_data.plot_step << ", " << p_data.value << ", " << p_data.error
+            << "\n";
       }
-      util::fprintf( file, "\n" );
+      out << "\n";
     }
   }
 }
@@ -262,12 +270,13 @@ void plot_t::analyze()
 
 void plot_t::create_options()
 {
-  sim->add_option(opt_int("dps_plot_iterations", dps_plot_iterations));
-  sim->add_option(opt_float("dps_plot_target_error", dps_plot_target_error));
-  sim->add_option(opt_int("dps_plot_points", dps_plot_points));
-  sim->add_option(opt_string("dps_plot_stat", dps_plot_stat_str));
-  sim->add_option(opt_float("dps_plot_step", dps_plot_step));
-  sim->add_option(opt_bool("dps_plot_debug", dps_plot_debug));
-  sim->add_option(opt_bool("dps_plot_positive", dps_plot_positive));
-  sim->add_option(opt_bool("dps_plot_negative", dps_plot_negative));
+  sim->add_option( opt_int( "dps_plot_iterations", dps_plot_iterations ) );
+  sim->add_option(
+      opt_float( "dps_plot_target_error", dps_plot_target_error ) );
+  sim->add_option( opt_int( "dps_plot_points", dps_plot_points ) );
+  sim->add_option( opt_string( "dps_plot_stat", dps_plot_stat_str ) );
+  sim->add_option( opt_float( "dps_plot_step", dps_plot_step ) );
+  sim->add_option( opt_bool( "dps_plot_debug", dps_plot_debug ) );
+  sim->add_option( opt_bool( "dps_plot_positive", dps_plot_positive ) );
+  sim->add_option( opt_bool( "dps_plot_negative", dps_plot_negative ) );
 }
