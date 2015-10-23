@@ -225,7 +225,7 @@ public:
   } active_actions;
 
   double track_chi_consumption;
-
+  
   bool track_jade;
 
   struct buffs_t
@@ -529,7 +529,6 @@ public:
     player_t( sim, MONK, name, r ),
     active_actions( active_actions_t() ),
     track_chi_consumption( 0.0 ),
-    track_jade( false ),
     buff( buffs_t() ),
     stance_data( stance_data_t() ),
     gain( gains_t() ),
@@ -563,6 +562,7 @@ public:
       regen_caches[CACHE_HASTE] = true;
       regen_caches[CACHE_ATTACK_HASTE] = true;
     }
+    track_jade = false;
     user_options.initial_chi = 0;
     user_options.goto_throttle = 0;
     user_options.ppm_below_35_percent_dm = 0;
@@ -6590,7 +6590,7 @@ void monk_t::apl_pre_mistweaver()
       pre -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
-  pre -> add_action( "stance,choose=wise_serpent" );
+  pre -> add_action( "stance,choose=spirited_crane" );
   pre -> add_action( "legacy_of_the_emperor,if=!aura.str_agi_int.up" );
   pre -> add_action( "snapshot_stats" );
 
@@ -6871,7 +6871,8 @@ void monk_t::apl_combat_windwalker()
 
 void monk_t::apl_combat_mistweaver()
 {
-  action_priority_list_t* def = get_action_priority_list( "default" );
+  std::vector<std::string> racial_actions = get_racial_actions();
+  action_priority_list_t* def = get_action_priority_list("default");
   action_priority_list_t* st = get_action_priority_list( "st" );
   std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
 
@@ -6879,8 +6880,20 @@ void monk_t::apl_combat_mistweaver()
   def -> add_action( "invoke_xuen" );
   def -> add_talent( this, "Chi Brew", "if=chi=0" );
   def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=5" );
-  def -> add_action( "use_item,name=mirror_of_the_blademaster" );
-  def -> add_action( "use_item,name=intuitions_gift" );
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      def -> add_action( "use_item,name=" + items[i].name_str );
+  }
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      def -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&target.time_to_die<18" );
+    else
+      def -> add_action( racial_actions[i] + ",if=target.time_to_die<18" );
+  }
+
 
   if ( sim -> allow_potions )
   {
