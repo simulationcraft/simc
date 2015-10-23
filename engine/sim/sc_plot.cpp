@@ -8,20 +8,27 @@
 namespace
 {  // UNNAMED NAMESPACE ==========================================
 
-// is_plot_stat =============================================================
-
+/// Will stat be plotted?
 bool is_plot_stat( sim_t* sim, stat_e stat )
 {
+  // check if stat is in plot stat option
   if ( !sim->plot->dps_plot_stat_str.empty() )
   {
     auto stat_list =
         util::string_split( sim->plot->dps_plot_stat_str, ",:;/|" );
+
     auto it = range::find_if( stat_list, [stat]( const std::string& s ) {
       return stat == util::parse_stat_type( s );
     } );
-    return it != stat_list.end();
+
+    if ( it == stat_list.end() )
+    {
+      // not found
+      return false;
+    }
   }
 
+  // also check if any player scales with that stat
   auto it = range::find_if( sim->player_no_pet_list, [stat]( player_t* p ) {
     return !p->quiet && p->scales_with[ stat ];
   } );

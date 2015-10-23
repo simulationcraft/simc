@@ -8,34 +8,33 @@
 namespace
 {  // UNNAMED NAMESPACE ==========================================
 
-// is_plot_stat =============================================================
-
+/// Will stat be reforge-plotted?
 bool is_plot_stat( sim_t* sim, stat_e stat )
 {
+  // search for explicit stat option
   if ( !sim->reforge_plot->reforge_plot_stat_str.empty() )
   {
     std::vector<std::string> stat_list =
         util::string_split( sim->reforge_plot->reforge_plot_stat_str, ",:;/|" );
-    bool found = false;
-    for ( size_t i = 0; i < stat_list.size() && !found; i++ )
+
+    auto it = range::find_if( stat_list, [stat]( const std::string& s ) {
+      return stat == util::parse_stat_type( s );
+    } );
+
+    if ( it == stat_list.end() )
     {
-      found = ( util::parse_stat_type( stat_list[ i ] ) == stat );
-    }
-    if ( !found )
+      // not found
       return false;
+    }
   }
 
-  for ( size_t i = 0; i < sim->player_no_pet_list.size(); ++i )
-  {
-    player_t* p = sim->player_no_pet_list[ i ];
-    if ( p->quiet )
-      continue;
+  // also check if any player scales_with that stat
+  auto it =
+      range::find_if( sim->player_no_pet_list, [stat]( const player_t* p ) {
+        return !p->quiet && p->scales_with[ stat ];
+      } );
 
-    if ( p->scales_with[ stat ] )
-      return true;
-  }
-
-  return false;
+  return it != sim->player_no_pet_list.end();
 }
 
 }  // UNNAMED NAMESPACE ====================================================
@@ -63,7 +62,7 @@ reforge_plot_t::reforge_plot_t( sim_t* s )
 // generate_stat_mods =======================================================
 
 void reforge_plot_t::generate_stat_mods(
-    std::vector<std::vector<int> >& stat_mods,
+    std::vector<std::vector<int>>& stat_mods,
     const std::vector<stat_e>& stat_indices, int cur_mod_stat,
     std::vector<int> cur_stat_mods )
 {
@@ -123,8 +122,6 @@ void reforge_plot_t::analyze_stats()
   if ( reforge_plot_stat_str.empty() )
     return;
 
-  size_t num_players = sim->players_by_name.size();
-
   reforge_plot_stat_indices.clear();
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
@@ -138,7 +135,7 @@ void reforge_plot_t::analyze_stats()
   // Create vector of all stat_add combinations recursively
   std::vector<int> cur_stat_mods( reforge_plot_stat_indices.size() );
 
-  std::vector<std::vector<int> > stat_mods;
+  std::vector<std::vector<int>> stat_mods;
   generate_stat_mods( stat_mods, reforge_plot_stat_indices, 0, cur_stat_mods );
 
   num_stat_combos = as<int>( stat_mods.size() );
@@ -234,23 +231,21 @@ void reforge_plot_t::analyze_stats()
     current_stat_combo = as<int>( i );
     current_reforge_sim->execute();
 
-    for ( size_t k = 0; k < num_players; k++ )
+    for ( player_t* player : sim->players_by_name )
     {
-      player_t* p = sim->players_by_name[ k ];
-
       if ( current_reforge_sim )
       {
         plot_data_t& data = delta_result[ stat_mods[ i ].size() ];
-        player_t* delta_p = current_reforge_sim->find_player( p->name() );
+        player_t* delta_p = current_reforge_sim->find_player( player->name() );
 
         scaling_metric_data_t scaling_data =
-            delta_p->scaling_for_metric( p->sim->scaling->scaling_metric );
+            delta_p->scaling_for_metric( player->sim->scaling->scaling_metric );
 
         data.value = scaling_data.value;
         data.error =
             scaling_data.stddev * current_reforge_sim->confidence_estimator;
 
-        p->reforge_plot_data.push_back( delta_result );
+        player->reforge_plot_data.push_back( delta_result );
       }
     }
 
@@ -262,7 +257,47 @@ void reforge_plot_t::analyze_stats()
   }
 }
 
-// reforge_plot_t::analyze() ================================================
+void reforge_plot_t::write_output_file()
+{
+  if ( sim->reforge_plot_output_file_str.empty() )
+  {
+    return;
+  }
+
+  io::ofstream out;
+  out.open( sim->reforge_plot_output_file_str,
+            io::ofstream::out | io::ofstream::app );
+  if ( !out.is_open() )
+  {
+    sim->errorf( "Unable to open plot output file '%s'.\n",
+                 sim->reforge_plot_output_file_str.c_str() );
+    return;
+  }
+
+  for ( player_t* player : sim->player_list )
+  {
+    if ( player->quiet )
+      continue;
+
+    out << player->name() << " Reforge Plot Results:\n";
+
+    for ( stat_e stat_index : reforge_plot_stat_indices )
+    {
+      out << util::stat_type_string( stat_index ) << ", ";
+    }
+    out << " DPS, DPS-Error\n";
+
+    for ( const auto& plot_data_list : player->reforge_plot_data )
+    {
+      for ( const plot_data_t& plot_data : plot_data_list )
+      {
+        out << plot_data.value << ", ";
+      }
+      out << plot_data_list.back().error << ", ";
+      out << "\n";
+    }
+  }
+}
 
 void reforge_plot_t::analyze()
 {
@@ -274,44 +309,7 @@ void reforge_plot_t::analyze()
 
   analyze_stats();
 
-  io::ofstream out;
-  if ( !sim->reforge_plot_output_file_str.empty() )
-  {
-    out.open( sim->reforge_plot_output_file_str,
-              io::ofstream::out | io::ofstream::app );
-    if ( !out.is_open() )
-    {
-      sim->errorf( "Unable to open plot output file '%s'.\n",
-                   sim->reforge_plot_output_file_str.c_str() );
-      return;
-    }
-  }
-
-  for ( size_t i = 0; i < sim->player_list.size(); ++i )
-  {
-    player_t* p = sim->player_list[ i ];
-    if ( p->quiet )
-      continue;
-
-    out << p->name() << " Reforge Plot Results:\n";
-
-    for ( int j = 0; j < (int)reforge_plot_stat_indices.size(); j++ )
-    {
-      out << util::stat_type_string( reforge_plot_stat_indices[ j ] ) << ", ";
-    }
-    out << " DPS, DPS-Error\n";
-
-    for ( size_t j = 0; j < p->reforge_plot_data.size(); j++ )
-    {
-      for ( size_t k = 0; k < p->reforge_plot_data[ j ].size(); k++ )
-      {
-        out << p->reforge_plot_data[ j ][ k ].value << ", ";
-        if ( k + 1 == p->reforge_plot_data[ j ].size() )
-          out << p->reforge_plot_data[ j ][ k ].error << ", ";
-      }
-      out << "\n";
-    }
-  }
+  write_output_file();
 }
 
 // reforge_plot_t::progress =================================================

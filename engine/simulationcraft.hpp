@@ -2012,6 +2012,8 @@ struct reforge_plot_t
   void analyze();
   void analyze_stats();
   double progress( std::string& phase, std::string* detailed = nullptr );
+private:
+  void write_output_file();
   void create_options();
 };
 
