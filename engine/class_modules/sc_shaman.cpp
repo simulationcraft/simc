@@ -244,7 +244,7 @@ public:
     proc_t* wasted_mw;
     proc_t* windfury;
 
-    proc_t* fulmination[20];
+    std::array<proc_t*,20> fulmination;
     proc_t* fulmination_generate;
 
     proc_t* uf_flame_shock;
@@ -5515,7 +5515,7 @@ void shaman_t::init_procs()
   proc.windfury           = get_proc( "windfury"                );
   proc.surge_during_lvb   = get_proc( "lava_surge_during_lvb"   );
 
-  for ( size_t i = 0, end = sizeof_array( proc.fulmination ); i < end; i++ )
+  for ( size_t i = 0; i < proc.fulmination.size(); i++ )
     proc.fulmination[ i ] = get_proc( "Fulmination: " + util::to_string( i ) + " stacks" );
 
   proc.fulmination_generate = get_proc( "Fulmination: Generate" );

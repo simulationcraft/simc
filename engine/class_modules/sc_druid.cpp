@@ -230,8 +230,8 @@ public:
   } active;
 
   // Pets
-  pet_t* pet_force_of_nature[ 4 ]; // Add another pet, you can(maybe?) have 4 up with AoC
-  pet_t* pet_fey_moonwing[ 11 ]; // 30 second duration, 3 second internal icd... create 11 to be safe.
+  std::array<pet_t*,4> pet_force_of_nature; // Add another pet, you can(maybe?) have 4 up with AoC
+  std::array<pet_t*,11> pet_fey_moonwing; // 30 second duration, 3 second internal icd... create 11 to be safe.
 
   // Auto-attacks
   weapon_t caster_form_weapon;
@@ -622,6 +622,8 @@ public:
     t16_2pc_sun_bolt( nullptr ),
     balance_t18_2pc( *this ),
     active( active_actions_t() ),
+    pet_force_of_nature(),
+    pet_fey_moonwing(),
     caster_form_weapon(),
     starshards(),
     wildcat_celerity(),
@@ -643,16 +645,6 @@ public:
     t16_2pc_sun_bolt      = nullptr;
     double_dmg_triggered = false;
     last_target_dot_moonkin = nullptr;
-
-    for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
-    {
-      pet_force_of_nature[i] = nullptr;
-    }
-
-    for ( size_t i = 0; i < sizeof_array( pet_fey_moonwing ); i++ )
-    {
-      pet_fey_moonwing[i] = nullptr;
-    }
     
     cooldown.berserk             = get_cooldown( "berserk"             );
     cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
@@ -4420,11 +4412,11 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     if ( ! p() -> balance_t18_2pc.trigger() )
       return;
 
-    for ( size_t i = 0; i < sizeof_array( p() -> pet_fey_moonwing ); i++ )
+    for ( pet_t* pet : p() -> pet_fey_moonwing )
     {
-      if ( p() -> pet_fey_moonwing[i] -> is_sleeping() )
+      if ( pet -> is_sleeping() )
       {
-        p() -> pet_fey_moonwing[i] -> summon( timespan_t::from_seconds( 30 ) );
+        pet -> summon( timespan_t::from_seconds( 30 ) );
         return;
       }
     }
@@ -4802,11 +4794,11 @@ struct force_of_nature_spell_t : public druid_spell_t
     druid_spell_t::execute();
     if ( p() -> pet_force_of_nature[0] )
     {
-      for ( size_t i = 0; i < sizeof_array( p() -> pet_force_of_nature ); i++ )
+      for ( pet_t* pet : p() -> pet_force_of_nature )
       {
-        if ( p() -> pet_force_of_nature[i] -> is_sleeping() )
+        if ( pet -> is_sleeping() )
         {
-          p() -> pet_force_of_nature[i] -> summon( p() -> talent.force_of_nature -> duration() );
+          pet -> summon( p() -> talent.force_of_nature -> duration() );
           return;
         }
       }
@@ -6111,26 +6103,26 @@ void druid_t::create_pets()
 
   if ( sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
   {
-    for ( size_t i = 0; i < sizeof_array( pet_fey_moonwing ); ++i )
-      pet_fey_moonwing[i] = new pets::fey_moonwing_t( sim, this );
+    for ( pet_t*& pet : pet_fey_moonwing )
+      pet = new pets::fey_moonwing_t( sim, this );
   }
 
   if ( talent.force_of_nature -> ok() && find_action( "force_of_nature" ) )
   {
     if ( specialization() == DRUID_BALANCE )
     {
-      for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
-        pet_force_of_nature[ i ] = new pets::force_of_nature_balance_t( sim, this );
+      for ( pet_t*& pet : pet_force_of_nature )
+        pet = new pets::force_of_nature_balance_t( sim, this );
     }
     else if ( specialization() == DRUID_FERAL )
     {
-      for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
-        pet_force_of_nature[ i ] = new pets::force_of_nature_feral_t( sim, this );
+      for ( pet_t*& pet : pet_force_of_nature )
+        pet = new pets::force_of_nature_feral_t( sim, this );
     }
     else if ( specialization() == DRUID_GUARDIAN )
     {
-      for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
-        pet_force_of_nature[ i ] = new pets::force_of_nature_guardian_t( sim, this );
+      for ( pet_t*& pet : pet_force_of_nature )
+        pet = new pets::force_of_nature_guardian_t( sim, this );
     }
   }
 }
