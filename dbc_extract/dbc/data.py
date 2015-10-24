@@ -162,7 +162,7 @@ _DBC_FIELDS = {
     ],
     'ItemEffect.db2': [
         'id', 'id_item', 'index', ( 'id_spell', '%6u' ), 'trigger_type',
-        ( 'cooldown_category', '%6d' ), ( 'cooldown_category_duration', '%6d' ),
+        ( 'cooldown_charges', '%6d' ), ( 'cooldown_duration', '%6d' ),
         ( 'cooldown_group', '%6d' ), ( 'cooldown_group_duration', '%6d' )
     ],
     'MinorTalent.dbc': [

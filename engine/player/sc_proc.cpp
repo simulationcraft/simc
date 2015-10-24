@@ -775,10 +775,10 @@ timespan_t special_effect_t::cooldown() const
   // spell cooldown may be
   if ( item )
   {
-    for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown_category_duration ); i < end; i++ )
+    for ( size_t i = 0; i < MAX_ITEM_EFFECT; i++ )
     {
-      if ( item -> parsed.data.cooldown_category_duration[ i ] > 0 )
-        return timespan_t::from_millis( item -> parsed.data.cooldown_category_duration[ i ] );
+      if ( item -> parsed.data.cooldown_duration[ i ] > 0 )
+        return timespan_t::from_millis( item -> parsed.data.cooldown_duration[ i ] );
     }
   }
 
@@ -939,6 +939,12 @@ std::string special_effect_t::to_string() const
     else
       s << " (i)cd=";
     s << cooldown().total_seconds();
+
+    if ( cooldown_group() > 0 )
+    {
+      s << " cdgrp=" << cooldown_group();
+      s << " cdgrp_duration=" << cooldown_group_duration().total_seconds();
+    }
   }
 
   if ( weapon_proc )
@@ -1236,6 +1242,62 @@ std::string special_effect_t::cooldown_name() const
   assert( ! n.empty() );
 
   return n;
+}
+
+/**
+ * Item-based special effects may have a cooldown group (in the client data). Cooldown groups are a
+ * shared cooldown between all item effects (in essence, on-use effects) that use the same group
+ */
+std::string special_effect_t::cooldown_group_name() const
+{
+  if ( ! item )
+  {
+    return std::string();
+  }
+
+  unsigned cdgroup = cooldown_group();
+  if ( cdgroup > 0 )
+  {
+    return "item_cd_" + util::to_string( cdgroup );
+  }
+
+  return std::string();
+}
+
+int special_effect_t::cooldown_group() const
+{
+  if ( ! item )
+  {
+    return 0;
+  }
+
+  for ( size_t i = 0; i < MAX_ITEM_EFFECT; ++i )
+  {
+    if ( item -> parsed.data.cooldown_group[ i ] > 0 )
+    {
+      return item -> parsed.data.cooldown_group[ i ];
+    }
+  }
+
+  return 0;
+}
+
+timespan_t special_effect_t::cooldown_group_duration() const
+{
+  if ( ! item )
+  {
+    return timespan_t::zero();
+  }
+
+  for ( size_t i = 0; i < MAX_ITEM_EFFECT; ++i )
+  {
+    if ( item -> parsed.data.cooldown_group[ i ] > 0 )
+    {
+      return timespan_t::from_millis( item -> parsed.data.cooldown_group_duration[ i ] );
+    }
+  }
+
+  return timespan_t::zero();
 }
 
 const item_t dbc_proc_callback_t::default_item_ = item_t();

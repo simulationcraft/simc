@@ -2359,6 +2359,11 @@ struct special_effect_t
   std::string name() const;
   std::string cooldown_name() const;
 
+  // On-use item cooldown handling accessories
+  int cooldown_group() const;
+  std::string cooldown_group_name() const;
+  timespan_t cooldown_group_duration() const;
+
   // Buff related functionality
   buff_t* create_buff() const;
   special_effect_buff_e buff_type() const;

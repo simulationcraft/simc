@@ -6528,11 +6528,13 @@ struct use_item_t : public action_t
   std::string use_name;
   action_t* action;
   buff_t* buff;
-  bool triggers_item_cd;
+  cooldown_t* cooldown_group;
+  timespan_t cooldown_group_duration;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 ), action( 0 ), buff( 0 ), triggers_item_cd( true )
+    item( nullptr ), action( nullptr ), buff( nullptr ),
+    cooldown_group( nullptr ), cooldown_group_duration( timespan_t::zero() )
   {
     std::string item_name, item_slot;
 
@@ -6581,6 +6583,7 @@ struct use_item_t : public action_t
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
     if ( e.type == SPECIAL_EFFECT_USE )
     {
+      // Create a buff
       if ( e.buff_type() != SPECIAL_EFFECT_BUFF_NONE )
       {
         buff = buff_t::find( player, e.name() );
@@ -6588,16 +6591,9 @@ struct use_item_t : public action_t
         {
           buff = e.create_buff();
         }
-
-        // Warlords of Draenor Legendary Ring On-Use effect does not trigger shared item cooldown. Match
-        // based on the buff spell id
-        unsigned buff_id = buff -> data().id();
-        if ( buff_id == 187619 || buff_id == 187620 || buff_id == 187616 )
-        {
-          triggers_item_cd = false;
-        }
       }
 
+      // Create an action
       if ( e.action_type() != SPECIAL_EFFECT_ACTION_NONE )
       {
         action = player -> find_action( e.name() );
@@ -6609,9 +6605,39 @@ struct use_item_t : public action_t
 
       stats = player ->  get_stats( name_str, this );
 
+      // Setup the long-duration cooldown for this item effect
       cooldown = player -> get_cooldown( e.cooldown_name() );
       cooldown -> duration = e.cooldown();
       trigger_gcd = timespan_t::zero();
+
+      // Use DBC-backed item cooldown system for any item data coming from our local database that
+      // has no user-given 'use' option on items.
+      if ( e.item && util::str_compare_ci( e.item -> source_str, "local" ) &&
+           e.item -> option_use_str.empty() )
+      {
+        std::string cdgrp = e.cooldown_group_name();
+        // No cooldown group will not trigger a shared cooldown
+        if ( ! cdgrp.empty() )
+        {
+          cooldown_group = player -> get_cooldown( cdgrp );
+          cooldown_group_duration = e.cooldown_group_duration();
+        }
+        else
+        {
+          cooldown_group = &( player -> item_cooldown );
+        }
+      }
+      else
+      {
+        cooldown_group = &( player -> item_cooldown );
+        // Presumes on-use items will always have static durations. Considering the client data
+        // system hardcodes the cooldown group durations in the DBC files, this is a reasonably safe
+        // bet for now.
+        if ( buff )
+        {
+          cooldown_group_duration = buff -> buff_duration;
+        }
+      }
     }
 
     if ( ! buff && ! action )
@@ -6620,13 +6646,6 @@ struct use_item_t : public action_t
       background = true;
       return;
     }
-  }
-
-  void lockout( timespan_t duration )
-  {
-    if ( duration <= timespan_t::zero() ) return;
-
-    player -> item_cooldown.start( duration );
   }
 
   virtual void execute() override
@@ -6652,9 +6671,16 @@ struct use_item_t : public action_t
 
     update_ready();
 
-    if ( triggers_item_cd && triggered && buff )
+    // Start the shared cooldown
+    if ( cooldown_group_duration > timespan_t::zero() )
     {
-      lockout( buff -> buff_duration );
+      cooldown_group -> start( cooldown_group_duration );
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s starts shared cooldown for %s (%s). Will be ready at %.4f",
+            player -> name(), name(), cooldown_group -> name(),
+            cooldown_group -> ready.total_seconds() );
+      }
     }
   }
 
@@ -6662,7 +6688,7 @@ struct use_item_t : public action_t
   {
     if ( ! item ) return false;
 
-    if ( triggers_item_cd && player -> item_cooldown.remains() > timespan_t::zero() )
+    if ( cooldown_group -> remains() > timespan_t::zero() )
     {
       return false;
     }

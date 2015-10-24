@@ -877,7 +877,7 @@ struct dbc_potion_t : public action_t
 
     // Setup cooldown
     cooldown = p -> get_cooldown( "potion" );
-    for ( size_t i = 0, end = sizeof_array( item -> cooldown_category ); i < end; i++ )
+    for ( size_t i = 0; i < MAX_ITEM_EFFECT; i++ )
     {
       if ( item -> cooldown_group[ i ] > 0 && item -> cooldown_group_duration[ i ] > 0 )
       {

@@ -190,6 +190,9 @@ struct item_enchantment_data_t {
   const char* name;
 };
 
+#define MAX_ITEM_EFFECT 5
+#define MAX_ITEM_STAT 10
+
 struct item_data_t {
   unsigned id;
   const char* name;
@@ -210,16 +213,15 @@ struct item_data_t {
   double   item_modifier;
   unsigned      class_mask;
   unsigned      race_mask;
-  int      stat_type_e[10];       // item_mod_type
-  int      stat_val[10];
-  int      stat_alloc[10];
-  double   stat_socket_mul[10];
-  int      trigger_spell[5];      // item_spell_trigger_type
-  int      id_spell[5];
-  int      cooldown_category[5];
-  int      cooldown_category_duration[5];
-  int      cooldown_group[5];
-  int      cooldown_group_duration[5];
+  int      stat_type_e[MAX_ITEM_STAT];       // item_mod_type
+  int      stat_val[MAX_ITEM_STAT];
+  int      stat_alloc[MAX_ITEM_STAT];
+  double   stat_socket_mul[MAX_ITEM_STAT];
+  int      trigger_spell[MAX_ITEM_EFFECT];      // item_spell_trigger_type
+  int      id_spell[MAX_ITEM_EFFECT];
+  int      cooldown_duration[MAX_ITEM_EFFECT];
+  int      cooldown_group[MAX_ITEM_EFFECT];
+  int      cooldown_group_duration[MAX_ITEM_EFFECT];
   int      socket_color[3];       // item_socket_color
   int      gem_properties;
   int      id_socket_bonus;
