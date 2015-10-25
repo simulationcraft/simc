@@ -4995,8 +4995,8 @@ struct surging_mist_t: public monk_heal_t
   {
     double c = monk_heal_t::cost();
     if ( p() -> buff.vital_mists -> up() )
-      c *= p() -> buff.vital_mists -> current_stack * p() -> buff.vital_mists -> data().effectN( 2 ).percent();
-
+      c *= 1 + ( p() -> buff.vital_mists -> current_stack * p() -> buff.vital_mists -> data().effectN( 2 ).percent() );
+ 
     return c;
   }
 
@@ -5627,7 +5627,10 @@ void monk_t::init_base_stats()
 
   // Mistweaver
   if ( spec.mana_meditation -> ok() )
+  {
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
+    base.mana_regen_per_second=640;
+  }
 
   // initialize resolve for Berwmaster
   if ( specialization() == MONK_BREWMASTER )
@@ -5752,7 +5755,8 @@ void monk_t::create_buffs()
   buff.gift_of_the_serpent = buff_creator_t( this, "gift_of_the_serpent", find_spell( 119031 ) )
     .max_stack( 99 );
 
-  buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) );
+  buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) )
+    .period( timespan_t::zero() ); // much like Tigereye Brew, Mana Tea does not tick.
 
   buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
 
