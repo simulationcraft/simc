@@ -11,14 +11,14 @@
 #include "generated/sc_talent_data.inc"
 #include "generated/sc_spell_data.inc"
 #include "generated/sc_spell_lists.inc"
-#include "generated/sc_extra_data.inc"
+#include "sc_extra_data.inc"
 
 #if SC_USE_PTR
 #include "generated/sc_scale_data_ptr.inc"
 #include "generated/sc_talent_data_ptr.inc"
 #include "generated/sc_spell_data_ptr.inc"
 #include "generated/sc_spell_lists_ptr.inc"
-#include "generated/sc_extra_data_ptr.inc"
+#include "sc_extra_data_ptr.inc"
 #endif
 
 namespace { // ANONYMOUS namespace ==========================================
