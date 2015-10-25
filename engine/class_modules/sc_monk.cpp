@@ -5629,7 +5629,6 @@ void monk_t::init_base_stats()
   if ( spec.mana_meditation -> ok() )
   {
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
-    base.mana_regen_per_second=640;
   }
 
   // initialize resolve for Berwmaster
