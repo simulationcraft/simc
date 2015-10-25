@@ -2218,7 +2218,7 @@ struct jab_t: public monk_melee_attack_t
     if ( p() -> buff.power_strikes -> up() )
     {
       if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
-        chi_gain += p() -> buff.power_strikes -> default_value;
+        player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> default_value, p() -> gain.power_strikes, this );
       else
         p() -> buff.chi_sphere -> trigger();
 
@@ -2916,7 +2916,7 @@ struct chi_explosion_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Spinning Crane Kick / Jade Rushing Wind
+// Spinning Crane Kick / Rushing Jade Wind
 // ==========================================================================
 
 // Shared tick action for both abilities
@@ -4357,15 +4357,16 @@ struct mana_tea_t: public monk_spell_t
     if ( glyphed )
       return timespan_t::zero();
     else
-      return data().effectN( 1 ).period() * std::min( p() -> buff.mana_tea -> current_stack, 6 ) ;
+      return data().effectN( 1 ).period() * p() -> buff.mana_tea -> current_stack;
   }
+  
 
   void tick( dot_t* d ) override
   {
     monk_spell_t::tick( d );
 
     player -> resource_gain( RESOURCE_MANA, p() -> initial.stats.attribute[STAT_SPIRIT] * mana_percent_return, p() -> gain.mana_tea, this );
-    p() -> buff.mana_tea -> decrement( 1 );
+    p() -> buff.mana_tea -> decrement();
   }
 
   bool ready() override
@@ -4400,6 +4401,8 @@ struct mana_tea_t: public monk_spell_t
       p() -> buff.mana_tea -> decrement( stacks_to_consume );
     }
   }
+  // Mana Tea is not modified by haste effects
+  double composite_haste() const override { return 1.0; }
 };
 
 // ==========================================================================
@@ -4800,7 +4803,7 @@ struct expel_harm_heal_t : public monk_heal_t
       if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
         p() -> resource_gain( RESOURCE_CHI,
         p() -> buff.power_strikes -> default_value,
-        nullptr, this );
+        p() -> gain.power_strikes, this );
       else
         p() -> buff.chi_sphere -> trigger();
 
@@ -5647,9 +5650,9 @@ void monk_t::init_scaling()
   else
   {
     scales_with[STAT_AGILITY] = false;
-	scales_with[STAT_MASTERY_RATING] = false;
-	scales_with[STAT_ATTACK_POWER] = false;
-	scales_with[STAT_SPIRIT] = true;
+    scales_with[STAT_MASTERY_RATING] = false;
+    scales_with[STAT_ATTACK_POWER] = false;
+    scales_with[STAT_SPIRIT] = true;
   }
   scales_with[STAT_STRENGTH] = false;
 
@@ -6886,7 +6889,6 @@ void monk_t::apl_combat_mistweaver()
   def -> add_action( "auto_attack" );
   def -> add_action( "invoke_xuen" );
   def -> add_talent( this, "Chi Brew", "if=chi=0" );
-  def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=5" );
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
@@ -6928,7 +6930,7 @@ void monk_t::apl_combat_mistweaver()
   st -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<6.6" );
   st -> add_action( this, "Rising Sun Kick" );
   st -> add_action( this, "Expel Harm", "if=chi.max-chi>2&health.percent<80" );
-  st -> add_action( this, "Jab", "if=chi.max-chi>2" );
+  st -> add_action( this, "Jab", "if=chi.max-chi>1" );
   st -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains-6.6<buff.cranes_zeal.remains" );
   st -> add_action( this, "Blackout Kick" );
 
@@ -6939,6 +6941,8 @@ void monk_t::apl_combat_mistweaver()
   aoe_list_str += "/tiger_palm,if=!buff.tiger_power.up";
   aoe_list_str += "/blackout_kick,if=buff.tiger_power.up&chi>1";
   aoe_list_str += "/jab,if=talent.rushing_jade_wind.enabled";
+  
+  def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=5,interrupt_if=mana.pct>15" );
 }
 
 // monk_t::init_actions =====================================================
