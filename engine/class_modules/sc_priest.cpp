@@ -6045,11 +6045,20 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
 {
   switch ( s )
   {
+    case STAT_STR_AGI_INT:
     case STAT_STR_INT:
     case STAT_AGI_INT:
       return STAT_INTELLECT;
     case STAT_STR_AGI:
-      return STAT_AGILITY;
+      return STAT_NONE;
+    case STAT_SPIRIT:
+      if ( specialization() != PRIEST_SHADOW )
+      {
+        return s;
+      }
+      return STAT_NONE;
+    case STAT_BONUS_ARMOR:
+      return STAT_NONE;
     default:
       return s;
   }
