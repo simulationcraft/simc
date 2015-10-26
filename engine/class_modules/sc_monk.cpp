@@ -3278,7 +3278,7 @@ struct melee_t: public monk_melee_attack_t
     school = SCHOOL_PHYSICAL;
     auto_attack = true;
 
-    if ( player -> dual_wield() )
+    if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
       base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
       if ( player -> specialization() == MONK_MISTWEAVER )
