@@ -3344,7 +3344,7 @@ void action_cost_tick_event_t::execute()
 
   if ( action.consume_cost_per_second( time_to_tick ) )
   {
-    action.schedule_cost_tick_event();
+    action.schedule_cost_tick_event( time_to_tick );
   }
   else
   {

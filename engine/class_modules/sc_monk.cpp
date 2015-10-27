@@ -4994,7 +4994,7 @@ struct surging_mist_t: public monk_heal_t
   virtual double cost() const override
   {
     double c = monk_heal_t::cost();
-    if ( p() -> buff.vital_mists -> up() )
+    if ( p() -> buff.vital_mists -> check() )
       c *= 1 + ( p() -> buff.vital_mists -> current_stack * p() -> buff.vital_mists -> data().effectN( 2 ).percent() );
  
     return c;
