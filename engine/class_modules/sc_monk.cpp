@@ -2248,8 +2248,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 3.42; // hardcoded into tooltip
-    base_multiplier *= 1.20; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Tiger Palm now deals 20% more damage.
+    base_multiplier = 4.104; // hardcoded into tooltip
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
@@ -2428,8 +2427,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 10.0; // hardcoded into tooltip
-    base_multiplier *= 1.10; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Rising Sun Kick now deals 10% more damage.
+    base_multiplier = 11.0; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     if ( p -> furious_sun )
@@ -2589,8 +2587,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 6.08; // hardcoded into tooltip
-    base_multiplier *= 1.10; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Blackout Kick now deals 10% more damage.
+    base_multiplier = 6.688; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
@@ -3138,8 +3135,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-    base_multiplier = 7.367; // hardcoded into tooltip
-    base_multiplier *= 1.20; // 6.2.2 update on 19 AUG 2015 with no tooltip info other than patch note info; Fists of Fury now deals 20% more damage.
+    base_multiplier = 8.84; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
