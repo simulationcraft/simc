@@ -1564,7 +1564,6 @@ struct sim_t : private sc_thread_t
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
   bool pvp_crit; // Sets critical strike damage to 150% instead of 200%, and limits multistrike to one roll.
-  bool equalize_plot_weights; // Plot option.
 
   // Actor tracking
   int active_enemies;

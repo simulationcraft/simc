@@ -1269,7 +1269,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   requires_regen_event( false ), enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
-  pvp_crit( false ), equalize_plot_weights( false ),
+  pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
   _rng(), seed( 0 ), deterministic( false ),
   average_range( true ), average_gauss( false ),
@@ -2850,7 +2850,6 @@ void sim_t::create_options()
   add_option( opt_uint( "enable_2_set", enable_2_set ) );
   add_option( opt_uint( "enable_4_set", enable_4_set ) );
   add_option( opt_bool( "pvp", pvp_crit ) );
-  add_option( opt_bool( "equalize_plot_weights", equalize_plot_weights ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );
