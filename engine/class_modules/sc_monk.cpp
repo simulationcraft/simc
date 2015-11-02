@@ -4527,6 +4527,9 @@ struct crackling_jade_lightning_t: public monk_spell_t
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     procs_courageous_primal_diamond = false;
+    base_tick_time *= 1.0 + p.spec.crane_style_techniques -> effectN( 4 ).percent();
+    dot_duration *= 1.0 + p.spec.crane_style_techniques -> effectN( 5 ).percent();
+    base_costs_per_second[RESOURCE_ENERGY] = ( p.specialization() == MONK_MISTWEAVER ? 0 : 15 );
   }
 
   double cost() const override
