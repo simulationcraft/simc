@@ -1441,9 +1441,8 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
   os << "<th class=\"left\">Override Value</th>\n";
   os << "<th class=\"left\">DBC Value</th>\n";
   os << "</tr>\n";
-  for ( size_t i = 0; i < entries.size(); ++i )
+  for ( const auto& entry : entries )
   {
-    const dbc_override::dbc_override_entry_t& entry = entries[ i ];
     os << "<tr>\n";
     if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
     {
