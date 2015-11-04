@@ -26,27 +26,26 @@ set redist=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\
 cd ..
 git clean -f -x -d
 :: Clean the directory up, otherwise it'll zip up all sorts of stuff.
-For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
+::For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
 :: Get the date, because I guess that's important.
-git log --no-merges -1 --pretty="%%h">bla.txt
+::git log --no-merges -1 --pretty="%%h">bla.txt
 :: Gives the git revision
-set /p revision=<bla.txt
+::set /p revision=<bla.txt
 :: Hacky hack because windows command prompt is annoying.
-del bla.txt
+::del bla.txt
 
 :: Script below
-set install=simc-%simcversion%-source
-cd>bla.txt
-set /p download=<bla.txt
-del bla.txt
+::set install=simc-%simcversion%-source
+::cd>bla.txt
+::set /p download=<bla.txt
+::del bla.txt
 
-robocopy . %install% /s *.* /xd .git %install% /xf *.pgd /xn
-set filename=%install%-%mydate%-%revision%
-7z a -r -tzip %filename% %install% -mx9
-call start winscp /command "open downloads" "put %download%\%filename%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
-
+::robocopy . %install% /s *.* /xd .git %install% /xf *.pgd /xn
+::set filename=%install%-%mydate%-%revision%
+::7z a -r -tzip %filename% %install% -mx9
+::call start winscp /command "open downloads" "put %download%\%filename%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
+::rd %install% /s /q
 ::Webkit compilation.
-rd %install% /s /q
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
