@@ -126,7 +126,7 @@ void SC_MainWindow::loadHistory()
   QSettings settings;
   QString saveApiKey;
   saveApiKey = settings.value( "options/apikey" ).toString();
-  
+
   QVariant simulateHistory = settings.value( "user_data/simulateHistory" );
   if ( simulateHistory.isValid() )
   {
@@ -1045,55 +1045,58 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   logText -> clear();
   if ( ! simulateThread -> success )
   {
-    logText -> moveCursor( QTextCursor::End );
-    if ( mainTab -> currentTab() != TAB_SPELLQUERY )
-      mainTab -> setCurrentTab( TAB_LOG );
-
-    QString errorText;
-    errorText += tr("SimulationCraft encountered an error!");
-    errorText += "<br><br>";
-    errorText += "<i>" + simulateThread -> getErrorCategory() + ":</i>";
-    errorText += "<br>";
-    errorText += "<b>" + simulateThread -> getError() + "</b>";
-    errorText += "<br><br>";
-    errorText += tr("Please open a ticket, copying the detailed text below.<br>"
-                    "It contains all the input options of the last simulation"
-                    " and helps us reproduce the issue.<br>");
-
-    // Use simulation options used, same as goes to simc_gui.simc
-    QString errorDetails = simulateThread -> getOptions();
-
-    QMessageBox mBox;
-    mBox.setWindowTitle(simulateThread -> getErrorCategory());
-    mBox.setText( errorText );
-    mBox.setDetailedText( errorDetails );
-    mBox.exec();
-
-    // print to log as well.
-    logText -> appendHtml( errorText );
-    logText -> appendPlainText( errorDetails );
-
-    // Spell Query
-    if ( mainTab -> currentTab() == TAB_SPELLQUERY )
-    {
-      QString result;
-      std::stringstream ss;
-      try
+      // Spell Query ( is no not an error )
+      if ( mainTab -> currentTab() == TAB_SPELLQUERY )
       {
-        sim -> spell_query -> evaluate();
-        report::print_spell_query( ss, *sim, *sim -> spell_query, sim -> spell_query_level );
+        QString result;
+        std::stringstream ss;
+        try
+        {
+          sim -> spell_query -> evaluate();
+          report::print_spell_query( ss, *sim, *sim -> spell_query, sim -> spell_query_level );
+        }
+        catch ( const std::exception& e ){
+          ss << "ERROR! Spell Query failure: " << e.what() << std::endl;
+        }
+        result = QString::fromStdString( ss.str() );
+        if ( result.isEmpty() )
+        {
+          result = "No results found!";
+        }
+        spellQueryTab -> textbox.result -> setPlainText( result );
+        spellQueryTab -> checkForSave();
       }
-      catch ( const std::exception& e ){
-        ss << "ERROR! Spell Query failure: " << e.what() << std::endl;
-      }
-      result = QString::fromStdString( ss.str() );
-      if ( result.isEmpty() )
+      else
       {
-        result = "No results found!";
-      }
-      spellQueryTab -> textbox.result -> setPlainText( result );
-      spellQueryTab -> checkForSave();
-    }
+        logText -> moveCursor( QTextCursor::End );
+        if ( mainTab -> currentTab() != TAB_SPELLQUERY )
+          mainTab -> setCurrentTab( TAB_LOG );
+
+        QString errorText;
+        errorText += tr("SimulationCraft encountered an error!");
+        errorText += "<br><br>";
+        errorText += "<i>" + simulateThread -> getErrorCategory() + ":</i>";
+        errorText += "<br>";
+        errorText += "<b>" + simulateThread -> getError() + "</b>";
+        errorText += "<br><br>";
+        errorText += tr("Please open a ticket, copying the detailed text below.<br>"
+                        "It contains all the input options of the last simulation"
+                        " and helps us reproduce the issue.<br>");
+
+        // Use simulation options used, same as goes to simc_gui.simc
+        QString errorDetails = simulateThread -> getOptions();
+
+        QMessageBox mBox;
+        mBox.setWindowTitle(simulateThread -> getErrorCategory());
+        mBox.setText( errorText );
+        mBox.setDetailedText( errorDetails );
+        mBox.exec();
+
+        // print to log as well.
+        logText -> appendHtml( errorText );
+        logText -> appendPlainText( errorDetails );
+}
+
   }
   else
   {
