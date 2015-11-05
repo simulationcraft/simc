@@ -625,35 +625,28 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       const spellpower_data_t* pd = spell -> _power -> at( i );
 
-      if ( pd -> cost() == 0 && pd -> cost_per_second() == 0 )
-        continue;
-
       s << "Resource         : ";
-      if ( spell -> cost( pd -> type() ) > 0 )
+      if ( pd -> type() == POWER_MANA )
+        s << pd -> cost() * 100.0 << "%";
+      else
+        s << pd -> cost();
+
+      s << " ";
+
+      if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
+          _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
+        s << _resource_strings[ pd -> type() + POWER_OFFSET ];
+      else
+        s << "Unknown (" << pd -> type() << ")";
+
+      if ( pd -> type() == POWER_MANA && pd -> cost() > 0 )
       {
-        if ( pd -> type() == POWER_MANA )
-          s << spell -> cost( pd -> type() ) * 100.0 << "%";
-        else
-          s << spell -> cost( pd -> type() );
-
-        s << " ";
-
-        if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-            _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
-          s << _resource_strings[ pd -> type() + POWER_OFFSET ];
-        else
-          s << "Unknown (" << pd -> type() << ")";
-
-        if ( pd -> type() == POWER_MANA )
-        {
-          s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
-        }
+        s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
       }
       
       if ( pd -> cost_per_second() > 0 )
       {
-        if ( pd -> cost() > 0 )
-          s << " and ";
+        s << " and ";
 
         if ( pd -> type() == POWER_MANA )
           s << pd -> cost_per_second() * 100.0 << "%";
