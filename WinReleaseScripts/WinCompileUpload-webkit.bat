@@ -24,20 +24,10 @@ set redist=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\
 
 cd ..
 git clean -f -x -d
-:: Clean the directory up, otherwise it'll zip up all sorts of stuff.
-::For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
-:: Get the date, because I guess that's important.
-::git log --no-merges -1 --pretty="%%h">bla.txt
-:: Gives the git revision
-::set /p revision=<bla.txt
-:: Hacky hack because windows command prompt is annoying.
-::del bla.txt
 
-:: Script below
-::set install=simc-%simcversion%-source
-::cd>bla.txt
-::set /p download=<bla.txt
-::del bla.txt
+cd>bla.txt
+set /p download=<bla.txt
+del bla.txt
 
 ::Webkit compilation.
 set install=simc-%simcversion%-win64

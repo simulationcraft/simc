@@ -5,9 +5,8 @@
 ::  - "open downloads" is the command that selects the downloads alias in winscp, which for me is the simulationcraft server. Change downloads to whatever suits you.
 :: MSVC 2013 - Fully updated
 :: Git
-:: QT 5.4.1, or whatever version we are currently using
+:: QT 5.5.1, or whatever version we are currently using
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
-:: OpenSSL - https://slproweb.com/products/Win32OpenSSL.html - Optional, the program will work fine even without these. The only time it will matter is if the person attempts to load a https website inside the gui, which is probably never going to happen.
 
 @echo off
 :: Building with PGO data will add 10-15 minutes to compile.
@@ -25,25 +24,10 @@ set redist=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\
 
 cd ..
 git clean -f -x -d
-:: Clean the directory up, otherwise it'll zip up all sorts of stuff.
-::For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
-:: Get the date, because I guess that's important.
-::git log --no-merges -1 --pretty="%%h">bla.txt
-:: Gives the git revision
-::set /p revision=<bla.txt
-:: Hacky hack because windows command prompt is annoying.
-::del bla.txt
 
-:: Script below
-::set install=simc-%simcversion%-source
-::cd>bla.txt
-::set /p download=<bla.txt
-::del bla.txt
-
-::robocopy . %install% /s *.* /xd .git %install% /xf *.pgd /xn
-::set filename=%install%-%mydate%-%revision%
-::7z a -r -tzip %filename% %install% -mx9
-::call start winscp /command "open downloads" "put %download%\%filename%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
+cd>bla.txt
+set /p download=<bla.txt
+del bla.txt
 
 ::WebEngine compilation.
 set install=simc-%simcversion%-win64
