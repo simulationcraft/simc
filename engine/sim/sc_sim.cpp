@@ -632,6 +632,12 @@ bool parse_override_spell_data( sim_t*             sim,
                                        const std::string& /* name */,
                                        const std::string& value )
 {
+  // Register overrides only once, for the main thread
+  if ( sim -> parent )
+  {
+    return true;
+  }
+
   size_t v_pos = value.find( '=' );
 
   if ( v_pos == std::string::npos )
