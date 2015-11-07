@@ -906,6 +906,21 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
   }
 
+  if ( spell -> _driver )
+  {
+    s << "Triggered by     : ";
+    for ( size_t driver_idx = 0; driver_idx < spell -> _driver -> size(); ++driver_idx )
+    {
+      const spell_data_t* driver = spell -> _driver -> at( driver_idx );
+      s << driver -> name_cstr() << " (" << driver -> id() << ")";
+      if ( driver_idx < spell -> _driver -> size() - 1 )
+      {
+        s << ", ";
+      }
+    }
+    s << std::endl;
+  }
+
   s << "Attributes       : ";
   std::string attr_str;
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )

@@ -1811,7 +1811,11 @@ void spelleffect_data_t::link( bool ptr )
 
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
-    ed._trigger_spell -> _driver = ed._spell;
+    if ( ! ed._trigger_spell -> _driver )
+    {
+      ed._trigger_spell -> _driver = new std::vector<spell_data_t*>;
+    }
+    ed._trigger_spell -> _driver -> push_back( ed._spell );
 
     if ( ed._spell -> _effects == nullptr )
       ed._spell -> _effects = new std::vector<const spelleffect_data_t*>;
@@ -1843,6 +1847,8 @@ void spell_data_t::de_link( bool ptr )
       delete sd._power;
       sd._power = nullptr;
     }
+    delete sd._driver;
+    sd._driver = nullptr;
   }
 }
 

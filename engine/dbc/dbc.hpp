@@ -622,8 +622,7 @@ public:
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
   std::vector<const spellpower_data_t*>*  _power;
-
-  spell_data_t*    _driver; // The triggered spell's driver
+  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
 
   // Direct member access functions
   uint32_t category() const
@@ -921,8 +920,11 @@ public:
   bool affected_by( const spelleffect_data_t* ) const;
   bool affected_by( const spelleffect_data_t& ) const;
 
-  spell_data_t* driver() const
-  { return _driver ? _driver : spell_data_t::nil(); }
+  spell_data_t* driver( size_t idx = 0 ) const
+  { return _driver ? _driver -> at( idx ) : spell_data_t::nil(); }
+
+  size_t n_drivers() const
+  { return _driver ? _driver -> size() : 0; }
 
   // static functions
   static spell_data_t* nil();

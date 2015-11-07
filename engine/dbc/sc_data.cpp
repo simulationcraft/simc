@@ -565,75 +565,115 @@ bool custom_dbc_data_t::add_effect( spelleffect_data_t* effect, bool ptr )
   return true;
 }
 
-spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* s, bool ptr )
+static void collect_base_spells( const spell_data_t* spell, std::vector<const spell_data_t*>& roots )
 {
-  spell_data_t* news = get_mutable_spell( s -> id(), ptr );
-  if ( ! news )
+  if ( ! spell -> _driver )
   {
-    news = new spell_data_t( *s );
+    if ( range::find( roots, spell ) == roots.end() )
+    {
+      roots.push_back( spell );
+    }
+  }
+  else
+  {
+    for ( auto driver_spell : *spell -> _driver )
+    {
+      collect_base_spells( driver_spell, roots );
+    }
+  }
+}
+
+spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool ptr )
+{
+  spell_data_t* clone = get_mutable_spell( source -> id(), ptr );
+  if ( ! clone )
+  {
+    clone = new spell_data_t( *source );
     // TODO: Power, not overridable atm so we can use the static data, and the static data vector
     // too.
-    news -> _effects = new std::vector<const spelleffect_data_t*>( s -> effect_count(), spelleffect_data_t::nil() );
-
-    add_spell( news, ptr );
+    clone -> _effects = new std::vector<const spelleffect_data_t*>( clone -> effect_count(), spelleffect_data_t::nil() );
+    // Drivers are set up in the parent's cloning of the trigger spell
+    clone -> _driver = 0;
+    add_spell( clone, ptr );
   }
 
-  for ( size_t i = 0; i < s -> _effects -> size(); ++i )
+  // Clone effects
+  for ( size_t i = 0; i < source -> _effects -> size(); ++i )
   {
-    if ( s -> _effects -> at( i ) -> id() == 0 )
+    if ( source -> _effects -> at( i ) -> id() == 0 )
     {
       continue;
     }
 
-    spelleffect_data_t* ed = get_mutable_effect( s -> _effects -> at( i ) -> id(), ptr );
-    if ( ! ed )
+    const spelleffect_data_t* e_source = source -> _effects -> at( i );
+    spelleffect_data_t* e_clone = get_mutable_effect( e_source -> id(), ptr );
+
+    if ( ! e_clone )
     {
-      ed = new spelleffect_data_t( *spelleffect_data_t::find( s -> _effects -> at( i ) -> id(), ptr ) );
-      news -> _effects -> at( i ) = ed;
-      add_effect( ed, ptr );
+      e_clone = new spelleffect_data_t( *spelleffect_data_t::find( e_source -> id(), ptr ) );
+      add_effect( e_clone, ptr );
     }
 
-    assert( ed -> _spell -> id() == news -> id() );
-    ed -> _spell = news;
-    if ( s -> _effects -> at( i ) -> trigger() -> id() != 0 )
+    // Link cloned effect to cloned spell, and cloned spell to cloned effect
+    clone -> _effects -> at( i ) = e_clone;
+    e_clone -> _spell = clone;
+
+    // No trigger set up in the source effect, so processing for this effect can end here.
+    if ( e_source -> trigger() -> id() == 0 )
     {
-      // Clone the trigger
-      ed -> _trigger_spell = create_clone( s -> _effects -> at( i ) -> trigger(), ptr );
-      assert( ed -> _trigger_spell -> _driver &&
-              ed -> _trigger_spell -> _driver -> id() == s -> id() );
-      // Set the trigger's driver to this spell
-      ed -> _trigger_spell -> _driver = news;
+      continue;
+    }
+
+    // Clone the trigger, and re-link drivers in the trigger spell so they also point to cloned
+    // data. This is necessary because Blizzard re-uses trigger spells in multiple drivers.
+    e_clone -> _trigger_spell = create_clone( e_source -> trigger(), ptr );
+    assert( e_source -> trigger() -> _driver );
+    if ( ! e_clone -> _trigger_spell -> _driver )
+    {
+      e_clone -> _trigger_spell -> _driver = new std::vector<spell_data_t*>( e_source -> trigger() -> n_drivers(), spell_data_t::nil() );
+    }
+
+    for ( size_t driver_idx = 0; driver_idx < e_source -> trigger() -> n_drivers(); ++driver_idx )
+    {
+      const spell_data_t* driver = e_source -> trigger() -> driver( driver_idx );
+      if ( driver -> id() == clone -> id() )
+      {
+        e_clone -> _trigger_spell -> _driver -> at( i ) = clone;
+        break;
+      }
     }
   }
 
-  return news;
+  return clone;
 }
 
-spell_data_t* custom_dbc_data_t::clone_spell( unsigned base_spell_id, bool ptr )
+spell_data_t* custom_dbc_data_t::clone_spell( unsigned clone_spell_id, bool ptr )
 {
-  spell_data_t* base_spell = get_mutable_spell( base_spell_id, ptr );
+  spell_data_t* c = get_mutable_spell( clone_spell_id, ptr );
   // If a spell is found, we can be sure that the whole spell chain has already been cloned, so just
   // return the base spell
-  if ( base_spell )
+  if ( c )
   {
-    return base_spell;
+    return c;
   }
   else
   {
-    base_spell = spell_data_t::find( base_spell_id, ptr );
+    c = spell_data_t::find( clone_spell_id, ptr );
   }
 
   // Get to the root of the potential chain
-  while ( base_spell -> driver() -> id() != 0 )
+  std::vector<const spell_data_t*> base_spells;
+  collect_base_spells( c, base_spells );
+  for ( auto base_spell : base_spells )
   {
-    base_spell = base_spell -> driver();
+    // Create clones of the base spell chains, we don't really care about individual spells for now
+    create_clone( base_spell, ptr );
   }
 
-  // Create clone of the whole chain, we don't really care about individual spells for now
-  create_clone( base_spell, ptr );
-
+  c = get_mutable_spell( clone_spell_id, ptr );
+  assert( c );
   // Return the cloned spell
-  return get_mutable_spell( base_spell_id, ptr );
+  return c;
 }
 
 custom_dbc_data_t::~custom_dbc_data_t()
