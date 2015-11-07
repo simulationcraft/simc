@@ -668,6 +668,9 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       }
       break;
     }
+    case ITEM_BONUS_QUALITY:
+      item.parsed.data.quality = entry.value_1;
+      break;
     // Item name description. We should do flagging here, I suppose. We don't
     // have the name descriptions exported at the moment though ..
     case ITEM_BONUS_DESC:

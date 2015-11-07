@@ -16,6 +16,7 @@ enum item_bonus_type
 {
   ITEM_BONUS_ILEVEL    = 1,
   ITEM_BONUS_MOD       = 2,
+  ITEM_BONUS_QUALITY   = 3,
   ITEM_BONUS_DESC      = 4,
   ITEM_BONUS_SUFFIX    = 5,
   ITEM_BONUS_SOCKET    = 6,
