@@ -578,6 +578,12 @@ static void collect_base_spells( const spell_data_t* spell, std::vector<const sp
   {
     for ( auto driver_spell : *spell -> _driver )
     {
+      // Safeguard infinite recursions
+      if ( range::find( roots, driver_spell ) != roots.end() )
+      {
+        continue;
+      }
+
       collect_base_spells( driver_spell, roots );
     }
   }
