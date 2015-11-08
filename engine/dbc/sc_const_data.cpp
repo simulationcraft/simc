@@ -1815,7 +1815,10 @@ void spelleffect_data_t::link( bool ptr )
     {
       ed._trigger_spell -> _driver = new std::vector<spell_data_t*>;
     }
-    ed._trigger_spell -> _driver -> push_back( ed._spell );
+    if ( range::find( *ed._trigger_spell -> _driver, ed._spell ) == ed._trigger_spell -> _driver -> end() )
+    {
+      ed._trigger_spell -> _driver -> push_back( ed._spell );
+    }
 
     if ( ed._spell -> _effects == nullptr )
       ed._spell -> _effects = new std::vector<const spelleffect_data_t*>;
