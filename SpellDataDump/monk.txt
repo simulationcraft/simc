@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
+SimulationCraft 622-02 for World of Warcraft 6.2.3 PTR (build level 20691)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -94,7 +94,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.40400
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.48824
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -250,6 +250,7 @@ Name             : Frenzy (id=19615)
 Class            : Hunter, Monk
 Duration         : 30 seconds
 Stacks           : 5 maximum
+Triggered by     : Frenzy (20784)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -351,6 +352,7 @@ Name             : Intimidation (id=24394)
 Class            : Hunter, Monk
 Range            : 5 yards
 Duration         : 3 seconds
+Triggered by     : Intimidation (19577)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -604,6 +606,7 @@ Spell Level      : 32
 GCD              : 1 seconds
 Duration         : 20 seconds
 Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450)
+Triggered by     : Frenzy (19615)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -640,7 +643,7 @@ Name             : Jab (id=100780) [Spell Family (53)]
 Class            : Monk
 Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Wise Serpent (id=115070)
 Resource         : 45 Energy w/ Stance of the Fierce Tiger (id=103985)
-Resource         : 45 Energy w/ Stance of the Sturdy Ox (id=115069)
+Resource         : 40 Energy w/ Stance of the Sturdy Ox (id=115069)
 Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Spirited Crane (id=154436)
 Spell Level      : 1
 Range            : 5 yards
@@ -693,9 +696,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=186903)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Kick with a blast of Chi energy, dealing ${6.08*$<low>} to ${6.08*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
+Description      : Kick with a blast of Chi energy, dealing ${6.688*$<low>} to ${6.688*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
 
-Also deals ${6.08*$<low>} to ${6.08*$<high>} damage to up to $116645s4 additional nearby targets][].$?s128595[
+Also deals ${6.688*$<low>} to ${6.688*$<high>} damage to up to $116645s4 additional nearby targets][].$?s128595[
 
 If behind the target, you deal an additional $m2% damage over $128531d. If in front of the target, you are instantly healed for $m2% of the damage done.][]$?s154436[
 
@@ -733,7 +736,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 125359
 #3 (id=184683)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Attack with the palm of your hand, dealing ${3.42*$<low>} to ${3.42*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
+Description      : Attack with the palm of your hand, dealing ${4.104*$<low>} to ${4.104*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -910,7 +913,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=118198)   : Trigger Spell: Rising Sun Kick (64)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 185099
-Description      : You kick upwards, dealing ${10.0*$<low>} to ${10.0*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
+Description      : You kick upwards, dealing ${11.0*$<low>} to ${11.0*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
@@ -942,7 +945,7 @@ Name             : Jab (id=108557) [Scaling Spell (8), Spell Family (53)]
 Class            : Monk
 Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Wise Serpent (id=115070)
 Resource         : 45 Energy w/ Stance of the Fierce Tiger (id=103985)
-Resource         : 45 Energy w/ Stance of the Sturdy Ox (id=115069)
+Resource         : 40 Energy w/ Stance of the Sturdy Ox (id=115069)
 Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Spirited Crane (id=154436)
 Spell Level      : 1
 Range            : 5 yards
@@ -1064,7 +1067,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 117418
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0
-Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*7.367*$<low>+5*7.367*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
+Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*8.84*$<low>+5*8.84*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
 Tooltip          : $w2 damage every $t2 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -1403,7 +1406,7 @@ Description      : Roll and Chi Torpedo also increase movement speed by $119085m
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
 Class            : Mistweaver Monk
-Resource         : 0.7% Base Mana (1119 @Level 100) per second
+Resource         : 0% Base Mana and 0.7% Base Mana (1119 @Level 100) per second
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds
@@ -1535,6 +1538,7 @@ Spell Level      : 56
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Affecting spells : Glyph of Mana Tea (123763)
+Triggered by     : Mana Tea (115867)
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1600,6 +1604,7 @@ Spell Level      : 36
 Duration         : 1 seconds
 Cooldown         : 6 seconds
 Affecting spells : Stance of the Sturdy Ox (115069), Item - Monk T14 Brewmaster 2P Bonus (123157), Eluding Movements (184906)
+Triggered by     : Elusive Brew (128939)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1868,6 +1873,7 @@ Name             : Mortal Wounds (id=115804)
 Class            : Warrior, Hunter, Monk
 Range            : 100 yards
 Duration         : 10 seconds
+Triggered by     : Mortal Strike (12294), Bloody Screech (24423), Wild Strike (100130), Deadly Sting (160060)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2024,6 +2030,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
+Triggered by     : Dizzying Haze (115180)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -2197,6 +2204,7 @@ Class            : Windwalker Monk
 Spell Level      : 56
 Duration         : 15 seconds
 Cooldown         : 5 seconds
+Triggered by     : Tigereye Brew (125195)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2410,6 +2418,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Rising Sun Kick (130320), Glyph of Flying Fists (173182), 
+Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ..x..... ........ ........ 
@@ -2500,9 +2509,10 @@ If the Healing Sphere expires before being used, a nearby ally within $135920A1 
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
 Class            : Monk
-Resource         : 15 Energy per second w/ Stance of the Fierce Tiger (id=103985)
-Resource         : 15 Energy per second w/ Stance of the Sturdy Ox (id=115069)
-Resource         :  w/ Stance of the Spirited Crane (id=154436)
+Resource         : 0% Base Mana w/ Stance of the Wise Serpent (id=115070)
+Resource         : 0 Energy and 15 Energy per second w/ Stance of the Fierce Tiger (id=103985)
+Resource         : 0 Energy and 15 Energy per second w/ Stance of the Sturdy Ox (id=115069)
+Resource         : 21.3% Base Mana (34080 @Level 100) w/ Stance of the Spirited Crane (id=154436)
 Spell Level      : 54
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2643,6 +2653,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Affecting spells : Extend Life (185158)
+Triggered by     : Surging Mist (116995)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2709,6 +2720,7 @@ Spell Level      : 15
 Duration         : 10 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
+Triggered by     : Momentum (115174)
 Attributes       : ........ ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2866,6 +2878,7 @@ Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
 Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Glyph of Fists of Fury (125671), Glyph of the Floating Butterfly (159490), Glyph of Flying Fists (173182), 
+Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2958,6 +2971,7 @@ Inactive while in Stance of the Wise Serpent.][]
 Name             : Tiger Strikes (id=120273) [Spell Family (53)] 
 Class            : Monk
 Duration         : 8 seconds
+Triggered by     : Tiger Strikes (120272)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3229,6 +3243,7 @@ Description      : Heals you for $s1% of your maximum health when a damaging att
 Name             : Healing Elixirs (id=122281) [Spell Family (53)] 
 Class            : Monk
 Affecting spells : Guard (115295), Extend Life (185158)
+Triggered by     : Healing Elixirs (134563)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3312,6 +3327,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : Aura (infinite)
+Triggered by     : Fists of Fury (117418)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3550,6 +3566,7 @@ Class            : Monk
 Spell Level      : 56
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
+Triggered by     : Mana Tea (115867)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3687,6 +3704,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Rising Sun Kick (130320)
+Triggered by     : Crackling Tiger Lightning Driver (123999)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... .x...... ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -4218,6 +4236,7 @@ Spell Level      : 1
 Duration         : 20 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
+Triggered by     : Tiger Palm (100787)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4362,6 +4381,7 @@ Name             : Honorable Bow (id=125735) [Scaling Spell (5), Spell Family (5
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
+Triggered by     : Glyph of Honor (125732), Glyph of Blackout Kick (132005)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4704,6 +4724,7 @@ Class            : Monk
 Spell Level      : 1
 GCD              : 1 seconds
 Duration         : Aura (infinite)
+Triggered by     : Zen Pilgrimage (126892)
 Attributes       : ........ x....... ........ .......x   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4867,6 +4888,7 @@ Spell Level      : 1
 Duration         : 30 seconds
 Stacks           : 15 maximum
 Proc Chance      : 101%
+Triggered by     : Eluding Movements (184906)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4923,6 +4945,7 @@ Name             : Power Strikes (id=129914) [Scaling Spell (5), Spell Family (5
 Class            : Monk
 Spell Level      : 24
 Duration         : Aura (infinite)
+Triggered by     : Power Strikes (121817)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5101,6 +5124,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
+Triggered by     : Healing Elixirs (122280)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5314,6 +5338,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 5 seconds
+Triggered by     : Ring of Peace (116844)
 Attributes       : ........ ........ .......x x..x....   .....x.x ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ..x..... ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5509,6 +5534,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 Name             : Chi Brew (id=145640) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
+Triggered by     : Chi Brew (115399)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5616,6 +5642,7 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x..... ........ ........ 
                  : AOE Heal
+Triggered by     : Glyph of Rapid Rolling (146951)
 Attributes       : ........ ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5635,6 +5662,7 @@ Spell Level      : 64
 Range            : 40 yards
 Duration         : 60 seconds
 Affecting spells : Guard (115295), Lucidity (137331), Extend Life (185158)
+Triggered by     : Glyph of Fortuitous Spheres (146953)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6937,6 +6965,7 @@ Class            : Monk
 Spell Level      : 56
 Range            : 5 yards
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Focus and Harmony (154555), Pool of Mists (173841)
+Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

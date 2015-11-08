@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
+SimulationCraft 622-02 for World of Warcraft 6.2.3 PTR (build level 20691)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -356,7 +356,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=879)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.24600
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.38076
 #2 (id=169356)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20
 Description      : A Lunar spell that causes $s1 Arcane damage to the target.
@@ -441,7 +441,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.40400
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.48824
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -834,6 +834,7 @@ Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
 Affecting spells : Item - Druid T18 Feral 2P Bonus (185805), 
+Triggered by     : Omen of Clarity (113043)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -929,6 +930,7 @@ Class            : Druid
 Range            : 100 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
+Triggered by     : Primal Fury (159286)
 Attributes       : ....x... ........ ........ x.......   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -943,6 +945,7 @@ Description      : Every time you critically strike with a combo generating abil
 
 Name             : Primal Fury (id=16959) 
 Class            : Druid
+Triggered by     : Primal Fury (16961)
 Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -1280,6 +1283,7 @@ Tooltip          : All damage taken reduced by $s2%.
 
 Name             : Frenzied Regeneration (id=22842) [Spell Family (7)] 
 Class            : Druid
+Resource         : 0 Rage
 Spell Level      : 68
 Cooldown         : 1.5 seconds
 Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Savage Defense (132402), Improved Regeneration (138217), Primal Mending (177969)
@@ -1662,6 +1666,7 @@ Class            : Druid
 Spell Level      : 42
 Range            : 100 yards
 Affecting spells : Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Naturalist (165374), 
+Triggered by     : Hurricane (16914)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ..x..... ........ ........ 
@@ -1871,6 +1876,7 @@ Description      : Increases the range of your Cyclone spell by $s1 yards.
 Name             : Starfall (id=50286) [Spell Family (7), Hidden] 
 Class            : Druid
 Spell Level      : 76
+Triggered by     : Starfall (184989)
 Attributes       : .......x x....... ........ ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1898,7 +1904,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=42452)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.28000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.29680
 Description      : $@spelldesc48505
 
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
@@ -2382,6 +2388,7 @@ Range            : 5 yards
 Duration         : 12 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
+Triggered by     : Infected Wounds (48484)
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ x.......   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2463,6 +2470,7 @@ Class            : Druid
 Spell Level      : 28
 Range            : 15 yards
 Duration         : 6 seconds
+Triggered by     : Typhoon (132469)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2747,6 +2755,7 @@ Name             : Predatory Swiftness (id=69369) [Spell Family (7)]
 Class            : Druid
 Duration         : 12 seconds
 Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437), Item - Druid WoD PvP Restoration 4P Bonus (165707), 
+Triggered by     : Predatory Swiftness (16974), Feral Instinct (16949)
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2864,7 +2873,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage: spellstorm (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.54, dl=0.319) | SP Coefficient: 2.80800
+                   Base Value: 1 | Scaled Value: 0 (avg=4.54, dl=0.319) | SP Coefficient: 2.97648
 Description      : Instantly causes $78674s1 Spellstorm damage to the target, benefiting from your strongest current Eclipse bonus. Also grants Lunar or Solar Empowerment, based on current Balance Energy side, which increases the damage of your next $164547n Starfires or $164545n Wraths by $164545s1%.
 
 Max 3 charges. Charges shared with Starfall.
@@ -3371,6 +3380,7 @@ Class            : Druid
 Spell Level      : 28
 Range            : 100 yards
 Duration         : 5 seconds
+Triggered by     : Solar Beam (78675)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3401,6 +3411,7 @@ Name             : Stampeding Roar (id=97993) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 84
 Affecting spells : Bear Form (5487), Berserk (106951), Glyph of Stampeding Roar (114222), 
+Triggered by     : Stampeding Roar (106898)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x...x ........ ........   ........ ........ ........ .......x 
@@ -3503,6 +3514,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 6 seconds
 Affecting spells : Bear Form (5487), Thick Hide (16931), Harmony (100977), Ironbark (102342), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Lucidity (137247)
+Triggered by     : Cenarion Ward (102351)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ .......x ....x... ........   ........ ........ ........ ........ 
@@ -4082,6 +4094,7 @@ Class            : Druid
 Spell Level      : 44
 Range            : 100 yards
 Affecting spells : Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Naturalist (165374), 
+Triggered by     : Astral Storm (106996)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ..x..... ........ ........ 
@@ -4957,6 +4970,7 @@ Tooltip          : Your next Entangling Roots, Healing Touch, Rebirth, or Regrow
 
 Name             : Visual Effect: Tree of Life (id=132213) [Hidden] 
 Class            : Druid
+Triggered by     : Incarnation: Tree of Life (33891)
 Attributes       : .......x x....... ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5017,6 +5031,7 @@ Duration         : 10 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Enhanced Tooth and Claw (157283)
+Triggered by     : Tooth and Claw (135288)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5077,6 +5092,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Affecting spells : Item - Druid T18 Feral 2P Bonus (185805), 
+Triggered by     : Omen of Clarity (16864)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5281,6 +5297,7 @@ Class            : Druid
 Spell Level      : 24
 Duration         : 4 seconds
 Affecting spells : Glyph of Dash (59219)
+Triggered by     : Displacer Beast (102280)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5416,6 +5433,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437), Item - Druid WoD PvP Restoration 4P Bonus (165707), 
+Triggered by     : Dream of Cenarius (158501)
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5750,12 +5768,13 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=216251)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.29200
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30952
 Description      : $@spelldesc155592
 
 Name             : Sunfall (id=155598) [Spell Family (7), Hidden] 
 Class            : Druid
 Spell Level      : 76
+Triggered by     : Sunfall (185002)
 Attributes       : .......x x....... ........ ........   ...x...x ..x..... ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5865,6 +5884,7 @@ Spell Level      : 6
 Range            : 100 yards
 Duration         : 15 seconds
 Affecting spells : Mastery: Razor Claws (77493), Prowl (102547), Berserk (106951), Clearcasting (135700), Glyph of Rake (164020), Bloodletting (165699)
+Triggered by     : Rake (1822)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -5969,6 +5989,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
+Triggered by     : Empowered Moonkin (157229)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6222,6 +6243,7 @@ Range            : 40 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Blessing of Lower City (37878), Harmony (100977), Ironbark (102342), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), 
+Triggered by     : Tranquility (740)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6542,6 +6564,7 @@ Description      : For $159438d after activating Barkskin, you are immune to Sil
 Name             : Glyph of Enchanted Bark (id=159438) [Spell Family (11)] 
 Class            : Druid
 Duration         : 5 seconds
+Triggered by     : Glyph of Enchanted Bark (159436)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6627,6 +6650,7 @@ This effect cannot occur more often than once every 5 sec.
 Name             : Glyph of the Shapemender (id=159454) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
+Triggered by     : Glyph of the Shapemender (159453)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ....xxx.   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7010,9 +7034,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=232409)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38900
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41234
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.28080
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.29765
 Description      : $@spelldesc8921
 Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
 
@@ -7031,9 +7055,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=232416)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38900
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41234
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.28080 | Radius: 0 - 5 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.29765 | Radius: 0 - 5 yards
 Description      : $@spelldesc93402
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 
@@ -7057,6 +7081,7 @@ Tooltip          : Hovering.
 Name             : Entangling Energy (id=164991) [Spell Family (7)] 
 Class            : Druid
 Duration         : 30 seconds
+Triggered by     : Glyph of Entangling Energy (54812)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7613,6 +7638,7 @@ Description      : For $179334d after you kill an enemy that yields experience o
 Name             : Nature's Bounty (id=179334) [Spell Family (7)] 
 Class            : Druid
 Duration         : 8 seconds
+Triggered by     : Nature's Bounty (179333)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7651,6 +7677,7 @@ Resource         : 6% Base Mana (1920 @Level 100)
 Spell Level      : 76
 Duration         : 10 seconds
 Affecting spells : Hurricane (16914), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247)
+Triggered by     : Starfall (48505)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7670,6 +7697,7 @@ Class            : Druid
 Spell Level      : 76
 Duration         : 10 seconds
 Affecting spells : Hurricane (16914), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247)
+Triggered by     : Sunfall (155592)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 

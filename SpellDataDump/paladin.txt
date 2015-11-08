@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
+SimulationCraft 622-02 for World of Warcraft 6.2.3 PTR (build level 20691)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -169,7 +169,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=381)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -70000000 | Scaled Value: -7e+007 | Misc Value: 127
+                   Base Value: -70000000 | Scaled Value: -7e+07 | Misc Value: 127
 Description      : Places a Hand on the party or raid member, temporarily removing all their threat for $d. Players may only have one Hand on them per Paladin at any one time.
 Tooltip          : All threat temporarily removed.
 
@@ -591,6 +591,7 @@ Name             : Seal of Insight (id=20167) [Spell Family (10)]
 Class            : Paladin
 Spell Level      : 32
 Affecting spells : Sanctuary (105805), Holy Insight (112859)
+Triggered by     : Seal of Insight (20165)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -610,6 +611,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
 Affecting spells : Exorcism (138162)
+Triggered by     : Seal of Justice (20164)
 Attributes       : ........ ........ ..x..x.. ..x....x   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -665,7 +667,7 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11347)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.57600 | AP Coefficient: 0.69600
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62208 | AP Coefficient: 0.75168
 Description      : Causes $s1 Holy damage$?s105424[ and generates 1 Holy Power]?s85256[ and generates 1 Holy Power][].  Requires an active Seal to cast.
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
@@ -756,7 +758,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14488)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.59200
 Description      : Hurls a magical hammer that strikes an enemy for $s1 Holy damage$?s53503[ and generates a charge of Holy Power][]. Only usable on enemies that have 20% or less health$?s53503[ or during Avenging Wrath][].
 
 Name             : Forbearance (id=25771) [Spell Family (10)] 
@@ -962,7 +964,7 @@ Attributes       : ........ ........ ..x..x.. ........   ...x.... ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=21447)    : Apply Aura (6) | Periodic Damage: holy every 3 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06178
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06672
 Description      : Deals $m1 additional Holy damage over $31803d. Stacks up to $31803u times.
 Tooltip          : Holy damage every $t1 sec.
 
@@ -1166,7 +1168,7 @@ Effects          :
 #1 (id=25579)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=25580)    : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2
+                   Base Value: 130 | Scaled Value: 1.3
 #3 (id=91108)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power
 Description      : $?s85673|s85256[An instant strike that causes $sw2 Physical damage and grants 1 Holy Power.][An instant strike that causes $sw2 Physical damage.]
@@ -1224,7 +1226,7 @@ Attributes       : ........ ........ x.x..... ........   ...x.... ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=34171)    : Weapon Damage% (31)
-                   Base Value: 12 | Scaled Value: 0.12
+                   Base Value: 13 | Scaled Value: 0.13
 #2 (id=131737)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : Fills you with Holy Light, causing melee attacks to deal $42463sw1 additional Holy damage and apply Censure to the target.
@@ -1305,7 +1307,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=157591)   : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8 | Radius: 0 - 8 yards
+                   Base Value: 86 | Scaled Value: 0.86 | Radius: 0 - 8 yards
 #2 (id=171269)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 Description      : Deals $sw1 Holy damage to all enemies within $A1 yards. $?s63220[Using Divine Storm will also heal you for ${$115515m1/100*$MHP}.][]
@@ -1507,6 +1509,7 @@ Range            : 60 yards
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x...x. ..x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, Heal, Periodic, Trap Triggered
+Triggered by     : Beacon of Light (53563), Beacon of Light (53563), Beacon of Faith (156910), Beacon of Faith (156910)
 Attributes       : ......xx x....... x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
@@ -1543,6 +1546,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Triggered by     : Infusion of Light (53576)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1825,6 +1829,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
+Triggered by     : Glyph of Flash of Light (57955)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2347,6 +2352,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
+Triggered by     : Exorcism (87138)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. .x...... ........ ........   ........ ........ ........ ........ 
@@ -2458,6 +2464,7 @@ Name             : Dazed - Avenger's Shield (id=63529) [Spell Family (10)]
 Class            : Paladin
 Range            : 50000 yards
 Duration         : 10 seconds
+Triggered by     : Glyph of Dazing Shield (56414)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2514,6 +2521,7 @@ Class            : Paladin
 Spell Level      : 1
 Duration         : 6 seconds
 Affecting spells : Glyph of Devotion Aura (146955)
+Triggered by     : Devotion Aura (31821)
 Attributes       : .......x x....... x.x..... x..x....   ........ .......x ........ ........ 
                  : x....... ........ ........ ........   ........ ........ x...x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2783,6 +2791,7 @@ Class            : Paladin
 Spell Level      : 1
 Duration         : 10 seconds
 Affecting spells : Sanctity of Battle (25956), Lucidity (137288), Improved Consecration (157486)
+Triggered by     : Consecration (26573)
 Attributes       : .......x x....... x....... ........   ...x...x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2848,7 +2857,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=86389)    : Weapon Damage% (31)
-                   Base Value: 240 | Scaled Value: 2.4
+                   Base Value: 259 | Scaled Value: 2.59
 #2 (id=131736)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 Description      : A powerful weapon strike that deals $sw1 Physical damage.
@@ -2861,6 +2870,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Holy Avenger (105809)
+Triggered by     : Grand Crusader (85043), Item - Paladin T18 Protection 4P Bonus (185677)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2903,6 +2913,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Glyph of Harsh Words (54938), Glyph of Flash of Light (54957), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
+Triggered by     : Bastion of Glory (114637)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3143,6 +3154,7 @@ Class            : Paladin
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Holy Avenger (105809), Exorcism (138162)
+Triggered by     : Hammer of the Righteous (53595)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3159,12 +3171,13 @@ Description      : $@spelldesc35395
 
 Name             : Daybreak (id=88819) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Duration         : 10 seconds
 Stacks           : 100 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Triggered by     : Daybreak (88821)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3179,7 +3192,7 @@ Tooltip          : Your next Holy Shock will heal each ally within $121129A2 yar
 
 Name             : Daybreak (id=88821) [Spell Family (10), Passive] 
 Class            : Holy Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 56
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -3212,6 +3225,7 @@ Description      : Healing the target of your Beacon of Light with Flash of Ligh
 
 Name             : Blessed Life (id=89023) [Spell Family (10)] 
 Class            : Paladin
+Triggered by     : Glyph of Blessed Life (54943)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... xx...... ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3244,6 +3258,7 @@ Class            : Paladin
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 8 seconds
+Triggered by     : Divine Purpose (86172)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3326,6 +3341,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Triggered by     : Supplication (31868)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3381,6 +3397,7 @@ Description      : Interrupts spellcasting and prevents any spell in that school
 Name             : Grand Crusader (id=98057) [Spell Family (10)] 
 Class            : Paladin
 Affecting spells : Holy Avenger (105809)
+Triggered by     : Grand Crusader (85416)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... xx...... ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3706,7 +3723,7 @@ On a friendly target, the falling hammer heals for ${$114917m1*27.906} over $114
 
 Name             : Light's Hammer (id=114158) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Resource         : 51.9% Base Mana (16608 @Level 100) w/ Daybreak (id=88821)
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3732,6 +3749,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Sanctuary (105805), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
+Triggered by     : Bastion of Glory (114637)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3751,7 +3769,7 @@ Replaces Word of Glory.
 
 Name             : Holy Prism (id=114165) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Resource         : 17% Base Mana (5440 @Level 100) w/ Daybreak (id=88821)
 Spell Level      : 1
 Range            : 40 yards
@@ -3808,6 +3826,7 @@ Class            : Paladin
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
+Triggered by     : Selfless Healer (85804)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3859,6 +3878,7 @@ Tooltip          : $?s114163[Your next Eternal Flame][Your next Word of Glory] u
 
 Name             : Pursuit of Justice (id=114694) [Hidden] 
 Class            : Paladin
+Triggered by     : Pursuit of Justice (26023), Pursuit of Justice (26023), Pursuit of Justice (26023), Pursuit of Justice (26023), Pursuit of Justice (26023), Pursuit of Justice (26023)
 Attributes       : .......x x....... ........ x..x....   ........ ........ ........ ........ 
                  : ........ ......x. ...x.... ....x...   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ .xx..... ........ 
@@ -3872,7 +3892,7 @@ Effects          :
 
 Name             : Holy Prism (id=114852) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3897,7 +3917,7 @@ Description      : $@spelldesc114165
 
 Name             : Holy Prism (id=114871) [Scaling Spell (6), Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3965,7 +3985,7 @@ Tooltip          : Healing every $t1 sec, decreasing over time.
 
 Name             : Light's Hammer (id=114918) [Spell Family (10), Passive] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3981,7 +4001,7 @@ Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds
 
 Name             : Arcing Light (id=114919) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 2 seconds
@@ -4002,6 +4022,7 @@ Tooltip          : Movement slowed by $s2%.
 
 Name             : Glyph of Illumination (id=115314) [Spell Family (10)] 
 Class            : Paladin
+Triggered by     : Glyph of Illumination (54937)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4048,6 +4069,7 @@ Class            : Paladin
 Range            : 100 yards
 Duration         : 20 seconds
 Affecting spells : Sanctified Wrath (53376)
+Triggered by     : Glyph of Avenging Wrath (54927)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
@@ -4068,6 +4090,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
+Triggered by     : Glyph of Denounce (56420)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4085,6 +4108,7 @@ Name             : Glyph of Templar's Verdict (id=115668) [Spell Family (10)]
 Class            : Paladin
 Spell Level      : 1
 Duration         : 6 seconds
+Triggered by     : Glyph of Templar's Verdict (54926)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4241,6 +4265,7 @@ Name             : Fire From the Heavens (id=115995) [Spell Family (10), Hidden]
 Class            : Paladin
 Range            : 100 yards
 Duration         : 4 seconds
+Triggered by     : Glyph of Fire From the Heavens (57954)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4327,7 +4352,7 @@ Description      : Using melee attacks while using Seal of Insight heals a nearb
 
 Name             : Arcing Light (id=119952) [Scaling Spell (6), Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Glyph of Flash of Light (54957), Sanctuary (105805), Holy Insight (112859)
@@ -4346,6 +4371,7 @@ Description      : $@spelldesc114158
 Name             : Glyph of Double Jeopardy (id=121027) [Spell Family (10)] 
 Class            : Paladin
 Duration         : 10 seconds
+Triggered by     : Glyph of Double Jeopardy (54922)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4361,7 +4387,7 @@ Tooltip          : Judgment damage against a different target increased by $s1%.
 
 Name             : Daybreak (id=121129) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....xx. 
@@ -4442,9 +4468,10 @@ Description      : Forcefully attempt to expel the evil from the target with a b
 
 Name             : Light's Hammer (Talent) (id=122773) [Spell Family (10)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Duration         : 15.5 seconds
+Triggered by     : Light's Hammer (114158)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5315,6 +5342,7 @@ Name             : Holy Shield (id=157122)
 Class            : Paladin
 Range            : 100 yards
 Velocity         : 40 yards/sec
+Triggered by     : Holy Shield (152261)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5762,6 +5790,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
+Triggered by     : Enhanced Holy Shock (157478)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5807,12 +5836,13 @@ Description      : You gain Parry equal to $s1% of your Critical Strike from gea
 
 Name             : Jailer's Judgment (id=162056) [Spell Family (6)] 
 Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
 Range            : 15 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
+Triggered by     : The Jailer's Libram (168802)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

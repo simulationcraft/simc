@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
+SimulationCraft 622-02 for World of Warcraft 6.2.3 PTR (build level 20691)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -96,7 +96,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=151)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.04000
 Description      : Fires a bolt of lightning at the target, dealing $s1 Nature damage.$?s147781[  This damage has a chance to add a charge to your currently active Earth Shield.][]
 
 Name             : Chain Lightning (id=421) [Spell Family (11)] 
@@ -115,7 +115,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60700
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.63128
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Earth Shield (id=974) [Spell Family (11)] 
@@ -532,7 +532,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.92500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.96200
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.
 
 Name             : Flame Shock (id=8050) [Spell Family (11)] 
@@ -552,9 +552,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3250)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.36400
 #2 (id=3251)     : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.17500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.18200
 #3 (id=233307)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Sears the target with fire, causing $s1 Fire damage and then an additional $o1 Fire damage over $d.
@@ -644,6 +644,7 @@ Name             : Magma Totem (id=8187) [Scaling Spell (9), Spell Family (11)]
 Class            : Shaman
 Spell Level      : 36
 Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Elemental Discharge (144999)
+Triggered by     : Magma Totem Passive (8188)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ......x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -998,7 +999,7 @@ Effects          :
 #1 (id=15497)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=211033)   : Weapon Damage% (31)
-                   Base Value: 40 | Scaled Value: 0.4
+                   Base Value: 42 | Scaled Value: 0.42
 Description      : Each of your main-hand weapon attacks has a $33757h% chance of triggering three extra attacks dealing $25504sw2 Physical damage.
 
 Name             : Lightning Shield (id=26364) [Scaling Spell (9), Spell Family (11)] 
@@ -1007,6 +1008,7 @@ Spell Level      : 8
 Range            : 100 yards
 Cooldown         : 3 seconds
 Affecting spells : Stormstrike (17364), Energized Shield (24499), Mental Quickness (30814), Shaman Lightning Shield Bonus (33020), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Glyph of Reactive Shielding (159647)
+Triggered by     : Lightning Shield (324)
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ .x...... ........ ........ 
                  : .......x ......xx ........ ........   ...x.... ........ .xx..... ........ 
@@ -1016,7 +1018,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=16327)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.565) | SP Coefficient: 0.22630
+                   Base Value: 1 | Scaled Value: 0 (avg=0.565) | SP Coefficient: 0.23536
 Description      : Discharges lightning at an attacker, dealing $s1 Nature damage.
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
@@ -1155,6 +1157,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
+Triggered by     : Stormstrike (17364)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -1164,7 +1167,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 624 | Scaled Value: 6.24 | SP Coefficient: 1.00000
+                   Base Value: 649 | Scaled Value: 6.49 | SP Coefficient: 1.00000
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1173,6 +1176,7 @@ Name             : Stormstrike Off-Hand (id=32176) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 40
 Range            : 5 yards
+Triggered by     : Stormstrike (17364)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -1182,7 +1186,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 624 | Scaled Value: 6.24 | SP Coefficient: 1.00000
+                   Base Value: 649 | Scaled Value: 6.49 | SP Coefficient: 1.00000
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1409,7 +1413,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43841)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.14400
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.18976
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage. Lava Burst will always deal a critical strike. If your Flame Shock is on the target, Lava Burst will deal $8050m3% additional damage.
 
 Name             : Hex (id=51514) [Spell Family (11)] 
@@ -1586,6 +1590,7 @@ Name             : Water Shield (id=52128) [Scaling Spell (-1), Spell Family (11
 Class            : Shaman
 Spell Level      : 20
 Affecting spells : Glyph of Water Shield (55436), Lucidity (137326)
+Triggered by     : Water Shield (52127)
 Attributes       : ........ ........ ..x..... x..x.x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ x....... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -1630,6 +1635,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
 Affecting spells : Improved Maelstrom Weapon (157807), Item - Shaman T18 Enhancement 4P Bonus (185872), 
+Triggered by     : Maelstrom Weapon (51530), Furious Winds (184920)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2521,6 +2527,7 @@ Class            : Shaman
 Spell Level      : 1
 Range            : 25 yards
 Duration         : 0.1 seconds
+Triggered by     : Spirit Walk (58875)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2625,7 +2632,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=53784)    : Weapon Damage% (31)
-                   Base Value: 690 | Scaled Value: 6.9
+                   Base Value: 718 | Scaled Value: 7.18
 #2 (id=53785)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=134467)   : Normalized Weapon Damage (121)
@@ -3016,6 +3023,7 @@ Duration         : 5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Triggered by     : Earthgrab (116943)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ .x...... 
@@ -3596,6 +3604,7 @@ Effects          :
 Name             : Spirit Link (id=98020) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 Spell Level      : 30
+Triggered by     : Spirit Link (98017)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4031,6 +4040,7 @@ Description      : Unleash a blast of superheated flame at the enemy, dealing $s
 Name             : Windlash (id=114089) [Spell Family (11)] 
 Class            : Shaman
 Range            : 30 yards
+Triggered by     : Ascendance (114051)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4077,6 +4087,7 @@ Class            : Shaman
 Range            : 100 yards
 Duration         : 10 seconds
 Affecting spells : Lucidity (137326)
+Triggered by     : Stone Bulwark Totem Passive (114889)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4182,6 +4193,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
+Triggered by     : Windstrike (115356)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -4191,7 +4203,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 624 | Scaled Value: 6.24
+                   Base Value: 649 | Scaled Value: 6.49
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4201,6 +4213,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
+Triggered by     : Windstrike (115356)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -4210,7 +4223,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 624 | Scaled Value: 6.24
+                   Base Value: 649 | Scaled Value: 6.49
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -5245,6 +5258,7 @@ Name             : Soothing Winds (id=157333) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 20
 Range            : 40 yards
+Triggered by     : Wind Gust (157331)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5302,6 +5316,7 @@ Name             : Liquid Magma (id=157501)
 Class            : Shaman
 Range            : 100 yards
 Velocity         : 2 yards/sec
+Triggered by     : Liquid Magma (152255)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ...x.... ........ 
@@ -5782,6 +5797,7 @@ Name             : Enhanced Unleash (id=162557) [Spell Family (11)]
 Class            : Shaman
 Range            : 100 yards
 Duration         : 4 seconds
+Triggered by     : Enhanced Unleash (157784)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6000,6 +6016,7 @@ Name             : Feral Spirit (id=167204) [Spell Family (11)]
 Class            : Shaman
 Range            : 100 yards
 Duration         : 30 seconds
+Triggered by     : Item - Shaman T17 Enhancement 4P Bonus (165610)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ..x..... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6030,7 +6047,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=241696)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | Misc Value: 24
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.20000 | Misc Value: 24
 #2 (id=241697)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500
 #3 (id=249213)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)

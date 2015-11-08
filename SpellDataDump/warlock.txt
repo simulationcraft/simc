@@ -1,4 +1,4 @@
-SimulationCraft 620-03 for World of Warcraft 6.2.2 PTR (build level 20444)
+SimulationCraft 622-02 for World of Warcraft 6.2.3 PTR (build level 20691)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -366,6 +366,7 @@ Description      : Summons a Infernal from the Twisting Nether, impacting for $2
 
 Name             : Life Tap (id=1454) [Scaling Spell (10), Spell Family (5)] 
 Class            : Affliction Demonology Warlock
+Resource         : 0 Health
 Spell Level      : 16
 GCD              : 1.5 seconds
 Affecting spells : Glyph of Life Tap (63320), Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
@@ -625,6 +626,7 @@ Name             : Hellfire (id=5857) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 20
 Affecting spells : Improved Rain of Fire/Hellfire (24430), Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Triggered by     : Hellfire (1949)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -657,6 +659,7 @@ Description      : Creates a Healthstone that can be consumed to restore $?s5622
 Name             : Soulstone (id=6203) 
 Class            : Warlock
 Range            : 50000 yards
+Triggered by     : Soulstone (20707)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -697,6 +700,7 @@ Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Affecting spells : Mastery: Emberstorm (77220), Metamorphosis (103958), Chaotic Energy (111546), Molten Core (122355), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134)
+Triggered by     : Molten Core (122355)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1136,6 +1140,7 @@ Name             : Immolation (id=20153) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 50
 Affecting spells : Metamorphosis (103958), Grimoire of Supremacy (108499), Kil'jaeden's Cunning (137587)
+Triggered by     : Immolation (19483)
 Attributes       : ....x... ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1211,6 +1216,7 @@ Spell Level      : 50
 Range            : 50000 yards
 Duration         : 2 seconds
 Affecting spells : Glyph of Hand of Gul'dan (56248), Kil'jaeden's Cunning (137587)
+Triggered by     : Summon Infernal (1122), Summon Abyssal (112921)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1297,6 +1303,7 @@ Name             : Shadowburn (id=29341) [Spell Family (5)]
 Class            : Warlock
 Range            : 100 yards
 Duration         : 5 seconds
+Triggered by     : Shadowburn (17877)
 Attributes       : ........ ........ x....... ...x....   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1336,6 +1343,7 @@ Description      : Deals $s1 Fire damage to an enemy$?s108647[ and generates Bur
 
 Name             : Soulshatter (id=29858) [Spell Family (5)] 
 Class            : Warlock
+Resource         : 0 Health
 Spell Level      : 66 (max 72)
 GCD              : 1.5 seconds
 Velocity         : 22 yards/sec
@@ -1427,6 +1435,7 @@ Tooltip          : Movement speed increased by $s3%.
 Name             : Pursuit (id=30153) [Scaling Spell (10)] 
 Class            : Warlock
 Range            : 50000 yards
+Triggered by     : Pursuit (30151)
 Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ......x. ......x.   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1602,6 +1611,7 @@ Class            : Warlock
 Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Improved Rain of Fire/Hellfire (24430), Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Flamelicked (185229)
+Triggered by     : Rain of Fire (5740)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ .x....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -2376,6 +2386,7 @@ Name             : Summon Doomguard (id=60478) [Spell Family (57)]
 Class            : Warlock
 Spell Level      : 60
 Duration         : 60 seconds
+Triggered by     : Summon Doomguard (18540)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2946,6 +2957,7 @@ Unable to use abilities during Felstorm.
 Name             : Felstorm (id=89753) [Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 36
+Triggered by     : Felstorm (89751)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : .......x ........ ........ ........   ........ .......x ........ ........ 
@@ -3029,6 +3041,7 @@ Resource         : 2% Base Mana (3200 @Level 100)
 Spell Level      : 1
 Range            : 40 yards
 Cooldown         : 20 seconds
+Triggered by     : Flee (89792)
 Attributes       : ........ ........ x....... ........   ........ .......x .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ...x.... 
@@ -3196,7 +3209,7 @@ Tooltip          : Deals $w1 Shadow damage every $t1 sec and causes all of the W
 
 Name             : Metamorphosis (id=103958) [Spell Family (5)] 
 Class            : Demonology Warlock
-Resource         : 6 Demonic Fury per second
+Resource         : 0 Demonic Fury and 6 Demonic Fury per second
 Spell Level      : 10
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
@@ -3265,7 +3278,7 @@ Description      : Unleashes energy at the enemy, causing $s1 Chaos damage and e
 
 Name             : Immolation Aura (Metamorphosis) (id=104025) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 25 Demonic Fury per second
+Resource         : 0 Demonic Fury and 25 Demonic Fury per second
 Spell Level      : 22
 Range            : 50000 yards
 GCD              : 1 seconds
@@ -3293,6 +3306,7 @@ Cast Time        : 4 seconds
 GCD              : 1 seconds
 Velocity         : 24 yards/sec
 Affecting spells : Mastery: Master Demonologist (77219), Mastery: Emberstorm (77220), Metamorphosis (103958), Chaotic Energy (111546), Molten Core (122355), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Dark Soul (138483)
+Triggered by     : Molten Core (122355)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3331,6 +3345,7 @@ Class            : Warlock
 Spell Level      : 20
 Range            : 50000 yards
 Affecting spells : Glyph of Hand of Gul'dan (56248), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
+Triggered by     : Rain of Fire (104232)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ........ .x....x. 
                  : ........ .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -3421,6 +3436,7 @@ Description      : Deals $s1 Fire damage to a target.
 Name             : Demonic Synergy (id=104330) 
 Class            : Warlock
 Range            : 100 yards
+Triggered by     : Shadow Bite (54049), Firebolt (3110), Legion Strike (30213), Mortal Cleave (115625), Felbolt (115746), Tongue Lash (115778), Bladedance (115748), Lash of Pain (7814), Torment (3716), Fel Firebolt (104318), Doom Bolt (85692), Immolation (20153)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ...x.... ........ 
@@ -3585,6 +3601,7 @@ Description      : Drain Life deals $s1% more damage and $s2% more healing.
 Name             : Mortal Coil (Talent) (id=108396) [Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 30
+Triggered by     : Mortal Coil (6789)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3660,6 +3677,7 @@ Tooltip          : $s1% of all damage taken is split with your summoned demon.  
 
 Name             : Unbound Will (id=108482) [Spell Family (5)] 
 Class            : Warlock
+Resource         : 0 Health
 Spell Level      : 60
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ x..x.x..   .....x.. ........ ........ ........ 
@@ -3950,6 +3968,7 @@ $@spelldesc122355
 Name             : Demonic Fury (Passive) (id=109145) [Passive] 
 Class            : Demonology Warlock
 Spell Level      : 10
+Triggered by     : Demonic Fury (104315)
 Attributes       : ......x. x....... .......x x..x.x.x   .....x.. ..x..... ........ ....x..x 
                  : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : .......x .......x .......x ........   ...x.... ........ .xx..... ........ 
@@ -4069,6 +4088,7 @@ Tooltip          : Deals $w1 damage every second.
 
 Name             : Blood Horror (id=111397) [Spell Family (5)] 
 Class            : Warlock
+Resource         : 0 Health
 Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : 60 seconds
@@ -4142,6 +4162,7 @@ Name             : Summon Infernal (Guardian) (id=111685) [Spell Family (57)]
 Class            : Warlock
 Range            : 50000 yards
 Duration         : 60 seconds
+Triggered by     : Summon Infernal (1122)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4447,6 +4468,7 @@ Name             : Summon Abyssal (Guardian) (id=112922) [Spell Family (5)]
 Class            : Warlock
 Range            : 50000 yards
 Duration         : 60 seconds
+Triggered by     : Summon Abyssal (112921)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4464,6 +4486,7 @@ Name             : Summon Terrorguard (id=112926) [Spell Family (57)]
 Class            : Warlock
 Spell Level      : 60
 Duration         : 60 seconds
+Triggered by     : Summon Terrorguard (112927)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4575,6 +4598,7 @@ Range            : 50000 yards
 Duration         : 900 seconds
 Cooldown         : 10 seconds
 Affecting spells : Kil'jaeden's Cunning (137587)
+Triggered by     : Demonic Gateway (111771)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : x.xx.... ......x. ........ ........   ........ ........ ....x... ......x. 
                  : .....x.x ........ .x.x.x.. ........   x..x.... ........ .xx..... ........ 
@@ -4592,6 +4616,7 @@ Range            : 50000 yards
 Duration         : 900 seconds
 Cooldown         : 10 seconds
 Affecting spells : Kil'jaeden's Cunning (137587)
+Triggered by     : Demonic Gateway (111771)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : x.xx.... ......x. ........ ........   ........ ........ ....x... ......x. 
                  : .....x.x ........ .x.x.x.. ........   x..x.... ........ .xx..... ........ 
@@ -4614,7 +4639,7 @@ Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000000000 | Scaled Value: -1e+009 | Misc Value: 893
+                   Base Value: -1000000000 | Scaled Value: -1e+09 | Misc Value: 893
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
@@ -4707,6 +4732,7 @@ Generates Burning Embers for each target hit. Critical strikes double this effec
 Name             : Disrupted Nether (id=114736) [Hidden] 
 Class            : Warlock
 Duration         : 120 seconds
+Triggered by     : Imp Swarm (104316)
 Attributes       : .......x x....... .......x x.xx.x.x   .....x.. ..x..... ........ ....x... 
                  : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : .......x ........ .......x ........   ...x.... .....x.. .xx..... ........ 
@@ -4755,6 +4781,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
+Triggered by     : Wild Imps (114592)
 Attributes       : ........ ........ .......x x..x.x.x   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -4821,6 +4848,7 @@ Name             : Shadow Shield (id=115234) [Spell Family (5)]
 Class            : Warlock
 Spell Level      : 8
 Range            : 100 yards
+Triggered by     : Shadow Shield (115232)
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ .x...... ........ ........ 
                  : .......x ......xx ........ ........   ...x.... ........ .xx..... ........ 
@@ -5048,6 +5076,7 @@ Unable to use abilities during Wrathstorm.
 Name             : Wrathstorm (id=115832) [Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 36
+Triggered by     : Wrathstorm (115831)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : .......x ........ ........ ........   ........ .......x ........ ........ 
@@ -5065,6 +5094,7 @@ Description      : $@spelldesc115831
 Name             : Burning Embers (id=116852) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
 Spell Level      : 42
+Triggered by     : Burning Embers (108647)
 Attributes       : ......xx x....... .......x x..x.x.x   .....x.. ..x..... ........ ....x... 
                  : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : .......x .......x .......x ........   ...x.... ........ .xx..... ........ 
@@ -5114,6 +5144,7 @@ Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
 Name             : Burning Embers (id=116860) 
 Class            : Warlock
+Triggered by     : Burning Embers (116852), Burning Embers (116852), Burning Embers (116852), Burning Embers (116852), Burning Embers (116852), Burning Embers (116852)
 Attributes       : ........ ........ ........ x.xx.x.x   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ ........ xx...... ........ 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -5178,6 +5209,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ....x.x. x....... ........ 
                  : AOE Hostile Spell, Heal, Hostile Spell
 Affecting spells : Kil'jaeden's Cunning (137587)
+Triggered by     : Backdraft (117896)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5425,6 +5457,7 @@ Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Glyph of Hand of Gul'dan (56248), Mastery: Master Demonologist (77219), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
+Triggered by     : Chaos Wave (124916)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ........ ........ ..x..... 
@@ -5906,6 +5939,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 Name             : Hand of Gul'dan (id=143381) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Range            : 50000 yards
+Triggered by     : Hand of Gul'dan (105174)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ........ 
@@ -6049,6 +6083,7 @@ Tooltip          : You regained a Soul Shard from Haunt.
 Name             : Ember Master (id=145164) [Spell Family (5)] 
 Class            : Warlock
 Duration         : 5 seconds
+Triggered by     : Item - Warlock T16 4P Bonus (145091), Item - Warlock T16 4P Bonus (145091), Item - Warlock T16 4P Bonus (145091), Item - Warlock T16 4P Bonus (145091)
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -6066,6 +6101,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 Name             : Ember Master Hidden Cooldown (id=145165) [Spell Family (5), Hidden] 
 Class            : Warlock
 Duration         : 10 seconds
+Triggered by     : Ember Master (145164)
 Attributes       : .......x ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -6081,6 +6117,7 @@ Name             : Fiery Wrath (id=146043) [Spell Family (5)]
 Class            : Warlock
 Range            : 100 yards
 Duration         : 10 seconds
+Triggered by     : Fiery Wrath (145085)
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -6099,6 +6136,7 @@ Spell Level      : 3
 Range            : 40 yards
 Duration         : 18 seconds
 Affecting spells : Haunt (48181), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), Epidemic (184922), 
+Triggered by     : Corruption (172)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
                  : x....... .......x ....x... ........   ........ .....x.. ........ ........ 
