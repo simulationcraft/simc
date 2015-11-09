@@ -8201,11 +8201,7 @@ public:
 
       if ( tf_exe_total > 0 || bt_exe_total > 0 )
       {
-        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
-
-        std::string name_str = wowhead::decorated_action_name( stats -> name_str, 
-                                                               stats -> action_list[ 0 ],
-                                                               domain );
+        std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ] );
         std::string row_class_str = "";
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";

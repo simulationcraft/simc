@@ -148,9 +148,7 @@ bool player_has_glance( const player_t& p, unsigned stats_mask )
 
 std::string output_action_name( const stats_t& s, const player_t* actor )
 {
-  std::string href = "#";
-  std::string rel = " rel=\"lvl=" + util::to_string( s.player -> true_level ) + "\"";
-  std::string prefix, suffix, class_attr;
+  std::string class_attr;
   action_t* a = nullptr;
   std::string stats_type = util::stats_type_string( s.type );
 
@@ -173,15 +171,15 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
       break;
   }
 
-  wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
-  if ( ! SC_BETA )
-    domain = s.player -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
-
   std::string name;
-  if ( a && a -> sim -> wowhead_tooltips )
-    name = wowhead::decorated_action_name( s.name_str, a, domain );
+  if ( a )
+  {
+    name = report::decorated_action_name( a );
+  }
   else
-    name = "<a href=\"#\">" + s.name_str + "</a>";
+  {
+    name = s.name_str;
+  }
 
   // If we are printing a stats object that belongs to a pet, for an actual
   // actor, print out the pet name too
@@ -1025,63 +1023,9 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
     const item_t& item = p.items[ i ];
-
-    std::string domain = p.dbc.ptr ? "ptr" : "www";
-    std::string item_string;
-    if ( item.active() )
+    if ( ! item.active() )
     {
-      std::string rel_str = "";
-      rel_str += "&amp;";
-      bool gems = false;
-      for ( size_t k = 0; k < item.parsed.gem_id.size(); k++ )
-      {
-        if ( item.parsed.gem_id[k] != 0 )
-        {
-          gems = true;
-          break;
-        }
-      }
-#if defined SC_USE_WEBKIT && defined SC_WINDOWS
-      gems = false; // Webkit + Windows + Gems in tooltip = GUI lock up.
-#endif
-      if ( gems )
-      {
-        rel_str += "gems=";
-        for ( size_t k = 0; k < item.parsed.gem_id.size(); k++ )
-        {
-          if ( item.parsed.gem_id[k] != 0 )
-          {
-            rel_str += util::to_string( item.parsed.gem_id[k] );
-            if ( k < item.parsed.gem_id.size() && item.parsed.gem_id[ k + 1 ] != 0 )
-              rel_str += ":";
-          }
-        }
-        if ( item.parsed.enchant_id || item.parsed.bonus_id.size() > 0 )
-          rel_str += "&amp;";
-      }
-      if ( item.parsed.enchant_id )
-      {
-        rel_str += "ench=";
-        rel_str += util::to_string( item.parsed.enchant_id );
-        if ( item.parsed.bonus_id.size() > 0 )
-          rel_str += "&amp;";
-      }
-      if ( item.parsed.bonus_id.size() )
-      {
-        rel_str += "bonus=";
-        for ( size_t k = 0; k < item.parsed.bonus_id.size(); k++ )
-        {
-          rel_str += util::to_string( item.parsed.bonus_id[k] );
-          if ( k + 1 < item.parsed.bonus_id.size() )
-            rel_str += ":";
-        }
-      }
-      item_string = ! item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.data.id ) +
-        rel_str + "\"" + " rel=\"" + rel_str + "\"" + ">" + item.encoded_item() + "</a>";
-    }
-    else
-    {
-      item_string = "empty";
+      continue;
     }
 
     os.format(
@@ -1092,58 +1036,56 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       "</tr>\n",
       item.source_str.c_str(),
       util::inverse_tokenize( item.slot_name() ).c_str(),
-      item_string.c_str() );
-    if ( item.active() )
+      report::decorated_item_name( &item ).c_str() );
+
+    std::string item_sim_desc = "ilevel: " + util::to_string( item.item_level() );
+
+    if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
     {
-      std::string item_sim_desc = "ilevel: " + util::to_string( item.item_level() );
-
-      if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
-      {
-        item_sim_desc += ", weapon: { " + item.weapon_stats_str() + " }";
-      }
-
-      if ( item.has_stats() )
-      {
-        item_sim_desc += ", stats: { ";
-        item_sim_desc += item.item_stats_str();
-        if ( item.parsed.suffix_stats.size() > 0 )
-        {
-          item_sim_desc += ", " + item.suffix_stats_str();
-        }
-
-        item_sim_desc += " }";
-      }
-
-      if ( item.parsed.gem_stats.size() > 0 )
-      {
-        item_sim_desc += ", gems: { ";
-        item_sim_desc += item.gem_stats_str();
-        if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
-        {
-          item_sim_desc += ", ";
-          item_sim_desc += item.socket_bonus_stats_str();
-        }
-        item_sim_desc += " }";
-      }
-
-      if ( item.parsed.enchant_stats.size() > 0 )
-      {
-        item_sim_desc += ", enchant: { ";
-        item_sim_desc += item.enchant_stats_str();
-        item_sim_desc += " }";
-      }
-      else if ( ! item.parsed.encoded_enchant.empty() )
-      {
-        item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
-      }
-
-      os.format(
-        "<tr>\n"
-        "<th class=\"left\" colspan=\"2\"></th>\n"
-        "<td class=\"left small\">%s</td>\n"
-        "</tr>\n",
-        item_sim_desc.c_str() );
+      item_sim_desc += ", weapon: { " + item.weapon_stats_str() + " }";
     }
+
+    if ( item.has_stats() )
+    {
+      item_sim_desc += ", stats: { ";
+      item_sim_desc += item.item_stats_str();
+      if ( item.parsed.suffix_stats.size() > 0 )
+      {
+        item_sim_desc += ", " + item.suffix_stats_str();
+      }
+
+      item_sim_desc += " }";
+    }
+
+    if ( item.parsed.gem_stats.size() > 0 )
+    {
+      item_sim_desc += ", gems: { ";
+      item_sim_desc += item.gem_stats_str();
+      if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
+      {
+        item_sim_desc += ", ";
+        item_sim_desc += item.socket_bonus_stats_str();
+      }
+      item_sim_desc += " }";
+    }
+
+    if ( item.parsed.enchant_stats.size() > 0 )
+    {
+      item_sim_desc += ", enchant: { ";
+      item_sim_desc += item.enchant_stats_str();
+      item_sim_desc += " }";
+    }
+    else if ( ! item.parsed.encoded_enchant.empty() )
+    {
+      item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
+    }
+
+    os.format(
+      "<tr>\n"
+      "<th class=\"left\" colspan=\"2\"></th>\n"
+      "<td class=\"left small\">%s</td>\n"
+      "</tr>\n",
+      item_sim_desc.c_str() );
   }
 
   os << "</table>\n"
@@ -3025,16 +2967,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   os << ">\n";
   if ( report_details )
   {
-    wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
-    if ( ! SC_BETA )
-    {
-      if ( b.player )
-        domain = b.player -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
-      else
-        domain = b.sim -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
-    }
-
-    buff_name = wowhead::decorated_buff_name( buff_name, b, domain );
+    buff_name = report::decorated_buff_name( &b );
     os.format( "<td class=\"left\"><span class=\"toggle-details\">%s</span></td>\n", buff_name.c_str() );
   }
   else

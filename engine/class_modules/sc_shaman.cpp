@@ -6388,11 +6388,7 @@ public:
 
       if ( n_generated > 0 || n_wasted > 0 )
       {
-        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
-
-        std::string name_str = wowhead::decorated_action_name( stats -> name_str, 
-                                                               stats -> action_list[ 0 ],
-                                                               domain );
+        std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ] );
         std::string row_class_str = "";
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
@@ -6469,11 +6465,7 @@ public:
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
 
-        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
-
-        std::string name_str = wowhead::decorated_action_name( stats -> name_str.c_str(), 
-                                                               stats -> action_list[ 0 ],
-                                                               domain );
+        std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ] );
 
         os.format("<tr%s><td rowspan=\"2\" class=\"left\" style=\"vertical-align: top;\">%s</td>",
             row_class_str.c_str(), name_str.c_str() );
@@ -6524,8 +6516,6 @@ public:
   void cdwaste_table_contents( report::sc_html_stream& os )
   {
     size_t n = 0;
-    wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
-
     for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
     {
       const data_t* entry = p.cd_waste_exec[ i ];
@@ -6540,7 +6530,7 @@ public:
       std::string name_str = entry -> first;
       if ( a )
       {
-        name_str = wowhead::decorated_action_name( entry -> first, a, domain );
+        name_str = report::decorated_action_name( a );
       }
 
       std::string row_class_str = "";

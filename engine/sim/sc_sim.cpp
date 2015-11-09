@@ -1299,7 +1299,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
-  wowhead_tooltips( -1 ),
+  decorated_tooltips( -1 ),
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
@@ -1936,8 +1936,8 @@ bool sim_t::init_actors()
   if ( debug )
     out_debug.printf( "Initializing Players." );
 
-  if ( wowhead_tooltips == -1 )
-    wowhead_tooltips = player_no_pet_list.size() <= 10;
+  if ( decorated_tooltips == -1 )
+    decorated_tooltips = 1;
 
   actor_init = true;
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
@@ -2934,7 +2934,7 @@ void sim_t::create_options()
   add_option( opt_bool( "enable_dps_healing", enable_dps_healing ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
-  add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );
+  add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Highcharts
   add_option( opt_bool( "enable_highcharts", enable_highcharts ) );
   add_option( opt_bool( "chart_show_relative_difference", output_relative_difference ) );

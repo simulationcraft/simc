@@ -186,13 +186,22 @@ const rgb SHADOW             = PURPLE;
 const rgb ARCANE             = COLOR_MAGE;
 const rgb ELEMENTAL          = COLOR_MONK;
 const rgb FROSTFIRE          = "9900CC";
+
+// Item quality colors
+const rgb POOR               = "9D9D9D";
+const rgb COMMON             = WHITE;
+const rgb UNCOMMON           = "1EFF00";
+const rgb RARE               = "0070DD";
+const rgb EPIC               = "A335EE";
+const rgb LEGENDARY          = "FF8000";
+const rgb HEIRLOOM           = "E6CC80";
+
 } /* namespace color */
 
 namespace report
 {
 
 typedef io::ofstream sc_html_stream;
-
 
 void generate_player_charts         ( player_t&, player_processed_report_information_t& );
 void generate_player_buff_lists     ( player_t&, player_processed_report_information_t& );
@@ -211,6 +220,14 @@ void print_json        ( sim_t& );
 void print_html_player ( report::sc_html_stream&, player_t&, int );
 void print_xml         ( sim_t* );
 void print_suite       ( sim_t* );
+
+const color::rgb& item_quality_color( const item_t& item );
+
+std::string decoration_domain( const sim_t& sim );
+std::string decorated_buff_name( const buff_t* buff );
+std::string decorated_action_name( const action_t* action );
+std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell );
+std::string decorated_item_name( const item_t* item );
 
 #if SC_BETA
 static const char* const beta_warnings[] =

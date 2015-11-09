@@ -736,6 +736,7 @@ struct buff_t : private noncopyable
 public:
   sim_t* const sim;
   player_t* const player;
+  const item_t* const item;
   const std::string name_str;
   const spell_data_t* s_data;
   player_t* const source;
@@ -1684,7 +1685,7 @@ struct sim_t : private sc_thread_t
   int separate_stats_by_actions;
   int report_raid_summary;
   int buff_uptime_timeline;
-  int wowhead_tooltips;
+  int decorated_tooltips;
 
   int allow_potions;
   int allow_food;
@@ -2500,6 +2501,7 @@ struct item_t
 
   bool active() const;
   const char* name() const;
+  std::string full_name() const;
   const char* slot_name() const;
   weapon_t* weapon() const;
   bool init();
@@ -4796,6 +4798,9 @@ public:
   player_t* const player;
 
   player_t* target;
+  // Item back-pointer for trinket-sourced actions so we can show proper tooltips in reports
+  const item_t* item;
+
   /**
    * Default target is needed, otherwise there's a chance that cycle_targets
    * option will _MAJORLY_ mess up the action list for the actor, as there's no
@@ -6794,23 +6799,6 @@ bool download_item_data( item_t&            item,
                          wowhead_e          source );
 
 std::string domain_str( wowhead_e domain );
-std::string decorated_spell_name( const std::string& name,
-                                  unsigned spell_id,
-                                  const std::string& spell_name,
-                                  wowhead_e domain,
-                                  const std::string& href_parm = std::string(),
-                                  bool affix = true );
-
-std::string decorated_action_name( const std::string& name,
-                                  action_t* action,
-                                  wowhead_e domain,
-                                  const std::string& href_parm = std::string(),
-                                  bool affix = true );
-std::string decorated_buff_name( const std::string& name,
-                                 const buff_t& buff,
-                                 wowhead_e domain,
-                                 const std::string& href_parm = std::string(),
-                                 bool affix = true );
 }
 
 

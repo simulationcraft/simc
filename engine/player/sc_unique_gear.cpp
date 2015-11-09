@@ -724,8 +724,8 @@ void profession::zen_alchemist_stone( special_effect_t& effect )
 
       struct common_buff_creator : public stat_buff_creator_t
       {
-        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell ) :
-          stat_buff_creator_t ( p, "zen_alchemist_stone_" + n, spell  )
+        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell, const item_t* item ) :
+          stat_buff_creator_t ( p, "zen_alchemist_stone_" + n, spell, item )
         {
           duration( p -> find_spell( 60229 ) -> duration() );
           chance( 1.0 );
@@ -735,11 +735,11 @@ void profession::zen_alchemist_stone( special_effect_t& effect )
 
       double value = spell -> effectN( 1 ).average( *i );
 
-      buff_str = common_buff_creator( listener, "str", spell )
+      buff_str = common_buff_creator( listener, "str", spell, effect.item )
                  .add_stat( STAT_STRENGTH, value );
-      buff_agi = common_buff_creator( listener, "agi", spell )
+      buff_agi = common_buff_creator( listener, "agi", spell, effect.item )
                  .add_stat( STAT_AGILITY, value );
-      buff_int = common_buff_creator( listener, "int", spell )
+      buff_int = common_buff_creator( listener, "int", spell, effect.item )
                  .add_stat( STAT_INTELLECT, value );
     }
 
@@ -781,8 +781,8 @@ void profession::draenor_philosophers_stone( special_effect_t& effect )
 
       struct common_buff_creator : public stat_buff_creator_t
       {
-        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell ) :
-          stat_buff_creator_t ( p, "draenor_philosophers_stone_" + n, spell  )
+        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell, const item_t* item ) :
+          stat_buff_creator_t ( p, "draenor_philosophers_stone_" + n, spell, item )
         {
           duration( p -> find_spell( 60229 ) -> duration() );
           chance( 1.0 );
@@ -792,11 +792,11 @@ void profession::draenor_philosophers_stone( special_effect_t& effect )
 
       double value = spell -> effectN( 1 ).average( *i );
 
-      buff_str = common_buff_creator( listener, "str", spell )
+      buff_str = common_buff_creator( listener, "str", spell, data.item )
                  .add_stat( STAT_STRENGTH, value );
-      buff_agi = common_buff_creator( listener, "agi", spell )
+      buff_agi = common_buff_creator( listener, "agi", spell, data.item )
                  .add_stat( STAT_AGILITY, value );
-      buff_int = common_buff_creator( listener, "int", spell )
+      buff_int = common_buff_creator( listener, "int", spell, data.item )
                  .add_stat( STAT_INTELLECT, value );
     }
 
@@ -1437,7 +1437,7 @@ void item::rune_of_reorigination( special_effect_t& effect )
   std::string buff_name = spell -> name_cstr();
   util::tokenize( buff_name );
 
-  stat_buff_t* buff = stat_buff_creator_t( effect.item -> player, buff_name, spell )
+  stat_buff_t* buff = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                       .activated( false )
                       .add_stat( STAT_CRIT_RATING, 0 )
                       .add_stat( STAT_HASTE_RATING, 0 )
@@ -1470,7 +1470,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
       dbc_proc_callback_t( *data.item, data )
     {
       const spell_data_t* spell = listener -> find_spell( 138958 );
-      sparks = buff_creator_t( listener, "zandalari_spark_driver", spell )
+      sparks = buff_creator_t( listener, "zandalari_spark_driver", spell, data.item )
                .quiet( true );
     }
 
@@ -1558,7 +1558,7 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff )
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff, effect.item )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
@@ -1582,7 +1582,7 @@ void item::blackiron_micro_crucible( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_MULTISTRIKE_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
@@ -1607,7 +1607,7 @@ void item::humming_blackiron_trigger( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
@@ -1835,7 +1835,7 @@ void item::battering_talisman_trigger( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
     .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
     .max_stack( stacks -> max_stacks() )
     .tick_behavior( BUFF_TICK_CLIP )
@@ -1860,7 +1860,7 @@ void item::forgemasters_insignia( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_MULTISTRIKE_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
@@ -1885,7 +1885,7 @@ void item::autorepairing_autoclave( special_effect_t& effect )
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell )
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
                    .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
@@ -1984,6 +1984,7 @@ void item::legendary_ring( special_effect_t& effect )
       radius = 20;
       range = -1;
       travel_speed = 0.0;
+      item = originaleffect.item;
     }
 
     void init() override
@@ -2004,7 +2005,7 @@ void item::legendary_ring( special_effect_t& effect )
     {
       action_t* boom;
       legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
-        buff_t( buff_creator_t( originaleffect.player, name, buff )
+        buff_t( buff_creator_t( originaleffect.player, name, buff, originaleffect.item )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         .default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
         boom( 0 )
@@ -2097,7 +2098,7 @@ void item::black_blood_of_yshaarj( special_effect_t& effect )
   std::string buff_name = buff -> name_cstr();
   util::tokenize( buff_name );
 
-  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff )
+  stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, buff, effect.item )
                    .add_stat( STAT_INTELLECT, ticker -> effectN( 1 ).average( effect.item ) )
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( ticker -> effectN( 1 ).period() )
@@ -2686,8 +2687,8 @@ void item::felmouth_frenzy( special_effect_t& effect )
 
 struct fel_burn_t : public debuff_t
 {
-  fel_burn_t( const actor_pair_t& p ) :
-    debuff_t( buff_creator_t( p, "fel_burn", p.source -> find_spell( 184256 )  )
+  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
     // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
     // will always have the correct number of stacks.
@@ -2697,13 +2698,14 @@ struct fel_burn_t : public debuff_t
 
 struct empty_drinking_horn_damage_t : public melee_attack_t
 {
-  empty_drinking_horn_damage_t( const special_effect_t& effect  ) :
+  empty_drinking_horn_damage_t( const special_effect_t& effect ) :
     melee_attack_t( "fel_burn", effect.player, effect.player -> find_spell( 184256 ) )
   {
     background = special = tick_may_crit = true;
     may_crit = callbacks = false;
     base_td = data().effectN( 1 ).average( effect.item );
     weapon_multiplier = 0;
+    item = effect.item;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2770,7 +2772,7 @@ struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
     {
       assert( ! td -> debuff.fel_burn );
 
-      td -> debuff.fel_burn = new fel_burn_t( *td );
+      td -> debuff.fel_burn = new fel_burn_t( *td, *effect );
       td -> debuff.fel_burn -> reset();
     }
   }
@@ -2795,6 +2797,7 @@ void item::discordant_chorus( special_effect_t& effect )
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
       weapon_multiplier = 0;
       aoe = -1;
+      item = effect.item;
     }
   };
 
@@ -2934,6 +2937,7 @@ struct doom_nova_t : public spell_t
     callbacks = false;
 
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    item = effect.item;
 
     aoe = -1;
   }
@@ -2977,7 +2981,7 @@ struct mark_of_doom_t : public debuff_t
   special_effect_t* effect;
 
   mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    debuff_t( buff_creator_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger() ).activated( false ) ),
+    debuff_t( buff_creator_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ).activated( false ) ),
     damage_spell( p.source -> find_action( "doom_nova" ) )
   {
     // Special effect to drive the AOE damage callback
@@ -3085,6 +3089,7 @@ struct darklight_ray_t : public spell_t
   {
     background = may_crit = true;
     callbacks = false;
+    item = effect.item;
 
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
 
@@ -3122,6 +3127,7 @@ struct soul_capacitor_explosion_t : public spell_t
     background = split_aoe_damage = true;
     callbacks = false;
     aoe = -1;
+    item = effect.item;
 
     explosion_multiplier = 1.0 + player -> find_spell( effect.spell_id ) -> effectN( 1 ).average( effect.item ) / 10000.0;
   }
@@ -3156,7 +3162,7 @@ struct soul_capacitor_buff_t : public buff_t
   spell_t* explosion;
 
   soul_capacitor_buff_t( player_t* player, special_effect_t& effect ) :
-    buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ) ) ),
+    buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ), effect.item ) ),
     explosion( new soul_capacitor_explosion_t( player, effect ) )
   {
     player -> buffs.spirit_shift = this;

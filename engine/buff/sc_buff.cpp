@@ -133,6 +133,7 @@ struct expiration_delay_t : public buff_event_t
 buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   sim( params._sim ),
   player( params._player.target ),
+  item( params.item ),
   name_str( params._name ),
   s_data( params.s_data ),
   source( params._player.source ),

@@ -1365,19 +1365,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       os << "<td></td>\n";
       const spelleffect_data_t* effect = sim.dbc.effect( e -> id_ );
 
-      std::string name;
-      if ( sim.wowhead_tooltips == 1 )
-      {
-        name =  wowhead::decorated_spell_name( effect -> spell() -> name_cstr(),
-                                               effect -> spell() -> id(),
-                                               effect -> spell() -> name_cstr(),
-                                               sim.dbc.ptr ? wowhead::PTR : wowhead::LIVE );
-      }
-      else
-      {
-        name = effect -> spell() -> name_cstr();
-      }
-
+      std::string name = report::decorated_spell_name( sim, *effect -> spell() );
       name += " (effect#" + util::to_string( effect -> index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
     }
@@ -1386,18 +1374,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       os << "<tr class=\"odd\">\n";
       os << "<td></td>\n";
       const spell_data_t* spell = sim.dbc.spell( e -> id_ );
-      std::string name;
-      if ( sim.wowhead_tooltips == 1 )
-      {
-        name = wowhead::decorated_spell_name( spell -> name_cstr(),
-                                              spell -> id(),
-                                              spell -> name_cstr(),
-                                              sim.dbc.ptr ? wowhead::PTR : wowhead::LIVE );
-      }
-      else
-      {
-        name = spell -> name_cstr();
-      }
+      std::string name = report::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
     }
 
@@ -1447,18 +1424,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
     {
       const spell_data_t* spell = hotfix::find_spell( sim.dbc.spell( entry.id_ ), sim.dbc.ptr );
-      std::string name;
-      if ( sim.wowhead_tooltips == 1 )
-      {
-        name = wowhead::decorated_spell_name( spell -> name_cstr(),
-                                              spell -> id(),
-                                              spell -> name_cstr(),
-                                              sim.dbc.ptr ? wowhead::PTR : wowhead::LIVE );
-      }
-      else
-      {
-        name = spell -> name_cstr();
-      }
+      std::string name = report::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
       os << "<td class=\"left\">" << entry.field_ << "</td>\n";
       os << "<td class=\"left\">" << entry.value_ << "</td>\n";
@@ -1468,18 +1434,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
     {
       const spelleffect_data_t* effect = hotfix::find_effect( sim.dbc.effect( entry.id_ ), sim.dbc.ptr );
       const spell_data_t* spell = effect -> spell();
-      std::string name;
-      if ( sim.wowhead_tooltips == 1 )
-      {
-        name = wowhead::decorated_spell_name( spell -> name_cstr(),
-                                              spell -> id(),
-                                              spell -> name_cstr(),
-                                              sim.dbc.ptr ? wowhead::PTR : wowhead::LIVE );
-      }
-      else
-      {
-        name = spell -> name_cstr();
-      }
+      std::string name = report::decorated_spell_name( sim, *spell );
       name += " (effect#" + util::to_string( effect -> index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
       os << "<td class=\"left\">" << entry.field_ << "</td>\n";
@@ -1508,11 +1463,6 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
      os << "<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.11.3.min.js\"></script>\n"
      << "<script src=\"http://code.highcharts.com/highcharts.js\"></script>\n"
      << "<script src=\"http://code.highcharts.com/highcharts-more.js\"></script>\n";
-  }
-  if ( sim.wowhead_tooltips )
-  {
-   os << "<script type=\"text/javascript\" src=\"http://static.wowhead.com/widgets/power.js\"></script>\n"
-      << "<script>var wowhead_tooltips = { \"colorlinks\": true, \"iconizelinks\": true, \"renamelinks\": true }</script>\n";
   }
 
   print_html_style( os, sim );
@@ -1637,6 +1587,11 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   if ( ! sim.enable_highcharts )
   {
     os << "<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.11.2.min.js\"></script>";
+  }
+
+  if ( sim.decorated_tooltips )
+  {
+    os << "<script type=\"text/javascript\" src=\"http://static-azeroth.cursecdn.com/current/js/syndication/tt.js\"></script>\n";
   }
 
   if ( sim.hosted_html )

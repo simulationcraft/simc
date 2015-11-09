@@ -424,34 +424,39 @@ namespace {
 struct proc_spell_t : public spell_t
 {
 
-  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s ) :
+  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
     spell_t( token, p, s )
   {
     background = true;
     // Periodic procs shouldnt ever haste ticks, probably
     hasted_ticks = false;
+
+    item = i;
   }
 };
 
 struct proc_heal_t : public heal_t
 {
 
-  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s ) :
+  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
     heal_t( token, p, s )
   {
     background = true;
     // Periodic procs shouldnt ever haste ticks, probably
     hasted_ticks = false;
+
+    item = i;
   }
 };
 
 struct proc_attack_t : public attack_t
 {
 
-  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s ) :
+  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
     attack_t( token, p, s )
   {
     background = true;
+    item = i;
   }
 };
 
@@ -461,12 +466,13 @@ struct proc_resource_t : public spell_t
   double gain_da, gain_ta;
   resource_e gain_resource;
 
-  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item ) :
+  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ ) :
     spell_t( token, p, s ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
   {
     callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
     background = true;
     target = player;
+    item = item_;
 
     for ( size_t i = 1; i <= s -> effect_count(); i++ )
     {
@@ -622,7 +628,7 @@ spell_t* special_effect_t::initialize_offensive_spell_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  proc_spell_t* spell = new proc_spell_t( name(), player, s );
+  proc_spell_t* spell = new proc_spell_t( name(), player, s, item );
   spell -> init();
   return spell;
 }
@@ -658,7 +664,7 @@ heal_t* special_effect_t::initialize_heal_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  proc_heal_t* heal = new proc_heal_t( name(), player, s );
+  proc_heal_t* heal = new proc_heal_t( name(), player, s, item );
   heal -> init();
   return heal;
 }
@@ -688,7 +694,7 @@ attack_t* special_effect_t::initialize_attack_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  proc_attack_t* attack = new proc_attack_t( name(), player, s );
+  proc_attack_t* attack = new proc_attack_t( name(), player, s, item );
   attack -> init();
   return attack;
 }
