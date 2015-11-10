@@ -4962,6 +4962,7 @@ struct surging_mist_t: public monk_heal_t
     parse_options( options_str );
 
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
+    focus_and_harmony_hasted_gcd = true;
 
     if ( p.specialization() == MONK_MISTWEAVER )
     {
