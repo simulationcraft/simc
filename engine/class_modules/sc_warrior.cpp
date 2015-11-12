@@ -35,6 +35,7 @@ struct warrior_t: public player_t
 public:
   event_t* heroic_charge;
   int initial_rage;
+  double bloodthirst_crit_multiplier;
   bool non_dps_mechanics, warrior_fixed_time;
   player_t* last_target_charged;
   bool stance_dance; // This is just a small optimization, if stance swapping is never required (99% of simulations),
@@ -390,6 +391,7 @@ public:
     perk( perks_t() )
   {
     initial_rage = 0;
+	bloodthirst_crit_multiplier = 0.0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = true;
     last_target_charged = nullptr;
@@ -1378,6 +1380,9 @@ struct bloodthirst_t: public warrior_attack_t
   double composite_crit() const override
   {
     double c = warrior_attack_t::composite_crit();
+
+	if ( p()-> bloodthirst_crit_multiplier > 0 )
+		c *= p()-> bloodthirst_crit_multiplier;
 
     c += crit_chance;
 
@@ -5713,6 +5718,7 @@ void warrior_t::create_options()
   player_t::create_options();
 
   add_option( opt_int( "initial_rage", initial_rage ) );
+  add_option( opt_float( "bloodthirst_crit_multiplier", bloodthirst_crit_multiplier) ) ;
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_bool( "control_stance_swapping", player_override_stance_dance ) );
@@ -5759,6 +5765,7 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
+  bloodthirst_crit_multiplier = p -> bloodthirst_crit_multiplier;
   non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
   player_override_stance_dance = p -> player_override_stance_dance;
