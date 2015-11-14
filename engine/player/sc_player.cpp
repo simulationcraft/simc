@@ -1473,9 +1473,12 @@ std::vector<std::string> player_t::get_item_actions( const std::string& options 
     {
       std::string action_string = "use_item,slot=";
       action_string += item.slot_name();
-      if ( ! options.empty() && options[ 0 ] != ',' )
+      if ( ! options.empty() )
       {
-        action_string += ',';
+        if ( options[ 0 ] != ',' )
+        {
+          action_string += ',';
+        }
         action_string += options;
       }
 
