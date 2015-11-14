@@ -120,32 +120,32 @@ actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 
-head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_critical_strike
-shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_critical_strike
-chest=raiment_of_divine_clarity,id=124170,bonus_id=567
-wrists=contemptuous_wristguards,id=124186,bonus_id=567
-hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567
-waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
-legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
-feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
-finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_critical_strike
-finger2=nithramus_the_allseer,id=124635,enchant=gift_of_critical_strike
+head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567,upgrade=2
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+chest=raiment_of_divine_clarity,id=124170,bonus_id=567,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
+hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567,upgrade=2
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
+legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567,upgrade=2
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
+finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+finger2=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_critical_strike
 trinket1=goren_soul_repository,id=119194,bonus_id=567
-trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567
-main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_the_thunderlord
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=726.67
-# gear_stamina=6165
-# gear_intellect=4986
+# gear_ilvl=730.33
+# gear_stamina=6446
+# gear_intellect=4671
 # gear_spell_power=2545
 # gear_crit_rating=1992
 # gear_haste_rating=976
-# gear_mastery_rating=1514
+# gear_mastery_rating=2132
 # gear_multistrike_rating=973
-# gear_versatility_rating=278
+# gear_versatility_rating=376
 # gear_armor=1106
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

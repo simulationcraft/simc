@@ -287,32 +287,32 @@ actions.cop+=/divine_star,if=talent.divine_star.enabled&target.distance<=28,movi
 actions.cop+=/cascade,if=talent.cascade.enabled&target.distance<=40,moving=1
 actions.cop+=/devouring_plague,moving=1
 
-head=demon_princes_ascendant_crown,id=124159,bonus_id=567
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_mastery
-shoulders=pious_mantle,id=124178,bonus_id=567
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_mastery
-chest=pious_raiment,id=124172,bonus_id=567
-wrists=contemptuous_wristguards,id=124186,bonus_id=567
-hands=pious_handwraps,id=124155,bonus_id=567
-waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
-legs=pious_leggings,id=124166,bonus_id=567
-feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
-finger1=nithramus_the_allseer,id=124635,enchant=gift_of_mastery
-finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
-trinket1=repudiation_of_war,id=124519,bonus_id=567
-trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
-main_hand=edict_of_argus,id=124382,bonus_id=567,enchant=mark_of_warsong
+head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+shoulders=pious_mantle,id=124178,bonus_id=567,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+chest=pious_raiment,id=124172,bonus_id=567,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
+hands=pious_handwraps,id=124155,bonus_id=567,upgrade=2
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
+legs=pious_leggings,id=124166,bonus_id=567,upgrade=2
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=567,upgrade=2
+finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_mastery
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+trinket1=repudiation_of_war,id=124519,bonus_id=567,upgrade=2
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=729.33
-# gear_stamina=6219
-# gear_intellect=4145
+# gear_ilvl=733.33
+# gear_stamina=6500
+# gear_intellect=4332
 # gear_spell_power=2545
 # gear_crit_rating=970
 # gear_haste_rating=1264
-# gear_mastery_rating=2926
+# gear_mastery_rating=3066
 # gear_multistrike_rating=970
-# gear_versatility_rating=130
+# gear_versatility_rating=228
 # gear_armor=1114
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

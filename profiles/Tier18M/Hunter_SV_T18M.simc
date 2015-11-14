@@ -72,31 +72,31 @@ actions.aoe+=/multishot,if=focus>=70|talent.focusing_shot.enabled
 actions.aoe+=/focusing_shot
 actions.aoe+=/cobra_shot
 
-head=hood_of_the_savage_hunt,id=124296,bonus_id=567
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5320
-shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567
-back=cloak_of_desperate_temerity,id=124134,bonus_id=567,enchant_id=5313
-chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=567
-wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567
-hands=eredar_felchain_gloves,id=124291,bonus_id=567
-waist=girdle_of_the_legion_general,id=124310,bonus_id=567
-legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567
-feet=spiked_throatcrusher_boots,id=124287,bonus_id=567
-finger1=maalus_the_blood_drinker,id=124636,enchant_id=5327
-finger2=portal_key_signet,id=124189,bonus_id=567,enchant_id=5327
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
-trinket2=malicious_censer,id=124226,bonus_id=567
-main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,enchant_id=5275
+head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5320
+shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567,upgrade=2
+back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant_id=5313
+chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=567,upgrade=2
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567,upgrade=2
+hands=eredar_felchain_gloves,id=124291,bonus_id=567,upgrade=2
+waist=girdle_of_the_legion_general,id=124310,bonus_id=567,upgrade=2
+legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
+feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
+finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5327
+finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567,upgrade=2
+trinket2=malicious_censer,id=124226,bonus_id=567,upgrade=2
+main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5275
 
 # Gear Summary
-# gear_ilvl=727.33
-# gear_agility=4508
-# gear_stamina=6173
-# gear_crit_rating=2045
+# gear_ilvl=731.33
+# gear_agility=4695
+# gear_stamina=6454
+# gear_crit_rating=2175
 # gear_haste_rating=358
 # gear_mastery_rating=853
 # gear_multistrike_rating=2865
-# gear_versatility_rating=154
+# gear_versatility_rating=270
 # gear_armor=1692
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

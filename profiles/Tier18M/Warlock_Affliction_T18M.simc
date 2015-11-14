@@ -68,32 +68,32 @@ actions+=/drain_soul,interrupt=1,chain=1
 actions+=/agony,cycle_targets=1,moving=1,if=mana.pct>50
 actions+=/life_tap
 
-head=deathrattle_mask,id=124162,bonus_id=567
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant_id=5318
-shoulders=mantle_of_the_eredar_lord,id=124176,bonus_id=567
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant_id=5311
-chest=deathrattle_robe,id=124173,bonus_id=567
-wrists=contemptuous_wristguards,id=124186,bonus_id=567
-hands=deathrattle_gloves,id=124156,bonus_id=567
-waist=sash_of_unending_anguish,id=124181,bonus_id=567
-legs=deathrattle_leggings,id=124167,bonus_id=567
-feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
-finger1=nithramus_the_allseer,id=124635,enchant_id=5325
-finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant_id=5325
-trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567
-trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567
-main_hand=edict_of_argus,id=124382,bonus_id=567,enchant_id=5337
+head=deathrattle_mask,id=124162,bonus_id=567,upgrade=2
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant_id=5318
+shoulders=mantle_of_the_eredar_lord,id=124176,bonus_id=567,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant_id=5311
+chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
+hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
+waist=sash_of_unending_anguish,id=124181,bonus_id=567,upgrade=2
+legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=567,upgrade=2
+finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant_id=5325
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant_id=5325
+trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=729.33
-# gear_stamina=6180
-# gear_intellect=4622
+# gear_ilvl=733.00
+# gear_stamina=6461
+# gear_intellect=4307
 # gear_spell_power=2545
 # gear_crit_rating=640
 # gear_haste_rating=2309
-# gear_mastery_rating=2101
+# gear_mastery_rating=2719
 # gear_multistrike_rating=566
-# gear_versatility_rating=130
+# gear_versatility_rating=228
 # gear_armor=1108
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

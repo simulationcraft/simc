@@ -74,31 +74,31 @@ actions.aoe+=/thunder_clap,if=spell_targets.thunder_clap>6
 actions.aoe+=/devastate,cycle_targets=1,if=dot.deep_wounds.remains<5&cooldown.shield_slam.remains>execute_time*0.4
 actions.aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
-head=faceguard_of_iron_wrath,id=124334,bonus_id=567
-neck=world_enders_gorget,id=124222,bonus_id=567,enchant=gift_of_mastery
-shoulders=doomcriers_shoulderplates,id=124343,bonus_id=567
-back=void_lords_wizened_cloak,id=124147,bonus_id=567,enchant=gift_of_mastery
-chest=breastplate_of_iron_wrath,id=124319,bonus_id=567
-wrists=wristplate_of_the_wretched,id=124352,bonus_id=567
-hands=gauntlets_of_iron_wrath,id=124329,bonus_id=567
-waist=annihilans_waistplate,id=124349,bonus_id=567
-legs=legplates_of_iron_wrath,id=124340,bonus_id=567
-feet=treads_of_the_defiler,id=124322,bonus_id=567
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,enchant=gift_of_mastery
-finger2=mannoroths_calcified_eye,id=124204,bonus_id=567,enchant=gift_of_mastery
-trinket1=anzus_cursed_plume,id=124241,bonus_id=567
-trinket2=empty_drinking_horn,id=124238,bonus_id=567
-main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,enchant_id=5330
-off_hand=fallen_defender_of_argus,id=124355,bonus_id=567
+head=faceguard_of_iron_wrath,id=124334,bonus_id=567,upgrade=2
+neck=world_enders_gorget,id=124222,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+shoulders=doomcriers_shoulderplates,id=124343,bonus_id=567,upgrade=2
+back=void_lords_wizened_cloak,id=124147,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+chest=breastplate_of_iron_wrath,id=124319,bonus_id=567,upgrade=2
+wrists=wristplate_of_the_wretched,id=124352,bonus_id=567,upgrade=2
+hands=gauntlets_of_iron_wrath,id=124329,bonus_id=567,upgrade=2
+waist=annihilans_waistplate,id=124349,bonus_id=567,upgrade=2
+legs=legplates_of_iron_wrath,id=124340,bonus_id=567,upgrade=2
+feet=treads_of_the_defiler,id=124322,bonus_id=567,upgrade=2
+finger1=thorasus_the_stone_heart_of_draenor,id=124634,bonus_id=641,enchant=gift_of_mastery
+finger2=mannoroths_calcified_eye,id=124204,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+trinket1=anzus_cursed_plume,id=124241,bonus_id=567,upgrade=2
+trinket2=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
+main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant_id=5330
+off_hand=fallen_defender_of_argus,id=124355,bonus_id=567,upgrade=2
 
 # Gear Summary
-# gear_ilvl=729.38
-# gear_strength=4651
-# gear_stamina=6189
-# gear_crit_rating=1446
+# gear_ilvl=733.13
+# gear_strength=4838
+# gear_stamina=6470
+# gear_crit_rating=1578
 # gear_haste_rating=786
 # gear_mastery_rating=1788
-# gear_multistrike_rating=1067
+# gear_multistrike_rating=1180
 # gear_armor=3322
 # gear_bonus_armor=1180
 # set_bonus=tier18_2pc=1

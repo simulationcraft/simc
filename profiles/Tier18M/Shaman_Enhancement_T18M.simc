@@ -99,32 +99,32 @@ actions.aoe+=/chain_lightning,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_
 actions.aoe+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&glyph.chain_lightning.enabled&spell_targets.chain_lightning<3
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1&spell_targets.fire_nova_explosion>=1
 
-head=crown_of_the_living_mountain,id=124297,bonus_id=567
-neck=chain_of_lidless_eyes,id=124209,bonus_id=567,enchant=gift_of_haste
-shoulders=pauldrons_of_the_living_mountain,id=124308,bonus_id=567
-back=cloak_of_tangible_dread,id=124135,bonus_id=567,enchant=gift_of_haste
-chest=ringmail_of_madness_accordant,id=124283,bonus_id=567
-wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567
-hands=gauntlets_of_the_living_mountain,id=124293,bonus_id=567
-waist=girdle_of_the_legion_general,id=124310,bonus_id=567
-legs=leggings_of_the_living_mountain,id=124302,bonus_id=567
-feet=surefooted_chain_treads,id=124286,bonus_id=567
-finger1=portal_key_signet,id=124189,bonus_id=567,enchant=gift_of_haste
-finger2=maalus_the_blood_drinker,id=124636,enchant=gift_of_haste
-trinket1=core_of_the_primal_elements,id=124521,bonus_id=567
-trinket2=soul_capacitor,id=124225,bonus_id=567
-main_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant=mark_of_warsong
-off_hand=demonblade_eviscerator,id=124368,bonus_id=567,enchant=mark_of_bleeding_hollow
+head=crown_of_the_living_mountain,id=124297,bonus_id=567,upgrade=2
+neck=chain_of_lidless_eyes,id=124209,bonus_id=567,upgrade=2,enchant=gift_of_haste
+shoulders=pauldrons_of_the_living_mountain,id=124308,bonus_id=567,upgrade=2
+back=cloak_of_tangible_dread,id=124135,bonus_id=567,upgrade=2,enchant=gift_of_haste
+chest=ringmail_of_madness_accordant,id=124283,bonus_id=567,upgrade=2
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567,upgrade=2
+hands=gauntlets_of_the_living_mountain,id=124293,bonus_id=567,upgrade=2
+waist=girdle_of_the_legion_general,id=124310,bonus_id=567,upgrade=2
+legs=leggings_of_the_living_mountain,id=124302,bonus_id=567,upgrade=2
+feet=surefooted_chain_treads,id=124286,bonus_id=567,upgrade=2
+finger1=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant=gift_of_haste
+finger2=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant=gift_of_haste
+trinket1=core_of_the_primal_elements,id=124521,bonus_id=567,upgrade=2
+trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+main_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_warsong
+off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=728.75
-# gear_agility=4530
-# gear_stamina=6042
-# gear_crit_rating=855
+# gear_ilvl=732.50
+# gear_agility=4717
+# gear_stamina=6323
+# gear_crit_rating=985
 # gear_haste_rating=2256
 # gear_mastery_rating=829
 # gear_multistrike_rating=1540
-# gear_versatility_rating=154
+# gear_versatility_rating=270
 # gear_armor=1690
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

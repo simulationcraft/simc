@@ -76,33 +76,33 @@ actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)
 actions.aoe+=/chain_lightning,if=spell_targets.chain_lightning>=2
 actions.aoe+=/lightning_bolt
 
-head=sinister_felborne_helmet,id=124295,bonus_id=567
-neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,enchant=gift_of_multistrike
-shoulders=pauldrons_of_the_living_mountain,id=124308,bonus_id=567
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_multistrike
-chest=robe_of_the_living_mountain,id=124303,bonus_id=567
-wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567
-hands=gauntlets_of_the_living_mountain,id=124293,bonus_id=567
-waist=cursed_demonchain_belt,id=124311,bonus_id=567
-legs=leggings_of_the_living_mountain,id=124302,bonus_id=567
-feet=spiked_throatcrusher_boots,id=124287,bonus_id=567
-finger1=nithramus_the_allseer,id=124635,enchant=gift_of_multistrike
-finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_multistrike
-trinket1=core_of_the_primal_elements,id=124521,bonus_id=567
-trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567
-main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,enchant=mark_of_the_frostwolf
-off_hand=fallen_defender_of_argus,id=124355,bonus_id=567
+head=sinister_felborne_helmet,id=124295,bonus_id=567,upgrade=2
+neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+shoulders=pauldrons_of_the_living_mountain,id=124308,bonus_id=567,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+chest=robe_of_the_living_mountain,id=124303,bonus_id=567,upgrade=2
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567,upgrade=2
+hands=gauntlets_of_the_living_mountain,id=124293,bonus_id=567,upgrade=2
+waist=cursed_demonchain_belt,id=124311,bonus_id=567,upgrade=2
+legs=leggings_of_the_living_mountain,id=124302,bonus_id=567,upgrade=2
+feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
+finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_multistrike
+finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+trinket1=core_of_the_primal_elements,id=124521,bonus_id=567,upgrade=2
+trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567,upgrade=2
+main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,upgrade=2,enchant=mark_of_the_frostwolf
+off_hand=fallen_defender_of_argus,id=124355,bonus_id=567,upgrade=2
 
 # Gear Summary
-# gear_ilvl=728.44
-# gear_stamina=6111
-# gear_intellect=4576
+# gear_ilvl=732.19
+# gear_stamina=6392
+# gear_intellect=4763
 # gear_spell_power=2544
 # gear_crit_rating=1375
 # gear_haste_rating=1424
-# gear_mastery_rating=618
+# gear_mastery_rating=758
 # gear_multistrike_rating=2137
-# gear_versatility_rating=130
+# gear_versatility_rating=228
 # gear_armor=2506
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
