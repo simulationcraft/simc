@@ -1460,20 +1460,28 @@ std::string player_t::init_use_item_actions( const std::string& append )
   return buffer;
 }
 
-std::vector<std::string> player_t::get_item_actions()
+std::vector<std::string> player_t::get_item_actions( const std::string& options )
 {
   std::vector<std::string> actions;
 
-  for ( size_t i = 0; i < items.size(); i++ )
+  for ( const auto& item : items )
   {
-    // Make sure hands slot comes last
-    if ( items[ i ].slot == SLOT_HANDS ) continue;
-    if ( items[ i ].has_use_special_effect() )
-      actions.push_back( std::string( "use_item,slot=" ) + items[ i ].slot_name() );
-  }
+    // This will skip Addon and Enchant-based on-use effects. Addons especially are important to
+    // skip from the default APLs since they will interfere with the potion timer, which is almost
+    // always preferred over an Addon.
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    {
+      std::string action_string = "use_item,slot=";
+      action_string += item.slot_name();
+      if ( ! options.empty() && options[ 0 ] != ',' )
+      {
+        action_string += ',';
+        action_string += options;
+      }
 
-  if ( items[ SLOT_HANDS ].has_use_special_effect() )
-    actions.push_back( std::string( "use_item,slot=" ) + items[ SLOT_HANDS ].slot_name() );
+      actions.push_back( action_string );
+    }
+  }
 
   return actions;
 }
@@ -1566,60 +1574,6 @@ bool player_t::add_action( const spell_data_t* s, std::string options, std::stri
 /* Adds all on use item actions for all items with their on use effect
  * not excluded in the exclude_effects string
  */
-
-std::string player_t::include_default_on_use_items( player_t& p, const std::string& exclude_effects )
-{
-  std::string s;
-
-  // Usable Item
-  for ( size_t i = 0; i < p.items.size(); i++ )
-  {
-    item_t& item = p.items[ i ];
-    if ( item.has_use_special_effect() )
-    {
-      const special_effect_t& effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-      if ( ! effect.name_str.empty() && exclude_effects.find( effect.name_str ) != std::string::npos )
-        continue;
-      s += "/use_item,name=";
-      s += item.name();
-    }
-  }
-
-  return s;
-}
-
-/* Adds a specific on use item with effects contained in effect_names ( split by ',' ),
- * when it is present on the players gear.
- */
-
-std::string player_t::include_specific_on_use_item( player_t& p, const std::string& effect_names, const std::string& options )
-{
-  std::string s;
-
-  std::vector<std::string> splits = util::string_split( effect_names, "," );
-
-  // Usable Item
-  for ( size_t i = 0; i < p.items.size(); i++ )
-  {
-    item_t& item = p.items[ i ];
-    const special_effect_t& effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    if ( effect.type == SPECIAL_EFFECT_USE )
-    {
-      for ( size_t j = 0; j < splits.size(); ++j )
-      {
-        if ( splits[ j ] == effect.name_str )
-        {
-          s += "/use_item,name=";
-          s += item.name();
-          s += options;
-          break;
-        }
-      }
-    }
-  }
-
-  return s;
-}
 
 void player_t::activate_action_list( action_priority_list_t* a, bool off_gcd )
 {

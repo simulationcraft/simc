@@ -44,6 +44,7 @@ namespace enchants
 namespace profession
 {
   void nitro_boosts( special_effect_t& );
+  void grounded_plasma_shield( special_effect_t& );
   void zen_alchemist_stone( special_effect_t& );
   void draenor_philosophers_stone( special_effect_t& );
 }
@@ -674,13 +675,27 @@ void enchants::executioner( special_effect_t& effect )
 
 // Profession perks =========================================================
 
-struct nitro_boosts_action_t : public action_t
+struct engineering_effect_t : public action_t
 {
-  nitro_boosts_action_t( player_t* p ) :
-    action_t( ACTION_USE, "nitro_boosts", p )
+  engineering_effect_t( player_t* p, const std::string& name ) :
+    action_t( ACTION_USE, name, p )
   {
     background = true;
+    callbacks = false;
+    // All engineering on-use addons share a cooldown with potions.
     cooldown = p -> get_cooldown( "potion" );
+  }
+
+  // Use similar cooldown handling to potions, see sc_consumable.cpp dbc_potion_t
+  void update_ready( timespan_t cd_duration ) override
+  {
+    // If the player is in combat, just make a very long CD
+    if ( player -> in_combat )
+      cd_duration = sim -> max_time * 3;
+    else
+      cd_duration = cooldown -> duration;
+
+    action_t::update_ready( cd_duration );
   }
 
   result_e calculate_result( action_state_t* /* state */ ) const override
@@ -690,16 +705,39 @@ struct nitro_boosts_action_t : public action_t
   {
     action_t::execute();
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+  }
+};
+
+struct nitro_boosts_action_t : public engineering_effect_t
+{
+  nitro_boosts_action_t( player_t* p ) :
+    engineering_effect_t( p, "nitro_boosts" )
+  { }
+
+  void execute() override
+  {
+    engineering_effect_t::execute();
 
     player -> buffs.nitro_boosts-> trigger();
   }
+};
 
-  bool ready() override
+struct grounded_plasma_shield_t : public engineering_effect_t
+{
+  absorb_buff_t* buff;
+
+  grounded_plasma_shield_t( player_t* p ) :
+    engineering_effect_t( p, "grounded_plasma_shield" )
   {
-    if ( ! player -> buffs.raid_movement -> check() )
-      return false;
+    buff = absorb_buff_creator_t( p, "grounded_plasma_shield", p -> find_spell( 82626 ) )
+           .cd( timespan_t::zero() );
+  }
 
-    return action_t::ready();
+  void execute() override
+  {
+    engineering_effect_t::execute();
+
+    buff -> trigger();
   }
 };
 
@@ -707,7 +745,13 @@ void profession::nitro_boosts( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_USE;
   effect.execute_action = new nitro_boosts_action_t( effect.item -> player );
-};
+}
+
+void profession::grounded_plasma_shield( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.execute_action = new grounded_plasma_shield_t( effect.item -> player );
+}
 
 void profession::zen_alchemist_stone( special_effect_t& effect )
 {
@@ -4231,7 +4275,8 @@ void unique_gear::register_special_effects()
   /* Profession perks */
   register_special_effect( 105574, profession::zen_alchemist_stone      ); /* Zen Alchemist Stone (stat proc) */
   register_special_effect( 157136, profession::draenor_philosophers_stone ); /* Draenor Philosopher's Stone (stat proc) */
-  //register_special_effect(  55004, profession::nitro_boosts             ); FIXME 
+  register_special_effect(  55004, profession::nitro_boosts             );
+  register_special_effect(  82626, profession::grounded_plasma_shield   );
 
   /**
    * Gems
