@@ -3692,6 +3692,7 @@ struct player_t : public actor_t
     buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
     haste_buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
+    buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
   } buffs;
 
   struct debuffs_t
@@ -5386,7 +5387,19 @@ public:
   virtual double composite_target_crit( player_t* /* target */ ) const;
 
   virtual double composite_target_multiplier( player_t* target ) const
-  { return target -> composite_player_vulnerability( get_school() ); }
+  {
+    double m = target -> composite_player_vulnerability( get_school() );
+    if ( target -> race == RACE_DEMON &&
+         player -> buffs.demon_damage_buff &&
+         player -> buffs.demon_damage_buff -> up() )
+    {
+      // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
+      // stat buffs.
+      m *= 1.0 + player -> buffs.demon_damage_buff -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
 
   virtual double composite_multistrike() const
   { return player -> cache.multistrike(); }

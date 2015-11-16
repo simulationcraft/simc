@@ -97,6 +97,9 @@ namespace item
   void tyrants_decree( special_effect_t& );
   void unblinking_gaze_of_sethe( special_effect_t& );
   void warlords_unseeing_eye( special_effect_t& );
+  void gronntooth_war_horn( special_effect_t& );
+  void orb_of_voidsight( special_effect_t& );
+  void infallible_tracking_charm( special_effect_t& );
 }
 
 namespace gem
@@ -2131,6 +2134,38 @@ void item::legendary_ring( special_effect_t& effect )
   effect.cooldown_ = timespan_t::from_seconds( 120 );
 }
 
+void item::gronntooth_war_horn( special_effect_t& effect )
+{
+  stat_buff_t* buff = stat_buff_creator_t( effect.player, "demonbane", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  effect.custom_buff = buff;
+  effect.player -> buffs.demon_damage_buff = buff;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+void item::infallible_tracking_charm( special_effect_t& effect )
+{
+  effect.custom_buff = buff_creator_t( effect.player, "cleansing_flame", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver() -> effectN( 1 ).trigger() );
+
+  effect.execute_action -> background = effect.execute_action -> may_crit = true;
+  effect.execute_action -> item = effect.item;
+  effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max = effect.execute_action -> data().effectN( 1 ).average( effect.item );
+
+  effect.player -> buffs.demon_damage_buff = effect.custom_buff;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+void item::orb_of_voidsight( special_effect_t& effect )
+{
+  stat_buff_t* buff = stat_buff_creator_t( effect.player, "voidsight", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  effect.custom_buff = buff;
+  effect.player -> buffs.demon_damage_buff = buff;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 void item::black_blood_of_yshaarj( special_effect_t& effect )
 {
   maintenance_check( 528 );
@@ -4162,6 +4197,9 @@ void unique_gear::register_special_effects()
   register_special_effect( 187611, item::legendary_ring                 );
   register_special_effect( 187615, item::legendary_ring                 );
   register_special_effect( 187613, item::legendary_ring                 );
+  register_special_effect( 201404, item::gronntooth_war_horn            );
+  register_special_effect( 201407, item::infallible_tracking_charm      );
+  register_special_effect( 201409, item::orb_of_voidsight               );
 
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );

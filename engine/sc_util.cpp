@@ -255,6 +255,7 @@ const char* util::race_type_string( race_e type )
     case RACE_NONE:      return "none";
     case RACE_BEAST:     return "beast";
     case RACE_BLOOD_ELF: return "blood_elf";
+    case RACE_DEMON:     return "demon";
     case RACE_DRAENEI:   return "draenei";
     case RACE_DRAGONKIN: return "dragonkin";
     case RACE_DWARF:     return "dwarf";
