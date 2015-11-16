@@ -876,6 +876,9 @@ class ItemDataGenerator(DataGenerator):
                 # All shirts
                 if data.inv_type == 4:
                     filter_ilevel = False
+                # All tabards
+                elif data.inv_type == 19:
+                    filter_ilevel = False
                 # All heirlooms
                 elif data.quality == 7:
                     filter_ilevel = False
