@@ -486,9 +486,9 @@ std::string item_t::full_name() const
 {
   std::string n;
 
-  if ( parsed.data.id > 0 )
+  if ( const item_data_t* item = sim -> dbc.item( parsed.data.id ) )
   {
-    n = sim -> dbc.item( parsed.data.id ) -> name;
+    n = item -> name;
   }
   else
   {
