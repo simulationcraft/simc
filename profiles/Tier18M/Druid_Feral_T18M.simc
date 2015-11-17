@@ -92,14 +92,14 @@ trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=732.33
-# gear_agility=4763
-# gear_stamina=6391
-# gear_crit_rating=2099
-# gear_haste_rating=142
-# gear_mastery_rating=1224
-# gear_multistrike_rating=2205
+# gear_ilvl=741.67
+# gear_agility=5182
+# gear_stamina=6952
+# gear_crit_rating=2245
+# gear_haste_rating=155
+# gear_mastery_rating=1344
+# gear_multistrike_rating=2418
 # gear_versatility_rating=270
-# gear_armor=1363
+# gear_armor=1444
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

@@ -80,17 +80,17 @@ trinket2=mirror_of_the_blademaster,id=124224,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=727.00
-# gear_agility=478
-# gear_stamina=6130
-# gear_intellect=4463
-# gear_spirit=697
-# gear_spell_power=2545
-# gear_crit_rating=606
-# gear_haste_rating=1792
-# gear_mastery_rating=355
-# gear_multistrike_rating=2492
-# gear_versatility_rating=133
-# gear_armor=1315
+# gear_ilvl=735.00
+# gear_agility=525
+# gear_stamina=6581
+# gear_intellect=4799
+# gear_spirit=734
+# gear_spell_power=2792
+# gear_crit_rating=665
+# gear_haste_rating=1922
+# gear_mastery_rating=374
+# gear_multistrike_rating=2670
+# gear_versatility_rating=146
+# gear_armor=1377
 # set_bonus=tier17_2pc=1
 # set_bonus=tier18_2pc=1

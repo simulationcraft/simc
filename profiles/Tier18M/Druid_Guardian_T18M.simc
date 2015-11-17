@@ -69,15 +69,15 @@ trinket2=blast_furnace_door,id=113893,bonus_id=567
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=731.33
-# gear_agility=4314
-# gear_stamina=6471
-# gear_crit_rating=425
-# gear_haste_rating=798
-# gear_mastery_rating=2266
-# gear_multistrike_rating=1112
-# gear_versatility_rating=422
-# gear_armor=1378
-# gear_bonus_armor=1987
+# gear_ilvl=740.00
+# gear_agility=4692
+# gear_stamina=7041
+# gear_crit_rating=466
+# gear_haste_rating=875
+# gear_mastery_rating=2461
+# gear_multistrike_rating=1220
+# gear_versatility_rating=437
+# gear_armor=1462
+# gear_bonus_armor=2102
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

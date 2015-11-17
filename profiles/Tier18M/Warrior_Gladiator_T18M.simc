@@ -92,14 +92,14 @@ main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant_id=5330
 off_hand=fallen_defender_of_argus,id=124355,bonus_id=567,upgrade=2
 
 # Gear Summary
-# gear_ilvl=733.13
-# gear_strength=4838
-# gear_stamina=6470
-# gear_crit_rating=1578
-# gear_haste_rating=786
-# gear_mastery_rating=1788
-# gear_multistrike_rating=1180
-# gear_armor=3322
-# gear_bonus_armor=1180
+# gear_ilvl=742.50
+# gear_strength=5268
+# gear_stamina=7041
+# gear_crit_rating=1702
+# gear_haste_rating=862
+# gear_mastery_rating=1936
+# gear_multistrike_rating=1268
+# gear_armor=3414
+# gear_bonus_armor=1295
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

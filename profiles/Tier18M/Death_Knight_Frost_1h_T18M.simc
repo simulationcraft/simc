@@ -144,13 +144,13 @@ main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=rune_of_
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=731.88
-# gear_strength=5245
-# gear_stamina=6293
-# gear_crit_rating=711
-# gear_haste_rating=1428
-# gear_mastery_rating=1480
-# gear_multistrike_rating=2234
-# gear_armor=2495
+# gear_ilvl=741.25
+# gear_strength=5712
+# gear_stamina=6845
+# gear_crit_rating=751
+# gear_haste_rating=1566
+# gear_mastery_rating=1596
+# gear_multistrike_rating=2424
+# gear_armor=2580
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

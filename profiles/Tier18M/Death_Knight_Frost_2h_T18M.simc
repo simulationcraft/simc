@@ -143,14 +143,14 @@ trinket2=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
 main_hand=maul_of_tyranny,id=124375,bonus_id=567,upgrade=2,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=731.67
-# gear_strength=4760
-# gear_stamina=6353
-# gear_crit_rating=531
-# gear_haste_rating=2452
-# gear_mastery_rating=1215
-# gear_multistrike_rating=1604
-# gear_versatility_rating=101
-# gear_armor=2495
+# gear_ilvl=741.00
+# gear_strength=5179
+# gear_stamina=6909
+# gear_crit_rating=553
+# gear_haste_rating=2663
+# gear_mastery_rating=1334
+# gear_multistrike_rating=1733
+# gear_versatility_rating=111
+# gear_armor=2580
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

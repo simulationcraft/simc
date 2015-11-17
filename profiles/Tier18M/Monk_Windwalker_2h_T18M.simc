@@ -152,14 +152,14 @@ trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=731.67
-# gear_agility=4738
-# gear_stamina=6353
-# gear_crit_rating=1568
-# gear_haste_rating=772
-# gear_mastery_rating=311
-# gear_multistrike_rating=2851
-# gear_versatility_rating=403
-# gear_armor=1358
+# gear_ilvl=741.00
+# gear_agility=5152
+# gear_stamina=6909
+# gear_crit_rating=1690
+# gear_haste_rating=848
+# gear_mastery_rating=342
+# gear_multistrike_rating=3101
+# gear_versatility_rating=416
+# gear_armor=1438
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

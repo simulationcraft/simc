@@ -153,14 +153,14 @@ main_hand=hammer_of_wicked_infusion,id=124371,bonus_id=567,upgrade=2,enchant=mar
 off_hand=hammer_of_wicked_infusion,id=124371,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=731.56
-# gear_agility=4676
-# gear_stamina=6261
-# gear_crit_rating=1768
-# gear_haste_rating=772
-# gear_mastery_rating=150
-# gear_multistrike_rating=2730
-# gear_versatility_rating=403
-# gear_armor=1358
+# gear_ilvl=740.94
+# gear_agility=5085
+# gear_stamina=6809
+# gear_crit_rating=1910
+# gear_haste_rating=848
+# gear_mastery_rating=165
+# gear_multistrike_rating=2968
+# gear_versatility_rating=416
+# gear_armor=1438
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

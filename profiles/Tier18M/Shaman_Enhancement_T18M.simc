@@ -117,14 +117,14 @@ main_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_o
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=732.50
-# gear_agility=4717
-# gear_stamina=6323
-# gear_crit_rating=985
-# gear_haste_rating=2256
-# gear_mastery_rating=829
-# gear_multistrike_rating=1540
+# gear_ilvl=741.88
+# gear_agility=5134
+# gear_stamina=6882
+# gear_crit_rating=1051
+# gear_haste_rating=2448
+# gear_mastery_rating=911
+# gear_multistrike_rating=1691
 # gear_versatility_rating=270
-# gear_armor=1690
+# gear_armor=1770
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

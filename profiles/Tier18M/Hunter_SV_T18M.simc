@@ -89,15 +89,15 @@ trinket2=malicious_censer,id=124226,bonus_id=567,upgrade=2
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5275
 
 # Gear Summary
-# gear_ilvl=731.33
-# gear_agility=4695
-# gear_stamina=6454
-# gear_crit_rating=2175
-# gear_haste_rating=358
-# gear_mastery_rating=853
-# gear_multistrike_rating=2865
+# gear_ilvl=740.00
+# gear_agility=5071
+# gear_stamina=7023
+# gear_crit_rating=2356
+# gear_haste_rating=393
+# gear_mastery_rating=936
+# gear_multistrike_rating=3117
 # gear_versatility_rating=270
-# gear_armor=1692
+# gear_armor=1774
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 summon_pet=cat

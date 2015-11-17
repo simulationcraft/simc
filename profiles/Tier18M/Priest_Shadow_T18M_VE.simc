@@ -305,15 +305,15 @@ main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,upgrade=2,enchant=mark_of_w
 off_hand=gibbering_madness,id=124205,bonus_id=567,upgrade=2
 
 # Gear Summary
-# gear_ilvl=731.56
-# gear_stamina=6353
-# gear_intellect=4737
-# gear_spell_power=2544
-# gear_crit_rating=1039
-# gear_haste_rating=2746
-# gear_mastery_rating=707
-# gear_multistrike_rating=1072
-# gear_versatility_rating=323
-# gear_armor=1099
+# gear_ilvl=740.94
+# gear_stamina=6907
+# gear_intellect=5152
+# gear_spell_power=2790
+# gear_crit_rating=1140
+# gear_haste_rating=2985
+# gear_mastery_rating=743
+# gear_multistrike_rating=1176
+# gear_versatility_rating=332
+# gear_armor=1189
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

@@ -153,14 +153,14 @@ main_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_o
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=732.50
-# gear_agility=4719
-# gear_stamina=6326
-# gear_crit_rating=1725
-# gear_haste_rating=1477
-# gear_mastery_rating=296
-# gear_multistrike_rating=2115
+# gear_ilvl=741.88
+# gear_agility=5134
+# gear_stamina=6881
+# gear_crit_rating=1863
+# gear_haste_rating=1594
+# gear_mastery_rating=325
+# gear_multistrike_rating=2319
 # gear_versatility_rating=270
-# gear_armor=1369
+# gear_armor=1450
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

@@ -152,14 +152,14 @@ trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=732.67
-# gear_agility=4781
-# gear_stamina=6418
-# gear_crit_rating=1725
-# gear_haste_rating=1163
-# gear_mastery_rating=457
-# gear_multistrike_rating=2348
+# gear_ilvl=742.00
+# gear_agility=5201
+# gear_stamina=6981
+# gear_crit_rating=1863
+# gear_haste_rating=1250
+# gear_mastery_rating=502
+# gear_multistrike_rating=2576
 # gear_versatility_rating=270
-# gear_armor=1369
+# gear_armor=1450
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

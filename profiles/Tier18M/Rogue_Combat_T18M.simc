@@ -88,14 +88,14 @@ main_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant_id=533
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=733.75
-# gear_agility=4768
-# gear_stamina=6400
-# gear_crit_rating=1388
-# gear_haste_rating=1729
-# gear_mastery_rating=1145
-# gear_multistrike_rating=1418
+# gear_ilvl=743.13
+# gear_agility=5191
+# gear_stamina=6965
+# gear_crit_rating=1494
+# gear_haste_rating=1870
+# gear_mastery_rating=1258
+# gear_multistrike_rating=1554
 # gear_versatility_rating=270
-# gear_armor=1382
+# gear_armor=1466
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

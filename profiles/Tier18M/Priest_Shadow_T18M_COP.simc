@@ -304,15 +304,15 @@ trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=733.33
-# gear_stamina=6500
-# gear_intellect=4332
-# gear_spell_power=2545
-# gear_crit_rating=970
-# gear_haste_rating=1264
-# gear_mastery_rating=3066
-# gear_multistrike_rating=970
+# gear_ilvl=742.67
+# gear_stamina=7072
+# gear_intellect=4714
+# gear_spell_power=2792
+# gear_crit_rating=1064
+# gear_haste_rating=1387
+# gear_mastery_rating=3305
+# gear_multistrike_rating=1065
 # gear_versatility_rating=228
-# gear_armor=1114
+# gear_armor=1204
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

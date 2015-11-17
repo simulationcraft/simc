@@ -94,15 +94,15 @@ main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,upgrade=2,enchant=mark_of_t
 off_hand=fallen_defender_of_argus,id=124355,bonus_id=567,upgrade=2
 
 # Gear Summary
-# gear_ilvl=732.19
-# gear_stamina=6392
-# gear_intellect=4763
-# gear_spell_power=2544
-# gear_crit_rating=1375
-# gear_haste_rating=1424
-# gear_mastery_rating=758
-# gear_multistrike_rating=2137
+# gear_ilvl=741.56
+# gear_stamina=6954
+# gear_intellect=5183
+# gear_spell_power=2790
+# gear_crit_rating=1509
+# gear_haste_rating=1562
+# gear_mastery_rating=800
+# gear_multistrike_rating=2320
 # gear_versatility_rating=228
-# gear_armor=2506
+# gear_armor=2594
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

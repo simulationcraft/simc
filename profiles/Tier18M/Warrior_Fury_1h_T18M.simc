@@ -141,13 +141,13 @@ main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=mark_of_
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=734.06
-# gear_strength=4791
-# gear_stamina=6400
-# gear_crit_rating=2459
-# gear_haste_rating=1006
-# gear_mastery_rating=1381
-# gear_multistrike_rating=1101
-# gear_armor=2512
+# gear_ilvl=743.44
+# gear_strength=5217
+# gear_stamina=6965
+# gear_crit_rating=2642
+# gear_haste_rating=1104
+# gear_mastery_rating=1517
+# gear_multistrike_rating=1182
+# gear_armor=2597
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

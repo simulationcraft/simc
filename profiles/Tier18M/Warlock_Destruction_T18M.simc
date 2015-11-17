@@ -113,16 +113,16 @@ trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=733.33
-# gear_stamina=6506
-# gear_intellect=4336
-# gear_spell_power=2545
-# gear_crit_rating=1531
-# gear_haste_rating=751
-# gear_mastery_rating=2916
-# gear_multistrike_rating=928
-# gear_versatility_rating=376
-# gear_armor=1115
+# gear_ilvl=742.67
+# gear_stamina=7078
+# gear_intellect=4718
+# gear_spell_power=2792
+# gear_crit_rating=1653
+# gear_haste_rating=823
+# gear_mastery_rating=3168
+# gear_multistrike_rating=1017
+# gear_versatility_rating=391
+# gear_armor=1206
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 default_pet=felhunter
