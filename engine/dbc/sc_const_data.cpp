@@ -1811,13 +1811,16 @@ void spelleffect_data_t::link( bool ptr )
 
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
-    if ( ! ed._trigger_spell -> _driver )
+    if ( ed._trigger_spell -> id() > 0 )
     {
-      ed._trigger_spell -> _driver = new std::vector<spell_data_t*>;
-    }
-    if ( range::find( *ed._trigger_spell -> _driver, ed._spell ) == ed._trigger_spell -> _driver -> end() )
-    {
-      ed._trigger_spell -> _driver -> push_back( ed._spell );
+      if ( ! ed._trigger_spell -> _driver )
+      {
+        ed._trigger_spell -> _driver = new std::vector<spell_data_t*>;
+      }
+      if ( range::find( *ed._trigger_spell -> _driver, ed._spell ) == ed._trigger_spell -> _driver -> end() )
+      {
+        ed._trigger_spell -> _driver -> push_back( ed._spell );
+      }
     }
 
     if ( ed._spell -> _effects == nullptr )
