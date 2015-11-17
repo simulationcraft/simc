@@ -4068,7 +4068,12 @@ struct player_t : public actor_t
   expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
-  void add_option( std::unique_ptr<option_t> );
+  void add_option( std::unique_ptr<option_t> o )
+  {
+    // Push_front so derived classes (eg. enemy_t) can override existing options
+    // (eg. target_level)
+    options.insert( options.begin(), std::move( o ) );
+  }
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
   virtual std::string create_profile( save_e = SAVE_ALL );
 
