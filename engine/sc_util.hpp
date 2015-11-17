@@ -16,7 +16,7 @@
 #include <string>
 #include <cstdarg>
 
-// Forward delcarations
+// Forward declarations
 struct player_t;
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 622-02 for World of Warcraft 6.2.3 PTR (build level 20691)
+SimulationCraft 623-01 for World of Warcraft 6.2.3 Live (build level 20726)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
