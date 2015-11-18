@@ -2120,6 +2120,7 @@ bool sim_t::init()
   {
     switch ( timewalk )
     {
+    case 85: scale_to_itemlevel = 300; break;
     case 80: scale_to_itemlevel = 160; break;
     case 70: scale_to_itemlevel = 95;  break;
     }
