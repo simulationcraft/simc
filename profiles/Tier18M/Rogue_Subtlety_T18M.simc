@@ -71,6 +71,7 @@ actions.generator+=/ambush
 actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>2
 actions.generator+=/backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
+actions.generator+=/hemorrhage,if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
 actions.generator+=/backstab,if=energy.time_to_max<=gcd*2
 actions.generator+=/hemorrhage,if=energy.time_to_max<=gcd*1.5&position_front
 actions.generator+=/run_action_list,name=pool
@@ -98,21 +99,21 @@ hands=felblade_gloves,id=124257,bonus_id=567,upgrade=2
 waist=waistwrap_of_banishment,id=124276,bonus_id=567,upgrade=2
 legs=empowered_demonskin_kilt,id=124266,bonus_id=567,upgrade=2
 feet=jungle_assassins_footpads,id=124252,bonus_id=567,upgrade=2
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant=gift_of_multistrike
-finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5327
+finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
 trinket1=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567,upgrade=2
 main_hand=fang_of_the_pit,id=124367,bonus_id=567,upgrade=2,enchant_id=5334
-off_hand=hammer_of_wicked_infusion,id=124371,bonus_id=567,upgrade=2,enchant_id=5334
+off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant_id=5334
 
 # Gear Summary
 # gear_ilvl=741.88
 # gear_agility=5139
 # gear_stamina=6888
-# gear_crit_rating=1951
-# gear_haste_rating=789
+# gear_crit_rating=1841
+# gear_haste_rating=961
 # gear_mastery_rating=583
-# gear_multistrike_rating=2783
+# gear_multistrike_rating=2721
 # gear_versatility_rating=270
 # gear_armor=1451
 # set_bonus=tier18_2pc=1

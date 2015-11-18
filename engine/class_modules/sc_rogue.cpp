@@ -5570,6 +5570,7 @@ void rogue_t::init_action_list()
     gen -> add_action( this, "Fan of Knives", "if=spell_targets.fan_of_knives>2", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
     gen -> add_action( this, "Backstab", "if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
+    gen -> add_action( this, "Hemorrhage", "if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking" );
     gen -> add_action( this, "Backstab", "if=energy.time_to_max<=gcd*2" );
     gen -> add_action( this, "Hemorrhage", "if=energy.time_to_max<=gcd*1.5&position_front" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
