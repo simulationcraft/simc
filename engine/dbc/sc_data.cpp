@@ -450,13 +450,13 @@ void spell_hotfix_entry_t::apply_hotfix( bool ptr )
   dbc_value_ = s -> get_field( field_name_ );
 
   if ( orig_value_ != -std::numeric_limits<double>::max() &&
-       util::round( orig_value_, 6 ) != util::round( dbc_value_, 6 ) )
+       util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 ) )
   {
     std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
                  "\" does not match verification value.";
     std::cerr << " Field: " << field_name_;
-    std::cerr << ", DBC: " << util::round( dbc_value_, 6 );
-    std::cerr << ", Verify: " << util::round( orig_value_, 6 );
+    std::cerr << ", DBC: " << util::round( dbc_value_, 5 );
+    std::cerr << ", Verify: " << util::round( orig_value_, 5 );
     std::cerr << std::endl;
   }
 
@@ -476,13 +476,13 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
 
   dbc_value_ = e -> get_field( field_name_ );
   if ( orig_value_ != -std::numeric_limits<double>::max() &&
-       util::round( orig_value_, 6 ) != util::round( dbc_value_, 6 ) )
+       util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 ) )
   {
     std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
                  "\" effect #" << ( e -> index() + 1 ) << " does not match verification value.";
     std::cerr << " Field: " << field_name_;
-    std::cerr << ", DBC: " << std::setprecision( 6 ) << util::round( dbc_value_, 6 );
-    std::cerr << ", Verify: " << std::setprecision( 6 ) << util::round( orig_value_, 6 );
+    std::cerr << ", DBC: " << std::setprecision( 5 ) << util::round( dbc_value_, 5 );
+    std::cerr << ", Verify: " << std::setprecision( 5 ) << util::round( orig_value_, 5 );
     std::cerr << std::endl;
   }
 
