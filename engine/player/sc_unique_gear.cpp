@@ -4439,6 +4439,22 @@ void unique_gear::register_hotfixes()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 10000 )
     .verification_value( 55000 );
+
+  hotfix::register_effect( "General", "2015-11-18",
+                           "Touch of the Grave damage has been increased by 100%",
+                           162610, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "sp_coefficient" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 2 )
+    .verification_value( 0.5 );
+
+  hotfix::register_effect( "General", "2015-11-18-2",
+                           "Touch of the Grave damage has been increased by 100%",
+                           162610, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "ap_coefficient" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 2 )
+    .verification_value( 0.5 );
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
