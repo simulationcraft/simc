@@ -4432,6 +4432,13 @@ void unique_gear::register_hotfixes()
     .operation( hotfix::HOTFIX_MUL )
     .modifier( 3.23 )
     .verification_value( 15.65168 );
+
+  hotfix::register_spell( "Item", "2015-11-18", "Reduce Voidsight ICD to sane numbers.", 201409,
+      hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "internal_cooldown" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 10000 )
+    .verification_value( 55000 );
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
