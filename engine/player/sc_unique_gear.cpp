@@ -2152,6 +2152,8 @@ void item::infallible_tracking_charm( special_effect_t& effect )
   effect.execute_action -> item = effect.item;
   effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max = effect.execute_action -> data().effectN( 1 ).average( effect.item );
 
+  effect.rppm_scale_ = RPPM_HASTE;
+
   effect.player -> buffs.demon_damage_buff = effect.custom_buff;
 
   new dbc_proc_callback_t( effect.item, effect );
@@ -4407,8 +4409,8 @@ void unique_gear::register_hotfixes()
                           "demons for 5 seconds (down from 10 seconds.)",
                           201407 )
     .field( "rppm" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 3 ) // rough approximation from about 1.5 hours of swinging at a dummy
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 3 )
     .verification_value( 0.96 );
 
   hotfix::register_spell( "Item", "2015-11-18-2",
@@ -4428,7 +4430,7 @@ void unique_gear::register_hotfixes()
                           296726, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
     .field( "average" )
     .operation( hotfix::HOTFIX_MUL )
-    .modifier( 3.23178 ) // should be very accurate but I didn't do a 1:1 verification with in-game
+    .modifier( 3.23 )
     .verification_value( 15.65168 );
 }
 
