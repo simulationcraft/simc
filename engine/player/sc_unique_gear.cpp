@@ -4400,6 +4400,36 @@ void unique_gear::register_hotfixes()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 0.5 )
     .verification_value( 0 );
+
+  hotfix::register_spell( "Item", "2015-11-18",
+                          "Infallible Tracking Charm now has a massively increased damage "
+                          "and chance to trigger, but now only increases damage against "
+                          "demons for 5 seconds (down from 10 seconds.)",
+                          201407 )
+    .field( "rppm" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 3 ) // rough approximation from about 1.5 hours of swinging at a dummy
+    .verification_value( 0.96 );
+
+  hotfix::register_spell( "Item", "2015-11-18-2",
+                          "Infallible Tracking Charm now has a massively increased damage "
+                          "and chance to trigger, but now only increases damage against "
+                          "demons for 5 seconds (down from 10 seconds.)",
+                          201408, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "duration" )
+    .operation( hotfix::HOTFIX_DIV )
+    .modifier( 2 )
+    .verification_value( 10000 );
+
+  hotfix::register_effect( "Item", "2015-11-18-3",
+                          "Infallible Tracking Charm now has a massively increased damage "
+                          "and chance to trigger, but now only increases damage against "
+                          "demons for 5 seconds (down from 10 seconds.)",
+                          296726, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 3.23178 ) // should be very accurate but I didn't do a 1:1 verification with in-game
+    .verification_value( 15.65168 );
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
