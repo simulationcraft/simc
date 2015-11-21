@@ -8,9 +8,9 @@
 #define SC_MAJOR_VERSION "623"
 #define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
-#define SC_BETA 0
+#define SC_BETA 1
 #if SC_BETA
-  static const char* SC_BETA_STR = "legion";
+#define SC_BETA_STR "legion"
 #endif
 #define SC_USE_STAT_CACHE
 
