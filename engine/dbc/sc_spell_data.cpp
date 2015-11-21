@@ -36,20 +36,6 @@ const sdata_field_t _talent_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              },
 };
 
-const sdata_field_t _set_bonus_data_fields[] =
-{
-  { SD_TYPE_STR,      "name"          },
-  { SD_TYPE_UNSIGNED, "tier",         },
-  { SD_TYPE_UNSIGNED, "bonus"         },
-  { SD_TYPE_UNSIGNED, "class_id"      },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, "spec"          },
-  { SD_TYPE_UNSIGNED, "spell_id"      },
-};
-
 const sdata_field_t _effect_data_fields[] =
 {
   { SD_TYPE_UNSIGNED, "id"             },
@@ -203,9 +189,7 @@ const struct expr_data_map_t
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "glyph", DATA_GLYPH_SPELL },
-  { "set_bonus_spell", DATA_SET_BONUS_SPELL },
   { "perk_spell", DATA_PERK_SPELL },
-  { "set_bonus", DATA_SET_BONUS },
 };
 
 expr_data_e parse_data_type( const std::string& name )
@@ -417,23 +401,6 @@ struct spell_list_expr_t : public spell_data_expr_t
         }
         break;
       }
-      case DATA_SET_BONUS_SPELL:
-      {
-        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
-        {
-          for ( unsigned tier = 0; tier < N_TIER; tier++ )
-          {
-            for ( unsigned n = 0; n < sim -> dbc.set_bonus_spell_size(); n++ )
-            {
-              if ( ! ( spell_id = sim -> dbc.set_bonus_spell( cls, tier, n ) ) )
-                continue;
-
-              result_spell_list.push_back( spell_id );
-            }
-          }
-        }
-        break;
-      }
 
       case DATA_PERK_SPELL:
       {
@@ -452,14 +419,7 @@ struct spell_list_expr_t : public spell_data_expr_t
         }
         break;
       }
-      case DATA_SET_BONUS:
-      {
-        for ( size_t i = 0, max = dbc::n_set_bonus( sim -> dbc.ptr ); i < max; ++i )
-        {
-          result_spell_list.push_back( (int)i ); // back: just insert the array index
-        }
-        break;
-      }
+
       default:
         return TOK_UNKNOWN;
     }
@@ -591,11 +551,6 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     {
       fields = _talent_data_fields;
       fsize  = sizeof( _talent_data_fields );
-    }
-    else if ( type == DATA_SET_BONUS )
-    {
-      fields = _set_bonus_data_fields;
-      fsize  = sizeof( _set_bonus_data_fields );
     }
     else if ( effect_query || type == DATA_EFFECT )
     {
@@ -744,8 +699,6 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         const char* p_data;
         if ( data_type == DATA_TALENT )
           p_data = reinterpret_cast<const char*>( sim -> dbc.talent( *i ) );
-        else if ( data_type == DATA_SET_BONUS )
-          p_data = reinterpret_cast<const char*>( (dbc::set_bonus( sim -> dbc.ptr ) + *i) );
         else if ( data_type == DATA_EFFECT )
           p_data = reinterpret_cast<const char*>( sim -> dbc.effect( *i ) );
         else
@@ -991,8 +944,6 @@ struct spell_class_expr_t : public spell_list_expr_t
     else
       return res;
 
-    player_e class_type = util::translate_class_str( other.result_str );
-
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
     {
       if ( data_type == DATA_TALENT )
@@ -1001,14 +952,6 @@ struct spell_class_expr_t : public spell_list_expr_t
           continue;
 
         if ( sim -> dbc.talent( *i ) -> mask_class() & class_mask )
-          res.push_back( *i );
-      }
-      if ( data_type == DATA_SET_BONUS )
-      {
-        if ( ! (dbc::set_bonus( sim -> dbc.ptr ) + *i) )
-          continue;
-
-        if ( util::translate_class_id( ( dbc::set_bonus( sim -> dbc.ptr ) + *i) -> class_id ) == class_type )
           res.push_back( *i );
       }
       else
@@ -1310,11 +1253,6 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   {
     fields = _talent_data_fields;
     fsize  = sizeof( _talent_data_fields );
-  }
-  else if ( data_type == DATA_SET_BONUS )
-  {
-    fields = _set_bonus_data_fields;
-    fsize  = sizeof( _set_bonus_data_fields );
   }
   else if ( effect_query || data_type == DATA_EFFECT )
   {

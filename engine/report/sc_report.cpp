@@ -495,9 +495,6 @@ void report::print_spell_query( std::ostream& out, const sim_t& sim, const spell
         }
       }
       break;
-    case DATA_SET_BONUS:
-      out << spell_info::set_bonus_to_str( sim.dbc, dbc::set_bonus( sim.dbc.ptr ) + *i );
-      break;
     default:
       {
         const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc.spell( *i ) );
@@ -527,9 +524,6 @@ void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim, 
           spell_info::effect_to_xml( sim.dbc, spell, dbc::find_effect( &( sim ), dbc_effect ), root );
         }
       }
-      break;
-    case DATA_SET_BONUS:
-      spell_info::talent_to_xml( sim.dbc, sim.dbc.talent( *i ), root );
       break;
     default:
       {

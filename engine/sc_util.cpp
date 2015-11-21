@@ -33,7 +33,7 @@ const spec_map_t spec_map[] =
   { HUNTER_MARKSMANSHIP,  "Marksmanship Hunter"  },
   { HUNTER_SURVIVAL,      "Survival Hunter"      },
   { ROGUE_ASSASSINATION,  "Assassination Rogue"  },
-  { ROGUE_COMBAT,         "Combat Rogue"         },
+  { ROGUE_OUTLAW,         "Combat Rogue"         },
   { ROGUE_SUBTLETY,       "Subtlety Rogue"       },
   { PRIEST_DISCIPLINE,    "Discipline Priest"    },
   { PRIEST_HOLY,          "Holy Priest"          },
@@ -2553,7 +2553,7 @@ std::string util::create_blizzard_talent_url( const player_t& p )
    case PRIEST_HOLY:          url += "XZa"; break;
    case PRIEST_SHADOW:        url += "Xba"; break;
    case ROGUE_ASSASSINATION:  url += "caa"; break;
-   case ROGUE_COMBAT:         url += "cZa"; break;
+   case ROGUE_OUTLAW:         url += "cZa"; break;
    case ROGUE_SUBTLETY:       url += "cba"; break;
    case SHAMAN_ELEMENTAL:     url += "Waa"; break;
    case SHAMAN_ENHANCEMENT:   url += "WZa"; break;

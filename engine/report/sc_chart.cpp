@@ -1774,7 +1774,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( const pl
     case MONK_WINDWALKER:
     case PALADIN_RETRIBUTION:
     case ROGUE_ASSASSINATION:
-    case ROGUE_COMBAT:
+    case ROGUE_OUTLAW:
     case ROGUE_SUBTLETY:
     case SHAMAN_ENHANCEMENT:
     case WARRIOR_ARMS:
@@ -2115,7 +2115,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( const 
     case PRIEST_HOLY:           spec += "Holy"; break;
     case PRIEST_SHADOW:         spec += "Shadow"; break;
     case ROGUE_ASSASSINATION:   spec += "Assassination"; break;
-    case ROGUE_COMBAT:          spec += "Combat"; break;
+    case ROGUE_OUTLAW:          spec += "Combat"; break;
     case ROGUE_SUBTLETY:        spec += "Subtlety"; break;
     case SHAMAN_ELEMENTAL:      spec += "Elemental"; break;
     case SHAMAN_ENHANCEMENT:    spec += "Enhancement"; break;

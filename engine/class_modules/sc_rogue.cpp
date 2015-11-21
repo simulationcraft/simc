@@ -805,7 +805,7 @@ struct rogue_attack_t : public melee_attack_t
     {
       if ( tdata -> dots.revealing_strike -> is_ticking() )
         m *= 1.0 + tdata -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
-      else if ( p() -> specialization() == ROGUE_COMBAT && harmful )
+      else if ( p() -> specialization() == ROGUE_OUTLAW && harmful )
         p() -> procs.no_revealing_strike -> occur();
     }
 
@@ -1291,7 +1291,7 @@ void rogue_attack_t::impact( action_state_t* state )
     // Legendary Daggers buff handling
     // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
     // Logic from: https://github.com/simulationcraft/simc/issues/1117
-    double fof_chance = ( p() -> specialization() == ROGUE_ASSASSINATION ) ? 0.23139 : ( p() -> specialization() == ROGUE_COMBAT ) ? 0.09438 : 0.28223;
+    double fof_chance = ( p() -> specialization() == ROGUE_ASSASSINATION ) ? 0.23139 : ( p() -> specialization() == ROGUE_OUTLAW ) ? 0.09438 : 0.28223;
     if ( state -> target && state -> target -> level() > 88 )
     {
       fof_chance *= ( 1.0 - 0.1 * ( state -> target -> level() - 88 ) );
@@ -2838,7 +2838,7 @@ struct sinister_strike_t : public rogue_attack_t
       if ( td -> dots.revealing_strike -> is_ticking() )
       {
         double proc_chance = td -> dots.revealing_strike -> current_action -> data().effectN( 6 ).percent();
-        proc_chance += p() -> sets.set( ROGUE_COMBAT, T17, B2 ) -> effectN( 1 ).percent();
+        proc_chance += p() -> sets.set( ROGUE_OUTLAW, T17, B2 ) -> effectN( 1 ).percent();
 
         if ( rng().roll( proc_chance ) )
         {
@@ -4239,7 +4239,7 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
 {
   using namespace actions;
 
-  if ( ! sets.has_set_bonus( ROGUE_COMBAT, T17, B4 ) )
+  if ( ! sets.has_set_bonus( ROGUE_OUTLAW, T17, B4 ) )
     return false;
 
   if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
@@ -4252,7 +4252,7 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
     return false;
 
   const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( state );
-  if ( ! rng().roll( sets.set( ROGUE_COMBAT, T17, B4 ) -> proc_chance() / 5.0 * rs -> cp ) )
+  if ( ! rng().roll( sets.set( ROGUE_OUTLAW, T17, B4 ) -> proc_chance() / 5.0 * rs -> cp ) )
     return false;
 
   trigger_combo_point_gain( state, buffs.deceit -> data().effectN( 2 ).base_value(), gains.deceit );
@@ -5077,7 +5077,7 @@ struct shadow_reflection_pet_t : public pet_t
     attacks[ FAN_OF_KNIVES    ] = new sr_fan_of_knives_t( this );
     attacks[ VENDETTA         ] = new sr_vendetta_t( this );
 
-    _spec = ROGUE_COMBAT;
+    _spec = ROGUE_OUTLAW;
     attacks[ EVISCERATE       ] = new sr_eviscerate_t( this );
     attacks[ SINISTER_STRIKE  ] = new sr_sinister_strike_t( this );
     attacks[ REVEALING_STRIKE ] = new sr_revealing_strike_t( this );
@@ -5252,11 +5252,11 @@ double rogue_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
     }
 
-    if ( sets.has_set_bonus( ROGUE_COMBAT, T18, B4 ) )
+    if ( sets.has_set_bonus( ROGUE_OUTLAW, T18, B4 ) )
     {
       if ( buffs.adrenaline_rush -> up() )
       {
-        m *= 1.0 + sets.set( ROGUE_COMBAT, T18, B4 ) -> effectN( 1 ).percent();
+        m *= 1.0 + sets.set( ROGUE_OUTLAW, T18, B4 ) -> effectN( 1 ).percent();
       }
     }
 
@@ -5314,7 +5314,7 @@ void rogue_t::init_action_list()
     std::string food_action = "food,type=";
     if ( specialization() == ROGUE_ASSASSINATION )
       food_action += ( ( level() >= 100 ) ? "sleeper_sushi" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
-    else if ( specialization() == ROGUE_COMBAT )
+    else if ( specialization() == ROGUE_OUTLAW )
       food_action += ( ( level() >= 100 ) ? "felmouth_frenzy" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_SUBTLETY )
       food_action += ( ( level() >= 100 ) ? "salty_squid_roll" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
@@ -5350,7 +5350,7 @@ void rogue_t::init_action_list()
   {
     potion_action_str += "|debuff.vendetta.up";
   }
-  else if ( specialization() == ROGUE_COMBAT )
+  else if ( specialization() == ROGUE_OUTLAW )
   {
     if ( find_item( "maalus_the_blood_drinker" ) )
       potion_action_str += "|(buff.adrenaline_rush.up&buff.maalus.up&(trinket.proc.any.react|trinket.stacking_proc.any.react|buff.archmages_greater_incandescence_agi.react))";
@@ -5420,7 +5420,7 @@ void rogue_t::init_action_list()
     generators -> add_action( this, "Preparation", "if=(cooldown.vanish.remains>50|!glyph.disappearance.enabled&cooldown.vanish.remains>110)&buff.vanish.down&buff.stealth.down" );
   }
 
-  else if ( specialization() == ROGUE_COMBAT )
+  else if ( specialization() == ROGUE_OUTLAW )
   {
     precombat -> add_talent( this, "Marked for Death" );
     precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
@@ -5720,7 +5720,7 @@ void rogue_t::init_spells()
 
   // Masteries
   mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
-  mastery.main_gauche       = find_mastery_spell( ROGUE_COMBAT );
+  mastery.main_gauche       = find_mastery_spell( ROGUE_OUTLAW );
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
@@ -5985,7 +5985,7 @@ static void combat_t18_2pc_bonus( buff_t* buff, int, int )
 {
   rogue_t* p = debug_cast<rogue_t*>( buff -> player );
 
-  if ( p -> rng().roll( p -> sets.set( ROGUE_COMBAT, T18, B2 ) -> proc_chance() ) )
+  if ( p -> rng().roll( p -> sets.set( ROGUE_OUTLAW, T18, B2 ) -> proc_chance() ) )
   {
     if ( p -> buffs.adrenaline_rush -> check() )
     {
@@ -6032,7 +6032,7 @@ void rogue_t::create_buffs()
                               .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
                               .affects_regen( true )
                               .add_invalidate( CACHE_ATTACK_SPEED )
-                              .add_invalidate( sets.has_set_bonus( ROGUE_COMBAT, T18, B4 ) ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
+                              .add_invalidate( sets.has_set_bonus( ROGUE_OUTLAW, T18, B4 ) ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
   buffs.blindside           = buff_creator_t( this, "blindside", spec.blindside -> effectN( 1 ).trigger() )
                               .chance( spec.blindside -> proc_chance() );
   buffs.feint               = buff_creator_t( this, "feint", find_class_spell( "Feint" ) )
@@ -6096,7 +6096,7 @@ void rogue_t::create_buffs()
     snd_creator.tick_callback( &energetic_recovery );
   }
   // Presume that combat re-uses the ticker for the T18 2pc set bonus
-  else if ( sets.has_set_bonus( ROGUE_COMBAT, T18, B2 ) )
+  else if ( sets.has_set_bonus( ROGUE_OUTLAW, T18, B2 ) )
   {
     snd_creator.period( find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() );
     snd_creator.tick_behavior( BUFF_TICK_REFRESH );
@@ -6126,8 +6126,8 @@ void rogue_t::create_buffs()
 
   buffs.anticipation      = buff_creator_t( this, "anticipation", find_spell( 115189 ) )
                             .chance( talent.anticipation -> ok() );
-  buffs.deceit            = buff_creator_t( this, "deceit", sets.set( ROGUE_COMBAT, T17, B4 ) -> effectN( 1 ).trigger() )
-                            .chance( sets.has_set_bonus( ROGUE_COMBAT, T17, B4 ) );
+  buffs.deceit            = buff_creator_t( this, "deceit", sets.set( ROGUE_OUTLAW, T17, B4 ) -> effectN( 1 ).trigger() )
+                            .chance( sets.has_set_bonus( ROGUE_OUTLAW, T17, B4 ) );
   buffs.shadow_strikes    = buff_creator_t( this, "shadow_strikes", find_spell( 170107 ) )
                             .chance( sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) );
 
@@ -6651,7 +6651,7 @@ static void toxic_mutilator( special_effect_t& effect )
 static void eviscerating_blade( special_effect_t& effect )
 {
   rogue_t* rogue = debug_cast<rogue_t*>( effect.player );
-  do_trinket_init( rogue, ROGUE_COMBAT, rogue -> eviscerating_blade, effect );
+  do_trinket_init( rogue, ROGUE_OUTLAW, rogue -> eviscerating_blade, effect );
 }
 
 static void from_the_shadows( special_effect_t& effect )

@@ -158,46 +158,11 @@ void dbc::apply_hotfixes()
 
   // Warlock
 
-  e = spelleffect_data_t::find( 129530, false );
-  assert( e -> _base_value == 14 && "Check warlock fury generation of Mortal Cleave" );
-  e -> _base_value = 12;
-  if ( SC_USE_PTR )
-  {
-    e = spelleffect_data_t::find( 129530, true );
-    assert( e -> _base_value == 14 && "Check warlock fury generation of Mortal Cleave" );
-    e -> _base_value = 12;
-  }
-
   // Druid
-  s = spell_data_t::find( 50288, false ); // Starfall probably doesn't take 30 seconds to hit the target.
-  assert( s -> _prj_speed == 0.8 && "Check the speed on Starfall" );
-  s -> _prj_speed = 20;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 50288, true );
-    s -> _prj_speed = 20;
-  }
 
   // Death Knight
 
   // Warrior
-  s = spell_data_t::find( 96103, false );
-  assert( s -> _spell_level == 39 && "Check level on Raging Blow" );
-  s -> _spell_level = 30;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 96103, true );
-    s -> _spell_level = 30;
-  }
-
-  s = spell_data_t::find( 85384, false );
-  assert( s -> _spell_level == 39 && "Check level on Raging Blow Off-Hand" );
-  s -> _spell_level = 30;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 85384, true );
-    s -> _spell_level = 30;
-  }
 
   // Enchants
 
@@ -512,7 +477,7 @@ specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spe
       if ( str_compare_ci( spec_str, "mut" ) )
         return ROGUE_ASSASSINATION;
       else if ( str_compare_ci( spec_str, "combat" ) )
-        return ROGUE_COMBAT;
+        return ROGUE_OUTLAW;
       else if ( str_compare_ci( spec_str, "subtlety" ) )
         return ROGUE_SUBTLETY;
       else if ( str_compare_ci( spec_str, "sub" ) )
@@ -594,7 +559,7 @@ std::string dbc::specialization_string( specialization_e spec )
     case HUNTER_MARKSMANSHIP: return "marksmanship";
     case HUNTER_SURVIVAL: return "survival";
     case ROGUE_ASSASSINATION: return "assassination";
-    case ROGUE_COMBAT: return "combat";
+    case ROGUE_OUTLAW: return "combat";
     case ROGUE_SUBTLETY: return "subtlety";
     case PRIEST_DISCIPLINE: return "discipline";
     case PRIEST_HOLY: return "holy";
@@ -1253,29 +1218,9 @@ unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_e, unsigned n ) c
 #endif
 }
 
-unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() && tier < dbc_t::num_tiers() && n < set_bonus_spell_size() );
-#if SC_USE_PTR
-  return ptr ? __ptr_tier_bonuses_data[ class_id ][ tier ][ n ]
-             : __tier_bonuses_data[ class_id ][ tier ][ n ];
-#else
-  return __tier_bonuses_data[ class_id ][ tier ][ n ];
-#endif
-}
-
 unsigned dbc_t::class_max_size() const
 {
   return MAX_CLASS;
-}
-
-unsigned dbc_t::num_tiers() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER;
-#else
-  return TIER_BONUSES_MAX_TIER;
-#endif
 }
 
 unsigned dbc_t::class_ability_tree_size() const
@@ -1361,15 +1306,6 @@ unsigned dbc_t::glyph_spell_size() const
   return ptr ? PTR_GLYPH_ABILITIES_SIZE : GLYPH_ABILITIES_SIZE;
 #else
   return GLYPH_ABILITIES_SIZE;
-#endif
-}
-
-unsigned dbc_t::set_bonus_spell_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_TIER_BONUSES_SIZE : TIER_BONUSES_SIZE;
-#else
-  return TIER_BONUSES_SIZE;
 #endif
 }
 

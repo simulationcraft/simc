@@ -644,7 +644,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
       const spell_data_t* driver = e_source -> trigger() -> driver( driver_idx );
       if ( driver -> id() == clone -> id() )
       {
-        e_clone -> _trigger_spell -> _driver -> at( i ) = clone;
+        e_clone -> _trigger_spell -> _driver -> at( driver_idx ) = clone;
         break;
       }
     }

@@ -559,70 +559,70 @@ private:
   friend void dbc::de_init();
   static void link( bool ptr );
 public:
-  const char* _name;               // Spell name from Spell.dbc stringblock (enGB)
-  unsigned    _id;                 // Spell ID in dbc
-  unsigned    _flags;              // Unused for now, 0x00 for all
-  double      _prj_speed;          // Projectile Speed
-  unsigned    _school;             // Spell school mask
-  unsigned    _class_mask;         // Class mask for spell
-  unsigned    _race_mask;          // Racial mask for the spell
-  int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
-  unsigned    _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
+  const char* _name;               // 1 Spell name from Spell.dbc stringblock (enGB)
+  unsigned    _id;                 // 2 Spell ID in dbc
+  unsigned    _flags;              // 3 Unused for now, 0x00 for all
+  double      _prj_speed;          // 4 Projectile Speed
+  unsigned    _school;             // 5 Spell school mask
+  unsigned    _class_mask;         // 6 Class mask for spell
+  unsigned    _race_mask;          // 7 Racial mask for the spell
+  int         _scaling_type;       // 8 Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
+  unsigned    _max_scaling_level;  // 9 Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   // SpellLevels.dbc
-  unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
-  unsigned    _max_level;          // Maximum level for scaling
+  unsigned    _spell_level;        // 10 Spell learned on level. NOTE: Only accurate for "class abilities"
+  unsigned    _max_level;          // 11 Maximum level for scaling
   // SpellRange.dbc
-  double      _min_range;          // Minimum range in yards
-  double      _max_range;          // Maximum range in yards
+  double      _min_range;          // 12 Minimum range in yards
+  double      _max_range;          // 13 Maximum range in yards
   // SpellCooldown.dbc
-  unsigned    _cooldown;           // Cooldown in milliseconds
-  unsigned    _gcd;                // GCD in milliseconds
+  unsigned    _cooldown;           // 14 Cooldown in milliseconds
+  unsigned    _gcd;                // 15 GCD in milliseconds
   // SpellCategory.dbc
-  unsigned    _charges;            // Number of charges
-  unsigned    _charge_cooldown;    // Cooldown duration of charges
+  unsigned    _charges;            // 16 Number of charges
+  unsigned    _charge_cooldown;    // 17 Cooldown duration of charges
   // SpellCategories.dbc
-  unsigned    _category;           // Spell category (for shared cooldowns, effects?)
+  unsigned    _category;           // 18 Spell category (for shared cooldowns, effects?)
   // SpellDuration.dbc
-  double      _duration;           // Spell duration in milliseconds
+  double      _duration;           // 19 Spell duration in milliseconds
   // SpellRuneCost.dbc
-  unsigned    _rune_cost;          // Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
-  unsigned    _runic_power_gain;   // Amount of runic power gained ( / 10 )
+  unsigned    _rune_cost;          // 20 Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
+  unsigned    _runic_power_gain;   // 21 Amount of runic power gained ( / 10 )
   // SpellAuraOptions.dbc
-  unsigned    _max_stack;          // Maximum stack size for spell
-  unsigned    _proc_chance;        // Spell proc chance in percent
-  unsigned    _proc_charges;       // Per proc charge amount
-  unsigned    _proc_flags;         // Proc flags
-  unsigned    _internal_cooldown;  // ICD
-  double      _rppm;               // Base real procs per minute
+  unsigned    _max_stack;          // 22 Maximum stack size for spell
+  unsigned    _proc_chance;        // 23 Spell proc chance in percent
+  unsigned    _proc_charges;       // 24 Per proc charge amount
+  unsigned    _proc_flags;         // 25 Proc flags
+  unsigned    _internal_cooldown;  // 26 ICD
+  double      _rppm;               // 27 Base real procs per minute
   // SpellEquippedItems.dbc
-  unsigned    _equipped_class;
-  unsigned    _equipped_invtype_mask;
-  unsigned    _equipped_subclass_mask;
+  unsigned    _equipped_class;         // 28
+  unsigned    _equipped_invtype_mask;  // 29
+  unsigned    _equipped_subclass_mask; // 30
   // SpellScaling.dbc
-  int         _cast_min;           // Minimum casting time in milliseconds
-  int         _cast_max;           // Maximum casting time in milliseconds
-  int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
-  double      _c_scaling;          // A scaling multiplier for level based scaling
-  unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
+  int         _cast_min;           // 31 Minimum casting time in milliseconds
+  int         _cast_max;           // 32 Maximum casting time in milliseconds
+  int         _cast_div;           // 33 A divisor used in the formula for casting time scaling (20 always?)
+  double      _c_scaling;          // 34 A scaling multiplier for level based scaling
+  unsigned    _c_scaling_level;    // 35 A scaling divisor for level based scaling
   // SpecializationSpells.dbc
-  unsigned    _replace_spell_id;
+  unsigned    _replace_spell_id;   // 36
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // SpellClassOptions.dbc spell family
-  const char* _desc;               // Spell.dbc description stringblock
-  const char* _tooltip;            // Spell.dbc tooltip stringblock
+  unsigned    _attributes[NUM_SPELL_FLAGS]; // 37 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 38 SpellClassOptions.dbc flags
+  unsigned    _class_flags_family; // 39 SpellClassOptions.dbc spell family
+  const char* _desc;               // 40 Spell.dbc description stringblock
+  const char* _tooltip;            // 41 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // Spell description variable stringblock, if present
+  const char* _desc_vars;          // 42 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _icon;
-  const char* _active_icon;
-  const char* _rank_str;
+  const char* _icon;               // 43
+  const char* _active_icon;        // 44
+  const char* _rank_str;           // 45
 
   // Pointers for runtime linking
-  std::vector<const spelleffect_data_t*>* _effects;
-  std::vector<const spellpower_data_t*>*  _power;
-  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
+  std::vector<const spelleffect_data_t*>* _effects; // 46
+  std::vector<const spellpower_data_t*>*  _power; // 47
+  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 48
 
   // Direct member access functions
   uint32_t category() const

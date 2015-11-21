@@ -2368,7 +2368,7 @@ void item::readiness( special_effect_t& effect )
   {
     // NOTE: Spells that trigger buffs must have the cooldown of their buffs removed if they have one, or this trinket may cause undesirable results.
     { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", 0, 0 } },
-    { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", 0, 0 } },
+    { ROGUE_OUTLAW,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", 0, 0 } },
     { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", 0, 0 } },
     { SHAMAN_ENHANCEMENT,  { "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit", 0 } },
     { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
