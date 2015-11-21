@@ -87,21 +87,18 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 20726 : 20726;
+  return maybe_ptr( ptr ) ? 20726 : 20740;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "6.2.3" : "6.2.3"; }
+{ return maybe_ptr( ptr ) ? "6.2.3" : "7.0.1"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
-{ return ( maybe_ptr( ptr ) ?
 #if SC_BETA
-                     "BETA"
+{ (void)ptr; return SC_BETA_STR "-BETA"; }
 #else
-                     "PTR"
+{ return ( maybe_ptr( ptr ) ? "PTR" : "Live" ); }
 #endif
-                     : "Live" ); }
-
 
 const item_set_bonus_t* dbc::set_bonus( bool ptr )
 {

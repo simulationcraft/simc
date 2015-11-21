@@ -5,7 +5,7 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "623"
+#define SC_MAJOR_VERSION "701"
 #define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 1
@@ -214,8 +214,8 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 #include "sim/sc_option.hpp"
 
 // Data Access ==============================================================
-const int MAX_LEVEL = 100;
-const int MAX_SCALING_LEVEL = 105;
+const int MAX_LEVEL = 110;
+const int MAX_SCALING_LEVEL = 115;
 const int MAX_ILEVEL = 1000;
 
 // Include DBC Module
