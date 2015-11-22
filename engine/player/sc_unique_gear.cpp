@@ -2148,7 +2148,8 @@ void item::infallible_tracking_charm( special_effect_t& effect )
   effect.custom_buff = buff_creator_t( effect.player, "cleansing_flame", effect.driver() -> effectN( 1 ).trigger(), effect.item );
   effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver() -> effectN( 1 ).trigger() );
 
-  effect.execute_action -> background = effect.execute_action -> may_crit = true;
+  effect.execute_action -> background = true;
+  effect.execute_action -> may_multistrike = 1;
   effect.execute_action -> item = effect.item;
   effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max = effect.execute_action -> data().effectN( 1 ).average( effect.item );
 
@@ -2164,6 +2165,8 @@ void item::orb_of_voidsight( special_effect_t& effect )
   stat_buff_t* buff = stat_buff_creator_t( effect.player, "voidsight", effect.driver() -> effectN( 1 ).trigger(), effect.item );
   effect.custom_buff = buff;
   effect.player -> buffs.demon_damage_buff = buff;
+
+  effect.rppm_scale_ = RPPM_DISABLE;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -4437,7 +4440,7 @@ void unique_gear::register_hotfixes()
       hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
     .field( "internal_cooldown" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( 10000 )
+    .modifier( 0 )
     .verification_value( 55000 );
 
   hotfix::register_effect( "General", "2015-11-18",
