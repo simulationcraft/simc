@@ -1222,6 +1222,7 @@ enum ready_e
 enum rppm_scale_e
 {
   RPPM_NONE = 0,
+  RPPM_DISABLE,
   RPPM_HASTE,
   RPPM_CRIT,
 };
