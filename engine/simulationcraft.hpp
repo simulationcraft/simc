@@ -6208,7 +6208,7 @@ inline void dot_end_event_t::execute()
   // in turn flip the order of the dot-tick-event and dot-end-event.
   else
   {
-    assert( dot -> tick_event && dot -> time_to_tick == dot -> tick_event -> remains() );
+    assert( ! dot -> tick_event || ( dot -> tick_event && dot -> time_to_tick == dot -> tick_event -> remains() ) );
   }
 
   // Aand sanity check that the dot has consumed all ticks just in case.

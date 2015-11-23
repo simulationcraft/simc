@@ -675,6 +675,11 @@ void dot_t::last_tick()
 
 void dot_t::schedule_tick()
 {
+  if ( remains() == timespan_t::zero() )
+  {
+    return;
+  }
+
   if ( sim.debug )
     sim.out_debug.printf( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
 
