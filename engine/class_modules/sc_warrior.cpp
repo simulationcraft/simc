@@ -56,10 +56,8 @@ public:
   // Active
   struct active_t
   {
-    action_t* blood_craze;
     action_t* bloodbath_dot;
     action_t* deep_wounds;
-    action_t* enhanced_rend;
     heal_t* t16_2pc;
     warrior_stance stance;
   } active;
@@ -102,7 +100,6 @@ public:
     buff_t* colossus_smash;
     // Prot only
     absorb_buff_t* shield_barrier;
-    buff_t* blood_craze;
     buff_t* last_stand;
     buff_t* shield_block;
     buff_t* shield_wall;
@@ -281,7 +278,6 @@ public:
     //Prot-only
     const spell_data_t* bastion_of_defense;
     const spell_data_t* bladed_armor;
-    const spell_data_t* blood_craze;
     const spell_data_t* deep_wounds;
     const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
@@ -346,7 +342,6 @@ public:
     const spell_data_t* improved_die_by_the_sword;
     const spell_data_t* improved_recklessness;
     //Arms only
-    const spell_data_t* enhanced_rend;
     //Fury only
     const spell_data_t* empowered_execute;
     //Protection only
@@ -866,11 +861,6 @@ struct melee_t: public warrior_attack_t
       if ( result_is_hit( execute_state -> result ) )
       {
         trigger_rage_gain( execute_state );
-        if ( p() -> active.enhanced_rend && td( execute_state -> target ) -> dots_rend -> is_ticking() )
-        {
-          p() -> active.enhanced_rend -> target = execute_state -> target;
-          p() -> active.enhanced_rend -> execute();
-        }
       }
     }
   }
@@ -878,15 +868,6 @@ struct melee_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-
-    if ( p() -> non_dps_mechanics && p() -> active.blood_craze && result_is_multistrike( s -> result ) )
-    {
-      p() -> buff.blood_craze -> trigger();
-      residual_action::trigger(
-        p() -> active.blood_craze, // ignite spell
-        p(), // target
-        p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
-    }
   }
 
   void trigger_rage_gain( action_state_t* s )
@@ -2111,20 +2092,6 @@ struct revenge_t: public warrior_attack_t
   }
 };
 
-// Blood Craze ==============================================================
-
-struct blood_craze_t: public residual_action::residual_periodic_action_t < warrior_heal_t >
-{
-  blood_craze_t( warrior_t* p ):
-    base_t( "blood_craze", p, p -> spec.blood_craze )
-  {
-    hasted_ticks = harmful = false;
-    background = true;
-    base_tick_time = p -> find_spell( 159363 ) -> effectN( 1 ).period();
-    dot_duration = p -> find_spell( 159363 ) -> duration();
-  }
-};
-
 // Enraged Regeneration ===============================================
 
 struct enraged_regeneration_t: public warrior_heal_t
@@ -2149,41 +2116,11 @@ struct enraged_regeneration_t: public warrior_heal_t
 
 // Rend ==============================================================
 
-struct enhanced_rend_t: public warrior_attack_t
-{
-  enhanced_rend_t( warrior_t* p ):
-    warrior_attack_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
-  {
-    background = true;
-  }
-
-  double target_armor( player_t* ) const override
-  {
-    return 0.0;
-  }
-};
-
-struct rend_burst_t: public warrior_attack_t
-{
-  rend_burst_t( warrior_t* p ):
-    warrior_attack_t( "rend_burst", p, p -> find_spell( 94009 ) )
-  {
-    dual = true;
-  }
-
-  double target_armor( player_t* ) const override
-  {
-    return 0.0;
-  }
-};
-
 struct rend_t: public warrior_attack_t
 {
-  rend_burst_t* burst;
   double t18_2pc_chance;
   rend_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "rend", p, p -> spec.rend ),
-    burst( new rend_burst_t( p ) ),
     t18_2pc_chance( 0 )
   {
     parse_options( options_str );
@@ -2191,18 +2128,6 @@ struct rend_t: public warrior_attack_t
     base_tick_time /= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
       t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
-    add_child( burst );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      dot_t* dot = get_dot( s -> target );
-      if ( dot -> is_ticking() && dot -> remains() < dot_duration * 0.3 )
-        burst -> execute();
-    }
-    warrior_attack_t::impact( s );
   }
 
   void tick( dot_t* d ) override
@@ -2218,15 +2143,6 @@ struct rend_t: public warrior_attack_t
         p() -> talents.taste_for_blood -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
         p() -> gain.taste_for_blood );
     }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    if ( d -> ticks_left() == 0 && !target -> is_sleeping() )
-    {
-      burst -> execute();
-    }
-    warrior_attack_t::last_tick( d );
   }
 
   bool ready() override
@@ -3103,7 +3019,6 @@ void warrior_t::init_spells()
   // Spec Passives
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
   spec.bladed_armor             = find_specialization_spell( "Bladed Armor" );
-  spec.blood_craze              = find_specialization_spell( "Blood Craze" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
   spec.cruelty                  = find_specialization_spell( "Cruelty" );
@@ -3183,7 +3098,6 @@ void warrior_t::init_spells()
   perk.improved_recklessness         = find_perk_spell( "Improved Recklessness" );
 
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword" );
-  perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
   perk.empowered_execute             = find_perk_spell( "Empowered Execute" );
 
@@ -3219,16 +3133,12 @@ void warrior_t::init_spells()
 
   // Active spells
   active.bloodbath_dot      = nullptr;
-  active.blood_craze        = nullptr;
   active.deep_wounds        = nullptr;
-  active.enhanced_rend      = nullptr;
   active.t16_2pc            = nullptr;
   active.stance             = STANCE_NONE;
 
-  if ( spec.blood_craze -> ok() ) active.blood_craze = new blood_craze_t( this );
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
-  if ( perk.enhanced_rend -> ok() ) active.enhanced_rend = new enhanced_rend_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
 
@@ -3247,7 +3157,7 @@ void warrior_t::init_spells()
   cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
   cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
-  cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
+  cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
   cooldown.recklessness             = get_cooldown( "recklessness" );
   cooldown.revenge                  = get_cooldown( "revenge" );
   cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
@@ -3931,8 +3841,6 @@ void warrior_t::create_buffs()
 
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
     .cd( timespan_t::zero() );
-
-  buff.blood_craze = buff_creator_t( this, "blood_craze", find_spell( 159363 ) );
 
   buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spec.colossus_smash )
     .duration( spec.colossus_smash -> duration() )
