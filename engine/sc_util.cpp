@@ -60,6 +60,10 @@ const spec_map_t spec_map[] =
   { DRUID_FERAL,          "Feral Druid"          },
   { DRUID_GUARDIAN,       "Guardian Druid"       },
   { DRUID_RESTORATION,    "Restoration Druid"    },
+  { DEMON_HUNTER_HAVOC,   "Havoc Demon Hunter"   },
+  { DEMON_HUNTER_HAVOC,   "Havoc DemonHunter"    },
+  { DEMON_HUNTER_VENGEANCE, "Vengeance Demon Hunter" },
+  { DEMON_HUNTER_VENGEANCE, "Vengeance DemonHunter"  },
 };
 
 struct html_named_character_t
@@ -380,6 +384,7 @@ const char* util::player_type_string( player_e type )
   {
     case PLAYER_NONE:     return "none";
     case DEATH_KNIGHT:    return "deathknight";
+    case DEMON_HUNTER:    return "demonhunter";
     case DRUID:           return "druid";
     case HUNTER:          return "hunter";
     case MAGE:            return "mage";
@@ -717,6 +722,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_SHADOW_ORB:    return "shadow_orb";
     case RESOURCE_COMBO_POINT:   return "combo_points";
     case RESOURCE_MAELSTROM:     return "maelstrom";
+    case RESOURCE_FURY:          return "fury";
     default:                     return "unknown";
   }
 }
@@ -805,6 +811,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_CHI:           return RESOURCE_CHI;
     case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
     case POWER_MAELSTROM:     return RESOURCE_MAELSTROM;
+    case POWER_FURY:          return RESOURCE_FURY;
     default:                  return RESOURCE_NONE;
   }
 }
@@ -1114,6 +1121,7 @@ item_subclass_armor util::matching_armor_type( player_e ptype )
     case DRUID:
     case ROGUE:
     case MONK:
+    case DEMON_HUNTER:
       return ITEM_SUBCLASS_ARMOR_LEATHER;
     case MAGE:
     case PRIEST:
@@ -1735,6 +1743,7 @@ int util::class_id( player_e type )
     case WARLOCK:      return  9;
     case MONK:         return 10;
     case DRUID:        return 11;
+    case DEMON_HUNTER: return 12;
     case PLAYER_SPECIAL_SCALE: return 12;
     case PLAYER_SPECIAL_SCALE2: return 13;
     case PLAYER_SPECIAL_SCALE3: return 14;
@@ -1854,6 +1863,7 @@ player_e util::translate_class_id( int cid )
     case  9: return WARLOCK;
     case 10: return MONK;
     case 11: return DRUID;
+    case 12: return DEMON_HUNTER;
     default: return PLAYER_NONE;
   }
 }

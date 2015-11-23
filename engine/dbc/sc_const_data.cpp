@@ -580,6 +580,8 @@ std::string dbc::specialization_string( specialization_e spec )
     case DRUID_FERAL: return "feral";
     case DRUID_GUARDIAN: return "guardian";
     case DRUID_RESTORATION: return "restoration";
+    case DEMON_HUNTER_HAVOC: return "havoc";
+    case DEMON_HUNTER_VENGEANCE: return "vengeance";
     case PET_FEROCITY: return "ferocity";
     case PET_TENACITY: return "tenacity";
     case PET_CUNNING: return "cunning";

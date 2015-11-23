@@ -142,7 +142,8 @@ const std::string _class_strings[] =
   "mage",
   "warlock",
   "monk",
-  "druid"
+  "druid",
+  "demonhunter"
 };
 
 const std::string _race_strings[] =

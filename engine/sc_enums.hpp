@@ -141,6 +141,7 @@ enum player_e
   PLAYER_SPECIAL_SCALE  = -1,
   PLAYER_NONE           = 0,
   DEATH_KNIGHT,
+  DEMON_HUNTER,
   DRUID,
   HUNTER,
   MAGE,
@@ -323,6 +324,7 @@ enum resource_e
   RESOURCE_SHADOW_ORB,
   RESOURCE_BURNING_EMBER,
   RESOURCE_DEMONIC_FURY,
+  RESOURCE_FURY,
   /* Dummy resources for reporting */
   RESOURCE_RUNE,
   RESOURCE_RUNE_BLOOD,
@@ -1169,8 +1171,10 @@ enum power_e
   POWER_SHADOW_ORB    = 13,
   POWER_BURNING_EMBER = 14,
   POWER_DEMONIC_FURY  = 15,
+  // Not yet used?
+  POWER_FURY          = 17,
   // Helpers
-  POWER_MAX    = 16,
+  POWER_MAX,
   POWER_NONE   = 0xFFFFFFFF,  // None.
   POWER_OFFSET = 2,
 };
