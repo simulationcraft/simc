@@ -310,6 +310,13 @@ public:
     gain_t* primal_fury;        // Cat & Bear Forms
     gain_t* soul_of_the_forest; // Feral & Guardian
 
+    // Balance
+    gain_t* astral_communion;
+    gain_t* celestial_alignment;
+    gain_t* lunar_strike;
+    gain_t* shooting_stars;
+    gain_t* solar_wrath;
+
     // Feral (Cat)
     gain_t* bloody_slash;
     gain_t* energy_refund;
@@ -707,7 +714,6 @@ public:
     return td;
   }
 
-  void trigger_shooting_stars( action_state_t* state );
   void trigger_soul_of_the_forest();
 
   void init_beast_weapon( weapon_t& w, double swing_time )
@@ -3594,6 +3600,13 @@ struct astral_communion_t : public druid_spell_t
   {
     harmful = false;
   }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> resource_gain( RESOURCE_ASTRAL_POWER, data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ), p() -> gain.astral_communion );
+  }
 };
 
 // Barkskin =================================================================
@@ -4034,7 +4047,7 @@ struct lunar_strike_t : public druid_spell_t
     timespan_t casttime = druid_spell_t::execute_time();
 
     if ( p() -> buff.lunar_empowerment -> up() && p() -> talent.starlord -> ok() )
-      casttime *= 1 + p() -> talent.starlord -> effectN( 2 ).percent();
+      casttime *= 1 + p() -> talent.starlord -> effectN( 1 ).percent();
 
     return casttime;
   }
@@ -4044,6 +4057,12 @@ struct lunar_strike_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> buff.lunar_empowerment -> decrement();
+
+    int ap = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, p() -> gain.lunar_strike );
+
+    if ( p() -> buff.celestial_alignment -> up() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * data().effectN( 3 ).percent(), p() -> gain.celestial_alignment );
   }
 
   void impact( action_state_t* s ) override
@@ -4084,11 +4103,11 @@ struct mark_of_the_wild_t : public druid_spell_t
   }
 };
 
-// Sunfire Base Spell ===========================================================
+// Sunfire Spell ===========================================================
 
-struct sunfire_base_t: public druid_spell_t
+struct sunfire_t: public druid_spell_t
 {
-  sunfire_base_t( druid_t* player ):
+  sunfire_t( druid_t* player, const std::string& options_str ):
     druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
   {
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
@@ -4116,19 +4135,22 @@ struct sunfire_base_t: public druid_spell_t
   {
     druid_spell_t::tick( d );
 
-    if ( result_is_hit( d -> state -> result ) )
-      p() -> trigger_shooting_stars( d -> state );
+    if ( p() -> talent.shooting_stars -> ok() && result_is_hit( d -> state -> result ) && d -> state -> target == p() -> last_target_dot_moonkin )
+    {
+      // Shooting stars will only proc on the most recent target of your moonfire/sunfire.
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, p() -> talent.shooting_stars -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ), p() -> gain.shooting_stars );
+    }
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
       trigger_balance_tier18_2pc();
   }
 };
 
-// Moonfire Base Spell ===============================================================
+// Moonfire Spell ===============================================================
 
-struct moonfire_base_t : public druid_spell_t
+struct moonfire_t : public druid_spell_t
 {
-  moonfire_base_t( druid_t* player ) :
+  moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
   {
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
@@ -4148,8 +4170,11 @@ struct moonfire_base_t : public druid_spell_t
   {
     druid_spell_t::tick( d );
 
-    if ( result_is_hit( d -> state -> result ) )
-      p() -> trigger_shooting_stars( d -> state );
+    if ( p() -> talent.shooting_stars -> ok() && result_is_hit( d -> state -> result ) && d -> state -> target == p() -> last_target_dot_moonkin )
+    {
+      // Shooting stars will only proc on the most recent target of your moonfire/sunfire.
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, p() -> talent.shooting_stars -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ), p() -> gain.shooting_stars );
+    }
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
       trigger_balance_tier18_2pc();
@@ -4168,70 +4193,6 @@ struct moonfire_base_t : public druid_spell_t
 
     p() -> buff.bear_form -> expire();
     p() -> buff.cat_form -> expire();
-  }
-};
-
-// Moonfire & Sunfire "parent" spells ================================================
-
-struct moonfire_t : public moonfire_base_t
-{
-  sunfire_base_t* sunfire;
-
-  moonfire_t( druid_t* player, const std::string& options_str ) :
-    moonfire_base_t( player )
-  {
-    parse_options( options_str );
-
-    if ( player -> specialization() == DRUID_BALANCE )
-    {
-      sunfire = new sunfire_base_t( player );
-      sunfire -> callbacks = false;
-      sunfire -> dual = sunfire -> background = true;
-    }
-  }
-
-  // Execute CA Sunfire in update_ready() to assure the correct timing.
-  // It must occur after Moonfire has impacted but before callbacks occur.
-  virtual void update_ready( timespan_adl_barrier::timespan_t cd_duration ) override
-  {
-    moonfire_base_t::update_ready( cd_duration );
-
-    if ( p() -> buff.celestial_alignment -> up() )
-    {
-      sunfire -> target = execute_state -> target;
-      sunfire -> execute();
-    }
-  }
-};
-
-struct sunfire_t : public sunfire_base_t
-{
-  moonfire_base_t* moonfire;
-
-  sunfire_t( druid_t* player, const std::string& options_str ) :
-    sunfire_base_t( player )
-  {
-    parse_options( options_str );
-
-    if ( player -> specialization() == DRUID_BALANCE )
-    {
-      moonfire = new moonfire_base_t( player );
-      moonfire -> callbacks = false;
-      moonfire -> dual = moonfire -> background = true;
-    }
-  }
-  
-  // Execute CA Moonfire in update_ready() to assure the correct timing.
-  // It must occur after Sunfire has impacted but before callbacks occur.
-  virtual void update_ready( timespan_adl_barrier::timespan_t cd_duration ) override
-  {
-    sunfire_base_t::update_ready( cd_duration );
-
-    if ( p() -> buff.celestial_alignment -> up() )
-    {
-      moonfire -> target = execute_state -> target;
-      moonfire -> execute();
-    }
   }
 };
 
@@ -4495,7 +4456,7 @@ struct solar_wrath_t : public druid_spell_t
     timespan_t casttime = druid_spell_t::execute_time();
 
     if ( p() -> buff.solar_empowerment -> up() && p() -> talent.starlord -> ok() )
-      casttime *= 1 + p() -> talent.starlord -> effectN( 2 ).percent();
+      casttime *= 1 + p() -> talent.starlord -> effectN( 1 ).percent();
 
     return casttime;
   }
@@ -4508,6 +4469,12 @@ struct solar_wrath_t : public druid_spell_t
       p() -> cooldown.celestial_alignment -> adjust( -1 * p() -> sets.set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
 
     p() -> buff.solar_empowerment -> decrement();
+
+    int ap = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, p() -> gain.solar_wrath );
+
+    if ( p() -> buff.celestial_alignment -> up() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * data().effectN( 3 ).percent(), p() -> gain.celestial_alignment );
   }
 
   void impact( action_state_t* s ) override
@@ -4815,16 +4782,6 @@ struct wild_mushroom_t : public druid_spell_t
 // ==========================================================================
 // Druid Character Definition
 // ==========================================================================
-
-void druid_t::trigger_shooting_stars( action_state_t* s )
-{
-  if ( s -> target != last_target_dot_moonkin )
-    return;
-  // Shooting stars will only proc on the most recent target of your moonfire/sunfire.
-  proc.shooting_stars -> occur();
-  if ( resources.current[ RESOURCE_ASTRAL_POWER ] == 100 )
-    proc.shooting_stars_wasted -> occur();
-}
 
 void druid_t::trigger_soul_of_the_forest()
 {
