@@ -805,6 +805,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_COMBO_POINT:   return RESOURCE_COMBO_POINT;
     case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
     case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
+    case POWER_ASTRAL_POWER:  return RESOURCE_ASTRAL_POWER;
     case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;
     case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
     case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;

@@ -1162,7 +1162,7 @@ enum power_e
   POWER_RUNE        = 5,
   POWER_RUNIC_POWER = 6,
   POWER_SOUL_SHARDS = 7,
-  // Not yet used
+  POWER_ASTRAL_POWER = 8,
   POWER_HOLY_POWER = 9,
   // Not yet used (MoP Monk deprecated resource #1)
   // Not yet used

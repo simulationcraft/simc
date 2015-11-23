@@ -406,8 +406,6 @@ public:
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
-    proc_t* shooting_stars;
-    proc_t* shooting_stars_wasted;
     proc_t* starshards;
     proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
@@ -4084,7 +4082,7 @@ struct lunar_strike_t : public druid_spell_t
     timespan_t casttime = druid_spell_t::execute_time();
 
     if ( p() -> buff.lunar_empowerment -> up() && p() -> talent.starlord -> ok() )
-      casttime *= 1 + p() -> talent.starlord -> effectN( 1 ).percent();
+      casttime *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
 
     return casttime;
   }
@@ -4099,7 +4097,7 @@ struct lunar_strike_t : public druid_spell_t
     p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, p() -> gain.lunar_strike );
 
     if ( p() -> buff.celestial_alignment -> up() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * data().effectN( 3 ).percent(), p() -> gain.celestial_alignment );
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
   }
 
   void impact( action_state_t* s ) override
@@ -4145,7 +4143,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 struct sunfire_t: public druid_spell_t
 {
   sunfire_t( druid_t* player, const std::string& options_str ):
-    druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
+    druid_spell_t( "sunfire", player, player -> find_spell( 164815 ) )
   {
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
 
@@ -4195,7 +4193,7 @@ struct sunfire_t: public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
+    druid_spell_t( "moonfire", player, player -> find_spell( 164812 ) )
   {
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
 
@@ -4508,7 +4506,7 @@ struct solar_wrath_t : public druid_spell_t
     timespan_t casttime = druid_spell_t::execute_time();
 
     if ( p() -> buff.solar_empowerment -> up() && p() -> talent.starlord -> ok() )
-      casttime *= 1 + p() -> talent.starlord -> effectN( 1 ).percent();
+      casttime *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
 
     return casttime;
   }
@@ -4522,11 +4520,11 @@ struct solar_wrath_t : public druid_spell_t
 
     p() -> buff.solar_empowerment -> decrement();
 
-    int ap = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+    int ap = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, p() -> gain.solar_wrath );
 
     if ( p() -> buff.celestial_alignment -> up() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * data().effectN( 3 ).percent(), p() -> gain.celestial_alignment );
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
   }
 
   void impact( action_state_t* s ) override
@@ -5005,7 +5003,7 @@ void druid_t::init_spells()
   spec.lunar_strike            = find_specialization_spell( "Lunar Strike" );
   spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
   spec.solar_wrath             = find_specialization_spell( "Solar Wrath" );
-  spec.starsurge               = find_specialization_spell( "Starsurge" );
+  spec.starsurge               = find_spell( 78674 );
   spec.sunfire                 = find_specialization_spell( "Sunfire" );
 
   // Feral
@@ -5564,14 +5562,7 @@ void druid_t::apl_default()
   for ( size_t i = 0; i < profession_actions.size(); i++ )
     extra_actions += add_action( profession_actions[ i ] );
 
-  if ( primary_role() == ROLE_SPELL )
-  {
-    def -> add_action( extra_actions );
-    def -> add_action( this, "Moonfire", "if=remains<=duration*0.3" );
-    def -> add_action( "Wrath" );
-  }
-  // Specless (or speced non-main role) druid who has a primary role of a melee
-  else if ( primary_role() == ROLE_ATTACK )
+  if ( primary_role() == ROLE_ATTACK )
   {
     def -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
     def -> add_action( extra_actions );
@@ -5710,34 +5701,14 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_talent( this, "Force of Nature", "if=trinket.stat.intellect.up|charges=3|target.time_to_die<21" );
-  default_list -> add_action( "call_action_list,name=aoe,if=spell_targets.starfall_pulse>1" );
-  default_list -> add_action( "call_action_list,name=single_target" );
-
-  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&(eclipse_energy>20|buff.celestial_alignment.up)" );
-  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40" );
-  single_target -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
-  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_energy>0" );
-  single_target -> add_action( "incarnation,if=eclipse_energy>0" );
-  single_target -> add_action( this, "Sunfire", "if=remains<7|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time&!talent.natures_balance.enabled)" );
-  single_target -> add_talent( this, "Stellar Flare", "if=remains<7" );
-  single_target -> add_action( this, "Moonfire" , "if=!talent.natures_balance.enabled&(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
-  single_target -> add_action( this, "Moonfire", "if=talent.natures_balance.enabled&(remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
-  single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
-  single_target -> add_action( this, "Starfire" );
-
-  aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
-  aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
-  aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<8" );
-  aoe -> add_action( this, "Starsurge", "if=t18_class_trinket&buff.starfall.remains<3&spell_targets.starfall_pulse>1" );
-  aoe -> add_action( this, "Starfall", "if=!t18_class_trinket&buff.starfall.remains<3&spell_targets.starfall_pulse>2" );
-  aoe -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
-  aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
-  aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=remains<7" );
-  aoe -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20&spell_targets.starfall_pulse=2" );
-  aoe -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40&spell_targets.starfall_pulse=2" );
-  aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
-  aoe -> add_action( this, "Starfire" );
+  //default_list -> add_action( this, "Moonfire", "if=remains<2" );
+  //default_list -> add_action( this, "Sunfire", "if=remains<2" );
+  default_list -> add_action( "incarnation,if=astral_power>=40" );
+  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
+  default_list -> add_action( this, "Starsurge", "if=astral_power>=40" );
+  default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
+  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
+  default_list -> add_action( this, "Solar Wrath" );
 }
 
 // Guardian Combat Action Priority List ==============================
@@ -5836,6 +5807,12 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
+  gain.astral_communion      = get_gain( "astral_communion"      );
+  gain.celestial_alignment   = get_gain( "celestial_alignment"   );
+  gain.lunar_strike          = get_gain( "lunar_strike"          );
+  gain.shooting_stars        = get_gain( "shooting_stars"        );
+  gain.solar_wrath           = get_gain( "solar_wrath"           );
+
   gain.bear_form             = get_gain( "bear_form"             );
   gain.bloody_slash          = get_gain( "bloody_slash"          );
   gain.energy_refund         = get_gain( "energy_refund"         );
@@ -5870,17 +5847,15 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.omen_of_clarity          = get_proc( "omen_of_clarity"                           );
-  proc.omen_of_clarity_wasted   = get_proc( "omen_of_clarity_wasted"                    );
-  proc.predator                 = get_proc( "predator"                                  );
-  proc.predator_wasted          = get_proc( "predator_wasted"                           );
-  proc.primal_fury              = get_proc( "primal_fury"                               );
-  proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
-  proc.shooting_stars           = get_proc( "Shooting Stars"                            );
-  proc.starshards               = get_proc( "Starshards"                                );
-  proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"                          );
-  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"                          );
-  proc.ursa_major               = get_proc( "ursa_major"                                );
+  proc.omen_of_clarity          = get_proc( "omen_of_clarity"        );
+  proc.omen_of_clarity_wasted   = get_proc( "omen_of_clarity_wasted" );
+  proc.predator                 = get_proc( "predator"               );
+  proc.predator_wasted          = get_proc( "predator_wasted"        );
+  proc.primal_fury              = get_proc( "primal_fury"            );
+  proc.starshards               = get_proc( "Starshards"             );
+  proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
+  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
+  proc.ursa_major               = get_proc( "ursa_major"             );
 }
 
 // druid_t::init_resources ===========================================
