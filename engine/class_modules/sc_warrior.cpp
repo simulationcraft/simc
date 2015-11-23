@@ -433,7 +433,7 @@ public:
     ab::init();
 
     if ( sweeping_strikes )
-      aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
+      ab::aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
   }
 
   virtual ~warrior_action_t() {}
@@ -460,6 +460,7 @@ public:
     {
       am *= 1.0 + ab::player -> cache.mastery_value();
     }
+    return am;
   }
 
   virtual double composite_crit() const
