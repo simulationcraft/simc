@@ -452,16 +452,14 @@ public:
     return p() -> get_target_data( t );
   }
 
-  virtual double action_multiplier() const
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    double am = ab::action_multiplier();
+    double am = ab::composite_target_multiplier( target );
 
-    if ( colossal_might )
+    if ( colossal_might && td(target) -> debuffs_colossus_smash -> up() )
     {
       am *= 1.0 + ab::player -> cache.mastery_value();
     }
-
-    return am;
   }
 
   virtual double composite_crit() const
@@ -1154,6 +1152,16 @@ struct colossus_smash_t: public warrior_attack_t
         p() -> proc.t17_2pc_arms -> occur();
     }
   }
+
+  double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> cache.mastery_value();
+
+    return am;
+  }
+
 };
 
 // Deep Wounds ==============================================================
@@ -3464,7 +3472,7 @@ void warrior_t::create_buffs()
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
 
-  buff.commanding_shout = new buffs::commanding_shout( *this, "commanding_shout", find_spell( 97463 ) );
+  buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
 
