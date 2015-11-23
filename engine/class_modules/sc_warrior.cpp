@@ -2573,63 +2573,79 @@ struct victory_rush_t: public warrior_attack_t
 
 struct whirlwind_off_hand_t: public warrior_attack_t
 {
-  whirlwind_off_hand_t( warrior_t* p ):
-    warrior_attack_t( "whirlwind_oh", p, p -> find_spell( 44949 ) )
+  whirlwind_off_hand_t( warrior_t* p, const spell_data_t* whirlwind ):
+    warrior_attack_t( "whirlwind_oh", p, whirlwind )
   {
-    dual = true;
     aoe = -1;
-    weapon = &( p -> off_hand_weapon );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.raging_wind ->  up() )
-      am *= 1.0 + p() -> buff.raging_wind -> data().effectN( 1 ).percent();
-
-    return am;
   }
 };
 
-struct whirlwind_t: public warrior_attack_t
+struct whirlwind_mh_t: public warrior_attack_t
+{
+  whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
+    warrior_attack_t( "whirlwind", p, whirlwind )
+  {
+    aoe = -1;
+  }
+};
+
+struct whirlwind_parent_t: public warrior_attack_t
 {
   whirlwind_off_hand_t* oh_attack;
-  whirlwind_t( warrior_t* p, const std::string& options_str ):
+  whirlwind_mh_t* mh_attack;
+  timespan_t spin_time;
+  whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
-    oh_attack( nullptr )
+    mh_attack( nullptr ),
+    oh_attack( nullptr ),
+    spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) ) // The misc value in the 3rd effect works for arms and fury.
   {
     parse_options( options_str );
-    aoe = -1;
+    radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
 
-    if ( p -> specialization() == WARRIOR_FURY && p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> main_hand_weapon.type != WEAPON_NONE )
     {
-      oh_attack = new whirlwind_off_hand_t( p );
-      add_child( oh_attack );
+      if ( p -> specialization() == WARRIOR_FURY )
+      {
+        mh_attack = new whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
+        mh_attack -> weapon = &( p -> main_hand_weapon );
+        add_child( mh_attack );
+        if ( p -> off_hand_weapon.type != WEAPON_NONE )
+        {
+          oh_attack = new whirlwind_off_hand_t( p, data().effectN( 2 ).trigger() );
+          oh_attack -> weapon = &( p -> off_hand_weapon );
+          add_child( oh_attack );
+        }
+      }
+      else
+      {
+        mh_attack = new whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
+        mh_attack -> weapon = &( p -> main_hand_weapon );
+        add_child( mh_attack );
+      }
     }
-
-    weapon = &( p -> main_hand_weapon );
+    tick_zero = true;
+    callbacks = false;
+    base_tick_time = spin_time;
+    dot_duration = base_tick_time * 2;
   }
 
-  double action_multiplier() const override
+  void tick( dot_t* d ) override
   {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.raging_wind ->  up() )
-      am *= 1.0 + p() -> buff.raging_wind -> data().effectN( 1 ).percent();
-
-    return am;
+    warrior_attack_t::tick( d );
+    mh_attack -> execute();
+    if ( mh_attack )
+    {
+      mh_attack -> execute();
+      if ( oh_attack )
+        oh_attack -> execute();
+    }
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( oh_attack )
-      oh_attack -> execute();
-
     p() -> buff.meat_cleaver -> trigger();
-    p() -> buff.raging_wind -> expire();
   }
 
   bool ready() override
@@ -3068,7 +3084,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
   if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str );
-  if ( name == "whirlwind"            ) return new whirlwind_t            ( this, options_str );
+  if ( name == "whirlwind"            ) return new whirlwind_parent_t            ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3216,30 +3232,30 @@ void warrior_t::init_spells()
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
 
-    // Cooldowns
-    cooldown.avatar                   = get_cooldown( "avatar" );
-    cooldown.bladestorm               = get_cooldown( "bladestorm" );
-    cooldown.bloodbath                = get_cooldown( "bloodbath" );
-    cooldown.charge                   = get_cooldown( "charge" );
-    cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
-    cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
-    cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
-    cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
-    cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
-    cooldown.last_stand               = get_cooldown( "last_stand" );
-    cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
-    cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
-    cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
-    cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
-    cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
-    cooldown.recklessness             = get_cooldown( "recklessness" );
-    cooldown.revenge                  = get_cooldown( "revenge" );
-    cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
-    cooldown.revenge_reset -> duration = spell.revenge_trigger -> internal_cooldown();
-    cooldown.shield_slam              = get_cooldown( "shield_slam" );
-    cooldown.shield_wall              = get_cooldown( "shield_wall" );
-    cooldown.shockwave                = get_cooldown( "shockwave" );
-    cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
+  // Cooldowns
+  cooldown.avatar                   = get_cooldown( "avatar" );
+  cooldown.bladestorm               = get_cooldown( "bladestorm" );
+  cooldown.bloodbath                = get_cooldown( "bloodbath" );
+  cooldown.charge                   = get_cooldown( "charge" );
+  cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
+  cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
+  cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
+  cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
+  cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
+  cooldown.last_stand               = get_cooldown( "last_stand" );
+  cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
+  cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
+  cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
+  cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
+  cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
+  cooldown.recklessness             = get_cooldown( "recklessness" );
+  cooldown.revenge                  = get_cooldown( "revenge" );
+  cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
+  cooldown.revenge_reset -> duration = spell.revenge_trigger -> internal_cooldown();
+  cooldown.shield_slam              = get_cooldown( "shield_slam" );
+  cooldown.shield_wall              = get_cooldown( "shield_wall" );
+  cooldown.shockwave                = get_cooldown( "shockwave" );
+  cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 }
 
 // warrior_t::init_base =====================================================
