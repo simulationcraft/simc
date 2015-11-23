@@ -10,13 +10,13 @@ namespace
 // ==========================================================================
 // Warrior
 // Add in colossus smash damage bonus
-// Fix autoattack rage gain, and check to see if stance are properly removed
+// Fix autoattack rage gain, and check to see if stances are properly removed
 // Make sure there are no lingering gladiator things
 // try to not break protection
 // Add Intercept
 // Check if rage is gained from charging the same target twice
 // Check if heroic leap mechanics are still the same
-// 
+// Add back second wind
 // 
 // ==========================================================================
 
@@ -2055,9 +2055,9 @@ struct revenge_t: public warrior_attack_t
     absorb_stats( nullptr ), rage_gain( 0 )
   {
     parse_options( options_str );
-    base_add_multiplier = data().effectN( 3 ).percent();
     aoe = -1;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
+    impact_action = p -> active.deep_wounds;
   }
 
   void execute() override
@@ -2421,7 +2421,6 @@ struct thunder_clap_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    impact_action = p -> active.deep_wounds;
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
