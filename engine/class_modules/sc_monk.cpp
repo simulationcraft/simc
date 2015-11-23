@@ -77,7 +77,6 @@ enum sef_ability_e {
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
   SEF_HURRICANE_STRIKE,
-  SEF_CHI_EXPLOSION,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -202,7 +201,6 @@ public:
   {
     action_t* blackout_kick_dot;
     action_t* blackout_kick_heal;
-    action_t* chi_explosion_dot;
     action_t* healing_elixir;
     action_t* healing_sphere;
     action_t* death_note;
@@ -222,8 +220,6 @@ public:
     buff_t* channeling_soothing_mist;
     buff_t* chi_sphere;
     buff_t* combo_breaker_bok;
-    buff_t* combo_breaker_ce;
-    buff_t* combo_breaker_tp;
     buff_t* cranes_zeal;
     buff_t* dampen_harm;
     buff_t* death_note;
@@ -266,9 +262,7 @@ public:
     gain_t* chi_brew;
     gain_t* chi_refund;
     gain_t* power_strikes;
-    gain_t* combo_breaker_ce;
     gain_t* combo_breaker_bok;
-    gain_t* combo_breaker_tp;
     gain_t* crackling_jade_lightning;
     gain_t* energizing_brew;
     gain_t* energy_refund;
@@ -294,8 +288,6 @@ public:
   struct procs_t
   {
     proc_t* combo_breaker_bok;
-    proc_t* combo_breaker_ce;
-    proc_t* combo_breaker_tp;
     proc_t* mana_tea;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
@@ -333,7 +325,6 @@ public:
     const spell_data_t* breath_of_the_serpent;
     const spell_data_t* soul_dance;
     const spell_data_t* hurricane_strike;
-    const spell_data_t* chi_explosion;
     const spell_data_t* pool_of_mists;
     const spell_data_t* serenity;
   } talent;
@@ -1286,85 +1277,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_chi_explosion_t : public sef_melee_attack_t
-  {
-    struct sef_chi_explosion_dot_t: public residual_action::residual_periodic_action_t < melee_attack_t >
-    {
-      sef_chi_explosion_dot_t( storm_earth_and_fire_pet_t* p ):
-        residual_action_t( "chi_explosion_dot", p, p -> find_spell( 157680 ) )
-      {
-        may_miss = may_crit = false;
-        weapon_power_mod = 0;
-        school = SCHOOL_NATURE;
-      }
-    };
-
-    sef_chi_explosion_dot_t* dot;
-
-    sef_chi_explosion_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "chi_explosion", player, player -> o() -> find_spell( 152174 ) ),
-      dot( new sef_chi_explosion_dot_t( player ) )
-    {
-      weapon_power_mod = 0;
-      school = SCHOOL_NATURE;
-    }
-
-    int n_targets() const override
-    {
-      if ( source_action )
-      {
-        if ( source_action -> resource_consumed >= 4 )
-          return -1;
-      }
-
-      return 0;
-    }
-
-    // Chi explosion grabs the multiplier from the owner's current CHI, which
-    // is not correct as the attack is triggered after the owner Chi Explosion.
-    // This causes the current CHI of the owner to already be consumed when the
-    // SEF Chi Explosion executes. Thus, we divide the multiplier with the
-    // owner's current CHI status to eliminate the owner-specific CHI
-    // multiplier, and then use the owner's consumed Chi as the correct
-    // multiplier.
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = sef_melee_attack_t::composite_da_multiplier( s );
-
-      if ( o() -> resources.current[ RESOURCE_CHI ] > 0 )
-      {
-        m /= 1.0 + o() -> resources.current[ RESOURCE_CHI ];
-      }
-
-      m *= 1.0 + source_action -> resource_consumed;
-
-      return m;
-    }
-
-    // Damage must be divided on non-main target by the number of targets
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      if ( state -> target != target )
-      {
-        return 1.0 / state -> n_targets;
-      }
-
-      return 1.0;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      if ( result_is_hit( state -> result ) &&
-           source_action -> resource_consumed >= 2 )
-      {
-        double amount = state -> result_amount * dot -> data().effectN( 2 ).percent();
-        residual_action::trigger( dot, state -> target, amount );
-      }
-    }
-  };
-
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t* player ) :
@@ -1524,7 +1436,6 @@ public:
     attacks[ SEF_SPINNING_CRANE_KICK     ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND       ] = new sef_rushing_jade_wind_t( this );
     attacks[ SEF_HURRICANE_STRIKE        ] = new sef_hurricane_strike_t( this );
-    attacks[ SEF_CHI_EXPLOSION           ] = new sef_chi_explosion_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
     spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
@@ -2152,18 +2063,8 @@ struct jab_t: public monk_melee_attack_t
       return;
 
     double cb_chance = combo_breaker_chance();
-    if ( p() -> talent.chi_explosion -> ok() )
-    {
-      if ( p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-        p() -> proc.combo_breaker_ce -> occur();
-    }
-    else
-    {
-      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+    if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
         p() -> proc.combo_breaker_bok -> occur();
-    }
-    if ( p() -> buff.combo_breaker_tp -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-      p() -> proc.combo_breaker_tp -> occur();
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
@@ -2207,44 +2108,6 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
     spell_power_mod.direct = 0.0;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_tp -> check() )
-      m *= 1.0 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
-
-    return m;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.combo_breaker_tp -> check() )
-      return 0;
-
-    return monk_melee_attack_t::cost();
-  }
-
-  virtual void consume_resource() override
-  {
-    if ( p() -> buff.combo_breaker_tp -> check() && result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += base_costs[RESOURCE_CHI];
-
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.combo_breaker_tp -> up() )
-    {
-      p() -> buff.combo_breaker_tp -> expire();
-      p() -> gain.combo_breaker_tp -> add( RESOURCE_CHI, cost() );
-    }
   }
 };
 
@@ -2309,18 +2172,8 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     double cb_chance = combo_breaker_chance();
     if ( cb_chance > 0 )
     {
-      if ( p() -> talent.chi_explosion -> ok() )
-      {
-        if ( p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-          p() -> proc.combo_breaker_ce -> occur();
-      }
-      else
-      {
-        if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
           p() -> proc.combo_breaker_bok -> occur();
-      }
-      if ( p() -> buff.combo_breaker_tp -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-        p() -> proc.combo_breaker_tp -> occur();
     }
   }
 
@@ -2385,18 +2238,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     double cb_chance = combo_breaker_chance();
     if ( cb_chance > 0 )
     {
-      if ( p() -> talent.chi_explosion -> ok() )
-      {
-        if ( p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-          p() -> proc.combo_breaker_ce -> occur();
-      }
-      else
-      {
-        if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
           p() -> proc.combo_breaker_bok -> occur();
-      }
-      if ( p() -> buff.combo_breaker_tp -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-        p() -> proc.combo_breaker_tp -> occur();
     }
     // TODO: Need a better way of handling this cooldown reset.
     if ( p() -> specialization() == MONK_MISTWEAVER )
@@ -2491,11 +2334,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       add_child( p -> active_actions.blackout_kick_dot );
     }
 
-    if ( p -> talent.chi_explosion -> ok() )
-    {
-      background = true;
-    }
-
     if ( p -> furious_sun )
     {
       rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
@@ -2587,243 +2425,6 @@ struct blackout_kick_t: public monk_melee_attack_t
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
-    }
-  }
-};
-
-// ==========================================================================
-// Chi Explosion State
-// ==========================================================================
-
-struct chi_state_t : public action_state_t
-{
-  int chi_used;
-
-  chi_state_t( action_t* a, player_t* t ):
-    action_state_t( a, t ),
-    chi_used( 0 )
-  { }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s ) << " chi_used=" << chi_used; return s;
-  }
-
-  void initialize() override
-  {
-    action_state_t::initialize(); chi_used = 0;
-  }
-
-  void copy_state( const action_state_t* o ) override
-  {
-    action_state_t::copy_state( o );
-    const chi_state_t* dps_t = static_cast<const chi_state_t*>( o );
-    chi_used = dps_t -> chi_used;
-  }
-};
-
-// ==========================================================================
-// Chi Explosion
-// ==========================================================================
-
-struct dot_chi_explosion_t: public residual_action::residual_periodic_action_t < monk_melee_attack_t >
-{
-  dot_chi_explosion_t( monk_t* p ):
-    base_t( "chi_explosion_dot", p, p -> specialization() == MONK_WINDWALKER ? p -> find_spell( 157680 ) :
-    p -> specialization() == MONK_MISTWEAVER ? p -> find_spell( 157681 ) :
-    p -> find_spell( 157676 ) )
-  {
-    dual = true;
-    may_miss = may_crit = false;
-    school = SCHOOL_NATURE;
-  }
-};
-
-struct chi_explosion_t: public monk_melee_attack_t
-{
-  const spell_data_t* windwalker_chi_explosion_dot;
-  const spell_data_t* spirited_crane_chi_explosion;
-  rising_sun_kick_proc_t* rsk_proc;
-
-  chi_explosion_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "chi_explosion", p, p -> specialization() == MONK_WINDWALKER ? p -> find_spell( 152174 ) :
-    p -> specialization() == MONK_BREWMASTER ? p -> find_spell( 157676 ) : p -> find_spell( 157675 ) ),
-    windwalker_chi_explosion_dot( p -> find_spell( 157680 ) ),
-    spirited_crane_chi_explosion( p -> find_spell( 159620 ) )
-  {
-    parse_options( options_str );
-    may_block = false;
-    sef_ability = SEF_CHI_EXPLOSION;
-    school = SCHOOL_NATURE;
-
-    if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-    {
-      if ( p() -> current_stance() == SPIRITED_CRANE )
-        return spirited_crane_chi_explosion -> effectN( 1 ).sp_coeff();
-      else
-        return spell_power_mod.direct;
-    }
-    else
-      return 0.0;
-  }
-
-  int n_targets() const override
-  {
-    if ( p() -> specialization() == MONK_BREWMASTER ||
-         p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( p() -> resources.current[ RESOURCE_CHI ] >= 4 )
-      {
-        return -1;
-      }
-    }
-    else if ( p() -> resources.current[RESOURCE_CHI] >= 2 )
-    {
-      return p() -> spec.teachings_of_the_monastery -> effectN( 3 ).base_value(); // Tooltip says effect 4, but I think 4 targets is more reasonable than 50.
-    }
-
-    return 0;
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      if ( resource_consumed >= 2 )
-      {
-        if ( p() -> buff.shuffle -> check() )
-          // hard code the 2 second shuffle 2 seconds per chi spent until an effect comes around 04/28/2014
-          p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 2 + ( 2 * resource_consumed ) ) );
-        else
-        {
-          p() -> buff.shuffle -> trigger();
-          p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 2 + ( 2 * resource_consumed ) ) );
-        }
-      }
-      if ( resource_consumed >= 3 && p() -> has_stagger() )
-      {
-        double stagger_pct = p() -> current_stagger_tick_dmg_percent();
-        double stagger_dmg = p() -> clear_stagger();
-
-        // Tier 17 4 pieces Brewmaster: 3 stacks of Chi Explosion generates 1 stacks of Elusive Brew.
-        // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
-        if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold ) )
-          trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
-
-        // Optional addition: Track and report amount of damage cleared
-        if ( stagger_pct > p() -> heavy_stagger_threshold )
-          p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
-        else if ( stagger_pct > p() -> moderate_stagger_threshold )
-          p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
-        else
-          p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
-
-        p() -> sample_datas.purified_damage -> add( stagger_dmg );
-      }
-    }
-    else if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( resource_consumed >= 3 )
-        trigger_brew( 1 );
-
-      // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
-      // of the special effect.
-      if ( p() -> furious_sun )
-      {
-        double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
-        // Chi Explosion's proc chance is reduced in half
-        proc_chance *= 0.50;
-
-        // Each chi spent has a chance of proccing a Rising Sun Kick. Plausible to see up to 4 RSK procs; though doubtful
-        for ( int i = 1; i <= resource_consumed; i++ )
-        {
-          if ( rng().roll( proc_chance ) )
-            rsk_proc -> execute();
-        }
-      }
-    }
-    else if ( p() -> current_stance() == SPIRITED_CRANE )
-    {
-      if ( resource_consumed >= 2 )
-        p() -> buff.cranes_zeal -> trigger();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_ce -> check() ) {
-      // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
-    }
-
-    m *= 1.0 + std::min( 4.0, p() -> resources.current[RESOURCE_CHI] );
-
-    return m;
-  }
-
-  void assess_damage( dmg_e type, action_state_t* s ) override
-  {
-    monk_melee_attack_t::assess_damage( type, s );
-
-    if ( ( p() -> specialization() == MONK_WINDWALKER ) && ( resource_consumed >= 2 ) )
-      residual_action::trigger(
-      p() -> active_actions.chi_explosion_dot,
-      s -> target,
-      s -> result_amount * windwalker_chi_explosion_dot -> effectN( 2 ).percent() );
-  }
-
-  double cost() const override
-  {
-    double c = std::min( 4.0, p() -> resources.current[RESOURCE_CHI] );
-
-    return c;
-  }
-
-  void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    assert( resource_consumed > 0 );
-
-    if ( p() -> buff.combo_breaker_ce -> up() )
-    {
-      player -> resource_gain( RESOURCE_CHI, p() -> buff.combo_breaker_ce -> data().effectN( 1 ).base_value(), p() -> gain.combo_breaker_ce, this );
-      p() -> buff.combo_breaker_ce -> expire();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !p() -> talent.chi_explosion -> ok() )
-      return false;
-
-    if ( p() -> resources.current[RESOURCE_CHI] > 0 )
-      return monk_melee_attack_t::ready();
-
-    return false;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( s -> target == p() -> target )
-      monk_melee_attack_t::impact( s );
-    else
-    {
-      double damage = s -> result_amount;
-      damage /= execute_state -> n_targets;
-      s -> result_amount = damage;
-      monk_melee_attack_t::impact( s );
     }
   }
 };
@@ -5285,7 +4886,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "invoke_xuen" ) return new               xuen_spell_t( this, options_str );
   if ( name == "chi_torpedo" ) return new               chi_torpedo_t( this, options_str );
   if ( name == "hurricane_strike" ) return new          hurricane_strike_t( this, options_str );
-  if ( name == "chi_explosion" ) return new             chi_explosion_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
@@ -5358,7 +4958,6 @@ void monk_t::init_spells()
   talent.breath_of_the_serpent       = find_talent_spell( "Breath of the Serpent" );
   talent.soul_dance                  = find_talent_spell( "Soul Dance" );
   talent.hurricane_strike            = find_talent_spell( "Hurricane Strike" );
-  talent.chi_explosion               = find_talent_spell( "Chi Explosion" );
   talent.pool_of_mists               = find_talent_spell( "Pool of Mists" );
   talent.serenity                    = find_talent_spell( "Serenity" );
 
@@ -5496,7 +5095,6 @@ void monk_t::init_spells()
   //SPELLS
   active_actions.blackout_kick_dot    = new actions::dot_blackout_kick_t( this );
   //active_actions.blackout_kick_heal   = new actions::heal_blackout_kick_t( this );
-  active_actions.chi_explosion_dot    = new actions::dot_chi_explosion_t( this );
   if ( talent.healing_elixirs -> ok() )
     active_actions.healing_elixir     = new actions::healing_elixirs_t( *this );
   active_actions.healing_sphere       = new actions::healing_sphere_t( *this );
@@ -5622,7 +5220,7 @@ void monk_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.shuffle = buff_creator_t( this, "shuffle", passives.shuffle )
-    .duration( talent.chi_explosion -> ok() ? timespan_t::from_millis( 10 ) : passives.shuffle -> duration() )
+    .duration( passives.shuffle -> duration() )
     .refresh_behavior( BUFF_REFRESH_EXTEND )
     .add_invalidate( CACHE_PARRY );
 
@@ -5656,10 +5254,6 @@ void monk_t::create_buffs()
     .max_stack( 8 );
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
-
-  buff.combo_breaker_tp = buff_creator_t( this, "combo_breaker_tp", find_spell( 118864 ) );
-
-  buff.combo_breaker_ce = buff_creator_t( this, "combo_breaker_ce", find_spell( 159407 ) );
 
   buff.energizing_brew = buff_creator_t( this, "energizing_brew", spec.energizing_brew )
     .duration( spec.energizing_brew -> duration() + 
@@ -5698,9 +5292,7 @@ void monk_t::init_gains()
   gain.chi_brew                 = get_gain( "chi_brew" );
   gain.chi_refund               = get_gain( "chi_refund" );
   gain.power_strikes            = get_gain( "power_strikes" );
-  gain.combo_breaker_ce         = get_gain( "combo_breaker_chi_explosion" );
   gain.combo_breaker_bok        = get_gain( "combo_breaker_blackout_kick" );
-  gain.combo_breaker_tp         = get_gain( "combo_breaker_tiger_palm" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
   gain.energizing_brew          = get_gain( "energizing_brew" );
   gain.energy_refund            = get_gain( "energy_refund" );
@@ -5728,8 +5320,6 @@ void monk_t::init_procs()
   base_t::init_procs();
 
   proc.combo_breaker_bok    = get_proc( "combo_breaker_bok" );
-  proc.combo_breaker_ce     = get_proc( "combo_breaker_ce" );
-  proc.combo_breaker_tp     = get_proc( "combo_breaker_tp" );
   proc.mana_tea             = get_proc( "mana_tea" );
   proc.tier15_2pc_melee     = get_proc( "tier15_2pc_melee" );
   proc.tier15_4pc_melee     = get_proc( "tier15_4pc_melee" );
@@ -6570,10 +6160,8 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
   st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2" );
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=3" );
   st -> add_action( this, "Purifying Brew", "if=stagger.moderate&buff.shuffle.remains>=6" );
   st -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   st -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
@@ -6590,10 +6178,8 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Tiger Palm" );
 
   aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  aoe -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2" );
   aoe -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  aoe -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=4" );
   aoe -> add_action( this, "Purifying Brew", "if=stagger.moderate&buff.shuffle.remains>=6" );
   aoe -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   aoe -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
@@ -6619,10 +6205,7 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* opener = get_action_priority_list("opener");
   action_priority_list_t* st = get_action_priority_list("st");
-  action_priority_list_t* st_chix = get_action_priority_list("st_chix");
-  action_priority_list_t* cleave_chix = get_action_priority_list("cleave_chix");
   action_priority_list_t* aoe_norjw = get_action_priority_list("aoe_norjw");
-  action_priority_list_t* aoe_norjw_chix = get_action_priority_list("aoe_norjw_chix");
   action_priority_list_t* aoe_rjw = get_action_priority_list("aoe_rjw");
 
   def -> add_action( "auto_attack" );
@@ -6658,8 +6241,6 @@ void monk_t::apl_combat_windwalker()
   }
 
   def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16" );
-  def -> add_action( this, "Tiger Palm", "if=!talent.chi_explosion.enabled" );
-  def -> add_action( this, "Tiger Palm", "if=talent.chi_explosion.enabled&(cooldown.fists_of_fury.remains<5|cooldown.fists_of_fury.up)" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&buff.serenity.up" );
 //  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&buff.spirit_shift.up" );
@@ -6667,7 +6248,6 @@ void monk_t::apl_combat_windwalker()
 //  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&(trinket.proc.multistrike.react)" );
 //  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&(trinket.proc.versatility.react)" );
 //  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=5&(trinket.proc.crit.react)" );
-  def -> add_action( this, "Tigereye Brew", "if=talent.chi_explosion.enabled&buff.tigereye_brew.stack>=1&t18_class_trinket&set_bonus.tier18_4pc=1&buff.tigereye_brew_use.down" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.fists_of_fury.up&chi>=3" );
   def -> add_action( this, "Tigereye Brew", "if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.hurricane_strike.up&chi>=3" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)" );
@@ -6678,21 +6258,14 @@ void monk_t::apl_combat_windwalker()
   def -> add_talent( this, "Hurricane Strike", "if=energy.time_to_max>cast_time&buff.energizing_brew.down" );
   def -> add_action( this, "Energizing Brew", "if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen<50" );
   
-  def -> add_action( "call_action_list,name=st,if=active_enemies<3&(level<100|!talent.chi_explosion.enabled)" );
-  def -> add_action( "call_action_list,name=st_chix,if=active_enemies=1&talent.chi_explosion.enabled" );
-  def -> add_action( "call_action_list,name=cleave_chix,if=(active_enemies=2|active_enemies=3&!talent.rushing_jade_wind.enabled)&talent.chi_explosion.enabled" );
-  def -> add_action( "call_action_list,name=aoe_norjw,if=active_enemies>=3&!talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled" );
-  def -> add_action( "call_action_list,name=aoe_norjw_chix,if=active_enemies>=4&!talent.rushing_jade_wind.enabled&talent.chi_explosion.enabled" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<3&(level<100" );
+  def -> add_action( "call_action_list,name=aoe_norjw,if=active_enemies>=3&!talent.rushing_jade_wind.enabled" );
   def -> add_action( "call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled" );
-
-  def -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react" );
 
   // Single Target & Non-Chi Explosion Cleave
   st -> add_action( this, "Blackout Kick", "if=set_bonus.tier18_2pc=1&buff.combo_breaker_bok.react" );
-  st -> add_action( this, "Tiger Palm", "if=set_bonus.tier18_2pc=1&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   st -> add_action( this, "Rising Sun Kick" );
   st -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
-  st -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );
@@ -6701,56 +6274,21 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=2" );
 
-  // Chi Explosion Single Target
-  st_chix -> add_talent( this, "Chi Explosion", "if=chi>=2&buff.combo_breaker_ce.react&cooldown.fists_of_fury.remains>2" );
-  st_chix -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
-  st_chix -> add_action( this, "Rising Sun Kick" );
-  st_chix -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
-  st_chix -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
-  st_chix -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking" );
-  st_chix -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
-  st_chix -> add_action( this, "Jab", "if=chi.max-chi>=2" );
-  st_chix -> add_talent( this, "Chi Explosion", "if=chi>=5&cooldown.fists_of_fury.remains>4" );
-  st_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
-  st_chix -> add_action( this, "Tiger Palm", "if=chi=4&!buff.combo_breaker_tp.react" );
-
-  // Chi Explosion Cleave
-  cleave_chix -> add_talent( this, "Chi Explosion", "if=chi>=4&cooldown.fists_of_fury.remains>2" );
-  cleave_chix -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
-  cleave_chix -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
-  cleave_chix -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
-  cleave_chix -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking" );
-  cleave_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
-  cleave_chix -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
-  cleave_chix -> add_action( this, "Jab", "if=chi.max-chi>=2" );
-
   // AoE Non-Rushing Jade Wind
   aoe_norjw -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_norjw -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_norjw -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );
   aoe_norjw -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
-  aoe_norjw -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   aoe_norjw -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
   aoe_norjw -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   aoe_norjw -> add_action( this, "Spinning Crane Kick" );
 
-  // AoE Chi Explosion Non-Rushing Jade Wind
-  aoe_norjw_chix -> add_talent( this, "Chi Explosion", "if=chi>=4&cooldown.fists_of_fury.remains>4" );
-  aoe_norjw_chix -> add_action( this, "Rising Sun Kick", "if=chi=chi.max" );
-  aoe_norjw_chix -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
-  aoe_norjw_chix -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
-  aoe_norjw_chix -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking" );
-  aoe_norjw_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
-  aoe_norjw_chix -> add_action( this, "Spinning Crane Kick" );
-  
   // AoE Rushing Jade Wind
-  aoe_rjw -> add_talent( this, "Chi Explosion", "if=chi>=4&cooldown.fists_of_fury.remains>4" );
   aoe_rjw -> add_talent( this, "Rushing Jade Wind" );
   aoe_rjw -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_rjw -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_rjw -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );
   aoe_rjw -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
-  aoe_rjw -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   aoe_rjw -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
   aoe_rjw -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   aoe_rjw -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
