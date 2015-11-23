@@ -132,7 +132,6 @@ public:
     cooldown_t* charge;
     cooldown_t* heroic_leap;
     cooldown_t* rage_from_charge;
-    cooldown_t* revenge;
     // Talents
     cooldown_t* avatar;
     cooldown_t* bladestorm;
@@ -150,6 +149,8 @@ public:
     cooldown_t* demoralizing_shout;
     cooldown_t* last_stand;
     cooldown_t* rage_from_crit_block;
+    cooldown_t* revenge;
+    cooldown_t* revenge_reset;
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
   } cooldown;
@@ -193,6 +194,7 @@ public:
     const spell_data_t* intervene;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
+    const spell_data_t* revenge_trigger;
     const spell_data_t* t17_prot_2p;
   } spell;
 
@@ -2212,7 +2214,7 @@ struct revenge_t: public warrior_attack_t
   {
     parse_options( options_str );
     base_add_multiplier = data().effectN( 3 ).percent();
-    aoe = 3;
+    aoe = -1;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
@@ -3371,6 +3373,7 @@ void warrior_t::init_spells()
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
+  spell.revenge_trigger         = find_class_spell( "Revenge Trigger" );
 
   // Active spells
   active.bloodbath_dot      = nullptr;
@@ -3412,6 +3415,8 @@ void warrior_t::init_spells()
     cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
     cooldown.recklessness             = get_cooldown( "recklessness" );
     cooldown.revenge                  = get_cooldown( "revenge" );
+    cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
+    cooldown.revenge_reset -> duration = spell.revenge_trigger -> internal_cooldown();
     cooldown.shield_slam              = get_cooldown( "shield_slam" );
     cooldown.shield_wall              = get_cooldown( "shield_wall" );
     cooldown.shockwave                = get_cooldown( "shockwave" );
@@ -4879,9 +4884,14 @@ void warrior_t::assess_damage( school_e school,
   }
 
   if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && !s -> action -> is_aoe() ) // AoE attacks do not reset revenge.
-    cooldown.revenge -> reset( true );
-
-  if ( s -> result == RESULT_PARRY && buff.die_by_the_sword -> up() && glyphs.drawn_sword -> ok() )
+  {
+    if ( cooldown.revenge_reset -> up() )
+    { // 3 second internal cooldown on resetting revenge. 
+      cooldown.revenge -> reset( true );
+      cooldown.revenge_reset -> start();
+    }
+  }
+  else if ( s -> result == RESULT_PARRY && buff.die_by_the_sword -> up() && glyphs.drawn_sword -> ok() )
   {
     player_t::resource_gain( RESOURCE_RAGE,
                              glyphs.drawn_sword -> effectN( 1 ).resource( RESOURCE_RAGE ),
