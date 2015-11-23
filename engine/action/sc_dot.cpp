@@ -678,14 +678,13 @@ void dot_t::schedule_tick()
   if ( sim.debug )
     sim.out_debug.printf( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
 
-  time_to_tick = current_action -> tick_time( state -> haste );
+  timespan_t base_tick_time = current_action -> tick_time( state -> haste );
+  time_to_tick = std::min( base_tick_time, remains() );
   assert( time_to_tick > timespan_t::zero() && "A Dot needs a positive tick time!" );
 
   // Recalculate num_ticks:
-  num_ticks = current_tick + as<int>(std::ceil( remains() / time_to_tick ));
-  // NOTE: Last tick factor has to be computed after time_to_tick is set (and after the dot has an
-  // end event).
-  last_tick_factor = current_action -> last_tick_factor( this, time_to_tick, remains() );
+  num_ticks = current_tick + as<int>( std::ceil( remains() / base_tick_time ) );
+  last_tick_factor = current_action -> last_tick_factor( this, base_tick_time, remains() );
 
   tick_event = new ( sim ) dot_tick_event_t( this, time_to_tick );
 
