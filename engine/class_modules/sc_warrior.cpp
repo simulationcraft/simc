@@ -81,7 +81,6 @@ public:
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
-    buff_t* debuffs_slam;
     buff_t* enraged_regeneration;
     buff_t* ravager;
     buff_t* ravager_protection;
@@ -265,6 +264,7 @@ public:
     const spell_data_t* mortal_strike;
     const spell_data_t* rend;
     const spell_data_t* seasoned_soldier;
+    const spell_data_t* slam;
     const spell_data_t* sweeping_strikes;
     const spell_data_t* weapon_mastery;
     //Arms and Prot
@@ -325,7 +325,6 @@ public:
     const spell_data_t* sudden_death;
     const spell_data_t* unquenchable_thirst;
     const spell_data_t* heavy_repercussions;
-    const spell_data_t* slam;
     const spell_data_t* furious_strikes;
 
     const spell_data_t* storm_bolt;
@@ -2582,37 +2581,10 @@ struct shield_slam_t: public warrior_attack_t
 struct slam_t: public warrior_attack_t
 {
   slam_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "slam", p, p -> talents.slam )
+    warrior_attack_t( "slam", p, p -> spec.slam )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    base_costs[RESOURCE_RAGE] = 10;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p() -> buff.debuffs_slam -> trigger( 1 );
-  }
-
-  double cost() const override
-  {
-    double c = warrior_attack_t::cost();
-
-    c *= 1.0 + p() -> buff.debuffs_slam -> current_stack;
-
-    return c;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.debuffs_slam -> up() )
-      am *= 1.0 + ( ( static_cast<double>( p() -> buff.debuffs_slam -> current_stack ) ) / 2.0 );
-
-    return am;
   }
 
   bool ready() override
@@ -3418,6 +3390,7 @@ void warrior_t::init_spells()
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
+  spec.slam                     = find_specialization_spell( "Slam" );
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
@@ -3441,7 +3414,6 @@ void warrior_t::init_spells()
   talents.sudden_death          = find_talent_spell( "Sudden Death" );
   talents.taste_for_blood       = find_talent_spell( "Taste for Blood" );
   talents.unquenchable_thirst   = find_talent_spell( "Unquenchable Thirst" );
-  talents.slam                  = find_talent_spell( "Slam" );
   talents.furious_strikes       = find_talent_spell( "Furious Strikes" );
 
   talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
@@ -3896,9 +3868,9 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Shockwave", "if=target.health.pct<=20" );
   single_target -> add_action( "wait,sec=0.1,if=target.health.pct<=20" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<40&!set_bonus.tier18_4pc" );
-  single_target -> add_talent( this, "Slam", "if=rage>20&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Thunder Clap", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&(!talent.slam.enabled|set_bonus.tier18_4pc)&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled" );
-  single_target -> add_action( this, "Whirlwind", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&(!talent.slam.enabled|set_bonus.tier18_4pc)&(rage>=40|debuff.colossus_smash.up)" );
+  single_target -> add_action( this, "Slam", "if=rage>20&!set_bonus.tier18_4pc" );
+  single_target -> add_action( this, "Thunder Clap", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&set_bonus.tier18_4pc&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled" );
+  single_target -> add_action( this, "Whirlwind", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&set_bonus.tier18_4pc&(rage>=40|debuff.colossus_smash.up)" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
@@ -4211,9 +4183,6 @@ void warrior_t::create_buffs()
   player_t::create_buffs();
 
   using namespace buffs;
-
-  buff.debuffs_slam = buff_creator_t( this, "slam", talents.slam )
-    .can_cancel( false );
 
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
@@ -5095,7 +5064,7 @@ struct fel_cleave_t: public warrior_attack_t
 
 action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& effect )
 {
-  if ( util::str_compare_ci( name, "fel_cleave" ) ) return new fel_cleave_t( this, effect ); // This must be added here so that it takes the armor reduction from colossus smash into account.
+  if ( util::str_compare_ci( name, "fel_cleave" ) ) return new fel_cleave_t( this, effect ); // This must be added here so that it takes the damage increase from colossus smash into account.
   return nullptr;
 }
 
