@@ -76,7 +76,6 @@ public:
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
-    buff_t* enraged_regeneration;
     buff_t* ravager;
     buff_t* ravager_protection;
     buff_t* sudden_death;
@@ -2096,17 +2095,8 @@ struct enraged_regeneration_t: public warrior_heal_t
     warrior_heal_t( "enraged_regeneration", p, p -> talents.enraged_regeneration )
   {
     parse_options( options_str );
-    dot_duration = data().duration();
     range = -1;
-    base_tick_time = data().effectN( 2 ).period();
     base_pct_heal = data().effectN( 1 ).percent();
-    tick_pct_heal = data().effectN( 2 ).percent();
-  }
-
-  void execute() override
-  {
-    warrior_heal_t::execute();
-    p() -> buff.enraged_regeneration -> trigger();
   }
 };
 
@@ -3848,8 +3838,6 @@ void warrior_t::create_buffs()
   buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 1 ).trigger() )
     .can_cancel( false )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration", talents.enraged_regeneration );
 
   buff.enraged_speed = buff_creator_t( this, "enraged_speed", glyphs.enraged_speed )
     .can_cancel( false )
