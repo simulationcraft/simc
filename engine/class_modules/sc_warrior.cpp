@@ -350,7 +350,6 @@ public:
     //Arms only
     const spell_data_t* enhanced_rend;
     //Fury only
-    const spell_data_t* enhanced_whirlwind;
     const spell_data_t* empowered_execute;
     //Protection only
     const spell_data_t* improved_block;
@@ -488,7 +487,7 @@ public:
     ab::init();
 
     if ( sweeping_strikes )
-      aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value();
+      aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
   }
 
   virtual ~warrior_action_t() {}
@@ -1933,31 +1932,29 @@ struct pummel_t: public warrior_attack_t
 
     may_miss = may_block = may_dodge = may_parry = false;
   }
-
-  /*
-  void execute()
-  {
-    warrior_attack_t::execute();
-    p() -> buff.rude_interruption -> trigger();
-  }
-  */
 };
 
 // Raging Blow ==============================================================
 
 struct raging_blow_attack_t: public warrior_attack_t
 {
+  int aoe_targets;
+  int sweeping_strikes;
   raging_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s ):
-    warrior_attack_t( name, p, s )
+    warrior_attack_t( name, p, s ), aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() ),
+    sweeping_strikes( p -> talents.sweeping_strikes -> effectN( 1 ).base_value() )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    radius = 10; // Meat cleaver RBs have a 10 yard range. Not found in spell data. 
+    radius = 10; // Meat cleaver RBs have a 10 yard range. Not found in spell data.
   }
 
   void execute() override
   {
-    aoe = p() -> buff.meat_cleaver -> stack();
+    if ( p() -> buff.meat_cleaver -> up() )
+      aoe = aoe_targets;
+    aoe += sweeping_strikes;
+
     if ( aoe ) ++aoe;
 
     warrior_attack_t::execute();
@@ -2011,7 +2008,6 @@ struct raging_blow_t: public warrior_attack_t
            oh_attack -> execute_state -> result == RESULT_CRIT )
            p() -> buff.raging_blow_glyph -> trigger();
       p() -> buff.raging_wind -> trigger();
-      p() -> buff.meat_cleaver -> expire();
     }
     p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack doesn't land.
   }
@@ -2649,8 +2645,6 @@ struct whirlwind_t: public warrior_attack_t
       oh_attack -> execute();
 
     p() -> buff.meat_cleaver -> trigger();
-    if ( p() -> perk.enhanced_whirlwind -> ok() )
-      p() -> buff.meat_cleaver -> trigger();
     p() -> buff.raging_wind -> expire();
   }
 
@@ -3192,7 +3186,6 @@ void warrior_t::init_spells()
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword" );
   perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
-  perk.enhanced_whirlwind            = find_perk_spell( "Enhanced Whirlwind" );
   perk.empowered_execute             = find_perk_spell( "Empowered Execute" );
 
   perk.improved_heroic_throw         = find_perk_spell( "Improved Heroic Throw" );
@@ -3514,7 +3507,7 @@ void warrior_t::apl_fury()
   three_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   three_targets -> add_action( "call_action_list,name=bladestorm" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
-  three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=2" );
+  three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   three_targets -> add_talent( this, "Siegebreaker" );
   three_targets -> add_action( this, "Execute", "cycle_targets=1" );
   three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
@@ -3524,9 +3517,8 @@ void warrior_t::apl_fury()
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=3&buff.enrage.up" );
+  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up&buff.enrage.up" );
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
-  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=3" );
   aoe -> add_action( "call_action_list,name=bladestorm" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Siegebreaker" );
@@ -3974,8 +3966,7 @@ void warrior_t::create_buffs()
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
-  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() )
-    .max_stack( perk.enhanced_whirlwind -> ok() ? 4 : 3 );
+  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
 
   buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) )
     .cd( timespan_t::zero() );
