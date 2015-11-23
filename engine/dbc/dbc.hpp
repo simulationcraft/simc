@@ -291,9 +291,11 @@ public:
   unsigned _aura_id; // Spell id for the aura during which this power type is active
   int      _power_e;
   int      _cost;
-  double   _cost_2;
-  int      _cost_per_second; // Unsure
-  double   _cost_per_second_2;
+  int      _cost_max;
+  int      _cost_per_second;
+  double   _pct_cost;
+  double   _pct_cost_max;
+  double   _pct_cost_per_second;
 
   resource_e resource() const
   { return util::translate_power_type( type() ); }
@@ -315,7 +317,6 @@ public:
     switch ( type() )
     {
       case POWER_MANA:
-      case POWER_SOUL_SHARDS:
         return 100.0;
       case POWER_RAGE:
       case POWER_RUNIC_POWER:
@@ -330,14 +331,21 @@ public:
 
   double cost() const
   {
-    double cost = _cost > 0 ? _cost : _cost_2;
+    double cost = _cost > 0 ? _cost : _pct_cost;
 
     return cost / cost_divisor( ! ( _cost > 0 ) );
   }
 
+  double max_cost() const
+  {
+    double cost = _cost_max > 0 ? _cost_max : _pct_cost_max;
+
+    return cost / cost_divisor( ! ( _cost_max > 0 ) );
+  }
+
   double cost_per_second() const
   {
-    double cost = _cost_per_second > 0 ? _cost_per_second : _cost_per_second_2;
+    double cost = _cost_per_second > 0 ? _cost_per_second : _pct_cost_per_second;
 
     return cost / cost_divisor( ! ( _cost_per_second > 0 ) );
   }

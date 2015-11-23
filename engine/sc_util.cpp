@@ -716,6 +716,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_CHI:           return "chi";
     case RESOURCE_SHADOW_ORB:    return "shadow_orb";
     case RESOURCE_COMBO_POINT:   return "combo_points";
+    case RESOURCE_MAELSTROM:     return "maelstrom";
     default:                     return "unknown";
   }
 }
@@ -795,7 +796,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_RAGE:          return RESOURCE_RAGE;
     case POWER_FOCUS:         return RESOURCE_FOCUS;
     case POWER_ENERGY:        return RESOURCE_ENERGY;
-    case POWER_MONK_ENERGY:   return RESOURCE_ENERGY;
+    case POWER_COMBO_POINT:   return RESOURCE_COMBO_POINT;
     case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
     case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
     case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;
@@ -803,6 +804,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
     case POWER_CHI:           return RESOURCE_CHI;
     case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
+    case POWER_MAELSTROM:     return RESOURCE_MAELSTROM;
     default:                  return RESOURCE_NONE;
   }
 }

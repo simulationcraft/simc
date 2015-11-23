@@ -318,7 +318,7 @@ enum resource_e
   RESOURCE_ECLIPSE,
   RESOURCE_HOLY_POWER,
   /* Unknown_2, */
-  /* Unknown_3 */
+  RESOURCE_MAELSTROM,
   RESOURCE_CHI,
   RESOURCE_SHADOW_ORB,
   RESOURCE_BURNING_EMBER,
@@ -1156,7 +1156,7 @@ enum power_e
   POWER_RAGE        = 1,
   POWER_FOCUS       = 2,
   POWER_ENERGY      = 3,
-  POWER_MONK_ENERGY = 4,  // translated to RESOURCE_ENERGY
+  POWER_COMBO_POINT = 4,
   POWER_RUNE        = 5,
   POWER_RUNIC_POWER = 6,
   POWER_SOUL_SHARDS = 7,
@@ -1164,6 +1164,7 @@ enum power_e
   POWER_HOLY_POWER = 9,
   // Not yet used (MoP Monk deprecated resource #1)
   // Not yet used
+  POWER_MAELSTROM     = 11,
   POWER_CHI           = 12,
   POWER_SHADOW_ORB    = 13,
   POWER_BURNING_EMBER = 14,

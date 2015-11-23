@@ -88,14 +88,14 @@ const char * _resource_strings[] =
   "Rage",
   "Focus",
   "Energy",
-  "Energy",
+  "Combo Points",
   "Rune",
   "Runic Power",
   "Soul Shard",
   "Eclipse",
   "Holy Power",
   nullptr,
-  nullptr,
+  "Maelstrom",
   "Chi",
   "Shadow Orb",
   "Burning Ember",
@@ -632,6 +632,16 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         s << pd -> cost();
 
       s << " ";
+
+      if ( pd -> max_cost() > 0 )
+      {
+        s << "- ";
+        if ( pd -> type() == POWER_MANA )
+          s << ( pd -> cost() + pd -> max_cost() ) * 100.0 << "%";
+        else
+          s << ( pd -> cost() + pd -> max_cost() );
+        s << " ";
+      }
 
       if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
           _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
