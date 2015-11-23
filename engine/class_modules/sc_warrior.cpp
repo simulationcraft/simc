@@ -60,8 +60,6 @@ public:
     action_t* bloodbath_dot;
     action_t* deep_wounds;
     action_t* enhanced_rend;
-    attack_t* sweeping_strikes;
-    attack_t* aoe_sweeping_strikes;
     heal_t* t16_2pc;
     warrior_stance stance;
   } active;
@@ -102,7 +100,6 @@ public:
     buff_t* raging_blow;
     // Arms only
     buff_t* colossus_smash;
-    buff_t* sweeping_strikes;
     // Prot only
     absorb_buff_t* shield_barrier;
     buff_t* blood_craze;
@@ -172,7 +169,6 @@ public:
     gain_t* melee_off_hand;
     // Arms Only
     gain_t* melee_crit;
-    gain_t* sweeping_strikes;
     gain_t* taste_for_blood;
     // Prot Only
     gain_t* critical_block;
@@ -221,7 +217,6 @@ public:
     const spell_data_t* raging_blow;
     const spell_data_t* raging_wind;
     // Arms only
-    const spell_data_t* sweeping_strikes;
     // Arms and Prot
     const spell_data_t* resonating_power;
     // Prot only
@@ -264,7 +259,6 @@ public:
     const spell_data_t* rend;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* slam;
-    const spell_data_t* sweeping_strikes;
     const spell_data_t* weapon_mastery;
     //Arms and Prot
     const spell_data_t* thunder_clap;
@@ -311,6 +305,8 @@ public:
   // Talents
   struct talents_t
   {
+    const spell_data_t* sweeping_strikes;
+
     const spell_data_t* juggernaut;
     const spell_data_t* double_time;
     const spell_data_t* warbringer;
@@ -353,7 +349,6 @@ public:
     const spell_data_t* improved_recklessness;
     //Arms only
     const spell_data_t* enhanced_rend;
-    const spell_data_t* enhanced_sweeping_strikes;
     //Fury only
     const spell_data_t* enhanced_whirlwind;
     const spell_data_t* empowered_execute;
@@ -471,7 +466,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, recklessness, weapons_master;
+  bool headlongrush, headlongrushgcd, recklessness, weapons_master, sweeping_strikes;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -482,9 +477,18 @@ public:
                     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
                     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
                     recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
-                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) )
+                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) ),
+                    sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
+  }
+
+  void init()
+  {
+    ab::init();
+
+    if ( sweeping_strikes )
+      aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value();
   }
 
   virtual ~warrior_action_t() {}
@@ -728,8 +732,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void execute() override
   {
     base_t::execute();
-    if ( p() -> buff.sweeping_strikes -> up() )
-      trigger_sweeping_strikes( execute_state );
   }
 
   virtual double calculate_weapon_damage( double attack_power ) const override
@@ -757,132 +759,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       p() -> active.bloodbath_dot, // ignite spell
       t, // target
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
-  }
-
-  virtual void trigger_sweeping_strikes( action_state_t* s )
-  {
-    warrior_t* p = debug_cast<warrior_t*>( s -> action -> player );
-
-    if ( s -> action -> result_is_miss( s -> result ) )
-      return;
-
-    if ( s -> action -> sim -> active_enemies == 1 )
-      return;
-
-    if ( s -> result_total <= 0 )
-      return;
-
-    if ( !s -> action -> is_aoe() )
-    {
-      if ( p -> active.sweeping_strikes -> target != s -> target )
-        p -> active.sweeping_strikes -> target_cache.is_valid = false;
-
-      p -> active.sweeping_strikes -> target = s -> target;
-      p -> active.sweeping_strikes -> base_dd_min = s -> result_total;
-      p -> active.sweeping_strikes -> base_dd_max = s -> result_total;
-      p -> active.sweeping_strikes -> execute();
-    }
-    else
-    {
-      if ( p -> active.aoe_sweeping_strikes -> target != s -> target )
-        p -> active.aoe_sweeping_strikes -> target_cache.is_valid = false;
-
-      p -> active.aoe_sweeping_strikes -> target = s -> target;
-      p -> active.aoe_sweeping_strikes -> execute();
-    }
-  }
-};
-
-// AoE Sweeping Strikes Attack ==============================================
-
-struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
-{
-  sweeping_strikes_aoe_attack_t( warrior_t* p ):
-    warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
-  {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
-    background = true;
-    may_multistrike = 1; // Yep. It can multistrike.
-    aoe = 1;
-    radius = 5;
-    school = SCHOOL_PHYSICAL;
-    weapon = &p -> main_hand_weapon;
-    weapon_multiplier = 0.5;
-    base_costs[RESOURCE_RAGE] = 0; // Resource consumption already accounted for in the buff application.
-    cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    warrior_attack_t::available_targets( tl );
-
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
-    return tl.size();
-  }
-
-  void execute() override
-  {
-    attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
-  }
-};
-
-// Sweeping Strikes Attack ======================================================
-
-struct sweeping_strikes_attack_t: public warrior_attack_t
-{
-  double pct_damage;
-  sweeping_strikes_attack_t( warrior_t* p ):
-    warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
-  {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
-    background = true;
-    aoe = 1;
-    may_multistrike = 1;
-    weapon_multiplier = 0;
-    radius = 5;
-    base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
-    cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
-    pct_damage = data().effectN( 1 ).percent();
-  }
-
-  double composite_player_multiplier() const
-  {
-    return 1; // No double dipping
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    warrior_attack_t::available_targets( tl );
-
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
-    return tl.size();
-  }
-
-  void execute() override
-  {
-    base_dd_max *= pct_damage; //Deals 50% of original damage
-    base_dd_min *= pct_damage;
-    attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-      p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
   }
 };
 
@@ -2165,9 +2041,6 @@ struct ravager_tick_t: public warrior_attack_t
     dual = true;
     ground_aoe = true;
   }
-
-  void trigger_sweeping_strikes( action_state_t* ) override // Ravager doesn't proc Sweeping Strikes. Check after each patch because this could change without Blizzard telling us.
-  {}
 };
 
 struct ravager_t: public warrior_attack_t
@@ -3127,26 +3000,6 @@ struct mass_spell_reflection_t: public warrior_spell_t
   }
 };
 
-// Sweeping Strikes =========================================================
-
-struct sweeping_strikes_t: public warrior_spell_t
-{
-  sweeping_strikes_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "sweeping_strikes", p, p -> spec.sweeping_strikes )
-  {
-    parse_options( options_str );
-    cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-    p() -> buff.sweeping_strikes -> trigger();
-  }
-};
-
 // Taunt =======================================================================
 
 struct taunt_t: public warrior_spell_t
@@ -3233,7 +3086,6 @@ action_t* warrior_t::create_action( const std::string& name,
       return new spell_reflection_t( this, options_str );
   }
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
-  if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
   if ( name == "taunt"                ) return new taunt_t                ( this, options_str );
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
@@ -3291,7 +3143,6 @@ void warrior_t::init_spells()
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
   spec.slam                     = find_specialization_spell( "Slam" );
-  spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
@@ -3300,6 +3151,8 @@ void warrior_t::init_spells()
   spec.weapon_mastery           = find_specialization_spell( "Weapon Mastery" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
 
+
+  talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
   // Talents
   talents.juggernaut            = find_talent_spell( "Juggernaut" );
   talents.double_time           = find_talent_spell( "Double Time" );
@@ -3336,7 +3189,6 @@ void warrior_t::init_spells()
   perk.improved_heroic_leap          = find_perk_spell( "Improved Heroic Leap" );
   perk.improved_recklessness         = find_perk_spell( "Improved Recklessness" );
 
-  perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes" );
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword" );
   perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
@@ -3363,7 +3215,6 @@ void warrior_t::init_spells()
   glyphs.resonating_power       = find_glyph_spell( "Glyph of Resonating Power" );
   glyphs.rude_interruption      = find_glyph_spell( "Glyph of Rude Interruption" );
   glyphs.shield_wall            = find_glyph_spell( "Glyph of Shield Wall" );
-  glyphs.sweeping_strikes       = find_glyph_spell( "Glyph of Sweeping Strikes" );
   glyphs.unending_rage          = find_glyph_spell( "Glyph of Unending Rage" );
   glyphs.victory_rush           = find_glyph_spell( "Glyph of Victory Rush" );
   glyphs.wind_and_thunder       = find_glyph_spell( "Glyph of Wind and Thunder" ); //So roleplay.
@@ -3379,8 +3230,6 @@ void warrior_t::init_spells()
   active.bloodbath_dot      = nullptr;
   active.blood_craze        = nullptr;
   active.deep_wounds        = nullptr;
-  active.sweeping_strikes   = nullptr;
-  active.aoe_sweeping_strikes = nullptr;
   active.enhanced_rend      = nullptr;
   active.t16_2pc            = nullptr;
   active.stance             = STANCE_NONE;
@@ -3391,11 +3240,6 @@ void warrior_t::init_spells()
   if ( perk.enhanced_rend -> ok() ) active.enhanced_rend = new enhanced_rend_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
-  if ( spec.sweeping_strikes -> ok() )
-  {
-    active.sweeping_strikes = new sweeping_strikes_attack_t( this );
-    active.aoe_sweeping_strikes = new sweeping_strikes_aoe_attack_t( this );
-  }
 
     // Cooldowns
     cooldown.avatar                   = get_cooldown( "avatar" );
@@ -3775,7 +3619,6 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Whirlwind", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&set_bonus.tier18_4pc&(rage>=40|debuff.colossus_smash.up)" );
   single_target -> add_talent( this, "Shockwave" );
 
-  aoe -> add_action( this, "Sweeping Strikes" );
   aoe -> add_action( this, "Rend", "if=dot.rend.remains<5.4&target.time_to_die>4" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,max_cycle_targets=2,if=dot.rend.remains<5.4&target.time_to_die>8&!buff.colossus_smash_up.up&talent.taste_for_blood.enabled" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=dot.rend.remains<5.4&target.time_to_die-remains>18&!buff.colossus_smash_up.up&spell_targets.whirlwind<=8" );
@@ -4175,10 +4018,6 @@ void warrior_t::create_buffs()
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death -> effectN( 1 ).trigger() );
 
-  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes", spec.sweeping_strikes )
-    .duration( spec.sweeping_strikes -> duration() + perk.enhanced_sweeping_strikes -> effectN( 1 ).time_value() )
-    .cd( timespan_t::zero() );
-
   buff.sword_and_board = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
     .chance( spec.sword_and_board -> effectN( 1 ).percent() );
 
@@ -4247,7 +4086,6 @@ void warrior_t::init_gains()
   gain.melee_off_hand         = get_gain( "melee_off_hand" );
   gain.revenge                = get_gain( "revenge" );
   gain.shield_slam            = get_gain( "shield_slam" );
-  gain.sweeping_strikes       = get_gain( "sweeping_strikes" );
   gain.sword_and_board        = get_gain( "sword_and_board" );
   gain.taste_for_blood        = get_gain( "taste_for_blood" );
 
