@@ -77,7 +77,6 @@ public:
     buff_t* defensive_stance;
     buff_t* heroic_leap_movement;
     buff_t* intervene_movement;
-    buff_t* shield_charge_movement;
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
@@ -109,7 +108,6 @@ public:
     buff_t* blood_craze;
     buff_t* last_stand;
     buff_t* shield_block;
-    buff_t* shield_charge;
     buff_t* shield_wall;
     buff_t* sword_and_board;
     buff_t* ultimatum;
@@ -1354,7 +1352,7 @@ struct charge_t: public warrior_attack_t
       return false;
 
     if ( p() -> buff.charge_movement -> check() || p() -> buff.heroic_leap_movement -> check()
-      || p() -> buff.intervene_movement -> check() || p() -> buff.shield_charge -> check() )
+      || p() -> buff.intervene_movement -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -1643,9 +1641,6 @@ struct heroic_strike_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> buff.shield_charge -> up() )
-      am *= 1.0 + p() -> buff.shield_charge -> default_value;
-
     return am;
   }
 
@@ -1775,7 +1770,7 @@ struct heroic_leap_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> buff.intervene_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.shield_charge -> check() )
+    if ( p() -> buff.intervene_movement -> check() || p() -> buff.charge_movement -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -1886,7 +1881,7 @@ struct intervene_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.shield_charge -> check() )
+    if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -2221,16 +2216,6 @@ struct revenge_t: public warrior_attack_t
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.shield_charge -> up() )
-      am *= 1.0 + p() -> buff.shield_charge -> default_value;
-
-    return am;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2436,26 +2421,6 @@ struct siegebreaker_t: public warrior_attack_t
 
 // Shield Slam ==============================================================
 
-struct shield_charge_2pc_t: public warrior_attack_t
-{
-  shield_charge_2pc_t( warrior_t* p ):
-    warrior_attack_t( "shield_charge_t17_2pc_proc", p, p -> find_spell( 156321 ) )
-  {
-    background = true;
-    base_costs[ RESOURCE_RAGE ] = 0;
-    cooldown -> duration = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    if ( p() -> buff.shield_charge -> check() )
-      p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
-    else
-      p() -> buff.shield_charge -> trigger();
-  }
-};
-
 struct shield_block_2pc_t: public warrior_attack_t
 {
   shield_block_2pc_t( warrior_t* p ):
@@ -2479,12 +2444,10 @@ struct shield_block_2pc_t: public warrior_attack_t
 struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
-  attack_t* shield_charge_2pc;
   attack_t* shield_block_2pc;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> spec.shield_slam ),
     rage_gain( 0.0 ),
-    shield_charge_2pc( new shield_charge_2pc_t( p ) ),
     shield_block_2pc( new shield_block_2pc_t( p ) )
   {
     parse_options( options_str );
@@ -2502,12 +2465,7 @@ struct shield_slam_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> buff.shield_charge -> up() )
-    {
-      am *= 1.0 + p() -> buff.shield_charge -> default_value;
-      am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
-    }
-    else if ( p() -> buff.shield_block -> up() )
+    if ( p() -> buff.shield_block -> up() )
       am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
@@ -3082,17 +3040,13 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
 
 struct shield_block_t: public warrior_spell_t
 {
-  cooldown_t* block_cd;
   shield_block_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) ),
-    block_cd( nullptr )
+    warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
     parse_options( options_str );
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
     use_off_gcd = true;
-    block_cd = p -> get_cooldown( "block_cd" );
-    block_cd -> duration = timespan_t::from_seconds( 1.5 );
   }
 
   double cost() const override
@@ -3107,7 +3061,6 @@ struct shield_block_t: public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    block_cd -> start();
 
     if ( p() -> buff.shield_block -> check() )
       p() -> buff.shield_block -> extend_duration( p(), p() -> buff.shield_block -> data().duration() );
@@ -3117,61 +3070,7 @@ struct shield_block_t: public warrior_spell_t
 
   bool ready() override
   {
-    if ( !p() -> has_shield_equipped() || !block_cd -> up() )
-      return false;
-
-    return warrior_spell_t::ready();
-  }
-};
-
-// Shield Charge ============================================================
-
-struct shield_charge_t: public warrior_spell_t
-{
-  double movement_speed_increase;
-  cooldown_t* shield_charge_cd;
-  shield_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) ),
-    movement_speed_increase( 5.0 ), shield_charge_cd( nullptr )
-  {
-    parse_options( options_str );
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
-    movement_directionality = MOVEMENT_OMNI;
-
-    shield_charge_cd = p -> get_cooldown( "shield_charge_cd" );
-    shield_charge_cd -> duration = timespan_t::from_seconds( 1.5 );
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    if ( p() -> current.distance_to_move > 0 )
-    {
-      p() -> buff.shield_charge_movement -> trigger( 1, movement_speed_increase, 1,
-                                                     timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * 
-                                                     ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
-      p() -> current.moving_away = 0;
-    }
-
-    if ( p() -> buff.shield_charge -> check() )
-      p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
-    else
-      p() -> buff.shield_charge -> trigger();
-
-    if ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) )
-      enrage();
-
-    shield_charge_cd -> start();
-  }
-
-  bool ready() override
-  {
-    if ( !shield_charge_cd -> up() || !p() -> has_shield_equipped() )
-      return false;
-
-    if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.intervene_movement -> check() )
+    if ( !p() -> has_shield_equipped() )
       return false;
 
     return warrior_spell_t::ready();
@@ -3320,7 +3219,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "siegebreaker"         ) return new siegebreaker_t         ( this, options_str );
   if ( name == "shield_barrier"       ) return new shield_barrier_t       ( this, options_str );
   if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
-  if ( name == "shield_charge"        ) return new shield_charge_t        ( this, options_str );
   if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
   if ( name == "shield_wall"          ) return new shield_wall_t          ( this, options_str );
   if ( name == "shockwave"            ) return new shockwave_t            ( this, options_str );
@@ -4224,7 +4122,6 @@ void warrior_t::create_buffs()
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
-  buff.shield_charge_movement = buff_creator_t( this, "shield_charge_movement" );
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
@@ -4266,10 +4163,6 @@ void warrior_t::create_buffs()
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_BLOCK );
-
-  buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
-    .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
     .default_value( spec.shield_wall -> effectN( 1 ).percent() )
@@ -4525,7 +4418,6 @@ void warrior_t::interrupt()
 {
   buff.charge_movement -> expire();
   buff.heroic_leap_movement -> expire();
-  buff.shield_charge_movement -> expire();
   buff.intervene_movement -> expire();
   if ( heroic_charge )
   {
@@ -4880,8 +4772,6 @@ double warrior_t::temporary_movement_modifier() const
     temporary = std::max( buff.charge_movement -> value(), temporary );
   else if ( buff.intervene_movement -> up() )
     temporary = std::max( buff.intervene_movement -> value(), temporary );
-  else if ( buff.shield_charge_movement -> up() )
-    temporary = std::max( buff.shield_charge_movement -> value(), temporary );
   else if ( buff.heroic_leap_glyph -> up() )
     temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
   else if ( buff.enraged_speed -> up() )
@@ -5153,10 +5043,6 @@ static void prot_trinket( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
-  if ( s -> prot_trinket )
-  {
-    s -> buff.shield_charge -> default_value += ( s -> prot_trinket -> driver() -> effectN( 3 ).average( s -> prot_trinket -> item ) / 100.0 );
-  }
 }
 
 // WARRIOR MODULE INTERFACE =================================================
