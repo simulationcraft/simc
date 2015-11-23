@@ -261,6 +261,7 @@ public:
     const spell_data_t* execute;
     //Arms-only
     const spell_data_t* colossus_smash;
+    const spell_data_t* hamstring;
     const spell_data_t* mortal_strike;
     const spell_data_t* rend;
     const spell_data_t* seasoned_soldier;
@@ -1614,7 +1615,7 @@ struct execute_t: public warrior_attack_t
 struct hamstring_t: public warrior_attack_t
 {
   hamstring_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) )
+    warrior_attack_t( "hamstring", p, p -> spec.hamstring )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -3369,6 +3370,7 @@ void warrior_t::init_spells()
   spec.die_by_the_sword         = find_specialization_spell( "Die By the Sword" );
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.execute                  = find_specialization_spell( "Execute" );
+  spec.hamstring                = find_specialization_spell( "Hamstring" );
   spec.inspiring_presence       = find_specialization_spell( "Inspiring Presence" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
