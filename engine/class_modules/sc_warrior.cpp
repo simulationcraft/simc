@@ -79,7 +79,6 @@ public:
     buff_t* enraged_regeneration;
     buff_t* ravager;
     buff_t* ravager_protection;
-    buff_t* second_wind;
     buff_t* sudden_death;
     // Glyphs
     buff_t* enraged_speed;
@@ -3891,10 +3890,6 @@ void warrior_t::create_buffs()
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption -> effectN( 1 ).trigger() )
     .default_value( glyphs.rude_interruption -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  
-  buff.second_wind = buff_creator_t( this, "second_wind", talents.second_wind )
-    .duration( timespan_t::zero() )
-    .add_invalidate( CACHE_LEECH );
 
   buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", specialization() == WARRIOR_PROTECTION ? find_spell( 112048 ) : spec.shield_barrier )
     .source( get_stats( "shield_barrier" ) );
@@ -4486,9 +4481,6 @@ double warrior_t::composite_leech() const
 
   if ( buff.rallying_cry -> check() && glyphs.rallying_cry -> ok() )
     cl += glyphs.rallying_cry -> effectN( 1 ).percent();
-
-  if ( buff.second_wind -> check() )
-    cl += talents.second_wind -> effectN( 1 ).percent();
 
   return cl;
 }
