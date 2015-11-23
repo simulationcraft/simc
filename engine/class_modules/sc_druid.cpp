@@ -4024,11 +4024,47 @@ struct incarnation_t : public druid_spell_t
 
 struct lunar_strike_t : public druid_spell_t
 {
+  struct lunar_strike_cleave_t : public druid_spell_t
+  {
+    lunar_strike_cleave_t( druid_t* player ):
+      druid_spell_t( "lunar_strike_cleave", player, player -> spec.lunar_strike )
+    {
+      may_miss = false;
+      proc = false;
+      callbacks = false;
+      background = true;
+      aoe = -1;
+      range = -1.0;
+      radius = 5.0;
+      base_dd_multiplier = 0.2;
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl ) const override
+    {
+      druid_spell_t::available_targets( tl );
+
+      for ( size_t i = 0; i < tl.size(); i++ )
+      {
+        if ( tl[i] == target ) // Cannot hit the original target.
+        {
+          tl.erase( tl.begin() + i );
+          break;
+        }
+      }
+
+      return tl.size();
+    }
+  };
+
+  spell_t* lunar_strike_cleave;
+
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "lunar_strike", player, player -> spec.lunar_strike )
+    druid_spell_t( "lunar_strike", player, player -> spec.lunar_strike ),
+    lunar_strike_cleave( new lunar_strike_cleave_t( player ) )
   {
     parse_options( options_str );
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
+    add_child( lunar_strike_cleave );
   }
 
   double action_multiplier() const override
@@ -4037,7 +4073,8 @@ struct lunar_strike_t : public druid_spell_t
 
     if ( p() -> buff.lunar_empowerment -> up() )
       m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent() +
-                 p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
+                 p() -> talent.soul_of_the_forest -> effectN( 1 ).percent() +
+                 p() -> cache.mastery_value();
 
     return m;
   }
@@ -4119,9 +4156,16 @@ struct sunfire_t: public druid_spell_t
     aoe                    = -1;
   }
 
-  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  double action_multiplier() const override
   {
-    return druid_spell_t::spell_direct_power_coefficient( s );
+    double am = druid_spell_t::action_multiplier();
+
+    // Assume Starfall is hitting all targets that are dotted (if it's up at all)
+    if ( p() -> buff.starfall -> up() )
+      am *= 1.0 + p() -> buff.starfall -> data().effectN( 1 ).percent()
+                + p() -> cache.mastery_value();
+
+    return am;
   }
 
   void execute() override
@@ -4161,9 +4205,16 @@ struct moonfire_t : public druid_spell_t
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
   }
 
-  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  double action_multiplier() const override
   {
-    return druid_spell_t::spell_direct_power_coefficient( s );
+    double am = druid_spell_t::action_multiplier();
+
+    // Assume Starfall is hitting all targets that are dotted (if it's up at all)
+    if ( p() -> buff.starfall -> up() )
+      am *= 1.0 + p() -> buff.starfall -> data().effectN( 1 ).percent() +
+                  p() -> cache.mastery_value();
+
+    return am;
   }
 
   void tick( dot_t* d ) override
@@ -4446,7 +4497,8 @@ struct solar_wrath_t : public druid_spell_t
 
     if ( p() -> buff.solar_empowerment -> up() )
       m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent() +
-                 p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
+                 p() -> talent.soul_of_the_forest -> effectN( 1 ).percent() + 
+                 p() -> cache.mastery_value();
 
     return m;
   }
@@ -4546,6 +4598,14 @@ struct starfall_t : public druid_spell_t
     add_child( pulse );
   }
 
+  double action_multiplier() const override
+  {
+    double am = druid_spell_t::action_multiplier();
+    am *= 1.0 + p() -> cache.mastery_value();
+
+    return am;
+  }
+
   void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
@@ -4605,6 +4665,14 @@ struct starsurge_t : public druid_spell_t
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
   }
 
+  double action_multiplier() const override
+  {
+    double am = druid_spell_t::action_multiplier();
+    am *= 1.0 + p() -> cache.mastery_value();
+
+    return am;
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -4628,6 +4696,29 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
   {
     parse_options( options_str );
+  }
+
+  double action_multiplier() const override
+  {
+    double m = druid_spell_t::action_multiplier();
+
+    if ( p() -> buff.lunar_empowerment -> up() )
+      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent() +
+                 p() -> cache.mastery_value();
+
+    if ( p() -> buff.solar_empowerment -> up() )
+      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent() +
+                 p() -> cache.mastery_value();
+
+    return m;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.lunar_empowerment -> decrement();
+    p() -> buff.solar_empowerment -> decrement();
   }
 };
 
