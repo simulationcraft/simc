@@ -31,7 +31,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Cat Form (3025), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Lucidity (137247), Astral Influence (197524)
+Affecting spells : Cat Form (3025), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Roots Range Increase (96148), Lucidity (137247), Astral Influence (197524)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   .....x.. ........ ........ ........ 
@@ -77,7 +77,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Lucidity (137247)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -105,7 +105,7 @@ Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Ironbark (102342), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (105770), Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (105790), Tricks of Time (105864), Item - Druid T14 Restoration 2P Bonus (123088), Lucidity (137247), Germination (155675), Astral Influence (197524)
+Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Ironbark (102342), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (105770), Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (105790), Tricks of Time (105864), Item - Druid T14 Restoration 2P Bonus (123088), Lucidity (137247), Germination (155675), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...x.. ........ ........ 
@@ -136,7 +136,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Lucidity (137247)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -332,7 +332,7 @@ Effects          :
 #1 (id=1032)     : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
+Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
 Class            : Restoration Rogue, Druid
 Race             : Night Elf
 Resource         : 3.5% Base Mana (0 @Level 110)
@@ -360,7 +360,7 @@ Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Predatory Swiftness (69369), Profusion (96206), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Tricks of Time (105864), Soul of the Forest (114108), Lucidity (137247), Sage Mender (144871), Astral Influence (197524)
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Predatory Swiftness (69369), Profusion (96206), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Tricks of Time (105864), Soul of the Forest (114108), Lucidity (137247), Sage Mender (144871), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -424,7 +424,7 @@ Class            : Feral Druid
 Spell Level      : 12
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Affecting spells : Barkskin Duration Increase (60142)
+Affecting spells : Barkskin Duration Increase (60142), Wildcat Celerity (184877)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -439,7 +439,7 @@ Effects          :
 Description      : Instantly restores $s2 Energy, and causes all autoattacks and abilities that you use to deal $s1% additional damage for their full durations. Lasts $d.
 Tooltip          : Autoattacks and physical abilities deal $s1% additional damage, for their full duration.
 
-Name             : Shred (id=5221) [Scaling Spell (2), Spell Family (7)] 
+Name             : Shred (id=5221) [Scaling Spell (3), Spell Family (7)] 
 Class            : Feral Druid
 Resource         : 40 Energy
 Spell Level      : 1
@@ -517,7 +517,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Lucidity (137247)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -672,7 +672,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Incarnation: Tree of Life (81097), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Astral Influence (197524)
+Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Incarnation: Tree of Life (81097), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -941,7 +941,7 @@ Spell Level      : 56
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
-Affecting spells : Cat Form (3025), Predatory Swiftness (69369), Lucidity (137247), Astral Influence (197524)
+Affecting spells : Cat Form (3025), Cheaper Druid Shapeshifting (38314), Predatory Swiftness (69369), Lucidity (137247), Book of Rebirth (176021), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1003,7 +1003,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1048,7 +1048,7 @@ Critical strike chance doubled against bleeding targets.
    4 points: ${$m1*4/5} damage
    5 points: ${$m1*5/5} damage
 
-Name             : Maim (id=22570) [Scaling Spell (2), Spell Family (7)] 
+Name             : Maim (id=22570) [Scaling Spell (3), Spell Family (7)] 
 Class            : Feral Druid
 Resource         : 35 Energy
 Resource         : 1 - 5 Combo Points
@@ -1152,7 +1152,7 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Glyph of Stars (114301)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -1298,7 +1298,7 @@ Duration         : Aura (infinite)
 Cooldown         : 180 seconds
 Proc Flags       : .....x.. .x.x.x.x .x...... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
-Affecting spells : Bear Form (5487), Incarnation (117679)
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2168,7 +2168,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc81269
 
-Name             : Efflorescence (id=81269) [Scaling Spell (2), Spell Family (7)] 
+Name             : Efflorescence (id=81269) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 88
 Range            : 100 yards
@@ -2309,7 +2309,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 4
 Description      : Cures harmful effects on the friendly target, removing all Magic, Curse, and Poison effects.
 
-Name             : Sunfire (Solar) (id=93402) [Scaling Spell (2), Spell Family (7)] 
+Name             : Sunfire (Solar) (id=93402) [Scaling Spell (3), Spell Family (7)] 
 Class            : Balance Restoration Druid
 Spell Level      : 24
 Range            : 40 yards
@@ -2399,7 +2399,7 @@ Effects          :
 Description      : $@spelldesc17076
 Tooltip          : Cast time of Healing Touch reduced by $s1%.
 
-Name             : Solar Beam (id=97547) [Scaling Spell (2), Spell Family (7)] 
+Name             : Solar Beam (id=97547) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 28
 Range            : 100 yards
@@ -2551,7 +2551,7 @@ Spell Level      : 1
 GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
-Affecting spells : Bear Form (5487), Incarnation (117679), Lucidity (137247)
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Lucidity (137247)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2603,7 +2603,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Bear Form (5487), Incarnation (117679), Lucidity (137247)
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Lucidity (137247)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2634,7 +2634,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
-Affecting spells : Bear Form (5487), Glyph of Stars (114301), Incarnation (117679)
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301), Incarnation (117679)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2865,6 +2865,7 @@ Class            : Druid
 Spell Level      : 48
 Duration         : 15 seconds
 Cooldown         : 180 seconds
+Affecting spells : Wildcat Celerity (184877)
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2929,7 +2930,7 @@ Tooltip          : Arcane damage every $t3 seconds.$?$w1!=0[
 Movement speed reduced by $w1%.][]$?$w4!=0[
 Damage taken from the Druid's Moonfire, Sunfire, and Starfall increased by $w4%.][]
 
-Name             : Astral Storm (id=106998) [Scaling Spell (2), Spell Family (7)] 
+Name             : Astral Storm (id=106998) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 44
 Range            : 100 yards
@@ -2961,7 +2962,7 @@ Effects          :
                    Affected Spells: Mark of the Wild (1126)
 Description      : Each time you shapeshift into Cat Form or Bear Form, your shapeshifted form will have a random hair color.$?s5217[ Does not apply to Claws of Shirvallah.][]
 
-Name             : Renewal (id=108238) [Scaling Spell (7), Spell Family (7)] 
+Name             : Renewal (id=108238) [Scaling Spell (8), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
 Cooldown         : 120 seconds
@@ -3888,7 +3889,7 @@ Effects          :
 #1 (id=201008)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1078
 
-Name             : Rake (id=150017) [Scaling Spell (2), Spell Family (7)] 
+Name             : Rake (id=150017) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 6
 Range            : 5 yards
@@ -4185,12 +4186,12 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : Increases your chance to critically strike by $s1%.
 
-Name             : Tranquility (id=157982) [Scaling Spell (2), Spell Family (7)] 
+Name             : Tranquility (id=157982) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Stacks           : 3 maximum
-Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342)
+Affecting spells : Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Ironbark (102342)
 Triggered by     : Tranquility (740)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ......x. 
@@ -4573,7 +4574,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 58
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Lucidity (137247)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... .......x ..x..... ....x...   ........ ..x..... x....... ........ 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4605,7 +4606,7 @@ Effects          :
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
-Name             : Maim (id=168877) [Scaling Spell (2), Spell Family (7)] 
+Name             : Maim (id=168877) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Resource         : 35 Energy
 Spell Level      : 82
@@ -4630,7 +4631,7 @@ Effects          :
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
-Name             : Maim (id=168878) [Scaling Spell (2), Spell Family (7)] 
+Name             : Maim (id=168878) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Resource         : 35 Energy
 Spell Level      : 82
@@ -4655,7 +4656,7 @@ Effects          :
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
-Name             : Maim (id=168879) [Scaling Spell (2), Spell Family (7)] 
+Name             : Maim (id=168879) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Resource         : 35 Energy
 Spell Level      : 82
@@ -4680,7 +4681,7 @@ Effects          :
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
-Name             : Maim (id=168880) [Scaling Spell (2), Spell Family (7)] 
+Name             : Maim (id=168880) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Resource         : 35 Energy
 Spell Level      : 82
@@ -4705,7 +4706,7 @@ Effects          :
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
 
-Name             : Maim (id=168881) [Scaling Spell (2), Spell Family (7)] 
+Name             : Maim (id=168881) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Resource         : 35 Energy
 Spell Level      : 82
@@ -4952,7 +4953,7 @@ Description      : Calls down waves of falling stars that damage enemies at the 
 
 Enemies in your Starfall take $197637s1% additional damage from your Moonfire and Sunfire.
 
-Name             : Starfall (id=191037) [Scaling Spell (2), Spell Family (7)] 
+Name             : Starfall (id=191037) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 76
 Range            : 50000 yards
@@ -5272,7 +5273,7 @@ Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 90 seconds
-Affecting spells : Glyph of Stars (114301)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -5364,7 +5365,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40400
 Description      : Causes $s1 Nature damage to the target.
 
-Name             : Sunfire (Solar) (id=197630) [Scaling Spell (2), Spell Family (7)] 
+Name             : Sunfire (Solar) (id=197630) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Resource         : 1.5% Base Mana (3300 @Level 110)
 Spell Level      : 18
@@ -5523,7 +5524,7 @@ Effects          :
 Description      : When Rejuvenation heals a target below $s1% health, it applies Cultivation to the target, healing them for $200389o1 over $200389d.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -5934,7 +5935,7 @@ Description      : You align to the power of the Moon and Stars so your direct d
 Your Lunar Strike extend the duration of Moonfire by $s1 sec.
 Your Solar Wraths extend the duration of Sunfire by $s2 sec.
 
-Name             : Shooting Stars (id=202497) [Scaling Spell (2), Spell Family (7)] 
+Name             : Shooting Stars (id=202497) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 Spell Level      : 76
 Range            : 50000 yards

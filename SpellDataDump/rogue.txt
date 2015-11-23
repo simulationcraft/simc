@@ -33,7 +33,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Ruthlessness (14161), Vendetta (79140), Fury of the Destroyer (109949), Prey on the Weak (131511), Shadow Dance (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Paralytic Poison (200800)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Fury of the Destroyer (109949), Prey on the Weak (131511), Shadow Dance (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Paralytic Poison (200800)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -56,7 +56,7 @@ Tooltip          : Stunned.$?$w2!=0[
 Damage taken increased by $w2%.][]
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
-Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
+Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -77,7 +77,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Shadow Blades (121471), Cloak and Dagger (138106), Silent Blades (145193), Numbing Poison (200803)
+Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Shadow Blades (121471), Cloak and Dagger (138106), Silent Blades (145193), From the Shadows (184918), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -99,7 +99,7 @@ Class            : Assassination Combat Subtlety Rogue
 Spell Level      : 16
 Range            : 5 yards
 Cooldown         : 0.5 seconds
-Affecting spells : Glyph of Pick Pocket (58017)
+Affecting spells : Glyph of Pick Pocket (58017), Pickpocketer's Handbook (168798)
 Attributes       : ....x... ........ x....... ........   .....x.. ....x... .x...x.. ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -179,7 +179,7 @@ Spell Level      : 18
 Range            : 5 yards
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Vendetta (79140), Item - Rogue T13 2P Bonus (Tricks of the Trade) (105849), Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon) (105866), Acrobatic Strikes (196924)
+Affecting spells : Improved Kick (24434), Vendetta (79140), Item - Rogue T13 2P Bonus (Tricks of the Trade) (105849), Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon) (105866), Acrobatic Strikes (196924)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -342,7 +342,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Shadow Dance (185314), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Shadow Dance (185314), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -457,12 +457,12 @@ Description      : Lunging finishing move that causes damage per combo point and
    6 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*6} damage][]
 Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00*0.88}]
 
-Name             : Deadly Poison (id=2818) [Scaling Spell (8), Spell Family (8)] 
+Name             : Deadly Poison (id=2818) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864), Numbing Poison (200803)
 Triggered by     : Deadly Poison (2823)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -483,7 +483,7 @@ Cast Time        : 3 seconds
 Duration         : 3600 seconds
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864), Numbing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -622,7 +622,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -644,7 +644,7 @@ Description      : Finishing move that consumes combo points to increase attack 
 Tooltip          : Attack speed increased by $w1%.$?$w2!=0[
 Regaining $w2 Energy every $t2 sec.][]
 
-Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
+Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
 Class            : Restoration Rogue, Druid
 Race             : Night Elf
 Resource         : 3.5% Base Mana (0 @Level 110)
@@ -773,7 +773,7 @@ Resource         : 60 Energy
 Spell Level      : 6
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Cold Blood (170882), Cold Blood (182304)
+Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Cold Blood (170882), Cold Blood (182304), From the Shadows (184918), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -809,12 +809,12 @@ Effects          :
 Description      : Coats your weapons with a Lethal Poison that lasts for $d.  Each strike has a $h% chance of poisoning the enemy, which instantly inflicts $8680s1 Nature damage and reduces all healing received for $8680d.
 Tooltip          : Each weapon strike has a chance of inflicting additional Nature damage to the victim and reducing all healing received for $8680d.
 
-Name             : Wound Poison (id=8680) [Scaling Spell (8), Spell Family (8)] 
+Name             : Wound Poison (id=8680) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 Spell Level      : 25
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140)
+Affecting spells : Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140)
 Triggered by     : Wound Poison (8679)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -968,7 +968,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6402)     : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 18
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Venomhide Poison (14795), Numbing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Venomhide Poison (14795), Spore Cloud (32643), Numbing Poison (200803)
 Description      : Increases the application chance of Deadly Poison and Wound Poison by $s1%.
 
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
@@ -1124,7 +1124,7 @@ Effects          :
 Description      : Increases your speed while $?s5176[Prowl is active by $s1%.][Stealth is active by $s1%.]
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1173,7 +1173,7 @@ Effects          :
 Description      : Silence all enemies within $A1 yards for $d and restore $m2 Energy.  Non-player victim spellcasting is also interrupted for $32747d.
 Tooltip          : Silenced.
 
-Name             : Mutilate Off-Hand (id=27576) [Scaling Spell (8), Spell Family (8)] 
+Name             : Mutilate Off-Hand (id=27576) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 Spell Level      : 1 (max 80)
 Range            : 5 yards
@@ -1282,7 +1282,7 @@ Spell Level      : 11
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
-Affecting spells : Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (170882), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (170882), Toxic Mutilator (184916), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x..x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1318,7 +1318,7 @@ Variables        : $mult2=$?s84601[${1.1*(1+$@versadmg)}][${1.00*1.05*(1+$@versa
 $mult=$?s76803[${$<mult2>*((100+$76803m1)/100)}][$<mult2>*${1.00}]
 
 Name             : Interrupt (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
 Spell Level      : 10
 Range            : 100 yards
@@ -1666,7 +1666,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=51319)    : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5
-                   Affected Spells: Pick Pocket (921)
+                   Affected Spells: Pick Pocket (921), Pick Pocket (192986)
 Description      : Increases the range of your Pick Pocket ability by $58017s1 yards.
 
 Name             : Glyph of Pick Lock (id=58027) [Spell Family (8), Passive, Hidden] 
@@ -2007,10 +2007,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Deadly Poison (113780), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Numbing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Numbing Poison (200803)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Misc Value: 22
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Deadly Poison (113780), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Numbing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Numbing Poison (200803)
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350
 Description      : Increases the damage done by your poisons by $76803s1%.
@@ -2107,7 +2107,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Parley (199743), Riposte (199753), Riposte (199754), Numbing Poison (200803)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Parley (199743), Riposte (199753), Riposte (199754), Numbing Poison (200803)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2335,7 +2335,7 @@ Name             : Deadly Poison (id=113780) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140)
+Affecting spells : Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2347,7 +2347,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.12870
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
-Name             : Shuriken Toss (id=114014) [Scaling Spell (8), Spell Family (8)] 
+Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 40 Energy
 Spell Level      : 11
@@ -3227,7 +3227,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : Stab the target, causing $sw2 Physical damage. Awards $s3 combo $lpoint:points;.
 
-Name             : Crimson Vial (id=185311) [Scaling Spell (7), Spell Family (8)] 
+Name             : Crimson Vial (id=185311) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
 Resource         : 30 Energy
 Spell Level      : 14
@@ -3305,7 +3305,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Strike through the shadows, appearing behind your target and dealing $sw2 Physical damage.  Awards $s3 combo $lpoint:points;.
 
-Name             : Poisoned Knife (id=185565) [Scaling Spell (8), Spell Family (8)] 
+Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
 Class            : Assassination Rogue
 Resource         : 40 Energy
 Spell Level      : 10
@@ -3330,7 +3330,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000
 Description      : Throw a poison-coated knife, dealing $s2 damage and applying your active Lethal and Non-Lethal Poisons. Awards $s3 combo $lpoint:points;.
 
-Name             : Pistol Shot (id=185763) [Scaling Spell (8), Spell Family (8)] 
+Name             : Pistol Shot (id=185763) [Scaling Spell (9), Spell Family (8)] 
 Class            : Combat Rogue
 Resource         : 40 Energy
 Spell Level      : 11
@@ -3393,7 +3393,7 @@ Effects          :
 Description      : Chills the target for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
-Name             : Cannonball Barrage (id=185779) [Scaling Spell (8), Spell Family (3)] 
+Name             : Cannonball Barrage (id=185779) [Scaling Spell (9), Spell Family (3)] 
 Class            : Rogue
 Spell Level      : 20
 Range            : 100 yards
@@ -3711,7 +3711,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Cold Blood (182304), Shadow Dance (185314), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), 
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Cold Blood (182304), Eviscerating Blade (184917), Shadow Dance (185314), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3763,7 +3763,7 @@ Effects          :
                    Affected Spells: Wound Poison (8679)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Numbing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Numbing Poison (200803)
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Debilitating Poison (115196)
@@ -4011,7 +4011,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
-Affecting spells : Glyph of Enslave Demon (58107)
+Affecting spells : Glyph of Enslave Demon (58107), Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
@@ -4141,7 +4141,7 @@ Effects          :
 Description      : Sabre Slash has an additional $s1% chance to trigger a second instant free Sabre Slash.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -4273,7 +4273,7 @@ Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
-Affecting spells : Improved Poisons (14117), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
 Triggered by     : Numbing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -4284,7 +4284,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
 Effects          :
 #1 (id=295687)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 10 | Scaled Value: 10
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Wound Poison (8679), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Shuriken Toss (114014), Poisoned Knife (185565), Shuriken Storm (197835), Numbing Poison (200803)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Wound Poison (8679), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Shuriken Toss (114014), Poisoned Knife (185565), Shuriken Storm (197835), Numbing Poison (200803)
 Description      : $@spelldesc200802
 Tooltip          : Taking $s1% increased damage from the poisoning Rogue's abilities.
 

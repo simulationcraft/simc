@@ -34,7 +34,7 @@ Effects          :
 Description      : Reduces all damage taken by $s1% for $d.
 Tooltip          : Damage taken reduced by $w1%.
 
-Name             : Lay on Hands (id=633) [Scaling Spell (6), Spell Family (10)] 
+Name             : Lay on Hands (id=633) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Spell Level      : 22
 Range            : 40 yards
@@ -88,7 +88,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Lucidity (137288)
+Affecting spells : Improved Hammer of Justice (24188), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -159,7 +159,7 @@ Effects          :
 Description      : Places a blessing on the friendly target, granting immunity to movement impairing effects $?s199325[and increasing movement speed by $199325m1%][] for $d.
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
 
-Name             : Denounce (id=2812) [Scaling Spell (6), Spell Family (10)] 
+Name             : Denounce (id=2812) [Scaling Spell (7), Spell Family (10)] 
 Class            : Holy Paladin
 Spell Level      : 16
 Range            : 40 yards
@@ -392,7 +392,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Sword of Light (53503), Beacon of Light (53563), Infusion of Light (54149), Saint's Vigor (105742), Sanctuary (105805), Lucidity (137288), Beacon of Faith (156910)
+Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Infusion of Light (54149), Saint's Vigor (105742), Sanctuary (105805), Lucidity (137288), Beacon of Faith (156910), Magnifying Light (185100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -452,7 +452,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Cooldown         : 12 seconds
-Affecting spells : Sanctity of Battle (25956), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T10 Retribution 4P Bonus (70762), Sanctified Wrath (114232), Holy Paladin (137029), Lucidity (137288), Exorcism (138162), The Might of Virtue (198801)
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Sanctified Wrath (114232), Holy Paladin (137029), Lucidity (137288), Exorcism (138162), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), The Might of Virtue (198801)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -524,7 +524,7 @@ Description      : Protects the target with a shield of Holy Light for $d, absor
 Tooltip          : Absorbs up to $w1 damage every $t1 sec.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -573,7 +573,7 @@ Effects          :
 Description      : Increases your threat generation while active, making you a more effective tank.
 Tooltip          : Increases your threat generation while active.
 
-Name             : Holy Shock (id=25912) [Scaling Spell (6), Spell Family (10)] 
+Name             : Holy Shock (id=25912) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 40
@@ -591,7 +591,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 3.00000
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
-Name             : Holy Shock (id=25914) [Scaling Spell (6), Spell Family (10)] 
+Name             : Holy Shock (id=25914) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 40
@@ -831,7 +831,7 @@ Description      : Increases your mounted speed by $s1%.  This does not stack wi
 Tooltip          : Mounted speed increased by $w1%.  This does not stack with other movement speed increasing effects.
 
 Name             : Interrupt (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
 Spell Level      : 10
 Range            : 100 yards
@@ -854,7 +854,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
-Affecting spells : Sanctity of Battle (25956), Sword of Light (53503), Guarded by the Light (53592), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Paladin (137029), Judgment (197277), Reprisal (201391), The Fires of Justice (203316)
+Affecting spells : Sanctity of Battle (25956), Improved Crusader Strike (44300), Sword of Light (53503), Guarded by the Light (53592), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Paladin (137029), Judgment (197277), Reprisal (201391), The Fires of Justice (203316)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -1663,7 +1663,7 @@ Spell Level      : 54
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Beacon of Light (53563), Infusion of Light (54149), Saint's Vigor (105742), Lucidity (137288), Unyielding Faith (144624), Beacon of Faith (156910)
+Affecting spells : Beacon of Light (53563), Infusion of Light (54149), Saint's Vigor (105742), Lucidity (137288), Unyielding Faith (144624), Beacon of Faith (156910), Magnifying Light (185100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1841,7 +1841,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : Heals the target of your heals for 30% of the amount healed.
 
-Name             : Ancient Fury (id=86704) [Scaling Spell (6), Spell Family (10)] 
+Name             : Ancient Fury (id=86704) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Affecting spells : Exorcism (138162)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1855,7 +1855,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 0 (avg=0.2366, dl=0.3) | SP Coefficient: 0.10700 | Radius: 10 yards
 Description      : Unleash the fury of ancient kings, causing $s1 Holy damage per application of Ancient Power, divided evenly among all targets within $a1 yards.
 
-Name             : Hammer of the Righteous (id=88263) [Scaling Spell (6), Spell Family (10)] 
+Name             : Hammer of the Righteous (id=88263) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Spell Level      : 1
 Range            : 50000 yards
@@ -1901,7 +1901,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14
 Description      : Your Paladin class mounts glow with holy light.
 
-Name             : Protector of the Innocent (id=94289) [Scaling Spell (6), Spell Family (10)] 
+Name             : Protector of the Innocent (id=94289) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Range            : 100 yards
 Affecting spells : Sanctuary (105805)
@@ -2145,7 +2145,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards
 Description      : $@spelldesc114165
 
-Name             : Holy Prism (id=114871) [Scaling Spell (6), Spell Family (10)] 
+Name             : Holy Prism (id=114871) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
@@ -2405,7 +2405,7 @@ Effects          :
 #1 (id=130554)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Arcing Light (id=119952) [Scaling Spell (6), Spell Family (10)] 
+Name             : Arcing Light (id=119952) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Spell Level      : 1
@@ -2998,6 +2998,7 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
+Triggered by     : The Jailer's Libram (168802)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3662,7 +3663,7 @@ Name             : Judgment (id=197277) [Spell Family (10)]
 Class            : Paladin
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Sanctity of Battle (25956), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T10 Retribution 4P Bonus (70762), Sanctified Wrath (114232), Holy Paladin (137029), Lucidity (137288), Exorcism (138162), Mass Judgment (198037), Judgments of the Bold (198798), The Might of Virtue (198801)
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Sanctified Wrath (114232), Holy Paladin (137029), Lucidity (137288), Exorcism (138162), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Mass Judgment (198037), Judgments of the Bold (198798), The Might of Virtue (198801)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3870,7 +3871,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : Your $?a137029[Judgment reduces][spells that consume Holy Power reduce] the remaining cooldown on Hammer of Justice by $s1 sec.
 
-Name             : Divine Hammer (id=198137) [Scaling Spell (6), Spell Family (10)] 
+Name             : Divine Hammer (id=198137) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 Spell Level      : 1
 Range            : 50000 yards
@@ -3895,7 +3896,7 @@ Spell Level      : 5
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Sanctity of Battle (25956), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T10 Retribution 4P Bonus (70762), Sanctified Wrath (114232), Holy Paladin (137029), Lucidity (137288), Exorcism (138162), The Might of Virtue (198801)
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Sanctified Wrath (114232), Holy Paladin (137029), Lucidity (137288), Exorcism (138162), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), The Might of Virtue (198801)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4004,7 +4005,7 @@ Effects          :
 Description      : $@spelldesc200025
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -4065,7 +4066,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 1 seconds
 Charges          : 3 (4 seconds cooldown)
-Affecting spells : Sanctity of Battle (25956), Sword of Light (53503), Guarded by the Light (53592), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Paladin (137029), Judgment (197277), Reprisal (201391), The Fires of Justice (203316)
+Affecting spells : Sanctity of Battle (25956), Improved Crusader Strike (44300), Sword of Light (53503), Guarded by the Light (53592), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Paladin (137029), Judgment (197277), Reprisal (201391), The Fires of Justice (203316)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4170,7 +4171,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 4.5 seconds
 Stacks           : 3 maximum
-Affecting spells : Sanctity of Battle (25956), Sword of Light (53503), Guarded by the Light (53592), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Paladin (137029), Judgment (197277), Reprisal (201391), The Fires of Justice (203316)
+Affecting spells : Sanctity of Battle (25956), Improved Crusader Strike (44300), Sword of Light (53503), Guarded by the Light (53592), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Paladin (137029), Judgment (197277), Reprisal (201391), The Fires of Justice (203316)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4615,7 +4616,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Sword of Light (53503), Beacon of Light (53563), Infusion of Light (54149), Saint's Vigor (105742), Sanctuary (105805), Lucidity (137288), Beacon of Faith (156910)
+Affecting spells : Increased Flash of Light Crit Chance (38522), Sword of Light (53503), Beacon of Light (53563), Infusion of Light (54149), Saint's Vigor (105742), Sanctuary (105805), Lucidity (137288), Beacon of Faith (156910), Magnifying Light (185100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

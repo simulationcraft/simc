@@ -9,7 +9,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 15 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Ice Floes (108839), Item - Mage T15 2P Bonus (138316), Ice Shard (166869), Lonely Winter (205024)
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Improved Counterspell (24429), Ice Floes (108839), Item - Mage T15 2P Bonus (138316), Ice Shard (166869), Lonely Winter (205024)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -26,7 +26,7 @@ Effects          :
 Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
 Tooltip          : $?$w1=0[][Movement slowed by $w1%.]
 
-Name             : Cone of Cold (id=120) [Scaling Spell (4), Spell Family (3)] 
+Name             : Cone of Cold (id=120) [Scaling Spell (5), Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 4% Base Mana (44000 @Level 110)
 Spell Level      : 28
@@ -110,7 +110,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.34800
 Description      : Throw a fiery ball that causes $s1 Fire damage.
 
-Name             : Arcane Explosion (id=1449) [Scaling Spell (4), Spell Family (3)] 
+Name             : Arcane Explosion (id=1449) [Scaling Spell (5), Spell Family (3)] 
 Class            : Arcane Mage
 Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 28
@@ -152,7 +152,7 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 15 seconds
 Charges          : 0 (15 seconds cooldown)
-Affecting spells : Displacement (195676)
+Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795), Displacement (195676)
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -199,6 +199,7 @@ Spell Level      : 26
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
+Affecting spells : Improved Counterspell (24429)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -488,7 +489,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage.
 
-Name             : Ice Barrier (id=11426) [Scaling Spell (4), Spell Family (3)] 
+Name             : Ice Barrier (id=11426) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 14
@@ -512,7 +513,7 @@ Class            : Arcane Mage
 Spell Level      : 44
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Affecting spells : Icy Veins (12472), Item - Mage T12 4P Bonus (99064), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), 
+Affecting spells : Icy Veins (12472), Item - Mage T12 4P Bonus (99064), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Wild Arcanist (184903), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -524,7 +525,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7e
 #2 (id=5131)     : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 14
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Arcane Missiles! (79683), Cannonball Barrage (185779), Blizzard (190356)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Arcane Missiles! (79683), Cleansing Flames (107835), Cleansing Flames (109847), Cleansing Flames (109849), Cannonball Barrage (185779), Blizzard (190356)
 #3 (id=5132)     : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
                    Affected Spells: Arcane Blast (30451)
@@ -637,7 +638,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown effect sub type (112)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 911
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Frozen Orb (84721), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Cannonball Barrage (185779), Combustion (190319), Blizzard (190356)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Frozen Orb (84721), Cleansing Flames (107835), Cleansing Flames (109847), Cleansing Flames (109849), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Cannonball Barrage (185779), Combustion (190319), Blizzard (190356)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $s2% chance.
@@ -684,7 +685,7 @@ Effects          :
 Description      : Maximum mana increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -763,7 +764,7 @@ Arcane Blast's damage is increased by $36032s1% per Arcane Charge, and its mana 
 
 Also applies the Slow spell to any target it damages.][]
 
-Name             : Ice Lance (id=30455) [Scaling Spell (4), Spell Family (3)] 
+Name             : Ice Lance (id=30455) [Scaling Spell (5), Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 5
@@ -837,7 +838,7 @@ Effects          :
 Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
-Name             : Dragon's Breath (id=31661) [Scaling Spell (4), Spell Family (3)] 
+Name             : Dragon's Breath (id=31661) [Scaling Spell (5), Spell Family (3)] 
 Class            : Fire Mage
 Resource         : 4% Base Mana (44000 @Level 110)
 Spell Level      : 62
@@ -886,7 +887,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 78116 | Radius: 2 yards
 Description      : Summons a Water Elemental to fight for the caster.
 
-Name             : Waterbolt (id=31707) [Scaling Spell (4), Spell Family (3)] 
+Name             : Waterbolt (id=31707) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 Spell Level      : 10
 Range            : 45 yards
@@ -906,7 +907,7 @@ Effects          :
 Description      : Deals $s1 Frost damage to the target.
 
 Name             : Interrupt (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
 Spell Level      : 10
 Range            : 100 yards
@@ -923,7 +924,7 @@ Effects          :
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
-Name             : Freeze (id=33395) [Scaling Spell (4), Spell Family (3)] 
+Name             : Freeze (id=33395) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 Resource         : 12% Base Mana (132000 @Level 110)
 Spell Level      : 10
@@ -1406,7 +1407,7 @@ Effects          :
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
-Name             : Frostbolt (id=59638) [Scaling Spell (4)] 
+Name             : Frostbolt (id=59638) [Scaling Spell (5)] 
 Class            : Mage
 Resource         : 0.1% Base Mana (1100 @Level 110)
 Spell Level      : 20
@@ -1759,7 +1760,7 @@ Effects          :
 Description      : $@spelldesc86949
 Tooltip          : You have recently benefited from Cauterize and cannot benefit from it again.
 
-Name             : Fireball (id=88082) [Scaling Spell (4)] 
+Name             : Fireball (id=88082) [Scaling Spell (5)] 
 Class            : Mage
 Resource         : 0.1% Base Mana (1100 @Level 110)
 Spell Level      : 1
@@ -1778,7 +1779,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=1.8, dl=0.2) | SP Coefficient: 0.60000
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
-Name             : Arcane Blast (id=88084) [Scaling Spell (4), Spell Family (3)] 
+Name             : Arcane Blast (id=88084) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 Resource         : 0.1% Base Mana (1100 @Level 110)
 Spell Level      : 34
@@ -1983,7 +1984,7 @@ The Fingers of Frost effect causes your next Ice Lance to deal $44544s2% increas
 
 Limit $44544s1 charges.
 
-Name             : Frost Bomb (id=113092) [Scaling Spell (4), Spell Family (3)] 
+Name             : Frost Bomb (id=113092) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 Spell Level      : 60
 Range            : 50000 yards
@@ -2516,7 +2517,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : Arcane Missiles has a $s1% chance to not consume Arcane Missiles!.  Consuming Brain Freeze has a $s2% chance to drop an icy boulder on your target. Inferno Blast also causes your next Pyroblast to be a critical strike.
 
-Name             : Frigid Blast (id=145264) [Scaling Spell (4), Spell Family (3)] 
+Name             : Frigid Blast (id=145264) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 Range            : 100 yards
 Velocity         : 0.8 yards/sec
@@ -3509,7 +3510,7 @@ Also freezes the target in place for up to $d. Damage caused may interrupt the e
 |cFFFFFFFFPassive:|r Ice Lance no longer launches Icicles.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds

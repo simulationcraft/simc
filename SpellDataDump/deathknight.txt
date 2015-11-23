@@ -29,7 +29,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | Radius: 30 yards
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
-Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
+Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -168,7 +168,7 @@ Effects          :
 #1 (id=4606)     : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (3), Spell Family (9)] 
+Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter, Death Knight
 Resource         : 25 Focus
 Spell Level      : 10
@@ -238,7 +238,7 @@ Description      : Increases attack power by $s1. Lasts $d.
 Tooltip          : Attack power increased by $s1.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -291,7 +291,7 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Interrupt (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
 Spell Level      : 10
 Range            : 100 yards
@@ -4697,7 +4697,7 @@ Effects          :
 Description      : @spelldesc198943
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds

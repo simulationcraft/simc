@@ -61,7 +61,7 @@ Effects          :
 Description      : Purges the enemy target, removing $m1 beneficial Magic $leffect:effects;.$?(s147762&s51530)
 [ Successfully purging a target grants a stack of Maelstrom Weapon.][]
 
-Name             : Lightning Bolt (id=403) [Scaling Spell (9), Spell Family (11)] 
+Name             : Lightning Bolt (id=403) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Resource         : 1.75% Base Mana (3850 @Level 110)
 Spell Level      : 1
@@ -125,7 +125,7 @@ Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703), Deluge (200075)
+Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703), Deluge (200075)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -185,7 +185,7 @@ Class            : Shaman
 Spell Level      : 12
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326)
+Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Tablet of Ghost Wolf (168799)
 Attributes       : ........ ........ x......x ........   ........ ..x..... .x...... ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -364,7 +364,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Tidal Waves (53390), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900)
+Affecting spells : Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -382,7 +382,7 @@ Resource         : 10 - 100 Maelstrom
 Spell Level      : 3
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Elemental Fury (60188), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Lightning Rod (197209), Telluric Currents (202327)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Lightning Rod (197209), Telluric Currents (202327)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -394,7 +394,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
-Name             : Fire Nova (id=8349) [Scaling Spell (9), Spell Family (11)] 
+Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Spell Level      : 12
 Range            : 100 yards
@@ -605,7 +605,7 @@ Effects          :
 Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana.  This effect can occur only once every 30 minutes.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -622,6 +622,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Windfury Attack (id=25504) [Spell Family (11)] 
 Class            : Shaman
 Range            : 100 yards
+Affecting spells : Furious Winds (184920)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -791,6 +792,7 @@ Spell power increased by $s2.
 Name             : Windfury Attack (id=33750) [Spell Family (11)] 
 Class            : Shaman
 Range            : 100 yards
+Affecting spells : Furious Winds (184920)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -880,7 +882,7 @@ Effects          :
 #1 (id=32741)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Lightning Bolt Overload (id=45284) [Scaling Spell (9), Spell Family (11)] 
+Name             : Lightning Bolt Overload (id=45284) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Spell Level      : 1
 Range            : 100 yards
@@ -899,7 +901,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: maelstrom
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
-Name             : Chain Lightning Overload (id=45297) [Scaling Spell (9), Spell Family (11)] 
+Name             : Chain Lightning Overload (id=45297) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Spell Level      : 32 (max 37)
 Range            : 100 yards
@@ -1161,6 +1163,7 @@ Effects          :
                    Affected Spells: Lava Lash (60103)
 #2 (id=48389)    : None (0)
                    Base Value: 1 | Scaled Value: 1
+                   Affected Spells: Mana Spring (24853)
 Description      : Your Lava Lash ability no longer spreads Flame Shock to nearby targets.
 
 Name             : Glyph of the Lakestrider (id=55448) [Spell Family (11), Passive, Hidden] 
@@ -1175,9 +1178,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48396)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Lightning Shield (192106), Lightning Shield (192109)
+                   Affected Spells: Spore Cloud (32642), Lightning Shield (192106), Lightning Shield (192109)
 #2 (id=48397)    : None (0)
                    Base Value: 1 | Scaled Value: 1
+                   Affected Spells: Mana Spring (24853)
 Description      : You automatically gain Water Walking while you are in Ghost Wolf form.
 
 Name             : Telluric Currents (Restoration) (id=55453) [Spell Family (11), Passive] 
@@ -1314,7 +1318,7 @@ Spell Level      : 22
 Range            : 25 yards
 Duration         : 3 seconds
 Cooldown         : 12 seconds
-Affecting spells : Lucidity (137326)
+Affecting spells : Shaman Shock Range Bonus (32973), Lucidity (137326)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1558,7 +1562,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 15
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue (10400), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake Totem (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Flametongue (194084), Earth Shock (196688), Frostbrand (196834), Frost Shock (196840)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue (10400), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake Totem (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Flametongue (194084), Earth Shock (196688), Frostbrand (196834), Frost Shock (196840)
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -1569,7 +1573,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
-Affecting spells : Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072)
+Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1665,6 +1669,7 @@ Effects          :
                    Affected Spells: Thunderstorm (51490)
 #2 (id=56112)    : None (0)
                    Base Value: 1 | Scaled Value: 1
+                   Affected Spells: Mana Spring (24853)
 Description      : Removes the knockback effect from your Thunderstorm spell.
 
 Name             : Thunderstorm (id=62133) 
@@ -1904,7 +1909,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300
 Description      : Increases the potency of your healing spells by up to $77226s1%, based on the current health level of your target (lower health targets are healed for more).
 
-Name             : Lava Burst Overload (id=77451) [Scaling Spell (9), Spell Family (11)] 
+Name             : Lava Burst Overload (id=77451) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Spell Level      : 1
 Range            : 100 yards
@@ -1931,7 +1936,7 @@ Spell Level      : 56
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Tidal Waves (53390), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326)
+Affecting spells : Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2437,7 +2442,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 1
 Description      : A massive gust of air that deals $sw1 Physical damage.
 
-Name             : Lava Beam Overload (id=114738) [Scaling Spell (9), Spell Family (11)] 
+Name             : Lava Beam Overload (id=114738) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Resource         : 8% Base Mana (17600 @Level 110)
 Spell Level      : 28
@@ -2532,7 +2537,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=129136)   : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 8
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Elemental Blast (117014), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Earth Shock (196688), Frost Shock (196840)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Spore Cloud (32642), Elemental Blast (117014), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Earth Shock (196688), Frost Shock (196840)
 #2 (id=129137)   : Trigger Spell: Windstrike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115357
 #3 (id=129138)   : Trigger Spell: Windstrike Off-Hand (64)
@@ -2772,7 +2777,7 @@ Effects          :
 Description      : Stuns enemies within $A1 yards for $d.
 Tooltip          : Stunned.
 
-Name             : Elemental Blast Overload (id=120588) [Scaling Spell (9), Spell Family (11)] 
+Name             : Elemental Blast Overload (id=120588) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3902,7 +3907,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Tidal Waves (53390), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900)
+Affecting spells : Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3937,7 +3942,7 @@ Effects          :
 Description      : Summon an Earthen Spike, instantly dealing $sw1 Physical damage to your enemy and increasing the Physical and Nature damage the target takes by $s2% for $d.
 Tooltip          : Nature and Physical spells deal $s2% more damage.
 
-Name             : Lightning Bolt (id=188196) [Scaling Spell (9), Spell Family (11)] 
+Name             : Lightning Bolt (id=188196) [Scaling Spell (10), Spell Family (11)] 
 Replaces         : Lightning Bolt (id=403)
 Class            : Elemental Shaman
 Spell Level      : 1
@@ -3981,14 +3986,14 @@ Effects          :
 Description      : Summons a Lightning Totem with $?s95155[$s1% of the caster's][$s1] health near the target for $d that repeatedly attacks an enemy within $188768r yards for $188768s1 Nature damage.
 Tooltip          : Lightning active
 
-Name             : Flame Shock (id=188389) [Scaling Spell (9), Spell Family (11)] 
+Name             : Flame Shock (id=188389) [Scaling Spell (10), Spell Family (11)] 
 Class            : Elemental Shaman
 Resource         : 0 - 20 Maelstrom
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Lightning Rod (197209), Path of Flame (201909)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Lightning Rod (197209), Path of Flame (201909)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4050,7 +4055,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Lightning Rod (197209), Path of Flame (201909)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Lightning Rod (197209), Path of Flame (201909)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4481,7 +4486,7 @@ Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
+Affecting spells : Energized Shield (24499), Shaman Lightning Shield Bonus (33020), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4503,7 +4508,7 @@ Name             : Lightning Shield (id=192109) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 8
 Range            : 10 yards
-Affecting spells : Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
+Affecting spells : Energized Shield (24499), Shaman Lightning Shield Bonus (33020), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
 Triggered by     : Lightning Shield (192106)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
@@ -4693,7 +4698,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: maelstrom
 Description      : Assault your target with earthen power, dealing $s1 Nature damage, and generating $s2 Maelstrom.
 
-Name             : Flametongue (id=193796) [Scaling Spell (9), Spell Family (11)] 
+Name             : Flametongue (id=193796) [Scaling Spell (10), Spell Family (11)] 
 Class            : Enhancement Shaman
 Spell Level      : 14
 Range            : 10 yards
@@ -4845,7 +4850,7 @@ Spell Level      : 26
 Range            : 25 yards
 GCD              : 1 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Elemental Fury (60188), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Lightning Rod (197209), Telluric Currents (202327)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Lightning Rod (197209), Telluric Currents (202327)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4887,7 +4892,7 @@ Spell Level      : 26
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Elemental Fury (60188), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Lightning Rod (197209), Telluric Currents (202327)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Lightning Rod (197209), Telluric Currents (202327)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5415,7 +5420,7 @@ Effects          :
 Description      : Chain Heal heals for an additional $200075s1% on targets inside your Healing Rain.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -5603,7 +5608,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Summons a Maelstrom Totem with $?s95155[$s1% of the caster's][$s1] health near the target for $d that repeatedly attacks an enemy within $202192r yards for $202192s1 Nature damage.  Every time the Maelstrom Totem attacks, it will generate $202205s1 Maelstrom for you.
 
-Name             : Maelstrom Bolt (id=202192) [Scaling Spell (9), Spell Family (11)] 
+Name             : Maelstrom Bolt (id=202192) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 Spell Level      : 1
 Range            : 30 yards

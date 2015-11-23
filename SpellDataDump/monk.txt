@@ -15,7 +15,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
-Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
+Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -28,7 +28,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
 
-Name             : Growl (Basic Ability) (id=2649) [Scaling Spell (3), Spell Family (9)] 
+Name             : Growl (Basic Ability) (id=2649) [Scaling Spell (4), Spell Family (9)] 
 Class            : Monk
 Spell Level      : 1
 Range            : 30 yards
@@ -250,7 +250,7 @@ Effects          :
 Description      : Maximum mana increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -303,7 +303,7 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Interrupt (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
 Spell Level      : 10
 Range            : 100 yards
@@ -968,7 +968,7 @@ Effects          :
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725)
 Description      : The Monk's Jab ability will change depending on what weapon is equipped, altering the Monk's fighting style appearance. Damage and resource cost remain the same.
 
-Name             : Paralysis (id=115078) [Scaling Spell (5), Spell Family (53)] 
+Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Resource         : 3% Base Mana (33000 @Level 110)
 Resource         : 20 Energy w/ Stagger (id=115069)
@@ -1005,7 +1005,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Serenity (152173)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Serenity (152173), Scroll of Touch of Death (168797)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ .......x ........ 
@@ -1020,7 +1020,7 @@ Effects          :
 Description      : Use ancient Pandaren knowledge of anatomy to inflict mortal damage on an enemy. After $d, the target will take damage equal to the monk's maximum health (damage reduced against players).
 Tooltip          : Taking $w1 damage when this effect expires.
 
-Name             : Chi Wave (id=115098) [Scaling Spell (5), Spell Family (53)] 
+Name             : Chi Wave (id=115098) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 18
 Range            : 40 yards
@@ -1043,7 +1043,7 @@ $healMult=$?a115070[${1.2}][${1.0}]
 $damage=${$<dmgMult>*$AP*0.500*(1+$@versadmg)}
 $healing=${$<healMult>*$AP*0.500*(1+$@versadmg)}
 
-Name             : Renewing Mist (id=115151) [Scaling Spell (5), Spell Family (53)] 
+Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 Resource         : 3.5% Base Mana (38500 @Level 110)
 Spell Level      : 24
@@ -1175,7 +1175,7 @@ Tooltip          : Breathes fire causing $w1 damage to all targets in front of y
 
 If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
 
-Name             : Fortifying Brew (id=115203) [Scaling Spell (5), Spell Family (53)] 
+Name             : Fortifying Brew (id=115203) [Scaling Spell (6), Spell Family (53)] 
 Class            : Brewmaster Monk
 Spell Level      : 24
 Cooldown         : 180 seconds
@@ -1236,7 +1236,7 @@ Description      : Increases your Stagger amount by an additional $s1% for $d.
 Shares charges with Purifying Brew.
 Tooltip          : Your Stagger amount is increased by an additional $w1%.
 
-Name             : Revival (id=115310) [Scaling Spell (5), Spell Family (53)] 
+Name             : Revival (id=115310) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 Resource         : 4.374% Base Mana (48113 @Level 110)
 Spell Level      : 65
@@ -1360,7 +1360,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Removes all Magic, Poison, and Disease effects from the target.
 
-Name             : Provoke (id=115546) [Scaling Spell (5), Spell Family (53)] 
+Name             : Provoke (id=115546) [Scaling Spell (6), Spell Family (53)] 
 Class            : Brewmaster Monk
 Spell Level      : 14
 Range            : 30 yards
@@ -1411,7 +1411,7 @@ Effects          :
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
-Name             : Afterlife (id=116092) [Scaling Spell (5), Spell Family (53), Passive] 
+Name             : Afterlife (id=116092) [Scaling Spell (6), Spell Family (53), Passive] 
 Class            : Windwalker Monk
 Spell Level      : 26
 Internal Cooldown: 1 seconds
@@ -1523,7 +1523,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Radius: 0 - 40 yards
 Description      : Cause a surge of invigorating mists around the target, healing them and their $s1 nearest injured allies for $s2.
 
-Name             : Thunder Focus Tea (id=116680) [Scaling Spell (5), Spell Family (53)] 
+Name             : Thunder Focus Tea (id=116680) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 Spell Level      : 54
 Duration         : 30 seconds
@@ -1688,7 +1688,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
-Name             : Tiger's Lust (id=116841) [Scaling Spell (5), Spell Family (53)] 
+Name             : Tiger's Lust (id=116841) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 15
 Range            : 20 yards
@@ -1760,7 +1760,7 @@ $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
-Name             : Life Cocoon (id=116849) [Scaling Spell (5), Spell Family (53)] 
+Name             : Life Cocoon (id=116849) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 Resource         : 2.4% Base Mana (26400 @Level 110)
 Spell Level      : 28
@@ -1873,7 +1873,7 @@ Variables        : $dmgMult=$?s113656[${12}][${1.0}]
 $healMult=$?s115070[${1.2}][${1.0}]
 $damage=${4*($m1*$<dmgMult>)}
 
-Name             : Crackling Jade Lightning (id=117959) [Scaling Spell (5), Spell Family (53), Passive, Hidden] 
+Name             : Crackling Jade Lightning (id=117959) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Monk
 Spell Level      : 40
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -1945,7 +1945,7 @@ Description      : Instantly purifies all of your staggered damage.
 
 Shares charges with Ironskin Brew.
 
-Name             : Renewing Mist (id=119611) [Scaling Spell (5), Spell Family (53)] 
+Name             : Renewing Mist (id=119611) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
 Duration         : 20 seconds
@@ -2001,7 +2001,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Your body and spirit swap locations.
 
-Name             : Fists of Fury (id=120086) [Scaling Spell (5), Spell Family (53)] 
+Name             : Fists of Fury (id=120086) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 Range            : 5 yards
@@ -2195,7 +2195,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Trigger Spell: 129914
 Description      : Every $t1 sec, your next Tiger Palm generates $s1 additional Chi.
 
-Name             : Dampen Harm (id=122278) [Scaling Spell (9), Spell Family (53)] 
+Name             : Dampen Harm (id=122278) [Scaling Spell (10), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 60
 Duration         : 45 seconds
@@ -2269,7 +2269,7 @@ Effects          :
 Description      : All damage you take is redirected to the enemy target as Nature damage over $124280d. Damage cannot exceed $s3% of your maximum health. Lasts for $d.
 Tooltip          : All damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
-Name             : Diffuse Magic (id=122783) [Scaling Spell (9), Spell Family (53)] 
+Name             : Diffuse Magic (id=122783) [Scaling Spell (10), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 60
 Duration         : 6 seconds
@@ -2286,7 +2286,7 @@ Effects          :
 Description      : Reduces magic damage taken by $m1% for $d and transfers all harmful magical effects back to their original caster if possible.
 Tooltip          : Spell damage taken reduced by $m1%.
 
-Name             : Fists of Fury Visual Target (id=123154) [Scaling Spell (5), Spell Family (53), Hidden] 
+Name             : Fists of Fury Visual Target (id=123154) [Scaling Spell (6), Spell Family (53), Hidden] 
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
@@ -2394,7 +2394,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 0xcbe
 Description      : Summon an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.
 
-Name             : Chi Burst (id=123986) [Scaling Spell (5), Spell Family (53)] 
+Name             : Chi Burst (id=123986) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 30
 Range            : 40 yards
@@ -2441,7 +2441,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.66600 | Radius: 0 - 10 yards
 Description      : $@spelldesc123904
 
-Name             : Crackling Tiger Lightning Driver (id=123999) [Scaling Spell (5), Spell Family (53), Hidden] 
+Name             : Crackling Tiger Lightning Driver (id=123999) [Scaling Spell (6), Spell Family (53), Hidden] 
 Class            : Monk
 Duration         : Aura (infinite)
 Attributes       : .......x x..x.... ..x..... x..x....   ........ ........ ........ ........ 
@@ -2531,7 +2531,7 @@ Tooltip          : $w1 damage is being staggered every 1 sec.
 
 Stagger Remaining: $w2
 
-Name             : Touch of Karma (id=124280) [Scaling Spell (5), Spell Family (53)] 
+Name             : Touch of Karma (id=124280) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
@@ -2617,7 +2617,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25
 Description      : $@spelldesc124502
 
-Name             : Enveloping Mist (id=124682) [Scaling Spell (5), Spell Family (53)] 
+Name             : Enveloping Mist (id=124682) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 10
@@ -2755,7 +2755,7 @@ Effects          :
                    Affected Spells: Flying Serpent Kick (101545)
 Description      : You honorably bow after each successful Touch of Death.
 
-Name             : Honorable Bow (id=125735) [Scaling Spell (5), Spell Family (53)] 
+Name             : Honorable Bow (id=125735) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
@@ -2810,7 +2810,7 @@ Effects          :
 #1 (id=159821)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1041
 
-Name             : Zen Flight (Glyph) (id=125883) [Scaling Spell (5), Spell Family (53)] 
+Name             : Zen Flight (Glyph) (id=125883) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 GCD              : 1 seconds
@@ -2911,7 +2911,7 @@ Effects          :
 #1 (id=159910)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1045
 
-Name             : Zen Pilgrimage (id=126892) [Scaling Spell (5), Spell Family (53)] 
+Name             : Zen Pilgrimage (id=126892) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 20
 Cast Time        : 10 seconds
@@ -2936,7 +2936,7 @@ Use Zen Pilgrimage again to return near to where you were.]
 
 Use Zen Pilgrimage again to return near to where you were.]
 
-Name             : Zen Pilgrimage/Death Gate/Moonglade Storage Aura I (id=126893) [Scaling Spell (5), Spell Family (53), Hidden] 
+Name             : Zen Pilgrimage/Death Gate/Moonglade Storage Aura I (id=126893) [Scaling Spell (6), Spell Family (53), Hidden] 
 Class            : Monk
 Spell Level      : 1
 GCD              : 1 seconds
@@ -2956,7 +2956,7 @@ Effects          :
 #3 (id=161278)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Zen Pilgrimage: Return (id=126895) [Scaling Spell (5), Spell Family (53)] 
+Name             : Zen Pilgrimage: Return (id=126895) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 30
 Cast Time        : 10 seconds
@@ -2977,7 +2977,7 @@ Leaving the Wandering Isle will cancel Zen Pilgrimage: Return.]
 
 Leaving Peak of Serenity will cancel Zen Pilgrimage: Return.]
 
-Name             : Zen Pilgrimage: Return (id=126896) [Scaling Spell (5), Spell Family (53)] 
+Name             : Zen Pilgrimage: Return (id=126896) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 Duration         : Aura (infinite)
@@ -3025,7 +3025,7 @@ Effects          :
 #1 (id=161559)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Combat Conditioning (id=128595) [Scaling Spell (5), Spell Family (53), Passive, Hidden] 
+Name             : Combat Conditioning (id=128595) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
 Spell Level      : 20
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3099,7 +3099,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : You're a Level 90 Monk.  Grats!
 
-Name             : Chi Burst (id=130654) [Scaling Spell (5), Spell Family (53)] 
+Name             : Chi Burst (id=130654) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
@@ -3214,7 +3214,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 73967 | Misc Value 2: 0xd19
 Description      : Summon an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target and Taunts it.
 
-Name             : Healing Elixirs (id=134563) [Scaling Spell (5), Spell Family (53)] 
+Name             : Healing Elixirs (id=134563) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 24
 Duration         : Aura (infinite)
@@ -3419,7 +3419,7 @@ Effects          :
 #15 (id=260826)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Combo Breaker (id=137384) [Scaling Spell (5), Spell Family (53), Passive, Hidden] 
+Name             : Combo Breaker (id=137384) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
 Spell Level      : 3
 GCD              : 1 seconds
@@ -4564,7 +4564,7 @@ Effects          :
 Description      : Updates the caster's Zen Pilgrimage ability to return the caster to the Temple of Five Dawns.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds

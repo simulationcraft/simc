@@ -8,7 +8,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 6 seconds
-Affecting spells : Rapture (47536), Lucidity (137323)
+Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Lucidity (137323)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -31,7 +31,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -155,7 +155,7 @@ Spell Level      : 38
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323), Clear Thoughts (167695)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Clear Thoughts (167695)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -257,7 +257,7 @@ Spell Level      : 34
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -276,7 +276,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323)
 Triggered by     : Surge of Light (114255)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -420,7 +420,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Power Infusion (10060), Mind Spike (73510), Discipline Priest (137032), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mind Blast (165201), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937), Voidform Modification Talent NYI (199312), 
+Affecting spells : Power Infusion (10060), Mind Spike (73510), Discipline Priest (137032), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mind Blast (165201), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937), Voidform Modification Talent NYI (199312), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -445,7 +445,7 @@ Duration         : 8 seconds
 Cooldown         : 60 seconds
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Lucidity (137323), Psychic Voice (196704)
+Affecting spells : Psychic Scream Duration Increase (23044), Improved Psychic Scream (44297), Lucidity (137323), Psychic Voice (196704)
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -586,7 +586,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Power Infusion (10060), Lucidity (137323), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Power Infusion (10060), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -648,7 +648,7 @@ Effects          :
 #1 (id=10187)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Desperate Prayer (id=19236) [Scaling Spell (7), Spell Family (6)] 
+Name             : Desperate Prayer (id=19236) [Scaling Spell (8), Spell Family (6)] 
 Class            : Priest
 Spell Level      : 1
 Cooldown         : 120 seconds
@@ -695,7 +695,7 @@ Effects          :
 Description      : Upon death, the Priest becomes the Spirit of Redemption for $27827d.  The Spirit of Redemption cannot move, attack, be attacked, or be targeted by any spells or effects.  While in this form the Priest can cast any healing spell free of cost.  When the effect ends, the Priest dies.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -828,7 +828,7 @@ Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Healing Trance (37706), Temporal Boon (105826), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -864,7 +864,7 @@ Effects          :
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful spells from each friendly target and $32592m1 beneficial $lspell:spells; from each enemy target.  This dispel is potent enough to remove Magic effects that are normally undispellable.
 
 Name             : Interrupt (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
 Spell Level      : 10
 Range            : 100 yards
@@ -889,7 +889,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Healing Trance (37706), Temporal Boon (105826), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -971,7 +971,7 @@ Spell Level      : 50
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323)
+Affecting spells : Healing Trance (37706), Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
@@ -1353,7 +1353,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Power Infusion (10060), Voidform (194249)
+Affecting spells : Power Infusion (10060), Mental Fatigue (185104), Voidform (194249)
 Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1370,7 +1370,7 @@ Tooltip          : Causing shadow damage to all targets within $49821a1 yards.
 Name             : Mind Sear (id=49821) [Spell Family (6)] 
 Class            : Priest
 Spell Level      : 1
-Affecting spells : Power Infusion (10060), Voidform (194249)
+Affecting spells : Power Infusion (10060), Mental Fatigue (185104), Voidform (194249)
 Triggered by     : Mind Sear (48045)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
@@ -1542,7 +1542,7 @@ Effects          :
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
-Name             : Power Word: Barrier (id=62618) [Scaling Spell (7), Spell Family (6)] 
+Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6)] 
 Class            : Discipline Priest
 Resource         : 6.3% Base Mana (69300 @Level 110)
 Spell Level      : 65
@@ -1829,7 +1829,7 @@ Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Flags       : ........ .....x.. .x...... ........ 
                  : AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Lucidity (137323), Empowered Shadows (145180), Surrender to Madness (193223), Voidform (194249)
+Affecting spells : Lucidity (137323), Empowered Shadows (145180), Mental Fatigue (185104), Surrender to Madness (193223), Voidform (194249)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2087,12 +2087,12 @@ Effects          :
 #1 (id=105331)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Flash Heal (id=101062) [Scaling Spell (7), Spell Family (6)] 
+Name             : Flash Heal (id=101062) [Scaling Spell (8), Spell Family (6)] 
 Class            : Priest
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323)
 Triggered by     : Surge of Light (114255)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2173,7 +2173,7 @@ Class            : Priest
 Spell Level      : 28
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2380,7 +2380,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.87400
 Description      : $@spelldesc120517
 
-Name             : Halo (id=120696) [Scaling Spell (7), Spell Family (6)] 
+Name             : Halo (id=120696) [Scaling Spell (8), Spell Family (6)] 
 Class            : Priest
 Range            : 100 yards
 Affecting spells : Atonement (194384)
@@ -2637,7 +2637,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Power Infusion (10060), Lucidity (137323), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Power Infusion (10060), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3007,7 +3007,7 @@ Effects          :
 #1 (id=201197)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1087
 
-Name             : Shadowy Apparition (id=148859) [Scaling Spell (7), Spell Family (6)] 
+Name             : Shadowy Apparition (id=148859) [Scaling Spell (8), Spell Family (6)] 
 Class            : Priest
 Spell Level      : 1
 Range            : 100 yards
@@ -3082,6 +3082,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Triggered by     : Codex of Ascension (168803)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3184,7 +3185,7 @@ Description      : Choose a level 90 talent.
 Name             : Searing Insanity (id=179337) [Spell Family (6)] 
 Class            : Priest
 Spell Level      : 1
-Affecting spells : Power Infusion (10060), Voidform (194249)
+Affecting spells : Power Infusion (10060), Mental Fatigue (185104), Voidform (194249)
 Triggered by     : Searing Insanity (179338)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
@@ -3292,7 +3293,7 @@ Effects          :
 Name             : Voidform (id=185916) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 Spell Level      : 10
-Affecting spells : Voidform Modification Talent NYI (199312)
+Affecting spells : Complete Healing (184914), Voidform Modification Talent NYI (199312)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3365,7 +3366,7 @@ Spell Level      : 18
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Power Infusion (10060), Mind Spike (73510), Discipline Priest (137032), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mind Blast (165201), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937), Voidform Modification Talent NYI (199312), 
+Affecting spells : Power Infusion (10060), Mind Spike (73510), Discipline Priest (137032), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mind Blast (165201), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937), Voidform Modification Talent NYI (199312), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3741,7 +3742,7 @@ Spell Level      : 46
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Temporal Boon (105826), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4145,7 +4146,7 @@ Effects          :
 Description      : Penance may be cast on a friendly target, healing them for ${$47750m1*3} over $47757d.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -4270,7 +4271,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4293,7 +4294,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Temporal Boon (105826), Lucidity (137323), Clear Thoughts (167695)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Clear Thoughts (167695)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
