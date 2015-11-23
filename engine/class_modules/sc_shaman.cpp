@@ -6657,19 +6657,6 @@ struct shaman_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_spell( "Shaman", "2015-07-20", "Ascendance now has a 2-minute cooldown (down from 3 minutes) "
-                                          "for Elemental Shaman.", 114050 )
-      .field( "cooldown" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 120000 )
-      .verification_value( 180000 );
-
-    hotfix::register_effect( "Shaman", "2015-07-20", "Mastery: Molten Earth damage has been increased by 11%.",
-                             241705 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.11 )
-      .verification_value( 1.00000 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

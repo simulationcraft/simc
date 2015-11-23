@@ -6634,59 +6634,6 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Warlock", "2015-07-20", "Chaos Bolt damage increased by 5%.", 132079 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 2.27500 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20-2", "Chaos Bolt damage increased by 5%.", 219895 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 2.27500 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20-", "Conflagrate damage increased by 5%.", 9553 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 2.04100 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20-2", "Conflagrate damage increased by 5%.", 119851 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 2.04100 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20", "Immolate damage increased by 5%.", 145 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 0.49500 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20-2", "Immolate damage increased by 5%.", 119854 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 0.49500 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20", "Incinerate damage increased by 5%.", 19297 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 1.43500 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20-2", "Incinerate damage increased by 5%.", 128057 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 1.43500 );
-
-    hotfix::register_effect( "Warlock", "2015-07-20", "Shadowburn damage increased by 5%.", 9475 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 3.40000 );
   }
 
   virtual bool valid() const override { return true; }

@@ -8553,23 +8553,6 @@ struct priest_module_t : public module_t
   }
   void register_hotfixes() const override
   {
-    // Missing DBC Values
-    hotfix::register_spell(
-        "Priest", "missing",
-        "Auspicious Spirit travel speed, in yards per second.", 78203,
-        hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
-        .field( "prj_speed" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 6.0 )
-        .verification_value( 0.0 );
-
-    hotfix::register_effect(
-        "Priest", "missing", "Shadow Orbs base number.", 101429,
-        hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 3.0 )
-        .verification_value( 0.0 );
   }
 
   void combat_begin( sim_t* ) const override
