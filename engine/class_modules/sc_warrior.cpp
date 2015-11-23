@@ -211,7 +211,6 @@ public:
     const spell_data_t* drawn_sword;
     const spell_data_t* rallying_cry;
     const spell_data_t* recklessness;
-    const spell_data_t* wind_and_thunder;
     // Fury only
     const spell_data_t* bloodthirst;
     const spell_data_t* raging_blow;
@@ -2582,7 +2581,6 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    radius += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
   }
@@ -2608,7 +2606,6 @@ struct whirlwind_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
 
-    radius += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     if ( p -> specialization() == WARRIOR_FURY )
     {
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -3210,7 +3207,6 @@ void warrior_t::init_spells()
   glyphs.shield_wall            = find_glyph_spell( "Glyph of Shield Wall" );
   glyphs.unending_rage          = find_glyph_spell( "Glyph of Unending Rage" );
   glyphs.victory_rush           = find_glyph_spell( "Glyph of Victory Rush" );
-  glyphs.wind_and_thunder       = find_glyph_spell( "Glyph of Wind and Thunder" ); //So roleplay.
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
