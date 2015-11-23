@@ -100,7 +100,6 @@ public:
     buff_t* pvp_2pc_arms;
     buff_t* pvp_2pc_fury;
     buff_t* pvp_2pc_prot;
-    buff_t* tier15_2pc_tank;
     buff_t* tier16_reckless_defense;
     buff_t* tier16_4pc_death_sentence;
     buff_t* tier17_2pc_arms;
@@ -160,7 +159,6 @@ public:
     gain_t* shield_slam;
     gain_t* sword_and_board;
     // Tier bonuses
-    gain_t* tier15_4pc_tank;
     gain_t* tier16_2pc_melee;
     gain_t* tier16_4pc_tank;
     gain_t* tier17_4pc_arms;
@@ -223,7 +221,6 @@ public:
     const spell_data_t* thunder_clap;
     //Arms and Fury
     const spell_data_t* die_by_the_sword;
-    const spell_data_t* inspiring_presence;
     const spell_data_t* shield_barrier;
     const spell_data_t* rallying_cry;
     const spell_data_t* recklessness;
@@ -244,7 +241,6 @@ public:
     const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
     const spell_data_t* last_stand;
-    const spell_data_t* mocking_banner;
     const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* resolve;
     const spell_data_t* revenge;
@@ -1016,7 +1012,6 @@ struct bloodthirst_t: public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
@@ -1496,16 +1491,6 @@ struct heroic_leap_t: public warrior_attack_t
   }
 };
 
-// 2 Piece Tier 16 Tank Set Bonus ===========================================
-
-struct tier16_2pc_tank_heal_t: public warrior_heal_t
-{
-  tier16_2pc_tank_heal_t( warrior_t* p ):
-    warrior_heal_t( "tier16_2pc_tank_heal", p )
-  {}
-  resource_e current_resource() const override { return RESOURCE_NONE; }
-};
-
 // Impending Victory ========================================================
 
 struct impending_victory_heal_t: public warrior_heal_t
@@ -1515,24 +1500,6 @@ struct impending_victory_heal_t: public warrior_heal_t
   {
     base_pct_heal = data().effectN( 1 ).percent();
     background = true;
-  }
-
-  virtual double composite_pct_heal( const action_state_t* s ) const override
-  {
-    double b = warrior_heal_t::composite_pct_heal( s );
-
-    if ( p() -> buff.tier15_2pc_tank -> check() )
-    {
-      b += p() -> buff.tier15_2pc_tank -> current_value;
-    }
-
-    return b;
-  }
-
-  virtual void execute() override
-  {
-    p() -> buff.tier15_2pc_tank -> up(); // benefit tracking
-    warrior_heal_t::execute();
   }
 
   resource_e current_resource() const override
@@ -1564,8 +1531,6 @@ struct impending_victory_t: public warrior_attack_t
     {
       impending_victory_heal -> execute();
     }
-
-    p() -> buff.tier15_2pc_tank -> decrement();
   }
 };
 
@@ -1717,7 +1682,6 @@ struct mortal_strike_t: public warrior_attack_t
     parse_options( options_str );
     cooldown = p -> cooldown.mortal_strike;
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
@@ -1924,25 +1888,6 @@ struct revenge_t: public warrior_attack_t
     impact_action = p -> active.deep_wounds;
   }
 
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.revenge );
-
-      if ( p() -> sets.has_set_bonus( SET_TANK, T15, B4 ) && td( target ) -> debuffs_demoralizing_shout -> up() )
-      {
-        p() -> resource_gain( RESOURCE_RAGE,
-          rage_gain * p() -> sets.set( SET_TANK, T15, B4 ) -> effectN( 1 ).percent(),
-          p() -> gain.tier15_4pc_tank );
-      }
-      if ( rng().roll( p() -> sets.set( SET_TANK, T15, B2 ) -> proc_chance() ) )
-        p() -> buff.tier15_2pc_tank -> trigger();
-    }
-  }
-
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -2136,8 +2081,6 @@ struct shield_slam_t: public warrior_attack_t
                               p() -> gain.sword_and_board );
       }
       p() -> buff.sword_and_board -> expire();
-      if ( rng().roll( p() -> sets.set( SET_TANK, T15, B2 ) -> proc_chance() ) )
-        p() -> buff.tier15_2pc_tank -> trigger();
 
       if ( execute_state -> result == RESULT_CRIT )
       {
@@ -2145,12 +2088,8 @@ struct shield_slam_t: public warrior_attack_t
         p() -> buff.ultimatum -> trigger();
       }
     }
-
-    if ( td( execute_state -> target ) -> debuffs_demoralizing_shout -> up() && p() -> sets.has_set_bonus( SET_TANK, T15, B4 ) )
-      p() -> resource_gain( RESOURCE_RAGE,
-      ( rage_gain + rage_from_snb ) * p() -> sets.set( SET_TANK, T15, B4 ) -> effectN( 1 ).percent(),
-      p() -> gain.tier15_4pc_tank );
   }
+
   bool ready() override
   {
     if ( !p() -> has_shield_equipped() )
@@ -2307,21 +2246,6 @@ struct victory_rush_t: public warrior_attack_t
     if ( p -> non_dps_mechanics )
       execute_action = victory_rush_heal;
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p() -> buff.tier15_2pc_tank -> decrement();
-  }
-
-  bool ready() override
-  {
-    if ( p() -> buff.tier15_2pc_tank -> check() )
-      return true;
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -2555,7 +2479,6 @@ struct last_stand_t: public warrior_spell_t
     parse_options( options_str );
     range = -1;
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).time_value();
     cooldown -> duration *= 1.0 + p -> sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 1 ).percent();
   }
 
@@ -2595,8 +2518,6 @@ struct recklessness_t: public warrior_spell_t
   {
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
-    cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
     callbacks = false;
   }
 
@@ -2607,55 +2528,6 @@ struct recklessness_t: public warrior_spell_t
     p() -> buff.recklessness -> trigger( 1, bonus_crit );
     if ( p() -> sets.has_set_bonus( WARRIOR_FURY, T17, B4 ) )
       p() -> buff.tier17_4pc_fury_driver -> trigger();
-  }
-};
-
-// Shield Barrier ===========================================================
-
-struct shield_barrier_t: public warrior_action_t < absorb_t >
-{
-  shield_barrier_t( warrior_t* p, const std::string& options_str ):
-    base_t( "shield_barrier", p, p -> specialization() == WARRIOR_PROTECTION ?
-    p -> find_spell( 112048 ) : p -> spec.shield_barrier )
-  {
-    parse_options( options_str );
-    use_off_gcd = true;
-    may_crit = false;
-    range = -1;
-    target = player;
-    attack_power_mod.direct = 1.4; // No spell data.
-  }
-
-  double cost() const override
-  {
-    return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    //1) Buff does not stack with itself.
-    //2) Will overwrite existing buff if new one is bigger.
-    double amount;
-
-    amount = s -> result_amount;
-    amount *= cost() / 20.0;
-    if ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T18, B4 ) && p() -> buff.last_stand -> up() )
-      amount *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T18, B4 ) -> effectN( 1 ).percent();
-
-    if ( !p() -> buff.shield_barrier -> check() ||
-         ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < amount ) )
-    {
-      p() -> buff.shield_barrier -> trigger( 1, amount );
-      stats -> add_result( 0.0, amount, ABSORB, s -> result, s -> block_result, p() );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !p() -> has_shield_equipped() && p() -> specialization() == WARRIOR_PROTECTION )
-      return false;
-
-    return base_t::ready();
   }
 };
 
@@ -2670,15 +2542,6 @@ struct shield_block_t: public warrior_spell_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
     use_off_gcd = true;
-  }
-
-  double cost() const override
-  {
-    double c = warrior_spell_t::cost();
-
-    c += p() -> sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-
-    return c;
   }
 
   void execute() override
@@ -2818,7 +2681,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
   if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
   if ( name == "siegebreaker"         ) return new siegebreaker_t         ( this, options_str );
-  if ( name == "shield_barrier"       ) return new shield_barrier_t       ( this, options_str );
   if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
   if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
   if ( name == "shield_wall"          ) return new shield_wall_t          ( this, options_str );
@@ -2864,10 +2726,8 @@ void warrior_t::init_spells()
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.execute                  = find_specialization_spell( "Execute" );
   spec.hamstring                = find_specialization_spell( "Hamstring" );
-  spec.inspiring_presence       = find_specialization_spell( "Inspiring Presence" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
-  spec.mocking_banner           = find_specialization_spell( "Mocking Banner" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.protection               = find_specialization_spell( "Protection" );
@@ -2879,7 +2739,6 @@ void warrior_t::init_spells()
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
-  spec.shield_barrier           = find_specialization_spell( "Shield Barrier" );
   spec.shield_block             = find_specialization_spell( "Shield Block" );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
@@ -2949,7 +2808,6 @@ void warrior_t::init_spells()
 
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
-  if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active.t16_2pc = new tier16_2pc_tank_heal_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
 
   // Cooldowns
@@ -3370,7 +3228,6 @@ void warrior_t::apl_prot()
 
   //defensive
   prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up)" );
-  prot -> add_action( this, "Shield Barrier", "if=buff.shield_barrier.down&((buff.shield_block.down&action.shield_block.charges_fractional<0.75)|rage>=85)" );
   prot -> add_action( this, "Demoralizing Shout", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
   prot -> add_talent( this, "Enraged Regeneration", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
   prot -> add_action( this, "Shield Wall", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
@@ -3663,9 +3520,6 @@ void warrior_t::create_buffs()
   buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
     .cd( timespan_t::zero() );
 
-  buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", specialization() == WARRIOR_PROTECTION ? find_spell( 112048 ) : spec.shield_barrier )
-    .source( get_stats( "shield_barrier" ) );
-
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_BLOCK );
@@ -3676,8 +3530,6 @@ void warrior_t::create_buffs()
 
   buff.sword_and_board = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
     .chance( spec.sword_and_board -> effectN( 1 ).percent() );
-
-  buff.tier15_2pc_tank = buff_creator_t( this, "tier15_2pc_tank", sets.set( SET_TANK, T15, B2 ) -> effectN( 1 ).trigger() );
 
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
 
@@ -3740,7 +3592,6 @@ void warrior_t::init_gains()
   gain.shield_slam            = get_gain( "shield_slam" );
   gain.sword_and_board        = get_gain( "sword_and_board" );
 
-  gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank" );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee" );
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank" );
   gain.tier17_4pc_arms        = get_gain( "tier17_4pc_arms" );
@@ -4009,11 +3860,6 @@ double warrior_t::composite_armor_multiplier() const
   if ( active.stance == STANCE_DEFENSE )
   {
     a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
-  }
-  if ( prot_trinket )
-  {
-    if ( buff.shield_barrier -> current_value > 0 )
-      a *= 1.0 + prot_trinket -> driver() -> effectN( 2 ).average( prot_trinket -> item ) / 100.0;
   }
 
   return a;
@@ -4382,23 +4228,6 @@ void warrior_t::assess_damage( school_e school,
     player_t::resource_gain( RESOURCE_RAGE,
                              floor( s -> result_amount / resources.max[RESOURCE_HEALTH] * 100 ),
                              gain.tier16_4pc_tank );
-  }
-
-  if ( active.t16_2pc )
-  {
-    if ( s -> block_result != BLOCK_RESULT_UNBLOCKED ) //heal if blocked
-    {
-      double heal_amount = floor( s -> blocked_amount * sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).percent() );
-      active.t16_2pc -> base_dd_min = active.t16_2pc -> base_dd_max = heal_amount;
-      active.t16_2pc -> execute();
-    }
-
-    if ( s -> self_absorb_amount > 0 ) //always heal if shield_barrier absorbed it. This assumes that shield_barrier is our only own absorb spell.
-    {
-      double heal_amount = floor( s -> self_absorb_amount * sets.set( SET_TANK, T16, B2 ) -> effectN( 2 ).percent() );
-      active.t16_2pc -> base_dd_min = active.t16_2pc -> base_dd_max = heal_amount;
-      active.t16_2pc -> execute();
-    }
   }
 }
 
