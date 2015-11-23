@@ -186,7 +186,7 @@ public:
   {
     const spell_data_t* critical_block; //Protection
     const spell_data_t* unshackled_fury; //Fury
-    const spell_data_t* weapons_master; //Arms
+    const spell_data_t* colossal_might; //Arms
   } mastery;
 
   // Procs
@@ -411,7 +411,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, recklessness, weapons_master, sweeping_strikes;
+  bool headlongrush, headlongrushgcd, recklessness, colossal_might, sweeping_strikes;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -422,7 +422,7 @@ public:
                     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
                     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
                     recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
-                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) ),
+                    colossal_might( ab::data().affected_by( player -> mastery.colossal_might -> effectN( 1 ) ) ),
                     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
@@ -456,7 +456,7 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( weapons_master )
+    if ( colossal_might )
     {
       am *= 1.0 + ab::player -> cache.mastery_value();
     }
@@ -1285,7 +1285,7 @@ struct execute_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> mastery.weapons_master -> ok() )
+    if ( p() -> mastery.colossal_might -> ok() )
     {
       if ( target -> health_percentage() < 20 || p() -> buff.tier16_4pc_death_sentence -> check() )
       {
@@ -1302,7 +1302,7 @@ struct execute_t: public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> mastery.weapons_master -> ok() )
+    if ( p() -> mastery.colossal_might -> ok() )
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.tier16_4pc_death_sentence -> up() && target -> health_percentage() < 20 )
@@ -2665,7 +2665,7 @@ void warrior_t::init_spells()
 
   // Mastery
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
-  mastery.weapons_master        = find_mastery_spell( WARRIOR_ARMS );
+  mastery.colossal_might        = find_mastery_spell( WARRIOR_ARMS );
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
 
   // Spec Passives
