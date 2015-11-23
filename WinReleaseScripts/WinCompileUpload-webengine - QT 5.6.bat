@@ -53,3 +53,28 @@ cd ..
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win64.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 7z a -r %install% %install% -mx9 -md=32m
 call start winscp /command "open downloads" "put %download%\%install%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
+
+::WebEngine compilation.
+set install=simc-%simcversion%-win32
+
+for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
+
+::if %ask%==y "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine-PGO /p:platform=x86 /nr:true
+::if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=x86 /nr:true
+"%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=x86 /nr:true
+
+robocopy "%redist%x86\Microsoft.VC140.CRT" %install%\ msvcp140.dll msvcr140.dll vccorlib140.dll
+robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
+robocopy winreleasescripts\ %install%\ qt.conf
+robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
+robocopy Profiles\ %install%\profiles\ *.* /S
+cd %install%
+%qt_dir%\msvc2015\bin\windeployqt.exe --no-translations simulationcraft64.exe
+cd ..
+
+cd winreleasescripts
+iscc.exe "setup32.iss"
+cd ..
+call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win32.exe -nopreservetime -nopermissions -transfer=binary" "exit"
+7z a -r %install% %install% -mx9 -md=32m
+call start winscp /command "open downloads" "put %download%\%install%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
