@@ -255,7 +255,6 @@ public:
     const spell_data_t* rend;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* slam;
-    const spell_data_t* weapon_mastery;
     //Arms and Prot
     const spell_data_t* thunder_clap;
     //Arms and Fury
@@ -267,7 +266,6 @@ public:
     const spell_data_t* whirlwind;
     //Fury-only
     const spell_data_t* bloodthirst;
-    const spell_data_t* cruelty;
     const spell_data_t* meat_cleaver;
     const spell_data_t* piercing_howl;
     const spell_data_t* raging_blow;
@@ -288,7 +286,6 @@ public:
     const spell_data_t* revenge;
     const spell_data_t* riposte;
     const spell_data_t* shield_block;
-    const spell_data_t* shield_mastery;
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
     const spell_data_t* sword_and_board;
@@ -3021,7 +3018,6 @@ void warrior_t::init_spells()
   spec.bladed_armor             = find_specialization_spell( "Bladed Armor" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
-  spec.cruelty                  = find_specialization_spell( "Cruelty" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
   spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
   spec.devastate                = find_specialization_spell( "Devastate" );
@@ -3046,7 +3042,6 @@ void warrior_t::init_spells()
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.shield_barrier           = find_specialization_spell( "Shield Barrier" );
   spec.shield_block             = find_specialization_spell( "Shield Block" );
-  spec.shield_mastery           = find_specialization_spell( "Shield Mastery" );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
@@ -3056,7 +3051,6 @@ void warrior_t::init_spells()
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
   spec.ultimatum                = find_specialization_spell( "Ultimatum" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
-  spec.weapon_mastery           = find_specialization_spell( "Weapon Mastery" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
 
 
@@ -4293,7 +4287,7 @@ double warrior_t::composite_mastery() const
 double warrior_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = player_t::composite_rating_multiplier( rating );
-
+  /*
   switch ( rating )
   {
   case RATING_MELEE_CRIT:
@@ -4308,6 +4302,7 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
   default:
     break;
   }
+  */
   return m;
 }
 
