@@ -273,14 +273,12 @@ public:
 
     // Guardian
     absorb_buff_t* primal_tenacity;
-    absorb_buff_t* tooth_and_claw_absorb;
     buff_t* barkskin;
     buff_t* bladed_armor;
     buff_t* bristling_fur;
     buff_t* pulverize;
     buff_t* savage_defense;
     buff_t* survival_instincts;
-    buff_t* tooth_and_claw;
     buff_t* ursa_major;
     buff_t* guardian_tier15_2pc;
     buff_t* guardian_tier17_4pc;
@@ -338,7 +336,6 @@ public:
     gain_t* primal_tenacity;
     gain_t* stalwart_guardian;
     gain_t* rage_refund;
-    gain_t* tooth_and_claw;
     gain_t* guardian_tier17_2pc;
     gain_t* guardian_tier18_2pc;
   } gain;
@@ -358,7 +355,6 @@ public:
     const spell_data_t* empowered_bear_form;
     const spell_data_t* empowered_berserk;
     const spell_data_t* enhanced_faerie_fire;
-    const spell_data_t* enhanced_tooth_and_claw;
 
     // Restoration
     const spell_data_t* empowered_rejuvenation;
@@ -378,8 +374,6 @@ public:
     const spell_data_t* ferocious_bite;
     const spell_data_t* maim;
     const spell_data_t* maul;
-    const spell_data_t* savage_roar;
-    const spell_data_t* savagery;
     const spell_data_t* skull_bash;
     const spell_data_t* solstice;
     const spell_data_t* survival_instincts;
@@ -421,8 +415,6 @@ public:
     proc_t* starshards;
     proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
-    proc_t* tooth_and_claw;
-    proc_t* tooth_and_claw_wasted;
     proc_t* ursa_major;
   } proc;
 
@@ -443,7 +435,6 @@ public:
     const spell_data_t* leader_of_the_pack;
     const spell_data_t* predatory_swiftness;
     const spell_data_t* rip;
-    const spell_data_t* savage_roar;
     const spell_data_t* swipe;
     const spell_data_t* tigers_fury;
 
@@ -465,7 +456,6 @@ public:
     const spell_data_t* savage_defense;
     const spell_data_t* survival_of_the_fittest;
     const spell_data_t* thick_hide; // Hidden passive for innate DR, expertise, and crit reduction
-    const spell_data_t* tooth_and_claw;
     const spell_data_t* ursa_major;
     const spell_data_t* guardian_passive; // Hidden guardian modifiers
 
@@ -669,7 +659,6 @@ public:
   virtual           ~druid_t();
 
   // Character Definition
-  virtual void      arise() override;
   virtual void      init() override;
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
@@ -687,23 +676,24 @@ public:
   virtual void      regen( timespan_t periodicity ) override;
   virtual timespan_t available() const override;
   virtual double    composite_armor_multiplier() const override;
-  virtual double    composite_melee_attack_power() const override;
-  virtual double    composite_melee_crit() const override;
   virtual double    composite_attack_power_multiplier() const override;
-  virtual double    temporary_movement_modifier() const override;
-  virtual double    passive_movement_modifier() const override;
-  virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_spell_crit() const override;
-  virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_attribute( attribute_e attr ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual double    composite_parry() const override { return 0; }
   virtual double    composite_block() const override { return 0; }
   virtual double    composite_crit_avoidance() const override;
-  virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_dodge() const override;
+  virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_melee_expertise( const weapon_t* ) const override;
+  virtual double    composite_parry() const override { return 0; }
+  virtual double    composite_persistent_multiplier( school_e ) const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_power( school_e school ) const override;
+  virtual double    temporary_movement_modifier() const override;
+  virtual double    passive_movement_modifier() const override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
@@ -917,7 +907,7 @@ struct yseras_gift_t : public heal_t
   yseras_gift_t( druid_t* p ) :
     heal_t( "yseras_gift", p, p -> spell.yseras_gift )
   {
-    base_tick_time = data().effectN( 1 ).period();
+    base_tick_time = timespan_t::from_seconds( 5.0 ); // data().effectN( 1 ).period();
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
                    2 * sim -> expected_iteration_time :
                    2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
@@ -1136,7 +1126,7 @@ public:
     druid.buff.moonkin_form -> expire();
     druid.buff.cat_form -> expire();
 
-    druid.buff.tigers_fury -> expire(); // 6/29/2014: Tiger's Fury ends when you enter bear form
+    druid.buff.tigers_fury -> expire(); // 6/29/2014: Tiger's Fury ends when you enter bear form. Legion TOCHECK
 
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.resolve_manager.start();
@@ -1163,17 +1153,20 @@ private:
 
 struct berserk_buff_t : public druid_buff_t<buff_t>
 {
+  double increased_max_energy;
+  double cost_modifier;
+
   berserk_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "berserk", p.find_specialization_spell( "Berserk" ) )
-      .cd( timespan_t::from_seconds( 0.0 ) ) // Cooldown handled by ability
-    ) {}
+    druid_buff_t<buff_t>( p, buff_creator_t( &p, "berserk", p.find_spell( 106951 ) )
+                             .cd( timespan_t::from_seconds( 0.0 ) ) ) // Cooldown handled by ability
+  {
+    increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
+    cost_modifier        = 1 + data().effectN( 1 ).percent();
+  }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool refresh = druid.buff.berserk -> check() != 0;
-
-    if ( druid.perk.enhanced_berserk -> ok() )
-      player -> resources.max[ RESOURCE_ENERGY ] += druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
     
     /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Berserk duration
        based on spell data of the special effect. */
@@ -1182,22 +1175,21 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
 
     bool success = druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
 
-    if ( ! refresh && success )
-      druid.max_fb_energy *= 1.0 + druid.spell.berserk_cat -> effectN( 1 ).percent();
+    if ( ! refresh && success ) {
+      player -> resources.max[ RESOURCE_ENERGY ] += increased_max_energy;
+      druid.max_fb_energy *= cost_modifier;
+    }
 
     return success;
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    druid.max_fb_energy /= 1.0 + druid.spell.berserk_cat -> effectN( 1 ).percent();
+    druid.max_fb_energy /= cost_modifier;
 
-    if ( druid.perk.enhanced_berserk -> ok() )
-    {
-      player -> resources.max[ RESOURCE_ENERGY ] -= druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
-      // Force energy down to cap if it's higher.
-      player -> resources.current[ RESOURCE_ENERGY ] = std::min( player -> resources.current[ RESOURCE_ENERGY ], player -> resources.max[ RESOURCE_ENERGY ]);
-    }
+    player -> resources.max[ RESOURCE_ENERGY ] -= increased_max_energy;
+    // Force energy down to cap if it's higher.
+    player -> resources.current[ RESOURCE_ENERGY ] = std::min( player -> resources.current[ RESOURCE_ENERGY ], player -> resources.max[ RESOURCE_ENERGY ]);
 
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
   }
@@ -1314,36 +1306,6 @@ struct omen_of_clarity_buff_t : public druid_buff_t<buff_t>
     druid.max_fb_energy += druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + druid.buff.berserk -> check() * druid.spell.berserk_cat -> effectN( 1 ).percent() );
 
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
-// Tooth and Claw Absorb Buff ===============================================
-
-static bool tooth_and_claw_can_absorb( const action_state_t* s )
-{ return ! s -> action -> special; }
-
-struct tooth_and_claw_absorb_t : public absorb_buff_t
-{
-  tooth_and_claw_absorb_t( druid_t& p ) :
-    absorb_buff_t( absorb_buff_creator_t( &p, "tooth_and_claw_absorb", p.find_spell( 135597 ) )
-      .school( SCHOOL_PHYSICAL )
-      .source( p.get_stats( "tooth_and_claw_absorb" ) )
-      .gain( p.get_gain( "tooth_and_claw_absorb" ) )
-      .high_priority( true )
-      .eligibility( &tooth_and_claw_can_absorb )
-    )
-  {}
-
-  virtual bool trigger( int stacks, double value, double, timespan_adl_barrier::timespan_t ) override
-  {
-    // Tooth and Claw absorb stacks by value.
-    return absorb_buff_t::trigger( stacks, value + current_value );
-  }
-
-  virtual void absorb_used( double /* amount */ ) override
-  {
-    // Tooth and Claw expires after ANY amount of the absorb is used.
-    expire();
   }
 };
 
@@ -1766,24 +1728,6 @@ public:
     return prowl || shadowmeld;
   }
 
-  void trigger_glyph_of_savage_roar()
-  {
-    // Bail out if we have Savagery
-    if ( p() -> glyph.savagery -> ok() )
-      return;
-
-    timespan_t duration = p() -> spec.savage_roar -> duration() + timespan_t::from_seconds( 6.0 ) * 5;
-    
-    /* Savage Roar behaves like a DoT with DOT_REFRESH and has a maximum duration equal
-       to 130% of the base duration.
-     * Per Alpha testing (6/16/2014), the maximum duration is 130% of the raw duration
-       of the NEW Savage Roar. */
-    if ( p() -> buff.savage_roar -> check() )
-      duration += std::min( p() -> buff.savage_roar -> remains(), duration * 0.3 );
-
-    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-  }
-
   virtual void execute() override
   {
     base_t::execute();
@@ -1894,16 +1838,6 @@ public:
       return false;
 
     return true;
-  }
-
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double pm = base_t::composite_persistent_multiplier( s );
-
-    if ( p() -> buff.cat_form -> check() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
-      pm *= 1.0 + p() -> buff.tigers_fury -> check() * p() -> buff.tigers_fury -> default_value; // Avoid using value() to prevent skewing benefit_pct.
-
-    return pm;
   }
 
   virtual double composite_ta_multiplier( const action_state_t* s ) const override
@@ -2037,7 +1971,6 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p -> glyph.ferocious_bite -> ok() )
       glyph_effect = new glyph_of_ferocious_bite_t( p );
-
   }
 
   bool ready() override
@@ -2136,6 +2069,7 @@ struct ferocious_bite_t : public cat_attack_t
 };
 
 // Maim =====================================================================
+// FIXME: Deals totally incorrect damage.
 
 struct maim_t : public cat_attack_t
 {
@@ -2154,11 +2088,9 @@ struct maim_t : public cat_attack_t
 struct rake_t : public cat_attack_t
 {
   const spell_data_t* bleed_spell;
-  snapshot_counter_t* ir_counter; //Imp Rake counter
 
   rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str ),
-    ir_counter( nullptr )
+    cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str )
   {
     special = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -2167,11 +2099,7 @@ struct rake_t : public cat_attack_t
     base_td               = bleed_spell -> effectN( 1 ).base_value();
     attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_duration          = bleed_spell -> duration();
-    base_tick_time        = bleed_spell -> effectN( 1 ).period();
-
-    ir_counter = new snapshot_counter_t( p, p -> buff.prowl );
-    ir_counter -> add_buff( p -> buff.incarnation );
-    ir_counter -> add_buff( p -> buffs.shadowmeld );
+    base_tick_time        = timespan_t::from_seconds( 3.0 ); // bleed_spell -> effectN( 1 ).period();
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -2207,25 +2135,11 @@ struct rake_t : public cat_attack_t
 
   virtual void execute() override
   {
-    // 05/05/2015: Triggers regardless of action outcome
-    if ( p() -> glyph.savage_roar -> ok() && prowling() )
-      trigger_glyph_of_savage_roar();
-
-    // Track Imp Rake
-    ir_counter -> count_execute();
-
     cat_attack_t::execute();
 
     // Track buff benefits
     if ( p() -> specialization() == DRUID_FERAL )
       p() -> buff.incarnation -> up();
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    cat_attack_t::tick( d );
-
-    ir_counter -> count_tick();
   }
 };
 
@@ -2273,11 +2187,14 @@ struct rip_t : public cat_attack_t
     ap_per_point( 0.0 )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
+    base_costs[ RESOURCE_ENERGY ] = 30; // FIXME
 
     ap_per_point = data().effectN( 1 ).ap_coeff();
     special      = true;
     may_crit     = false;
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
+    base_tick_time = timespan_t::from_seconds( 2.0 ); // FIXME
+    dot_duration = timespan_t::from_seconds( 24.0 ); // FIXME
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -2291,6 +2208,8 @@ struct rip_t : public cat_attack_t
 
   double attack_tick_power_coefficient( const action_state_t* s ) const override
   {
+    /* FIXME: Does this even work correctly for tick_damage expression?
+     probably just uses the CP of the Rip already on the target */
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
 
     return ap_per_point * rip_state -> combo_points;
@@ -2341,10 +2260,8 @@ struct savage_roar_t : public cat_attack_t
 
   virtual bool ready() override
   {
-    if ( p() -> glyph.savagery -> ok() )
-      return false;
     // Savage Roar may not be cast if the new duration is less than that of the current
-    else if ( duration() < p() -> buff.savage_roar -> remains() )
+    if ( duration() < p() -> buff.savage_roar -> remains() )
       return false;
     
     return cat_attack_t::ready();
@@ -2356,7 +2273,7 @@ struct savage_roar_t : public cat_attack_t
 struct shred_t : public cat_attack_t
 {
   shred_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
+    cat_attack_t( "shred", p, p -> find_specialization_spell( "Shred" ), options_str )
   {
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
@@ -2364,10 +2281,6 @@ struct shred_t : public cat_attack_t
 
   virtual void execute() override
   {
-    // 05/05/2015: Triggers regardless of action outcome
-    if ( p() -> glyph.savage_roar -> ok() && stealthed() )
-      trigger_glyph_of_savage_roar();
-
     cat_attack_t::execute();
 
     if ( p() -> buff.feral_tier15_4pc -> up() )
@@ -2429,9 +2342,7 @@ struct shred_t : public cat_attack_t
       m *= 1.0 + p() -> buff.feral_tier16_2pc -> data().effectN( 1 ).percent();
 
     if ( stealthed() )
-    {
       m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
-    }
 
     return m;
   }
@@ -2522,6 +2433,8 @@ struct thrash_cat_t : public cat_attack_t
   {
     aoe                    = -1;
     spell_power_mod.direct = 0;
+    dot_duration = timespan_t::from_seconds( 15.0 ); // FIXME
+    base_tick_time = timespan_t::from_seconds( 3.0 ); // FIXME
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
@@ -2585,25 +2498,10 @@ struct shattered_bleed_t : public cat_attack_t
 
       return new_duration;
     }
-
-    double action_multiplier() const override
-    {
-      double am = cat_attack_t::action_multiplier();
-
-      // Benefits dynamically from Savage Roar and Tiger's Fury.
-      am *= 1.0 + p() -> buff.savage_roar -> value();
-      am *= 1.0 + p() -> buff.tigers_fury -> value();
-
-      return am;
-    }
     
     // Override to prevent benefitting from mastery.
     double composite_ta_multiplier( const action_state_t* /*s*/ ) const override
     { return action_multiplier(); }
-    
-    // Benefit from Savage Roar and Tiger's Fury is not persistent.
-    double composite_persistent_multiplier( const action_state_t* /*s*/ ) const override
-    { return 1.0; }
 };
 
 } // end namespace cat_attacks
@@ -2709,22 +2607,6 @@ struct bear_melee_t : public bear_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return bear_attack_t::execute_time();
-  }
-
-  virtual void impact( action_state_t* state ) override
-  {
-    bear_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( rng().roll( p() -> spec.tooth_and_claw -> proc_chance() ) )
-      {
-        if ( p() -> buff.tooth_and_claw -> current_stack == p() -> buff.tooth_and_claw -> max_stack() )
-          p() -> proc.tooth_and_claw_wasted -> occur();
-        p() -> buff.tooth_and_claw -> trigger();
-        p() -> proc.tooth_and_claw -> occur();
-      }
-    }
   }
 };
 
@@ -2836,33 +2718,6 @@ struct mangle_t : public bear_attack_t
 
 struct maul_t : public bear_attack_t
 { 
-  struct tooth_and_claw_t : public druid_action_t<absorb_t>
-  {
-    /* FIXME: Functions as an absorb that only benefits the druid, to support multi-tank sims correctly
-       it must cause the target's next attack to mitigated (applying Resolve appropriately).
-       TODO: Determine if this uses the druid's resolve on application or on consumption. */
-    tooth_and_claw_t( druid_t* p ) :
-      druid_action_t<absorb_t>( "tooth_and_claw", p, p -> spec.tooth_and_claw )
-    {
-      harmful = special = may_crit = false;
-      may_multistrike = 0;
-      target = player;
-      stats = p -> get_stats( "tooth_and_claw_absorb" );
-
-      // Coeff is in tooltip but not spell data, so hardcode the value here.
-      attack_power_mod.direct = 2.40;
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
-        p() -> buff.guardian_tier17_4pc -> increment();
-
-      p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount );
-    }
-  };
-
-  tooth_and_claw_t* absorb;
   double cost_reduction;
 
   maul_t( druid_t* player, const std::string& options_str ) :
@@ -2876,24 +2731,7 @@ struct maul_t : public bear_attack_t
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
     use_off_gcd = true;
 
-    if ( player -> spec.tooth_and_claw -> ok() )
-    {
-      absorb = new tooth_and_claw_t( player );
-      if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
-        cost_reduction = p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) * -1.0;
-    }
-
     normalize_weapon_speed = false;
-  }
-
-  virtual double cost() const override
-  {
-    double c = bear_attack_t::cost();
-
-    if ( p() -> buff.tooth_and_claw -> check() && p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
-      c -= cost_reduction;
-
-    return c;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -2914,31 +2752,6 @@ struct maul_t : public bear_attack_t
       cd = timespan_t::zero();
 
     bear_attack_t::update_ready( cd );
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    bear_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> check() )
-    {
-      if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
-      {
-        // Treat the savings like a rage gain for tracking purposes.
-        p() -> gain.guardian_tier17_2pc -> add( RESOURCE_RAGE, cost_reduction );
-      }
-      absorb -> execute();
-    }
-  }
-
-  virtual void execute() override
-  {
-    // Benefit tracking
-    p() -> buff.tooth_and_claw -> up();
-
-    bear_attack_t::execute();
-
-    p() -> buff.tooth_and_claw -> decrement();
   }
 };
 
@@ -3824,7 +3637,7 @@ struct bear_form_t : public druid_spell_t
 struct berserk_t : public druid_spell_t
 {
   berserk_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "berserk", player, player -> find_class_spell( "Berserk" ), options_str  )
+    druid_spell_t( "berserk", player, player -> find_spell( 106951 ), options_str )
   {
     harmful = false;
   }
@@ -3833,15 +3646,7 @@ struct berserk_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> buff.bear_form -> check() )
-    {
-      p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, ( p() -> spell.berserk_bear -> duration() +
-                                                                          p() -> perk.empowered_berserk -> effectN( 1 ).time_value() ) );
-      p() -> cooldown.mangle -> reset( false );
-    }
-    else if ( p() -> buff.cat_form -> check() )
-      p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, ( p() -> spell.berserk_cat -> duration()  +
-                                                                        p() -> perk.empowered_berserk -> effectN( 1 ).time_value() ) );
+    p() -> buff.berserk -> trigger();
 
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       p() -> buff.feral_tier17_4pc -> trigger();
@@ -4165,7 +3970,7 @@ struct incarnation_t : public druid_spell_t
 struct mark_of_the_wild_t : public druid_spell_t
 {
   mark_of_the_wild_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "mark_of_the_wild", player, player -> find_class_spell( "Mark of the Wild" )  )
+    druid_spell_t( "mark_of_the_wild", player, player -> find_specialization_spell( "Mark of the Wild" )  )
   {
     parse_options( options_str );
 
@@ -4820,7 +4625,7 @@ struct survival_instincts_t : public druid_spell_t
   {
     harmful = false;
     use_off_gcd = true;
-    cooldown -> duration = timespan_t::from_seconds( 120.0 ); // Spell data has wrong cooldown, as of 6/18/14
+    cooldown -> duration = timespan_t::from_seconds( 120.0 ); // Spell data has wrong cooldown, as of 6/18/14. Legion TOCHECK
 
     cooldown -> charges = 2;
   }
@@ -4847,7 +4652,7 @@ struct tigers_fury_t : public druid_spell_t
     
     /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
        based on spell data of the special effect. */
-    if ( p -> wildcat_celerity )
+    if ( p -> wildcat_celerity ) // FIXME
       duration *= 1.0 + p -> wildcat_celerity -> driver() -> effectN( 1 ).average( p -> wildcat_celerity -> item ) / 100.0;
   }
 
@@ -5201,7 +5006,6 @@ void druid_t::init_spells()
   spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
   spec.rip                     = find_specialization_spell( "Rip" );
-  spec.savage_roar             = find_specialization_spell( "Savage Roar" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.swipe                   = find_specialization_spell( "Swipe" );
   spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
@@ -5212,7 +5016,6 @@ void druid_t::init_spells()
   spec.savage_defense          = find_specialization_spell( "Savage Defense" );
   spec.survival_of_the_fittest = find_specialization_spell( "Survival of the Fittest" );
   spec.thick_hide              = find_specialization_spell( "Thick Hide" );
-  spec.tooth_and_claw          = find_specialization_spell( "Tooth and Claw" );
   spec.ursa_major              = find_specialization_spell( "Ursa Major" );
   spec.guardian_passive        = find_specialization_spell( "Guardian Overrides Passive" );
 
@@ -5320,20 +5123,6 @@ void druid_t::init_spells()
   mastery.primal_tenacity  = find_mastery_spell( DRUID_GUARDIAN );
   mastery.primal_tenacity_AP = find_spell( 159195 );
 
-  // Active actions
-  if ( spec.leader_of_the_pack -> ok() )
-    active.leader_of_the_pack = new leader_of_the_pack_t( this );
-  if ( talent.cenarion_ward -> ok() )
-    active.cenarion_ward_hot  = new cenarion_ward_hot_t( this );
-  if ( spell.yseras_gift -> ok() )
-    active.yseras_gift        = new yseras_gift_t( this );
-  if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
-    active.gushing_wound      = new gushing_wound_t( this );
-  if ( specialization() == DRUID_BALANCE )
-    active.starshards         = new spells::starshards_t( this );
-  if ( specialization() == DRUID_GUARDIAN )
-    active.stalwart_guardian  = new stalwart_guardian_t( this );
-
   // Spells
   spell.ferocious_bite                  = find_class_spell( "Ferocious Bite"              ) -> ok() ? find_spell( 22568  ) : spell_data_t::not_found(); // Get spell data for max_fb_energy calculation.
   spell.bear_form_passive               = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
@@ -5348,12 +5137,22 @@ void druid_t::init_spells()
 
   if ( specialization() == DRUID_FERAL )
   {
+    spec.dream_of_cenarius = find_spell ( 158497 );
     spell.primal_fury = find_spell( 16953 );
     spell.gushing_wound = find_spell( 165432 );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
+    spec.dream_of_cenarius = find_spell( 158501 );
     spell.primal_fury = find_spell( 16959 );
+  }
+  else if ( specialization() == DRUID_RESTORATION )
+  {
+    spec.dream_of_cenarius = find_spell( 158504 );
+  }
+  else if ( specialization() == DRUID_BALANCE )
+  {
+    spec.dream_of_cenarius = find_spell( 108373 );
   }
 
   // Affinities
@@ -5371,7 +5170,7 @@ void druid_t::init_spells()
   }
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
   {
-    spell.yseras_gift = find_specialization_spell( "Ysera's Gift" );
+    spell.yseras_gift = find_spell( 145108 );
   }
 
   // Feral
@@ -5384,7 +5183,6 @@ void druid_t::init_spells()
 
   // Guardian
   perk.enhanced_faerie_fire           = find_perk_spell( "Enhanced Faerie Fire" );
-  perk.enhanced_tooth_and_claw        = find_perk_spell( "Enhanced Tooth and Claw" );
   perk.empowered_bear_form            = find_perk_spell( "Empowered Bear Form" );
   perk.empowered_berserk              = find_perk_spell( "Empowered Berserk" );
 
@@ -5408,8 +5206,6 @@ void druid_t::init_spells()
   glyph.moonwarding           = find_glyph_spell( "Glyph of Moonwarding" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
-  glyph.savage_roar           = find_glyph_spell( "Glyph of Savage Roar" );
-  glyph.savagery              = find_glyph_spell( "Glyph of Savagery" );
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
   glyph.shapemender           = find_glyph_spell( "Glyph of the Shapemender" );
   glyph.stampeding_roar       = find_glyph_spell( "Glyph of Stampeding Roar" );
@@ -5424,6 +5220,20 @@ void druid_t::init_spells()
   }
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
+
+  // Active actions
+  if ( spec.leader_of_the_pack -> ok() )
+    active.leader_of_the_pack = new leader_of_the_pack_t( this );
+  if ( talent.cenarion_ward -> ok() )
+    active.cenarion_ward_hot  = new cenarion_ward_hot_t( this );
+  if ( spell.yseras_gift )
+    active.yseras_gift        = new yseras_gift_t( this );
+  if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    active.gushing_wound      = new gushing_wound_t( this );
+  if ( specialization() == DRUID_BALANCE )
+    active.starshards         = new spells::starshards_t( this );
+  if ( specialization() == DRUID_GUARDIAN )
+    active.stalwart_guardian  = new stalwart_guardian_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -5567,8 +5377,7 @@ void druid_t::create_buffs()
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
-                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() - glyph.savagery -> effectN( 2 ).percent() )
-                               .duration( find_spell( glyph.savagery -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
@@ -5608,9 +5417,6 @@ void druid_t::create_buffs()
                                .duration( find_spell( 177969 ) -> duration() )
                                .max_stack( find_spell( 177969 ) -> max_stacks() )
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
-  buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) )
-                               .max_stack( find_spell( 135286 ) -> _max_stack + perk.enhanced_tooth_and_claw -> effectN( 1 ).base_value() );
-  buff.tooth_and_claw_absorb = new tooth_and_claw_absorb_t( *this );
   buff.ursa_major            = new ursa_major_t( *this );
 
   // Restoration
@@ -5971,7 +5777,6 @@ void druid_t::apl_guardian()
 
   default_list -> add_action( this, "Barkskin", "if=buff.bristling_fur.down" );
   default_list -> add_talent( this, "Bristling Fur", "if=buff.barkskin.down&buff.savage_defense.down" );
-  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&incoming_damage_1s" );
   default_list -> add_action( this, "Berserk", "if=(buff.pulverize.remains>10|!talent.pulverize.enabled)&buff.incarnation.down" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=rage>=80" );
   default_list -> add_talent( this, "Cenarion Ward" );
@@ -6033,18 +5838,6 @@ void druid_t::init_scaling()
   caster_form_weapon = main_hand_weapon;
 }
 
-
-// druid_t::arise ============================================================
-
-void druid_t::arise()
-{
-  player_t::arise();
-
-  if ( glyph.savagery -> ok() )
-    buff.savage_roar -> trigger();
-
-}
-
 // druid_t::init ============================================================
 
 void druid_t::init()
@@ -6075,7 +5868,6 @@ void druid_t::init_gains()
   gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
   gain.swipe                 = get_gain( "swipe"                 );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
-  gain.tooth_and_claw        = get_gain( "tooth_and_claw"        );
   
   gain.feral_tier15_2pc      = get_gain( "feral_tier15_2pc"      );
   gain.feral_tier16_4pc      = get_gain( "feral_tier16_4pc"      );
@@ -6101,8 +5893,6 @@ void druid_t::init_procs()
   proc.starshards               = get_proc( "Starshards"                                );
   proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"                          );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"                          );
-  proc.tooth_and_claw           = get_proc( "tooth_and_claw"                            );
-  proc.tooth_and_claw_wasted    = get_proc( "tooth_and_claw_wasted"                     );
   proc.ursa_major               = get_proc( "ursa_major"                                );
 }
 
@@ -6267,15 +6057,12 @@ void druid_t::combat_begin()
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
 
   // If Ysera's Gift is talented, apply it upon entering combat
-  if ( spell.yseras_gift -> ok() )
+  if ( spell.yseras_gift )
     active.yseras_gift -> execute();
   
   // Apply Bladed Armor buff 
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
-
-  if ( predatory_swiftness_bug && glyph.savage_roar -> ok() )
-    buff.predatory_swiftness -> trigger();
 }
 
 // druid_t::invalidate_cache ================================================
@@ -6331,6 +6118,18 @@ double druid_t::composite_armor_multiplier() const
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
 
   return a;
+}
+
+// druid_t::composite_persistent_multiplier =================================
+
+double druid_t::composite_persistent_multiplier( school_e school ) const
+{
+  double pm = player_t::composite_persistent_multiplier( school );
+
+  // Don't call up() for accurate benefit tracking.
+  pm *= 1.0 + buff.tigers_fury -> check() * buff.tigers_fury -> default_value;
+
+  return pm;
 }
 
 // druid_t::composite_player_multiplier =====================================
@@ -6438,15 +6237,8 @@ double druid_t::composite_spell_power( school_e school ) const
 {
   double p = player_t::composite_spell_power( school );
 
-  switch ( school )
-  {
-    case SCHOOL_NATURE:
-      if ( spec.nurturing_instinct -> ok() )
-        p += spec.nurturing_instinct -> effectN( 1 ).percent() * cache.agility();
-      break;
-    default:
-      break;
-  }
+  if ( spec.nurturing_instinct -> ok() )
+    p += spec.nurturing_instinct -> effectN( 1 ).percent() * cache.agility();
 
   return p;
 }
@@ -6917,7 +6709,7 @@ public:
     }
     os << "</tr>\n";
 
-// Compile and Write Contents 
+    // Compile and Write Contents 
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
       stats_t* stats = p.stats_list[ i ];
@@ -6992,72 +6784,6 @@ public:
     os << "</table>\n";
   }
 
-  void feral_imp_rake_table( report::sc_html_stream& os )
-  {
-    // Write header
-    os << "<table class=\"sc\">\n"
-         << "<tr>\n"
-           << "<th colspan=2>Improved Rake</th>\n";
-    os << "</tr>\n";
-
-// Compile and Write Contents 
-    for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
-    {
-      stats_t* stats = p.stats_list[ i ];
-      double ir_exe_up = 0, ir_exe_total = 0;
-      double ir_benefit_up = 0, ir_benefit_total = 0;
-      double ir_wasted_buffs = 0;
-      int n = 0;
-
-      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
-      {
-        cat_attacks::rake_t* a = dynamic_cast<cat_attacks::rake_t*>( stats -> action_list[ j ] );
-        if ( ! a )
-          continue;
-
-        ir_exe_up += a -> ir_counter -> mean_exe_up();
-        ir_exe_total += a -> ir_counter -> mean_exe_total();
-        ir_benefit_up += a -> ir_counter -> mean_tick_up();
-        ir_benefit_total += a -> ir_counter -> mean_tick_total();
-        if ( has_amount_results( stats -> direct_results ) )
-        {
-          ir_benefit_up += a -> ir_counter -> mean_exe_up();
-          ir_benefit_total += a -> ir_counter -> mean_exe_total();
-        }
-        ir_wasted_buffs += a -> ir_counter -> mean_waste();
-      }
-
-      if ( ir_exe_total > 0 )
-      {
-        std::string row_class_str = "";
-        if ( ++n & 1 )
-          row_class_str = " class=\"odd\"";
-
-        // Table Row : Execute %
-        os.format("<tr%s><td class=\"left\">Execute %%</td><td class=\"right\">%.2f %%</td>\n",
-            row_class_str.c_str(),
-            util::round( ir_exe_up / ir_exe_total * 100, 2 ) );
-
-        // Table Row : Benefit %
-        os.format("<tr%s><td class=\"left\">Benefit %%</td><td class=\"right\">%.2f %%</td>\n",
-            row_class_str.c_str(),
-            util::round( ir_benefit_up / ir_benefit_total * 100, 2 ) );
-
-        // Table Row : Wasted Buffs
-        os.format("<tr%s><td class=\"left\">Wasted Buffs</td><td class=\"right\">%.2f</td>\n",
-            row_class_str.c_str(),
-            util::round( ir_wasted_buffs , 2 ) );
-
-        os << "</tr>";
-      }
-      
-    }
-
-    os << "</tr>";
-
-    // Write footer
-    os << "</table>\n";
-  }
 private:
   druid_t& p;
 };
