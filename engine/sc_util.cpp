@@ -706,7 +706,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_HEALTH:        return "health";
     case RESOURCE_MANA:          return "mana";
     case RESOURCE_RAGE:          return "rage";
-    case RESOURCE_ECLIPSE:       return "eclipse";
+    case RESOURCE_ASTRAL_POWER:  return "astral_power";
     case RESOURCE_ENERGY:        return "energy";
     case RESOURCE_FOCUS:         return "focus";
     case RESOURCE_RUNIC_POWER:   return "runic_power";

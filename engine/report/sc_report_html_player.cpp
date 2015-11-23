@@ -1891,7 +1891,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, const player_t
 
 bool print_html_sample_sequence_resource( const player_t& p, const player_collected_data_t::action_sequence_data_t& data, resource_e r )
 {
-  if ( r == RESOURCE_ECLIPSE && p.specialization() == DRUID_BALANCE ) // Eclipse dips into the negatives.
+  if ( r == RESOURCE_ASTRAL_POWER && p.specialization() == DRUID_BALANCE ) // Eclipse dips into the negatives.
     return true;
 
   if ( data.resource_snapshot[ r ] < 0 )
