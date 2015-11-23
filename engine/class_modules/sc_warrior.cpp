@@ -80,7 +80,7 @@ public:
     buff_t* ravager_protection;
     // Arms and Fury
     buff_t* die_by_the_sword;
-    buff_t* rallying_cry;
+    buff_t* commanding_shout;
     buff_t* recklessness;
     // Fury and Prot
     buff_t* enrage;
@@ -222,7 +222,7 @@ public:
     //Arms and Fury
     const spell_data_t* die_by_the_sword;
     const spell_data_t* shield_barrier;
-    const spell_data_t* rallying_cry;
+    const spell_data_t* commanding_shout;
     const spell_data_t* recklessness;
     const spell_data_t* whirlwind;
     //Fury-only
@@ -2359,28 +2359,6 @@ struct avatar_t: public warrior_spell_t
   }
 };
 
-// Battle Shout =============================================================
-
-struct battle_shout_t: public warrior_spell_t
-{
-  battle_shout_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "battle_shout", p, p -> find_class_spell( "Battle Shout" ) )
-  {
-    parse_options( options_str );
-    range = -1;
-    callbacks = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    if ( !sim -> overrides.attack_power_multiplier )
-      sim -> auras.attack_power_multiplier -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-  }
-};
-
 // Berserker Rage ===========================================================
 
 struct berserker_rage_t: public warrior_spell_t
@@ -2418,28 +2396,6 @@ struct bloodbath_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.bloodbath -> trigger();
-  }
-};
-
-// Commanding Shout =========================================================
-
-struct commanding_shout_t: public warrior_spell_t
-{
-  commanding_shout_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "commanding_shout", p, p -> find_class_spell( "Commanding Shout" ) )
-  {
-    parse_options( options_str );
-    range = -1;
-    callbacks = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    if ( !sim -> overrides.stamina )
-      sim -> auras.stamina -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 
@@ -2489,12 +2445,12 @@ struct last_stand_t: public warrior_spell_t
   }
 };
 
-// Rallying Cry ===============================================================
+// Commanding Shout ===============================================================
 
-struct rallying_cry_t: public warrior_spell_t
+struct commanding_shout_t: public warrior_spell_t
 {
-  rallying_cry_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "rallying_cry", p, p -> spec.rallying_cry )
+  commanding_shout_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "commanding_shout", p, p -> spec.commanding_shout )
   {
     parse_options( options_str );
     range = -1;
@@ -2503,7 +2459,7 @@ struct rallying_cry_t: public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    p() -> buff.rallying_cry -> trigger();
+    p() -> buff.commanding_shout -> trigger();
   }
 };
 
@@ -2650,14 +2606,12 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"          ) return new auto_attack_t          ( this, options_str );
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
-  if ( name == "battle_shout"         ) return new battle_shout_t         ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
   if ( name == "bloodbath"            ) return new bloodbath_t            ( this, options_str );
   if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
-  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
   if ( name == "die_by_the_sword"     ) return new die_by_the_sword_t     ( this, options_str );
@@ -2675,7 +2629,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
-  if ( name == "rallying_cry"         ) return new rallying_cry_t         ( this, options_str );
+  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
   if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
@@ -2732,7 +2686,7 @@ void warrior_t::init_spells()
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.protection               = find_specialization_spell( "Protection" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
-  spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
+  spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
   spec.recklessness             = find_specialization_spell( "Recklessness" );
   spec.rend                     = find_specialization_spell( "Rend" );
   spec.resolve                  = find_specialization_spell( "Resolve" );
@@ -3380,12 +3334,12 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
   }
 };
 
-struct rallying_cry_t: public warrior_buff_t < buff_t >
+struct commanding_shout_t : public warrior_buff_t < buff_t >
 {
   int health_gain;
-  rallying_cry_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s )
-    .add_invalidate( CACHE_LEECH ) ), health_gain( 0 )
+  commanding_shout_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
+    base_t( p, buff_creator_t( &p, n, s ) ),
+    health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -3510,7 +3464,7 @@ void warrior_t::create_buffs()
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
 
-  buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
+  buff.commanding_shout = new buffs::commanding_shout( *this, "commanding_shout", find_spell( 97463 ) );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
 
