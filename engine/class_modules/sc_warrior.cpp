@@ -9,15 +9,12 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Add in colossus smash damage bonus
-// Fix autoattack rage gain, and check to see if stances are properly removed
-// Make sure there are no lingering gladiator things
+// Fix autoattack rage gain
 // try to not break protection
 // Add Intercept
 // Check if rage is gained from charging the same target twice
 // Check if heroic leap mechanics are still the same
 // Add back second wind
-// 
 // ==========================================================================
 
 struct warrior_t;
@@ -720,13 +717,13 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < war
 struct melee_t: public warrior_attack_t
 {
   bool mh_lost_melee_contact, oh_lost_melee_contact;
-  double base_rage_generation, arms_battle_stance, arms_defensive_stance, battle_stance, arms_trinket_chance;
+  double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, arms_trinket_chance;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
     base_rage_generation( 1.75 ),
-    arms_battle_stance( 3.40 ), arms_defensive_stance( 1.60 ),
-    battle_stance( 2.00 ),
+    arms_rage_multiplier( 3.40 ),
+    fury_rage_multiplier( 2.00 ),
     arms_trinket_chance( 0 )
   {
     school = SCHOOL_PHYSICAL;
@@ -806,11 +803,6 @@ struct melee_t: public warrior_attack_t
     }
   }
 
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-  }
-
   void trigger_rage_gain( action_state_t* s )
   {
     weapon_t*  w = weapon;
@@ -821,11 +813,11 @@ struct melee_t: public warrior_attack_t
       if ( s -> result == RESULT_CRIT )
         rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2015/02/02
       else
-        rage_gain *= arms_battle_stance;
+        rage_gain *= arms_rage_multiplier;
     }
     else
     {
-      rage_gain *= battle_stance;
+      rage_gain *= fury_rage_multiplier;
       if ( w -> slot == SLOT_OFF_HAND )
         rage_gain *= 0.5;
     }
