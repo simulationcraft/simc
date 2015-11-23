@@ -270,7 +270,6 @@ public:
     const spell_data_t* whirlwind;
     //Fury-only
     const spell_data_t* bloodthirst;
-    const spell_data_t* crazed_berserker;
     const spell_data_t* cruelty;
     const spell_data_t* meat_cleaver;
     const spell_data_t* piercing_howl;
@@ -742,8 +741,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
     if ( weapon -> slot == SLOT_OFF_HAND )
     {
-      dmg *= 1.0 + p() -> spec.crazed_berserker -> effectN( 2 ).percent();
-
       if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
         p() -> off_hand_weapon.group() == WEAPON_1H )
         dmg *= 1.0 + p() -> spec.singleminded_fury -> effectN( 2 ).percent();
@@ -1380,7 +1377,7 @@ struct execute_t: public warrior_attack_t
 
     sudden_death_rage = 30;
 
-    if ( p -> spec.crazed_berserker -> ok() )
+    if ( p -> specialization() == WARRIOR_FURY )
     {
       oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
       add_child( oh_attack );
@@ -1449,7 +1446,7 @@ struct execute_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) &&
+    if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
          oh_attack -> execute();
 
@@ -2581,7 +2578,6 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
   }
 
@@ -2606,19 +2602,10 @@ struct whirlwind_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
 
-    if ( p -> specialization() == WARRIOR_FURY )
+    if ( p -> specialization() == WARRIOR_FURY && p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( p -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        oh_attack = new whirlwind_off_hand_t( p );
-        add_child( oh_attack );
-      }
-      weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
-      base_costs[RESOURCE_RAGE] += p -> spec.crazed_berserker -> effectN( 3 ).resource( RESOURCE_RAGE );
-    }
-    else
-    {
-      weapon_multiplier *= 2;
+      oh_attack = new whirlwind_off_hand_t( p );
+      add_child( oh_attack );
     }
 
     weapon = &( p -> main_hand_weapon );
@@ -3103,7 +3090,6 @@ void warrior_t::init_spells()
   spec.blood_craze              = find_specialization_spell( "Blood Craze" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
-  spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker" );
   spec.cruelty                  = find_specialization_spell( "Cruelty" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
   spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
