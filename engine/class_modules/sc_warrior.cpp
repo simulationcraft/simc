@@ -460,6 +460,7 @@ public:
     {
       am *= 1.0 + ab::player -> cache.mastery_value();
     }
+
     return am;
   }
 
