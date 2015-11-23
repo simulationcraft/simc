@@ -575,7 +575,7 @@ public:
   unsigned    _class_mask;         // 6 Class mask for spell
   unsigned    _race_mask;          // 7 Racial mask for the spell
   int         _scaling_type;       // 8 Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
-  unsigned    _max_scaling_level;  // 9 Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
+  int         _max_scaling_level;  // 9 Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   // SpellLevels.dbc
   unsigned    _spell_level;        // 10 Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // 11 Maximum level for scaling
