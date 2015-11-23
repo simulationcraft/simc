@@ -88,7 +88,6 @@ public:
     buff_t* sudden_death;
     // Glyphs
     buff_t* enraged_speed;
-    buff_t* hamstring;
     buff_t* heroic_leap_glyph;
     buff_t* raging_blow_glyph;
     buff_t* raging_wind;
@@ -207,7 +206,6 @@ public:
     const spell_data_t* cleave;
     const spell_data_t* death_from_above;
     const spell_data_t* enraged_speed;
-    const spell_data_t* hamstring;
     const spell_data_t* heroic_leap;
     const spell_data_t* long_charge;
     const spell_data_t* rude_interruption;
@@ -3456,7 +3454,6 @@ void warrior_t::init_spells()
   glyphs.death_from_above       = find_glyph_spell( "Glyph of Death From Above" );
   glyphs.drawn_sword            = find_glyph_spell( "Glyph of the Drawn Sword" );
   glyphs.enraged_speed          = find_glyph_spell( "Glyph of Enraged Speed" );
-  glyphs.hamstring              = find_glyph_spell( "Glyph of Hamstring" );
   glyphs.heroic_leap            = find_glyph_spell( "Glyph of Heroic Leap" );
   glyphs.long_charge            = find_glyph_spell( "Glyph of Long Charge" );
   glyphs.raging_blow            = find_glyph_spell( "Glyph of Raging Blow" );
@@ -4221,8 +4218,6 @@ void warrior_t::create_buffs()
   buff.enraged_speed = buff_creator_t( this, "enraged_speed", glyphs.enraged_speed )
     .can_cancel( false )
     .duration( buff.enrage -> data().duration() );
-
-  buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "glyph_of_heroic_leap", find_spell( 133278 ) )
     .chance( glyphs.heroic_leap -> ok() ? 1.0 : 0 );
