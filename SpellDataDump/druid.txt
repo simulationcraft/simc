@@ -62,7 +62,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=293)      : Apply Aura (6) | Periodic Trigger Spell: Tranquility (23)
+#1 (id=293)      : Apply Aura (6) | Periodic Trigger Spell: Tranquility every 2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 157982
 #2 (id=294)      : Apply Party Aura (35) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Radius: 40 yards
@@ -113,7 +113,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=311)      : Apply Aura (6) | Periodic Heal (8)
+#1 (id=311)      : Apply Aura (6) | Periodic Heal: every 3 seconds (8)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.54200
 #2 (id=227841)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
@@ -156,7 +156,7 @@ Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 Name             : Rip (id=1079) [Spell Family (7)] 
 Class            : Feral Druid
 Resource         : 30 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
@@ -169,7 +169,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=390)      : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=390)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13200
 #2 (id=117625)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
@@ -666,7 +666,7 @@ Usable while in Bear Form.
 
 Name             : Regrowth (id=8936) [Spell Family (7)] 
 Class            : Restoration Druid
-Resource         : 18.63% Base Mana (40985 @Level 110)
+Resource         : 18.63% Base Mana (40986 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -682,7 +682,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=3728)     : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.14812
-#2 (id=3729)     : Apply Aura (6) | Periodic Heal (8)
+#2 (id=3729)     : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.09104
 Description      : Heals a friendly target for $s1$?s116218[][ and another ${$o2*$<mult>} over $d].
 
@@ -1020,7 +1020,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Ferocious Bite (id=22568) [Spell Family (7)] 
 Class            : Feral Druid
 Resource         : 25 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1051,7 +1051,7 @@ Critical strike chance doubled against bleeding targets.
 Name             : Maim (id=22570) [Scaling Spell (2), Spell Family (7)] 
 Class            : Feral Druid
 Resource         : 35 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 72
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1120,7 +1120,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=13048)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=13048)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=124626)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
@@ -1248,7 +1248,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=23639)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=23639)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.36729
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.
 
@@ -1310,7 +1310,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 0x9
 #2 (id=102371)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17
-#3 (id=170940)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=170940)   : Apply Aura (6) | Periodic Dummy: every 7 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 132213
 Description      : Shapeshift into the Tree of Life, increasing healing done by $5420s1%, increasing armor by $5420s3%, and granting immunity to Polymorph.  Functionality of Rejuvenation, Wild Growth, Regrowth, and Entangling Roots is enhanced.
 
@@ -1471,7 +1471,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=40640)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=40640)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Radius: 0 - 30 yards
 #2 (id=40641)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 30 yards
@@ -1595,7 +1595,7 @@ Description      : Returns all dead party members to life with $s1% of maximum h
 Name             : Savage Roar (id=52610) [Spell Family (7)] 
 Class            : Druid
 Resource         : 25 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 18
 Range            : 100 yards
 GCD              : 1 seconds
@@ -1612,7 +1612,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=45152)    : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40
-#3 (id=159999)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=159999)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
                    Base Value: 30 | Scaled Value: 30
 Description      : Finishing move that increases physical damage done by $62071s1% while in Cat Form.  Lasts longer per combo point:
 
@@ -2066,7 +2066,7 @@ Also grants you Lunar and Solar Empowerments, which increase the damage of your 
 
 Name             : Solar Beam (id=78675) [Spell Family (7)] 
 Class            : Balance Druid
-Resource         : 16.8% Base Mana (36959 @Level 110)
+Resource         : 16.8% Base Mana (36960 @Level 110)
 Spell Level      : 28
 Range            : 40 yards
 Duration         : 8 seconds
@@ -2164,7 +2164,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=68689)    : Persistent Area Aura (27) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards
-#2 (id=68690)    : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=68690)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc81269
 
@@ -2497,7 +2497,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=111087)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=111087)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.93300
 Description      : Heals the target for $m1 every $t1 sec for $d.
 Tooltip          : Heals $w1 damage every $t1 seconds.
@@ -2798,7 +2798,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=117262)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.51300 | Radius: 0 - 8 yards
-#2 (id=117263)   : Apply Aura (6) | Periodic Damage: physical (3)
+#2 (id=117263)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36500 | Radius: 0 - 8 yards
 #3 (id=216428)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
@@ -2917,7 +2917,7 @@ Attributes       : ........ ........ x....... ........   ..xx...x ........ .....
 Effects          :
 #1 (id=117548)   : Persistent Area Aura (27) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
-#3 (id=117550)   : Apply Aura (6) | Periodic Trigger Spell: Astral Storm (23)
+#3 (id=117550)   : Apply Aura (6) | Periodic Trigger Spell: Astral Storm every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 106998
 #4 (id=232971)   : Persistent Area Aura (27) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
@@ -3214,7 +3214,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127
 #2 (id=158319)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127
-#3 (id=158320)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=158320)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 20 | Scaled Value: 20
 #4 (id=215347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40
@@ -3690,7 +3690,7 @@ Attributes       : ....x... ........ ........ x.......   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=184106)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: energy
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Grants $m1 combo point.
 
 Name             : Item - Druid T16 Feral 4P Bonus (id=144841) [Spell Family (7), Passive] 
@@ -3722,7 +3722,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=195304)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=195304)   : Apply Aura (6) | Periodic Dummy: every 5 seconds (226)
                    Base Value: 4 | Scaled Value: 4
 Description      : Heals you for $s1% of your maximum health every $t sec.  If you are at full health, a random nearby injured ally will be healed instead.
 
@@ -3905,7 +3905,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=206325)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.03) | AP Coefficient: 0.22400
-#2 (id=206326)   : Apply Aura (6) | Periodic Damage: physical (3)
+#2 (id=206326)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.03) | AP Coefficient: 0.22400
 #3 (id=206327)   : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20000
@@ -4040,7 +4040,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=216287)   : Apply Aura (6) | Periodic Damage: arcane (3)
+#1 (id=216287)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.73300
 #2 (id=216288)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.84700
@@ -4108,7 +4108,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ .x..x... ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=216427)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=216427)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62000
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
@@ -4266,7 +4266,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=222335)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f
-#2 (id=258557)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=258557)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc80313
 Tooltip          : Damage taken reduced by $s4%.
@@ -4508,7 +4508,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=232409)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.63000
-#2 (id=232410)   : Apply Aura (6) | Periodic Damage: arcane (3)
+#2 (id=232410)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42000
 Description      : $@spelldesc8921
 Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
@@ -4529,7 +4529,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=232416)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.63000
-#2 (id=232417)   : Apply Aura (6) | Periodic Damage: nature (3)
+#2 (id=232417)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42000 | Radius: 0 - 5 yards
 Description      : $@spelldesc93402
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
@@ -4831,7 +4831,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=268201)   : Apply Aura (6) | Periodic Trigger Spell: Sunfall (23)
+#1 (id=268201)   : Apply Aura (6) | Periodic Trigger Spell: Sunfall every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11700 | Trigger Spell: 155598
 #2 (id=268202)   : Apply Aura (6) | Unknown effect sub type (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2613
@@ -5024,7 +5024,7 @@ Attributes       : ....x... ........ .....x.. ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281782)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=281782)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.10200
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0
@@ -5502,7 +5502,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=295007)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=295007)   : Apply Aura (6) | Periodic Heal: every 3 seconds (8)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.54200
 Description      : $@spelldesc200390
 Tooltip          : Heals $w1 damage every $t1 seconds.
@@ -5673,8 +5673,8 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=297780)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: energy
-#2 (id=297781)   : Apply Aura (6) | Periodic Trigger Spell: Combo Point (23)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: combo_points
+#2 (id=297781)   : Apply Aura (6) | Periodic Trigger Spell: Combo Point every 1 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 139546
 Description      : Immediately gain $s1 combo points and an additional $s2 combo point every $t2 sec for $d.
 Tooltip          : Gaining $s2 combo point every $t sec.
@@ -5813,7 +5813,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=298295)   : School Damage: spellstorm (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.39000
-#2 (id=298296)   : Apply Aura (6) | Periodic Damage: spellstorm (3)
+#2 (id=298296)   : Apply Aura (6) | Periodic Damage: spellstorm every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.13000
 Description      : Burns the target for $s1 Spellstorm damage, and then an additional $o2 damage over $d.
 
@@ -5982,7 +5982,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298913)   : Apply Aura (6) | Periodic Energize Power (24)
+#1 (id=298913)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 8
 Description      : Grants 3 Astral Power every $t1 sec.
 Tooltip          : Grants 3 Astral Power every $t1 sec.
@@ -6003,7 +6003,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=298967)   : School Damage: spellstorm (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 10.00000
-#2 (id=298968)   : Apply Aura (6) | Periodic Damage: spellstorm (3)
+#2 (id=298968)   : Apply Aura (6) | Periodic Damage: spellstorm every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000
 Description      : Burns the target for $s1 Spellstorm damage, and then an additional $s2 damage per second until your Astral Power is exhausted.
 
@@ -6096,7 +6096,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=300991)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=300991)   : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
                    Base Value: 30 | Scaled Value: 30
 Description      : 
 Every $t1 sec, you gain a charge of Earthwarden, up to $203975u charges.

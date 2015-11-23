@@ -518,7 +518,7 @@ Attributes       : ........ ...x.... ........ ........   ........ ........ .....
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=86373)    : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=86373)    : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Protects the target with a shield of Holy Light for $d, absorbing up to $?s85256[${$m1+1.306*$SPH/0.7}][${$m1+1.306*$SPH}] damage every $t1 sec.  Only one target can be affected at a time.
 Tooltip          : Absorbs up to $w1 damage every $t1 sec.
@@ -646,7 +646,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=301465)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=301465)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=16533)    : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4488
@@ -669,7 +669,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=18390)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=18390)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106031)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -1394,7 +1394,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=53091)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=53091)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106028)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -2183,7 +2183,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=128467)   : Apply Aura (6) | Periodic Damage: holy (3)
+#1 (id=128467)   : Apply Aura (6) | Periodic Damage: holy every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=163020)   : Dummy (3)
                    Base Value: 9142 | Scaled Value: 9142
@@ -2206,7 +2206,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=128468)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=128468)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.59400
 #2 (id=163021)   : Dummy (3)
                    Base Value: 594 | Scaled Value: 594
@@ -2225,7 +2225,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=128469)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=128469)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds.
 
@@ -2765,7 +2765,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ..x..... 
 Effects          :
-#1 (id=194348)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=194348)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc144580
 Tooltip          : Healing for $w1 every $t sec for $d.
@@ -2895,7 +2895,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=217570)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=217570)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000
 Description      : $@spelldesc114163
 Tooltip          : Healing $w1 health every $t2 sec.
@@ -3181,7 +3181,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=265638)   : Apply Friendly Area Aura (128) | Periodic Heal% (20)
+#1 (id=265638)   : Apply Friendly Area Aura (128) | Periodic Heal%: every 5 seconds (20)
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards
 Description      : Allies within $A1 yards heal $s1% of max health every $t sec.
 Tooltip          : Healing $s1% of max health every $t sec.
@@ -3321,7 +3321,7 @@ Attributes       : .......x x....... x.x..... x..x....   ........ .......x .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7), Disable player procs (112)
 Effects          :
-#1 (id=266347)   : Apply Aura (6) | Periodic Trigger Spell: Aura of Light (23)
+#1 (id=266347)   : Apply Aura (6) | Periodic Trigger Spell: Aura of Light every 1 seconds (23)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 183839 | Radius: 40 yards
 #2 (id=266348)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3
@@ -3343,7 +3343,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 40 yards
 #2 (id=266350)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 22
-#3 (id=266355)   : Apply Friendly Area Aura (128) | Periodic Heal% (20)
+#3 (id=266355)   : Apply Friendly Area Aura (128) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 1 | Scaled Value: 1 | Radius: 40 yards
 
 Name             : Tower of Light (id=183994) [Spell Family (10)] 
@@ -3748,7 +3748,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=291057)   : Apply Aura (6) | Periodic Trigger Spell: Divine Hammer (23)
+#1 (id=291057)   : Apply Aura (6) | Periodic Trigger Spell: Divine Hammer every 2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198137
 #2 (id=291195)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power
@@ -3768,7 +3768,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=291058)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=291058)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=291205)   : Dummy (3)
                    Base Value: 9142 | Scaled Value: 9142
@@ -3826,7 +3826,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=291065)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100774 | Misc Value 2: 0xe93
-#2 (id=291573)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=291573)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Place a Beacon of Hope at the target location.  After $d, or when you take damage, you will be sent to the Beacon.
 
@@ -4209,9 +4209,9 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
-#1 (id=300234)   : Apply Aura (6) | Periodic Damage: holy (3)
+#1 (id=300234)   : Apply Aura (6) | Periodic Damage: holy every 0.75 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000
-#2 (id=300235)   : Apply Aura (6) | Periodic Heal% (20)
+#2 (id=300235)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=300236)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50

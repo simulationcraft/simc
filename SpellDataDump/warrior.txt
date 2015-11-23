@@ -148,7 +148,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=310)      : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=310)      : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.96600
 Description      : Wounds the target, causing $o1 bleed damage over $d.
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
@@ -986,7 +986,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=18390)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=18390)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106031)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -1217,7 +1217,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=39082)    : Apply Aura (6) | Periodic Trigger Spell: Bladestorm (23)
+#1 (id=39082)    : Apply Aura (6) | Periodic Trigger Spell: Bladestorm every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 50622
 #2 (id=39083)    : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
@@ -2126,7 +2126,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   .x...... ........ ........ ........ 
 Effects          :
-#1 (id=126202)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=126202)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 5 | Scaled Value: 0 (avg=0.094)
 Description      : $@spelldesc12292
 Tooltip          : Bleeding for $w1 every $t1 sec.
@@ -2167,7 +2167,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=129821)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=129821)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.84000
 Description      : Your Mortal Strike, Bloodthirst, Devastate, and Thunder Clap cause the target to bleed for $115767o1 Physical damage over $115767d.
 
@@ -2861,7 +2861,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=199740)   : Apply Aura (6) | Periodic Energize Power (24)
+#1 (id=199740)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 1
 #2 (id=199747)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: -1000 | Scaled Value: -1000
@@ -2975,7 +2975,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #2 (id=217166)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 76168 | Misc Value 2: 0xd55 | Radius: 6 yards
-#3 (id=217506)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=217506)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=254765)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
@@ -3820,7 +3820,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=297920)   : Apply Aura (6) | Periodic Heal% (20)
+#1 (id=297920)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 6 | Scaled Value: 6
 Description      : $@spelldesc29838
 

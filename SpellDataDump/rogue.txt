@@ -27,7 +27,7 @@ Description      : Stab the target, causing $sw2 Physical damage. Damage increas
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
 Class            : Rogue
 Resource         : 25 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
@@ -85,7 +85,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=280)      : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=280)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
@@ -216,7 +216,7 @@ Effects          :
 #2 (id=169690)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42000 | Misc Value: 0x7f
 #3 (id=284082)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: energy
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Gouges the eyes of an enemy target, incapacitating the opponent for $d.  Any damage will cause the target to recover immediately. Generates $s3 combo $lpoint:points;.
 Tooltip          : Incapacitated.$?$w2!=0[
 Damage taken increased by $w2%.][]
@@ -337,7 +337,7 @@ Description      : Reduces damage from falling.
 Name             : Rupture (id=1943) [Spell Family (8)] 
 Class            : Assassination Rogue
 Resource         : 25 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
@@ -350,9 +350,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=586)      : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06850
-#2 (id=239409)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=293833)   : Trigger Spell: Rupture (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 199672
@@ -430,7 +430,7 @@ Tooltip          : Disoriented.
 Name             : Run Through (id=2098) [Spell Family (8)] 
 Class            : Combat Rogue
 Resource         : 35 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 8 yards
 GCD              : 1 seconds
@@ -471,7 +471,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
                  : ........ .x..xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=853)      : Apply Aura (6) | Periodic Damage: nature (3)
+#1 (id=853)      : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
                    Base Value: 6 | Scaled Value: 0 (avg=0.6) | AP Coefficient: 0.25014
 Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
@@ -632,7 +632,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 40 | Scaled Value: 40
-#2 (id=127877)   : Apply Aura (6) | Periodic Energize Power (24)
+#2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
    1 point  : 12 seconds
@@ -1271,13 +1271,13 @@ Attributes       : .......x x....... ........ ...x.x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=21283)    : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=21283)    : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
                    Base Value: 10 | Scaled Value: 10
 
 Name             : Envenom (id=32645) [Spell Family (8)] 
 Class            : Assassination Rogue
 Resource         : 35 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 11
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1296,7 +1296,7 @@ Effects          :
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Paralytic Poison (200800), Numbing Poison (200802)
-#3 (id=159997)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=159997)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Paralytic Poison (200800), Numbing Poison (200802)
 #4 (id=220587)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -1498,7 +1498,7 @@ Attributes       : ....x... ........ x....... .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=44062)    : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=44062)    : Apply Aura (6) | Periodic Dummy: every 0.5 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3
 #2 (id=44063)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
@@ -2805,7 +2805,7 @@ Attributes       : .......x x....... x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7), Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=185207)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=185207)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
 Description      : Designer Note: The only purpose of this aura is to mark a player who just cast Nature's Swiftness.
 
@@ -2926,7 +2926,7 @@ Effects          :
 Name             : Death from Above (id=152150) [Spell Family (8)] 
 Class            : Rogue
 Resource         : 50 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
@@ -2949,7 +2949,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=217868)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
-#6 (id=217869)   : Apply Aura (6) | Periodic Dummy (226)
+#6 (id=217869)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 156327
 #7 (id=254016)   : Trigger Spell: (184963) (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 184963
@@ -3013,7 +3013,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=215087)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=215087)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20700
 Description      : $@spelldesc154904
 Tooltip          : Suffering $w1 damage every $t1 sec.
@@ -3065,7 +3065,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=218226)   : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3
-#2 (id=218288)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=218288)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc152152
 Tooltip          : Energy regeneration increased by $s1%.
@@ -3158,7 +3158,7 @@ Attributes       : .......x x....... ..x..... ...x....   ....x... ..x..... .....
 Effects          :
 #1 (id=220706)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2
-#2 (id=295619)   : Apply Aura (6) | Periodic Heal% (20)
+#2 (id=295619)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -3369,7 +3369,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=269983)   : Persistent Area Aura (27) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 6 yards
-#2 (id=269984)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=269984)   : Apply Aura (6) | Periodic Dummy: every 0.3 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=269985)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Radius: 6 yards
@@ -3460,7 +3460,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=283619)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: energy
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 #2 (id=283620)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=283621)   : Weapon Damage% (31)
@@ -3477,7 +3477,7 @@ Saber Slash has a $s5% chance to strike an additional time, granting additional 
 Name             : Roll the Bones (id=193316) [Spell Family (8)] 
 Class            : Rogue
 Resource         : 25 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 36
 Range            : 100 yards
 GCD              : 1 seconds
@@ -3492,7 +3492,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=283623)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40
-#2 (id=283629)   : Apply Aura (6) | Periodic Energize Power (24)
+#2 (id=283629)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 Description      : Finishing move that rolls the dice of fate, providing a random combat enhancement. Lasts longer per combo point:
    1 point  : 12 seconds
@@ -3651,7 +3651,7 @@ Casting Extraction Point while in the Hall of Shadows will return the Rogue back
 Name             : Nightblade (id=195452) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 25 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3664,9 +3664,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=286896)   : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=286896)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06850
-#2 (id=286897)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=286897)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=286898)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
@@ -3707,7 +3707,7 @@ Description      : Launch a grappling hook and pull yourself to the target locat
 Name             : Eviscerate (id=196819) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3856,7 +3856,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=289165)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: energy
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 #2 (id=289166)   : Weapon Damage% (31)
                    Base Value: 176 | Scaled Value: 1.76
 #3 (id=289167)   : Normalized Weapon Damage (121)
@@ -3866,7 +3866,7 @@ Effects          :
 #5 (id=289169)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 10 | Scaled Value: 10
                    Affected Spells: Gouge (1776), Killing Spree (51690), Killing Spree (57841), Killing Spree Off-Hand (57842), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937)
-#6 (id=297629)   : Apply Aura (6) | Periodic Dummy (226)
+#6 (id=297629)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
                    Base Value: 10 | Scaled Value: 10
                    Affected Spells: Gouge (1776), Killing Spree (51690), Killing Spree (57841), Killing Spree Off-Hand (57842), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937)
 Description      : Strike an enemy with your cursed weapon, dealing $sw2 Physical damage, awarding $s1 combo $lpoint:points;, and causing the target to take $s5% increased damage from your abilities for $d.
@@ -4046,7 +4046,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=293945)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0
-#4 (id=293946)   : Apply Aura (6) | Periodic Dummy (226)
+#4 (id=293946)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Pacifies the target, who is forced to negotiate instead of fighting for $d. Only works on Humanoids, Demons, and Dragonkin. Any damage caused will break the peace. Limit 1 target.
 Tooltip          : Pacified.
@@ -4099,7 +4099,7 @@ Name             : Between the Eyes (id=199804) [Spell Family (8)]
 Replaces         : Kidney Shot (id=408)
 Class            : Combat Rogue
 Resource         : 35 Energy
-Resource         : 1 Energy and 262144 Energy per second
+Resource         : 1 - 5 Combo Points
 Spell Level      : 25
 Range            : 20 yards
 GCD              : 1 seconds

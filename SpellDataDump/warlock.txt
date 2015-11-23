@@ -127,7 +127,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow every 20 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.00000
 Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage after $d.
 
@@ -156,7 +156,7 @@ Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Summon Imp (Summon) (id=688) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 1
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -192,9 +192,9 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
-#1 (id=271)      : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=271)      : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25050
-#2 (id=92509)    : Apply Aura (6) | Periodic Heal% (20)
+#2 (id=92509)    : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 3 | Scaled Value: 3
 #3 (id=186635)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
@@ -205,7 +205,7 @@ Restoring $m2% of maximum health to the caster when Drain Life deals damage.
 
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 35
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -227,7 +227,7 @@ Description      : Summons a Felhunter under your command, able to heal itself b
 
 Name             : Summon Voidwalker (Summon) (id=697) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 8
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -274,7 +274,7 @@ Tooltip          : Invulnerable, but unable to act.
 
 Name             : Summon Succubus (Summon) (id=712) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 28
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -309,7 +309,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
-#1 (id=302)      : Apply Aura (6) | Periodic Heal% (20)
+#1 (id=302)      : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 6 | Scaled Value: 6
 #2 (id=303)      : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
@@ -335,9 +335,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=374)      : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=374)      : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03300
-#2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=198244)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Inflicts increasing agony on the target, causing up to ${$o1*10} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
 
@@ -368,7 +368,7 @@ Tooltip          : Enslaved.
 
 Name             : Summon Infernal (Guardian) (id=1122) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 50
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -567,7 +567,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Radius: 8 yards
 #2 (id=2040)     : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5420
-#3 (id=291291)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=291291)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Calls down a rain of hellfire, dealing ${$42223m1*8} Fire damage to enemies in an area, over $d.
 Tooltip          : $42223s1 Fire damage every $5740t2 sec.
@@ -644,7 +644,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=2157)     : Direct Heal (10)
                    Base Value: 15 | Scaled Value: 499.7065 (avg=0.294118)
-#2 (id=127600)   : Apply Aura (6) | Periodic Heal (8)
+#2 (id=127600)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 30 | Scaled Value: 99.94028 (avg=0.058823)
 Description      : $?s56224[Restores $o2 health over $d.][Instantly restores $m1 health.]
 Tooltip          : $w2 health restored every $t2 sec.
@@ -902,7 +902,7 @@ Tooltip          : Maximum health increased by $s1%.
 
 Name             : Shadowburn (id=17877) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 47
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -949,7 +949,7 @@ Also causes Backdraft, reducing the cast times of Incinerate and Chaos Bolt by $
 
 Name             : Summon Doomguard (Guardian) (id=18540) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 58
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1005,7 +1005,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=10699)    : Apply Aura (6) | Periodic Trigger Spell: Immolation (23)
+#1 (id=10699)    : Apply Aura (6) | Periodic Trigger Spell: Immolation every 2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 20153
 Description      : Burns nearby enemies for $20153s1 fire damage every $t1 seconds.
 Tooltip          : Burns nearby enemies for $20153s1 fire damage every $t1 seconds.
@@ -1139,7 +1139,7 @@ Tooltip          : Stunned.
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
 Class            : Affliction Warlock
 Resource         : 4.5% Base Mana (49500 @Level 110)
-Resource         : 0 Soul Shard and 655.36 Soul Shard per second w/ Sow the Seeds (id=196226)
+Resource         : 0 - 1 Soul Shard w/ Sow the Seeds (id=196226)
 Spell Level      : 38
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -1157,7 +1157,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=16910)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=16911)    : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=16911)    : Apply Aura (6) | Periodic Dummy: every 18 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 #3 (id=154322)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
@@ -1246,7 +1246,7 @@ Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
 Class            : Affliction Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1260,12 +1260,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=19677)    : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=19677)    : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=302947)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Eye of Kilrogg (126), Corruption (172), Drain Life (689), Banish (710), Agony (980), Create Healthstone (6201), Unstable Affliction (30108), Haunt (48181), Siphon Life (63106), Corruption (146739), Drain Soul (198590)
-#3 (id=303066)   : Apply Aura (6) | Periodic Damage: shadow (3)
+#3 (id=303066)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600
 Description      : An especially insidious affliction that deals $o3 Shadow damage over $d. If this effect is reapplied, any remaining damage will be added to the new Unstable Affliction.
 
@@ -1276,7 +1276,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Summon Felguard (Summon) (id=30146) [Spell Family (5)] 
 Class            : Demonology Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 40
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -1499,7 +1499,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=40196)    : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=40196)    : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=40197)    : Unknown effect type (104)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 191083 | Misc Value 2: 0x4
@@ -2208,7 +2208,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ..x....x .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=92647)    : Apply Aura (6) | Periodic Trigger Spell: Felstorm (23)
+#1 (id=92647)    : Apply Aura (6) | Periodic Trigger Spell: Felstorm every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 89753
 #2 (id=92648)    : Apply Aura (6) | Unknown effect sub type (264)
                    Base Value: 0 | Scaled Value: 0
@@ -2431,7 +2431,7 @@ Description      : Corrupts all of your Warlock fire spells, infusing them with 
 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
 Class            : Demonology Warlock
-Resource         : 0.02 Soul Shard
+Resource         : 2 Soul Shard
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -2483,7 +2483,7 @@ Description      : Fel energies protect the Warlock, increasing their Stamina by
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Warlock
-Resource         : 0.01 Soul Shard and 1966.08 Soul Shard per second
+Resource         : 1 - 4 Soul Shard
 Spell Level      : 34
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2606,7 +2606,7 @@ Attributes       : ........ ........ x.x..... .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=119566)   : Apply Owner Area Aura (143) | Unknown effect sub type (81)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Radius: 100 yards
-#2 (id=119569)   : Apply Owner Area Aura (143) | Periodic Dummy (226)
+#2 (id=119569)   : Apply Owner Area Aura (143) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 127 | Radius: 100 yards
 Description      : $s1% of all damage taken is split with your demon pet, and $s2% of damage you deal heals you and your demon.
 Tooltip          : $s1% of all damage taken is split with your summoned demon.  $s2% of all damage done by the Warlock is converted into healing on the Warlock and the demon.
@@ -2739,7 +2739,7 @@ Description      : Create a demonic gateway between two locations. Activating th
 
 Name             : Grimoire: Imp (Summon) (id=111859) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2762,7 +2762,7 @@ Imps cast ranged Firebolts and cleanse a hostile magic effect from their master.
 
 Name             : Grimoire: Voidwalker (Summon) (id=111895) 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2784,7 +2784,7 @@ Voidwalkers will taunt their target when summoned.
 
 Name             : Grimoire: Succubus (Summon) (id=111896) 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2806,7 +2806,7 @@ Succubi will seduce their target if it is Humanoid.
 
 Name             : Grimoire: Felhunter (Summon) (id=111897) 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2828,7 +2828,7 @@ Felhunters will Spell Lock their target when summoned.
 
 Name             : Grimoire: Felguard (Summon) (id=111898) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2872,7 +2872,7 @@ Tooltip          : Increases your threat generation while active.
 
 Name             : Summon Fel Imp (Summon) (id=112866) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 1
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -2894,7 +2894,7 @@ Description      : Summons a Fel Imp under your command that casts ranged Fel Fi
 
 Name             : Summon Voidlord (Summon) (id=112867) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 8
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -2916,7 +2916,7 @@ Description      : Summons a Voidlord under your command, able to withstand heav
 
 Name             : Summon Shivarra (Summon) (id=112868) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 20
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -2938,7 +2938,7 @@ Description      : Summons a Shivarra under your command to mesmerize opponents,
 
 Name             : Summon Observer (Summon) (id=112869) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 29
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -2960,7 +2960,7 @@ Description      : Summons an Observer under your command, able to heal itself b
 
 Name             : Summon Wrathguard (Summon) (id=112870) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 42
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -2995,7 +2995,7 @@ Tooltip          : You have recently triggered Howl of Terror.
 
 Name             : Summon Abyssal (Guardian) (id=112921) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 49
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3050,7 +3050,7 @@ Description      : Summons a Terrorguard.
 
 Name             : Summon Terrorguard (Guardian) (id=112927) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Spell Level      : 58
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3394,7 +3394,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ..x....x .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=129941)   : Apply Aura (6) | Periodic Trigger Spell: Wrathstorm (23)
+#1 (id=129941)   : Apply Aura (6) | Periodic Trigger Spell: Wrathstorm every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115832
 #2 (id=169578)   : Apply Aura (6) | Unknown effect sub type (264)
                    Base Value: 0 | Scaled Value: 0
@@ -3428,7 +3428,7 @@ Description      : $@spelldesc115831
 
 Name             : Chaos Bolt (id=116858) [Spell Family (5)] 
 Class            : Destruction Warlock
-Resource         : 0.02 Soul Shard
+Resource         : 2 Soul Shard
 Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -3444,7 +3444,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132079)   : School Damage: chromatic (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.75000
-#2 (id=177448)   : Apply Aura (6) | Periodic Damage: chromatic (3)
+#2 (id=177448)   : Apply Aura (6) | Periodic Damage: chromatic every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000
 #3 (id=283496)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -3560,7 +3560,7 @@ Attributes       : ........ ........ ........ ........   .......x ..x..... .x...
 Effects          :
 #1 (id=139029)   : Unknown effect type (165)
                    Base Value: 1 | Scaled Value: 1
-#2 (id=139030)   : Apply Aura (6) | Periodic Heal% (20)
+#2 (id=139030)   : Apply Aura (6) | Periodic Heal%: every 3 seconds (20)
                    Base Value: 2 | Scaled Value: 2
 Description      : Burns the Master's wounds, dealing a small amount of damage, then restoring $o2% health over $d.
 Tooltip          : Healing $s2% health every $t2 sec.
@@ -4070,7 +4070,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=198369)   : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=198369)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26208
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
@@ -4156,7 +4156,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=219942)   : Apply Aura (6) | Periodic Damage: fire (3)
+#1 (id=219942)   : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.49500
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
@@ -4164,7 +4164,7 @@ Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Grimoire: Doomguard (Summon) (id=157900) 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -4184,7 +4184,7 @@ Description      : Summons a Doomguard who attacks the target for $108501s1 sec.
 
 Name             : Grimoire: Infernal (Summon) (id=157901) 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -4667,7 +4667,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
 Effects          :
 #1 (id=283784)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Radius: 100 yards
-#2 (id=283785)   : Apply Aura (6) | Periodic Trigger Spell: Demonwrath (23)
+#2 (id=283785)   : Apply Aura (6) | Periodic Trigger Spell: Demonwrath every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 193439
 #3 (id=285334)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
@@ -4850,7 +4850,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f
 #2 (id=287838)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: mana
-#3 (id=299357)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=299357)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 15 | Scaled Value: 15
 Description      : Consumes $s2% of current mana to grant $s1% increased damage for $d.
 Tooltip          : Damage increased by $s1%.
@@ -5148,7 +5148,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=288342)   : Apply Aura (6) | Periodic Trigger Spell: Channel Demonfire (23)
+#1 (id=288342)   : Apply Aura (6) | Periodic Trigger Spell: Channel Demonfire every 0.2 seconds (23)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 196449
 Description      : Launches $s1 bolts of felfire at Immolated enemies within $196449A1 yds, over $d. Each bolt deals $196448s1 Fire damage.
 
@@ -5215,9 +5215,9 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
-#1 (id=291909)   : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=291909)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
-#2 (id=291910)   : Apply Aura (6) | Periodic Heal% (20)
+#2 (id=291910)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 1 | Scaled Value: 1
 Description      : Drains the target's soul, causing $o1 Shadow damage, and restoring $o2% of the caster's health over $d.  If the target dies while channeling, generates 1 Soul Shard.
 
@@ -5327,13 +5327,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=302907)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=302907)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Place a phantom singularity above the target, which consumes the life of all enemies within $205246A2 yards, dealing $205246s2 damage every $t sec for $d, healing you for ${$205246e2*100}% of the damage done.
 
 Name             : Summon Inquisitor (id=205180) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 0.01 Soul Shard
+Resource         : 1 Soul Shard
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 24 seconds
@@ -5365,7 +5365,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302909)   : School Damage: shadowflame (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-#2 (id=302911)   : Apply Aura (6) | Periodic Damage: shadowflame (3)
+#2 (id=302911)   : Apply Aura (6) | Periodic Damage: shadowflame every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000
 Description      : Lob a ball of Shadowflame at the target, dealing $s1 Shadowflame damage, and $o2 Shadowflame damage over $d, stacking.
 

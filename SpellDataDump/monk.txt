@@ -295,7 +295,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=18390)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=18390)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106031)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -653,7 +653,7 @@ Attributes       : ....x... ........ x.x..... ........   ..x...x. ........ .....
                  : ........ ........ ........ ........   .x..x... ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=110004)   : Apply Aura (6) | Periodic Trigger Spell: Spinning Crane Kick (23)
+#1 (id=110004)   : Apply Aura (6) | Periodic Trigger Spell: Spinning Crane Kick every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 107270
 Description      : You spin while kicking in the air, dealing ${(4*3.00*$<low>+4*3.00*$<high>)/2} damage over $d to enemies within $107270A1 yds.
 Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
@@ -684,7 +684,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=110144)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 54569 | Misc Value 2: 0xca2
-#2 (id=255742)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=255742)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : You split your body and spirit, leaving your spirit behind for $d.  Use Transcendence: Transfer to swap locations with your spirit.
 Tooltip          : You left your spirit behind, allowing you to use Transcendence: Transfer to swap with its location.
@@ -834,7 +834,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. .xx..... .....
 Effects          :
 #1 (id=126625)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=128845)   : Apply Aura (6) | Periodic Trigger Spell: Fists of Fury (23)
+#2 (id=128845)   : Apply Aura (6) | Periodic Trigger Spell: Fists of Fury every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120086
 #3 (id=159495)   : Apply Aura (6) | Unknown effect sub type (227)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 117418
@@ -1013,7 +1013,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=128742)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=128742)   : Apply Aura (6) | Periodic Damage: physical every 8 seconds (3)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=162038)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -1101,7 +1101,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=128871)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=128871)   : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Chain Multiplier: 100
 Description      : Heals the target for $o1 over $d.  
 While channeling Soothing Mist, Surging Mist and Enveloping Mist are instant on any target.
@@ -1454,7 +1454,7 @@ Attributes       : ....x... ...x.... x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=130769)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
-#2 (id=158599)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=158599)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Reduces the target's movement speed by $s1% for $d, duration refreshed by your melee attacks.  Targets already snared will be rooted for $116706d instead.
 Tooltip          : Movement slowed by $w1%. When struck again by Disable, you will be rooted for $116706d.
@@ -1745,7 +1745,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ .x....x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
-#1 (id=132057)   : Apply Aura (6) | Periodic Trigger Spell: Rushing Jade Wind (23)
+#1 (id=132057)   : Apply Aura (6) | Periodic Trigger Spell: Rushing Jade Wind every 0.75 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 148187
 Description      : Summon a whirling tornado around you, causing ${(2.00*$<low>+2.00*$<high>)/2*9} damage over $d to enemies within $107270A1 yards.
 Tooltip          : Dealing physical damage to nearby enemies every $116847t1 sec.
@@ -1863,7 +1863,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : Channeled (34)
 Effects          :
-#1 (id=134063)   : Apply Aura (6) | Periodic Damage: nature (3)
+#1 (id=134063)   : Apply Aura (6) | Periodic Damage: nature every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.28182
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
@@ -1960,7 +1960,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=138091)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=138091)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.75000
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
@@ -2136,7 +2136,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=141348)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=141348)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=141349)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -2191,7 +2191,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=153005)   : Apply Aura (6) | Periodic Trigger Spell: Power Strikes (23)
+#1 (id=153005)   : Apply Aura (6) | Periodic Trigger Spell: Power Strikes every 15 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Trigger Spell: 129914
 Description      : Every $t1 sec, your next Tiger Palm generates $s1 additional Chi.
 
@@ -2227,7 +2227,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=153852)   : Apply Aura (6) | Periodic Trigger Spell: Healing Elixirs (23)
+#1 (id=153852)   : Apply Aura (6) | Periodic Trigger Spell: Healing Elixirs every 18 seconds (23)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Trigger Spell: 134563
 Description      : Heals you for $s1% of your maximum health when a damaging attack brings you below 35% health, or when you drink a Brew or Tea while injured.  This effect can only happen once every $t1 sec.
 
@@ -2372,7 +2372,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=156180)   : Apply Aura (6) | Periodic Damage: fire (3)
+#1 (id=156180)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 0.19602
 Description      : $@spelldesc115181
 Tooltip          : Burning for $123725o1 Fire damage.
@@ -2452,7 +2452,7 @@ Attributes       : .......x x..x.... ..x..... x..x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=156723)   : Apply Aura (6) | Periodic Trigger Spell: Crackling Tiger Lightning (23)
+#1 (id=156723)   : Apply Aura (6) | Periodic Trigger Spell: Crackling Tiger Lightning every 1 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 123996
 #2 (id=288827)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
@@ -2504,7 +2504,7 @@ Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... .....
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112)
 Effects          :
-#1 (id=157231)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=157231)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=179267)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
@@ -2545,7 +2545,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ .....x.. ........ ........ 
                  : Disable player procs (112), Disable weapon procs (151)
 Effects          :
-#1 (id=157266)   : Apply Aura (6) | Periodic Damage: nature (3)
+#1 (id=157266)   : Apply Aura (6) | Periodic Damage: nature every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc122470
 Tooltip          : $w1 Nature damage every $t1 sec.
@@ -2633,7 +2633,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=157840)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=157840)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.65000
 #2 (id=290817)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 30 | Scaled Value: 30
@@ -2720,7 +2720,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=159476)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=159476)   : Apply Aura (6) | Periodic Dummy: every 3000 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3
 Description      : You always will attack with hands and fist with Jab, even with non-fist weapons equipped.
 
@@ -3559,7 +3559,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=210680)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=210680)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=288846)   : Unknown effect type (144)
                    Base Value: 100 | Scaled Value: 100
@@ -3893,7 +3893,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell: Essence Font (23)
+#1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell: Essence Font every 0.167 seconds (23)
                    Base Value: 6 | Scaled Value: 6 | Trigger Spell: 191840
 Description      : Unleash a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1} sec for $d.
 
@@ -3916,7 +3916,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Radius: 0 - 25 yards
-#2 (id=289619)   : Apply Aura (6) | Periodic Heal (8)
+#2 (id=289619)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Radius: 0 - 25 yards
 Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2.
@@ -4007,9 +4007,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=288658)   : Apply Aura (6) | Periodic Heal (8)
+#1 (id=288658)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000
-#2 (id=288659)   : Apply Aura (6) | Periodic Damage: nature (3)
+#2 (id=288659)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000
 Description      : $@spelldesc196607
 Tooltip          : $?$w1>0[Healing $w1 every $t1 sec.][Suffering $w2 Nature damage every $t2 sec.]
@@ -4115,7 +4115,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ .x....x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
-#1 (id=288818)   : Apply Aura (6) | Periodic Trigger Spell: Refreshing Jade Wind (23)
+#1 (id=288818)   : Apply Aura (6) | Periodic Trigger Spell: Refreshing Jade Wind every 0.75 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162530
 Description      : Summon a whirling tornado around you, causing ${$162530m1*9} healing over $d to up to 6 allies within $107270A1 yards.
 Tooltip          : Dealing healing to nearby allies every $116847t1 sec.
@@ -4281,7 +4281,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=288848)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=288848)   : Apply Aura (6) | Periodic Dummy: every 5 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : 
 Every $t1 sec, an orb of energy forms and rotates around you, until it impacts an enemy, dealing $196748s1 damage. Max 4 orbs.

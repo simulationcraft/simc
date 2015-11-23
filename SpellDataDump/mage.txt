@@ -140,7 +140,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=461)      : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=461)      : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Magical energy flows through you while in combat, building up to ${$116267m1*5}% increased damage and then diminishing down to $116267s1% increased damage, cycling every 10 sec.
 
@@ -303,9 +303,9 @@ Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
-#1 (id=1818)     : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=1818)     : Apply Aura (6) | Periodic Dummy: every 0.4 seconds (226)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=1819)     : Apply Aura (6) | Periodic Trigger Spell: Arcane Missiles (23)
+#2 (id=1819)     : Apply Aura (6) | Periodic Trigger Spell: Arcane Missiles every 0.4 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 7268
 #3 (id=88858)    : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9
@@ -591,7 +591,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=5511)     : Apply Aura (6) | Periodic Damage: fire (3)
+#1 (id=5511)     : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=5512)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
@@ -618,7 +618,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
 #2 (id=127998)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150
-#3 (id=290011)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=290011)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Your target burns for an additional $m1% over $12654d of the total direct damage caused by your Fireball, Inferno Blast, Scorch, Pyroblast$?s153561[, Meteor][]$?s198929[, Cinderstorm][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.
 
@@ -731,7 +731,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=18390)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=18390)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106031)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -1089,7 +1089,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=36371)    : Apply Aura (6) | Periodic Damage: fire (3)
+#1 (id=36371)    : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000
 #2 (id=253823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
@@ -1158,7 +1158,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
 #3 (id=37398)    : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126
-#4 (id=223391)   : Apply Aura (6) | Periodic Heal% (20)
+#4 (id=223391)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 0 | Scaled Value: 0
 Description      : You become encased in a block of ice, protecting you from all attacks and damage for $d, but during that time you cannot attack, move or cast spells.  
 
@@ -1399,7 +1399,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=53097)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=53097)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106026)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -1951,7 +1951,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=125604)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=125604)   : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Places a Frost Bomb on the target for $d. Limit 1 target.
 
@@ -2072,7 +2072,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=128479)   : Apply Aura (6) | Periodic Damage: arcane (3)
+#1 (id=128479)   : Apply Aura (6) | Periodic Damage: arcane every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03410
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
@@ -2149,7 +2149,7 @@ Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... .....
 Effects          :
 #1 (id=130584)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7e
-#2 (id=150697)   : Apply Aura (6) | Periodic Heal% (20)
+#2 (id=150697)   : Apply Aura (6) | Periodic Heal%: every 1.5 seconds (20)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=150698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
@@ -2847,7 +2847,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215514)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f
-#2 (id=256210)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=256210)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: -200 | Scaled Value: -200
 #3 (id=256211)   : Apply Aura (6) | Unknown effect sub type (402)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 161
@@ -2866,7 +2866,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
-#1 (id=215526)   : Apply Aura (6) | Periodic Damage: fire (3)
+#1 (id=215526)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37500
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
@@ -3175,7 +3175,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 #2 (id=290008)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33554432
-#3 (id=290009)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=290009)   : Apply Aura (6) | Periodic Dummy: every 0.5 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Engulf yourself in flames, increasing your critical strike chance by $s1% for $d.
 
@@ -3558,7 +3558,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30
-#2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost (3)
+#2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 0.5 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.78700
 Description      : Channels a ray of frost at the target, slowing the target by $m1% and dealing $o2 Frost damage to the target over $d.  The damage dealt is increased the longer the ray is channeled.
 
@@ -3844,7 +3844,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=303128)   : Apply Aura (6) | Periodic Trigger Spell: Flare Up (23)
+#1 (id=303128)   : Apply Aura (6) | Periodic Trigger Spell: Flare Up every 1 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Trigger Spell: 205345
 Description      : Explodes with fire.
 Tooltip          : Exploding with fire.

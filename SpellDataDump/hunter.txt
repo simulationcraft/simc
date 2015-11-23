@@ -14,7 +14,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ....x... ........ x.......   ........ ........ ......x. ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=94)       : Apply Aura (6) | Periodic Heal% (20)
+#1 (id=94)       : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals your pet for $?s56833[${$<total>+$56833m4}][$<total>]% of its total health over $d.$?s19573[  Each time Mend Pet heals your pet, it has a $19573s1% chance to cleanse $24406s1 Curse, Disease, Magic, or Poison effect.][]
 Tooltip          : Heals $w1% of the pets health every $t1 sec.
@@ -142,7 +142,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...
 Effects          :
 #1 (id=480)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=481)      : Apply Aura (6) | Periodic Trigger Spell: Tame Beast (23)
+#2 (id=481)      : Apply Aura (6) | Periodic Trigger Spell: Tame Beast every 10 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 13481
 Description      : $?a166615[|CFFFF2020You must dismiss your current pet before you can tame another one.|CFFFFD200
 
@@ -949,7 +949,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=18390)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=18390)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106031)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -1716,7 +1716,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=53092)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=53092)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106025)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -1820,7 +1820,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112)
 Effects          :
-#1 (id=57625)    : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=57625)    : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 Description      : Your critical strikes with Arcane Shot, Marked Shot and Aimed Shot cause the target to bleed for an additional $s1% of the initial damage over $63468d.
 Tooltip          : Bleeding.
@@ -2213,7 +2213,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=93520)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 0 (avg=1.1)
-#2 (id=93521)    : Apply Aura (6) | Periodic Heal (8)
+#2 (id=93521)    : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 1 | Scaled Value: 0 (avg=0.423)
 Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.6)*3*1.0504)} plus an additional ${$m2+(($RAP*0.6)*2*1.0504)} over $d.
 Tooltip          : Heals $w2 every $t2 sec for $d.
@@ -2246,7 +2246,7 @@ Attributes       : ........ ........ x....... ........   ..x...xx ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=96379)    : Apply Aura (6) | Periodic Trigger Spell: Froststorm Breath (23)
+#1 (id=96379)    : Apply Aura (6) | Periodic Trigger Spell: Froststorm Breath every 2 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 95725
 Description      : The Chimera channels a frozen breath attack, causing $<damage> Froststorm damage every $92380T1 sec for $92380d to all enemies within $95725a1 yards.
 Tooltip          : Causing Froststorm damage to all targets within $95725A1 yards.
@@ -2308,7 +2308,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=97956)    : Apply Aura (6) | Periodic Trigger Spell: Burrow Attack (23)
+#1 (id=97956)    : Apply Aura (6) | Periodic Trigger Spell: Burrow Attack every 1 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 95714
 Description      : The Worm burrows into the earth and shakes the ground above, dealing $<damage> Nature damage over $d.
 Tooltip          : Burrowed into the ground, dealing damage to enemies above.
@@ -2545,7 +2545,7 @@ Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=132388)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
-#2 (id=140695)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=140695)   : Apply Aura (6) | Periodic Dummy: every 0.2 seconds (226)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=150512)   : Trigger Spell: Glaive Toss (64)
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 120755
@@ -2589,7 +2589,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature (3)
+#1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.72500
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
@@ -2682,7 +2682,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. .x....x. .....
 Effects          :
 #1 (id=139839)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=139948)   : Apply Aura (6) | Periodic Trigger Spell: Barrage (23)
+#2 (id=139948)   : Apply Aura (6) | Periodic Trigger Spell: Barrage every 0.2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361
 Description      : Rapidly fires a spray of shots for $120360d, dealing $<damagePri> Physical damage to the enemy target and an average of $<damageSec> Physical damage to each other enemy target in front of you.  Usable while moving.
 
@@ -2993,7 +2993,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=170310)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=170310)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 60 | Scaled Value: 60
 Description      : Summons a flock of crows to attack your target over the next $d. If the target dies while under attack, A Murder of Crows' cooldown is reset.
 Tooltip          : Under attack by a flock of crows.
@@ -3516,7 +3516,7 @@ Attributes       : ........ ........ ........ ........   ......x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (38)
 Effects          :
-#1 (id=224104)   : Apply Aura (6) | Periodic Heal% (20)
+#1 (id=224104)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
                    Base Value: 20 | Scaled Value: 20
 #2 (id=224105)   : Apply Aura (6) | Unknown effect sub type (21)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 2
@@ -3723,7 +3723,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=228151)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=228151)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
 Description      : $@spelldesc162479
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
@@ -3890,7 +3890,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=228231)   : Apply Aura (6) | Periodic Damage: nature (3)
+#1 (id=228231)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc162537
 Tooltip          : Deals $w1 Nature damage every $t sec.
@@ -3978,9 +3978,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=232517)   : Apply Aura (6) | Periodic Heal% (20)
+#1 (id=232517)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
                    Base Value: 3 | Scaled Value: 3
-#2 (id=280650)   : Apply Aura (6) | Periodic Heal% (20)
+#2 (id=280650)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc164856
 Tooltip          : Healing $o1% of maximum health over $d.
@@ -4014,7 +4014,7 @@ Attributes       : .x...... ........ ..x..... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : Ranged ability (1)
 Effects          :
-#1 (id=242178)   : Apply Aura (6) | Periodic Damage: nature (3)
+#1 (id=242178)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04600
 Description      : $@spelldesc162537
 Tooltip          : Deals $w1 Nature damage every $t sec.
@@ -4181,7 +4181,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=270149)   : Apply Aura (6) | Periodic Damage: physical (3)
+#1 (id=270149)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.96600
 Description      : Tear a wound in the target, dealing $o1 damage over $d.
 Tooltip          : Bleeding for $o1 damage every $t1 sec.
@@ -4597,7 +4597,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ......x. ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
-#1 (id=273800)   : Apply Aura (6) | Periodic Damage: fire (3)
+#1 (id=273800)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.022) | SP Coefficient: 1.00000
 Description      : $@spelldesc13813
 Tooltip          : Burning for $s1 Fire damage every $t1 sec.
@@ -4808,7 +4808,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=280739)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=280739)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Kill Command is improved based on the Talent choice of your pet.
 
@@ -4903,7 +4903,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=280784)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.75)
-#2 (id=280785)   : Apply Aura (6) | Periodic Damage: physical (3)
+#2 (id=280785)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36600
 Description      : $@spelldesc34026
 Tooltip          : Bleeding for $w2 damage every second.
@@ -5042,7 +5042,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7
 #2 (id=283922)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7
-#3 (id=283923)   : Apply Aura (6) | Periodic Energize Power (24)
+#3 (id=283923)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2
                    Affected Spells: Hunting Companion (191335), Hunting Companion (191336)
 Description      : Increases the Critical Strike chance of all skills for you and your pet by $s1%, and gain $s3 Focus per second for $d.
@@ -5262,7 +5262,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=285361)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=285361)   : Apply Aura (6) | Periodic Dummy: every 0.2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : For every pet or guardian you have active, Cobra Shot deals an additional $194398s1% damage.
 
@@ -5379,7 +5379,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Ranged ability (1)
 Effects          :
-#1 (id=285672)   : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=285672)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20000
 #2 (id=285673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40
@@ -5437,9 +5437,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire (3)
+#1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-#3 (id=286032)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=286032)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 Description      : Sets an enemy aflame, inflicting $o1 Fire damage over $d. and sending it into a state of panic. While the target is affected, the flames periodically scorch its nearby allies for $16806s1 damage as well.
 Tooltip          : You're burning!
@@ -5480,7 +5480,7 @@ Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Head Shot (id=198670) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
-Resource         : 20 Focus and 5.24288e+06 Focus per second
+Resource         : 20 - 100 Focus
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 100 yards/sec
@@ -5527,7 +5527,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30
 #3 (id=292222)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0
-#4 (id=292224)   : Apply Aura (6) | Periodic Heal% (20)
+#4 (id=292224)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 2 | Scaled Value: 2
 #5 (id=292239)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10
@@ -5602,7 +5602,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30
 #3 (id=293560)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0
-#4 (id=293561)   : Apply Aura (6) | Periodic Heal% (20)
+#4 (id=293561)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 2 | Scaled Value: 2
 #5 (id=293562)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10

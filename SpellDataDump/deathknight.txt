@@ -95,7 +95,7 @@ Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#2 (id=1295)     : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=1295)     : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 60068 | Scaled Value: 60068
 #3 (id=97375)    : Apply Aura (6) | Dummy (4)
                    Base Value: 93061 | Scaled Value: 93061
@@ -283,7 +283,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=18390)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=18390)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106031)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -350,7 +350,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=34352)    : Apply Aura (6) | Periodic Trigger Spell: Army of the Dead (23)
+#1 (id=34352)    : Apply Aura (6) | Periodic Trigger Spell: Army of the Dead every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 42651
 Description      : Summons a legion of Ghouls over $d who will fight for the Death Knight for $42651d, swarming the area, $?s56222[taunting and ][]fighting anything they can.
 Tooltip          : Summoning Ghouls.
@@ -393,7 +393,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 #2 (id=105194)   : Dummy (3)
                    Base Value: 26 | Scaled Value: 0 (avg=0.041) | Radius: 8 yards
-#3 (id=129192)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=129192)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=274827)   : Unknown effect type (179)
                    Base Value: 26 | Scaled Value: 26 | Misc Value: 4485
@@ -430,7 +430,7 @@ Name             : Blood Strike (id=45902) [Scaling Spell (1), Spell Family (15)
 Class            : Blood Death Knight
 Resource         : 1 Rune
 Resource         : 0 Runic Power
-Resource         : 0 Health w/ Blood for Blood (id=202846)
+Resource         : 0 - 5 Health w/ Blood for Blood (id=202846)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1 seconds
@@ -883,7 +883,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .x...
 Effects          :
 #1 (id=41319)    : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 27829 | Misc Value 2: 0xca6 | Radius: 3 yards
-#2 (id=41320)    : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=41320)    : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=41321)    : Trigger Spell: Summon Gargoyle (64)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 61777
@@ -1211,7 +1211,7 @@ Effects          :
 #1 (id=44095)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 16
                    Affected Spells: Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Mark of Sindragosa (155166), Defile (156000)
-#2 (id=205722)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=205722)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16
                    Affected Spells: Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Frost Fever (55095), Frost Strike Off-Hand (66196)
 Description      : $@spelldesc53343
@@ -1436,7 +1436,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=47999)    : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=47999)    : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
                    Base Value: 0 | Scaled Value: 0 (avg=0.158) | AP Coefficient: 0.47300
 #2 (id=48000)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31600
@@ -1483,7 +1483,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=48025)    : Apply Aura (6) | Periodic Damage: frost (3)
+#1 (id=48025)    : Apply Aura (6) | Periodic Damage: frost every 3 seconds (3)
                    Base Value: 0 | Scaled Value: 0 (avg=0.133) | AP Coefficient: 0.47300 | Misc Value: 127
 Description      : A disease that deals Frost damage every $t1 sec for $d and has a chance to grant the Death Knight 5 runic power.
 Tooltip          : Suffering $w1 Frost damage every $t1 sec.
@@ -1857,7 +1857,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=53094)    : Apply Aura (6) | Periodic Heal (8)
+#1 (id=53094)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 4 | Scaled Value: 4
 #2 (id=106024)   : None (0)
                    Base Value: 20 | Scaled Value: 20
@@ -2781,7 +2781,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=119240)   : Apply Aura (6) | Periodic Trigger Spell: Remorseless Winter (23)
+#1 (id=119240)   : Apply Aura (6) | Periodic Trigger Spell: Remorseless Winter every 1 seconds (23)
                    Base Value: 3682 | Scaled Value: 3683 - 3872 | Value Range: 190 | Trigger Spell: 115000
 Description      : Surrounds the Death Knight with a swirling tempest of frigid air for $d, chilling enemies within $115000A1 yards every $t1 sec. Each pulse reduces targets' movement speed by $115000s2% for $115000d, stacking up to $115000u times. Upon receiving a fifth application, an enemy will be stunned for $115001d.
 Tooltip          : Encircled by a frigid tempest, chilling enemies within $115000A1 yards every $t1 sec.
@@ -2941,7 +2941,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=134169)   : Persistent Area Aura (27) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Radius: 0 - 8 yards
-#2 (id=134170)   : Apply Aura (6) | Periodic Dummy (226)
+#2 (id=134170)   : Apply Aura (6) | Periodic Dummy: every 0.5 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc108201
 
@@ -3355,7 +3355,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=210837)   : Apply Aura (6) | Periodic Trigger Spell: Mark of Sindragosa (23)
+#1 (id=210837)   : Apply Aura (6) | Periodic Trigger Spell: Mark of Sindragosa every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 155166
 #2 (id=291656)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
@@ -3391,7 +3391,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 #2 (id=215541)   : Unknown effect type (179)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 1713
-#3 (id=215543)   : Apply Aura (6) | Periodic Dummy (226)
+#3 (id=215543)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 3 | Scaled Value: 3
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127
@@ -3609,9 +3609,9 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=241474)   : Apply Aura (6) | Periodic Trigger Spell: Frozen Runeblade (23)
+#1 (id=241474)   : Apply Aura (6) | Periodic Trigger Spell: Frozen Runeblade every 0.5 seconds (23)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 165569
-#2 (id=256853)   : Apply Aura (6) | Periodic Trigger Spell: Frozen Runeblade (23)
+#2 (id=256853)   : Apply Aura (6) | Periodic Trigger Spell: Frozen Runeblade every 0.5 seconds (23)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 178808
 Description      : $@spelldesc165568
 
@@ -3827,7 +3827,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=281049)   : Apply Aura (6) | Periodic Damage: shadow (3)
+#1 (id=281049)   : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
                    Base Value: 0 | Scaled Value: 0 (avg=0.133) | AP Coefficient: 0.47300 | Misc Value: 127
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
@@ -4015,7 +4015,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=286001)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=286001)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: -30 | Scaled Value: -30
 Description      : Gain a charge of Bone Shield every second for 10 seconds.
 
@@ -4037,7 +4037,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3
 #2 (id=288454)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-#3 (id=288455)   : Apply Aura (6) | Periodic Trigger Spell: Bonestorm (23)
+#3 (id=288455)   : Apply Aura (6) | Periodic Trigger Spell: Bonestorm every 0.33 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196528
 Description      : A whirl of bone and gore batters nearby enemies $s1 times per second to deal $196528s1 Shadow damage, healing you for $s2% of your maximum health per strike. Lasts $d.
 
@@ -4575,7 +4575,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=288888)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
-#2 (id=288889)   : Apply Aura (6) | Periodic Trigger Spell: Hungering Runeblade (23)
+#2 (id=288889)   : Apply Aura (6) | Periodic Trigger Spell: Hungering Runeblade every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196771
 Description      : Drain the warmth of life from all nearby enemies each second for $d, absorbing fragments of their souls and dealing $s196771 Frost damage.
 
@@ -4626,7 +4626,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=288906)   : Apply Aura (6) | Periodic Dummy (226)
+#1 (id=288906)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Tooltip          : Infecting nearby allies with Wandering Plague.
 
