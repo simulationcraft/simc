@@ -15,7 +15,7 @@ namespace { // UNNAMED NAMESPACE
     = Feral =
 
     = Balance =
-    APL adjustments for set bonuses & trinket
+    APL adjustments for set bonuses & trinket : Done 24/11/2015
 
     = Guardian =
     Max charges statistic
@@ -6841,43 +6841,82 @@ void druid_t::apl_balance()
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
-
-  if ( sim -> allow_potions && true_level >= 80 )
-    default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up" );
-
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up" );
+  action_priority_list_t* ca                  = get_action_priority_list( "ca" );
+  action_priority_list_t* ca_aoe              = get_action_priority_list( "ca_aoe" );
+  action_priority_list_t* aoe_t18_trinket     = get_action_priority_list( "aoe_t18_trinket" );
+  action_priority_list_t* cooldowns           = get_action_priority_list( "cooldowns" );
+  
+  // Main List
+  default_list -> add_talent( this, "Force of Nature", "if=trinket.stat.intellect.up|charges=3|target.time_to_die<21" );
+  default_list -> add_action( "call_action_list,name=cooldowns,if=cooldown.celestial_alignment.up&(eclipse_energy>=0|target.time_to_die<=30+gcd)" );
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
-
-  default_list -> add_talent( this, "Force of Nature", "if=trinket.stat.intellect.up|charges=3|target.time_to_die<21" );
-  default_list -> add_action( "call_action_list,name=aoe,if=spell_targets.starfall_pulse>1" );
-  default_list -> add_action( "call_action_list,name=single_target" );
-
-  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&(eclipse_energy>20|buff.celestial_alignment.up)" );
-  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40" );
-  single_target -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
-  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_energy>0" );
-  single_target -> add_action( "incarnation,if=eclipse_energy>0" );
-  single_target -> add_action( this, "Sunfire", "if=remains<7|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time&!talent.balance_of_power.enabled)" );
-  single_target -> add_talent( this, "Stellar Flare", "if=remains<7" );
-  single_target -> add_action( this, "Moonfire" , "if=!talent.balance_of_power.enabled&(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
-  single_target -> add_action( this, "Moonfire", "if=talent.balance_of_power.enabled&(remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
-  single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
-  single_target -> add_action( this, "Starfire" );
-
-  aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
-  aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
+  default_list -> add_action( "call_action_list,name=ca_aoe,if=buff.celestial_alignment.up&spell_targets.starfall_pulse>1&!t18_class_trinket" );
+  default_list -> add_action( "call_action_list,name=ca,if=buff.celestial_alignment.up&(spell_targets.starfall_pulse=1|t18_class_trinket)" );
+  default_list -> add_action( "call_action_list,name=aoe_t18_trinket,if=buff.celestial_alignment.down&spell_targets.starfall.pulse>1&t18_class_trinket" );
+  default_list -> add_action( "call_action_list,name=aoe,if=spell_targets.starfall_pulse>1&buff.celestial_alignment.down&!t18_class_trinket" );
+  default_list -> add_action( "call_action_list,name=single_target,if=spell_targets.starfall_pulse=1&buff.celestial_alignment.down" );
+  
+  // Cooldowns
+  cooldowns -> add_action( "incarnation" );
+  if ( sim -> allow_potions && true_level >= 80 )
+    default_list -> add_action( potion_action );
+  if ( race == RACE_TROLL )
+    cooldowns -> add_action( "Berserking" );
+  cooldowns -> add_action( this, "Celestial Alignment" );
+  
+  // AOE with cooldowns still up, no t18 trinket
+  ca_aoe -> add_action( this, "Starfall", "if=buff.starfall.remains<3" );
+  ca_aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=!dot.moonfire.ticking|!dot.sunfire.ticking" );
+  ca_aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=!dot.moonfire.ticking|!dot.sunfire.ticking" );
+  ca_aoe -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>=0&charges>1" );
+  ca_aoe -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<0&charges>1" );
+  ca_aoe -> add_action( this, "Starfire", "if=eclipse_energy>=0&buff.celestial_alignment.remains>cast_time" );
+  ca_aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.remains>cast_time" );
+  ca_aoe -> add_action( this, "Moonfire", "cycle_targets=1" );
+  ca_aoe -> add_action( this, "Sunfire", "cycle_targets=1" );
+  
+  // Rotation with cooldowns still up, single target or t18 trinket
+  ca -> add_action( this, "Starsurge", "if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)" );
+  ca -> add_action( this, "Moonfire", "cycle_targets=1,if=!dot.moonfire.remains|!dot.sunfire.remains" );
+  ca -> add_action( this, "Sunfire", "cycle_targets=1,if=!dot.moonfire.remains|!dot.sunfire.remains" );
+  ca -> add_action( this, "Starfire", "if=eclipse_energy>=0&buff.celestial_alignment.remains>cast_time" );
+  ca -> add_action( this, "Wrath", "if=buff.celestial_alignment.remains>cast_time" );
+  ca -> add_action( this, "Moonfire", "cycle_targets=1" );
+  ca -> add_action( this, "Sunfire", "cycle_targets=1" );
+  
+  // AOE with t18 trinket
+  aoe_t18_trinket -> add_action( this, "Starsurge", "if=charges=3" );
+  aoe_t18_trinket -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<8" );
+  aoe_t18_trinket -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
+  aoe_t18_trinket -> add_action( this, "Starsurge", "if=eclipse_energy>40&buff.lunar_empowerment.down" );
+  aoe_t18_trinket -> add_action( this, "Starsurge", "if=eclipse_energy<-40&buff.solar_empowerment.down" );
+  aoe_t18_trinket -> add_action( this, "Wrath", "if=(eclipse_energy<0&action.starfire.cast_time<eclipse_change)|(eclipse_energy>0&cast_time>eclipse_change)" );
+  aoe_t18_trinket -> add_action( this, "Starfire" );
+  
+  // AOE without t18 trinket
   aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<8" );
-  aoe -> add_action( this, "Starsurge", "if=t18_class_trinket&buff.starfall.remains<3&spell_targets.starfall_pulse>1" );
-  aoe -> add_action( this, "Starfall", "if=!t18_class_trinket&buff.starfall.remains<3&spell_targets.starfall_pulse>2" );
-  aoe -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
+  aoe -> add_action( this, "Starfall", "if=spell_targets.starfall_pulse>2&buff.starfall.remains<3" );
+  aoe -> add_action( this, "Starfall", "if=@eclipse_energy<20&eclipse_dir.lunar&buff.starfall.remains<3&talent.euphoria.enabled" );
+  aoe -> add_action( this, "Starfall", "if=@eclipse_energy<10&eclipse_dir.lunar&buff.starfall.remains<3&!talent.euphoria.enabled" );
   aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
   aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=remains<7" );
-  aoe -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20&spell_targets.starfall_pulse=2" );
-  aoe -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40&spell_targets.starfall_pulse=2" );
-  aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
+  aoe -> add_action( this, "Starsurge", "if=(buff.lunar_empowerment.down&eclipse_energy>40&charges>1)|charges=3" );
+  aoe -> add_action( this, "Starsurge", "if=(buff.solar_empowerment.down&eclipse_energy<-40&charges>1)|charges=3" );
+  aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   aoe -> add_action( this, "Starfire" );
+  
+  // Single Target
+  single_target -> add_action( this, "Starsurge", "if=charges=3" );
+  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>40" );
+  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40" );
+  single_target -> add_action( this, "Sunfire", "if=(remains<solar_max&eclipse_dir.solar)|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time&!talent.balance_of_power.enabled)" );
+  single_target -> add_talent( this, "Stellar Flare", "if=remains<7" );
+  single_target -> add_action( this, "Moonfire", "if=!talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20)&!talent.balance_of_power.enabled" );
+  single_target -> add_action( this, "Moonfire", "if=talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+10)&!talent.balance_of_power.enabled" );
+  single_target -> add_action( this, "Moonfire", "if=talent.balance_of_power.enabled&remains<eclipse_change+14" );
+  single_target -> add_action( this, "Wrath", "if=(eclipse_energy<0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
+  single_target -> add_action( this, "Starfire" );
 }
 
 // Guardian Combat Action Priority List ==============================
