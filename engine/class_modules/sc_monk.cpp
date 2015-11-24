@@ -5079,8 +5079,9 @@ void monk_t::init_spells()
   spec.extend_life                   = find_spell( 185158 ); // Tier 18 bonus
 
   // Stance
-  stance_data.fierce_tiger           = find_class_spell( "Stance of the Fierce Tiger" );
-  stance_data.sturdy_ox              = find_specialization_spell( "Stance of the Sturdy Ox" );
+  stance_data.fierce_tiger           = find_specialization_spell( "Stance of the Fierce Tiger" );
+  stance_data.sturdy_ox              = find_specialization_spell( "Stagger" );
+  // TODO: These stances are gone!! Fix it!!!
   stance_data.wise_serpent           = find_specialization_spell( "Stance of the Wise Serpent" );
   stance_data.spirited_crane         = find_specialization_spell( "Stance of the Spirited Crane" );
 
@@ -5137,8 +5138,11 @@ void monk_t::init_base_stats()
   base_t::init_base_stats();
 
   base.distance = ( specialization() == MONK_MISTWEAVER ) ? 40 : 3;
-  if ( specialization() != MONK_MISTWEAVER )
-    base_gcd = timespan_t::from_seconds( 1.0 );
+  base_gcd = timespan_t::from_seconds( 1.5 );
+  if ( spec.stagger -> ok() )
+    base_gcd -= timespan_t::from_millis( spec.stagger -> effectN( 11 ).base_value() * -1 ); // Saved as -500 milliseconds
+  if ( stance_data.fierce_tiger -> ok() )
+    base_gcd -= timespan_t::from_millis( stance_data.fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
 
   resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
   resources.base[RESOURCE_ENERGY] = 100 + sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 2 ).base_value();
@@ -5626,7 +5630,7 @@ double monk_t::composite_crit_avoidance() const
 {
   double c = base_t::composite_crit_avoidance();
 
-  c += active_stance_data( STURDY_OX ).effectN( 7 ).percent();
+  c += spec.stagger -> effectN( 8 ).percent();
 
   return c;
 }
@@ -5661,7 +5665,7 @@ double monk_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  a += active_stance_data( STURDY_OX ).effectN( 13 ).percent();
+  a += spec.stagger -> effectN( 14 ).percent();
 
   return a;
 }
@@ -5915,7 +5919,7 @@ void monk_t::target_mitigation( school_e school,
 
   // Passive sources (Sturdy Ox)
   if ( school != SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
-    s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
+    s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
 
   // Damage Reduction Cooldowns
 
