@@ -6860,7 +6860,7 @@ void druid_t::apl_balance()
   // Cooldowns
   cooldowns -> add_action( "incarnation" );
   if ( sim -> allow_potions && true_level >= 80 )
-    default_list -> add_action( potion_action );
+    cooldowns -> add_action( potion_action );
   if ( race == RACE_TROLL )
     cooldowns -> add_action( "Berserking" );
   cooldowns -> add_action( this, "Celestial Alignment" );

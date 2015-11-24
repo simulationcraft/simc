@@ -33,7 +33,6 @@ actions+=/call_action_list,name=ca,if=buff.celestial_alignment.up&(spell_targets
 actions+=/call_action_list,name=aoe_t18_trinket,if=buff.celestial_alignment.down&spell_targets.starfall.pulse>1&t18_class_trinket
 actions+=/call_action_list,name=aoe,if=spell_targets.starfall_pulse>1&buff.celestial_alignment.down&!t18_class_trinket
 actions+=/call_action_list,name=single_target,if=spell_targets.starfall_pulse=1&buff.celestial_alignment.down
-actions+=/potion,name=draenic_intellect
 
 actions.single_target=starsurge,if=charges=3
 actions.single_target+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>40
@@ -84,6 +83,7 @@ actions.aoe_t18_trinket+=/wrath,if=(eclipse_energy<0&action.starfire.cast_time<e
 actions.aoe_t18_trinket+=/starfire
 
 actions.cooldowns=incarnation
+actions.cooldowns+=/potion,name=draenic_intellect
 actions.cooldowns+=/Berserking
 actions.cooldowns+=/celestial_alignment
 
