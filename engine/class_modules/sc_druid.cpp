@@ -191,6 +191,10 @@ public:
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
 
+  // Active
+  action_t* t16_2pc_starfall_bolt;
+  action_t* t16_2pc_sun_bolt;
+
   // Absorb stats
   stats_t* primal_tenacity_stats;
 
@@ -600,6 +604,8 @@ public:
     player_t( sim, DRUID, name, r ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
+    t16_2pc_starfall_bolt( nullptr ),
+    t16_2pc_sun_bolt( nullptr ),
     balance_tier18_2pc( *this ),
     predator( *this ),
     active( active_actions_t() ),
@@ -621,6 +627,8 @@ public:
     talent( talents_t() ),
     inflight_starsurge( false )
   {
+    t16_2pc_starfall_bolt = nullptr;
+    t16_2pc_sun_bolt      = nullptr;
     last_target_dot_moonkin = nullptr;
     
     cooldown.berserk             = get_cooldown( "berserk"             );
@@ -4313,6 +4321,7 @@ struct sunfire_t: public druid_spell_t
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
 
     dot_duration           = dmg_spell -> duration();
+    dot_duration          += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
     base_tick_time         = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
     spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
@@ -4368,6 +4377,7 @@ struct moonfire_t : public druid_spell_t
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
 
     dot_duration                  = dmg_spell -> duration(); 
+    dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
@@ -4663,6 +4673,8 @@ struct solar_wrath_t : public druid_spell_t
   {
     double m = druid_spell_t::action_multiplier();
 
+    m *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
+
     if ( p() -> buff.solar_empowerment -> up() )
       m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent() +
                  p() -> talent.soul_of_the_forest -> effectN( 1 ).percent() + 
@@ -4774,6 +4786,7 @@ struct starfall_t : public druid_spell_t
     hasted_ticks = may_crit = false;
     may_multistrike = 0;
     spell_power_mod.tick = spell_power_mod.direct = 0;
+    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
     add_child( pulse );
   }
 
@@ -4823,6 +4836,10 @@ struct starsurge_t : public druid_spell_t
     starshards_chance( 0.0 )
   {
     parse_options( options_str );
+
+    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
+    base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
 
     if ( player -> starshards )
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
@@ -4943,6 +4960,26 @@ struct tigers_fury_t : public druid_spell_t
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       p() -> buff.feral_tier16_4pc -> trigger();
+  }
+};
+
+// T16 Balance 2P Bonus =====================================================
+
+struct t16_2pc_starfall_bolt_t : public druid_spell_t
+{
+  t16_2pc_starfall_bolt_t( druid_t* player ) :
+    druid_spell_t( "t16_2pc_starfall_bolt", player, player -> find_spell( 144770 ) )
+  {
+    background  = true;
+  }
+};
+
+struct t16_2pc_sun_bolt_t : public druid_spell_t
+{
+  t16_2pc_sun_bolt_t( druid_t* player ) :
+    druid_spell_t( "t16_2pc_sun_bolt", player, player -> find_spell( 144772 ) )
+  {
+    background  = true;
   }
 };
 
@@ -5402,6 +5439,12 @@ void druid_t::init_spells()
   glyph.survival_instincts    = find_glyph_spell( "Glyph of Survival Instincts" );
   glyph.ursols_defense        = find_glyph_spell( "Glyph of Ursol's Defense" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
+
+  if ( sets.has_set_bonus( SET_CASTER, T16, B2 ) )
+  {
+    t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
+    t16_2pc_sun_bolt = new spells::t16_2pc_sun_bolt_t( this );
+  }
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
 
