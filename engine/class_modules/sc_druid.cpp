@@ -18,6 +18,7 @@ namespace { // UNNAMED NAMESPACE
  Feral ---------
  Glyph & Perk Cleanup
  APL
+ Predator (?)
 
  Balance -------
  All the things
@@ -1256,7 +1257,7 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
 
 static void elunes_guidance_tick( buff_t* buff, int, int )
 {
-  druid_t* p = dynamic_cast<druid_t*>( buff -> player );
+  druid_t* p = debug_cast<druid_t*>( buff -> player );
   p -> resource_gain( RESOURCE_COMBO_POINT,
     p -> talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
     p -> gain.elunes_guidance );
