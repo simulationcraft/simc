@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 20740
+// Class based active abilities, wow build 20756
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -531,10 +531,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 10 abilities
+    // General tree, 9 abilities
     {
       114911, // Ancestral Guidance
-         556, // Astral Recall
         2825, // Bloodlust
         2645, // Ghost Wolf
        32182, // Heroism
@@ -777,8 +776,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       166864, // Soul Fire
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
-      134477, // Threatening Presence (Special Ability)
       112042, // Threatening Presence (Special Ability)
+      134477, // Threatening Presence (Special Ability)
       115778, // Tongue Lash (Basic Attack)
       171021, // Torch Magic (Special Ability)
         6360, // Whiplash (Special Ability)
@@ -1002,10 +1001,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
   },
 };
-
 #define TREE_SPECIALIZATION_SIZE (31)
 
-// Talent tree specialization abilities, wow build 20740
+// Talent tree specialization abilities, wow build 20756
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1047,7 +1045,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        63900, // Thunderstomp
            0,
     },
-    // Specialization abilities for Cunning
+    // Specialization abilities for Cunning Adaptation
     {
        53482, // Blood of the Rhino
        19596, // Boar's Speed
@@ -1257,8 +1255,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        83245, // Call Pet 5
       193455, // Cobra Shot
         5116, // Concussive Shot
-       93322, // Control Pet
        93321, // Control Pet
+       93322, // Control Pet
       147362, // Counter Shot
       120679, // Dire Beast
         2641, // Dismiss Pet
@@ -2018,10 +2016,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
   },
 };
-
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 20740
+// Class mastery abilities, wow build 20756
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2254,14 +2251,13 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
     },
   },
 };
-
 #define RACE_ABILITY_SIZE (4)
 
 #ifndef MAX_RACE
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 20740
+// Racial abilities, wow build 20756
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2993,10 +2989,9 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
   },
 };
-
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 20740
+// Glyph spells for classes, wow build 20756
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3014,10 +3009,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     {
            0,
     },
-    // Minor Glyphs (14 spells)
+    // Minor Glyphs (12 spells)
     {
-      146969, // 0
-      146974, // 0
        58096, // Glyph of Bloodcurdling Shout
        58369, // Glyph of Bloody Healing
       115946, // Glyph of Burning Anger
@@ -3294,10 +3287,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     },
   },
 };
-
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 20740
+// Set bonus data, wow build 20756
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3839,10 +3831,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    3,  102, 187133, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    3,  102, 187435, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
 };
-
 #define PERK_SIZE (3)
 
-// Perk specialization abilities, wow build 20740
+// Perk specialization abilities, wow build 20756
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4037,14 +4028,62 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     },
   },
 };
-
-// Glyph properties, wow build 20740
+// Glyph properties, wow build 20756
 static glyph_property_data_t __glyph_property_data[151] = {
+  {  1028, 125151 },
+  {  1029, 125154 },
+  {  1033, 125660 },
+  {  1039, 125732 },
+  {  1041, 125872 },
+  {  1042, 125893 },
+  {  1043, 125872 },
+  {  1044, 125901 },
+  {  1045, 125931 },
+  {  1047, 126152 },
+  {  1048, 126174 },
+  {  1049, 126094 },
+  {  1052, 126745 },
+  {  1053, 126746 },
+  {  1054, 131113 },
+  {  1055, 132005 },
+  {  1058, 135557 },
+  {  1060, 145722 },
+  {  1061, 147707 },
+  {  1074, 146652 },
+  {  1076, 146654 },
+  {  1077, 146656 },
+  {  1078, 146656 },
+  {  1079, 146976 },
+  {  1080, 146662 },
+  {  1081, 147353 },
+  {  1082, 146958 },
+  {  1083, 146959 },
+  {  1084, 145722 },
+  {  1085, 147776 },
+  {  1087, 147072 },
+  {  1088, 146960 },
+  {  1089, 146961 },
+  {  1090, 147783 },
+  {  1091, 147784 },
+  {  1092, 147770 },
+  {  1093, 147772 },
+  {  1094, 147785 },
+  {  1095, 147788 },
+  {  1096, 147787 },
+  {  1097, 147707 },
+  {  1098, 146968 },
+  {  1100, 146973 },
+  {  1127, 159456 },
+  {  1128, 159459 },
+  {  1141, 159534 },
+  {  1164, 159642 },
+  {  1176, 159680 },
   {   164, 114338 },
   {   171, 116218 },
   {   172,  17076 },
   {   175, 146655 },
   {   176, 114333 },
+  {  1206, 171803 },
   {   190,  89401 },
   {   225,  55448 },
   {   226,  55453 },
@@ -4111,8 +4150,10 @@ static glyph_property_data_t __glyph_property_data[151] = {
   {   554,  59307 },
   {   555,  60200 },
   {   558,  59336 },
+  {  1204,  58669 },
   {   612,  62132 },
   {   613, 114301 },
+  {  1215, 186198 },
   {   692, 119462 },
   {   698,  63092 },
   {   715,  63252 },
@@ -4122,6 +4163,7 @@ static glyph_property_data_t __glyph_property_data[151] = {
   {   765,  63327 },
   {   773,  63335 },
   {   851,  68164 },
+  {  1213, 164997 },
   {   923,  89749 },
   {   935, 114280 },
   {   937, 125047 },
@@ -4138,58 +4180,5 @@ static glyph_property_data_t __glyph_property_data[151] = {
   {  1017, 123403 },
   {  1020, 123779 },
   {  1022, 125042 },
-  {  1028, 125151 },
-  {  1029, 125154 },
-  {  1033, 125660 },
-  {  1039, 125732 },
-  {  1041, 125872 },
-  {  1042, 125893 },
-  {  1043, 125872 },
-  {  1044, 125901 },
-  {  1045, 125931 },
-  {  1047, 126152 },
-  {  1048, 126174 },
-  {  1049, 126094 },
-  {  1052, 126745 },
-  {  1053, 126746 },
-  {  1054, 131113 },
-  {  1055, 132005 },
-  {  1058, 135557 },
-  {  1060, 145722 },
-  {  1061, 147707 },
-  {  1074, 146652 },
-  {  1076, 146654 },
-  {  1077, 146656 },
-  {  1078, 146656 },
-  {  1079, 146976 },
-  {  1080, 146662 },
-  {  1081, 147353 },
-  {  1082, 146958 },
-  {  1083, 146959 },
-  {  1084, 145722 },
-  {  1085, 147776 },
-  {  1087, 147072 },
-  {  1088, 146960 },
-  {  1089, 146961 },
-  {  1090, 147783 },
-  {  1091, 147784 },
-  {  1092, 147770 },
-  {  1093, 147772 },
-  {  1094, 147785 },
-  {  1095, 147788 },
-  {  1096, 147787 },
-  {  1097, 147707 },
-  {  1098, 146968 },
-  {  1100, 146973 },
-  {  1127, 159456 },
-  {  1128, 159459 },
-  {  1141, 159534 },
-  {  1164, 159642 },
-  {  1176, 159680 },
-  {  1204,  58669 },
-  {  1206, 171803 },
-  {  1213, 164997 },
-  {  1215, 186198 },
   {     0,      0 }
 };
-

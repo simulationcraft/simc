@@ -1,4 +1,4 @@
-// Level scaling data, wow build 20740
+// Level scaling data, wow build 20756
 static double __gt_octhp_per_stamina[115] = {
   14.00000,   14.00000,   15.00000,   16.00000,   17.00000, 
   18.00000,   18.00000,   18.00000,   18.00000,   18.00000, 
@@ -25,8 +25,7 @@ static double __gt_octhp_per_stamina[115] = {
   60.00000,   60.00000,   60.00000,   60.00000,   60.00000
 };
 
-
-// Spell scaling multipliers for levels 1 - 115, wow build 20740
+// Spell scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_spell_scaling[][115] = {
   // Constant scaling
   {
@@ -498,8 +497,7 @@ static double __gt_spell_scaling[][115] = {
   },
 };
 
-
-// Class based scaling multipliers for levels 1 - 115, wow build 20740
+// Class based scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_chance_to_melee_crit_base[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,
@@ -840,7 +838,7 @@ static double __gt_chance_to_melee_crit_base[][115] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 115, wow build 20740
+// Class based scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_chance_to_spell_crit_base[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,
@@ -1181,7 +1179,7 @@ static double __gt_chance_to_spell_crit_base[][115] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 115, wow build 20740
+// Class based scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_chance_to_melee_crit[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,
@@ -1522,7 +1520,7 @@ static double __gt_chance_to_melee_crit[][115] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 115, wow build 20740
+// Class based scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_chance_to_spell_crit[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,
@@ -1863,7 +1861,7 @@ static double __gt_chance_to_spell_crit[][115] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 115, wow build 20740
+// Class based scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_regen_mpper_spt[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,
@@ -2204,7 +2202,7 @@ static double __gt_regen_mpper_spt[][115] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 115, wow build 20740
+// Class based scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_octbase_hpby_class[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,
@@ -2545,7 +2543,7 @@ static double __gt_octbase_hpby_class[][115] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 115, wow build 20740
+// Class based scaling multipliers for levels 1 - 115, wow build 20756
 static double __gt_octbase_mpby_class[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,
@@ -2886,8 +2884,7 @@ static double __gt_octbase_mpby_class[][115] = {
   },
 };
 
-
-// Combat ratings for levels 1 - 115, wow build 20740 
+// Combat ratings for levels 1 - 115, wow build 20756 
 static double __gt_combat_ratings[][115] = {
   // Dodge rating multipliers
   {
@@ -3515,8 +3512,7 @@ static double __gt_combat_ratings[][115] = {
   },
 };
 
-
-// Item Level scaling data, wow build 20740
+// Item Level scaling data, wow build 20756
 static double __gt_item_socket_cost_per_level[1000] = {
         0.00000,         0.00000,         0.00000,         0.00000,         0.00000, 
         0.00000,         0.00000,         0.00000,         0.00000,         0.00000, 
@@ -3721,8 +3717,7 @@ static double __gt_item_socket_cost_per_level[1000] = {
 
 };
 
-
-// Monster(?) Level scaling data, wow build 20740
+// Monster(?) Level scaling data, wow build 20756
 static double __gt_armor_mitigation_by_lvl[118] = {
       157.0000000000,       167.0000000000,       177.0000000000,       187.0000000000,       197.0000000000, 
       207.0000000000,       217.0000000000,       227.0000000000,       237.0000000000,       247.0000000000, 
@@ -3749,5 +3744,4 @@ static double __gt_armor_mitigation_by_lvl[118] = {
      7648.0000000000,      7906.0000000000,      8164.0000000000,      8164.0000000000,      8164.0000000000, 
      8164.0000000000,      8164.0000000000,      8164.0000000000
 };
-
 

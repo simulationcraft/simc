@@ -117,4 +117,3 @@ static const int __idx_specs[582] = {
 };
 
 } // namespace specdata
-
