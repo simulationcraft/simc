@@ -3483,10 +3483,16 @@ namespace spells {
 
 struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
+  double ap_per_hit, ap_per_tick, ap_per_cast;
+  bool benefits_from_ca, benefits_from_elune;
+  gain_t* ap_gain;
+
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    base_t( token, p, s )
+    base_t( token, p, s ), ap_per_hit( 0 ), ap_per_tick( 0 ),
+    ap_per_cast( 0 ), ap_gain( p -> get_gain( name() ) ),
+    benefits_from_ca( false ), benefits_from_elune( false )
   {
     parse_options( options );
   }
@@ -3505,6 +3511,50 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     }
 
     spell_t::execute();
+
+    trigger_astral_power_gain( ap_per_cast );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      trigger_astral_power_gain( ap_per_hit );
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    spell_t::tick( d );
+
+    if ( result_is_hit( d -> state -> result ) )
+      trigger_astral_power_gain( ap_per_tick );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = spell_t::action_multiplier();
+
+    if ( p() -> buff.celestial_alignment -> check() )
+      am *= 1.0 + p() -> buff.celestial_alignment -> current_value;
+
+    return am;
+  }
+
+  virtual void trigger_astral_power_gain( double ap )
+  {
+    if ( ap <= 0 )
+      return;
+
+    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, ap_gain );
+
+    // TOCHECK: Are these modifiers additive or multiplicative?
+
+    if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
+
+    if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spell.blessing_of_elune -> effectN( 2 ).percent(), p() -> gain.blessing_of_elune );
   }
 
   virtual void trigger_balance_tier18_2pc()
@@ -3520,16 +3570,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
         return;
       }
     }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = spell_t::action_multiplier();
-
-    if ( p() -> buff.celestial_alignment -> check() )
-      am *= 1.0 + p() -> buff.celestial_alignment -> current_value;
-
-    return am;
   }
 }; // end druid_spell_t
 
@@ -3570,20 +3610,11 @@ struct auto_attack_t : public melee_attack_t
 
 struct astral_communion_t : public druid_spell_t
 {
-  double ap_gain;
-
   astral_communion_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "astral_communion", player, player -> talent.astral_communion, options_str )
   {
     harmful = false;
-    ap_gain = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain, p() -> gain.astral_communion );
+    ap_per_cast = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   }
 };
 
@@ -3667,8 +3698,6 @@ struct berserk_t : public druid_spell_t
 
 struct blessing_of_anshe_t : public druid_spell_t
 {
-  double ap_gain_tick;
-
   blessing_of_anshe_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "blessing_of_anshe", player, player -> spell.blessing_of_anshe )
   {
@@ -3681,7 +3710,7 @@ struct blessing_of_anshe_t : public druid_spell_t
     hasted_ticks = false;
     ignore_false_positive = true;
 
-    ap_gain_tick = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_tick = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void execute() override
@@ -3690,13 +3719,6 @@ struct blessing_of_anshe_t : public druid_spell_t
 
     p() -> buff.blessing_of_elune -> expire();
     p() -> buff.blessing_of_anshe -> start();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    druid_spell_t::tick( d );
-
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain_tick, p() -> gain.blessing_of_anshe );
   }
 
   virtual bool ready() override
@@ -4122,8 +4144,6 @@ struct incarnation_t : public druid_spell_t
 
 struct lunar_strike_t : public druid_spell_t
 {
-  double ap_gain;
-
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "lunar_strike", player, player -> spec.lunar_strike )
   {
@@ -4133,7 +4153,8 @@ struct lunar_strike_t : public druid_spell_t
     aoe = -1;
     base_aoe_multiplier  = data().effectN( 1 ).percent();
 
-    ap_gain = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+    benefits_from_ca = benefits_from_elune = true;
   }
 
   double action_multiplier() const override
@@ -4180,15 +4201,6 @@ struct lunar_strike_t : public druid_spell_t
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
-
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain, p() -> gain.lunar_strike );
-
-    // TOCHECK: Celestial Alignment + Blessing of Elune additive or multiplicative?
-    if ( p() -> buff.celestial_alignment -> up() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
-
-    if ( p() -> buff.blessing_of_elune -> up() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain * p() -> spell.blessing_of_elune -> effectN( 2 ).percent(), p() -> gain.blessing_of_elune );
   }
 
   void impact( action_state_t* s ) override
@@ -4234,19 +4246,10 @@ struct mark_of_the_wild_t : public druid_spell_t
 
 struct shooting_stars_t : public druid_spell_t
 {
-  double ap_gain;
-
   shooting_stars_t( druid_t* player ) :
     druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) )
   {
-    ap_gain = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain, p() -> gain.shooting_stars );
+    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 };
 
@@ -4632,8 +4635,6 @@ struct skull_bash_t : public druid_spell_t
 
 struct solar_wrath_t : public druid_spell_t
 {
-  double ap_gain;
-
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> spec.solar_wrath )
   {
@@ -4642,7 +4643,8 @@ struct solar_wrath_t : public druid_spell_t
 
     base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
-    ap_gain = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    benefits_from_ca = benefits_from_elune = true;
   }
 
   double action_multiplier() const override
@@ -4677,14 +4679,6 @@ struct solar_wrath_t : public druid_spell_t
       p() -> cooldown.celestial_alignment -> adjust( -1 * p() -> sets.set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
 
     p() -> buff.solar_empowerment -> decrement();
-
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain, p() -> gain.solar_wrath );
-
-    if ( p() -> buff.celestial_alignment -> up() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
-
-    if ( p() -> buff.blessing_of_elune -> up() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap_gain * p() -> spell.blessing_of_elune -> effectN( 1 ).percent(), p() -> gain.blessing_of_elune );
   }
 
   void impact( action_state_t* s ) override
