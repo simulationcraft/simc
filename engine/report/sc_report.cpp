@@ -1525,7 +1525,7 @@ rgb resource_color( resource_e type )
     case RESOURCE_BURNING_EMBER:
     case RESOURCE_DEMONIC_FURY:  return class_color( WARLOCK );
 
-    case RESOURCE_ECLIPSE:       return class_color( DRUID );
+    case RESOURCE_ASTRAL_POWER:  return class_color( DRUID );
 
     case RESOURCE_CHI:           return class_color( MONK );
 

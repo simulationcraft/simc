@@ -706,7 +706,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_HEALTH:        return "health";
     case RESOURCE_MANA:          return "mana";
     case RESOURCE_RAGE:          return "rage";
-    case RESOURCE_ECLIPSE:       return "eclipse";
+    case RESOURCE_ASTRAL_POWER:  return "astral_power";
     case RESOURCE_ENERGY:        return "energy";
     case RESOURCE_FOCUS:         return "focus";
     case RESOURCE_RUNIC_POWER:   return "runic_power";
@@ -805,6 +805,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_COMBO_POINT:   return RESOURCE_COMBO_POINT;
     case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
     case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
+    case POWER_ASTRAL_POWER:  return RESOURCE_ASTRAL_POWER;
     case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;
     case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
     case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;

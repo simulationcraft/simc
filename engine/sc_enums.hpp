@@ -316,7 +316,7 @@ enum resource_e
   RESOURCE_ENERGY,
   RESOURCE_RUNIC_POWER,
   RESOURCE_SOUL_SHARD,
-  RESOURCE_ECLIPSE,
+  RESOURCE_ASTRAL_POWER,
   RESOURCE_HOLY_POWER,
   /* Unknown_2, */
   RESOURCE_MAELSTROM,
@@ -1162,7 +1162,7 @@ enum power_e
   POWER_RUNE        = 5,
   POWER_RUNIC_POWER = 6,
   POWER_SOUL_SHARDS = 7,
-  // Not yet used
+  POWER_ASTRAL_POWER = 8,
   POWER_HOLY_POWER = 9,
   // Not yet used (MoP Monk deprecated resource #1)
   // Not yet used

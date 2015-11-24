@@ -5066,23 +5066,6 @@ struct hunter_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Hunter", "2015-07-20", "Black Arrow damage increased by 25%.", 1289 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.25 )
-      .verification_value( 0.56700 );
-
-    hotfix::register_effect( "Hunter", "2015-07-20", "Serpent Sting damage increased by 25%.", 134592 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.25 )
-      .verification_value( 0.72500 );
-
-    hotfix::register_spell( "Hunter", "2015-07-20", "Bestial Wrath now lasts 15 seconds (up from 10 seconds).", 19574 )
-      .field( "duration" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15000 )
-      .verification_value( 10000 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
