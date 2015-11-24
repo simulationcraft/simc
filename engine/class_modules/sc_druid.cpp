@@ -1308,9 +1308,7 @@ struct ironfur_buff_t : public druid_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, s, p.spec.ironfur )
     .cd( timespan_t::zero() )
     .quiet( true ) )
-  {
-    std::string a = name();
-  }
+  {}
   
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
