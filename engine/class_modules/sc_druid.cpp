@@ -18,7 +18,7 @@ namespace { // UNNAMED NAMESPACE
  Feral ---------
  Glyph & Perk Cleanup
  APL
- Predator (?)
+ Predator vs. adds
 
  Balance -------
  All the things
@@ -180,10 +180,6 @@ struct snapshot_counter_t
 struct druid_t : public player_t
 {
 public:
-  timespan_t balance_time; // Balance power's current time, after accounting for celestial alignment/astral communion.
-  timespan_t last_check; // Last time balance power was updated.
-  bool double_dmg_triggered;
-  bool predatory_swiftness_bug; // Trigger a PS when combat begins.
   bool stellar_flare_cast; //Hacky way of not consuming lunar/solar peak.
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
@@ -201,6 +197,10 @@ public:
 
   // RPPM objects
   real_ppm_t balance_tier18_2pc;
+  real_ppm_t predator; // Optional RPPM approximation
+
+  // Options
+  double predator_rppm_rate;
   
   struct active_actions_t
   {
@@ -248,7 +248,6 @@ public:
     buff_t* wild_charge_movement;
 
     // Balance
-    buff_t* astral_communion;
     buff_t* astral_insight;
     buff_t* astral_showers;
     buff_t* celestial_alignment;
@@ -374,7 +373,6 @@ public:
   struct glyphs_t
   {
     // DONE
-    const spell_data_t* astral_communion;
     const spell_data_t* celestial_alignment;
     const spell_data_t* dash;
     const spell_data_t* ferocious_bite;
@@ -415,6 +413,8 @@ public:
   {
     proc_t* omen_of_clarity;
     proc_t* omen_of_clarity_wasted;
+    proc_t* predator;
+    proc_t* predator_wasted;
     proc_t* primal_fury;
     proc_t* shooting_stars;
     proc_t* shooting_stars_wasted;
@@ -445,7 +445,6 @@ public:
     const spell_data_t* tigers_fury;
 
     // Balance
-    const spell_data_t* astral_communion;
     const spell_data_t* astral_showers;
     const spell_data_t* celestial_alignment;
     const spell_data_t* celestial_focus;
@@ -601,15 +600,13 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
-    balance_time( timespan_t::zero() ),
-    last_check( timespan_t::zero() ),
-    predatory_swiftness_bug( 0 ),
     stellar_flare_cast( 0 ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     balance_tier18_2pc( *this ),
+    predator( *this ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     caster_form_weapon(),
@@ -631,7 +628,6 @@ public:
   {
     t16_2pc_starfall_bolt = nullptr;
     t16_2pc_sun_bolt      = nullptr;
-    double_dmg_triggered = false;
     last_target_dot_moonkin = nullptr;
     
     cooldown.berserk             = get_cooldown( "berserk"             );
@@ -1077,27 +1073,6 @@ public:
   druid_t& p() const { return druid; }
 };
 
-// Astral Communion Buff ====================================================
-
-struct astral_communion_t : public druid_buff_t < buff_t >
-{
-  astral_communion_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "astral_communion", p.find_class_spell( "Astral Communion" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    base_t::expire_override( expiration_stacks, remaining_duration );
-
-    druid.last_check = sim -> current_time() - druid.last_check;
-    druid.last_check *= 1 + druid.buff.astral_communion -> data().effectN( 1 ).percent();
-    druid.balance_time += druid.last_check;
-    druid.last_check = sim -> current_time();
-  }
-};
-
 // Bear Form ================================================================
 
 struct bear_form_t : public druid_buff_t< buff_t >
@@ -1235,25 +1210,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
   }
 };
 
-// Celestial Alignment Buff =================================================
-
-struct celestial_alignment_t : public druid_buff_t < buff_t >
-{
-  celestial_alignment_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "celestial_alignment", p.find_class_spell( "Celestial Alignment" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    tick_behavior = BUFF_TICK_NONE;
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    base_t::expire_override( expiration_stacks, remaining_duration );
-
-    druid.last_check = sim -> current_time();
-  }
-};
+// Elune's Guidance Buff =================================================
 
 static void elunes_guidance_tick( buff_t* buff, int, int )
 {
@@ -1262,8 +1219,6 @@ static void elunes_guidance_tick( buff_t* buff, int, int )
     p -> talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
     p -> gain.elunes_guidance );
 }
-
-// Elune's Guidance Buff =================================================
 
 struct elunes_guidance_buff_t : public druid_buff_t < buff_t >
 {
@@ -1907,6 +1862,18 @@ public:
       p() -> resource_gain( RESOURCE_ENERGY,
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
                             p() -> gain.feral_tier17_2pc );
+
+    if ( p() -> predator_rppm_rate && p() -> predator.trigger() )
+      trigger_predator();
+  }
+
+  void trigger_predator()
+  {
+    if ( ! p() -> cooldown.tigers_fury -> down() )
+      p() -> proc.predator_wasted -> occur();
+
+    p() -> cooldown.tigers_fury -> reset( true );
+    p() -> proc.predator -> occur();
   }
 }; // end druid_cat_attack_t
 
@@ -3653,30 +3620,9 @@ struct auto_attack_t : public melee_attack_t
 struct astral_communion_t : public druid_spell_t
 {
   astral_communion_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "astral_communion", player, player -> spec.astral_communion, options_str )
+    druid_spell_t( "astral_communion", player, player -> talent.astral_communion, options_str )
   {
-    harmful = proc = hasted_ticks = false;
-    may_multistrike = 0;
-    channeled = true;
-
-    base_tick_time = timespan_t::from_millis( 100 );
-  }
-
-  double composite_haste() const override
-  {
-    return 1.0;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute(); // Do not move the buff trigger in front of this.
-    p() -> buff.astral_communion -> trigger();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    druid_spell_t::last_tick( d );
-    p() -> buff.astral_communion -> expire();
+    harmful = false;
   }
 };
 
@@ -5118,7 +5064,6 @@ void druid_t::init_spells()
   spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
 
   // Boomkin
-  spec.astral_communion        = find_specialization_spell( "Astral Communion" );
   spec.astral_showers          = find_specialization_spell( "Astral Showers" );
   spec.celestial_alignment     = find_specialization_spell( "Celestial Alignment" );
   spec.celestial_focus         = find_specialization_spell( "Celestial Focus" );
@@ -5321,7 +5266,6 @@ void druid_t::init_spells()
   perk.enhanced_lifebloom     = find_perk_spell( "Enhanced Lifebloom" );
 
   // Glyphs
-  glyph.astral_communion      = find_glyph_spell( "Glyph of Astral Communion" );
   glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
   glyph.celestial_alignment   = find_glyph_spell( "Glyph of Celestial Alignment" );
   glyph.dash                  = find_glyph_spell( "Glyph of Dash" );
@@ -5470,14 +5414,12 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.astral_communion          = new astral_communion_t( *this );
-
   buff.astral_insight            = buff_creator_t( this, "astral_insight", talent.soul_of_the_forest -> ok() ? find_spell( 145138 ) : spell_data_t::not_found() )
                                    .chance( 0.08 );
 
-  buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers );
+  buff.astral_showers            = buff_creator_t( this, "astral_showers", spec.astral_showers );
 
-  buff.celestial_alignment       = new celestial_alignment_t( *this );
+  buff.celestial_alignment       = buff_creator_t( this, "celestial_alignment", spec.celestial_alignment ); // Legion TODO
 
   buff.empowered_moonkin         = buff_creator_t( this, "empowered_moonkin", find_spell( 157228 ) )
                                    .chance( perk.empowered_moonkin -> proc_chance() );
@@ -5505,7 +5447,8 @@ void druid_t::create_buffs()
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() );
+                               .cd( timespan_t::zero() )
+                               .refresh_behavior( BUFF_REFRESH_PANDEMIC ); // Legion TOCHECK
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
@@ -6019,6 +5962,8 @@ void druid_t::init_procs()
 
   proc.omen_of_clarity          = get_proc( "omen_of_clarity"                           );
   proc.omen_of_clarity_wasted   = get_proc( "omen_of_clarity_wasted"                    );
+  proc.predator                 = get_proc( "predator"                                  );
+  proc.predator_wasted          = get_proc( "predator_wasted"                           );
   proc.primal_fury              = get_proc( "primal_fury"                               );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
   proc.shooting_stars           = get_proc( "Shooting Stars"                            );
@@ -6041,6 +5986,13 @@ void druid_t::init_rng()
 {
   // RPPM objects
   balance_tier18_2pc.set_frequency( sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
+
+  // Predator: optional RPPM approximation.
+  predator.set_frequency( predator_rppm_rate );
+  // Set all rampup to 0 so it doesn't proc on pull.
+  predator.set_initial_precombat_time( timespan_t::zero() );
+  predator.set_last_trigger_attempt( timespan_t::from_seconds( -1.0 ) );
+  predator.set_last_trigger_success( timespan_t::zero() );
 
   player_t::init_rng();
 }
@@ -6103,9 +6055,6 @@ void druid_t::reset()
   player_t::reset();
 
   inflight_starsurge = false;
-  double_dmg_triggered = false;
-  last_check = timespan_t::zero();
-  balance_time = timespan_t::zero();
   max_fb_energy = spell.ferocious_bite -> powerN( 1 ).cost() - spell.ferocious_bite -> effectN( 2 ).base_value();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -6534,7 +6483,7 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_bool( "predatory_swiftness_bug", predatory_swiftness_bug ) );
+  add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
 }
 
 // druid_t::create_proc_action =============================================
