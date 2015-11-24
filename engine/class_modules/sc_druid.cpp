@@ -2485,6 +2485,14 @@ public:
 
     return c;
   }
+
+  virtual bool ready() override
+  {
+    if ( p() -> talent.bloody_slash -> ok() )
+      return false;
+
+    return cat_attack_t::ready();
+  }
 };
 
 // Thrash (Cat) =============================================================
