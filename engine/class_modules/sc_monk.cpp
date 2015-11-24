@@ -416,6 +416,7 @@ public:
     const spell_data_t* purifying_brew;
     const spell_data_t* resolve;
     const spell_data_t* summon_black_ox_statue;
+    const spell_data_t* stagger;
     const spell_data_t* light_stagger;
     const spell_data_t* moderate_stagger;
     const spell_data_t* heavy_stagger;
@@ -1837,7 +1838,7 @@ public:
     }
   }
 
-  double combo_breaker_chance( combo_strikes_e ability)
+  double combo_breaker_chance( combo_strikes_e ability )
   {
     double cb_chance = 0;
     if ( p() -> mastery.combo_strikes -> ok() )
@@ -2075,8 +2076,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 1.38; // hardcoded into tooltip
-    // Hardcode the Brewmaster Energy cost until DBC is updated
-    base_costs[RESOURCE_ENERGY] = ( p -> specialization() == MONK_BREWMASTER ? 25 : 50 );
+    base_costs[RESOURCE_ENERGY] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 16 ).percent() : 0 ); // -50% for Brewmasters
     spell_power_mod.direct = 0.0;
   }
 
@@ -2333,6 +2333,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 6.688; // hardcoded into tooltip
+    base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
@@ -2509,6 +2510,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = true;
 
     base_multiplier *= 0.72; // hardcoded into tooltip
+    base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( data() ) );
@@ -2570,6 +2572,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_zero = channeled = true;
 
     base_multiplier *= 0.9; // hardcoded into tooltip
+    base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
     base_tick_time *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
@@ -3708,6 +3711,7 @@ struct breath_of_fire_t: public monk_spell_t
     parse_options( options_str );
     aoe = -1;
     stancemask = STURDY_OX;
+    base_costs[RESOURCE_CHI] *= 1 + ( p.specialization() == MONK_BREWMASTER ? p.spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5041,6 +5045,7 @@ void monk_t::init_spells()
   spec.resolve                       = find_specialization_spell( "Resolve" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.ferment                       = find_specialization_spell( "Ferment" );
+  spec.stagger                       = find_specialization_spell( "Stagger" );
   spec.light_stagger                 = find_spell( 124275 );
   spec.moderate_stagger              = find_spell( 124274 );
   spec.heavy_stagger                 = find_spell( 124273 );
@@ -5528,7 +5533,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   double cam = base_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
-    cam *= 1.0 + active_stance_data( STURDY_OX ).effectN( 5 ).percent();
+    cam *= 1.0 + spec.stagger ->effectN( 6 ).percent();
 
   if ( attr == ATTR_SPIRIT && specialization() == MONK_MISTWEAVER )
     cam *= 1.0 + talent.ascension -> effectN( 2 ).percent();
@@ -5556,7 +5561,7 @@ double monk_t::composite_melee_expertise( const weapon_t* weapon ) const
 {
   double e = base_t::composite_melee_expertise( weapon );
 
-  e += static_stance_data( STURDY_OX ).effectN( 11 ).percent();
+  e += spec.stagger -> effectN( 12 ).percent();
 
   return e;
 }
@@ -6460,7 +6465,7 @@ double monk_t::stagger_pct()
 
   if ( current_stance() == STURDY_OX ) // no stagger without active stance
   {
-    stagger += static_stance_data( STURDY_OX ).effectN( 8 ).percent();
+    stagger += spec.stagger -> effectN( 9 ).percent(); //TODO: Effect says 10 but tooltip say 6%; double check
 
     if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
       stagger += spec.brewmaster_training -> effectN( 1 ).percent();
