@@ -3703,6 +3703,8 @@ struct blessing_of_anshe_t : public druid_spell_t
   {
     if ( ! p() -> talent.blessing_of_the_ancients -> ok() )
       return false;
+    if ( p() -> buff.blessing_of_anshe -> check() )
+      return false;
 
     return druid_spell_t::ready();
   }
@@ -3732,6 +3734,8 @@ struct blessing_of_elune_t : public druid_spell_t
   virtual bool ready() override
   {
     if ( ! p() -> talent.blessing_of_the_ancients -> ok() )
+      return false;
+    if ( p() -> buff.blessing_of_elune -> check() )
       return false;
 
     return druid_spell_t::ready();
@@ -4127,8 +4131,6 @@ struct lunar_strike_t : public druid_spell_t
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
 
     aoe = -1;
-    base_multiplier     *= 1.0 + p() -> talent.full_moon -> effectN( 1 ).percent();
-    base_aoe_multiplier /= 1.0 + p() -> talent.full_moon -> effectN( 1 ).percent(); // hacky but efficient way for full moon to only buff the main hit
     base_aoe_multiplier  = data().effectN( 1 ).percent();
 
     ap_gain = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
@@ -4139,17 +4141,21 @@ struct lunar_strike_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.lunar_empowerment -> check() )
-    {
-      double m = 1.0 + p() -> buff.lunar_empowerment -> current_value +
-                       p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
-
-      if ( p() -> mastery.starlight -> ok() )
-        m += p() -> cache.mastery_value();
-
-      am *= m;
-    }
+      am = 1.0 + p() -> buff.lunar_empowerment -> current_value
+               + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent()
+               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double dm = druid_spell_t::composite_target_da_multiplier( t );
+
+    if ( target == t )
+      dm *= 1.0 + p() -> talent.full_moon -> effectN( 1 ).percent();
+
+    return dm;
   }
 
   timespan_t execute_time() const override
@@ -4644,15 +4650,9 @@ struct solar_wrath_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.solar_empowerment -> check() )
-    {
-      double m = 1.0 + p() -> buff.solar_empowerment -> current_value +
-                       p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
-
-      if ( p() -> mastery.starlight -> ok() )
-        m += p() -> cache.mastery_value();
-
-      am *= m;
-    }
+      am = 1.0 + p() -> buff.solar_empowerment -> current_value
+               + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent()
+               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
   }
@@ -5900,17 +5900,24 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
+  default_list -> add_action( "blessing_of_elune,moving=0" );
+  default_list -> add_action( "blessing_of_anshe,moving=1" );
+  default_list -> add_action( "warrior_of_elune,if=buff.lunar_empowerment.stack>=2" );
   default_list -> add_action( "stellar_flare,if=remains<2" );
   default_list -> add_action( this, "Moonfire", "if=remains<2" );
   default_list -> add_action( this, "Sunfire", "if=remains<2" );
-  default_list -> add_action( "warrior_of_elune" );
-  default_list -> add_action( "astral_communion,if=astral_power<=25" );
+  default_list -> add_action( "astral_communion,if=astral_power.deficit>=75" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_action( "collapsing_stars,if=astral_power>=40" );
-  default_list -> add_action( this, "Starsurge", "if=astral_power>=40&!dot.collapsing_stars.ticking" );
+  default_list -> add_action( "collapsing_stars,if=astral_power.deficit<=10" );
+  default_list -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<5" );
+  default_list -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<5" );
+  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
+  default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
+  default_list -> add_action( this, "Starsurge", "if=!talent.collapsing_stars.enabled|(buff.collapsing_stars_up.down&(cooldown.collapsing_stars.remains>10|astral_power.deficit<=10))" );
+  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
-  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
+  default_list -> add_action( this, "Lunar Strike", "if=talent.full_moon.enabled|action.solar_wrath.cast_time<1" );
   default_list -> add_action( this, "Solar Wrath" );
 }
 
