@@ -1837,11 +1837,23 @@ public:
     }
   }
 
-  double combo_breaker_chance()
+  double combo_breaker_chance( combo_strikes_e ability)
   {
     double cb_chance = 0;
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
+    if ( p() -> mastery.combo_strikes -> ok() )
+    {
+      if ( ability == CS_RISING_SUN_KICK )
+      {
+        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+          cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
+      }
+      else
+      {
+        cb_chance += p() -> spec.combo_breaker -> effectN( 1 ).percent();
+        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
+          cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 1 ).percent();
+      }
+    }
     return cb_chance;
   }
 
@@ -2077,7 +2089,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    double cb_chance = combo_breaker_chance();
+    double cb_chance = combo_breaker_chance( CS_TIGER_PALM );
     if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
       p() -> proc.combo_breaker_bok -> occur();
 
@@ -2154,7 +2166,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    double cb_chance = combo_breaker_chance();
+    double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
     if ( cb_chance > 0 )
     {
       if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
@@ -2214,7 +2226,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    double cb_chance = combo_breaker_chance();
+    double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
     if ( cb_chance > 0 )
     {
       if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
