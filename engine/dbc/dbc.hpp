@@ -1240,9 +1240,6 @@ public:
   const item_scale_data_t&       item_damage_2h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_caster_2h( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_ranged( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_thrown( unsigned ilevel ) const;
-  const item_scale_data_t&       item_damage_wand( unsigned ilevel ) const;
 
   const item_scale_data_t&       item_armor_quality( unsigned ilevel ) const;
   const item_scale_data_t&       item_armor_shield( unsigned ilevel ) const;

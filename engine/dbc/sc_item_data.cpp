@@ -180,38 +180,6 @@ const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamageranged_data[ ilevel - 1 ] : __itemdamageranged_data[ ilevel - 1 ];
-#else
-  return __itemdamageranged_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamagethrown_data[ ilevel - 1 ] : __itemdamagethrown_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamagethrown_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamagewand_data[ ilevel - 1 ] : __itemdamagewand_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamagewand_data[ ilevel - 1 ];
-#endif
-}
-
 const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) const
 {
 #if SC_USE_PTR

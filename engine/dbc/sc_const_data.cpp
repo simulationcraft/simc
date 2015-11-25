@@ -2541,19 +2541,22 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
     {
       switch ( item_data -> item_subclass )
       {
+        // TODO: DBC ItemDamageRanged got removed
         case ITEM_SUBCLASS_WEAPON_BOW:
         case ITEM_SUBCLASS_WEAPON_GUN:
         case ITEM_SUBCLASS_WEAPON_CROSSBOW:
         {
-          return item_damage_ranged( ilvl ).values[ quality ];
+          return item_damage_2h( ilvl ).values[ quality ];
         }
+        // TODO: DBC ItemDamageThrown got removed
         case ITEM_SUBCLASS_WEAPON_THROWN:
         {
-          return item_damage_thrown( ilvl ).values[ quality ];
+          return item_damage_1h( ilvl ).values[ quality ];
         }
+        // TODO: DBC ItemDamageWand got removed
         case ITEM_SUBCLASS_WEAPON_WAND:
         {
-          return item_damage_wand( ilvl ).values[ quality ];
+          return item_damage_caster_1h( ilvl ).values[ quality ];
         }
         default: break;
       }
