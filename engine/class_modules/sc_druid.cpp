@@ -45,7 +45,8 @@ struct leader_of_the_pack_t;
 struct stalwart_guardian_t;
 struct yseras_gift_t;
 namespace spells {
-struct starshards_t;
+  struct moonfire_t;
+  struct starshards_t;
 }
 
 struct druid_td_t : public actor_target_data_t
@@ -208,6 +209,7 @@ public:
   {
     brambles_t*           brambles;
     cenarion_ward_hot_t*  cenarion_ward_hot;
+    spells::moonfire_t*   galactic_guardian;
     gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
     stalwart_guardian_t*  stalwart_guardian;
@@ -1638,6 +1640,223 @@ public:
 
 };
 
+// Druid "Spell" Base for druid_spell_t, druid_heal_t ( and potentially druid_absorb_t )
+template <class Base>
+struct druid_spell_base_t : public druid_action_t< Base >
+{
+private:
+  typedef druid_action_t< Base > ab;
+public:
+  typedef druid_spell_base_t base_t;
+
+  druid_spell_base_t( const std::string& n, druid_t* player,
+                      const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s )
+  {}
+
+  virtual double composite_haste() const
+  {
+    double h = ab::composite_haste();
+
+    return h;
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    if ( this -> p() -> buff.empowered_moonkin -> up() )
+      return timespan_t::zero();
+
+    return ab::execute_time();
+  }
+
+  virtual void execute()
+  {
+    ab::execute();
+
+    if ( ab::base_execute_time > timespan_t::zero() )
+      this -> p() -> buff.empowered_moonkin -> decrement();
+  }
+};
+
+namespace spells {
+
+/* druid_spell_t ============================================================
+  Early definition of druid_spell_t. Only spells that MUST for use by other
+  actions should go here, otherwise they can go in the second spells
+  namespace.
+========================================================================== */
+
+struct druid_spell_t : public druid_spell_base_t<spell_t>
+{
+  double ap_per_hit, ap_per_tick, ap_per_cast;
+  bool benefits_from_ca, benefits_from_elune;
+  gain_t* ap_gain;
+
+  druid_spell_t( const std::string& token, druid_t* p,
+                 const spell_data_t* s = spell_data_t::nil(),
+                 const std::string& options = std::string() ) :
+    base_t( token, p, s ), ap_per_hit( 0 ), ap_per_tick( 0 ),
+    ap_per_cast( 0 ), ap_gain( p -> get_gain( name() ) ),
+    benefits_from_ca( false ), benefits_from_elune( false )
+  {
+    parse_options( options );
+  }
+
+  virtual void execute() override
+  {
+    // Adjust buffs and cooldowns if we're in precombat.
+    if ( ! p() -> in_combat )
+    {
+      if ( p() -> buff.incarnation -> check() )
+      {
+        timespan_t time = std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
+        p() -> buff.incarnation -> extend_duration( p(), -time );
+        p() -> get_cooldown( "incarnation" ) -> adjust( -time );
+      }
+    }
+
+    spell_t::execute();
+
+    trigger_astral_power_gain( ap_per_cast );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      trigger_astral_power_gain( ap_per_hit );
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    spell_t::tick( d );
+
+    if ( result_is_hit( d -> state -> result ) )
+      trigger_astral_power_gain( ap_per_tick );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = spell_t::action_multiplier();
+
+    if ( p() -> buff.celestial_alignment -> check() )
+      am *= 1.0 + p() -> buff.celestial_alignment -> current_value;
+
+    return am;
+  }
+
+  virtual void trigger_astral_power_gain( double ap )
+  {
+    if ( ap <= 0 )
+      return;
+
+    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, ap_gain );
+
+    // TOCHECK: Are these modifiers additive or multiplicative?
+
+    if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
+
+    if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spell.blessing_of_elune -> effectN( 2 ).percent(), p() -> gain.blessing_of_elune );
+  }
+
+  virtual void trigger_balance_tier18_2pc()
+  {
+    if ( ! p() -> balance_tier18_2pc.trigger() )
+      return;
+
+    for ( pet_t* pet : p() -> pet_fey_moonwing )
+    {
+      if ( pet -> is_sleeping() )
+      {
+        pet -> summon( timespan_t::from_seconds( 30 ) );
+        return;
+      }
+    }
+  }
+}; // end druid_spell_t
+
+// Shooting Stars ===========================================================
+// Legion TODO: What is the proc chance? Currently implemented as 100%.
+
+struct shooting_stars_t : public druid_spell_t
+{
+  shooting_stars_t( druid_t* player ) :
+    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) )
+  {
+    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+  }
+};
+
+// Moonfire Spell ===========================================================
+
+struct moonfire_t : public druid_spell_t
+{
+  spell_t* shooting_stars;
+
+  moonfire_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) ),
+    shooting_stars( new shooting_stars_t( player ) )
+  {
+    parse_options( options_str );
+
+    const spell_data_t* dmg_spell = player -> find_spell( 164812 );
+
+    dot_duration                  = dmg_spell -> duration(); 
+    dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+    base_tick_time                = dmg_spell -> effectN( 2 ).period();
+    spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
+    spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = druid_spell_t::composite_target_multiplier( t );
+
+    if ( p() -> spec.starfall -> ok() && td( t ) -> dots.starfall -> is_ticking() )
+      tm *= 1.0 + p() -> spec.starfall -> effectN( 1 ).percent()
+              + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+
+    return tm;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    druid_spell_t::tick( d );
+
+    if ( result_is_hit( d -> state -> result ) )
+    {
+      if ( p() -> talent.shooting_stars -> ok() && d -> state -> target == p() -> last_target_dot_moonkin )
+      {
+        // Shooting stars will only proc on the most recent target of your moonfire/sunfire.
+        shooting_stars -> target = d -> target;
+        shooting_stars -> execute();
+      }
+
+      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+        trigger_balance_tier18_2pc();
+    }
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> last_target_dot_moonkin = execute_state -> target;
+  }
+
+  void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    druid_spell_t::schedule_execute( state );
+
+    p() -> buff.cat_form -> expire();
+  }
+};
+
+}
+
 namespace caster_attacks {
 
 // Caster Form Melee Attack ========================================================
@@ -2685,6 +2904,9 @@ public:
                               p() -> gain.primal_fury );
         p() -> proc.primal_fury -> occur();
       }
+
+      if ( p() -> talent.galactic_guardian -> ok() )
+        trigger_galactic_guardian( s );
     }
   }
 
@@ -2692,7 +2914,13 @@ public:
   {
     base_t::tick( d );
 
-    p() -> resource_gain( RESOURCE_RAGE, rage_tick_amount, rage_gain );
+    if ( result_is_hit( d -> state -> result ) )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, rage_tick_amount, rage_gain );
+
+      if ( p() -> talent.galactic_guardian -> ok() )
+        trigger_galactic_guardian( d -> state );
+    }
   }
 
   virtual bool ready() override 
@@ -2702,9 +2930,21 @@ public:
     
     return base_t::ready();
   }
+
+  virtual void trigger_galactic_guardian( action_state_t* s ) // TOCHECK: does it proc off of ANY damage event? or just bear attacks
+  {
+    if ( s -> result_total <= 0 )
+      return;
+
+    if ( rng().roll( p() -> talent.galactic_guardian -> effectN( 1 ).percent() ) )
+    {
+      p() -> active.galactic_guardian -> target = s -> target;
+      p() -> active.galactic_guardian -> execute();
+    }
+  }
 private:
   gain_t* rage_gain;
-}; // end druid_bear_attack_t
+}; // end bear_attack_t
 
 // Bear Melee Attack ========================================================
 
@@ -2740,7 +2980,6 @@ struct lacerate_dot_t : public bear_attack_t
     bear_attack_t( "lacerate_dot", p, p -> find_spell( 192090 ) ),
     blood_frenzy_amount( 0.0 )
   {
-
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
 
     if ( p -> talent.blood_frenzy -> ok() )
@@ -2800,6 +3039,7 @@ struct lacerate_t : public bear_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
+      dot -> target = target;
       dot -> execute();
 
       if ( rng().roll( 0.25 ) ) // FIXME: Find in spell data.
@@ -2838,7 +3078,7 @@ struct mangle_t : public bear_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
-    if ( p() -> buff.berserk -> check() || ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN ) )
+    if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN )
       cd = timespan_t::zero();
 
     bear_attack_t::update_ready( cd );
@@ -2857,8 +3097,8 @@ struct mangle_t : public bear_attack_t
   virtual void execute() override
   {
     int base_aoe = aoe;
-    if ( p() -> buff.berserk -> up() )
-      aoe = p() -> spell.berserk_bear -> effectN( 1 ).base_value();
+    if ( p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_GUARDIAN )
+      aoe = p() -> talent.incarnation_bear -> effectN( 4 ).base_value();
 
     bear_attack_t::execute();
 
@@ -2959,6 +3199,7 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
+      dot -> target = s -> target;
       dot -> execute();
 
       td( s -> target ) -> dots.thrash_cat -> cancel(); // Legion TOCHECK
@@ -2971,44 +3212,6 @@ struct thrash_bear_t : public bear_attack_t
 };
 
 } // end namespace bear_attacks
-
-// Druid "Spell" Base for druid_spell_t, druid_heal_t ( and potentially druid_absorb_t )
-template <class Base>
-struct druid_spell_base_t : public druid_action_t< Base >
-{
-private:
-  typedef druid_action_t< Base > ab;
-public:
-  typedef druid_spell_base_t base_t;
-
-  druid_spell_base_t( const std::string& n, druid_t* player,
-                      const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
-  {}
-
-  virtual double composite_haste() const
-  {
-    double h = ab::composite_haste();
-
-    return h;
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    if ( this -> p() -> buff.empowered_moonkin -> up() )
-      return timespan_t::zero();
-
-    return ab::execute_time();
-  }
-
-  virtual void execute()
-  {
-    ab::execute();
-
-    if ( ab::base_execute_time > timespan_t::zero() )
-      this -> p() -> buff.empowered_moonkin -> decrement();
-  }
-};
 
 namespace heals {
 
@@ -3662,98 +3865,6 @@ namespace spells {
 // ==========================================================================
 // Druid Spells
 // ==========================================================================
-
-struct druid_spell_t : public druid_spell_base_t<spell_t>
-{
-  double ap_per_hit, ap_per_tick, ap_per_cast;
-  bool benefits_from_ca, benefits_from_elune;
-  gain_t* ap_gain;
-
-  druid_spell_t( const std::string& token, druid_t* p,
-                 const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string() ) :
-    base_t( token, p, s ), ap_per_hit( 0 ), ap_per_tick( 0 ),
-    ap_per_cast( 0 ), ap_gain( p -> get_gain( name() ) ),
-    benefits_from_ca( false ), benefits_from_elune( false )
-  {
-    parse_options( options );
-  }
-
-  virtual void execute() override
-  {
-    // Adjust buffs and cooldowns if we're in precombat.
-    if ( ! p() -> in_combat )
-    {
-      if ( p() -> buff.incarnation -> check() )
-      {
-        timespan_t time = std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
-        p() -> buff.incarnation -> extend_duration( p(), -time );
-        p() -> get_cooldown( "incarnation" ) -> adjust( -time );
-      }
-    }
-
-    spell_t::execute();
-
-    trigger_astral_power_gain( ap_per_cast );
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      trigger_astral_power_gain( ap_per_hit );
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    spell_t::tick( d );
-
-    if ( result_is_hit( d -> state -> result ) )
-      trigger_astral_power_gain( ap_per_tick );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = spell_t::action_multiplier();
-
-    if ( p() -> buff.celestial_alignment -> check() )
-      am *= 1.0 + p() -> buff.celestial_alignment -> current_value;
-
-    return am;
-  }
-
-  virtual void trigger_astral_power_gain( double ap )
-  {
-    if ( ap <= 0 )
-      return;
-
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, ap_gain );
-
-    // TOCHECK: Are these modifiers additive or multiplicative?
-
-    if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
-
-    if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spell.blessing_of_elune -> effectN( 2 ).percent(), p() -> gain.blessing_of_elune );
-  }
-
-  virtual void trigger_balance_tier18_2pc()
-  {
-    if ( ! p() -> balance_tier18_2pc.trigger() )
-      return;
-
-    for ( pet_t* pet : p() -> pet_fey_moonwing )
-    {
-      if ( pet -> is_sleeping() )
-      {
-        pet -> summon( timespan_t::from_seconds( 30 ) );
-        return;
-      }
-    }
-  }
-}; // end druid_spell_t
 
 // Auto Attack ==============================================================
 
@@ -4470,18 +4581,6 @@ struct mark_of_ursol_t : public druid_spell_t
   }
 };
 
-// Shooting Stars ===========================================================
-// Legion TODO: What is the proc chance? Currently implemented as 100%.
-
-struct shooting_stars_t : public druid_spell_t
-{
-  shooting_stars_t( druid_t* player ) :
-    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) )
-  {
-    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-  }
-};
-
 // Sunfire Spell ============================================================
 
 struct sunfire_t: public druid_spell_t
@@ -4531,76 +4630,13 @@ struct sunfire_t: public druid_spell_t
       if ( p() -> talent.shooting_stars -> ok() && d -> state -> target == p() -> last_target_dot_moonkin )
       {
         // Shooting stars will only proc on the most recent target of your moonfire/sunfire. Legion TOCHECK
+        shooting_stars -> target = d -> target;
         shooting_stars -> execute();
       }
 
       if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
         trigger_balance_tier18_2pc();
     }
-  }
-};
-
-// Moonfire Spell ===========================================================
-
-struct moonfire_t : public druid_spell_t
-{
-  spell_t* shooting_stars;
-
-  moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) ),
-    shooting_stars( new shooting_stars_t( player ) )
-  {
-    parse_options( options_str );
-
-    const spell_data_t* dmg_spell = player -> find_spell( 164812 );
-
-    dot_duration                  = dmg_spell -> duration(); 
-    dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
-    base_tick_time                = dmg_spell -> effectN( 2 ).period();
-    spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
-    spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = druid_spell_t::composite_target_multiplier( t );
-
-    if ( p() -> spec.starfall -> ok() && td( t ) -> dots.starfall -> is_ticking() )
-      tm *= 1.0 + p() -> spec.starfall -> effectN( 1 ).percent()
-              + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
-
-    return tm;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    druid_spell_t::tick( d );
-
-    if ( result_is_hit( d -> state -> result ) )
-    {
-      if ( p() -> talent.shooting_stars -> ok() && d -> state -> target == p() -> last_target_dot_moonkin )
-      {
-        // Shooting stars will only proc on the most recent target of your moonfire/sunfire.
-        shooting_stars -> execute();
-      }
-
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-        trigger_balance_tier18_2pc();
-    }
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> last_target_dot_moonkin = execute_state -> target;
-  }
-
-  void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    druid_spell_t::schedule_execute( state );
-
-    p() -> buff.cat_form -> expire();
   }
 };
 
@@ -4832,6 +4868,9 @@ struct stampeding_roar_t : public druid_spell_t
   {
     parse_options( options_str );
     harmful = false;
+
+    radius *= 1.0 + p -> talent.gutteral_roars -> effectN( 1 ).percent();
+    cooldown -> duration *= 1.0 + p -> talent.gutteral_roars -> effectN( 2 ).percent();
   }
 
   void execute() override
@@ -4901,7 +4940,10 @@ struct starfall_t : public druid_spell_t
 
     // Only ticks while in moonkin form.
     if ( p() -> buff.moonkin_form -> check() )
+    {
+      pulse -> target = d -> target;
       pulse -> execute();
+    }
   }
 };
 
@@ -5575,6 +5617,8 @@ void druid_t::init_spells()
     instant_absorb_list[ talent.brambles -> id() ] =
       new instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler );
   }
+  if ( talent.galactic_guardian -> ok() )
+    active.galactic_guardian  = new spells::moonfire_t( this, "" );
 }
 
 // druid_t::init_base =======================================================
@@ -6909,6 +6953,10 @@ void druid_t::assess_damage( school_e school,
   s -> result_amount *= 1.0 + buff.pulverize -> value();
 
   s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
+
+  // TOCHECK: This talent only has one effect for some reason, may change in the future.
+  if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
+    s -> result_amount *= 1.0 - talent.galactic_guardian -> effectN( 1 ).percent();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
     buff.ironfur -> up();
