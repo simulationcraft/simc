@@ -236,6 +236,9 @@ public:
   const special_effect_t* stalwart_guardian;
   const special_effect_t* flourish;
 
+  // Druid Events
+  event_t* earthwarden_delay;
+
   // Buffs
   struct buffs_t
   {
@@ -281,6 +284,8 @@ public:
     buff_t* barkskin;
     buff_t* bladed_armor;
     buff_t* bristling_fur;
+    buff_t* earthwarden;
+    buff_t* earthwarden_driver;
     buff_t* mark_of_ursol;
     buff_t* pulverize;
     buff_t* survival_instincts;
@@ -669,6 +674,7 @@ public:
   virtual void      init_rng() override;
   virtual void      init_absorb_priority() override;
   virtual void      invalidate_cache( cache_e ) override;
+  virtual void      arise() override;
   virtual void      combat_begin() override;
   virtual void      reset() override;
   virtual void      merge( player_t& other ) override;
@@ -1278,6 +1284,48 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
+  }
+};
+
+// Earthwarden Driver Buff ============================================================
+
+struct earthwarden_delay_event_t : public event_t
+{
+  druid_t* player;
+
+  earthwarden_delay_event_t( druid_t* p, const timespan_t& delay ) : 
+    event_t( *p ), player( p )
+  { add_event( delay ); }
+
+  const char* name() const override
+  { return "earthwarden_driver-delay"; }
+
+  void execute() override
+  { player -> buff.earthwarden_driver -> trigger(); }
+};
+
+static void earthwarden_driver_tick( buff_t* buff, int, int )
+{
+  druid_t* p = debug_cast<druid_t*>( buff -> player );
+  p -> buff.earthwarden -> increment();
+}
+
+struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
+{
+  druid_t* druid;
+
+  earthwarden_driver_buff_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "earthwarden_driver", p.talent.earthwarden )
+    .quiet( true )
+    .tick_callback( earthwarden_driver_tick ) ), druid( &p )
+  {}
+
+  void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
+  {
+    druid_buff_t<buff_t>::start( stacks, value, duration );
+
+    // Emulate tick_zero behavior.
+    druid -> buff.earthwarden -> increment();
   }
 };
 
@@ -4457,6 +4505,8 @@ struct ironfur_t : public druid_spell_t
         return;
       }
     }
+
+    assert( "No ironfur_stack instance found to trigger!" );
   }
 };
 
@@ -5775,6 +5825,9 @@ void druid_t::create_buffs()
   buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
                                .default_value( talent.bristling_fur -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() );
+  buff.earthwarden           = buff_creator_t( this, "earthwarden", find_spell( 203975 ) )
+                               .default_value( talent.earthwarden -> effectN( 1 ).percent() );
+  buff.earthwarden_driver    = new earthwarden_driver_buff_t( *this );
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() ) // cooldown handled by spell
@@ -6361,6 +6414,10 @@ void druid_t::reset()
   main_hand_attack = caster_melee_attack;
   main_hand_weapon = caster_form_weapon;
 
+  // Reset any custom events to be safe.
+  if ( talent.earthwarden -> ok() )
+    earthwarden_delay = nullptr;
+
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
 
@@ -6428,6 +6485,16 @@ timespan_t druid_t::available() const
          );
 }
 
+// druid_t::arise ===========================================================
+
+void druid_t::arise()
+{
+  player_t::arise();
+
+  if ( talent.earthwarden -> ok() )
+    buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
+}
+
 // druid_t::combat_begin ====================================================
 
 void druid_t::combat_begin()
@@ -6442,6 +6509,13 @@ void druid_t::combat_begin()
   // If Ysera's Gift is talented, apply it upon entering combat
   if ( spell.yseras_gift )
     active.yseras_gift -> execute();
+
+  if ( talent.earthwarden -> ok() )
+  {
+    // Delay the first tick a random number of seconds between 0 and buff_period.
+    earthwarden_delay = nullptr;
+    earthwarden_delay = new (*sim) buffs::earthwarden_delay_event_t( this, rng().real() * buff.earthwarden_driver -> buff_period );
+  }
   
   // Apply Bladed Armor buff 
   if ( spec.bladed_armor -> ok() )
@@ -6957,6 +7031,12 @@ void druid_t::assess_damage( school_e school,
   // TOCHECK: This talent only has one effect for some reason, may change in the future.
   if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
     s -> result_amount *= 1.0 - talent.galactic_guardian -> effectN( 1 ).percent();
+
+  if ( talent.earthwarden -> ok() && ! s -> action -> special && buff.earthwarden -> up() )
+  {
+    s -> result_amount *= 1.0 - buff.earthwarden -> current_value;
+    buff.earthwarden -> decrement();
+  }
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
     buff.ironfur -> up();
