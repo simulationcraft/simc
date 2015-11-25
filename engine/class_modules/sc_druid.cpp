@@ -24,7 +24,7 @@ namespace { // UNNAMED NAMESPACE
  Balance -------
  Stellar Flare snapshotting if it consumes any empowerments
  Shooting Stars proc chance
- Starfall positioning (Moonfire/Sunfire damage bonus, cast while moving with SD)
+ Stellar Drift cast while moving
  APL
 
  Guardian ------
@@ -5045,6 +5045,7 @@ struct starfall_t : public druid_spell_t
     {
       background = direct_tick = true;
       aoe = -1;
+      ground_aoe = true;
       range = 40;
       radius = 0;
       callbacks = false;
