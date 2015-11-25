@@ -2900,6 +2900,11 @@ double player_t::composite_mastery() const
 
 double player_t::composite_multistrike() const
 {
+  if ( current.rating.multistrike == 0 )
+  {
+    return 0;
+  }
+
   double cm = composite_multistrike_rating() / current.rating.multistrike;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.multistrike -> check() )
