@@ -52,6 +52,7 @@
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
+#pragma warning( disable : 4265)
 #endif
 
 #if defined( SC_WINDOWS ) && !defined( SC_VS )

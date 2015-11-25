@@ -38,7 +38,7 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 ::if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=x64 /nr:true
 "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=x64 /nr:true
 
-robocopy "%redist%x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll msvcr140.dll vccorlib140.dll
+robocopy "%redist%x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
@@ -63,7 +63,7 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 ::if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=win32 /nr:true
 "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=win32 /nr:true
 
-robocopy "%redist%x86\Microsoft.VC140.CRT" %install%\ msvcp140.dll msvcr140.dll vccorlib140.dll
+robocopy "%redist%x86\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
