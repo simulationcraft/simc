@@ -1917,6 +1917,137 @@ struct moonfire_t : public druid_spell_t
 
 }
 
+namespace heals {
+
+struct druid_heal_t : public druid_spell_base_t<heal_t>
+{
+  action_t* living_seed;
+  bool target_self;
+
+  druid_heal_t( const std::string& token, druid_t* p,
+                const spell_data_t* s = spell_data_t::nil(),
+                const std::string& options_str = std::string() ) :
+    base_t( token, p, s ),
+    living_seed( nullptr ),
+    target_self( 0 )
+  {
+    add_option( opt_bool( "target_self", target_self ) );
+    parse_options( options_str );
+
+    if( target_self )
+      target = p;
+
+    may_miss          = false;
+    weapon_multiplier = 0;
+    harmful           = false;
+  }
+    
+protected:
+  void init_living_seed();
+
+public:
+  virtual void execute() override
+  {
+    base_t::execute();
+
+    if ( base_execute_time > timespan_t::zero() )
+    {
+      p() -> buff.soul_of_the_forest -> expire();
+
+      if ( p() -> buff.natures_swiftness -> check() )
+      {
+        p() -> buff.natures_swiftness -> expire();
+        // NS cd starts when the buff is consumed.
+        p() -> cooldown.natures_swiftness -> start();
+      }
+    }
+
+    if ( p() -> mastery.harmony -> ok() && spell_power_mod.direct > 0 && ! background )
+      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    if ( p() -> buff.natures_swiftness -> check() )
+      return timespan_t::zero();
+
+    return base_t::execute_time();
+  }
+
+  virtual double composite_haste() const override
+  {
+    double h = base_t::composite_haste();
+
+    h *= 1.0 / ( 1.0 + p() -> buff.soul_of_the_forest -> value() );
+
+    return h;
+  }
+
+  virtual double action_da_multiplier() const override
+  {
+    double adm = base_t::action_da_multiplier();
+
+    if ( p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_RESTORATION )
+      adm *= 1.0 + p() -> buff.incarnation -> data().effectN( 1 ).percent();
+
+    if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
+      adm *= 1.0 + p() -> buff.natures_swiftness -> data().effectN( 2 ).percent();
+
+    if ( p() -> mastery.harmony -> ok() )
+      adm *= 1.0 + p() -> cache.mastery_value();
+
+    return adm;
+  }
+
+  virtual double action_ta_multiplier() const override
+  {
+    double adm = base_t::action_ta_multiplier();
+
+    if ( p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_RESTORATION )
+      adm += p() -> buff.incarnation -> data().effectN( 2 ).percent();
+
+    if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
+      adm += p() -> buff.natures_swiftness -> data().effectN( 3 ).percent();
+
+    adm += p() -> buff.harmony -> value();
+
+    return adm;
+  }
+
+  void trigger_lifebloom_refresh( action_state_t* s )
+  {
+    druid_td_t& td = *this -> td( s -> target );
+
+    if ( td.dots.lifebloom -> is_ticking() )
+    {
+      td.dots.lifebloom -> refresh_duration();
+
+      if ( td.buffs.lifebloom -> check() )
+        td.buffs.lifebloom -> refresh();
+    }
+  }
+
+  void trigger_living_seed( action_state_t* s )
+  {
+    // Technically this should be a buff on the target, then bloom when they're attacked
+    // For simplicity we're going to assume it always heals the target
+    if ( living_seed )
+    {
+      living_seed -> base_dd_min = s -> result_amount;
+      living_seed -> base_dd_max = s -> result_amount;
+      living_seed -> execute();
+    }
+  }
+
+  void trigger_omen_of_clarity()
+  {
+    if ( ! proc && p() -> specialization() == DRUID_RESTORATION && p() -> spec.omen_of_clarity -> ok() )
+      p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
+  }
+}; // end druid_heal_t
+
+}
+
 namespace caster_attacks {
 
 // Caster Form Melee Attack ========================================================
@@ -3279,133 +3410,6 @@ namespace heals {
 // Druid Heal
 // ==========================================================================
 
-struct druid_heal_t : public druid_spell_base_t<heal_t>
-{
-  action_t* living_seed;
-  bool target_self;
-
-  druid_heal_t( const std::string& token, druid_t* p,
-                const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options_str = std::string() ) :
-    base_t( token, p, s ),
-    living_seed( nullptr ),
-    target_self( 0 )
-  {
-    add_option( opt_bool( "target_self", target_self ) );
-    parse_options( options_str );
-
-    if( target_self )
-      target = p;
-
-    may_miss          = false;
-    weapon_multiplier = 0;
-    harmful           = false;
-  }
-    
-protected:
-  void init_living_seed();
-
-public:
-  virtual void execute() override
-  {
-    base_t::execute();
-
-    if ( base_execute_time > timespan_t::zero() )
-    {
-      p() -> buff.soul_of_the_forest -> expire();
-
-      if ( p() -> buff.natures_swiftness -> check() )
-      {
-        p() -> buff.natures_swiftness -> expire();
-        // NS cd starts when the buff is consumed.
-        p() -> cooldown.natures_swiftness -> start();
-      }
-    }
-
-    if ( p() -> mastery.harmony -> ok() && spell_power_mod.direct > 0 && ! background )
-      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    if ( p() -> buff.natures_swiftness -> check() )
-      return timespan_t::zero();
-
-    return base_t::execute_time();
-  }
-
-  virtual double composite_haste() const override
-  {
-    double h = base_t::composite_haste();
-
-    h *= 1.0 / ( 1.0 + p() -> buff.soul_of_the_forest -> value() );
-
-    return h;
-  }
-
-  virtual double action_da_multiplier() const override
-  {
-    double adm = base_t::action_da_multiplier();
-
-    if ( p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_RESTORATION )
-      adm *= 1.0 + p() -> buff.incarnation -> data().effectN( 1 ).percent();
-
-    if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
-      adm *= 1.0 + p() -> buff.natures_swiftness -> data().effectN( 2 ).percent();
-
-    if ( p() -> mastery.harmony -> ok() )
-      adm *= 1.0 + p() -> cache.mastery_value();
-
-    return adm;
-  }
-
-  virtual double action_ta_multiplier() const override
-  {
-    double adm = base_t::action_ta_multiplier();
-
-    if ( p() -> buff.incarnation -> up() && p() -> specialization() == DRUID_RESTORATION )
-      adm += p() -> buff.incarnation -> data().effectN( 2 ).percent();
-
-    if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
-      adm += p() -> buff.natures_swiftness -> data().effectN( 3 ).percent();
-
-    adm += p() -> buff.harmony -> value();
-
-    return adm;
-  }
-
-  void trigger_lifebloom_refresh( action_state_t* s )
-  {
-    druid_td_t& td = *this -> td( s -> target );
-
-    if ( td.dots.lifebloom -> is_ticking() )
-    {
-      td.dots.lifebloom -> refresh_duration();
-
-      if ( td.buffs.lifebloom -> check() )
-        td.buffs.lifebloom -> refresh();
-    }
-  }
-
-  void trigger_living_seed( action_state_t* s )
-  {
-    // Technically this should be a buff on the target, then bloom when they're attacked
-    // For simplicity we're going to assume it always heals the target
-    if ( living_seed )
-    {
-      living_seed -> base_dd_min = s -> result_amount;
-      living_seed -> base_dd_max = s -> result_amount;
-      living_seed -> execute();
-    }
-  }
-
-  void trigger_omen_of_clarity()
-  {
-    if ( ! proc && p() -> specialization() == DRUID_RESTORATION && p() -> spec.omen_of_clarity -> ok() )
-      p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
-  }
-}; // end druid_heal_t
-
 struct living_seed_t : public druid_heal_t
 {
   living_seed_t( druid_t* player ) :
@@ -4429,7 +4433,6 @@ struct hurricane_t : public druid_spell_t
     channeled = true;
 
     tick_action = new hurricane_tick_t( player, data().effectN( 3 ).trigger() );
-    dynamic_tick_action = true;
     ignore_false_positive = true;
   }
 
@@ -4523,6 +4526,64 @@ struct ironfur_t : public druid_spell_t
     }
 
     assert( "No ironfur_stack instance found to trigger!" );
+  }
+};
+
+// Lunar Beam ===============================================================
+
+struct lunar_beam_t : public druid_spell_t
+{
+  struct lunar_beam_heal_t : public heals::druid_heal_t
+  {
+    lunar_beam_heal_t( druid_t* player, const spell_data_t* s ) :
+      heals::druid_heal_t( "lunar_beam_heal", player, s )
+    {
+      target = player;
+      spell_power_mod.direct = s -> effectN( 1 ).ap_coeff();
+      background = true;
+    }
+  };
+
+  struct lunar_beam_damage_t : public druid_spell_t
+  {
+    lunar_beam_damage_t( druid_t* player, const spell_data_t* s ) :
+      druid_spell_t( "lunar_beam_damage", player, s )
+    {
+      spell_power_mod.direct = s -> effectN( 2 ).ap_coeff();
+      dual = background = true;
+    }
+  };
+
+  const spell_data_t* tick_spell;
+  lunar_beam_heal_t* heal;
+  lunar_beam_damage_t* damage;
+
+  lunar_beam_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "lunar_beam", player, player -> talent.lunar_beam )
+  {
+    parse_options( options_str );
+
+    tick_spell = player -> find_spell( 204069 );
+    heal       = new lunar_beam_heal_t( player, tick_spell );
+    damage     = new lunar_beam_damage_t( player, tick_spell );
+
+    aoe        = -1;
+    ground_aoe = true;
+    may_crit = hasted_ticks = false;
+    radius = tick_spell -> effectN( 2 ).radius();
+    base_tick_time = timespan_t::from_seconds( 1.0 ); // TODO: Find in spell data... somewhere!
+    dot_duration = data().duration();
+
+    tick_action = damage;
+    add_child( damage );
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    druid_spell_t::tick( d );
+
+    if ( ! sim -> distance_targeting_enabled || p() -> get_ground_aoe_distance( *d -> state ) <= radius )
+      heal -> execute();
   }
 };
 
@@ -5337,6 +5398,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
+  if ( name == "lunar_beam"             ) return new             lunar_beam_t( this, options_str );
   if ( name == "lunar_strike"           ) return new           lunar_strike_t( this, options_str );
   if ( name == "maim"                   ) return new                   maim_t( this, options_str );
   if ( name == "mangle"                 ) return new                 mangle_t( this, options_str );
