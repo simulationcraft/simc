@@ -231,8 +231,6 @@ public:
     buff_t* dampen_harm;
     buff_t* death_note;
     buff_t* diffuse_magic;
-    buff_t* elusive_brew_activated;
-    buff_t* elusive_brew_stacks;
     buff_t* forceful_winds;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_serpent;
@@ -392,10 +390,8 @@ public:
     // Brewmaster
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
-    const spell_data_t* brewing_elusive_brew;
     const spell_data_t* desperate_measures;
     const spell_data_t* dizzying_haze;
-    const spell_data_t* elusive_brew;
     const spell_data_t* ferment;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* guard;
@@ -1732,16 +1728,7 @@ public:
 
   void trigger_brew( double base_stacks )
   {
-    if ( p() -> spec.brewing_elusive_brew -> ok() )
-    {
-      int stacks = static_cast<int>( base_stacks );
-      double partial = base_stacks - stacks;
-      if ( partial > 0 )
-        stacks +=( ab::rng().roll( partial ) ) ? 1 : 0;
-      p() -> buff.elusive_brew_stacks -> trigger( stacks );
-    }
-
-    else if ( p() -> spec.brewing_mana_tea -> ok() )
+    if ( p() -> spec.brewing_mana_tea -> ok() )
     {
       // Manatee
       //                   _.---.._
@@ -2775,26 +2762,6 @@ struct melee_t: public monk_melee_attack_t
     else
       monk_melee_attack_t::execute();
   }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( p() -> spec.brewing_elusive_brew -> ok() )
-    {
-      if ( s -> result == RESULT_CRIT )
-      {
-        // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
-        if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
-          trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
-        else
-          trigger_brew( p() -> buff.elusive_brew_activated -> data().effectN( 2 ).base_value() * weapon -> swing_time.total_seconds() / 3.6);
-      }
-      // TODO: Add BLOCK_RESULT_MULTISTRIKE and BLOCK_RESULT_MULTISTRIKE_CRIT
-      if ( result_is_multistrike( s -> result ) )
-        p() -> buff.gift_of_the_ox -> trigger();
-    }
-  }
 };
 
 // ==========================================================================
@@ -3623,50 +3590,6 @@ struct fortifying_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.fortifying_brew -> trigger();
-  }
-};
-
-// ==========================================================================
-// Elusive Brew
-// ==========================================================================
-
-struct elusive_brew_t: public monk_spell_t
-{
-  elusive_brew_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "elusive_brew", &p, p.spec.elusive_brew )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p() -> talent.healing_elixirs -> ok() )
-    {
-      if ( p() -> cooldown.healing_elixirs -> up() )
-        p() -> active_actions.healing_elixir -> execute();
-    }
-
-    p() -> buff.elusive_brew_activated -> trigger( 1,
-                                               buff_t::DEFAULT_VALUE(),
-                                               1.0, timespan_t::from_seconds( p() -> buff.elusive_brew_stacks -> stack() ) );
-    p() -> buff.elusive_brew_stacks -> expire();
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> buff.elusive_brew_stacks -> check() )
-      return false;
-
-    if ( p() -> buff.elusive_brew_activated -> check() )
-      return false;
-
-    return monk_spell_t::ready();
   }
 };
 
@@ -4682,7 +4605,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "dizzying_haze" ) return new             dizzying_haze_t( *this, options_str );
   if ( name == "guard" ) return new                     guard_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
-  if ( name == "elusive_brew" ) return new              elusive_brew_t( *this, options_str );
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   // Mistweaver
@@ -4859,8 +4781,6 @@ void monk_t::init_spells()
   spec.rising_sun_kick_trinket       = find_spell( 185099 );
 
   // Brewmaster Passives
-  spec.brewing_elusive_brew          = find_specialization_spell( "Brewing: Elusive Brew" );
-  spec.elusive_brew                  = find_specialization_spell( "Elusive Brew" );
   spec.desperate_measures            = find_specialization_spell( "Desperate Measures" );
   spec.dizzying_haze                 = find_specialization_spell( "Dizzying Haze" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
@@ -5045,13 +4965,6 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.keg_smash = buff_creator_t( this, "keg_smash", find_spell( 196720 ) );
-
-  buff.elusive_brew_stacks = buff_creator_t( this, "elusive_brew_stacks", find_spell( 128939 ) );
-
-  buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated", spec.elusive_brew )
-    .default_value( spec.elusive_brew -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_DODGE )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.guard = absorb_buff_creator_t( this, "guard", spec.guard )
     .source( get_stats( "guard" ) )
@@ -5323,10 +5236,11 @@ double monk_t::composite_player_multiplier( school_e school ) const
   }
 
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
-  if ( eluding_movements && buff.elusive_brew_activated -> up() )
+/*  if ( eluding_movements )
   {
     m *= 1.0 + ( eluding_movements -> driver() -> effectN( 2 ).average( eluding_movements -> item ) / 100 );
   }
+*/
   return m;
 }
 
@@ -5408,12 +5322,6 @@ double monk_t::composite_parry() const
 double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
-
-  if ( buff.elusive_brew_activated -> check() )
-  {
-    d += buff.elusive_brew_activated -> default_value;
-    d += sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
-  }
 
   return d;
 }
@@ -5654,24 +5562,17 @@ void monk_t::assess_damage(school_e school,
   buff.fortifying_brew -> up();
   if ( specialization() == MONK_BREWMASTER )
   {
-    buff.elusive_brew_activated -> up();
     if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
       buff.guard -> up();
     else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
       buff.guard -> up();
 
     // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, adjust Elusive Brew proc chance based on spell data of the special effect.
-    if ( eluding_movements )
+/*    if ( eluding_movements )
     {
       double bm_trinket_proc = eluding_movements -> driver() -> effectN( 1 ).average( eluding_movements -> item );
-
-      if ( health_percentage() < bm_trinket_proc )
-      {
-//        TODO: Figure out how to get trigger_brew to work from here
-        if ( rng().roll( ( bm_trinket_proc / 100 ) / 2 ) )
-          buff.elusive_brew_stacks -> trigger( 1 );
-      }
     }
+*/
 
     // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
     // adding a cooldown for desperate Measure so that we can throttle however much we want it to be; basing around a Proc Per Minute mentality
@@ -5939,30 +5840,29 @@ void monk_t::apl_combat_brewmaster()
   }
 
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
-  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))" );
+  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))" );
   def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2&buff.shuffle.down)" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
   def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
-  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
+  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
+  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action( "use_item,name=" + items[i].name_str + ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
+      def -> add_action( "use_item,name=" + items[i].name_str + ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
   }
 
-  def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.shuffle.remains>=3&buff.serenity.down" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&cooldown.keg_smash.remains>6" );
   
   if ( sim -> allow_potions )
   {
     if ( true_level >= 90 )
-      def -> add_action( "potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
+      def -> add_action( "potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down))" );
     else if ( true_level >= 85 )
-      def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
+      def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down))" );
   }
   def -> add_action( this, "Touch of Death", "if=target.health.percent<10&cooldown.touch_of_death.remains=0&((!glyph.touch_of_death.enabled&chi>=3&target.time_to_die<8)|(glyph.touch_of_death.enabled&target.time_to_die<5))" );
 
