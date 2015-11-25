@@ -2730,33 +2730,30 @@ struct bear_melee_t : public bear_attack_t
   }
 };
 
-// Lacerate =================================================================
+// Lacerate DoT =============================================================
 
-struct lacerate_t : public bear_attack_t
+struct lacerate_dot_t : public bear_attack_t
 {
-  lacerate_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
+  double blood_frenzy_amount;
+
+  lacerate_dot_t( druid_t* p ) :
+    bear_attack_t( "lacerate_dot", p, p -> find_spell( 192090 ) ),
+    blood_frenzy_amount( 0.0 )
   {
-    parse_options( options_str );
+
+    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+
+    if ( p -> talent.blood_frenzy -> ok() )
+      blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   virtual void impact( action_state_t* state ) override
   {
     bear_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( td( state -> target ) -> lacerate_stack < 3 )
-        td( state -> target ) -> lacerate_stack++;
-
-      if ( rng().roll( 0.25 ) ) // FIXME: Find in spell data.
-        p() -> cooldown.mangle -> reset( true );
-    }
+    if ( result_is_hit( state -> result ) && td( state -> target ) -> lacerate_stack < 3 )
+      td( state -> target ) -> lacerate_stack++;
   }
-
-  // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* ) const override
-  { return 0.0; }
 
   virtual double composite_target_ta_multiplier( player_t* t ) const override
   {
@@ -2767,12 +2764,52 @@ struct lacerate_t : public bear_attack_t
     return tm;
   }
 
+  virtual void tick( dot_t* d ) override
+  {
+    rage_tick_amount = td( d -> state -> target ) -> lacerate_stack * blood_frenzy_amount;
+    
+    bear_attack_t::tick( d );
+  }
+
   virtual void last_tick( dot_t* d ) override
   {
     bear_attack_t::last_tick( d );
 
     td( target ) -> lacerate_stack = 0;
   }
+};
+
+// Lacerate =================================================================
+
+struct lacerate_t : public bear_attack_t
+{
+  lacerate_dot_t* dot;
+
+  lacerate_t( druid_t* p, const std::string& options_str ) :
+    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) ),
+    dot( new lacerate_dot_t( p ) )
+  {
+    parse_options( options_str );
+
+    add_child( dot );
+  }
+
+  virtual void impact( action_state_t* state ) override
+  {
+    bear_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      dot -> execute();
+
+      if ( rng().roll( 0.25 ) ) // FIXME: Find in spell data.
+        p() -> cooldown.mangle -> reset( true );
+    }
+  }
+
+  // Treat direct damage as "bleed"
+  virtual double target_armor( player_t* ) const override
+  { return 0.0; }
 };
 
 // Mangle ============================================================
@@ -2871,7 +2908,7 @@ struct pulverize_t : public bear_attack_t
   {
     parse_options( options_str );
 
-    normalize_weapon_speed = false;
+    normalize_weapon_speed = false; // TOCHECK
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2883,7 +2920,7 @@ struct pulverize_t : public bear_attack_t
       // consumes 3 stacks of Lacerate on the target
       target -> get_dot( "lacerate", p() ) -> cancel();
 
-      // and reduce damage taken by x% for y sec (pandemics)
+      // and reduce damage taken by x% for y sec.
       p() -> buff.pulverize -> trigger();
     }
   }
@@ -2902,8 +2939,11 @@ struct pulverize_t : public bear_attack_t
 
 struct thrash_bear_t : public bear_attack_t
 {
+  lacerate_dot_t* dot;
+
   thrash_bear_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ) )
+    bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ) ),
+    dot( new lacerate_dot_t( player ) )
   {
     parse_options( options_str );
     aoe                    = -1;
@@ -2911,9 +2951,6 @@ struct thrash_bear_t : public bear_attack_t
 
     // Apply hidden passive damage multiplier
     base_dd_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 6 ).percent();
-
-    base_tick_time *= 1.0 + player -> talent.jagged_wounds -> effectN( 1 ).percent();
-    dot_duration   *= 1.0 + player -> talent.jagged_wounds -> effectN( 2 ).percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2922,9 +2959,7 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> lacerate_stack < 3 )
-        td( s -> target ) -> lacerate_stack++;
-      td( s -> target ) -> dots.lacerate -> trigger( p() -> spell.lacerate -> duration() );
+      dot -> execute();
 
       td( s -> target ) -> dots.thrash_cat -> cancel(); // Legion TOCHECK
     }
