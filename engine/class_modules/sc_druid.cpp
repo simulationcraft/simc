@@ -292,7 +292,7 @@ public:
     buff_t* guardian_tier15_2pc;
     buff_t* guardian_tier17_4pc;
     buff_t* ironfur; // proxy buff, manages stack count and mechanical effect
-    buff_t* ironfur_stack[7]; // individual buffs, manages timers
+    buff_t* ironfur_stack[9]; // individual buffs, manages timers
 
     // Restoration
     buff_t* hurricane;
@@ -1357,7 +1357,8 @@ struct ironfur_buff_t : public druid_buff_t < buff_t >
   ironfur_buff_t( druid_t& p, std::string& s ) :
     base_t( p, buff_creator_t( &p, s, p.spec.ironfur )
     .cd( timespan_t::zero() )
-    .quiet( true ) )
+    .quiet( true )
+    .duration( p.spec.ironfur -> duration() + p.talent.guardian_of_elune -> effectN( 1 ).time_value() ) )
   {}
   
   virtual void start( int stacks, double value, timespan_t duration ) override
@@ -3444,6 +3445,8 @@ struct frenzied_regeneration_t : public druid_heal_t
     p -> cooldown.frenzied_regen_use -> duration = cooldown -> duration;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 20.0 );
+
+    base_multiplier *= 1.0 + p -> talent.guardian_of_elune -> effectN( 2 ).percent();
   }
 
   virtual void execute()
@@ -4497,7 +4500,7 @@ struct ironfur_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    for ( size_t i = 0; i < 7; i++ )
+    for ( size_t i = 0; i < 9; i++ )
     {
       if ( ! p() -> buff.ironfur_stack[ i ] -> check() )
       {
@@ -5831,7 +5834,9 @@ void druid_t::create_buffs()
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() ) // cooldown handled by spell
-                               .refresh_behavior( BUFF_REFRESH_EXTEND ); // Legion TOCHECK
+                               .refresh_behavior( BUFF_REFRESH_EXTEND ) // Legion TOCHECK
+                               .duration( find_specialization_spell( "Mark of Ursol" ) -> duration()
+                                        + talent.guardian_of_elune -> effectN( 1 ).time_value() ); 
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -5849,7 +5854,7 @@ void druid_t::create_buffs()
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR );
   
-  for ( size_t i = 0; i < 7; i++ )
+  for ( size_t i = 0; i < 9; i++ )
   {
     char s [50];
     sprintf( s, "ironfur_%x", 10+i );
