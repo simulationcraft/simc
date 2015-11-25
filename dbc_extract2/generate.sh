@@ -1,65 +1,48 @@
-@echo off
+#!/bin/sh
+if [ $# -lt 1 ]; then
+    echo "Usage: generate.sh [ptr] [wowversion] <patch> <input_base>"
+    exit 1
+fi
 
-setlocal
+OUTPATH=`dirname $PWD`/engine/dbc/generated
+INEXT=DBFilesClient
 
-set INEXT=DBFilesClient
-set OUTPATH=%~dp0..\engine\dbc\generated
-set RUNFILE=%~dp0\dbc_extract.py
-set CACHEDIR=%~dp0\cache\live
+PTR=
+if [ "$1" == "ptr" ]; then
+    PTR=" --prefix=ptr"
+    shift
+fi
 
-set PTR=
-set PTREXT=
-if not %1 == ptr goto next
-set PTR= --prefix=ptr
-set PTREXT=_ptr
-set CACHEDIR=%~dp0\cache\ptr
-shift
+BUILD=$1
+INPUT=${2}/${1}/${INEXT}
 
-:next
-set BUILD=%1
-set INPATH=%~f2\%BUILD%\%INEXT%
+if [ ! -d $INPUT ]; then
+  echo Error: Unable to find input files.
+  echo "Usage: generate.sh [ptr] <patch> <input_base>"
+  exit 1
+fi
 
-if exist %INPATH% goto okay
-echo Error: Unable to find input files! %INPATH%
-echo.
-goto usage
-:okay
+./dbc_extract.py -p $INPUT -b $BUILD -t spec_enum -o $OUTPATH/sc_specialization_data.inc
 
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t talent           -o $OUTPATH/sc_talent_data${PTR:+_ptr}.inc
 
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% -t spec_list                  > %OUTPATH%\sc_spec_list.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t talent                  > %OUTPATH%\sc_talent_data%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t spell > %OUTPATH%\sc_spell_data%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t rppm_coeff              >> %OUTPATH%\sc_spell_data%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t scale                   > %OUTPATH%\sc_scale_data%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t class_list              > %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t spec_spell_list        >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t mastery_list           >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t racial_list            >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t glyph_list             >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t set_list               >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t set_list2              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t perk_list              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t glyph_property_list    >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item                    > %OUTPATH%/sc_item_data%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t random_property_points  > %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t random_suffix          >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_ench              >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_armor             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t weapon_damage          >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t gem_properties         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_upgrade           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_bonus             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_scaling           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item_name_desc         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t spec_list        -o $OUTPATH/sc_spec_list${PTR:+_ptr}.inc
 
-python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_enum > %OUTPATH%\sc_specialization_data.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t spell            -o $OUTPATH/sc_spell_data${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t rppm_coeff       -a $OUTPATH/sc_spell_data${PTR:+_ptr}.inc
 
-echo Done!
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t scale            -o $OUTPATH/sc_scale_data${PTR:+_ptr}.inc
 
-goto end
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t class_list       -o $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t spec_spell_list  -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t mastery_list     -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t racial_list      -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t glyph_list       -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t set_list2        -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t perk_list        -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t glyph_property_list -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 
-:usage
-echo Usage: generate.bat [ptr] <build> <inpath>
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t item             -o $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 
-:end
-endlocal
+#./dbc_extract.py -p $INPUT -b $BUILD$PTR -t random_property_points -o $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+
