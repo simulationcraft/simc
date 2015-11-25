@@ -1480,6 +1480,17 @@ public:
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
+  virtual double composite_target_multiplier( player_t* t ) const
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    // Legion TOCHECK: Does this apply to ALL damage dealt by the player, or just druid spells?
+    if ( p() -> talent.rend_and_tear -> ok() )
+      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> lacerate_stack;
+
+    return tm;
+  }
+
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
@@ -7045,6 +7056,10 @@ void druid_t::assess_damage( school_e school,
     s -> result_amount *= 1.0 - buff.earthwarden -> current_value;
     buff.earthwarden -> decrement();
   }
+
+  if ( talent.rend_and_tear -> ok() )
+    s -> result_amount *= 1.0 - talent.rend_and_tear -> effectN( 2 ).percent()
+                              * get_target_data( s -> action -> player ) -> lacerate_stack;
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
     buff.ironfur -> up();
