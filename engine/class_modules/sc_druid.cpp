@@ -1358,7 +1358,7 @@ struct elunes_guidance_buff_t : public druid_buff_t < buff_t >
 
 struct ironfur_buff_t : public druid_buff_t < buff_t >
 {
-  ironfur_buff_t( druid_t& p, std::string& s ) :
+  ironfur_buff_t( druid_t& p, const std::string& s ) :
     base_t( p, buff_creator_t( &p, s, p.spec.ironfur )
     .cd( timespan_t::zero() )
     .quiet( true )
@@ -1760,8 +1760,9 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
     base_t( token, p, s ), ap_per_hit( 0 ), ap_per_tick( 0 ),
-    ap_per_cast( 0 ), ap_gain( p -> get_gain( name() ) ),
-    benefits_from_ca( false ), benefits_from_elune( false )
+    ap_per_cast( 0 ),
+    benefits_from_ca( false ), benefits_from_elune( false ),
+    ap_gain( p -> get_gain( name() ) )
   {
     parse_options( options );
   }
@@ -5941,12 +5942,12 @@ void druid_t::create_buffs()
                                .duration( timespan_t::zero() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR );
-  
+
   for ( size_t i = 0; i < 9; i++ )
   {
-    char s [50];
-    sprintf( s, "ironfur_%x", 10+i );
-    buff.ironfur_stack[i]    = new ironfur_buff_t( *this, std::string( s ) );
+    char s[50];
+    sprintf( s, "ironfur_%x", static_cast<unsigned>( 10 + i ) );
+    buff.ironfur_stack[i]    = new ironfur_buff_t( *this, s );
   }
 
   // Restoration
