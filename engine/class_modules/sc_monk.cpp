@@ -393,7 +393,6 @@ public:
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
     const spell_data_t* brewing_elusive_brew;
-    const spell_data_t* brewmaster_training;
     const spell_data_t* desperate_measures;
     const spell_data_t* dizzying_haze;
     const spell_data_t* elusive_brew;
@@ -415,11 +414,8 @@ public:
     const spell_data_t* crane_style_techniques;
     const spell_data_t* detonate_chi;
     const spell_data_t* enveloping_mist;
-    const spell_data_t* focus_and_harmony; // To-do: Implement
-    const spell_data_t* internal_medicine;
     const spell_data_t* jade_mists;
     const spell_data_t* life_cocoon;
-    const spell_data_t* mana_meditation;
     const spell_data_t* mana_tea;
     const spell_data_t* mana_tea_driver;
     const spell_data_t* renewing_mist;
@@ -506,6 +502,9 @@ public:
 
   struct passives_t
   {
+    const spell_data_t* aura_brewmaster_monk;
+    const spell_data_t* aura_mistweaver_monk;
+    const spell_data_t* aura_windwalker_monk;
     const spell_data_t* hit_combo;
     const spell_data_t* enveloping_mist;
     const spell_data_t* healing_elixirs;
@@ -1608,7 +1607,7 @@ template <class Base>
 struct monk_action_t: public Base
 {
   sef_ability_e sef_ability;
-  bool focus_and_harmony_hasted_gcd;
+  bool hasted_gcd;
 private:
   std::array < resource_e, MONK_WINDWALKER + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
@@ -1619,14 +1618,18 @@ public:
                  const spell_data_t* s = spell_data_t::nil() ):
                  ab( n, player, s ),
                  sef_ability( SEF_NONE ),
-                 focus_and_harmony_hasted_gcd( ab::data().affected_by( player -> spec.focus_and_harmony -> effectN( 1 ) ) )
+                 hasted_gcd( ab::data().affected_by( player -> passives.aura_mistweaver_monk -> effectN( 4 ) ) )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
+    ab::min_gcd = timespan_t::from_seconds( 1.0 );
+    ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
     if ( player -> specialization() != MONK_MISTWEAVER )
     {
-      ab::trigger_gcd = timespan_t::from_seconds( 1.0 );
-      ab::min_gcd = timespan_t::from_seconds( 1.0 );
+      if ( player -> spec.stagger -> ok() )
+        ab::trigger_gcd -= timespan_t::from_millis( player -> spec.stagger -> effectN( 11 ).base_value() * -1 ); // Saved as -500 milliseconds
+      if ( player -> passives.stance_of_the_fierce_tiger -> ok() )
+        ab::trigger_gcd -= timespan_t::from_millis( player -> passives.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
     }
   }
   virtual ~monk_action_t() {}
@@ -1848,7 +1851,7 @@ public:
     if ( t == timespan_t::zero() )
       return t;
 
-    if ( focus_and_harmony_hasted_gcd )
+    if ( hasted_gcd && ab::player -> specialization() == MONK_MISTWEAVER )
       t *= ab::player -> cache.attack_haste();
     if ( t < ab::min_gcd )
       t = ab::min_gcd;
@@ -2276,17 +2279,6 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( p() -> spec.teachings_of_the_monastery -> ok() )
       p() -> buff.cranes_zeal -> trigger();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> spec.brewmaster_training -> ok() )
-        p() -> buff.shuffle -> trigger();
-    }
   }
 
   virtual double action_multiplier() const override
@@ -2739,7 +2731,7 @@ struct melee_t: public monk_melee_attack_t
     {
       base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
       if ( player -> specialization() == MONK_MISTWEAVER )
-        base_multiplier *= 1.0 + player -> spec.mana_meditation -> effectN( 2 ).percent();
+        base_multiplier *= 1.0 + player -> passives.aura_mistweaver_monk -> effectN( 3 ).percent();
       else
         base_hit -= 0.19;
     }
@@ -4299,7 +4291,7 @@ struct surging_mist_t: public monk_heal_t
   {
     parse_options( options_str );
 
-    focus_and_harmony_hasted_gcd = true;
+    hasted_gcd = true;
 
     if ( p.specialization() == MONK_MISTWEAVER )
     {
@@ -4625,8 +4617,7 @@ namespace buffs
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     // Extra Health is set by current max_health, doesn't change when max_health changes.
-    health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.glyph.fortifying_brew -> ok() ? monk.glyph.fortifying_brew -> effectN( 2 ).percent() :
-      monk.spec.fortifying_brew -> effectN( 1 ).percent() ) );
+    health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.spec.fortifying_brew -> effectN( 1 ).percent() ) );
     monk.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     monk.stat_gain( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
@@ -4868,7 +4859,6 @@ void monk_t::init_spells()
   spec.rising_sun_kick_trinket       = find_spell( 185099 );
 
   // Brewmaster Passives
-  spec.brewmaster_training           = find_specialization_spell( "Brewmaster Training" );
   spec.brewing_elusive_brew          = find_specialization_spell( "Brewing: Elusive Brew" );
   spec.elusive_brew                  = find_specialization_spell( "Elusive Brew" );
   spec.desperate_measures            = find_specialization_spell( "Desperate Measures" );
@@ -4889,8 +4879,6 @@ void monk_t::init_spells()
 
   // Mistweaver Passives
   spec.brewing_mana_tea              = find_specialization_spell( "Brewing: Mana Tea" );
-  spec.mana_meditation               = find_specialization_spell( "Mana Meditation" );
-  spec.focus_and_harmony             = find_specialization_spell( "Focus and Harmony" );
   spec.crane_style_techniques        = find_specialization_spell( "Crane Style Techniques" );
   spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
   spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
@@ -4900,7 +4888,6 @@ void monk_t::init_spells()
   spec.mana_tea                      = find_specialization_spell( "Mana Tea" );
   spec.revival                       = find_specialization_spell( "Revival" );
   spec.summon_jade_serpent_statue    = find_specialization_spell( "Summon Jade Serpent Statue" );
-  spec.internal_medicine             = find_specialization_spell( "Internal Medicine" );
   spec.detonate_chi                  = find_specialization_spell( "Detonate Chi" );
   spec.mana_tea_driver               = find_specialization_spell( "Mana Tea Driver" );
   spec.legacy_of_the_emperor         = find_specialization_spell( "Legacy of the Emperor" );
@@ -4915,6 +4902,9 @@ void monk_t::init_spells()
   spec.breath_of_the_serpent_heal    = find_spell( 157590 );
   spec.extend_life                   = find_spell( 185158 ); // Tier 18 bonus
 
+  passives.aura_brewmaster_monk       = find_spell( 137023 );
+  passives.aura_mistweaver_monk       = find_spell( 137024 );
+  passives.aura_windwalker_monk       = find_spell( 137025 );
   passives.hit_combo                  = find_spell( 196741 );
   passives.tier15_2pc_melee           = find_spell( 138311 );
   passives.tier17_2pc_tank            = find_spell( 165356 );
@@ -4985,12 +4975,6 @@ void monk_t::init_base_stats()
     base.attack_power_per_agility = 1.0;
   if ( specialization() == MONK_MISTWEAVER )
     base.spell_power_per_intellect = 1.0;
-
-  // Mistweaver
-  if ( spec.mana_meditation -> ok() )
-  {
-    base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
-  }
 
   // initialize resolve for Berwmaster
   if ( specialization() == MONK_BREWMASTER )
@@ -5732,6 +5716,8 @@ void monk_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
 
   // Damage Reduction Cooldowns
+  if ( buff.fortifying_brew -> up() )
+    s -> result_amount *= 1.0 - spec.fortifying_brew -> effectN( 1 ).percent();
 
   // Dampen Harm // Currently reduces hits below 15% hp as well
   double dampen_health = max_health() * buff.dampen_harm -> data().effectN( 1 ).percent();
@@ -5745,10 +5731,6 @@ void monk_t::target_mitigation( school_e school,
   // Diffuse Magic
   if ( buff.diffuse_magic -> up() && school != SCHOOL_PHYSICAL )
     s -> result_amount *= 1.0 + buff.diffuse_magic -> default_value; // Stored as -90%
-
-  // Fortifying Brew
-  if ( buff.fortifying_brew -> up() )
-    s -> result_amount *= 1.0 + ( glyph.fortifying_brew -> ok() ? glyph.fortifying_brew -> effectN( 1 ).percent() : 0 );
 
   player_t::target_mitigation(school, dt, s);
 }
@@ -6278,8 +6260,8 @@ double monk_t::stagger_pct()
   {
     stagger += spec.stagger -> effectN( 9 ).percent(); //TODO: Effect says 10 but tooltip say 6%; double check
 
-    if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
-      stagger += spec.brewmaster_training -> effectN( 1 ).percent();
+    if ( specialization() == MONK_BREWMASTER && buff.fortifying_brew -> check() )
+      stagger += spec.fortifying_brew -> effectN( 1 ).percent();
 
     if ( mastery.elusive_brawler -> ok() )
       stagger += cache.mastery_value();
