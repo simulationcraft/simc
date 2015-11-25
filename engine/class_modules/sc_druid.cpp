@@ -5045,9 +5045,6 @@ struct starfall_t : public druid_spell_t
     {
       background = direct_tick = true;
       aoe = -1;
-      ground_aoe = true;
-      range = 40;
-      radius = 0;
       callbacks = false;
 
       base_multiplier *= 1.0 + p() -> talent.stellar_drift -> effectN( 2 ).percent();
@@ -5072,25 +5069,20 @@ struct starfall_t : public druid_spell_t
   {
     parse_options( options_str );
 
+    hasted_ticks = may_crit = false; // Legion TOCHECK
+
+    // Missing from spell data. Legion TOCHECK, tooltip suggests it may be 0.888s for some reason.
+    base_tick_time = timespan_t::from_seconds( 1.0 );
     dot_duration = data().duration();
-    base_tick_time = timespan_t::from_seconds( 1.0 ); // Missing from spell data
-    hasted_ticks = may_crit = false;
-    may_multistrike = 0;
     spell_power_mod.tick = spell_power_mod.direct = 0;
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
+
+    ground_aoe = true;
+    radius = data().effectN( 1 ).radius();
+    radius *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
+
+    tick_action = pulse;
     add_child( pulse );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    druid_spell_t::tick( d );
-
-    // Only ticks while in moonkin form.
-    if ( p() -> buff.moonkin_form -> check() )
-    {
-      pulse -> target = d -> target;
-      pulse -> execute();
-    }
   }
 };
 
