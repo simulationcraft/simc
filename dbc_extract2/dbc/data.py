@@ -227,8 +227,7 @@ class Item_sparse(DBCRecord):
         p2_offset = 0
         if record[end_offset] != 0:
             start_offset, end_offset = _getstring(record, end_offset)
-            self._d += (record_offset + start_offset,) + self._d
-            self.desc = record[start_offset:end_offset]
+            self._d += (record_offset + start_offset,)
         else:
             self._d += (0,)
 
@@ -375,10 +374,10 @@ def proxy_class(file_name, fields, record_size):
         rs = record_size
         b4 = b2 = b1 = 0
         while f > 0:
-            if rs >= 5 or (rs == 4 and f == 1):
+            if rs >= (4 + f) or (rs == 4 and f == 1):
                 b4 += 1
                 rs -= 4
-            elif rs >= 3 or (rs == 2 and f == 1):
+            elif rs >= (2 + f) or (rs == 2 and f == 1):
                 b2 += 1
                 rs -= 2
             else:

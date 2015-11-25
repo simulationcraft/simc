@@ -16,6 +16,7 @@ parser.add_option("-t", "--type", dest = "type",
                               'item_name_desc' ]), 
 parser.add_option("-o", dest = "output", action = "store", type = "str", default = None)
 parser.add_option("-a", dest = "append", action = "store", type = "str", default = None)
+parser.add_option("--raw", dest = "raw", action = "store_true", default = False)
 parser.add_option("-f", dest = "format",
                   help = "DBC Format file",
                   action = "store", type = "str")
@@ -83,6 +84,7 @@ if options.type == 'spell':
 
     g.generate(ids)
     #sys.stderr.write('done, %s\n' % (datetime.datetime.now() - _start))
+    #input()
 elif options.type == 'class_list':
     g = dbc.generator.SpellListGenerator(options)
     if not g.initialize():
@@ -153,6 +155,10 @@ elif options.type == 'item_upgrade':
     ids = g.filter()
     g.generate(ids)
 
+    if options.output:
+        options.append = options.output
+        options.output = None
+
     g = dbc.generator.ItemUpgradeDataGenerator(options)
     if not g.initialize():
         sys.exit(1)
@@ -176,9 +182,12 @@ elif options.type == 'item_armor':
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
-    
+
     g.generate(ids)
-    
+    if options.output:
+        options.append = options.output
+        options.output = None
+
     g = dbc.generator.ArmorSlotDataGenerator(options)
     if not g.initialize():
         sys.exit(1)
@@ -340,8 +349,9 @@ elif options.type == 'scale':
     g.generate()
 
     # Swap to appending
-    options.append = options.output
-    options.output = None
+    if options.output:
+        options.append = options.output
+        options.output = None
 
     g = dbc.generator.SpellScalingDataGenerator(options)
     if not g.initialize():

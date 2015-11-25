@@ -706,21 +706,7 @@ class RulesetItemUpgradeGenerator(DataGenerator):
         DataGenerator.__init__(self, options)
 
     def filter(self):
-        ids = {}
-
-        # There's two entries for most items in RulesetItemUpgrade that point to the same data. For
-        # now, just use the higher "upgrade level" value in the dbc to grab the correct data.
-        for id, entry in self._rulesetitemupgrade_db.items():
-            if entry.id_item not in ids:
-                ids[entry.id_item] = { 'id': entry.id, 'level': entry.upgrade_level }
-            elif entry.upgrade_level > ids[entry.id_item]['level']:
-                ids[entry.id_item]['id'] = entry.id
-
-        ids2 = []
-        for k, v in ids.items():
-            ids2.append(v['id'])
-
-        return sorted(ids2)
+        return sorted(self._rulesetitemupgrade_db.keys()) + [0]
 
     def generate(self, ids = None):
         self._out.write('// Item upgrade rules, wow build level %d\n' % self._options.build)
@@ -1308,7 +1294,7 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
                     html_stats.append((stat_id, stat_val))
 
                 for suffix_id, suffix_data in self._itemrandomsuffix_db.items():
-                    if suffix_data.name_sfx != suffix:
+                    if suffix_data.name != suffix:
                         continue
 
                     # Name matches, we need to check the stats
@@ -3999,7 +3985,7 @@ class RandomSuffixGenerator(DataGenerator):
             for i in range(1,5):
                 item_ench = self._spellitemenchantment_db.get( getattr(data, 'id_property_%d' % i) )
                 if not item_ench:
-                    self.debug( "No item enchantment found for %s (%s)" % (data.name_sfx, data.name_int) )
+                    self.debug( "No item enchantment found for %s (%s)" % (data.name, data.name_int) )
                     continue
 
                 if item_ench.type_1 not in [4, 5]:
@@ -4022,7 +4008,7 @@ class RandomSuffixGenerator(DataGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         ))
-        self._out.write('// Random "cataclysm" item suffixes, wow build %d\n' % self._options.build)
+        self._out.write('// Random new-style item suffixes, wow build %d\n' % self._options.build)
         self._out.write('static struct random_suffix_data_t __%srand_suffix%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -4030,10 +4016,14 @@ class RandomSuffixGenerator(DataGenerator):
         for id in ids + [ 0 ]:
             rs = self._itemrandomsuffix_db[id]
 
-            fields  = rs.field('id', 'suffix')
+            fields  = rs.field('id', 'name')
             fields += [ '{ %s }' % ', '.join(rs.field('id_property_1', 'id_property_2', 'id_property_3', 'id_property_4', 'id_property_5')) ]
             fields += [ '{ %s }' % ', '.join(rs.field('property_pct_1', 'property_pct_2', 'property_pct_3', 'property_pct_4', 'property_pct_5')) ]
-            self._out.write('  { %s },' % (', '.join(fields)))
+            try:
+                self._out.write('  { %s },' % (', '.join(fields)))
+            except:
+                print(fields)
+                sys.exit(1)
             if rs.name_int:
                 self._out.write(' // %s' % rs.name_int)
             self._out.write('\n')
@@ -4044,7 +4034,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
     def __init__(self, options):
         RandomSuffixGenerator.__init__(self, options)
 
-        self._dbc += ['Spell', 'SpellEffect']
+        self._dbc += ['Spell', 'SpellEffect', 'Item-sparse', 'GemProperties']
 
     def initialize(self):
         RandomSuffixGenerator.initialize(self)
@@ -4078,14 +4068,31 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
                 else:
                     item_ench._spells = [ data ]
 
+        # Map items to gem properties
+        for id, data in self._item_sparse_db.items():
+            if data.gem_props == 0:
+                continue
+
+            gprop = self._gemproperties_db[data.gem_props]
+            if gprop.id == 0:
+                continue
+
+            gprop.item = data
+
+        # Map gem properties to enchants
+        for id, data in self._gemproperties_db.items():
+            ench = self._spellitemenchantment_db[data.id_enchant]
+            if ench.id == 0:
+                continue
+
+            ench.gem_property = data
+
         return True
 
     def filter(self):
         return self._spellitemenchantment_db.keys()
 
     def generate(self, ids = None):
-        ids.sort()
-
         self._out.write('#define %sSPELL_ITEM_ENCH%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
@@ -4096,10 +4103,15 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
 
-        for i in ids + [ 0 ]:
+        for i in sorted(ids) + [ 0 ]:
             ench_data = self._spellitemenchantment_db[i]
 
-            fields = ench_data.field('id', 'slot', 'id_gem', 'id_scaling', 'min_scaling_level', 'max_scaling_level', 'req_skill', 'req_skill_value')
+            fields = ench_data.field('id', 'slot')
+            if hasattr(ench_data, 'gem_property') and hasattr(ench_data.gem_property, 'item'):
+                fields += ench_data.gem_property.item.field('id')
+            else:
+                fields += self._item_sparse_db[0].field('id')
+            fields += ench_data.field('scaling_type', 'min_scaling_level', 'max_scaling_level', 'req_skill', 'req_skill_value')
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
@@ -4157,7 +4169,6 @@ class RandomPropertyPointsGenerator(DataGenerator):
 class WeaponDamageDataGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ItemDamageOneHand', 'ItemDamageOneHandCaster',
-                      'ItemDamageRanged',  'ItemDamageThrown',        'ItemDamageWand',
                       'ItemDamageTwoHand', 'ItemDamageTwoHandCaster',  ]
 
         DataGenerator.__init__(self, options)
@@ -4325,7 +4336,7 @@ class ItemBonusDataGenerator(DataGenerator):
 
         for key in sorted(self._itembonus_db.keys()) + [0,]:
             data = self._itembonus_db[key]
-            fields = data.field('id', 'id_node', 'type', 'val1', 'val2', 'index')
+            fields = data.field('id', 'id_node', 'type', 'val_1', 'val_2', 'index')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n\n')
@@ -4401,11 +4412,11 @@ class ScalingStatDataGenerator(DataGenerator):
         self._out.write('static struct curve_point_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         vals = self._curvepoint_db.values()
-        for data in sorted(vals, cmp = curve_point_sort):
-            fields = data.field('id_distribution', 'curve_index', 'val1', 'val2' )
+        for data in sorted(vals, key = lambda k: (k.id_distribution, k.curve_index)):
+            fields = data.field('id_distribution', 'curve_index', 'val_1', 'val_2' )
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
-        self._out.write('  { %s },\n' % (', '.join(self._curvepoint_db[0].field('id_distribution', 'curve_index', 'val1', 'val2' ))))
+        self._out.write('  { %s },\n' % (', '.join(self._curvepoint_db[0].field('id_distribution', 'curve_index', 'val_1', 'val_2' ))))
 
         self._out.write('};\n\n')
 

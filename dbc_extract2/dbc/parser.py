@@ -1,4 +1,4 @@
-import os, io, struct, stat, sys, mmap, collections
+import os, io, struct, stat, sys, mmap, math
 import dbc.data
 
 _BASE_HEADER = struct.Struct('IIII')
@@ -24,11 +24,14 @@ class DBCParser(object):
         else:
             table_name = os.path.basename(self._fname).split('.')[0].replace('-', '_')
 
-        if '%s' % table_name in dir(dbc.data):
+        if not self._options.raw and '%s' % table_name in dir(dbc.data):
             self._class = getattr(dbc.data, '%s' % table_name)
 
     # DBC IDs in an idblock + potential ID cloning
     def __build_idtable(self):
+        if self._id_offset == 0:
+            return
+
         idtable = []
         indexdict = {}
         # Process ID block
@@ -50,6 +53,9 @@ class DBCParser(object):
 
         self._idtable = idtable
 
+    def full_name(self):
+        return os.path.basename(self._fname)
+
     def file_name(self):
         return os.path.basename(self._fname).split('.')[0]
 
@@ -57,25 +63,21 @@ class DBCParser(object):
         return os.path.basename(self._fname).split('.')[0].replace('-', '_').lower()
 
     def find(self, id):
+        dbc_id = record_offset = 0
         if self._id_offset > 0:
             for dbc_id, record_id in self._idtable:
                 if dbc_id != id:
                     continue
 
-                data_offset = self._data_offset + record_id * self._record_size
-                return self._class(self,
-                                   self._data[data_offset:data_offset + self._record_size],
-                                   dbc_id,
-                                   data_offset)
+                record_offset = self._data_offset + record_id * self._record_size
+                break
         else:
             for record_id in range(0, self._records):
-                dbc_id_offset = self._data_offset + record_id * self._record_size
-                dbc_id = _ID.unpack_from(self._data, dbc_id_offset)[0]
-                if dbc_id == id:
-                    return self._class(self,
-                                       self._data[dbc_id_offset:dbc_id_offset + self._record_size],
-                                       0,
-                                       dbc_id_offset)
+                record_offset = self._data_offset + record_id * self._record_size
+                if _ID.unpack_from(self._data, record_offset)[0] == id:
+                    break
+
+        return self._class(self, self._data[record_offset:record_offset + self._record_size], dbc_id, record_offset)
 
     def open_dbc(self):
         if self._data:
@@ -94,12 +96,12 @@ class DBCParser(object):
             sys.exit(1)
 
         self._f = f
-        self._data = mmap.mmap(self._f.fileno(), 0, prot = mmap.PROT_READ)
+        self._data = mmap.mmap(self._f.fileno(), 0, access = mmap.ACCESS_READ)
 
-        magic = self._data[:4]
-        offset = len(magic)
+        self._magic = self._data[:4]
+        offset = len(self._magic)
 
-        if magic not in [b'WDBC', b'WDB2', b'WDB3']:
+        if self._magic not in [b'WDBC', b'WDB2', b'WDB3']:
             self._data.close()
             self._f.close()
             sys.stderr.write('Invalid file format, got %s.' % magic)
@@ -112,7 +114,7 @@ class DBCParser(object):
             raise Exception('Invalid data format size in %s, record_size=%u, dataformat_size=%u' % (
                 self._fname, self._record_size, self._class._parser.size))
 
-        if magic in [b'WDB2', b'WDB3']:
+        if self._magic in [b'WDB2', b'WDB3']:
             self._table_hash, self._build, self._timestamp = _DB_HEADER_1.unpack_from(self._data, offset)
             offset += _DB_HEADER_1.size
 
@@ -131,18 +133,24 @@ class DBCParser(object):
         else:
             self._sb_offset = 0
 
-        if magic == b'WDB3' and self._data_offset + self._records * self._record_size + self._string_block_size < len(self._data):
+        if self._magic == b'WDB3' and self._data_offset + self._records * self._record_size + self._string_block_size < len(self._data):
             self._id_offset = self._data_offset + self._records * self._record_size + self._string_block_size
         else:
             self._id_offset = 0
 
-        if magic == b'WDB3' and self._clone_segment_size > 0:
+        if self._magic == b'WDB3' and self._clone_segment_size > 0:
             self._clone_segment_offset = self._id_offset + self._records * _ID.size
         else:
+            self._clone_segment_size = 0
             self._clone_segment_offset = 0
+
+        self.__build_idtable()
 
         if not self._class:
             self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size)
+
+        if not self._options.raw and hasattr(self._class, '_ff'):
+            self._class._ff = (self.compute_id_output_format(),) + self._class._ff[1:]
 
         # Make sure our data format is correct size
         if self._class and self._class and self._class.data_size() != self._record_size:
@@ -154,11 +162,14 @@ class DBCParser(object):
 
         return self
 
+    def n_records(self):
+        if self._idtable:
+            return len(self._idtable)
+        else:
+            return self._records
+
     def n_cloned_records(self):
         return self._clone_segment_size // 8
-
-    def n_records(self):
-        return self._records + self.n_cloned_records()
 
     def get_string_block(self, offset):
         end_offset = self._data.find(b'\x00', self._sb_offset + offset)
@@ -168,74 +179,33 @@ class DBCParser(object):
 
         return self._data[self._sb_offset + offset:end_offset].decode('utf-8')
 
+    def compute_id_output_format(self):
+        n_digits = int(math.log10(self._last_id) + 1)
+
+        return '%%%uu' % n_digits
+
     def next_record(self):
         if not self._data and not self.open_dbc():
             return None
 
-        if self._id_offset > 0:
-            if len(self._idtable) == 0:
-                self.__build_idtable()
-
-            if self._last_record_id == len(self._idtable):
-                return None
-
-            dbc_id, record_id = self._idtable[self._last_record_id]
-
-            record_offset = self._data_offset + record_id * self._record_size
-            parsed_record = self._class(self,
-                                        self._data[record_offset:record_offset + self._record_size],
-                                        dbc_id,
-                                        record_offset)
-        else:
-            if self._last_record_id == self._records:
-                return None
-
-            record_offset = self._data_offset + self._last_record_id * self._record_size
-            parsed_record = self._class(self,
-                                        self._data[record_offset:record_offset + self._record_size],
-                                        0,
-                                        record_offset)
-
-        self._last_record_id += 1
-
-        return parsed_record
-
-    def raw_record(self):
-        if not self._data and not self.open_dbc():
+        if self._last_record_id == self.n_records():
             return None
 
+        dbc_id = record_offset = 0
         if self._id_offset > 0:
-            if len(self._idtable) == 0:
-                self.__build_idtable()
-
-            if self._last_record_id == len(self._idtable):
-                return None
-
             dbc_id, record_id = self._idtable[self._last_record_id]
-
             record_offset = self._data_offset + record_id * self._record_size
-            parsed_record = (dbc_id,
-                             self._data[record_offset:record_offset + self._record_size],
-                             record_offset,
-                             True)
         else:
-            if self._last_record_id == self._records:
-                return None
-
             record_offset = self._data_offset + self._last_record_id * self._record_size
-            parsed_record = (_ID.unpack_from(self._data, record_offset)[0],
-                             self._data[record_offset:record_offset + self._record_size],
-                             record_offset,
-                             False)
 
+        parsed_record = self._class(self, self._data[record_offset:record_offset + self._record_size], dbc_id, record_offset)
         self._last_record_id += 1
 
         return parsed_record
 
-
     def __str__(self):
-        return '%s(byte_size=%u, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u)' % (
-                self.file_name(), len(self._data), self._records, self.n_cloned_records(), self._fields, self._record_size,
+        return '%s::%s(byte_size=%u, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u)' % (
+                self.full_name(), self._magic.decode('ascii'), len(self._data), self._records, self.n_cloned_records(), self._fields, self._record_size,
                     self._string_block_size, self._clone_segment_size, self._first_id,
                     self._last_id, self._data_offset, self._sb_offset, self._id_offset,
                     self._clone_segment_offset
@@ -268,23 +238,21 @@ class ItemSparseParser(DBCParser):
 
         return self._data[offset:end_offset].decode('utf-8')
 
-    def raw_record(self):
+    def find(self, dbcid):
         if not self._data and not self.open_dbc():
             return None
 
-        if self._last_record_id == (self._last_id - self._first_id + 1):
-            return None
-
-        record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)
-        self._last_record_id += 1
-        while record_offset == 0:
+        while self._last_record_id < (self._last_id - self._first_id + 1):
             record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)
             self._last_record_id += 1
+            while record_offset == 0:
+                record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)
+                self._last_record_id += 1
 
-        return (self._first_id + self._last_record_id - 1,
-                self._data[record_offset:record_offset + record_bytes],
-                True,
-                record_offset)
+            if self._first_id + self._last_record_id - 1 != dbcid:
+                continue
+
+            return self._class(self, self._data[record_offset:record_offset + record_bytes], self._first_id + self._last_record_id - 1, record_offset)
 
     def next_record(self):
         if not self._data and not self.open_dbc():
@@ -299,10 +267,7 @@ class ItemSparseParser(DBCParser):
             record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)
             self._last_record_id += 1
 
-        return self._class(self,
-                           self._data[record_offset:record_offset + record_bytes],
-                           self._first_id + self._last_record_id - 1,
-                           record_offset)
+        return self._class(self, self._data[record_offset:record_offset + record_bytes], self._first_id + self._last_record_id - 1, record_offset)
 
 def get_parser(opts, for_file):
     if 'Item-sparse' in for_file:
