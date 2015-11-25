@@ -176,7 +176,7 @@ class DBCParser(object):
             if len(self._idtable) == 0:
                 self.__build_idtable()
 
-            if self._last_record_id == len(self._idtable) - 1:
+            if self._last_record_id == len(self._idtable):
                 return None
 
             dbc_id, record_id = self._idtable[self._last_record_id]
@@ -208,7 +208,7 @@ class DBCParser(object):
             if len(self._idtable) == 0:
                 self.__build_idtable()
 
-            if self._last_record_id == len(self._idtable) - 1:
+            if self._last_record_id == len(self._idtable):
                 return None
 
             dbc_id, record_id = self._idtable[self._last_record_id]

@@ -1,4 +1,4 @@
-import struct, sys
+import struct, sys, math
 
 import dbc.fmt
 
@@ -89,7 +89,11 @@ class DBCRecord(object):
     # Customize data access, this gets only called on fields that do not exist in the object. If the
     # format of the field is 'S', the value is an offset to the stringblock giving the string
     def __getattr__(self, name):
-        field_idx = self._cd[name]
+        try:
+            field_idx = self._cd[name]
+        except:
+            raise AttributeError
+
         if self._fo[field_idx] == 'S' and self._d[field_idx] > 0:
             return self._dbcp.get_string_block(self._d[field_idx])
         else:
@@ -330,50 +334,73 @@ class ItemSet(DBCRecord):
 
         self.bonus = []
 
+def proxy_str(self):
+    s = ''
+    data_idx = 1
+    format_idx = 0
+    if self._dbcp._id_offset > 0:
+        fmt = '%%-%us' % int(math.log10(self._dbcp._last_id) + 1)
+        s += 'id=%s ' % (fmt % self._d[0])
+    else:
+        data_idx = 1
+        format_idx = 1
+        fmt = '%%-%us' % int(math.log10(self._dbcp._last_id) + 1)
+        s += 'id=%s ' % (fmt % self._d[0])
+
+    for idx in range(0, len(self._parser.format) - format_idx):
+        fmt = self._parser.format[format_idx + idx]
+        if fmt == ord('I'):
+            s += '%08x' % (self._d[data_idx + idx])
+        elif fmt == ord('H'):
+            s += '%04x' % (self._d[data_idx + idx])
+        elif fmt == ord('B'):
+            s += '%02x' % (self._d[data_idx + idx])
+        s += ' '
+
+    if getattr(self, '_record', None):
+        s += 'bytes=['
+        for b in range(0, len(self._record)):
+            s += '%.02x' % self._record[b]
+            if (b + 1) % 4 == 0 and b < len(self._record) - 1:
+                s += ' '
+
+        s += ']'
+
+    return s
+
 def proxy_class(file_name, fields, record_size):
         class_name = '%s' % file_name.split('.')[0].replace('-', '_')
 
-        b4 = record_size // 4
-        b2 = 0
-        b1 = 0
-        print(fields, record_size)
+        f = fields
+        rs = record_size
+        b4 = b2 = b1 = 0
+        while f > 0:
+            if rs >= 5 or (rs == 4 and f == 1):
+                b4 += 1
+                rs -= 4
+            elif rs >= 3 or (rs == 2 and f == 1):
+                b2 += 1
+                rs -= 2
+            else:
+                b1 += 1
+                rs -= 1
 
-        fields -= b4
-        if fields > 0:
-            remainder = (record_size - b4 * 4) % 2
-            b2 = remainder // 2
-            fields - b2
+            f -= 1
 
-        if fields > 0:
-            b1 = (record_size - b4 * 4 - b2 * 2)
-            fields - b1
+        #print(fields, record_size, b4, b2, b1, record_size - b4 * 4 - b2 * 2 - b1)
 
-        assert fields == 0, fields
+        # Override the __str__ method of the proxy class so that it prints out
+        # something better for DBC data exploration
+        objdict = DBCRecord.__dict__.copy()
+        objdict['__str__'] = proxy_str
 
-        setattr(dbc.data, class_name, type('%s' % class_name.encode('ascii'), (DBCRecord,), dict(DBCRecord.__dict__)))
+        setattr(dbc.data, class_name, type('%s' % class_name.encode('ascii'), (DBCRecord,), dict(objdict)))
 
         cls = getattr(dbc.data, class_name)
 
         # Set class-specific parser
-        setattr(cls, '_parser',
-            struct.Struct('i' * b4 + 'h' * b2 + 'b' * b1))
-
-        fields = []
-        formats = []
-        types = []
-        for i in range(0, len(cls._parser.format)):
-            if cls._parser.format[i] == ord('i'):
-                fields.append('i%u' % i)
-            elif cls._parser.format[i] == ord('h'):
-                fields.append('h%u' % i)
-            elif cls._parser.format[i] == ord('b'):
-                fields.append('b%u' % i)
-            formats.append('%d')
-            types.append(chr(cls._parser.format[i]))
-
-        setattr(cls, '_fi', tuple(fields))
-        setattr(cls, '_fo', tuple(types))
-        setattr(cls, '_ff', tuple(formats))
+        setattr(cls, '_parser', struct.Struct('I' * b4 + 'H' * b2 + 'B' * b1))
+        setattr(cls, '_cd', {})
 
         return cls
 
