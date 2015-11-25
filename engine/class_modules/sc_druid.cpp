@@ -14,6 +14,7 @@ namespace { // UNNAMED NAMESPACE
 
  Astral Influence
  Affinity active components
+ Form restrictions rework
 
  Feral ---------
  Glyph & Perk Cleanup
@@ -27,7 +28,10 @@ namespace { // UNNAMED NAMESPACE
  APL
 
  Guardian ------
- All the things
+ Bristling Fur
+ APL
+ Glyph & Perk Cleanup
+ Statistics?
 
  Resto ---------
  All the things
@@ -4557,9 +4561,11 @@ struct lunar_beam_t : public druid_spell_t
   const spell_data_t* tick_spell;
   lunar_beam_heal_t* heal;
   lunar_beam_damage_t* damage;
+  int last_tick;
 
   lunar_beam_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "lunar_beam", player, player -> talent.lunar_beam )
+    druid_spell_t( "lunar_beam", player, player -> talent.lunar_beam ),
+    last_tick( 0 )
   {
     parse_options( options_str );
 
@@ -4578,12 +4584,25 @@ struct lunar_beam_t : public druid_spell_t
     add_child( damage );
   }
 
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    last_tick = 0;
+  }
+
   virtual void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
 
-    if ( ! sim -> distance_targeting_enabled || p() -> get_ground_aoe_distance( *d -> state ) <= radius )
-      heal -> execute();
+    // Only trigger heal once per tick
+    if ( d -> current_tick != last_tick )
+    {
+      last_tick = d -> current_tick;
+
+      if ( ! sim -> distance_targeting_enabled || p() -> get_ground_aoe_distance( *d -> state ) <= radius )
+        heal -> execute();
+    }
   }
 };
 
