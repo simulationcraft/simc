@@ -3971,6 +3971,8 @@ struct barkskin_t : public druid_spell_t
   {
     harmful = false;
     use_off_gcd = true;
+
+    cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -5113,6 +5115,7 @@ struct survival_instincts_t : public druid_spell_t
     cooldown -> duration += player -> spec.guardian_passive -> effectN( 5 ).time_value();
 
     cooldown -> charges = 2;
+    cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
   }
 
   void execute() override
