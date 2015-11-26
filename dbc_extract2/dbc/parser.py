@@ -147,7 +147,7 @@ class DBCParser(object):
         self.__build_idtable()
 
         if not self._class:
-            self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size)
+            self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size, self._id_offset > 0, self._magic == b'WDB3')
 
         if not self._options.raw and hasattr(self._class, '_ff'):
             self._class._ff = (self.compute_id_output_format(),) + self._class._ff[1:]

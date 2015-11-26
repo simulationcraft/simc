@@ -49,7 +49,7 @@ class DBCRecord(object):
     def __init__(self, parser, data, dbc_id, record_offset):
         self._dbcp = parser
         # Store data if we are in debug mode
-        if self._dbcp and self._dbcp._options.debug == True:
+        if self._dbcp and (self._dbcp._options.debug == True or self._dbcp._options.raw):
             self._dbc_id = dbc_id
             self._record = data
             self._record_offset = record_offset
@@ -337,37 +337,118 @@ def proxy_str(self):
     s = ''
     data_idx = 1
     format_idx = 0
-    if self._dbcp._id_offset > 0:
-        fmt = '%%-%us' % int(math.log10(self._dbcp._last_id) + 1)
-        s += 'id=%s ' % (fmt % self._d[0])
-    else:
+    idstr = ''
+    n_digits = int(math.log10(self._dbcp._last_id) + 1)
+    if self._dbcp._id_offset == 0:
         data_idx = 1
         format_idx = 1
-        fmt = '%%-%us' % int(math.log10(self._dbcp._last_id) + 1)
-        s += 'id=%s ' % (fmt % self._d[0])
+    idstr = 'id=%-*u ' % (n_digits, self._d[0])
+    # Raw mode needs more room, so pad to 9 chars
+    if self._dbcp._options.raw and len(idstr) < 9:
+        idstr += ' ' * (9 - len(idstr))
 
-    for idx in range(0, len(self._parser.format) - format_idx):
-        fmt = self._parser.format[format_idx + idx]
-        if fmt == ord('I'):
-            s += '%08x' % (self._d[data_idx + idx])
-        elif fmt == ord('H'):
-            s += '%04x' % (self._d[data_idx + idx])
-        elif fmt == ord('B'):
-            s += '%02x' % (self._d[data_idx + idx])
-        s += ' '
+    s += idstr
 
-    if getattr(self, '_record', None):
-        s += 'bytes=['
-        for b in range(0, len(self._record)):
-            s += '%.02x' % self._record[b]
-            if (b + 1) % 4 == 0 and b < len(self._record) - 1:
-                s += ' '
+    if not self._dbcp._options.raw:
+        for idx in range(0, len(self._parser.format) - format_idx):
+            fmt = self._parser.format[format_idx + idx]
+            if fmt == ord('I'):
+                s += '%08x' % (self._d[data_idx + idx])
+            elif fmt == ord('H'):
+                s += '%04x' % (self._d[data_idx + idx])
+            elif fmt == ord('B'):
+                s += '%02x' % (self._d[data_idx + idx])
+            s += ' '
+    else:
+        for field_num in range(0, self._dbcp._fields):
+            s += '%-9u' % (field_num + 1)
+        s += '\n'
+        for pm in self._dp:
+            prefix = '%2u %2u %2u' % pm[:-1]
+            prefixfmt = '%%-%us' % len(idstr)
+            s += prefixfmt % prefix
+            boffset = 0
+            for b4fields in range(0, pm[0]):
+                for b in range(0, 4):
+                    s += '%.02x' % self._record[boffset]
+                    if (boffset + 1) % 4 == 0 and boffset < len(self._record) - 1:
+                        s += ' '
+                    boffset += 1
 
-        s += ']'
+            for b2fields in range(0, pm[1]):
+                for b in range(0, 2):
+                    s += '%.02x' % self._record[boffset]
+                    if (boffset + 1) % 2 == 0 and boffset < len(self._record) - 1:
+                        s += ' ' * 5
+                    boffset += 1
+
+            for b1fields in range(0, pm[2]):
+                s += '%.02x' % self._record[boffset]
+                if boffset < len(self._record) - 1:
+                    s += ' ' * 7
+                boffset += 1
+
+            s += '\n'
 
     return s
 
-def proxy_class(file_name, fields, record_size):
+# Figure out all permutations of 4 byte, 2 byte, and 1 byte fields, allowing
+# for potentially up to 3 bytes of padding at the end of the structure. Fields
+# are always presumed to be in size order.
+def permutations(fields, record_size, separate_id, allow_padding):
+    choices = []
+    fields_left = fields
+    bytes_left = record_size
+    # If DBC id is included in the record data, automatically append a 4 byte field at the start
+    if not separate_id:
+        fields_left -= 1
+        bytes_left -= 4
+
+    # Allow up to 3 bytes of padding
+    for padding in range(0, allow_padding and 4 or 1):
+        max_4bytes = (bytes_left - padding) // 4
+        max_2bytes = (bytes_left - padding) // 2
+        max_1bytes = bytes_left - padding
+        #print('padding', padding, 'f', fields, 'rs', record_size, 'm4b', max_4bytes, 'm2b', max_2bytes, 'm1b', max_1bytes, 'separate_id', separate_id)
+
+        for b4 in range(max_4bytes, -1, -1):
+            rb = [0, 0, 0, 0]
+            rbl = (bytes_left - padding)
+            fl = fields_left
+            if b4 > 0 and b4 * 4 <= rbl and fl >= b4:
+                rb[0] = b4
+                rbl -= b4 * 4
+                fl -= b4
+
+            for b2 in range(rbl // 2, -1, -1):
+                remaining_1bytes = rbl - b2 * 2 - (fl - b2)
+                #print('b4', b4, 'b2', b2, 'fl', fl, 'rbl', rbl, 'remaining_bytes', remaining_1bytes, 'taken_bytes', b2 * 2)
+                if remaining_1bytes < 0 or remaining_1bytes > 3:
+                    continue
+
+                if b2 > 0 and b2 * 2 <= rbl and fl >= b2:
+                    rb[1] = b2
+                    rbl -= b2 * 2
+                    fl -= b2
+
+                for b1 in range(rbl, 0, -1):
+                    if b1 <= rbl and fl >= b1:
+                        rb[2] = b1
+                        rbl -= b1
+                        fl -= b1
+
+            if rbl == 0 and fl == 0:
+                if padding > 0:
+                    rb[3] = padding
+                if not separate_id:
+                    rb[0] += 1
+
+                choices.append(tuple(rb))
+
+    choices.sort(key = lambda v: (-v[0], -v[1], -v[2], v[3]))
+    return tuple(choices)
+
+def proxy_class(file_name, fields, record_size, separate_id, allow_padding):
         class_name = '%s' % file_name.split('.')[0].replace('-', '_')
 
         f = fields
@@ -400,6 +481,7 @@ def proxy_class(file_name, fields, record_size):
         # Set class-specific parser
         setattr(cls, '_parser', struct.Struct('I' * b4 + 'H' * b2 + 'B' * b1))
         setattr(cls, '_cd', {})
+        setattr(cls, '_dp', permutations(fields, record_size, separate_id, allow_padding))
 
         return cls
 
