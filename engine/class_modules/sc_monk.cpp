@@ -222,7 +222,6 @@ public:
 
   struct buffs_t
   {
-    absorb_buff_t* guard;
     buff_t* bladed_armor;
     buff_t* channeling_soothing_mist;
     buff_t* chi_sphere;
@@ -239,7 +238,6 @@ public:
     buff_t* power_strikes;
     buff_t* rushing_jade_wind;
     buff_t* serenity;
-    buff_t* shuffle;
     buff_t* storm_earth_and_fire;
     buff_t* gift_of_the_ox;
     buff_t* tigereye_brew;
@@ -390,7 +388,6 @@ public:
     const spell_data_t* dizzying_haze;
     const spell_data_t* ferment;
     const spell_data_t* gift_of_the_ox;
-    const spell_data_t* guard;
     const spell_data_t* keg_smash;
     const spell_data_t* keg_smash_debuff;
     const spell_data_t* purifying_brew;
@@ -448,7 +445,6 @@ public:
     const spell_data_t* enhanced_transcendence;
     // Brewmaster
     const spell_data_t* improved_breath_of_fire;
-    const spell_data_t* improved_guard;
     // Mistweaver
     const spell_data_t* improved_life_cocoon;
     const spell_data_t* improved_renewing_mist;
@@ -472,7 +468,6 @@ public:
     const spell_data_t* targeted_expulsion;
     const spell_data_t* touch_of_death;
     // Brewmaster
-    const spell_data_t* guard;
     // Mistweaver
     const spell_data_t* mana_tea;
     // Windwalker
@@ -484,7 +479,6 @@ public:
   struct cooldowns_t
   {
     cooldown_t* desperate_measure;
-    cooldown_t* guard;
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
     cooldown_t* touch_of_death;
@@ -500,7 +494,6 @@ public:
     const spell_data_t* healing_elixirs;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* surging_mist;
-    const spell_data_t* shuffle;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_2pc_tank;
@@ -552,7 +545,6 @@ public:
     furious_sun( nullptr )
   {
     // actives
-    cooldown.guard            = get_cooldown( "guard" );
     cooldown.healing_elixirs  = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere   = get_cooldown( "healing_sphere" );
     cooldown.touch_of_death   = get_cooldown( "touch_of_death" );
@@ -1893,9 +1885,6 @@ struct monk_heal_t: public monk_action_t < heal_t >
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = base_t::composite_target_multiplier( target );
-
-    if ( p() -> buff.guard -> up() && player == target )
-      m *= 1.0 + p() -> spec.guard -> effectN( 2 ).percent();
 
     return m;
   }
@@ -4311,34 +4300,6 @@ struct monk_absorb_t: public monk_action_t < absorb_t >
   {
   }
 };
-
-// ==========================================================================
-// Guard
-// ==========================================================================
-
-struct guard_t: public monk_absorb_t
-{
-  guard_t( monk_t& p, const std::string& options_str ):
-    monk_absorb_t( "guard", p, p.spec.guard )
-  {
-    parse_options( options_str );
-    harmful = may_crit = false;
-    trigger_gcd = timespan_t::zero();
-    target = &p;
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
-    attack_power_mod.direct = 18; // hardcoded into tooltip
-    base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
-    if ( p.glyph.guard -> ok() )
-      base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    p() -> buff.guard -> trigger( 1, s -> result_amount );
-    stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
-  }
-};
 } // end namespace absorbs
 
 using namespace attacks;
@@ -4469,7 +4430,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
   if ( name == "dizzying_haze" ) return new             dizzying_haze_t( *this, options_str );
-  if ( name == "guard" ) return new                     guard_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
@@ -4604,7 +4564,6 @@ void monk_t::init_spells()
   talent.soothing_elegance           = find_talent_spell( "Soothing Elegance" );
 
   // PERKS
-  perk.improved_guard                = find_perk_spell( "Improved Guard" );
   perk.improved_life_cocoon          = find_perk_spell( "Improved Life Cocoon" );
   perk.improved_renewing_mist        = find_perk_spell( "Improved Renewing Mist" );
   perk.empowered_chi                 = find_perk_spell( "Empowered Chi" );
@@ -4647,7 +4606,6 @@ void monk_t::init_spells()
   spec.desperate_measures            = find_specialization_spell( "Desperate Measures" );
   spec.dizzying_haze                 = find_specialization_spell( "Dizzying Haze" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
-  spec.guard                         = find_specialization_spell( "Guard" );
   spec.summon_black_ox_statue        = find_specialization_spell( "Summon Black Ox Statue" );
   spec.purifying_brew                = find_specialization_spell( "Purifying Brew" );
   spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
@@ -4695,7 +4653,6 @@ void monk_t::init_spells()
   passives.surging_mist               = find_class_spell( "Surging Mist" );
   passives.healing_elixirs            = find_spell( 122281 );
   passives.storm_earth_and_fire       = find_spell( 138228 );
-  passives.shuffle                    = find_spell( 115307 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   passives.forceful_winds             = find_spell( 166603 );
   passives.hotfix_passive             = find_spell( 137022 );
@@ -4704,7 +4661,6 @@ void monk_t::init_spells()
   glyph.blackout_kick                = find_glyph_spell( "Glyph of Blackout Kick" );
   glyph.fortifying_brew              = find_glyph_spell( "Glyph of Fortifying Brew" );
   glyph.fortuitous_spheres           = find_glyph_spell( "Glyph of Fortuitous Spheres" );
-  glyph.guard                        = find_glyph_spell( "Glyph of Guard" );
   glyph.mana_tea                     = find_glyph_spell( "Glyph of Mana Tea" );
   glyph.targeted_expulsion           = find_glyph_spell( "Glyph of Targeted Expulsion" );
   glyph.touch_of_death               = find_glyph_spell( "Glyph of Touch of Death" );
@@ -4827,15 +4783,6 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.keg_smash = buff_creator_t( this, "keg_smash", find_spell( 196720 ) );
-
-  buff.guard = absorb_buff_creator_t( this, "guard", spec.guard )
-    .source( get_stats( "guard" ) )
-    .cd( timespan_t::zero() );
-
-  buff.shuffle = buff_creator_t( this, "shuffle", passives.shuffle )
-    .duration( passives.shuffle -> duration() )
-    .refresh_behavior( BUFF_REFRESH_EXTEND )
-    .add_invalidate( CACHE_PARRY );
 
   // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
   double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
@@ -5172,9 +5119,6 @@ double monk_t::composite_parry() const
 {
   double p = base_t::composite_parry();
 
-  if ( buff.shuffle -> check() )
-    p += buff.shuffle -> data().effectN( 1 ).percent();
-
   return p;
 }
 
@@ -5419,15 +5363,9 @@ void monk_t::assess_damage(school_e school,
   dmg_e    dtype,
   action_state_t* s)
 {
-  buff.shuffle -> up();
   buff.fortifying_brew -> up();
   if ( specialization() == MONK_BREWMASTER )
   {
-    if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
-      buff.guard -> up();
-    else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
-      buff.guard -> up();
-
     // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, adjust Elusive Brew proc chance based on spell data of the special effect.
 /*    if ( eluding_movements )
     {
@@ -5690,7 +5628,7 @@ void monk_t::apl_combat_brewmaster()
 
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))" );
-  def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2&buff.shuffle.down)" );
+  def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2)" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
   def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
@@ -5703,7 +5641,7 @@ void monk_t::apl_combat_brewmaster()
       def -> add_action( "use_item,name=" + items[i].name_str + ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
   }
 
-  def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.shuffle.remains>=3&buff.serenity.down" );
+  def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.serenity.down" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&cooldown.keg_smash.remains>6" );
   
   if ( sim -> allow_potions )
@@ -5719,14 +5657,11 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
   st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  st -> add_action( this, "Purifying Brew", "if=stagger.moderate&buff.shuffle.remains>=6" );
-  st -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
-  st -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
-  st -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi.max-chi>=2&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
+  st -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
+  st -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi.max-chi>=2&!glyph.touch_of_death.enabled" );
   st -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
-  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Blackout Kick", "if=cooldown.keg_smash.remains>=gcd" );
   st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
@@ -5737,14 +5672,11 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Tiger Palm" );
 
   aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  aoe -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  aoe -> add_action( this, "Purifying Brew", "if=stagger.moderate&buff.shuffle.remains>=6" );
-  aoe -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
-  aoe -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
-  aoe -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
+  aoe -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
+  aoe -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&!glyph.touch_of_death.enabled" );
   aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
-  aoe -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
+  aoe -> add_action( this, "Blackout Kick", "if=cooldown.keg_smash.remains>=gcd" );
   aoe -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
   aoe -> add_action( "rushing_jade_wind,if=chi.max-chi>=1&buff.serenity.down" );
   aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
