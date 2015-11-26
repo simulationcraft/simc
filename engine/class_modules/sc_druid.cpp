@@ -5149,6 +5149,7 @@ struct starsurge_t : public druid_spell_t
 };
 
 // Stellar Flare ==========================================================
+// TOCHECK: Does this snapshot mastery? Are empowerments additive or multiplicative?
 
 struct stellar_flare_t : public druid_spell_t
 {
@@ -5158,19 +5159,19 @@ struct stellar_flare_t : public druid_spell_t
     parse_options( options_str );
   }
 
-  double action_multiplier() const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double am = druid_spell_t::action_multiplier();
+    double pm = druid_spell_t::composite_persistent_multiplier( s );
 
     if ( p() -> buff.lunar_empowerment -> check() )
-      am *= 1.0 + p() -> buff.lunar_empowerment -> current_value +
+      pm *= 1.0 + p() -> buff.lunar_empowerment -> current_value +
                ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     if ( p() -> buff.solar_empowerment -> check() )
-      am *= 1.0 + p() -> buff.solar_empowerment -> current_value +
+      pm *= 1.0 + p() -> buff.solar_empowerment -> current_value +
                ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
-    return am;
+    return pm;
   }
 
   void execute() override
