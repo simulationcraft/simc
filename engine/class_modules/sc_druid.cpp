@@ -6910,11 +6910,12 @@ void druid_t::apl_balance()
   single_target -> add_action( this, "Starsurge", "if=charges=3" );
   single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>40" );
   single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40" );
-  single_target -> add_action( this, "Sunfire", "if=(remains<solar_max&eclipse_dir.solar)|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time&!talent.balance_of_power.enabled)" );
+  single_target -> add_action( this, "Sunfire", "if=!talent.balance_of_power.enabled&((remains<solar_max&eclipse_dir.solar)|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time))" );
+  single_target -> add_action( this, "Sunfire", "if=talent.balance_of_power.enabled&(remains<lunar_max+10|remains<action.wrath.cast_time)" );
   single_target -> add_talent( this, "Stellar Flare", "if=remains<7" );
-  single_target -> add_action( this, "Moonfire", "if=!talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20)&!talent.balance_of_power.enabled" );
-  single_target -> add_action( this, "Moonfire", "if=talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+10)&!talent.balance_of_power.enabled" );
-  single_target -> add_action( this, "Moonfire", "if=talent.balance_of_power.enabled&remains<eclipse_change+14" );
+  single_target -> add_action( this, "Moonfire", "if=!talent.euphoria.enabled&!talent.balance_of_power.enabled&((remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20))" );
+  single_target -> add_action( this, "Moonfire", "if=talent.euphoria.enabled&((remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+10))" );
+  single_target -> add_action( this, "Moonfire", "if=talent.balance_of_power.enabled&(remains<solar_max+10|remains<action.starfire.cast_time)" );
   single_target -> add_action( this, "Wrath", "if=(eclipse_energy<0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   single_target -> add_action( this, "Starfire" );
 }
