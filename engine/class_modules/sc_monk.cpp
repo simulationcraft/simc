@@ -214,8 +214,6 @@ public:
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
-  double track_chi_consumption;
-  
   bool track_jade;
 
   combo_strikes_e previous_combo_strike;
@@ -251,6 +249,7 @@ public:
     buff_t* chi_jis_guidance;
 
     // Windwalker
+    buff_t* dizzying_kicks;
     buff_t* vital_mists;
 
     // Legion changes
@@ -487,6 +486,8 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* brewmaster_attack;
+    cooldown_t* brewmaster_active_mitigation;
     cooldown_t* desperate_measure;
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
@@ -499,6 +500,7 @@ public:
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* aura_windwalker_monk;
+    const spell_data_t* dizzying_kicks;
     const spell_data_t* eye_of_the_tiger;
     const spell_data_t* hit_combo;
     const spell_data_t* enveloping_mist;
@@ -538,7 +540,6 @@ public:
   monk_t( sim_t* sim, const std::string& name, race_e r ):
     player_t( sim, MONK, name, r ),
     active_actions( active_actions_t() ),
-    track_chi_consumption( 0.0 ),
     buff( buffs_t() ),
     gain( gains_t() ),
     proc( procs_t() ),
@@ -558,10 +559,12 @@ public:
     furious_sun( nullptr )
   {
     // actives
-    cooldown.healing_elixirs  = get_cooldown( "healing_elixirs" );
-    cooldown.healing_sphere   = get_cooldown( "healing_sphere" );
-    cooldown.rising_sun_kick  = get_cooldown( "rising_sun_kick" );
-    cooldown.touch_of_death   = get_cooldown( "touch_of_death" );
+    cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
+    cooldown.brewmaster_active_mitigation = get_cooldown( "active_mitigation" );
+    cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
+    cooldown.healing_sphere               = get_cooldown( "healing_sphere" );
+    cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
+    cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
 
     regen_type = REGEN_DYNAMIC;
     if ( specialization() != MONK_MISTWEAVER )
@@ -1780,29 +1783,6 @@ public:
 
     if ( !ab::execute_state ) // Fixes rare crashes at combat_end.
       return;
-    // Handle Mana Tea
-    if ( ab::result_is_hit( ab::execute_state -> result ) )
-    {
-      // Track Chi Consumption
-      if ( current_resource() == RESOURCE_CHI )
-      {
-        p() -> track_chi_consumption += ab::resource_consumed;
-        if ( p() -> spec.brewing_mana_tea -> ok() && p() -> specialization() == MONK_MISTWEAVER )
-        {
-          p() -> buff.vital_mists -> trigger( static_cast<int>( ab::resource_consumed ) );
-        }
-      }
-      if ( p() -> spec.brewing_mana_tea -> ok() )
-      {
-        int chi_to_consume = 4;
-
-        if ( p() -> track_chi_consumption >= chi_to_consume )
-        {
-          p() -> track_chi_consumption -= chi_to_consume;
-          trigger_brew( 1 );
-        }
-      }
-    }
 
     // Chi Savings on Dodge & Parry & Miss
     if ( current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 )
@@ -1880,9 +1860,6 @@ struct monk_spell_t: public monk_action_t < spell_t >
   {
     double m = base_t::composite_target_multiplier( t );
 
-    // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
-    m *= 1.0 + p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
-
     return m;
   }
 };
@@ -1943,9 +1920,6 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   virtual double composite_target_multiplier( player_t* t ) const override
   {
     double m = base_t::composite_target_multiplier( t );
-
-    // Your Rising Sun Kick increases the damage the target receives from your abilities by an additional 6%.
-    m *= 1.0 + p() -> sets.set( MONK_MISTWEAVER, T18, B2 ) -> effectN( 2 ).percent();
 
     return m;
   }
@@ -2167,8 +2141,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
+    cooldown -> duration = data().cooldown();
+    if ( p -> specialization() == MONK_MISTWEAVER )
+      cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
     
 //    if( p -> talent.pool_of_mists -> ok() )
 //      cooldown -> charges += p -> talent.pool_of_mists -> effectN( 2 ).base_value();
@@ -2224,10 +2199,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    double savings = base_costs[RESOURCE_CHI] - cost();
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += savings;
-
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
     if ( p() -> furious_sun )
@@ -2244,58 +2215,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 // Blackout Kick
 // ==========================================================================
 
-struct dot_blackout_kick_t: public residual_action::residual_periodic_action_t < monk_melee_attack_t >
-{
-  dot_blackout_kick_t( monk_t* p ):
-    base_t( "blackout_kick_dot", p, p -> find_spell( 128531 ) )
-  {
-    may_miss = may_crit = false;
-  }
-};
-
-struct heal_blackout_kick_t: public monk_heal_t
-{
-  heal_blackout_kick_t( monk_t& p ):
-    monk_heal_t( "blackout_kick_heal", p, p.find_spell( 128591 ) )
-  {
-    may_miss = may_crit = false;
-    target = player;
-  }
-};
-
 struct blackout_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
-
-  void trigger_blackout_kick_dot( blackout_kick_t* s, player_t* t, double dmg )
-  {
-    monk_t* p = s -> p();
-
-    residual_action::trigger(
-      p -> active_actions.blackout_kick_dot,
-      t,
-      dmg );
-  }
-
-  void trigger_blackout_kick_heal( blackout_kick_t* s, player_t* t, double heal )
-  {
-    monk_t* p = s -> p();
-
-    residual_action::trigger(
-      p -> active_actions.blackout_kick_heal,
-      t,
-      heal );
-  }
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( options_str );
-
-    if ( p -> specialization() == MONK_WINDWALKER )
-    {
-      add_child( p -> active_actions.blackout_kick_dot );
-    }
 
     if ( p -> furious_sun )
     {
@@ -2307,11 +2234,13 @@ struct blackout_kick_t: public monk_melee_attack_t
     base_multiplier = 7.5; // hardcoded into tooltip
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
-
-    if ( p -> spec.teachings_of_the_monastery -> ok() )
+    if ( p -> specialization() == MONK_BREWMASTER )
     {
-      aoe = p -> spec.teachings_of_the_monastery -> effectN( 3 ).base_value(); // Tooltip says effect 4, but I think 4 targets is more reasonable than 50.
+      cooldown             = p -> cooldown.brewmaster_attack;
+      cooldown -> duration = p -> find_spell( id ) -> cooldown();
     }
+    else
+      cooldown -> duration = timespan_t::zero();
 
     sef_ability = SEF_BLACKOUT_KICK;
   }
@@ -2325,9 +2254,12 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     combo_strikes_trigger( CS_BLACKOUT_KICK );
 
+    if ( p() -> talent.dizzying_kicks -> ok() )
+      p() -> buff.dizzying_kicks -> trigger();
+
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
-      if (rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
+      if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
         p() -> cooldown.rising_sun_kick -> reset( true );
     }
   }
@@ -2350,19 +2282,6 @@ struct blackout_kick_t: public monk_melee_attack_t
     return am;
   }
 
-  virtual void assess_damage( dmg_e type, action_state_t* s ) override
-  {
-    monk_melee_attack_t::assess_damage( type, s );
-
-    if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( p() -> current.position == POSITION_BACK || p() -> glyph.blackout_kick )
-        trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent() );
-      //else
-      //  trigger_blackout_kick_heal( this, s -> target, s -> result_amount * data().effectN( 2 ).percent() );
-    }
-  }
-
   virtual double cost() const override
   {
     if ( p() -> buff.combo_breaker_bok -> check() )
@@ -2376,8 +2295,6 @@ struct blackout_kick_t: public monk_melee_attack_t
     monk_melee_attack_t::consume_resource();
 
     double savings = base_costs[RESOURCE_CHI] - cost();
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += savings;
 
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
@@ -2652,19 +2569,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     combo_strikes_trigger( CS_FISTS_OF_FURY );
   }
 
-  void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    double savings = base_costs[ RESOURCE_CHI ] - cost();
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> track_chi_consumption += savings;
-      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-        trigger_brew( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() );
-    }
-  }
-
   virtual void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
@@ -2754,15 +2658,6 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
           rsk_proc -> execute();
       }
     }
-  }
-
-  void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    double savings = base_costs[RESOURCE_CHI] - cost();
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += savings;
   }
 };
 
@@ -2890,21 +2785,18 @@ struct auto_attack_t: public monk_melee_attack_t
 
 struct keg_smash_t: public monk_melee_attack_t
 {
-  const spell_data_t* chi_generation;
-  bool apply_dizzying_haze;
 
   keg_smash_t( monk_t& p, const std::string& options_str ):
-    monk_melee_attack_t( "keg_smash", &p, p.spec.keg_smash ),
-    chi_generation( p.find_spell( 127796 ) ),
-    apply_dizzying_haze( false )
+    monk_melee_attack_t( "keg_smash", &p, p.spec.keg_smash )
   {
-    add_option( opt_bool( "dizzying_haze", apply_dizzying_haze ) );
     parse_options( options_str );
 
     aoe = -1;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    cooldown -> duration = data().charge_cooldown();
+    cooldown             = p.cooldown.brewmaster_attack;
+    cooldown -> duration = p.find_spell( id ) -> cooldown();
+
 
     base_multiplier = 11.6; // hardcoded into tooltip
   }
@@ -2923,21 +2815,6 @@ struct keg_smash_t: public monk_melee_attack_t
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
-
-    player -> resource_gain( RESOURCE_CHI,
-                             chi_generation -> effectN( 1 ).resource( RESOURCE_CHI ),
-                             p() -> gain.keg_smash, this );
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( apply_dizzying_haze )
-    {
-      if ( result_is_hit( s -> result ) )
-        td( s -> target ) -> debuff.dizzying_haze -> trigger();
-    }
   }
 };
 
@@ -4727,6 +4604,7 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk       = find_spell( 137023 );
   passives.aura_mistweaver_monk       = find_spell( 137024 );
   passives.aura_windwalker_monk       = find_spell( 137025 );
+  passives.dizzying_kicks             = find_spell( 196723 );
   passives.eye_of_the_tiger           = find_spell( 196608 );
   passives.hit_combo                  = find_spell( 196741 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
@@ -4763,8 +4641,6 @@ void monk_t::init_spells()
   sample_datas.heavy_stagger_total_damage     = get_sample_data("Amount of damage purified while at heavy stagger");
 
   //SPELLS
-  active_actions.blackout_kick_dot    = new actions::dot_blackout_kick_t( this );
-  //active_actions.blackout_kick_heal   = new actions::heal_blackout_kick_t( this );
   if ( talent.healing_elixirs -> ok() )
     active_actions.healing_elixir     = new actions::healing_elixirs_t( *this );
   active_actions.healing_sphere       = new actions::healing_sphere_t( *this );
@@ -4911,6 +4787,9 @@ void monk_t::create_buffs()
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
 
+  buff.dizzying_kicks = buff_creator_t( this, "dizzying_kicks", passives.dizzying_kicks )
+    .default_value( passives.dizzying_kicks -> effectN( 1 ).percent() );
+
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
     .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew )
@@ -5000,8 +4879,6 @@ bool monk_t::has_t18_class_trinket() const
 void monk_t::reset()
 {
   base_t::reset();
-
-  track_chi_consumption = 0.0;
 }
 
 // monk_t::regen (brews/teas)================================================
