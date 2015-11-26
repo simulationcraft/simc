@@ -62,6 +62,29 @@ class DBCParser(object):
     def name(self):
         return os.path.basename(self._fname).split('.')[0].replace('-', '_').lower()
 
+    def count_pad_bytes(self):
+        max_nonzero_byte = 3
+        n = 0
+
+        while True:
+            if n == self._records:
+                return max_nonzero_byte
+
+            dbc_id = record_offset = 0
+            if self._id_offset > 0:
+                dbc_id, record_id = self._idtable[n]
+                record_offset = self._data_offset + record_id * self._record_size
+            else:
+                record_offset = self._data_offset + n * self._record_size
+
+            for i in range(max_nonzero_byte, 0, -1):
+                if self._data[record_offset + self._record_size - i] != 0:
+                    max_nonzero_byte = i - 1
+                    if i == 1:
+                        return 0
+
+            n += 1
+
     def find(self, id):
         dbc_id = record_offset = 0
         if self._id_offset > 0:
@@ -147,7 +170,8 @@ class DBCParser(object):
         self.__build_idtable()
 
         if not self._class:
-            self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size, self._id_offset > 0, self._magic == b'WDB3')
+            self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size, self._id_offset > 0,
+                    self._magic == b'WDB3' and self.count_pad_bytes() or 0)
 
         if not self._options.raw and hasattr(self._class, '_ff'):
             self._class._ff = (self.compute_id_output_format(),) + self._class._ff[1:]

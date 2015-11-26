@@ -426,8 +426,8 @@
   "SpellCastTimes.db2": [
     { "data_type": "i", "field": "cast_time" },
     { "data_type": "i", "field": "min_cast_time" },
-    { "data_type": "h", "field": "cast_time_per_level" },
-    { "data_type": "2x" }
+    { "data_type": "b", "field": "cast_time_per_level" },
+    { "data_type": "3x" }
   ],
   "SpellCategories.db2": [
     { "data_type": "I", "field": "id_spell" },

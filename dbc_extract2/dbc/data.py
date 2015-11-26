@@ -403,7 +403,7 @@ def proxy_str(self):
 # Figure out all permutations of 4 byte, 2 byte, and 1 byte fields, allowing
 # for potentially up to 3 bytes of padding at the end of the structure. Fields
 # are always presumed to be in size order.
-def permutations(fields, record_size, separate_id, allow_padding):
+def permutations(fields, record_size, separate_id, max_pad_bytes):
     choices = []
     fields_left = fields
     bytes_left = record_size
@@ -412,29 +412,22 @@ def permutations(fields, record_size, separate_id, allow_padding):
         fields_left -= 1
         bytes_left -= 4
 
-    # Allow up to 3 bytes of padding, if its a WDB3 file and the record size
-    # isnt exactly fields * 4 bytes
-    max_padding = 0
-    if allow_padding:
-        max_padding = (bytes_left - (fields * 4) != 0) and 4 or 1
+    for b4 in range((bytes_left - max_pad_bytes) // 4, -1, -1):
+        for b2 in range((bytes_left - max_pad_bytes - b4 * 4) // 2, -1, -1):
+            # Ensure we can satisfy the remaining field count with 1 byte
+            # fields, after adding b2 2 byte fields
+            b1 = bytes_left - max_pad_bytes - b4 * 4 - b2 * 2
+            if b4 + b2 + b1 != fields_left:
+                continue
 
-    for padding in range(0, max_padding):
-        for b4 in range((bytes_left - padding) // 4, -1, -1):
-            for b2 in range((bytes_left - padding - b4 * 4) // 2, -1, -1):
-                # Ensure we can satisfy the remaining field count with 1 byte
-                # fields, after adding b2 2 byte fields
-                b1 = bytes_left - padding - b4 * 4 - b2 * 2
-                if b4 + b2 + b1 != fields_left:
-                    continue
-
-                assert b4 * 4 + b2 * 2 + b1 + padding == bytes_left
-                # 4byte fields, 2byte fields, 1byte fields, padding
-                choices.append((b4 + (not separate_id), b2, b1, padding))
+            assert b4 * 4 + b2 * 2 + b1 + max_pad_bytes == bytes_left
+            # 4byte fields, 2byte fields, 1byte fields, padding
+            choices.append((b4 + (not separate_id), b2, b1, max_pad_bytes))
 
     choices.sort(key = lambda v: (v[3], -v[0], -v[1], -v[2]))
     return tuple(choices)
 
-def proxy_class(file_name, fields, record_size, separate_id, allow_padding):
+def proxy_class(file_name, fields, record_size, separate_id, max_pad_bytes):
         class_name = '%s' % file_name.split('.')[0].replace('-', '_')
 
         f = fields
@@ -467,7 +460,7 @@ def proxy_class(file_name, fields, record_size, separate_id, allow_padding):
         # Set class-specific parser
         setattr(cls, '_parser', struct.Struct('I' * b4 + 'H' * b2 + 'B' * b1))
         setattr(cls, '_cd', {})
-        setattr(cls, '_dp', permutations(fields, record_size, separate_id, allow_padding))
+        setattr(cls, '_dp', permutations(fields, record_size, separate_id, max_pad_bytes))
 
         return cls
 
