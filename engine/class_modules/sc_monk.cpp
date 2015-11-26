@@ -2123,7 +2123,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p() -> buff.teachings_of_the_monastery -> up() )
     {
       am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
-      p() -> buff.teachings_of_the_monastery -> expire;
+      p() -> buff.teachings_of_the_monastery -> expire();
     }
 
     return am;
@@ -2268,7 +2268,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     if ( p() -> buff.teachings_of_the_monastery -> up() )
     {
       am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
-      p() -> buff.teachings_of_the_monastery -> expire;
+      p() -> buff.teachings_of_the_monastery -> expire();
     }
 
     // check for melee 2p and CB: BoK, for the 50% dmg bonus
