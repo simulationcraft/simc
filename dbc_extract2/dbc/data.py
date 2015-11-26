@@ -363,6 +363,7 @@ def proxy_str(self):
         for field_num in range(0, self._dbcp._fields):
             s += '%-9u' % (field_num + 1)
         s += '\n'
+        padding = -1
         for pm in self._dp:
             prefix = '%2u %2u %2u' % pm[:-1]
             prefixfmt = '%%-%us' % len(idstr)
@@ -389,6 +390,9 @@ def proxy_str(self):
                 boffset += 1
 
             s += '\n'
+            if padding > -1 and pm[-1] != padding:
+                s += '\n'
+            padding = pm[-1]
 
     return s
 
@@ -405,7 +409,7 @@ def permutations(fields, record_size, separate_id, allow_padding):
         bytes_left -= 4
 
     # Allow up to 3 bytes of padding
-    for padding in range(0, allow_padding and 4 or 1):
+    for padding in range(0, (allow_padding and record_size - (fields * 4) != 0) and 4 or 1):
         max_4bytes = (bytes_left - padding) // 4
         max_2bytes = (bytes_left - padding) // 2
         max_1bytes = bytes_left - padding
@@ -445,7 +449,7 @@ def permutations(fields, record_size, separate_id, allow_padding):
 
                 choices.append(tuple(rb))
 
-    choices.sort(key = lambda v: (-v[0], -v[1], -v[2], v[3]))
+    choices.sort(key = lambda v: (v[3], -v[0], -v[1], -v[2]))
     return tuple(choices)
 
 def proxy_class(file_name, fields, record_size, separate_id, allow_padding):

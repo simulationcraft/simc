@@ -299,7 +299,7 @@ elif options.type == 'view':
     if not dbc_file.open_dbc():
         sys.exit(1)
 
-    if options.debug:
+    if options.debug or options.raw:
         print(dbc_file)
     if id == None:
         record = dbc_file.next_record()
