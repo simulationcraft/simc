@@ -22,7 +22,6 @@ namespace { // UNNAMED NAMESPACE
  Predator vs. adds
 
  Balance -------
- Stellar Flare snapshotting if it consumes any empowerments
  Shooting Stars proc chance
  Stellar Drift cast while moving
  APL
@@ -6292,7 +6291,7 @@ void druid_t::apl_guardian()
   
   default_list -> add_action( this, "Barkskin" );
   default_list -> add_action( "bristling_fur,if=buff.ironfur.remains<2&rage<40" );
-  default_list -> add_action( this, "Ironfur", "if=(buff.ironfur.down|rage.deficit<25" );
+  default_list -> add_action( this, "Ironfur", "if=buff.ironfur.down|rage.deficit<25" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=!ticking&incoming_damage_6s%health.max>0.25+(2-charges_fractional)*0.15" );
   default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.down" );
   default_list -> add_action( this, "Mangle" );
