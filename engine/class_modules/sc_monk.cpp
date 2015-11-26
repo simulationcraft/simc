@@ -242,9 +242,15 @@ public:
     buff_t* gift_of_the_ox;
     buff_t* tigereye_brew;
     buff_t* tigereye_brew_use;
-    buff_t* vital_mists;
 
     buff_t* zen_meditation;
+
+    // Mistweaver
+    buff_t* teachings_of_the_monastery;
+    buff_t* chi_jis_guidance;
+
+    // Windwalker
+    buff_t* vital_mists;
 
     // Legion changes
     buff_t* combo_strikes;
@@ -270,7 +276,7 @@ public:
     gain_t* soothing_mist;
     gain_t* spinning_crane_kick;
     gain_t* rushing_jade_wind;
-    gain_t* surging_mist;
+    gain_t* effuse;
     gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
     gain_t* tier16_4pc_tank;
@@ -366,6 +372,7 @@ public:
     // GENERAL
     const spell_data_t* critical_strikes;
     const spell_data_t* healing_sphere;
+    const spell_data_t* effuse;
     const spell_data_t* leather_specialization;
     const spell_data_t* legacy_of_the_white_tiger;
     const spell_data_t* legacy_of_the_emperor;
@@ -379,7 +386,6 @@ public:
     const spell_data_t* way_of_the_monk_aa_speed;
     const spell_data_t* zen_meditaiton;
     const spell_data_t* fortifying_brew;
-    const spell_data_t* surging_mist_heal;
 
     // Brewmaster
     const spell_data_t* bladed_armor;
@@ -415,6 +421,7 @@ public:
     const spell_data_t* soothing_mist_statue;
     const spell_data_t* summon_jade_serpent_statue;
     const spell_data_t* teachings_of_the_monastery;
+    const spell_data_t* teachings_of_the_monastery_buff;
     const spell_data_t* thunder_focus_tea;
     const spell_data_t* uplift;
     const spell_data_t* eminence;
@@ -481,6 +488,7 @@ public:
     cooldown_t* desperate_measure;
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
+    cooldown_t* rising_sun_kick;
     cooldown_t* touch_of_death;
   } cooldown;
 
@@ -493,7 +501,6 @@ public:
     const spell_data_t* enveloping_mist;
     const spell_data_t* healing_elixirs;
     const spell_data_t* storm_earth_and_fire;
-    const spell_data_t* surging_mist;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_2pc_tank;
@@ -547,6 +554,7 @@ public:
     // actives
     cooldown.healing_elixirs  = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere   = get_cooldown( "healing_sphere" );
+    cooldown.rising_sun_kick  = get_cooldown( "rising_sun_kick" );
     cooldown.touch_of_death   = get_cooldown( "touch_of_death" );
 
     regen_type = REGEN_DYNAMIC;
@@ -1973,34 +1981,39 @@ struct tiger_palm_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if (result_is_miss(execute_state->result))
+    if ( result_is_miss( execute_state -> result ) )
       return;
 
-    combo_strikes_trigger(CS_TIGER_PALM);
-
-    double cb_chance = combo_breaker_chance( CS_TIGER_PALM );
-    if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-      p() -> proc.combo_breaker_bok -> occur();
+    combo_strikes_trigger( CS_TIGER_PALM );
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
     chi_gain += p() -> passives.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
 
-    if ( p() -> buff.power_strikes -> up() )
+    if ( p() -> specialization() == MONK_MISTWEAVER)
+      p() -> buff.teachings_of_the_monastery -> trigger();
+    else if ( p() -> specialization () == MONK_WINDWALKER)
     {
-      if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
-        player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> default_value, p() -> gain.power_strikes, this );
-      else
-        p() -> buff.chi_sphere -> trigger();
+      if ( p() -> buff.power_strikes -> up() )
+      {
+        if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
+          player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> default_value, p() -> gain.power_strikes, this );
+        else
+          p() -> buff.chi_sphere -> trigger();
 
-      p() -> buff.power_strikes -> expire();
-    }
-    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
+        p() -> buff.power_strikes -> expire();
+      }
+      player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
 
-    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
-      p() -> proc.tier15_2pc_melee -> occur();
+      double cb_chance = combo_breaker_chance( CS_TIGER_PALM );
+      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+        p() -> proc.combo_breaker_bok -> occur();
+
+      if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2) -> proc_chance() ) )
+      {
+        p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
+        p() -> proc.tier15_2pc_melee -> occur();
+      }
     }
   }
 };
@@ -2104,6 +2117,12 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 //    if ( p() -> talent.pool_of_mists -> ok() )
 //      am *= 1.0 + p() -> talent.pool_of_mists -> effectN( 4 ).percent();
 
+    if ( p() -> buff.teachings_of_the_monastery -> up() )
+    {
+      am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
+      p() -> buff.teachings_of_the_monastery -> expire;
+    }
+
     return am;
   }
 
@@ -2125,20 +2144,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
           p() -> proc.combo_breaker_bok -> occur();
     }
-    // TODO: Need a better way of handling this cooldown reset.
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-    {
-      if ( p() -> track_jade == false )
-      {
-        if ( rng().roll( p() -> cache.multistrike()) )
-        {
-          cooldown -> reset( true );
-          p() -> track_jade = true;
-        }
-      }
-      else
-  		  p() -> track_jade = false;
-	  }
   }
 
   virtual void consume_resource() override
@@ -2246,20 +2251,29 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     combo_strikes_trigger( CS_BLACKOUT_KICK );
 
-    if ( p() -> spec.teachings_of_the_monastery -> ok() )
-      p() -> buff.cranes_zeal -> trigger();
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      if (rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
+        p() -> cooldown.rising_sun_kick -> reset( true );
+    }
   }
 
   virtual double action_multiplier() const override
   {
-    double m = monk_melee_attack_t::action_multiplier();
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.teachings_of_the_monastery -> up() )
+    {
+      am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
+      p() -> buff.teachings_of_the_monastery -> expire;
+    }
 
     // check for melee 2p and CB: BoK, for the 50% dmg bonus
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> check() ) {
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> up() ) {
       // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
+      am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
     }
-    return m;
+    return am;
   }
 
   virtual void assess_damage( dmg_e type, action_state_t* s ) override
@@ -3950,7 +3964,6 @@ struct renewing_mist_t: public monk_heal_t
   virtual void execute() override
   {
     monk_heal_t::execute();
-    player -> resource_gain( RESOURCE_CHI, p() -> spec.renewing_mist -> effectN( 2 ).base_value(), p() -> gain.renewing_mist, this );
   }
 };
 
@@ -4056,17 +4069,13 @@ struct soothing_mist_t: public monk_heal_t
 };
 
 // ==========================================================================
-// Surging Mist
+// Effuse
 // ==========================================================================
-/*
-TODO: Verify healing values.
-Main Spell ID is 116694, but the AP Co-efficient is from 116995
-*/
 
-struct surging_mist_t: public monk_heal_t
+struct effuse_t: public monk_heal_t
 {
-  surging_mist_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "surging_mist", p, p.spec.surging_mist_heal )
+  effuse_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "effuse", p, p.spec.effuse )
   {
     parse_options( options_str );
 
@@ -4075,12 +4084,12 @@ struct surging_mist_t: public monk_heal_t
     if ( p.specialization() == MONK_MISTWEAVER )
     {
       resource_current = RESOURCE_MANA;
-      base_costs[RESOURCE_MANA] = p.passives.surging_mist -> cost( POWER_MANA ) * p.resources.base[RESOURCE_MANA];
+      base_costs[RESOURCE_MANA] = p.spec.effuse-> cost( POWER_MANA ) * p.resources.base[RESOURCE_MANA];
     }
     else
     {
       resource_current = RESOURCE_ENERGY;
-      base_costs[RESOURCE_ENERGY] = p.passives.surging_mist -> cost( POWER_ENERGY );
+      base_costs[RESOURCE_ENERGY] = p.spec.effuse-> cost( POWER_ENERGY );
     }
 
     may_miss = false;
@@ -4090,21 +4099,13 @@ struct surging_mist_t: public monk_heal_t
   {
     timespan_t et = monk_heal_t::execute_time();
 
-    if ( p() -> buff.channeling_soothing_mist -> check() )
-      return timespan_t::zero();
-
-    if ( p() -> buff.vital_mists -> up() )
-      et *= p() -> buff.vital_mists -> current_stack * p() -> buff.vital_mists -> data().effectN( 1 ).percent();
-
     return et;
   }
 
   virtual double cost() const override
   {
     double c = monk_heal_t::cost();
-    if ( p() -> buff.vital_mists -> check() )
-      c *= 1 + ( p() -> buff.vital_mists -> current_stack * p() -> buff.vital_mists -> data().effectN( 2 ).percent() );
- 
+
     return c;
   }
 
@@ -4114,7 +4115,7 @@ struct surging_mist_t: public monk_heal_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
-      player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
+      player -> resource_gain( RESOURCE_CHI, p() -> spec.effuse-> effectN( 2 ).base_value(), p() -> gain.effuse, this );
       if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) && p() -> buff.vital_mists -> current_stack == 5)
         player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.tier17_2pc_healer, this );
 
@@ -4125,10 +4126,10 @@ struct surging_mist_t: public monk_heal_t
       p() -> buff.vital_mists -> reset();
   }
 
-  virtual void impact( action_state_t* /*s*/ ) override
+  virtual void impact( action_state_t* s ) override
   {
-    //if (result_is_multistrike(s -> result) && p()  ->  sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) )
-
+    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) && s -> result == RESULT_CRIT )
+      p() -> buff.chi_jis_guidance -> trigger();
   }
 };
 
@@ -4438,7 +4439,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "mana_tea" ) return new                  mana_tea_t( *this, options_str );
   if ( name == "renewing_mist" ) return new             renewing_mist_t( *this, options_str );
   if ( name == "soothing_mist" ) return new             soothing_mist_t( *this, options_str );
-  if ( name == "surging_mist" ) return new              surging_mist_t( *this, options_str );
+  if ( name == "effuse" ) return new                    effuse_t( *this, options_str );
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   // Talents
   if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
@@ -4575,6 +4576,7 @@ void monk_t::init_spells()
   // General Passives
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
   spec.healing_sphere                = find_spell( 125355 );
+  spec.effuse                        = find_class_spell( "Effuse" );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
   spec.legacy_of_the_white_tiger     = find_specialization_spell( "Legacy of the White Tiger" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
@@ -4586,7 +4588,6 @@ void monk_t::init_spells()
   spec.way_of_the_monk_aa_damage     = find_spell( 108977 );
   spec.way_of_the_monk_aa_speed      = find_spell( 140737 );
   spec.fortifying_brew               = find_class_spell( "Fortifying Brew" );
-  spec.surging_mist_heal             = find_spell( 116995 );
 
   // Windwalker Passives
   spec.combo_breaker                 = find_specialization_spell( "Combo Breaker" );
@@ -4622,6 +4623,7 @@ void monk_t::init_spells()
   spec.brewing_mana_tea              = find_specialization_spell( "Brewing: Mana Tea" );
   spec.crane_style_techniques        = find_specialization_spell( "Crane Style Techniques" );
   spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
+  spec.teachings_of_the_monastery_buff = find_spell( 202090 );
   spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
   spec.renewing_mist_heal            = find_spell( 119611 );
   spec.soothing_mist                 = find_specialization_spell( "Soothing Mist" );
@@ -4650,7 +4652,6 @@ void monk_t::init_spells()
   passives.tier15_2pc_melee           = find_spell( 138311 );
   passives.tier17_2pc_tank            = find_spell( 165356 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
-  passives.surging_mist               = find_class_spell( "Surging Mist" );
   passives.healing_elixirs            = find_spell( 122281 );
   passives.storm_earth_and_fire       = find_spell( 138228 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
@@ -4807,7 +4808,12 @@ void monk_t::create_buffs()
   buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) )
     .period( timespan_t::zero() ); // much like Tigereye Brew, Mana Tea does not tick.
 
+  buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", spec.teachings_of_the_monastery_buff )
+    .default_value( spec.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
+
   buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
+
+  buff.chi_jis_guidance = buff_creator_t( this, "chi_jis_guidance", find_spell( 167717 ) );
 
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" )
@@ -4860,7 +4866,7 @@ void monk_t::init_gains()
   gain.soothing_mist            = get_gain( "soothing_mist" );
   gain.spinning_crane_kick      = get_gain( "spinning_crane_kick" );
   gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
-  gain.surging_mist             = get_gain( "surging_mist" );
+  gain.effuse                   = get_gain( "effuse" );
   gain.tier15_2pc_melee         = get_gain( "tier15_2pc_melee" );
   gain.tier16_4pc_melee         = get_gain( "tier16_4pc_melee" );
   gain.tier16_4pc_tank          = get_gain( "tier16_4pc_tank" );
