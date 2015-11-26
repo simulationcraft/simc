@@ -247,6 +247,7 @@ public:
 
     // Mistweaver
     buff_t* teachings_of_the_monastery;
+    buff_t* mistweaving;
     buff_t* chi_jis_guidance;
 
     // Windwalker
@@ -503,8 +504,10 @@ public:
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* tier15_2pc_melee;
+    const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_2pc_tank;
-    const spell_data_t* forceful_winds;
+    const spell_data_t* tier17_4pc_heal;
+    const spell_data_t* tier17_4pc_melee;
 
     // 6.0.2 Hotfixes consolidated into a single spell in build 19057
     const spell_data_t* hotfix_passive;
@@ -3961,6 +3964,16 @@ struct renewing_mist_t: public monk_heal_t
     dot_duration += p.perk.improved_renewing_mist -> effectN( 1 ).time_value();
   }
 
+  virtual double cost() const override
+  {
+    double c = monk_heal_t::cost();
+
+    if ( p() -> buff.chi_jis_guidance -> up() )
+      c *= 1 + p() -> buff.chi_jis_guidance -> value(); // Saved as -50%
+    return c;
+  }
+
+
   virtual void execute() override
   {
     monk_heal_t::execute();
@@ -4030,14 +4043,9 @@ struct soothing_mist_t: public monk_heal_t
 
     monk_heal_t::tick( d );
 
-    // Chi Gain
-    if ( rng().roll( 0.15 + consecutive_failed_chi_procs * 0.15 ) )
-    {
-      p() -> resource_gain( RESOURCE_CHI, 1.0, p() -> gain.soothing_mist, this );
-      consecutive_failed_chi_procs = 0;
-    }
-    else
-      consecutive_failed_chi_procs++;
+    if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) )
+      p() -> buff.mistweaving -> trigger();
+
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4052,6 +4060,7 @@ struct soothing_mist_t: public monk_heal_t
     monk_heal_t::last_tick( d );
 
     p() -> buff.channeling_soothing_mist -> expire();
+    p() -> buff.mistweaving -> expire();
   }
 
   virtual bool ready() override
@@ -4112,18 +4121,6 @@ struct effuse_t: public monk_heal_t
   virtual void execute() override
   {
     monk_heal_t::execute();
-
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-    {
-      player -> resource_gain( RESOURCE_CHI, p() -> spec.effuse-> effectN( 2 ).base_value(), p() -> gain.effuse, this );
-      if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) && p() -> buff.vital_mists -> current_stack == 5)
-        player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.tier17_2pc_healer, this );
-
-      reset_swing();
-    }
-
-    if ( p() -> buff.vital_mists -> up() )
-      p() -> buff.vital_mists -> reset();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4649,13 +4646,15 @@ void monk_t::init_spells()
   passives.aura_mistweaver_monk       = find_spell( 137024 );
   passives.aura_windwalker_monk       = find_spell( 137025 );
   passives.hit_combo                  = find_spell( 196741 );
-  passives.tier15_2pc_melee           = find_spell( 138311 );
-  passives.tier17_2pc_tank            = find_spell( 165356 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
   passives.healing_elixirs            = find_spell( 122281 );
   passives.storm_earth_and_fire       = find_spell( 138228 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
-  passives.forceful_winds             = find_spell( 166603 );
+  passives.tier15_2pc_melee           = find_spell( 138311 );
+  passives.tier17_2pc_heal            = find_spell( 167732 );
+  passives.tier17_2pc_tank            = find_spell( 165356 );
+  passives.tier17_4pc_heal            = find_spell( 167717 );
+  passives.tier17_4pc_melee           = find_spell( 166603 );
   passives.hotfix_passive             = find_spell( 137022 );
 
   // GLYPHS
@@ -4813,7 +4812,13 @@ void monk_t::create_buffs()
 
   buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
 
-  buff.chi_jis_guidance = buff_creator_t( this, "chi_jis_guidance", find_spell( 167717 ) );
+  buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
+    .default_value( passives.tier17_2pc_heal -> effectN( 1 ).percent() )
+    .max_stack( 7 )
+    .add_invalidate( CACHE_CRIT );
+
+  buff.chi_jis_guidance = buff_creator_t( this, "chi_jis_guidance", passives.tier17_4pc_heal )
+    .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() ) ;
 
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" )
@@ -4832,8 +4837,8 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.forceful_winds )
-    .default_value( passives.forceful_winds -> effectN( 1 ).percent() )
+  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.tier17_4pc_melee )
+    .default_value( passives.tier17_4pc_melee -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_CRIT )
     .add_invalidate( CACHE_SPELL_CRIT );
 
@@ -4978,6 +4983,9 @@ double monk_t::composite_melee_crit() const
   double crit = player_t::composite_melee_crit();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
+
+  if ( buff.mistweaving -> check() )
+    crit += buff.mistweaving -> stack_value();
 
   if ( buff.cranes_zeal -> check() )
     crit += buff.cranes_zeal -> data().effectN( 1 ).percent();
