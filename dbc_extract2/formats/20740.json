@@ -6,6 +6,39 @@
     { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3f" } },
     { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3f" } }
   ],
+  "Artifact.db2": [
+    { "data_type": "I", "field": "f1" },
+    { "data_type": "I", "field": "f2" },
+    { "data_type": "I", "field": "f3" },
+    { "data_type": "h", "field": "f4" },
+    { "data_type": "h", "field": "f5" },
+    { "data_type": "H", "field": "id_spec" },
+    { "data_type": "B", "field": "f7" },
+    { "data_type": "x"                }
+  ],
+  "ArtifactPower.db2": [
+    { "data_type": "I", "field": "id" },
+    { "data_type": "f", "field": "f2" },
+    { "data_type": "f", "field": "f3" },
+    { "data_type": "H", "field": "f4" },
+    { "data_type": "B", "field": "id_artifact" },
+    { "data_type": "B", "field": "f6" },
+    { "data_type": "B", "field": "f7" },
+    { "data_type": "3x" }
+  ],
+  "ArtifactPowerLink.db2": [
+    { "data_type": "H", "field": "f1" },
+    { "data_type": "H", "field": "f2" }
+  ],
+  "ArtifactPowerRank.db2": [
+    { "data_type": "I", "field": "id" },
+    { "data_type": "f", "field": "f2" },
+    { "data_type": "f", "field": "f3" },
+    { "data_type": "H", "field": "f4" },
+    { "data_type": "H", "field": "f5" },
+    { "data_type": "B", "field": "index" },
+    { "data_type": "3x" }
+  ],
   "ChrSpecialization.dbc": [
     { "data_type": "I", "field": "id",         "formats": { "cpp": "%-6u" } },
     { "data_type": "I", "field": "f1",         "formats": { } },
@@ -171,7 +204,7 @@
 
     { "data_type": "B", "field": "unk_6" },
     { "data_type": "B", "field": "unk_7" },
-    { "data_type": "B", "field": "unk_8" },
+    { "data_type": "B", "field": "id_artifact" },
     { "data_type": "B", "field": "unk_9" },
     { "data_type": "B", "field": "unk_10" },
     { "data_type": "B", "field": "unk_11" },
@@ -219,6 +252,11 @@
     { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" } },
     { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } },
     { "data_type": "x"                                                   }
+  ],
+  "ItemChildEquipment.db2": [
+    { "data_type": "I", "field": "id_item" },
+    { "data_type": "I", "field": "id_item_child" },
+    { "data_type": "I", "field": "unk_1" }
   ],
   "ItemDamageOneHand.db2": [
     { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
