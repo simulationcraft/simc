@@ -264,7 +264,6 @@ public:
     gain_t* crackling_jade_lightning;
     gain_t* energy_refund;
     gain_t* energizing_elixir;
-    gain_t* expel_harm;
     gain_t* keg_smash;
     gain_t* gift_of_the_ox;
     gain_t* mana_tea;
@@ -368,7 +367,6 @@ public:
   {
     // GENERAL
     const spell_data_t* critical_strikes;
-    const spell_data_t* expel_harm;
     const spell_data_t* healing_sphere;
     const spell_data_t* leather_specialization;
     const spell_data_t* legacy_of_the_white_tiger;
@@ -383,8 +381,6 @@ public:
     const spell_data_t* way_of_the_monk_aa_speed;
     const spell_data_t* zen_meditaiton;
     const spell_data_t* fortifying_brew;
-    const spell_data_t* expel_harm_damage;
-    const spell_data_t* chi_torpedo_heal;
     const spell_data_t* surging_mist_heal;
 
     // Brewmaster
@@ -476,7 +472,6 @@ public:
     const spell_data_t* targeted_expulsion;
     const spell_data_t* touch_of_death;
     // Brewmaster
-    const spell_data_t* expel_harm;
     const spell_data_t* guard;
     // Mistweaver
     const spell_data_t* mana_tea;
@@ -489,7 +484,6 @@ public:
   struct cooldowns_t
   {
     cooldown_t* desperate_measure;
-    cooldown_t* expel_harm;
     cooldown_t* guard;
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
@@ -558,7 +552,6 @@ public:
     furious_sun( nullptr )
   {
     // actives
-    cooldown.expel_harm       = get_cooldown( "expel_harm_heal" );
     cooldown.guard            = get_cooldown( "guard" );
     cooldown.healing_elixirs  = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere   = get_cooldown( "healing_sphere" );
@@ -3945,132 +3938,6 @@ struct enveloping_mist_t: public monk_heal_t
 };
 
 // ==========================================================================
-// Expel Harm
-// ==========================================================================
-
-struct expel_harm_damage_t : public monk_spell_t
-{
-  expel_harm_damage_t(monk_t* p) :
-    monk_spell_t( "expel_harm", p, p -> spec.expel_harm_damage )
-  {
-    background = true;
-    may_crit = false;
-    base_multiplier = p -> spec.expel_harm_damage -> effectN( 2 ).percent();
-    trigger_gcd = timespan_t::zero();
-  }
-};
-
-struct expel_harm_heal_t : public monk_heal_t
-{
-  expel_harm_damage_t* damage;
-  expel_harm_heal_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "expel_harm_heal", p, p.spec.expel_harm ),
-    damage( new expel_harm_damage_t( &p ) )
-  {
-    parse_options( options_str );
-
-    base_multiplier = 7.5;
-
-    weapon_power_mod = 1.0 / 3.5;
-
-    if ( p.glyph.targeted_expulsion -> ok() )
-      base_multiplier *= 1.0 - p.glyph.targeted_expulsion -> effectN( 2 ).percent();
-
-    may_crit = true;
-    may_multistrike = 1;
-
-    p.cooldown.desperate_measure = p.get_cooldown( "desperate_measure" );
-
-    if ( p.specialization() == MONK_BREWMASTER )
-    {
-      double desperate_measure = 0;
-
-      if ( p.sets.has_set_bonus( MONK_BREWMASTER, T18, B2) )
-      {
-        if ( p.user_options.ppm_below_50_percent_dm > 0 )
-          desperate_measure = p.user_options.ppm_below_50_percent_dm;
-        else
-          // Increase the proc rate for PTR by 1/3 due to the changes made to Brewmaster
-          desperate_measure = ( 50.0 / 35.0 ) * ( 3.0 / 2.0 );
-        }
-      else if ( p.user_options.ppm_below_35_percent_dm > 0 )
-        desperate_measure = p.user_options.ppm_below_35_percent_dm;
-      else
-        // Increase the proc rate for PTR by 1/3 due to the changes made to Brewmaster
-        desperate_measure = ( 3.0 / 2.0 );
-      // since a tank is normally tanking half the time, double the proc per minute to simulate as if they were single-tanking
-      p.cooldown.desperate_measure -> duration = timespan_t::from_seconds( 60.0 / ( desperate_measure * 2 ) );
-    } 
-  }
-
-  void init() override
-  {
-    monk_heal_t::init();
-
-    if ( p() -> specialization() == MONK_BREWMASTER )
-      snapshot_flags |= STATE_RESOLVE;
-  }
-
-  virtual double cost() const override
-  {
-    double c = monk_heal_t::cost();
-    if ( player -> health_percentage() < 35 && p() -> glyph.expel_harm -> ok() )
-      c += p() -> glyph.expel_harm -> effectN( 1 ).base_value();
-
-    return c;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_heal_t::impact( s );
-    summon_gots_orb( 1.00 );
-
-    damage -> base_dd_min = damage -> base_dd_max = s -> result_total;
-    damage -> execute();
-  }
-
-  virtual void execute() override
-  {
-    weapon_t mh = p() -> main_hand_weapon;
-    weapon_t oh = p() -> off_hand_weapon;
-
-    base_dd_min = base_dd_max = monk_util::monk_weapon_damage( this, &( mh ), &( oh ), weapon_power_mod,
-      ( p() -> specialization() == MONK_MISTWEAVER ? p() -> composite_spell_power( SCHOOL_MAX ) : p() -> composite_melee_attack_power() ) );
-
-    monk_heal_t::execute();
-
-    // Chi Gain
-    double chi_gain = data().effectN( 2 ).base_value();
-    chi_gain += p() -> passives.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
-
-    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.expel_harm, this );
-
-    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
-      p() -> proc.tier15_2pc_melee -> occur();
-    }
-
-    // Power Strike manipulation
-    if ( p() -> buff.power_strikes -> up() )
-    {
-      if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
-        p() -> resource_gain( RESOURCE_CHI,
-        p() -> buff.power_strikes -> default_value,
-        p() -> gain.power_strikes, this );
-      else
-        p() -> buff.chi_sphere -> trigger();
-
-      p() -> buff.power_strikes -> expire();
-    }
-
-    // Every time you use Expel Harm, the remaining cooldown of your Guard is reduced by 5 sec.
-    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T18, B4 ) )
-      p() -> cooldown.guard -> adjust( p() -> sets.set( MONK_BREWMASTER, T18, B4 ) -> effectN( 1 ).time_value() ); // T18 set bonus is saved as "-5000"
-  }
-};
-
-// ==========================================================================
 // Renewing Mist
 // ==========================================================================
 /*
@@ -4587,7 +4454,6 @@ action_t* monk_t::create_action( const std::string& name,
   if (name == "legacy_of_the_emperor") return new       legacy_of_the_emperor_t( this, options_str );
   if (name == "legacy_of_the_white_tiger") return new   legacy_of_the_white_tiger_t( this, options_str );
   if (name == "auto_attack") return new                 auto_attack_t(this, options_str);
-  if ( name == "expel_harm" ) return new                expel_harm_heal_t( *this, options_str );
   if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
   if ( name == "blackout_kick" ) return new             blackout_kick_t( this, options_str );
   if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
@@ -4749,7 +4615,6 @@ void monk_t::init_spells()
 
   // General Passives
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
-  spec.expel_harm                    = find_class_spell( "Expel Harm" );
   spec.healing_sphere                = find_spell( 125355 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
   spec.legacy_of_the_white_tiger     = find_specialization_spell( "Legacy of the White Tiger" );
@@ -4762,8 +4627,6 @@ void monk_t::init_spells()
   spec.way_of_the_monk_aa_damage     = find_spell( 108977 );
   spec.way_of_the_monk_aa_speed      = find_spell( 140737 );
   spec.fortifying_brew               = find_class_spell( "Fortifying Brew" );
-  spec.expel_harm_damage             = find_spell( 115129 );
-  spec.chi_torpedo_heal              = find_spell( 124040 );
   spec.surging_mist_heal             = find_spell( 116995 );
 
   // Windwalker Passives
@@ -4839,7 +4702,6 @@ void monk_t::init_spells()
 
   // GLYPHS
   glyph.blackout_kick                = find_glyph_spell( "Glyph of Blackout Kick" );
-  glyph.expel_harm                   = find_glyph_spell( "Glyph of Expel Harm" );
   glyph.fortifying_brew              = find_glyph_spell( "Glyph of Fortifying Brew" );
   glyph.fortuitous_spheres           = find_glyph_spell( "Glyph of Fortuitous Spheres" );
   glyph.guard                        = find_glyph_spell( "Glyph of Guard" );
@@ -5044,7 +4906,6 @@ void monk_t::init_gains()
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
   gain.energizing_elixir        = get_gain( "energizing_elixir" );
   gain.energy_refund            = get_gain( "energy_refund" );
-  gain.expel_harm               = get_gain( "expel_harm" );
   gain.keg_smash                = get_gain( "keg_smash" );
   gain.mana_tea                 = get_gain( "mana_tea" );
   gain.renewing_mist            = get_gain( "renewing_mist" );
@@ -5573,18 +5434,6 @@ void monk_t::assess_damage(school_e school,
       double bm_trinket_proc = eluding_movements -> driver() -> effectN( 1 ).average( eluding_movements -> item );
     }
 */
-
-    // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
-    // adding a cooldown for desperate Measure so that we can throttle however much we want it to be; basing around a Proc Per Minute mentality
-    if ( health_percentage() < ( specialization() == MONK_BREWMASTER ?
-      ( sets.has_set_bonus( MONK_BREWMASTER, T18, B2 ) ? sets.set( MONK_BREWMASTER, T18, B2 ) -> effectN( 1 ).base_value() : 35 ) : 0 ) )
-    {
-      if ( cooldown.desperate_measure -> up() && cooldown.expel_harm -> down() )
-      {
-        cooldown.expel_harm -> reset( true );
-        cooldown.desperate_measure -> start();
-      } 
-    }
 
     if ( s -> result == RESULT_DODGE && sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
       resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
