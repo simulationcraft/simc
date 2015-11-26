@@ -28,8 +28,6 @@ namespace { // UNNAMED NAMESPACE
  APL
 
  Guardian ------
- Bristling Fur
- APL
  Glyph & Perk Cleanup
  Statistics?
 
@@ -359,6 +357,7 @@ public:
 
     // Guardian (Bear)
     gain_t* bear_form;
+    gain_t* bristling_fur;
     gain_t* stalwart_guardian;
     gain_t* rage_refund;
     gain_t* guardian_tier17_2pc;
@@ -4138,6 +4137,7 @@ struct bristling_fur_t : public druid_spell_t
     druid_spell_t( "bristling_fur", player, player -> talent.bristling_fur, options_str  )
   {
     harmful = false;
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -5915,7 +5915,6 @@ void druid_t::create_buffs()
   buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
                                .add_invalidate( CACHE_ATTACK_POWER );
   buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
-                               .default_value( talent.bristling_fur -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() );
   buff.earthwarden           = buff_creator_t( this, "earthwarden", find_spell( 203975 ) )
                                .default_value( talent.earthwarden -> effectN( 1 ).percent() );
@@ -6284,30 +6283,30 @@ void druid_t::apl_guardian()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Skull Bash" );
-  default_list -> add_action( this, "Savage Defense", "if=buff.barkskin.down" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
-
-  default_list -> add_action( this, "Barkskin", "if=buff.bristling_fur.down" );
-  default_list -> add_talent( this, "Bristling Fur", "if=buff.barkskin.down" );
-  default_list -> add_action( this, "Berserk", "if=(buff.pulverize.remains>10|!talent.pulverize.enabled)&buff.incarnation.down" );
-  default_list -> add_action( this, "Frenzied Regeneration", "if=rage>=80" );
-  default_list -> add_talent( this, "Cenarion Ward" );
-  default_list -> add_talent( this, "Renewal", "if=health.pct<30" );
-  default_list -> add_talent( this, "Heart of the Wild" );
-  default_list -> add_talent( this, "Nature's Vigil" );
-  default_list -> add_action( this, "Healing Touch", "if=buff.dream_of_cenarius.react&health.pct<30" );
-  default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<=3.6" );
-  default_list -> add_action( this, "Lacerate", "if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd&buff.berserk.down" );
-  default_list -> add_action( "incarnation,if=buff.berserk.down" );
-  default_list -> add_action( this, "Lacerate", "if=!ticking" );
-  default_list -> add_action( "thrash_bear,if=!ticking" );
+  
+  default_list -> add_action( this, "Barkskin" );
+  default_list -> add_action( "bristling_fur,if=buff.ironfur.remains<2&rage<40" );
+  default_list -> add_action( this, "Ironfur", "if=(buff.ironfur.down|rage.deficit<25" );
+  default_list -> add_action( this, "Frenzied Regeneration", "if=!ticking&incoming_damage_6s%health.max>0.25+(2-charges_fractional)*0.15" );
+  default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.down" );
   default_list -> add_action( this, "Mangle" );
-  default_list -> add_action( "thrash_bear,if=remains<=4.8" );
+  default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.remains<gcd" );
+  default_list -> add_action( "lunar_beam" );
+  default_list -> add_action( "incarnation" );
+  default_list -> add_action( "thrash_bear,if=active_enemies>=2" );
+  default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.remains<3.6" );
+  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.stack<3" );
   default_list -> add_action( this, "Lacerate" );
+  default_list -> add_action( "thrash_bear,if=talent.pulverize.enabled&buff.pulverize.remains<3.6" );
+  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=!ticking" );
+  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<3.6" );
+  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<7.2" );
+  default_list -> add_action( this, "Moonfire" );
 }
 
 // Restoration Combat Action Priority List ==============================
@@ -6379,6 +6378,7 @@ void druid_t::init_gains()
 
   gain.bear_form             = get_gain( "bear_form"             );
   gain.bloody_slash          = get_gain( "bloody_slash"          );
+  gain.bristling_fur         = get_gain( "bristling_fur"         );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
   gain.glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
@@ -7143,6 +7143,16 @@ void druid_t::assess_damage( school_e school,
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
 
   player_t::assess_damage( school, dtype, s );
+
+  if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
+  {
+    // TOCHECK: This is a total guess based on ancient wiki pages on how Berserk Stance worked.
+    // 1 rage per 1% health taken
+    double rage = s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100;
+    // rage *= 1.0 + buff.bear_form -> check() * spell.bear_form_passive -> effectN( 5 ).percent();
+
+    resource_gain( RESOURCE_RAGE, rage, gain.bristling_fur );
+  }
 }
 
 // druid_t::assess_damage_imminent_preabsorb ================================
