@@ -365,6 +365,8 @@ def proxy_str(self):
         s += '\n'
         padding = -1
         for pm in self._dp:
+            if padding > -1 and pm[-1] != padding:
+                s += '\n'
             prefix = '%2u %2u %2u' % pm[:-1]
             prefixfmt = '%%-%us' % len(idstr)
             s += prefixfmt % prefix
@@ -390,8 +392,6 @@ def proxy_str(self):
                 boffset += 1
 
             s += '\n'
-            if padding > -1 and pm[-1] != padding:
-                s += '\n'
             padding = pm[-1]
 
     return s
