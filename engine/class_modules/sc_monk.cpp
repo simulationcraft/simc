@@ -254,6 +254,7 @@ public:
     buff_t* vital_mists;
 
     // Legion changes
+    buff_t* eye_of_the_tiger;
     buff_t* combo_strikes;
     buff_t* hit_combo;
   } buff;
@@ -498,6 +499,7 @@ public:
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* aura_windwalker_monk;
+    const spell_data_t* eye_of_the_tiger;
     const spell_data_t* hit_combo;
     const spell_data_t* enveloping_mist;
     const spell_data_t* healing_elixirs;
@@ -1967,10 +1969,70 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 // Tiger Palm
 // ==========================================================================
 
+struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
+{
+  eye_of_the_tiger_heal_tick_t( monk_t& p, const std::string& name ):
+    monk_heal_t( name, p, p.passives.eye_of_the_tiger )
+  {
+    background = true;
+    target = player;
+    attack_power_mod.direct = p.passives.eye_of_the_tiger -> effectN( 1 ).ap_coeff();
+  }
+};
+
+struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
+{
+  eye_of_the_tiger_dmg_tick_t( monk_t* player, const std::string& name ):
+    monk_spell_t( name, player, player -> passives.eye_of_the_tiger )
+  {
+    background = true;
+    attack_power_mod.direct = player -> passives.eye_of_the_tiger -> effectN( 2 ).ap_coeff();
+  }
+};
+
+struct eye_of_the_tiger_t : public monk_spell_t
+{
+  heal_t* heal;
+  spell_t* damage;
+  eye_of_the_tiger_t( monk_t* player ) :
+    monk_spell_t( "eye_of_the_tiger", player, player -> talent.eye_of_the_tiger ),
+    heal( new eye_of_the_tiger_heal_tick_t( *player, "eye_of_the_tiger_heal" ) ),
+    damage( new eye_of_the_tiger_dmg_tick_t( player, "eye_of_the_tiger_damage" ) )
+  {
+    background = true;
+    hasted_ticks = harmful = false;
+    dot_duration = player -> passives.eye_of_the_tiger -> duration();
+    base_tick_time = player -> passives.eye_of_the_tiger -> effectN( 1 ).period();
+    add_child( heal );
+    add_child( damage );
+    tick_zero = true;
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    p() -> buff.eye_of_the_tiger -> trigger();
+  }
+
+  void tick(dot_t* d) override
+  {
+    monk_spell_t::tick( d );
+
+    damage -> execute();
+    heal -> execute();
+  }
+};
+
 struct tiger_palm_t: public monk_melee_attack_t
 {
+  eye_of_the_tiger_t& dot;
   tiger_palm_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
+    monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) ),
+    dot( eye_of_the_tiger_t( p ) )
   {
     parse_options( options_str );
     sef_ability = SEF_TIGER_PALM;
@@ -1990,14 +2052,17 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     combo_strikes_trigger( CS_TIGER_PALM );
 
-    // Chi Gain
-    double chi_gain = data().effectN( 2 ).base_value();
+    if ( p() -> talent.eye_of_the_tiger -> ok() )
+      dot.execute();
 
     if ( p() -> specialization() == MONK_MISTWEAVER)
       p() -> buff.teachings_of_the_monastery -> trigger();
     else if ( p() -> specialization () == MONK_WINDWALKER)
     {
+      // Chi Gain
+      double chi_gain = data().effectN( 2 ).base_value();
       chi_gain += p() -> passives.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+
       if ( p() -> buff.power_strikes -> up() )
       {
         if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
@@ -2022,9 +2087,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     else if ( p() -> specialization() == MONK_BREWMASTER )
     {
       if ( p() -> talent.secret_ingredients -> ok() )
-      {
         p() -> buff.keg_smash_talent -> trigger();
-      }
     }
   }
 };
@@ -4664,6 +4727,7 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk       = find_spell( 137023 );
   passives.aura_mistweaver_monk       = find_spell( 137024 );
   passives.aura_windwalker_monk       = find_spell( 137025 );
+  passives.eye_of_the_tiger           = find_spell( 196608 );
   passives.hit_combo                  = find_spell( 196741 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
   passives.healing_elixirs            = find_spell( 122281 );
@@ -4862,6 +4926,8 @@ void monk_t::create_buffs()
     .default_value( passives.tier17_4pc_melee -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_CRIT )
     .add_invalidate( CACHE_SPELL_CRIT );
+
+  buff.eye_of_the_tiger = buff_creator_t( this, "eye_of_the_tiger", passives.eye_of_the_tiger );
 
   buff.combo_strikes = buff_creator_t(this, "combo_strikes")
     .duration( timespan_t::from_seconds( 30 ) )
