@@ -9,6 +9,6 @@ del hi.txt
 cd ..
 cd ..
 set curr=%cd%
-cd dbc_extract
+cd dbc_extract2
 call generate.bat %wowdir% %curr%\casc_extract\wow
 pause
