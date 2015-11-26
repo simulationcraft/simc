@@ -290,12 +290,12 @@ public:
   struct procs_t
   {
     proc_t* combo_breaker_bok;
+    proc_t* eye_of_the_tiger;
     proc_t* mana_tea;
+    proc_t* teachings_of_the_monastery;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
     proc_t* tier17_4pc_heal;
-    proc_t* tigereye_brew;
-    proc_t* tigereye_brew_wasted;
   } proc;
 
   struct talents_t
@@ -4839,11 +4839,13 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.combo_breaker_bok    = get_proc( "combo_breaker_bok" );
-  proc.mana_tea             = get_proc( "mana_tea" );
-  proc.tier15_2pc_melee     = get_proc( "tier15_2pc_melee" );
-  proc.tier15_4pc_melee     = get_proc( "tier15_4pc_melee" );
-  proc.tier17_4pc_heal      = get_proc( "tier17_2pc_heal" );
+  proc.combo_breaker_bok          = get_proc( "combo_breaker_bok" );
+  proc.eye_of_the_tiger           = get_proc( "eye_of_the_tiger" );
+  proc.teachings_of_the_monastery = get_proc( "teachings_of_the_monastery" );
+  proc.mana_tea                   = get_proc( "mana_tea" );
+  proc.tier15_2pc_melee           = get_proc( "tier15_2pc_melee" );
+  proc.tier15_4pc_melee           = get_proc( "tier15_4pc_melee" );
+  proc.tier17_4pc_heal            = get_proc( "tier17_2pc_heal" );
 }
 
 // druid_t::has_t18_class_trinket ===========================================
