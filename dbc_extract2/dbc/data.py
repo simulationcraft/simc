@@ -362,6 +362,7 @@ def proxy_str(self):
     else:
         for field_num in range(0, self._dbcp._fields):
             s += '%-9u' % (field_num + 1)
+        s += 'Pad'
         s += '\n'
         padding = -1
         for pm in self._dp:
@@ -387,9 +388,12 @@ def proxy_str(self):
 
             for b1fields in range(0, pm[2]):
                 s += '%.02x' % self._record[boffset]
-                if boffset < len(self._record) - 1:
+                if boffset < len(self._record) - 1 :
                     s += ' ' * 7
                 boffset += 1
+
+            for padidx in range(0, len(self._record) - boffset):
+                s += '%.02x' % self._record[boffset + padidx]
 
             s += '\n'
             padding = pm[-1]
@@ -408,46 +412,24 @@ def permutations(fields, record_size, separate_id, allow_padding):
         fields_left -= 1
         bytes_left -= 4
 
-    # Allow up to 3 bytes of padding
-    for padding in range(0, (allow_padding and record_size - (fields * 4) != 0) and 4 or 1):
-        max_4bytes = (bytes_left - padding) // 4
-        max_2bytes = (bytes_left - padding) // 2
-        max_1bytes = bytes_left - padding
-        #print('padding', padding, 'f', fields, 'rs', record_size, 'm4b', max_4bytes, 'm2b', max_2bytes, 'm1b', max_1bytes, 'separate_id', separate_id)
+    # Allow up to 3 bytes of padding, if its a WDB3 file and the record size
+    # isnt exactly fields * 4 bytes
+    max_padding = 0
+    if allow_padding:
+        max_padding = (bytes_left - (fields * 4) != 0) and 4 or 1
 
-        for b4 in range(max_4bytes, -1, -1):
-            rb = [0, 0, 0, 0]
-            rbl = (bytes_left - padding)
-            fl = fields_left
-            if b4 > 0 and b4 * 4 <= rbl and fl >= b4:
-                rb[0] = b4
-                rbl -= b4 * 4
-                fl -= b4
-
-            for b2 in range(rbl // 2, -1, -1):
-                remaining_1bytes = rbl - b2 * 2 - (fl - b2)
-                #print('b4', b4, 'b2', b2, 'fl', fl, 'rbl', rbl, 'remaining_bytes', remaining_1bytes, 'taken_bytes', b2 * 2)
-                if remaining_1bytes < 0 or remaining_1bytes > 3:
+    for padding in range(0, max_padding):
+        for b4 in range((bytes_left - padding) // 4, -1, -1):
+            for b2 in range((bytes_left - padding - b4 * 4) // 2, -1, -1):
+                # Ensure we can satisfy the remaining field count with 1 byte
+                # fields, after adding b2 2 byte fields
+                b1 = bytes_left - padding - b4 * 4 - b2 * 2
+                if b4 + b2 + b1 != fields_left:
                     continue
 
-                if b2 > 0 and b2 * 2 <= rbl and fl >= b2:
-                    rb[1] = b2
-                    rbl -= b2 * 2
-                    fl -= b2
-
-                for b1 in range(rbl, 0, -1):
-                    if b1 <= rbl and fl >= b1:
-                        rb[2] = b1
-                        rbl -= b1
-                        fl -= b1
-
-            if rbl == 0 and fl == 0:
-                if padding > 0:
-                    rb[3] = padding
-                if not separate_id:
-                    rb[0] += 1
-
-                choices.append(tuple(rb))
+                assert b4 * 4 + b2 * 2 + b1 + padding == bytes_left
+                # 4byte fields, 2byte fields, 1byte fields, padding
+                choices.append((b4 + (not separate_id), b2, b1, padding))
 
     choices.sort(key = lambda v: (v[3], -v[0], -v[1], -v[2]))
     return tuple(choices)
