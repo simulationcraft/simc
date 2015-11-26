@@ -233,7 +233,7 @@ public:
     buff_t* forceful_winds;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_serpent;
-    buff_t* keg_smash;
+    buff_t* keg_smash_talent;
     buff_t* mana_tea;
     buff_t* power_strikes;
     buff_t* rushing_jade_wind;
@@ -501,6 +501,7 @@ public:
     const spell_data_t* hit_combo;
     const spell_data_t* enveloping_mist;
     const spell_data_t* healing_elixirs;
+    const spell_data_t* keg_smash;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* tier15_2pc_melee;
@@ -1991,12 +1992,12 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
-    chi_gain += p() -> passives.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
 
     if ( p() -> specialization() == MONK_MISTWEAVER)
       p() -> buff.teachings_of_the_monastery -> trigger();
     else if ( p() -> specialization () == MONK_WINDWALKER)
     {
+      chi_gain += p() -> passives.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
       if ( p() -> buff.power_strikes -> up() )
       {
         if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
@@ -2016,6 +2017,13 @@ struct tiger_palm_t: public monk_melee_attack_t
       {
         p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
         p() -> proc.tier15_2pc_melee -> occur();
+      }
+    }
+    else if ( p() -> specialization() == MONK_BREWMASTER )
+    {
+      if ( p() -> talent.secret_ingredients -> ok() )
+      {
+        p() -> buff.keg_smash_talent -> trigger();
       }
     }
   }
@@ -2836,6 +2844,17 @@ struct keg_smash_t: public monk_melee_attack_t
     cooldown -> duration = data().charge_cooldown();
 
     base_multiplier = 11.6; // hardcoded into tooltip
+  }
+
+  virtual bool ready() override
+  {
+    if ( p() -> buff.keg_smash_talent -> check() )
+    {
+      p() -> buff.keg_smash_talent -> expire();
+      return true;
+    }
+
+    return monk_melee_attack_t::ready();
   }
 
   virtual void execute() override
@@ -4648,6 +4667,7 @@ void monk_t::init_spells()
   passives.hit_combo                  = find_spell( 196741 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
   passives.healing_elixirs            = find_spell( 122281 );
+  passives.keg_smash                  = find_spell( 196720 );
   passives.storm_earth_and_fire       = find_spell( 138228 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   passives.tier15_2pc_melee           = find_spell( 138311 );
@@ -4772,7 +4792,7 @@ void monk_t::create_buffs()
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .duration( specialization() == MONK_BREWMASTER ? timespan_t::from_seconds( talent.serenity -> effectN( 1 ).base_value() ) : talent.serenity -> duration() );
+    .duration( talent.serenity -> duration() );
 
   buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) )
     .duration( timespan_t::from_minutes( 60 ) );
@@ -4782,7 +4802,8 @@ void monk_t::create_buffs()
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
-  buff.keg_smash = buff_creator_t( this, "keg_smash", find_spell( 196720 ) );
+  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash )
+    .chance( passives.keg_smash -> proc_chance() );
 
   // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
   double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
