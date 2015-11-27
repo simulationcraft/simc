@@ -1978,10 +1978,10 @@ struct eye_of_the_tiger_t : public monk_spell_t
 
 struct tiger_palm_t: public monk_melee_attack_t
 {
-  eye_of_the_tiger_t& dot;
+  eye_of_the_tiger_t* dot;
   tiger_palm_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) ),
-    dot( eye_of_the_tiger_t( p ) )
+    dot( new eye_of_the_tiger_t( p ) )
   {
     parse_options( options_str );
     sef_ability = SEF_TIGER_PALM;
@@ -2002,7 +2002,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     combo_strikes_trigger( CS_TIGER_PALM );
 
     if ( p() -> talent.eye_of_the_tiger -> ok() )
-      dot.execute();
+      dot -> execute();
 
     if ( p() -> specialization() == MONK_MISTWEAVER)
       p() -> buff.teachings_of_the_monastery -> trigger();
