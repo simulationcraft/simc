@@ -41,16 +41,18 @@ struct druid_t;
 
 // Active actions
 struct brambles_t;
-struct gushing_wound_t;
 struct leader_of_the_pack_t;
 struct stalwart_guardian_t;
-struct yseras_gift_t;
 namespace spells {
   struct moonfire_t;
   struct starshards_t;
 }
 namespace heals {
   struct cenarion_ward_hot_t;
+  struct yseras_tick_t;
+}
+namespace cat_attacks {
+  struct gushing_wound_t;
 }
 
 enum form_e {
@@ -227,11 +229,11 @@ public:
     brambles_t*                   brambles;
     heals::cenarion_ward_hot_t*   cenarion_ward_hot;
     spells::moonfire_t*           galactic_guardian;
-    gushing_wound_t*              gushing_wound;
+    cat_attacks::gushing_wound_t* gushing_wound;
     leader_of_the_pack_t*         leader_of_the_pack;
     stalwart_guardian_t*          stalwart_guardian;
     spells::starshards_t*         starshards;
-    yseras_gift_t*                yseras_gift;
+    heals::yseras_tick_t*         yseras_gift;
   } active;
 
   // Pets
@@ -255,6 +257,7 @@ public:
 
   // Druid Events
   event_t* earthwarden_delay;
+  event_t* yseras_gift_delay;
 
   // Buffs
   struct buffs_t
@@ -314,6 +317,7 @@ public:
     // Restoration
     buff_t* hurricane;
     buff_t* soul_of_the_forest;
+    buff_t* yseras_gift;
 
     // NYI / Needs checking
     buff_t* harmony;
@@ -804,33 +808,6 @@ snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
   p -> counters.push_back( this );
 }
 
-// Gushing Wound (tier17_4pc_melee) ========================================================
-
-struct gushing_wound_t : public residual_action::residual_periodic_action_t< attack_t >
-{
-  bool trigger_t17_2p;
-  gushing_wound_t( druid_t* p ) :
-    residual_action::residual_periodic_action_t< attack_t >( "gushing_wound", p, p -> find_spell( 166638 ) ),
-    trigger_t17_2p( false )
-  {
-    background = dual = proc = true;
-    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
-  }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual void tick( dot_t* d ) override
-  {
-    residual_action::residual_periodic_action_t<attack_t>::tick( d );
-
-    if ( trigger_t17_2p )
-      p() -> resource_gain( RESOURCE_ENERGY,
-                            p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
-                            p() -> gain.feral_tier17_2pc );
-  }
-};
-
 // Stalwart Guardian ( 6.2 T18 Guardian Trinket) =========================
 
 struct brambles_t : public absorb_t
@@ -985,85 +962,6 @@ struct leader_of_the_pack_t : public heal_t
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
     base_pct_heal = data().effectN( 1 ).percent();
-  }
-};
-
-// Ysera's Gift ==============================================================
-
-struct yseras_gift_t : public heal_t
-{
-  yseras_gift_t( druid_t* p ) :
-    heal_t( "yseras_gift", p, p -> spell.yseras_gift )
-  {
-    base_tick_time = data().effectN( 1 ).period();
-    dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
-                   2 * sim -> expected_iteration_time :
-                   2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-    harmful = tick_may_crit = hasted_ticks = false;
-    may_multistrike = 0;
-    background = proc = dual = true;
-    target = p;
-
-    tick_pct_heal = data().effectN( 1 ).percent();
-  }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual double action_multiplier() const override
-  {
-    double am = heal_t::action_multiplier();
-
-    if ( p() -> buff.bear_form -> check() )
-      am *= 1.0 + p() -> buff.bear_form -> data().effectN( 10 ).percent();
-
-    return am;
-  }
-
-  virtual void init() override
-  {
-    heal_t::init();
-
-    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
-  }
-
-  // Override calculate_tick_amount for unique mechanic (heals smart target for % of own health)
-  // This might not be the best way to do this, but it works.
-  virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) const override
-  {
-    double amount = state -> action -> player -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
-    
-    // Record initial amount to state
-    state -> result_raw = amount;
-
-    // Multipliers removed here to avoid unneccesary code.
-    // Refer to heal_t::calculate_tick_amount if mechanics change.
-
-    // replicate debug output of calculate_tick_amount
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f pct=%.3f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
-        player -> name(), name(), target -> name(), amount,
-        tick_pct_heal, base_ta( state ), bonus_ta( state ),
-        spell_tick_power_coefficient( state ), state -> composite_spell_power(),
-        attack_tick_power_coefficient( state ), state -> composite_attack_power(),
-        state -> composite_ta_multiplier() );
-    }
-
-    // Record total amount to state
-    state -> result_total = amount;
-
-    return amount;
-  }
-
-  virtual void execute() override
-  {
-    if ( player -> health_percentage() < 100 )
-      target = player;
-    else
-      target = smart_target();
-
-    heal_t::execute();
   }
 };
 
@@ -1323,21 +1221,21 @@ struct earthwarden_delay_event_t : public event_t
   { player -> buff.earthwarden_driver -> trigger(); }
 };
 
-static void earthwarden_driver_tick( buff_t* buff, int, int )
-{
-  druid_t* p = debug_cast<druid_t*>( buff -> player );
-  p -> buff.earthwarden -> increment();
-}
-
 struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
 {
   druid_t* druid;
 
   earthwarden_driver_buff_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "earthwarden_driver", p.talent.earthwarden )
+    druid_buff_t<buff_t>( p, buff_creator_t( &p, "earthwarden_driver", p.talent.earthwarden )
     .quiet( true )
     .tick_callback( earthwarden_driver_tick ) ), druid( &p )
   {}
+
+  static void earthwarden_driver_tick( buff_t* buff, int, int )
+  {
+    druid_t* p = debug_cast<druid_t*>( buff -> player );
+    p -> buff.earthwarden -> increment();
+  }
 
   void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
   {
@@ -1348,7 +1246,7 @@ struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
   }
 };
 
-// Elune's Guidance Buff =================================================
+// Elune's Guidance Buff ====================================================
 
 static void elunes_guidance_tick( buff_t* buff, int, int )
 {
@@ -2118,7 +2016,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   double base_dd_bonus;
   double base_td_bonus;
   bool   consume_ooc;
-  bool   trigger_t17_2p;
+  bool   trigger_tier17_2pc;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
@@ -2126,7 +2024,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true ),
-    trigger_t17_2p( false )
+    trigger_tier17_2pc( false )
   {
     parse_options( options );
     form_mask = CAT_FORM;
@@ -2330,7 +2228,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   {
     base_t::tick( d );
 
-    if ( trigger_t17_2p )
+    if ( trigger_tier17_2pc )
       p() -> resource_gain( RESOURCE_ENERGY,
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
                             p() -> gain.feral_tier17_2pc );
@@ -2623,6 +2521,29 @@ struct ferocious_bite_t : public cat_attack_t
   }
 };
 
+// Gushing Wound (tier17_feral_4pc) ========================================================
+
+struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+{
+  gushing_wound_t( druid_t* p ) :
+    residual_action::residual_periodic_action_t<cat_attack_t>( "gushing_wound", p, p -> find_spell( 166638 ) )
+  {
+    background = dual = proc = true;
+
+    consume_ooc = may_miss = may_dodge = may_parry = false;
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    residual_action::residual_periodic_action_t<cat_attack_t>::tick( d );
+
+    if ( trigger_tier17_2pc )
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
+                            p() -> gain.feral_tier17_2pc );
+  }
+};
+
 // Maim =====================================================================
 // FIXME: Deals totally incorrect damage.
 
@@ -2656,7 +2577,7 @@ struct rake_t : public cat_attack_t
     dot_duration          = bleed_spell -> duration();
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
 
-    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
     // 2015/09/01: Rake deals 20% less damage in PvP combat.
     if ( sim -> pvp_crit )
@@ -2752,7 +2673,7 @@ struct rip_t : public cat_attack_t
     may_crit     = false;
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
-    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
     // 2015/09/01: Rip deals 20% less damage in PvP combat.
     if ( sim -> pvp_crit )
@@ -3042,7 +2963,7 @@ struct thrash_cat_t : public cat_attack_t
     aoe                    = -1;
     spell_power_mod.direct = 0;
 
-    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
@@ -4109,7 +4030,99 @@ struct wild_growth_t : public druid_heal_t
   }
 };
 
+// Ysera's Gift ==============================================================
+
+struct yseras_tick_t : public druid_heal_t
+{
+  yseras_tick_t( druid_t* p ) :
+    druid_heal_t( "yseras_gift", p, p -> find_spell( 145110 ) )
+  {
+    form_mask = 0;
+
+    may_crit = false;
+    background = dual = true;
+  }
+
+  virtual void init() override
+  {
+    druid_heal_t::init();
+
+    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
+    // TODO: What other multipliers does this not scale with?
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = druid_heal_t::action_multiplier();
+
+    if ( p() -> buff.bear_form -> check() )
+      am *= 1.0 + p() -> buff.bear_form -> data().effectN( 10 ).percent();
+
+    return am;
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> health_percentage() < 100 )
+      target = p();
+    else
+      target = smart_target();
+
+    druid_heal_t::execute();
+  }
+};
+
 } // end namespace heals
+
+namespace buffs {
+  
+// Ysera's Gift Driver Buff =================================================
+
+struct yseras_gift_delay_event_t : public event_t
+{
+  druid_t* player;
+
+  yseras_gift_delay_event_t( druid_t* p, const timespan_t& delay ) : 
+    event_t( *p ), player( p )
+  { add_event( delay ); }
+
+  const char* name() const override
+  { return "yseras_gift_driver-delay"; }
+
+  void execute() override
+  { player -> buff.yseras_gift -> trigger(); }
+};
+
+struct yseras_gift_driver_buff_t : public druid_buff_t < buff_t >
+{
+  druid_t* druid;
+
+  yseras_gift_driver_buff_t( druid_t& p ) :
+    druid_buff_t<buff_t>( p, buff_creator_t( &p, "yseras_gift_driver", p.spell.yseras_gift )
+    .quiet( true )
+    .tick_callback( yseras_gift_driver_tick ) ), druid( &p )
+  {
+    //buff_period = data().effectN( 1 ).period();
+  }
+
+  static void yseras_gift_driver_tick( buff_t* buff, int, int )
+  {
+    druid_t* p = debug_cast<druid_t*>( buff -> player );
+    p -> active.yseras_gift -> base_dd_min = p -> spell.yseras_gift -> effectN( 1 ).percent() * p -> resources.max[ RESOURCE_HEALTH ];
+    p -> active.yseras_gift -> execute();
+  }
+
+  // Emulate tick_zero behavior.
+  virtual void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
+  {
+    druid_buff_t<buff_t>::start( stacks, value, duration );
+    
+    druid -> active.yseras_gift -> base_dd_min = druid -> spell.yseras_gift -> effectN( 1 ).percent() * druid -> resources.max[ RESOURCE_HEALTH ];
+    druid -> active.yseras_gift -> execute();
+  }
+};
+
+}
 
 namespace spells {
 
@@ -5709,9 +5722,9 @@ void druid_t::init_spells()
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
   if ( spell.yseras_gift )
-    active.yseras_gift        = new yseras_gift_t( this );
+    active.yseras_gift        = new heals::yseras_tick_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
-    active.gushing_wound      = new gushing_wound_t( this );
+    active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
   if ( specialization() == DRUID_BALANCE )
     active.starshards         = new spells::starshards_t( this );
   if ( specialization() == DRUID_GUARDIAN )
@@ -5914,6 +5927,9 @@ void druid_t::create_buffs()
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
+
+  if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
+    buff.yseras_gift         = new yseras_gift_driver_buff_t( *this );
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -6475,6 +6491,9 @@ void druid_t::reset()
   if ( talent.earthwarden -> ok() )
     earthwarden_delay = nullptr;
 
+  if ( buff.yseras_gift )
+    yseras_gift_delay = nullptr;
+
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
 
@@ -6564,8 +6583,12 @@ void druid_t::combat_begin()
   resources.current[ RESOURCE_ASTRAL_POWER ] = 0;
 
   // If Ysera's Gift is talented, apply it upon entering combat
-  if ( spell.yseras_gift )
-    active.yseras_gift -> execute();
+  if ( buff.yseras_gift )
+  {
+    // Delay the first tick a random number of seconds between 0 and buff_period.
+    yseras_gift_delay = nullptr;
+    yseras_gift_delay = new (*sim) buffs::yseras_gift_delay_event_t( this, rng().real() * buff.yseras_gift -> buff_period );
+  }
 
   if ( talent.earthwarden -> ok() )
   {
