@@ -1841,7 +1841,7 @@ class SpellDataGenerator(DataGenerator):
                 'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment',
                 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellEffectScaling', 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
-                'ItemEffect', 'MinorTalent', 'ArtifactPowerRank' ]
+                'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'SpellShapeshift' ]
 
     def initialize(self):
         _start = datetime.datetime.now()
@@ -1989,7 +1989,18 @@ class SpellDataGenerator(DataGenerator):
             if spell._classopts.id == 0:
                 spell._classopts= data
 
-        #print('init done', datetime.datetime.now() - _start)
+        # Map SpellShapeshift to spells
+        for _, data in self._spellshapeshift_db.items():
+            spell_id = data.id_spell
+            if spell_id == 0:
+                continue
+
+            spell = self._spell_db[spell_id]
+            if spell.id == 0:
+                continue
+
+            if spell._shapeshift.id == 0:
+                spell._shapeshift = data
 
         return True
 
@@ -2623,27 +2634,19 @@ class SpellDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(spell._classopts.field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
             # 39
             fields += spell._classopts.field('family')
-            # 40, 41
+            # 40
+            fields += spell._shapeshift.field('flags')
+            # 41, 42
             fields += spell.field('desc', 'tt')
-            # 42
+            # 43
             if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('desc')
             else:
                 fields += [ u'0' ]
-            # 43
-            if spell.id_misc and self._spellicon_db.get(misc.id_icon):
-                fields += self._spellicon_db[misc.id_icon].field('icon')
-            else:
-                fields += [ u'0' ]
             # 44
-            if spell.id_misc and self._spellicon_db.get(misc.id_active_icon):
-                fields += self._spellicon_db[misc.id_active_icon].field('icon')
-            else:
-                fields += [ u'0' ]
-            # 45
             fields += spell.field('rank')
             # Pad struct with empty pointers for direct access to spell effect data
-            # 46, 47, 48
+            # 45, 46, 47
             fields += [ u'0', u'0', u'0' ]
 
             try:

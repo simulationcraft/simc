@@ -259,6 +259,7 @@ class Spell(DBCRecord):
         self._auraoptions = SpellAuraOptions.default()
         self._equippeditems = SpellEquippedItems.default()
         self._classopts = SpellClassOptions.default()
+        self._shapeshift = SpellShapeshift.default()
 
     def has_effect(self, field, value):
         for effect in self._effects:

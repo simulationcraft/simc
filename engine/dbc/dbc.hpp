@@ -618,19 +618,19 @@ public:
   unsigned    _attributes[NUM_SPELL_FLAGS]; // 37 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
   unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 38 SpellClassOptions.dbc flags
   unsigned    _class_flags_family; // 39 SpellClassOptions.dbc spell family
-  const char* _desc;               // 40 Spell.dbc description stringblock
-  const char* _tooltip;            // 41 Spell.dbc tooltip stringblock
+  // SpellShapeshift.db2
+  unsigned    _stance_mask;        // 40 Stance mask (used only for druid form restrictions?)
+  const char* _desc;               // 41 Spell.dbc description stringblock
+  const char* _tooltip;            // 42 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 42 Spell description variable stringblock, if present
+  const char* _desc_vars;          // 43 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _icon;               // 43
-  const char* _active_icon;        // 44
-  const char* _rank_str;           // 45
+  const char* _rank_str;           // 44
 
   // Pointers for runtime linking
-  std::vector<const spelleffect_data_t*>* _effects; // 46
-  std::vector<const spellpower_data_t*>*  _power; // 47
-  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 48
+  std::vector<const spelleffect_data_t*>* _effects; // 45
+  std::vector<const spellpower_data_t*>*  _power; // 46
+  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 47
 
   // Direct member access functions
   uint32_t category() const
@@ -728,6 +728,9 @@ public:
 
   const char* tooltip() const
   { return ok() ? _tooltip : ""; }
+
+  unsigned stance_mask() const
+  { return _stance_mask; }
 
   // Helper functions
   size_t effect_count() const

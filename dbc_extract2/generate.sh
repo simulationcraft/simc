@@ -16,11 +16,11 @@ fi
 BUILD=$1
 INPUT=${2}/${1}/${INEXT}
 
-if [ ! -d $INPUT ]; then
-  echo Error: Unable to find input files.
-  echo "Usage: generate.sh [ptr] <patch> <input_base>"
-  exit 1
-fi
+#if [ ! -d ${INPUT} ]; then
+#  echo Error: Unable to find input files in ${INPUT}.
+#  echo "Usage: generate.sh [ptr] <patch> <input_base>"
+#  exit 1
+#fi
 
 ./dbc_extract.py -p $INPUT -b $BUILD -t spec_enum -o $OUTPATH/sc_specialization_data.inc
 
