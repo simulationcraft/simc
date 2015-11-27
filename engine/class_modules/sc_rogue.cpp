@@ -5540,13 +5540,13 @@ void rogue_t::init_action_list()
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=50" );
     def -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
 
-    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=90" );
-    def -> add_action( "shadowmeld,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=115" );
+    def -> add_action( "shadowmeld,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
 
     if ( find_item( "maalus_the_blood_drinker" ) )
       def -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc=1&buff.shadow_reflection.up&combo_points<3");
-    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=100" );
-    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=100&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down" );
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=115" );
+    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down" );
 
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
@@ -5586,7 +5586,7 @@ void rogue_t::init_action_list()
 
     // Resource pooling
     action_priority_list_t* pool = get_action_priority_list( "pool", "Resource pooling" );
-    pool -> add_action( this, "Preparation", "if=!buff.vanish.up&!buff.shadow_dance.up&cooldown.vanish.remains>50" );
+    pool -> add_action( this, "Preparation", "if=!buff.vanish.up&!buff.shadow_dance.up&cooldown.vanish.remains>45" );
   }
 
   use_default_action_list = true;

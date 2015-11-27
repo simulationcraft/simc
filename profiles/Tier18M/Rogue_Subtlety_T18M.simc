@@ -49,11 +49,11 @@ actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/pool_resource,for_next=1,extra_amount=90
-actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=90&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=115
+actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/vanish,if=set_bonus.tier18_4pc=1&buff.shadow_reflection.up&combo_points<3
-actions+=/pool_resource,for_next=1,extra_amount=100
-actions+=/vanish,if=talent.subterfuge.enabled&energy>=100&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down
+actions+=/pool_resource,for_next=1,extra_amount=115
+actions+=/vanish,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down
 actions+=/marked_for_death,if=combo_points=0
 actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains
 actions+=/pool_resource,for_next=1
@@ -87,7 +87,7 @@ actions.finisher+=/run_action_list,name=pool
 
 # Resource pooling
 
-actions.pool=preparation,if=!buff.vanish.up&!buff.shadow_dance.up&cooldown.vanish.remains>50
+actions.pool=preparation,if=!buff.vanish.up&!buff.shadow_dance.up&cooldown.vanish.remains>45
 
 head=felblade_hood,id=124263,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5320
@@ -104,16 +104,16 @@ finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
 trinket1=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567,upgrade=2
 main_hand=fang_of_the_pit,id=124367,bonus_id=567,upgrade=2,enchant_id=5334
-off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant_id=5334
+off_hand=hammer_of_wicked_infusion,id=124371,bonus_id=567,upgrade=2,enchant_id=5334
 
 # Gear Summary
 # gear_ilvl=741.88
 # gear_agility=5139
 # gear_stamina=6888
-# gear_crit_rating=1841
-# gear_haste_rating=961
+# gear_crit_rating=1951
+# gear_haste_rating=789
 # gear_mastery_rating=583
-# gear_multistrike_rating=2721
+# gear_multistrike_rating=2783
 # gear_versatility_rating=270
 # gear_armor=1451
 # set_bonus=tier18_2pc=1
