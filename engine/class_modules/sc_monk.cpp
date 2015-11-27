@@ -218,6 +218,7 @@ public:
   {
     buff_t* bladed_armor;
     buff_t* channeling_soothing_mist;
+    buff_t* chi_orbit;
     buff_t* chi_sphere;
     buff_t* chi_torpedo;
     buff_t* combo_breaker_bok;
@@ -480,6 +481,7 @@ public:
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* aura_windwalker_monk;
+    const spell_data_t* chi_orbit;
     const spell_data_t* chi_sphere;
     const spell_data_t* chi_torpedo;
     const spell_data_t* dizzying_kicks;
@@ -634,6 +636,7 @@ public:
   const double light_stagger_threshold;
   const double moderate_stagger_threshold;
   const double heavy_stagger_threshold;
+  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   double weapon_power_mod;
   double clear_stagger();
   bool has_stagger();
@@ -1689,13 +1692,13 @@ public:
   // Make sure the current combo strike ability is not the same as the previous ability used
   virtual bool compare_previous_combo_strikes( combo_strikes_e new_ability )
   {
-    return ( p() -> previous_combo_strike != new_ability );
+    return ( p() -> previous_combo_strike == new_ability );
   }
 
   // Used to trigger Windwalker's Combo Strike Mastery
   void combo_strikes_trigger( combo_strikes_e new_ability )
   {
-    if ( compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
+    if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
     {
       p() -> buff.combo_strikes -> trigger();
       if ( p() -> talent.hit_combo -> ok() )
@@ -3440,6 +3443,35 @@ struct chi_sphere_t: public monk_spell_t
 };
 
 // ==========================================================================
+// Chi Sphere
+// ==========================================================================
+
+struct chi_orbit_t: public monk_spell_t
+{
+  chi_orbit_t( monk_t* p, const std::string& options_str ):
+    monk_spell_t( "chi_orbit", p, p -> talent.chi_orbit )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
+    attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
+  }
+
+  bool ready() override
+  {
+    return p() -> buff.chi_orbit -> up();
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( p() -> buff.chi_orbit -> up() )
+      p() -> buff.chi_orbit -> decrement();
+  }
+};
+
+// ==========================================================================
 // Breath of Fire
 // ==========================================================================
 
@@ -4122,6 +4154,26 @@ using namespace heals;
 using namespace absorbs;
 } // end namespace actions;
 
+struct chi_orbit_event_t : public player_event_t
+{
+  chi_orbit_event_t( monk_t& player, timespan_t tick_time ):
+    player_event_t( player )
+  {
+    tick_time = clamp( tick_time, timespan_t::zero(), player.talent.chi_orbit -> effectN( 1 ).period() );
+    add_event( tick_time );
+  }
+  virtual const char* name() const override
+  { return  "chi_orbit"; }
+  virtual void execute() override
+  {
+    monk_t* p = debug_cast<monk_t*>( player() );
+
+    p -> buff.chi_orbit -> trigger();
+
+    new ( sim() ) chi_orbit_event_t( *p, p -> talent.chi_orbit -> effectN( 1 ).period() );
+  }
+};
+
 struct power_strikes_event_t: public player_event_t
 {
   power_strikes_event_t( monk_t& player, timespan_t tick_time ):
@@ -4256,7 +4308,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   // Talents
   if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
-//  if ( name == "zen_sphere" ) return new                zen_sphere_t( *this, options_str );
   if ( name == "chi_burst" ) return new                 chi_burst_t( this, options_str );
   if ( name == "chi_sphere" ) return new                chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "black_ox_brew" ) return new             black_ox_brew_t( this, options_str );
@@ -4265,6 +4316,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
   if ( name == "invoke_xuen" ) return new               xuen_spell_t( this, options_str );
   if ( name == "chi_torpedo" ) return new               chi_torpedo_t( this, options_str );
+  if ( name == "chi_orbit" ) return new                 chi_orbit_t( this, options_str );
   if ( name == "spinning_dragon_strike" ) return new    spinning_dragon_strike_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   return base_t::create_action( name, options_str );
@@ -4461,6 +4513,7 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk       = find_spell( 137023 );
   passives.aura_mistweaver_monk       = find_spell( 137024 );
   passives.aura_windwalker_monk       = find_spell( 137025 );
+  passives.chi_orbit                  = find_spell( 196748 );
   passives.chi_sphere                 = find_spell( 121283 );
   passives.chi_torpedo                = find_spell( 119085 );
   passives.dizzying_kicks             = find_spell( 196723 );
@@ -4566,10 +4619,6 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
-  buff.chi_sphere = buff_creator_t( this, "chi_sphere", passives.chi_sphere )
-    .default_value( passives.chi_sphere -> effectN( 1 ).base_value() )
-    .max_stack( 8 );
-
   buff.chi_torpedo = buff_creator_t( this, "chi_torpedo", passives.chi_torpedo )
     .default_value( passives.chi_torpedo -> effectN( 1 ).percent() );
 
@@ -4632,6 +4681,14 @@ void monk_t::create_buffs()
     .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() ) ;
 
   // Windwalker
+  buff.chi_orbit = buff_creator_t( this, "chi_orbit", talent.chi_orbit )
+    .default_value( passives.chi_orbit -> effectN( 1 ).ap_coeff() )
+    .max_stack( 4 );
+
+  buff.chi_sphere = buff_creator_t( this, "chi_sphere", passives.chi_sphere )
+    .default_value( passives.chi_sphere -> effectN( 1 ).base_value() )
+    .max_stack( 8 );
+
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
 
   buff.dizzying_kicks = buff_creator_t( this, "dizzying_kicks", passives.dizzying_kicks )
@@ -5171,6 +5228,14 @@ void monk_t::combat_begin()
   if ( spec.resolve -> ok() )
     resolve_manager.start();
 
+  if ( talent.chi_orbit -> ok() )
+  {
+    // If Chi Orbit, start out with max stacks
+    for (int i = 0; i >= buff.chi_orbit -> max_stack(); i++)
+      buff.chi_orbit -> trigger();
+    new ( *sim ) chi_orbit_event_t( *this, timespan_t::zero() );
+  }
+
   if ( talent.power_strikes -> ok() )
   {
     new ( *sim ) power_strikes_event_t( *this, timespan_t::zero() );
@@ -5512,6 +5577,7 @@ void monk_t::apl_combat_windwalker()
 // TODO: Will activate these lines once Storm, Earth, and Fire is finished; too spammy right now
   def -> add_action( "storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down" );
   def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down" );
+  def -> add_action( "chi_orbit,if=talent.chi_orbit.enabled" );
   def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<chi.max" );
 
@@ -5706,7 +5772,7 @@ void monk_t::init_action_list()
     apl_combat_mistweaver();
     break;
   default:
-    add_action( "Jab" );
+    add_action( "Tiger Palm" );
     break;
   }
   use_default_action_list = true;
@@ -5764,6 +5830,21 @@ double monk_t::current_stagger_dot_remains()
   }
   return remains;
 }
+
+// monk_t::convert_expression_action_to_enum =============================================
+
+/*combo_strikes_e monk_t::convert_expression_action_to_enum( action_t* action )
+{
+  std::string& action_name = action->name();
+  switch (action->name())
+  {
+    case "tiger_palm": return CS_TIGER_PALM; break;
+    default: return CS_NONE; break;
+  }
+}
+*/
+// TODO: Convert action_t* a to Combo Strike ENUM
+// TODO: Compare Combo Strike
 
 // monk_t::create_expression ==================================================
 
@@ -5839,6 +5920,12 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
     else if ( splits[1] == "remains" )
       return new stagger_remains_expr_t( *this );
   }
+
+/*  if ( splits.size() == 2 && splits[0] == "combo_strikes")
+  {
+
+  }
+  */
 
   return base_t::create_expression( a, name_str );
 }
