@@ -41,7 +41,6 @@ struct druid_t;
 
 // Active actions
 struct brambles_t;
-struct cenarion_ward_hot_t;
 struct gushing_wound_t;
 struct leader_of_the_pack_t;
 struct stalwart_guardian_t;
@@ -49,6 +48,9 @@ struct yseras_gift_t;
 namespace spells {
   struct moonfire_t;
   struct starshards_t;
+}
+namespace heals {
+  struct cenarion_ward_hot_t;
 }
 
 enum form_e {
@@ -222,14 +224,14 @@ public:
   
   struct active_actions_t
   {
-    brambles_t*           brambles;
-    cenarion_ward_hot_t*  cenarion_ward_hot;
-    spells::moonfire_t*   galactic_guardian;
-    gushing_wound_t*      gushing_wound;
-    leader_of_the_pack_t* leader_of_the_pack;
-    stalwart_guardian_t*  stalwart_guardian;
-    spells::starshards_t* starshards;
-    yseras_gift_t*        yseras_gift;
+    brambles_t*                   brambles;
+    heals::cenarion_ward_hot_t*   cenarion_ward_hot;
+    spells::moonfire_t*           galactic_guardian;
+    gushing_wound_t*              gushing_wound;
+    leader_of_the_pack_t*         leader_of_the_pack;
+    stalwart_guardian_t*          stalwart_guardian;
+    spells::starshards_t*         starshards;
+    yseras_gift_t*                yseras_gift;
   } active;
 
   // Pets
@@ -966,27 +968,6 @@ struct stalwart_guardian_t : public absorb_t
   {
     s -> result_amount = std::min( s -> result_total, absorb_limit * incoming_damage );
     absorb_size = s -> result_amount;
-  }
-};
-
-// Cenarion Ward HoT ========================================================
-
-struct cenarion_ward_hot_t : public heal_t
-{
-  cenarion_ward_hot_t( druid_t* p ) :
-    heal_t( "cenarion_ward_hot", p, p -> find_spell( 102352 ) )
-  {
-    harmful = false;
-    background = proc = true;
-    target = p;
-    hasted_ticks = false;
-  }
-
-  virtual void execute() override
-  {
-    heal_t::execute();
-
-    static_cast<druid_t*>( player ) -> buff.cenarion_ward -> expire();
   }
 };
 
@@ -3267,7 +3248,7 @@ struct growl_t: public bear_attack_t
     parse_options( options_str );
 
     ignore_false_positive = true;
-    may_crit = false;
+    may_miss = may_parry = may_dodge = may_block = may_crit = false;
     use_off_gcd = true;
   }
 
@@ -3568,6 +3549,56 @@ namespace heals {
 // ==========================================================================
 // Druid Heal
 // ==========================================================================
+
+// Cenarion Ward ============================================================
+
+struct cenarion_ward_hot_t : public druid_heal_t
+{
+  cenarion_ward_hot_t( druid_t* p ) :
+    druid_heal_t( "cenarion_ward_hot", p, p -> find_spell( 102352 ) )
+  {
+    harmful = false;
+    background = proc = true;
+    target = p;
+    hasted_ticks = false;
+  }
+
+  virtual void execute() override
+  {
+    heal_t::execute();
+
+    static_cast<druid_t*>( player ) -> buff.cenarion_ward -> expire();
+  }
+};
+
+struct cenarion_ward_t : public druid_heal_t
+{
+  cenarion_ward_t( druid_t* p, const std::string& options_str ) :
+    druid_heal_t( "cenarion_ward", p, p -> talent.cenarion_ward,  options_str )
+  {
+    form_mask = 0;
+  }
+
+  virtual void execute() override
+  {
+    druid_heal_t::execute();
+
+    p() -> buff.cenarion_ward -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( target != player )
+    {
+      assert( "Cenarion Ward will not trigger on other players!" );
+      return false;
+    }
+
+    return druid_heal_t::ready();
+  }
+};
+
+// Living Seed ==============================================================
 
 struct living_seed_t : public druid_heal_t
 {
@@ -4337,25 +4368,6 @@ struct celestial_alignment_t : public druid_spell_t
       return false;
 
     return druid_spell_t::ready();
-  }
-};
-
-// Cenarion Ward ============================================================
-
-struct cenarion_ward_t : public druid_spell_t
-{
-  cenarion_ward_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "cenarion_ward", p, p -> talent.cenarion_ward,  options_str )
-  {
-    form_mask = 0;
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.cenarion_ward -> trigger();
   }
 };
 
@@ -5695,7 +5707,7 @@ void druid_t::init_spells()
   if ( spec.leader_of_the_pack -> ok() )
     active.leader_of_the_pack = new leader_of_the_pack_t( this );
   if ( talent.cenarion_ward -> ok() )
-    active.cenarion_ward_hot  = new cenarion_ward_hot_t( this );
+    active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
   if ( spell.yseras_gift )
     active.yseras_gift        = new yseras_gift_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
