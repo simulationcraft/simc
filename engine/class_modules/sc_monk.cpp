@@ -206,11 +206,7 @@ public:
 
   struct active_actions_t
   {
-    action_t* blackout_kick_dot;
-    action_t* blackout_kick_heal;
     action_t* healing_elixir;
-    action_t* healing_sphere;
-    action_t* death_note;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -227,7 +223,6 @@ public:
     buff_t* combo_breaker_bok;
     buff_t* cranes_zeal;
     buff_t* dampen_harm;
-    buff_t* death_note;
     buff_t* diffuse_magic;
     buff_t* forceful_winds;
     buff_t* fortifying_brew;
@@ -3766,42 +3761,6 @@ struct diffuse_magic_t: public monk_spell_t
     monk_spell_t::execute();
   }
 };
-
-// ==========================================================================
-// Death Note
-// ==========================================================================
-// This is used to better match what happens in game:
-//    - Game figures if the player can use Touch of Death
-//    - Provides the buff "Death Note"
-//    - Touch of Death is usable
-
-struct death_note_t : public monk_spell_t
-{
-  death_note_t( monk_t& p ) :
-    monk_spell_t( "death_note", &p, p.find_spell( 121125 ) )
-  {
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-    cooldown = p.cooldown.touch_of_death;
-  }
-
-  bool ready() override
-  {
-    if ( target -> health_percentage() > 10 )
-      return false;
-    if ( target -> current_health() <= player -> max_health() )
-      return monk_spell_t::ready();
-
-    return monk_spell_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    p() -> buff.death_note -> trigger();
-    monk_spell_t::execute();
-  }
-};
-
 } // END spells NAMESPACE
 
 namespace heals {
@@ -4533,7 +4492,6 @@ void monk_t::init_spells()
   //SPELLS
   if ( talent.healing_elixirs -> ok() )
     active_actions.healing_elixir     = new actions::healing_elixirs_t( *this );
-  active_actions.death_note           = new actions::death_note_t( *this );
 
   if (specialization() == MONK_BREWMASTER)
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
@@ -4625,9 +4583,6 @@ void monk_t::create_buffs()
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
     .duration( talent.serenity -> duration() );
-
-  buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) )
-    .duration( timespan_t::from_minutes( 60 ) );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
