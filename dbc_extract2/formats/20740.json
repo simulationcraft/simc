@@ -23,7 +23,7 @@
     { "data_type": "H", "field": "f4" },
     { "data_type": "B", "field": "id_artifact" },
     { "data_type": "B", "field": "f6" },
-    { "data_type": "B", "field": "f7" },
+    { "data_type": "B", "field": "max_rank" },
     { "data_type": "3x" }
   ],
   "ArtifactPowerLink.db2": [
@@ -32,9 +32,9 @@
   ],
   "ArtifactPowerRank.db2": [
     { "data_type": "I", "field": "id" },
-    { "data_type": "f", "field": "f2" },
+    { "data_type": "I", "field": "id_spell", "formats": { "cpp": "%6u" } },
     { "data_type": "f", "field": "f3" },
-    { "data_type": "H", "field": "f4" },
+    { "data_type": "H", "field": "id_power", "formats": { "cpp": "%5u" } },
     { "data_type": "H", "field": "f5" },
     { "data_type": "B", "field": "index" },
     { "data_type": "3x" }
@@ -678,6 +678,15 @@
     { "data_type": "H", "field": "max_scaling_ilevel" },
     { "data_type": "b", "field": "id_class" },
     { "data_type": "b", "field": "max_scaling_level" }
+  ],
+  "SpellShapeshift.db2": [
+    { "data_type": "I", "field": "id_spell" },
+    { "data_type": "I", "field": "unk_1" },
+    { "data_type": "I", "field": "unk_2" },
+    { "data_type": "I", "field": "unk_3" },
+    { "data_type": "I", "field": "unk_4" },
+    { "data_type": "B", "field": "unk_5" },
+    { "data_type": "3x"                  }
   ],
   "Talent.dbc": [
     { "data_type": "I", "field": "id",         "formats": { "cpp": "%5u" } },

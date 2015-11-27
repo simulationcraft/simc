@@ -1841,7 +1841,7 @@ class SpellDataGenerator(DataGenerator):
                 'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment',
                 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellEffectScaling', 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
-                'ItemEffect', 'MinorTalent' ]
+                'ItemEffect', 'MinorTalent', 'ArtifactPowerRank' ]
 
     def initialize(self):
         _start = datetime.datetime.now()
@@ -2430,6 +2430,15 @@ class SpellDataGenerator(DataGenerator):
                     continue
 
                 self.process_spell(spell_id, ids, 0, 0)
+
+        # Artifact spells
+        for _, data in self._artifactpowerrank_db.items():
+            spell_id = data.id_spell
+            spell = self._spell_db[spell_id]
+            if spell.id != spell_id:
+                continue
+
+            self.process_spell(spell_id, ids, 0, 0)
 
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]
