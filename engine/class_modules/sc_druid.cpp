@@ -1664,7 +1664,7 @@ public:
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   {
-    form_mask = NO_FORM;
+    this->form_mask = NO_FORM;
   }
 
   virtual timespan_t execute_time() const
