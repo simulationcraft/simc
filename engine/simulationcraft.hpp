@@ -5212,6 +5212,10 @@ public:
   // =======================
   // Const virtual functions
   // =======================
+
+  virtual bool verify_actor_level() const;
+  virtual bool verify_actor_spec() const;
+
   virtual double cost() const;
 
   virtual double cost_per_second( resource_e ) const;

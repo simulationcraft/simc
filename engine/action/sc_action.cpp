@@ -424,22 +424,9 @@ action_t::action_t( action_e       ty,
     parse_spell_data( data() );
   }
 
-  if ( data().id() && !data().is_level( player -> true_level ) && data().level() <= MAX_LEVEL )
+  if ( ! verify_actor_level() || ! verify_actor_spec() )
   {
-    sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
-      player -> name(), name(), player -> true_level, data().level() );
-
-    background = true; // prevent action from being executed
-  }
-
-  std::vector<specialization_e> spec_list;
-  specialization_e _s = player -> specialization();
-  if ( data().id() && player -> dbc.ability_specialization( data().id(), spec_list ) && range::find( spec_list, _s ) == spec_list.end() )
-  {
-    sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
-      player -> name(), name() );
-
-    background = true; // prevent action from being executed
+    background = true;
   }
 
   if ( s_data == spell_data_t::not_found() )
@@ -450,8 +437,6 @@ action_t::action_t( action_e       ty,
       player -> name(), name() );
     background = true;
   }
-
-  spec_list.clear();
 
   add_option( opt_deprecated( "bloodlust", "if=buff.bloodlust.react" ) );
   add_option( opt_deprecated( "haste<", "if=spell_haste>= or if=attack_haste>=" ) );
@@ -700,6 +685,33 @@ void action_t::parse_options( const std::string& options_str )
         sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
     }
   }
+}
+
+bool action_t::verify_actor_level() const
+{
+  if ( data().id() && ! data().is_level( player -> true_level ) && data().level() <= MAX_LEVEL )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
+      player -> name(), name(), player -> true_level, data().level() );
+    return false;
+  }
+
+  return true;
+}
+
+bool action_t::verify_actor_spec() const
+{
+  std::vector<specialization_e> spec_list;
+  specialization_e _s = player -> specialization();
+  if ( data().id() && player -> dbc.ability_specialization( data().id(), spec_list ) && range::find( spec_list, _s ) == spec_list.end() )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
+      player -> name(), name() );
+
+    return false;
+  }
+
+  return true;
 }
 
 // action_t::cost ===========================================================
