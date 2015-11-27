@@ -866,6 +866,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  if ( spell -> stance_mask() > 0 )
+  {
+    s << "Stance Mask      : 0x";
+    std::streamsize ss = s.width();
+    s.width( 8 );
+    s << std::hex << std::setfill('0') << spell -> stance_mask() << std::endl << std::dec;
+    s.width( ss );
+  }
+
   if ( spell -> proc_flags() > 0 )
   {
     s << "Proc Flags       : ";
