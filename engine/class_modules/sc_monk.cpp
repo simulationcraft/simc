@@ -3067,7 +3067,7 @@ struct black_ox_brew_t: public monk_spell_t
 
     p() -> resource_gain( RESOURCE_ENERGY, energy_refund, p() -> gain.energy_refund );
 
-    p() -> cooldown.brewmaster_active_mitigation -> reset_init();
+    p() -> cooldown.brewmaster_active_mitigation -> reset( true );
   }
 };
 // ==========================================================================
