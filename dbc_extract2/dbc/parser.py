@@ -124,7 +124,7 @@ class DBCParser(object):
         self._magic = self._data[:4]
         offset = len(self._magic)
 
-        if self._magic not in [b'WDBC', b'WDB2', b'WDB3']:
+        if self._magic not in [b'WDBC', b'WDB2', b'WDB3', b'WCH4']:
             self._data.close()
             self._f.close()
             sys.stderr.write('Invalid file format, got %s.' % magic)
@@ -137,7 +137,7 @@ class DBCParser(object):
             raise Exception('Invalid data format size in %s, record_size=%u, dataformat_size=%u' % (
                 self._fname, self._record_size, self._class._parser.size))
 
-        if self._magic in [b'WDB2', b'WDB3']:
+        if self._magic in [b'WDB2', b'WDB3', b'WCH4']:
             self._table_hash, self._build, self._timestamp = _DB_HEADER_1.unpack_from(self._data, offset)
             offset += _DB_HEADER_1.size
 
@@ -156,12 +156,12 @@ class DBCParser(object):
         else:
             self._sb_offset = 0
 
-        if self._magic == b'WDB3' and self._data_offset + self._records * self._record_size + self._string_block_size < len(self._data):
+        if self._data_offset + self._records * self._record_size + self._string_block_size < len(self._data):
             self._id_offset = self._data_offset + self._records * self._record_size + self._string_block_size
         else:
             self._id_offset = 0
 
-        if self._magic == b'WDB3' and self._clone_segment_size > 0:
+        if self._clone_segment_size > 0:
             self._clone_segment_offset = self._id_offset + self._records * _ID.size
         else:
             self._clone_segment_size = 0
@@ -228,12 +228,12 @@ class DBCParser(object):
         return parsed_record
 
     def __str__(self):
-        return '%s::%s(byte_size=%u, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u)' % (
-                self.full_name(), self._magic.decode('ascii'), len(self._data), self._records, self.n_cloned_records(), self._fields, self._record_size,
-                    self._string_block_size, self._clone_segment_size, self._first_id,
-                    self._last_id, self._data_offset, self._sb_offset, self._id_offset,
-                    self._clone_segment_offset
-                )
+        return '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%u, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u)' % (
+                self.full_name(), self._magic.decode('ascii'), len(self._data), self._build, self._timestamp, self._locale, 
+                self._records, self.n_cloned_records(), self._fields, self._record_size,
+                self._string_block_size, self._clone_segment_size, self._first_id,
+                self._last_id, self._data_offset, self._sb_offset, self._id_offset,
+                self._clone_segment_offset)
 
 _ITEMRECORD = struct.Struct('IH')
 
