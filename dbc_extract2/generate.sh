@@ -41,6 +41,7 @@ INPUT=${2}/${1}/${INEXT}
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t set_list2              -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t perk_list              -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t glyph_property_list    -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t artifact               -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t item                   -o $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 

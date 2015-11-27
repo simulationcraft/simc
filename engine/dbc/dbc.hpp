@@ -1338,6 +1338,11 @@ public:
   const scaling_stat_distribution_t* scaling_stat_distribution( unsigned id );
   std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value );
 
+  // Artifact stuff
+  unsigned artifact_by_spec( specialization_e spec ) const;
+  std::vector<const artifact_power_t*> artifact_powers( unsigned artifact_id ) const;
+  std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned power_id ) const;
+  unsigned artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank );
 };
 
 namespace dbc

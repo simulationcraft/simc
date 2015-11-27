@@ -12,7 +12,7 @@
     { "data_type": "I", "field": "f3" },
     { "data_type": "h", "field": "f4" },
     { "data_type": "h", "field": "f5" },
-    { "data_type": "H", "field": "id_spec" },
+    { "data_type": "H", "field": "id_spec", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "f7" },
     { "data_type": "x"                }
   ],
@@ -21,9 +21,9 @@
     { "data_type": "f", "field": "f2" },
     { "data_type": "f", "field": "f3" },
     { "data_type": "H", "field": "f4" },
-    { "data_type": "B", "field": "id_artifact" },
+    { "data_type": "B", "field": "id_artifact", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "f6" },
-    { "data_type": "B", "field": "max_rank" },
+    { "data_type": "B", "field": "max_rank", "formats": { "cpp": "%3u" } },
     { "data_type": "3x" }
   ],
   "ArtifactPowerLink.db2": [
@@ -36,7 +36,7 @@
     { "data_type": "f", "field": "f3" },
     { "data_type": "H", "field": "id_power", "formats": { "cpp": "%5u" } },
     { "data_type": "H", "field": "f5" },
-    { "data_type": "B", "field": "index" },
+    { "data_type": "B", "field": "index", "formats": { "cpp": "%2u" } },
     { "data_type": "3x" }
   ],
   "ChrSpecialization.dbc": [

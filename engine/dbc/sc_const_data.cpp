@@ -2649,3 +2649,95 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 { return affected_by( &effect ); }
+
+unsigned dbc_t::artifact_by_spec( specialization_e spec ) const
+{
+#if SC_USE_PTR
+  const artifact_t * p = ptr ? __ptr_artifact_data : __artifact_data;
+#else
+  const artifact_t * p = __artifact_data;
+#endif
+
+  while ( p -> id != 0 )
+  {
+    if ( p -> id_spec == spec )
+    {
+      return p -> id;
+    }
+    p++;
+  }
+
+  return 0;
+}
+
+std::vector<const artifact_power_t*> dbc_t::artifact_powers( unsigned artifact_id ) const
+{
+  std::vector<const artifact_power_t*> powers;
+
+#if SC_USE_PTR
+  const artifact_power_t * p = ptr ? __ptr_artifact_power_data : __artifact_power_data;
+#else
+  const artifact_power_t * p = __artifact_power_data;
+#endif
+
+  while ( p -> id != 0 )
+  {
+    if ( p -> id_artifact == artifact_id )
+    {
+      powers.push_back( p );
+    }
+    p++;
+  }
+
+  return powers;
+}
+
+std::vector<const artifact_power_rank_t*> dbc_t::artifact_power_ranks( unsigned power_id ) const
+{
+  std::vector<const artifact_power_rank_t*> ranks;
+
+#if SC_USE_PTR
+  const artifact_power_rank_t * p = ptr ? __ptr_artifact_power_rank_data : __artifact_power_rank_data;
+#else
+  const artifact_power_rank_t * p = __artifact_power_rank_data;
+#endif
+
+  while ( p -> id != 0 )
+  {
+    if ( p -> id_power == power_id )
+    {
+      ranks.push_back( p );
+    }
+    // Ranks are sorted in power -> index form, so don't go past entries when the power id changes
+    else if ( ranks.size() > 0 )
+    {
+      break;
+    }
+    p++;
+  }
+
+  return ranks;
+}
+
+unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank )
+{
+  unsigned artifact_id = artifact_by_spec( spec );
+  if ( artifact_id == 0 )
+  {
+    return 0;
+  }
+
+  std::vector<const artifact_power_t*> powers = artifact_powers( artifact_id );
+  if ( powers.size() == 0 || power_index > powers.size() - 1 )
+  {
+    return 0;
+  }
+
+  std::vector<const artifact_power_rank_t*> ranks = artifact_power_ranks( powers[ power_index ] -> id );
+  if ( ranks.size() == 0 || rank > ranks.size() - 1 )
+  {
+    return 0;
+  }
+
+  return ranks[ rank ] -> id_spell;
+}

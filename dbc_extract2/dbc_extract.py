@@ -13,7 +13,7 @@ parser.add_option("-t", "--type", dest = "type",
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties',
                               'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
                               'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling',
-                              'item_name_desc' ]), 
+                              'item_name_desc', 'artifact' ]), 
 parser.add_option("-o", dest = "output", action = "store", type = "str", default = None)
 parser.add_option("-a", dest = "append", action = "store", type = "str", default = None)
 parser.add_option("--raw", dest = "raw", action = "store_true", default = False)
@@ -265,6 +265,13 @@ elif options.type == 'item_scaling':
     g.generate(ids)
 elif options.type == 'item_name_desc':
     g = dbc.generator.ItemNameDescriptionDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
+    g.generate(ids)
+elif options.type == 'artifact':
+    g = dbc.generator.ArtifactDataGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()

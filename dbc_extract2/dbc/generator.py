@@ -1028,7 +1028,7 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(cooldown_group_duration) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix', 'scale_stat_dist' )
+            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix', 'scale_stat_dist', 'id_artifact' )
 
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
@@ -4458,4 +4458,106 @@ class ItemNameDescriptionDataGenerator(DataGenerator):
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n\n')
+
+class ArtifactDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'Artifact', 'ArtifactPower', 'ArtifactPowerRank', 'Spell' ]
+
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        ids = {}
+
+        for id, data in self._artifact_db.items():
+            if data.id_spec == 0:
+                continue
+
+            ids[id] = { }
+
+        for id, data in self._artifactpower_db.items():
+            artifact_id = data.id_artifact
+
+            if artifact_id not in ids:
+                continue
+
+            ids[artifact_id][id] = { 'data': data, 'ranks': [] }
+
+        for id, data in self._artifactpowerrank_db.items():
+            power_id = data.id_power
+            power = self._artifactpower_db[power_id]
+            if power.id == 0:
+                continue
+
+            if power.id_artifact not in ids:
+                continue
+
+            ids[power.id_artifact][power_id]['ranks'].append(data)
+
+        return ids
+
+    def generate(self, ids):
+        data_str = "%sartifact%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(ids.keys()) + 1))
+
+        self._out.write('// Artifact base data, wow build %d\n' % ( self._options.build ))
+
+        self._out.write('static struct artifact_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+
+        artifact_keys = sorted(ids.keys())
+        powers = []
+        for key in artifact_keys + [0]:
+            data = self._artifact_db[key]
+            fields = data.field( 'id', 'id_spec' )
+            self._out.write('  { %s },\n' % (', '.join(fields)))
+            if key in ids:
+                for _, power_data in ids[key].items():
+                    powers.append(power_data)
+
+        self._out.write('};\n')
+
+        data_str = "%sartifact_power%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(powers) + 1))
+
+        self._out.write('// Artifact power data, wow build %d\n' % ( self._options.build ))
+
+        self._out.write('static struct artifact_power_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+
+        ranks = []
+        for power in sorted(powers, key = lambda v: (v['data'].id_artifact, v['data'].id)) + [{ 'data': dbc.data.ArtifactPower.default(), 'ranks': [] }]:
+            fields = power['data'].field('id', 'id_artifact', 'max_rank')
+            if len(power['ranks']) > 0:
+                spell = self._spell_db[power['ranks'][0].id_spell]
+                fields += spell.field('name')
+                self._out.write('  { %s }, // %s (id=%u, n_ranks=%u)\n' % (', '.join(fields), spell.name, power['ranks'][0].id_spell, len(power['ranks'])))
+            else:
+                fields += self._spell_db[0].field('name')
+                self._out.write('  { %s },\n' % (', '.join(fields)))
+            ranks += power['ranks']
+
+        self._out.write('};\n')
+
+        data_str = "%sartifact_power_rank%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(ranks) + 1))
+
+        self._out.write('// Artifact power rank data, wow build %d\n' % ( self._options.build ))
+
+        self._out.write('static struct artifact_power_rank_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+
+        for rank in sorted(ranks, key = lambda v: (v.id_power, v.index)) + [dbc.data.ArtifactPowerRank.default()]:
+            fields = rank.field('id', 'id_power', 'index', 'id_spell')
+            self._out.write('  { %s },\n' % (', '.join(fields)))
+
+        self._out.write('};\n')
 

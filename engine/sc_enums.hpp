@@ -10,6 +10,13 @@
 // Enumerations =============================================================
 // annex _e to enumerations
 
+
+enum
+{
+  MAX_ARTIFACT_POWER = 16, /// Maximum number of artifact perks per weapon
+  MAX_ARTIFACT_POWER_RANK = 6
+};
+
 enum regen_type_e
 {
   /**

@@ -481,6 +481,7 @@ player_t::player_t( sim_t*             s,
   dbc( s -> dbc ),
   talent_points(),
   glyph_list(),
+  artifact_points(),
   base(),
   initial(),
   current(),
@@ -7624,6 +7625,74 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   }
 
   return spell_data_t::not_found();
+}
+
+// player_t::find_artifact_spell ==========================================
+
+const spell_data_t* player_t::find_artifact_spell( const std::string& name ) const
+{
+  // Find the artifact for the player
+  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
+  if ( artifact_id == 0 )
+  {
+    return spell_data_t::not_found();
+  }
+
+  std::vector<const artifact_power_t*> powers = dbc.artifact_powers( artifact_id );
+  const artifact_power_t* power_data = nullptr;
+  size_t power_index = 0;
+
+  // Find the power by name
+  for ( power_index = 0; power_index < powers.size(); ++power_index )
+  {
+    const artifact_power_t* power = powers[ power_index ];
+    if ( power -> perk_name == 0 )
+    {
+      continue;
+    }
+
+    if ( util::str_compare_ci( name, power -> perk_name ) )
+    {
+      power_data = power;
+      break;
+    }
+  }
+
+  // No power found
+  if ( ! power_data )
+  {
+    return spell_data_t::not_found();
+  }
+
+  // User input did not select this power
+  if ( artifact_points[ power_index ] == 0 )
+  {
+    return spell_data_t::not_found();
+  }
+
+  // Single rank powers can only be set to 0 or 1
+  if ( power_data -> max_rank == 1 && artifact_points[ power_index ] > 1 )
+  {
+    return spell_data_t::not_found();
+  }
+
+  // Multi-rank powers have a system whereby they can go +2 over the max rank of the power (as
+  // indicated by the DBC file).
+  if ( power_data -> max_rank > 1 &&
+       artifact_points[ power_index ] > ( power_data -> max_rank + 2 ) )
+  {
+    return spell_data_t::not_found();
+  }
+
+  std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
+  // Rank data missing for the power
+  if ( artifact_points[ power_index ] > ranks.size() - 1 )
+  {
+    return spell_data_t::not_found();
+  }
+
+  // Finally, all checks satisfied, return a real spell
+  return find_spell( ranks[ artifact_points[ power_index ] ] -> id_spell );
 }
 
 // player_t::find_perk_spell ======================================

@@ -18,6 +18,28 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct artifact_t
+{
+  unsigned id;
+  unsigned id_spec;
+};
+
+struct artifact_power_t
+{
+  unsigned    id;
+  unsigned    id_artifact;
+  unsigned    max_rank;
+  const char* perk_name; // In reality, the spell name
+};
+
+struct artifact_power_rank_t
+{
+  unsigned id;
+  unsigned id_power;
+  unsigned rank_index;
+  unsigned id_spell;
+};
+
 struct item_name_description_t
 {
   unsigned id;
@@ -228,6 +250,7 @@ struct item_data_t {
   int      id_set;
   int      id_suffix_group;
   unsigned id_scaling_distribution;
+  unsigned id_artifact;
 
   bool is_armor()
   { return item_class == ITEM_CLASS_ARMOR && ( item_subclass >= ITEM_SUBCLASS_ARMOR_CLOTH && item_subclass <= ITEM_SUBCLASS_ARMOR_SHIELD ); }
