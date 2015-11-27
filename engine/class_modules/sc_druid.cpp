@@ -14,7 +14,6 @@ namespace { // UNNAMED NAMESPACE
 
  Astral Influence
  Affinity active components
- Form restrictions rework
 
  Feral ---------
  Glyph & Perk Cleanup
@@ -640,7 +639,8 @@ public:
     spec( specializations_t() ),
     spell( spells_t() ),
     talent( talents_t() ),
-    inflight_starsurge( false )
+    inflight_starsurge( false ),
+    form( NO_FORM )
   {
     t16_2pc_starfall_bolt = nullptr;
     t16_2pc_sun_bolt      = nullptr;
@@ -1788,13 +1788,6 @@ public:
     form_mask = NO_FORM;
   }
 
-  virtual double composite_haste() const
-  {
-    double h = ab::composite_haste();
-
-    return h;
-  }
-
   virtual timespan_t execute_time() const
   {
     if ( this -> p() -> buff.empowered_moonkin -> up() )
@@ -2155,8 +2148,8 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     trigger_t17_2p( false )
   {
     parse_options( options );
-
     form_mask = CAT_FORM;
+
     parse_special_effect_data();
   }
 
@@ -2405,6 +2398,27 @@ struct cat_melee_t : public cat_attack_t
       cm *= 1.0 + p() -> buff.cat_form -> data().effectN( 3 ).percent();
 
     return cm;
+  }
+};
+
+// Berserk ==================================================================
+
+struct berserk_t : public cat_attack_t
+{
+  berserk_t( druid_t* player, const std::string& options_str ) :
+    cat_attack_t( "berserk", player, player -> find_spell( 106951 ), options_str )
+  {
+    harmful = consume_ooc = may_miss = may_parry = may_dodge = may_crit = false;
+  }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p() -> buff.berserk -> trigger();
+
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+      p() -> buff.feral_tier17_4pc -> trigger();
   }
 };
 
@@ -2997,6 +3011,46 @@ public:
   }
 };
 
+// Tiger's Fury =============================================================
+
+struct tigers_fury_t : public cat_attack_t
+{
+  timespan_t duration;
+
+  tigers_fury_t( druid_t* p, const std::string& options_str ) :
+    cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
+    duration( p -> buff.tigers_fury -> buff_duration )
+  {
+    form_mask = autoshift = CAT_FORM;
+    harmful = consume_ooc = may_miss = may_parry = may_dodge = may_crit = false;
+    
+    /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
+       based on spell data of the special effect. */
+    if ( p -> wildcat_celerity )
+      duration *= 1.0 + p -> wildcat_celerity -> driver() -> effectN( 1 ).average( p -> wildcat_celerity -> item ) / 100.0;
+  }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+
+    p() -> resource_gain( RESOURCE_ENERGY,
+                          data().effectN( 2 ).resource( RESOURCE_ENERGY ),
+                          p() -> gain.tigers_fury );
+
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B4 ) )
+      p() -> buff.omen_of_clarity -> trigger();
+
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
+      p() -> buff.feral_tier15_4pc -> trigger( 3 );
+
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
+      p() -> buff.feral_tier16_4pc -> trigger();
+  }
+};
+
 // Thrash (Cat) =============================================================
 
 struct thrash_cat_t : public cat_attack_t
@@ -3203,6 +3257,69 @@ struct bear_melee_t : public bear_attack_t
   }
 };
 
+// Growl  ===================================================================
+
+struct growl_t: public bear_attack_t
+{
+  growl_t( druid_t* player, const std::string& options_str ):
+    bear_attack_t( "growl", player, player -> find_class_spell( "Growl" ) )
+  {
+    parse_options( options_str );
+
+    ignore_false_positive = true;
+    may_crit = false;
+    use_off_gcd = true;
+  }
+
+  void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN )
+      cd = timespan_t::zero();
+
+    bear_attack_t::update_ready( cd );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( s -> target -> is_enemy() )
+      target -> taunt( player );
+
+    bear_attack_t::impact( s );
+  }
+};
+
+// Ironfur ==================================================================
+
+struct ironfur_t : public bear_attack_t
+{
+  ironfur_t( druid_t* p, const std::string& options_str ) :
+    bear_attack_t( "ironfur", p, p -> spec.ironfur )
+  {
+    parse_options( options_str );
+
+    use_off_gcd = true;
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
+  }
+
+  virtual void execute() override
+  {
+    bear_attack_t::execute();
+
+    for ( size_t i = 0; i < 9; i++ )
+    {
+      if ( ! p() -> buff.ironfur_stack[ i ] -> check() )
+      {
+        p() -> buff.ironfur_stack[ i ] -> trigger();
+        return;
+      }
+    }
+
+    assert( "No ironfur_stack instance found to trigger!" );
+  }
+};
+
 // Lacerate DoT =============================================================
 
 struct lacerate_dot_t : public bear_attack_t
@@ -3391,7 +3508,7 @@ struct pulverize_t : public bear_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // consumes 3 stacks of Lacerate on the target
-      find_dot( s -> target ) -> cancel();
+      s -> target -> find_dot( "lacerate_dot", player ) -> cancel();
 
       // and reduce damage taken by x% for y sec.
       p() -> buff.pulverize -> trigger();
@@ -4068,28 +4185,6 @@ struct bear_form_t : public druid_spell_t
   }
 };
 
-// Berserk ==================================================================
-
-struct berserk_t : public druid_spell_t
-{
-  berserk_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "berserk", player, player -> find_spell( 106951 ), options_str )
-  {
-    form_mask = CAT_FORM;
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.berserk -> trigger();
-
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
-      p() -> buff.feral_tier17_4pc -> trigger();
-  }
-};
-
 // Blessing of An'she =============================================================
 
 struct blessing_of_anshe_t : public druid_spell_t
@@ -4191,6 +4286,7 @@ struct cat_form_t : public druid_spell_t
   {
     form_mask = NO_FORM | BEAR_FORM | MOONKIN_FORM;
     may_autounshift = false;
+
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
@@ -4367,40 +4463,6 @@ struct elunes_guidance_t : public druid_spell_t
   }
 };
 
-// Growl  ===================================================================
-
-struct growl_t: public druid_spell_t
-{
-  growl_t( druid_t* player, const std::string& options_str ):
-    druid_spell_t( "growl", player, player -> find_class_spell( "Growl" ) )
-  {
-    parse_options( options_str );
-    form_mask = BEAR_FORM;
-
-    ignore_false_positive = true;
-    may_crit = false;
-    use_off_gcd = true;
-  }
-
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    if ( p() -> buff.incarnation -> check() && p() -> specialization() == DRUID_GUARDIAN )
-      cd = timespan_t::zero();
-
-    druid_spell_t::update_ready( cd );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( s -> target -> is_enemy() )
-      target -> taunt( player );
-
-    druid_spell_t::impact( s );
-  }
-};
-
 // Hurricane ================================================================
 
 struct hurricane_t : public druid_spell_t
@@ -4481,37 +4543,6 @@ struct incarnation_t : public druid_spell_t
   }
 };
 
-// Ironfur ==================================================================
-
-struct ironfur_t : public druid_spell_t
-{
-  ironfur_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "ironfur", p, p -> spec.ironfur, options_str )
-  {
-    form_mask = BEAR_FORM;
-
-    use_off_gcd = true;
-    harmful = false;
-    may_crit = may_miss = false;
-  }
-
-  virtual void execute() override
-  {
-    druid_spell_t::execute();
-
-    for ( size_t i = 0; i < 9; i++ )
-    {
-      if ( ! p() -> buff.ironfur_stack[ i ] -> check() )
-      {
-        p() -> buff.ironfur_stack[ i ] -> trigger();
-        return;
-      }
-    }
-
-    assert( "No ironfur_stack instance found to trigger!" );
-  }
-};
-
 // Lunar Beam ===============================================================
 
 struct lunar_beam_t : public druid_spell_t
@@ -4587,6 +4618,39 @@ struct lunar_beam_t : public druid_spell_t
       if ( ! sim -> distance_targeting_enabled || p() -> get_ground_aoe_distance( *d -> state ) <= radius )
         heal -> execute();
     }
+  }
+};
+
+// Lunar Inspiration =======================================
+
+struct lunar_inspiration_t : public druid_spell_t
+{
+  lunar_inspiration_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "lunar_inspiration", player, player -> find_spell( 155625 ), options_str )
+  {}
+
+  virtual void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    // Grant combo points
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.moonfire );
+      if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> proc.primal_fury -> occur();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
+      }
+    }
+  }
+
+  virtual bool ready() override
+  {
+    if ( ! p() -> talent.lunar_inspiration -> ok() )
+      return false;
+
+    return druid_spell_t::ready();
   }
 };
 
@@ -4773,42 +4837,6 @@ struct sunfire_t: public druid_spell_t
       if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
         trigger_balance_tier18_2pc();
     }
-  }
-};
-
-// Moonfire (Lunar Inspiration) Spell =======================================
-
-struct moonfire_cat_t : public druid_spell_t
-{
-  moonfire_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire_cat", player, player -> find_spell( 155625 ) )
-  {
-    parse_options( options_str );
-    form_mask = CAT_FORM;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    // Grant combo points
-    if ( result_is_hit( s -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.moonfire );
-      if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
-      {
-        p() -> proc.primal_fury -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
-      }
-    }
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! p() -> talent.lunar_inspiration -> ok() )
-      return false;
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -5178,46 +5206,6 @@ struct survival_instincts_t : public druid_spell_t
   }
 };
 
-// Tiger's Fury =============================================================
-
-struct tigers_fury_t : public druid_spell_t
-{
-  timespan_t duration;
-
-  tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
-    duration( p -> buff.tigers_fury -> buff_duration )
-  {
-    form_mask = autoshift = CAT_FORM;
-    harmful = false;
-    
-    /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
-       based on spell data of the special effect. */
-    if ( p -> wildcat_celerity )
-      duration *= 1.0 + p -> wildcat_celerity -> driver() -> effectN( 1 ).average( p -> wildcat_celerity -> item ) / 100.0;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-
-    p() -> resource_gain( RESOURCE_ENERGY,
-                          data().effectN( 2 ).resource( RESOURCE_ENERGY ),
-                          p() -> gain.tigers_fury );
-
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B4 ) )
-      p() -> buff.omen_of_clarity -> trigger();
-
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
-      p() -> buff.feral_tier15_4pc -> trigger( 3 );
-
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
-      p() -> buff.feral_tier16_4pc -> trigger();
-  }
-};
-
 // T16 Balance 2P Bonus =====================================================
 
 struct t16_2pc_starfall_bolt_t : public druid_spell_t
@@ -5384,7 +5372,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mark_of_ursol"          ) return new          mark_of_ursol_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
-  if ( name == "moonfire_cat"           ) return new           moonfire_cat_t( this, options_str );
+  if ( name == "moonfire_cat" ||
+       name == "lunar_inspiration" )      return new      lunar_inspiration_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
@@ -6458,6 +6447,8 @@ bool druid_t::has_t18_class_trinket() const
 void druid_t::reset()
 {
   player_t::reset();
+
+  form = NO_FORM;
 
   inflight_starsurge = false;
   max_fb_energy = spell.ferocious_bite -> powerN( 1 ).cost() - spell.ferocious_bite -> effectN( 2 ).base_value();
