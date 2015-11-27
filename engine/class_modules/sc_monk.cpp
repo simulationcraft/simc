@@ -467,20 +467,6 @@ public:
     const spell_data_t* gust_of_mists; // Mistweaver
   } mastery;
 
-  struct glyphs_t
-  {
-    // General
-    const spell_data_t* fortifying_brew;
-    const spell_data_t* fortuitous_spheres;
-    const spell_data_t* targeted_expulsion;
-    const spell_data_t* touch_of_death;
-    // Brewmaster
-    // Mistweaver
-    // Windwalker
-    const spell_data_t* blackout_kick;
-    // Minor
-  } glyph;
-
   // Cooldowns
   struct cooldowns_t
   {
@@ -546,7 +532,6 @@ public:
     talent( talents_t() ),
     spec( specs_t() ),
     mastery( mastery_spells_t() ),
-    glyph( glyphs_t() ),
     cooldown( cooldowns_t() ),
     passives( passives_t() ),
     pet( pets_t() ),
@@ -1118,8 +1103,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( ( p() -> current.position == POSITION_BACK || p() -> o() -> glyph.blackout_kick ) &&
-           result_is_hit( state -> result ) )
+      if ( result_is_hit( state -> result ) )
       {
         residual_action::trigger( dot,
                                   state -> target,
@@ -3575,6 +3559,14 @@ struct mana_tea_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.mana_tea -> trigger();
+
+    if ( p() -> talent.healing_elixirs -> ok() )
+    {
+      if ( p() -> cooldown.healing_elixirs -> up() )
+        p() -> active_actions.healing_elixir -> execute();
+    }
+
+
   }
 };
 
@@ -4151,24 +4143,6 @@ struct healing_elixirs_t: public monk_heal_t
     cooldown -> duration = data().effectN( 1 ).period();
   }
 };
-
-
-// ==========================================================================
-// Healing Sphere
-// ==========================================================================
-
-struct healing_sphere_t: public monk_heal_t
-{
-  healing_sphere_t( monk_t& p ):
-    monk_heal_t( "healing_sphere", p, p.spec.healing_sphere )
-  {
-    harmful = false;
-    background = true;
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( p.glyph.fortuitous_spheres -> effectN( 2 ).base_value() );
-  }
-};
-
 } // end namespace heals
 
 namespace absorbs {
@@ -4543,13 +4517,6 @@ void monk_t::init_spells()
   passives.tier17_4pc_melee           = find_spell( 166603 );
   passives.hotfix_passive             = find_spell( 137022 );
 
-  // GLYPHS
-  glyph.blackout_kick                = find_glyph_spell( "Glyph of Blackout Kick" );
-  glyph.fortifying_brew              = find_glyph_spell( "Glyph of Fortifying Brew" );
-  glyph.fortuitous_spheres           = find_glyph_spell( "Glyph of Fortuitous Spheres" );
-  glyph.targeted_expulsion           = find_glyph_spell( "Glyph of Targeted Expulsion" );
-  glyph.touch_of_death               = find_glyph_spell( "Glyph of Touch of Death" );
-
   //MASTERY
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
@@ -4566,7 +4533,6 @@ void monk_t::init_spells()
   //SPELLS
   if ( talent.healing_elixirs -> ok() )
     active_actions.healing_elixir     = new actions::healing_elixirs_t( *this );
-  active_actions.healing_sphere       = new actions::healing_sphere_t( *this );
   active_actions.death_note           = new actions::death_note_t( *this );
 
   if (specialization() == MONK_BREWMASTER)
@@ -5276,11 +5242,6 @@ void monk_t::assess_damage(school_e school,
       resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
   }
 
-  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
-  {
-    if ( cooldown.healing_sphere -> up() )
-      active_actions.healing_sphere -> execute();
-  }
   base_t::assess_damage(school, dtype, s);
 }
 
