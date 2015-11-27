@@ -121,11 +121,10 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
   { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
   { SD_TYPE_UNSIGNED, "family"        }, // Family
+  { SD_TYPE_UNSIGNED, "stance_mask"   },
   { SD_TYPE_STR,      "desc"          },
   { SD_TYPE_STR,      "tooltip"       },
   { SD_TYPE_STR,      "desc_vars"     },
-  { SD_TYPE_STR,      "icon"          },
-  { SD_TYPE_STR,      "active_icon"   },
   { SD_TYPE_STR,      "rank"          },
 };
 
