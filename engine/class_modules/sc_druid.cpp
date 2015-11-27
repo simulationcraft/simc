@@ -1376,9 +1376,9 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 template <class Base>
 struct druid_action_t : public Base
 {
-  int form_mask; // Restricts use of a spell based on from.
+  unsigned form_mask; // Restricts use of a spell based on form.
   bool may_autounshift; // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
-  int autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
+  unsigned autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -1387,7 +1387,7 @@ public:
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), may_autounshift( true ), autoshift( 0 ),
-    form_mask( 0 )
+    form_mask( data().stance_mask() )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1461,7 +1461,12 @@ public:
   virtual bool ready() override
   {
     if ( ! check_form_restriction() && ! ( ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM ) || autoshift ) )
-        return false;
+    {
+      if ( sim -> debug )
+        sim -> errorf( "%s ready() failed due to wrong form. form=%u form_mask=%u", name(), p() -> get_form(), form_mask );
+
+      return false;
+    }
     
     return ab::ready();
   }
@@ -1663,9 +1668,7 @@ public:
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
-  {
-    this->form_mask = NO_FORM;
-  }
+  {}
 
   virtual timespan_t execute_time() const
   {
@@ -1809,7 +1812,6 @@ struct moonfire_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    form_mask = NO_FORM | MOONKIN_FORM | BEAR_FORM;
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
 
     dot_duration                  = dmg_spell -> duration(); 
@@ -2027,9 +2029,12 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     trigger_tier17_2pc( false )
   {
     parse_options( options );
-    form_mask = CAT_FORM;
 
     parse_special_effect_data();
+
+    // Skills that cost combo points can't be cast outside of Cat Form.
+    if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+      form_mask |= CAT_FORM;
   }
 
   void parse_special_effect_data()
@@ -2255,6 +2260,8 @@ struct cat_melee_t : public cat_attack_t
   cat_melee_t( druid_t* player ) :
     cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
+    form_mask = CAT_FORM;
+
     school = SCHOOL_PHYSICAL;
     may_glance = background = repeating = true;
     trigger_gcd = timespan_t::zero();
@@ -2923,8 +2930,8 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
     duration( p -> buff.tigers_fury -> buff_duration )
   {
-    form_mask = autoshift = CAT_FORM;
     harmful = consume_ooc = may_miss = may_parry = may_dodge = may_crit = false;
+    autoshift = form_mask = CAT_FORM;
     
     /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
        based on spell data of the special effect. */
@@ -2995,8 +3002,6 @@ struct flurry_of_xuen_t : public cat_attack_t
     special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
     proc = false;
     aoe = 5;
-
-    form_mask = 0;
   }
 };
 
@@ -3010,8 +3015,6 @@ struct shattered_bleed_t : public cat_attack_t
       hasted_ticks = false; background = true; callbacks = false; special = true;
       may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
       tick_may_crit = false;
-
-      form_mask = 0;
     }
 
     void init() override
@@ -3055,9 +3058,7 @@ public:
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s ), rage_amount( 0.0 ), 
     rage_tick_amount( 0.0 ),  rage_gain( p -> get_gain( name() ) )
-  {
-    form_mask = BEAR_FORM;
-  }
+  {}
 
   virtual timespan_t gcd() const override
   {
@@ -3142,6 +3143,8 @@ struct bear_melee_t : public bear_attack_t
   bear_melee_t( druid_t* player ) :
     bear_attack_t( "bear_melee", player )
   {
+    form_mask = BEAR_FORM;
+
     school      = SCHOOL_PHYSICAL;
     may_glance  = background = repeating = true;
     trigger_gcd = timespan_t::zero();
@@ -3496,9 +3499,7 @@ struct cenarion_ward_t : public druid_heal_t
 {
   cenarion_ward_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "cenarion_ward", p, p -> talent.cenarion_ward,  options_str )
-  {
-    form_mask = 0;
-  }
+  {}
 
   virtual void execute() override
   {
@@ -3530,8 +3531,6 @@ struct living_seed_t : public druid_heal_t
     may_crit   = false;
     proc       = true;
     school     = SCHOOL_NATURE;
-
-    form_mask = 0;
   }
 
   double composite_da_multiplier( const action_state_t* ) const override
@@ -3560,8 +3559,6 @@ struct frenzied_regeneration_t : public druid_heal_t
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "frenzied_regeneration", p, p -> find_specialization_spell( "Frenzied Regeneration"), options_str )
   {
-    form_mask = BEAR_FORM;
-
     use_off_gcd = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = false;
@@ -3610,6 +3607,8 @@ struct healing_touch_t : public druid_heal_t
   healing_touch_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "healing_touch", p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
+    form_mask = NO_FORM | MOONKIN_FORM; // DBC has no mask
+
     init_living_seed();
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
 
@@ -3732,8 +3731,6 @@ struct lifebloom_bloom_t : public druid_heal_t
     dot_duration        = timespan_t::zero();
     base_td          = 0;
     attack_power_mod.tick   = 0;
-
-    form_mask = 0;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -3911,8 +3908,6 @@ struct renewal_t : public druid_heal_t
   {
     may_crit = false;
     may_multistrike = 0;
-
-    form_mask = 0;
   }
 
   virtual void init() override
@@ -4037,8 +4032,6 @@ struct yseras_tick_t : public druid_heal_t
   yseras_tick_t( druid_t* p ) :
     druid_heal_t( "yseras_gift", p, p -> find_spell( 145110 ) )
   {
-    form_mask = 0;
-
     may_crit = false;
     background = dual = true;
   }
@@ -4101,9 +4094,7 @@ struct yseras_gift_driver_buff_t : public druid_buff_t < buff_t >
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "yseras_gift_driver", p.spell.yseras_gift )
     .quiet( true )
     .tick_callback( yseras_gift_driver_tick ) ), druid( &p )
-  {
-    //buff_period = data().effectN( 1 ).period();
-  }
+  {}
 
   static void yseras_gift_driver_tick( buff_t* buff, int, int )
   {
@@ -4172,8 +4163,6 @@ struct astral_communion_t : public druid_spell_t
   {
     harmful = false;
     ap_per_cast = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
-
-    form_mask |= MOONKIN_FORM;
   }
 };
 
@@ -4186,7 +4175,6 @@ struct barkskin_t : public druid_spell_t
   {
     harmful = false;
     use_off_gcd = true;
-    form_mask = 0;
 
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
   }
@@ -4208,6 +4196,7 @@ struct bear_form_t : public druid_spell_t
   {
     form_mask = NO_FORM | CAT_FORM | MOONKIN_FORM;
     may_autounshift = false;
+
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
@@ -4237,7 +4226,6 @@ struct blessing_of_anshe_t : public druid_spell_t
     druid_spell_t( "blessing_of_anshe", player, player -> spell.blessing_of_anshe )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
       2 * sim -> expected_iteration_time :
@@ -4276,7 +4264,6 @@ struct blessing_of_elune_t : public druid_spell_t
     druid_spell_t( "blessing_of_elune", player, player -> spell.blessing_of_elune )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     harmful = false;
     ignore_false_positive = true;
@@ -4308,7 +4295,6 @@ struct bristling_fur_t : public druid_spell_t
   bristling_fur_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "bristling_fur", player, player -> talent.bristling_fur, options_str  )
   {
-    form_mask = 0;
     harmful = false;
     use_off_gcd = true;
   }
@@ -4361,7 +4347,6 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     cooldown = player -> cooldown.celestial_alignment;
     harmful = false;
@@ -4392,7 +4377,6 @@ struct collapsing_stars_t : public druid_spell_t
     druid_spell_t( "collapsing_stars", player, player -> talent.collapsing_stars )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
       2 * sim -> expected_iteration_time :
@@ -4425,7 +4409,7 @@ struct dash_t : public druid_spell_t
     druid_spell_t( "dash", player, player -> find_class_spell( "Dash" ) )
   {
     parse_options( options_str );
-    form_mask = autoshift = CAT_FORM;
+    autoshift = form_mask = CAT_FORM;
 
     harmful = false;
     ignore_false_positive = true;
@@ -4447,7 +4431,7 @@ struct displacer_beast_t : public druid_spell_t
     druid_spell_t( "displacer_beast", p, p -> talent.displacer_beast )
   {
     parse_options( options_str );
-    form_mask = autoshift = CAT_FORM;
+    autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
@@ -4473,7 +4457,6 @@ struct elunes_guidance_t : public druid_spell_t
     druid_spell_t( "elunes_guidance", p, p -> talent.elunes_guidance )
   {
     parse_options( options_str );
-    form_mask = 0;
 
     combo_points = data().effectN( 1 ).resource( RESOURCE_COMBO_POINT );
     dot_duration = timespan_t::zero();
@@ -4541,7 +4524,6 @@ struct incarnation_t : public druid_spell_t
     )
   {
     parse_options( options_str );
-    form_mask = 0;
 
     harmful = false;
   }
@@ -4577,8 +4559,6 @@ struct lunar_beam_t : public druid_spell_t
     lunar_beam_heal_t( druid_t* player, const spell_data_t* s ) :
       heals::druid_heal_t( "lunar_beam_heal", player, s )
     {
-      form_mask = 0;
-
       target = player;
       spell_power_mod.direct = s -> effectN( 1 ).ap_coeff();
       background = true;
@@ -4590,8 +4570,6 @@ struct lunar_beam_t : public druid_spell_t
     lunar_beam_damage_t( druid_t* player, const spell_data_t* s ) :
       druid_spell_t( "lunar_beam_damage", player, s )
     {
-      form_mask = 0;
-
       spell_power_mod.direct = s -> effectN( 2 ).ap_coeff();
       dual = background = true;
     }
@@ -4607,7 +4585,6 @@ struct lunar_beam_t : public druid_spell_t
     last_tick( 0 )
   {
     parse_options( options_str );
-    form_mask = 0;
 
     tick_spell = player -> find_spell( 204069 );
     heal       = new lunar_beam_heal_t( player, tick_spell );
@@ -4687,7 +4664,6 @@ struct lunar_strike_t : public druid_spell_t
     druid_spell_t( "lunar_strike", player, player -> spec.lunar_strike )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
 
@@ -4761,7 +4737,6 @@ struct mark_of_the_wild_t : public druid_spell_t
     druid_spell_t( "mark_of_the_wild", player, player -> find_specialization_spell( "Mark of the Wild" )  )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     trigger_gcd = timespan_t::zero();
     harmful     = false;
@@ -4791,7 +4766,6 @@ struct mark_of_ursol_t : public druid_spell_t
     druid_spell_t( "mark_of_ursol", player, player -> find_specialization_spell( "Mark of Ursol" ) )
   {
     parse_options( options_str );
-    form_mask = 0; // Legion TOCHECK: seems like this should require bear form, but it doesn't.
 
     harmful = false;
     may_crit = may_miss = false;
@@ -4816,7 +4790,6 @@ struct sunfire_t: public druid_spell_t
     shooting_stars( new shooting_stars_t( player ) )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
 
@@ -4873,9 +4846,9 @@ struct moonkin_form_t : public druid_spell_t
     druid_spell_t( "moonkin_form", player, player -> spec.moonkin_form )
   {
     parse_options( options_str );
-
     form_mask = NO_FORM | CAT_FORM | BEAR_FORM;
     may_autounshift   = false;
+
     harmful           = false;
     ignore_false_positive = true;
   }
@@ -4896,7 +4869,7 @@ struct prowl_t : public druid_spell_t
     druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" ) )
   {
     parse_options( options_str );
-    form_mask = autoshift = CAT_FORM;
+    autoshift = form_mask = CAT_FORM;
 
     trigger_gcd = timespan_t::zero();
     harmful     = false;
@@ -4931,7 +4904,6 @@ struct skull_bash_t : public druid_spell_t
     druid_spell_t( "skull_bash", player, player -> find_specialization_spell( "Skull Bash" ) )
   {
     parse_options( options_str );
-    form_mask = CAT_FORM | BEAR_FORM;
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     ignore_false_positive = true;
@@ -4964,7 +4936,6 @@ struct solar_wrath_t : public druid_spell_t
     druid_spell_t( "solar_wrath", player, player -> spec.solar_wrath )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
 
@@ -5082,7 +5053,6 @@ struct starfall_t : public druid_spell_t
     pulse( new starfall_pulse_t( player, "starfall_pulse" ) )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     hasted_ticks = may_crit = false; // Legion TOCHECK
 
@@ -5106,8 +5076,6 @@ struct starshards_t : public starfall_t
   starshards_t( druid_t* player ) :
     starfall_t( player, std::string( "" ) )
   {
-    form_mask = 0;
-
     background = true;
     target = sim -> target;
     radius = 40;
@@ -5130,7 +5098,6 @@ struct starsurge_t : public druid_spell_t
     starshards_chance( 0.0 )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
 
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
@@ -5174,7 +5141,6 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
   {
     parse_options( options_str );
-    form_mask |= MOONKIN_FORM;
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -5211,7 +5177,6 @@ struct survival_instincts_t : public druid_spell_t
   survival_instincts_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "survival_instincts", player, player -> find_specialization_spell( "Survival Instincts" ), options_str )
   {
-    form_mask = 0;
     harmful = false;
     use_off_gcd = true;
 
@@ -5238,7 +5203,6 @@ struct t16_2pc_starfall_bolt_t : public druid_spell_t
   t16_2pc_starfall_bolt_t( druid_t* player ) :
     druid_spell_t( "t16_2pc_starfall_bolt", player, player -> find_spell( 144770 ) )
   {
-    form_mask = 0;
     background  = true;
   }
 };
@@ -5248,7 +5212,6 @@ struct t16_2pc_sun_bolt_t : public druid_spell_t
   t16_2pc_sun_bolt_t( druid_t* player ) :
     druid_spell_t( "t16_2pc_sun_bolt", player, player -> find_spell( 144772 ) )
   {
-    form_mask = 0;
     background  = true;
   }
 };
@@ -5261,7 +5224,6 @@ struct typhoon_t : public druid_spell_t
     druid_spell_t( "typhoon", player, player -> talent.typhoon )
   {
     parse_options( options_str );
-    form_mask = 0;
 
     ignore_false_positive = true;
   }
@@ -5275,7 +5237,6 @@ struct warrior_of_elune_t : public druid_spell_t
     druid_spell_t( "warrior_of_elune", player, player -> talent.warrior_of_elune )
   {
     parse_options( options_str );
-    form_mask = 0;
 
     harmful = false;
   }
@@ -5307,7 +5268,6 @@ struct wild_charge_t : public druid_spell_t
     movement_speed_increase( 5.0 )
   {
     parse_options( options_str );
-    form_mask = 0;
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
