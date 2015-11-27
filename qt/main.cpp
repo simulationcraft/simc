@@ -1,8 +1,4 @@
-﻿#include <QLocale>
-#include <QtWidgets/QApplication>
-#include <locale>
-
-#include "simulationcraft.hpp"
+﻿#include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include "sc_SimulateTab.hpp"
 
