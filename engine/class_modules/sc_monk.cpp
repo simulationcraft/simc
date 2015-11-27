@@ -480,6 +480,7 @@ public:
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* aura_windwalker_monk;
+    const spell_data_t* chi_sphere;
     const spell_data_t* chi_torpedo;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* eye_of_the_tiger;
@@ -3416,7 +3417,7 @@ void sef_despawn_cb_t::operator()(player_t*)
 struct chi_sphere_t: public monk_spell_t
 {
   chi_sphere_t( monk_t* p, const std::string& options_str ):
-    monk_spell_t( "chi_sphere", p, spell_data_t::nil() )
+    monk_spell_t( "chi_sphere", p, p -> passives.chi_sphere )
   {
     parse_options( options_str );
     harmful = false;
@@ -3431,7 +3432,7 @@ struct chi_sphere_t: public monk_spell_t
     if ( p() -> buff.chi_sphere -> up() )
     {
       // Only use 1 Orb per execution
-      player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.power_strikes, this );
+      player -> resource_gain( RESOURCE_CHI, p() -> buff.chi_sphere -> value(), p() -> gain.power_strikes, this );
 
       p() -> buff.chi_sphere -> decrement();
     }
@@ -4460,6 +4461,7 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk       = find_spell( 137023 );
   passives.aura_mistweaver_monk       = find_spell( 137024 );
   passives.aura_windwalker_monk       = find_spell( 137025 );
+  passives.chi_sphere                 = find_spell( 121283 );
   passives.chi_torpedo                = find_spell( 119085 );
   passives.dizzying_kicks             = find_spell( 196723 );
   passives.eye_of_the_tiger           = find_spell( 196608 );
@@ -4564,6 +4566,10 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
+  buff.chi_sphere = buff_creator_t( this, "chi_sphere", passives.chi_sphere )
+    .default_value( passives.chi_sphere -> effectN( 1 ).base_value() )
+    .max_stack( 8 );
+
   buff.chi_torpedo = buff_creator_t( this, "chi_torpedo", passives.chi_torpedo )
     .default_value( passives.chi_torpedo -> effectN( 1 ).percent() );
 
@@ -4626,9 +4632,6 @@ void monk_t::create_buffs()
     .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() ) ;
 
   // Windwalker
-  buff.chi_sphere = buff_creator_t( this, "chi_sphere" )
-    .max_stack( 8 );
-
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
 
   buff.dizzying_kicks = buff_creator_t( this, "dizzying_kicks", passives.dizzying_kicks )
