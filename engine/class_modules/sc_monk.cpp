@@ -223,6 +223,7 @@ public:
     buff_t* bladed_armor;
     buff_t* channeling_soothing_mist;
     buff_t* chi_sphere;
+    buff_t* chi_torpedo;
     buff_t* combo_breaker_bok;
     buff_t* cranes_zeal;
     buff_t* dampen_harm;
@@ -230,9 +231,7 @@ public:
     buff_t* diffuse_magic;
     buff_t* forceful_winds;
     buff_t* fortifying_brew;
-    buff_t* gift_of_the_serpent;
     buff_t* keg_smash_talent;
-    buff_t* mana_tea;
     buff_t* power_strikes;
     buff_t* rushing_jade_wind;
     buff_t* serenity;
@@ -245,6 +244,7 @@ public:
 
     // Mistweaver
     buff_t* teachings_of_the_monastery;
+    buff_t* mana_tea;
     buff_t* mistweaving;
     buff_t* chi_jis_guidance;
 
@@ -464,7 +464,7 @@ public:
   {
     const spell_data_t* combo_strikes;       // Windwalker
     const spell_data_t* elusive_brawler;     // Brewmaster
-    const spell_data_t* gift_of_the_serpent; // Mistweaver
+    const spell_data_t* gust_of_mists; // Mistweaver
   } mastery;
 
   struct glyphs_t
@@ -476,7 +476,6 @@ public:
     const spell_data_t* touch_of_death;
     // Brewmaster
     // Mistweaver
-    const spell_data_t* mana_tea;
     // Windwalker
     const spell_data_t* blackout_kick;
     // Minor
@@ -500,6 +499,7 @@ public:
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* aura_windwalker_monk;
+    const spell_data_t* chi_torpedo;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* eye_of_the_tiger;
     const spell_data_t* hit_combo;
@@ -1729,26 +1729,6 @@ public:
     }
   }
 
-  void trigger_brew( double base_stacks )
-  {
-    if ( p() -> spec.brewing_mana_tea -> ok() )
-    {
-      // Manatee
-      //                   _.---.._
-      //     _        _.-'         ''-.
-      //   .'  '-,_.-'                 '''.
-      //  (       _                     o  :
-      //   '._ .-'  '-._         \  \-  ---]
-      //                 '-.___.-')  )..-'
-      //                          (_/lame
-      int stacks = static_cast<int>( base_stacks );
-      for ( int x = 0; x < base_stacks; ++x ) {
-        stacks += ( ab::rng().roll( p() -> cache.spell_crit() ) ) ? 1 : 0;
-      }
-      p() -> buff.mana_tea -> trigger( stacks );
-    }
-  }
-
   double combo_breaker_chance( combo_strikes_e ability )
   {
     double cb_chance = 0;
@@ -1769,13 +1749,24 @@ public:
     return cb_chance;
   }
 
-  void summon_gots_orb( double spell_proc_rate )
+  double cost() const
   {
-    if ( p() -> spec.brewing_mana_tea -> ok() )
-    {
-      double proc_rate = spell_proc_rate * p() -> cache.mastery_value();
-      p() -> buff.gift_of_the_serpent -> trigger( 1, 1, proc_rate );
-    }
+    double c = ab::cost();
+    if ( c == 0 )
+      return c;
+    c *= 1.0 + cost_reduction();
+    if ( c < 0 ) c = 0;
+    return c;
+  }
+
+  virtual double cost_reduction() const
+  {
+    double c = 0.0;
+
+    if ( p() -> specialization() == MONK_MISTWEAVER && p() -> buff.mana_tea -> up() )
+      c += p() -> buff.mana_tea -> value();
+
+    return c;
   }
 
   virtual void consume_resource()
@@ -2623,6 +2614,7 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
     interrupt_auto_attack = callbacks = false;
     channeled = true;
     dot_duration = data().duration();
+    tick_zero = false;
     base_tick_time = p -> talent.spinning_dragon_strike -> effectN( 1 ).period();
 
     base_multiplier = 10; // hardcoded into tooltip
@@ -3057,6 +3049,15 @@ struct energizing_elixir_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
+    int energy_max_refund = std::min( p() -> talent.energizing_elixir -> effectN( 1 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_ENERGY] ) );
+    int energy_refund = energy_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_ENERGY] );
+
+    int chi_max_refund = std::min( p() -> talent.energizing_elixir -> effectN( 2 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_CHI] ) );
+    int chi_refund = chi_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_CHI] );
+
+    p() -> resource_gain( RESOURCE_ENERGY, energy_refund, p() -> gain.energy_refund );
+    p() -> resource_gain( RESOURCE_CHI, chi_refund, p() -> gain.chi_refund );
+
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
       p() -> buff.forceful_winds -> trigger();
   }
@@ -3082,8 +3083,12 @@ struct black_ox_brew_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    // TODO:
-    // Implement Black Ox Brew
+    int energy_max_refund = std::min( p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_ENERGY] ) );
+    int energy_refund = energy_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_ENERGY] );
+
+    p() -> resource_gain( RESOURCE_ENERGY, energy_refund, p() -> gain.energy_refund );
+
+    p() -> cooldown.brewmaster_active_mitigation -> reset_init();
   }
 };
 // ==========================================================================
@@ -3098,12 +3103,6 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     background = direct_tick = true;
     attack_power_mod.direct = 0.500; // Hard code 09/09/14
     target = player;
-  }
-
-  void impact(action_state_t* s) override
-  {
-    monk_heal_t::impact( s );
-    summon_gots_orb( 0.25 );
   }
 };
 
@@ -3132,7 +3131,7 @@ struct chi_wave_t: public monk_spell_t
 
     parse_options( options_str );
     hasted_ticks = harmful = false;
-    dot_duration = timespan_t::from_seconds( 7.0 );
+    dot_duration = timespan_t::from_seconds( player -> talent.chi_wave -> effectN( 1 ).base_value() );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     add_child( heal );
     add_child( damage );
@@ -3176,17 +3175,11 @@ struct chi_wave_t: public monk_spell_t
 struct chi_burst_heal_t: public monk_heal_t
 {
   chi_burst_heal_t( monk_t& player ):
-    monk_heal_t( "chi_burst_heal", player, player.find_spell( 123986 ) )
+    monk_heal_t( "chi_burst_heal", player, player.find_spell( 130654 ) )
   {
     background = true;
     target = p();
-    attack_power_mod.direct = 2.03;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_heal_t::impact( s );
-    summon_gots_orb( 0.20 );
+    attack_power_mod.direct = 2.75;
   }
 };
 
@@ -3194,7 +3187,7 @@ struct chi_burst_t: public monk_spell_t
 {
   chi_burst_heal_t* heal;
   chi_burst_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "chi_burst", player, player -> talent.chi_burst ),
+    monk_spell_t( "chi_burst", player, player -> find_spell( 148135 ) ),
     heal( nullptr )
   {
     sef_ability = SEF_CHI_BURST;
@@ -3228,7 +3221,6 @@ struct chi_torpedo_t: public monk_spell_t
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo )
   {
     parse_options( options_str );
-    aoe = -1;
 
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
@@ -3558,78 +3550,32 @@ struct fortifying_brew_t: public monk_spell_t
 // ==========================================================================
 // Mana Tea
 // ==========================================================================
+// Manatee
+//                   _.---.._
+//     _        _.-'         ''-.
+//   .'  '-,_.-'                 '''.
+//  (       _                     o  :
+//   '._ .-'  '-._         \  \-  ---]
+//                 '-.___.-')  )..-'
+//                          (_/lame
 
 struct mana_tea_t: public monk_spell_t
 {
-  bool glyphed;
-  int mana_percent_return;
   mana_tea_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "mana_tea", &p, ( p.glyph.mana_tea -> ok() ? p.find_spell( 123761 ) : p.find_specialization_spell( "Mana Tea" ) )),
-    glyphed( p.glyph.mana_tea -> ok() ),
-    mana_percent_return( data().effectN( 1 ).base_value() )
+    monk_spell_t( "mana_tea", &p, p.talent.mana_tea )
   {
     parse_options( options_str );
 
-    if ( !glyphed )
-    {
-      channeled = true;
-      hasted_ticks = false;
-    }
-
     harmful = false;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    if ( glyphed )
-      return timespan_t::zero();
-    else
-      return data().effectN( 1 ).period() * p() -> buff.mana_tea -> current_stack;
-  }
-  
-
-  void tick( dot_t* d ) override
-  {
-    monk_spell_t::tick( d );
-
-    player -> resource_gain( RESOURCE_MANA, p() -> initial.stats.attribute[STAT_SPIRIT] * mana_percent_return, p() -> gain.mana_tea, this );
-    p() -> buff.mana_tea -> decrement();
-  }
-
-  bool ready() override
-  {
-    if ( p() -> buff.mana_tea -> current_stack == 0 )
-      return false;
-
-    return monk_spell_t::ready();
+    trigger_gcd = timespan_t::zero();
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    if ( p() -> talent.healing_elixirs -> ok() )
-    {
-      if ( p() -> cooldown.healing_elixirs -> up() )
-        p() -> active_actions.healing_elixir -> execute();
-    }
-
-    if ( glyphed )
-    {
-      int max_stacks_consumable = 2;
-      int stacks_to_consume = 0;
-      stacks_to_consume = std::min( p() -> buff.mana_tea -> current_stack, max_stacks_consumable );
-
-      double mana_gain = 0;
-      mana_gain = p() -> initial.stats.attribute[STAT_SPIRIT]
-        * mana_percent_return
-        * stacks_to_consume;
-      player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
-      p() -> buff.mana_tea -> decrement( stacks_to_consume );
-    }
+    p() -> buff.mana_tea -> trigger();
   }
-  // Mana Tea is not modified by haste effects
-  double composite_haste() const override { return 1.0; }
 };
 
 // ==========================================================================
@@ -3715,11 +3661,6 @@ struct purifying_brew_t: public monk_spell_t
       double stagger_heal = stagger_dmg * p() -> sets.set( SET_TANK, T16, B4 ) -> effectN( 1 ).percent();
       player -> resource_gain( RESOURCE_HEALTH, stagger_heal, p() -> gain.tier16_4pc_tank, this );
     }
-
-    // Tier 17 4 pieces Brewmaster: Purifying Brew generates 1 stacks of Elusive Brew.
-    // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
-    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold ) )
-      trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )
@@ -3897,12 +3838,6 @@ struct enveloping_mist_t: public monk_heal_t
       return timespan_t::zero();
 
     return monk_heal_t::execute_time();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_heal_t::impact( s );
-    summon_gots_orb( 0.25 );
   }
 };
 
@@ -4121,14 +4056,6 @@ struct zen_sphere_t: public monk_heal_t
       attack_power_mod.direct = 1.25;
     }
 
-    void impact( action_state_t* s ) override
-    {
-      monk_heal_t::impact( s );
-
-      summon_gots_orb( 0.20 );
-    }
-  };
-
   struct zen_sphere_explosion_dmg_t: public monk_spell_t
   {
     zen_sphere_explosion_dmg_t( monk_t& player ):
@@ -4162,14 +4089,6 @@ struct zen_sphere_t: public monk_heal_t
     hasted_ticks = false;
 
     cooldown -> duration = data().cooldown();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    monk_heal_t::tick( d );
-
-    summon_gots_orb( 0.20 );
-    dot -> execute();
   }
 
   void last_tick( dot_t* d ) override
@@ -4608,6 +4527,7 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk       = find_spell( 137023 );
   passives.aura_mistweaver_monk       = find_spell( 137024 );
   passives.aura_windwalker_monk       = find_spell( 137025 );
+  passives.chi_torpedo                = find_spell( 119085 );
   passives.dizzying_kicks             = find_spell( 196723 );
   passives.eye_of_the_tiger           = find_spell( 196608 );
   passives.hit_combo                  = find_spell( 196741 );
@@ -4627,14 +4547,13 @@ void monk_t::init_spells()
   glyph.blackout_kick                = find_glyph_spell( "Glyph of Blackout Kick" );
   glyph.fortifying_brew              = find_glyph_spell( "Glyph of Fortifying Brew" );
   glyph.fortuitous_spheres           = find_glyph_spell( "Glyph of Fortuitous Spheres" );
-  glyph.mana_tea                     = find_glyph_spell( "Glyph of Mana Tea" );
   glyph.targeted_expulsion           = find_glyph_spell( "Glyph of Targeted Expulsion" );
   glyph.touch_of_death               = find_glyph_spell( "Glyph of Touch of Death" );
 
   //MASTERY
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
-  mastery.gift_of_the_serpent        = find_mastery_spell( MONK_MISTWEAVER );
+  mastery.gust_of_mists              = find_mastery_spell( MONK_MISTWEAVER );
 
   // Sample Data
   sample_datas.stagger_total_damage           = get_sample_data("Total Stagger damage generated");
@@ -4721,6 +4640,9 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
+  buff.chi_torpedo = buff_creator_t( this, "chi_torpedo", passives.chi_torpedo )
+    .default_value( passives.chi_torpedo -> effectN( 1 ).percent() );
+
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() )
@@ -4766,11 +4688,8 @@ void monk_t::create_buffs()
   buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) )
     .add_invalidate( CACHE_CRIT );
 
-  buff.gift_of_the_serpent = buff_creator_t( this, "gift_of_the_serpent", find_spell( 119031 ) )
-    .max_stack( 99 );
-
-  buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) )
-    .period( timespan_t::zero() ); // much like Tigereye Brew, Mana Tea does not tick.
+  buff.mana_tea = buff_creator_t( this, "mana_tea", talent.mana_tea )
+    .default_value( talent.mana_tea -> effectN( 1 ).percent() );
 
   buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", spec.teachings_of_the_monastery_buff )
     .default_value( spec.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
