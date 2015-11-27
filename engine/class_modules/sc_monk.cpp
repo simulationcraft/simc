@@ -292,7 +292,6 @@ public:
     proc_t* combo_breaker_bok;
     proc_t* eye_of_the_tiger;
     proc_t* mana_tea;
-    proc_t* teachings_of_the_monastery;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
     proc_t* tier17_4pc_heal;
@@ -489,6 +488,7 @@ public:
     cooldown_t* brewmaster_attack;
     cooldown_t* brewmaster_active_mitigation;
     cooldown_t* desperate_measure;
+    cooldown_t* fists_of_fury;
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
     cooldown_t* rising_sun_kick;
@@ -561,6 +561,7 @@ public:
     // actives
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.brewmaster_active_mitigation = get_cooldown( "active_mitigation" );
+    cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere               = get_cooldown( "healing_sphere" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
@@ -2259,8 +2260,11 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
-      if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
-        p() -> cooldown.rising_sun_kick -> reset( true );
+      if ( p() -> buff.teachings_of_the_monastery -> up() )
+      {
+        if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
+          p() -> cooldown.rising_sun_kick -> reset( true );
+      }
     }
   }
 
@@ -2594,6 +2598,7 @@ struct spinning_dragon_strike_tick_t: public monk_melee_attack_t
     monk_melee_attack_t( name, p, s )
   {
     background = true;
+    aoe = -1;
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -2618,9 +2623,9 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
     interrupt_auto_attack = callbacks = false;
     channeled = true;
     dot_duration = data().duration();
-    base_tick_time = dot_duration / 15;
+    base_tick_time = p -> talent.spinning_dragon_strike -> effectN( 1 ).period();
 
-    base_multiplier = 2.375; // hardcoded into tooltip
+    base_multiplier = 10; // hardcoded into tooltip
     spell_power_mod.direct = 0.0;
 
     tick_action = new spinning_dragon_strike_tick_t( "spinning_dragon_strike_tick", p, p-> find_spell( 158221 ) );
@@ -2631,15 +2636,18 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
 
   void execute() override
   {
-    combo_strikes_trigger( CS_SPINNING_DRAGON_STRIKE );
-
     monk_melee_attack_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    combo_strikes_trigger( CS_SPINNING_DRAGON_STRIKE );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t tt = tick_time( s -> haste );
-    return tt * 15;
+    return tt * 3;
   }
 
   virtual void last_tick(dot_t* dot) override
@@ -2652,12 +2660,20 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
       proc_chance *= 0.50;
 
       // Each chi spent has a chance of proccing a Rising Sun Kick. Plausible to see up to 3 RSK procs; though highly unlikely
-      for ( int i = 1; i <= base_costs[RESOURCE_CHI]; i++ )
+      for ( int i = 1; i <= 3; i++ ) // TODO: Hard code the 3 for the time being until final word on how this works
       {
         if ( rng().roll( proc_chance ) )
           rsk_proc -> execute();
       }
     }
+  }
+
+  virtual bool ready() override
+  {
+    if ( p() -> cooldown.fists_of_fury -> down() && p() -> cooldown.rising_sun_kick -> down() )
+      return monk_melee_attack_t::ready();
+
+    return false;
   }
 };
 
@@ -4841,7 +4857,6 @@ void monk_t::init_procs()
 
   proc.combo_breaker_bok          = get_proc( "combo_breaker_bok" );
   proc.eye_of_the_tiger           = get_proc( "eye_of_the_tiger" );
-  proc.teachings_of_the_monastery = get_proc( "teachings_of_the_monastery" );
   proc.mana_tea                   = get_proc( "mana_tea" );
   proc.tier15_2pc_melee           = get_proc( "tier15_2pc_melee" );
   proc.tier15_4pc_melee           = get_proc( "tier15_4pc_melee" );
