@@ -29,14 +29,14 @@ struct artifact_power_t
   unsigned    id;
   unsigned    id_artifact;
   unsigned    max_rank;
-  const char* perk_name; // In reality, the spell name
+  const char* name; // In reality, the spell name
 };
 
 struct artifact_power_rank_t
 {
   unsigned id;
   unsigned id_power;
-  unsigned rank_index;
+  unsigned index;
   unsigned id_spell;
 };
 

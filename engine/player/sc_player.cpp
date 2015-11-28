@@ -358,6 +358,33 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   return true;
 }
 
+bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
+{
+  if ( value.size() == 0 )
+  {
+    return false;
+  }
+
+  bool ret = false;
+
+  if ( util::str_in_str_ci( value, ".wowdb.com/artifact-calculator#" ) )
+  {
+    ret = sim -> active_player -> parse_artifact_wowdb( value );
+  }
+  // Otherwise, if the string is exactly 9 or 8 characters, presume it's a shortened wowdb string
+  else if ( value.size() == 8 || value.size() == 9 )
+  {
+    ret = sim -> active_player -> parse_artifact_wowdb( value );
+  }
+
+  if ( ret )
+  {
+    sim -> active_player -> artifact_str = value;
+  }
+
+  return ret;
+}
+
 } // UNNAMED NAMESPACE ======================================================
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
@@ -7423,6 +7450,52 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   return true;
 }
 
+// player_t::parse_artifact_wowdb ===========================================
+
+bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
+{
+  auto data_offset = artifact_string.find( '#' );
+  if ( data_offset == std::string::npos && artifact_string.size() != 8 &&
+       artifact_string.size() != 9 )
+  {
+    return false;
+  }
+
+  std::string artifact_data;
+  // Full url
+  if ( data_offset != std::string::npos )
+  {
+    artifact_data = artifact_string.substr( data_offset + 2 );
+  }
+  // Only the actual artifact data (AAAAAAAA)
+  else if ( artifact_string.size() == 8 )
+  {
+    artifact_data = artifact_string;
+  }
+  // Spec + artifact data, we skip the spec for now (dAAAAAAAA)
+  else if ( artifact_string.size() == 9 )
+  {
+    artifact_data = artifact_string.substr( 1 );
+  }
+
+  if ( artifact_data.size() * 2 != artifact_points.size() )
+  {
+    return false;
+  }
+
+  const auto shift = 6, rank_mask = (1 << shift) - 1;
+
+  for ( size_t idx = 0; idx < artifact_data.size(); ++idx )
+  {
+    auto data = artifact_data[ idx ];
+
+    artifact_points[ idx * 2 ] = ( ( data & rank_mask ) - 1 );
+    artifact_points[ idx * 2 + 1 ] = ( ( data & ( rank_mask << shift ) ) >> shift ) - 1;
+  }
+
+  return true;
+}
+
 // player_t::replace_spells =================================================
 
 // TODO: HOTFIX handling
@@ -7646,12 +7719,12 @@ const spell_data_t* player_t::find_artifact_spell( const std::string& name ) con
   for ( power_index = 0; power_index < powers.size(); ++power_index )
   {
     const artifact_power_t* power = powers[ power_index ];
-    if ( power -> perk_name == 0 )
+    if ( power -> name == 0 )
     {
       continue;
     }
 
-    if ( util::str_compare_ci( name, power -> perk_name ) )
+    if ( util::str_compare_ci( name, power -> name ) )
     {
       power_data = power;
       break;
@@ -7688,6 +7761,13 @@ const spell_data_t* player_t::find_artifact_spell( const std::string& name ) con
   // Rank data missing for the power
   if ( artifact_points[ power_index ] > ranks.size() - 1 )
   {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s (index %u)",
+          this -> name(), artifact_points[ power_index ], ranks[ ranks.size() - 1 ] -> index,
+          power_data -> name ? power_data -> name : "Unknown", power_index );
+    }
+
     return spell_data_t::not_found();
   }
 
@@ -8944,6 +9024,11 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "glyphs=" + glyphs_str + term;
     }
+
+    if ( artifact_str.size() > 0 )
+    {
+      profile_str += "artifact=" + artifact_str + term;
+    }
   }
 
   if ( stype == SAVE_ALL )
@@ -9125,6 +9210,7 @@ void player_t::copy_from( player_t* source )
   professions_str = source -> professions_str;
   source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source -> talents_str );
+  parse_artifact( sim, "artifact", source -> artifact_str );
   talent_overrides_str = source -> talent_overrides_str;
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
@@ -9158,6 +9244,7 @@ void player_t::create_options()
     add_option( opt_string( "id", id_str ) );
     add_option( opt_func( "talents", parse_talent_url ) );
     add_option( opt_func( "talent_override", parse_talent_override ) );
+    add_option( opt_func( "artifact", parse_artifact ) );
     add_option( opt_string( "glyphs", glyphs_str ) );
     add_option( opt_string( "race", race_str ) );
     add_option( opt_func( "timeofday", parse_timeofday ) );

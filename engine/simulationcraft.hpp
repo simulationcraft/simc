@@ -3366,7 +3366,7 @@ struct player_t : public actor_t
   bool        initialized;
   bool        potion_used;
 
-  std::string talents_str, glyphs_str, id_str, target_str;
+  std::string talents_str, glyphs_str, id_str, target_str, artifact_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
@@ -4046,6 +4046,8 @@ struct player_t : public actor_t
   bool parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
+
+  bool parse_artifact_wowdb( const std::string& artifact_string );
 
   void create_talents_numbers();
   void create_talents_armory();
