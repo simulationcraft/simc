@@ -88,7 +88,6 @@ public:
     // Arms only
     buff_t* colossus_smash;
     // Prot only
-    absorb_buff_t* shield_barrier;
     buff_t* last_stand;
     buff_t* shield_block;
     buff_t* shield_wall;
@@ -201,7 +200,6 @@ public:
 
   struct realppm_t
   {
-    //std::unique_ptr<real_ppm_t> sudden_death;
   } rppm;
 
   // Spec Passives
@@ -220,7 +218,6 @@ public:
     const spell_data_t* thunder_clap;
     //Arms and Fury
     const spell_data_t* die_by_the_sword;
-    const spell_data_t* shield_barrier;
     const spell_data_t* commanding_shout;
     const spell_data_t* recklessness;
     const spell_data_t* whirlwind;
@@ -3680,8 +3677,6 @@ void warrior_t::init_procs()
 void warrior_t::init_rng()
 {
   player_t::init_rng();
-
-  //rppm.sudden_death = std::unique_ptr<rppm::sudden_death_t>( new rppm::sudden_death_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -3800,12 +3795,6 @@ void warrior_t::reset()
   heroic_charge = nullptr;
   rampage_driver = nullptr;
   last_target_charged = nullptr;
-  /*
-  if ( rppm.sudden_death )
-  {
-    rppm.sudden_death -> reset();
-  }
-  */
 }
 
 // Movement related overrides. =============================================
