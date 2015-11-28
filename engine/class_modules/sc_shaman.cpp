@@ -47,7 +47,6 @@ struct shaman_td_t : public actor_target_data_t
 
   struct debuffs
   {
-    buff_t* stormstrike;
     buff_t* t16_2pc_caster;
   } debuff;
 
@@ -543,7 +542,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
 {
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
-  debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
   debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).trigger() )
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) ) );
 }
@@ -1718,12 +1716,6 @@ struct lightning_charge_t : public shaman_spell_t
     double c = shaman_spell_t::composite_target_crit( target );
 
 
-    if ( td( target ) -> debuff.stormstrike -> check() )
-    {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-    }
-
     return c;
   }
 
@@ -2466,8 +2458,6 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      td( state -> target ) -> debuff.stormstrike -> trigger();
-
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
     }
@@ -2544,8 +2534,6 @@ struct windstrike_t : public shaman_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      td( state -> target ) -> debuff.stormstrike -> trigger();
-
       windstrike_mh -> execute();
       if ( windstrike_oh ) windstrike_oh -> execute();
     }
@@ -2696,19 +2684,6 @@ struct chain_lightning_t: public shaman_spell_t
 
   action_state_t* new_state() override
   { return new chain_lightning_state_t( this, target ); }
-
-  double composite_target_crit( player_t* target ) const override
-  {
-    double c = shaman_spell_t::composite_target_crit( target );
-
-    if ( td( target ) -> debuff.stormstrike -> check() )
-    {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-    }
-
-    return c;
-  }
 
   void execute() override
   {
@@ -3206,19 +3181,6 @@ struct lightning_bolt_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_target_crit( player_t* target ) const override
-  {
-    double c = shaman_spell_t::composite_target_crit( target );
-
-    if ( td( target ) -> debuff.stormstrike -> check() )
-    {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-    }
-
-    return c;
-  }
-
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
@@ -3312,19 +3274,6 @@ struct elemental_blast_t : public shaman_spell_t
       s -> debug();
 
     return result;
-  }
-
-  virtual double composite_target_crit( player_t* target ) const override
-  {
-    double c = shaman_spell_t::composite_target_crit( target );
-
-    if ( td( target ) -> debuff.stormstrike -> check() )
-    {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-    }
-
-    return c;
   }
 };
 
@@ -3556,19 +3505,6 @@ struct earth_shock_t : public shaman_spell_t
     uses_elemental_fusion= true;
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
-  }
-
-  double composite_target_crit( player_t* target ) const override
-  {
-    double c = shaman_spell_t::composite_target_crit( target );
-
-    if ( td( target ) -> debuff.stormstrike -> check() )
-    {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-    }
-
-    return c;
   }
 
   virtual void execute() override
@@ -5734,17 +5670,11 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=2))" );
     aoe -> add_action( this, "Unleash Elements", "if=spell_targets.fire_nova_explosion<4" );
     aoe -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<=9|!ticking" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=1,if=!debuff.stormstrike.up" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=2,if=!debuff.stormstrike.up" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=3,if=!debuff.stormstrike.up" );
     aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike" );
     aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=3" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=(buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=4)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3))" );
     aoe -> add_action( this, "Magma Totem", "if=pet.magma_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
     aoe -> add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.react=5&glyph.chain_lightning.enabled&spell_targets.chain_lightning<3" );
-    aoe -> add_action( this, "Stormstrike", "target=1,if=!debuff.stormstrike.up" );
-    aoe -> add_action( this, "Stormstrike", "target=2,if=!debuff.stormstrike.up" );
-    aoe -> add_action( this, "Stormstrike", "target=3,if=!debuff.stormstrike.up" );
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Lava Lash" );
     aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=2&spell_targets.fire_nova_explosion>=2" );
