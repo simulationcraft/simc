@@ -2779,10 +2779,7 @@ struct keg_smash_t: public monk_melee_attack_t
   virtual bool ready() override
   {
     if ( p() -> buff.keg_smash_talent -> check() )
-    {
-      p() -> buff.keg_smash_talent -> expire();
       return true;
-    }
 
     return monk_melee_attack_t::ready();
   }
@@ -2797,6 +2794,9 @@ struct keg_smash_t: public monk_melee_attack_t
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
+
+    if ( p() -> buff.keg_smash_talent -> check() )
+      p() -> buff.keg_smash_talent -> expire();
   }
 };
 
