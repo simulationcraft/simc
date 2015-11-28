@@ -1806,6 +1806,7 @@ struct rampage_attack_t: public warrior_attack_t
       dam *= 1.0 + p() -> buff.enrage -> data().effectN( 2 ).percent();
       dam *= 1.0 + p() -> cache.mastery_value();
     }
+    return dam;
   }
 };
 
@@ -1845,6 +1846,10 @@ struct rampage_parent_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+    for ( size_t i = 0; i < p -> rampage_attacks.size(); i++ )
+    {
+      add_child( p -> rampage_attacks[i] );
+    }
   }
 
   void execute() override
