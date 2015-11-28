@@ -1801,7 +1801,7 @@ struct rampage_attack_t: public warrior_attack_t
   {
     double dam = warrior_attack_t::action_multiplier();
 
-    if ( !p() -> buff.enrage -> check() ) // If enrage is not up, it's still does damage as if the player is enraged. 
+    if ( !p() -> buff.enrage -> check() ) // If enrage is not up, it still does damage as if the player is enraged. 
     {
       dam *= 1.0 + p() -> buff.enrage -> data().effectN( 2 ).percent();
       dam *= 1.0 + p() -> cache.mastery_value();
