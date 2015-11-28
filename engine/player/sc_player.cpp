@@ -1202,7 +1202,15 @@ void player_t::init_defense()
   }
 
   // Armor Coefficient
-  initial.armor_coeff = dbc.armor_mitigation_constant( level() );
+  // TODO: Danger, danger, hardcode K value for 103 targets so we can have wod mitigation to "compare things", since we don't know armor values in legion.
+  if ( level() == 103 )
+  {
+    initial.armor_coeff = 5234;
+  }
+  else
+  {
+    initial.armor_coeff = dbc.armor_mitigation_constant( level() );
+  }
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
 
