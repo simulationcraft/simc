@@ -1732,8 +1732,15 @@ talent_data_t* talent_data_t::find_tokenized( const char* name, specialization_e
   return nullptr;
 }
 
-void spell_data_t::link( bool /* ptr */ )
+void spell_data_t::link( bool ptr )
 {
+  spell_data_t* spell_data = spell_data_t::list( ptr );
+
+  for ( int i = 0; spell_data[ i ].id(); i++ )
+  {
+    spell_data_t& sd = spell_data[ i ];
+    sd._effects = new std::vector<const spelleffect_data_t*>;
+  }
 }
 
 void spelleffect_data_t::link( bool ptr )
@@ -1758,9 +1765,6 @@ void spelleffect_data_t::link( bool ptr )
       }
     }
 
-    if ( ed._spell -> _effects == nullptr )
-      ed._spell -> _effects = new std::vector<const spelleffect_data_t*>;
-
     if ( ed._spell -> _effects -> size() < ( ed.index() + 1 ) )
       ed._spell -> _effects -> resize( ed.index() + 1, spelleffect_data_t::nil() );
 
@@ -1780,16 +1784,13 @@ void spell_data_t::de_link( bool ptr )
     {
       // delete dynamically allocated vector with spelleffect_data_t pointers
       delete sd._effects;
-      sd._effects = nullptr;
     }
     if ( sd._power )
     {
       // delete dynamically allocated vector with spellpower_data_t pointers
       delete sd._power;
-      sd._power = nullptr;
     }
     delete sd._driver;
-    sd._driver = nullptr;
   }
 }
 

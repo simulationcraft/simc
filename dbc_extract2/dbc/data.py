@@ -248,8 +248,8 @@ class Spell(DBCRecord):
     def __init__(self, dbc_parser, record, dbc_id, record_offset):
         DBCRecord.__init__(self, dbc_parser, record, dbc_id, record_offset)
 
-        self._effects = [ None ]
-        self.max_effect_index = 0
+        self._effects = []
+        self.max_effect_index = -1
         self._powers  = []
         self._misc    = []
         self._categories = []

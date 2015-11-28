@@ -173,7 +173,7 @@ class DBCParser(object):
             self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size, self._id_offset > 0,
                     self._magic == b'WDB3' and self.count_pad_bytes() or 0)
 
-        if not self._options.raw and hasattr(self._class, '_ff'):
+        if not self._options.raw and hasattr(self._class, '_ff') and self._records > 0:
             self._class._ff = (self.compute_id_output_format(),) + self._class._ff[1:]
 
         # Make sure our data format is correct size
@@ -212,7 +212,7 @@ class DBCParser(object):
         if not self._data and not self.open_dbc():
             return None
 
-        if self._last_record_id == self.n_records():
+        if self._records == 0 or self._last_record_id == self.n_records():
             return None
 
         dbc_id = record_offset = 0
@@ -282,7 +282,7 @@ class ItemSparseParser(DBCParser):
         if not self._data and not self.open_dbc():
             return None
 
-        if self._last_record_id == (self._last_id - self._first_id + 1):
+        if self._records == 0 or self._last_record_id == (self._last_id - self._first_id + 1):
             return None
 
         record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)

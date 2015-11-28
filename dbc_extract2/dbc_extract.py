@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-import optparse, sys, os, glob, re, datetime, signal
+import argparse, sys, os, glob, re, datetime, signal
 import dbc.generator, dbc.db, dbc.parser
 
-parser = optparse.OptionParser( usage= "%prog [-otlbp] [ARGS]", version = "%prog 1.0" )
-parser.add_option("-t", "--type", dest = "type", 
+parser = argparse.ArgumentParser(usage= "%(prog)s [-otlbp] [ARGS]")
+parser.add_argument("-t", "--type", dest = "type", 
                   help    = "Processing type [spell]", metavar = "TYPE", 
-                  default = "spell", action = "store", type = "choice",
+                  default = "spell", action = "store",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'csv',
                               'header', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
                               'glyph_list', 'glyph_property_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
@@ -14,47 +14,35 @@ parser.add_option("-t", "--type", dest = "type",
                               'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
                               'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling',
                               'item_name_desc', 'artifact' ]), 
-parser.add_option("-o", dest = "output", action = "store", type = "str", default = None)
-parser.add_option("-a", dest = "append", action = "store", type = "str", default = None)
-parser.add_option("--raw", dest = "raw", action = "store_true", default = False)
-parser.add_option("-f", dest = "format",
-                  help = "DBC Format file",
-                  action = "store", type = "str")
-parser.add_option("--delim", dest = "delim",
-                  help = "Delimiter for -t csv",
-                  default = ",", action = "store", type = "str")
-parser.add_option("-l", "--level", dest = "level", 
-                  help    = "Scaling values up to level [115]", 
-                  default = 115, action = "store", type = "int")
-parser.add_option("-p", "--path", dest = "path", 
-                  help    = "DBC input directory [cwd]", 
-                  default = r'.', action = "store", type = "string")
-parser.add_option("-b", "--build", dest = "build", 
-                  help    = "World of Warcraft build number", 
-                  default = 0, action = "store", type = "int")
-parser.add_option("--prefix", dest = "prefix", 
-                  help    = "Data structure prefix string", 
-                  default = r'', action = "store", type = "string")
-parser.add_option("--suffix", dest = "suffix", 
-                  help    = "Data structure suffix string", 
-                  default = r'', action = "store", type = "string")
-parser.add_option("--min-ilvl", dest = "min_ilevel",
-                  help    = "Minimum inclusive ilevel for item-related extraction",
-                  default = 90, action = "store", type = "int" )
-parser.add_option("--max-ilvl", dest = "max_ilevel",
-                  help    = "Maximum inclusive ilevel for item-related extraction",
-                  default = 940, action = "store", type = "int" )
-parser.add_option("--scale-ilvl", dest = "scale_ilevel",
-                  help    = "Maximum inclusive ilevel for game table related extraction",
-                  default = 1000, action = "store", type = "int" )
-parser.add_option("--cache", dest = "cache_dir",
-                  help    = "World of Warcraft Cache directory.", 
-                  default = r'', action = "store", type = "string" )
-parser.add_option("--as", dest = "as_dbc", 
-                  help    = "Treat given DBC file as this option",
-                  action = "store", type = "string", default = '' )
-parser.add_option("--debug", dest = "debug", default = False, action = "store_true")
-(options, args) = parser.parse_args()
+parser.add_argument("-o",            dest = "output")
+parser.add_argument("-a",            dest = "append")
+parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
+parser.add_argument("--debug",       dest = "debug",        default = False, action = "store_true")
+parser.add_argument("-f",            dest = "format",
+                    help = "DBC Format file")
+parser.add_argument("--delim",       dest = "delim",        default = ',',
+                    help = "Delimiter for -t csv")
+parser.add_argument("-l", "--level", dest = "level",        default = 115, type = int,
+                    help = "Scaling values up to level [115]")
+parser.add_argument("-b", "--build", dest = "build",        default = 0, type = int,
+                    help = "World of Warcraft build number")
+parser.add_argument("--prefix",      dest = "prefix",       default = '',
+                    help = "Data structure prefix string")
+parser.add_argument("--suffix",      dest = "suffix",       default = '',
+                    help = "Data structure suffix string")
+parser.add_argument("--min-ilvl",    dest = "min_ilevel",   default = 90, type = int,
+                    help = "Minimum inclusive ilevel for item-related extraction")
+parser.add_argument("--max-ilvl",    dest = "max_ilevel",   default = 940, type = int,
+                    help = "Maximum inclusive ilevel for item-related extraction")
+parser.add_argument("--scale-ilvl",  dest = "scale_ilevel", default = 1000, type = int,
+                    help = "Maximum inclusive ilevel for game table related extraction")
+parser.add_argument("--as",          dest = "as_dbc",       default = '',
+                    help = "Treat given DBC file as this option" )
+parser.add_argument("-p", "--path",  dest = "path",         default = '.', nargs = '+',
+                    help = "DBC input directory [cwd]")
+parser.add_argument("--cache",       dest = "cache_dir",    default = '',  nargs = '+',
+                    help = "World of Warcraft Cache directory.")
+options = parser.parse_args()
 
 if options.build == 0 and options.type != 'header':
     parser.error('-b is a mandatory parameter for extraction type "%s"' % options.type)
@@ -70,6 +58,9 @@ if options.type == 'view' and len(args) == 0:
 
 if options.type == 'header' and len(args) == 0:
     parser.error('Header parsing requires at least a single DBC file to parse it from')
+
+if options.cache_dir and not os.path.isdir(' '.join(options.cache_dir)):
+    parser.error('Invalid cache directory %s' % ' '.join(options.cache_dir))
 
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
 # up to options.build

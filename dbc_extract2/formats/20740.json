@@ -448,7 +448,8 @@
     { "data_type": "S", "field": "desc"                                       },
     { "data_type": "S", "field": "tt"                                         },
     { "data_type": "I", "field": "id_misc"                                    },
-    { "data_type": "I", "field": "id_desc_var"                                }
+    { "data_type": "H", "field": "id_desc_var"                                },
+    { "data_type": "2x"                                                       }
   ],
   "SpellAuraOptions.db2": [
     { "data_type": "I", "field": "id_spell" },

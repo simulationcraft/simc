@@ -73,7 +73,7 @@ class DataGenerator(object):
 
         for i in self._dbc:
             dbcname = i.replace('-', '_').lower()
-            dbcp = dbc.parser.get_parser(self._options, os.path.abspath(os.path.join(self._options.path, i)))
+            dbcp = dbc.parser.get_parser(self._options, os.path.abspath(os.path.join(' '.join(self._options.path), i)))
 
             if not dbcp.open_dbc():
                 return False
@@ -88,22 +88,22 @@ class DataGenerator(object):
                 dbase[record.id] = record
                 record = dbcp.next_record()
 
-        if not self._options.cache_dir or not os.access(os.path.abspath(self._options.cache_dir), os.R_OK):
+        if not self._options.cache_dir:
             return True
 
         cache_files = []
-        files = os.listdir(self._options.cache_dir)
+        files = os.listdir(' '.join(self._options.cache_dir))
         for f in files:
             fn = f[:f.find('.')]
             if fn in self._dbc:
-                cache_files.append((fn, os.path.abspath(os.path.join(self._options.cache_dir, f))))
+                cache_files.append((fn, os.path.abspath(os.path.join(' '.join(self._options.cache_dir), f))))
 
         cache_parsers = { }
         for cache_file in cache_files:
             if cache_file[0] not in cache_parsers:
                 cache_parsers[cache_file[0]] = { 'parsers': [], 'ids': [ ] }
 
-            p = parser.DBCParser(self._options, cache_file[1])
+            p = dbc.parser.get_parser(self._options, cache_file[1])
             if not p.open_dbc():
                 continue
 
@@ -113,10 +113,13 @@ class DataGenerator(object):
             if len(data['parsers']) == 0:
                 continue
 
-            data['parsers'].sort(cmp = lambda x, y: y._timestamp - x._timestamp)
+            data['parsers'].sort(key = lambda v: -v._timestamp)
             dbase = getattr(self, '_%s_db' % data['parsers'][0].name())
 
             for cache_parser in data['parsers']:
+                if cache_parser._build != self._options.build:
+                    continue
+
                 record = cache_parser.next_record()
                 while record != None:
                     if record.id not in data['ids']:
@@ -2092,8 +2095,8 @@ class SpellDataGenerator(DataGenerator):
 
         # If we do not find a true value in enabled effects, this spell is completely
         # blacklisted, as it has no effects enabled that interest us
-        if True not in enabled_effects:
-            self.debug("Spell id %u (%s) has no enabled effects" % ( spell.id, spell_name ) )
+        if len(spell._effects) > 0 and True not in enabled_effects:
+            self.debug("Spell id %u (%s) has no enabled effects (n_effects=%u)" % ( spell.id, spell_name, len(spell._effects) ) )
             return False
 
         return True
@@ -2884,6 +2887,10 @@ class RacialSpellGenerator(SpellDataGenerator):
                 if not DataGenerator._race_names[race_bit]:
                     continue
 
+                spell = self._spell_db[k]
+                if spell.id != k:
+                    continue
+
                 if v['mask_race'] & (1 << (race_bit - 1)):
                     if v['mask_class']:
                         for class_bit in range(0, len(DataGenerator._class_names)):
@@ -2891,11 +2898,9 @@ class RacialSpellGenerator(SpellDataGenerator):
                                 continue
 
                             if v['mask_class'] & (1 << (class_bit - 1)):
-                                spell = self._spell_db[k]
                                 keys[race_bit][class_bit].append( ( spell.name, k ) )
                     # Generic racial spell, goes to "class 0"
                     else:
-                        spell = self._spell_db[k]
                         keys[race_bit][0].append( ( spell.name, k ) )
 
         # Figure out tree with most abilities
