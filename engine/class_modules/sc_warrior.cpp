@@ -286,18 +286,8 @@ public:
   // Perks
   struct perks_t
   {
-    //All Specs
-    const spell_data_t* improved_heroic_leap;
-    //Arms and Fury
-    const spell_data_t* improved_die_by_the_sword;
-    const spell_data_t* improved_recklessness;
-    //Arms only
-    //Fury only
-    const spell_data_t* empowered_execute;
-    //Protection only
     const spell_data_t* improved_block;
     const spell_data_t* improved_defensive_stance;
-    const spell_data_t* improved_heroic_throw;
   } perk;
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
@@ -1259,8 +1249,6 @@ struct execute_off_hand_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
-
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 };
 
@@ -1281,8 +1269,6 @@ struct execute_t: public warrior_attack_t
            p -> off_hand_weapon.group() == WEAPON_1H )
            weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
-
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -1423,8 +1409,6 @@ struct heroic_throw_t: public warrior_attack_t
 
     weapon = &( player -> main_hand_weapon );
     may_dodge = may_parry = may_block = false;
-    if ( p -> perk.improved_heroic_throw -> ok() )
-      cooldown -> duration = timespan_t::zero();
   }
 
   bool ready() override
@@ -2823,13 +2807,6 @@ void warrior_t::init_spells()
   talents.siegebreaker          = find_talent_spell( "Siegebreaker" );
 
   //Perks
-  perk.improved_heroic_leap          = find_perk_spell( "Improved Heroic Leap" );
-
-  perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword" );
-
-  perk.empowered_execute             = find_perk_spell( "Empowered Execute" );
-
-  perk.improved_heroic_throw         = find_perk_spell( "Improved Heroic Throw" );
   perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );
   perk.improved_block                = find_perk_spell( "Improved Block" );
 
@@ -3544,7 +3521,7 @@ void warrior_t::create_buffs()
   buff.defensive_stance = new buffs::defensive_stance_t( *this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
 
   buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
-    .default_value( spec.die_by_the_sword -> effectN( 2 ).percent() + perk.improved_die_by_the_sword -> effectN( 1 ).percent() )
+    .default_value( spec.die_by_the_sword -> effectN( 2 ).percent() )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PARRY );
 
