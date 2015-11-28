@@ -336,21 +336,6 @@ public:
     const spell_data_t* earthen_spike;
   } talent;
 
-  // Glyphs
-  struct
-  {
-    const spell_data_t* chain_lightning;
-    const spell_data_t* fire_elemental_totem;
-    const spell_data_t* flame_shock;
-    const spell_data_t* frost_shock;
-    const spell_data_t* lava_lash;
-    const spell_data_t* spiritwalkers_grace;
-    const spell_data_t* thunder;
-    const spell_data_t* thunderstorm;
-    const spell_data_t* lightning_shield;
-    const spell_data_t* spiritwalkers_focus;
-  } glyph;
-
   // Misc Spells
   struct
   {
@@ -395,7 +380,6 @@ public:
     spec(),
     mastery(),
     talent(),
-    glyph(),
     spell()
   {
     range::fill( pet_feral_spirit, nullptr );
@@ -461,7 +445,6 @@ public:
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      create_options() override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
@@ -2271,8 +2254,6 @@ struct chain_lightning_t: public shaman_spell_t
     may_fulmination = player -> spec.fulmination -> ok();
     cooldown -> duration += player -> spec.shamanism -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + player -> spec.shamanism -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
-    aoe = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
   }
@@ -2853,7 +2834,6 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_spell_t( "thunderstorm", player, player -> find_specialization_spell( "Thunderstorm" ), options_str )
   {
     aoe = -1;
-    cooldown -> duration += player -> glyph.thunder -> effectN( 1 ).time_value();
   }
 };
 
@@ -2946,8 +2926,6 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     shaman_spell_t( "spiritwalkers_grace", player, player -> find_specialization_spell( "Spiritwalker's Grace" ), options_str )
   {
     may_miss = may_crit = harmful = callbacks = false;
-
-    cooldown -> duration += player -> glyph.spiritwalkers_focus -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
@@ -3033,39 +3011,10 @@ struct earth_shock_t : public shaman_spell_t
 
 // Flame Shock Spell ========================================================
 
-struct flame_shock_heal_t : public heal_t
-{
-  flame_shock_heal_t( shaman_t* player ) :
-    heal_t( "flame_shock_heal", player, player -> glyph.flame_shock )
-  {
-    background = true;
-    may_crit = false;
-    may_multistrike = 0;
-
-    target = player;
-  }
-
-  void init() override
-  {
-    heal_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-
-  // No way for our generic system to know this is an "amount heal", so we
-  // override the proc type to explicitly tell it's a heal, and as a
-  // consequence, procs healing effects (trinkets).
-  proc_types proc_type() const override
-  { return PROC1_HEAL; }
-};
-
 struct flame_shock_t : public shaman_spell_t
 {
-  flame_shock_heal_t* heal;
-
   flame_shock_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "flame_shock", player, player -> find_specialization_spell( "Flame Shock" ), options_str ),
-    heal( p() -> glyph.flame_shock -> ok() ? new flame_shock_heal_t( player ) : nullptr )
+    shaman_spell_t( "flame_shock", player, player -> find_specialization_spell( "Flame Shock" ), options_str )
   {
     // TODO-WOD: Separate to tick and direct amount to be safe
     tick_may_crit         = true;
@@ -3087,26 +3036,9 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( heal )
-    {
-      heal -> base_dd_min = heal -> base_dd_max = execute_state -> result_amount * p() -> glyph.flame_shock -> effectN( 1 ).percent();
-      heal -> execute();
-    }
-  }
-
   virtual void tick( dot_t* d ) override
   {
     shaman_spell_t::tick( d );
-
-    if ( heal )
-    {
-      heal -> base_dd_min = heal -> base_dd_max = d -> state -> result_amount * p() -> glyph.flame_shock -> effectN( 1 ).percent();
-      heal -> execute();
-    }
 
     if ( rng().roll( p() -> spec.lava_surge -> proc_chance() ) )
     {
@@ -3138,16 +3070,6 @@ struct frost_shock_t : public shaman_spell_t
   {
     cooldown              = player -> cooldown.shock;
     shock      = true;
-  }
-
-  void execute() override
-  {
-    timespan_t tmp_cd = cooldown -> duration;
-    cooldown -> duration = data().cooldown() + p() -> glyph.frost_shock -> effectN( 1 ).time_value();
-
-    base_t::execute();
-
-    cooldown -> duration = tmp_cd;
   }
 };
 
@@ -4137,18 +4059,6 @@ void shaman_t::init_spells()
   talent.feral_kin                   = find_talent_spell( "Feral Kin"            );
   talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
 
-  // Glyphs
-  glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );
-  glyph.fire_elemental_totem         = find_glyph_spell( "Glyph of Fire Elemental Totem" );
-  glyph.flame_shock                  = find_glyph_spell( "Glyph of Flame Shock" );
-  glyph.frost_shock                  = find_glyph_spell( "Glyph of Frost Shock" );
-  glyph.lava_lash                    = find_glyph_spell( "Glyph of Lava Lash" );
-  glyph.spiritwalkers_grace          = find_glyph_spell( "Glyph of Spiritwalker's Grace" );
-  glyph.thunder                      = find_glyph_spell( "Glyph of Thunder" );
-  glyph.thunderstorm                 = find_glyph_spell( "Glyph of Thunderstorm" );
-  glyph.lightning_shield             = find_glyph_spell( "Glyph of Lightning Shield" );
-  glyph.spiritwalkers_focus          = find_glyph_spell( "Glyph of Spiritwalker's Focus" );
-
   // Misc spells
   spell.ancestral_swiftness          = find_spell( 121617 );
   spell.resurgence                   = find_spell( 101033 );
@@ -4456,9 +4366,6 @@ void shaman_t::trigger_improved_lava_lash( const action_state_t* state )
   if ( ! get_target_data( state -> target ) -> dot.flame_shock -> is_ticking() )
     return;
 
-  if ( glyph.lava_lash -> ok() )
-    return;
-
   // Splash from the action's target
   action_improved_lava_lash -> target = state -> target;
   action_improved_lava_lash -> schedule_execute();
@@ -4485,8 +4392,6 @@ void shaman_t::create_buffs()
   buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) )
                                  .chance( 1.0 )
                                  .duration( find_specialization_spell( "Spiritwalker's Grace" ) -> duration() +
-                                            glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
-                                            glyph.spiritwalkers_focus -> effectN( 2 ).time_value() +
                                             sets.set( SET_HEALER, T13, B4 ) -> effectN( 1 ).time_value() );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
 
@@ -4740,9 +4645,6 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10" );
     def -> add_talent( this, "Ancestral Swiftness" );
     def -> add_action( this, "Ascendance" );
-
-    // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
-    def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
 
     def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>1", "On multiple enemies, the priority follows the 'aoe' action list." );
     def -> add_action( "call_action_list,name=single", "If only one enemy, priority follows the 'single' action list." );
@@ -5018,18 +4920,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   }
 
   return m;
-}
-
-// shaman_t::target_mitigation ==============================================
-
-void shaman_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
-{
-  player_t::target_mitigation( school, type, state );
-
-  if ( buff.lightning_shield -> check() )
-  {
-    state -> result_amount *= 1.0 + glyph.lightning_shield -> effectN( 1 ).percent();
-  }
 }
 
 // shaman_t::invalidate_cache ===============================================
