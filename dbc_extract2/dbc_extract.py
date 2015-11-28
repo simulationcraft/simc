@@ -38,10 +38,11 @@ parser.add_argument("--scale-ilvl",  dest = "scale_ilevel", default = 1000, type
                     help = "Maximum inclusive ilevel for game table related extraction")
 parser.add_argument("--as",          dest = "as_dbc",       default = '',
                     help = "Treat given DBC file as this option" )
-parser.add_argument("-p", "--path",  dest = "path",         default = '.', nargs = '+',
+parser.add_argument("-p", "--path",  dest = "path",         default = '.',
                     help = "DBC input directory [cwd]")
-parser.add_argument("--cache",       dest = "cache_dir",    default = '',  nargs = '+',
+parser.add_argument("--cache",       dest = "cache_dir",    default = '',
                     help = "World of Warcraft Cache directory.")
+parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
 options = parser.parse_args()
 
 if options.build == 0 and options.type != 'header':
@@ -53,14 +54,14 @@ if options.min_ilevel < 0 or options.max_ilevel > 999:
 if options.level % 5 != 0 or options.level > 115:
     parser.error('-l must be given as a multiple of 5 and be smaller than 100')
 
-if options.type == 'view' and len(args) == 0:
+if options.type == 'view' and len(options.args) == 0:
     parser.error('View requires a DBC file name and an optional ID number')
 
-if options.type == 'header' and len(args) == 0:
+if options.type == 'header' and len(options.args) == 0:
     parser.error('Header parsing requires at least a single DBC file to parse it from')
 
-if options.cache_dir and not os.path.isdir(' '.join(options.cache_dir)):
-    parser.error('Invalid cache directory %s' % ' '.join(options.cache_dir))
+if options.cache_dir and not os.path.isdir(options.cache_dir):
+    parser.error('Invalid cache directory %s' % options.cache_dir)
 
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
 # up to options.build
@@ -288,10 +289,10 @@ elif options.type == 'talent':
     
     g.generate(ids)
 elif options.type == 'view':
-    path = os.path.abspath(os.path.join(options.path, args[0]))
-    id = None
-    if len(args) > 1:
-        id = int(args[1])
+    path = os.path.abspath(os.path.join(options.path, options.args[0]))
+    id = 0
+    if len(options.args) > 1:
+        id = int(options.args[1])
 
     dbc_file = dbc.parser.get_parser(options, path)
     if not dbc_file.open_dbc():
@@ -299,7 +300,7 @@ elif options.type == 'view':
 
     if options.debug or options.raw:
         print(dbc_file)
-    if id == None:
+    if id == 0:
         record = dbc_file.next_record()
         while record != None:
             #mo = re.findall(r'(\$(?:{.+}|[0-9]*(?:<.+>|[^l][A-z:;]*)[0-9]?))', str(record))

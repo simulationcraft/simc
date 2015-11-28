@@ -73,7 +73,7 @@ class DataGenerator(object):
 
         for i in self._dbc:
             dbcname = i.replace('-', '_').lower()
-            dbcp = dbc.parser.get_parser(self._options, os.path.abspath(os.path.join(' '.join(self._options.path), i)))
+            dbcp = dbc.parser.get_parser(self._options, os.path.abspath(os.path.join(self._options.path, i)))
 
             if not dbcp.open_dbc():
                 return False
@@ -92,11 +92,11 @@ class DataGenerator(object):
             return True
 
         cache_files = []
-        files = os.listdir(' '.join(self._options.cache_dir))
+        files = os.listdir(self._options.cache_dir)
         for f in files:
             fn = f[:f.find('.')]
             if fn in self._dbc:
-                cache_files.append((fn, os.path.abspath(os.path.join(' '.join(self._options.cache_dir), f))))
+                cache_files.append((fn, os.path.abspath(os.path.join(self._options.cache_dir, f))))
 
         cache_parsers = { }
         for cache_file in cache_files:
