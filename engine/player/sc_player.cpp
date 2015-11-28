@@ -1203,9 +1203,9 @@ void player_t::init_defense()
 
   // Armor Coefficient
   // TODO: Danger, danger, hardcode K value for 103 targets so we can have wod mitigation to "compare things", since we don't know armor values in legion.
-  if ( level() == 103 )
+  if ( level() == 100 )
   {
-    initial.armor_coeff = 5234;
+    initial.armor_coeff = 3610;
   }
   else
   {
