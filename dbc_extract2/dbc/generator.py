@@ -1522,6 +1522,8 @@ class SpellDataGenerator(DataGenerator):
           ( 173183, 0 ),                                # Elemental Blast buffs
           ( 170512, 0 ), ( 170523, 0 ),                 # Feral Spirit windfury (t17 enhance 4pc set bonus)
           ( 189078, 0 ),                                # Gathering Vortex (Elemental t18 4pc charge)
+          ( 201846, 0 ),                                # Stormfury buff
+          ( 195256, 0 ), ( 195222, 0 ),                 # Stormlash stuff for legion
         ),
 
         # Mage:
