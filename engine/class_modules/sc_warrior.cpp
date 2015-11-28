@@ -3094,17 +3094,11 @@ void warrior_t::apl_fury()
   movement -> add_action( this, "Heroic Leap" );
   movement -> add_action( this, "Charge", "cycle_targets=1,if=debuff.charge.down" );
   movement -> add_action( this, "Charge", "", "If possible, charge a target that will give rage. Otherwise, just charge to get back in range." );
-  for ( size_t i = 0; i < num_items; i++ )
-  {
-    if ( items[i].parsed.encoded_addon == "nitro_boosts" )
-      movement -> add_action( "use_item,name=" + items[i].name_str + ",if=movement.distance>90" );
-  }
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
   single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_action( this, "Recklessness", "if=target.health.pct<20&raid_event.adds.exists" );
-  single_target -> add_action( this, "Wild Strike", "if=(rage>rage.max-20)&target.health.pct>20" );
   single_target -> add_action( this, "Bloodthirst", "if=(!talent.unquenchable_thirst.enabled&(rage<rage.max-40))|buff.enrage.down" );
   single_target -> add_talent( this, "Ravager", "if=buff.bloodbath.up|(!talent.bloodbath.enabled&(!raid_event.adds.exists|raid_event.adds.in>60|target.time_to_die<40))" );
   single_target -> add_talent( this, "Siegebreaker" );
@@ -3113,7 +3107,6 @@ void warrior_t::apl_fury()
   single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<0.5&rage<50" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.enrage.up&target.health.pct>20" );
   single_target -> add_talent( this, "Bladestorm", "if=!raid_event.adds.exists" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
   single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled&target.health.pct>20" );
