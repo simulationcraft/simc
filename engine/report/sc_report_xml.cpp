@@ -1392,16 +1392,6 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag( "dot_behavior", util::dot_behavior_type_string( a -> dot_behavior ) );
           writer.end_tag( "damage_over_time" );
         }
-        // Extra Reporting for DKs
-        if ( a -> player -> type == DEATH_KNIGHT )
-        {
-          writer.begin_tag( "runes" );
-          writer.print_tag( "blood", util::to_string( a -> data().rune_cost() & 0x1 ) );
-          writer.print_tag( "frost", util::to_string( ( a -> data().rune_cost() >> 4 ) & 0x1 ) );
-          writer.print_tag( "unholy", util::to_string( ( a -> data().rune_cost() >> 2 ) & 0x1 ) );
-          writer.print_tag( "runic_power_gain", util::to_string( a -> rp_gain ) );
-          writer.end_tag( "runes" );
-        }
         if ( a -> weapon )
         {
           writer.begin_tag( "weapon" );

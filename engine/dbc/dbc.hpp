@@ -592,45 +592,42 @@ public:
   unsigned    _category;           // 18 Spell category (for shared cooldowns, effects?)
   // SpellDuration.dbc
   double      _duration;           // 19 Spell duration in milliseconds
-  // SpellRuneCost.dbc
-  unsigned    _rune_cost;          // 20 Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
-  unsigned    _runic_power_gain;   // 21 Amount of runic power gained ( / 10 )
   // SpellAuraOptions.dbc
-  unsigned    _max_stack;          // 22 Maximum stack size for spell
-  unsigned    _proc_chance;        // 23 Spell proc chance in percent
-  unsigned    _proc_charges;       // 24 Per proc charge amount
-  unsigned    _proc_flags;         // 25 Proc flags
-  unsigned    _internal_cooldown;  // 26 ICD
-  double      _rppm;               // 27 Base real procs per minute
+  unsigned    _max_stack;          // 20 Maximum stack size for spell
+  unsigned    _proc_chance;        // 21 Spell proc chance in percent
+  unsigned    _proc_charges;       // 22 Per proc charge amount
+  unsigned    _proc_flags;         // 23 Proc flags
+  unsigned    _internal_cooldown;  // 24 ICD
+  double      _rppm;               // 25 Base real procs per minute
   // SpellEquippedItems.dbc
-  unsigned    _equipped_class;         // 28
-  unsigned    _equipped_invtype_mask;  // 29
-  unsigned    _equipped_subclass_mask; // 30
+  unsigned    _equipped_class;         // 26
+  unsigned    _equipped_invtype_mask;  // 27
+  unsigned    _equipped_subclass_mask; // 28
   // SpellScaling.dbc
-  int         _cast_min;           // 31 Minimum casting time in milliseconds
-  int         _cast_max;           // 32 Maximum casting time in milliseconds
-  int         _cast_div;           // 33 A divisor used in the formula for casting time scaling (20 always?)
-  double      _c_scaling;          // 34 A scaling multiplier for level based scaling
-  unsigned    _c_scaling_level;    // 35 A scaling divisor for level based scaling
+  int         _cast_min;           // 29 Minimum casting time in milliseconds
+  int         _cast_max;           // 30 Maximum casting time in milliseconds
+  int         _cast_div;           // 31 A divisor used in the formula for casting time scaling (20 always?)
+  double      _c_scaling;          // 32 A scaling multiplier for level based scaling
+  unsigned    _c_scaling_level;    // 33 A scaling divisor for level based scaling
   // SpecializationSpells.dbc
-  unsigned    _replace_spell_id;   // 36
+  unsigned    _replace_spell_id;   // 34
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS]; // 37 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 38 SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // 39 SpellClassOptions.dbc spell family
+  unsigned    _attributes[NUM_SPELL_FLAGS]; // 35 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 36 SpellClassOptions.dbc flags
+  unsigned    _class_flags_family; // 37 SpellClassOptions.dbc spell family
   // SpellShapeshift.db2
-  unsigned    _stance_mask;        // 40 Stance mask (used only for druid form restrictions?)
-  const char* _desc;               // 41 Spell.dbc description stringblock
-  const char* _tooltip;            // 42 Spell.dbc tooltip stringblock
+  unsigned    _stance_mask;        // 38 Stance mask (used only for druid form restrictions?)
+  const char* _desc;               // 39 Spell.dbc description stringblock
+  const char* _tooltip;            // 40 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 43 Spell description variable stringblock, if present
+  const char* _desc_vars;          // 41 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _rank_str;           // 44
+  const char* _rank_str;           // 42
 
   // Pointers for runtime linking
-  std::vector<const spelleffect_data_t*>* _effects; // 45
-  std::vector<const spellpower_data_t*>*  _power; // 46
-  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 47
+  std::vector<const spelleffect_data_t*>* _effects; // 43
+  std::vector<const spellpower_data_t*>*  _power; // 44
+  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 45
 
   // Direct member access functions
   uint32_t category() const
@@ -710,12 +707,6 @@ public:
 
   unsigned replace_spell_id() const
   { return _replace_spell_id; }
-
-  uint32_t rune_cost() const
-  { return _rune_cost; }
-
-  double runic_power_gain() const
-  { return _runic_power_gain * ( 1 / 10.0 ); }
 
   double scaling_multiplier() const
   { return _c_scaling; }

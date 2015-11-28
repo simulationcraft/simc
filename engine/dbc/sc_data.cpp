@@ -41,10 +41,6 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _gcd = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "duration" ) )
     _duration = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "rune_cost" ) )
-    _rune_cost = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "runic_power_gain" ) )
-    _runic_power_gain = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "max_stack" ) )
     _max_stack = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "proc_chance" ) )
@@ -86,10 +82,6 @@ double spell_data_t::get_field( const std::string& field ) const
     return static_cast<double>( _gcd );
   else if ( util::str_compare_ci( field, "duration" ) )
     return static_cast<double>( _duration );
-  else if ( util::str_compare_ci( field, "rune_cost" ) )
-    return static_cast<double>( _rune_cost );
-  else if ( util::str_compare_ci( field, "runic_power_gain" ) )
-    return static_cast<double>( _runic_power_gain );
   else if ( util::str_compare_ci( field, "max_stack" ) )
     return static_cast<double>( _max_stack );
   else if ( util::str_compare_ci( field, "proc_chance" ) )

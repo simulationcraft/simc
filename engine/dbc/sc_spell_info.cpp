@@ -622,29 +622,49 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> rune_cost() == 0 && spell -> class_mask() != 0 )
+  for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
   {
-    for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
-    {
-      const spellpower_data_t* pd = spell -> _power -> at( i );
+    const spellpower_data_t* pd = spell -> _power -> at( i );
 
-      s << "Resource         : ";
+    s << "Resource         : ";
+    if ( pd -> type() == POWER_MANA )
+      s << pd -> cost() * 100.0 << "%";
+    else
+      s << pd -> cost();
+
+    s << " ";
+
+    if ( pd -> max_cost() != 0 )
+    {
+      s << "- ";
       if ( pd -> type() == POWER_MANA )
-        s << pd -> cost() * 100.0 << "%";
+        s << ( pd -> cost() + pd -> max_cost() ) * 100.0 << "%";
       else
-        s << pd -> cost();
+        s << ( pd -> cost() + pd -> max_cost() );
+      s << " ";
+    }
+
+    if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
+        _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
+      s << _resource_strings[ pd -> type() + POWER_OFFSET ];
+    else
+      s << "Unknown (" << pd -> type() << ")";
+
+    if ( pd -> type() == POWER_MANA && pd -> cost() != 0 )
+    {
+      s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
+    }
+
+    if ( pd -> cost_per_second() != 0 )
+    {
+      s << " and ";
+
+      if ( pd -> type() == POWER_MANA )
+        s << pd -> cost_per_second() * 100.0 << "%";
+      else
+        s << pd -> cost_per_second();
 
       s << " ";
-
-      if ( pd -> max_cost() != 0 )
-      {
-        s << "- ";
-        if ( pd -> type() == POWER_MANA )
-          s << ( pd -> cost() + pd -> max_cost() ) * 100.0 << "%";
-        else
-          s << ( pd -> cost() + pd -> max_cost() );
-        s << " ";
-      }
 
       if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
           _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
@@ -652,59 +672,18 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       else
         s << "Unknown (" << pd -> type() << ")";
 
-      if ( pd -> type() == POWER_MANA && pd -> cost() != 0 )
+      if ( pd -> type() == POWER_MANA )
       {
-        s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
+        s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost_per_second() ) << " @Level " << level << ")";
       }
 
-      if ( pd -> cost_per_second() != 0 )
-      {
-        s << " and ";
-
-        if ( pd -> type() == POWER_MANA )
-          s << pd -> cost_per_second() * 100.0 << "%";
-        else
-          s << pd -> cost_per_second();
-
-        s << " ";
-
-        if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-            _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
-          s << _resource_strings[ pd -> type() + POWER_OFFSET ];
-        else
-          s << "Unknown (" << pd -> type() << ")";
-
-        if ( pd -> type() == POWER_MANA )
-        {
-          s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost_per_second() ) << " @Level " << level << ")";
-        }
-
-        s << " per second";
-      }
-
-      if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
-        s << " w/ " << dbc.spell( pd -> aura_id() ) -> name_cstr() << " (id=" << pd -> aura_id() << ")";
-
-      s << std::endl;
+      s << " per second";
     }
-  }
 
-  if ( spell -> rune_cost() > 0 && spell -> class_mask() != 0 )
-  {
-    s << "Rune Cost        : ";
+    if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
+      s << " w/ " << dbc.spell( pd -> aura_id() ) -> name_cstr() << " (id=" << pd -> aura_id() << ")";
 
-    int b = spell -> rune_cost() & 0x3;
-    int u = ( spell -> rune_cost() & 0xC ) >> 2;
-    int f = ( spell -> rune_cost() & 0x30 ) >> 4;
-    int d = ( spell -> rune_cost() & 0xC0 ) >> 6;
-    if ( b > 0 ) s << ( ( b & 0x1 ) ? "1" : "2" ) << " Blood, ";
-    if ( u > 0 ) s << ( ( u & 0x1 ) ? "1" : "2" ) << " Unholy, ";
-    if ( f > 0 ) s << ( ( f & 0x1 ) ? "1" : "2" ) << " Frost, ";
-    if ( d > 0 ) s << ( ( d & 0x1 ) ? "1" : "2" ) << " Death, ";
-
-    s.seekp( -2, std::ios_base::cur );
-
-    s << " Rune" << ( b + u + f > 1 ? "s" : "" ) << std::endl;
+    s << std::endl;
   }
 
   if ( spell -> level() > 0 )
@@ -752,9 +731,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> missile_speed() )
     s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
-
-  if ( spell -> runic_power_gain() > 0 )
-    s << "Power Gain       : " << spell -> runic_power_gain() << " Runic Power" << std::endl;
 
   if ( spell -> duration() != timespan_t::zero() )
   {
@@ -1319,53 +1295,36 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     }
   }
 
-  if ( spell -> rune_cost() == 0 )
+  for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
   {
-    for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
-    {
-      const spellpower_data_t* pd = spell -> _power -> at( i );
+    const spellpower_data_t* pd = spell -> _power -> at( i );
 
-      if ( pd -> cost() == 0 )
-        continue;
+    if ( pd -> cost() == 0 )
+      continue;
 
-      xml_node_t* resource_node = node -> add_child( "resource" );
-      resource_node -> add_parm( "type", ( signed ) pd -> type() );
-
-      if ( pd -> type() == POWER_MANA )
-        resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) * 100.0 );
-      else
-        resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) );
-
-      if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-           _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
-        resource_node -> add_parm( "type_name", _resource_strings[ pd -> type() + POWER_OFFSET ] );
-
-      if ( pd -> type() == POWER_MANA )
-      {
-        resource_node -> add_parm( "cost_mana_flat", floor( dbc.resource_base( pt, level ) * pd -> cost() ) );
-        resource_node -> add_parm( "cost_mana_flat_level", level );
-      }
-
-      if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
-      {
-        resource_node -> add_parm( "cost_aura_id", pd -> aura_id() );
-        resource_node -> add_parm( "cost_aura_name", dbc.spell( pd -> aura_id() ) -> name_cstr() );
-      }
-    }
-  }
-  else if ( spell -> rune_cost() > 0 )
-  {
     xml_node_t* resource_node = node -> add_child( "resource" );
-    resource_node -> add_parm( "type", ( signed ) POWER_RUNE );
-    resource_node -> add_parm( "type_name", _resource_strings[ POWER_RUNE + POWER_OFFSET ] );
-    int b = spell -> rune_cost() & 0x3;
-    int u = ( spell -> rune_cost() & 0xC ) >> 2;
-    int f = ( spell -> rune_cost() & 0x30 ) >> 4;
-    int d = ( spell -> rune_cost() & 0xC0 ) >> 6;
-    if ( b > 0 ) resource_node -> add_parm( "cost_rune_blood", b & 0x1 ? 1 : 2 );
-    if ( u > 0 ) resource_node -> add_parm( "cost_rune_unholy", u & 0x1 ? 1 : 2 );
-    if ( f > 0 ) resource_node -> add_parm( "cost_rune_frost", f & 0x1 ? 1 : 2 );
-    if ( d > 0 ) resource_node -> add_parm( "cost_rune_death", d & 0x1 ? 1 : 2 );
+    resource_node -> add_parm( "type", ( signed ) pd -> type() );
+
+    if ( pd -> type() == POWER_MANA )
+      resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) * 100.0 );
+    else
+      resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) );
+
+    if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
+         _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
+      resource_node -> add_parm( "type_name", _resource_strings[ pd -> type() + POWER_OFFSET ] );
+
+    if ( pd -> type() == POWER_MANA )
+    {
+      resource_node -> add_parm( "cost_mana_flat", floor( dbc.resource_base( pt, level ) * pd -> cost() ) );
+      resource_node -> add_parm( "cost_mana_flat_level", level );
+    }
+
+    if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
+    {
+      resource_node -> add_parm( "cost_aura_id", pd -> aura_id() );
+      resource_node -> add_parm( "cost_aura_name", dbc.spell( pd -> aura_id() ) -> name_cstr() );
+    }
   }
 
   if ( spell -> level() > 0 )
@@ -1402,9 +1361,6 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 
   if ( spell -> missile_speed() )
     node -> add_parm( "velocity", spell -> missile_speed() );
-
-  if ( spell -> runic_power_gain() > 0 )
-    node -> add_parm( "runic_power_gain", spell -> runic_power_gain() );
 
   if ( spell -> duration() != timespan_t::zero() )
   {

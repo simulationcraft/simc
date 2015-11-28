@@ -917,24 +917,6 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
           a -> hasted_ticks ? "true" : "false",
           util::dot_behavior_type_string( a -> dot_behavior ) );
       }
-      // Extra Reporting for DKs
-      if ( a -> player -> type == DEATH_KNIGHT )
-      {
-        os.format(
-          "<div class=\"float\">\n"
-          "<h5>Rune Information</h5>\n"
-          "<ul>\n"
-          "<li><span class=\"label\">Blood Cost:</span>%d</li>\n"
-          "<li><span class=\"label\">Frost Cost:</span>%d</li>\n"
-          "<li><span class=\"label\">Unholy Cost:</span>%d</li>\n"
-          "<li><span class=\"label\">Runic Power Gain:</span>%.2f</li>\n"
-          "</ul>\n"
-          "</div>\n",
-          a -> data().rune_cost() & 0x1,
-          ( a -> data().rune_cost() >> 4 ) & 0x1,
-          ( a -> data().rune_cost() >> 2 ) & 0x1,
-          a -> rp_gain );
-      }
       if ( a -> weapon )
       {
         os.format(

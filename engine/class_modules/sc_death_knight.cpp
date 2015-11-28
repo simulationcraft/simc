@@ -2485,18 +2485,7 @@ struct death_knight_action_t : public Base
 private:
   void extract_rune_cost( const spell_data_t* spell )
   {
-    // Rune costs appear to be in binary: 0a0b0c0d where 'd' is whether the ability
-    // costs a blood rune, 'c' is whether it costs an unholy rune, 'b'
-    // is whether it costs a frost rune, and 'a' is whether it costs a  death
-    // rune
-
     if ( ! spell -> ok() ) return;
-
-    uint32_t rune_cost = spell -> rune_cost();
-    cost_blood  =          rune_cost & 0x1;
-    cost_unholy = ( rune_cost >> 2 ) & 0x1;
-    cost_frost  = ( rune_cost >> 4 ) & 0x1;
-    cost_death  = ( rune_cost >> 6 ) & 0x1;
   }
 };
 

@@ -87,8 +87,6 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "charge_cooldown" },
   { SD_TYPE_UNSIGNED, "category"      },
   { SD_TYPE_DOUBLE,   "duration"      },
-  { SD_TYPE_UNSIGNED, ""              }, // Runes (spell_rune_expr_t)
-  { SD_TYPE_UNSIGNED, "power_gain"    },
   { SD_TYPE_UNSIGNED, "max_stack"     },
   { SD_TYPE_UNSIGNED, "proc_chance"   },
   { SD_TYPE_UNSIGNED, "initial_stack" },
@@ -864,71 +862,6 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   }
 };
 
-struct spell_rune_expr_t : public spell_list_expr_t
-{
-  static unsigned rune_cost( const std::string& s )
-  {
-    const char _runes[] = { 'b', 'u', 'f', 'd' };
-    int n_runes[]       = { 0, 0, 0, 0 };
-    unsigned rune_mask  = 0;
-
-    for ( unsigned int i = 0; i < s.size(); i++ )
-    {
-      for ( unsigned int j = 0; j < 4; j++ )
-      {
-        if ( s[ i ] == _runes[ j ] )
-          n_runes[ j ]++;
-      }
-    }
-
-    for ( unsigned int i = 0; i < 4; i++ )
-    {
-      for ( int j = 0; j < std::min( 2, n_runes[ i ] ); j++ )
-        rune_mask |= ( 1 << ( i * 2 + j ) );
-    }
-
-    return rune_mask;
-  }
-
-  spell_rune_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "rune", type ) { }
-
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
-  {
-    std::vector<uint32_t> res;
-    unsigned              r = rune_cost( other.result_str );
-
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
-    {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
-      if ( ! spell )
-        continue;
-
-      if ( ( spell -> rune_cost() & r ) == r )
-        res.push_back( *i );
-    }
-
-    return res;
-  }
-
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
-  {
-    std::vector<uint32_t> res;
-    unsigned              r = rune_cost( other.result_str );
-
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
-    {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
-      if ( ! spell )
-        continue;
-
-      if ( ( spell -> rune_cost() & r ) != r )
-        res.push_back( *i );
-    }
-
-    return res;
-  }
-};
-
 struct spell_class_expr_t : public spell_list_expr_t
 {
   spell_class_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "class", type ) { }
@@ -1244,8 +1177,6 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     return new spell_attribute_expr_t( sim, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
     return new spell_school_expr_t( sim, data_type );
-  else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "rune" ) )
-    return new spell_rune_expr_t( sim, data_type );
 
   const sdata_field_t* fields;
   unsigned fsize;

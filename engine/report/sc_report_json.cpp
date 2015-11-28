@@ -135,8 +135,6 @@ js::sc_js_t to_json( const spell_data_t& sd )
   if ( sd.rank_str() )
     node.set( "rank_str", sd.rank_str() );
   node.set( "replace_spell_id", sd.replace_spell_id() );
-  node.set( "rune_cost", sd.rune_cost() );
-  node.set( "runic_power_gain", sd.runic_power_gain() );
   node.set( "scaling_multiplier", sd.scaling_multiplier() );
   node.set( "scaling_threshold", sd.scaling_threshold() );
   node.set( "school_mask", sd.school_mask() );

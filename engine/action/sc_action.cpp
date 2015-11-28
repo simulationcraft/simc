@@ -503,7 +503,6 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   travel_speed         = spell_data.missile_speed();
   trigger_gcd          = spell_data.gcd();
   school               = spell_data.get_school_type();
-  rp_gain              = spell_data.runic_power_gain();
 
   if (spell_data._power)
   {

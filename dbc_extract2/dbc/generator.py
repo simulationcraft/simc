@@ -2593,32 +2593,28 @@ class SpellDataGenerator(DataGenerator):
             # 19
             fields += self._spellduration_db[misc.id_duration].field('duration_1')
             assert len(fields) == 19
-            # 20, 21 (elsewhere)
-            fields += [ u'0', u'0' ]
-            assert len(fields) == 21
             #fields += _rune_cost(self, None, self._spellrunecost_db[spell.id_rune_cost], '%#.4x'),
             #fields += self._spellrunecost_db[spell.id_rune_cost].field('rune_power_gain')
-            # 22, 23, 24, 25, 26
+            # 20, 21, 22, 23, 24
             fields += spell._auraoptions.field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags', 'internal_cooldown')
-            assert len(fields) == 26
-            # 27
+            assert len(fields) == 24
+            # 25
             fields += self._spellprocsperminute_db[spell._auraoptions.id_ppm].field('ppm')
-            assert len(fields) == 27
+            assert len(fields) == 25
 
-            # 28, 29, 30
+            # 26, 27, 28
             fields += spell._equippeditems.field('item_class', 'mask_inv_type', 'mask_sub_class')
 
             cast_times = self._spellcasttimes_db[misc.id_cast_time]
-            # 31, 32
+            # 29, 30
             fields += cast_times.field('min_cast_time', 'cast_time')
-            # 33, 34, 35
+            # 31, 32, 33
             fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
 
+            # 34
             if id in ids and 'replace_spell_id' in ids[id]:
-                # 36
                 fields += [ '%6u' % ids[id]['replace_spell_id'] ]
             else:
-                # 36
                 fields += [ '%6u' % 0 ]
 
             s_effect = []
@@ -2629,27 +2625,27 @@ class SpellDataGenerator(DataGenerator):
                     effect_ids.append( '%u' % effect.id )
 
             # Add spell flags
-            # 37
+            # 35
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
                 'flags_12')) ]
-            # 38
+            # 36
             fields += [ '{ %s }' % ', '.join(spell._classopts.field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
-            # 39
+            # 37
             fields += spell._classopts.field('family')
-            # 40
+            # 38
             fields += spell._shapeshift.field('flags')
-            # 41, 42
+            # 39, 40
             fields += spell.field('desc', 'tt')
-            # 43
+            # 41
             if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('desc')
             else:
                 fields += [ u'0' ]
-            # 44
+            # 42
             fields += spell.field('rank')
             # Pad struct with empty pointers for direct access to spell effect data
-            # 45, 46, 47
+            # 43, 464 45
             fields += [ u'0', u'0', u'0' ]
 
             try:
