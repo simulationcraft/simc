@@ -568,8 +568,7 @@ public:
     proc( procs_t() ),
     spec( specializations_t() ),
     spell( spells_t() ),
-    talent( talents_t() ),
-    inflight_starsurge( false )
+    talent( talents_t() )
   {
     t16_2pc_starfall_bolt = nullptr;
     t16_2pc_sun_bolt      = nullptr;
@@ -1370,8 +1369,8 @@ public:
   {
     if ( ! check_form_restriction() && ! ( ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM ) || autoshift ) )
     {
-      if ( sim -> log )
-        sim -> out_log.printf( "%s ready() failed due to wrong form. form=%#.8x form_mask=%#.8x", name(), p() -> get_form(), form_mask );
+      if ( ab::sim -> log )
+        ab::sim -> out_log.printf( "%s ready() failed due to wrong form. form=%#.8x form_mask=%#.8x", ab::name(), p() -> get_form(), form_mask );
 
       return false;
     }
