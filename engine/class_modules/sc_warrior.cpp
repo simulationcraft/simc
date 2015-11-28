@@ -2395,6 +2395,7 @@ struct whirlwind_parent_t: public warrior_attack_t
     tick_zero = true;
     callbacks = false;
     base_tick_time = spin_time;
+    hasted_ticks = true;
     dot_duration = base_tick_time * 2;
   }
 
