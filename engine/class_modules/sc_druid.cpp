@@ -546,6 +546,7 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
+    form( NO_FORM ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
@@ -568,7 +569,7 @@ public:
     spec( specializations_t() ),
     spell( spells_t() ),
     talent( talents_t() ),
-    form( NO_FORM )
+    inflight_starsurge( false )
   {
     t16_2pc_starfall_bolt = nullptr;
     t16_2pc_sun_bolt      = nullptr;
@@ -684,6 +685,9 @@ public:
       break;
     case MOONKIN_FORM:
       buff.moonkin_form -> trigger();
+      break;
+    default:
+      assert( 0 );
       break;
     }
 
@@ -1290,8 +1294,8 @@ public:
 
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), may_autounshift( true ), autoshift( 0 ),
-    form_mask( data().stance_mask() )
+    ab( n, player, s ), 
+    form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1352,7 +1356,7 @@ public:
         assert( "Action executed in wrong form with no valid form to shift to!" );
     }
 
-    ab::schedule_execute();
+    ab::schedule_execute( s );
   }
   
   /* Override this function for temporary effects that change the normal
@@ -5885,8 +5889,8 @@ void druid_t::apl_balance()
     potion_action += "volcanic";
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
-  action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
+  //action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  //action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up" );
