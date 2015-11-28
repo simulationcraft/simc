@@ -3527,6 +3527,7 @@ void warrior_t::create_buffs()
 
   buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 1 ).trigger() )
     .can_cancel( false )
+    .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
@@ -3915,22 +3916,6 @@ double warrior_t::composite_mastery() const
 double warrior_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = player_t::composite_rating_multiplier( rating );
-  /*
-  switch ( rating )
-  {
-  case RATING_MELEE_CRIT:
-    return m *= 1.0 + spec.cruelty -> effectN( 1 ).percent();
-  case RATING_SPELL_CRIT:
-    return m *= 1.0 + spec.cruelty -> effectN( 1 ).percent();
-  case RATING_MASTERY:
-    m *= 1.0 + spec.weapon_mastery -> effectN( 1 ).percent();
-    m *= 1.0 + spec.shield_mastery -> effectN( 1 ).percent();
-    return m;
-    break;
-  default:
-    break;
-  }
-  */
   return m;
 }
 
@@ -4069,6 +4054,9 @@ double warrior_t::composite_melee_speed() const
       sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
   }
 
+  if ( buff.enrage -> check() )
+    s /= 1.0 + buff.enrage -> data().effectN( 1 ).percent();
+
   return s;
 }
 
@@ -4110,9 +4098,7 @@ double warrior_t::composite_spell_crit() const
 
 double warrior_t::composite_leech() const
 {
-  double cl = player_t::composite_leech();
-
-  return cl;
+  return player_t::composite_leech();
 }
 
 // warrior_t::temporary_movement_modifier ==================================
