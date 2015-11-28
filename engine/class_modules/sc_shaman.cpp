@@ -1637,14 +1637,13 @@ struct stormstrike_attack_t : public shaman_attack_t
     background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
-    add_child( cl );
   }
 
   void impact( action_state_t* s )
   {
     shaman_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> buff.crash_lightning -> up() )
     {
       cl -> target = s -> target;
       cl -> schedule_execute();
@@ -2130,11 +2129,13 @@ struct stormstrike_t : public shaman_attack_t
     // stormstrike_attack_t( std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
     stormstrike_mh = new stormstrike_attack_t( "stormstrike_mh", player, data().effectN( 1 ).trigger(), &( player -> main_hand_weapon ) );
     add_child( stormstrike_mh );
+    add_child( stormstrike_mh -> cl );
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       stormstrike_oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( stormstrike_oh );
+      add_child( stormstrike_oh -> cl );
     }
 
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
