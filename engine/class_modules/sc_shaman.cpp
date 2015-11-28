@@ -153,7 +153,6 @@ public:
     double matching_gear_multiplier;
     double speed_attack_ancestral_swiftness;
     double haste_ancestral_swiftness;
-    double haste_elemental_mastery;
   } constant;
 
   // Buffs
@@ -176,7 +175,6 @@ public:
     buff_t* t18_4pc_elemental;
     buff_t* gathering_vortex;
 
-    haste_buff_t* elemental_mastery;
     haste_buff_t* tier13_4pc_healer;
 
     stat_buff_t* elemental_blast_agility;
@@ -290,19 +288,52 @@ public:
   // Talents
   struct
   {
-    const spell_data_t* call_of_the_elements;
-    const spell_data_t* totemic_restoration;
-
-    const spell_data_t* elemental_mastery;
+    // Generic / Shared
     const spell_data_t* ancestral_swiftness;
+    const spell_data_t* ascendance;
+    const spell_data_t* gust_of_wind;
+
+    // Elemental
+    const spell_data_t* path_of_flame;
+    const spell_data_t* path_of_elements;
+    const spell_data_t* maelstrom_totem;
+
+    const spell_data_t* fleet_of_foot;
+
+    const spell_data_t* elemental_blast;
     const spell_data_t* echo_of_the_elements;
 
-    const spell_data_t* unleashed_fury;
-    const spell_data_t* primal_elementalist;
-    const spell_data_t* elemental_blast;
+    const spell_data_t* elemental_fusion;
+    const spell_data_t* sons_of_flame;
+    const spell_data_t* magnitude;
 
-    const spell_data_t* storm_elemental_totem;
-    const spell_data_t* liquid_magma;
+    const spell_data_t* lightning_rod;
+    const spell_data_t* storm_elemental;
+    const spell_data_t* liquid_magma_totem;
+
+    const spell_data_t* primal_elementalist;
+    const spell_data_t* totemic_fury;
+
+    // Enhancement
+    const spell_data_t* windsong;
+    const spell_data_t* spiritual_resonance;
+    const spell_data_t* fists_of_stone;
+
+    const spell_data_t* feral_lunge;
+
+    const spell_data_t* lightning_shield;
+    const spell_data_t* landslide;
+
+    const spell_data_t* tempest;
+    const spell_data_t* spiritual_affinity;
+    const spell_data_t* sundering;
+
+    const spell_data_t* fury_of_air;
+    const spell_data_t* crashing_storm;
+    const spell_data_t* stonefist_strike;
+
+    const spell_data_t* feral_kin;
+    const spell_data_t* earthen_spike;
   } talent;
 
   // Glyphs
@@ -330,9 +361,6 @@ public:
     const spell_data_t* lightning_strike;
     const spell_data_t* eruption;
   } spell;
-
-  // RNGs
-  real_ppm_t rppm_echo_of_the_elements;
 
   // Cached pointer for ascendance / normal white melee
   shaman_attack_t* melee_mh;
@@ -368,8 +396,7 @@ public:
     mastery(),
     talent(),
     glyph(),
-    spell(),
-    rppm_echo_of_the_elements( *this, 0, RPPM_HASTE )
+    spell()
   {
     range::fill( pet_feral_spirit, nullptr );
     range::fill( totems, nullptr );
@@ -2430,28 +2457,6 @@ struct lava_beam_t : public shaman_spell_t
   }
 };
 
-// Elemental Mastery Spell ==================================================
-
-struct elemental_mastery_t : public shaman_spell_t
-{
-  elemental_mastery_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "elemental_mastery", player, player -> talent.elemental_mastery, options_str )
-  {
-    harmful   = false;
-    may_crit  = false;
-    may_miss  = false;
-  }
-
-  virtual void execute() override
-  {
-    shaman_spell_t::execute();
-
-    p() -> buff.elemental_mastery -> trigger();
-    if ( p() -> sets.has_set_bonus( SET_CASTER, T13, B2 ) )
-      p() -> buff.tier13_2pc_caster -> trigger();
-  }
-};
-
 // Ancestral Swiftness Spell ================================================
 
 struct ancestral_swiftness_t : public shaman_spell_t
@@ -3877,7 +3882,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
   if ( name == "earthliving_weapon"      ) return new       earthliving_weapon_t( this, options_str );
   if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
-  if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
   if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
   if ( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
@@ -3938,34 +3942,34 @@ void shaman_t::create_pets()
 {
   if ( talent.primal_elementalist -> ok() )
   {
-    if ( find_action( "fire_elemental_totem" )  )
+    if ( find_action( "fire_elemental" )  )
     {
       pet_fire_elemental = create_pet( "fire_elemental_pet" );
     }
 
-    if ( find_action( "earth_elemental_totem" ) )
+    if ( find_action( "earth_elemental" ) )
     {
       pet_earth_elemental = create_pet( "earth_elemental_pet" );
     }
 
-    if ( talent.storm_elemental_totem -> ok() && find_action( "storm_elemental_totem" ) )
+    if ( talent.storm_elemental -> ok() && find_action( "storm_elemental" ) )
     {
       pet_storm_elemental = create_pet( "storm_elemental_pet" );
     }
   }
   else
   {
-    if ( find_action( "fire_elemental_totem" ) )
+    if ( find_action( "fire_elemental" ) )
     {
       guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
     }
 
-    if ( find_action( "earth_elemental_totem" ) )
+    if ( find_action( "earth_elemental" ) )
     {
       guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
     }
 
-    if ( talent.storm_elemental_totem -> ok() && find_action( "storm_elemental_totem" ) )
+    if ( talent.storm_elemental -> ok() && find_action( "storm_elemental" ) )
     {
       guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
     }
@@ -3990,31 +3994,6 @@ void shaman_t::create_pets()
     {
       pet_feral_spirit.push_back( new feral_spirit_pet_t( this ) );
     }
-  }
-
-  if ( find_action( "earth_elemental_totem" ) )
-  {
-    create_pet( "earth_elemental_totem" );
-  }
-
-  if ( find_action( "fire_elemental_totem" ) )
-  {
-    create_pet( "fire_elemental_totem"  );
-  }
-
-  if ( talent.storm_elemental_totem -> ok() && find_action( "storm_elemental_totem" ) )
-  {
-    create_pet( "storm_elemental_totem" );
-  }
-
-  if ( find_action( "magma_totem" ) )
-  {
-    create_pet( "magma_totem" );
-  }
-
-  if ( find_action( "searing_totem" ) )
-  {
-    create_pet( "searing_totem" );
   }
 }
 
@@ -4114,21 +4093,49 @@ void shaman_t::init_spells()
   mastery.deep_healing               = find_mastery_spell( SHAMAN_RESTORATION );
 
   // Talents
-  talent.call_of_the_elements        = find_talent_spell( "Call of the Elements" );
-  talent.totemic_restoration         = find_talent_spell( "Totemic Restoration"  );
-
-  talent.elemental_mastery           = find_talent_spell( "Elemental Mastery"    );
   talent.ancestral_swiftness         = find_talent_spell( "Ancestral Swiftness"  );
+  talent.gust_of_wind                = find_talent_spell( "Gust of Wind"         );
+  talent.ascendance                  = find_talent_spell( "Ascendance"           );
 
-  talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
-  rppm_echo_of_the_elements.set_frequency( talent.echo_of_the_elements -> real_ppm() );
+  // Elemental
+  talent.path_of_flame               = find_talent_spell( "Path of Flame"        );
+  talent.path_of_elements            = find_talent_spell( "Path of Elements"     );
+  talent.maelstrom_totem             = find_talent_spell( "Maelstrom Totem"      );
 
-  talent.unleashed_fury              = find_talent_spell( "Unleashed Fury"       );
-  talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
+  talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
 
-  talent.storm_elemental_totem       = find_talent_spell( "Storm Elemental Totem" );
-  talent.liquid_magma                = find_talent_spell( "Liquid Magma" );
+  talent.elemental_fusion            = find_talent_spell( "Elemental Fusion"     );
+  talent.sons_of_flame               = find_talent_spell( "Sons of Flame"        );
+  talent.magnitude                   = find_talent_spell( "Magnitude"            );
+
+  talent.lightning_rod               = find_talent_spell( "Lightning Rod"        );
+  talent.storm_elemental             = find_talent_spell( "Storm Elemental"      );
+  talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
+
+  talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
+  talent.totemic_fury                = find_talent_spell( "Totemic Fury"         );
+
+  // Enhancement
+  talent.windsong                    = find_talent_spell( "Windsong"             );
+  talent.spiritual_resonance         = find_talent_spell( "Spiritual Resonance"  );
+  talent.fists_of_stone              = find_talent_spell( "Fists of Stone"       );
+
+  talent.feral_lunge                 = find_talent_spell( "Feral Lunge"          );
+
+  talent.lightning_shield            = find_talent_spell( "Lightning Shield"     );
+  talent.landslide                   = find_talent_spell( "Landslide"            );
+
+  talent.tempest                     = find_talent_spell( "Tempest"              );
+  talent.spiritual_affinity          = find_talent_spell( "Spiritual Affinity"   );
+  talent.sundering                   = find_talent_spell( "Sundering"            );
+
+  talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
+  talent.crashing_storm              = find_talent_spell( "Crashing Storm"       );
+  talent.stonefist_strike            = find_talent_spell( "Stonefist Strike"     );
+
+  talent.feral_kin                   = find_talent_spell( "Feral Kin"            );
+  talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
 
   // Glyphs
   glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );
@@ -4468,8 +4475,6 @@ void shaman_t::create_buffs()
   buff.ascendance              = new ascendance_buff_t( this );
   buff.echo_of_the_elements    = buff_creator_t( this, "echo_of_the_elements", talent.echo_of_the_elements )
                                  .chance( talent.echo_of_the_elements -> ok() );
-  buff.liquid_magma               = buff_creator_t( this, "liquid_magma", talent.liquid_magma )
-                                 .chance( talent.liquid_magma -> ok() );
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
@@ -4484,12 +4489,6 @@ void shaman_t::create_buffs()
                                             glyph.spiritwalkers_focus -> effectN( 2 ).time_value() +
                                             sets.set( SET_HEALER, T13, B4 ) -> effectN( 1 ).time_value() );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
-
-  // Haste buffs
-  buff.elemental_mastery       = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
-                                 .chance( 1.0 )
-                                 .add_invalidate( CACHE_HASTE );
-  constant.haste_elemental_mastery = 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
 
   buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
 
@@ -4778,7 +4777,7 @@ void shaman_t::init_action_list()
     }
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
-    def -> add_action( "berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))" );
+    def -> add_action( "berserking,if=!buff.bloodlust.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))" );
     // Sync blood fury with ascendance or fire elemental as long as one is ready
     // soon after blood fury is.
     def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
@@ -4842,7 +4841,7 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Mastery" );
     def -> add_talent( this, "Elemental Blast" );
     def -> add_talent( this, "Ancestral Swiftness" );
-    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)" );
+    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react)&ticks_remain<3)" );
     def -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time" );
     def -> add_action( this, "Chain Lightning", "if=target.adds>2&mana.pct>25" );
     def -> add_action( this, "Lightning Bolt" );
@@ -4854,7 +4853,7 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Blast" );
     def -> add_talent( this, "Ancestral Swiftness" );
     def -> add_talent( this, "Primal Strike" );
-    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)" );
+    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react)&ticks_remain<3)" );
     def -> add_action( this, "Earth Shock" );
     def -> add_action( this, "Lightning Bolt", "moving=1" );
   }
@@ -4930,9 +4929,6 @@ double shaman_t::composite_spell_haste() const
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_ancestral_swiftness;
 
-  if ( buff.elemental_mastery -> up() )
-    h *= constant.haste_elemental_mastery;
-
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
 
@@ -4961,9 +4957,6 @@ double shaman_t::temporary_movement_modifier() const
 double shaman_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
-
-  if ( buff.elemental_mastery -> up() )
-    h *= constant.haste_elemental_mastery;
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_ancestral_swiftness;
@@ -5096,7 +5089,6 @@ void shaman_t::reset()
 
   ls_reset = timespan_t::zero();
   lava_surge_during_lvb = false;
-  rppm_echo_of_the_elements.reset();
   for (auto & elem : counters)
     elem -> reset();
 }
