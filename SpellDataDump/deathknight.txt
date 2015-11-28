@@ -1,33 +1,5 @@
 SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
 
-Name             : Word of Recall (OLD) (id=1) 
-Class            : Warrior, Death Knight, Shaman, Warlock, Monk
-Resource         : 10% Base Mana (0 @Level 110)
-Cast Time        : 10 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1)        : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000
-
-Name             : Word of Mass Recall (OLD) (id=3) 
-Class            : Death Knight, Shaman, Warlock
-Resource         : 10% Base Mana (0 @Level 110)
-Cast Time        : 20 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=2)        : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | Radius: 30 yards
-
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -41,45 +13,6 @@ Effects          :
 #1 (id=263)      : Dual Wield (40)
                    Base Value: 0 | Scaled Value: 0
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
-
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
 
 Name             : Path of Frost (id=3714) [Spell Family (15)] 
 Class            : Death Knight
@@ -101,72 +34,6 @@ Effects          :
                    Base Value: 93061 | Scaled Value: 93061
 Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.  Usable while mounted,$?s59307[ and allows you to fall from a greater distance without suffering damage,][] but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
-
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
-
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
 
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter, Death Knight
@@ -190,32 +57,6 @@ Variables        : $ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
-
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
@@ -276,6 +117,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -409,6 +251,7 @@ Spell Level      : 63
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
+Proc Chance      : 101%
 Affecting spells : On a Pale Horse (51986)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -505,6 +348,7 @@ Resource         : 40 Energy
 Spell Level      : 50
 Range            : 5 yards
 GCD              : 1 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -525,6 +369,7 @@ Spell Level      : 58
 Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -544,6 +389,7 @@ Class            : Death Knight
 Spell Level      : 50
 Range            : 5 yards
 Cooldown         : 60 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -562,6 +408,8 @@ Class            : Death Knight
 Spell Level      : 1
 Range            : 5 - 30 yards
 Cooldown         : 30 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ...x.... ....x...   ........ ........ xx...... ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -582,6 +430,7 @@ Resource         : 10 Energy
 Spell Level      : 50
 GCD              : 1 seconds
 Cooldown         : 45 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -620,6 +469,7 @@ Resource         : 30 Runic Power
 Spell Level      : 55
 Range            : 40 yards
 GCD              : 1.5 seconds
+Proc Chance      : 101%
 Affecting spells : On a Pale Horse (51986), Glyph of Tranquil Grip (63335), Sudden Doom (81340)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -718,6 +568,7 @@ Class            : Death Knight
 Spell Level      : 68
 Duration         : 5 seconds
 Cooldown         : 45 seconds
+Proc Chance      : 101%
 Affecting spells : Spellbreaker (194834)
 Triggered by     : Spellbreaker (194834)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -758,6 +609,7 @@ Class            : Frost Unholy Death Knight
 Spell Level      : 65
 Duration         : 8 seconds
 Cooldown         : 180 seconds
+Proc Chance      : 100%
 Affecting spells : Improved Icebound Fortitude (194920), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -805,6 +657,7 @@ Spell Level      : 74
 Range            : 30 yards
 Duration         : 8 seconds
 Cooldown         : 90 seconds
+Proc Chance      : 100%
 Proc Flags       : ....x... x...x.x. x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Attributes       : ........ ........ ........ ........   ........ .xx..... ........ ....x... 
@@ -910,6 +763,7 @@ Additionally, your Blood Boil refreshes your diseases on targets it damages.
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 Spell Level      : 64
+Proc Chance      : 100%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -999,6 +853,7 @@ Name             : Razorice (id=50401) [Spell Family (15)]
 Class            : Death Knight
 Range            : 10 yards
 Internal Cooldown: 0.008 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Biting Cold (166057)
@@ -1018,6 +873,7 @@ Name             : Scent of Blood (id=50421) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 20 seconds
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Affecting spells : Item - Death Knight T18 Blood 2P Bonus (187872)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1102,6 +958,7 @@ Name             : Killing Machine (id=51124) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 10 seconds
 Stacks           : 1 maximum
+Proc Chance      : 101%
 Affecting spells : Biting Winds (194911)
 Triggered by     : Killing Machine (51128)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -1120,6 +977,7 @@ Tooltip          : Guaranteed critical strike on your next Obliterate.
 Name             : Killing Machine (id=51128) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 Spell Level      : 64
+Proc Chance      : 101%
 Real PPM         : 4.5 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -1165,6 +1023,7 @@ Name             : Runic Corruption (id=51460) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 55
 Duration         : 3 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1200,6 +1059,7 @@ Class            : Death Knight
 Range            : 50000 yards
 Duration         : 20 seconds
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ xxx..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1375,6 +1235,7 @@ Spell Level      : 55
 Range            : 40 yards
 Duration         : 15 seconds
 Stacks           : 1 maximum
+Proc Chance      : 101%
 Affecting spells : Veteran of the Third War (48263)
 Triggered by     : Fallen Crusader (166441)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1474,6 +1335,7 @@ Class            : Death Knight
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 30 seconds
+Proc Chance      : 101%
 Affecting spells : Death's Advance (48265), Razorice (51714), Biting Cold (166057)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -1514,6 +1376,7 @@ Spell Level      : 58
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -1599,6 +1462,7 @@ Description      : The ghouls summoned by your Army of the Dead no longer taunt 
 
 Name             : Glyph of Death's Embrace (id=58677) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1630,6 +1494,7 @@ Description      : Your Death Coil refunds 20 Runic Power when used to heal an a
 
 Name             : Glyph of Horn of Winter (id=58680) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
+Proc Chance      : 101%
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1708,6 +1573,7 @@ Name             : Rime (id=59052) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Biting Winds (194911)
@@ -1734,6 +1600,7 @@ Tooltip          : Your next Howling Blast will consume no Runes, generate no Ru
 Name             : Rime (id=59057) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 Spell Level      : 10
+Proc Chance      : 45%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Affecting spells : Biting Winds (194911), 
@@ -1850,6 +1717,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1911,6 +1779,7 @@ Class            : Death Knight
 Resource         : 0 Runic Power
 Spell Level      : 55
 Duration         : 40 seconds
+Stance Mask      : 0x00000040
 Affecting spells : Item - Death Knight T14 DPS 4P Bonus (123078)
 Triggered by     : Summon Gargoyle (49206)
 Attributes       : .......x x....... .......x x..x...x   .....x.. ..x..... ........ ..x.x... 
@@ -2015,6 +1884,7 @@ Description      : When your pet is at or above 50 Focus, your pet's Basic Attac
 
 Name             : Glyph of Tranquil Grip (id=63335) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
+Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2177,6 +2047,7 @@ Name             : Scourge (id=70890) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 80
 Range            : 100 yards
+Proc Chance      : 101%
 Triggered by     : Scourge Strike (55090)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -2292,6 +2163,7 @@ $@spelldesc191587
 Name             : Crimson Scourge (id=81136) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 Spell Level      : 63
+Proc Chance      : 25%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2356,6 +2228,7 @@ Name             : Sudden Doom (id=81340) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Triggered by     : Sudden Doom (49530)
@@ -2407,7 +2280,7 @@ Resource         : 0 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : On a Pale Horse (51986), Rotten Touch (191442)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2505,6 +2378,7 @@ Class            : Death Knight
 Resource         : 40 Energy
 Spell Level      : 50
 Range            : 5 yards
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2522,6 +2396,7 @@ Resource         : 40 Energy
 Spell Level      : 50
 Range            : 5 yards
 GCD              : 1 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2539,6 +2414,7 @@ Spell Level      : 50
 Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 60 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2559,6 +2435,7 @@ Spell Level      : 50
 Range            : 5 yards
 Duration         : 3 seconds
 Cooldown         : 60 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2579,6 +2456,7 @@ Spell Level      : 1
 Range            : 5 - 30 yards
 Velocity         : 30 yards/sec
 Cooldown         : 30 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2598,6 +2476,8 @@ Class            : Death Knight
 Spell Level      : 20
 Range            : 5 - 30 yards
 Duration         : 2 seconds
+Proc Chance      : 100%
+Stance Mask      : 0x00000040
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Triggered by     : Shambling Rush (91802)
@@ -2621,6 +2501,8 @@ Spell Level      : 1
 Range            : 5 - 30 yards
 Velocity         : 30 yards/sec
 Cooldown         : 30 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ...x.... ....x...   ........ ........ xx...... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2642,6 +2524,7 @@ Spell Level      : 50
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2663,6 +2546,7 @@ Spell Level      : 50
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
+Stance Mask      : 0x00000040
 Attributes       : ....x... ........ x.x..... ........   ..x...x. ..x..... .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2712,6 +2596,7 @@ Name             : Dark Succor (id=101568) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Dark Succor (178819)
@@ -2812,6 +2697,7 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
+Proc Chance      : 101%
 Affecting spells : On a Pale Horse (51986)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2846,6 +2732,7 @@ Class            : Death Knight
 Duration         : 3 seconds
 Cooldown         : 60 seconds
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Triggered by     : Remorseless Winter (108200)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x ........ ........ ........ 
@@ -3177,6 +3064,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Item - Death Knight T16 DPS 4P Bonus (id=144907) [Spell Family (15), Passive] 
 Class            : Death Knight
+Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3196,6 +3084,7 @@ Description      : Death Coil increases the duration of Dark Transformation by $
 Name             : Item - Death Knight T16 DPS 4P Bonus (Hidden) (id=144909) [Spell Family (15), Hidden] 
 Class            : Death Knight
 Duration         : 20 seconds
+Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : .......x ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3212,6 +3101,7 @@ Description      : $@spelldesc144907
 
 Name             : Item - Death Knight T16 Blood 2P Bonus (id=144934) [Spell Family (15), Passive] 
 Class            : Death Knight
+Proc Chance      : 101%
 Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
                  : .......x ........ x....... ........   ...x.... ........ .xx..... ........ 
@@ -3228,6 +3118,7 @@ Name             : Bone Wall (id=144948) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 120 seconds
 Stacks           : 1 initial, 6 maximum
+Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3245,6 +3136,7 @@ Tooltip          : Your next Bone Shield will have $w1 additional charge$?$w1>1[
 
 Name             : Item - Death Knight T16 Blood 4P Bonus (id=144950) [Spell Family (15), Passive] 
 Class            : Death Knight
+Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3263,6 +3155,7 @@ Name             : Deathbringer (id=144953) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3294,6 +3187,7 @@ Description      : Your Raise Dead spell summons a skeleton instead of a ghoul.
 
 Name             : Frozen Power (id=147620) [Spell Family (15)] 
 Class            : Death Knight
+Proc Chance      : 101%
 Triggered by     : Item - Death Knight T16 DPS 4P Bonus (Hidden) (144909)
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
@@ -3420,6 +3314,7 @@ Description      : Maximum runic power increased by $s1%.
 Name             : Mark of Sindragosa (id=155166) [Spell Family (15)] 
 Class            : Death Knight
 Spell Level      : 28
+Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
 Affecting spells : Razorice (51714)
@@ -3523,6 +3418,7 @@ Effects          :
 
 Name             : Item - Death Knight T17 Frost 4P Bonus (id=165568) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
+Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3560,6 +3456,7 @@ Name             : Item - Death Knight T17 Frost 4P Driver (id=167655) [Spell Fa
 Class            : Death Knight
 Range            : 100 yards
 Duration         : 20 seconds
+Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Triggered by     : Item - Death Knight T17 Frost 4P Bonus (165568)
@@ -3582,6 +3479,7 @@ Range            : 100 yards
 Velocity         : 24 yards/sec
 Duration         : 20 seconds
 Stacks           : 50 maximum
+Proc Chance      : 101%
 Triggered by     : Item - Death Knight T17 Frost 4P Driver (167655)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3620,6 +3518,7 @@ Class            : Death Knight
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Stacks           : 50 maximum
+Proc Chance      : 101%
 Triggered by     : Frozen Runeblade (170202)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3686,6 +3585,7 @@ Description      : $@spelldesc165568
 Name             : Dark Succor (id=178819) [Spell Family (15), Passive] 
 Class            : Frost Unholy Death Knight
 Spell Level      : 59
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3819,6 +3719,7 @@ Class            : Death Knight
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 21 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
@@ -3877,6 +3778,7 @@ Name             : Festering Wound (id=194311) [Scaling Spell (1), Spell Family 
 Class            : Death Knight
 Spell Level      : 57
 Range            : 50000 yards
+Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -4002,7 +3904,7 @@ Effects          :
                    Affected Spells: Anti-Magic Shell (48707)
 #2 (id=288199)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Trigger Spell: 48707
-Description      : Increases Anti-Magic Shellâ€™s duration by $s1% and maximum absorption value by $s2%.
+Description      : Increases Anti-Magic Shell’s duration by $s1% and maximum absorption value by $s2%.
 
 Name             : Exhume (id=194837) [Spell Family (15)] 
 Class            : Death Knight
@@ -4085,6 +3987,7 @@ Description      : Killing Machine also causes your next Obliterate to deal an a
 
 Name             : Frozen Pulse (id=194909) [Spell Family (15), Passive] 
 Class            : Death Knight
+Proc Chance      : 101%
 Real PPM         : 7 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -4219,6 +4122,7 @@ Description      : Festering Strike now applies 1 to 5 Festering Wounds. The Run
 
 Name             : Blighted Runeblade (id=194918) [Spell Family (15), Passive] 
 Class            : Death Knight
+Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -4294,6 +4198,7 @@ Spell Level      : 78
 Duration         : 30 seconds
 Internal Cooldown: 1 seconds
 Stacks           : 1 initial, 10 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
 Affecting spells : Bone Wall (144948)
@@ -4372,6 +4277,7 @@ Name             : Frost Fever (id=195617) [Scaling Spell (1)]
 Class            : Death Knight
 Spell Level      : 55
 Range            : 50000 yards
+Proc Chance      : 101%
 Triggered by     : Frost Fever (195621)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -4390,6 +4296,7 @@ Class            : Frost Death Knight
 Spell Level      : 55
 Range            : 50000 yards
 Internal Cooldown: 1 seconds
+Proc Chance      : 20%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4406,6 +4313,7 @@ Description      : $@spelldesc195617
 
 Name             : Bloodworms (id=195679) [Spell Family (15), Passive] 
 Class            : Death Knight
+Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4451,6 +4359,7 @@ Description      : Heals you for $s1% of maximum health.
 
 Name             : Blood Plague (id=195740) [Scaling Spell (1), Spell Family (15), Passive] 
 Class            : Blood Death Knight
+Proc Chance      : 101%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4530,6 +4439,7 @@ Name             : Unholy Vigor (id=196263) [Scaling Spell (1)]
 Class            : Death Knight
 Spell Level      : 55
 Range            : 50000 yards
+Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
@@ -4565,6 +4475,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 20 seconds
 Stacks           : 25 maximum
+Proc Chance      : 101%
 Affecting spells : On a Pale Horse (51986), Soul Asylum (194912)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4633,6 +4544,7 @@ Tooltip          : Infecting nearby allies with Wandering Plague.
 Name             : Festering Wound (id=197147) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 Spell Level      : 57
+Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4666,6 +4578,7 @@ Description      : Summon a slow moving but powerful spirit to assist you in com
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
 Class            : Death Knight
 Spell Level      : 60
+Proc Chance      : 100%
 Proc Flags       : ....x.x. ....x.x. x....... ........ 
                  : Yellow Melee, White Ranged, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4684,6 +4597,7 @@ Name             : Shadow Infusion (id=198956) [Spell Family (15)]
 Class            : Death Knight
 Range            : 100 yards
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Triggered by     : Shadow Infusion (198943)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

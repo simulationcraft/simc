@@ -33,6 +33,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
+Proc Chance      : 101%
 Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Fury of the Destroyer (109949), Prey on the Weak (131511), Shadow Dance (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Paralytic Poison (200800)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -99,6 +100,7 @@ Class            : Assassination Combat Subtlety Rogue
 Spell Level      : 16
 Range            : 5 yards
 Cooldown         : 0.5 seconds
+Stance Mask      : 0x20000000
 Affecting spells : Glyph of Pick Pocket (58017), Pickpocketer's Handbook (168798)
 Attributes       : ....x... ........ x....... ........   .....x.. ....x... .x...x.. ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -200,6 +202,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Acrobatic Strikes (196924), Ghostly Strike (196937), 
@@ -227,6 +230,7 @@ Spell Level      : 5
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Nightstalker (14062), Vendetta (79140), Subterfuge (108208), Into the Fray <NNF> (196922), Acrobatic Strikes (196924)
@@ -278,6 +282,8 @@ Spell Level      : 29
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x20000000
 Affecting spells : Vendetta (79140), Shadow Blades (121471), Prey on the Weak (131511), Cloak and Dagger (138106), Silent Blades (145193), Premeditation (196979), Paralytic Poison (200800)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -407,6 +413,7 @@ GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 20 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Dirty Tricks (108216), Prey on the Weak (131511)
@@ -481,6 +488,7 @@ Class            : Assassination Rogue
 Spell Level      : 10
 Cast Time        : 3 seconds
 Duration         : 3600 seconds
+Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864), Numbing Poison (200803)
@@ -531,50 +539,12 @@ Effects          :
 Description      : Increases your movement speed by $s1% for $d. Usable while stealthed.
 Tooltip          : Movement speed increased by $w1%.
 
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Crippling Poison (id=3408) [Spell Family (8)] 
 Class            : Assassination Rogue
 Spell Level      : 19
 Cast Time        : 3 seconds
 Duration         : 3600 seconds
+Proc Chance      : 50%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Blade Flurry (13877), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864)
@@ -598,6 +568,7 @@ Class            : Rogue
 Spell Level      : 19
 Range            : 100 yards
 Duration         : 12 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
 Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
@@ -653,6 +624,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
+Stance Mask      : 0x40000000
 Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Druid (137012), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Blessing of Elune (202737)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -710,6 +682,8 @@ Spell Level      : 12
 Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 60 seconds
+Proc Chance      : 100%
+Stance Mask      : 0x20000000
 Affecting spells : Vendetta (79140), Prey on the Weak (131511)
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
@@ -727,52 +701,13 @@ Description      : Incapacitates a target not in combat for up to $d. Only works
 Tooltip          : Incapacitated.$?$w2!=0[
 Damage taken increased by $w2%.][]
 
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
-
 Name             : Ambush (id=8676) [Spell Family (8)] 
 Class            : Combat Rogue
 Resource         : 60 Energy
 Spell Level      : 6
 Range            : 5 yards
 GCD              : 1 seconds
+Stance Mask      : 0x20000000
 Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Cold Blood (170882), Cold Blood (182304), From the Shadows (184918), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -794,6 +729,7 @@ Class            : Assassination Rogue
 Spell Level      : 25
 Cast Time        : 3 seconds
 Duration         : 3600 seconds
+Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Improved Poisons (14117), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864), Numbing Poison (200803)
@@ -831,36 +767,11 @@ Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $8679h% chance of poisoning the enemy, which instantly inflicts $8680s1 Nature damage and reduces the effect of healing received for $d.
 Tooltip          : Healing effects reduced by $w2%.
 
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Vanish (id=11327) [Spell Family (8)] 
 Class            : Rogue
 Spell Level      : 24
 Duration         : 3 seconds
+Stance Mask      : 0x20000000
 Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Enhanced Vanish (157666), Item - Rogue T18 Subtlety 2P Bonus (186278), Into the Fray <NNF> (196922), Acrobatic Strikes (196924)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
@@ -911,6 +822,7 @@ Class            : Combat Rogue
 Spell Level      : 48
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
@@ -974,6 +886,7 @@ Description      : Increases the application chance of Deadly Poison and Wound P
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
 Class            : Combat Rogue
 Spell Level      : 27
+Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -991,6 +904,7 @@ Name             : Seal Fate (id=14189) [Spell Family (8)]
 Class            : Rogue
 Range            : 50000 yards
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Triggered by     : Seal Fate (14190)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -1005,6 +919,7 @@ Effects          :
 Name             : Seal Fate (id=14190) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 Spell Level      : 27
+Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1042,6 +957,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
+Proc Chance      : 101%
 Affecting spells : Glyph of Hemorrhage (56807), Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
@@ -1061,32 +977,6 @@ Effects          :
                    Affected Spells: Garrote (703), Rupture (1943), Internal Bleeding (154953)
 Description      : Rip a gushing wound in the target, instantly dealing $sw2 Physical damage and increasing your Bleed damage on the target by $s4% for $d. Awards $s3 combo $lpoint:points;.
 Tooltip          : Bleed damage taken from the Rogue increased by $s4%.
-
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
@@ -1263,6 +1153,7 @@ Description      : Fatal attacks instead reduce you to 7% of your maximum health
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
 Class            : Rogue
 Duration         : 6 seconds
+Proc Chance      : 100%
 Attributes       : .......x x....... ........ ...x.x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1352,6 +1243,7 @@ Description      : $@spelldesc35551
 Name             : Combat Potency (id=35551) [Spell Family (8), Passive] 
 Class            : Combat Rogue
 Spell Level      : 34
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1380,32 +1272,12 @@ Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=26920)    : Trigger Spell: Shadowstep (64)
+#1 (id=26920)    : Trigger Spell: (36563) (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36563
 #2 (id=283909)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 70 | Scaled Value: 70
 Description      : Step through the shadows to appear behind your target and gain $s2% movement speed for $d.
 Tooltip          : Movement speed increased by $s2%.
-
-Name             : Shadowstep (id=36563) [Spell Family (8)] 
-Class            : Rogue
-Spell Level      : 1
-Range            : 100 yards
-Stacks           : 1 initial, 1 maximum
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Triggered by     : Shadowstep (36554)
-Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
-                 : ..x..... ........ ........ ....x...   ........ ........ xx...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable player procs (112), Disable target procs (113)
-Effects          :
-#1 (id=26931)    : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 2 yards
-Description      : $@spelldesc36554
 
 Name             : Deathblow X11 Goggles (id=41317) 
 Class            : Rogue, Monk, Druid
@@ -1468,6 +1340,7 @@ Effects          :
 Name             : Cut to the Chase (id=51667) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
 Spell Level      : 20
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1547,6 +1420,7 @@ Effects          :
 
 Name             : Glyph of Decoy (id=56800) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1564,6 +1438,7 @@ Description      : When you Vanish, you leave behind a brief illusion that very 
 
 Name             : Glyph of Hemorrhage (Subtlety) (id=56807) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2018,6 +1893,7 @@ Description      : Increases the damage done by your poisons by $76803s1%.
 Name             : Mastery: Main Gauche (id=76806) [Spell Family (8), Passive] 
 Class            : Combat Rogue
 Spell Level      : 78
+Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x....... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2071,9 +1947,29 @@ Effects          :
                    Affected Spells: Feint (1966)
 Description      : Feint also reduces all damage you take by $s1% for $1966d.
 
+Name             : Restless Blades (id=79096) [Spell Family (8), Passive] 
+Class            : Rogue
+Spell Level      : 50
+Internal Cooldown: 0.8 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... x...x... ........ ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=68363)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 2000 | Scaled Value: 2000 | SP Coefficient: 1.00000
+Description      : Your damaging finishing moves reduce the remaining cooldown of your Adrenaline Rush, Killing Spree, and Sprint abilities by $/1000;S1 sec per combo point.
+
 Name             : Venomous Wounds (id=79134) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 Spell Level      : 22
+Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..x.. ........ 
                  : Periodic, Trap Triggered
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2303,6 +2199,7 @@ Tooltip          : Energy cost of abilities reduced by $s1%.
 Name             : Leeching Poison (Talent) (id=112961) [Spell Family (8)] 
 Class            : Rogue
 Duration         : 12 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Blade Flurry (13877)
@@ -2370,6 +2267,7 @@ Description      : A ranged attack dealing $s1 Physical damage to an enemy targe
 
 Name             : Anticipation (id=114015) [Spell Family (8), Passive] 
 Class            : Rogue
+Proc Chance      : 100%
 Proc Flags       : ....x... x...x... ........ ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2404,6 +2302,7 @@ Class            : Rogue
 Spell Level      : 20
 Range            : 100 yards
 Duration         : 12 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
 Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
@@ -2746,6 +2645,7 @@ Tooltip          : Marked for Death will reset upon death.
 
 Name             : Cloak and Dagger (id=138106) [Spell Family (8), Passive] 
 Class            : Rogue
+Stance Mask      : 0x20000000
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2778,6 +2678,7 @@ Name             : Combo Point Delayed (id=139569)
 Class            : Rogue
 Range            : 100 yards
 Stacks           : 1 maximum
+Proc Chance      : 101%
 Triggered by     : Ruthlessness (14161), Item - Druid T15 Feral 2P Bonus (138352)
 Attributes       : ....x... x....... ........ x.......   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ xx...... ........ 
@@ -2794,6 +2695,7 @@ Description      : Grants $m1 combo point.
 Name             : Marked for Death (id=140149) [Spell Family (8), Hidden] 
 Class            : Rogue
 Duration         : Aura (infinite)
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Marked for Death (137619)
@@ -2811,6 +2713,7 @@ Description      : Designer Note: The only purpose of this aura is to mark a pla
 
 Name             : Item - Rogue T16 4P Bonus (id=145210) [Spell Family (8), Passive] 
 Class            : Rogue
+Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -2833,6 +2736,7 @@ Name             : Sleight of Hand (id=145211) [Spell Family (8)]
 Class            : Rogue
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ .....x.. 
                  
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -2856,6 +2760,7 @@ Class            : Rogue
 Spell Level      : 80
 Duration         : 5 seconds
 Stacks           : 20 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ xx...... ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
@@ -3056,6 +2961,7 @@ Name             : Venom Rush (id=156719)
 Class            : Rogue
 Duration         : Aura (infinite)
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3249,6 +3155,7 @@ Class            : Rogue
 Spell Level      : 1
 Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Shadow Dance (185314)
@@ -3289,6 +3196,7 @@ Resource         : 40 Energy
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1 seconds
+Stance Mask      : 0x20000000
 Affecting spells : Premeditation (196979)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -3414,6 +3322,7 @@ Tooltip          : $@spellaura185767
 
 Name             : Item - Rogue T18 Assassination 2P Bonus (id=186182) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3524,6 +3433,7 @@ Description      : You may now have a maximum of $s3 combo points, and your fini
 
 Name             : Weaponmaster (id=193537) [Spell Family (8), Passive] 
 Class            : Rogue
+Proc Chance      : 20%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3543,6 +3453,7 @@ Class            : Rogue
 Spell Level      : 1
 Duration         : 20 seconds
 Stacks           : 25 maximum
+Proc Chance      : 101%
 Triggered by     : Alacrity (193539)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3590,6 +3501,7 @@ Description      : Increases the healing you receive from Crimson Vial, healing 
 
 Name             : Elaborate Planning (id=193640) [Spell Family (8), Passive] 
 Class            : Rogue
+Proc Chance      : 100%
 Proc Flags       : ....x... x....... ........ ........ 
                  : Yellow Melee, Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3611,6 +3523,7 @@ Class            : Rogue
 Spell Level      : 1
 Duration         : 4 seconds
 Stacks           : 25 maximum
+Proc Chance      : 101%
 Triggered by     : Elaborate Planning (193640)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3638,8 +3551,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=284308)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1317
 #2 (id=284309)   : Quest Complete (16)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 #3 (id=284310)   : Unknown effect type (90)
@@ -3733,6 +3644,7 @@ Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00*0.88}]
 
 Name             : Thuggee (id=196861) [Spell Family (8), Passive] 
 Class            : Rogue
+Proc Chance      : 15%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3776,6 +3688,7 @@ Name             : Shadow Technique (id=196911) [Spell Family (8)]
 Class            : Rogue
 Range            : 50000 yards
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Triggered by     : Shadow Techniques (196912), Expanded Technique (200780)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3791,6 +3704,7 @@ Name             : Shadow Techniques (id=196912) [Spell Family (8), Passive]
 Class            : Subtlety Rogue
 Spell Level      : 27
 Internal Cooldown: 3 seconds
+Proc Chance      : 50%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4011,6 +3925,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
+Proc Chance      : 101%
 Affecting spells : Glyph of Enslave Demon (58107), Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4031,6 +3946,7 @@ Spell Level      : 50
 Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 60 seconds
+Proc Chance      : 100%
 Affecting spells : Vendetta (79140), Prey on the Weak (131511)
 Attributes       : ....x... ........ x.x.xx.. ........   ........ x.x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
@@ -4078,6 +3994,7 @@ Spell Level      : 42
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Vendetta (79140)
@@ -4215,6 +4132,7 @@ Name             : Expanded Technique (id=200780) [Spell Family (8), Passive]
 Class            : Rogue
 Spell Level      : 27
 Internal Cooldown: 3 seconds
+Proc Chance      : 50%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4252,6 +4170,7 @@ Class            : Rogue
 Spell Level      : 10
 Cast Time        : 3 seconds
 Duration         : 3600 seconds
+Proc Chance      : 20%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Envenom (32645), Glyph of Poisons (58038), Poisoned Knife (185565)
@@ -4273,6 +4192,7 @@ Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
 Triggered by     : Numbing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 

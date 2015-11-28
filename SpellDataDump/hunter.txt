@@ -227,50 +227,12 @@ Effects          :
                    Base Value: 55 | Scaled Value: 0.55 | Radius: 0 - 8 yards
 Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $sw2 Physical damage.
 
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Freezing Trap (id=3355) [Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 28
 Range            : 100 yards
 Duration         : 60 seconds
+Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Glyph of Aspects (122492)
@@ -367,72 +329,6 @@ Effects          :
 #2 (id=2548)     : Trigger Spell: Feed Pet - Visual (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 51284
 Description      : Feed your pet the selected item, instantly restoring $1539s1% of its total health. Cannot be used while in combat.
-
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
-
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
 
 Name             : Tame Beast (id=13481) 
 Class            : Hunter
@@ -585,32 +481,6 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Wyvern Sting (id=19386) [Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 30
@@ -621,6 +491,7 @@ Velocity         : 40 yards/sec
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Sniper Training (193468)
@@ -690,6 +561,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Freezing Trap (3355)
@@ -879,6 +751,7 @@ Name             : Intimidation (id=24394)
 Class            : Hunter, Monk
 Range            : 5 yards
 Duration         : 3 seconds
+Proc Chance      : 101%
 Triggered by     : Intimidation (19577)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -897,6 +770,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -917,6 +791,7 @@ Spell Level      : 20
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
@@ -943,6 +818,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1024,6 +900,7 @@ Name             : Thrill of the Hunt (id=34720) [Spell Family (9)]
 Class            : Hunter
 Duration         : 15 seconds
 Stacks           : 3 initial, 3 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Triggered by     : Thrill of the Hunt (109306)
@@ -1057,6 +934,7 @@ Description      : $@spelldesc34954
 Name             : Go for the Throat (id=34954) [Spell Family (9), Passive, Hidden] 
 Class            : Beast Mastery Hunter
 Spell Level      : 20
+Proc Chance      : 100%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1074,6 +952,7 @@ Description      : Your auto-shot critical strikes cause your pet to generate $3
 Name             : Bombardment (id=35110) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 Spell Level      : 62
+Proc Chance      : 100%
 Proc Flags       : ......x. x...x... ........ ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1252,6 +1131,7 @@ Description      : A two-headed shot that hits your primary target and another n
 Name             : Piercing Shots (id=53238) [Spell Family (9), Passive] 
 Class            : Hunter
 Spell Level      : 72
+Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1342,6 +1222,7 @@ Class            : Ferocity Tenacity Cunning Cunning Hunter Pet
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ...x.... ........ 
@@ -1396,6 +1277,7 @@ Description      : Removes all movement impairing effects and all effects which 
 
 Name             : Cornered (id=53497) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Cunning Hunter Pet
+Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1537,6 +1419,7 @@ Class            : Hunter
 Range            : 5 yards
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Charge (53148)
@@ -1711,6 +1594,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1762,6 +1646,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ...x.... 
@@ -1814,6 +1699,7 @@ Name             : Piercing Shots (id=63468) [Spell Family (9)]
 Class            : Hunter
 Range            : 50000 yards
 Duration         : 8 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ x....... ......x. 
                  : ........ x....... ....x... ........   ........ ........ ........ ........ 
@@ -2005,6 +1891,7 @@ Effects          :
 Name             : Bombardment (id=82921) [Spell Family (9)] 
 Class            : Hunter
 Duration         : 5 seconds
+Proc Chance      : 101%
 Triggered by     : Bombardment (35110)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2142,6 +2029,7 @@ Spell Level      : 20
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
@@ -2206,6 +2094,7 @@ Spell Level      : 20
 Range            : 25 yards
 Duration         : 10 seconds
 Cooldown         : 30 seconds
+Stance Mask      : 0x80000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2270,6 +2159,7 @@ Effects          :
 
 Name             : Control Pet (Passive) (id=93321) [Passive] 
 Class            : Beast Mastery Survival Hunter
+Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2284,6 +2174,7 @@ Description      : Allows you to give commands to control your pet.
 
 Name             : Control Pet (Passive) (id=93322) [Hidden] 
 Class            : Beast Mastery Survival Hunter
+Proc Chance      : 101%
 Attributes       : .......x x....... ........ ........   ........ ........ ........ .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2465,6 +2356,7 @@ Description      : Instantly heals you for $s1% and your pet for $128594s1% of m
 
 Name             : Thrill of the Hunt (id=109306) [Spell Family (9), Passive] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2487,6 +2379,7 @@ Name             : Mortal Wounds (id=115804)
 Class            : Warrior, Hunter, Monk
 Range            : 100 yards
 Duration         : 10 seconds
+Proc Chance      : 101%
 Triggered by     : Mortal Strike (12294), Bloody Screech (24423), Deadly Sting (160060)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2564,6 +2457,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2601,6 +2495,7 @@ Class            : Hunter
 Spell Level      : 10
 Range            : 50000 yards
 Duration         : 4 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -2737,6 +2632,7 @@ Summoning a beast reduces the remaining cooldown of Bestial Wrath by $s1 sec.
 
 Name             : Dire Beast (id=120694) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Affecting spells : Dire Stable (193532)
@@ -2839,6 +2735,7 @@ Description      : Summons a physical manifestation of your current Aspect.
 
 Name             : Glyph of Aspects (id=122492) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x...x. ........ ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, Heal
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3056,6 +2953,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
@@ -3278,6 +3176,7 @@ Range            : 40 yards
 Velocity         : 120 yards/sec
 Duration         : 3 seconds
 Cooldown         : 24 seconds
+Proc Chance      : 101%
 Affecting spells : Guide: Sharpshooting (178549), Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3391,6 +3290,7 @@ If Kill Shot fails to kill the target, the cooldown is instantly reset, but cann
 
 Name             : Improved Focus (id=157726) [Spell Family (9), Passive] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3424,6 +3324,7 @@ Class            : Hunter
 Spell Level      : 74
 Range            : 30 yards
 Duration         : 10 seconds
+Proc Chance      : 101%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Triggered by     : Molten Hide (159788)
@@ -3444,6 +3345,7 @@ Class            : Hunter
 Spell Level      : 74
 Range            : 30 yards
 Internal Cooldown: 60 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
@@ -3494,6 +3396,7 @@ Class            : Hunter
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
@@ -3565,6 +3468,7 @@ Class            : Hunter
 Spell Level      : 20
 Range            : 100 yards
 Internal Cooldown: 120 seconds
+Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -3607,6 +3511,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3699,6 +3604,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ......x.   ........ ..x..... ..x..... ........ 
@@ -3800,6 +3706,7 @@ Spell Level      : 10
 Cast Time        : 3 seconds
 Velocity         : 24 yards/sec
 Duration         : 3600 seconds
+Proc Chance      : 100%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
@@ -3822,6 +3729,7 @@ Spell Level      : 10
 Cast Time        : 3 seconds
 Velocity         : 24 yards/sec
 Duration         : 3600 seconds
+Proc Chance      : 100%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
@@ -3844,6 +3752,7 @@ Spell Level      : 10
 Cast Time        : 3 seconds
 Velocity         : 24 yards/sec
 Duration         : 3600 seconds
+Proc Chance      : 100%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
@@ -3955,6 +3864,7 @@ Description      : $@spelldesc53351
 Name             : Survivalist (id=164856) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 Spell Level      : 12
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4131,6 +4041,7 @@ Description      : A quick shot that causes $sw2 Arcane damage, and generates $1
 Name             : Wild Call (id=185789) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 Spell Level      : 22
+Proc Chance      : 30%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Affecting spells : One with the Pack (199528)
@@ -4249,6 +4160,7 @@ Effects          :
 Name             : Dark Ranger (id=186065) [Spell Family (9), Passive] 
 Class            : Hunter
 Spell Level      : 1
+Proc Chance      : 100%
 Real PPM         : 5
 Proc Flags       : ......x. x....... ..x..... ........ 
                  : White Ranged, Yellow Ranged, Periodic
@@ -4439,6 +4351,7 @@ Spell Level      : 90
 Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4606,6 +4519,7 @@ Tooltip          : Burning for $s1 Fire damage every $t1 sec.
 
 Name             : Item - Hunter T18 Survival 4P Bonus (id=188199) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ......x. x...x... x.x..... ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4732,6 +4646,7 @@ Name             : Mongoose Bite (id=190931) [Spell Family (9)]
 Class            : Hunter
 Duration         : 3.5 seconds
 Stacks           : 6 maximum
+Proc Chance      : 101%
 Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Sniper Training (193468)
 Triggered by     : Mongoose Bite (190928)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5068,6 +4983,7 @@ Description      : Dire Beast generate $s1 extra focus when they attack.
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
 Class            : Hunter
 Spell Level      : 1
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5111,8 +5027,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=284295)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1317
 #2 (id=284296)   : Quest Complete (16)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 #3 (id=284297)   : Unknown effect type (90)
@@ -5272,6 +5186,7 @@ Name             : Way of the Cobra (id=194398) [Spell Family (9)]
 Class            : Hunter
 Duration         : Aura (infinite)
 Stacks           : 20 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5320,6 +5235,7 @@ Name             : Lock and Load (id=194594) [Spell Family (9)]
 Class            : Hunter
 Duration         : 15 seconds
 Stacks           : 2 initial, 2 maximum
+Proc Chance      : 100%
 Proc Flags       : ......x. x...x... x.x..x.. ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
 Triggered by     : Lock and Load (194595)
@@ -5348,6 +5264,7 @@ Tooltip          : Your Explosive Shot triggers no cooldown.
 Name             : Lock and Load (id=194595) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 Spell Level      : 43
+Proc Chance      : 5%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
 Affecting spells : Item - Hunter T14 4P Bonus (123091)
@@ -5514,6 +5431,7 @@ Spell Level      : 6
 Duration         : 60 seconds
 Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... ........ ........ 
@@ -5562,6 +5480,7 @@ $explosive=${$AP*0.47*(1+$76658m1*.01)*(1+$@versadmg)*$<lone>}
 
 Name             : Lock and Load (id=198811) [Spell Family (9), Passive] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5589,6 +5508,7 @@ Range            : 50000 yards
 Duration         : 60 seconds
 Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... ........ ........ 
@@ -5661,6 +5581,7 @@ Description      : Aimed Shot will now also hit all Vulnerable targets for $1998
 
 Name             : Momentum (id=199523) [Spell Family (9), Passive] 
 Class            : Hunter
+Proc Chance      : 10%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -5694,6 +5615,7 @@ Description      : Targets affected by your Flare take extra damage from all of 
 
 Name             : True Aim (id=199527) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ......x. x...x... ........ ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -5739,6 +5661,7 @@ Description      : When your Dire Beasts charge in, they will stomp the ground, 
 
 Name             : Killer Cobra (id=199532) [Spell Family (9), Passive] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -5851,6 +5774,7 @@ Class            : Hunter
 Range            : 50000 yards
 Duration         : 3 seconds
 Stacks           : 20 maximum
+Proc Chance      : 101%
 Triggered by     : True Aim (199527)
 Attributes       : ....x... x....... ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5978,6 +5902,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Mortal Wounds (id=201075) [Spell Family (9), Passive] 
 Class            : Hunter
+Proc Chance      : 2%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6011,6 +5936,7 @@ Name             : Mok'Nathal Tactics (id=201081) [Spell Family (9)]
 Class            : Hunter
 Duration         : 8 seconds
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Triggered by     : Way of the Mok'Nathal (201082)
 Attributes       : ........ ........ ..x..... .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -6026,6 +5952,7 @@ Tooltip          : Attack Power increased by $s1%
 
 Name             : Way of the Mok'Nathal (id=201082) [Spell Family (9), Passive] 
 Class            : Hunter
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6121,6 +6048,7 @@ Class            : Hunter
 Range            : 30 yards
 Duration         : 12 seconds
 Cooldown         : 180 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ x....... .......x   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

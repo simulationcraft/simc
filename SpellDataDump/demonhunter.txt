@@ -112,7 +112,7 @@ Effects          :
                    Affected Spells: Chaos Strike (162794), Annihilation (201427)
 #7 (id=297855)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 202101 | Scaled Value: 202101
-                   Affected Spells: Eye Beam (198013)
+                   Affected Spells: Eye Beam (198013), Eye Beam (198030)
 Description      : $@spelldesc191427
 Tooltip          : Demon's Bite and Chaos Strike upgraded to $@spellname201429 and $@spellname201427.
 
@@ -140,6 +140,7 @@ Description      : Slice your target for ${$sw1+$199547sw1} Chaos damage.  Criti
 Name             : Demon Soul (id=163073) [Spell Family (107)] 
 Class            : Demon Hunter
 Duration         : 15 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -190,6 +191,7 @@ Description      : Deals Fire damage to all nearby enemies.
 Name             : Shattered Souls (id=178940) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -293,6 +295,7 @@ Generates maximum Fury on a successful interrupt.
 
 Name             : Consume Magic (id=183782) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
+Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -336,7 +339,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Chaos Strike (199547), Annihilation (201427), Annihilation (201428)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Eye Beam (198030), Chaos Strike (199547), Annihilation (201427), Annihilation (201428)
 #2 (id=294810)   : Apply Aura (6) | Unknown effect sub type (171)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 Description      : Increases your Chaos damage by $s1% and your movement speed by $s2%.
@@ -366,6 +369,7 @@ Tooltip          : Taunted.
 
 Name             : Energy Regen (id=186452) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -560,6 +564,7 @@ Description      : $@spelldesc195072
 Name             : Fel Mastery (id=192939) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -591,8 +596,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=284283)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1317
 #2 (id=284284)   : Quest Complete (16)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 #3 (id=284285)   : Unknown effect type (90)
@@ -663,6 +666,7 @@ Description      : You are able to jump again while near the apex of your first 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -713,11 +717,28 @@ Effects          :
 #3 (id=291387)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200
 Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage.
+Variables        : $dmg=$?a203550[${$198030m1*14}][${$198030m1*9}]
+
+Name             : Eye Beam (id=198030) [Spell Family (107)] 
+Class            : Demon Hunter
+Range            : 50000 yards
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Blind Fury (203550), 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=291051)   : School Damage: chaos (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.70000 | Radius: 20 yards
+Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
 Class            : Demon Hunter
 Duration         : 7 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x....... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x... ........ ..x..... .......x   ........ ..x..... ........ ....x... 
@@ -1066,14 +1087,15 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300253)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1
-                   Affected Spells: Eye Beam (198013)
+                   Affected Spells: Eye Beam (198013), Eye Beam (198030)
 #2 (id=300254)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14
-                   Affected Spells: Eye Beam (198013)
+                   Affected Spells: Eye Beam (198013), Eye Beam (198030)
 Description      : Increases the duration of Eye Beam by $s1%.
 
 Name             : Prepared (id=203551) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
+Proc Chance      : 100%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1091,6 +1113,7 @@ Description      : After using Vengeful Retreat, you generate ${$203650m1*12} Fu
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 Internal Cooldown: 1.5 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1109,6 +1132,7 @@ Replaces Demon's Bite.
 
 Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
+Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1249,6 +1273,7 @@ Generates $m3 to $M3 Fury.
 Name             : Hateful Strike Passive (id=203783) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
 Spell Level      : 1
+Proc Chance      : 101%
 Real PPM         : 12
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -1343,6 +1368,7 @@ Name             : Soul Fragments (id=203981) [Spell Family (107)]
 Class            : Demon Hunter
 Duration         : Aura (infinite)
 Stacks           : 20 maximum
+Proc Chance      : 101%
 Triggered by     : Soul Fragment (204255)
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ....x... ........ 
@@ -1412,7 +1438,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301300)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.2)
 #2 (id=301301)   : Weapon Damage% (31)
                    Base Value: 50 | Scaled Value: 0.5
 Description      : Throw a demonic glaive at the target, dealing $sw2 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards.
@@ -1420,6 +1446,7 @@ Description      : Throw a demonic glaive at the target, dealing $sw2 Physical d
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1519,6 +1546,7 @@ Name             : Sigil of Persecution (id=204598) [Spell Family (107)]
 Class            : Demon Hunter
 Range            : 100 yards
 Duration         : 8 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ......x. 
                  : ........ ...x.... .......x ........   ........ ........ ........ ........ 

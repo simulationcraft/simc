@@ -88,6 +88,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 101%
 Affecting spells : Improved Hammer of Justice (24188), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -182,45 +183,6 @@ Effects          :
 Description      : Casts down the enemy with a bolt of Holy Light, causing $s1 Holy damage and preventing the target from causing critical effects for the next $d.
 Tooltip          : Incapable of causing a critical effect.
 
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Cleanse (id=4987) [Spell Family (10)] 
 Class            : Holy Paladin
 Resource         : 16.4% Base Mana (36079 @Level 110)
@@ -253,6 +215,7 @@ Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
@@ -293,98 +256,6 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35
 Description      : Brings a dead ally back to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
 
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
-
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Flash of Light (id=19750) [Spell Family (10)] 
 Class            : Holy Retribution Paladin
 Resource         : 20% Base Mana (44000 @Level 110)
@@ -414,6 +285,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
@@ -558,6 +430,7 @@ Name             : Righteous Fury (id=25780) [Spell Family (10), Passive, Hidden
 Class            : Protection Paladin
 Spell Level      : 10
 Cooldown         : 1.5 seconds
+Proc Chance      : 101%
 Attributes       : ......xx ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -662,6 +535,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -950,6 +824,7 @@ Effects          :
 
 Name             : Sanctified Wrath (id=53376) [Spell Family (10), Passive] 
 Class            : Paladin
+Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1035,6 +910,7 @@ Range            : 60 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 3 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
@@ -1060,6 +936,7 @@ Tooltip          : Healed whenever the Paladin heals a nearby ally.
 Name             : Infusion of Light (id=53576) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 Spell Level      : 50
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1077,6 +954,7 @@ Description      : Your Holy Shock criticals reduce the cast time of your next H
 Name             : Guarded by the Light (id=53592) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
 Spell Level      : 10
+Proc Chance      : 10%
 Attributes       : ....x.xx x....... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1166,6 +1044,7 @@ Name             : Light's Beacon (id=53651) [Spell Family (10), Passive, Hidden
 Class            : Holy Paladin
 Spell Level      : 39
 Range            : 60 yards
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x...x. ..x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, Heal, Periodic, Trap Triggered
 Triggered by     : Beacon of Light (53563), Beacon of Faith (156910)
@@ -1202,6 +1081,7 @@ Name             : Infusion of Light (id=54149) [Spell Family (10)]
 Class            : Paladin
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Triggered by     : Infusion of Light (53576)
@@ -1275,6 +1155,7 @@ Description      : Your Seal of Truth now uses the Seal of Blood visual.
 
 Name             : Glyph of Fire From the Heavens (id=57954) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1387,6 +1268,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1421,6 +1303,7 @@ Spell Level      : 14
 Range            : 30 yards
 Duration         : 3 seconds
 Charges          : 1 (8 seconds cooldown)
+Proc Chance      : 101%
 Affecting spells : Lucidity (137288)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
@@ -1584,6 +1467,7 @@ Also increases your attack power by $s5%.
 Name             : Mastery: Hand of Light (id=76672) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
 Spell Level      : 78
+Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1679,6 +1563,7 @@ Name             : Grand Crusader (id=85043) [Spell Family (10), Passive]
 Class            : Protection Paladin
 Spell Level      : 50
 Internal Cooldown: 1 seconds
+Proc Chance      : 15%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : First Avenger (203776)
@@ -1830,6 +1715,7 @@ Name             : Light of the Ancient Kings (id=86678) [Spell Family (10)]
 Class            : Paladin
 Range            : 100 yards
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1936,6 +1822,7 @@ Class            : Paladin
 Resource         : 7% Base Mana (15400 @Level 110)
 Spell Level      : 80
 Range            : 100 yards
+Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
                  : ........ x....... .......x ........   ........ ........ ........ ........ 
@@ -1970,6 +1857,7 @@ Description      : Interrupts spellcasting and prevents any spell in that school
 Name             : Judgments of the Wise (id=105424) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 Spell Level      : 28
+Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2286,6 +2174,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
+Proc Chance      : 101%
 Affecting spells : Lucidity (137288)
 Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..... ....x... 
                  : ........ ........ ........ ........   ........ ........ x....... ..x..... 
@@ -2711,6 +2600,7 @@ Description      : Gained $s1 Holy Power.
 
 Name             : Item - Paladin T16 Protection 4P Bonus (id=144566) [Spell Family (10), Passive] 
 Class            : Paladin
+Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2728,6 +2618,7 @@ Description      : While at 3 or more stacks of Bastion of Glory, your next $?s1
 Name             : Bastion of Power (id=144569) [Spell Family (10)] 
 Class            : Paladin
 Duration         : 20 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
@@ -2743,6 +2634,7 @@ Tooltip          : Your next $?s114163[Eternal Flame][Word of Glory] consumes no
 
 Name             : Item - Paladin T16 Protection 2P Bonus (id=144580) [Spell Family (10), Passive] 
 Class            : Paladin
+Proc Chance      : 101%
 Attributes       : ......x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2758,6 +2650,7 @@ Description      : While Divine Protection is active, $s1% of the damage taken i
 Name             : Blessing of the Guardians (id=144581) [Spell Family (10)] 
 Class            : Paladin
 Duration         : 10 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ........ .....x.. 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
@@ -2788,6 +2681,7 @@ Description      : Exorcism will now appear to remove the evil from its target.
 
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
+Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2845,6 +2739,7 @@ Effects          :
 
 Name             : Holy Shield (id=152261) [Passive] 
 Class            : Paladin
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3097,8 +2992,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=261604)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1316
 #2 (id=273638)   : Quest Complete (16)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 #3 (id=284207)   : Unknown effect type (90)
@@ -3115,6 +3008,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3136,6 +3030,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
@@ -3171,6 +3066,7 @@ Name             : Aura of Mercy (id=183415) [Spell Family (10), Passive]
 Class            : Paladin
 Spell Level      : 60
 Cooldown         : 180 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : AOE Heal Taken, Heal Taken
 Affecting spells : Aura Mastery (31821)
@@ -3190,6 +3086,7 @@ Tooltip          : Healing $s1% of max health every $t sec.
 Name             : Aura of Light (id=183416) [Spell Family (10), Passive] 
 Class            : Paladin
 Spell Level      : 60
+Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : AOE Heal Taken, Heal Taken
 Affecting spells : Aura Mastery (31821)
@@ -3209,6 +3106,7 @@ Tooltip          : Receiving $s1% increased healing.
 Name             : Devotion Aura (id=183425) [Spell Family (10), Passive] 
 Class            : Paladin
 Spell Level      : 60
+Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : AOE Heal Taken, Heal Taken
 Affecting spells : Aura Mastery (31821), Devotion Aura (64364), Aura of Light (183840)
@@ -3228,6 +3126,7 @@ Tooltip          : Taking $s1% reduced damage.
 Name             : Retribution (id=183435) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
 Spell Level      : 56
+Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ x....... 
                  : Death
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
@@ -3260,6 +3159,7 @@ Tooltip          : Dealing $s1% increased damage.
 Name             : Judgment of Light (id=183778) [Spell Family (10), Passive] 
 Class            : Paladin
 Spell Level      : 1
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3354,6 +3254,7 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x...x. ..x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, Heal, Periodic, Trap Triggered
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
@@ -3488,6 +3389,8 @@ Spell Level      : 26
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x08000000
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -3503,6 +3406,7 @@ Tooltip          : Absorbs $w1 damage and deals damage when it expires.
 Name             : Conviction (id=185817) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
 Spell Level      : 83
+Proc Chance      : 20%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3520,6 +3424,7 @@ Description      : Your Crusader Strike and Blade of Justice have a $h% chance t
 Name             : Redoubt (id=190774) [Spell Family (4), Passive] 
 Class            : Protection Paladin
 Spell Level      : 12
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3608,6 +3513,7 @@ Description      : Reduces the damage you take from Light of the Martyr by $s1%.
 
 Name             : Crusader's Might (id=196926) [Spell Family (10), Passive] 
 Class            : Paladin
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3644,6 +3550,7 @@ Spell Level      : 56
 Duration         : 30 seconds
 Internal Cooldown: 1 seconds
 Stacks           : 40 initial, 40 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Triggered by     : Judgment of Light (183778)
@@ -3681,6 +3588,7 @@ Name             : Beacon of the Lightbringer (id=197446) [Spell Family (10), Pa
 Class            : Paladin
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ...x.... .......x 
                  : AOE Heal Taken, Heal Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3700,6 +3608,7 @@ Class            : Paladin
 Range            : 50000 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ......x. ........ ........ 
                  : Yellow Melee, Heal
 Triggered by     : Avenger's Shield (31935)
@@ -3722,6 +3631,7 @@ Tooltip          : The effects of your next Shield of the Righteous or Light of 
 Name             : Divine Purpose (id=197646) [Spell Family (10), Passive] 
 Class            : Paladin
 Spell Level      : 1
+Proc Chance      : 20%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3857,6 +3767,7 @@ Re-activating the ability will cause the Paladin to charge to the blade, damagin
 
 Name             : Fist of Justice (id=198054) [Spell Family (10), Passive] 
 Class            : Paladin
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3975,6 +3886,7 @@ Description      : Increases the damage and healing of Holy Shock by $s1%.
 Name             : Beacon of the Savior (id=200025) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 Spell Level      : 39
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ....x... x....... ........ 
                  : White Melee, Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx x....... x.x..... ...x....   ........ ..x..... ........ ........ 
@@ -4025,6 +3937,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Reprisal (id=201389) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 Spell Level      : 54
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4043,6 +3956,7 @@ Name             : Reprisal (id=201391) [Spell Family (10)]
 Class            : Paladin
 Duration         : 8 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Reprisal (201389)
@@ -4171,6 +4085,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 4.5 seconds
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Affecting spells : Sanctity of Battle (25956), Improved Crusader Strike (44300), Sword of Light (53503), Guarded by the Light (53592), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Paladin (137029), Judgment (197277), Reprisal (201391), The Fires of Justice (203316)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -4264,6 +4179,7 @@ Description      : Hand of Reckoning now has ${$m1+1} charges.  Additionally, ta
 
 Name             : Consecrated Hammer (id=203785) [Spell Family (10), Passive] 
 Class            : Paladin
+Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4279,6 +4195,7 @@ Description      : Your Hammer of the Righteous always gains the damage bonus of
 
 Name             : Last Defender (id=203791) [Spell Family (10), Passive] 
 Class            : Paladin
+Proc Chance      : 10%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4302,6 +4219,7 @@ Description      : Each enemy within $s1 yards causes you to take $s2% reduced d
 Name             : Retribution Aura (id=203797) [Spell Family (10), Passive] 
 Class            : Paladin
 Spell Level      : 1
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Aura Mastery (31821), Devotion Aura (64364), Aura of Light (183840)
@@ -4401,6 +4319,7 @@ Name             : Crusader's Judgment (id=204023) [Spell Family (10), Passive]
 Class            : Paladin
 Spell Level      : 1
 Internal Cooldown: 1 seconds
+Proc Chance      : 15%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Affecting spells : First Avenger (203776)
@@ -4434,6 +4353,7 @@ Name             : Consecrated Ground (id=204054) [Spell Family (10), Passive]
 Class            : Paladin
 Spell Level      : 1
 Internal Cooldown: 1 seconds
+Proc Chance      : 15%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4485,6 +4405,7 @@ Name             : Final Stand (id=204079) [Spell Family (10)]
 Class            : Paladin
 Spell Level      : 10
 Duration         : 8 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4502,6 +4423,7 @@ Name             : Knight Templar (id=204139) [Spell Family (10), Passive]
 Class            : Paladin
 Spell Level      : 1
 Internal Cooldown: 1 seconds
+Proc Chance      : 15%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4594,6 +4516,7 @@ Spell Level      : 62
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Stacks           : 10 initial, 10 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 

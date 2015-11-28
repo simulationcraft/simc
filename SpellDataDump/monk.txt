@@ -1,19 +1,5 @@
 SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
 
-Name             : Word of Recall (OLD) (id=1) 
-Class            : Warrior, Death Knight, Shaman, Warlock, Monk
-Resource         : 10% Base Mana (0 @Level 110)
-Cast Time        : 10 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1)        : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000
-
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -50,85 +36,6 @@ Effects          :
 Description      : Your pet growls at the target, generating threat, taunting the target to attack the pet, and increasing threat that your pet generates against the target for $d.
 Tooltip          : Taunted.
 
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
-
 Name             : Pet Damage (id=8875) [Spell Family (9), Passive, Hidden] 
 Class            : Monk
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
@@ -145,64 +52,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22
 Tooltip          : Damage increased by $s1%.
 
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Intimidation (id=19577) [Spell Family (9)] 
 Class            : Hunter, Monk
 Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Freezing Trap (3355)
@@ -268,6 +124,7 @@ Name             : Intimidation (id=24394)
 Class            : Hunter, Monk
 Range            : 5 yards
 Duration         : 3 seconds
+Proc Chance      : 101%
 Triggered by     : Intimidation (19577)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -288,6 +145,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -574,6 +432,7 @@ Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
+Proc Chance      : 101%
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Combo Breaker: Blackout Kick (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Teachings of the Monastery (202090)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -980,6 +839,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331)
@@ -1113,6 +973,7 @@ Spell Level      : 65
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ........ ........ ........ ........   ..x...x. ........ .x...... .....x.. 
@@ -1158,6 +1019,7 @@ Spell Level      : 18
 GCD              : 1 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 3 seconds
+Proc Chance      : 101%
 Affecting spells : Stagger (115069), Serenity (152173)
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1198,6 +1060,7 @@ Class            : Monk
 Spell Level      : 36
 Cooldown         : 60 seconds
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Affecting spells : Item - Monk T14 Windwalker 4P Bonus (123150)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1398,6 +1261,7 @@ Name             : Mortal Wounds (id=115804)
 Class            : Warrior, Hunter, Monk
 Range            : 100 yards
 Duration         : 10 seconds
+Proc Chance      : 101%
 Triggered by     : Mortal Strike (12294), Bloody Screech (24423), Deadly Sting (160060)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1415,6 +1279,7 @@ Name             : Afterlife (id=116092) [Scaling Spell (6), Spell Family (53), 
 Class            : Windwalker Monk
 Spell Level      : 26
 Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1442,6 +1307,7 @@ Spell Level      : 25
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024)
@@ -1464,6 +1330,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ......x. 
                  : ........ ...x.... .......x ........   ........ ........ ........ .x...... 
@@ -1484,6 +1351,7 @@ Tooltip          : Taunted. Movement speed increased by $s3%.
 Name             : Teachings of the Monastery (id=116645) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
 Spell Level      : 10
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1530,6 +1398,7 @@ Duration         : 30 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (45 seconds cooldown)
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ..x..x.. ........ 
                  : AOE Heal, Heal, Periodic, Trap Triggered
 Affecting spells : Item - Monk T15 Mistweaver 4P Bonus (138289), Focused Thunder (197895), 
@@ -1614,6 +1483,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 2 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1652,6 +1522,7 @@ Class            : Monk
 Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -1806,6 +1677,7 @@ Description      : $@spelldesc113656
 Name             : Mastery: Elusive Brawler (id=117906) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
 Spell Level      : 78
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1830,6 +1702,7 @@ Also increases your attack power by $s2%.
 Name             : Mastery: Gust of Mists (id=117907) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
 Spell Level      : 78
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1854,6 +1727,7 @@ Spell Level      : 36
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
+Proc Chance      : 100%
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Lucidity (137331), Mana Tea (197908)
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1876,6 +1750,7 @@ $damage=${4*($m1*$<dmgMult>)}
 Name             : Crackling Jade Lightning (id=117959) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Monk
 Spell Level      : 40
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1894,6 +1769,7 @@ Class            : Monk
 Spell Level      : 15
 Duration         : 10 seconds
 Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Chi Torpedo (115008)
 Attributes       : ........ ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1949,6 +1825,7 @@ Name             : Renewing Mist (id=119611) [Scaling Spell (6), Spell Family (5
 Class            : Monk
 Range            : 50000 yards
 Duration         : 20 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Enveloping Mist (124682), Lucidity (137331), Extend Life (185158), Mana Tea (197908)
@@ -2129,6 +2006,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2153,6 +2031,7 @@ Velocity         : 30 yards/sec
 Duration         : 15 seconds
 Cooldown         : 8 seconds
 Charges          : 0 (8 seconds cooldown)
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2181,6 +2060,21 @@ $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
+Name             : Power Strikes (id=121283) [Spell Family (53)] 
+Class            : Monk
+Range            : 50000 yards
+Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ x....... ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : Disable target procs (113)
+Effects          :
+#1 (id=150148)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: chi
+Description      : $@spelldesc121286
+
 Name             : Power Strikes (id=121817) [Spell Family (53), Passive] 
 Class            : Monk
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2201,6 +2095,7 @@ Spell Level      : 60
 Duration         : 45 seconds
 Cooldown         : 90 seconds
 Stacks           : 3 initial, 3 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2217,6 +2112,7 @@ Tooltip          : Attacks that deal damage equal to $m1% or more of your total 
 
 Name             : Healing Elixirs (Passive Talent) (id=122280) [Spell Family (53), Passive] 
 Class            : Monk
+Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2364,6 +2260,7 @@ Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
+Proc Chance      : 101%
 Affecting spells : Stagger (115069), Serenity (152173)
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2740,6 +2637,7 @@ Effects          :
 
 Name             : Glyph of Honor (id=125732) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2925,8 +2823,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=161274)   : Unknown effect type (252)
-                   Base Value: 1 | Scaled Value: 1
 #2 (id=161284)   : Trigger Spell: Zen Pilgrimage: Return (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126896
 Description      : $?a200617[Your spirit travels to the Temple of Five Dawns, leaving your body behind.
@@ -3219,6 +3115,7 @@ Class            : Monk
 Spell Level      : 24
 Duration         : Aura (infinite)
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Triggered by     : Healing Elixirs (122280)
@@ -3441,6 +3338,7 @@ Spell Level      : 65
 GCD              : 1 seconds
 Duration         : Aura (infinite)
 Stacks           : 2 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x...... 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Proc on jump
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3645,6 +3543,7 @@ Class            : Monk
 Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -3763,6 +3662,20 @@ Effects          :
 #1 (id=229488)   : Threat (63)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 30 yards
 
+Name             : Item - Monk T17 Mistweaver 2P Bonus (id=165404) [Spell Family (53), Passive, Hidden] 
+Class            : Monk
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=233448)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17
+Description      : Every time your Soothing Mist heals a target your critical strike chance is increased by $167732s1%.
+
 Name             : Windwalking (id=166646) [Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
@@ -3779,6 +3692,25 @@ Effects          :
 #1 (id=235496)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 10 | Scaled Value: 10
 Tooltip          : Movement speed increased by $s1%.
+
+Name             : Mistweaving (id=167732) 
+Class            : Monk
+Spell Level      : 36
+Duration         : 10 seconds
+Cooldown         : 6 seconds
+Stacks           : 8 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=237364)   : Apply Aura (6) | Modify Crit% (52)
+                   Base Value: 5 | Scaled Value: 5
+Description      : $@spelldesc165404
+Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Gift of the Ox (id=178173) [Spell Family (53)] 
 Class            : Monk
@@ -3905,6 +3837,7 @@ Spell Level      : 1
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Stacks           : 1 maximum
+Proc Chance      : 101%
 Affecting spells : Enveloping Mist (124682)
 Triggered by     : Essence Font (191837)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3942,6 +3875,7 @@ Name             : Soothing Mist (id=193884) [Spell Family (53), Passive]
 Class            : Mistweaver Monk
 Spell Level      : 10
 Range            : 40 yards
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3963,6 +3897,7 @@ Class            : Monk
 Spell Level      : 80
 Duration         : 10 seconds
 Stacks           : 100 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Mastery: Elusive Brawler (117906)
@@ -3981,6 +3916,7 @@ Tooltip          : Dodge chance increased by $w1%.
 
 Name             : Eye of the Tiger (id=196607) [Spell Family (53), Passive] 
 Class            : Monk
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4016,6 +3952,7 @@ Tooltip          : $?$w1>0[Healing $w1 every $t1 sec.][Suffering $w2 Nature dama
 
 Name             : Secret Ingredients (id=196719) [Spell Family (53), Passive] 
 Class            : Monk
+Proc Chance      : 30%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4036,6 +3973,7 @@ Name             : Keg Smash! (id=196720) [Spell Family (53)]
 Class            : Monk
 Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Secret Ingredients (196719)
@@ -4069,6 +4007,7 @@ Description      : Reduces the cooldown of Ironskin Brew and Purifying Brew by $
 
 Name             : Dizzying Kicks (id=196722) [Spell Family (53), Passive] 
 Class            : Monk
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4122,6 +4061,7 @@ Tooltip          : Dealing healing to nearby allies every $116847t1 sec.
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
 Class            : Monk
+Proc Chance      : 30%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4259,6 +4199,7 @@ Name             : Hit Combo (id=196741) [Spell Family (53)]
 Class            : Monk
 Duration         : 10 seconds
 Stacks           : 10 maximum
+Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4305,6 +4246,7 @@ Class            : Monk
 Range            : 50000 yards
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4394,6 +4336,7 @@ Description      : Reduces the mana cost of your spells by $s1% for $d.
 Name             : Lifecycles (id=197915) [Spell Family (53), Passive] 
 Class            : Monk
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4515,6 +4458,7 @@ Spell Level      : 10
 Range            : 100 yards
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..... ........ 
@@ -4585,6 +4529,7 @@ Name             : Teachings of the Monastery (id=202090) [Spell Family (53)]
 Class            : Monk
 Duration         : 8 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ........ ........ ........ x..x....   ........ ..x..... ........ ........ 

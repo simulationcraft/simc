@@ -1,33 +1,5 @@
 SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
 
-Name             : Word of Recall (OLD) (id=1) 
-Class            : Warrior, Death Knight, Shaman, Warlock, Monk
-Resource         : 10% Base Mana (0 @Level 110)
-Cast Time        : 10 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1)        : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000
-
-Name             : Word of Mass Recall (OLD) (id=3) 
-Class            : Death Knight, Shaman, Warlock
-Resource         : 10% Base Mana (0 @Level 110)
-Cast Time        : 20 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=2)        : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | Radius: 30 yards
-
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -99,24 +71,6 @@ Effects          :
 #1 (id=155)      : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60700
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
-
-Name             : Astral Recall (id=556) [Spell Family (11)] 
-Class            : Shaman
-Spell Level      : 34
-Cast Time        : 10 seconds
-GCD              : 1.5 seconds
-Cooldown         : 900 seconds
-Affecting spells : Glyph of Astral Recall (58058), Glyph of the Spectral Wolf (58135), Spiritwalker's Grace (79206), Lucidity (137326)
-Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=223)      : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Yanks the caster through the twisting nether back to $?s147787[your faction's Earthshrine.][$z.  Speak to an Innkeeper in a different place to change your home location.]
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
 Class            : Restoration Shaman
@@ -230,45 +184,6 @@ Description      : Increases haste by $s1% for all party and raid members within
 Allies receiving this effect will become Sated and be unable to benefit from Bloodlust or Time Warp again for $57724d.
 Tooltip          : Haste increased by $s1%.
 
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Healing Stream Totem (id=5394) [Spell Family (11)] 
 Class            : Restoration Shaman
 Resource         : 8.6% Base Mana (18920 @Level 110)
@@ -316,46 +231,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Changes the caster's viewpoint to the targeted location. Lasts $d.$?s58059[][ Only usable outdoors.]
 Tooltip          : Cannot move while using Far Sight.
-
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
 
 Name             : Healing Surge (id=8004) [Spell Family (11)] 
 Class            : Restoration Shaman
@@ -418,6 +293,7 @@ Description      : Causes the Shaman's Flame Shocked targets to emit a wave of f
 Name             : Flametongue (id=10400) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 Spell Level      : 14
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Elemental Fury (60188), Elemental Discharge (144999)
@@ -440,6 +316,7 @@ Description      : Each of your off-hand weapon attacks causes up to ${0.075*$AP
 Name             : Flametongue Attack (id=10444) [Spell Family (11)] 
 Class            : Shaman
 Range            : 50000 yards
+Proc Chance      : 101%
 Affecting spells : Elemental Fury (60188), Elemental Discharge (144999)
 Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -452,35 +329,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc10400
 
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Resurgence (id=16196) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 Spell Level      : 38
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -530,6 +382,7 @@ Spell Level      : 26
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 16 seconds
+Proc Chance      : 101%
 Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
@@ -545,32 +398,6 @@ Effects          :
 #3 (id=287087)   : Trigger Spell: Stormstrike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195573
 Description      : Energize your weapons with lightning and deliver a massive blow to your target, dealing a total of ${$32175sw1+$32176sw1} Physical damage.
-
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
@@ -644,6 +471,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -685,6 +513,7 @@ Class            : Enhancement Restoration Shaman
 Spell Level      : 40
 Duration         : 15 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -706,6 +535,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 5 yards
 Stacks           : 2 initial, 2 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Triggered by     : Stormstrike (17364), Stormstrike (196881)
@@ -811,6 +641,7 @@ Name             : Windfury (id=33757) [Spell Family (11), Passive]
 Class            : Enhancement Shaman
 Spell Level      : 30
 Internal Cooldown: 4 seconds
+Proc Chance      : 5%
 Proc Flags       : ..x.x... ........ ......xx ........ 
                  : White Melee, Yellow Melee, Melee Off-Hand
 Affecting spells : Mastery: Enhanced Elements (77223)
@@ -1030,6 +861,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)
@@ -1092,6 +924,7 @@ Name             : Tidal Waves (id=51564) [Spell Family (11), Passive]
 Class            : Restoration Shaman
 Spell Level      : 50
 Internal Cooldown: 0.2 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1128,6 +961,7 @@ Name             : Tidal Waves (id=53390) [Spell Family (11)]
 Class            : Shaman
 Duration         : 15 seconds
 Stacks           : 1 initial, 2 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Affecting spells : Item - Shaman T14 Restoration 4P Bonus (123135), Crashing Waves (197464), 
@@ -1187,6 +1021,7 @@ Description      : You automatically gain Water Walking while you are in Ghost W
 Name             : Telluric Currents (Restoration) (id=55453) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 Spell Level      : 10
+Proc Chance      : 30%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1332,6 +1167,7 @@ Description      : Disrupts the target's concentration with a burst of wind, int
 
 Name             : Glyph of Totemic Encirclement (id=58057) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
+Proc Chance      : 100%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1358,7 +1194,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=51362)    : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -300000 | Scaled Value: -300000 | Misc Value: 11
-                   Affected Spells: Astral Recall (556)
 Description      : Reduces the cooldown of your Astral Recall spell by ${$m1/-60000} minutes.
 
 Name             : Glyph of Far Sight (id=58059) [Spell Family (11), Passive, Hidden] 
@@ -1388,7 +1223,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=51449)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11
-                   Affected Spells: Astral Recall (556)
 Description      : Alters the appearance of your Ghost Wolf transformation, causing it to resemble a large, spectral wolf.
 
 Name             : Astral Recall (id=58260) 
@@ -1446,6 +1280,7 @@ Class            : Enhancement Shaman
 Spell Level      : 72
 Duration         : 15 seconds
 Cooldown         : 60 seconds
+Stance Mask      : 0x00008000
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1487,6 +1322,7 @@ Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ....x... x....... ........ 
                  : White Melee, Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1510,6 +1346,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Affecting spells : Mastery: Deep Healing (77226)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
@@ -1611,6 +1448,7 @@ Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (10 seconds cooldown)
+Proc Chance      : 100%
 Affecting spells : Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -1687,6 +1525,7 @@ Description      : Increases the mana you receive from your Thunderstorm spell b
 
 Name             : Glyph of Deluge (Restoration) (id=63279) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1719,6 +1558,7 @@ Description      : $@spelldesc63279
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
 Class            : Shaman
 Duration         : 5 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Triggered by     : Earthgrab (116943)
@@ -1946,7 +1786,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Chain Multiplier: 0.2
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -1969,6 +1809,7 @@ Description      : $@spelldesc61882
 Name             : Lava Surge (id=77756) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 Spell Level      : 40
+Proc Chance      : 10%
 Proc Flags       : ........ ........ ..x..x.. ........ 
                  : Periodic, Trap Triggered
 Affecting spells : Elemental Fusion (192235)
@@ -2000,7 +1841,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Astral Recall (556), Chain Heal (1064), Ancestral Spirit (2008), Ghost Wolf (2645), Healing Surge (8004), Lava Burst (51505), Hex (51514), Earthquake Totem (61882), Healing Rain (73920), Healing Wave (77472), Earthquake (77478), Conductivity (108282), Lava Beam (114074), Elemental Blast (117014), Lightning Bolt (187837), Healing Surge (188070), Lightning Bolt (188196), Chain Lightning (188443), Voodoo Hex (196942)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Chain Heal (1064), Ancestral Spirit (2008), Ghost Wolf (2645), Healing Surge (8004), Lava Burst (51505), Hex (51514), Earthquake Totem (61882), Healing Rain (73920), Healing Wave (77472), Earthquake (77478), Conductivity (108282), Lava Beam (114074), Elemental Blast (117014), Lightning Bolt (187837), Healing Surge (188070), Lightning Bolt (188196), Chain Lightning (188443), Voodoo Hex (196942)
 #2 (id=289427)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0
 Description      : Calls upon spiritual guidance, permitting movement while casting  Shaman spells. This spell may be cast while casting other spells.  $?a192088[Increases movement speed by $192088s2%.][] Lasts $d.
@@ -2121,20 +1962,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Enables Worgens to switch between human and Worgan forms
 
-Name             : Teleport (DND) (id=95155) [Hidden] 
-Class            : Shaman
-Range            : 50000 yards
-Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=100459)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0
-
 Name             : Spirit Link Totem (id=98007) [Spell Family (11), Passive] 
 Class            : Shaman
 Spell Level      : 30
@@ -2244,6 +2071,7 @@ Name             : Ancestral Guidance (id=108281)
 Class            : Shaman
 Duration         : 10 seconds
 Cooldown         : 120 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2260,6 +2088,7 @@ Tooltip          : A percentage of damage or healing dealt is copied as healing 
 
 Name             : Conductivity (id=108282) [Spell Family (11), Passive] 
 Class            : Shaman
+Proc Chance      : 100%
 Proc Flags       : ....x... ......x. x....... ........ 
                  : Yellow Melee, Heal, Hostile Spell
 Affecting spells : Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Lucidity (137326)
@@ -2373,6 +2202,7 @@ Class            : Shaman
 Spell Level      : 87
 Duration         : 15 seconds
 Cooldown         : 120 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ..x..x.. ........ 
                  : Heal, Periodic, Trap Triggered
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
@@ -2527,6 +2357,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 0 (12 seconds cooldown)
+Proc Chance      : 100%
 Affecting spells : Flurry (16282), Item - Shaman T14 Enhancement 4P Bonus (123133)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
@@ -2550,6 +2381,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
+Proc Chance      : 101%
 Triggered by     : Windstrike (115356)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -3084,6 +2916,7 @@ Range            : 50000 yards
 Velocity         : 15 yards/sec
 Duration         : 180 seconds
 Internal Cooldown: 8 seconds
+Proc Chance      : 75%
 Proc Flags       : ........ ......x. x.x..x.. ........ 
                  : Heal, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ........ ...x.... .......x .....x..   ...x...x ..xx.... ........ ........ 
@@ -3485,6 +3318,7 @@ Description      : $@spelldesc157153
 
 Name             : Glyph of Ghostly Speed (id=159642) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
+Stance Mask      : 0x00008000
 Attributes       : ....x.xx x......x ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3568,6 +3402,7 @@ Effects          :
 
 Name             : Item - Shaman T17 Enhancement 4P Bonus (id=165610) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
+Proc Chance      : 101%
 Proc Flags       : ....x... ..x...x. ........ ........ 
                  : Yellow Melee, AOE Heal, Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3605,6 +3440,7 @@ Feral Spirits can now proc Windfury.
 Name             : Mastery: Elemental Overload (id=168534) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 Spell Level      : 78
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3624,6 +3460,7 @@ Description      : Grants a $77222s1% chance for Elemental Overload to occur.  E
 Name             : Mastery: Molten Earth (id=170374) [Spell Family (11), Passive] 
 Class            : Shaman
 Spell Level      : 78
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3663,6 +3500,7 @@ Name             : Feral Spirit Windfury Driver (id=170523) [Spell Family (11), 
 Class            : Shaman
 Range            : 100 yards
 Duration         : 30 seconds
+Proc Chance      : 20%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..xxx ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Melee Off-Hand
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3855,6 +3693,7 @@ Name             : Crash Lightning (id=187878) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 1
 Duration         : 10 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -3872,6 +3711,7 @@ Effects          :
 Name             : Maelstrom Weapon (id=187880) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 Spell Level      : 50
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ......xx ........ 
                  : White Melee, Yellow Melee, Melee Off-Hand
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4094,6 +3934,7 @@ Name             : Gathering Vortex (id=189078)
 Class            : Shaman
 Duration         : Aura (infinite)
 Stacks           : 20 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ....x... ........   ........ ........ ........ ........ 
@@ -4266,6 +4107,7 @@ When cast, Earth Shock will consume all of your available Maelstrom, converting 
 Name             : Fulmination! (id=190494) [Spell Family (11), Hidden] 
 Class            : Shaman
 Duration         : Aura (infinite)
+Proc Chance      : 60%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Triggered by     : Maelstrom Controller (190488)
@@ -4283,6 +4125,7 @@ Effects          :
 Name             : Tempest Totem Empower Lava (id=190507) [Spell Family (11), Passive] 
 Class            : Shaman
 Spell Level      : 50
+Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4334,6 +4177,7 @@ Class            : Shaman
 Spell Level      : 1
 Duration         : Aura (infinite)
 Stacks           : 10 maximum
+Proc Chance      : 101%
 Triggered by     : Maelstrom Controller Increasing (190899)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4432,6 +4276,7 @@ Tooltip          : Movement speed increased by $s1%.
 
 Name             : Ancestral Swiftness (id=192087) [Spell Family (11), Passive] 
 Class            : Shaman
+Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4639,8 +4484,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=284292)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1317
 #2 (id=284293)   : Quest Complete (16)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 #3 (id=284294)   : Unknown effect type (90)
@@ -4667,6 +4510,7 @@ Effects          :
 Name             : Fulmination (id=193777) [Spell Family (11), Hidden] 
 Class            : Shaman
 Duration         : Aura (infinite)
+Proc Chance      : 101%
 Triggered by     : Maelstrom Controller (190488)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4724,6 +4568,7 @@ Name             : Flametongue (id=194084) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 10
 Duration         : 16 seconds
+Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Elemental Fury (60188), Elemental Discharge (144999)
@@ -4747,6 +4592,7 @@ Tooltip          : Each of your weapon attacks causes up to ${0.075*$AP} additio
 Name             : Stormlash (id=195255) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 Spell Level      : 16
+Proc Chance      : 5%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
@@ -4765,6 +4611,7 @@ Name             : Stormstrike (id=195573) [Spell Family (11), Hidden]
 Class            : Shaman
 Duration         : 2 seconds
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Triggered by     : Stormstrike (17364), Stormstrike (196881)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4800,6 +4647,7 @@ Name             : Maelstrom Power Decrease (id=195769) [Spell Family (11), Hidd
 Class            : Shaman
 Spell Level      : 1
 Stacks           : 10 maximum
+Proc Chance      : 101%
 Triggered by     : Maelstrom Controller Decreasing (195771)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4911,6 +4759,7 @@ Class            : Shaman
 Spell Level      : 26
 Range            : 5 yards
 GCD              : 1.5 seconds
+Proc Chance      : 100%
 Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133)
 Triggered by     : Feral Lunge (196884)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4935,6 +4784,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4993,6 +4843,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)
@@ -5085,6 +4936,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ .....x.. .x.x.... ........ 
                  : AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5210,6 +5062,7 @@ Description      : Resurgence always triggers when you heal a target below $s1% 
 
 Name             : Lightning Rod (id=197568) [Spell Family (11)] 
 Class            : Shaman
+Proc Chance      : 100%
 Proc Flags       : ........ .....x.. .x.x.... ........ 
                  : AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Triggered by     : Lightning Rod (197209)
@@ -5343,6 +5196,7 @@ Name             : Earthen Shield (id=198839) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 30
 Duration         : Aura (infinite)
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5663,6 +5517,7 @@ Description      : Gaining Maelstrom
 
 Name             : Stoneclaw Totem (id=202227) [Spell Family (11), Passive] 
 Class            : Shaman
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5700,6 +5555,7 @@ Name             : Telluric Currents (id=202327) [Spell Family (11)]
 Class            : Shaman
 Duration         : 8 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Triggered by     : Telluric Currents (55453)

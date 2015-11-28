@@ -6,6 +6,7 @@ Spell Level      : 24
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 101%
 Affecting spells : Balance Overrides Passive (106732), Feral Overrides Passive (106733), Guardian Overrides Passive (106734), Restoration Druid (137012), Gutteral Roars (204012)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -29,6 +30,7 @@ Range            : 35 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Cat Form (3025), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Roots Range Increase (96148), Lucidity (137247), Astral Influence (197524)
@@ -53,6 +55,7 @@ Spell Level      : 72
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x00000002
 Affecting spells : Tricks of Time (105864), Lucidity (137247), Inner Peace (197073), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -77,6 +80,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -105,7 +109,8 @@ Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Ironbark (102342), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (105770), Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (105790), Tricks of Time (105864), Item - Druid T14 Restoration 2P Bonus (123088), Lucidity (137247), Germination (155675), Astral Influence (197524)
+Stance Mask      : 0x00000002
+Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (105770), Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (105790), Tricks of Time (105864), Item - Druid T14 Restoration 2P Bonus (123088), Lucidity (137247), Germination (155675), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...x.. ........ ........ 
@@ -136,6 +141,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -161,6 +167,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Mastery: Razor Claws (77493), Berserk (106951), Item - Druid T14 Feral 4P Bonus (123085), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Wounds (202032), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -212,6 +219,7 @@ Tooltip          : Strength, Agility, and Intellect increased by $s1%. $?($s2=0)
 Name             : Bear Form Passive (id=1178) [Spell Family (7), Passive] 
 Class            : Druid
 Spell Level      : 1
+Stance Mask      : 0x00000010
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -237,6 +245,7 @@ Resource         : 35 Energy
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Mastery: Razor Claws (77493), Prowl (102547), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Wounds (202032), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -274,6 +283,7 @@ Tooltip          : Increased movement speed by $s1% while in Cat Form.
 
 Name             : Cat Form (id=3025) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
+Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -293,45 +303,6 @@ Effects          :
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
                    Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
 
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
 Class            : Restoration Rogue, Druid
 Race             : Night Elf
@@ -341,6 +312,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
+Stance Mask      : 0x40000000
 Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Druid (137012), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Blessing of Elune (202737)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -360,7 +332,7 @@ Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Predatory Swiftness (69369), Profusion (96206), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Tricks of Time (105864), Soul of the Forest (114108), Lucidity (137247), Sage Mender (144871), Astral Influence (197524)
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Profusion (96206), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Tricks of Time (105864), Soul of the Forest (114108), Lucidity (137247), Sage Mender (144871), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -379,6 +351,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 50 seconds
+Proc Chance      : 101%
 Affecting spells : Bear Form (5487), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -398,6 +371,7 @@ Spell Level      : 5
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Incarnation: King of the Jungle (102543)
@@ -445,6 +419,7 @@ Resource         : 40 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Berserk (106951), Item - Druid T14 Feral 2P Bonus (123084), Clearcasting (135700), Tiger's Fury (138358), Feral Fury (144865), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -467,6 +442,7 @@ While stealthed, Shred deals $5215m4% increased damage, and has double the chanc
 
 Name             : Incarnation: Tree of Life (Passive) (id=5420) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
+Stance Mask      : 0x00000002
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -497,6 +473,7 @@ Effects          :
 Name             : Aquatic Form Passive (id=5421) [Spell Family (7), Passive] 
 Class            : Druid
 Spell Level      : 1
+Stance Mask      : 0x00000008
 Affecting spells : Glyph of Aquatic Form (57856), Glyph of the Orca (114333)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -517,6 +494,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -570,6 +548,8 @@ Spell Level      : 12
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x00000010
 Affecting spells : Incarnation: Guardian of Ursoc (102558), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ..x..... ........ 
@@ -591,6 +571,7 @@ Resource         : 20 Rage
 Spell Level      : 10
 Range            : 5 yards
 Cooldown         : 3 seconds
+Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Tooth and Claw (165411), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -605,51 +586,12 @@ Effects          :
                    Base Value: 150 | Scaled Value: 1.5
 Description      : Maul the target for $sw2 Physical damage.
 
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
-
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 6
 Range            : 40 yards
 GCD              : 1.5 seconds
+Stance Mask      : 0x40000012
 Affecting spells : Balance Overrides Passive (106732), Astral Storm (106996), Item - Druid T14 Balance 4P Bonus (123083), Lucidity (137247), Lunar Inspiration (155627), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Feral Overrides Passive (197692), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -672,7 +614,8 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Incarnation: Tree of Life (81097), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Astral Influence (197524)
+Stance Mask      : 0x00000002
+Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Incarnation: Tree of Life (81097), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -699,35 +642,10 @@ $tol=$?a5420[${1+0.01+$5420m1}][${1}]
 $gift=$?s87305[${1.25}][${1}]
 $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
 Class            : Feral Druid
 Spell Level      : 38
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Affecting spells : Moment of Clarity (155577), Item - Druid T18 Feral 2P Bonus (185805), 
@@ -749,6 +667,7 @@ Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 1 maximum
+Proc Chance      : 101%
 Affecting spells : Moment of Clarity (155577), Item - Druid T18 Feral 2P Bonus (185805), 
 Triggered by     : Omen of Clarity (113043)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -773,6 +692,8 @@ Range            : 35 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x40000002
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x..x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -804,6 +725,7 @@ Description      : Reduces all damage taken by $s1%.
 Name             : Feral Instinct (id=16949) [Spell Family (7), Passive] 
 Class            : Feral Druid
 Spell Level      : 10
+Stance Mask      : 0x00000001
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -824,6 +746,8 @@ Class            : Druid
 Spell Level      : 35
 Range            : 100 yards
 Stacks           : 3 maximum
+Proc Chance      : 101%
+Stance Mask      : 0x00000001
 Triggered by     : Primal Fury (159286)
 Attributes       : ....x... ........ ........ x.......   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ........ 
@@ -897,7 +821,8 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Affecting spells : Incarnation: Tree of Life (5420), Tricks of Time (105864), Item - Druid T14 Restoration 4P Bonus (123089), Lucidity (137247), Astral Influence (197524)
+Stance Mask      : 0x00000002
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Tricks of Time (105864), Item - Druid T14 Restoration 4P Bonus (123089), Lucidity (137247), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -908,32 +833,6 @@ Effects          :
 #1 (id=10065)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.00000
 Description      : Instantly heals a friendly target for $s1.
-
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
 
 Name             : Rebirth (id=20484) [Spell Family (7)] 
 Class            : Druid
@@ -956,6 +855,7 @@ Description      : Returns the spirit to the body, restoring a dead target to li
 Name             : Feline Grace (id=20719) [Passive, Hidden] 
 Class            : Druid
 Spell Level      : 6
+Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1024,6 +924,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Tiger's Fury (138358), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1056,6 +957,7 @@ Spell Level      : 72
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1112,6 +1014,7 @@ Spell Level      : 50
 Duration         : 6 seconds
 Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
+Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Improved Regeneration (138217), Guardian of Elune (155578), Primal Mending (177969)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1132,6 +1035,7 @@ Description      : Heals you for $s2% of all damage taken in the last $s3 sec ov
 
 Name             : Shapeshift Movement Speed (id=23218) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
+Stance Mask      : 0x00000015
 Attributes       : ......xx x......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1150,6 +1054,7 @@ Resource         : 9.3% Base Mana (20460 @Level 110)
 Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 15%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301)
@@ -1196,6 +1101,8 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Stance Mask      : 0x40000002
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -1218,6 +1125,8 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), Rend and Tear (204053), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -1240,7 +1149,9 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Stacks           : 1 maximum
-Affecting spells : Incarnation: Tree of Life (5420), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Item - Druid T18 Restoration 4P Bonus (185397), Astral Influence (197524)
+Proc Chance      : 101%
+Stance Mask      : 0x00000002
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Item - Druid T18 Restoration 4P Bonus (185397), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   .....x.. .....x.. ........ ........ 
@@ -1260,7 +1171,7 @@ Name             : Lifebloom (id=33778) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 64
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Astral Influence (197524)
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Astral Influence (197524)
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1296,6 +1207,7 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 180 seconds
+Proc Chance      : 100%
 Proc Flags       : .....x.. .x.x.x.x .x...... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
 Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679)
@@ -1325,6 +1237,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
+Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Soul of the Forest (158477), Lacerate (192090), Astral Influence (197524), Enraged Mangle (202076)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1463,6 +1376,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 7 seconds
 Cooldown         : 10 seconds
+Stance Mask      : 0x80000000
 Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Nature's Wisdom (167715), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
@@ -1487,6 +1401,7 @@ Tooltip          : Heals $w1 damage every $t1 second.
 Name             : Infected Wounds (id=48484) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Guardian Druid
 Spell Level      : 40
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1504,6 +1419,7 @@ Description      : Your Rake causes an Infected Wound in the target, reducing th
 Name             : Living Seed (id=48500) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 Spell Level      : 28
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1541,6 +1457,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ..x..... ...x....   ........ ..x..... ........ ........ 
@@ -1773,6 +1690,7 @@ Spell Level      : 40
 Range            : 5 yards
 Duration         : 12 seconds
 Stacks           : 1 maximum
+Proc Chance      : 101%
 Triggered by     : Infected Wounds (48484)
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ x.......   ........ ........ .x...... ........ 
@@ -1859,6 +1777,7 @@ Name             : Savage Roar (id=62071) [Spell Family (7), Hidden]
 Class            : Druid
 Spell Level      : 18
 Duration         : Aura (infinite)
+Stance Mask      : 0x00000001
 Attributes       : ....x..x x....... ..x..... .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2027,6 +1946,7 @@ Resource         : 0 Rage
 Spell Level      : 18
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
+Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2046,6 +1966,7 @@ Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
+Stance Mask      : 0x40000000
 Affecting spells : Mastery: Starlight (77492), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2071,6 +1992,7 @@ Spell Level      : 28
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2093,6 +2015,7 @@ Class            : Druid
 Spell Level      : 50
 Range            : 5 yards
 GCD              : 1.5 seconds
+Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2232,6 +2155,7 @@ Description      : Increases your Intellect by $s2% while wearing only Leather a
 Name             : Leather Specialization (id=86096) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 Spell Level      : 50
+Stance Mask      : 0x00000010
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2314,6 +2238,7 @@ Class            : Balance Restoration Druid
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Balance Overrides Passive (106732), Astral Storm (106996), Item - Druid T14 Balance 4P Bonus (123083), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2404,6 +2329,7 @@ Class            : Druid
 Spell Level      : 28
 Range            : 100 yards
 Duration         : 5 seconds
+Stance Mask      : 0x40000000
 Triggered by     : Solar Beam (78675)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ..x..... ......x. 
@@ -2468,6 +2394,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Bear Form (5487), Ironbark (102342), Lucidity (137247), Astral Influence (197524)
@@ -2509,6 +2436,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ......x.   ........ ..x..... ........ .x...... 
@@ -2551,6 +2479,7 @@ Spell Level      : 1
 GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
+Proc Chance      : 101%
 Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Lucidity (137247)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2573,6 +2502,7 @@ Spell Level      : 6
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Incarnation: King of the Jungle (102543)
@@ -2603,6 +2533,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
+Proc Chance      : 101%
 Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Lucidity (137247)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2634,6 +2565,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
+Proc Chance      : 101%
 Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301), Incarnation (117679)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2763,6 +2695,7 @@ Resource         : 45 Energy
 Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Berserk (106951), Clearcasting (135700), Tiger's Fury (138358), Feral Fury (144865), Bloodtalons (145152), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2788,6 +2721,7 @@ Spell Level      : 18
 Range            : 8 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Mastery: Razor Claws (77493), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Wounds (202032), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2810,6 +2744,7 @@ Class            : Feral Guardian Druid
 Resource         : 0 Rage
 Spell Level      : 18
 Range            : 5 yards
+Stance Mask      : 0x00000011
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2826,6 +2761,7 @@ Class            : Feral Guardian Druid
 Spell Level      : 64
 Range            : 13 yards
 Cooldown         : 15 seconds
+Stance Mask      : 0x00000011
 Affecting spells : Berserk (106951), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2844,6 +2780,7 @@ Spell Level      : 88
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ .......x 
@@ -2889,6 +2826,7 @@ Name             : Berserk (id=106952) [Spell Family (7)]
 Class            : Feral Druid
 Spell Level      : 48
 Cooldown         : 180 seconds
+Stance Mask      : 0x00000001
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2907,6 +2845,8 @@ Spell Level      : 42
 Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x40000002
 Affecting spells : Lucidity (137247), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ..xx...x ........ ........ ........ 
                  : ........ ........ ...x..x. ........   ........ ........ ........ ........ 
@@ -3015,6 +2955,7 @@ Description      : Increases your mana pool by $s1%.
 Name             : Omen of Clarity (id=113043) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 Spell Level      : 38
+Proc Chance      : 4%
 Proc Flags       : ........ ......x. ..x..x.. ........ 
                  : Heal, Periodic, Trap Triggered
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3031,6 +2972,7 @@ Description      : Your periodic healing from Lifebloom has a $h% chance to caus
 
 Name             : Cat Form (Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
+Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3061,6 +3003,7 @@ Name             : Soul of the Forest (id=114108) [Spell Family (7)]
 Class            : Druid
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
@@ -3202,6 +3145,7 @@ Class            : Druid
 Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 90 seconds
+Proc Chance      : 100%
 Proc Flags       : ....x... ......x. x.x..x.. ........ 
                  : Yellow Melee, Heal, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
@@ -3410,6 +3354,7 @@ Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Affecting spells : Moment of Clarity (155577), Item - Druid T18 Feral 2P Bonus (185805), 
@@ -3681,6 +3626,7 @@ Name             : Combo Point (id=139546)
 Class            : Druid
 Range            : 100 yards
 Stacks           : 1 maximum
+Proc Chance      : 101%
 Triggered by     : Elune's Guidance (202060)
 Attributes       : ....x... ........ ........ x.......   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ xx...... ......x. 
@@ -3696,6 +3642,7 @@ Description      : Grants $m1 combo point.
 
 Name             : Item - Druid T16 Feral 4P Bonus (id=144841) [Spell Family (7), Passive] 
 Class            : Druid
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3763,6 +3710,7 @@ Class            : Druid
 Duration         : 30 seconds
 Internal Cooldown: 0.1 seconds
 Stacks           : 2 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3785,6 +3733,8 @@ Spell Level      : 88
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x00000002
 Affecting spells : Incarnation: Tree of Life (5420), Glyph of the Sprouting Mushroom (146654), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3851,6 +3801,7 @@ Class            : Druid
 Range            : 70 yards
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x..... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, Hostile Spell
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3976,6 +3927,7 @@ Resource         : 6% Base Mana (13200 @Level 110)
 Spell Level      : 76
 GCD              : 1.5 seconds
 Charges          : 3 (30 seconds cooldown)
+Stance Mask      : 0x40000000
 Affecting spells : Mastery: Starlight (77492), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Stellar Drift (202354), 
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4033,6 +3985,7 @@ Spell Level      : 3
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 14 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Berserk (106951), Clearcasting (135700), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4100,6 +4053,7 @@ Class            : Druid
 Spell Level      : 6
 Range            : 100 yards
 Duration         : 15 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Mastery: Razor Claws (77493), Prowl (102547), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Wounds (202032), 
 Triggered by     : Rake (1822)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
@@ -4137,6 +4091,7 @@ Name             : Bristling Fur (id=155835)
 Class            : Druid
 Duration         : 6 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4154,6 +4109,7 @@ Tooltip          : Generating Rage from taking damage.
 Name             : Owlkin Frenzy (id=157228) [Spell Family (7)] 
 Class            : Druid
 Duration         : 10 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Triggered by     : Moonkin Form (24858)
@@ -4191,7 +4147,8 @@ Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Stacks           : 3 maximum
-Affecting spells : Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Ironbark (102342)
+Proc Chance      : 101%
+Affecting spells : Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342)
 Triggered by     : Tranquility (740)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ......x. 
@@ -4291,6 +4248,8 @@ Name             : Primal Fury (id=159286) [Spell Family (7), Passive]
 Class            : Feral Druid
 Spell Level      : 35
 Internal Cooldown: 0.9 seconds
+Proc Chance      : 100%
+Stance Mask      : 0x00000001
 Proc Flags       : ....x... ..x.x.x. x....... ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4309,6 +4268,7 @@ Damage over time cannot trigger this effect.
 
 Name             : Glyph of Travel (id=159456) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
+Stance Mask      : 0x00000004
 Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4427,6 +4387,7 @@ Class            : Druid
 Spell Level      : 32
 Range            : 50000 yards
 Duration         : 4 seconds
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4443,6 +4404,7 @@ Name             : Solar Empowerment (id=164545) [Spell Family (7)]
 Class            : Druid
 Duration         : 40 seconds
 Stacks           : 1 initial, 3 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107)
@@ -4470,6 +4432,7 @@ Name             : Lunar Empowerment (id=164547) [Spell Family (7)]
 Class            : Druid
 Duration         : 40 seconds
 Stacks           : 1 initial, 3 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107)
@@ -4498,6 +4461,7 @@ Class            : Druid
 Spell Level      : 3
 Range            : 100 yards
 Duration         : 12 seconds
+Stance Mask      : 0x40000012
 Affecting spells : Balance Overrides Passive (106732), Astral Storm (106996), Item - Druid T14 Balance 4P Bonus (123083), Lucidity (137247), Lunar Inspiration (155627), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Feral Overrides Passive (197692), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
@@ -4519,6 +4483,7 @@ Class            : Druid
 Spell Level      : 18
 Range            : 100 yards
 Duration         : 8 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Balance Overrides Passive (106732), Astral Storm (106996), Item - Druid T14 Balance 4P Bonus (123083), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
@@ -4539,6 +4504,7 @@ Name             : Flap (id=164862)
 Class            : Druid
 GCD              : 0.5 seconds
 Duration         : 15 seconds
+Stance Mask      : 0x40000000
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4574,6 +4540,7 @@ Resource         : 7.4% Base Mana (16280 @Level 110)
 Spell Level      : 58
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
 Attributes       : ....x... .......x ..x..... ....x...   ........ ..x..... x....... ........ 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4613,6 +4580,7 @@ Spell Level      : 82
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4638,6 +4606,7 @@ Spell Level      : 82
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4663,6 +4632,7 @@ Spell Level      : 82
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4688,6 +4658,7 @@ Spell Level      : 82
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4713,6 +4684,7 @@ Spell Level      : 82
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Stance Mask      : 0x00000001
 Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4823,6 +4795,7 @@ Name             : Sunfall (Solar) (id=185002) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 76
 Duration         : 10 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Mastery: Starlight (77492), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Stellar Drift (202354), 
 Triggered by     : Sunfall (155592)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -4855,6 +4828,7 @@ Description      : $@spelldesc184878
 
 Name             : Item - Druid T18 Balance 2P Bonus (id=187875) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
+Proc Chance      : 100%
 Real PPM         : 4
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -4911,6 +4885,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
+Stance Mask      : 0x40000000
 Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Druid (137012), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Blessing of Elune (202737)
 Triggered by     : Solar Empowerment (164545)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4923,7 +4898,7 @@ Effects          :
 #1 (id=280098)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.28600
 #2 (id=280099)   : Energize Power (30)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value: none
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: astral_power
 Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.
 
 Generates $s2 Astral Power.
@@ -4935,6 +4910,7 @@ Spell Level      : 40
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Mastery: Starlight (77492), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Stellar Drift (202354), 
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4978,6 +4954,8 @@ Spell Level      : 42
 Duration         : 6 seconds
 Cooldown         : 1 seconds
 Stacks           : 6 maximum
+Proc Chance      : 101%
+Stance Mask      : 0x00000010
 Affecting spells : Guardian of Elune (155578)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5017,6 +4995,7 @@ Spell Level      : 38
 Range            : 5 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Astral Influence (197524), Rend and Tear (204053), 
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ........ 
@@ -5051,8 +5030,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=284286)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1317
 #2 (id=284287)   : Quest Complete (16)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 #3 (id=284288)   : Unknown effect type (90)
@@ -5067,6 +5044,7 @@ Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
+Stance Mask      : 0x40000002
 Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Full Moon (202355), Warrior of Elune (202425), Blessing of Elune (202737)
 Triggered by     : Lunar Empowerment (164547), Warrior of Elune (202425)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5081,7 +5059,7 @@ Effects          :
 #2 (id=284977)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Radius: 0 - 5 yards
 #3 (id=295015)   : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: none
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: astral_power
 #4 (id=298448)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20
 Description      : Call down a strike of lunar energy, causing $s2 Arcane damage to the target, and ${$m2*$m1/100} Arcane damage to all other enemies within $A2 yards.
@@ -5273,6 +5251,7 @@ Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 90 seconds
+Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5308,6 +5287,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 8 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Mastery: Starlight (77492), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5333,6 +5313,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Full Moon (202355), Warrior of Elune (202425), Blessing of Elune (202737)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5353,6 +5334,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
+Stance Mask      : 0x40000000
 Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Druid (137012), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Blessing of Elune (202737)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5371,6 +5353,7 @@ Resource         : 1.5% Base Mana (3300 @Level 110)
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
+Stance Mask      : 0x40000000
 Affecting spells : Balance Overrides Passive (106732), Astral Storm (106996), Item - Druid T14 Balance 4P Bonus (123083), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5545,6 +5528,7 @@ Name             : Thorns (id=201295) [Spell Family (7)]
 Class            : Restoration Druid
 Spell Level      : 54
 Duration         : 1800 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5609,6 +5593,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
 Charges          : 3 (15 seconds cooldown)
+Stance Mask      : 0x00000001
 Affecting spells : Clearcasting (135700), Lacerate (192090), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5702,6 +5687,7 @@ Resource         : 15 Rage
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
+Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Soul of the Forest (158477), Lacerate (192090), Astral Influence (197524), Enraged Mangle (202076)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5866,7 +5852,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298311)   : Energize Power (30)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: none
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: astral_power
 Description      : Generate $s1 Astral Power
 
 Name             : Blessing of the Ancients (id=202360) [Spell Family (7)] 
@@ -5898,6 +5884,7 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 45 seconds
 Stacks           : 1 initial, 2 maximum
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5951,7 +5938,7 @@ Effects          :
 #1 (id=298525)   : School Damage: spellstorm (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.21000
 #2 (id=298537)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: none
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: astral_power
 Description      : @spelldesc202342
 
 Name             : Blessing of Elune (id=202737) [Spell Family (7)] 
@@ -6054,6 +6041,7 @@ Description      : Lacerate also generates ${$203961s1/10} Rage per stack, each 
 
 Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive] 
 Class            : Druid
+Proc Chance      : 5%
 Proc Flags       : ..x.x... ....x... x.x..... ........ 
                  : White Melee, Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6109,6 +6097,7 @@ Name             : Earthwarden (id=203975) [Spell Family (7)]
 Class            : Druid
 Duration         : Aura (infinite)
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

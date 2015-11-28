@@ -1,23 +1,10 @@
 SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
 
-Name             : Word of Recall (OLD) (id=1) 
-Class            : Warrior, Death Knight, Shaman, Warlock, Monk
-Resource         : 10% Base Mana (0 @Level 110)
-Cast Time        : 10 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1)        : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000
-
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
 Spell Level      : 9
 Cooldown         : 1.5 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Bladestorm (46924), Improved Defensive Stance (157494), Headlong Rush (158836)
@@ -103,6 +90,7 @@ Spell Level      : 14
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
+Proc Chance      : 101%
 Affecting spells : Bladestorm (46924), Vigilance (114030)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
@@ -197,6 +185,7 @@ Class            : Protection Warrior
 Spell Level      : 40
 Duration         : 8 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 101%
 Affecting spells : Bladestorm (46924), Booming Voice (202743), 
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -227,6 +216,7 @@ Spell Level      : 5
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 2 maximum
+Proc Chance      : 101%
 Affecting spells : Recklessness (1719), Headlong Rush (158836), Colossus Smash (167105), Dauntless (202297)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
@@ -344,45 +334,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
-Name             : Heavy Linen Bandage (id=3276) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1030)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Wool Bandage (id=3277) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1031)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Wool Bandage (id=3278) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=1032)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Intervene (id=3411) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 72
@@ -405,6 +356,7 @@ Tooltip          : The next melee or ranged attack made against you will be made
 Name             : Revenge Trigger (id=5301) [Passive, Hidden] 
 Class            : Warrior
 Internal Cooldown: 3 seconds
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -422,6 +374,7 @@ Name             : Revenge! (id=5302) [Spell Family (4), Hidden]
 Class            : Warrior
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Triggered by     : Revenge Trigger (5301)
@@ -462,6 +415,7 @@ Spell Level      : 26
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
+Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160), Recklessness (1719), Headlong Rush (158836), Colossus Smash (167105), Crackling Thunder (203201)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -567,6 +521,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1.5 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -581,77 +536,12 @@ Effects          :
 Description      : Charge an enemy, generate Rage, and stun them for $7922d.
 Tooltip          : Knocked down.
 
-Name             : Silk Bandage (id=7928) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3172)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Silk Bandage (id=7929) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3173)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Anti-Venom (id=7934) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=3176)     : Create Item (24)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Creates 3 vials of Anti-Venom.
-
-Name             : Mageweave Bandage (id=10840) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4605)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Mageweave Bandage (id=10841) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4606)     : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Bloodbath (id=12292) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
 Duration         : 12 seconds
 Cooldown         : 60 seconds
+Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ....x... ........ ..x..... ...x....   ........ ..x..... ........ ........ 
@@ -673,6 +563,7 @@ Spell Level      : 1 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
+Proc Chance      : 101%
 Affecting spells : Recklessness (1719), Mortal Strike and Bloodthirst Damage Up (60174), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336), Vicious Strike (165638), Deadly Calm (166587), Colossus Smash (167105), Sweeping Strikes (202161), Dauntless (202297)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -713,6 +604,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Seasoned Soldier (id=12712) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 Spell Level      : 10
+Proc Chance      : 100%
 Proc Flags       : ..xx.... ........ ........ ........ 
                  : White Melee, White Melee Taken
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
@@ -734,6 +626,7 @@ Name             : Meat Cleaver (id=12950) [Spell Family (4), Passive]
 Class            : Fury Warrior
 Spell Level      : 58
 Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -794,38 +687,13 @@ Description      : You go berserk, removing and granting immunity to Fear, Sap a
 Also Enrages you for $184362d.][]
 Tooltip          : Immune to Fear, Sap, and Incapacitate effects.
 
-Name             : Runecloth Bandage (id=18629) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10186)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
-Name             : Heavy Runecloth Bandage (id=18630) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Cast Time        : 1 seconds
-Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=10187)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
-
 Name             : Devastate (id=20243) [Spell Family (4)] 
 Class            : Protection Warrior
 Spell Level      : 12 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
+Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160), Recklessness (1719), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -927,6 +795,7 @@ Spell Level      : 65
 Duration         : 5 seconds
 Cooldown         : 25 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Manual of Spell Reflection (168801)
@@ -980,6 +849,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
+Stance Mask      : 0x81000000
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1029,6 +899,7 @@ Reduces the Rage cost of Thunder Clap by $s2%.
 
 Name             : Second Wind (id=29838) [Spell Family (4), Passive] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
@@ -1046,6 +917,7 @@ Description      : You gain $202147s1% health every $202147t1 sec, when you have
 Name             : Victorious State (id=32215) [Passive, Hidden] 
 Class            : Warrior
 Spell Level      : 5
+Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1234,6 +1106,7 @@ Immune to crowd control.
 Name             : Sword and Board (id=46953) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
 Spell Level      : 10
+Proc Chance      : 50%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1253,6 +1126,7 @@ Class            : Warrior
 Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 40 seconds
+Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160), Recklessness (1719), Colossus Smash (167105)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1374,6 +1248,7 @@ Description      : Throw your weapon at the enemy, causing $sw2 Physical damage$
 
 Name             : Glyph of Mystic Shout (id=58095) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1390,6 +1265,7 @@ Description      : Your Battle Shout and Commanding Shout cause you to hover in 
 
 Name             : Glyph of Bloodcurdling Shout (id=58096) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1406,6 +1282,7 @@ Description      : Your Battle Shout and Commanding Shout terrify small animals.
 
 Name             : Glyph of Gushing Wound (Protection) (id=58099) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1524,6 +1401,7 @@ Effects          :
 
 Name             : Glyph of Intimidating Shout (id=63327) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1564,6 +1442,7 @@ Effects          :
 
 Name             : Glyph of Thunder Strike (Arms, Protection) (id=68164) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1823,6 +1702,7 @@ Description      : $@spelldesc85288
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
 Class            : Warrior
 Duration         : 6 seconds
+Proc Chance      : 101%
 Triggered by     : Meat Cleaver (12950)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2014,6 +1894,7 @@ Description      : Your Intercept now deals $7922s1 damage to all enemies within
 
 Name             : Impending Victory (id=103840) [Spell Family (4), Passive] 
 Class            : Warrior
+Proc Chance      : 40%
 Proc Flags       : ........ ....x... ........ ........ 
                  : AOE Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2157,6 +2038,7 @@ Class            : Warrior
 Spell Level      : 32
 Range            : 100 yards
 Duration         : 15 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ .......x ........ .......x 
                  : Heal Taken
 Affecting spells : Demoralizing Shout (1160), Recklessness (1719), Headlong Rush (158836), Colossus Smash (167105), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297)
@@ -2199,6 +2081,7 @@ Name             : Mortal Wounds (id=115804)
 Class            : Warrior, Hunter, Monk
 Range            : 100 yards
 Duration         : 10 seconds
+Proc Chance      : 101%
 Triggered by     : Mortal Strike (12294), Bloody Screech (24423), Deadly Sting (160060)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2228,6 +2111,7 @@ Effects          :
 
 Name             : Glyph of Crow Feast (id=115943) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ....x... ...x.... ........ ........ 
                  : Yellow Melee, AOE Heal Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2259,6 +2143,7 @@ Effects          :
 
 Name             : Glyph of Burning Anger (Fury, Protection) (id=115946) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ ........ 
                  : AOE Heal Taken, Heal Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2381,6 +2266,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
+Proc Chance      : 101%
 Affecting spells : Unwavering Sentinel (29144), Glyph of Mighty Victory (58104)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -2412,6 +2298,7 @@ Effects          :
 
 Name             : Glyph of the Blazing Trail (id=123779) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2539,6 +2426,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 4 seconds
+Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160), Recklessness (1719), Colossus Smash (167105)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -2763,6 +2651,7 @@ Effects          :
 
 Name             : Item - Warrior T16 DPS 4P Bonus (id=144441) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2781,6 +2670,7 @@ Name             : Death Sentence (id=144442) [Spell Family (4)]
 Class            : Warrior
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ........ ........ ........ ...x....   .....x.. ..x..... ........ ........ 
@@ -2855,6 +2745,7 @@ Name             : Raging Whirlwind (id=147297) [Spell Family (4)]
 Class            : Warrior
 Duration         : 6 seconds
 Stacks           : 2 maximum
+Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2893,6 +2784,7 @@ Spell Level      : 1
 Range            : 25 yards
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ...x.... ........ 
@@ -3196,6 +3088,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
+Proc Chance      : 101%
 Affecting spells : Recklessness (1719), Mastery: Colossal Might (76838), Headlong Rush (158836), Titanic Might (202612), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3303,6 +3196,7 @@ Tooltip          : Knocked down.
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 Spell Level      : 10
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3398,6 +3292,7 @@ Name             : Rampage (id=184707) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
+Proc Chance      : 101%
 Affecting spells : Recklessness (1719), Headlong Rush (158836), Carnage (202922), 
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3417,6 +3312,7 @@ Name             : Rampage (id=184709) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
+Proc Chance      : 101%
 Affecting spells : Recklessness (1719), Headlong Rush (158836), Carnage (202922), 
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3436,6 +3332,7 @@ Description      : $@spelldesc184367
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 Spell Level      : 18
+Proc Chance      : 20%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3456,6 +3353,7 @@ Name             : Cleave (id=188923) [Spell Family (4)]
 Class            : Warrior
 Duration         : 6 seconds
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3534,8 +3432,6 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281774)   : Unknown effect type (252)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1317
 #2 (id=281775)   : Quest Complete (16)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 Description      : Teleports the caster to the Halls of Valor.
@@ -3547,6 +3443,7 @@ Class            : Arms Warrior
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 101%
 Attributes       : ....x... ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3623,6 +3520,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1 seconds
+Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3725,6 +3623,7 @@ Class            : Warrior
 Spell Level      : 18
 Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Tactician (184783)
@@ -3761,6 +3660,7 @@ Name             : Rampage (id=201363) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
+Proc Chance      : 101%
 Affecting spells : Recklessness (1719), Headlong Rush (158836), Carnage (202922), 
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3781,6 +3681,7 @@ Name             : Rampage (id=201364) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
+Proc Chance      : 101%
 Affecting spells : Recklessness (1719), Headlong Rush (158836), Carnage (202922), 
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3918,6 +3819,7 @@ Description      : You take 20% less damage for 5sec after Charging.
 
 Name             : Renewed Fury (id=202288) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4044,6 +3946,7 @@ Range            : 5 yards
 GCD              : 0.75 seconds
 Duration         : 10 seconds
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4145,6 +4048,7 @@ This ability is not on the global cooldown.
 
 Name             : Vengeance (id=202572) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 100%
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4181,6 +4085,7 @@ Name             : Into the Fray (id=202602)
 Class            : Warrior
 Duration         : Aura (infinite)
 Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4209,6 +4114,7 @@ Description      : You gain $202602s1% Haste for each enemy within $s1 yards, up
 
 Name             : Titanic Might (id=202612) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4230,6 +4136,7 @@ Description      : Increases the duration of Colossus Smash by $s1%, but halves 
 
 Name             : Unquenchable Thirst (id=202687) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4245,6 +4152,7 @@ Description      : Bloodthirst generates an additional ${$s1/10} Rage.
 
 Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4266,6 +4174,7 @@ Description      : Demoralizing Shout also generates ${$m1/10} Rage, and increas
 
 Name             : Reckless Abandon (id=202751) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4339,6 +4248,7 @@ Description      : $@spelldesc203179
 
 Name             : Opportunity Strikes (id=203179) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 30%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4356,6 +4266,7 @@ Your melee abilities have an up to $h% chance, based on target's missing health,
 
 Name             : Crackling Thunder (id=203201) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
