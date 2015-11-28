@@ -40,6 +40,8 @@ struct warrior_t: public player_t
 {
 public:
   event_t* heroic_charge;
+  event_t* rampage_driver;
+  std::vector<attack_t*> rampage_attacks;
   int initial_rage;
   double bloodthirst_crit_multiplier;
   bool non_dps_mechanics, warrior_fixed_time;
@@ -226,6 +228,7 @@ public:
     const spell_data_t* bloodthirst;
     const spell_data_t* meat_cleaver;
     const spell_data_t* piercing_howl;
+    const spell_data_t* rampage;
     const spell_data_t* raging_blow;
     const spell_data_t* singleminded_fury;
     const spell_data_t* titans_grip;
@@ -303,6 +306,8 @@ public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( nullptr ),
+    rampage_driver( nullptr ),
+    rampage_attacks( 0 ),
     active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -1574,7 +1579,7 @@ struct intervene_t: public warrior_attack_t
   }
 };
 
-// Mortal Strike ============================================================
+// Heroic Charge ============================================================
 
 struct heroic_charge_movement_ticker_t: public event_t
 {
@@ -1779,6 +1784,82 @@ struct raging_blow_attack_t: public warrior_attack_t
         p() -> proc.t17_2pc_fury -> occur();
       }
     }
+  }
+};
+
+// Rampage ================================================================
+
+struct rampage_attack_t: public warrior_attack_t
+{
+  rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name ):
+    warrior_attack_t( name, p, rampage )
+  {
+    dual = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double dam = warrior_attack_t::action_multiplier();
+
+    if ( !p() -> buff.enrage -> check() ) // If enrage is not up, it's still does damage as if the player is enraged. 
+    {
+      dam *= 1.0 + p() -> buff.enrage -> data().effectN( 2 ).percent();
+      dam *= 1.0 + p() -> cache.mastery_value();
+    }
+  }
+};
+
+struct rampage_event_t: public event_t
+{
+  timespan_t duration;
+  warrior_t* warrior;
+  size_t attacks;
+  rampage_event_t( warrior_t*p, size_t current_attack ):
+    event_t( *p -> sim ), warrior( p ), attacks( current_attack )
+  {
+    duration = next_execute();
+    add_event( duration );
+    if ( sim().debug ) sim().out_debug.printf( "New rampage event" );
+  }
+
+  timespan_t next_execute() const
+  {
+    return timespan_t::from_millis( ( warrior -> spec.rampage -> effectN( attacks + 5 ).misc_value1() - ( attacks > 0 ? warrior -> spec.rampage -> effectN( attacks + 4 ).misc_value1() : 0 ) ) * warrior -> cache.attack_haste() );
+  }
+
+  void execute() override
+  {
+    warrior -> rampage_attacks[attacks] -> execute();
+    attacks++;
+    if ( attacks < warrior -> rampage_attacks.size() )
+    {
+      warrior -> rampage_driver = new ( sim() ) rampage_event_t( warrior, attacks );
+    }
+  }
+};
+
+struct rampage_parent_t: public warrior_attack_t
+{
+  rampage_parent_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "rampage", p, p -> spec.rampage )
+  {
+    parse_options( options_str );
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
+  }
+
+  bool ready() override
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -2630,6 +2711,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "last_stand"           ) return new last_stand_t           ( this, options_str );
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
+  if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
@@ -2687,6 +2769,7 @@ void warrior_t::init_spells()
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.protection               = find_specialization_spell( "Protection" );
+  spec.rampage                  = find_specialization_spell( "Rampage" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
   spec.recklessness             = find_specialization_spell( "Recklessness" );
@@ -2765,6 +2848,21 @@ void warrior_t::init_spells()
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
+  if ( spec.rampage -> ok() )
+  {
+    rampage_attack_t* first = new rampage_attack_t( this, spec.rampage -> effectN( 5 ).trigger(), "rampage1" );
+    rampage_attack_t* second = new rampage_attack_t( this, spec.rampage -> effectN( 6 ).trigger(), "rampage2" );
+    rampage_attack_t* third = new rampage_attack_t( this, spec.rampage -> effectN( 7 ).trigger(), "rampage3" );
+    rampage_attack_t* fourth = new rampage_attack_t( this, spec.rampage -> effectN( 8 ).trigger(), "rampage4" );
+    first -> weapon = &( this -> off_hand_weapon );
+    second -> weapon = &( this -> main_hand_weapon );
+    third -> weapon = &( this -> off_hand_weapon );
+    fourth -> weapon = &( this -> main_hand_weapon );
+    this -> rampage_attacks.push_back( first );
+    this -> rampage_attacks.push_back( second );
+    this -> rampage_attacks.push_back( third );
+    this -> rampage_attacks.push_back( fourth );
+  }
 
   // Cooldowns
   cooldown.avatar                   = get_cooldown( "avatar" );
@@ -3701,6 +3799,7 @@ void warrior_t::reset()
     active.stance = STANCE_NONE;
   }
   heroic_charge = nullptr;
+  rampage_driver = nullptr;
   last_target_charged = nullptr;
   /*
   if ( rppm.sudden_death )
@@ -3725,6 +3824,10 @@ void warrior_t::interrupt()
   if ( heroic_charge )
   {
     event_t::cancel( heroic_charge );
+  }
+  if ( rampage_driver )
+  {
+    event_t::cancel( rampage_driver );
   }
   player_t::interrupt();
 }
