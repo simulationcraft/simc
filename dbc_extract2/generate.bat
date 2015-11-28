@@ -40,6 +40,7 @@ py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t set_list   
 py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t set_list2              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t perk_list              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t glyph_property_list    >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t artifact               >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item                    > %OUTPATH%/sc_item_data%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t random_property_points  > %OUTPATH%/sc_item_data%PTREXT%2.inc
 py -3  %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t random_suffix          >> %OUTPATH%/sc_item_data%PTREXT%2.inc
