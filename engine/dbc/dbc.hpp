@@ -331,23 +331,23 @@ public:
 
   double cost() const
   {
-    double cost = _cost > 0 ? _cost : _pct_cost;
+    double cost = _cost != 0 ? _cost : _pct_cost;
 
-    return cost / cost_divisor( ! ( _cost > 0 ) );
+    return cost / cost_divisor( ! ( _cost != 0 ) );
   }
 
   double max_cost() const
   {
-    double cost = _cost_max > 0 ? _cost_max : _pct_cost_max;
+    double cost = _cost_max != 0 ? _cost_max : _pct_cost_max;
 
-    return cost / cost_divisor( ! ( _cost_max > 0 ) );
+    return cost / cost_divisor( ! ( _cost_max != 0 ) );
   }
 
   double cost_per_second() const
   {
-    double cost = _cost_per_second > 0 ? _cost_per_second : _pct_cost_per_second;
+    double cost = _cost_per_second != 0 ? _cost_per_second : _pct_cost_per_second;
 
-    return cost / cost_divisor( ! ( _cost_per_second > 0 ) );
+    return cost / cost_divisor( ! ( _cost_per_second != 0 ) );
   }
 
   static spellpower_data_t* nil();

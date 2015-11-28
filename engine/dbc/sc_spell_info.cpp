@@ -636,7 +636,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       s << " ";
 
-      if ( pd -> max_cost() > 0 )
+      if ( pd -> max_cost() != 0 )
       {
         s << "- ";
         if ( pd -> type() == POWER_MANA )
@@ -652,12 +652,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       else
         s << "Unknown (" << pd -> type() << ")";
 
-      if ( pd -> type() == POWER_MANA && pd -> cost() > 0 )
+      if ( pd -> type() == POWER_MANA && pd -> cost() != 0 )
       {
         s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
       }
-      
-      if ( pd -> cost_per_second() > 0 )
+
+      if ( pd -> cost_per_second() != 0 )
       {
         s << " and ";
 
