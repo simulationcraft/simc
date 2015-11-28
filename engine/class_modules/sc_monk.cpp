@@ -180,8 +180,8 @@ public:
 
   struct buffs_t
   {
-    debuff_t* dizzying_haze;
-    debuff_t* rising_sun_kick;
+    debuff_t* dizzing_kicks;
+    debuff_t* keg_smash;
     debuff_t* storm_earth_and_fire;
   } debuff;
 
@@ -391,7 +391,6 @@ public:
     const spell_data_t* ferment;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* keg_smash;
-    const spell_data_t* keg_smash_debuff;
     const spell_data_t* purifying_brew;
     const spell_data_t* resolve;
     const spell_data_t* summon_black_ox_statue;
@@ -440,22 +439,6 @@ public:
     const spell_data_t* windflurry;
   } spec;
 
-  // Warlords of Draenor Perks
-  struct
-  {
-    // GENERAL
-    const spell_data_t* enhanced_roll;
-    const spell_data_t* enhanced_transcendence;
-    // Brewmaster
-    const spell_data_t* improved_breath_of_fire;
-    // Mistweaver
-    const spell_data_t* improved_life_cocoon;
-    const spell_data_t* improved_renewing_mist;
-    // Windwalker
-    const spell_data_t* empowered_chi;
-    const spell_data_t* empowered_spinning_crane_kick;
-  } perk;
-
   struct mastery_spells_t
   {
     const spell_data_t* combo_strikes;       // Windwalker
@@ -489,7 +472,7 @@ public:
     const spell_data_t* hit_combo;
     const spell_data_t* enveloping_mist;
     const spell_data_t* healing_elixirs;
-    const spell_data_t* keg_smash;
+    const spell_data_t* keg_smash_buff;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* tier15_2pc_melee;
@@ -636,7 +619,7 @@ public:
   const double light_stagger_threshold;
   const double moderate_stagger_threshold;
   const double heavy_stagger_threshold;
-  combo_strikes_e convert_expression_action_to_enum( action_t* a );
+//  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   double weapon_power_mod;
   double clear_stagger();
   bool has_stagger();
@@ -2220,6 +2203,14 @@ struct blackout_kick_t: public monk_melee_attack_t
     sef_ability = SEF_BLACKOUT_KICK;
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p() -> talent.dizzying_kicks -> ok() )
+      td( s -> target ) -> debuff.dizzing_kicks -> trigger();
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -2228,9 +2219,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       return;
 
     combo_strikes_trigger( CS_BLACKOUT_KICK );
-
-    if ( p() -> talent.dizzying_kicks -> ok() )
-      p() -> buff.dizzying_kicks -> trigger();
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
@@ -2444,9 +2432,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     base_multiplier *= 3; // hardcoded into tooltip
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
-
-    base_tick_time *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
-    dot_duration *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
 
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, &( data() ) );
   }
@@ -2788,7 +2773,6 @@ struct keg_smash_t: public monk_melee_attack_t
     cooldown             = p.cooldown.brewmaster_attack;
     cooldown -> duration = p.find_spell( id ) -> cooldown();
 
-
     base_multiplier = 11.6; // hardcoded into tooltip
   }
 
@@ -2801,6 +2785,13 @@ struct keg_smash_t: public monk_melee_attack_t
     }
 
     return monk_melee_attack_t::ready();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    td( s -> target ) -> debuff.keg_smash -> trigger();
   }
 
   virtual void execute() override
@@ -2829,7 +2820,6 @@ struct touch_of_death_t: public monk_melee_attack_t
     s -> result_amount = p() -> resources.max[RESOURCE_HEALTH];
     monk_melee_attack_t::impact( s );
   }
-
 };
 
 // ==========================================================================
@@ -3503,35 +3493,12 @@ struct breath_of_fire_t: public monk_spell_t
     monk_spell_t::impact( s );
 
     monk_td_t& td = *this -> td( s -> target );
-    // Improved Breath of Fire
-    if ( ( td.debuff.dizzying_haze -> up() ) || p() -> perk.improved_breath_of_fire -> ok() )
+
+    if ( td.debuff.keg_smash -> up() )
     {
       dot_action -> target = s -> target;
       dot_action -> execute();
     }
-  }
-};
-
-// ==========================================================================
-// Dizzying Haze
-// ==========================================================================
-
-struct dizzying_haze_t: public monk_spell_t
-{
-  dizzying_haze_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "dizzying_haze", &p, p.spec.dizzying_haze )
-  {
-    parse_options( options_str );
-
-    aoe = -1;
-    ability_lag = timespan_t::from_seconds( 0.5 ); // ground target malus
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_spell_t::impact( s );
-
-    td( s -> target ) -> debuff.dizzying_haze -> trigger();
   }
 };
 
@@ -3841,9 +3808,6 @@ struct renewing_mist_t: public monk_heal_t
     parse_options( options_str );
     may_crit = may_miss = false;
     dot_duration = p.spec.renewing_mist_heal -> duration();
-
-    // Improved Renewing Mist
-    dot_duration += p.perk.improved_renewing_mist -> effectN( 1 ).time_value();
   }
 
   virtual double cost() const override
@@ -4259,9 +4223,12 @@ dots( dots_t() ),
 debuff( buffs_t() ),
 monk( *p )
 {
-  debuff.dizzying_haze = buff_creator_t( *this, "dizzying_haze" )
-    .spell( p -> find_spell( 116330 ) )
-    .default_value( p -> find_spell( 116330 ) -> effectN( 1 ).percent() );
+  debuff.dizzing_kicks = buff_creator_t( *this, "dizzying_kicks" )
+    .spell( p -> passives.dizzying_kicks )
+    .default_value( p-> passives.dizzying_kicks -> effectN( 1 ).percent() );
+  debuff.keg_smash = buff_creator_t( *this, "keg_smash" )
+    .spell( p -> spec.keg_smash )
+    .default_value( p -> spec.keg_smash -> effectN( 2 ).percent() );
   debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
     .cd( timespan_t::zero() );
 
@@ -4295,7 +4262,6 @@ action_t* monk_t::create_action( const std::string& name,
   // Brewmaster
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
-  if ( name == "dizzying_haze" ) return new             dizzying_haze_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
@@ -4429,15 +4395,6 @@ void monk_t::init_spells()
   talent.focused_thunder             = find_talent_spell( "Focused Thunder" );
   talent.soothing_elegance           = find_talent_spell( "Soothing Elegance" );
 
-  // PERKS
-  perk.improved_life_cocoon          = find_perk_spell( "Improved Life Cocoon" );
-  perk.improved_renewing_mist        = find_perk_spell( "Improved Renewing Mist" );
-  perk.empowered_chi                 = find_perk_spell( "Empowered Chi" );
-  perk.empowered_spinning_crane_kick = find_perk_spell( "Empowered Spinning Crane Kick" );
-  perk.enhanced_roll                 = find_perk_spell( "Enhanced Roll" );
-  perk.improved_breath_of_fire       = find_perk_spell( "Improved Breath of Fire" );
-  perk.enhanced_transcendence        = find_perk_spell( "Enhanced Transcendence" );
-
   // General Passives
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
   spec.healing_sphere                = find_spell( 125355 );
@@ -4470,7 +4427,6 @@ void monk_t::init_spells()
 
   // Brewmaster Passives
   spec.desperate_measures            = find_specialization_spell( "Desperate Measures" );
-  spec.dizzying_haze                 = find_specialization_spell( "Dizzying Haze" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
   spec.summon_black_ox_statue        = find_specialization_spell( "Summon Black Ox Statue" );
   spec.purifying_brew                = find_specialization_spell( "Purifying Brew" );
@@ -4521,7 +4477,7 @@ void monk_t::init_spells()
   passives.hit_combo                  = find_spell( 196741 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
   passives.healing_elixirs            = find_spell( 122281 );
-  passives.keg_smash                  = find_spell( 196720 );
+  passives.keg_smash_buff             = find_spell( 196720 );
   passives.storm_earth_and_fire       = find_spell( 138228 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   passives.tier15_2pc_melee           = find_spell( 138311 );
@@ -4565,7 +4521,7 @@ void monk_t::init_base_stats()
   if ( passives.stance_of_the_fierce_tiger -> ok() )
     base_gcd -= timespan_t::from_millis( passives.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
 
-  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
+  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value();
   resources.base[RESOURCE_ENERGY] = 100 + sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 2 ).base_value();
 
   base_chi_regen_per_second = 0;
@@ -4644,8 +4600,8 @@ void monk_t::create_buffs()
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
-  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash )
-    .chance( passives.keg_smash -> proc_chance() );
+  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
+    .chance( talent.secret_ingredients -> proc_chance() ); 
 
   // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
   double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
@@ -4690,9 +4646,6 @@ void monk_t::create_buffs()
     .max_stack( 8 );
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
-
-  buff.dizzying_kicks = buff_creator_t( this, "dizzying_kicks", passives.dizzying_kicks )
-    .default_value( passives.dizzying_kicks -> effectN( 1 ).percent() );
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
@@ -5552,7 +5505,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
   aoe -> add_talent( this, "Black Ox Brew" );
   aoe -> add_action( this, "Keg Smash" );
-  aoe -> add_action( this, "Breath of Fire" );  
+  aoe -> add_action( this, "Breath of Fire", "if=debuff.keg_smash.up" );  
   aoe -> add_talent( this, "Rushing Jade Wind" );
   aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
