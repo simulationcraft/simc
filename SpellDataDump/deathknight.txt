@@ -179,7 +179,7 @@ Effects          :
 Name             : Army of the Dead (id=42650) [Spell Family (15)] 
 Class            : Unholy Death Knight
 Resource         : 3 Rune
-Resource         : 0 Runic Power
+Resource         : -30 Runic Power
 Spell Level      : 82
 GCD              : 1.5 seconds
 Duration         : 4 seconds
@@ -217,7 +217,7 @@ Description      : $@spelldesc42650
 Name             : Death and Decay (id=43265) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Unholy Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 60
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -246,7 +246,7 @@ Movement speed reduced by $w4%.][]
 Name             : Chains of Ice (id=45524) [Spell Family (15)] 
 Class            : Frost Unholy Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 63
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -272,7 +272,7 @@ Tooltip          : Slowed by frozen chains.
 Name             : Blood Strike (id=45902) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -20 Runic Power
 Resource         : 0 - 5 Health w/ Blood for Blood (id=202846)
 Spell Level      : 55
 Range            : 5 yards
@@ -633,7 +633,7 @@ Immune to Stun effects.
 Name             : Obliterate (id=49020) [Spell Family (15)] 
 Class            : Frost Death Knight
 Resource         : 2 Rune
-Resource         : 0 Runic Power
+Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -698,7 +698,7 @@ Description      : Chill your weapons with icy power, and quickly strike the ene
 Name             : Howling Blast (id=49184) [Spell Family (15)] 
 Class            : Frost Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -914,7 +914,7 @@ Tooltip          : Silenced.
 Name             : Blood Boil (id=50842) [Spell Family (15)] 
 Class            : Blood Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 59
 GCD              : 1.5 seconds
 Affecting spells : On a Pale Horse (51986), Glyph of Resilient Grip (59309)
@@ -934,7 +934,7 @@ Description      : Deals $s1 Shadow damage and spreads disease to all enemies wi
 Name             : Death Gate (id=50977) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 55
 Cast Time        : 10 seconds
 GCD              : 1 seconds
@@ -1310,7 +1310,7 @@ Tooltip          : Suffering $w1 Shadow damage per $t1 sec. The cast heals $1957
 Name             : Scourge Strike (id=55090) [Spell Family (15)] 
 Class            : Unholy Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2137,7 +2137,7 @@ Tooltip          : Absorbs $w1 Physical damage.
 Name             : Outbreak (id=77575) [Spell Family (15)] 
 Class            : Unholy Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 81
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -2276,7 +2276,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Festering Strike (id=85948) [Scaling Spell (1), Spell Family (15)] 
 Class            : Unholy Death Knight
 Resource         : 2 Rune
-Resource         : 0 Runic Power
+Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2691,7 +2691,7 @@ Description      : Corrupts the ground in a $118009A1 yard radius beneath the De
 Name             : Control Undead (id=111673) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 69
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -3269,7 +3269,7 @@ Tooltip          : Continuously dealing Shadowfrost damage every $t1 sec to enem
 Name             : Defile (id=152280) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 10 seconds
@@ -3841,7 +3841,7 @@ Description      : Your Defile or Death and Decay deals $s1% more damage to targ
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 2 Rune
-Resource         : 0 Runic Power
+Resource         : -60 Runic Power
 Cooldown         : 30 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -3904,7 +3904,7 @@ Effects          :
                    Affected Spells: Anti-Magic Shell (48707)
 #2 (id=288199)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Trigger Spell: 48707
-Description      : Increases Anti-Magic Shell’s duration by $s1% and maximum absorption value by $s2%.
+Description      : Increases Anti-Magic Shellâ€™s duration by $s1% and maximum absorption value by $s2%.
 
 Name             : Exhume (id=194837) [Spell Family (15)] 
 Class            : Death Knight
@@ -3924,7 +3924,7 @@ Description      : Gain a charge of Bone Shield every second for 10 seconds.
 Name             : Bonestorm (id=194844) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 2 Rune
-Resource         : 0 Runic Power
+Resource         : -20 Runic Power
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
@@ -4059,7 +4059,7 @@ Description      : Hungering Runeblade now starts with 5 souls already trapped, 
 Name             : Glacial Advance (id=194913) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 12 seconds
@@ -4175,7 +4175,7 @@ Description      : Reduces the cooldown of Icebound Fortitude by $s1 seconds, an
 Name             : Consume Vitality (id=194922) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
 Affecting spells : On a Pale Horse (51986)
@@ -4221,7 +4221,7 @@ Movement speed increased by $w3%.][]
 Name             : Marrowrend (id=195182) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Death Knight
 Resource         : 2 Rune
-Resource         : 0 Runic Power
+Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -4252,7 +4252,7 @@ $@spelldesc195181
 Name             : Death's Caress (id=195292) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Death Knight
 Resource         : 1 Rune
-Resource         : 0 Runic Power
+Resource         : -10 Runic Power
 Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -4469,7 +4469,7 @@ Description      : $@spelldesc194844
 Name             : Hungering Runeblade (id=196770) [Spell Family (15)] 
 Class            : Frost Death Knight
 Resource         : 2 Rune
-Resource         : 0 Runic Power
+Resource         : -20 Runic Power
 Spell Level      : 60
 GCD              : 1.5 seconds
 Duration         : 20 seconds

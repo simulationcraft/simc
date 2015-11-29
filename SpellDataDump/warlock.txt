@@ -1917,7 +1917,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68066)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 32
-                   Affected Spells: Demonic Empowerment (193396)
+                   Affected Spells: Demonic Empowerment (193396), Stormlash (195222)
 Description      : Demonic Empowerment also increases the damage of your demons by ${$m1}.2%.
 
 Name             : Mastery: Chaotic Energies (id=77220) [Spell Family (5), Passive] 

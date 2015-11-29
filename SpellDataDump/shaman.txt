@@ -383,7 +383,8 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 16 seconds
 Proc Chance      : 101%
-Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133)
+Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133), Stormfury (201846), 
+Triggered by     : Stormfury (201846)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -538,6 +539,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
+Affecting spells : Stormfury (201846)
 Triggered by     : Stormstrike (17364), Stormstrike (196881)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -557,6 +559,7 @@ Name             : Stormstrike Off-Hand (id=32176) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 40
 Range            : 5 yards
+Affecting spells : Stormfury (201846)
 Triggered by     : Stormstrike (17364), Stormstrike (196881)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -1786,7 +1789,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Chain Multiplier: 0.2
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -2382,6 +2385,7 @@ Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Proc Chance      : 101%
+Affecting spells : Stormfury (201846)
 Triggered by     : Windstrike (115356)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -2402,6 +2406,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
+Affecting spells : Stormfury (201846)
 Triggered by     : Windstrike (115356)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -4419,6 +4424,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=282019)   : Apply Aura (6) | Add Flat Modifier: Stack Amount (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4
+                   Affected Spells: Stormfury (201846)
 Description      : When Stormfury is activated, you now gain 2 Stormstrikes which are cost 50% Maelstrom and trigger no cooldown.
 
 Name             : Elemental Fusion (id=192235) [Spell Family (11), Passive] 
@@ -4589,6 +4595,33 @@ Effects          :
 Description      : Each of your weapon attacks causes up to ${0.075*$AP} additional Fire damage, based on weapon speed. Lasts $d.
 Tooltip          : Each of your weapon attacks causes up to ${0.075*$AP} additional Fire damage.
 
+Name             : Stormlash (id=195222) [Spell Family (5)] 
+Class            : Shaman
+Spell Level      : 16
+Range            : 100 yards
+GCD              : 1.5 seconds
+Duration         : 12 seconds
+Charges          : 3 (12 seconds cooldown)
+Proc Chance      : 100%
+Real PPM         : 10
+Proc Flags       : ....x... x...x... x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Affecting spells : Mastery: Master Demonologist (77219)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=286572)   : Apply Aura (6) | Proc Trigger Spell: Stormlash (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195256
+#2 (id=290975)   : Apply Aura (6) | Proc Trigger Spell: Stormlash (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195256 | Radius: 40 yards
+Description      : Whenever you attack with enhanced weapons you have a chance to enhance up to $s1 allies, causing their attacks and spellcasts to deal additional Nature damage.
+Tooltip          : Empowered with lightning.
+Attacks and spellcasts have a chance to deal additional Nature damage.
+
 Name             : Stormlash (id=195255) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 Spell Level      : 16
@@ -4606,6 +4639,22 @@ Effects          :
 #1 (id=286638)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0
 Description      : Whenever you attack with your weapons enhanced, you have a chance to enhance up to 2 allies or yourself, causing attacks and spellcasts to deal additional Nature damage.
+
+Name             : Stormlash (id=195256) 
+Class            : Shaman
+Spell Level      : 16
+Range            : 100 yards
+Triggered by     : Stormlash (195222)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=286640)   : School Damage: nature (2)
+                   Base Value: 200 | Scaled Value: 200
+Description      : Deals Nature damage to enemy targets.
 
 Name             : Stormstrike (id=195573) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -4760,7 +4809,7 @@ Spell Level      : 26
 Range            : 5 yards
 GCD              : 1.5 seconds
 Proc Chance      : 100%
-Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133)
+Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133), Stormfury (201846), 
 Triggered by     : Feral Lunge (196884)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
@@ -5308,6 +5357,36 @@ Effects          :
 #1 (id=297456)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : Each of your attacks has a $h% chance to cause Stormfury, reseting the cooldown on Stormstrike, and causing your next Stormstrike to cost 50% Maelstrom and trigger no cooldown.
+
+Name             : Stormfury (id=201846) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 12 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Affecting spells : Tempest (192234)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=297457)   : Apply Aura (6) | Unknown effect sub type (408)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 17364
+#2 (id=297909)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
+                   Affected Spells: Stormstrike (17364), Stormstrike (196881)
+#3 (id=297910)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14
+                   Affected Spells: Stormstrike (17364), Stormstrike (196881)
+#4 (id=302446)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
+Description      : Each of your main-hand weapon attacks has a $33757h% chance of triggering three extra attacks dealing $25504sw2 Physical damage.
+Tooltip          : Stormstrike has no cooldown and cost is reduced by $s2%.
 
 Name             : Fists of Stone (id=201897) [Spell Family (11)] 
 Class            : Shaman
