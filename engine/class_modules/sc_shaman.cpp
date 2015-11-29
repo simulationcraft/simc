@@ -2147,7 +2147,7 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( p() -> buff.stormfury -> check() )
     {
-      c *= 1.0 - p() -> buff.stormfury -> data().effectN( 3 ).percent();
+      c *= 1.0 + p() -> buff.stormfury -> data().effectN( 3 ).percent();
     }
 
     return c;
