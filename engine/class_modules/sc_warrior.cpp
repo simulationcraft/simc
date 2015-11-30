@@ -164,6 +164,7 @@ public:
     // All Warriors
     const spell_data_t* bloodbath;
     const spell_data_t* charge;
+    const spell_data_t* defensive_stance;
     const spell_data_t* intervene;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
@@ -1140,7 +1141,6 @@ struct colossus_smash_t: public warrior_attack_t
 
     return am;
   }
-
 };
 
 // Deep Wounds ==============================================================
@@ -2462,6 +2462,52 @@ struct bloodbath_t: public warrior_spell_t
   }
 };
 
+// Defensive Stance ===============================================================
+
+struct defensive_stance_t: public warrior_spell_t
+{
+  std::string onoff;
+  bool onoffbool;
+  defensive_stance_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "defensive_stance", p, p -> spell.defensive_stance ),
+    onoff( nullptr ), onoffbool( nullptr )
+  {
+    add_option( opt_string( "toggle", onoff ) );
+    parse_options( options_str );
+
+    if ( onoff == "on" )
+      onoffbool = true;
+    else if( onoff == "off" )
+      onoffbool = false;
+    else
+    {
+      sim -> errorf( "Defensive stance must use the option 'toggle=on' or 'toggle=off'" );
+      background = true;
+    }
+
+    use_off_gcd = true;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+    if ( onoffbool )
+      p() -> buff.defensive_stance -> trigger();
+    else
+      p() -> buff.defensive_stance -> expire();
+  }
+
+  bool ready() override
+  {
+    if ( onoffbool && p() -> buff.defensive_stance -> check() )
+      return false;
+    else if ( !onoffbool && !p() -> buff.defensive_stance -> check() )
+      return false;
+    else
+      return true;
+  }
+};
+
 // Die By the Sword  ==============================================================
 
 struct die_by_the_sword_t: public warrior_spell_t
@@ -2664,6 +2710,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
   if ( name == "die_by_the_sword"     ) return new die_by_the_sword_t     ( this, options_str );
@@ -2812,6 +2859,7 @@ void warrior_t::init_spells()
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
+  spell.defensive_stance        = find_class_spell( "Defensive Stance" );
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
@@ -3368,22 +3416,6 @@ protected:
   warrior_t& warrior;
 };
 
-struct defensive_stance_t: public warrior_buff_t < buff_t >
-{
-  defensive_stance_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s )
-    .can_cancel( false )
-    .activated( true )
-    .add_invalidate( CACHE_EXP )
-    .add_invalidate( CACHE_CRIT_AVOIDANCE )
-    .add_invalidate( CACHE_CRIT_BLOCK )
-    .add_invalidate( CACHE_BLOCK )
-    .add_invalidate( CACHE_STAMINA )
-    .add_invalidate( CACHE_ARMOR )
-    .add_invalidate( CACHE_BONUS_ARMOR )
-  {}
-};
-
 struct commanding_shout_t : public warrior_buff_t < buff_t >
 {
   int health_gain;
@@ -3495,7 +3527,15 @@ void warrior_t::create_buffs()
     .duration( spec.colossus_smash -> duration() )
     .cd( timespan_t::zero() );
 
-  buff.defensive_stance = new buffs::defensive_stance_t( *this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
+  buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
+    .activated( true )
+    .add_invalidate( CACHE_EXP )
+    .add_invalidate( CACHE_CRIT_AVOIDANCE )
+    .add_invalidate( CACHE_CRIT_BLOCK )
+    .add_invalidate( CACHE_BLOCK )
+    .add_invalidate( CACHE_STAMINA )
+    .add_invalidate( CACHE_ARMOR )
+    .add_invalidate( CACHE_BONUS_ARMOR );
 
   buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
     .default_value( spec.die_by_the_sword -> effectN( 2 ).percent() )
