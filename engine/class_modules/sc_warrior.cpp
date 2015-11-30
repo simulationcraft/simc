@@ -159,6 +159,7 @@ public:
     const spell_data_t* bloodbath;
     const spell_data_t* charge;
     const spell_data_t* defensive_stance;
+    const spell_data_t* indomitable;
     const spell_data_t* intervene;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
@@ -206,7 +207,6 @@ public:
     const spell_data_t* seasoned_soldier;
     const spell_data_t* slam;
     //Arms and Prot
-    const spell_data_t* thunder_clap;
     //Arms and Fury
     const spell_data_t* die_by_the_sword;
     const spell_data_t* commanding_shout;
@@ -239,6 +239,7 @@ public:
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
     const spell_data_t* sword_and_board;
+    const spell_data_t* thunder_clap;
     const spell_data_t* unwavering_sentinel;
   } spec;
 
@@ -271,7 +272,6 @@ public:
 
     const spell_data_t* rend;
     const spell_data_t* die_by_the_sword;
-    const spell_data_t* indomitable;
     const spell_data_t* bounding_strike;
     const spell_data_t* seething_rage;
     const spell_data_t* renewed_fury;
@@ -2490,7 +2490,7 @@ struct defensive_stance_t: public warrior_spell_t
 struct die_by_the_sword_t: public warrior_spell_t
 {
   die_by_the_sword_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword )
+    warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword ? p -> spec.die_by_the_sword : p -> talents.die_by_the_sword )
   {
     parse_options( options_str );
     range = -1;
@@ -2803,7 +2803,6 @@ void warrior_t::init_spells()
   
   talents.rend                  = find_talent_spell( "Rend" );
   talents.die_by_the_sword      = find_talent_spell( "Die by the Sword" );
-  talents.indomitable           = find_talent_spell( "Indomitable" );
   talents.bounding_strike       = find_talent_spell ("Bounding Strike" );
   talents.seething_rage         = find_talent_spell( "Seething Rage" );
   talents.renewed_fury          = find_talent_spell( "Renewed Fury" );
@@ -2836,6 +2835,8 @@ void warrior_t::init_spells()
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
   spell.defensive_stance        = find_class_spell( "Defensive Stance" );
+  if ( specialization() == WARRIOR_FURY )
+    spell.indomitable = find_spell( 202095 );
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
@@ -3841,6 +3842,8 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   case ATTR_STAMINA:
     if ( buff.defensive_stance -> check() )
       a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
+    if ( specialization() == WARRIOR_FURY )
+      a += spell.indomitable -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
     break;
   default:
     break;
