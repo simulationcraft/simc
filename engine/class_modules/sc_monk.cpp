@@ -238,6 +238,9 @@ public:
 
     buff_t* zen_meditation;
 
+    // Brewmaster
+    buff_t* ironskin_brew;
+
     // Mistweaver
     buff_t* teachings_of_the_monastery;
     buff_t* mana_tea;
@@ -390,6 +393,7 @@ public:
     const spell_data_t* dizzying_haze;
     const spell_data_t* ferment;
     const spell_data_t* gift_of_the_ox;
+    const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash;
     const spell_data_t* purifying_brew;
     const spell_data_t* resolve;
@@ -3620,6 +3624,33 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     return 0;
   }
 };
+// ==========================================================================
+// Ironskin Brew
+// ==========================================================================
+
+struct ironskin_brew_t: public monk_spell_t
+{
+  ironskin_brew_t( monk_t& p, const std::string& options_str ):
+    monk_spell_t( "ironskin_brew", &p, p.spec.ironskin_brew )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+
+    cooldown             = p.cooldown.brewmaster_active_mitigation;
+    cooldown -> duration = p.find_spell( id ) -> cooldown();
+    cooldown -> charges  = p.find_spell( id ) -> charges();
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p() -> buff.ironskin_brew -> trigger();
+  }
+};
+
 
 // ==========================================================================
 // Purifying Brew
@@ -3634,6 +3665,10 @@ struct purifying_brew_t: public monk_spell_t
 
     harmful = false;
     trigger_gcd = timespan_t::zero();
+
+    cooldown             = p.cooldown.brewmaster_active_mitigation;
+    cooldown -> duration = p.find_spell( id ) -> cooldown();
+    cooldown -> charges  = p.find_spell( id ) -> charges();
   }
 
   void execute() override
@@ -4263,6 +4298,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
+  if ( name == "ironskin_brew" ) return new             ironskin_brew_t( *this, options_str );
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   // Mistweaver
@@ -4429,6 +4465,7 @@ void monk_t::init_spells()
   spec.desperate_measures            = find_specialization_spell( "Desperate Measures" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
   spec.summon_black_ox_statue        = find_specialization_spell( "Summon Black Ox Statue" );
+  spec.ironskin_brew                 = find_specialization_spell( "Ironskin Brew" );
   spec.purifying_brew                = find_specialization_spell( "Purifying Brew" );
   spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
   spec.gift_of_the_ox                = find_specialization_spell( "Gift of the Ox" );
@@ -4602,6 +4639,10 @@ void monk_t::create_buffs()
 
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
     .chance( talent.secret_ingredients -> proc_chance() ); 
+
+  buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", spec.ironskin_brew )
+    .default_value( spec.ironskin_brew -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
 
   // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
   double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
@@ -5746,8 +5787,8 @@ double monk_t::stagger_pct()
     if ( specialization() == MONK_BREWMASTER && buff.fortifying_brew -> check() )
       stagger += spec.fortifying_brew -> effectN( 1 ).percent();
 
-    if ( mastery.elusive_brawler -> ok() )
-      stagger += cache.mastery_value();
+    if ( buff.ironskin_brew -> up() )
+      stagger += buff.ironskin_brew -> value();
   }
 
   return stagger;
