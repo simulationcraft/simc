@@ -541,13 +541,12 @@ public:
     if ( ab::sim -> log || ab::sim -> debug )
     {
       ab::sim -> out_debug.printf(
-        "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Multistrike: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
+        "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
         p() -> cache.strength(),
         p() -> cache.attack_power() * p() -> composite_attack_power_multiplier(),
         p() -> cache.attack_crit() * 100,
         p() -> composite_player_critical_damage_multiplier(),
         p() -> cache.mastery_value() * 100,
-        p() -> cache.multistrike() * 100,
         ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
         p() -> cache.damage_versatility() * 100,
         p() -> cache.bonus_armor(),
@@ -564,13 +563,12 @@ public:
     if ( ab::sim -> log || ab::sim -> debug )
     {
       ab::sim -> out_debug.printf(
-        "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Multistrike: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
+        "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
         p() -> cache.strength(),
         p() -> cache.attack_power() * p() -> composite_attack_power_multiplier(),
         p() -> cache.attack_crit() * 100,
         p() -> composite_player_critical_damage_multiplier(),
         p() -> cache.mastery_value() * 100,
-        p() -> cache.multistrike() * 100,
         ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
         p() -> cache.damage_versatility() * 100,
         p() -> cache.bonus_armor(),
@@ -653,7 +651,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::assess_damage( type, s );
 
-    if ( special && s -> result_amount > 0 && result_is_hit_or_multistrike( s -> result ) && p() -> buff.bloodbath -> up() )
+    if ( special && s -> result_amount > 0 && result_is_hit( s -> result ) && p() -> buff.bloodbath -> up() )
     {
       trigger_bloodbath_dot( s -> target, s -> result_amount );
     }
