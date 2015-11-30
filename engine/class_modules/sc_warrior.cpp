@@ -203,7 +203,6 @@ public:
     const spell_data_t* colossus_smash;
     const spell_data_t* hamstring;
     const spell_data_t* mortal_strike;
-    const spell_data_t* rend;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* slam;
     //Arms and Prot
@@ -1962,7 +1961,7 @@ struct rend_t: public warrior_attack_t
 {
   double t18_2pc_chance;
   rend_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "rend", p, p -> spec.rend ),
+    warrior_attack_t( "rend", p, p -> talents.rend ),
     t18_2pc_chance( 0 )
   {
     parse_options( options_str );
@@ -2763,7 +2762,6 @@ void warrior_t::init_spells()
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
   spec.recklessness             = find_specialization_spell( "Recklessness" );
-  spec.rend                     = find_specialization_spell( "Rend" );
   spec.resolve                  = find_specialization_spell( "Resolve" );
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
