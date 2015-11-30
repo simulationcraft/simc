@@ -79,8 +79,8 @@ public:
     buff_t* commanding_shout;
     buff_t* recklessness;
     // Fury and Prot
-    buff_t* enrage;
     // Fury Only
+    buff_t* enrage;
     buff_t* meat_cleaver;
     // Arms only
     buff_t* colossus_smash;
@@ -89,7 +89,6 @@ public:
     buff_t* shield_block;
     buff_t* shield_wall;
     buff_t* sword_and_board;
-    buff_t* ultimatum;
 
     // Tier bonuses
     buff_t* pvp_2pc_arms;
@@ -231,6 +230,7 @@ public:
     const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
     const spell_data_t* last_stand;
+    const spell_data_t* heroic_strike;
     const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* resolve;
     const spell_data_t* revenge;
@@ -239,7 +239,6 @@ public:
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
     const spell_data_t* sword_and_board;
-    const spell_data_t* ultimatum;
     const spell_data_t* unwavering_sentinel;
   } spec;
 
@@ -445,6 +444,7 @@ public:
   {
     return debug_cast<warrior_t*>( ab::player );
   }
+
   const warrior_t* p() const
   {
     return debug_cast<warrior_t*>( ab::player );
@@ -605,7 +605,7 @@ public:
 
   void enrage()
   {
-    // Crit BT/Devastate/Block give rage, and refresh enrage
+    // Crit BT give rage, and refresh enrage
     p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
     p() -> buff.enrage -> trigger();
   }
@@ -1186,9 +1186,6 @@ struct devastate_t: public warrior_attack_t
     {
       if ( p() -> buff.sword_and_board -> trigger() )
         p() -> cooldown.shield_slam -> reset( true );
-
-      if ( execute_state -> result == RESULT_CRIT )
-        enrage();
     }
   }
 
@@ -1333,12 +1330,11 @@ struct heroic_strike_t: public warrior_attack_t
 {
   double anger_management_rage;
   heroic_strike_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_strike", p, p -> find_class_spell( "Heroic Strike" ) )
+    warrior_attack_t( "heroic_strike", p, p -> spec.heroic_strike ? p -> spec.heroic_strike : p -> talents.heroic_strike )
   {
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
-    anger_management_rage = base_costs[RESOURCE_RAGE];
     use_off_gcd = true;
   }
 
@@ -1346,34 +1342,20 @@ struct heroic_strike_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
+    if ( p() -> buff.enrage -> up() )
+      am *= 2.0; // No spell data yet.
+
     return am;
   }
 
-  double cost() const override
+  double composite_target_multiplier( player_t* target ) const
   {
-    double c = warrior_attack_t::cost();
+    double dtm = warrior_attack_t::composite_target_multiplier( target );
 
-    if ( p() -> buff.ultimatum -> check() )
-      c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
+    if ( td( target ) -> debuffs_colossus_smash -> up() )
+      dtm *= 2.0;
 
-    return c;
-  }
-
-  double composite_crit() const override
-  {
-    double cc = warrior_attack_t::composite_crit();
-
-    if ( p() -> buff.ultimatum -> check() )
-      cc += p() -> buff.ultimatum -> data().effectN( 2 ).percent();
-
-    return cc;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p() -> buff.ultimatum -> expire();
+    return dtm;
   }
 
   bool ready() override
@@ -2137,12 +2119,6 @@ struct shield_slam_t: public warrior_attack_t
                               p() -> gain.sword_and_board );
       }
       p() -> buff.sword_and_board -> expire();
-
-      if ( execute_state -> result == RESULT_CRIT )
-      {
-        enrage();
-        p() -> buff.ultimatum -> trigger();
-      }
     }
   }
 
@@ -2769,6 +2745,7 @@ void warrior_t::init_spells()
   spec.enraged_regeneration     = find_specialization_spell( "Enraged Regeneration" );
   spec.execute                  = find_specialization_spell( "Execute" );
   spec.hamstring                = find_specialization_spell( "Hamstring" );
+  spec.heroic_strike            = find_specialization_spell( "Heroic Strike" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
@@ -2791,7 +2768,6 @@ void warrior_t::init_spells()
   spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
-  spec.ultimatum                = find_specialization_spell( "Ultimatum" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
 
@@ -3284,27 +3260,26 @@ void warrior_t::apl_prot()
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up)" );
-  prot -> add_action( this, "Demoralizing Shout", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_talent( this, "Enraged Regeneration", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_action( this, "Shield Wall", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_action( this, "Last Stand", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up)" );
+  prot -> add_action( this, "Demoralizing Shout", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_talent( this, "Enraged Regeneration", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( this, "Shield Wall", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( this, "Last Stand", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
 
   //potion
   if ( sim -> allow_potions )
   {
     if ( true_level > 90 )
-      prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
     else if ( true_level >= 80 )
-      prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
   }
 
   //stoneform
-  prot -> add_action( "stoneform,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( "stoneform,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
 
   //dps-single-target
   prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>3" );
@@ -3587,8 +3562,6 @@ void warrior_t::create_buffs()
 
   buff.pvp_2pc_prot = buff_creator_t( this, "pvp_2pc_prot", sets.set( WARRIOR_PROTECTION, PVP, B2 ) -> effectN( 1 ).trigger() )
     .default_value( sets.set( WARRIOR_PROTECTION, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-
-  buff.ultimatum = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -4195,18 +4168,6 @@ void warrior_t::assess_damage( school_e school,
 
     if ( buff.die_by_the_sword -> up() )
       s -> result_amount *= 1.0 + buff.die_by_the_sword -> default_value;
-
-    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
-    {
-      if ( cooldown.rage_from_crit_block -> up() )
-      {
-        cooldown.rage_from_crit_block -> start();
-        resource_gain( RESOURCE_RAGE,
-                       buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
-                       gain.critical_block );
-        buff.enrage -> trigger();
-      }
-    }
   }
 
   if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && !s -> action -> is_aoe() ) // AoE attacks do not reset revenge.
