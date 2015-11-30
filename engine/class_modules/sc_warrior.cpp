@@ -144,7 +144,6 @@ public:
     gain_t* enrage;
     gain_t* melee_main_hand;
     // Fury and Prot
-    gain_t* defensive_stance;
     // Fury and Arms
     // Fury Only
     gain_t* bloodthirst;
@@ -3338,16 +3337,6 @@ struct warrior_real_ppm_t: public Base
 // Buff Help Classes
 // =========================================================================
 
-// Defensive Stance Rage Gain ==============================================
-
-void defensive_stance( buff_t* buff, int, int )
-{
-  warrior_t* p = debug_cast<warrior_t*>( buff -> player );
-
-  p -> resource_gain( RESOURCE_RAGE, 1, p -> gain.defensive_stance );
-  buff -> refresh();
-}
-
 // Fury T17 4 piece ========================================================
 
 void tier17_4pc_fury( buff_t* buff, int, int )
@@ -3391,7 +3380,6 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s )
     .can_cancel( false )
     .activated( true )
-    .tick_callback( defensive_stance )
     .tick_behavior( BUFF_TICK_REFRESH )
     .refresh_behavior( BUFF_REFRESH_TICK )
     .add_invalidate( CACHE_EXP )
@@ -3616,7 +3604,6 @@ void warrior_t::init_gains()
   gain.bloodthirst            = get_gain( "bloodthirst" );
   gain.charge                 = get_gain( "charge" );
   gain.critical_block         = get_gain( "critical_block" );
-  gain.defensive_stance       = get_gain( "defensive_stance" );
   gain.enrage                 = get_gain( "enrage" );
   gain.melee_crit             = get_gain( "melee_crit" );
   gain.melee_main_hand        = get_gain( "melee_main_hand" );
