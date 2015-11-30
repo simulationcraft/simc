@@ -19,8 +19,6 @@ namespace
 
 struct warrior_t;
 
-enum warrior_stance { STANCE_NONE = 1, STANCE_DEFENSE = 2 };
-
 struct warrior_td_t: public actor_target_data_t
 {
   dot_t* dots_bloodbath;
@@ -58,7 +56,6 @@ public:
     action_t* bloodbath_dot;
     action_t* deep_wounds;
     heal_t* t16_2pc;
-    warrior_stance stance;
   } active;
 
   // Buffs
@@ -2825,7 +2822,6 @@ void warrior_t::init_spells()
   active.bloodbath_dot      = nullptr;
   active.deep_wounds        = nullptr;
   active.t16_2pc            = nullptr;
-  active.stance             = STANCE_NONE;
 
   if ( spell.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
@@ -3390,12 +3386,6 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .duration( timespan_t::from_seconds( 3 ) )
     .period( timespan_t::from_seconds( 3 ) ) )
   {}
-
-  void execute( int a, double b, timespan_t t ) override
-  {
-    warrior.active.stance = STANCE_DEFENSE;
-    base_t::execute( a, b, t );
-  }
 };
 
 struct commanding_shout_t : public warrior_buff_t < buff_t >
@@ -3753,13 +3743,10 @@ void warrior_t::reset()
   player_t::reset();
 
   if ( specialization() == WARRIOR_PROTECTION )
-  {
-    active.stance = STANCE_DEFENSE;
-  }
-  else
-  {
-    active.stance = STANCE_NONE;
-  }
+    buff.defensive_stance -> trigger();
+  else if ( buff.defensive_stance -> check() ) // Arms probably doesn't want defensive stance up every time.
+    buff.defensive_stance -> expire();
+
   heroic_charge = nullptr;
   rampage_driver = nullptr;
   last_target_charged = nullptr;
@@ -3843,7 +3830,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
   case ATTR_STAMINA:
-    if ( active.stance == STANCE_DEFENSE )
+    if ( buff.defensive_stance -> check() )
       a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
     break;
   default:
@@ -3872,7 +3859,7 @@ double warrior_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  if ( active.stance == STANCE_DEFENSE )
+  if ( buff.defensive_stance -> up() )
   {
     a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
   }
@@ -3886,7 +3873,7 @@ double warrior_t::composite_melee_expertise( const weapon_t* ) const
 {
   double e = player_t::composite_melee_expertise();
 
-  if ( active.stance == STANCE_DEFENSE )
+  if ( buff.defensive_stance -> check() )
     e += spec.unwavering_sentinel -> effectN( 5 ).percent();
 
   return e;
@@ -4023,7 +4010,7 @@ double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( active.stance == STANCE_DEFENSE )
+  if ( buff.defensive_stance -> check() )
     c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
   return c;
@@ -4169,7 +4156,7 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_CRIT ||
        s -> result == RESULT_GLANCE )
   {
-    if ( active.stance == STANCE_DEFENSE )
+    if ( buff.defensive_stance -> up() )
       s -> result_amount *= 1.0 + ( buff.defensive_stance -> data().effectN( 1 ).percent() +
       perk.improved_defensive_stance -> effectN( 2 ).percent() );
 
