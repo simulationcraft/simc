@@ -67,6 +67,7 @@ public:
     buff_t* bladestorm;
     buff_t* charge_movement;
     buff_t* defensive_stance;
+    buff_t* dragon_roar;
     buff_t* heroic_leap_movement;
     buff_t* intervene_movement;
     // Talents
@@ -1208,6 +1209,13 @@ struct dragon_roar_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
+  }
+  
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> buff.dragon_roar -> trigger();
   }
 
   double target_armor( player_t* ) const override { return 0; }
@@ -3505,6 +3513,9 @@ void warrior_t::create_buffs()
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PARRY );
 
+  buff.dragon_roar = buff_creator_t( this, "dragon_roar", talents.dragon_roar )
+    .default_value( talents.dragon_roar -> effectN( 2 ).percent() );
+
   buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 1 ).trigger() )
     .can_cancel( false )
     .add_invalidate( CACHE_ATTACK_SPEED )
@@ -3814,6 +3825,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   if ( main_hand_weapon.group() == WEAPON_1H &&
        off_hand_weapon.group() == WEAPON_1H )
     m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
+
+  if ( buff.dragon_roar -> check() )
+    m *= 1.0 + buff.dragon_roar -> default_value;
 
   return m;
 }
