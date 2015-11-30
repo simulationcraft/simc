@@ -73,6 +73,7 @@ public:
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
+    buff_t* frenzy;
     buff_t* ravager;
     buff_t* ravager_protection;
     // Arms and Fury
@@ -139,6 +140,8 @@ public:
     // Fury Only
     gain_t* bloodthirst;
     gain_t* melee_off_hand;
+    gain_t* raging_blow;
+    gain_t* recklessness;
     // Arms Only
     gain_t* melee_crit;
     // Prot Only
@@ -272,28 +275,29 @@ public:
 
     const spell_data_t* rend;
     const spell_data_t* die_by_the_sword;
-    const spell_data_t* bounding_strike;
-    const spell_data_t* seething_rage;
-    const spell_data_t* renewed_fury;
+    const spell_data_t* bounding_strike; //
+    const spell_data_t* seething_rage; //
+    const spell_data_t* renewed_fury; //
     const spell_data_t* dauntless;
-    const spell_data_t* overpower;
-    const spell_data_t* imposing_roar;
-    const spell_data_t* fervor_of_battle;
+    const spell_data_t* overpower; //
+    const spell_data_t* imposing_roar; // 
+    const spell_data_t* fervor_of_battle; //
     const spell_data_t* enraging_blows;
     const spell_data_t* frenzy;
-    const spell_data_t* best_served_cold;
-    const spell_data_t* never_surrender;
+    const spell_data_t* best_served_cold; //
+    const spell_data_t* never_surrender;//
     const spell_data_t* heroic_strike;
-    const spell_data_t* vengeance;
+    const spell_data_t* vengeance;//
     const spell_data_t* mortal_combo;
-    const spell_data_t* into_the_fray;
-    const spell_data_t* titanic_might;
-    const spell_data_t* booming_voice;
+    const spell_data_t* into_the_fray; //
+    const spell_data_t* titanic_might; // 
+    const spell_data_t* booming_voice; //
     const spell_data_t* reckless_abandon;
-    const spell_data_t* carnage;
-    const spell_data_t* opportunity_strikes;
-    const spell_data_t* furious_charge;
-    const spell_data_t* crackling_thunder;
+    const spell_data_t* carnage;//
+    const spell_data_t* opportunity_strikes;//
+    const spell_data_t* furious_charge; //
+    const spell_data_t* crackling_thunder;//
+    const spell_data_t* endless_rage; //
   } talents;
 
   // Perks
@@ -413,7 +417,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, recklessness, colossal_might, sweeping_strikes;
+  bool headlongrush, headlongrushgcd, recklessness, colossal_might, sweeping_strikes, dauntless;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -425,7 +429,8 @@ public:
                     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
                     recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
                     colossal_might( ab::data().affected_by( player -> mastery.colossal_might -> effectN( 1 ) ) ),
-                    sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) )
+                    sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
+                    dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
   }
@@ -453,6 +458,16 @@ public:
   warrior_td_t* td( player_t* t ) const
   {
     return p() -> get_target_data( t );
+  }
+
+  virtual double cost() const override
+  {
+    double c = ab::cost();
+
+    if ( dauntless )
+      c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+
+    return c;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -1319,6 +1334,30 @@ struct execute_t: public warrior_attack_t
   }
 };
 
+// Frenzy ==============================================================
+
+struct frenzy_t : public warrior_attack_t
+{
+  frenzy_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "frenzy", p, p -> talents.frenzy )
+  {
+    parse_options( options_str );
+    weapon = &( p -> main_hand_weapon );
+    min_gcd = timespan_t::from_millis( 750 );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> buff.frenzy -> trigger( 1 );
+  }
+
+  timespan_t gcd() const override
+  {
+    return timespan_t::from_millis( 750 );
+  }
+};
+
 // Hamstring ==============================================================
 
 struct hamstring_t: public warrior_attack_t
@@ -1648,6 +1687,7 @@ struct mortal_strike_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+    cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -1764,6 +1804,9 @@ struct raging_blow_t: public warrior_attack_t
     oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
+
+    if ( p -> talents.enraging_blows -> ok() )
+      base_costs[RESOURCE_RAGE] = 0;
   }
 
   void execute() override
@@ -1774,6 +1817,12 @@ struct raging_blow_t: public warrior_attack_t
     {
       mh_attack -> execute();
       oh_attack -> execute();
+      if ( p() -> talents.enraging_blows -> ok() )
+      {
+        p() -> resource_gain( RESOURCE_RAGE,
+                              p() -> talents.enraging_blows -> effectN( 2 ).resource( RESOURCE_RAGE ),
+                              p() -> gain.raging_blow );
+      }
     }
   }
 
@@ -2561,6 +2610,7 @@ struct recklessness_t: public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
+    cooldown -> duration *= 1.0 + p ->talents.reckless_abandon -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -2570,6 +2620,13 @@ struct recklessness_t: public warrior_spell_t
     p() -> buff.recklessness -> trigger( 1, bonus_crit );
     if ( p() -> sets.has_set_bonus( WARRIOR_FURY, T17, B4 ) )
       p() -> buff.tier17_4pc_fury_driver -> trigger();
+
+    if ( p() -> talents.reckless_abandon -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+                            p() -> talents.reckless_abandon -> effectN( 2 ).resource( RESOURCE_RAGE ),
+                            p() -> gain.recklessness );
+    }
   }
 };
 
@@ -2694,6 +2751,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "dragon_roar"          ) return new dragon_roar_t          ( this, options_str );
   if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
   if ( name == "execute"              ) return new execute_t              ( this, options_str );
+  if ( name == "frenzy"               ) return new frenzy_t               ( this, options_str );
   if ( name == "hamstring"            ) return new hamstring_t            ( this, options_str );
   if ( name == "heroic_charge"        ) return new heroic_charge_t        ( this, options_str );
   if ( name == "heroic_leap"          ) return new heroic_leap_t          ( this, options_str );
@@ -2825,6 +2883,7 @@ void warrior_t::init_spells()
   talents.opportunity_strikes   = find_talent_spell( "Opportunity Strikes" );
   talents.furious_charge        = find_talent_spell( "Furious Charge");
   talents.crackling_thunder     = find_talent_spell( "Crackling Thunder" );
+  talents.endless_rage          = find_talent_spell( "Endless Rage" );
 
   //Perks
   perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );
@@ -3520,6 +3579,10 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy )
+    .add_invalidate( CACHE_HASTE )
+    .default_value( talents.frenzy -> effectN( 2 ).percent() );
+
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
@@ -3603,6 +3666,8 @@ void warrior_t::init_gains()
   gain.melee_crit             = get_gain( "melee_crit" );
   gain.melee_main_hand        = get_gain( "melee_main_hand" );
   gain.melee_off_hand         = get_gain( "melee_off_hand" );
+  gain.raging_blow            = get_gain( "raging_blow" );
+  gain.recklessness           = get_gain( "recklessness" );
   gain.revenge                = get_gain( "revenge" );
   gain.shield_slam            = get_gain( "shield_slam" );
   gain.sword_and_board        = get_gain( "sword_and_board" );
@@ -3861,6 +3926,8 @@ double warrior_t::composite_melee_haste() const
   {
     a *= 1.0 / ( 1.0 + buff.fury_trinket -> stack_value() );
   }
+
+  a *= 1.0 / ( 1.0 + buff.frenzy -> stack_value() );
 
   return a;
 }
