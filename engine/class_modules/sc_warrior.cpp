@@ -110,14 +110,8 @@ public:
     cooldown_t* heroic_leap;
     cooldown_t* rage_from_charge;
     // Talents
-    cooldown_t* avatar;
-    cooldown_t* bladestorm;
-    cooldown_t* bloodbath;
-    cooldown_t* dragon_roar;
     cooldown_t* shockwave;
-    cooldown_t* storm_bolt;
     // Fury And Arms
-    cooldown_t* die_by_the_sword;
     cooldown_t* recklessness;
     // Arms only
     cooldown_t* colossus_smash;
@@ -2439,7 +2433,7 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.berserker_rage -> trigger();
-    if ( p() -> specialization() != WARRIOR_ARMS )
+    if ( p() -> specialization() == WARRIOR_FURY )
       enrage();
   }
 };
@@ -2891,14 +2885,9 @@ void warrior_t::init_spells()
   }
 
   // Cooldowns
-  cooldown.avatar                   = get_cooldown( "avatar" );
-  cooldown.bladestorm               = get_cooldown( "bladestorm" );
-  cooldown.bloodbath                = get_cooldown( "bloodbath" );
   cooldown.charge                   = get_cooldown( "charge" );
   cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
   cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
-  cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
-  cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
   cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
   cooldown.last_stand               = get_cooldown( "last_stand" );
   cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
@@ -2913,7 +2902,6 @@ void warrior_t::init_spells()
   cooldown.shield_slam              = get_cooldown( "shield_slam" );
   cooldown.shield_wall              = get_cooldown( "shield_wall" );
   cooldown.shockwave                = get_cooldown( "shockwave" );
-  cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 }
 
 // warrior_t::init_base =====================================================
