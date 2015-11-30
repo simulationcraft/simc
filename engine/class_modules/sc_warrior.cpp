@@ -3906,17 +3906,14 @@ double warrior_t::composite_melee_expertise( const weapon_t* ) const
 
 double warrior_t::composite_mastery() const
 {
-  double mast = player_t::composite_mastery();
-
-  return mast;
+  return player_t::composite_mastery();
 }
 
 // warrior_t::composite_rating_multiplier =====================================
 
 double warrior_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double m = player_t::composite_rating_multiplier( rating );
-  return m;
+  return player_t::composite_rating_multiplier( rating );
 }
 
 // warrior_t::matching_gear_multiplier ======================================
@@ -4079,12 +4076,7 @@ double warrior_t::composite_melee_crit() const
 
 double warrior_t::composite_player_critical_damage_multiplier() const
 {
-  double cdm = player_t::composite_player_critical_damage_multiplier();
-
-  if ( buff.recklessness -> check() )
-    cdm *= 1.0 + buff.recklessness -> data().effectN( 2 ).percent();
-
-  return cdm;
+ return player_t::composite_player_critical_damage_multiplier();
 }
 
 // warrior_t::composite_spell_crit =========================================
