@@ -3374,8 +3374,6 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s )
     .can_cancel( false )
     .activated( true )
-    .tick_behavior( BUFF_TICK_REFRESH )
-    .refresh_behavior( BUFF_REFRESH_TICK )
     .add_invalidate( CACHE_EXP )
     .add_invalidate( CACHE_CRIT_AVOIDANCE )
     .add_invalidate( CACHE_CRIT_BLOCK )
@@ -3383,8 +3381,6 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_STAMINA )
     .add_invalidate( CACHE_ARMOR )
     .add_invalidate( CACHE_BONUS_ARMOR )
-    .duration( timespan_t::from_seconds( 3 ) )
-    .period( timespan_t::from_seconds( 3 ) ) )
   {}
 };
 
