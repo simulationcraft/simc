@@ -1586,7 +1586,7 @@ class SpellDataGenerator(DataGenerator):
         (
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 159407, 3 ), # Combo Breaker: Chi Explosion
-          ( 108557, 1, False ), # Brewmaster Jab
+		  ( 195630, 1, False ), # Brewmaster Mastery Buff
           ( 126890, 0, False ), # Eminence false positives for activatable abilities
           ( 117895, 0, False ),
 		  ( 121283, 0 ), # Chi Sphere from Power Strikes

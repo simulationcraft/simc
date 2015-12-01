@@ -239,6 +239,7 @@ public:
     buff_t* zen_meditation;
 
     // Brewmaster
+    buff_t* elusive_brawler;
     buff_t* elusive_dance;
     buff_t* ironskin_brew;
 
@@ -474,6 +475,7 @@ public:
     const spell_data_t* chi_sphere;
     const spell_data_t* chi_torpedo;
     const spell_data_t* dizzying_kicks;
+    const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
     const spell_data_t* eye_of_the_tiger;
     const spell_data_t* hit_combo;
@@ -4581,6 +4583,7 @@ void monk_t::init_spells()
   passives.chi_sphere                 = find_spell( 121283 );
   passives.chi_torpedo                = find_spell( 119085 );
   passives.dizzying_kicks             = find_spell( 196723 );
+  passives.elusive_brawler            = find_spell( 195630 );
   passives.elusive_dance              = find_spell( 196739 );
   passives.eye_of_the_tiger           = find_spell( 196608 );
   passives.hit_combo                  = find_spell( 196741 );
@@ -4709,6 +4712,12 @@ void monk_t::create_buffs()
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
+
+  double brm_mastery_value = mastery.elusive_brawler -> effectN( 1 ).mastery_value();
+  buff.elusive_brawler = buff_creator_t(this, "elusive_brawler", passives.elusive_brawler)
+    .default_value( cache.mastery() * brm_mastery_value)
+    .max_stack( static_cast<int>( ceil( ( 100 - ( brm_mastery_value * 8 ) ) / brm_mastery_value ) ) )
+    .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
     .default_value( talent.elusive_dance -> effectN( 1 ).percent() ) // 5% per stack
@@ -5080,6 +5089,9 @@ double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
+  if ( buff.elusive_brawler -> up() )
+    d += buff.elusive_brawler -> stack_value();
+
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
 
@@ -5335,6 +5347,9 @@ void monk_t::assess_damage(school_e school,
     }
 */
 
+    if ( s-> result == RESULT_DODGE && buff.elusive_brawler -> up() )
+      buff.elusive_brawler -> expire();
+
     if ( s -> result == RESULT_DODGE && sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
       resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
   }
@@ -5359,6 +5374,9 @@ void monk_t::target_mitigation( school_e school,
   // Passive sources (Sturdy Ox)
   if ( school != SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
     s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
+  // trigger the mastery if the player gets hit by a physical attack
+  else if ( school == SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
+    buff.elusive_brawler -> trigger();
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew -> up() )
