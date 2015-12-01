@@ -239,6 +239,7 @@ public:
     buff_t* zen_meditation;
 
     // Brewmaster
+    buff_t* elusive_dance;
     buff_t* ironskin_brew;
 
     // Mistweaver
@@ -457,6 +458,7 @@ public:
     cooldown_t* brewmaster_active_mitigation;
     cooldown_t* desperate_measure;
     cooldown_t* fists_of_fury;
+    cooldown_t* fortifying_brew;
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
     cooldown_t* rising_sun_kick;
@@ -472,11 +474,13 @@ public:
     const spell_data_t* chi_sphere;
     const spell_data_t* chi_torpedo;
     const spell_data_t* dizzying_kicks;
+    const spell_data_t* elusive_dance;
     const spell_data_t* eye_of_the_tiger;
     const spell_data_t* hit_combo;
     const spell_data_t* enveloping_mist;
     const spell_data_t* healing_elixirs;
     const spell_data_t* keg_smash_buff;
+    const spell_data_t* special_delivery;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* tier15_2pc_melee;
@@ -531,6 +535,7 @@ public:
     // actives
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.brewmaster_active_mitigation = get_cooldown( "active_mitigation" );
+    cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere               = get_cooldown( "healing_sphere" );
@@ -2032,10 +2037,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
-
 struct rising_sun_kick_proc_t : public monk_melee_attack_t
 {
-
   rising_sun_kick_proc_t( monk_t* p, const spell_data_t* s ) :
     monk_melee_attack_t( "rising_sun_kick_trinket", p, s )
   {
@@ -2805,6 +2808,30 @@ struct keg_smash_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
+// Special Delivery
+// ==========================================================================
+
+struct special_delivery_t : public monk_melee_attack_t
+{
+  special_delivery_t( monk_t* p ) :
+    monk_melee_attack_t( "special_delivery", p, p -> passives.special_delivery )
+  {
+    background = true;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    trigger_gcd = timespan_t::zero();
+    aoe = -1;
+
+    base_multiplier = 11.6; // hardcoded into tooltip
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+};
+
+// ==========================================================================
 // Touch of Death
 // ==========================================================================
 
@@ -3564,8 +3591,6 @@ struct mana_tea_t: public monk_spell_t
       if ( p() -> cooldown.healing_elixirs -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
-
-
   }
 };
 
@@ -3624,14 +3649,18 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     return 0;
   }
 };
+
 // ==========================================================================
 // Ironskin Brew
 // ==========================================================================
 
-struct ironskin_brew_t: public monk_spell_t
+struct ironskin_brew_t : public monk_spell_t
 {
+//  special_delivery_t* delivery;
+
   ironskin_brew_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "ironskin_brew", &p, p.spec.ironskin_brew )
+//    delivery( new special_delivery_t( &p ) )
   {
     parse_options( options_str );
 
@@ -3639,8 +3668,8 @@ struct ironskin_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = p.find_spell( id ) -> cooldown();
-    cooldown -> charges  = p.find_spell( id ) -> charges();
+    cooldown -> duration = p.find_spell( id ) -> cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
+    cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
   }
 
   void execute() override
@@ -3648,9 +3677,18 @@ struct ironskin_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.ironskin_brew -> trigger();
+
+    // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
+    if ( p() -> talent.fortified_mind -> ok() )
+      p() -> cooldown.fortifying_brew -> duration += timespan_t::zero();
+
+    /*
+    if ( p() -> talent.special_delivery -> ok() )
+      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
+        delivery -> execute();
+    */
   }
 };
-
 
 // ==========================================================================
 // Purifying Brew
@@ -3658,8 +3696,11 @@ struct ironskin_brew_t: public monk_spell_t
 
 struct purifying_brew_t: public monk_spell_t
 {
+//  special_delivery_t* delivery;
+
   purifying_brew_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "purifying_brew", &p, p.spec.purifying_brew )
+//    delivery( new special_delivery_t( &p ) )
   {
     parse_options( options_str );
 
@@ -3667,13 +3708,14 @@ struct purifying_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = p.find_spell( id ) -> cooldown();
-    cooldown -> charges  = p.find_spell( id ) -> charges();
+    cooldown -> duration = p.find_spell( id ) -> cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
+    cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
   }
 
   void execute() override
   {
     monk_spell_t::execute();
+
     double stagger_pct = p() -> current_stagger_tick_dmg_percent();
     double stagger_dmg = p() -> clear_stagger();
 
@@ -3686,13 +3728,35 @@ struct purifying_brew_t: public monk_spell_t
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )
+    {
+      if ( p() -> talent.elusive_dance -> ok() )
+        p() -> buff.elusive_dance-> trigger( 3 );
       p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
+    }
     else if ( stagger_pct > p() -> moderate_stagger_threshold )
+    {
+      if ( p() -> talent.elusive_dance -> ok() )
+        p() -> buff.elusive_dance-> trigger( 2 );
       p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
+    }
     else
+    {
+      if ( p() -> talent.elusive_dance -> ok() )
+        p() -> buff.elusive_dance-> trigger();
       p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
+    }
 
     p() -> sample_datas.purified_damage -> add( stagger_dmg );
+
+    // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
+    if ( p() -> talent.fortified_mind -> ok() )
+      p() -> cooldown.fortifying_brew -> duration += timespan_t::zero();
+
+    /*
+    if ( p() -> talent.special_delivery -> ok() )
+      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
+        delivery -> execute();
+    */
   }
 
   bool ready() override
@@ -4510,11 +4574,13 @@ void monk_t::init_spells()
   passives.chi_sphere                 = find_spell( 121283 );
   passives.chi_torpedo                = find_spell( 119085 );
   passives.dizzying_kicks             = find_spell( 196723 );
+  passives.elusive_dance              = find_spell( 196739 );
   passives.eye_of_the_tiger           = find_spell( 196608 );
   passives.hit_combo                  = find_spell( 196741 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
   passives.healing_elixirs            = find_spell( 122281 );
   passives.keg_smash_buff             = find_spell( 196720 );
+  passives.special_delivery           = find_spell( 196734 );
   passives.storm_earth_and_fire       = find_spell( 138228 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   passives.tier15_2pc_melee           = find_spell( 138311 );
@@ -4637,12 +4703,17 @@ void monk_t::create_buffs()
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
-  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
-    .chance( talent.secret_ingredients -> proc_chance() ); 
+  buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
+    .default_value( talent.elusive_dance -> effectN( 1 ).percent() ) // 5% per stack
+    .max_stack( 3 ) // Cap of 15%
+    .add_invalidate( CACHE_DODGE );
 
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", spec.ironskin_brew )
     .default_value( spec.ironskin_brew -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
+
+  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
+    .chance( talent.secret_ingredients -> proc_chance() ); 
 
   // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
   double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
@@ -5002,6 +5073,9 @@ double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
+  if ( buff.elusive_dance -> up() )
+    d += buff.elusive_dance -> stack_value();
+
   return d;
 }
 
@@ -5225,8 +5299,7 @@ void monk_t::combat_begin()
   if ( talent.chi_orbit -> ok() )
   {
     // If Chi Orbit, start out with max stacks
-    for (int i = 0; i >= buff.chi_orbit -> max_stack(); i++)
-      buff.chi_orbit -> trigger();
+    buff.chi_orbit -> trigger( 4 );
     new ( *sim ) chi_orbit_event_t( *this, timespan_t::zero() );
   }
 
@@ -5783,6 +5856,9 @@ double monk_t::stagger_pct()
   if ( specialization() == MONK_BREWMASTER ) // no stagger when not in Brewmaster Specialization
   {
     stagger += spec.stagger -> effectN( 9 ).percent(); //TODO: Effect says 10 but tooltip say 6%; double check
+
+    if ( talent.high_tolerance -> ok() )
+      stagger += talent.high_tolerance -> effectN( 1 ).percent();
 
     if ( specialization() == MONK_BREWMASTER && buff.fortifying_brew -> check() )
       stagger += spec.fortifying_brew -> effectN( 1 ).percent();
