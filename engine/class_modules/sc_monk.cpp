@@ -534,7 +534,7 @@ public:
   {
     // actives
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
-    cooldown.brewmaster_active_mitigation = get_cooldown( "active_mitigation" );
+    cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
@@ -2027,6 +2027,10 @@ struct tiger_palm_t: public monk_melee_attack_t
     }
     else if ( p() -> specialization() == MONK_BREWMASTER )
     {
+          
+      if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+        p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+
       if ( p() -> talent.secret_ingredients -> ok() )
         p() -> buff.keg_smash_talent -> trigger();
     }
@@ -2804,6 +2808,9 @@ struct keg_smash_t: public monk_melee_attack_t
 
     if ( p() -> buff.keg_smash_talent -> check() )
       p() -> buff.keg_smash_talent -> expire();
+    
+    if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+      p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
   }
 };
 
