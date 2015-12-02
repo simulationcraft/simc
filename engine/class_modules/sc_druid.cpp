@@ -417,12 +417,13 @@ public:
     const spell_data_t* dream_of_cenarius;      // All Specs (TOCHECK: does this still exist?)
 
     // Feral
-    const spell_data_t* feral_passive; // Hidden feral modifiers
+    const spell_data_t* feral_passive; // Feral Overrides Passive
     const spell_data_t* sharpened_claws;
     const spell_data_t* predatory_swiftness;
     const spell_data_t* swipe;
 
     // Balance
+    const spell_data_t* balance_passive; // Balance Overrides Passive
     const spell_data_t* celestial_alignment;
     const spell_data_t* moonkin_form;
     const spell_data_t* starfall;
@@ -430,7 +431,7 @@ public:
 
     // Guardian
     const spell_data_t* bladed_armor;
-    const spell_data_t* guardian_passive; // Guardian hidden effects
+    const spell_data_t* guardian_passive; // Guardian Overrides Passive
     const spell_data_t* ironfur;
     const spell_data_t* resolve;
   } spec;
@@ -1704,6 +1705,7 @@ struct moonfire_t : public druid_spell_t
 
     dot_duration                  = dmg_spell -> duration(); 
     dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+    dot_duration                 += player -> spec.balance_passive -> effectN( 4 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
@@ -4563,6 +4565,7 @@ struct sunfire_t: public druid_spell_t
 
     dot_duration           = dmg_spell -> duration();
     dot_duration          += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+    dot_duration          += player -> spec.balance_passive -> effectN( 4 ).time_value();
     base_tick_time         = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
     spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
@@ -5219,6 +5222,7 @@ void druid_t::init_spells()
   spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
 
   // Boomkin
+  spec.balance_passive         = find_specialization_spell( "Balance Overrides Passive" );
   spec.celestial_alignment     = find_specialization_spell( "Celestial Alignment" );
   spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
   spec.starfall                = find_specialization_spell( "Starfall" );
