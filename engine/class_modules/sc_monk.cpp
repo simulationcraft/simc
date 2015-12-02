@@ -4713,10 +4713,9 @@ void monk_t::create_buffs()
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
-  double brm_mastery_default_value = cache.mastery() * mastery.elusive_brawler -> effectN( 1 ).mastery_value();
   buff.elusive_brawler = buff_creator_t(this, "elusive_brawler", passives.elusive_brawler )
-    .default_value( brm_mastery_default_value )
-    .max_stack( static_cast<int>( ceil( 1 / brm_mastery_default_value ) ) )
+    .default_value( 1 )
+    .max_stack( 20 ) // TODO: Hard Code this for the time being
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
@@ -5090,7 +5089,7 @@ double monk_t::composite_dodge() const
   double d = base_t::composite_dodge();
 
   if ( buff.elusive_brawler -> up() )
-    d += buff.elusive_brawler -> stack_value();
+    d += buff.elusive_brawler -> stack_value() * ( cache.mastery() * mastery.elusive_brawler -> effectN( 1 ).mastery_value() );
 
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
