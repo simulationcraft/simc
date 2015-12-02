@@ -4713,10 +4713,10 @@ void monk_t::create_buffs()
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
-  double brm_mastery_value = mastery.elusive_brawler -> effectN( 1 ).mastery_value();
-  buff.elusive_brawler = buff_creator_t(this, "elusive_brawler", passives.elusive_brawler)
-    .default_value( cache.mastery() * brm_mastery_value)
-    .max_stack( static_cast<int>( ceil( ( 100 - ( brm_mastery_value * 8 ) ) / brm_mastery_value ) ) )
+  double brm_mastery_default_value = cache.mastery() * mastery.elusive_brawler -> effectN( 1 ).mastery_value();
+  buff.elusive_brawler = buff_creator_t(this, "elusive_brawler", passives.elusive_brawler )
+    .default_value( brm_mastery_default_value )
+    .max_stack( static_cast<int>( ceil( 1 / brm_mastery_default_value ) ) )
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
