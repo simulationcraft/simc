@@ -376,8 +376,12 @@ DBFilesClient\ScenarioStep.db2
 DBFilesClient\SceneScript.db2
 DBFilesClient\SceneScriptPackage.db2
 DBFilesClient\SceneScriptPackageMember.db2
+DBFilesClient\ScheduledInterval.db2
+DBFilesClient\ScheduledWorldState.db2
+DBFilesClient\ScheduledWorldStateGroup.db2
 DBFilesClient\ScreenEffect.db2
 DBFilesClient\ScreenLocation.db2
+DBFilesClient\SeamlessSite.db2
 DBFilesClient\ServerMessages.db2
 DBFilesClient\ShadowyEffect.db2
 DBFilesClient\SkillLine.db2
@@ -476,10 +480,12 @@ DBFilesClient\TaxiPathNode.db2
 DBFilesClient\TerrainMaterial.db2
 DBFilesClient\TerrainType.dbc
 DBFilesClient\TerrainTypeSounds.db2
+DBFilesClient\TextureBlendSet.db2
 DBFilesClient\TextureFileData.db2
 DBFilesClient\TotemCategory.db2
 DBFilesClient\Toy.db2
 DBFilesClient\TradeSkillCategory.db2
+DBFilesClient\TradeSkillItem.db2
 DBFilesClient\TransportAnimation.db2
 DBFilesClient\TransportPhysics.db2
 DBFilesClient\TransportRotation.db2
