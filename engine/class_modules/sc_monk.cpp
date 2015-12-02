@@ -4713,9 +4713,9 @@ void monk_t::create_buffs()
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
-  buff.elusive_brawler = buff_creator_t(this, "elusive_brawler", passives.elusive_brawler )
+  buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", passives.elusive_brawler )
     .default_value( 1 )
-    .max_stack( 20 ) // TODO: Hard Code this for the time being
+    .max_stack( 13 ) // TODO: Hard Code this for the time being
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
