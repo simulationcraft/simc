@@ -479,8 +479,9 @@ public:
     const spell_data_t* elusive_dance;
     const spell_data_t* enveloping_mist;
     const spell_data_t* eye_of_the_tiger;
-    const spell_data_t* gift_of_the_ox_summon;
+    const spell_data_t* gift_of_the_ox_chance;
     const spell_data_t* gift_of_the_ox_heal;
+    const spell_data_t* gift_of_the_ox_summon;
     const spell_data_t* hit_combo;
     const spell_data_t* healing_elixirs;
     const spell_data_t* keg_smash_buff;
@@ -4590,6 +4591,7 @@ void monk_t::init_spells()
   passives.elusive_dance              = find_spell( 196739 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
   passives.eye_of_the_tiger           = find_spell( 196608 );
+  passives.gift_of_the_ox_chance      = find_spell( 124502 );
   passives.gift_of_the_ox_heal        = find_spell( 124507 );
   passives.gift_of_the_ox_summon      = find_spell( 124503 );
   passives.hit_combo                  = find_spell( 196741 );
@@ -5367,7 +5369,8 @@ void monk_t::assess_damage(school_e school,
       if ( school == SCHOOL_PHYSICAL )
         buff.elusive_brawler -> trigger();
 
-      if ( rng().roll( fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) )
+      // TODO: Check if 35% chance is baseline and increased by HP percent from there
+      if ( rng().roll( fmax( passives.gift_of_the_ox_chance -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
         buff.gift_of_the_ox -> trigger();
     }
   }
