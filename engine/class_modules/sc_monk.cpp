@@ -4719,7 +4719,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", passives.elusive_brawler )
-    .max_stack( static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 2 ).mastery_value() * 8 ) ) ) )
+    .max_stack( static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 1 ).mastery_value() * 8 ) ) ) )
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
