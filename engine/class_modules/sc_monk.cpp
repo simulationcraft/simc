@@ -477,9 +477,11 @@ public:
     const spell_data_t* dizzying_kicks;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
-    const spell_data_t* eye_of_the_tiger;
-    const spell_data_t* hit_combo;
     const spell_data_t* enveloping_mist;
+    const spell_data_t* eye_of_the_tiger;
+    const spell_data_t* gift_of_the_ox_summon;
+    const spell_data_t* gift_of_the_ox_heal;
+    const spell_data_t* hit_combo;
     const spell_data_t* healing_elixirs;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
@@ -4171,12 +4173,13 @@ struct zen_sphere_t: public monk_heal_t
 struct gift_of_the_ox_t: public monk_heal_t
 {
   gift_of_the_ox_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "gift_of_the_ox", p, p.find_spell( 124507 ) )
+    monk_heal_t( "gift_of_the_ox", p, p.passives.gift_of_the_ox_heal )
   {
     parse_options( options_str );
     harmful = false;
     background = true;
     trigger_gcd = timespan_t::zero();
+    base_pct_heal = p.passives.gift_of_the_ox_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -4585,9 +4588,11 @@ void monk_t::init_spells()
   passives.dizzying_kicks             = find_spell( 196723 );
   passives.elusive_brawler            = find_spell( 195630 );
   passives.elusive_dance              = find_spell( 196739 );
-  passives.eye_of_the_tiger           = find_spell( 196608 );
-  passives.hit_combo                  = find_spell( 196741 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
+  passives.eye_of_the_tiger           = find_spell( 196608 );
+  passives.gift_of_the_ox_heal        = find_spell( 124507 );
+  passives.gift_of_the_ox_summon      = find_spell( 124503 );
+  passives.hit_combo                  = find_spell( 196741 );
   passives.healing_elixirs            = find_spell( 122281 );
   passives.keg_smash_buff             = find_spell( 196720 );
   passives.special_delivery           = find_spell( 196734 );
@@ -4714,8 +4719,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", passives.elusive_brawler )
-    .default_value( 1 )
-    .max_stack( 13 ) // TODO: Hard Code this for the time being
+    .max_stack( static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 2 ).mastery_value() * 8 ) ) ) )
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
@@ -4730,14 +4734,8 @@ void monk_t::create_buffs()
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
     .chance( talent.secret_ingredients -> proc_chance() ); 
 
-  // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
-  double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
-  // Players generally don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
-  // Defaulting to 60% pickup, but users can adjust as needed
-  goto_chance *= ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 );
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" , find_spell( 124503 ) )
-    .chance( goto_chance )
-    .duration( timespan_t::from_seconds( 30 ) )
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" , passives.gift_of_the_ox_summon )
+    .duration( passives.gift_of_the_ox_summon -> duration() )
     .refresh_behavior( BUFF_REFRESH_NONE )
     .max_stack( 99 );
 
@@ -5089,7 +5087,7 @@ double monk_t::composite_dodge() const
   double d = base_t::composite_dodge();
 
   if ( buff.elusive_brawler -> up() )
-    d += buff.elusive_brawler -> stack_value() * ( cache.mastery() * mastery.elusive_brawler -> effectN( 1 ).mastery_value() );
+    d += buff.elusive_brawler -> current_stack * ( cache.mastery() * mastery.elusive_brawler -> effectN( 1 ).mastery_value() );
 
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
@@ -5143,7 +5141,7 @@ double monk_t::composite_armor_multiplier() const
   return a;
 }
 
-// monk_t::composite_dodge ==============================================
+// monk_t::invalidate_cache ==============================================
 
 void monk_t::invalidate_cache( cache_e c )
 {
@@ -5342,15 +5340,36 @@ void monk_t::assess_damage(school_e school,
     // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, adjust Elusive Brew proc chance based on spell data of the special effect.
 /*    if ( eluding_movements )
     {
+    {
       double bm_trinket_proc = eluding_movements -> driver() -> effectN( 1 ).average( eluding_movements -> item );
+
+      if ( health_percentage() < bm_trinket_proc )
+      {
+//        TODO: Figure out how to get trigger_brew to work from here
+        if ( rng().roll( ( bm_trinket_proc / 100 ) / 2 ) )
+          buff.elusive_brew_stacks -> trigger( 1 );
+      }
     }
 */
 
-    if ( s-> result == RESULT_DODGE && buff.elusive_brawler -> up() )
-      buff.elusive_brawler -> expire();
+    if ( s -> result == RESULT_DODGE )
+    {
+      if ( buff.elusive_brawler -> up() )
+        buff.elusive_brawler -> expire();
 
-    if ( s -> result == RESULT_DODGE && sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
-      resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
+      if ( sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
+        resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
+    }
+
+    if ( action_t::result_is_hit( s -> result ) && s -> action -> id != 124255 )
+    {
+      // trigger the mastery if the player gets hit by a physical attack; but not from stagger
+      if ( school == SCHOOL_PHYSICAL )
+        buff.elusive_brawler -> trigger();
+
+      if ( rng().roll( fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) )
+        buff.gift_of_the_ox -> trigger();
+    }
   }
 
   base_t::assess_damage(school, dtype, s);
@@ -5372,10 +5391,8 @@ void monk_t::target_mitigation( school_e school,
 
   // Passive sources (Sturdy Ox)
   if ( school != SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
+    // TODO: Double Check that Brewmasters mitigate 15% of Magical Damage
     s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
-  // trigger the mastery if the player gets hit by a physical attack
-  else if ( school == SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
-    buff.elusive_brawler -> trigger();
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew -> up() )
