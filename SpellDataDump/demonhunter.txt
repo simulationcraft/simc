@@ -70,7 +70,7 @@ Name             : Demon's Bite (id=162243) [Spell Family (107)]
 Class            : Demon Hunter
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Demonic Instincts (203569)
+Affecting spells : Metamorphosis (162264), Demon Rage (201458), Demonic Instincts (203569)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -91,6 +91,7 @@ Class            : Demon Hunter
 Duration         : 30 seconds
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Affecting spells : Unleashed Demons (201460)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -121,7 +122,7 @@ Class            : Demon Hunter
 Resource         : 40 Fury
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Demonic Instincts (203569)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos of the Deceiver (202124), Demonic Instincts (203569)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -315,7 +316,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Demonic Instincts (203569)
+Affecting spells : Sharpened Glaives (201457), Balanced Blades (201470), Demonic Instincts (203569)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -604,6 +605,20 @@ Description      : Teleports the caster to the  Fel Hammer.
 
 Casting Gateway: The Fel Hammer while in the Fel Hammer will return the Demon Hunter back to near their departure point.
 
+Name             : Demon Reborn (id=193897) [Spell Family (107), Passive] 
+Class            : Demon Hunter
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=284560)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : All your cooldowns are reset when you invoke Metamorphosis.
+
 Name             : Fel Rush (id=195072) [Spell Family (107)] 
 Class            : Demon Hunter
 GCD              : 0.5 seconds
@@ -663,6 +678,29 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : You are able to jump again while near the apex of your first jump.
 
+Name             : Netherwalk (id=196555) [Spell Family (107)] 
+Class            : Demon Hunter
+Duration         : 5 seconds
+Cooldown         : 90 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=288519)   : Apply Aura (6) | Unknown effect sub type (40)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
+#2 (id=303654)   : Apply Aura (6) | Pacify (25)
+                   Base Value: 0 | Scaled Value: 0
+#3 (id=303655)   : Apply Aura (6) | Unknown effect sub type (171)
+                   Base Value: 100 | Scaled Value: 100
+Description      : Slip into the nether, increasing movement speed by $s3% and becoming immune to damage, but unable to attack. Lasts $d.
+
+Replaces Blur.
+Tooltip          : Immune to damage and unable to attack.
+Movement speed increased by $s3%.
+
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 Internal Cooldown: 0.5 seconds
@@ -701,7 +739,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 45 seconds
-Affecting spells : Metamorphosis (162264), Blind Fury (203550), Demonic Instincts (203569)
+Affecting spells : Metamorphosis (162264), Chaos Vision (201456), Blind Fury (203550), Demonic Instincts (203569)
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -722,7 +760,7 @@ Variables        : $dmg=$?a203550[${$198030m1*14}][${$198030m1*9}]
 Name             : Eye Beam (id=198030) [Spell Family (107)] 
 Class            : Demon Hunter
 Range            : 50000 yards
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Blind Fury (203550), 
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Chaos Vision (201456), Blind Fury (203550), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -797,7 +835,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Chaos Strike (id=199547) [Spell Family (107)] 
 Class            : Demon Hunter
 Range            : 5 yards
-Affecting spells : Mastery: Demonic Presence (185164)
+Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos of the Deceiver (202124)
 Triggered by     : Chaos Strike (162794)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -899,7 +937,7 @@ Name             : Annihilation (id=201427) [Spell Family (107)]
 Class            : Demon Hunter
 Resource         : 100 Fury
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Demonic Instincts (203569)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos of the Deceiver (202124), Demonic Instincts (203569)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -917,7 +955,7 @@ Description      : Slice your target and all nearby targets for ${$sw1+$201428sw
 
 Name             : Annihilation (id=201428) [Spell Family (107)] 
 Class            : Demon Hunter
-Affecting spells : Mastery: Demonic Presence (185164)
+Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos of the Deceiver (202124)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -937,7 +975,7 @@ Name             : Demon Rend (id=201429) [Spell Family (107)]
 Class            : Demon Hunter
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Demonic Instincts (203569)
+Affecting spells : Metamorphosis (162264), Demon Rage (201458), Demonic Instincts (203569)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1429,7 +1467,7 @@ Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
-Affecting spells : Demonic Instincts (203569)
+Affecting spells : Sharpened Glaives (201457), Balanced Blades (201470), Demonic Instincts (203569)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1446,7 +1484,7 @@ Description      : Throw a demonic glaive at the target, dealing $sw2 Physical d
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 Internal Cooldown: 1 seconds
-Proc Chance      : 100%
+Proc Chance      : 50%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1591,5 +1629,48 @@ Effects          :
 #1 (id=302487)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
 Description      : Increases your Leech by $s1% while in demon form.
+
+Name             : Feed the Demon (id=205400) [Spell Family (107), Passive] 
+Class            : Demon Hunter
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=303275)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Increases the duration of your Metamorphosis by 5 sec every time you consume a Shattered Soul.
+
+Name             : Desperate Instincts (id=205411) [Spell Family (107), Passive] 
+Class            : Demon Hunter
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=303317)   : Apply Aura (6) | Unknown effect sub type (468)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Trigger Spell: 205478
+#2 (id=303640)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25
+Description      : You automatically cast Blur when you fall below $s1% health. If activated automatically, the cooldown is reduced by $s2 sec.
+
+Name             : Desperate Instincts (id=205478) [Spell Family (107)] 
+Class            : Demon Hunter
+Triggered by     : Desperate Instincts (205411)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=303440)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
 
 

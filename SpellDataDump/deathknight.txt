@@ -223,7 +223,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : On a Pale Horse (51986), All-Consuming Rot (192464), 
 Attributes       : ........ ........ ........ ..x.....   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x..x. 
@@ -253,6 +253,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
 Affecting spells : On a Pale Horse (51986)
+Triggered by     : Frozen Core (190509)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -277,7 +278,7 @@ Resource         : 0 - 5 Health w/ Blood for Blood (id=202846)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : On a Pale Horse (51986), Blood for Blood (202846), 
+Affecting spells : On a Pale Horse (51986), Veinrender (192457), Blood for Blood (202846), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -451,7 +452,7 @@ Spell Level      : 62
 Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 15 seconds
-Affecting spells : Razorice (51714), 
+Affecting spells : Razorice (51714)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -470,7 +471,7 @@ Spell Level      : 55
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : On a Pale Horse (51986), Glyph of Tranquil Grip (63335), Sudden Doom (81340)
+Affecting spells : On a Pale Horse (51986), Glyph of Tranquil Grip (63335), Sudden Doom (81340), Deadliest Coil (191419)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -559,7 +560,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15
 #2 (id=40422)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 22
-                   Affected Spells: Blood Plague (55078), Frost Fever (55095)
+                   Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
 Description      : Increases movement speed by $s1%.
 Tooltip          : Movement speed increased by $s1%.
 
@@ -637,7 +638,7 @@ Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124), On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : Killing Machine (51124), On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Nothing but the Boots (189144)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -660,6 +661,7 @@ Cooldown         : 90 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x.x. x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Heal, Hostile Spell, Periodic
+Affecting spells : Dance of Darkness (192514), Mouth of Hell (192570)
 Attributes       : ........ ........ ........ ........   ........ .xx..... ........ ....x... 
                  : ........ ........ ........ ........   .x...... ..x..... ..x..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -681,7 +683,7 @@ Resource         : 20 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Razorice (51714), On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Biting Cold (166057)
+Affecting spells : Razorice (51714), On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Biting Cold (166057), Chill of the Grave (205209)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -702,7 +704,7 @@ Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Razorice (51714), On a Pale Horse (51986), Rime (59052), Biting Cold (166057), Northrend Winds (204088)
+Affecting spells : Razorice (51714), On a Pale Horse (51986), Rime (59052), Biting Cold (166057), Blast Radius (189086), Northrend Winds (204088)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -856,7 +858,7 @@ Internal Cooldown: 0.008 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Biting Cold (166057)
+Affecting spells : Biting Cold (166057), Bad to the Bone (189147), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... x.x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -888,7 +890,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 49998
 #3 (id=285788)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
 Description      : $@spelldesc49509
 Tooltip          : Increases the healing of your next Death Strike by $w1%$?$w3>0[, and its damage by $w3%][].
 
@@ -914,7 +916,6 @@ Tooltip          : Silenced.
 Name             : Blood Boil (id=50842) [Spell Family (15)] 
 Class            : Blood Death Knight
 Resource         : 1 Rune
-Resource         : -10 Runic Power
 Spell Level      : 59
 GCD              : 1.5 seconds
 Affecting spells : On a Pale Horse (51986), Glyph of Resilient Grip (59309)
@@ -1070,7 +1071,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=44095)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 16
-                   Affected Spells: Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Mark of Sindragosa (155166), Defile (156000)
+                   Affected Spells: Frost Strike (49143), Howling Blast (49184), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (152279), Mark of Sindragosa (155166), Defile (156000)
 #2 (id=205722)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16
                    Affected Spells: Mind Freeze (47528), Frost Strike (49143), Howling Blast (49184), Frost Fever (55095), Frost Strike Off-Hand (66196)
@@ -1111,7 +1112,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11
 #4 (id=289546)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Path of Frost (3714), Army of the Dead (42650), Death and Decay (43265), Chains of Ice (45524), Blood Strike (45902), Raise Dead (46584), Death Coil (47541), Obliterate (49020), Frost Strike (49143), Howling Blast (49184), Summon Gargoyle (49206), Death Strike (49998), Blood Boil (50842), Death Gate (50977), Scourge Strike (55090), Raise Ally (61999), Dark Transformation (63560), Outbreak (77575), Festering Strike (85948), Control Undead (111673), Consume Vitality (194922), Marrowrend (195182), Death's Caress (195292), Hungering Runeblade (196770)
+                   Affected Spells: Path of Frost (3714), Army of the Dead (42650), Death and Decay (43265), Chains of Ice (45524), Blood Strike (45902), Raise Dead (46584), Death Coil (47541), Obliterate (49020), Frost Strike (49143), Howling Blast (49184), Summon Gargoyle (49206), Death Strike (49998), Blood Boil (50842), Death Gate (50977), Scourge Strike (55090), Raise Ally (61999), Dark Transformation (63560), Outbreak (77575), Festering Strike (85948), Control Undead (111673), Consume Vitality (194922), Marrowrend (195182), Death's Caress (195292), Remorseless Winter (196770), Consumption (205223)
 Description      : You are as hard to stop as death itself, increasing your mounted speed by $s1%.
 
 Name             : Death and Decay (id=52212) [Scaling Spell (1), Spell Family (15)] 
@@ -1236,7 +1237,7 @@ Range            : 40 yards
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Veteran of the Third War (48263)
+Affecting spells : Veteran of the Third War (48263), The Darkest Crusade (191488)
 Triggered by     : Fallen Crusader (166441)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1287,7 +1288,7 @@ Class            : Death Knight
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 30 seconds
-Affecting spells : Death's Advance (48265), Crimson Scourge (81136), Rapid Decomposition (194662)
+Affecting spells : Coagulopathy (192460), Rapid Decomposition (194662)
 Triggered by     : Death's Caress (195292)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -1314,7 +1315,7 @@ Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Flagellation (191748)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1336,7 +1337,7 @@ Spell Level      : 55
 Range            : 50000 yards
 Duration         : 30 seconds
 Proc Chance      : 101%
-Affecting spells : Death's Advance (48265), Razorice (51714), Biting Cold (166057)
+Affecting spells : Razorice (51714), Biting Cold (166057)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
@@ -1355,7 +1356,7 @@ Class            : Blood Death Knight
 Spell Level      : 82
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Affecting spells : Item - Death Knight T14 Blood 2P Bonus (123079)
+Affecting spells : Item - Death Knight T14 Blood 2P Bonus (123079), Vampiric Fangs (192542), Vampiric Fangs (192543), Vampiric Fangs (192544), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1365,8 +1366,12 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=48161)    : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 127
-#2 (id=48162)    : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 100 | Scaled Value: 100
+#2 (id=48162)    : Apply Aura (6) | Increase Max Health (Stacking) (250)
+                   Base Value: 0 | Scaled Value: 0
+#3 (id=303974)   : Apply Aura (6) | Unknown effect sub type (329)
+                   Base Value: 0 | Scaled Value: 0
+#4 (id=303975)   : Activate Rune (146)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Embrace your undeath, increasing your maximum health by $s2% and increasing all healing received by $s1%.
 Tooltip          : Maximum health increased by $s2%. Healing received increased by $s1%.
 
@@ -1959,7 +1964,7 @@ Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Razorice (51714), Item - Death Knight T14 DPS 2P Bonus (123077), Biting Cold (166057)
+Affecting spells : Razorice (51714), Item - Death Knight T14 DPS 2P Bonus (123077), Biting Cold (166057), Ambidexterity (189092), Chill of the Grave (205209)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1977,7 +1982,7 @@ Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Fami
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : Killing Machine (51124), Item - Death Knight T14 DPS 2P Bonus (123077), Ambidexterity (189092), Nothing but the Boots (189144)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2176,7 +2181,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68639)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
-                   Affected Spells: Blood Plague (55078)
 Description      : Your successful autoattacks on targets infected with your Blood Plague have a $h% chance to reset the cooldown on Death and Decay.
 
 Name             : Runic Empowerment (id=81229) [Spell Family (15), Passive] 
@@ -2231,6 +2235,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
+Affecting spells : Double Doom (191741), 
 Triggered by     : Sudden Doom (49530)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2611,7 +2616,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 #2 (id=139194)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
 Description      : $@spelldesc96279
 Tooltip          : Your next Death Strike in Frost or Unholy Presence is free and its healing is increased by $s1%.
 
@@ -2638,7 +2643,7 @@ Class            : Death Knight
 Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 10 seconds
-Cooldown         : 60 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2659,6 +2664,7 @@ Class            : Death Knight
 GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
+Affecting spells : Dead of Winter (189164), Gathering Storm (194912)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2733,6 +2739,7 @@ Duration         : 3 seconds
 Cooldown         : 60 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
+Affecting spells : Dead of Winter (189164), Gathering Storm (194912)
 Triggered by     : Remorseless Winter (108200)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x ........ ........ ........ 
@@ -3167,7 +3174,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=194922)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
 Description      : $@spelldesc144950
 Tooltip          : Death Strike has no resource cost.
 
@@ -3274,6 +3281,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
+Affecting spells : All-Consuming Rot (192464), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3711,7 +3719,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 15
 #2 (id=289400)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
-                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
 Description      : Increases the magnitude of Death Strike critical heals by ${$m1/2}%.
 
 Name             : Virulent Plague (id=191587) [Scaling Spell (1), Spell Family (15)] 
@@ -3720,6 +3728,7 @@ Spell Level      : 55
 Range            : 50000 yards
 Duration         : 21 seconds
 Proc Chance      : 101%
+Affecting spells : Death's Advance (48265), Plaguebearer (191485), 
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
@@ -3742,6 +3751,7 @@ Name             : Virulent Eruption (id=191685) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 18
 Range            : 100 yards
+Affecting spells : Death's Advance (48265), Plaguebearer (191485), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3761,6 +3771,7 @@ Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Flags       : ........ ...x...x ........ .......x 
                  : AOE Heal Taken, Heal Taken
+Triggered by     : APOCALYPSE! (205488)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -3841,8 +3852,10 @@ Description      : Your Defile or Death and Decay deals $s1% more damage to targ
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 2 Rune
-Resource         : -60 Runic Power
-Cooldown         : 30 seconds
+Resource         : -20 Runic Power
+Duration         : 3 seconds
+Cooldown         : 120 seconds
+Affecting spells : Item - Death Knight T15 Blood 2P Bonus (138195)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -3851,43 +3864,49 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=285811)   : Dummy (3)
-                   Base Value: 60 | Scaled Value: 60
-Description      : Consume two Runes to generate $s1 Runic Power.
+#1 (id=285811)   : Direct Heal% (136)
+                   Base Value: 20 | Scaled Value: 20
+#2 (id=303970)   : Apply Aura (6) | Unknown effect sub type (383)
+                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Rune Tap (194679)
+Description      : Consume a Rune to restore $s1% of your heath. You may recast the ability within $d without triggering the cooldown.
 
-Name             : March of the Damned (id=194832) [Spell Family (15), Passive, Hidden] 
+Name             : March of the Damned (id=194832) [Spell Family (15)] 
 Class            : Death Knight
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+Duration         : 10 seconds
+Cooldown         : 75 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285992)   : Apply Aura (6) | Unknown effect sub type (305)
                    Base Value: 100 | Scaled Value: 100
-#2 (id=285993)   : Apply Aura (6) | Unknown effect sub type (234)
+#2 (id=285993)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 1
-#3 (id=289680)   : Apply Aura (6) | Unknown effect sub type (234)
+#3 (id=289680)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 2
-#4 (id=289681)   : Apply Aura (6) | Unknown effect sub type (234)
+#4 (id=289681)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 5
-#5 (id=289682)   : Apply Aura (6) | Unknown effect sub type (234)
+#5 (id=289682)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 13
-#6 (id=289683)   : Apply Aura (6) | Unknown effect sub type (234)
+#6 (id=289683)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 24
-#7 (id=289684)   : Apply Aura (6) | Unknown effect sub type (234)
+#7 (id=289684)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14
-#8 (id=289685)   : Apply Aura (6) | Unknown effect sub type (234)
+#8 (id=289685)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 17
-#9 (id=289686)   : Apply Aura (6) | Unknown effect sub type (234)
+#9 (id=289686)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 30
-#10 (id=289687)   : Apply Aura (6) | Unknown effect sub type (234)
+#10 (id=289687)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 12
-#11 (id=289688)   : Apply Aura (6) | Unknown effect sub type (234)
+#11 (id=289688)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 18
-Description      : You cannot be slowed below $s1% movement speed, and the duration of effects that remove control of your character are reduced by $s2%.
+#12 (id=303987)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
+Description      : Become immune to all movement impairing effects, and effects that cause you to lose control of your character for $d. Does not break effects in progress.
 
 Name             : Spellbreaker (id=194834) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -4038,7 +4057,7 @@ Effects          :
                    Affected Spells: Killing Machine (51124)
 Description      : Increases the chance for Obliterate to trigger Rime by $s1%. Up to two charges of Killing Machine and Rime can be stored.
 
-Name             : Soul Asylum (id=194912) [Spell Family (15), Passive] 
+Name             : Gathering Storm (id=194912) [Spell Family (15), Passive] 
 Class            : Death Knight
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4050,11 +4069,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=286103)   : Apply Aura (6) | Add Flat Modifier (107)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 31
-                   Affected Spells: Hungering Runeblade (196770), Hungering Runeblade (196771)
 #2 (id=288145)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
-                   Affected Spells: Hungering Runeblade (196775)
-Description      : Hungering Runeblade now starts with 5 souls already trapped, and the damage of the explosion is increased by $s2%.
+                   Affected Spells: Remorseless Winter (108200), Remorseless Winter (115000)
+Description      : Remorseless Winter deals $s1% more damage with each successive wave.
 
 Name             : Glacial Advance (id=194913) [Spell Family (15)] 
 Class            : Death Knight
@@ -4201,7 +4219,7 @@ Stacks           : 1 initial, 10 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
-Affecting spells : Bone Wall (144948)
+Affecting spells : Bone Wall (144948), Rattling Bones [Untested IMPL] (192557)
 Triggered by     : Marrowrend (195182)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4225,7 +4243,7 @@ Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : On a Pale Horse (51986), Bonebreaker (192538)
 Triggered by     : Bone Shield (195181)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4325,8 +4343,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=287219)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
-Description      : If your Death Strike or Breath of Sindragosa would heal you past full health, you create a Blood Worm. Blood Worms explode if they aren't fed for 10 seconds or when you drop below 50% health, healing you for the total amount of excess healing.
+                   Base Value: 100 | Scaled Value: 100
+Description      : If your Death Strike would heal you past full health, you create a Blood Worm. Blood Worms explode if they aren't fed for 10 seconds or when you drop below 50% health, healing you for the $s1% total amount of excess healing.
 
 Name             : Ossuary (id=195683) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -4466,7 +4484,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75000 | Radius: 0 - 8 yards
 Description      : $@spelldesc194844
 
-Name             : Hungering Runeblade (id=196770) [Spell Family (15)] 
+Name             : Remorseless Winter (id=196770) [Spell Family (15)] 
 Class            : Frost Death Knight
 Resource         : 2 Rune
 Resource         : -20 Runic Power
@@ -4476,7 +4494,7 @@ Duration         : 20 seconds
 Cooldown         : 20 seconds
 Stacks           : 25 maximum
 Proc Chance      : 101%
-Affecting spells : On a Pale Horse (51986), Soul Asylum (194912)
+Affecting spells : On a Pale Horse (51986)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4486,17 +4504,13 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=288888)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
-#2 (id=288889)   : Apply Aura (6) | Periodic Trigger Spell: Hungering Runeblade every 1 seconds (23)
+#2 (id=288889)   : Apply Aura (6) | Periodic Trigger Spell: Remorseless Winter every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196771
-Description      : Drain the warmth of life from all nearby enemies each second for $d, absorbing fragments of their souls and dealing $s196771 Frost damage.
-
-If you accumulate $s1 fragments the cooldown of this ability is reset and you radiate a blast of cold, dealing $196775s1 Frost damage to all enemies near you.
-Tooltip          : Collecting soul fragments.
+Description      : Drain the warmth of life from all nearby enemies for $d, dealing $s196771 Frost damage each second.
 
-Name             : Hungering Runeblade (id=196771) [Spell Family (15)] 
+Name             : Remorseless Winter (id=196771) [Spell Family (15)] 
 Class            : Death Knight
-Affecting spells : Soul Asylum (194912)
-Triggered by     : Hungering Runeblade (196770)
+Triggered by     : Remorseless Winter (196770)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4507,21 +4521,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288891)   : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Radius: 0 - 8 yards
-Description      : $@spelldesc169770
-
-Name             : Hungering Runeblade (id=196775) [Spell Family (15)] 
-Class            : Death Knight
-Affecting spells : Soul Asylum (194912)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
-Effects          :
-#1 (id=288896)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Radius: 0 - 8 yards
 Description      : $@spelldesc169770
 
 Name             : Outbreak (id=196782) [Spell Family (15)] 

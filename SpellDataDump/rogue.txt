@@ -6,7 +6,7 @@ Resource         : 35 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211), The Quiet Knife (197231)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -34,7 +34,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Fury of the Destroyer (109949), Prey on the Weak (131511), Shadow Dance (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Paralytic Poison (200800)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Prey on the Weak (131511), Shadow Dance (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Paralytic Poison (200800)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -120,7 +120,7 @@ Resource         : 55 Energy
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Glyph of Disguise (63268), Shadow Blades (121471), Silent Blades (145193)
+Affecting spells : Glyph of Disguise (63268), Shadow Blades (121471), Silent Blades (145193), Balanced Blades (192326)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... x....... x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -321,7 +321,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 18461
 #3 (id=271221)   : Add Combo Points (80)
                    Base Value: 0 | Scaled Value: 0
-Description      : Allows you to vanish from sight, entering an improved stealth mode for $11327d.  For the first $11327d after vanishing, damage and harmful effects received will not break stealth.  Also breaks movement impairing effects.
+Description      : Allows you to vanish from sight, entering stealth while in combat.  For the first $11327d after vanishing, damage and harmful effects received will not break stealth.  Also breaks movement impairing effects.
 Tooltip          : Improved stealth.
 
 Name             : Safe Fall (Passive) (id=1860) [Spell Family (8), Passive, Hidden] 
@@ -348,7 +348,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Shadow Dance (185314), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Shadow Dance (185314), Adrenaline Rush (186286), Gushing Wound (192329), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -442,7 +442,7 @@ Spell Level      : 10
 Range            : 8 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
-Affecting spells : Death from Above (163786), Deeper Strategem (193531), Alacrity (193539)
+Affecting spells : Death from Above (163786), Deeper Strategem (193531), Alacrity (193539), Fate's Thirst (202514), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -462,6 +462,7 @@ Description      : Lunging finishing move that causes damage per combo point and
    4 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*4} damage
    5 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*5} damage$?s193531[
    6 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*6} damage][]
+Tooltip          : Rooted.
 Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00*0.88}]
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (9), Spell Family (8)] 
@@ -469,7 +470,7 @@ Class            : Rogue
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Triggered by     : Deadly Poison (2823)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -491,7 +492,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -593,7 +594,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -625,7 +626,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Druid (137012), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Blessing of Elune (202737)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Druid (137012), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Tranquil Mind (189858), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -659,7 +660,7 @@ Name             : Mutilate (id=5374) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 1 (max 80)
 Range            : 5 yards
-Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Numbing Poison (200803)
+Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Serrated Edge (192315), Numbing Poison (200803)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -732,7 +733,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -750,7 +751,7 @@ Class            : Rogue
 Spell Level      : 25
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140)
+Affecting spells : Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Surge of Toxins (192425)
 Triggered by     : Wound Poison (8679)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -797,7 +798,7 @@ Class            : Combat Rogue
 Spell Level      : 37
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Item - Rogue T18 Combat 4P Bonus (186288)
+Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Item - Rogue T18 Combat 4P Bonus (186288), Fortune's Boon (202907)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -825,6 +826,7 @@ Cooldown         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
+Affecting spells : Blade Dancer (202507)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1067,7 +1069,7 @@ Name             : Mutilate Off-Hand (id=27576) [Scaling Spell (9), Spell Family
 Class            : Rogue
 Spell Level      : 1 (max 80)
 Range            : 5 yards
-Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Numbing Poison (200803)
+Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Serrated Edge (192315), Numbing Poison (200803)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1086,6 +1088,7 @@ Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 com
 Name             : Fleet Footed (Passive) (id=31209) [Spell Family (8), Passive] 
 Class            : Rogue
 Spell Level      : 62
+Affecting spells : Catwalk (197241)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1173,7 +1176,7 @@ Spell Level      : 11
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (170882), Toxic Mutilator (184916), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (170882), Toxic Mutilator (184916), Toxic Blades (192310), Surge of Toxins (192425), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x..x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1228,6 +1231,7 @@ Tooltip          : Interrupted.
 
 Name             : Combat Potency (id=35546) [Spell Family (8)] 
 Class            : Rogue
+Affecting spells : Fortune Strikes (202530)
 Triggered by     : Combat Potency (35551)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1993,7 +1997,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865)
+Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Master Assassin (192349)
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2232,7 +2236,7 @@ Name             : Deadly Poison (id=113780) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140)
+Affecting spells : Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Surge of Toxins (192425)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2340,6 +2344,7 @@ Class            : Subtlety Rogue
 Spell Level      : 72
 Duration         : 12 seconds
 Cooldown         : 180 seconds
+Affecting spells : Soul Shadows (197386)
 Attributes       : ........ ........ ..x..... ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2836,7 +2841,7 @@ Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Mastery: Executioner (76808)
+Affecting spells : Mastery: Executioner (76808), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3117,7 +3122,7 @@ Resource         : 35 Energy
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211), The Quiet Knife (197231)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3197,7 +3202,7 @@ Spell Level      : 10
 Range            : 30 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Premeditation (196979)
+Affecting spells : Premeditation (196979), Precision Strike (197235)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3246,6 +3251,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
+Affecting spells : Gunslinger (202522), Dreadblade's Fate (202710)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3306,7 +3312,7 @@ Class            : Rogue
 Spell Level      : 20
 Range            : 100 yards
 Velocity         : 0.6 yards/sec
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Ice Floes (108839)
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), 
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -3359,7 +3365,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 0.5 seconds
-Affecting spells : Acrobatic Strikes (196924), Ghostly Strike (196937), Swordmaster (200733)
+Affecting spells : Acrobatic Strikes (196924), Ghostly Strike (196937), Swordmaster (200733), Cursed Edges (202463), Dreadblade's Fate (202710)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3391,7 +3397,7 @@ Spell Level      : 36
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Deeper Strategem (193531)
+Affecting spells : Deeper Strategem (193531), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3567,7 +3573,7 @@ Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Shadow Dance (185314), Deeper Strategem (193531), Tangled Shadow (200778)
+Affecting spells : Shadow Dance (185314), Deeper Strategem (193531), Demon's Kiss (197233), Tangled Shadow (200778)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -3622,7 +3628,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Cold Blood (182304), Eviscerating Blade (184917), Shadow Dance (185314), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), 
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Cold Blood (182304), Eviscerating Blade (184917), Shadow Dance (185314), Adrenaline Rush (186286), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3689,7 +3695,7 @@ Class            : Rogue
 Range            : 50000 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Triggered by     : Shadow Techniques (196912), Expanded Technique (200780)
+Triggered by     : Shadow Techniques (196912)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4021,7 +4027,7 @@ Spell Level      : 25
 Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 50 yards/sec
-Affecting spells : Deeper Strategem (193531), Alacrity (193539), Tangled Shadow (200778)
+Affecting spells : Deeper Strategem (193531), Alacrity (193539), Tangled Shadow (200778), Fatebringer (202524)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4128,25 +4134,6 @@ Effects          :
                    Affected Spells: Nightblade (195452), Between the Eyes (199804)
 Description      : Nightblade now decreases the target's movement speed by an additional $s1%.
 
-Name             : Expanded Technique (id=200780) [Spell Family (8), Passive] 
-Class            : Rogue
-Spell Level      : 27
-Internal Cooldown: 3 seconds
-Proc Chance      : 50%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=295647)   : Apply Aura (6) | Proc Trigger Spell: Shadow Technique (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196911
-Description      : Your combo point generators now also have a chance to trigger Shadow Techniques.
-
 Name             : Paralytic Poison (id=200800) [Spell Family (8)] 
 Class            : Rogue
 Cast Time        : 3 seconds
@@ -4193,7 +4180,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Surge of Toxins (192425), Master Poisoner (196864)
 Triggered by     : Numbing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -4221,5 +4208,31 @@ Effects          :
 #1 (id=295690)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
 Description      : Each time you deal Bleed damage, the effect has a $s1% chance to spread to an additional nearby target.
+
+Name             : Enveloping Shadows (id=206237) [Spell Family (8)] 
+Class            : Rogue
+Resource         : 25 Energy
+Spell Level      : 14
+Range            : 100 yards
+GCD              : 1 seconds
+Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ .......x ........   ........ ........ x....... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=304933)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 4
+#2 (id=304934)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3
+Description      : Finishing move that consumes combo points to generate twice as many combo points over time. Lasts longer per combo point.
+   1 point  : 4 seconds
+   2 points: 8 seconds
+   3 points: 12 seconds
+   4 points: 16 seconds
+   5 points: 20 seconds$?s193531[
+   6 points: 24 seconds][]
+Tooltip          : Generating $w1 Combo Point every $t1 sec.
 
 

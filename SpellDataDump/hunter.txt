@@ -7,6 +7,7 @@ Range            : 45 yards
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
+Affecting spells : Natural Mending (197036)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -78,7 +79,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Affecting spells : Glyph of Revive Pet (57866), Glyph of Lesser Proportion (57870)
 Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...... ........ 
-                 : ..x..... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -212,7 +213,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Item - Hunter T16 2P Bonus (144637), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Item - Hunter T16 2P Bonus (144637), Guide: Sharpshooting (178549), Call the Targets (190467), Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -247,7 +248,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Kill Shot (157708), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Mongoose Bite (190931), Flanking Strike (191385), Flanking Strike (191387), Flanking Strike (191389), Flanking Strike (191413), Flanking Strike (191414), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Dragonsfire Trap (194855), Dragonsfire Trap (194856), Explosive Shot (198810), Flanking Strike (202791), Flanking Strike (202800), Chimaera Shot (204304)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Kill Shot (157708), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Mongoose Bite (190931), Flanking Strike (191385), Flanking Strike (191387), Flanking Strike (191389), Flanking Strike (191413), Flanking Strike (191414), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Dragonsfire Trap (194855), Dragonsfire Trap (194856), Explosive Shot (198810), Flanking Strike (202791), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304)
 Description      : Place an ice trap that freezes the first enemy that approaches, incapacitating them for $3355d.  Any damage caused will break the ice. Only one target can be Freezing Trapped at a time. Trap will exist for $d.
 Tooltip          : Incapacitated.
 
@@ -353,7 +354,7 @@ Spell Level      : 46
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -408,7 +409,7 @@ Class            : Hunter
 Spell Level      : 38
 Range            : 100 yards
 Duration         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Black Decay (188400), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Black Decay (188400), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Triggered by     : Explosive Trap (191433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -518,7 +519,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Lone Wolf (155228), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Sniper Training (193468), Lock and Load (194594), True Aim (199803)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Lone Wolf (155228), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Precision (190520), Marked for Death (190533), Sniper Training (193468), Lock and Load (194594), True Aim (199803)
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -531,7 +532,7 @@ Effects          :
 #1 (id=10651)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1)
 #2 (id=101526)   : Weapon Damage% (31)
-                   Base Value: 435 | Scaled Value: 4.35
+                   Base Value: 350 | Scaled Value: 3.5
 Description      : A powerful aimed shot that deals $sw2 Physical damage.
 
 Name             : Bestial Wrath (id=19574) [Spell Family (9)] 
@@ -540,7 +541,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306)
+Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unlimited Wrath (197038)
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3225,12 +3226,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Aimed Shot (19434)
+                   Affected Spells: Aimed Shot (19434), Arcane Shot (185358)
 #2 (id=244426)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
                    Affected Spells: Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Cobra Shot (193455), Black Arrow (194599), Explosive Shot (198810), Chimaera Shot (204304)
-Description      : Your damage dealt with Auto Shot, Steady Shot and Aimed Shot is increased by $s1%.
-Tooltip          : Your damage dealt with Auto Shot, Steady Shot and Aimed Shot is increased by $s1%.
+Description      : Your damage dealt with Auto Shot, Arcane Shot and Aimed Shot is increased by $s1%.
+Tooltip          : Your damage dealt with Auto Shot, Arcane Shot and Aimed Shot is increased by $s1%.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter, Death Knight Pet
@@ -3643,10 +3644,10 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
-Attributes       : ........ ........ x...x... ........   ........ ........ .x...... ........ 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
+Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3662,7 +3663,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Triggered by     : Steel Trap (162488)
 Attributes       : ........ ........ x...x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4087,6 +4088,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 10 seconds
+Affecting spells : Jagged Claws (203578)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4107,6 +4109,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 0.9 seconds
+Affecting spells : Windrunner's Guidance (190457)
 Attributes       : ........ ........ x....... ........   ..x...x. .xx..... ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4182,7 +4185,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306)
+Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unlimited Wrath (197038)
 Triggered by     : Bestial Wrath (19574)
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -4256,19 +4259,17 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | SP Coefficient: 1.00000
 #2 (id=271190)   : Apply Aura (6) | Unknown effect sub type (287)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
-#3 (id=271191)   : Apply Aura (6) | Unknown effect sub type (264)
+#3 (id=271191)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 0 | Scaled Value: 0
-#4 (id=271192)   : Apply Aura (6) | Spell Reflection (28)
-                   Base Value: 0 | Scaled Value: 0
-#5 (id=271193)   : Apply Aura (6) | Modify Damage Taken% (87)
+#4 (id=271192)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 1.00000 | Misc Value: 0x7f
-#6 (id=271194)   : Apply Aura (6) | Mechanic Immunity (77)
+#5 (id=271193)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 26
-#7 (id=271195)   : Apply Aura (6) | Mechanic Immunity (77)
+#6 (id=271194)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9
-#8 (id=271196)   : Apply Aura (6) | Unknown effect sub type (288)
+#7 (id=271195)   : Apply Aura (6) | Unknown effect sub type (288)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
-#9 (id=271197)   : Apply Aura (6) | Unknown effect sub type (185)
+#8 (id=271196)   : Apply Aura (6) | Unknown effect sub type (185)
                    Base Value: -100 | Scaled Value: -100
 Description      : You deflect all attacks and take $s5% less damage for $d, but you cannot attack.$?s83495[  Additionally, you have a $83495s1% chance to reflect spells back at the attacker][]
 Tooltip          : Deflecting all attacks.
@@ -4280,7 +4281,7 @@ Resource         : 25 Focus
 Spell Level      : 10
 Range            : 8 yards
 GCD              : 1.5 seconds
-Affecting spells : Thrill of the Hunt (34720)
+Affecting spells : Thrill of the Hunt (34720), Raptor's Cry (203638)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4325,7 +4326,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Black Decay (188400)
+Affecting spells : Freezing Trap (3355), Black Decay (188400), Gust of Wind (190567)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ........ 
@@ -4374,7 +4375,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Attributes       : ........ ........ x...x... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4394,7 +4395,7 @@ Spell Level      : 28
 Range            : 100 yards
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Triggered by     : Freezing Trap (187650)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ...x....   ........ ........ ........ ........ 
@@ -4429,7 +4430,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4449,7 +4450,7 @@ Spell Level      : 46
 Range            : 100 yards
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Triggered by     : Tar Trap (187698)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ...x....   ........ ........ ........ ........ 
@@ -4624,7 +4625,7 @@ Spell Level      : 18
 Range            : 8 yards
 GCD              : 1.5 seconds
 Charges          : 3 (10 seconds cooldown)
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mongoose Bite (190931), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mongoose Bite (190931), Sniper Training (193468), Sharpened Beak (203566)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4647,7 +4648,7 @@ Class            : Hunter
 Duration         : 3.5 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Sniper Training (193468), Sharpened Beak (203566)
 Triggered by     : Mongoose Bite (190928)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4658,7 +4659,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=279996)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Mongoose Bite (190928), Mongoose Bite (190931)
+                   Affected Spells: Mongoose Bite (190928), Mongoose Bite (190931), Fury of the Eagle (203415)
 Description      : Damage dealt by your next Mongoose Bite increased by $s1%.
 Tooltip          : Damage dealt by your next Mongoose Bite increased by $s1%.
 
@@ -4745,7 +4746,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468), My Beloved Monster (203577)
 Attributes       : ........ ........ x.x..x.. ........   ........ ..x..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4767,7 +4768,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468), My Beloved Monster (203577)
 Attributes       : ........ ........ x.x..x.. ........   ........ ..x..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4789,7 +4790,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468), My Beloved Monster (203577)
 Attributes       : ........ ........ x.x..x.. ........   ........ ..x..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4810,7 +4811,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468), My Beloved Monster (203577)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4830,7 +4831,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468), My Beloved Monster (203577)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4852,7 +4853,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Black Decay (188400), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Black Decay (188400), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4890,7 +4891,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Lone Wolf (155228), Guide: Sharpshooting (178549), Black Decay (188400), Way of the Cobra (194398)
+Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Lone Wolf (155228), Guide: Sharpshooting (178549), Black Decay (188400), Way of the Cobra (194398), Spitting Cobras (197140)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4917,7 +4918,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Binding Shot (109248), Glaive Toss (117050), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Mongoose Bite (190928), Mongoose Bite (190931), Flanking Strike (191385), Flanking Strike (191387), Flanking Strike (191389), Flanking Strike (191413), Flanking Strike (191414), Flanking Strike (202791), Flanking Strike (202800), Chimaera Shot (204304)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Binding Shot (109248), Glaive Toss (117050), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Mongoose Bite (190928), Mongoose Bite (190931), Flanking Strike (191385), Flanking Strike (191387), Flanking Strike (191389), Flanking Strike (191413), Flanking Strike (191414), Flanking Strike (202791), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304)
 #2 (id=283906)   : Apply Aura (6) | Unknown effect sub type (163)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 127
 Description      : Critical strike damage and range of all shots is increased by $s1%.
@@ -4929,6 +4930,7 @@ Class            : Marksmanship Hunter
 Spell Level      : 40
 Duration         : 15 seconds
 Cooldown         : 180 seconds
+Affecting spells : Quick Shot (190462)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5013,13 +5015,12 @@ Effects          :
 Description      : $@spelldesc193533
 Tooltip          : Focus regeneration increased by $w1%.
 
-Name             : Call Greater Eagle (id=193756) [Spell Family (10)] 
+Name             : Call Eagle Spirit (id=193756) [Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 14
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Exorcism (138162)
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5031,7 +5032,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
 #3 (id=284297)   : Unknown effect type (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98305
-Description      : Teleports the caster to the Trueshot Lodge.
+Description      : Calls an eagle spirit that carries the hunter to the Trueshot Lodge.
 
 Name             : Caltrops (id=194277) [Spell Family (9)] 
 Class            : Hunter
@@ -5289,7 +5290,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 20 seconds
 Cooldown         : 24 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Survival Hunter (137017), Lone Wolf (155228), Guide: Sharpshooting (178549), Black Decay (188400), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Survival Hunter (137017), Lone Wolf (155228), Guide: Sharpshooting (178549), Black Decay (188400), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -5312,10 +5313,10 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
-Attributes       : ........ ........ x...x... ........   ........ ........ .x...... ........ 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
+Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5331,7 +5332,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), 
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Triggered by     : Dragonsfire Trap (194855)
 Attributes       : ........ ........ x...x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5611,7 +5612,7 @@ Effects          :
 #2 (id=293776)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 40000 | Scaled Value: 40000 | Misc Value: 11
                    Affected Spells: Flare (1543), Flare (132950)
-Description      : Targets affected by your Flare take extra damage from all of your attacks.
+Description      : Targets affected by your Flare take $199666s1% extra damage from all of your attacks.
 
 Name             : True Aim (id=199527) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -5768,6 +5769,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
+
+Name             : Light Em Up (id=199666) [Spell Family (9)] 
+Class            : Hunter
+Range            : 100 yards
+Duration         : 20 seconds
+Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=293818)   : Apply Aura (6) | Damage Taken (14)
+                   Base Value: 10 | Scaled Value: 10
+Description      : $@spelldesc109215
+Tooltip          : Damage taken is increased by $s1%.
 
 Name             : True Aim (id=199803) [Spell Family (9)] 
 Class            : Hunter
@@ -6080,7 +6097,7 @@ Description      : Deals $s1 Physical damage to all nearby enemies.
 Name             : Flanking Strike (id=202791) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 Range            : 8 yards
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Sniper Training (193468), My Beloved Monster (203577)
 Triggered by     : Flanking Strike (202800)
 Attributes       : ........ ........ x.x..x.. ........   ........ ..x..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -6105,7 +6122,7 @@ Spell Level      : 10
 Range            : 8 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Sniper Training (193468), My Beloved Monster (203577)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6177,7 +6194,7 @@ Effects          :
 Description      : When you attack with Flanking Strike, you gain the instincts of your pet, providing you with a random combat enhancement.
 Tooltip          : Gained a random combat enhancement.
 
-Name             : Mechanically Synchronized (id=205154) [Hidden] 
+Name             : Mechanical Transponder (id=205154) [Hidden] 
 Class            : Hunter
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

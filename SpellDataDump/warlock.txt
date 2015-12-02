@@ -33,7 +33,7 @@ Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Unstable Affliction (30108), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Epidemic (184922), 
+Affecting spells : Unstable Affliction (30108), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Epidemic (184922), Hideous Corruption (199112), Perdition (199158)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -98,7 +98,7 @@ Class            : Warlock
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 2.5 seconds
+Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Affecting spells : Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Item - Warlock T15 DPS 4P Bonus (138134)
@@ -142,7 +142,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Eradication (196414), Secrets of the Necrolyte (205183)
+Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Devourer of Life (196301), Eradication (196414), Drained to a Husk (199120), Perdition (199158), Secrets of the Necrolyte (205183)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -288,7 +288,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Unstable Affliction (30108), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Epidemic (184922), Writhe in Agony (196102)
+Affecting spells : Unstable Affliction (30108), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Epidemic (184922), Writhe in Agony (196102), Inimitable Agony (199111), Perdition (199158)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -783,7 +783,7 @@ Effects          :
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15
 Description      : Instantly blasts a target for $s1 Shadow damage. Generates $29341s1 Soul Shards if the target dies within $d.
-Tooltip          : If the target dies, the Warlock gains a Soul Shard.
+Tooltip          : If the target dies, the Warlock gains $29341s1 Soul Shards.
 
 Name             : Conflagrate (id=17962) [Spell Family (5)] 
 Class            : Destruction Warlock
@@ -792,7 +792,7 @@ Spell Level      : 21
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (12 seconds cooldown)
-Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Eradication (196414)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Eradication (196414), Conflagration of Chaos (196546)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -804,11 +804,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.04100
 #2 (id=9554)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard
-#3 (id=283970)   : Trigger Spell: Backdraft (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 117828
-Description      : Triggers an explosion of fire on the target, dealing $s1 Fire damage and generating a Soul Shard.
-
-Also causes Backdraft, reducing the cast times of Incinerate and Chaos Bolt by $117828s1% for $117828d.
+Description      : Triggers an explosion of fire on the target, dealing $s1 Fire damage and generating a Soul Shard.
 
 Name             : Summon Doomguard (Guardian) (id=18540) [Spell Family (5)] 
 Class            : Warlock
@@ -1013,7 +1009,7 @@ Name             : Seed of Corruption (id=27285) [Scaling Spell (11), Spell Fami
 Class            : Warlock
 Spell Level      : 72
 Range            : 50000 yards
-Affecting spells : Glyph of Hand of Gul'dan (56248)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Seeds of Doom (199153)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1070,7 +1066,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Warlock T13 4P Bonus (Soulburn) (105787), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Destruction Warlock (137046), Flamelicked (185229), Eradication (196414)
+Affecting spells : Item - Warlock T13 4P Bonus (Soulburn) (105787), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Destruction Warlock (137046), Flamelicked (185229), Master of Disaster (196211), Eradication (196414)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1093,7 +1089,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Glyph of Falling Meteor (56247), Mastery: Potent Afflictions (77215), Epidemic (184922), Contagion (196105)
+Affecting spells : Glyph of Falling Meteor (56247), Mastery: Potent Afflictions (77215), Epidemic (184922), Contagion (196105), Inherently Unstable (199152), Perdition (199158), Compound Interest (199281)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1301,7 +1297,7 @@ Name             : Rain of Fire (id=42223) [Scaling Spell (11), Spell Family (5)
 Class            : Warlock
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Flamelicked (185229), Eradication (196414)
+Affecting spells : Flamelicked (185229), Fire From the Sky (196258), Eradication (196414)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ .x....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -2027,6 +2023,7 @@ Description      : Increases your Intellect by $s1%.
 
 Name             : Drain Life (id=89653) [Spell Family (5)] 
 Class            : Warlock
+Affecting spells : Long Dark Night of the Soul (199214), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2308,6 +2305,32 @@ Effects          :
 #1 (id=113739)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 55659 | Misc Value 2: 0xc8a
 Description      : $@spelldesc105174
+
+Name             : Unending Resolve (id=104773) [Spell Family (5)] 
+Class            : Warlock
+Resource         : 10% Base Mana (110000 @Level 110)
+Spell Level      : 64
+Duration         : 8 seconds
+Cooldown         : 180 seconds
+Proc Chance      : 100%
+Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=114369)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 26
+#2 (id=114370)   : Apply Aura (6) | Unknown effect sub type (149)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf
+#3 (id=114371)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f
+#4 (id=162716)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9
+Description      : Hardens your skin, reducing all damage taken by $s3%, and granting immunity to interrupts and silences for $d.
+Tooltip          : Damage taken reduced by $w3%.
+Immune to interrupt and silence effects.
 
 Name             : Fel Armor (id=104938) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -3087,6 +3110,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f
 #2 (id=133703)   : Apply Aura (6) | Periodic Trigger Spell (23)
                    Base Value: 108499 | Scaled Value: 108499
+#3 (id=303458)   : Apply Aura (6) | Unknown effect sub type (133)
+                   Base Value: 20 | Scaled Value: 20
 Description      : Summoned by the Grimoire of Supremacy, this demon has $115578s1% more health and deals $115578s1% more damage than its weaker counterpart.
 Tooltip          : Health and damage increased by $s1%.
 
@@ -3285,10 +3310,10 @@ Class            : Destruction Warlock
 Resource         : 2 Soul Shard
 Spell Level      : 26
 Range            : 40 yards
-Cast Time        : 2.5 seconds
+Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : The Codex of Xerrath (101508), Backdraft (117828), Destruction Warlock (137046), Dark Soul (138483), Item - Warlock T17 Destruction 4P Bonus (165452), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), Eradication (196414), Reverse Entropy (205148)
+Affecting spells : The Codex of Xerrath (101508), Backdraft (117828), Destruction Warlock (137046), Dark Soul (138483), Item - Warlock T17 Destruction 4P Bonus (165452), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Eradication (196414), Reverse Entropy (205148)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3327,8 +3352,7 @@ Description      : Life in the twisting nether has made this demon particularly 
 Name             : Backdraft (id=117828) [Spell Family (5)] 
 Class            : Warlock
 Duration         : 5 seconds
-Affecting spells : Burning Embers (196406)
-Triggered by     : Conflagrate (17962)
+Affecting spells : Fire and the Flames (196222)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3345,7 +3369,7 @@ Effects          :
 #3 (id=288653)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 1
                    Affected Spells: Channel Demonfire (196447)
-Description      : $@spelldesc117896
+Description      : $@spelldesc196406
 Tooltip          : Incinerate and Chaos Bolt cast times reduced by $s1%.
 
 Name             : Fear (id=118699) [Spell Family (5)] 
@@ -3926,7 +3950,7 @@ Class            : Warlock
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Unstable Affliction (30108), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Epidemic (184922), 
+Affecting spells : Unstable Affliction (30108), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Epidemic (184922), Hideous Corruption (199112), Perdition (199158)
 Triggered by     : Corruption (172)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -4014,7 +4038,7 @@ Class            : Warlock
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Eradication (196414)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Residual Flames (196227), Eradication (196414), Roaring Blaze (205690)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -4526,7 +4550,7 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ...x.... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... .x...... ........   ........ ........ ........ ........ 
@@ -4564,7 +4588,7 @@ Name             : Immolate (id=193540) [Spell Family (5)]
 Class            : Warlock
 Spell Level      : 12
 Range            : 100 yards
-Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Eradication (196414)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Residual Flames (196227), Eradication (196414), Roaring Blaze (205690)
 Triggered by     : Immolate (193541)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4582,6 +4606,7 @@ Class            : Destruction Warlock
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
+Affecting spells : Burning Hunger (196432)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4593,29 +4618,6 @@ Effects          :
 #1 (id=283939)   : Apply Aura (6) | Proc Trigger Spell: Immolate (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 193540
 Description      : $@spelldesc348
-
-Name             : Ritual of Return (id=193758) [Spell Family (10)] 
-Class            : Warlock
-Resource         : 0.1% Base Mana (1100 @Level 110)
-Spell Level      : 14
-Cast Time        : 10 seconds
-GCD              : 1.5 seconds
-Cooldown         : 60 seconds
-Affecting spells : Exorcism (138162)
-Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#2 (id=284302)   : Quest Complete (16)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 39174
-#3 (id=284303)   : Unknown effect type (90)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 98305
-Description      : Teleports the caster to the Seat of the Darkener.
-
-Casting Ritual of Return while in the  Seat of the Darkener will return the Warlock back to near their departure point.
 
 Name             : Soul Harvest (id=196098) [Spell Family (5)] 
 Class            : Warlock
@@ -4886,7 +4888,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288091)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3
-Description      : Hand of Gul'dan now also applies Doom to all enemies that it hits when it consumes at least $s1 Soul Shards.
+Description      : Hand of Gul'dan now also applies Doom to all enemies that it hits.
 
 Name             : Demonbolt (id=196300) [Spell Family (5)] 
 Class            : Warlock
@@ -4922,7 +4924,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc30108
 
-Name             : Burning Embers (id=196406) [Spell Family (5), Passive] 
+Name             : Backdraft (id=196406) [Spell Family (5), Passive] 
 Class            : Warlock
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4932,10 +4934,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=288272)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1
-                   Affected Spells: Backdraft (117828)
-Description      : Your Backdraft from Conflagrate now lasts an additional ${$m1/1000} sec.
+#1 (id=288272)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1
+Description      : Your Conflagrate reduces the cast times of Incinerate and Chaos Bolt by $117828s1% for $117828d.
 
 Name             : Fire and Brimstone (id=196408) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -5077,7 +5078,7 @@ Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Eradication (196414), Secrets of the Necrolyte (205183)
+Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Devourer of Life (196301), Eradication (196414), Drained to a Husk (199120), Perdition (199158), Secrets of the Necrolyte (205183)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -5227,13 +5228,13 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 8 seconds
-Charges          : 2 (12 seconds cooldown)
+Charges          : 2 (14 seconds cooldown)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -5241,7 +5242,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=302911)   : Apply Aura (6) | Periodic Damage: shadowflame every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000
-Description      : Lob a ball of Shadowflame at the target, dealing $s1 Shadowflame damage, and $o2 Shadowflame damage over $d, stacking.
+#3 (id=304087)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard
+Description      : Lob a ball of Shadowflame at the target, dealing $s1 Shadowflame damage, and $o2 Shadowflame damage over $d, stacking. Generates $m3 Soul Shard.
+Tooltip          : Suffering $w2 Shadowflame damage every $t2.
 
 Name             : Secrets of the Necrolyte (id=205183) [Spell Family (5), Passive, Hidden] 
 Class            : Affliction Warlock
@@ -5272,8 +5276,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302915)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
-Description      : When you Incinerate an Immolated target, the remaining damage of the Immolate is increased by $s1%. Refreshing Immolate will return it to its normal damage.
+                   Base Value: 0 | Scaled Value: 0
+Description      : When you Conflagrate an Immolated target, the remaining damage of the Immolate is increased by $205690s1%. Refreshing Immolate will return it to its normal damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
 Class            : Warlock
@@ -5290,5 +5294,25 @@ Effects          :
 #2 (id=303063)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 25 yards
 Description      : $@spelldesc205179
+
+Name             : Roaring Blaze (id=205690) [Spell Family (5), Hidden] 
+Class            : Warlock
+Range            : 100 yards
+Duration         : 30 seconds
+Stacks           : 100 maximum
+Proc Chance      : 101%
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=303923)   : Apply Aura (6) | Unknown effect sub type (271)
+                   Base Value: 50 | Scaled Value: 50
+                   Affected Spells: Immolate (157736), Immolate (193540)
+Description      : $@spelldesc205184
+Tooltip          : Damage taken from the Warlock's Immolate increased by $s1%.
 
 
