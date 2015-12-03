@@ -1659,20 +1659,45 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     return am;
   }
 
-  virtual void trigger_astral_power_gain( double ap )
+  virtual void trigger_astral_power_gain( double base_ap )
   {
-    if ( ap <= 0 )
+    if ( base_ap <= 0 )
       return;
 
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, ap_gain );
+    /*
+      Astral power modifiers are multiplicative, so we have to do some shenanigans
+      if we want to have seperate gains to track the effectiveness of these modifiers.
+    */
 
-    // TOCHECK: Are these modifiers additive or multiplicative?
+    // Calculate the final AP total, and the additive percent bonus to the base.
 
+    double ap = base_ap;
+    double bonus_pct = 0;
+    
     if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
+    {
+      ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+    }
 
     if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spell.blessing_of_elune -> effectN( 2 ).percent(), p() -> gain.blessing_of_elune );
+    {
+      ap *= 1.0 + p() -> spell.blessing_of_elune -> effectN( 2 ).percent();
+      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+    }
+
+    // Gain the base AP amount and attribute it to the spell cast.
+    p() -> resource_gain( RESOURCE_ASTRAL_POWER, base_ap, ap_gain );
+
+    // Subtract the base amount from the total AP gain.
+    ap -= base_ap;
+
+    // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
+    if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ), p() -> gain.celestial_alignment );
+
+    if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 2 ).percent() / bonus_pct ), p() -> gain.blessing_of_elune );
   }
 
   virtual void trigger_balance_tier18_2pc()
