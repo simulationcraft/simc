@@ -4559,7 +4559,7 @@ class ArtifactDataGenerator(DataGenerator):
         self._out.write('static struct artifact_power_rank_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         for rank in sorted(ranks, key = lambda v: (v.id_power, v.index)) + [dbc.data.ArtifactPowerRank.default()]:
-            fields = rank.field('id', 'id_power', 'index', 'id_spell')
+            fields = rank.field('id', 'id_power', 'index', 'id_spell', 'value')
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n')

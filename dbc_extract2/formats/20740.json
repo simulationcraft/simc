@@ -33,7 +33,7 @@
   "ArtifactPowerRank.db2": [
     { "data_type": "I", "field": "id" },
     { "data_type": "I", "field": "id_spell", "formats": { "cpp": "%6u" } },
-    { "data_type": "f", "field": "f3" },
+    { "data_type": "f", "field": "value", "formats": { "cpp": "%10.3f" } },
     { "data_type": "H", "field": "id_power", "formats": { "cpp": "%5u" } },
     { "data_type": "H", "field": "f5" },
     { "data_type": "B", "field": "index", "formats": { "cpp": "%2u" } },

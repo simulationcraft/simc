@@ -38,6 +38,7 @@ struct artifact_power_rank_t
   unsigned id_power;
   unsigned index;
   unsigned id_spell;
+  double   value;
 };
 
 struct item_name_description_t
