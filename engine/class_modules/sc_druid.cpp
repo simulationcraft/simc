@@ -23,6 +23,7 @@ namespace { // UNNAMED NAMESPACE
  Shooting Stars proc chance
  Stellar Drift cast while moving
  APL
+ initial_astral_power option
 
  Guardian ------
  Statistics?
@@ -1313,7 +1314,6 @@ public:
   {
     double tm = ab::composite_target_multiplier( t );
 
-    // Legion TOCHECK: Does this apply to ALL damage dealt by the player, or just druid spells?
     if ( p() -> talent.rend_and_tear -> ok() )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> lacerate_stack;
 
@@ -3685,7 +3685,7 @@ struct rejuvenation_t : public druid_heal_t
   rejuvenation_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "rejuvenation", p, p -> find_class_spell( "Rejuvenation" ), options_str )
   {
-    tick_zero = true; // Legion TOCHECK
+    tick_zero = true;
   }
 
   virtual double action_ta_multiplier() const override
@@ -6393,8 +6393,8 @@ double druid_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + buff.incarnation -> current_value;
       if ( buff.balance_tier18_4pc -> check() )
         m *= 1.0 + buff.balance_tier18_4pc -> data().effectN( 1 ).percent();
-      /* if ( buff.moonkin_form -> check() ) // TOCHECK: Does this effect do anything? Tooltip suggests it doesn't.
-        m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent(); */
+      if ( buff.moonkin_form -> check() )
+        m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
     }
   }
   return m;
