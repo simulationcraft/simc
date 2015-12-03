@@ -1275,7 +1275,8 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
   {
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
-    druid.cooldown.warrior_of_elune -> start(); // TOCHECK: Verify that cooldown starts when buff ends.
+    // disabled for now since they'll probably institute this behavior later.
+    // druid.cooldown.warrior_of_elune -> start();
   }
 };
 
