@@ -1611,7 +1611,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       snapshot_flags          = STATE_AP;
       attack_power_mod.direct = w -> swing_time.total_seconds() / 2.6 * 0.075;
     }
-    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
   }
 };
 
@@ -2482,6 +2481,8 @@ struct flametongue_t : public shaman_spell_t
   flametongue_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "flametongue", player, player -> find_specialization_spell( "Flametongue" ), options_str )
   {
+    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
+
     add_child( player -> flametongue );
   }
 
@@ -4529,6 +4530,7 @@ void shaman_t::init_spells()
   artifact.stormflurry               = find_artifact_spell( "Stormflurry"        );
   artifact.hammer_of_storms          = find_artifact_spell( "Hammer of Storms"   );
   artifact.forged_in_lava            = find_artifact_spell( "Forged in Lava"     );
+  artifact.surge_of_elements         = find_artifact_spell( "Surge of the Elements" );
   artifact.wind_strikes              = find_artifact_spell( "Wind Strikes"       );
   artifact.gathering_storms          = find_artifact_spell( "Gathering Storms"   );
   artifact.gathering_of_the_maelstrom= find_artifact_spell( "Gathering of the Maelstrom" );
