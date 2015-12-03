@@ -4694,6 +4694,11 @@ void shaman_t::trigger_unleash_doom( const action_state_t* state )
     return;
   }
 
+  if ( state -> action -> background )
+  {
+    return;
+  }
+
   if ( ! buff.unleash_doom -> up() )
   {
     return;
