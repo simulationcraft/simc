@@ -7492,14 +7492,23 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
     return false;
   }
 
-  const auto shift = 6, rank_mask = (1 << shift) - 1;
-
   for ( size_t idx = 0; idx < artifact_data.size(); ++idx )
   {
     auto data = artifact_data[ idx ];
 
-    artifact_points[ idx * 2 ] = ( ( data & rank_mask ) - 1 );
-    artifact_points[ idx * 2 + 1 ] = ( ( data & ( rank_mask << shift ) ) >> shift ) - 1;
+    auto first = 0;
+    auto second = (data >> 4) - 0x4;
+    if (second > 1)
+    {
+      first = (data & 0xF) - 0x7;
+    }
+    else
+    {
+      first = (data & 0xF) - 1;
+    }
+
+    artifact_points[ idx * 2 ] = first;
+    artifact_points[ idx * 2 + 1 ] = second;
   }
 
   return true;
