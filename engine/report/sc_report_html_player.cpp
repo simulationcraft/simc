@@ -17,19 +17,19 @@ enum stats_mask_e
   MASK_NEUTRAL = 1 << STATS_NEUTRAL
 };
 
-bool has_avoidance( const std::vector<stats_t::stats_results_t>& s )
+bool has_avoidance( const std::array<stats_t::stats_results_t,RESULT_MAX>& s )
 {
   return ( s[ RESULT_MISS   ].count.mean() +
            s[ RESULT_DODGE  ].count.mean() +
            s[ RESULT_PARRY  ].count.mean() ) > 0;
 }
 
-bool has_multistrike( const std::vector<stats_t::stats_results_t>& s)
+bool has_multistrike( const std::array<stats_t::stats_results_t,RESULT_MAX>& s)
 {
   return ( s[ RESULT_MULTISTRIKE ].count.mean() + s[ RESULT_MULTISTRIKE_CRIT ].count.mean() ) > 0;
 }
 
-bool has_block( const std::vector<stats_t::stats_results_t>& s )
+bool has_block( const std::array<stats_t::stats_results_t,FULLTYPE_MAX>& s )
 {
   return ( s[ FULLTYPE_HIT_BLOCK ].count.mean() +
            s[ FULLTYPE_HIT_CRITBLOCK ].count.mean() +
@@ -191,7 +191,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
 
 // print_html_action_info =================================================
 
-double mean_damage( const std::vector<stats_t::stats_results_t>& result )
+double mean_damage( const std::array<stats_t::stats_results_t,RESULT_MAX>& result )
 {
   double mean = 0;
   size_t count = 0;
@@ -220,8 +220,8 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   else
     type_str = "Direct";
 
-  const std::vector<stats_t::stats_results_t>& results = result_type == 1 ? s.tick_results : s.direct_results;
-  const std::vector<stats_t::stats_results_t>& block_results = result_type == 1 ? s.tick_results_detail : s.direct_results_detail;
+  const auto& results = result_type == 1 ? s.tick_results : s.direct_results;
+  const auto& block_results = result_type == 1 ? s.tick_results_detail : s.direct_results_detail;
 
   // Result type
   os.format( "<td class=\"right small\">%s</td>\n", type_str.c_str() );

@@ -11,7 +11,8 @@
 // Experimental Raw Ability Output for Blizzard to do comparisons
 namespace raw_ability_summary {
 
-double aggregate_damage( const std::vector<stats_t::stats_results_t>& results )
+template<class ResultRange>
+double aggregate_damage( const ResultRange& results )
 {
   double total = 0;
   for ( const auto& result : results )
