@@ -7502,13 +7502,6 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
     artifact_points[ idx * 2 + 1 ] = ( ( data & ( rank_mask << shift ) ) >> shift ) - 1;
   }
 
-  std::cout << "artifact=";
-  for ( size_t i = 0; i < artifact_data.size(); ++i )
-  {
-    std::cout << +artifact_points[ i ];
-  }
-  std::cout << std::endl;
-
   return true;
 }
 
