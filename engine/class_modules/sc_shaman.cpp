@@ -342,6 +342,12 @@ public:
     const spell_data_t* earthen_spike;
   } talent;
 
+  // Artifact
+  struct artifact_spell_data_t
+  {
+    const spell_data_t* doom_winds;
+  } artifact;
+
   // Misc Spells
   struct
   {
@@ -4339,6 +4345,11 @@ void shaman_t::init_spells()
   talent.feral_kin                   = find_talent_spell( "Feral Kin"            );
   talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
 
+  // Artifact
+
+  // Enhancement
+  artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
+
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
   spell.flame_shock                  = find_class_spell( "Flame Shock" );
@@ -5830,6 +5841,11 @@ static void furious_winds( special_effect_t& effect )
   do_trinket_init( s, SHAMAN_ENHANCEMENT, s -> furious_winds, effect );
 }
 
+// Enhancement Doomhammer of Doom of Legion fame!
+static void doomhammer( special_effect_t& effect )
+{
+}
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
@@ -5858,6 +5874,7 @@ struct shaman_module_t : public module_t
   {
     unique_gear::register_special_effect( 184919, elemental_bellows );
     unique_gear::register_special_effect( 184920, furious_winds     );
+    unique_gear::register_special_effect( 198735, doomhammer        );
   }
 
   virtual void register_hotfixes() const override
