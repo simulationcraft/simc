@@ -275,6 +275,7 @@ public:
     const spell_data_t* spiritual_insight;
 
     // Enhancement
+    const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* flurry;
     const spell_data_t* maelstrom_weapon;
@@ -4451,6 +4452,7 @@ void shaman_t::init_spells()
   spec.shamanism             = find_specialization_spell( "Shamanism" );
 
   // Enhancement
+  spec.critical_strikes      = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield            = find_specialization_spell( "Dual Wield" );
   spec.flurry                = find_specialization_spell( "Flurry" );
   spec.maelstrom_weapon      = find_specialization_spell( "Maelstrom Weapon" );
@@ -5431,6 +5433,8 @@ double shaman_t::composite_spell_crit() const
     m += buff.fists_of_stone -> data().effectN( 1 ).percent();
   }
 
+  m += spec.critical_strikes -> effectN( 1 ).percent();
+
   return m;
 }
 
@@ -5464,6 +5468,8 @@ double shaman_t::composite_melee_crit() const
   {
     m += buff.fists_of_stone -> data().effectN( 1 ).percent();
   }
+
+  m += spec.critical_strikes -> effectN( 1 ).percent();
 
   return m;
 }
