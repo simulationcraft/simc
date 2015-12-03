@@ -205,7 +205,6 @@ public:
 
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
-  player_t* last_target_dot_moonkin;
 
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
@@ -574,7 +573,6 @@ public:
   {
     t16_2pc_starfall_bolt = nullptr;
     t16_2pc_sun_bolt      = nullptr;
-    last_target_dot_moonkin = nullptr;
     
     cooldown.berserk             = get_cooldown( "berserk"             );
     cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
@@ -1725,12 +1723,14 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 }; // end druid_spell_t
 
 // Shooting Stars ===========================================================
-// Legion TODO: What is the proc chance? Currently implemented as 100%.
 
 struct shooting_stars_t : public druid_spell_t
 {
+  double proc_chance;
+
   shooting_stars_t( druid_t* player ) :
-    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) )
+    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) ),
+    proc_chance( 0.50 ) // not in spell data, tested Dec 3 2015
   {
     ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
@@ -1740,7 +1740,7 @@ struct shooting_stars_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
-  spell_t* shooting_stars;
+  shooting_stars_t* shooting_stars;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) ),
@@ -1775,9 +1775,8 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit( d -> state -> result ) )
     {
-      if ( p() -> talent.shooting_stars -> ok() && d -> state -> target == p() -> last_target_dot_moonkin )
+      if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
       {
-        // Shooting stars will only proc on the most recent target of your moonfire/sunfire. Legion TOCHECK
         shooting_stars -> target = d -> target;
         shooting_stars -> execute();
       }
@@ -1785,13 +1784,6 @@ struct moonfire_t : public druid_spell_t
       if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
         trigger_balance_tier18_2pc();
     }
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> last_target_dot_moonkin = execute_state -> target;
   }
 };
 
@@ -4609,7 +4601,7 @@ struct mark_of_ursol_t : public druid_spell_t
 
 struct sunfire_t: public druid_spell_t
 {
-  spell_t* shooting_stars;
+  shooting_stars_t* shooting_stars;
 
   sunfire_t( druid_t* player, const std::string& options_str ):
     druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) ),
@@ -4639,22 +4631,14 @@ struct sunfire_t: public druid_spell_t
     return tm;
   }
 
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> last_target_dot_moonkin = execute_state -> target;
-  }
-
   void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
 
     if ( result_is_hit( d -> state -> result ) )
     {
-      if ( p() -> talent.shooting_stars -> ok() && d -> state -> target == p() -> last_target_dot_moonkin )
+      if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
       {
-        // Shooting stars will only proc on the most recent target of your moonfire/sunfire. Legion TOCHECK
         shooting_stars -> target = d -> target;
         shooting_stars -> execute();
       }
