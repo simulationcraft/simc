@@ -2270,7 +2270,7 @@ struct stormstrike_t : public shaman_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( p() -> buff.stormfury -> up() )
+    if ( p() -> buff.stormfury -> up() || background == true )
     {
       cd_duration = timespan_t::zero();
     }
