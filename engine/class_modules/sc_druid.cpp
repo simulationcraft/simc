@@ -4202,6 +4202,7 @@ struct celestial_alignment_t : public druid_spell_t
 };
 
 // Collapsing Stars =========================================================
+// FIXME: Should consume cost_per_sec * base_tick_time AsP on each tick.
 
 struct collapsing_stars_t : public druid_spell_t
 {
@@ -4213,15 +4214,16 @@ struct collapsing_stars_t : public druid_spell_t
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
       2 * sim -> expected_iteration_time :
       2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-    hasted_ticks = false;
   }
 
   void impact( action_state_t* s ) override
   {
+    bool refresh = get_dot( s -> target ) -> is_ticking();
+
     druid_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-      p() -> buff.collapsing_stars_up -> start();
+    if ( result_is_hit( s -> result ) && ! refresh )
+      p() -> buff.collapsing_stars_up -> increment();
   }
 
   void cancel() override
@@ -4230,7 +4232,8 @@ struct collapsing_stars_t : public druid_spell_t
 
     if ( dot_t* dot = find_dot( target ) )
       dot -> cancel();
-    p() -> buff.collapsing_stars_up -> expire();
+
+    p() -> buff.collapsing_stars_up -> decrement();
   }
 };
 
@@ -5553,7 +5556,8 @@ void druid_t::create_buffs()
                                    .cd( timespan_t::zero() ) // handled by spell
                                    .default_value( spec.celestial_alignment -> effectN( 1 ).percent() );
 
-  buff.collapsing_stars_up       = buff_creator_t( this, "collapsing_stars_up", spell_data_t::nil() ); // Tracking buff for APL use
+  buff.collapsing_stars_up       = buff_creator_t( this, "collapsing_stars_up", spell_data_t::nil() )
+                                   .max_stack( 10 ); // Tracking buff for APL use
 
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", find_spell( 157228 ) )
                                    .chance( spec.moonkin_form -> effectN( 7 ).percent() );
