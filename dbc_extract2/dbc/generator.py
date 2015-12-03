@@ -1525,6 +1525,7 @@ class SpellDataGenerator(DataGenerator):
           ( 201846, 0 ),                                # Stormfury buff
           ( 195256, 0 ), ( 195222, 0 ),                 # Stormlash stuff for legion
           ( 199054, 0 ), ( 199053, 0 ),                 # Unleash Doom, DOOM I SAY
+          ( 198300, 0 ),                                # Gathering Storms buff
         ),
 
         # Mage:

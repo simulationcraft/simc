@@ -124,6 +124,7 @@ public:
   // Active
   action_t* active_lightning_charge;
   std::array<action_t*, 2> unleash_doom;
+  action_t* doom_vortex;
 
   // Cached actions
   action_t* action_ancestral_awakening;
@@ -194,7 +195,8 @@ public:
     buff_t* rockbiter;
     buff_t* doom_winds;
     buff_t* unleash_doom;
-
+    haste_buff_t* wind_strikes;
+    buff_t* gathering_storms;
   } buff;
 
   // Cooldowns
@@ -355,6 +357,15 @@ public:
   {
     artifact_power_t doom_winds;
     artifact_power_t unleash_doom;
+    artifact_power_t hurricane;
+    artifact_power_t stormflurry;
+    artifact_power_t hammer_of_storms;
+    artifact_power_t forged_in_lava;
+    artifact_power_t surge_of_elements;
+    artifact_power_t wind_strikes;
+    artifact_power_t gathering_storms;
+    artifact_power_t gathering_of_the_maelstrom;
+    artifact_power_t doom_vortex;
   } artifact;
 
   // Misc Spells
@@ -1599,6 +1610,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       snapshot_flags          = STATE_AP;
       attack_power_mod.direct = w -> swing_time.total_seconds() / 2.6 * 0.075;
     }
+    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
   }
 };
 
@@ -1688,6 +1700,21 @@ struct stormstrike_attack_t : public shaman_attack_t
     background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
+    base_multiplier *= 1.0 + player -> artifact.hammer_of_storms.percent();
+  }
+
+  double action_multiplier() const
+  {
+    double m = shaman_attack_t::action_multiplier();
+
+    if ( p() -> artifact.hurricane.rank() && p() -> buff.stormfury -> up() )
+    {
+      m *= 1.0 + p() -> artifact.hurricane.percent();
+    }
+
+    m *= p() -> buff.gathering_storms -> stack_value();
+
+    return m;
   }
 
   void impact( action_state_t* s )
@@ -1802,8 +1829,19 @@ struct unleash_doom_spell_t : public shaman_spell_t
   unleash_doom_spell_t( const std::string& n, shaman_t* p, const spell_data_t* s ) :
     shaman_spell_t( n, p, s )
   {
-    background = true;
     callbacks = false;
+    background = may_crit = true;
+  }
+};
+
+struct doom_vortex_t : public shaman_spell_t
+{
+  doom_vortex_t( shaman_t* p ) :
+    shaman_spell_t( "doom_vortex", p, p -> find_spell( 199116 ) )
+  {
+    aoe = -1;
+    callbacks = false;
+    background = may_crit = true;
   }
 };
 
@@ -2051,6 +2089,7 @@ struct lava_lash_t : public shaman_attack_t
     school = SCHOOL_FIRE;
 
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> artifact.forged_in_lava.percent();
 
     parse_options( options_str );
     weapon              = &( player -> off_hand_weapon );
@@ -2060,6 +2099,10 @@ struct lava_lash_t : public shaman_attack_t
 
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
     add_child( cl );
+    if ( player -> artifact.doom_vortex.rank() )
+    {
+      add_child( player -> doom_vortex );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -2071,6 +2114,12 @@ struct lava_lash_t : public shaman_attack_t
     {
       cl -> target = state -> target;
       cl -> schedule_execute();
+    }
+
+    if ( p() -> artifact.doom_vortex.rank() )
+    {
+      p() -> doom_vortex -> target = state -> target;
+      p() -> doom_vortex -> schedule_execute();
     }
   }
 };
@@ -2185,6 +2234,7 @@ struct stormstrike_t : public shaman_attack_t
     may_crit             = false;
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> find_spell( id ) -> cooldown();
+    may_proc_flametongue = false;
 
     // Actual damaging attacks are done by stormstrike_attack_t
     // stormstrike_attack_t( std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
@@ -2248,6 +2298,23 @@ struct stormstrike_t : public shaman_attack_t
     }
 
     p() -> buff.stormfury -> decrement();
+
+    // Don't try this at home, or anywhere else ..
+    if ( p() -> artifact.stormflurry.rank() && rng().roll( p() -> artifact.stormflurry.percent() ) )
+    {
+      background = true;
+      schedule_execute();
+    }
+    else
+    {
+      background = false;
+    }
+  }
+
+  void reset() override
+  {
+    shaman_attack_t::reset();
+    background = false;
   }
 
   bool ready() override
@@ -2279,6 +2346,7 @@ struct windstrike_t : public shaman_attack_t
     weapon_multiplier    = 0.0;
     may_crit             = false;
     cooldown             = p() -> cooldown.strike;
+    may_proc_flametongue = false;
     // TODO: Legion windstrike is broken, and has bogus cooldown info for now
     //cooldown -> duration = p() -> find_spell( id ) -> cooldown();
 
@@ -2347,7 +2415,22 @@ struct windstrike_t : public shaman_attack_t
     }
 
     p() -> buff.stormfury -> decrement();
-    assert( p() -> buff.stormfury -> check() == 0 );
+    // Don't try this at home, or anywhere else ..
+    if ( p() -> artifact.stormflurry.rank() && rng().roll( p() -> artifact.stormflurry.percent() ) )
+    {
+      background = true;
+      schedule_execute();
+    }
+    else
+    {
+      background = false;
+    }
+  }
+
+  void reset() override
+  {
+    shaman_attack_t::reset();
+    background = false;
   }
 
   bool ready() override
@@ -2370,13 +2453,20 @@ struct rockbiter_t : public shaman_spell_t
     maelstrom_gain( data().effectN( 2 ).resource( RESOURCE_MAELSTROM ) )
   {
     maelstrom_gain += player -> talent.spiritual_resonance -> effectN( 1 ).base_value();
+    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
 
-    p() -> resource_gain( RESOURCE_MAELSTROM, maelstrom_gain, gain );
+    double g = maelstrom_gain;
+    if ( rng().roll( p() -> artifact.gathering_of_the_maelstrom.percent() ) )
+    {
+      g *= 2.0;
+    }
+
+    p() -> resource_gain( RESOURCE_MAELSTROM, g, gain );
     p() -> buff.rockbiter -> trigger();
   }
 };
@@ -2417,9 +2507,18 @@ struct crash_lightning_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && execute_state -> n_targets > 1 )
+    if ( result_is_hit( execute_state -> result ) )
     {
-      p() -> buff.crash_lightning -> trigger();
+      if ( execute_state -> n_targets > 1 )
+      {
+        p() -> buff.crash_lightning -> trigger();
+      }
+
+      if ( p() -> artifact.gathering_storms.rank() )
+      {
+        double v = 1.0 + p() -> artifact.gathering_storms.percent() * execute_state -> n_targets;
+        p() -> buff.gathering_storms -> trigger( 1, v );
+      }
     }
   }
 };
@@ -4421,6 +4520,14 @@ void shaman_t::init_spells()
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
   artifact.unleash_doom              = find_artifact_spell( "Unleash Doom"       );
+  artifact.hurricane                 = find_artifact_spell( "Hurricane"          );
+  artifact.stormflurry               = find_artifact_spell( "Stormflurry"        );
+  artifact.hammer_of_storms          = find_artifact_spell( "Hammer of Storms"   );
+  artifact.forged_in_lava            = find_artifact_spell( "Forged in Lava"     );
+  artifact.wind_strikes              = find_artifact_spell( "Wind Strikes"       );
+  artifact.gathering_storms          = find_artifact_spell( "Gathering Storms"   );
+  artifact.gathering_of_the_maelstrom= find_artifact_spell( "Gathering of the Maelstrom" );
+  artifact.doom_vortex               = find_artifact_spell( "Doom Vortex"        );
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
@@ -4445,10 +4552,15 @@ void shaman_t::init_spells()
     spell.echo_of_the_elements       = spell_data_t::not_found();
   }
 
-  if ( artifact.unleash_doom.rank() == 1 )
+  if ( artifact.unleash_doom.rank() )
   {
     unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
     unleash_doom[ 1 ] = new unleash_doom_spell_t( "unleash_lightning", this, find_spell( 199054 ) );
+  }
+
+  if ( artifact.doom_vortex.rank() )
+  {
+    doom_vortex = new doom_vortex_t( this );
   }
 
   // Constants
@@ -4571,6 +4683,7 @@ void shaman_t::trigger_stormfury( const action_state_t* state )
   {
     buff.stormfury -> trigger( buff.stormfury -> max_stack() );
     cooldown.strike -> reset( true );
+    buff.wind_strikes -> trigger();
   }
 }
 
@@ -4873,6 +4986,10 @@ void shaman_t::create_buffs()
   buff.doom_winds = buff_creator_t( this, "doom_winds", &( artifact.doom_winds.data() ) )
                     .cd( timespan_t::zero() ); // handled by the action
   buff.unleash_doom = buff_creator_t( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() );
+  buff.wind_strikes = haste_buff_creator_t( this, "wind_strikes", find_spell( 198293 ) )
+                      .chance( artifact.wind_strikes.rank() > 0 )
+                      .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
+  buff.gathering_storms = buff_creator_t( this, "gathering_storms", find_spell( 198300 ) );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5380,6 +5497,11 @@ double shaman_t::composite_melee_speed() const
   if ( buff.fists_of_stone -> up() )
   {
     speed *= buff.fists_of_stone -> check_value();
+  }
+
+  if ( buff.wind_strikes -> up() )
+  {
+    speed *= buff.wind_strikes -> check_value();
   }
 
   return speed;

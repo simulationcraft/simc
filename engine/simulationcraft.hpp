@@ -256,7 +256,7 @@ struct artifact_power_t
   }
 
   double percent() const
-  { return value() * .1; }
+  { return value() * .01; }
 
   const spell_data_t& data() const
   { return *spell_; }
