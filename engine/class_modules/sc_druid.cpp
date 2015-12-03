@@ -4495,8 +4495,12 @@ struct lunar_strike_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( p() -> talent.natures_balance -> ok() && result_is_hit( s -> result ) )
+    // Nature's Balance only extends Moonfire on the primary target.
+    if ( p() -> talent.natures_balance -> ok()
+      && s -> target == target && result_is_hit( s -> result ) )
+    {
       td( s -> target ) -> dots.moonfire -> extend_duration( timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 1 ).base_value() ), 0 );
+    }
   }
 };
 
