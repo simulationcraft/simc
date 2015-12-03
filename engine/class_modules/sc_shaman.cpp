@@ -2241,7 +2241,7 @@ struct stormstrike_t : public shaman_attack_t
         stormstrike_oh -> execute();
       }
 
-      if ( p() -> real_ppm.unleash_doom.trigger() )
+      if ( p() -> artifact.unleash_doom.rank() == 1 && p() -> real_ppm.unleash_doom.trigger() )
       {
         p() -> buff.unleash_doom -> trigger();
       }
@@ -2338,6 +2338,11 @@ struct windstrike_t : public shaman_attack_t
       if ( windstrike_oh )
       {
         windstrike_oh -> execute();
+      }
+
+      if ( p() -> artifact.unleash_doom.rank() == 1 && p() -> real_ppm.unleash_doom.trigger() )
+      {
+        p() -> buff.unleash_doom -> trigger();
       }
     }
 
@@ -5499,6 +5504,7 @@ void shaman_t::reset()
   lava_surge_during_lvb = false;
   for (auto & elem : counters)
     elem -> reset();
+  real_ppm.unleash_doom.reset();
 }
 
 // shaman_t::merge ==========================================================
