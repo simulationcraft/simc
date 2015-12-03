@@ -1331,7 +1331,7 @@ public:
 
   // Artifact stuff
   unsigned artifact_by_spec( specialization_e spec ) const;
-  std::vector<const artifact_power_t*> artifact_powers( unsigned artifact_id ) const;
+  std::vector<const artifact_power_data_t*> artifact_powers( unsigned artifact_id ) const;
   std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned power_id ) const;
   unsigned artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank );
 };

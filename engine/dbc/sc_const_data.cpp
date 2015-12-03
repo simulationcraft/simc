@@ -87,7 +87,7 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 20726 : 20740;
+  return maybe_ptr( ptr ) ? 20726 : 20773;
 }
 
 const char* dbc::wow_version( bool ptr )
@@ -2671,14 +2671,14 @@ unsigned dbc_t::artifact_by_spec( specialization_e spec ) const
   return 0;
 }
 
-std::vector<const artifact_power_t*> dbc_t::artifact_powers( unsigned artifact_id ) const
+std::vector<const artifact_power_data_t*> dbc_t::artifact_powers( unsigned artifact_id ) const
 {
-  std::vector<const artifact_power_t*> powers;
+  std::vector<const artifact_power_data_t*> powers;
 
 #if SC_USE_PTR
-  const artifact_power_t * p = ptr ? __ptr_artifact_power_data : __artifact_power_data;
+  const artifact_power_data_t * p = ptr ? __ptr_artifact_power_data : __artifact_power_data;
 #else
-  const artifact_power_t * p = __artifact_power_data;
+  const artifact_power_data_t * p = __artifact_power_data;
 #endif
 
   while ( p -> id != 0 )
@@ -2728,7 +2728,7 @@ unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_i
     return 0;
   }
 
-  std::vector<const artifact_power_t*> powers = artifact_powers( artifact_id );
+  std::vector<const artifact_power_data_t*> powers = artifact_powers( artifact_id );
   if ( powers.size() == 0 || power_index > powers.size() - 1 )
   {
     return 0;

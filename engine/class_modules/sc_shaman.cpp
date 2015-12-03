@@ -345,7 +345,7 @@ public:
   // Artifact
   struct artifact_spell_data_t
   {
-    const spell_data_t* doom_winds;
+    artifact_power_t doom_winds;
   } artifact;
 
   // Misc Spells
@@ -4349,6 +4349,7 @@ void shaman_t::init_spells()
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
+  std::cout << artifact.doom_winds.data().id() << " " << artifact.doom_winds.value() << " " << artifact.doom_winds.rank() << " " << artifact.doom_winds.max_rank() << std::endl;
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );

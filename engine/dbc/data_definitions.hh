@@ -24,12 +24,18 @@ struct artifact_t
   unsigned id_spec;
 };
 
-struct artifact_power_t
+struct artifact_power_data_t
 {
   unsigned    id;
   unsigned    id_artifact;
   unsigned    max_rank;
   const char* name; // In reality, the spell name
+
+  static const artifact_power_data_t* nil()
+  {
+    static artifact_power_data_t __nil;
+    return &( __nil );
+  }
 };
 
 struct artifact_power_rank_t
@@ -39,6 +45,12 @@ struct artifact_power_rank_t
   unsigned index;
   unsigned id_spell;
   double   value;
+
+  static const artifact_power_rank_t* nil()
+  {
+    static artifact_power_rank_t __nil;
+    return &( __nil );
+  }
 };
 
 struct item_name_description_t

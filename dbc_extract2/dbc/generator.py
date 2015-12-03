@@ -4531,7 +4531,7 @@ class ArtifactDataGenerator(DataGenerator):
 
         self._out.write('// Artifact power data, wow build %d\n' % ( self._options.build ))
 
-        self._out.write('static struct artifact_power_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+        self._out.write('static struct artifact_power_data_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         ranks = []
         for power in sorted(powers, key = lambda v: (v['data'].id_artifact, v['data'].id)) + [{ 'data': dbc.data.ArtifactPower.default(), 'ranks': [] }]:

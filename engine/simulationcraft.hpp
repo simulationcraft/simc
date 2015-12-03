@@ -228,6 +228,52 @@ const int MAX_ILEVEL = 1000;
 
 #include "report/sc_report.hpp"
 
+struct artifact_power_t
+{
+  artifact_power_t() :
+    spell_( spell_data_t::not_found() ), rank_( artifact_power_rank_t::nil() ),
+    power_( artifact_power_data_t::nil() )
+  { }
+
+  artifact_power_t( const spell_data_t* s, const artifact_power_data_t* p, const artifact_power_rank_t* r ):
+    spell_( s ), rank_( r ), power_( p )
+  { }
+
+  const spell_data_t* spell_;
+  const artifact_power_rank_t* rank_;
+  const artifact_power_data_t* power_;
+
+  double value() const
+  {
+    if ( power_ -> max_rank == 1 )
+    {
+      return spell_ -> effectN( 1 ).base_value();
+    }
+    else
+    {
+      return rank_ -> value;
+    }
+  }
+
+  double percent() const
+  { return value() * .1; }
+
+  const spell_data_t& data() const
+  { return *spell_; }
+
+  unsigned rank() const
+  {
+    if ( power_ -> max_rank == 1 )
+    {
+      return rank_ -> index + 1;
+    }
+    return rank_ -> index;
+  }
+
+  unsigned max_rank() const
+  { return power_ -> max_rank; }
+};
+
 // Spell information struct, holding static functions to output spell data in a human readable form
 
 namespace spell_info
@@ -4063,12 +4109,13 @@ struct player_t : public actor_t
   const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_artifact_spell( const std::string& name ) const;
   const spell_data_t* find_perk_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_perk_spell( size_t idx, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
   const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() ) const;
+
+  artifact_power_t find_artifact_spell( const std::string& name ) const;
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
   expr_t* create_resource_expression( const std::string& name );

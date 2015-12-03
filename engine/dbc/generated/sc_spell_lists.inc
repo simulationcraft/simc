@@ -4369,7 +4369,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 #define ARTIFACT_POWER_SIZE (469)
 
 // Artifact power data, wow build 20773
-static struct artifact_power_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
+static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,   1, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
   {   42,   2,   3, "Sharpened Edge"                     }, // Sharpened Edge (id=184759, n_ranks=6)
