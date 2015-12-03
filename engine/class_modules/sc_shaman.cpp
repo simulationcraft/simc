@@ -191,6 +191,7 @@ public:
     haste_buff_t* windsong;
     haste_buff_t* fists_of_stone;
     buff_t* rockbiter;
+    buff_t* doom_winds;
 
   } buff;
 
@@ -1631,6 +1632,18 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
       base_multiplier *= 1.0 + damage_value;
     }
   }
+
+  double action_multiplier() const
+  {
+    double m = shaman_attack_t::action_multiplier();
+
+    if ( p() -> buff.doom_winds -> up() )
+    {
+      m *= 1.0 + p() -> buff.doom_winds -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct crash_lightning_attack_t : public shaman_attack_t
@@ -2315,11 +2328,9 @@ struct rockbiter_t : public shaman_spell_t
   double maelstrom_gain;
 
   rockbiter_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ) ),
+    shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ), options_str ),
     maelstrom_gain( data().effectN( 2 ).resource( RESOURCE_MAELSTROM ) )
   {
-    parse_options( options_str );
-
     maelstrom_gain += player -> talent.spiritual_resonance -> effectN( 1 ).base_value();
   }
 
@@ -2337,10 +2348,8 @@ struct rockbiter_t : public shaman_spell_t
 struct flametongue_t : public shaman_spell_t
 {
   flametongue_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "flametongue", player, player -> find_specialization_spell( "Flametongue" ) )
+    shaman_spell_t( "flametongue", player, player -> find_specialization_spell( "Flametongue" ), options_str )
   {
-    parse_options( options_str );
-
     add_child( player -> flametongue );
   }
 
@@ -2380,10 +2389,8 @@ struct crash_lightning_t : public shaman_attack_t
 struct windsong_t : public shaman_spell_t
 {
   windsong_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "windsong", player, player -> talent.windsong )
-  {
-    parse_options( options_str );
-  }
+    shaman_spell_t( "windsong", player, player -> talent.windsong, options_str )
+  { }
 
   void execute() override
   {
@@ -2396,11 +2403,9 @@ struct windsong_t : public shaman_spell_t
 struct fists_of_stone_t : public shaman_spell_t
 {
   fists_of_stone_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "fists_of_stone", player, player -> talent.fists_of_stone )
+    shaman_spell_t( "fists_of_stone", player, player -> talent.fists_of_stone, options_str )
   {
     harmful = may_crit = may_miss = false;
-
-    parse_options( options_str );
   }
 
   void execute() override
@@ -2414,12 +2419,10 @@ struct fists_of_stone_t : public shaman_spell_t
 struct sundering_t : public shaman_spell_t
 {
   sundering_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "sundering", player, player -> talent.sundering )
+    shaman_spell_t( "sundering", player, player -> talent.sundering, options_str )
   {
     background = true;
     aoe = -1; // TODO: This is likely not going to affect all enemies but it will do for now
-
-    parse_options( options_str );
   }
 };
 
@@ -2439,11 +2442,9 @@ struct fury_of_air_aoe_t : public shaman_attack_t
 struct fury_of_air_t : public shaman_spell_t
 {
   fury_of_air_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "fury_of_air", player, player -> talent.fury_of_air )
+    shaman_spell_t( "fury_of_air", player, player -> talent.fury_of_air, options_str )
   {
     hasted_ticks = callbacks = false;
-
-    parse_options( options_str );
 
     tick_action = new fury_of_air_aoe_t( player );
   }
@@ -3303,6 +3304,37 @@ struct spirit_walk_t : public shaman_spell_t
   }
 };
 
+struct doom_winds_t : public shaman_spell_t
+{
+  doom_winds_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "doom_winds", player, &( player -> artifact.doom_winds.data() ), options_str )
+  {
+    harmful = callbacks = false;
+  }
+
+  void execute()
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.doom_winds -> trigger();
+  }
+
+  bool ready()
+  {
+    if ( ! player -> artifact_enabled() )
+    {
+      return false;
+    }
+
+    if ( p() -> artifact.doom_winds.rank() == 0 )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
+  }
+};
+
 // ==========================================================================
 // Shaman Shock Spells
 // ==========================================================================
@@ -4077,6 +4109,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "crash_lightning"         ) return new          crash_lightning_t( this, options_str );
+  if ( name == "doom_winds"              ) return new               doom_winds_t( this, options_str );
   if ( name == "earthen_spike"           ) return new            earthen_spike_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
@@ -4349,7 +4382,6 @@ void shaman_t::init_spells()
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
-  std::cout << artifact.doom_winds.data().id() << " " << artifact.doom_winds.value() << " " << artifact.doom_winds.rank() << " " << artifact.doom_winds.max_rank() << std::endl;
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
@@ -4507,11 +4539,15 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   if ( ! attack -> weapon )
     return;
 
-  if ( attack -> weapon -> slot != SLOT_MAIN_HAND )
+  if ( attack -> weapon -> slot != SLOT_MAIN_HAND && ! buff.doom_winds -> check() )
     return;
 
   double proc_chance = spec.windfury -> proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements -> effectN( 4 ).mastery_value();
+  if ( buff.doom_winds -> up() )
+  {
+    proc_chance = 1.0;
+  }
 
   if ( rng().roll( proc_chance ) )
   {
@@ -4767,6 +4803,8 @@ void shaman_t::create_buffs()
                    .add_invalidate( CACHE_ATTACK_POWER )
                    .chance( talent.landslide -> ok() )
                    .default_value( find_spell( 202004 ) -> effectN( 1 ).percent() );
+  buff.doom_winds = buff_creator_t( this, "doom_winds", &( artifact.doom_winds.data() ) )
+                    .cd( timespan_t::zero() ); // handled by the action
 }
 
 // shaman_t::init_gains =====================================================
