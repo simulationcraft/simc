@@ -1059,10 +1059,23 @@ struct expression_t
 
 struct expr_t
 {
-  expr_t( const std::string& name, token_e op=TOK_UNKNOWN ) : name_( name ), op_( op ) { id_=get_global_id(); }
-  virtual ~expr_t() {}
+  expr_t( const std::string&, token_e op = TOK_UNKNOWN )
+    : op_( op )
+#if !defined( NDEBUG )
+      ,
+      id_( get_global_id() )
+#endif
+  {
+  }
+  virtual ~expr_t()
+  {
+  }
 
-  const std::string& name() { return name_; }
+  virtual const char* name() const
+  { return "anonymous expression"; }
+  int id() const
+  { return -1; }
+
 
   double eval() { return evaluate(); }
   bool success() { return eval() != 0; }
@@ -1080,9 +1093,11 @@ struct expr_t
   bool always_true()  { double v; return is_constant( &v ) && v != 0.0; }
   bool always_false() { double v; return is_constant( &v ) && v == 0.0; }
 
-  std::string name_;
   token_e op_;
+private:
+#if !defined( NDEBUG )
   int id_;
+#endif
 
   int get_global_id()
   {

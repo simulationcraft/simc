@@ -175,13 +175,13 @@ public:
 
   expr_t* optimize( int spacing ) override // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s )\n", spacing, id_, name().c_str(), input -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s )\n", spacing, id(), name(), input -> name() );
     input = input -> optimize( spacing+2 );
     double input_value;
     if( input -> is_constant( &input_value ) )
     {
       double result = F( input_value );
-      if( EXPRESSION_DEBUG ) printf( "%*d %s unary expression reduced to %f\n", spacing, id_, name().c_str(), result );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s unary expression reduced to %f\n", spacing, id(), name(), result );
       delete input;
       delete this;
       return new const_expr_t( "const_unary", result );
@@ -258,8 +258,8 @@ public:
   {
     if ( EXPRESSION_DEBUG )
     {
-      util::printf( "%*d and %lu %lu %lu %lu ( %s %s )\n", spacing, id_, left_true,
-        left_false, right_true, right_false, left->name().c_str(), right->name().c_str() );
+      util::printf( "%*d and %lu %lu %lu %lu ( %s %s )\n", spacing, id(), left_true,
+        left_false, right_true, right_false, left->name(), right->name() );
     }
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
@@ -272,15 +272,15 @@ public:
       if( left -> op_ == TOK_UNKNOWN )
   if( ( ! left_always_true  && left_false == 0 ) ||
       ( ! left_always_false && left_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", left -> id_, left -> name().c_str() );
+    printf( "consider marking expression %d %s as constant\n", left -> id(), left -> name() );
       if( right -> op_ == TOK_UNKNOWN )
   if( ( ! right_always_true  && right_false == 0 ) ||
       ( ! right_always_false && right_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", right -> id_, right -> name().c_str() );
+    printf( "consider marking expression %d %s as constant\n", right -> id(), right -> name() );
     }
     if( left_always_false || right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to false\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to false\n", spacing, id(), name() );
       delete left;
       delete right;
       delete this;
@@ -288,7 +288,7 @@ public:
     }
     if( left_always_true && right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to true\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to true\n", spacing, id(), name() );
       delete left;
       delete right;
       delete this;
@@ -296,7 +296,7 @@ public:
     }
     if( left_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to right\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to right\n", spacing, id(), name() );
       delete left;
       expr_t* prev_right = right;
       delete this;
@@ -304,7 +304,7 @@ public:
     }
     if( right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to left\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to left\n", spacing, id(), name() );
       expr_t* prev_left = left;
       delete right;
       delete this;
@@ -346,8 +346,8 @@ public:
   {
     if ( EXPRESSION_DEBUG )
     {
-      util::printf( "%*d or %lu %lu %lu %lu ( %s %s )\n", spacing, id_, left_true, left_false,
-        right_true, right_false, left->name().c_str(), right->name().c_str() );
+      util::printf( "%*d or %lu %lu %lu %lu ( %s %s )\n", spacing, id(), left_true, left_false,
+        right_true, right_false, left->name(), right->name() );
     }
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
@@ -360,15 +360,15 @@ public:
       if( left -> op_ == TOK_UNKNOWN )
   if( ( ! left_always_true  && left_false == 0 ) ||
       ( ! left_always_false && left_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", left -> id_, left -> name().c_str() );
+    printf( "consider marking expression %d %s as constant\n", left -> id(), left -> name() );
       if( right -> op_ == TOK_UNKNOWN )
   if( ( ! right_always_true  && right_false == 0 ) ||
       ( ! right_always_false && right_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", right -> id_, right -> name().c_str() );
+    printf( "consider marking expression %d %s as constant\n", right -> id(), right -> name() );
     }
     if( left_always_true || right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to true\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to true\n", spacing, id(), name() );
       delete left;
       delete right;
       delete this;
@@ -376,7 +376,7 @@ public:
     }
     if( left_always_false && right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to false\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to false\n", spacing, id(), name() );
       delete left;
       delete right;
       delete this;
@@ -384,7 +384,7 @@ public:
     }
     if( left_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to right\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to right\n", spacing, id(), name() );
       delete left;
       expr_t* prev_right = right;
       delete this;
@@ -392,7 +392,7 @@ public:
     }
     if( right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to left\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to left\n", spacing, id(), name() );
       expr_t* prev_left = left;
       delete right;
       delete this;
@@ -432,7 +432,7 @@ public:
 
   expr_t* optimize( int spacing ) override // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d xor ( %s %s )\n", spacing, id_, left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d xor ( %s %s )\n", spacing, id(), left -> name(), right -> name() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
@@ -442,7 +442,7 @@ public:
     if( ( left_always_true  && right_always_false ) ||
   ( left_always_false && right_always_true  ) )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to true\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to true\n", spacing, id(), name() );
       delete left;
       delete right;
       delete this;
@@ -451,7 +451,7 @@ public:
     if( ( left_always_true  && right_always_true  ) ||
   ( left_always_false && right_always_false ) )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to false\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to false\n", spacing, id(), name() );
       delete left;
       delete right;
       delete this;
@@ -459,7 +459,7 @@ public:
     }
     if( left_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to right\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to right\n", spacing, id(), name() );
       delete left;
       expr_t* prev_right = right;
       delete this;
@@ -467,7 +467,7 @@ public:
     }
     if( right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to left\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to left\n", spacing, id(), name() );
       expr_t* prev_left = left;
       delete right;
       delete this;
@@ -475,7 +475,7 @@ public:
     }
     if( left_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !right\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !right\n", spacing, id(), name() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, right );
       delete left;
       delete this;
@@ -483,7 +483,7 @@ public:
     }
     if( right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !left\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !left\n", spacing, id(), name() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, left );
       delete right;
       delete this;
@@ -511,7 +511,7 @@ public:
   
   expr_t* optimize( int spacing ) override // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s %s )\n", spacing, id_, name().c_str(), left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s %s )\n", spacing, id(), name(), left -> name(), right -> name() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     double left_value, right_value;
@@ -520,7 +520,7 @@ public:
     if( left_constant && right_constant )
     {
       result = F<double>()( left_value, right_value );
-      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced to %f\n", spacing, id_, name().c_str(), result );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced to %f\n", spacing, id(), name(), result );
       delete left;
       delete right;
       expr_t* reduced = new const_expr_t( "const_binary", result );
@@ -529,7 +529,7 @@ public:
     }
     if( left_constant )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced left\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced left\n", spacing, id(), name() );
       struct left_reduced_t : public expr_t
       {
   double left;
@@ -544,7 +544,7 @@ public:
     }
     if( right_constant )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced right\n", spacing, id_, name().c_str() );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced right\n", spacing, id(), name() );
       struct right_reduced_t : public expr_t
       {
   expr_t* left;
