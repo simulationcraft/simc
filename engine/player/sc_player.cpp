@@ -509,6 +509,7 @@ player_t::player_t( sim_t*             s,
   talent_points(),
   glyph_list(),
   artifact_points(),
+  artifact_( -1 ),
   base(),
   initial(),
   current(),
@@ -7501,6 +7502,13 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
     artifact_points[ idx * 2 + 1 ] = ( ( data & ( rank_mask << shift ) ) >> shift ) - 1;
   }
 
+  std::cout << "artifact=";
+  for ( size_t i = 0; i < artifact_data.size(); ++i )
+  {
+    std::cout << +artifact_points[ i ];
+  }
+  std::cout << std::endl;
+
   return true;
 }
 
@@ -7712,6 +7720,11 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 
 const spell_data_t* player_t::find_artifact_spell( const std::string& name ) const
 {
+  if ( ! artifact_enabled() )
+  {
+    return spell_data_t::not_found();
+  }
+
   // Find the artifact for the player
   unsigned artifact_id = dbc.artifact_by_spec( specialization() );
   if ( artifact_id == 0 )
@@ -7760,19 +7773,19 @@ const spell_data_t* player_t::find_artifact_spell( const std::string& name ) con
   // Multi-rank powers have a system whereby they can go +2 over the max rank of the power (as
   // indicated by the DBC file).
   if ( power_data -> max_rank > 1 &&
-       artifact_points[ power_index ] > ( power_data -> max_rank + 2 ) )
+       artifact_points[ power_index ] - 1 > ( power_data -> max_rank + 2 ) )
   {
     return spell_data_t::not_found();
   }
 
   std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
   // Rank data missing for the power
-  if ( artifact_points[ power_index ] > ranks.size() - 1 )
+  if ( artifact_points[ power_index ] - 1 > ranks.size() - 1 )
   {
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s (index %u)",
-          this -> name(), artifact_points[ power_index ], ranks[ ranks.size() - 1 ] -> index,
+          this -> name(), artifact_points[ power_index ] - 1, ranks[ ranks.size() - 1 ] -> index,
           power_data -> name ? power_data -> name : "Unknown", power_index );
     }
 
@@ -7780,7 +7793,7 @@ const spell_data_t* player_t::find_artifact_spell( const std::string& name ) con
   }
 
   // Finally, all checks satisfied, return a real spell
-  return find_spell( ranks[ artifact_points[ power_index ] ] -> id_spell );
+  return find_spell( ranks[ artifact_points[ power_index ] - 1 ] -> id_spell );
 }
 
 // player_t::find_perk_spell ======================================
@@ -11202,4 +11215,30 @@ player_t* player_t::actor_by_name_str( const std::string& name ) const
   }
 
   return 0;
+}
+
+bool player_t::artifact_enabled() const
+{
+  if ( artifact_ == 1 )
+  {
+    return true;
+  }
+  else if ( artifact_ == 0 )
+  {
+    return false;
+  }
+  else
+  {
+    if ( ! artifact_str.empty() )
+    {
+      return true;
+    }
+    // TODO: Additional sanity check against the spec's artifact id
+    else if ( items.size() > SLOT_MAIN_HAND && items[ SLOT_MAIN_HAND ].parsed.data.id_artifact > 0 )
+    {
+      return true;
+    }
+
+    return false;
+  }
 }

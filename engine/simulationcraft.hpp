@@ -3407,6 +3407,9 @@ struct player_t : public actor_t
 
   // Artifact
   std::array<uint8_t, MAX_ARTIFACT_POWER> artifact_points;
+  int artifact_;
+
+  bool artifact_enabled() const;
 
   virtual ~player_t();
 
