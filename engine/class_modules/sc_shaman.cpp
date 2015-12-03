@@ -123,6 +123,7 @@ public:
 
   // Active
   action_t* active_lightning_charge;
+  std::array<action_t*, 2> unleash_doom;
 
   // Cached actions
   action_t* action_ancestral_awakening;
@@ -192,6 +193,7 @@ public:
     haste_buff_t* fists_of_stone;
     buff_t* rockbiter;
     buff_t* doom_winds;
+    buff_t* unleash_doom;
 
   } buff;
 
@@ -251,6 +253,11 @@ public:
 
     proc_t* surge_during_lvb;
   } proc;
+
+  struct
+  {
+    real_ppm_t unleash_doom;
+  } real_ppm;
 
   // Class Specializations
   struct
@@ -347,6 +354,7 @@ public:
   struct artifact_spell_data_t
   {
     artifact_power_t doom_winds;
+    artifact_power_t unleash_doom;
   } artifact;
 
   // Misc Spells
@@ -440,6 +448,7 @@ public:
   void trigger_tier17_4pc_elemental( int );
   void trigger_tier18_4pc_elemental( int );
   void trigger_stormfury( const action_state_t* state );
+  void trigger_unleash_doom( const action_state_t* state );
 
   // Character Definition
   virtual void      init_spells() override;
@@ -450,6 +459,7 @@ public:
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_action_list() override;
+  virtual void      init_rng() override;
   virtual void      moving() override;
   virtual void      invalidate_cache( cache_e c ) override;
   virtual double    temporary_movement_modifier() const override;
@@ -828,6 +838,7 @@ public:
     p() -> trigger_windfury_weapon( state );
     p() -> trigger_stormfury( state );
     p() -> trigger_flametongue_weapon( state );
+    p() -> trigger_unleash_doom( state );
     //p() -> trigger_tier16_2pc_melee( state ); TODO: Legion will change this
   }
 };
@@ -876,6 +887,13 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   void impact( action_state_t* state ) override
   {
     base_t::impact( state );
+
+    if ( ! result_is_hit( state -> result ) )
+    {
+      return;
+    }
+
+    p() -> trigger_unleash_doom( state );
   }
 
   virtual bool usable_moving() const override
@@ -1779,6 +1797,16 @@ struct electrocute_t : public shaman_spell_t
   }
 };
 
+struct unleash_doom_spell_t : public shaman_spell_t
+{
+  unleash_doom_spell_t( const std::string& n, shaman_t* p, const spell_data_t* s ) :
+    shaman_spell_t( n, p, s )
+  {
+    background = true;
+    callbacks = false;
+  }
+};
+
 // ==========================================================================
 // Shaman Action / Spell Base
 // ==========================================================================
@@ -2211,6 +2239,11 @@ struct stormstrike_t : public shaman_attack_t
       if ( stormstrike_oh )
       {
         stormstrike_oh -> execute();
+      }
+
+      if ( p() -> real_ppm.unleash_doom.trigger() )
+      {
+        p() -> buff.unleash_doom -> trigger();
       }
     }
 
@@ -4382,6 +4415,7 @@ void shaman_t::init_spells()
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
+  artifact.unleash_doom              = find_artifact_spell( "Unleash Doom"       );
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
@@ -4404,6 +4438,12 @@ void shaman_t::init_spells()
   else
   {
     spell.echo_of_the_elements       = spell_data_t::not_found();
+  }
+
+  if ( artifact.unleash_doom.rank() == 1 )
+  {
+    unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
+    unleash_doom[ 1 ] = new unleash_doom_spell_t( "unleash_lightning", this, find_spell( 199054 ) );
   }
 
   // Constants
@@ -4527,6 +4567,28 @@ void shaman_t::trigger_stormfury( const action_state_t* state )
     buff.stormfury -> trigger( buff.stormfury -> max_stack() );
     cooldown.strike -> reset( true );
   }
+}
+
+void shaman_t::trigger_unleash_doom( const action_state_t* state )
+{
+  if ( ! state -> action -> special )
+  {
+    return;
+  }
+
+  if ( ! buff.unleash_doom -> up() )
+  {
+    return;
+  }
+
+  if ( ! state -> action -> callbacks )
+  {
+    return;
+  }
+
+  size_t spell_idx = rng().range( 0, unleash_doom.size() );
+  unleash_doom[ spell_idx ] -> target = state -> target;
+  unleash_doom[ spell_idx ] -> schedule_execute();
 }
 
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
@@ -4805,6 +4867,7 @@ void shaman_t::create_buffs()
                    .default_value( find_spell( 202004 ) -> effectN( 1 ).percent() );
   buff.doom_winds = buff_creator_t( this, "doom_winds", &( artifact.doom_winds.data() ) )
                     .cd( timespan_t::zero() ); // handled by the action
+  buff.unleash_doom = buff_creator_t( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() );
 }
 
 // shaman_t::init_gains =====================================================
@@ -4849,6 +4912,15 @@ void shaman_t::init_procs()
     proc.fulmination[ i ] = get_proc( "Fulmination: " + util::to_string( i ) + " stacks" );
 
   proc.fulmination_generate = get_proc( "Fulmination: Generate" );
+}
+
+// shaman_t::init_rng =======================================================
+
+void shaman_t::init_rng()
+{
+  player_t::init_rng();
+
+  real_ppm.unleash_doom = real_ppm_t( *this, artifact.unleash_doom.data().real_ppm() );
 }
 
 // shaman_t::init_actions ===================================================

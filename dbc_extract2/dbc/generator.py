@@ -1524,6 +1524,7 @@ class SpellDataGenerator(DataGenerator):
           ( 189078, 0 ),                                # Gathering Vortex (Elemental t18 4pc charge)
           ( 201846, 0 ),                                # Stormfury buff
           ( 195256, 0 ), ( 195222, 0 ),                 # Stormlash stuff for legion
+          ( 199054, 0 ), ( 199053, 0 ),                 # Unleash Doom, DOOM I SAY
         ),
 
         # Mage:
