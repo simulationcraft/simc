@@ -1763,7 +1763,8 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     if ( p() -> buff.meat_cleaver -> up() )
       aoe = aoe_targets;
-    aoe += sweeping_strikes;
+    else // Currently, SS will not add another target or attack to meat cleaver.
+      aoe += sweeping_strikes;
 
     if ( aoe ) ++aoe;
 
@@ -1909,7 +1910,10 @@ struct rampage_parent_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
+    if ( result_is_hit( execute_state -> result ) ) // If the first attack fails to land, the rest do too. 
+    {
+      p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
+    }
   }
 
   bool ready() override
