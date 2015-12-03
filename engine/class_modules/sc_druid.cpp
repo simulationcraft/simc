@@ -1079,6 +1079,27 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+// Blessing of An'she Buff ====================================================
+
+struct blessing_of_anshe_buff_t : public druid_buff_t < buff_t >
+{
+  druid_t* druid;
+
+  blessing_of_anshe_buff_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "blessing_of_anshe", p.spell.blessing_of_anshe ) ),
+    druid( &p )
+  {
+    tick_behavior = BUFF_TICK_NONE; // ticking is handled by DoT
+  }
+
+  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
+  {
+    druid_buff_t<buff_t>::expire_override( stacks, duration );
+
+    druid -> get_dot( "blessing_of_anshe", druid ) -> cancel();
+  }
+};
+
 // Cat Form =================================================================
 
 struct cat_form_t : public druid_buff_t< buff_t >
@@ -4039,11 +4060,12 @@ struct blessing_of_anshe_t : public druid_spell_t
   {
     parse_options( options_str );
 
+    target = player; // apply DoT to self
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
       2 * sim -> expected_iteration_time :
       2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-    harmful = false;
-    hasted_ticks = false;
+    harmful = may_crit = tick_may_crit = false;
+    hasted_ticks = true;
     ignore_false_positive = true;
 
     ap_per_tick = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
@@ -5523,7 +5545,7 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.blessing_of_anshe         = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe );
+  buff.blessing_of_anshe         = new blessing_of_anshe_buff_t( *this );
 
   buff.blessing_of_elune         = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
 
@@ -6756,7 +6778,8 @@ void druid_t::assess_damage( school_e school,
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
 
-  s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
+  if ( spell.thick_hide )
+    s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
 
   // TOCHECK: This talent only has one effect for some reason, may change in the future.
   if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
