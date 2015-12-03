@@ -3043,7 +3043,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
        << "<ul>\n";
     for ( unsigned int j = 0; j < b.stack_uptime.size(); j++ )
     {
-      double uptime = b.stack_uptime[ j ] -> uptime_sum.mean();
+      double uptime = b.stack_uptime[ j ].uptime_sum.mean();
       if ( uptime > 0 )
       {
         os.format(

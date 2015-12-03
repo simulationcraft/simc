@@ -789,7 +789,7 @@ public:
   simple_sample_data_t avg_start, avg_refresh;
   simple_sample_data_t avg_overflow_count, avg_overflow_total;
   simple_sample_data_t uptime_pct, start_intervals, trigger_intervals;
-  auto_dispose< std::vector<buff_uptime_t*> > stack_uptime;
+  std::vector<buff_uptime_t> stack_uptime;
 
   virtual ~buff_t() {}
 
@@ -1074,8 +1074,13 @@ struct expr_t
   virtual const char* name() const
   { return "anonymous expression"; }
   int id() const
-  { return -1; }
-
+  {
+#if !defined( NDEBUG )
+    return id_;
+#else
+    return -1;
+#endif
+  }
 
   double eval() { return evaluate(); }
   bool success() { return eval() != 0; }
@@ -1097,7 +1102,6 @@ struct expr_t
 private:
 #if !defined( NDEBUG )
   int id_;
-#endif
 
   int get_global_id()
   {
@@ -1105,6 +1109,7 @@ private:
   }
 
   static std::atomic<int> unique_id;
+#endif
 };
 
 // Reference Expression - ref_expr_t

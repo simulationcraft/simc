@@ -7,7 +7,10 @@
 
 #define EXPRESSION_DEBUG false
 
+#if !defined( NDEBUG )
 std::atomic<int> expr_t::unique_id( 0 );
+#endif
+
 
 namespace
 {  // ANONYMOUS ====================================================
@@ -372,21 +375,31 @@ public:
     if ( EXPRESSION_DEBUG )
     {
       if ( left->op_ == TOK_UNKNOWN )
+      {
         if ( ( !left_always_true && left_false == 0 ) ||
              ( !left_always_false && left_true == 0 ) )
+        {
           printf( "consider marking expression %d %s as constant\n", left->id(),
                   left->name() );
+        }
+      }
       if ( right->op_ == TOK_UNKNOWN )
+      {
         if ( ( !right_always_true && right_false == 0 ) ||
              ( !right_always_false && right_true == 0 ) )
+        {
           printf( "consider marking expression %d %s as constant\n",
                   right->id(), right->name() );
+        }
+      }
     }
     if ( left_always_false || right_always_false )
     {
       if ( EXPRESSION_DEBUG )
+      {
         printf( "%*d %s and expression reduced to false\n", spacing, id(),
                 name() );
+      }
       delete left;
       delete right;
       delete this;
@@ -395,8 +408,10 @@ public:
     if ( left_always_true && right_always_true )
     {
       if ( EXPRESSION_DEBUG )
+      {
         printf( "%*d %s and expression reduced to true\n", spacing, id(),
                 name() );
+      }
       delete left;
       delete right;
       delete this;
@@ -426,13 +441,14 @@ public:
     // sorting.
     if ( left_false < right_false )
     {
-      std::swap( left, right->op_ == TOK_AND ? ( (logical_and_t*)right )->left
-                                             : right );
+      std::swap( left, right->op_ == TOK_AND
+                           ? static_cast<logical_and_t*>( right )->left
+                           : right );
     }
     else if ( left->op_ == TOK_AND )
     {
       std::swap( left, right );
-      std::swap( left, ( (logical_and_t*)right )->left );
+      std::swap( left, static_cast<logical_and_t*>( right )->left );
     }
     expr_t* and_expr = new logical_and_t( name(), left, right );
     delete this;
@@ -474,15 +490,23 @@ public:
     if ( EXPRESSION_DEBUG )
     {
       if ( left->op_ == TOK_UNKNOWN )
+      {
         if ( ( !left_always_true && left_false == 0 ) ||
              ( !left_always_false && left_true == 0 ) )
+        {
           printf( "consider marking expression %d %s as constant\n", left->id(),
                   left->name() );
+        }
+      }
       if ( right->op_ == TOK_UNKNOWN )
+      {
         if ( ( !right_always_true && right_false == 0 ) ||
              ( !right_always_false && right_true == 0 ) )
+        {
           printf( "consider marking expression %d %s as constant\n",
                   right->id(), right->name() );
+        }
+      }
     }
     if ( left_always_true || right_always_true )
     {
@@ -528,13 +552,14 @@ public:
     // sorting.
     if ( left_true < right_true )
     {
-      std::swap(
-          left, right->op_ == TOK_OR ? ( (logical_or_t*)right )->left : right );
+      std::swap( left, right->op_ == TOK_OR
+                           ? static_cast<logical_or_t*>( right )->left
+                           : right );
     }
     else if ( left->op_ == TOK_OR )
     {
       std::swap( left, right );
-      std::swap( left, ( (logical_or_t*)right )->left );
+      std::swap( left, static_cast<logical_or_t*>( right )->left );
     }
     expr_t* or_expr = new logical_or_t( name(), left, right );
     delete this;

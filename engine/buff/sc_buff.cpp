@@ -361,8 +361,9 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   stack_react_ready_triggers.resize( _max_stack + 1 );
 
   if ( as<int>( stack_uptime.size() ) < _max_stack )
-    for ( int i = as<int>( stack_uptime.size() ); i <= _max_stack; ++i )
-      stack_uptime.push_back( new buff_uptime_t() );
+  {
+      stack_uptime.resize(_max_stack+1);
+  }
 }
 
 void buff_t::add_invalidate( cache_e c )
@@ -393,7 +394,7 @@ void buff_t::datacollection_begin()
   overflow_total = 0;
 
   for ( int i = 0; i <= simulation_max_stack; i++ )
-    stack_uptime[ i ] -> datacollection_begin();
+    stack_uptime[ i ].datacollection_begin();
 }
 
 // buff_t::datacollection_end ===============================================
@@ -405,7 +406,7 @@ void buff_t::datacollection_end()
   uptime_pct.add( time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / time : 0 );
 
   for ( int i = 0; i <= simulation_max_stack; i++ )
-    stack_uptime[ i ] -> datacollection_end( time );
+    stack_uptime[ i ].datacollection_end( time );
 
   double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 
     time != timespan_t::zero() ? 100 * iteration_uptime_sum / time : 0;
@@ -691,7 +692,7 @@ void buff_t::decrement( int    stacks,
     if ( requires_invalidation ) invalidate_cache();
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( false, sim -> current_time() );
+      stack_uptime[ current_stack ].update( false, sim -> current_time() );
 
     current_stack -= stacks;
 
@@ -701,7 +702,7 @@ void buff_t::decrement( int    stacks,
     if ( value >= 0 ) current_value = value;
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( true, sim -> current_time() );
+      stack_uptime[ current_stack ].update( true, sim -> current_time() );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "buff %s decremented by %d to %d stacks",
@@ -909,8 +910,8 @@ void buff_t::bump( int stacks, double value )
 
     if ( before_stack != current_stack )
     {
-      stack_uptime[ before_stack ] -> update( false, sim -> current_time() );
-      stack_uptime[ current_stack ] -> update( true, sim -> current_time() );
+      stack_uptime[ before_stack ].update( false, sim -> current_time() );
+      stack_uptime[ current_stack ].update( true, sim -> current_time() );
     }
 
     aura_gain();
@@ -1008,7 +1009,7 @@ void buff_t::expire( timespan_t delay )
   event_t::cancel( tick_event );
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
-  stack_uptime[ current_stack ] -> update( false, sim -> current_time() );
+  stack_uptime[ current_stack ].update( false, sim -> current_time() );
 
   if ( player && change_regen_rate )
     player -> do_dynamic_regen();
@@ -1163,7 +1164,7 @@ void buff_t::merge( const buff_t& other )
 #endif
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> merge ( *( other.stack_uptime[ i ] ) );
+    stack_uptime[ i ].merge ( other.stack_uptime[ i ] );
 }
 
 // buff_t::analyze ==========================================================
@@ -1566,7 +1567,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
   else
   {
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( false, sim -> current_time() );
+      stack_uptime[ current_stack ].update( false, sim -> current_time() );
 
     for ( size_t i = 0; i < stats.size(); ++i )
     {
@@ -1582,7 +1583,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     invalidate_cache();
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( true, sim -> current_time() );
+      stack_uptime[ current_stack ].update( true, sim -> current_time() );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "buff %s decremented by %d to %d stacks",
