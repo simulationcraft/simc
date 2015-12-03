@@ -1896,7 +1896,7 @@ public:
     virtual void execute() override
     {
       spell -> cost_event = new ( sim() ) cost_event_t( p(), spell, resource );
-      p() -> resource_loss( resource, spell -> base_costs_per_second[resource], spell -> gain );
+      p() -> resource_loss( resource, spell -> base_costs_per_tick[resource], spell -> gain );
     }
   };
 
@@ -2192,9 +2192,9 @@ public:
     }
   }
 
-  bool consume_cost_per_second( timespan_t tick_time ) override
+  bool consume_cost_per_tick( const dot_t& dot ) override
   {
-    bool consume = spell_t::consume_cost_per_second( tick_time );
+    bool consume = spell_t::consume_cost_per_tick( dot );
 
     resource_e r = current_resource();
 
@@ -4410,11 +4410,11 @@ struct rain_of_fire_t: public warlock_spell_t
     tick_action = new rain_of_fire_tick_t( p, data() );
   }
 
-  bool consume_cost_per_second( timespan_t tick_time ) override
+  bool consume_cost_per_tick( const dot_t& dot ) override
   {
     if ( channeled )
       return false;
-    return warlock_spell_t::consume_cost_per_second( tick_time );
+    return warlock_spell_t::consume_cost_per_tick( dot );
   }
 
   timespan_t composite_dot_duration( const action_state_t* state ) const override
@@ -4535,7 +4535,7 @@ struct immolation_aura_t: public warlock_spell_t
     dot_duration = data().duration();
     base_tick_time = dot_duration / 10.0;
     tick_action = new immolation_aura_tick_t( p, this );
-    tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = base_costs_per_second[RESOURCE_DEMONIC_FURY];
+    tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = base_costs_per_tick[RESOURCE_DEMONIC_FURY];
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override

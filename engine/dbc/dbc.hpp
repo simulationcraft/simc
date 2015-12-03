@@ -292,10 +292,10 @@ public:
   int      _power_e;
   int      _cost;
   int      _cost_max;
-  int      _cost_per_second;
+  int      _cost_per_tick;
   double   _pct_cost;
   double   _pct_cost_max;
-  double   _pct_cost_per_second;
+  double   _pct_cost_per_tick;
 
   resource_e resource() const
   { return util::translate_power_type( type() ); }
@@ -343,11 +343,11 @@ public:
     return cost / cost_divisor( ! ( _cost_max != 0 ) );
   }
 
-  double cost_per_second() const
+  double cost_per_tick() const
   {
-    double cost = _cost_per_second != 0 ? _cost_per_second : _pct_cost_per_second;
+    double cost = _cost_per_tick != 0 ? _cost_per_tick : _pct_cost_per_tick;
 
-    return cost / cost_divisor( ! ( _cost_per_second != 0 ) );
+    return cost / cost_divisor( ! ( _cost_per_tick != 0 ) );
   }
 
   static spellpower_data_t* nil();

@@ -5020,8 +5020,8 @@ public:
   /// Cost of using the ability.
   std::array< double, RESOURCE_MAX > base_costs;
 
-  /// Cost of using ability per second.
-  std::array< double, RESOURCE_MAX > base_costs_per_second;
+  /// Cost of using ability per periodic effect tick.
+  std::array< double, RESOURCE_MAX > base_costs_per_tick;
 
   /// Minimum base direct damage
   double base_dd_min;
@@ -5227,7 +5227,7 @@ public:
 
   virtual double cost() const;
 
-  virtual double cost_per_second( resource_e ) const;
+  virtual double cost_per_tick( resource_e ) const;
 
   virtual timespan_t gcd() const;
 
@@ -5501,10 +5501,10 @@ public:
   const std::vector<travel_event_t*>& current_travel_events() const
   { return travel_events; }
 
-  virtual bool need_to_trigger_costs_per_second() const
+  virtual bool need_to_trigger_costs_per_tick() const
   {
-    return std::accumulate(base_costs_per_second.begin(),
-        base_costs_per_second.end(), 0.0) != 0;
+    return std::accumulate(base_costs_per_tick.begin(),
+        base_costs_per_tick.end(), 0.0) != 0;
   }
 
   virtual bool has_movement_directionality() const;
@@ -5591,9 +5591,10 @@ public:
 
   event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = nullptr );
 
-  virtual void schedule_cost_tick_event( timespan_t tick_time = timespan_t::from_seconds( 1.0 ) );
-
-  virtual bool consume_cost_per_second( timespan_t tick_time );
+  virtual void schedule_cost_tick_event( const dot_t& dot );
+  virtual bool consume_cost_per_tick( const dot_t& dot );
+  virtual timespan_t cost_tick_time( const dot_t& /* dot */ ) const
+  { return timespan_t::from_seconds( 1.0 ); }
 
   virtual void do_teleport( action_state_t* );
 
@@ -6058,14 +6059,13 @@ private:
 struct action_cost_tick_event_t : public event_t
 {
 public:
-  action_cost_tick_event_t( action_t& a, timespan_t time_to_tick );
+  action_cost_tick_event_t( const dot_t& a );
 
 private:
   virtual void execute() override;
   virtual const char* name() const override
   { return "Action Cost Tick"; }
-  action_t& action;
-  timespan_t time_to_tick;
+  const dot_t& dot;
 };
 
 // DoT End Event ===========================================================

@@ -655,14 +655,14 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
     }
 
-    if ( pd -> cost_per_second() != 0 )
+    if ( pd -> cost_per_tick() != 0 )
     {
       s << " and ";
 
       if ( pd -> type() == POWER_MANA )
-        s << pd -> cost_per_second() * 100.0 << "%";
+        s << pd -> cost_per_tick() * 100.0 << "%";
       else
-        s << pd -> cost_per_second();
+        s << pd -> cost_per_tick();
 
       s << " ";
 
@@ -674,10 +674,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       if ( pd -> type() == POWER_MANA )
       {
-        s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost_per_second() ) << " @Level " << level << ")";
+        s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost_per_tick() ) << " @Level " << level << ")";
       }
 
-      s << " per second";
+      s << " per second or tick";
     }
 
     if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )

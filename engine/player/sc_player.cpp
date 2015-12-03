@@ -9422,6 +9422,7 @@ void player_t::create_options()
     add_option( opt_bool( "infinite_mana",   resources.infinite_resource[ RESOURCE_MANA   ] ) );
     add_option( opt_bool( "infinite_rage",   resources.infinite_resource[ RESOURCE_RAGE   ] ) );
     add_option( opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ) );
+    add_option( opt_bool( "infinite_moo", resources.infinite_resource[ RESOURCE_ASTRAL_POWER ] ) );
 
     // Misc
     add_option( opt_string( "skip_actions", action_list_skip ) );

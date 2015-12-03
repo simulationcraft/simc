@@ -3797,7 +3797,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
     procs_courageous_primal_diamond = false;
     base_tick_time *= 1.0 + p.spec.crane_style_techniques -> effectN( 4 ).percent();
     dot_duration *= 1.0 + p.spec.crane_style_techniques -> effectN( 5 ).percent();
-    base_costs_per_second[RESOURCE_ENERGY] = ( p.specialization() == MONK_MISTWEAVER ? 0 : 15 );
+    base_costs_per_tick[RESOURCE_ENERGY] = ( p.specialization() == MONK_MISTWEAVER ? 0 : 15 );
   }
 
   double cost() const override
@@ -3968,7 +3968,7 @@ struct soothing_mist_t: public monk_heal_t
 
     // Cost is handled in action_t::tick()
     base_costs[RESOURCE_MANA] = 0.0;
-    base_costs_per_second[RESOURCE_MANA] = 0.0;
+    base_costs_per_tick[RESOURCE_MANA] = 0.0;
   }
 
   virtual double action_ta_multiplier() const override

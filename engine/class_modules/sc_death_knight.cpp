@@ -3348,7 +3348,7 @@ struct conversion_t : public death_knight_heal_t
       const spellpower_data_t& power = p -> talent.conversion -> powerN( idx );
       if ( power.spell_id() && p -> dbc.spec_by_spell( power.aura_id() ) == p -> specialization() )
       {
-        base_costs[ power.resource() ] = power.cost_per_second();
+        base_costs[ power.resource() ] = power.cost_per_tick();
         break;
       }
     }
@@ -5411,7 +5411,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
       const spellpower_data_t& power = data().powerN( idx );
       if ( power.aura_id() == 0 || p -> dbc.spec_by_spell( power.aura_id() ) == p -> specialization() )
       {
-        base_costs_per_second[ power.resource() ] = power.cost_per_second();
+        base_costs_per_tick[ power.resource() ] = power.cost_per_tick();
       }
     }
   }
@@ -5433,9 +5433,9 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
       d -> cancel();
   }
 
-  bool consume_cost_per_second( timespan_t tick_time ) override
+  bool consume_cost_per_tick( const dot_t& dot ) override
   {
-    bool ret = death_knight_spell_t::consume_cost_per_second( tick_time );
+    bool ret = death_knight_spell_t::consume_cost_per_tick( dot );
 
     p() -> trigger_runic_empowerment( resource_consumed );
     p() -> trigger_blood_charge( resource_consumed );

@@ -4205,7 +4205,8 @@ struct collapsing_stars_t : public druid_spell_t
   {
     druid_spell_t::cancel();
 
-    find_dot( target ) -> cancel();
+    if ( dot_t* dot = find_dot( target ) )
+      dot -> cancel();
     p() -> buff.collapsing_stars_up -> expire();
   }
 };

@@ -386,7 +386,7 @@ action_t::action_t( action_e       ty,
   state_cache = 0;
 
   range::fill( base_costs, 0.0 );
-  range::fill( base_costs_per_second, 0.0 );
+  range::fill( base_costs_per_tick, 0.0 );
 
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
 
@@ -532,10 +532,10 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     else
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
 
-    if ( pd -> _cost_per_second > 0 )
-      base_costs_per_second[ pd -> resource() ] = pd -> cost_per_second();
+    if ( pd -> _cost_per_tick > 0 )
+      base_costs_per_tick[ pd -> resource() ] = pd -> cost_per_tick();
     else
-      base_costs_per_second[ pd -> resource() ] = floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
+      base_costs_per_tick[ pd -> resource() ] = floor( pd -> cost_per_tick() * player -> resources.base[ pd -> resource() ] );
   }
 
   for ( size_t i = 1; i <= spell_data.effect_count(); i++ )
@@ -737,9 +737,9 @@ double action_t::cost() const
   return floor( c );
 }
 
-double action_t::cost_per_second( resource_e r ) const
+double action_t::cost_per_tick( resource_e r ) const
 {
-  return base_costs_per_second[ r ];
+  return base_costs_per_tick[ r ];
 }
 
 // action_t::gcd ============================================================
@@ -3223,19 +3223,19 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   }
 }
 
-void action_t::schedule_cost_tick_event( timespan_t tick_time )
+void action_t::schedule_cost_tick_event( const dot_t& dot )
 {
   if ( cost_tick_event )
   {
     event_t::cancel( cost_tick_event );
   }
 
-  cost_tick_event = new ( *sim ) action_cost_tick_event_t( *this, tick_time );
+  cost_tick_event = new ( *sim ) action_cost_tick_event_t( dot );
 
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s scheduling action %s cost tick event. tick_time=%.3f",
-        player -> name(), name(), tick_time.total_seconds() );
+        player -> name(), name(), cost_tick_event -> remains().total_seconds() );
   }
 }
 
@@ -3243,7 +3243,7 @@ void action_t::schedule_cost_tick_event( timespan_t tick_time )
  * If the action is still ticking and all resources could be successfully consumed,
  * return true to indicate continued ticking.
  */
-bool action_t::consume_cost_per_second( timespan_t tick_time )
+bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
 {
   if ( player -> get_active_dots( internal_id ) == 0 )
   {
@@ -3261,7 +3261,7 @@ bool action_t::consume_cost_per_second( timespan_t tick_time )
   bool cancel_action = false;
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    double cost = cost_per_second( r ) * tick_time.total_seconds();
+    double cost = cost_per_tick( r );
     if ( cost <= 0.0 )
       continue;
 
@@ -3342,21 +3342,22 @@ bool action_t::has_movement_directionality() const
       return m == movement_directionality;
   }
 }
-action_cost_tick_event_t::action_cost_tick_event_t( action_t& a, timespan_t time_to_tick ) :
-    event_t( *a.player ),
-    action( a ),
-    time_to_tick( time_to_tick )
+action_cost_tick_event_t::action_cost_tick_event_t( const dot_t& dot ) :
+    event_t( *dot.source ),
+    dot( dot )
 {
-  add_event( time_to_tick );
+  add_event( dot.current_action -> cost_tick_time( dot ) );
 }
 
 void action_cost_tick_event_t::execute()
 {
-  action.cost_tick_event = nullptr;
+  action_t* action = dot.current_action;
 
-  if ( action.consume_cost_per_second( time_to_tick ) )
+  action -> cost_tick_event = nullptr;
+
+  if ( action -> consume_cost_per_tick( dot ) )
   {
-    action.schedule_cost_tick_event( time_to_tick );
+    action -> schedule_cost_tick_event( dot );
   }
   else
   {
