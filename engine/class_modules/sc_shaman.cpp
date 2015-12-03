@@ -1712,7 +1712,10 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= 1.0 + p() -> artifact.hurricane.percent();
     }
 
-    m *= p() -> buff.gathering_storms -> stack_value();
+    if ( p() -> buff.gathering_storms -> up() )
+    {
+      m *= p() -> buff.gathering_storms -> check_value();
+    }
 
     return m;
   }
