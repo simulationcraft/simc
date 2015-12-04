@@ -2355,13 +2355,8 @@ struct blackout_strike_t: public monk_melee_attack_t
 // Shared tick action for both abilities
 struct tick_action_t : public monk_melee_attack_t
 {
-  const spell_data_t* resource_gain;
-  bool first_tick;
-
   tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data ) :
-    monk_melee_attack_t( name, p, data ),
-    resource_gain( p -> find_spell( 129881 ) ),
-    first_tick( false )
+    monk_melee_attack_t( name, p, data )
   {
     dual = background = true;
     aoe = -1;
@@ -2374,50 +2369,6 @@ struct tick_action_t : public monk_melee_attack_t
     school = SCHOOL_PHYSICAL;
     cooldown -> duration = timespan_t::zero();
     base_costs[ RESOURCE_ENERGY ] = 0;
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    // 3+ targets does special things
-    if ( execute_state -> n_targets < 3 )
-    {
-      return;
-    }
-
-    if ( first_tick )
-    {
-      player -> resource_gain( RESOURCE_CHI,
-                               resource_gain -> effectN( 1 ).base_value(),
-                               p() -> gain.spinning_crane_kick,
-                               this );
-      first_tick = false;
-    }
-
-    if ( p() -> buff.power_strikes -> up() )
-    {
-      if ( p() -> resources.current[ RESOURCE_CHI ] < p() -> resources.max[ RESOURCE_CHI ] )
-      {
-        p() -> resource_gain( RESOURCE_CHI,
-                              p() -> buff.power_strikes -> default_value,
-                              nullptr,
-                              this );
-      }
-      else
-      {
-        p() -> buff.chi_sphere -> trigger();
-      }
-
-      p() -> buff.power_strikes -> expire();
-    }
-  }
-
-  void reset() override
-  {
-    monk_melee_attack_t::reset();
-
-    first_tick = false;
   }
 };
 
@@ -2461,28 +2412,17 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
   void execute() override
   {
-    static_cast<tick_action_t*>( tick_action ) -> first_tick = true;
-
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    combo_strikes_trigger(CS_RUSHING_JADE_WIND);
+    combo_strikes_trigger( CS_RUSHING_JADE_WIND );
 
     p() -> buff.rushing_jade_wind -> trigger( 1,
         buff_t::DEFAULT_VALUE(),
         1.0,
         composite_dot_duration( execute_state ) );
-
-    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_ENERGY,
-          p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(),
-          p() -> gain.tier15_2pc_melee,
-          this );
-      p() -> proc.tier15_2pc_melee -> occur();
-    }
   }
 
   void init() override
@@ -2514,30 +2454,12 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
   void execute() override
   {
-    static_cast<tick_action_t*>( tick_action ) -> first_tick = true;
-
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
 
     combo_strikes_trigger( CS_SPINNING_CRANE_KICK );
-
-    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
-      p() -> proc.tier15_2pc_melee -> occur();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( p() -> talent.rushing_jade_wind -> ok() )
-    {
-      return false;
-    }
-
-    return monk_melee_attack_t::ready();
   }
 };
 
@@ -5084,8 +5006,8 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( buff.tigereye_brew -> up() )
     m *= 1.0 + buff.tigereye_brew -> value();
 
-  if (buff.serenity->up())
-    m *= 1.0 + buff.serenity->value();
+  if ( buff.serenity -> up() )
+    m *= 1.0 + buff.serenity -> value();
 
   if ( buff.storm_earth_and_fire -> up() )
   {
