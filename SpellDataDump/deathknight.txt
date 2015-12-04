@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3243,9 +3243,9 @@ Great Stamina|r
 
 Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
 Class            : Death Knight
-Resource         : 0 Runic Power and 12 Runic Power per second w/ Killing Machine (id=51128)
-Resource         : 0 Runic Power and 15 Runic Power per second w/ Veteran of the Third War (id=48263)
-Resource         : 0 Runic Power and 15 Runic Power per second w/ Death's Advance (id=48265)
+Resource         : 0 Runic Power and 12 Runic Power per second or tick w/ Killing Machine (id=51128)
+Resource         : 0 Runic Power and 15 Runic Power per second or tick w/ Veteran of the Third War (id=48263)
+Resource         : 0 Runic Power and 15 Runic Power per second or tick w/ Death's Advance (id=48265)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
 Affecting spells : Razorice (51714)

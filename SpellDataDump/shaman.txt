@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -539,7 +539,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Hammer of Storms (198228), Stormfury (201846)
+Affecting spells : Hammer of Storms (198228), Gathering Storms (198300), Stormfury (201846)
 Triggered by     : Stormstrike (17364), Stormstrike (196881)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -559,7 +559,7 @@ Name             : Stormstrike Off-Hand (id=32176) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 40
 Range            : 5 yards
-Affecting spells : Hammer of Storms (198228), Stormfury (201846)
+Affecting spells : Hammer of Storms (198228), Gathering Storms (198300), Stormfury (201846)
 Triggered by     : Stormstrike (17364), Stormstrike (196881)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -2385,7 +2385,7 @@ Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Proc Chance      : 101%
-Affecting spells : Hammer of Storms (198228), Stormfury (201846)
+Affecting spells : Hammer of Storms (198228), Gathering Storms (198300), Stormfury (201846)
 Triggered by     : Windstrike (115356)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -2406,7 +2406,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Hammer of Storms (198228), Stormfury (201846)
+Affecting spells : Hammer of Storms (198228), Gathering Storms (198300), Stormfury (201846)
 Triggered by     : Windstrike (115356)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -4331,7 +4331,7 @@ Description      : Reduces the cooldown of Feral Spirits by ${$s1/-1000} secs.
 
 Name             : Lightning Shield (id=192106) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 20 Maelstrom and 5 Maelstrom per second
+Resource         : 20 Maelstrom and 5 Maelstrom per second or tick
 Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -5018,7 +5018,7 @@ Description      : Any time a target is standing in Earthquake with Flame Shock,
 
 Name             : Fury of Air (id=197211) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 20 Maelstrom and 5 Maelstrom per second
+Resource         : 20 Maelstrom and 5 Maelstrom per second or tick
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
@@ -5219,6 +5219,60 @@ $@spelldesc30823
 
 Lasts $d.
 
+Name             : Gathering Storms (id=198299) [Spell Family (11), Passive] 
+Class            : Shaman
+Range            : 100 yards
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=291439)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2
+Description      : Each target hit by Crash Lightning increases the damage of your next Stormstrike by $s1%.
+
+Name             : Gathering Storms (id=198300) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 12 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=291440)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 2 | Scaled Value: 2
+                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
+Description      : $@spelldesc198299
+Tooltip          : Damage of Stormstrike increased by $w1%.
+
+Name             : Unleash Doom (id=198736) [Spell Family (11), Passive] 
+Class            : Shaman
+Range            : 100 yards
+Proc Chance      : 101%
+Real PPM         : 2
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=292137)   : Apply Aura (6) | Proc Trigger Spell: Unleash Doom (42)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 199055
+Description      : Stormstrike has a chance to cause Doomhammer to unleash the power of the elements, causing your special attacks to also cause arcs of lightning or streaks of lava at your target.
+
 Name             : Earthen Shield Totem (Air Totem) (id=198838) [Spell Family (11)] 
 Class            : Shaman
 Resource         : 11% Base Mana (24200 @Level 110)
@@ -5259,6 +5313,54 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5760
 Description      : $@spelldesc198838
 Tooltip          : X damage from each attack taken is redirected to the Earthen Shield Totem.
+
+Name             : Unleash Lava (id=199053) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=292917)   : School Damage: fire (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
+Description      : $@spelldesc198736
+
+Name             : Unleash Lightning (id=199054) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=292919)   : School Damage: nature (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
+Description      : $@spelldesc198736
+
+Name             : Unleash Doom (id=199055) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 6 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Triggered by     : Unleash Doom (198736)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=292920)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc198736
+Tooltip          : Your special attacks will trugger an arc of fiery or lightning damage at your target.
 
 Name             : Undulation (id=200071) [Spell Family (11), Passive] 
 Class            : Shaman

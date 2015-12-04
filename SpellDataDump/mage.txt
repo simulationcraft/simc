@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
 
 Name             : Frostbolt (id=116) [Spell Family (3)] 
 Class            : Frost Mage

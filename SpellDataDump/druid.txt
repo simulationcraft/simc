@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -5947,7 +5947,7 @@ Tooltip          : Grants 3 Astral Power every $t1 sec.
 
 Name             : Collapsing Stars (id=202770) [Spell Family (7)] 
 Class            : Druid
-Resource         : 10 Eclipse and 10 Eclipse per second
+Resource         : 10 Eclipse and 10 Eclipse per second or tick
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)

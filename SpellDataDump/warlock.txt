@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -137,7 +137,7 @@ Description      : Summons an Imp under your command that casts ranged Firebolts
 
 Name             : Drain Life (id=689) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second
+Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second or tick
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4544,7 +4544,7 @@ Description      : $@spelldesc193440
 
 Name             : Demonwrath (id=193440) [Spell Family (5)] 
 Class            : Demonology Warlock
-Resource         : 0% Base Mana and 2.5% Base Mana (27500 @Level 110) per second
+Resource         : 0% Base Mana and 2.5% Base Mana (27500 @Level 110) per second or tick
 Spell Level      : 36
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -5073,7 +5073,7 @@ Description      : Demonic Empowerment now affects all of your active demons.
 
 Name             : Drain Soul (id=198590) [Spell Family (5)] 
 Class            : Warlock
-Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second
+Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second or tick
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds

@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20740)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Beast Mastery Survival Hunter
@@ -2127,7 +2127,7 @@ Effects          :
 
 Name             : Froststorm Breath (Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
-Resource         : 10 Focus and 5 Focus per second
+Resource         : 10 Focus and 5 Focus per second or tick
 Spell Level      : 20
 Duration         : 8 seconds
 Attributes       : ........ ........ x....... ........   ..x...xx ..x..... .x...... ........ 
@@ -2190,7 +2190,7 @@ Description      : Allows you to give commands to control your pet.
 
 Name             : Burrow Attack (Exotic Ability) (id=93433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
-Resource         : 10 Focus and 5 Focus per second
+Resource         : 10 Focus and 5 Focus per second or tick
 Spell Level      : 20
 Duration         : 8 seconds
 Cooldown         : 14 seconds
