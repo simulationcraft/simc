@@ -2513,9 +2513,12 @@ struct item_t
   // Extracted data
   gear_stats_t base_stats, stats;
 
+  mutable int cached_upgrade_item_level;
+
   item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), unique( false ),
     unique_addon( false ), is_ptr( false ),
-    parsed(), xml() { }
+    parsed(), xml(),
+    cached_upgrade_item_level( -1 ){ }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
@@ -2533,6 +2536,7 @@ struct item_t
 
   unsigned item_level() const;
   unsigned upgrade_level() const;
+  unsigned upgrade_item_level() const;
   unsigned base_item_level() const;
   stat_e stat( size_t idx ) const;
   int stat_value( size_t idx ) const;
@@ -6719,7 +6723,7 @@ std::string stat_to_str( int stat, int stat_amount );
 double approx_scale_coefficient( unsigned current_ilevel, unsigned new_ilevel );
 int scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel );
 
-int upgrade_ilevel( const item_t& item, unsigned upgrade_level );
+unsigned upgrade_ilevel( const item_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
