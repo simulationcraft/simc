@@ -22,16 +22,6 @@ namespace buffs {
                   struct wings_of_liberty_driver_t;
                 }
 
-enum seal_e
-{
-  SEAL_NONE = 0,
-  SEAL_OF_JUSTICE,
-  SEAL_OF_INSIGHT,
-  SEAL_OF_RIGHTEOUSNESS,
-  SEAL_OF_TRUTH,
-  SEAL_MAX
-};
-
 // ==========================================================================
 // Paladin Target Data
 // ==========================================================================
@@ -40,7 +30,6 @@ struct paladin_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* censure;
     dot_t* eternal_flame;
     dot_t* execution_sentence;
     dot_t* stay_of_execution;
@@ -49,7 +38,6 @@ struct paladin_td_t : public actor_target_data_t
 
   struct buffs_t
   {
-    buff_t* debuffs_censure;
     buff_t* eternal_flame;
     buff_t* glyph_of_flash_of_light;
     buff_t* sacred_shield;
@@ -67,19 +55,13 @@ struct paladin_t : public player_t
 public:
 
   // Active
-  seal_e    active_seal;
   heal_t*   active_beacon_of_light;
-  action_t* active_censure;  // this is the Censure dot application
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
   action_t* active_hand_of_light_multistrike_proc;
   action_t* active_holy_shield_proc;
   absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
-  action_t* active_seal_of_insight_proc;
-  action_t* active_seal_of_justice_proc;
-  action_t* active_seal_of_righteousness_proc;
-  action_t* active_seal_of_truth_proc;
   heal_t*   active_shining_protector_proc;
   player_t* last_judgement_target;
 
@@ -106,10 +88,6 @@ public:
     buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
-    buff_t* seal_of_insight;
-    buff_t* seal_of_justice;
-    buff_t* seal_of_righteousness;
-    buff_t* seal_of_truth;
     buff_t* shield_of_the_righteous;
 
     // glyphs
@@ -125,15 +103,11 @@ public:
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
-    buff_t* liadrins_righteousness;
     buff_t* long_arm_of_the_law;
-    buff_t* maraads_truth;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
     stat_buff_t* seraphim;
     buff_t* speed_of_light;
-    buff_t* turalyons_justice;
-    buff_t* uthers_insight;
 
     // Draenor Perk
     buff_t* divine_crusader;
@@ -154,7 +128,6 @@ public:
   {
     // Healing/absorbs
     gain_t* holy_shield;
-    gain_t* seal_of_insight;
     gain_t* glyph_divine_storm;
     gain_t* glyph_divine_shield;
 
@@ -214,7 +187,6 @@ public:
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* sanctuary;
     const spell_data_t* shining_protector;
-    const spell_data_t* seal_of_insight;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
   } passives;
@@ -282,7 +254,6 @@ public:
     const spell_data_t* holy_prism;
     const spell_data_t* lights_hammer;
     const spell_data_t* execution_sentence;
-    const spell_data_t* empowered_seals;
     const spell_data_t* seraphim;
     const spell_data_t* holy_shield;
     const spell_data_t* final_verdict;
@@ -360,18 +331,12 @@ public:
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
     active_beacon_of_light             = nullptr;
-    active_censure                     = nullptr;
     active_enlightened_judgments       = nullptr;
     active_hand_of_light_proc          = nullptr;
     active_hand_of_light_multistrike_proc = nullptr;
     active_holy_shield_proc            = nullptr;
     active_illuminated_healing         = nullptr;
     active_protector_of_the_innocent   = nullptr;
-    active_seal                        = SEAL_NONE;
-    active_seal_of_justice_proc        = nullptr;
-    active_seal_of_insight_proc        = nullptr;
-    active_seal_of_righteousness_proc  = nullptr;
-    active_seal_of_truth_proc          = nullptr;
     active_shining_protector_proc      = nullptr;
     bok_up                             = false;
     bom_up                             = false;
@@ -867,32 +832,9 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
   {
     may_crit          = true;
     tick_may_crit     = true;
-    benefits_from_seal_of_insight = true;
     harmful = false;
 
     weapon_multiplier = 0.0;
-  }
-
-  bool benefits_from_seal_of_insight;
-
-  virtual double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
-      am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
-
-    return am;
-  }
-
-  virtual double action_ta_multiplier() const override
-  {
-    double am = base_t::action_ta_multiplier();
-
-    if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
-      am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
-
-    return am;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -1250,7 +1192,6 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
     // It _is_ affected by Sanctified Wrath, but that's handled in assess_heal()
     hasted_ticks = false;
     may_crit = tick_may_crit = false;
-    benefits_from_seal_of_insight = false;
 
     // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
     base_tick_time = timespan_t::from_seconds( 1 );
@@ -1735,7 +1676,6 @@ struct stay_of_execution_t : public paladin_heal_t
     hasted_ticks   = false;
     travel_speed   = 0;
     tick_may_crit  = 1;
-    benefits_from_seal_of_insight = false;
     background = true;
 
     // link with Execution Sentence's cooldown
@@ -2820,9 +2760,7 @@ struct sacred_shield_t : public paladin_heal_t
     // most of this is irrelevant now, I think?
     may_crit = false;
     tick_may_crit = false;
-    benefits_from_seal_of_insight = false;
     harmful = false;
-
 
     // disable if not talented
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
@@ -2852,67 +2790,6 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     td( target ) -> buffs.sacred_shield -> trigger();
-  }
-};
-
-// Seal of Insight ==========================================================
-
-struct seal_of_insight_proc_t : public paladin_heal_t
-{
-  double proc_chance;
-  proc_t* proc_tracker;
-
-  seal_of_insight_proc_t( paladin_t* p ) :
-    paladin_heal_t( "seal_of_insight_proc", p, p -> find_class_spell( "Seal of Insight" ) ),
-    proc_chance( 0.0 ),
-    proc_tracker( p -> get_proc( name_str ) )
-  {
-    background  = true;
-    proc = true;
-    trigger_gcd = timespan_t::zero();
-    may_crit = true;
-
-    // spell database info is in spell 20167
-    parse_effect_data( p -> find_spell( 20167 ) -> effectN( 1 ) );
-
-    // Battle Healer glyph
-    if ( p -> glyphs.battle_healer -> ok() )
-    {
-      attack_power_mod.direct *= p -> glyphs.battle_healer -> effectN( 1 ).percent();
-      spell_power_mod.direct *= p -> glyphs.battle_healer -> effectN( 1 ).percent();
-    }
-
-    // needed for weapon speed, I assume
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    // proc chance is 20 PPM, tested 9/8/14 (http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=784737#p784737)
-    // Base PPM value of 15 isn't in spell data, 2nd effect describes the additional 5 PPM added in MoP.
-    proc_chance = ppm_proc_chance( 15 + data().effectN( 2 ).base_value() );
-
-    target = player;
-  }
-
-  virtual void execute() override
-  {
-    if ( rng().roll( proc_chance ) )
-    {
-      proc_tracker -> occur();
-
-      // Battle Healer glyph makes SoI a smart heal
-      if ( p() -> glyphs.battle_healer -> ok() )
-      {
-        target = find_lowest_player();
-        if ( target )
-          paladin_heal_t::execute();
-      }
-      else
-        paladin_heal_t::execute();
-    }
-    else
-    {
-      update_ready();
-    }
   }
 };
 
@@ -3004,45 +2881,6 @@ struct shining_protector_t : public paladin_heal_t
     paladin_heal_t::execute();
   }
 
-};
-
-// Uther's Insight ==========================================================
-// This is the healing buff from Empowered Seals
-
-struct uthers_insight_t : public paladin_heal_t
-{
-  uthers_insight_t( paladin_t* p )
-    : paladin_heal_t( "uthers_insight", p, p -> find_spell( 156988 ) )
-  {
-    background = true;
-    proc = true;
-    target = player;
-    may_crit = tick_may_crit = false; // tested 6.0.3
-    may_multistrike = false; // tested 6.0.3
-    hasted_ticks = false; // tested 6.0.3
-    benefits_from_seal_of_insight = false; // tested 6.0.3
-
-    // spell info isn't parsing out of the effect well, some manual adjustments necessary
-
-    // % heal amount is in effect #1
-    parse_effect_data( data().effectN( 1 ) );
-
-    // tick interval is hidden in the _amplitude field of the effect
-    // appears unnecessary now, leaving for future reference
-    // base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
-  }
-
-  virtual void execute() override
-  {
-    p() -> buffs.uthers_insight -> trigger();
-
-    paladin_heal_t::execute();
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    paladin_heal_t::tick( d );
-  }
 };
 
 // Word of Glory  ===========================================================
@@ -3203,22 +3041,12 @@ struct harsh_word_t : public paladin_spell_t
 
 struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 {
-  // booleans to allow individual control of seal proc triggers
-  bool trigger_seal;
-  bool trigger_seal_of_righteousness;
-  bool trigger_seal_of_justice;
-  bool trigger_seal_of_truth;
-
   bool use2hspec;
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
                           bool u2h = true ):
                           base_t( n, p, s ),
-                          trigger_seal( false ),
-                          trigger_seal_of_righteousness( false ),
-                          trigger_seal_of_justice( false ),
-                          trigger_seal_of_truth( false ),
                           use2hspec( u2h )
   {
     may_crit = true;
@@ -3272,37 +3100,6 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
   virtual void execute() override
   {
     base_t::execute();
-
-    // handle all on-hit effects (seals, Ancient Power, battle healer)
-    if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) )
-         || ( trigger_seal_of_justice && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
-         || ( trigger_seal_of_truth && ( p() -> active_seal == SEAL_OF_TRUTH ) ) )
-    {
-      switch ( p() -> active_seal )
-      {
-      case SEAL_OF_JUSTICE:
-        p() -> active_seal_of_justice_proc       -> target = target;
-        p() -> active_seal_of_justice_proc       -> execute();
-        break;
-      case SEAL_OF_INSIGHT:
-        p() -> active_seal_of_insight_proc       -> execute();
-        break;
-      case SEAL_OF_RIGHTEOUSNESS:
-        p() -> active_seal_of_righteousness_proc -> target = target;
-        p() -> active_seal_of_righteousness_proc -> execute();
-        break;
-      case SEAL_OF_TRUTH:
-        p() -> active_censure                    -> target = target;
-        p() -> active_censure                    -> execute();
-        if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 )
-        {
-          p() -> active_seal_of_truth_proc       -> target = target;
-          p() -> active_seal_of_truth_proc       -> execute();
-        }
-        break;
-      default: break;
-      }
-    }
   }
 };
 
@@ -3317,7 +3114,6 @@ struct melee_t : public paladin_melee_attack_t
   {
     school = SCHOOL_PHYSICAL;
     special               = false;
-    trigger_seal          = true;
     background            = true;
     repeating             = true;
     trigger_gcd           = timespan_t::zero();
@@ -3393,60 +3189,6 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
   }
 };
 
-//Censure  ==================================================================
-
-struct censure_t : public paladin_melee_attack_t
-{
-  censure_t( paladin_t* p ) :
-    paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
-  {
-    background = proc = tick_may_crit = true;
-    hasted_ticks = may_miss = may_dodge = may_parry = false;
-    weapon_multiplier = 0.0;
-
-    // Glyph of Immediate Truth reduces DoT damage
-    if ( p -> glyphs.immediate_truth -> ok() )
-    {
-      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
-    }
-
-    // 1/15 hotfix reduces damage by 80% for prot
-    if ( p -> passives.guarded_by_the_light -> ok() )
-      base_multiplier /= 5;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      // if the application hits, apply/refresh the censure debuff; this will also increment stacks
-      td( s -> target ) -> buffs.debuffs_censure -> trigger();
-    }
-
-    paladin_melee_attack_t::impact( s );
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    // since we don't support stacking debuffs, we handle the stack size in paladin_td buffs.debuffs_censure
-    // and apply the stack size as an action multiplier
-    double am = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    am *= td( t ) -> buffs.debuffs_censure -> check();
-
-    return am;
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    // if this is the last tick, expire the debuff locally
-    // (this shouldn't happen ... ever? ... under normal operation)
-    td( d -> state -> target ) -> buffs.debuffs_censure -> expire();
-
-    paladin_melee_attack_t::last_tick( d );
-  }
-};
-
 // Crusader Strike ==========================================================
 
 struct crusader_strike_t : public paladin_melee_attack_t
@@ -3457,9 +3199,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
-
-    // CS triggers all seals
-    trigger_seal = true;
 
     // multiplier modification for T13 Retribution 2-piece bonus
     base_multiplier *= 1.0 + ( p -> sets.set( SET_MELEE, T13, B2 ) -> effectN( 1 ).percent() );
@@ -3543,9 +3282,6 @@ struct divine_storm_t: public paladin_melee_attack_t
     weapon = &( p -> main_hand_weapon );
 
     aoe = -1;
-    trigger_seal = false;
-    trigger_seal_of_righteousness = true;
-
     if ( p -> glyphs.divine_storm -> ok() )
     {
       glyph_heal = new glyph_of_divine_storm_t( p );
@@ -3702,7 +3438,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ), false )
   {
     // AoE effect always hits if single-target attack succeeds
-    // Doesn't proc seals or Grand Crusader
+    // Doesn't proc Grand Crusader
     may_dodge = false;
     may_parry = false;
     may_miss  = false;
@@ -3757,8 +3493,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // link with Crusader Strike's cooldown
     cooldown = p -> get_cooldown( "crusader_strike" );
     cooldown -> duration = data().cooldown();
-    // HotR triggers all seals
-    trigger_seal = true;
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
@@ -3830,7 +3564,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     // Cannot be parried or blocked, but can be dodged
     may_parry = may_block = false;
-    trigger_seal = true;
     // no weapon multiplier
     weapon_multiplier = 0.0;
 
@@ -4024,7 +3757,6 @@ struct hand_of_light_multistrike_proc_t : public paladin_melee_attack_t
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  uthers_insight_t* uthers_insight;
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
@@ -4039,17 +3771,11 @@ struct judgment_t : public paladin_melee_attack_t
     // Special melee attack that can only miss
     may_glance = may_block = may_parry = may_dodge = false;
 
-    // Only triggers Seal of Truth
-    trigger_seal_of_truth        = true;
-
     // Guarded by the Light reduces mana cost
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 8 ).percent();
 
     // damage multiplier from T14 Retribution 4-piece bonus
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-
-    if ( p -> talents.empowered_seals -> ok() )
-      uthers_insight = new uthers_insight_t( p );
   }
 
   virtual void execute() override
@@ -4107,19 +3833,6 @@ struct judgment_t : public paladin_melee_attack_t
     // Selfless Healer talent
     if ( p() -> talents.selfless_healer -> ok() )
       p() -> buffs.selfless_healer -> trigger();
-
-    // Empowered Seals
-    if ( p() -> talents.empowered_seals -> ok() )
-    {
-      switch ( p() -> active_seal )
-      {
-        case SEAL_OF_JUSTICE:        p() -> buffs.turalyons_justice -> trigger(); break; // this one is sort of pointless?
-        case SEAL_OF_RIGHTEOUSNESS:  p() -> buffs.liadrins_righteousness -> trigger(); break;
-        case SEAL_OF_TRUTH:          p() -> buffs.maraads_truth -> trigger(); break;
-        case SEAL_OF_INSIGHT:        uthers_insight -> schedule_execute(); break;
-        default: break;
-      }
-    }
   }
 
   virtual double action_multiplier() const override
@@ -4142,14 +3855,6 @@ struct judgment_t : public paladin_melee_attack_t
     }
 
     return am;
-  }
-
-  virtual bool ready() override
-  {
-    // Only usable if a seal is active
-    if ( p() -> active_seal == SEAL_NONE ) return false;
-
-    return paladin_melee_attack_t::ready();
   }
 };
 
@@ -4198,147 +3903,6 @@ struct reckoning_t: public paladin_melee_attack_t
   }
 };
 
-// Seals ====================================================================
-
-struct paladin_seal_t : public paladin_melee_attack_t
-{
-  seal_e seal_type;
-
-  paladin_seal_t( paladin_t* p, const std::string& n, seal_e st, const std::string& options_str )
-    : paladin_melee_attack_t( n, p ), seal_type( st )
-  {
-    parse_options( options_str );
-
-    harmful    = false;
-    resource_current = RESOURCE_MANA;
-    ignore_false_positive = true;
-    school = SCHOOL_HOLY;
-    // all seals cost 16.4% of base mana
-    base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
-  }
-
-  virtual void execute() override
-  {
-    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-    consume_resource();
-
-    if ( p() -> specialization() == PALADIN_PROTECTION && seal_type == SEAL_OF_JUSTICE )
-    {
-      sim -> errorf( "Protection attempted to cast Seal of Justice, defaulting to Seal of Insight" );
-      p() -> active_seal = SEAL_OF_INSIGHT;
-    }
-    else if ( p() -> specialization() == PALADIN_PROTECTION && seal_type == SEAL_OF_TRUTH )
-    {
-      sim -> errorf( "Protection attempted to cast Seal of Truth, defaulting to Seal of Insight" );
-      p() -> active_seal = SEAL_OF_INSIGHT;
-    }
-    else
-    {
-      p() -> active_seal = seal_type; // set the new seal
-
-      // now handle the buffs (for reporting only)
-
-      // cancel all existing buffs
-      p() -> buffs.seal_of_insight -> expire();
-      p() -> buffs.seal_of_justice -> expire();
-      p() -> buffs.seal_of_righteousness -> expire();
-      p() -> buffs.seal_of_truth -> expire();
-      // now trigger the new buff
-      switch ( seal_type )
-      {
-      case SEAL_OF_INSIGHT:
-        p() -> buffs.seal_of_insight -> trigger();
-        p() -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
-        break;
-      case SEAL_OF_JUSTICE:
-        p() -> buffs.seal_of_justice -> trigger();
-        break;
-      case SEAL_OF_RIGHTEOUSNESS:
-        p() -> buffs.seal_of_righteousness -> trigger();
-        break;
-      case SEAL_OF_TRUTH:
-        p() -> buffs.seal_of_truth -> trigger();
-        break;
-      default:
-        break;
-      }
-    }
-
-    // if we've swapped to or from Seal of Insight, we'll need to refresh spell haste cache
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> active_seal == seal_type ) return false;
-    return paladin_melee_attack_t::ready();
-  }
-};
-
-// Seal of Justice ==========================================================
-
-struct seal_of_justice_proc_t : public paladin_melee_attack_t
-{
-  seal_of_justice_proc_t( paladin_t* p ) :
-    paladin_melee_attack_t( "seal_of_justice_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Justice" ) -> ok() ? 20170 : 0 ) )
-  {
-    background        = true;
-    trigger_gcd       = timespan_t::zero();
-
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-  }
-};
-
-// Seal of Righteousness ====================================================
-
-struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
-{
-  seal_of_righteousness_proc_t( paladin_t* p ) :
-    paladin_melee_attack_t( "seal_of_righteousness_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Righteousness" ) -> ok() ? 101423 : 0 ) )
-  {
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-
-    aoe         = -1;
-
-    // T14 Retribution 4-piece increases seal damage
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-  }
-};
-
-// Seal of Truth ============================================================
-
-struct seal_of_truth_proc_t : public paladin_melee_attack_t
-{
-  seal_of_truth_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "seal_of_truth_proc", p, p -> find_class_spell( "Seal of Truth" ), true )
-  {
-    background  = true;
-    // automatically connects when triggered
-    may_block = may_glance = may_miss = may_dodge = may_parry = false;
-    trigger_gcd = timespan_t::zero();
-
-    if ( data().ok() )
-    {
-      // proc info stored in spell 42463.
-      // Note that effect #2 is a lie, SoT uses unnormalized weapon speed, so we leave that as default (false)
-      const spell_data_t* s = p -> find_spell( 42463 );
-      if ( s && s -> ok() )
-        weapon_multiplier      = s -> effectN( 1 ).percent();
-    }
-
-    // Glyph of Immediate Truth increases direct damage
-    if ( p -> glyphs.immediate_truth -> ok() )
-      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 1 ).percent();
-
-    // Retribution T14 4-piece boosts seal damage
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
-
-    // 1/15 hotfix reduces damage by 80% for prot
-    if ( p -> passives.guarded_by_the_light -> ok() )
-      base_multiplier /= 5;
-  }
-};
-
 // Shield of the Righteous ==================================================
 
 struct shield_of_the_righteous_t : public paladin_melee_attack_t
@@ -4353,9 +3917,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
       background = true;
     }
-
-    // Triggers all seals
-    trigger_seal = true;
 
     // not on GCD, usable off-GCD
     trigger_gcd = timespan_t::zero();
@@ -4393,9 +3954,6 @@ struct final_verdict_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "final_verdict", p, p -> find_talent_spell( "Final Verdict" ), true )
   {
     parse_options( options_str );
-    trigger_seal       = true;
-    if ( p -> bugs )
-      trigger_seal_of_righteousness = false;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
@@ -4436,7 +3994,6 @@ struct templars_verdict_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( options_str );
-    trigger_seal       = true;
 
     // Tier 13 Retribution 4-piece boosts damage
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
@@ -4593,12 +4150,9 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 {
   dots.eternal_flame      = target -> get_dot( "eternal_flame",      paladin );
   dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
-  dots.censure            = target -> get_dot( "censure",            paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
 
-  buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) )
-                             .duration( timespan_t::from_seconds( 20 ) ); // artificially extend duration to fix last tick bug
   buffs.eternal_flame      = new buffs::eternal_flame_t( this );
   buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) )
                              .cd( timespan_t::zero() ) // let ability handle cooldown
@@ -4648,17 +4202,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
-
-  action_t* a = nullptr;
-  if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
-                                               active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this ); return a; }
-  if ( name == "seal_of_insight"           ) { a = new paladin_seal_t( this, "seal_of_insight",       SEAL_OF_INSIGHT,       options_str );
-                                               active_seal_of_insight_proc       = new seal_of_insight_proc_t       ( this ); return a; }
-  if ( name == "seal_of_righteousness"     ) { a = new paladin_seal_t( this, "seal_of_righteousness", SEAL_OF_RIGHTEOUSNESS, options_str );
-                                               active_seal_of_righteousness_proc = new seal_of_righteousness_proc_t ( this ); return a; }
-  if ( name == "seal_of_truth"             ) { a = new paladin_seal_t( this, "seal_of_truth",         SEAL_OF_TRUTH,         options_str );
-                                               active_seal_of_truth_proc         = new seal_of_truth_proc_t         ( this );
-                                               active_censure                    = new censure_t                    ( this ); return a; }
 
   if ( name == "speed_of_light"            ) return new speed_of_light_t           ( this, options_str );
   if ( name == "eternal_flame"             ) return new eternal_flame_t            ( this, options_str );
@@ -4780,7 +4323,6 @@ void paladin_t::reset()
 
   last_judgement_target = nullptr;
   last_retribution_trinket_target = nullptr;
-  active_seal = SEAL_NONE;
   bok_up      = false;
   bom_up      = false;
   last_extra_regen = timespan_t::zero();
@@ -4801,7 +4343,6 @@ void paladin_t::init_gains()
 
   // Health
   gains.holy_shield                 = get_gain( "holy_shield_absorb" );
-  gains.seal_of_insight             = get_gain( "seal_of_insight" );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm" );
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
 
@@ -4894,12 +4435,6 @@ void paladin_t::create_buffs()
   buffs.speed_of_light         = buff_creator_t( this, "speed_of_light", talents.speed_of_light )
                                  .default_value( talents.speed_of_light -> effectN( 1 ).percent() );
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
-  buffs.liadrins_righteousness = buff_creator_t( this, "liadrins_righteousness", find_spell( 156989 ) )
-                                 .add_invalidate( CACHE_HASTE );
-  buffs.maraads_truth          = buff_creator_t( this, "maraads_truth", find_spell( 156990 ) )
-                                 .add_invalidate( CACHE_ATTACK_POWER );
-  buffs.turalyons_justice      = buff_creator_t( this, "turalyons_justice", find_spell( 156987 ) );
-  buffs.uthers_insight         = buff_creator_t( this, "uthers_insight", find_spell( 156988 ) );
   buffs.seraphim               = stat_buff_creator_t( this, "seraphim", talents.seraphim )
                                .add_stat( STAT_HASTE_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
                                .add_stat( STAT_CRIT_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
@@ -4916,10 +4451,6 @@ void paladin_t::create_buffs()
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.hand_of_purity         = buff_creator_t( this, "hand_of_purity", find_talent_spell( "Hand of Purity" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.seal_of_insight        = buff_creator_t( this, "seal_of_insight", find_class_spell( "Seal of Insight" ) );
-  buffs.seal_of_justice        = buff_creator_t( this, "seal_of_justice", find_class_spell( "Seal of Justice" ) );
-  buffs.seal_of_righteousness  = buff_creator_t( this, "seal_of_righteousness", find_class_spell( "Seal of Righteousness" ) );
-  buffs.seal_of_truth          = buff_creator_t( this, "seal_of_truth", find_class_spell( "Seal of Truth" ) );
 
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_spell( 88819 ) );
@@ -5084,8 +4615,6 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
   def -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
 
-  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains", "GCD-bound spells" );
-  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&spell_targets.avengers_shield>1&!glyph.focused_shield.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=spell_targets.hammer_of_the_righteous>=3" );
   def -> add_action( this, "Crusader Strike" );
@@ -5107,8 +4636,6 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   def -> add_action( this, "Holy Wrath" );
-  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<=buff.liadrins_righteousness.remains" );
-  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<=buff.uthers_insight.remains" );
   def -> add_talent( this, "Sacred Shield" );
   def -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
 
@@ -5127,7 +4654,6 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&spell_targets.avengers_shield>1&!glyph.focused_shield.enabled", "GCD-bound spells" );
   dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled&(buff.seraphim.react|(glyph.final_wrath.enabled&target.health.pct<=20))" );
   dps -> add_action( this, "Hammer of the Righteous", "if=spell_targets.hammer_of_the_righteous>=3" );
-  dps -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.down" );
   dps -> add_action( this, "Crusader Strike" );
   dps -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
   dps -> add_action( "judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&last_judgment_target!=target" );
@@ -5139,7 +4665,6 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_talent( this, "Execution Sentence", "if=spell_targets.consecration<3" );
   dps -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
   dps -> add_action( this, "Avenger's Shield" );
-  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness" );
   dps -> add_talent( this, "Light's Hammer" );
   dps -> add_talent( this, "Holy Prism" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&spell_targets.consecration>=3" );
@@ -5259,9 +4784,7 @@ void paladin_t::generate_action_prio_list_ret()
       def -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
   }
 
-  def -> add_action( "auto_attack,target_if=dot.censure.remains<4" );
   def -> add_talent( this, "Speed of Light", "if=movement.distance>5" );
-  def -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&time<2" );
   def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled" );
   def -> add_talent( this, "Execution Sentence", "sync=seraphim,if=talent.seraphim.enabled" );
   def -> add_talent( this, "Light's Hammer", "if=!talent.seraphim.enabled" );
@@ -5319,10 +4842,6 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
 
-  single -> add_action( this, "judgment", "if=talent.empowered_seals.enabled&seal.truth&buff.maraads_truth.remains<cooldown.judgment.duration*1.5" );
-  single -> add_action( this, "judgment", "if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration*1.5" );
-  single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<(cooldown.judgment.duration|buff.maraads_truth.down)&(buff.avenging_wrath.up|target.health.pct<35)&!buff.wings_of_liberty.up" );
-  single -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<cooldown.judgment.duration&buff.maraads_truth.remains>cooldown.judgment.duration*1.5&target.health.pct<35&!buff.wings_of_liberty.up&!buff.bloodlust.up" );
   single -> add_action( this, "Crusader Strike", "if=talent.seraphim.enabled" );
   single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
@@ -5339,8 +4858,6 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react" );
   single -> add_talent( this, "Final Verdict", "if=holy_power>=4" );
 
-  single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<cooldown.judgment.duration*1.5&buff.liadrins_righteousness.remains>cooldown.judgment.duration*1.5" );
-  single -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<cooldown.judgment.duration*1.5&buff.maraads_truth.remains>cooldown.judgment.duration*1.5&!buff.bloodlust.up" );
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&spell_targets.divine_storm=2&holy_power>=4&!talent.final_verdict.enabled" );
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&!talent.final_verdict.enabled" );
@@ -5364,7 +4881,6 @@ void paladin_t::generate_action_prio_list_ret()
 
   cleave -> add_action( this, "Hammer of Wrath" );
   cleave -> add_action( this, "Hammer of the Righteous", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
-  cleave -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration" );
   cleave -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
 
   cleave -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
@@ -5637,7 +5153,6 @@ void paladin_t::init_spells()
   talents.holy_prism              = find_talent_spell( "Holy Prism" );
   talents.lights_hammer           = find_talent_spell( "Light's Hammer" );
   talents.execution_sentence      = find_talent_spell( "Execution Sentence" );
-  talents.empowered_seals         = find_talent_spell( "Empowered Seals" );
   talents.seraphim                = find_talent_spell( "Seraphim" );
   talents.holy_shield             = find_talent_spell( "Holy Shield" );
   talents.final_verdict           = find_talent_spell( "Final Verdict" );
@@ -5662,7 +5177,6 @@ void paladin_t::init_spells()
   passives.boundless_conviction   = find_spell( 115675 ); // find_spell fails here
   passives.plate_specialization   = find_specialization_spell( "Plate Specialization" );
   passives.sanctity_of_battle     = find_spell( 25956 );  // find_spell fails here
-  passives.seal_of_insight        = find_class_spell( "Seal of Insight" );
 
   // Holy Passives
   passives.daybreak               = find_specialization_spell( "Daybreak" );
@@ -5936,10 +5450,6 @@ double paladin_t::composite_melee_haste() const
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
-  // Empowered Seals
-  if ( buffs.liadrins_righteousness -> check() )
-    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent();
-
   return h;
 }
 
@@ -5978,10 +5488,6 @@ double paladin_t::composite_spell_haste() const
 
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
-
-  // Empowered Seals
-  if ( buffs.liadrins_righteousness -> check() )
-    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent();
 
   return h;
 }
@@ -6103,12 +5609,8 @@ double paladin_t::composite_attack_power_multiplier() const
 {
   double ap = player_t::composite_attack_power_multiplier();
 
-  // Mastery bonus is multiplicative with other effects (raid buff, Maraad's Truth)
+  // Mastery bonus is multiplicative with other effects
   ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
-
-  // Maraad's Truth is multiplicative with other effects (raid buff, mastery)
-  if ( buffs.maraads_truth -> check() )
-    ap *= 1.0 + buffs.maraads_truth -> data().effectN( 1 ).percent();
 
   return ap;
 }
@@ -6191,8 +5693,6 @@ double paladin_t::temporary_movement_modifier() const
     temporary = std::max( buffs.speed_of_light -> default_value, temporary );
   if ( buffs.long_arm_of_the_law -> up() )
     temporary = std::max( buffs.long_arm_of_the_law -> default_value, temporary );
-  if ( buffs.turalyons_justice -> check() )
-    temporary = std::max( buffs.turalyons_justice-> data().effectN( 1 ).percent(), temporary );
   if ( talents.pursuit_of_justice -> ok() )
     temporary = std::max( ( talents.pursuit_of_justice -> effectN( 1 ).percent() +
                 std::min( resources.current[RESOURCE_HOLY_POWER] * talents.pursuit_of_justice -> effectN( 8 ).percent(), 0.15 ) ),
@@ -6563,27 +6063,8 @@ expr_t* paladin_t::create_expression( action_t* a,
       expr_t( n ), paladin( p ) {}
   };
 
-  struct seal_expr_t : public paladin_expr_t
-  {
-    seal_e rt;
-    seal_expr_t( const std::string& n, paladin_t& p, seal_e r ) :
-      paladin_expr_t( n, p ), rt( r ) {}
-    virtual double evaluate() override { return paladin.active_seal == rt; }
-  };
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
-
-  if ( ( splits.size() == 2 ) && ( splits[ 0 ] == "seal" ) )
-  {
-    seal_e s = SEAL_NONE;
-
-    if      ( splits[ 1 ] == "truth"         ) s = SEAL_OF_TRUTH;
-    else if ( splits[ 1 ] == "insight"       ) s = SEAL_OF_INSIGHT;
-    else if ( splits[ 1 ] == "none"          ) s = SEAL_NONE;
-    else if ( splits[ 1 ] == "righteousness" ) s = SEAL_OF_RIGHTEOUSNESS;
-    else if ( splits[ 1 ] == "justice"       ) s = SEAL_OF_JUSTICE;
-    return new seal_expr_t( name_str, *this, s );
-  }
 
   struct double_jeopardy_expr_t : public paladin_expr_t
   {
