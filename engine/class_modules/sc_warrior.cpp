@@ -19,7 +19,6 @@ struct warrior_t;
 
 struct warrior_td_t: public actor_target_data_t
 {
-  dot_t* dots_bloodbath;
   dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
   dot_t* dots_rend;
@@ -49,7 +48,6 @@ public:
   // Active
   struct active_t
   {
-    action_t* bloodbath_dot;
     action_t* deep_wounds;
   } active;
 
@@ -57,7 +55,6 @@ public:
   struct buffs_t
   {
     buff_t* fury_trinket;
-    buff_t* bloodbath;
     // All Warriors
     buff_t* berserker_rage;
     buff_t* bladestorm;
@@ -143,7 +140,6 @@ public:
   // Spells
   struct spells_t
   {
-    const spell_data_t* bloodbath;
     const spell_data_t* charge;
     const spell_data_t* defensive_stance;
     const spell_data_t* indomitable;
@@ -632,11 +628,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void assess_damage( dmg_e type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
-
-    if ( special && s -> result_amount > 0 && result_is_hit( s -> result ) && p() -> buff.bloodbath -> up() )
-    {
-      trigger_bloodbath_dot( s -> target, s -> result_amount );
-    }
   }
 
   virtual void execute() override
@@ -660,28 +651,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
     return dmg;
   }
-
-  virtual void trigger_bloodbath_dot( player_t* t, double dmg )
-  {
-    residual_action::trigger(
-      p() -> active.bloodbath_dot, // ignite spell
-      t, // target
-      p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
-  }
-};
-
-// Bloodbath Dot ============================================================
-
-struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
-{
-  bloodbath_dot_t( warrior_t* p ):
-    base_t( "bloodbath", p, p -> find_spell( 113344 ) )
-  {
-    dual = true;
-  }
-
-  void trigger_bloodbath_dot( player_t*, double ) override // Bloodbath doesn't trigger itself.
-  {}
 };
 
 // Melee Attack =============================================================
@@ -2394,24 +2363,6 @@ struct berserker_rage_t: public warrior_spell_t
   }
 };
 
-// Bloodbath ================================================================
-
-struct bloodbath_t: public warrior_spell_t
-{
-  bloodbath_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "bloodbath", p, p -> spell.bloodbath )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    p() -> buff.bloodbath -> trigger();
-  }
-};
-
 // Defensive Stance ===============================================================
 
 struct defensive_stance_t: public warrior_spell_t
@@ -2664,7 +2615,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
-  if ( name == "bloodbath"            ) return new bloodbath_t            ( this, options_str );
   if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
@@ -2823,13 +2773,10 @@ void warrior_t::init_spells()
   spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
   spell.revenge_trigger         = find_class_spell( "Revenge Trigger" );
-  spell.bloodbath               = find_class_spell( "Bloodbath" );
 
   // Active spells
-  active.bloodbath_dot      = nullptr;
   active.deep_wounds        = nullptr;
 
-  if ( spell.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
   if ( spec.rampage -> ok() )
@@ -3023,13 +2970,13 @@ void warrior_t::apl_fury()
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].name_str == "scabbard_of_kyanos" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.avatar.up|buff.bloodbath.up|target.time_to_die<25)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.avatar.up|target.time_to_die<25)" );
     else if ( items[i].name_str == "vial_of_convulsive_shadows" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25|!talent.anger_management.enabled)" );
     else if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25)" );
     else if ( items[i].name_str != "nitro_boosts" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|buff.avatar.up|buff.bloodbath.up|target.time_to_die<25)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|buff.avatar.up|target.time_to_die<25)" );
   }
 
   if ( sim -> allow_potions )
@@ -3041,12 +2988,12 @@ void warrior_t::apl_fury()
   }
 
   default_list -> add_action( "run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
-  default_list -> add_action( this, "Recklessness", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>25|!talent.bloodbath.enabled|target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&set_bonus.tier18_4pc" );
+  default_list -> add_action( this, "Recklessness", "if=target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&set_bonus.tier18_4pc" );
   default_list -> add_action( "call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc" );
   default_list -> add_action( "call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc" );
 
-  reck_anger_management -> add_action( this, "Recklessness", "if=(target.time_to_die>140|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled|target.time_to_die<15)" );
-  reck_no_anger -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled|target.time_to_die<15)" );
+  reck_anger_management -> add_action( this, "Recklessness", "if=(target.time_to_die>140|target.health.pct<20)" );
+  reck_no_anger -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)" );
 
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|cooldown.recklessness.remains>60|target.time_to_die<30" );
 
@@ -3055,7 +3002,7 @@ void warrior_t::apl_fury()
     if ( racial_actions[i] == "arcane_torrent" )
       default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
     else
-      default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up" );
+      default_list -> add_action( racial_actions[i] + ",if=buff.recklessness.up" );
   }
 
   default_list -> add_action( "call_action_list,name=two_targets,if=spell_targets.whirlwind=2" );
@@ -3069,14 +3016,13 @@ void warrior_t::apl_fury()
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
-  single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_action( this, "Recklessness", "if=target.health.pct<20&raid_event.adds.exists" );
   single_target -> add_action( this, "Bloodthirst", "if=(!talent.unquenchable_thirst.enabled&(rage<rage.max-40))|buff.enrage.down" );
-  single_target -> add_talent( this, "Ravager", "if=buff.bloodbath.up|(!talent.bloodbath.enabled&(!raid_event.adds.exists|raid_event.adds.in>60|target.time_to_die<40))" );
+  single_target -> add_talent( this, "Ravager", "if=!raid_event.adds.exists|raid_event.adds.in>60|target.time_to_die<40" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12" );
-  single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  single_target -> add_talent( this, "Dragon Roar" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<0.5&rage<50" );
   single_target -> add_talent( this, "Bladestorm", "if=!raid_event.adds.exists" );
@@ -3084,9 +3030,8 @@ void warrior_t::apl_fury()
   single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled&target.health.pct>20" );
   single_target -> add_action( this, "Bloodthirst" );
 
-  two_targets -> add_talent( this, "Bloodbath" );
-  two_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  two_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  two_targets -> add_talent( this, "Ravager" );
+  two_targets -> add_talent( this, "Dragon Roar" );
   two_targets -> add_action( "call_action_list,name=bladestorm" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<40" );
   two_targets -> add_talent( this, "Siegebreaker" );
@@ -3096,26 +3041,24 @@ void warrior_t::apl_fury()
   two_targets -> add_action( this, "Bloodthirst" );
   two_targets -> add_action( this, "Whirlwind" );
 
-  three_targets -> add_talent( this, "Bloodbath" );
-  three_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  three_targets -> add_talent( this, "Ravager" );
   three_targets -> add_action( "call_action_list,name=bladestorm" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   three_targets -> add_talent( this, "Siegebreaker" );
   three_targets -> add_action( this, "Execute", "cycle_targets=1" );
-  three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  three_targets -> add_talent( this, "Dragon Roar" );
   three_targets -> add_action( this, "Whirlwind", "if=target.health.pct>20" );
   three_targets -> add_action( this, "Bloodthirst" );
   three_targets -> add_action( this, "Raging Blow" );
 
-  aoe -> add_talent( this, "Bloodbath" );
-  aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  aoe -> add_talent( this, "Ravager" );
   aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up&buff.enrage.up" );
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50" );
   aoe -> add_action( "call_action_list,name=bladestorm" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Siegebreaker" );
-  aoe -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Bloodthirst" );
 
   bladestorm -> add_action( this, "Recklessness", "sync=bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)", "oh god why" );
@@ -3143,7 +3086,7 @@ void warrior_t::apl_arms()
     if ( items[i].name_str == "scabbard_of_kyanos" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && items[i].parsed.encoded_addon != "nitro_boosts" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
   }
 
   if ( sim -> allow_potions )
@@ -3154,9 +3097,8 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=(((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
+  default_list -> add_action( this, "Recklessness", "if=(((target.time_to_die>190|target.health.pct<20)|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Bloodbath", "if=(dot.rend.ticking&cooldown.colossus_smash.remains<5&((talent.ravager.enabled&prev_gcd.ravager)|!talent.ravager.enabled))|target.time_to_die<20" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -3164,7 +3106,7 @@ void warrior_t::apl_arms()
     if ( racial_actions[i] == "arcane_torrent" )
       default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
     else
-      default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
+      default_list -> add_action( racial_actions[i] + ",if=debuff.colossus_smash.up|buff.recklessness.up" );
   }
 
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
@@ -3205,7 +3147,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Rend", "if=dot.rend.remains<5.4&target.time_to_die>4" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,max_cycle_targets=2,if=dot.rend.remains<5.4&target.time_to_die>8&!buff.colossus_smash_up.up" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=dot.rend.remains<5.4&target.time_to_die-remains>18&!buff.colossus_smash_up.up&spell_targets.whirlwind<=8" );
-  aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|cooldown.colossus_smash.remains<4" );
+  aoe -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4" );
   aoe -> add_talent( this, "Bladestorm", "if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)" );
   aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
   aoe -> add_action( this, "Execute", "cycle_targets=1,if=spell_targets.whirlwind<=8&((rage.deficit<48&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)" );
@@ -3244,10 +3186,10 @@ void warrior_t::apl_prot()
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|!talent.bloodbath.enabled)|(active_enemies>=2&buff.ravager_protection.up)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1|(active_enemies>=2&buff.ravager_protection.up)" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
+    default_list -> add_action( racial_actions[i] );
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
@@ -3271,25 +3213,21 @@ void warrior_t::apl_prot()
 
   //dps-single-target
   prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>3" );
-  prot -> add_talent( this, "Bloodbath", "if=talent.bloodbath.enabled&((cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(cooldown.storm_bolt.remains=0&talent.storm_bolt.enabled)|talent.shockwave.enabled)" );
   prot -> add_talent( this, "Avatar", "if=talent.avatar.enabled&((cooldown.ravager.remains=0&talent.ravager.enabled)|(cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(talent.storm_bolt.enabled&cooldown.storm_bolt.remains=0)|(!(talent.dragon_roar.enabled|talent.ravager.enabled|talent.storm_bolt.enabled)))" );
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge" );
   prot -> add_talent( this, "Ravager" );
   prot -> add_talent( this, "Storm Bolt" );
-  prot -> add_talent( this, "Dragon Roar" );
   prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe
-  prot_aoe -> add_talent( this, "Bloodbath" );
   prot_aoe -> add_talent( this, "Avatar" );
   prot_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
   prot_aoe -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
   prot_aoe -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
   prot_aoe -> add_talent( this, "Ravager", "if=(buff.avatar.up|cooldown.avatar.remains>10)|!talent.avatar.enabled" );
-  prot_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   prot_aoe -> add_talent( this, "Shockwave" );
   prot_aoe -> add_action( this, "Revenge" );
   prot_aoe -> add_action( this, "Thunder Clap" );
@@ -3430,7 +3368,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
 {
   using namespace buffs;
 
-  dots_bloodbath = target -> get_dot( "bloodbath", &p );
   dots_deep_wounds = target -> get_dot( "deep_wounds", &p );
   dots_ravager = target -> get_dot( "ravager", &p );
   dots_rend = target -> get_dot( "rend", &p );
@@ -3459,9 +3396,6 @@ void warrior_t::create_buffs()
 
   buff.bladestorm = buff_creator_t( this, "bladestorm", talents.bladestorm )
     .period( timespan_t::zero() )
-    .cd( timespan_t::zero() );
-
-  buff.bloodbath = buff_creator_t( this, "bloodbath", spell.bloodbath )
     .cd( timespan_t::zero() );
 
   buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spec.colossus_smash )
@@ -4186,8 +4120,6 @@ struct fel_cleave_t: public warrior_attack_t
     weapon_multiplier = 0;
     aoe = -1;
   }
-  void trigger_bloodbath_dot( player_t*, double ) override
-  {}
 };
 
 action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& effect )
