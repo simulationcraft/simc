@@ -2975,8 +2975,6 @@ void warrior_t::apl_fury()
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25|!talent.anger_management.enabled)" );
     else if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25)" );
-    else if ( items[i].name_str != "nitro_boosts" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|buff.avatar.up|target.time_to_die<25)" );
   }
 
   if ( sim -> allow_potions )
@@ -2988,9 +2986,9 @@ void warrior_t::apl_fury()
   }
 
   default_list -> add_action( "run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
-  default_list -> add_action( this, "Recklessness", "if=target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&set_bonus.tier18_4pc" );
-  default_list -> add_action( "call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc" );
-  default_list -> add_action( "call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc" );
+  default_list -> add_action( this, "Recklessness", "if=target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)" );
+  default_list -> add_action( "call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)" );
+  default_list -> add_action( "call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)" );
 
   reck_anger_management -> add_action( this, "Recklessness", "if=(target.time_to_die>140|target.health.pct<20)" );
   reck_no_anger -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)" );
@@ -3011,23 +3009,20 @@ void warrior_t::apl_fury()
   default_list -> add_action( "call_action_list,name=single_target" );
 
   movement -> add_action( this, "Heroic Leap" );
-  movement -> add_action( this, "Charge", "cycle_targets=1,if=debuff.charge.down" );
-  movement -> add_action( this, "Charge", "", "If possible, charge a target that will give rage. Otherwise, just charge to get back in range." );
+  movement -> add_action( this, "Charge" );
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
   single_target -> add_action( this, "Recklessness", "if=target.health.pct<20&raid_event.adds.exists" );
-  single_target -> add_action( this, "Bloodthirst", "if=(!talent.unquenchable_thirst.enabled&(rage<rage.max-40))|buff.enrage.down" );
+  single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
   single_target -> add_talent( this, "Ravager", "if=!raid_event.adds.exists|raid_event.adds.in>60|target.time_to_die<40" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12" );
   single_target -> add_talent( this, "Dragon Roar" );
   single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<0.5&rage<50" );
   single_target -> add_talent( this, "Bladestorm", "if=!raid_event.adds.exists" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
-  single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled&target.health.pct>20" );
   single_target -> add_action( this, "Bloodthirst" );
 
   two_targets -> add_talent( this, "Ravager" );
@@ -3061,8 +3056,8 @@ void warrior_t::apl_fury()
   aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Bloodthirst" );
 
-  bladestorm -> add_action( this, "Recklessness", "sync=bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)", "oh god why" );
-  bladestorm -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)" );
+  bladestorm -> add_action( this, "Recklessness", "sync=bladestorm,if=buff.enrage.remains>4&(raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)", "oh god why" );
+  bladestorm -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4&(raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)" );
 }
 
 // Arms Warrior Action Priority List ========================================
@@ -3084,8 +3079,6 @@ void warrior_t::apl_arms()
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].name_str == "scabbard_of_kyanos" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
-    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && items[i].parsed.encoded_addon != "nitro_boosts" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
   }
 
@@ -3114,13 +3107,7 @@ void warrior_t::apl_arms()
   default_list -> add_action( "call_action_list,name=single" );
 
   movement -> add_action( this, "Heroic Leap" );
-  movement -> add_action( this, "Charge", "cycle_targets=1,if=debuff.charge.down" );
-  movement -> add_action( this, "Charge", "", "If possible, charge a target that will give us rage. Otherwise, just charge to get back in range." );
-  for ( size_t i = 0; i < num_items; i++ )
-  {
-    if ( items[i].parsed.encoded_addon == "nitro_boosts" )
-      movement -> add_action( "use_item,name=" + items[i].name_str + ",if=movement.distance>90" );
-  }
+  movement -> add_action( this, "Charge" );
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
@@ -3129,10 +3116,10 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
   single_target -> add_action( this, "Colossus Smash" );
-  single_target -> add_talent( this, "Bladestorm", "if=(((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4))&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))" );
+  single_target -> add_talent( this, "Bladestorm", "if=(((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4))&(!raid_event.adds.exists|raid_event.adds.in>55)" );
   single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.down" );
   single_target -> add_talent( this, "Siegebreaker" );
-  single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))" );
+  single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   single_target -> add_action( this, "Execute", "if=(rage.deficit<48&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
   single_target -> add_action( this, "Rend", "if=target.time_to_die>4&remains<5.4" );
   single_target -> add_action( "wait,sec=cooldown.colossus_smash.remains,if=cooldown.colossus_smash.remains<gcd" );
@@ -3140,7 +3127,6 @@ void warrior_t::apl_arms()
   single_target -> add_action( "wait,sec=0.1,if=target.health.pct<=20" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<40&!set_bonus.tier18_4pc" );
   single_target -> add_action( this, "Slam", "if=rage>20&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Thunder Clap", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&set_bonus.tier18_4pc&(rage>=40|debuff.colossus_smash.up)" );
   single_target -> add_action( this, "Whirlwind", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&set_bonus.tier18_4pc&(rage>=40|debuff.colossus_smash.up)" );
   single_target -> add_talent( this, "Shockwave" );
 
@@ -3151,7 +3137,7 @@ void warrior_t::apl_arms()
   aoe -> add_talent( this, "Bladestorm", "if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)" );
   aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
   aoe -> add_action( this, "Execute", "cycle_targets=1,if=spell_targets.whirlwind<=8&((rage.deficit<48&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)" );
-  aoe -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down" );
+  aoe -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2" );
   aoe -> add_action( this, "Mortal Strike", "if=target.health.pct>20&(rage>60|debuff.colossus_smash.up)&spell_targets.whirlwind<=5", "Heroic Charge is an event that makes the warrior heroic leap out of melee range for an instant\n"
                      "# If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.\n"
                      "# This can delay autoattacks, but typically the rage gained from charging is more than\n"
