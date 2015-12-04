@@ -52,7 +52,6 @@ public:
   {
     action_t* bloodbath_dot;
     action_t* deep_wounds;
-    heal_t* t16_2pc;
   } active;
 
   // Buffs
@@ -90,8 +89,6 @@ public:
     buff_t* sword_and_board;
 
     // Tier bonuses
-    buff_t* tier16_reckless_defense;
-    buff_t* tier16_4pc_death_sentence;
     buff_t* tier17_2pc_arms;
     buff_t* tier17_4pc_fury;
     buff_t* tier17_4pc_fury_driver;
@@ -144,8 +141,6 @@ public:
     gain_t* shield_slam;
     gain_t* sword_and_board;
     // Tier bonuses
-    gain_t* tier16_2pc_melee;
-    gain_t* tier16_4pc_tank;
     gain_t* tier17_4pc_arms;
   } gain;
 
@@ -994,7 +989,6 @@ struct bloodthirst_t: public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
   double composite_crit() const override
@@ -1012,7 +1006,6 @@ struct bloodthirst_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p() -> buff.tier16_4pc_death_sentence -> trigger();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1259,7 +1252,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() )
     {
-      if ( target -> health_percentage() < 20 || p() -> buff.tier16_4pc_death_sentence -> check() )
+      if ( target -> health_percentage() < 20 )
       {
         am *= 4.0 * std::min( 40.0, ( p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
       }
@@ -1277,9 +1270,6 @@ struct execute_t: public warrior_attack_t
     if ( p() -> mastery.colossal_might -> ok() )
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
-    if ( p() -> buff.tier16_4pc_death_sentence -> up() && target -> health_percentage() < 20 )
-      c *= 1.0 + p() -> buff.tier16_4pc_death_sentence -> data().effectN( 2 ).percent();
-
     return c;
   }
 
@@ -1290,17 +1280,12 @@ struct execute_t: public warrior_attack_t
     if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
          oh_attack -> execute();
-
-    p() -> buff.tier16_4pc_death_sentence -> expire();
   }
 
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
-
-    if ( p() -> buff.tier16_4pc_death_sentence -> check() )
-      return warrior_attack_t::ready();
 
     // Call warrior_attack_t::ready() first for proper targeting support.
     if ( warrior_attack_t::ready() && target -> health_percentage() < 20 )
@@ -1661,7 +1646,6 @@ struct mortal_strike_t: public warrior_attack_t
     parse_options( options_str );
     cooldown = p -> cooldown.mortal_strike;
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
   }
@@ -1671,7 +1655,6 @@ struct mortal_strike_t: public warrior_attack_t
     warrior_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) && sim -> overrides.mortal_wounds )
       execute_state -> target -> debuffs.mortal_wounds -> trigger();
-    p() -> buff.tier16_4pc_death_sentence -> trigger();
   }
 
   double cooldown_reduction() const override
@@ -2859,7 +2842,6 @@ void warrior_t::init_spells()
   // Active spells
   active.bloodbath_dot      = nullptr;
   active.deep_wounds        = nullptr;
-  active.t16_2pc            = nullptr;
 
   if ( spell.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
@@ -3449,14 +3431,6 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
   {
     default_value = data().effectN( 1 ).percent();
   }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    if ( warrior.sets.has_set_bonus( SET_TANK, T16, B4 ) )
-      warrior.buff.tier16_reckless_defense -> trigger();
-
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
 };
 } // end namespace buffs
 
@@ -3563,11 +3537,6 @@ void warrior_t::create_buffs()
   buff.sword_and_board = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
     .chance( spec.sword_and_board -> effectN( 1 ).percent() );
 
-  buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
-
-  buff.tier16_4pc_death_sentence = buff_creator_t( this, "death_sentence", find_spell( 144442 ) )
-    .chance( sets.set( SET_MELEE, T16, B4 ) -> effectN( 1 ).percent() );
-
   buff.tier17_2pc_arms = buff_creator_t( this, "tier17_2pc_arms", sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets.set( WARRIOR_ARMS, T17, B2 ) -> proc_chance() );
 
@@ -3614,8 +3583,6 @@ void warrior_t::init_gains()
   gain.shield_slam            = get_gain( "shield_slam" );
   gain.sword_and_board        = get_gain( "sword_and_board" );
 
-  gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee" );
-  gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank" );
   gain.tier17_4pc_arms        = get_gain( "tier17_4pc_arms" );
 
   if ( !fury_trinket )
@@ -4209,13 +4176,6 @@ void warrior_t::assess_damage( school_e school,
   }
 
   player_t::assess_damage( school, dtype, s );
-
-  if ( ( s -> result == RESULT_HIT || s -> result == RESULT_CRIT || s -> result == RESULT_GLANCE ) && buff.tier16_reckless_defense -> up() )
-  {
-    player_t::resource_gain( RESOURCE_RAGE,
-                             floor( s -> result_amount / resources.max[RESOURCE_HEALTH] * 100 ),
-                             gain.tier16_4pc_tank );
-  }
 }
 
 // warrior_t::create_options ================================================
