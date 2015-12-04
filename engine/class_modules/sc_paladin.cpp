@@ -97,9 +97,6 @@ public:
     stat_buff_t* seraphim;
     buff_t* speed_of_light;
 
-    // Draenor Perk
-    buff_t* divine_crusader;
-
     // Set Bonuses
     buff_t* crusaders_fury;       // t17_2pc_melee
     buff_t* blazing_contempt;     // t17_4pc_melee
@@ -197,7 +194,6 @@ public:
   struct procs_t
   {
     proc_t* divine_purpose;
-    proc_t* divine_crusader;
     proc_t* eternal_glory;
     proc_t* focus_of_vengeance_reset;
     proc_t* crusaders_fury;
@@ -607,20 +603,6 @@ public:
       if ( success )
         p() -> procs.divine_purpose -> occur();
     }
-
-    bool perk_success = false;
-
-    // Repeat for Draenor perk
-    if ( p() -> perk.empowered_divine_storm -> ok() )
-    {
-      perk_success = p() -> buffs.divine_crusader -> trigger( 1,
-        p() -> buffs.divine_crusader -> default_value,
-        p() -> perk.empowered_divine_storm -> effectN( 1 ).percent() * c_effective / 3.0 );
-    }
-    // record success for output
-    if ( perk_success )
-      p() -> procs.divine_crusader -> occur();
-
   }
 
   virtual void execute()
@@ -2945,45 +2927,6 @@ struct divine_storm_t: public paladin_melee_attack_t
     aoe = -1;
   }
 
-  void execute() override
-  {
-    paladin_melee_attack_t::execute();
-  }
-
-  double cost() const override
-  {
-    // check for the Draenor Perk
-    if ( p() -> buffs.divine_crusader -> check() )
-      return 0.0;
-
-    return paladin_melee_attack_t::cost();
-  }
-
-  void consume_free_hp_effects() override
-  {
-    // order of operations: Draenor Perk, then Divine Purpose
-
-    // check for Draenor Perk
-    if ( p() -> buffs.divine_crusader -> up() )
-    {
-      p() -> buffs.divine_crusader -> expire();
-
-      return;
-    }
-
-    paladin_melee_attack_t::consume_free_hp_effects();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    if ( p() -> buffs.divine_crusader -> check() )
-      am *= 1.0 + p() -> buffs.divine_crusader -> data().effectN( 2 ).percent();
-
-    return am;
-  }
-
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
@@ -3810,7 +3753,6 @@ void paladin_t::init_procs()
   player_t::init_procs();
 
   procs.divine_purpose            = get_proc( "divine_purpose"                 );
-  procs.divine_crusader           = get_proc( "divine_crusader"                );
   procs.eternal_glory             = get_proc( "eternal_glory"                  );
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
   procs.crusaders_fury            = get_proc( "crusaders_fury"                 );
@@ -3886,10 +3828,6 @@ void paladin_t::create_buffs()
   // Ret
 
   // Tier Bonuses
-  // MoP
-  buffs.divine_crusader        = buff_creator_t( this, "divine_crusader", find_spell( 144595 ) )
-                                 .chance( 0.25 ); // spell data errantly defines proc chance as 101%, actual proc chance nowhere to be found; should be 25%
-
   // T17
   buffs.crusaders_fury         = buff_creator_t( this, "crusaders_fury", sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> effectN( 1 ).trigger() )
                                  .chance( sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> proc_chance() );
@@ -4231,18 +4169,12 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( "call_action_list,name=cleave,if=spell_targets.divine_storm>=3" );
   def -> add_action( "call_action_list,name=single" );
 
-  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&spell_targets.divine_storm=2" );
-  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(talent.seraphim.enabled&cooldown.seraphim.remains<gcd*4)" );
   single -> add_action( this, "Templar's Verdict", "if=(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(buff.avenging_wrath.down|target.health.pct>35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<3" );
-  single -> add_talent( this, "Final Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
-  single -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<3" );
 
   single -> add_action( this, "Crusader Strike", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
   single -> add_action( this, "Hammer of Wrath" );
 
-  single -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up|target.health.pct<35" );
-  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&spell_targets.divine_storm=2&(buff.avenging_wrath.up|target.health.pct<35)" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
@@ -4250,32 +4182,22 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Crusader Strike", "if=talent.seraphim.enabled" );
   single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
-  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)" );
-
   single -> add_action( this, "Judgment", "if=talent.seraphim.enabled" );
   single -> add_action( this, "Judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
 
-  single -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react" );
-  single -> add_talent( this, "Final Verdict", "if=holy_power>=4" );
-
-  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&spell_targets.divine_storm=2&holy_power>=4" );
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
-  single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
 
-  single -> add_talent( this, "Final Verdict", "if=holy_power>=3" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
   single -> add_talent( this, "Holy Prism" );
 
   //Executed if three or more targets are present.
 
-  cleave -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
 
   cleave -> add_action( this, "Hammer of Wrath" );
   cleave -> add_action( this, "Hammer of the Righteous", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
 
-  cleave -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
@@ -4288,7 +4210,6 @@ void paladin_t::generate_action_prio_list_ret()
   cleave -> add_action( this, "judgment", "if=talent.seraphim.enabled" );
   cleave -> add_action( this, "judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
 
-  cleave -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
 
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
