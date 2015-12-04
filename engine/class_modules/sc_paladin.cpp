@@ -82,8 +82,6 @@ public:
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
 
     // Set Bonuses
-    buff_t* crusaders_fury;       // t17_2pc_melee
-    buff_t* blazing_contempt;     // t17_4pc_melee
     buff_t* faith_barricade;      // t17_2pc_tank
     buff_t* defender_of_the_light; // t17_4pc_tank
     buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
@@ -147,7 +145,6 @@ public:
   {
     proc_t* eternal_glory;
     proc_t* focus_of_vengeance_reset;
-    proc_t* crusaders_fury;
     proc_t* defender_of_the_light;
   } procs;
 
@@ -2131,14 +2128,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     }
     return tl.size();
   }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    // Trigger Hand of Light procs
-    trigger_hand_of_light( s );
-  }
 };
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
@@ -2174,14 +2163,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       hotr_aoe -> target = execute_state -> target;
       hotr_aoe -> execute();
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
   }
 };
 
@@ -2703,7 +2684,6 @@ void paladin_t::init_procs()
 
   procs.eternal_glory             = get_proc( "eternal_glory"                  );
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
-  procs.crusaders_fury            = get_proc( "crusaders_fury"                 );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -2756,10 +2736,6 @@ void paladin_t::create_buffs()
 
   // Tier Bonuses
   // T17
-  buffs.crusaders_fury         = buff_creator_t( this, "crusaders_fury", sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> effectN( 1 ).trigger() )
-                                 .chance( sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> proc_chance() );
-  buffs.blazing_contempt       = buff_creator_t( this, "blazing_contempt", sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() )
-                                 .default_value( sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
   buffs.faith_barricade        = buff_creator_t( this, "faith_barricade", sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() )
                                  .default_value( sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_BLOCK );
@@ -2972,7 +2948,6 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Avenging Wrath", "if=set_bonus.tier18_4pc=0" );
   def -> add_action( this, "Avenging Wrath", "if=time<20&set_bonus.tier18_4pc=1" );
   def -> add_action( this, "Avenging Wrath", "if=prev.execution_sentence&set_bonus.tier18_4pc=1&talent.execution_sentence.enabled" );
-  def -> add_action( this, "Avenging Wrath", "if=prev.lights_hammer&set_bonus.tier18_4pc=1&talent.lights_hammer.enabled" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -2994,7 +2969,6 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
 
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=3" );
-  single -> add_talent( this, "Holy Prism" );
 
   //Executed if three or more targets are present.
 
@@ -3014,8 +2988,6 @@ void paladin_t::generate_action_prio_list_ret()
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=4" );
 
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=3" );
-
-  cleave -> add_talent( this, "Holy Prism", "target=self" );
 }
 
 // ==========================================================================
