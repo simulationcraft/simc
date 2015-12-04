@@ -20,9 +20,12 @@ namespace { // UNNAMED NAMESPACE
  Predator vs. adds
 
  Balance -------
- Shooting Stars proc chance
  Stellar Drift cast while moving
  APL
+ initial_astral_power option
+ Concurrent starfalls & player proxy buff, no partial ticks
+ Artifact stuff (New Moon, OKF driver)
+ Nature's Balance cap (20s)
 
  Guardian ------
  Statistics?
@@ -204,7 +207,6 @@ public:
 
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
-  player_t* last_target_dot_moonkin;
 
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
@@ -573,7 +575,6 @@ public:
   {
     t16_2pc_starfall_bolt = nullptr;
     t16_2pc_sun_bolt      = nullptr;
-    last_target_dot_moonkin = nullptr;
     
     cooldown.berserk             = get_cooldown( "berserk"             );
     cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
@@ -1078,6 +1079,27 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+// Blessing of An'she Buff ====================================================
+
+struct blessing_of_anshe_buff_t : public druid_buff_t < buff_t >
+{
+  druid_t* druid;
+
+  blessing_of_anshe_buff_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "blessing_of_anshe", p.spell.blessing_of_anshe ) ),
+    druid( &p )
+  {
+    tick_behavior = BUFF_TICK_NONE; // ticking is handled by DoT
+  }
+
+  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
+  {
+    druid_buff_t<buff_t>::expire_override( stacks, duration );
+
+    druid -> get_dot( "blessing_of_anshe", druid ) -> cancel();
+  }
+};
+
 // Cat Form =================================================================
 
 struct cat_form_t : public druid_buff_t< buff_t >
@@ -1274,7 +1296,8 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
   {
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
-    druid.cooldown.warrior_of_elune -> start(); // TOCHECK: Verify that cooldown starts when buff ends.
+    // disabled for now since they'll probably institute this behavior later.
+    // druid.cooldown.warrior_of_elune -> start();
   }
 };
 
@@ -1313,7 +1336,6 @@ public:
   {
     double tm = ab::composite_target_multiplier( t );
 
-    // Legion TOCHECK: Does this apply to ALL damage dealt by the player, or just druid spells?
     if ( p() -> talent.rend_and_tear -> ok() )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> lacerate_stack;
 
@@ -1637,20 +1659,45 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     return am;
   }
 
-  virtual void trigger_astral_power_gain( double ap )
+  virtual void trigger_astral_power_gain( double base_ap )
   {
-    if ( ap <= 0 )
+    if ( base_ap <= 0 )
       return;
 
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap, ap_gain );
+    /*
+      Astral power modifiers are multiplicative, so we have to do some shenanigans
+      if we want to have seperate gains to track the effectiveness of these modifiers.
+    */
 
-    // TOCHECK: Are these modifiers additive or multiplicative?
+    // Calculate the final AP total, and the additive percent bonus to the base.
 
+    double ap = base_ap;
+    double bonus_pct = 0;
+    
     if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spec.celestial_alignment -> effectN( 3 ).percent(), p() -> gain.celestial_alignment );
+    {
+      ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+    }
 
     if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * p() -> spell.blessing_of_elune -> effectN( 2 ).percent(), p() -> gain.blessing_of_elune );
+    {
+      ap *= 1.0 + p() -> spell.blessing_of_elune -> effectN( 2 ).percent();
+      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+    }
+
+    // Gain the base AP amount and attribute it to the spell cast.
+    p() -> resource_gain( RESOURCE_ASTRAL_POWER, base_ap, ap_gain );
+
+    // Subtract the base amount from the total AP gain.
+    ap -= base_ap;
+
+    // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
+    if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ), p() -> gain.celestial_alignment );
+
+    if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 2 ).percent() / bonus_pct ), p() -> gain.blessing_of_elune );
   }
 
   virtual void trigger_balance_tier18_2pc()
@@ -1678,14 +1725,16 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 }; // end druid_spell_t
 
 // Shooting Stars ===========================================================
-// Legion TODO: What is the proc chance? Currently implemented as 100%.
 
 struct shooting_stars_t : public druid_spell_t
 {
+  double proc_chance;
+
   shooting_stars_t( druid_t* player ) :
-    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) )
+    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) ),
+    proc_chance( 0.50 ) // not in spell data, tested Dec 3 2015
   {
-    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 };
 
@@ -1693,7 +1742,7 @@ struct shooting_stars_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
-  spell_t* shooting_stars;
+  shooting_stars_t* shooting_stars;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) ),
@@ -1728,9 +1777,8 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit( d -> state -> result ) )
     {
-      if ( p() -> talent.shooting_stars -> ok() && d -> state -> target == p() -> last_target_dot_moonkin )
+      if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
       {
-        // Shooting stars will only proc on the most recent target of your moonfire/sunfire. Legion TOCHECK
         shooting_stars -> target = d -> target;
         shooting_stars -> execute();
       }
@@ -1738,13 +1786,6 @@ struct moonfire_t : public druid_spell_t
       if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
         trigger_balance_tier18_2pc();
     }
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> last_target_dot_moonkin = execute_state -> target;
   }
 };
 
@@ -3685,7 +3726,7 @@ struct rejuvenation_t : public druid_heal_t
   rejuvenation_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "rejuvenation", p, p -> find_class_spell( "Rejuvenation" ), options_str )
   {
-    tick_zero = true; // Legion TOCHECK
+    tick_zero = true;
   }
 
   virtual double action_ta_multiplier() const override
@@ -4038,11 +4079,12 @@ struct blessing_of_anshe_t : public druid_spell_t
   {
     parse_options( options_str );
 
+    target = player; // apply DoT to self
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
       2 * sim -> expected_iteration_time :
       2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-    harmful = false;
-    hasted_ticks = false;
+    harmful = may_crit = tick_may_crit = false;
+    hasted_ticks = true;
     ignore_false_positive = true;
 
     ap_per_tick = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
@@ -4190,15 +4232,25 @@ struct collapsing_stars_t : public druid_spell_t
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
       2 * sim -> expected_iteration_time :
       2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-    hasted_ticks = false;
+
+    // Tick cost is proportional to base tick time.
+    base_costs_per_tick[ RESOURCE_ASTRAL_POWER ] *= base_tick_time.total_seconds();
+  }
+
+  virtual timespan_t cost_tick_time( const dot_t& d ) const override
+  {
+    // Consumes cost each time DoT ticks.
+    return d.time_to_next_tick();
   }
 
   void impact( action_state_t* s ) override
   {
+    bool refresh = get_dot( s -> target ) -> is_ticking();
+
     druid_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-      p() -> buff.collapsing_stars_up -> start();
+    if ( result_is_hit( s -> result ) && ! refresh )
+      p() -> buff.collapsing_stars_up -> increment();
   }
 
   void cancel() override
@@ -4207,7 +4259,8 @@ struct collapsing_stars_t : public druid_spell_t
 
     if ( dot_t* dot = find_dot( target ) )
       dot -> cancel();
-    p() -> buff.collapsing_stars_up -> expire();
+
+    p() -> buff.collapsing_stars_up -> decrement();
   }
 };
 
@@ -4495,8 +4548,12 @@ struct lunar_strike_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( p() -> talent.natures_balance -> ok() && result_is_hit( s -> result ) )
+    // Nature's Balance only extends Moonfire on the primary target.
+    if ( p() -> talent.natures_balance -> ok()
+      && s -> target == target && result_is_hit( s -> result ) )
+    {
       td( s -> target ) -> dots.moonfire -> extend_duration( timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 1 ).base_value() ), 0 );
+    }
   }
 };
 
@@ -4554,7 +4611,7 @@ struct mark_of_ursol_t : public druid_spell_t
 
 struct sunfire_t: public druid_spell_t
 {
-  spell_t* shooting_stars;
+  shooting_stars_t* shooting_stars;
 
   sunfire_t( druid_t* player, const std::string& options_str ):
     druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) ),
@@ -4584,22 +4641,14 @@ struct sunfire_t: public druid_spell_t
     return tm;
   }
 
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> last_target_dot_moonkin = execute_state -> target;
-  }
-
   void tick( dot_t* d ) override
   {
     druid_spell_t::tick( d );
 
     if ( result_is_hit( d -> state -> result ) )
     {
-      if ( p() -> talent.shooting_stars -> ok() && d -> state -> target == p() -> last_target_dot_moonkin )
+      if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
       {
-        // Shooting stars will only proc on the most recent target of your moonfire/sunfire. Legion TOCHECK
         shooting_stars -> target = d -> target;
         shooting_stars -> execute();
       }
@@ -4711,7 +4760,7 @@ struct solar_wrath_t : public druid_spell_t
 
     base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
-    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     benefits_from_ca = benefits_from_elune = true;
   }
 
@@ -4798,10 +4847,11 @@ struct starfall_t : public druid_spell_t
     starfall_pulse_t( druid_t* player, const std::string& name ) :
       druid_spell_t( name, player, player -> find_spell( 191037 ) )
     {
-      background = direct_tick = true;
+      background = direct_tick = true; // Legion TOCHECK
       aoe = -1;
       callbacks = false;
-
+      
+      base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
       base_multiplier *= 1.0 + p() -> talent.stellar_drift -> effectN( 2 ).percent();
     }
 
@@ -4823,18 +4873,14 @@ struct starfall_t : public druid_spell_t
     pulse( new starfall_pulse_t( player, "starfall_pulse" ) )
   {
     parse_options( options_str );
-
-    hasted_ticks = may_crit = false; // Legion TOCHECK
-
-    // Missing from spell data. Legion TOCHECK, tooltip suggests it may be 0.888s for some reason.
-    base_tick_time = timespan_t::from_seconds( 1.0 );
+    
+    may_crit = false;
     dot_duration = data().duration();
-    spell_power_mod.tick = spell_power_mod.direct = 0;
-    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
+    base_tick_time = dot_duration / 9.0; // ticks 9 times (missing from spell data)
 
     ground_aoe = true;
-    radius = data().effectN( 1 ).radius();
-    radius *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
+    radius     = data().effectN( 1 ).radius();
+    radius    *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
 
     tick_action = pulse;
     add_child( pulse );
@@ -4886,13 +4932,22 @@ struct starsurge_t : public druid_spell_t
 
     return am;
   }
+  
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    // Dec 3 2015: Starsurge only grants empowerments on hit.
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> buff.solar_empowerment -> trigger();
+      p() -> buff.lunar_empowerment -> trigger();
+    }
+  }
 
   void execute() override
   {
     druid_spell_t::execute();
-
-    p() -> buff.solar_empowerment -> trigger();
-    p() -> buff.lunar_empowerment -> trigger();
 
     if ( p() -> starshards && rng().roll( starshards_chance ) )
     {
@@ -4903,7 +4958,6 @@ struct starsurge_t : public druid_spell_t
 };
 
 // Stellar Flare ==========================================================
-// TOCHECK: Does this snapshot mastery? Are empowerments additive or multiplicative?
 
 struct stellar_flare_t : public druid_spell_t
 {
@@ -4913,6 +4967,7 @@ struct stellar_flare_t : public druid_spell_t
     parse_options( options_str );
   }
 
+  // Dec 3 2015: Empowerments modifiers are multiplicative AND snapshot mastery.
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double pm = druid_spell_t::composite_persistent_multiplier( s );
@@ -5518,7 +5573,7 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.blessing_of_anshe         = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe );
+  buff.blessing_of_anshe         = new blessing_of_anshe_buff_t( *this );
 
   buff.blessing_of_elune         = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
 
@@ -5526,7 +5581,8 @@ void druid_t::create_buffs()
                                    .cd( timespan_t::zero() ) // handled by spell
                                    .default_value( spec.celestial_alignment -> effectN( 1 ).percent() );
 
-  buff.collapsing_stars_up       = buff_creator_t( this, "collapsing_stars_up", spell_data_t::nil() ); // Tracking buff for APL use
+  buff.collapsing_stars_up       = buff_creator_t( this, "collapsing_stars_up", spell_data_t::nil() )
+                                   .max_stack( 10 ); // Tracking buff for APL use
 
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", find_spell( 157228 ) )
                                    .chance( spec.moonkin_form -> effectN( 7 ).percent() );
@@ -6393,8 +6449,8 @@ double druid_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + buff.incarnation -> current_value;
       if ( buff.balance_tier18_4pc -> check() )
         m *= 1.0 + buff.balance_tier18_4pc -> data().effectN( 1 ).percent();
-      /* if ( buff.moonkin_form -> check() ) // TOCHECK: Does this effect do anything? Tooltip suggests it doesn't.
-        m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent(); */
+      if ( buff.moonkin_form -> check() )
+        m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
     }
   }
   return m;
@@ -6751,7 +6807,8 @@ void druid_t::assess_damage( school_e school,
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
 
-  s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
+  if ( spell.thick_hide )
+    s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
 
   // TOCHECK: This talent only has one effect for some reason, may change in the future.
   if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
