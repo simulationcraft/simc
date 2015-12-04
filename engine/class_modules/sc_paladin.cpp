@@ -15,7 +15,6 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 struct paladin_t;
 struct hand_of_sacrifice_redirect_t;
-struct blessing_of_the_guardians_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct ardent_defender_buff_t;
@@ -63,7 +62,6 @@ public:
   struct active_actions_t
   {
     hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
-    blessing_of_the_guardians_t* blessing_of_the_guardians;
   } active;
 
   // Buffs
@@ -831,56 +829,6 @@ struct beacon_of_light_heal_t : public heal_t
 
     target = p -> beacon_target;
   }
-};
-
-// Blessing of the Guardians =====================================
-// Blessing of the Guardians is the t16_2pc_tank set bonus
-
-struct blessing_of_the_guardians_t : public paladin_heal_t
-{
-  double accumulated_damage;
-  double healing_multiplier;
-
-  blessing_of_the_guardians_t( paladin_t* p ) :
-    paladin_heal_t( "blessing_of_the_guardians", p, p -> find_spell( 144581 ) )
-  {
-    background = true;
-
-    // tested 8/7/2013 by Theck. Cannot crit, not affected by SoI, ticks not hasted
-    // It _is_ affected by Sanctified Wrath, but that's handled in assess_heal()
-    hasted_ticks = false;
-    may_crit = tick_may_crit = false;
-
-    // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
-    base_tick_time = timespan_t::from_seconds( 1 );
-
-    dot_duration = timespan_t::from_seconds( 10.0 );
-
-    // initialize accumulator
-    accumulated_damage = 0.0;
-
-    // store healing multiplier
-    healing_multiplier = p -> find_spell( 144580 ) -> effectN( 1 ).percent();
-
-    // unbreakable spirit seems to halve the healing done
-    if ( p -> talents.unbreakable_spirit -> ok() )
-      healing_multiplier /= 2;
-  }
-
-  virtual void increment_damage( double amount )
-  {
-    accumulated_damage += amount;
-  }
-
-  virtual void execute() override
-  {
-    base_td = healing_multiplier * accumulated_damage * dot_duration / base_tick_time;
-
-    paladin_heal_t::execute();
-
-    accumulated_damage = 0;
-  }
-
 };
 
 // Consecration =============================================================
