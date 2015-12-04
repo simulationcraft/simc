@@ -2347,7 +2347,7 @@ struct blackout_strike_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Spinning Crane Kick / Rushing Jade Wind
+// SCK/RJW Tick Info
 // ==========================================================================
 
 // Shared tick action for both abilities
@@ -2370,6 +2370,10 @@ struct tick_action_t : public monk_melee_attack_t
   }
 };
 
+// ==========================================================================
+// Rushing Jade Wind
+// ==========================================================================
+
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
   rushing_jade_wind_t( monk_t* p, const std::string& options_str ):
@@ -2389,8 +2393,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( p -> passives.rushing_jade_wind ) );
   }
 
-  // N full ticks, but never additional ones.
-
   virtual void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
@@ -2403,6 +2405,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     monk_melee_attack_t::update_ready( cd );
   }
 
+  // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
@@ -2430,6 +2433,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     update_flags &= ~STATE_HASTE;
   }
 };
+
+// ==========================================================================
+// Spinning Crane Kick
+// ==========================================================================
 
 struct spinning_crane_kick_t: public monk_melee_attack_t
 {
