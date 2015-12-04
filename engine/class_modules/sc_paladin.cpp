@@ -30,7 +30,6 @@ struct paladin_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* eternal_flame;
     dot_t* execution_sentence;
     dot_t* stay_of_execution;
     dot_t* holy_radiance;
@@ -38,7 +37,6 @@ struct paladin_td_t : public actor_target_data_t
 
   struct buffs_t
   {
-    buff_t* eternal_flame;
     buff_t* sacred_shield;
   } buffs;
 
@@ -125,7 +123,6 @@ public:
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;
     gain_t* hp_holy_avenger;
-    gain_t* hp_holy_shock;
     gain_t* hp_pursuit_of_justice;
     gain_t* hp_sanctified_wrath;
     gain_t* hp_selfless_healer;
@@ -195,7 +192,6 @@ public:
     const spell_data_t* unbreakable_spirit;
     const spell_data_t* clemency;
     const spell_data_t* selfless_healer;
-    const spell_data_t* eternal_flame;
     const spell_data_t* sacred_shield;
     const spell_data_t* holy_avenger;
     const spell_data_t* sanctified_wrath;
@@ -461,28 +457,6 @@ namespace buffs {
     double crit_bonus;
     double haste_bonus;
   };
-
-// Eternal Flame buff
-  struct eternal_flame_t: public buff_t
-  {
-    paladin_td_t* pair;
-    eternal_flame_t( paladin_td_t* q ):
-      buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 156322 ) ) ),
-      pair( q )
-    {
-      cooldown -> duration = timespan_t::zero();
-    }
-
-    virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-
-      // cancel existing Eternal Flame HoT
-      pair -> dots.eternal_flame -> cancel();
-    }
-
-  };
-
 } // end namespace buffs
 // ==========================================================================
 // End Paladin Buffs, Part One
@@ -549,38 +523,6 @@ public:
     }
   }
 
-  // Method for consuming "free" holy power effects (Divine Purpose et. al.)
-  virtual void consume_free_hp_effects()
-  {
-    // check for Divine Purpose buff
-    if ( p() -> buffs.divine_purpose -> up() )
-    {
-      // get rid of buff corresponding to the current proc
-      p() -> buffs.divine_purpose -> expire();
-    }
-    // other general effects can go here if added in the future
-    // ability-specific effects (e.g. T16 4-pc melee) go in the ability definition, overriding this method
-  }
-
-  virtual void trigger_free_hp_effects( double c )
-  {
-    // now we trigger new buffs.  Need to treat c=0 as c=3 for proc purposes
-    double c_effective = ( c == 0.0 || c > 3 ) ? 3 : c;
-
-    // if Divine Purpose is talented, trigger a DP proc
-    if ( p() -> talents.divine_purpose -> ok() )
-    {
-      // chance to proc the buff needs to be scaled by holy power spent
-      bool success = p() -> buffs.divine_purpose -> trigger( 1,
-        p() -> buffs.divine_purpose -> default_value,
-        p() -> buffs.divine_purpose -> default_chance * c_effective / 3.0 );
-
-      // record success for output
-      if ( success )
-        p() -> procs.divine_purpose -> occur();
-    }
-  }
-
   virtual void execute()
   {
     double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
@@ -590,13 +532,6 @@ public:
     // if the ability uses Holy Power, handle Divine Purpose and other freebie effects
     if ( c >= 0 )
     {
-      // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
-      if ( c == 0.0 )
-        consume_free_hp_effects();
-
-      // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
-      trigger_free_hp_effects( c );
-
       // trigger WoD Ret PvP 4-P
       p() -> buffs.vindicators_fury -> trigger( 1, c > 0 ? c : 3 );
     }
@@ -1239,163 +1174,6 @@ struct denounce_t : public paladin_spell_t
   }
 };
 
-
-// Eternal Flame  ===========================================================
-
-// HoT portion
-struct eternal_flame_hot_t : public paladin_heal_t
-{
-  double hopo;
-  double base_num_ticks;
-
-  eternal_flame_hot_t( paladin_t* p ) :
-    paladin_heal_t( "eternal_flame_tick", p, p -> find_spell( 156322 ) )
-  {
-    background = true;
-    hopo = 0;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    paladin_heal_t::impact( s );
-
-    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_dot_duration( s ) );
-
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    td( d -> state -> target ) -> buffs.eternal_flame -> expire();
-
-    paladin_heal_t::last_tick( d );
-  }
-
-  virtual double action_ta_multiplier() const override
-  {
-    // this scales just the ticks
-    double am = paladin_heal_t::action_ta_multiplier();
-
-    // Scale based on HP used - removed in 6/13 patch notes
-    // am *= hopo;
-
-    if ( target == player )
-    {
-      // HoT is more effective when used on self
-      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 2 ).percent();
-    }
-
-    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
-    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
-    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
-    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
-
-    return am;
-  }
-
-  virtual timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Scale dot duration base on hp here!
-    // scale duration based on holy power spent
-    return dot_duration * hopo;
-  }
-
-  virtual void execute() override
-  {
-
-    paladin_heal_t::execute();
-  }
-
-};
-
-// Direct Heal
-struct eternal_flame_t : public paladin_heal_t
-{
-  eternal_flame_hot_t* hot;
-
-  eternal_flame_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "eternal_flame", p, p -> find_talent_spell( "Eternal Flame" ) ),
-    hot( new eternal_flame_hot_t( p ) )
-  {
-    parse_options( options_str );
-
-    // remove GCD constraints & cast time for prot
-    if ( p -> passives.guarded_by_the_light -> ok() )
-    {
-      trigger_gcd = timespan_t::zero();
-      use_off_gcd = true;
-      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 9 ).percent();
-    }
-    // remove cast time for ret
-    if ( p -> passives.sword_of_light -> ok() )
-    {
-      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 7 ).percent();
-    }
-    // redirect to self if not specified
-    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
-      target = p;
-    // attach HoT as child object - doesn't seem to work?
-    add_child( hot );
-
-    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
-    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
-    base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
-    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
-
-    // Sword of light
-    base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
-  }
-
-  virtual double cost() const override
-  {
-    return paladin_heal_t::cost();
-  }
-
-  virtual void consume_free_hp_effects() override
-  {
-    paladin_heal_t::consume_free_hp_effects();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    // this scales both the base heal and the ticks
-    double am = paladin_heal_t::action_multiplier();
-    double c = cost();
-
-    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3.0;
-
-    if ( target == player )
-    {
-      // grant extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
-      double bog_m = p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent(); // base multiplier is in effect 1 of BoG buff
-      bog_m += p() -> cache.mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
-      bog_m *= p() -> buffs.bastion_of_glory -> stack(); // multiply by stack size
-
-      am *= ( 1.0 + bog_m );
-    }
-
-    return am;
-  }
-
-  virtual void execute() override
-  {
-    double hopo = ( ( p() -> holy_power_stacks() <= 3  && cost() > 0.0 ) ? p() -> holy_power_stacks() : 3 );
-
-    paladin_heal_t::execute();
-
-    // trigger HoT
-    hot -> target = target;
-    hot -> hopo = hopo;
-    hot -> schedule_execute();
-
-    // consume BoG stacks if used on self
-    if ( target == player )
-    {
-      p() -> buffs.bastion_of_glory -> expire();
-    }
-  }
-};
-
 // Execution Sentence =======================================================
 
 // this is really two components: Execution Sentence is the damage portion, Stay of Execution the heal
@@ -1989,24 +1767,6 @@ struct holy_shock_damage_t : public paladin_spell_t
 
     return cc;
   }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      int g = 1;
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_holy_shock );
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER,
-                              p() -> buffs.holy_avenger -> value() - g,
-                              p() -> gains.hp_holy_avenger );
-      }
-    }
-  }
-
 };
 
 // Holy Shock Heal Spell ====================================================
@@ -2049,18 +1809,6 @@ struct holy_shock_heal_t : public paladin_heal_t
   virtual void execute() override
   {
     paladin_heal_t::execute();
-
-    int g = 1;
-    p() -> resource_gain( RESOURCE_HOLY_POWER,
-                          g,
-                          p() -> gains.hp_holy_shock );
-
-    if ( p() -> buffs.holy_avenger -> check() )
-    {
-      p() -> resource_gain( RESOURCE_HOLY_POWER,
-                            std::max( ( int ) 0, ( int )( p() -> buffs.holy_avenger -> value() - g ) ),
-                            p() -> gains.hp_holy_avenger );
-    }
 
     if ( execute_state -> result == RESULT_CRIT )
       p() -> buffs.infusion_of_light -> trigger();
@@ -2360,15 +2108,6 @@ struct light_of_dawn_t : public paladin_heal_t
     base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
     base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_heal_t::action_multiplier();
-
-    am *= p() -> holy_power_stacks();
-
-    return am;
-  }
 };
 
 // Sacred Shield ============================================================
@@ -2477,10 +2216,6 @@ struct seraphim_t : public paladin_spell_t
     may_miss = false;
   }
 
-  // Seraphim cannot trigger free HP effects
-  virtual void trigger_free_hp_effects( double /* c */ ) override
-    {}
-
   virtual void execute() override
   {
     paladin_spell_t::execute();
@@ -2506,91 +2241,6 @@ struct speed_of_light_t: public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.speed_of_light -> trigger();
-  }
-};
-
-// Word of Glory  ===========================================================
-
-struct word_of_glory_t : public paladin_heal_t
-{
-  // find_class_spell("Word of Glory") returns spellid 85673, which is a stub that points to 130551 for heal and 130552 for harsh words.
-  // We'll call that to get spell cooldown, resource cost, and other information and then parse_effect_data on 130551 to get healing coefficients
-  // Note: if you have Eternal Flame talented, find_class_spell will return a not_found() object!  Will fix in APL parsing.
-  word_of_glory_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) )
-  {
-    parse_options( options_str );
-
-    // healing coefficients stored in 130551
-    parse_effect_data( p -> find_spell( 130551 ) -> effectN( 1 ) );
-
-    // remove GCD constraints & cast time for prot
-    if ( p -> passives.guarded_by_the_light -> ok() )
-    {
-      trigger_gcd = timespan_t::zero();
-      use_off_gcd = true;
-      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 9 ).percent();
-    }
-    // remove cast time for ret
-    if ( p -> passives.sword_of_light -> ok() )
-    {
-      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 7 ).percent();
-    }
-    // redirect to self if not specified
-    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
-      target = p;
-
-    // passive effects that affect action_multiplier()
-
-    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
-    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
-    base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
-    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
-
-    // Sword of light
-    base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
-  }
-
-  virtual double cost() const override
-  {
-    return paladin_heal_t::cost();
-  }
-
-  virtual void consume_free_hp_effects() override
-  {
-    paladin_heal_t::consume_free_hp_effects();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_heal_t::action_multiplier();
-    double c = cost();
-
-    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3.0;
-
-    if ( p() -> buffs.bastion_of_glory -> up() )
-    {
-      // grant extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
-      double bog_m = p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent(); // base multiplier is in effect 1 of BoG buff
-      bog_m += p() -> cache.mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
-      bog_m *= p() -> buffs.bastion_of_glory -> stack(); // multiply by stack size
-
-      am *= ( 1.0 + bog_m );
-    }
-
-    return am;
-  }
-
-  virtual void execute() override
-  {
-    paladin_heal_t::execute();
-
-    // consume BoG stacks if used on self
-    if ( target == player )
-    {
-      p() -> buffs.bastion_of_glory -> expire();
-    }
   }
 };
 
@@ -3414,12 +3064,10 @@ void hand_of_sacrifice_t::execute()
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
-  dots.eternal_flame      = target -> get_dot( "eternal_flame",      paladin );
   dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
 
-  buffs.eternal_flame      = new buffs::eternal_flame_t( this );
   buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) )
                              .cd( timespan_t::zero() ) // let ability handle cooldown
                              .period( timespan_t::zero() );
@@ -3467,8 +3115,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
 
   if ( name == "speed_of_light"            ) return new speed_of_light_t           ( this, options_str );
-  if ( name == "eternal_flame"             ) return new eternal_flame_t            ( this, options_str );
-  if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "sacred_shield"             ) return new sacred_shield_t            ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
@@ -3580,7 +3226,6 @@ void paladin_t::init_gains()
   gains.hp_grand_crusader           = get_gain( "grand_crusader" );
   gains.hp_hammer_of_the_righteous  = get_gain( "hammer_of_the_righteous" );
   gains.hp_holy_avenger             = get_gain( "holy_avenger" );
-  gains.hp_holy_shock               = get_gain( "holy_shock" );
   gains.hp_judgment                 = get_gain( "judgment" );
   gains.hp_pursuit_of_justice       = get_gain( "pursuit_of_justice" );
   gains.hp_sanctified_wrath         = get_gain( "sanctified_wrath" );
@@ -3812,7 +3457,6 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" );
   def -> add_action( this, "Ardent Defender", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)");
-  def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
   def -> add_action( this, "Shield of the Righteous", "if=buff.divine_purpose.react" );
   def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
   def -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
@@ -3879,7 +3523,6 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
   surv -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" );
   surv -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
-  surv -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
   surv -> add_action( this, "Shield of the Righteous", "if=buff.divine_purpose.react" );
   surv -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
   surv -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
@@ -4117,10 +3760,7 @@ void paladin_t::generate_action_prio_list_holy_dps()
     def -> add_action( racial_actions[ i ] );
 
   def -> add_action( this, "Avenging Wrath" );
-  def -> add_talent( this, "Holy Avenger", "if=holy_power<=2" );
   def -> add_talent( this, "Execution Sentence" );
-  def -> add_action( "harsh_word,if=buff.divine_purpose.react" );
-  def -> add_action( "harsh_word,if=holy_power>=3" );
   def -> add_action( "holy_shock,damage=1" );
   def -> add_action( this, "Denounce" );
 }
@@ -4196,13 +3836,9 @@ void paladin_t::generate_action_prio_list_holy()
   def -> add_action( this, "Lay on Hands","if=incoming_damage_5s>health.max*0.7" );
   def -> add_action( this, "Judgment", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack<3" );
   def -> add_action( this, "Sacred Shield","if=buff.sacred_shield.down" );
-  def -> add_action( this, "Eternal Flame", "if=holy_power>=3" );
-  def -> add_action( this, "Word of Glory", "if=holy_power>=3" );
   def -> add_action( "wait,if=target.health.pct>=75&mana.pct<=10" );
-  def -> add_action( this, "Holy Shock", "if=holy_power<=3" );
   def -> add_action( this, "Flash of Light", "if=target.health.pct<=30" );
   def -> add_action( this, "Divine Plea", "if=mana.pct<75" );
-  def -> add_action( this, "Judgment", "if=holy_power<3" );
   def -> add_action( this, "Lay on Hands", "if=mana.pct<5" );
   def -> add_action( this, "Holy Light" );
 
@@ -4280,7 +3916,6 @@ void paladin_t::init_spells()
   talents.unbreakable_spirit      = find_talent_spell( "Unbreakable Spirit" );
   talents.clemency                = find_talent_spell( "Clemency" );
   talents.selfless_healer         = find_talent_spell( "Selfless Healer" );
-  talents.eternal_flame           = find_talent_spell( "Eternal Flame" );
   talents.sacred_shield           = find_talent_spell( "Sacred Shield" );
   talents.holy_avenger            = find_talent_spell( "Holy Avenger" );
   talents.sanctified_wrath        = find_talent_spell( "Sanctified Wrath" ); // this returns the prot version of the talent
@@ -5101,12 +4736,10 @@ expr_t* paladin_t::create_expression( action_t* a,
     cooldown_t* cs_cd;
     cooldown_t* j_cd;
     cooldown_t* hw_cd;
-    cooldown_t* hs_cd;
 
     time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
       paladin_expr_t( n, p ), cs_cd( p.get_cooldown( "crusader_strike" ) ),
-      j_cd( p.get_cooldown( "judgment" ) ), hw_cd( p.get_cooldown( "holy_wrath") ),
-      hs_cd( p.get_cooldown( "holy_shock" ) )
+      j_cd( p.get_cooldown( "judgment" ) ), hw_cd( p.get_cooldown( "holy_wrath") )
     { }
 
     virtual double evaluate() override
@@ -5127,12 +4760,6 @@ expr_t* paladin_t::create_expression( action_t* a,
         // Prot-specific HPG go here
         if ( paladin.talents.sanctified_wrath -> ok() && hw_cd -> remains() < shortest_hpg_time )
           shortest_hpg_time = hw_cd -> remains();
-      }
-      else if ( paladin.specialization() == PALADIN_HOLY )
-      {
-        // holy-specific HPG go here
-        if ( hs_cd -> remains() < shortest_hpg_time )
-          shortest_hpg_time = hs_cd -> remains();
       }
 
       if ( gcd_ready > shortest_hpg_time )
