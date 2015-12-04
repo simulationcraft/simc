@@ -124,7 +124,6 @@ public:
     gain_t* hp_blade_of_justice;
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;
-    gain_t* hp_hammer_of_wrath;
     gain_t* hp_holy_avenger;
     gain_t* hp_holy_shock;
     gain_t* hp_pursuit_of_justice;
@@ -3027,101 +3026,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   }
 };
 
-// Hammer of Wrath ==========================================================
-
-struct hammer_of_wrath_t : public paladin_melee_attack_t
-{
-  double cooldown_mult;
-
-  hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), true ),
-      cooldown_mult( 1.0 )
-  {
-    parse_options( options_str );
-
-    // Cannot be parried or blocked, but can be dodged
-    may_parry = may_block = false;
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-
-    // define cooldown multiplier for use with Sanctified Wrath talent for retribution only
-    if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
-    {
-      cooldown_mult = 1.0 + p -> spells.sanctified_wrath -> effectN( 3 ).percent();
-    }
-  }
-
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    // Expire Ret T17 2-piece
-    p() -> buffs.crusaders_fury -> expire();
-    // Trigger Ret T17 4-piece
-    p() -> buffs.blazing_contempt -> trigger();
-  }
-
-  // Special things that happen with Hammer of Wrath damages target
-  virtual void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) )
-    {
-      // if Ret spec, grant Holy Power
-      if ( p() -> passives.sword_of_light -> ok() )
-      {
-        int g = 1; // base gain is 1 Holy Power
-        //apply gain, attribute to Hammer of Wrath
-        p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_wrath );
-
-        // Holy Avenger adds 2 more Holy Power if active
-        if ( p() -> buffs.holy_avenger -> check() )
-        {
-          //apply gain, attribute to Holy Avenger
-          p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
-        }
-      }
-    }
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Holy Avenger buffs HoW damage by 30% while active
-    if ( p() -> specialization() == PALADIN_RETRIBUTION && p() -> buffs.holy_avenger -> check() )
-    {
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-
-    return am;
-  }
-
-  double cooldown_multiplier() override
-  {
-    double cdm = paladin_melee_attack_t::cooldown_multiplier();
-
-    if ( p() -> buffs.avenging_wrath -> check() )
-      cdm *= cooldown_mult;
-
-    return cdm;
-  }
-
-  virtual bool ready() override
-  {
-    // this checks whether we're able to cast it (ignoring cooldowns)
-    // if so, continue to the standard ready() function for cooldowns/etc.
-   if ( p() -> get_how_availability() )
-     return paladin_melee_attack_t::ready();
-   else
-     // otherwise just return false to save some time
-     return false;
-  }
-};
-
 // Hand of Light proc =======================================================
 
 struct hand_of_light_proc_t : public paladin_melee_attack_t
@@ -3545,7 +3449,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hand_of_purity"            ) return new hand_of_purity_t           ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
-  if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
@@ -3676,7 +3579,6 @@ void paladin_t::init_gains()
   gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
   gains.hp_grand_crusader           = get_gain( "grand_crusader" );
   gains.hp_hammer_of_the_righteous  = get_gain( "hammer_of_the_righteous" );
-  gains.hp_hammer_of_wrath          = get_gain( "hammer_of_wrath" );
   gains.hp_holy_avenger             = get_gain( "holy_avenger" );
   gains.hp_holy_shock               = get_gain( "holy_shock" );
   gains.hp_judgment                 = get_gain( "judgment" );
@@ -3930,7 +3832,6 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Holy Prism", "if=!talent.seraphim.enabled|buff.seraphim.up|cooldown.seraphim.remains>5|time<5" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&spell_targets.consecration>=3" );
   def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled|buff.seraphim.up|time<12" );
-  def -> add_action( this, "Hammer of Wrath" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   def -> add_action( this, "Holy Wrath" );
@@ -3965,7 +3866,6 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_talent( this, "Holy Prism" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&spell_targets.consecration>=3" );
   dps -> add_talent( this, "Execution Sentence" );
-  dps -> add_action( this, "Hammer of Wrath" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   dps -> add_action( this, "Holy Wrath" );
   dps -> add_talent( this, "Sacred Shield" );
@@ -3999,7 +3899,6 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&spell_targets.consecration>=3" );
   surv -> add_talent( this, "Execution Sentence" );
   surv -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
-  surv -> add_action( this, "Hammer of Wrath" );
   surv -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
   surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
   surv -> add_action( this, "Holy Wrath" );
@@ -4118,7 +4017,6 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<3" );
 
   single -> add_action( this, "Crusader Strike", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
-  single -> add_action( this, "Hammer of Wrath" );
 
   single -> add_action( this, "Templar's Verdict","if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
@@ -4140,7 +4038,6 @@ void paladin_t::generate_action_prio_list_ret()
 
   cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
 
-  cleave -> add_action( this, "Hammer of Wrath" );
   cleave -> add_action( this, "Hammer of the Righteous", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
 
   cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
@@ -5184,23 +5081,6 @@ double paladin_t::get_hand_of_light()
   return handoflight;
 }
 
-bool paladin_t::get_how_availability()
-{
-  // T17 Ret tier bonus makes this available regardless of health
-  if ( buffs.crusaders_fury -> check() )
-    return true;
-
-  // Ret can use freely during Avenging Wrath thanks to Sword of Light
-  if ( passives.sword_of_light -> ok() && buffs.avenging_wrath -> check() )
-    return true;
-
-  // Otherwise, not available if target is above 20% health.
-  if ( target -> health_percentage() > 20 )
-    return false;
-
-  return true;
-}
-
 // player_t::create_expression ==============================================
 
 expr_t* paladin_t::create_expression( action_t* a,
@@ -5221,13 +5101,12 @@ expr_t* paladin_t::create_expression( action_t* a,
     cooldown_t* cs_cd;
     cooldown_t* j_cd;
     cooldown_t* hw_cd;
-    cooldown_t* how_cd;
     cooldown_t* hs_cd;
 
     time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
       paladin_expr_t( n, p ), cs_cd( p.get_cooldown( "crusader_strike" ) ),
       j_cd( p.get_cooldown( "judgment" ) ), hw_cd( p.get_cooldown( "holy_wrath") ),
-      how_cd( p.get_cooldown( "hammer_of_wrath" ) ), hs_cd( p.get_cooldown( "holy_shock" ) )
+      hs_cd( p.get_cooldown( "holy_shock" ) )
     { }
 
     virtual double evaluate() override
@@ -5248,11 +5127,6 @@ expr_t* paladin_t::create_expression( action_t* a,
         // Prot-specific HPG go here
         if ( paladin.talents.sanctified_wrath -> ok() && hw_cd -> remains() < shortest_hpg_time )
           shortest_hpg_time = hw_cd -> remains();
-      }
-      else if ( paladin.specialization() == PALADIN_RETRIBUTION )
-      {
-        if ( paladin.get_how_availability() && how_cd -> remains() < shortest_hpg_time )
-          shortest_hpg_time = how_cd -> remains();
       }
       else if ( paladin.specialization() == PALADIN_HOLY )
       {
