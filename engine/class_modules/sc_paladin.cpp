@@ -229,7 +229,6 @@ public:
   } artifact;
 
   player_t* beacon_target;
-  int ret_pvp_gloves;
 
   timespan_t last_extra_regen;
   timespan_t extra_regen_period;
@@ -247,7 +246,6 @@ public:
     spells( spells_t() ),
     talents( talents_t() ),
     beacon_target( nullptr ),
-    ret_pvp_gloves( 0 ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 )
