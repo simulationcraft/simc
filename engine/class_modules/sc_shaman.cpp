@@ -2259,6 +2259,12 @@ struct stormstrike_t : public shaman_attack_t
   {
     double c = shaman_attack_t::cost();
 
+    // Stormflurried
+    if ( background == true )
+    {
+      return 0;
+    }
+
     if ( p() -> buff.stormfury -> check() )
     {
       c *= 1.0 + p() -> buff.stormfury -> data().effectN( 3 ).percent();
@@ -2375,6 +2381,12 @@ struct windstrike_t : public shaman_attack_t
   double cost() const override
   {
     double c = shaman_attack_t::cost();
+
+    // Stormflurried
+    if ( background == true )
+    {
+      return 0;
+    }
 
     if ( p() -> buff.stormfury -> check() )
     {
