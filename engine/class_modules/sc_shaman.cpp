@@ -3265,7 +3265,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
   {
     harmful   = false;
 
-    cooldown -> duration += timespan_t::from_seconds( player -> talent.spiritual_affinity -> effectN( 1 ).base_value() );
+    cooldown -> duration += player -> talent.spiritual_affinity -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
@@ -3304,7 +3304,7 @@ struct feral_kin_t : public shaman_spell_t
   {
     harmful   = false;
 
-    cooldown -> duration += timespan_t::from_seconds( player -> talent.spiritual_affinity -> effectN( 1 ).base_value() );
+    cooldown -> duration += player -> talent.spiritual_affinity -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
