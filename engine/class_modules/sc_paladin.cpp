@@ -253,6 +253,7 @@ public:
     const spell_data_t* beacon_of_faith;
     const spell_data_t* beacon_of_insight;
     const spell_data_t* saved_by_the_light;
+    const spell_data_t* fires_of_justice;
   } talents;
 
   struct artifact_spell_data_t
@@ -3191,6 +3192,12 @@ struct crusader_strike_t : public paladin_melee_attack_t
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
 
+    // Fires of Justice buffs CS damage by 25%
+    if ( p() -> talents.fires_of_justice -> ok() )
+    {
+      am *= 1.0 + p() -> talents.fires_of_justice -> effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -4964,6 +4971,7 @@ void paladin_t::init_spells()
   talents.beacon_of_faith         = find_talent_spell( "Beacon of Faith" );
   talents.beacon_of_insight       = find_talent_spell( "Beacon of Insight" );
   talents.saved_by_the_light      = find_talent_spell( "Saved by the Light" );
+  talents.fires_of_justice        = find_talent_spell( "The Fires of Justice" );
 
   artifact.wake_of_ashes          = find_artifact_spell( "Wake of Ashes" );
 
