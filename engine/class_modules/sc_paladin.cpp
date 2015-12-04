@@ -3011,7 +3011,6 @@ void paladin_t::generate_action_prio_list_holy()
   def -> add_action( this, "Lay on Hands","if=incoming_damage_5s>health.max*0.7" );
   def -> add_action( "wait,if=target.health.pct>=75&mana.pct<=10" );
   def -> add_action( this, "Flash of Light", "if=target.health.pct<=30" );
-  def -> add_action( this, "Divine Plea", "if=mana.pct<75" );
   def -> add_action( this, "Lay on Hands", "if=mana.pct<5" );
   def -> add_action( this, "Holy Light" );
 
@@ -3193,12 +3192,6 @@ void paladin_t::init_spells()
     active_holy_shield_proc = new holy_shield_proc_t( this );
 
   rppm_defender_of_the_light.set_frequency( sets.set( PALADIN_PROTECTION, T17, B4 ) -> real_ppm() );
-
-  // Holy Mastery uses effect#2 by default
-  if ( specialization() == PALADIN_HOLY )
-  {
-    _mastery = &find_mastery_spell( specialization() ) -> effectN( 2 );
-  }
 }
 
 // paladin_t::primary_role ==================================================
@@ -3447,10 +3440,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   if ( retribution_trinket )
     m *= 1.0 + buffs.retribution_trinket -> current_stack * buffs.retribution_trinket -> current_value;
-
-  // Divine Shield reduces everything
-  if ( buffs.divine_shield -> check() )
-    m *= 1.0 + buffs.divine_shield -> data().effectN( 1 ).percent();
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
