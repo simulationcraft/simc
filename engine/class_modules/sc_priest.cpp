@@ -92,7 +92,7 @@ public:
     buff_t* shadowy_insight;
     buff_t* shadow_word_death_reset_cooldown;
     buff_t* mind_sear_on_hit_reset;
-    buff_t* shadowform;
+    buff_t* voidform;
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
     buff_t* dispersion;
@@ -173,7 +173,7 @@ public:
     const spell_data_t* focused_will;
 
     // Shadow
-    const spell_data_t* shadowform;
+    const spell_data_t* voidform;
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* mastermind;
   } specs;
@@ -338,7 +338,6 @@ public:
   }
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  double composite_armor() const override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
@@ -350,7 +349,6 @@ public:
   double composite_multistrike() const override;
   double composite_player_multistrike_damage_multiplier() const override;
   double composite_player_multistrike_healing_multiplier() const override;
-  double spirit() const;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_absorb_multiplier(
       const action_state_t* s ) const override;
@@ -956,9 +954,6 @@ public:
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-
-    can_cancel_shadowform  = p.options.autoUnshift;
-    castable_in_shadowform = true;
   }
 
   priest_td_t& get_td( player_t* t ) const
@@ -1010,24 +1005,6 @@ public:
     return false;
   }
 
-  void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    cancel_shadowform();
-
-    ab::schedule_execute( state );
-  }
-
-  bool ready() override
-  {
-    if ( !ab::ready() )
-      return false;
-
-    if ( !check_shadowform() )
-      return false;
-
-    return true;
-  }
-
   double cost() const override
   {
     double c = ab::cost();
@@ -1050,9 +1027,6 @@ public:
   }
 
 protected:
-  bool castable_in_shadowform;
-  bool can_cancel_shadowform;
-
   /* keep reference to the priest. We are sure this will always resolve
    * to the same player as the action_t::player; pointer, and is always valid
    * because it owns the action
@@ -1065,20 +1039,6 @@ protected:
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
   typedef Base ab;
-
-  bool check_shadowform() const
-  {
-    return ( castable_in_shadowform || can_cancel_shadowform ||
-             ( !priest.buffs.shadowform->check() ) );
-  }
-
-  void cancel_shadowform()
-  {
-    if ( !castable_in_shadowform )
-    {
-      priest.buffs.shadowform->expire();
-    }
-  }
 };
 
 // ==========================================================================
@@ -1751,7 +1711,6 @@ struct angelic_feather_t : public priest_spell_t
   {
     parse_options( options_str );
     harmful = may_hit = may_crit = false;
-    castable_in_shadowform = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1991,14 +1950,14 @@ struct power_infusion_t : public priest_spell_t
 
 // Shadowform Spell ========================================================
 
-struct shadowform_t : public priest_spell_t
+struct voidform_t : public priest_spell_t
 {
-  shadowform_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "shadowform", p, p.find_class_spell( "Shadowform" ) )
+  voidform_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "voidform", p, p.specs.voidform )
   {
     parse_options( options_str );
     ignore_false_positive = true;
-
+    background = true;
     harmful = false;
   }
 
@@ -2006,7 +1965,7 @@ struct shadowform_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    priest.buffs.shadowform->trigger();
+    priest.buffs.voidform->trigger();
   }
 };
 
@@ -2271,7 +2230,6 @@ struct mind_blast_t : public priest_spell_t
     }
 
     timespan_t et = priest_spell_t::execute_time();
-
 
     return et;
   }
@@ -3060,7 +3018,6 @@ struct holy_fire_base_t : public priest_spell_t
     procs_courageous_primal_diamond = false;
 
     can_trigger_atonement = priest.specs.atonement->ok();
-
   }
 
   void execute() override
@@ -3092,7 +3049,6 @@ struct holy_fire_base_t : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-
     priest_spell_t::impact( s );
   }
 };
@@ -3177,14 +3133,13 @@ struct penance_t : public priest_spell_t
   {
     parse_options( options_str );
 
-    may_crit               = false;
-    may_miss               = false;
-    channeled              = true;
-    tick_zero              = true;
-    dot_duration           = timespan_t::from_seconds( 2.0 );
-    base_tick_time         = timespan_t::from_seconds( 1.0 );
-    hasted_ticks           = false;
-    castable_in_shadowform = false;
+    may_crit       = false;
+    may_miss       = false;
+    channeled      = true;
+    tick_zero      = true;
+    dot_duration   = timespan_t::from_seconds( 2.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks   = false;
 
     // HACK: Set can_trigger here even though the tick spell actually
     // does the triggering. We want atonement_penance to be created in
@@ -3242,9 +3197,7 @@ struct smite_t : public priest_spell_t
 
     procs_courageous_primal_diamond = false;
 
-    can_trigger_atonement  = priest.specs.atonement->ok();
-    castable_in_shadowform = false;
-
+    can_trigger_atonement = priest.specs.atonement->ok();
   }
 
   void execute() override
@@ -3974,8 +3927,6 @@ struct flash_heal_t : public priest_heal_t
   {
     parse_options( options_str );
     can_trigger_spirit_shell = true;
-
-    castable_in_shadowform = false;
   }
 
   void execute() override
@@ -4227,8 +4178,6 @@ struct holy_word_chastise_t : public priest_spell_t
     // Needs testing
     cooldown->duration *=
         1.0 + p.sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2;
-
-    castable_in_shadowform = false;
   }
 
   void execute() override
@@ -4334,8 +4283,6 @@ struct holy_word_t : public priest_spell_t
       hw_serenity( new holy_word_serenity_t( p, options_str ) )
   {
     school = SCHOOL_HOLY;
-
-    castable_in_shadowform = false;
   }
 
   void init() override
@@ -4397,8 +4344,6 @@ struct lightwell_t : public priest_spell_t
     parse_options( options_str );
 
     harmful = false;
-
-    castable_in_shadowform = false;
 
     assert( consume_interval > timespan_t::zero() &&
             consume_interval < cooldown->duration );
@@ -4506,9 +4451,6 @@ struct power_word_shield_t : public priest_absorb_t
     parse_options( options_str );
 
     spell_power_mod.direct = 4.59;  // last checked 2015/02/21
-
-
-    castable_in_shadowform = true;
   }
 
   void impact( action_state_t* s ) override
@@ -4638,8 +4580,6 @@ struct prayer_of_mending_t : public priest_heal_t
       aoe +=
           (int)priest.sets.set( PRIEST_HOLY, T17, B2 )->effectN( 1 ).percent() *
           100;
-
-    castable_in_shadowform = false;
   }
 
   void execute() override
@@ -4712,8 +4652,6 @@ struct renew_t : public priest_heal_t
       add_child( rr );
       base_multiplier *= 1.0 + p.specs.rapid_renewal->effectN( 2 ).percent();
     }
-
-    castable_in_shadowform = true;
   }
 
   double action_multiplier() const override
@@ -4848,15 +4786,15 @@ protected:
   priest_t& priest;
 };
 
-/* Custom shadowform buff
- * trigger/cancels spell haste aura
+/* Custom voidform buff
  */
-struct shadowform_t : public priest_buff_t<buff_t>
+struct voidform_t : public priest_buff_t<buff_t>
 {
-  shadowform_t( priest_t& p )
-    : base_t( p, buff_creator_t( &p, "shadowform" )
-                     .spell( p.find_class_spell( "Shadowform" ) )
-                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+  voidform_t( priest_t& p )
+    : base_t( p, buff_creator_t( &p, "voidform" )
+                     .spell( p.find_spell( 194249 ) )
+                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                     .add_invalidate( CACHE_HASTE ) )
   {
   }
 
@@ -4865,12 +4803,6 @@ struct shadowform_t : public priest_buff_t<buff_t>
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
-    if ( !sim->overrides.haste )
-      sim->auras.haste->trigger();
-
-    if ( !sim->overrides.multistrike )
-      sim->auras.multistrike->trigger();
-
     return r;
   }
 
@@ -4878,12 +4810,6 @@ struct shadowform_t : public priest_buff_t<buff_t>
                         timespan_t remaining_duration ) override
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( !sim->overrides.haste )
-      sim->auras.haste->decrement();
-
-    if ( !sim->overrides.multistrike )
-      sim->auras.multistrike->decrement();
   }
 };
 
@@ -5218,7 +5144,6 @@ void priest_t::create_procs()
  */
 void priest_t::create_benefits()
 {
-
 }
 
 /* Define the acting role of the priest
@@ -5343,27 +5268,6 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
   }
 
   return player_t::create_expression( a, name_str );
-}
-
-// priest_t::composite_armor ================================================
-
-double priest_t::composite_armor() const
-{
-  double a = base_t::composite_armor();
-
-  if ( buffs.shadowform->check() )
-    a *= 1.0 + buffs.shadowform->data().effectN( 3 ).percent();
-
-  return std::floor( a );
-}
-
-// priest_t::spirit ==========================================
-
-double priest_t::spirit() const
-{
-  double s = player_t::spirit();
-
-  return s;
 }
 
 // priest_t::composite_spell_haste ==========================================
@@ -5502,10 +5406,10 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( specs.shadowform->ok() && dbc::is_school( SCHOOL_SHADOWFROST, school ) )
+  if ( specs.voidform->ok() && dbc::is_school( SCHOOL_SHADOWFROST, school ) &&
+       buffs.voidform->check() )
   {
-    m *= 1.0 +
-         buffs.shadowform->check() * specs.shadowform->effectN( 2 ).percent();
+    m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
   }
 
   if ( dbc::is_school( SCHOOL_SHADOWLIGHT, school ) )
@@ -5680,8 +5584,6 @@ action_t* priest_t::create_action( const std::string& name,
     return new pain_suppression_t( *this, options_str );
   if ( name == "power_infusion" )
     return new power_infusion_t( *this, options_str );
-  if ( name == "shadowform" )
-    return new shadowform_t( *this, options_str );
   if ( name == "silence" )
     return new silence_t( *this, options_str );
   if ( name == "vampiric_embrace" )
@@ -5921,16 +5823,15 @@ void priest_t::init_spells()
   specs.focused_will      = find_specialization_spell( "Focused Will" );
 
   // Shadow
-  specs.shadowform = find_class_spell( "Shadowform" );
+  specs.voidform = find_specialization_spell( "Voidform" );
   specs.shadowy_apparitions =
       find_specialization_spell( "Shadowy Apparitions" );
-  specs.mastermind  = find_specialization_spell( "Mastermind" );
+  specs.mastermind = find_specialization_spell( "Mastermind" );
 
   // Mastery Spells
   mastery_spells.shield_discipline = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light     = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.mental_anguish    = find_mastery_spell( PRIEST_SHADOW );
-
 
   ///////////////
   // Glyphs    //
@@ -6084,13 +5985,12 @@ void priest_t::create_buffs()
 
   // Shadow
 
-  buffs.shadowform = new buffs::shadowform_t( *this );
+  buffs.voidform = new buffs::voidform_t( *this );
 
   buffs.vampiric_embrace =
       buff_creator_t( this, "vampiric_embrace",
                       find_class_spell( "Vampiric Embrace" ) )
           .duration( find_class_spell( "Vampiric Embrace" )->duration() );
-
 
   buffs.shadow_word_death_reset_cooldown =
       buff_creator_t( this, "shadow_word_death_reset_cooldown" )
@@ -6238,23 +6138,6 @@ void priest_t::apl_precombat()
 
   precombat->add_action( this, "Power Word: Fortitude", "if=!aura.stamina.up" );
 
-  // Chakra / Shadowform
-  switch ( specialization() )
-  {
-    case PRIEST_HOLY:
-      if ( primary_role() != ROLE_HEAL )
-        precombat->add_action( this, "Chakra: Chastise" );
-      else
-        precombat->add_action( this, "Chakra: Serenity" );
-      break;
-    case PRIEST_SHADOW:
-      precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
-      break;
-    case PRIEST_DISCIPLINE:
-    default:
-      break;
-  }
-
   // Snapshot stats
   precombat->add_action( "snapshot_stats",
                          "Snapshot raid buffed stats before combat begins and "
@@ -6344,8 +6227,7 @@ void priest_t::apl_default()
 void priest_t::apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* main = get_action_priority_list( "main" );
-
+  action_priority_list_t* main         = get_action_priority_list( "main" );
 
   // On-Use Items
   std::vector<std::string> item_actions = get_item_actions();
@@ -6363,10 +6245,12 @@ void priest_t::apl_shadow()
 
   // Choose which APL to use based on talents and fight conditions.
 
-  default_list->add_action(
-      "call_action_list,name=main" );
+  default_list->add_action( "call_action_list,name=main" );
 
   main->add_action( "mind_blast" );
+  main->add_action( "shadow_word_pain,if=!ticking" );
+  main->add_action( "vampiric_touch,if=!ticking" );
+  main->add_action( "mind_flay" );
 }
 
 // Discipline Heal Combat Action Priority List
