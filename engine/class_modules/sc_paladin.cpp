@@ -506,9 +506,7 @@ public:
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
-      // otherwise return a value equal to our current holy power,
-      // lower-bounded by the ability's base cost, upper-bounded by 3
-      return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
+      return ab::base_costs[ RESOURCE_HOLY_POWER ];
     }
 
     return ab::cost();
