@@ -9,10 +9,9 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Fix autoattack rage gain
+// Fix/check autoattack rage gain - Fury/Protection are g2g, Arms is not playable yet.
 // try to not break protection
 // Add Intercept
-// Check if rage is gained from charging the same target twice
 // Check if heroic leap mechanics are still the same
 // Add back second wind
 // ==========================================================================
@@ -26,7 +25,6 @@ struct warrior_td_t: public actor_target_data_t
   dot_t* dots_ravager;
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
-  buff_t* debuffs_charge;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
 
@@ -43,7 +41,6 @@ public:
   int initial_rage;
   double bloodthirst_crit_multiplier;
   bool non_dps_mechanics, warrior_fixed_time;
-  player_t* last_target_charged;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* fury_trinket;
@@ -329,7 +326,6 @@ public:
 	  bloodthirst_crit_multiplier = 0.0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = true;
-    last_target_charged = nullptr;
     base.distance = 5.0;
 
     fury_trinket = nullptr;
@@ -1084,15 +1080,8 @@ struct charge_t: public warrior_attack_t
     if ( first_charge )
       first_charge = !first_charge;
 
-    if ( p() -> cooldown.rage_from_charge -> up() && !td( execute_state -> target ) -> debuffs_charge -> up() )
-    { // Blizz hack, not mine. Charge will not grant rage unless the last target charged was different than the current. 
-      p() -> cooldown.rage_from_charge -> start();
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
-      td( execute_state -> target ) -> debuffs_charge -> trigger();
-      if ( p() -> last_target_charged )
-        td( p() -> last_target_charged ) -> debuffs_charge -> expire();
-      p() -> last_target_charged = execute_state -> target;
-    }
+    p() -> cooldown.rage_from_charge -> start();
+    p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
   }
 
   void reset() override
@@ -3528,9 +3517,6 @@ actor_target_data_t( target, &p ), warrior( p )
     .duration( p.spec.colossus_smash -> duration() )
     .cd( timespan_t::zero() );
 
-  debuffs_charge = buff_creator_t( *this, "charge" )
-    .duration( timespan_t::zero() );
-
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( *this, "taunt", p.find_class_spell( "Taunt" ) );
 }
@@ -3825,7 +3811,6 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
-  last_target_charged = nullptr;
 }
 
 // Movement related overrides. =============================================
