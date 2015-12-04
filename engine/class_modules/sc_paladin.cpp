@@ -140,7 +140,6 @@ public:
     gain_t* hp_blazing_contempt;
     gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
-    gain_t* hp_exorcism;
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;
     gain_t* hp_hammer_of_wrath;
@@ -159,7 +158,6 @@ public:
     // these seem to be required to get Art of War and Grand Crusader procs working
     cooldown_t* ardent_defender;
     cooldown_t* avengers_shield;
-    cooldown_t* exorcism;
   } cooldowns;
 
   // Passives
@@ -169,7 +167,6 @@ public:
     const spell_data_t* boundless_conviction;
     const spell_data_t* daybreak;
     const spell_data_t* divine_bulwark;
-    const spell_data_t* exorcism; // for cooldown reset
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
@@ -218,9 +215,7 @@ public:
     proc_t* divine_purpose;
     proc_t* divine_crusader;
     proc_t* eternal_glory;
-    proc_t* exorcism_cd_reset;
     proc_t* focus_of_vengeance_reset;
-    proc_t* wasted_exorcism_cd_reset;
     proc_t* crusaders_fury;
     proc_t* defender_of_the_light;
   } procs;
@@ -290,7 +285,6 @@ public:
     const spell_data_t* immediate_truth;
     const spell_data_t* illumination;
     const spell_data_t* judgment;
-    const spell_data_t* mass_exorcism;
     const spell_data_t* merciful_wrath;
     const spell_data_t* templars_verdict;
     const spell_data_t* word_of_glory;
@@ -341,7 +335,6 @@ public:
 
     cooldowns.ardent_defender = get_cooldown( "ardent_defender" );
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
-    cooldowns.exorcism = get_cooldown( "exorcism" );
 
     beacon_target = nullptr;
 
@@ -3127,22 +3120,6 @@ struct melee_t : public paladin_melee_attack_t
       first = false;
 
     paladin_melee_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // Check for Art of War procs
-      if ( p() -> passives.exorcism -> ok() && rng().roll( p() -> passives.exorcism -> proc_chance() ) )
-      {
-        // if Exorcism was already off-cooldown, count the proc as wasted
-        if ( p() -> cooldowns.exorcism -> remains() <= timespan_t::zero() )
-        {
-          p() -> procs.wasted_exorcism_cd_reset -> occur();
-        }
-
-        // trigger proc, reset Exorcism cooldown
-        p() -> procs.exorcism_cd_reset -> occur();
-        p() -> cooldowns.exorcism -> reset( true );
-      }
-    }
   }
 };
 
@@ -3328,69 +3305,6 @@ struct divine_storm_t: public paladin_melee_attack_t
     if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
-  }
-};
-
-// Exorcism =================================================================
-
-struct exorcism_t : public paladin_melee_attack_t
-{
-  exorcism_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
-  {
-    parse_options( options_str );
-
-    may_crit = true;
-
-    if ( p -> glyphs.mass_exorcism -> ok() )
-    {
-      aoe = -1;
-      base_aoe_multiplier = 0.25;
-    }
-    weapon_multiplier = 0;
-    cooldown = p -> cooldowns.exorcism;
-    cooldown -> duration = data().cooldown();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Holy Avenger
-    if ( p() -> buffs.holy_avenger -> check() )
-    {
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-
-    return am;
-  }
-
-  void execute() override
-  {
-    paladin_melee_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // base spell adds one Holy Power
-      int g = 1;
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_exorcism );
-
-      // T17 Ret 4-piece bonus adds two holy power
-      if ( p() -> buffs.blazing_contempt -> up() )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.blazing_contempt -> default_value, p() -> gains.hp_blazing_contempt );
-        p() -> buffs.blazing_contempt -> expire();
-      }
-      // Holy Avenger also adds 2 holy power
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
-      }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
   }
 };
 
@@ -4111,7 +4025,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
-  if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
   if ( name == "fist_of_justice"           ) return new fist_of_justice_t          ( this, options_str );
   if ( name == "hand_of_purity"            ) return new hand_of_purity_t           ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
@@ -4280,7 +4193,6 @@ void paladin_t::init_gains()
   // Holy Power
   gains.hp_blessed_life             = get_gain( "blessed_life" );
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
-  gains.hp_exorcism                 = get_gain( "exorcism" );
   gains.hp_grand_crusader           = get_gain( "grand_crusader" );
   gains.hp_hammer_of_the_righteous  = get_gain( "hammer_of_the_righteous" );
   gains.hp_hammer_of_wrath          = get_gain( "hammer_of_wrath" );
@@ -4309,9 +4221,7 @@ void paladin_t::init_procs()
   procs.divine_purpose            = get_proc( "divine_purpose"                 );
   procs.divine_crusader           = get_proc( "divine_crusader"                );
   procs.eternal_glory             = get_proc( "eternal_glory"                  );
-  procs.exorcism_cd_reset         = get_proc( "exorcism_cd_reset"              );
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
-  procs.wasted_exorcism_cd_reset  = get_proc( "wasted_exorcism_cd_reset"       );
   procs.crusaders_fury            = get_proc( "crusaders_fury"                 );
 }
 
@@ -4759,7 +4669,6 @@ void paladin_t::generate_action_prio_list_ret()
 
   single -> add_action( this, "Crusader Strike", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
   single -> add_action( this, "Hammer of Wrath" );
-  single -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
 
   single -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up|target.health.pct<35" );
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&spell_targets.divine_storm=2&(buff.avenging_wrath.up|target.health.pct<35)" );
@@ -4771,7 +4680,6 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)" );
-  single -> add_action( this, "Exorcism", "if=glyph.mass_exorcism.enabled&spell_targets.exorcism>=2&!glyph.double_jeopardy.enabled&!set_bonus.tier17_4pc=1" );
 
   single -> add_action( this, "judgment", "cycle_targets=1,if=last_judgment_target!=target&talent.seraphim.enabled&glyph.double_jeopardy.enabled" );
   single -> add_action( this, "Judgment", "if=talent.seraphim.enabled" );
@@ -4786,9 +4694,6 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
 
-  single -> add_action( this, "Exorcism", "if=talent.seraphim.enabled" );
-  single -> add_action( this, "Exorcism", "if=holy_power<=3|(holy_power=4&(cooldown.judgment.remains>=gcd*2&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))" );
-
   single -> add_talent( this, "Final Verdict", "if=holy_power>=3" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
   single -> add_talent( this, "Holy Prism" );
@@ -4800,7 +4705,6 @@ void paladin_t::generate_action_prio_list_ret()
 
   cleave -> add_action( this, "Hammer of Wrath" );
   cleave -> add_action( this, "Hammer of the Righteous", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
-  cleave -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
 
   cleave -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
@@ -4812,7 +4716,6 @@ void paladin_t::generate_action_prio_list_ret()
   cleave -> add_action( this, "Crusader Strike", "if=talent.seraphim.enabled" );
   cleave -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
-  cleave -> add_action( this, "Exorcism", "if=glyph.mass_exorcism.enabled&!set_bonus.tier17_4pc=1" );
   cleave -> add_action( this, "judgment", "cycle_targets=1,if=last_judgment_target!=target&talent.seraphim.enabled&glyph.double_jeopardy.enabled" );
   cleave -> add_action( this, "judgment", "if=talent.seraphim.enabled" );
   cleave -> add_action( this, "judgment", "cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&(holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))" );
@@ -4820,9 +4723,6 @@ void paladin_t::generate_action_prio_list_ret()
 
   cleave -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
-
-  cleave -> add_action( this, "Exorcism", "if=talent.seraphim.enabled" );
-  cleave -> add_action( this, "Exorcism", "if=holy_power<=3|(holy_power=4&(cooldown.judgment.remains>=gcd*2&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))" );
 
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
 
@@ -5103,7 +5003,6 @@ void paladin_t::init_spells()
   // Ret Passives
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
-  passives.exorcism               = find_spell( passives.sword_of_light -> ok() ? 87138 : 0 );
   passives.righteous_vengeance    = find_specialization_spell( "Righteous Vengeance" );
 
   // Perks
@@ -5148,7 +5047,6 @@ void paladin_t::init_spells()
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.illumination             = find_glyph_spell( "Glyph of Illumination" );
   glyphs.judgment                 = find_glyph_spell( "Glyph of Judgment" );
-  glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
   glyphs.merciful_wrath           = find_glyph_spell( "Glyph of Merciful Wrath" );
   glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict" );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
@@ -5987,14 +5885,12 @@ expr_t* paladin_t::create_expression( action_t* a,
     cooldown_t* cs_cd;
     cooldown_t* j_cd;
     cooldown_t* hw_cd;
-    cooldown_t* e_cd;
     cooldown_t* how_cd;
     cooldown_t* hs_cd;
 
     time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
       paladin_expr_t( n, p ), cs_cd( p.get_cooldown( "crusader_strike" ) ),
       j_cd( p.get_cooldown( "judgment" ) ), hw_cd( p.get_cooldown( "holy_wrath") ),
-      e_cd( p.get_cooldown( "exorcism" ) ),
       how_cd( p.get_cooldown( "hammer_of_wrath" ) ), hs_cd( p.get_cooldown( "holy_shock" ) )
     { }
 
@@ -6019,10 +5915,6 @@ expr_t* paladin_t::create_expression( action_t* a,
       }
       else if ( paladin.specialization() == PALADIN_RETRIBUTION )
       {
-        // ret-specific HPG go here
-        if ( e_cd -> remains() < shortest_hpg_time )
-          shortest_hpg_time = e_cd -> remains();
-
         if ( paladin.get_how_availability() && how_cd -> remains() < shortest_hpg_time )
           shortest_hpg_time = how_cd -> remains();
       }
