@@ -1213,14 +1213,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_spinning_dragon_strike_tick_t( storm_earth_and_fire_pet_t* p ):
       sef_tick_action_t( "spinning_dragon_strike_tick", p, p -> find_spell( 158221 ) )
     {
-      aoe = 0;
+      aoe = -1;
     }
   };
 
   struct sef_spinning_dragon_strike_t : public sef_melee_attack_t
   {
     sef_spinning_dragon_strike_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "spinning_dragon_strike", player, player -> o() -> find_talent_spell( "Hurricane Strike" ) )
+      sef_melee_attack_t( "spinning_dragon_strike", player, player -> o() -> find_talent_spell( "Spinning Dragon Strike" ) )
     {
       channeled = true;
 
@@ -1300,8 +1300,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
   // Storm, Earth, and Fire abilities end ===================================
 
-  // SEF has its own Tiger Power armor penetration buff
-
   std::vector<sef_melee_attack_t*> attacks;
   std::vector<sef_spell_t*> spells;
 
@@ -1365,7 +1363,7 @@ public:
     attacks[ SEF_FISTS_OF_FURY           ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK     ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND       ] = new sef_rushing_jade_wind_t( this );
-    attacks[ SEF_SPINNING_DRAGON_STRIKE    ] = new sef_spinning_dragon_strike_t( this );
+    attacks[ SEF_SPINNING_DRAGON_STRIKE  ] = new sef_spinning_dragon_strike_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_BURST )  ] = new sef_chi_burst_t( this );
     spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
