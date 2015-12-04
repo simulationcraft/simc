@@ -388,6 +388,7 @@ public:
     const spell_data_t* fortifying_brew;
 
     // Brewmaster
+    const spell_data_t* blackout_strike;
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
     const spell_data_t* desperate_measures;
@@ -2314,6 +2315,36 @@ struct blackout_kick_t: public monk_melee_attack_t
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
+  }
+};
+
+// ==========================================================================
+// Blackout Strike
+// ==========================================================================
+
+struct blackout_strike_t: public monk_melee_attack_t
+{
+  blackout_strike_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "blackout_strike", p, p -> spec.blackout_strike )
+  {
+    parse_options( options_str );
+
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
+    spell_power_mod.direct = 0.0;
+    cooldown -> duration = data().cooldown();
+  }
+
+  virtual void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.serenity -> check() )
+      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
+
+    monk_melee_attack_t::update_ready( cd );
   }
 };
 
@@ -4419,6 +4450,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
   if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
   // Brewmaster
+  if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
@@ -4586,6 +4618,7 @@ void monk_t::init_spells()
   spec.rising_sun_kick_trinket       = find_spell( 185099 );
 
   // Brewmaster Passives
+  spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
   spec.desperate_measures            = find_specialization_spell( "Desperate Measures" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
   spec.summon_black_ox_statue        = find_specialization_spell( "Summon Black Ox Statue" );
