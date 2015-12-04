@@ -186,27 +186,6 @@ public:
     const spell_data_t* mental_anguish;
   } mastery_spells;
 
-  // Perk Spells
-  struct
-  {
-    // General
-    const spell_data_t* enhanced_power_word_shield;
-
-    // Healing
-    const spell_data_t* enhanced_focused_will;
-    const spell_data_t* enhanced_leap_of_faith;
-
-    // Discipline
-
-    // Holy
-    const spell_data_t* enhanced_chakras;
-    const spell_data_t* enhanced_renew;
-
-    // Shadow
-    const spell_data_t* enhanced_mind_flay;
-    const spell_data_t* enhanced_shadow_word_death;
-  } perks;
-
   // Cooldowns
   struct
   {
@@ -344,7 +323,6 @@ public:
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
-  void init_resources( bool force ) override;
   void reset() override;
   void create_options() override;
   std::string create_profile( save_e = SAVE_ALL ) override;
@@ -950,14 +928,9 @@ struct weakened_soul_t : public buff_t
    * applied,
    * depending on the triggering priest
    */
-  bool trigger_weakened_souls( priest_t& p )
+  bool trigger_weakened_souls( priest_t& )
   {
-    timespan_t duration;
-
-    duration = buff_duration +
-               p.perks.enhanced_power_word_shield->effectN( 1 ).time_value();
-
-    return buff_t::trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    return buff_t::trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
   }
 };
 }  // namespace buffs
@@ -1832,12 +1805,6 @@ struct chakra_base_t : public priest_spell_t
     ignore_false_positive = true;
 
     p.cooldowns.chakra->duration = cooldown->duration;
-
-    if ( priest.perks.enhanced_chakras->ok() )
-    {
-      p.cooldowns.chakra->duration -=
-          p.perks.enhanced_chakras->effectN( 1 ).time_value();
-    }
 
     cooldown = p.cooldowns.chakra;
   }
@@ -2839,12 +2806,6 @@ struct mind_flay_base_t : public priest_spell_t
     hasted_ticks  = false;
     use_off_gcd   = true;
     is_mind_spell = true;
-
-    if ( priest.perks.enhanced_mind_flay->ok() )
-    {
-      base_tick_time *=
-          1.0 + priest.perks.enhanced_mind_flay->effectN( 1 ).percent();
-    }
   }
 
   double action_multiplier() const override
@@ -4752,9 +4713,6 @@ struct renew_t : public priest_heal_t
       base_multiplier *= 1.0 + p.specs.rapid_renewal->effectN( 2 ).percent();
     }
 
-
-    dot_duration += priest.perks.enhanced_renew->effectN( 1 ).time_value();
-
     castable_in_shadowform = true;
   }
 
@@ -5131,7 +5089,6 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     talents(),
     specs(),
     mastery_spells(),
-    perks(),
     cooldowns(),
     gains(),
     benefits(),
@@ -5564,13 +5521,6 @@ double priest_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.twist_of_fate->current_value;
   }
 
-  if ( perks.enhanced_focused_will->ok() && buffs.focused_will->check() )
-  {
-    m *= 1.0 +
-         buffs.focused_will->check() *
-             perks.enhanced_focused_will->effectN( 1 ).percent();
-  }
-
   if ( buffs.reperation->check() )
   {
     m *= 1.0 +
@@ -5981,26 +5931,6 @@ void priest_t::init_spells()
   mastery_spells.echo_of_light     = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.mental_anguish    = find_mastery_spell( PRIEST_SHADOW );
 
-  // Perk Spells
-  // General
-  perks.enhanced_power_word_shield =
-      find_perk_spell( "Enhanced Power Word: Shield" );
-
-  // Healing
-  perks.enhanced_focused_will = find_perk_spell( "Enhanced Focused Will" );
-  perks.enhanced_leap_of_faith =
-      find_perk_spell( "Enhanced Leap of Faith" );  // NYI
-
-  // Discipline
-
-  // Holy
-  perks.enhanced_chakras = find_perk_spell( "Enhanced Chakras" );
-  perks.enhanced_renew   = find_perk_spell( "Enhanced Renew" );
-
-  // Shadow
-  perks.enhanced_mind_flay   = find_perk_spell( "Enhanced Mind Flay" );
-  perks.enhanced_shadow_word_death =
-      find_perk_spell( "Enhanced Shadow Word: Death" );
 
   ///////////////
   // Glyphs    //
@@ -6151,9 +6081,6 @@ void priest_t::create_buffs()
           .spell( specs.focused_will->ok()
                       ? specs.focused_will->effectN( 1 ).trigger()
                       : spell_data_t::not_found() );
-
-  if ( perks.enhanced_focused_will->ok() )
-    buffs.focused_will->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Shadow
 
