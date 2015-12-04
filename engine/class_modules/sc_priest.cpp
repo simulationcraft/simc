@@ -66,7 +66,6 @@ public:
   struct
   {
     // Talents
-    buff_t* glyph_of_levitate;
     buff_t* power_infusion;
     buff_t* twist_of_fate;
     buff_t* surge_of_light;
@@ -93,8 +92,6 @@ public:
     buff_t* shadowy_insight;
     buff_t* shadow_word_death_reset_cooldown;
     buff_t* mind_sear_on_hit_reset;
-    buff_t* glyph_of_mind_flay;
-    buff_t* glyph_of_mind_spike;
     buff_t* shadowform;
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
@@ -245,7 +242,6 @@ public:
   // Benefits
   struct
   {
-    benefit_t* smites_with_glyph_increase;
   } benefits;
 
   // Procs
@@ -327,55 +323,25 @@ public:
   struct
   {
     // All Specs
-    const spell_data_t* dispel_magic;
-    const spell_data_t* fade;
-    const spell_data_t* fear_ward;
-    const spell_data_t* leap_of_faith;
-    const spell_data_t* levitate;
-    const spell_data_t* mass_dispel;
-    const spell_data_t* power_word_shield;
-    const spell_data_t* prayer_of_mending;
-    const spell_data_t* psychic_scream;
-    const spell_data_t* reflective_shield;
-    const spell_data_t* restored_faith;
-    const spell_data_t* scourge_imprisonment;
-    const spell_data_t* weakened_soul;
-
-    // Healing Specs
-    const spell_data_t* holy_fire;
-    const spell_data_t* inquisitor;
-    const spell_data_t* purify;
-    const spell_data_t* shadow_magic;
-    const spell_data_t* smite;
+    const spell_data_t* angels;
+    const spell_data_t* confession;
+    const spell_data_t* holy_resurrection;
+    const spell_data_t* shackle_undead;
+    const spell_data_t* the_heavens;
+    const spell_data_t* the_sha;
 
     // Discipline
     const spell_data_t* borrowed_time;
-    const spell_data_t* penance;
 
     // Holy
-    const spell_data_t* binding_heal;
-    const spell_data_t* circle_of_healing;
-    const spell_data_t* deep_wells;
-    const spell_data_t* guardian_spirit;
-    const spell_data_t* lightwell;
-    const spell_data_t* redeemer;
-    const spell_data_t* renew;
-    const spell_data_t* spirit_of_redemption;
+    const spell_data_t* inspired_hymns;
+    const spell_data_t* the_valkyr;
 
     // Shadow
-    const spell_data_t* delayed_coalescence;
-    const spell_data_t* dispersion;
-    const spell_data_t* focused_mending;
-    const spell_data_t* free_action;
-    const spell_data_t* mind_blast;
-    const spell_data_t* mind_flay;
-    const spell_data_t* mind_harvest;
-    const spell_data_t* mind_spike;
-    const spell_data_t* miraculous_dispelling;
-    const spell_data_t* psychic_horror;
-    const spell_data_t* shadow_word_death;
-    const spell_data_t* silence;
-    const spell_data_t* vampiric_embrace;
+    const spell_data_t* dark_archangel;
+    const spell_data_t* shadow;
+    const spell_data_t* shadow_ravens;
+    const spell_data_t* shadowy_friends;
   } glyphs;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -724,8 +690,6 @@ public:
 
   void summon( timespan_t duration ) override
   {
-    charges = 15 + o().glyphs.deep_wells->effectN( 1 ).base_value();
-
     priest_pet_t::summon( duration );
   }
 };
@@ -1762,8 +1726,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void trigger_vampiric_embrace( action_state_t* s )
   {
     double amount = s->result_amount;
-    amount *= ( priest.buffs.vampiric_embrace->data().effectN( 1 ).percent() +
-                priest.glyphs.vampiric_embrace->effectN( 2 ).percent() );
+    amount *= priest.buffs.vampiric_embrace->data().effectN( 1 ).percent();
 
     // Get all non-pet, non-sleeping players
     std::vector<player_t*> ally_list;
@@ -1995,17 +1958,13 @@ struct dispersion_t : public priest_spell_t
     parse_options( options_str );
 
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    dot_duration   = timespan_t::from_seconds( 6.0 ) +
-                   priest.glyphs.delayed_coalescence->effectN( 1 ).time_value();
+    dot_duration   = timespan_t::from_seconds( 6.0 );
 
     ignore_false_positive = true;
     channeled             = true;
     harmful               = false;
     tick_may_crit         = false;
     // hasted_ticks      = false;
-
-    cooldown->duration =
-        data().cooldown() + priest.glyphs.dispersion->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -2020,8 +1979,7 @@ struct dispersion_t : public priest_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    return timespan_t::from_seconds( 6.0 ) +
-           priest.glyphs.delayed_coalescence->effectN( 1 ).time_value();
+    return timespan_t::from_seconds( 6.0 );
   }
 
   void last_tick( dot_t* d ) override
@@ -2065,13 +2023,6 @@ struct levitate_t : public priest_spell_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.glyph_of_levitate->trigger();
   }
 };
 
@@ -2330,11 +2281,6 @@ struct mind_blast_t : public priest_spell_t
     instant_multistrike = 0;
     is_mind_spell       = true;
 
-    // Glyph of Mind Harvest
-    if ( priest.glyphs.mind_harvest->ok() )
-      priest.cooldowns.mind_blast->duration +=
-          priest.glyphs.mind_harvest->effectN( 2 )
-              .time_value();  // Effect #2 --
     // http://www.wowhead.com/spell=162532
     if ( priest.talents.clarity_of_power->ok() )
       priest.cooldowns.mind_blast->duration +=
@@ -2356,26 +2302,6 @@ struct mind_blast_t : public priest_spell_t
     if ( result_is_hit( s->result ) )
     {
       generate_shadow_orb( 1, priest.gains.shadow_orb_mind_blast );
-
-      // Glyph of Mind Harvest
-      if ( priest.glyphs.mind_harvest->ok() )
-      {
-        priest_td_t& td = get_td( s->target );
-        if ( !td.glyph_of_mind_harvest_consumed )
-        {
-          td.glyph_of_mind_harvest_consumed = true;
-          generate_shadow_orb(
-              priest.glyphs.mind_harvest->effectN( 1 ).base_value(),
-              priest.gains.shadow_orb_mind_harvest );  // Effect #1 --
-          // http://www.wowhead.com/spell=162532
-
-          if ( sim->debug )
-            sim->out_debug.printf(
-                "%s consumed Glyph of Mind Harvest on target %s.",
-                priest.name(), s->target->name() );
-        }
-      }
-      priest.buffs.glyph_of_mind_spike->expire();
     }
   }
 
@@ -2432,7 +2358,6 @@ struct mind_blast_t : public priest_spell_t
 
     priest.buffs.empowered_shadows->up();  // benefit tracking
     priest.buffs.empowered_shadows->expire();
-    priest.buffs.glyph_of_mind_spike->up();  // benefit tracking
   }
 
   timespan_t execute_time() const override
@@ -2445,9 +2370,6 @@ struct mind_blast_t : public priest_spell_t
 
     timespan_t et = priest_spell_t::execute_time();
 
-    et *= 1.0 +
-          priest.buffs.glyph_of_mind_spike->check() *
-              priest.buffs.glyph_of_mind_spike->data().effectN( 1 ).percent();
 
     return et;
   }
@@ -2640,8 +2562,6 @@ struct mind_spike_t : public priest_spell_t
 
         if ( removed_dot )
           priest.procs.mind_spike_dot_removal->occur();
-
-        priest.buffs.glyph_of_mind_spike->trigger();
       }
 
       if ( trigger_shadowy_insight() )
@@ -2973,18 +2893,6 @@ struct shadow_word_death_t : public priest_spell_t
       d *= 1.0 + priest.talents.clarity_of_power->effectN( 1 ).percent();
 
     return d;
-  }
-
-  bool ready() override
-  {
-    if ( !priest_spell_t::ready() )
-      return false;
-
-    if ( priest.glyphs.shadow_word_death->ok() ||
-         target->health_percentage() < 20.0 )
-      return true;
-
-    return false;
   }
 };
 
@@ -3417,7 +3325,6 @@ struct mind_flay_base_t : public priest_spell_t
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
-    priest.buffs.glyph_of_mind_flay->trigger();
 
     if ( priest.active_items.mental_fatigue )
     {
@@ -3656,7 +3563,6 @@ struct holy_fire_base_t : public priest_spell_t
 
     can_trigger_atonement = priest.specs.atonement->ok();
 
-    range += priest.glyphs.holy_fire->effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -3688,17 +3594,6 @@ struct holy_fire_base_t : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( backlash && priest.glyphs.inquisitor->ok() &&
-         ( s->result == RESULT_HIT || s->result == RESULT_CRIT ) )
-    {
-      backlash->spellpower = s->composite_spell_power();
-      backlash->multiplier = s->da_multiplier;
-
-      if ( s->result == RESULT_CRIT )
-        backlash->critical = true;
-
-      backlash->schedule_execute();
-    }
 
     priest_spell_t::impact( s );
   }
@@ -3817,20 +3712,6 @@ struct penance_t : public priest_spell_t
       atonement->channeled = true;
   }
 
-  bool usable_moving() const override
-  {
-    return priest.glyphs.penance->ok();
-  }
-
-  double cost() const override
-  {
-    double c = priest_spell_t::cost();
-
-    c *= 1.0 + priest.glyphs.penance->effectN( 1 ).percent();
-
-    return c;
-  }
-
   void execute() override
   {
     priest_spell_t::execute();
@@ -3853,34 +3734,6 @@ struct penance_t : public priest_spell_t
 
 struct smite_t : public priest_spell_t
 {
-  struct state_t : public action_state_t
-  {
-    bool glyph_benefit;
-    state_t( action_t* a, player_t* t )
-      : action_state_t( a, t ), glyph_benefit( false )
-    {
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s ) << " glyph_benefit=" << std::boolalpha
-                                     << glyph_benefit;
-      return s;
-    }
-
-    void initialize() override
-    {
-      action_state_t::initialize();
-      glyph_benefit = false;
-    }
-
-    void copy_state( const action_state_t* o ) override
-    {
-      action_state_t::copy_state( o );
-      glyph_benefit = static_cast<const state_t&>( *o ).glyph_benefit;
-    }
-  };
-
   cooldown_t* hw_chastise;
 
   smite_t( priest_t& p, const std::string& options_str )
@@ -3894,7 +3747,6 @@ struct smite_t : public priest_spell_t
     can_trigger_atonement  = priest.specs.atonement->ok();
     castable_in_shadowform = false;
 
-    range += priest.glyphs.holy_fire->effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -3911,61 +3763,11 @@ struct smite_t : public priest_spell_t
   {
     priest_spell_t::update_ready( cd_duration );
     assert( execute_state );
-    priest.benefits.smites_with_glyph_increase->update(
-        static_cast<const state_t*>( execute_state )->glyph_benefit );
-  }
-
-  /* Check if Holy Fire or PW: Solace is up
-   */
-  bool glyph_benefit( player_t* t ) const
-  {
-    bool glyph_benefit = false;
-
-    if ( priest.glyphs.smite->ok() )
-    {
-      const priest_td_t& td = get_td( t );
-
-      const dot_t* dot = priest.talents.power_word_solace->ok()
-                             ? td.dots.power_word_solace
-                             : td.dots.holy_fire;
-
-      glyph_benefit = dot->is_ticking();
-    }
-
-    return glyph_benefit;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = priest_spell_t::composite_target_multiplier( target );
-
-    if ( glyph_benefit( target ) )
-      m *= 1.0 + priest.glyphs.smite->effectN( 1 ).percent();
-
-    return m;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_state( action_state_t* s, dmg_e type ) override
-  {
-    state_t& state = static_cast<state_t&>( *s );
-
-    state.glyph_benefit = glyph_benefit( s->target );
-
-    priest_spell_t::snapshot_state( s, type );
   }
 
   void trigger_atonement( dmg_e type, action_state_t* s )
   {
     double atonement_dmg = s->result_amount;  // Normal dmg
-
-    // If HF/PW:S was up, remove the extra damage from glyph
-    if ( static_cast<const state_t*>( s )->glyph_benefit )
-      atonement_dmg /= 1.0 + priest.glyphs.smite->effectN( 1 ).percent();
 
     atonement->trigger( atonement_dmg, direct_tick ? DMG_OVER_TIME : type,
                         s->result );
@@ -4493,13 +4295,6 @@ struct silence_t : public priest_spell_t
 
     cooldown           = priest.cooldowns.silence;
     cooldown->duration = data().cooldown();
-
-    // Glyph of Silence
-    if ( priest.specialization() == PRIEST_SHADOW &&
-         priest.glyphs.silence->ok() )
-    {
-      cooldown->duration += priest.glyphs.silence->effectN( 1 ).time_value();
-    }
   }
 
   void execute() override
@@ -4579,11 +4374,7 @@ struct circle_of_healing_t : public priest_heal_t
   {
     parse_options( options_str );
 
-    base_costs[ current_resource() ] *=
-        1.0 + p.glyphs.circle_of_healing->effectN( 2 ).percent();
-    base_costs[ current_resource() ] =
-        floor( base_costs[ current_resource() ] );
-    aoe = p.glyphs.circle_of_healing->ok() ? 6 : 5;
+    aoe = 5;
   }
 
   void execute() override
@@ -5205,15 +4996,6 @@ struct penance_heal_t : public priest_heal_t
     tick_action = new penance_heal_tick_t( p );
   }
 
-  double cost() const override
-  {
-    double c = priest_heal_t::cost();
-
-    c *= 1.0 + priest.glyphs.penance->effectN( 1 ).percent();
-
-    return c;
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
@@ -5227,37 +5009,11 @@ struct penance_heal_t : public priest_heal_t
 
 struct power_word_shield_t : public priest_absorb_t
 {
-  struct glyph_power_word_shield_t : public priest_heal_t
-  {
-    glyph_power_word_shield_t( priest_t& player )
-      : priest_heal_t( "power_word_shield_glyph", player,
-                       player.find_spell( 55672 ) )
-    {
-      school     = SCHOOL_HOLY;
-      background = true;
-      proc       = true;
-
-      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
-      castable_in_shadowform = true;
-    }
-
-    void trigger( action_state_t* s )
-    {
-      base_dd_min = base_dd_max =
-          priest.glyphs.power_word_shield->effectN( 1 ).percent() *
-          s->result_amount;
-      target = s->target;
-      execute();
-    }
-  };
-
-  glyph_power_word_shield_t* glyph_pws;
   bool ignore_debuff;
 
   power_word_shield_t( priest_t& p, const std::string& options_str )
     : priest_absorb_t( "power_word_shield", p,
                        p.find_class_spell( "Power Word: Shield" ) ),
-      glyph_pws( nullptr ),
       ignore_debuff( false )
   {
     add_option( opt_bool( "ignore_debuff", ignore_debuff ) );
@@ -5265,11 +5021,6 @@ struct power_word_shield_t : public priest_absorb_t
 
     spell_power_mod.direct = 4.59;  // last checked 2015/02/21
 
-    if ( p.glyphs.power_word_shield->ok() )
-    {
-      glyph_pws = new glyph_power_word_shield_t( p );
-      // add_child( glyph_pws );
-    }
 
     castable_in_shadowform = true;
   }
@@ -5286,10 +5037,6 @@ struct power_word_shield_t : public priest_absorb_t
     // Talent
     if ( priest.talents.body_and_soul->ok() )
       s->target->buffs.body_and_soul->trigger();
-
-    // Glyph
-    if ( glyph_pws )
-      glyph_pws->trigger( s );
   }
 
   bool ready() override
@@ -5428,16 +5175,6 @@ struct prayer_of_mending_t : public priest_heal_t
     return am;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = priest_heal_t::composite_target_multiplier( t );
-
-    if ( priest.glyphs.prayer_of_mending->ok() && t == target )
-      ctm *= 1.0 + priest.glyphs.prayer_of_mending->effectN( 1 ).percent();
-
-    return ctm;
-  }
-
   void update_ready( timespan_t cd_duration ) override
   {
     // If divine insight holy is up, don't trigger a cooldown
@@ -5490,8 +5227,6 @@ struct renew_t : public priest_heal_t
       base_multiplier *= 1.0 + p.specs.rapid_renewal->effectN( 2 ).percent();
     }
 
-    base_multiplier *= 1.0 + p.glyphs.renew->effectN( 1 ).percent();
-    dot_duration += p.glyphs.renew->effectN( 2 ).time_value();
 
     dot_duration += priest.perks.enhanced_renew->effectN( 1 ).time_value();
 
@@ -6008,8 +5743,7 @@ void priest_t::create_procs()
  */
 void priest_t::create_benefits()
 {
-  benefits.smites_with_glyph_increase =
-      get_benefit( "Smites increased by Holy Fire" );
+
 }
 
 /* Define the acting role of the priest
@@ -6407,17 +6141,6 @@ double priest_t::temporary_movement_modifier() const
 {
   double speed = player_t::temporary_movement_modifier();
 
-  if ( glyphs.free_action->ok() && buffs.dispersion->check() )
-    speed = std::max( speed, glyphs.free_action->effectN( 1 ).percent() );
-
-  if ( buffs.glyph_of_levitate->check() )
-    speed = std::max( speed, buffs.glyph_of_levitate->default_value );
-
-  if ( buffs.glyph_of_mind_flay->check() )
-    speed = std::max(
-        speed, ( buffs.glyph_of_mind_flay->data().effectN( 1 ).percent() *
-                 buffs.glyph_of_mind_flay->check() ) );
-
   return speed;
 }
 
@@ -6783,77 +6506,30 @@ void priest_t::init_spells()
   perks.enhanced_shadow_word_death =
       find_perk_spell( "Enhanced Shadow Word: Death" );
 
-  // Glyphs
-  // glyphs.dispel_magic                 = find_glyph_spell( "Glyph of Dispel
-  // Magic" );            //NYI
-  // glyphs.fade                         = find_glyph_spell( "Glyph of Fade" );
-  // //NYI
-  // glyphs.fear_ward                    = find_glyph_spell( "Glyph of Fear
-  // Ward" );               //NYI
-  // glyphs.leap_of_faith                = find_glyph_spell( "Glyph of Leap of
-  // Faith" );           //NYI
-  glyphs.levitate = find_glyph_spell( "Glyph of Levitate" );
-  // glyphs.mass_dispel                  = find_glyph_spell( "Glyph of Mass
-  // Dispel" );             //NYI
-  glyphs.power_word_shield = find_glyph_spell( "Glyph of Power Word: Shield" );
-  glyphs.prayer_of_mending = find_glyph_spell( "Glyph of Prayer of Mending" );
-  // glyphs.psychic_scream               = find_glyph_spell( "Glyph of Psychic
-  // Scream" );          //NYI
-  // glyphs.reflective_shield            = find_glyph_spell( "Glyph of
-  // Reflective Shield" );       //NYI
-  // glyphs.restored_faith               = find_glyph_spell( "Glyph of Restored
-  // Faith" );          //NYI
-  // glyphs.scourge_imprisonment         = find_glyph_spell( "Glyph of Scourge
-  // Imprisonment" );    //NYI
-  // glyphs.weakened_soul                = find_glyph_spell( "Glyph of Weakened
-  // Soul" );           //NYI
+  ///////////////
+  // Glyphs    //
+  ///////////////
 
-  // Healing Specs
-  glyphs.holy_fire  = find_glyph_spell( "Glyph of Holy Fire" );
-  glyphs.inquisitor = find_glyph_spell( "Glyph of the Inquisitor" );
-  // glyphs.purify                       = find_glyph_spell( "Glyph of Purify"
-  // );                  //NYI
-  // glyphs.shadow_magic                 = find_glyph_spell( "Glyph of Shadow
-  // Magic" );            //NYI
-  glyphs.smite = find_glyph_spell( "Glyph of Smite" );
+  // All Specs
+  glyphs.angels            = find_glyph_spell( "Glyph of Angels" );
+  glyphs.confession        = find_glyph_spell( "Glyph of Confession" );
+  glyphs.holy_resurrection = find_glyph_spell( "Glyph of Holy Resurrection" );
+  glyphs.shackle_undead    = find_glyph_spell( "Glyph of Shackle Undead" );
+  glyphs.the_heavens       = find_glyph_spell( "Glyph of the Heavens" );
+  glyphs.the_sha           = find_glyph_spell( "Glyph of the Sha" );
 
   // Discipline
   glyphs.borrowed_time = find_glyph_spell( "Glyph of Borrowed Time" );
-  glyphs.penance       = find_glyph_spell( "Glyph of Penance" );
 
   // Holy
-  // glyphs.binding_heal                 = find_glyph_spell( "Glyph of Binding
-  // Heal" );            //NYI
-  glyphs.circle_of_healing = find_glyph_spell( "Glyph of Circle of Healing" );
-  glyphs.deep_wells        = find_glyph_spell( "Glyph of Deep Wells" );
-  // glyphs.guardian_spirit              = find_glyph_spell( "Glyph of Guardian
-  // Spirit" );         //NYI
-  // glyphs.lightwell                    = find_glyph_spell( "Glyph of
-  // Lightwell" );               //NYI
-  // glyphs.redeemer                     = find_glyph_spell( "Glyph of the
-  // Redeemer" );            //NYI
-  glyphs.renew = find_glyph_spell( "Glyph of Renew" );
-  // glyphs.spirit_of_redemption         = find_glyph_spell( "Glyph of Spirit of
-  // Redemption" );    //NYI
+  glyphs.inspired_hymns = find_glyph_spell( "Glyph of Inspired Hymns" );
+  glyphs.the_valkyr     = find_glyph_spell( "Glyph of the Val'kyr" );
 
   // Shadow
-  glyphs.delayed_coalescence =
-      find_glyph_spell( "Glyph of Delayed Coalescence" );
-  glyphs.dispersion = find_glyph_spell( "Glyph of Dispersion" );
-  // glyphs.focused_mending              = find_glyph_spell( "Glyph of Focused
-  // Mending" );         //NYI
-  glyphs.free_action  = find_glyph_spell( "Glyph of Free Action" );
-  glyphs.mind_blast   = find_glyph_spell( "Glyph of Mind Blast" );
-  glyphs.mind_flay    = find_glyph_spell( "Glyph of Mind Flay" );
-  glyphs.mind_harvest = find_glyph_spell( "Glyph of Mind Harvest" );
-  glyphs.mind_spike   = find_glyph_spell( "Glyph of Mind Spike" );
-  // glyphs.miraculous_dispelling        = find_glyph_spell( "Glyph of
-  // Miraculous Dispelling" );   //NYI
-  // glyphs.psychic_horror               = find_glyph_spell( "Glyph of Psychic
-  // Horror" );          //NYI
-  glyphs.shadow_word_death = find_glyph_spell( "Glyph of Shadow Word: Death" );
-  glyphs.silence           = find_glyph_spell( "Glyph of Silence" );  // NYI
-  glyphs.vampiric_embrace  = find_glyph_spell( "Glyph of Vampiric Embrace" );
+  glyphs.dark_archangel  = find_glyph_spell( "Glyph of Dark Archangel" );
+  glyphs.shadow          = find_glyph_spell( "Glyph of Shadow" );
+  glyphs.shadow_ravens   = find_glyph_spell( "Glyph of Shadow Ravens" );
+  glyphs.shadowy_friends = find_glyph_spell( "Glyph of Shadowy Friends" );
 
   if ( mastery_spells.echo_of_light->ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
@@ -6990,13 +6666,8 @@ void priest_t::create_buffs()
   buffs.vampiric_embrace =
       buff_creator_t( this, "vampiric_embrace",
                       find_class_spell( "Vampiric Embrace" ) )
-          .duration( find_class_spell( "Vampiric Embrace" )->duration() +
-                     glyphs.vampiric_embrace->effectN( 1 ).time_value() );
+          .duration( find_class_spell( "Vampiric Embrace" )->duration() );
 
-  buffs.glyph_of_mind_spike =
-      buff_creator_t( this, "glyph_mind_spike" )
-          .spell( glyphs.mind_spike->effectN( 1 ).trigger() )
-          .chance( glyphs.mind_spike->proc_chance() );
 
   buffs.shadow_word_death_reset_cooldown =
       buff_creator_t( this, "shadow_word_death_reset_cooldown" )
@@ -7063,15 +6734,6 @@ void priest_t::create_buffs()
           .spell( find_spell( 188779 ) )
           .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) )
           .add_invalidate( CACHE_MULTISTRIKE );
-
-  // Glyphs
-  buffs.glyph_of_levitate =
-      buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )
-          .default_value( glyphs.levitate->effectN( 1 ).percent() );
-
-  buffs.glyph_of_mind_flay =
-      buff_creator_t( this, "glyph_of_mind_flay", find_spell( 120587 ) )
-          .chance( glyphs.mind_flay->ok() ? 1.0 : 0.0 );
 }
 
 // ALL Spec Pre-Combat Action Priority List
@@ -8404,14 +8066,6 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
   if ( buffs.dispersion->check() )
   {
     double extraReduction = 0;
-
-    if ( glyphs.delayed_coalescence->ok() &&
-         buffs.dispersion->remains().total_seconds() <= 2.0 )
-    {
-      extraReduction =
-          ( 2.0 - floor( buffs.dispersion->remains().total_seconds() ) ) *
-          glyphs.delayed_coalescence->effectN( 2 ).percent();
-    }
 
     s->result_amount *=
         1.0 +
