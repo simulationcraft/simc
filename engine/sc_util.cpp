@@ -719,7 +719,6 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_DEMONIC_FURY:  return "demonic_fury";
     case RESOURCE_HOLY_POWER:    return "holy_power";
     case RESOURCE_CHI:           return "chi";
-    case RESOURCE_SHADOW_ORB:    return "shadow_orb";
     case RESOURCE_COMBO_POINT:   return "combo_points";
     case RESOURCE_MAELSTROM:     return "maelstrom";
     case RESOURCE_FURY:          return "fury";
@@ -810,7 +809,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
     case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
     case POWER_CHI:           return RESOURCE_CHI;
-    case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
+    // case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
     case POWER_MAELSTROM:     return RESOURCE_MAELSTROM;
     case POWER_FURY:          return RESOURCE_FURY;
     default:                  return RESOURCE_NONE;
