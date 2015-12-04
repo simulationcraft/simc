@@ -2564,9 +2564,6 @@ double player_t::composite_melee_haste() const
     if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
-    if ( sim -> auras.haste -> check() )
-      h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
-
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
@@ -2611,12 +2608,7 @@ double player_t::composite_melee_attack_power() const
 
 double player_t::composite_attack_power_multiplier() const
 {
-  double m = current.attack_power_multiplier;
-
-  if ( ! is_pet() && ! is_enemy() && sim -> auras.attack_power_multiplier -> check() )
-    m *= 1.0 + sim -> auras.attack_power_multiplier -> value();
-
-  return m;
+  return current.attack_power_multiplier;
 }
 
 // player_t::composite_attack_crit ==========================================
@@ -2627,9 +2619,6 @@ double player_t::composite_melee_crit() const
 
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
-
-  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
-    ac += sim -> auras.critical_strike -> value();
 
   ac += racials.viciousness -> effectN( 1 ).percent();
   ac += racials.arcane_acuity -> effectN( 1 ).percent();
@@ -2841,9 +2830,6 @@ double player_t::composite_spell_haste() const
     if ( buffs.tempus_repit -> up() )
       h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
 
-    if ( sim -> auras.haste -> check() )
-      h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
-
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
@@ -2879,12 +2865,7 @@ double player_t::composite_spell_power( school_e /* school */ ) const
 
 double player_t::composite_spell_power_multiplier() const
 {
-  double m = current.spell_power_multiplier;
-
-  if ( ! is_pet() && ! is_enemy() && sim -> auras.spell_power_multiplier -> check() )
-    m *= 1.0 + sim -> auras.spell_power_multiplier -> value();
-
-  return m;
+  return current.spell_power_multiplier;
 }
 
 // player_t::composite_spell_crit ===========================================
@@ -2896,12 +2877,6 @@ double player_t::composite_spell_crit() const
   if ( current.spell_crit_per_intellect > 0 )
   {
     sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
-  }
-
-  if ( ! is_pet() && ! is_enemy() )
-  {
-    if ( sim -> auras.critical_strike -> check() )
-      sc += sim -> auras.critical_strike -> value();
   }
 
   sc += racials.viciousness -> effectN( 1 ).percent();
@@ -2937,17 +2912,7 @@ double player_t::composite_mastery() const
 
 double player_t::composite_multistrike() const
 {
-  if ( current.rating.multistrike == 0 )
-  {
-    return 0;
-  }
-
-  double cm = composite_multistrike_rating() / current.rating.multistrike;
-
-  if ( ! is_pet() && ! is_enemy() && sim -> auras.multistrike -> check() )
-    cm += sim -> auras.multistrike -> value();
-
-  return cm;
+  return 0;
 }
 
 // player_t::composite_readiness ============================================
@@ -2972,9 +2937,6 @@ double player_t::composite_damage_versatility() const
 
   if ( ! is_pet() && ! is_enemy() )
   {
-    if ( sim -> auras.versatility -> check() )
-      cdv += sim -> auras.versatility -> default_value;
-
     if ( buffs.legendary_tank_buff )
       cdv += buffs.legendary_tank_buff -> value();
   }
@@ -2990,9 +2952,6 @@ double player_t::composite_heal_versatility() const
 
   if ( ! is_pet() && ! is_enemy() )
   {
-    if ( sim -> auras.versatility -> check() )
-      chv += sim -> auras.versatility -> default_value;
-
     if ( buffs.legendary_tank_buff )
       chv += buffs.legendary_tank_buff -> value();
   }
@@ -3008,9 +2967,6 @@ double player_t::composite_mitigation_versatility() const
 
   if ( ! is_pet() && ! is_enemy() )
   {
-    if ( sim -> auras.versatility -> check() )
-      cmv += sim -> auras.versatility -> default_value / 2; // Mitigation recieves 1.5% from the aura.
-
     if ( buffs.legendary_tank_buff )
       cmv += buffs.legendary_tank_buff -> value() / 2;
   }
@@ -3193,34 +3149,24 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + buffs.archmages_greater_incandescence_str -> data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_str -> check() )
         m *= 1.0 + buffs.archmages_incandescence_str -> data().effectN( 1 ).percent();
-      if ( sim -> auras.str_agi_int -> check() )
-        m *= 1.0 + sim -> auras.str_agi_int -> value();
       break;
     case ATTR_AGILITY:
       if ( buffs.archmages_greater_incandescence_agi -> check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_agi -> data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_agi -> check() )
         m *= 1.0 + buffs.archmages_incandescence_agi -> data().effectN( 1 ).percent();
-      if ( sim -> auras.str_agi_int -> check() )
-        m *= 1.0 + sim -> auras.str_agi_int -> value();
       break;
     case ATTR_INTELLECT:
       if ( buffs.archmages_greater_incandescence_int -> check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_int -> data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_int -> check() )
         m *= 1.0 + buffs.archmages_incandescence_int -> data().effectN( 1 ).percent();
-      if ( sim -> auras.str_agi_int -> check() )
-        m *= 1.0 + sim -> auras.str_agi_int -> value();
       break;
     case ATTR_SPIRIT:
       if ( buffs.amplification )
         m *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
         m *= 1.0 + passive_values.amplification_2;
-      break;
-    case ATTR_STAMINA:
-      if ( sim -> auras.stamina -> check() )
-        m *= 1.0 + sim -> auras.stamina -> value();
       break;
     default:
       break;
@@ -3282,8 +3228,6 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.hit_rating; break;
     case RATING_MASTERY:
       v = current.stats.mastery_rating;
-      if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
-        v += sim -> auras.mastery -> value();
       break;
     case RATING_DAMAGE_VERSATILITY:
     case RATING_HEAL_VERSATILITY:

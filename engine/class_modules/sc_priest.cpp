@@ -1865,31 +1865,6 @@ struct dispersion_t : public priest_spell_t
   }
 };
 
-// Fortitude Spell ==========================================================
-
-struct fortitude_t : public priest_spell_t
-{
-  fortitude_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "fortitude", player,
-                      player.find_class_spell( "Power Word: Fortitude" ) )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-
-    harmful = false;
-
-    background = ( sim->overrides.stamina != 0 );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( !sim->overrides.stamina )
-      sim->auras.stamina->trigger();
-  }
-};
-
 // Levitate =================================================================
 
 struct levitate_t : public priest_spell_t
@@ -5578,8 +5553,6 @@ action_t* priest_t::create_action( const std::string& name,
     return new dispersion_t( *this, options_str );
   if ( name == "levitate" )
     return new levitate_t( *this, options_str );
-  if ( name == "power_word_fortitude" )
-    return new fortitude_t( *this, options_str );
   if ( name == "pain_suppression" )
     return new pain_suppression_t( *this, options_str );
   if ( name == "power_infusion" )

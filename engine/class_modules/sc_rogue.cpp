@@ -6435,9 +6435,6 @@ void rogue_t::arise()
 
   if ( perk.improved_slice_and_dice -> ok() )
     buffs.slice_and_dice -> trigger( 1, buffs.slice_and_dice -> data().effectN( 1 ).percent(), -1.0, timespan_t::zero() );
-
-  if ( ! sim -> overrides.haste && find_spell( 113742 ) -> is_level( true_level ) ) sim -> auras.haste -> trigger();
-  if ( ! sim -> overrides.multistrike && find_spell( 113742 ) -> is_level( true_level ) ) sim -> auras.multistrike -> trigger();
 }
 
 // rogue_t::energy_regen_per_second =========================================

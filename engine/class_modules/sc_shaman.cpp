@@ -5627,16 +5627,6 @@ void shaman_t::arise()
 
   assert( main_hand_attack == melee_mh && off_hand_attack == melee_oh );
 
-  if ( !sim -> overrides.mastery && find_spell( 116956 ) -> is_level( true_level ) )
-  {
-    double mastery_rating = find_spell( 116956 ) -> effectN( 1 ).average( this );
-    if ( ! sim -> auras.mastery -> check() || sim -> auras.mastery -> current_value < mastery_rating )
-      sim -> auras.mastery -> trigger( 1, mastery_rating );
-  }
-
-  if ( !sim -> overrides.haste && find_spell( 116956 ) -> is_level( true_level ) )
-    sim -> auras.haste -> trigger();
-
   if ( main_hand_weapon.type != WEAPON_NONE )
     main_hand_weapon.buff_type = WINDFURY_IMBUE;
 

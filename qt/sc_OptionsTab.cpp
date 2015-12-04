@@ -377,15 +377,6 @@ void SC_OptionsTab::createBuffsDebuffsTab()
   buffsButtonGroup -> setExclusive( false );
 
   appendCheckBox( tr( "Toggle All Buffs" ),             "",                                 tr( "Toggle all buffs on/off" ),                         buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Attack Power Multiplier" ),      "override.attack_power_multiplier", tr( "+10% Attack Power Multiplier" ),                    buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Spell Power Multiplier" ),       "override.spell_power_multiplier",  tr( "+10% Spell Power Multiplier" ),                     buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Critical Strike" ),              "override.critical_strike",         tr( "+5% Critical Strike Chance" ),                      buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Haste" ),                        "override.haste",                   tr( "+5% Haste" ),                                       buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Multistrike" ),                  "override.multistrike",             tr( "+5% Multistrike" ),                                 buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Mastery" ),                      "override.mastery",                 tr( "+Mastery Rating" ),                                 buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Stamina" ),                      "override.stamina",                 tr( "+10% Stamina" ),                                    buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Strength, Agility, Intellect" ), "override.str_agi_int",             tr( "+5% Strength, Agility, Intellect" ),                buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Versatility" ),                  "override.versatility",             tr( "+3% Versatility" ),                                 buffsLayout, buffsButtonGroup );
   appendCheckBox( tr( "Bloodlust" ),                    "override.bloodlust",               tr( "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" ), buffsLayout, buffsButtonGroup );
   buffsLayout -> addStretch( 1 );
 

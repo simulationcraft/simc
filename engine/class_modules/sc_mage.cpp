@@ -2058,32 +2058,6 @@ struct arcane_blast_t : public mage_spell_t
 
 };
 
-// Arcane Brilliance Spell ==================================================
-
-struct arcane_brilliance_t : public mage_spell_t
-{
-  arcane_brilliance_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_brilliance", p, p -> find_class_spell( "Arcane Brilliance" ) )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-
-    harmful = false;
-    background = ( sim -> overrides.spell_power_multiplier != 0 && sim -> overrides.critical_strike != 0 );
-  }
-
-  virtual void execute() override
-  {
-    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-
-    if ( ! sim -> overrides.spell_power_multiplier )
-      sim -> auras.spell_power_multiplier -> trigger();
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
-  }
-};
-
 // Arcane Explosion Spell ===========================================================
 
 struct arcane_explosion_t : public mage_spell_t
@@ -5201,7 +5175,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "water_jet"         ) return new               water_jet_t( this, options_str );
 
   // Shared spells
-  if ( name == "arcane_brilliance" ) return new       arcane_brilliance_t( this, options_str );
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );

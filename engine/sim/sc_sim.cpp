@@ -1280,7 +1280,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   _rng(), seed( 0 ), deterministic( false ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
-  fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
+  fight_style( "Patchwerk" ), overrides( overrides_t() ),
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
   progress_bar( *this ),
@@ -1560,23 +1560,6 @@ void sim_t::combat_begin()
 
   for ( auto& target : target_list )
     target -> combat_begin();
-
-  if ( overrides.attack_power_multiplier )
-    auras.attack_power_multiplier -> override_buff();
-
-  if ( overrides.critical_strike )
-    auras.critical_strike         -> override_buff();
-
-  // TODO: Sim-wide overrides
-  if ( overrides.mastery )
-    auras.mastery -> override_buff( 1, dbc.effect_average( dbc::find_spell( this, 116956 ) -> effectN( 1 ).id(), max_player_level ) );
-
-  if ( overrides.haste                   ) auras.haste                   -> override_buff();
-  if ( overrides.multistrike             ) auras.multistrike             -> override_buff();
-  if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override_buff();
-  if ( overrides.stamina                 ) auras.stamina                 -> override_buff();
-  if ( overrides.str_agi_int             ) auras.str_agi_int             -> override_buff();
-  if ( overrides.versatility             ) auras.versatility             -> override_buff();
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
@@ -2130,65 +2113,6 @@ bool sim_t::init()
   // set scaling metric
   scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
 
-  // WoD aura initialization
-
-  // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
-  auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" )
-                                  .max_stack( 100 )
-                                  .default_value( dbc::find_spell( this, 19506 ) -> effectN( 1 ).percent() )
-                                  .add_invalidate( CACHE_ATTACK_POWER );
-
-  // Critical Strike, value from Arcane Brilliance (id=1459) (Mage)
-  auras.critical_strike = buff_creator_t( this, "critical_strike" )
-                          .max_stack( 100 )
-                          .default_value( dbc::find_spell( this, 1459 ) -> effectN( 2 ).percent() )
-                          .add_invalidate( CACHE_CRIT );
-
-  // Mastery, value from Grace of Air (id=116956) (Shaman)
-  auras.mastery = buff_creator_t( this, "mastery" )
-                  .max_stack( 100 )
-                  .default_value( dbc::find_spell( this, 116956 ) -> effectN( 1 ).base_value() )
-                  .add_invalidate( CACHE_MASTERY );
-
-  // Haste, value from Mind Quickening (id=49868) (Priest)
-  auras.haste = buff_creator_t( this, "haste" )
-                      .max_stack( 100 )
-                      .default_value( dbc::find_spell( this, 49868 ) -> effectN( 1 ).percent() )
-                      .add_invalidate( CACHE_HASTE );
-
-  // Multistrike, value from Mind Quickening (id=49868) (Priest)
-  auras.multistrike = buff_creator_t( this, "multistrike" )
-                      .max_stack( 100 )
-                      .default_value( dbc::find_spell( this, 49868 ) -> effectN( 2 ).percent() )
-                      .add_invalidate( CACHE_MULTISTRIKE );
-
-  // Spell Power Multiplier, value from Arcane Brilliance (id=1459) (Mage)
-  auras.spell_power_multiplier = buff_creator_t( this, "spell_power_multiplier" )
-                                 .max_stack( 100 )
-                                 .default_value( dbc::find_spell( this, 1459 ) -> effectN( 1 ).percent() )
-                                 .add_invalidate( CACHE_SPELL_POWER );
-
-  // Stamina, value from fortitude (id=21562) (Priest)
-  auras.stamina = buff_creator_t( this, "stamina" )
-                  .max_stack( 100 )
-                  .default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
-                  .add_invalidate( CACHE_STAMINA );
-
-  // Strength, Agility, and Intellect, value from Blessing of Kings (id=20217) (Paladin)
-  auras.str_agi_int = buff_creator_t( this, "str_agi_int" )
-                      .max_stack( 100 )
-                      .default_value( dbc::find_spell( this, 20217 ) -> effectN( 1 ).percent() )
-                      .add_invalidate( CACHE_STRENGTH )
-                      .add_invalidate( CACHE_AGILITY )
-                      .add_invalidate( CACHE_INTELLECT );
-
-  // Versatility from Inspiring Presence - ID=167188 (Warrior)
-  // Warriors will have it.
-  auras.versatility = buff_creator_t( this, "versatility" )
-                      .max_stack( 100 )
-                      .default_value( dbc::find_spell( this, 167188 ) -> effectN ( 1 ).percent() )
-                      .add_invalidate( CACHE_VERSATILITY );
-
   // Find Already defined target, otherwise create a new one.
   if ( debug )
     out_debug << "Creating Enemies.";
@@ -2604,16 +2528,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
 
-  overrides.attack_power_multiplier = optimal_raid;
-  overrides.critical_strike         = optimal_raid;
-  overrides.mastery                 = optimal_raid;
-  overrides.haste                   = optimal_raid;
-  overrides.multistrike             = optimal_raid;
-  overrides.spell_power_multiplier  = optimal_raid;
-  overrides.stamina                 = optimal_raid;
-  overrides.str_agi_int             = optimal_raid;
-  overrides.versatility             = optimal_raid;
-
   overrides.mortal_wounds           = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
@@ -2767,15 +2681,6 @@ void sim_t::create_options()
   add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
-  add_option( opt_int( "override.attack_power_multiplier", overrides.attack_power_multiplier ) );
-  add_option( opt_int( "override.critical_strike", overrides.critical_strike ) );
-  add_option( opt_int( "override.mastery", overrides.mastery ) );
-  add_option( opt_int( "override.haste", overrides.haste ) );
-  add_option( opt_int( "override.multistrike", overrides.multistrike ) );
-  add_option( opt_int( "override.spell_power_multiplier", overrides.spell_power_multiplier ) );
-  add_option( opt_int( "override.stamina", overrides.stamina ) );
-  add_option( opt_int( "override.str_agi_int", overrides.str_agi_int ) );
-  add_option( opt_int( "override.versatility", overrides.versatility ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
   add_option( opt_int( "override.bleeding", overrides.bleeding ) );
   add_option( opt_func( "override.spell_data", parse_override_spell_data ) );

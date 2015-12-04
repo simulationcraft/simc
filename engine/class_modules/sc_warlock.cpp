@@ -4079,25 +4079,6 @@ struct drain_soul_t: public warlock_spell_t
   }
 };
 
-struct dark_intent_t: public warlock_spell_t
-{
-  dark_intent_t( warlock_t* p ):
-    warlock_spell_t( p, "Dark Intent" )
-  {
-    harmful = false;
-    background = ( sim -> overrides.spell_power_multiplier != 0 );
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( ! sim -> overrides.spell_power_multiplier )
-      sim -> auras.spell_power_multiplier -> trigger();
-  }
-};
-
-
 struct soulburn_t: public warlock_spell_t
 {
   soulburn_t( warlock_t* p ):
@@ -5502,7 +5483,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "soul_fire"             ) a = new             soul_fire_t( this );
   else if ( action_name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
   else if ( action_name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
-  else if ( action_name == "dark_intent"           ) a = new           dark_intent_t( this );
   else if ( action_name == "dark_soul"             ) a = new             dark_soul_t( this );
   else if ( action_name == "soulburn"              ) a = new              soulburn_t( this );
   else if ( action_name == "havoc"                 ) a = new                 havoc_t( this );

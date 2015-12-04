@@ -997,8 +997,6 @@ public:
 
     swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
 
-    sim -> auras.critical_strike -> decrement();
-
     druid.recalculate_resource_max( RESOURCE_HEALTH );
 
     if ( druid.specialization() == DRUID_GUARDIAN )
@@ -1023,9 +1021,6 @@ public:
     // TODO: Clear rage on bear form exit instead of entry.
 
     base_t::start( stacks, value, duration );
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
 
     druid.recalculate_resource_max( RESOURCE_HEALTH );
   }
@@ -1116,8 +1111,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t::expire_override( expiration_stacks, remaining_duration );
     
     swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
-
-    sim -> auras.critical_strike -> decrement();
   }
 
   virtual void start( int stacks, double value, timespan_t duration ) override
@@ -1128,9 +1121,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
     swap_melee( druid.cat_melee_attack, druid.cat_weapon );
 
     base_t::start( stacks, value, duration );
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
   }
 };
 
@@ -1232,22 +1222,12 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   { }
 
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    base_t::expire_override( expiration_stacks, remaining_duration );
-
-    sim -> auras.mastery -> decrement();
-  }
-
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
     druid.buff.bear_form -> expire();
     druid.buff.cat_form  -> expire();
 
     base_t::start( stacks, value, duration );
-
-    if ( ! sim -> overrides.mastery )
-      sim -> auras.mastery -> trigger();
   }
 };
 
@@ -4569,7 +4549,6 @@ struct mark_of_the_wild_t : public druid_spell_t
     trigger_gcd = timespan_t::zero();
     harmful     = false;
     ignore_false_positive = true;
-    background  = ( sim -> overrides.str_agi_int != 0 && sim -> overrides.versatility != 0 );
   }
 
   void execute() override
@@ -4577,12 +4556,6 @@ struct mark_of_the_wild_t : public druid_spell_t
     druid_spell_t::execute();
 
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-
-    if ( ! sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 79060 ) -> duration() );
-
-    if ( ! sim -> overrides.versatility )
-      sim -> auras.versatility -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dbc::find_spell( player, 79060 ) -> duration() );
   }
 };
 

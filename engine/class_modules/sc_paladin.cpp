@@ -1229,25 +1229,6 @@ struct blessing_of_kings_t : public paladin_spell_t
 
     harmful = false;
     ignore_false_positive = true;
-
-    background = ( sim -> overrides.str_agi_int != 0 );
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    if ( ! sim -> overrides.str_agi_int )
-    {
-      sim -> auras.str_agi_int -> trigger();
-      p() -> bok_up = true;
-    }
-
-    if ( ! sim -> overrides.mastery && p() -> bom_up )
-    {
-      sim -> auras.mastery -> decrement();
-      p() -> bom_up = false;
-    }
   }
 };
 
@@ -1262,27 +1243,6 @@ struct blessing_of_might_t : public paladin_spell_t
 
     harmful = false;
     ignore_false_positive = true;
-
-    background = ( sim -> overrides.mastery != 0 );
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    if ( ! sim -> overrides.mastery )
-    {
-      double mastery_rating = data().effectN( 1 ).average( player );
-      if ( ! sim -> auras.mastery -> check() || sim -> auras.mastery -> current_value < mastery_rating )
-        sim -> auras.mastery -> trigger( 1, mastery_rating );
-      p() -> bom_up = true;
-    }
-
-    if ( ! sim -> overrides.str_agi_int && p() -> bok_up )
-    {
-      sim -> auras.str_agi_int -> decrement();
-      p() -> bok_up = false;
-    }
   }
 };
 
@@ -6804,11 +6764,6 @@ expr_t* paladin_t::create_expression( action_t* a,
 void paladin_t::arise()
 {
   player_t::arise();
-
-  // Trigger Sanctity Aura
-  if ( specialization() == PALADIN_RETRIBUTION && ! sim -> overrides.versatility ) 
-    sim -> auras.versatility -> trigger();
-
 }
 
 /* Report Extension Class

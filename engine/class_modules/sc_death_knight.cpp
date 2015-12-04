@@ -4233,28 +4233,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
   }
 };
 
-// Horn of Winter============================================================
-
-struct horn_of_winter_t : public death_knight_spell_t
-{
-  horn_of_winter_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "horn_of_winter", p, p -> find_spell( 57330 ) )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-
-    harmful = false;
-  }
-
-  virtual void execute() override
-  {
-    death_knight_spell_t::execute();  // 10 RP gain happens in here
-
-    if ( ! sim -> overrides.attack_power_multiplier )
-      sim -> auras.attack_power_multiplier -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-  }
-};
-
 // Howling Blast ============================================================
 
 struct howling_blast_t : public death_knight_spell_t
@@ -6060,7 +6038,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // Frost Actions
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
   if ( name == "frost_strike"             ) return new frost_strike_t             ( this, options_str );
-  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "howling_blast"            ) return new howling_blast_t            ( this, options_str );
   if ( name == "icy_touch"                ) return new icy_touch_t                ( this, options_str );
   if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
@@ -8467,11 +8444,6 @@ void death_knight_t::arise()
         _runes.slot[i].make_permanent_death_rune();
     }
   }
-
-  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.haste ) sim -> auras.haste -> trigger();
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.haste ) sim -> auras.haste -> trigger();
-  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.versatility ) sim -> auras.versatility -> trigger();
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.versatility ) sim -> auras.versatility -> trigger();
 
   runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
   runeforge.rune_of_spellshattering -> trigger();

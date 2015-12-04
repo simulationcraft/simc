@@ -641,15 +641,6 @@ js::sc_js_t to_json( const raid_event_t& re )
 js::sc_js_t to_json( const sim_t::overrides_t& o )
 {
   js::sc_js_t node;
-  node.set( "attack_power_multiplier", o.attack_power_multiplier );
-  node.set( "critical_strike", o.critical_strike );
-  node.set( "mastery", o.mastery );
-  node.set( "haste", o.haste );
-  node.set( "multistrike", o.multistrike );
-  node.set( "spell_power_multiplier", o.spell_power_multiplier );
-  node.set( "stamina", o.stamina );
-  node.set( "str_agi_int", o.str_agi_int );
-  node.set( "versatility", o.versatility );
   node.set( "mortal_wounds", o.mortal_wounds );
   node.set( "bleeding", o.bleeding );
   node.set( "bloodlust", o.bloodlust );

@@ -1634,17 +1634,6 @@ struct sim_t : private sc_thread_t
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
-    // Buff overrides
-    int attack_power_multiplier;
-    int critical_strike;
-    int mastery;
-    int haste;
-    int multistrike;
-    int spell_power_multiplier;
-    int stamina;
-    int str_agi_int;
-    int versatility;
-
     // Debuff overrides
     int mortal_wounds;
     int bleeding;
@@ -1653,21 +1642,6 @@ struct sim_t : private sc_thread_t
     int    bloodlust;
     std::vector<uint64_t> target_health;
   } overrides;
-
-  // Auras
-  struct auras_t
-  {
-    // Raid-wide auras from various classes
-    aura_t* attack_power_multiplier;
-    aura_t* critical_strike;
-    aura_t* mastery;
-    aura_t* haste;
-    aura_t* multistrike;
-    aura_t* spell_power_multiplier;
-    aura_t* stamina;
-    aura_t* str_agi_int;
-    aura_t* versatility;
-  } auras;
 
   // Auras and De-Buffs
   auto_dispose< std::vector<buff_t*> > buff_list;

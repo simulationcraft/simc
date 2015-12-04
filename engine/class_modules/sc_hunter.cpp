@@ -1590,93 +1590,6 @@ struct furious_howl_t: public hunter_main_pet_spell_t
     parse_options( options_str );
 
     harmful = false;
-    background = ( sim -> overrides.critical_strike != 0 );
-  }
-
-  virtual void execute() override
-  {
-    hunter_main_pet_spell_t::execute();
-
-    if ( !sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-  }
-};
-
-// Cat/Spirit Beast Roar of Courage =========================================
-
-struct roar_of_courage_t: public hunter_main_pet_spell_t
-{
-  roar_of_courage_t( hunter_main_pet_t* player, const std::string& options_str ):
-    hunter_main_pet_spell_t( "roar_of_courage", player, player -> find_pet_spell( "Roar of Courage" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    background = ( sim -> overrides.str_agi_int != 0 );
-  }
-
-  virtual void execute() override
-  {
-    hunter_main_pet_spell_t::execute();
-    double mastery_rating = data().effectN( 1 ).average( player );
-    if ( !sim -> overrides.mastery )
-      sim -> auras.mastery -> trigger( 1, mastery_rating, -1.0, data().duration() );
-  }
-};
-
-// Breath of the Winds ===============================================
-
-struct breath_of_the_winds_t: public hunter_main_pet_spell_t
-{
-  breath_of_the_winds_t( hunter_main_pet_t* player, const std::string& options_str ):
-    hunter_main_pet_spell_t( "breath_of_the_winds", player, player -> find_pet_spell( "Breath of the Winds" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    background = ( sim -> overrides.multistrike != 0 );
-  }
-
-  virtual void execute() override
-  {
-    hunter_main_pet_spell_t::execute();
-
-    if ( !sim -> overrides.multistrike )
-      sim -> auras.multistrike -> trigger();
-  }
-};
-
-// Silithid Qiraji Fortitude  ===============================================
-
-struct qiraji_fortitude_t: public hunter_main_pet_spell_t
-{
-  qiraji_fortitude_t( hunter_main_pet_t* player, const std::string& options_str ):
-    hunter_main_pet_spell_t( "qiraji_fortitude", player, player -> find_pet_spell( "Qiraji Fortitude" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    background = ( sim -> overrides.stamina != 0 );
-  }
-
-  virtual void execute() override
-  {
-    hunter_main_pet_spell_t::execute();
-
-    if ( !sim -> overrides.stamina )
-      sim -> auras.stamina -> trigger();
-  }
-};
-
-// Hyena Cackling Howl ======================================================
-
-// TODO add attack speed to hyena
-struct cackling_howl_t: public hunter_main_pet_spell_t
-{
-  cackling_howl_t( hunter_main_pet_t* player, const std::string& options_str ):
-    hunter_main_pet_spell_t( "cackling_howl", player, player -> find_pet_spell( "Cackling Howl" ) )
-  {
-    parse_options( options_str );
   }
 };
 
@@ -1739,11 +1652,7 @@ action_t* hunter_main_pet_t::create_action( const std::string& name,
   if ( name == "smack" ) return new                basic_attack_t( this, "Smack", options_str );
   if ( name == "froststorm_breath" ) return new    froststorm_breath_t( this, options_str );
   if ( name == "furious_howl" ) return new         furious_howl_t( this, options_str );
-  if ( name == "roar_of_courage" ) return new      roar_of_courage_t( this, options_str );
-  if ( name == "qiraji_fortitude" ) return new     qiraji_fortitude_t( this, options_str );
   if ( name == "monstrous_bite" ) return new       monstrous_bite_t( this, options_str );
-  if ( name == "cackling_howl" ) return new        cackling_howl_t( this, options_str );
-  if ( name == "breath_of_the_winds" ) return new  breath_of_the_winds_t( this, options_str ); 
   return base_t::create_action( name, options_str );
 }
 // hunter_t::init_spells ====================================================
@@ -4571,9 +4480,6 @@ struct sniper_training_event_t : public event_t
 void hunter_t::arise()
 {
   player_t::arise();
-
-  if ( specs.trueshot_aura -> is_level( true_level ) && !sim -> overrides.attack_power_multiplier )
-    sim -> auras.attack_power_multiplier -> trigger();
 
   if ( mastery.sniper_training -> ok() )
   {

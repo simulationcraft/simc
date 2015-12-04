@@ -2962,60 +2962,6 @@ struct provoke_t: public monk_melee_attack_t
 } // END melee_attacks NAMESPACE
 
 namespace spells {
-// ==========================================================================
-// Legacy of the Emperor Spell
-// ==========================================================================
-
-struct legacy_of_the_emperor_t : public monk_spell_t
-{
-  legacy_of_the_emperor_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "legacy_of_the_emperor", player, player -> spec.legacy_of_the_emperor )
-  {
-    parse_options( options_str );
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-    ignore_false_positive = true;
-    background = sim -> overrides.str_agi_int != 0;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( !sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spec.legacy_of_the_emperor -> duration() );
-  }
-};
-
-// ==========================================================================
-// Legacy of the White Tiger Spell
-// ==========================================================================
-
-struct legacy_of_the_white_tiger_t : public monk_spell_t
-{
-  legacy_of_the_white_tiger_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "legacy_of_the_white_tiger", player, player -> spec.legacy_of_the_white_tiger )
-  {
-    parse_options( options_str );
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-    ignore_false_positive = true;
-    background = ( sim -> overrides.str_agi_int != 0 && sim -> overrides.critical_strike != 0 );
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( !sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spec.legacy_of_the_white_tiger -> duration() );
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spec.legacy_of_the_white_tiger -> duration() );
-  }
-};
 
 // ==========================================================================
 // Tigereye Brew
@@ -4362,8 +4308,6 @@ action_t* monk_t::create_action( const std::string& name,
 {
   using namespace actions;
   // Melee Attacks
-  if (name == "legacy_of_the_emperor") return new       legacy_of_the_emperor_t( this, options_str );
-  if (name == "legacy_of_the_white_tiger") return new   legacy_of_the_white_tiger_t( this, options_str );
   if (name == "auto_attack") return new                 auto_attack_t(this, options_str);
   if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
   if ( name == "blackout_kick" ) return new             blackout_kick_t( this, options_str );
