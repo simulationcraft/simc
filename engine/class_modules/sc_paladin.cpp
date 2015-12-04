@@ -30,7 +30,6 @@ struct paladin_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* execution_sentence;
-    dot_t* holy_radiance;
   } dots;
 
   struct buffs_t
@@ -1310,67 +1309,6 @@ struct holy_prism_t : public paladin_spell_t
   }
 };
 
-// Holy Radiance ============================================================
-
-// TODO: fix this - now a direct heal w/ aoe component that has aoe=5 and (presumably) doesn't hit primary target
-
-struct holy_radiance_hot_t : public paladin_heal_t
-{
-  holy_radiance_hot_t( paladin_t* p, const spell_data_t* s ) :
-    paladin_heal_t( "holy_radiance", p, s )
-  {
-    background = true;
-    dual = true;
-    direct_tick = true;
-  }
-};
-
-struct holy_radiance_t : public paladin_heal_t
-{
-  holy_radiance_hot_t* hot;
-
-  holy_radiance_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_radiance", p, p -> find_class_spell( "Holy Radiance" ) ),
-    hot( new holy_radiance_hot_t( p, data().effectN( 1 ).trigger() ) )
-  {
-    parse_options( options_str );
-
-    // FIXME: This is an AoE Hot, which isn't supported currently
-    aoe = data().effectN( 2 ).base_value();
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    paladin_heal_t::tick( d );
-
-    hot -> execute();
-  }
-
-  virtual void execute() override
-  {
-    paladin_heal_t::execute();
-
-    p() -> buffs.infusion_of_light -> expire();
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = paladin_heal_t::execute_time();
-
-    if ( p() -> buffs.infusion_of_light -> check() )
-      t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
-
-    return t;
-  }
-
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    paladin_heal_t::schedule_execute( state );
-
-    p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
-  }
-};
-
 // Holy Shock ===============================================================
 
 // Holy Shock is another one of those "heals or does damage depending on target" spells.
@@ -2412,7 +2350,6 @@ void hand_of_sacrifice_t::execute()
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
-  dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
 }
 
@@ -2438,7 +2375,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
