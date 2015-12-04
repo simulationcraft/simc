@@ -58,11 +58,9 @@ public:
   heal_t*   active_beacon_of_light;
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
-  action_t* active_hand_of_light_multistrike_proc;
   action_t* active_holy_shield_proc;
   absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
-  heal_t*   active_shining_protector_proc;
   player_t* last_judgement_target;
 
   const special_effect_t* retribution_trinket;
@@ -183,7 +181,6 @@ public:
     const spell_data_t* sanctified_light;
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* sanctuary;
-    const spell_data_t* shining_protector;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
   } passives;
@@ -330,11 +327,9 @@ public:
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
     active_hand_of_light_proc          = nullptr;
-    active_hand_of_light_multistrike_proc = nullptr;
     active_holy_shield_proc            = nullptr;
     active_illuminated_healing         = nullptr;
     active_protector_of_the_innocent   = nullptr;
-    active_shining_protector_proc      = nullptr;
     bok_up                             = false;
     bom_up                             = false;
 
@@ -364,7 +359,6 @@ public:
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_mastery() const override;
   virtual double    composite_mastery_rating() const override;
-  virtual double    composite_multistrike() const override;
   virtual double    composite_bonus_armor() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_melee_crit() const override;
@@ -404,7 +398,6 @@ public:
   bool    get_how_availability();
   double  jotp_haste();
   void    trigger_grand_crusader();
-  void    trigger_shining_protector( action_state_t* );
   void    trigger_holy_shield( action_state_t* s );
   virtual bool has_t18_class_trinket() const override;
   void    generate_action_prio_list_prot();
@@ -651,18 +644,9 @@ public:
   {
     if ( p() -> passives.hand_of_light -> ok() )
     {
-      if ( ab::result_is_multistrike( s -> result ) )
-      {
-        p() -> active_hand_of_light_multistrike_proc -> base_dd_max = p() -> active_hand_of_light_multistrike_proc -> base_dd_min = s -> result_amount;
-        p() -> active_hand_of_light_multistrike_proc -> target = s -> target;
-        p() -> active_hand_of_light_multistrike_proc -> execute();
-      }
-      else
-      {
-        p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
-        p() -> active_hand_of_light_proc -> target = s -> target;
-        p() -> active_hand_of_light_proc -> execute();
-      }
+      p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
+      p() -> active_hand_of_light_proc -> target = s -> target;
+      p() -> active_hand_of_light_proc -> execute();
     }
   }
 
@@ -744,19 +728,6 @@ public:
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
-
-    // things that proc only off of HP consumers (note - no cost-based proc chance scaling here!)
-    if ( s -> action -> base_costs[ RESOURCE_HOLY_POWER ] > 0 )
-    {
-      // T17 Ret set bonus procs off of hit/miss on each target, but need to filter out multistrike impacts
-      if ( ! this -> result_is_multistrike( s -> result ) )
-      {
-        // trigger T17 Ret set bonus
-        if ( p() -> buffs.crusaders_fury -> trigger() )
-          p() -> procs.crusaders_fury -> occur();
-      }
-      // anything here would proc from both initial attack and multistrikes, regardless of hit/miss/etc.
-    }
   }
 
   virtual double cooldown_multiplier() { return 1.0; }
@@ -1059,7 +1030,6 @@ struct avenging_wrath_t : public paladin_heal_t
       dot_duration = p -> buffs.avenging_wrath -> buff_duration;
       hasted_ticks = false;
       tick_may_crit = false;
-      may_multistrike = false;
       target = p;
     }
   }
@@ -1281,7 +1251,6 @@ struct daybreak_t : public paladin_heal_t
     aoe = -1;
     split_aoe_damage = false;
     may_crit = false;
-    may_multistrike = false; // guess, TODO: Test
 
     base_multiplier  = p -> passives.daybreak -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> perk.improved_daybreak -> effectN( 1 ).percent();
@@ -2704,7 +2673,6 @@ struct sacred_shield_tick_t : public absorb_t
     absorb_t( "sacred_shield_tick", p, p -> find_spell( 65148 ) )
   {
     may_crit = true;
-    may_multistrike = true;
     background = true;
 
     // unfortunately, the following spell info is missing, and only hinted at in tooltips
@@ -2748,7 +2716,6 @@ struct sacred_shield_t : public paladin_heal_t
     // tick_action doesn't natively inherit target, so set that specifically
     tick_action -> target = target;
     hasted_ticks = true;
-    may_multistrike = false;
 
     // most of this is irrelevant now, I think?
     may_crit = false;
@@ -2796,7 +2763,6 @@ struct seraphim_t : public paladin_spell_t
     parse_options( options_str );
 
     may_miss = false;
-    may_multistrike = false; //necessary?
   }
 
   // Seraphim cannot trigger free HP effects
@@ -2829,51 +2795,6 @@ struct speed_of_light_t: public paladin_spell_t
 
     p() -> buffs.speed_of_light -> trigger();
   }
-};
-
-// Shining Protector ========================================================
-// This is a protection-specific multistrike effect
-
-struct shining_protector_t : public paladin_heal_t
-{
-  proc_t* proc_tracker;
-
-  shining_protector_t( paladin_t* p )
-    : paladin_heal_t( "shining_protector", p, p -> find_specialization_spell( "Shining Protector" ) ),
-    proc_tracker( p -> get_proc( name_str ) )
-  {
-    background = true;
-    proc = true;
-    target = player;
-    may_multistrike = false;
-    may_crit = false;
-  }
-
-  // Need to disable multipliers in init() so that it doesn't double-dip on anything
-  virtual void init() override
-  {
-    paladin_heal_t::init();
-    // disable the snapshot_flags for all multipliers, but specifically allow
-    // action_multiplier() to be called so we can override.
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_DA;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
-
-    return am;
-  }
-
-
-  virtual void execute() override
-  {
-    proc_tracker -> occur();
-
-    paladin_heal_t::execute();
-  }
-
 };
 
 // Word of Glory  ===========================================================
@@ -3227,7 +3148,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       p() -> trigger_grand_crusader();
 
     }
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3280,7 +3201,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
     }
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3366,7 +3287,7 @@ struct divine_storm_t: public paladin_melee_attack_t
       if ( p() -> glyphs.divine_storm -> ok() )
         glyph_heal -> schedule_execute();
     }
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3507,7 +3428,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3568,7 +3489,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
         }
       }
     }
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3621,7 +3542,6 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     may_dodge   = false;
     may_parry   = false;
     may_glance  = false;
-    may_multistrike = 0;
     background  = true;
     trigger_gcd = timespan_t::zero();
     id          = 96172;
@@ -3663,59 +3583,6 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
   }
 };
 
-struct hand_of_light_multistrike_proc_t : public paladin_melee_attack_t
-{
-  hand_of_light_multistrike_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false )
-  {
-    school = SCHOOL_HOLY;
-    may_crit    = false;
-    may_miss    = false;
-    may_dodge   = false;
-    may_parry   = false;
-    may_glance  = false;
-    callbacks = false;
-    may_multistrike = 0;
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-    id          = 96172;
-
-    // No weapon multiplier
-    weapon_multiplier = 0.0;
-    // Note that setting weapon_multiplier=0.0 prevents STATE_MUL_DA from being added
-    // to snapshot_flags because both base_dd_min && base_dd_max are zero, so we need
-    // to do it specifically in init().
-    // Alternate solution is to set weapon = NULL, but we have to use init() to disable
-    // other multipliers (Versatility) anyway.
-  }
-
-  // Disable multipliers in init() so that it doesn't double-dip on anything
-  virtual void init() override
-  {
-    paladin_melee_attack_t::init();
-    // Disable the snapshot_flags for all multipliers, but specifically allow factors in
-    // action_state_t::composite_da_multiplier() to be called. This lets us use
-    // action_multiplier() to apply the HoL factor, but we need to divide by the other
-    // factors in composite_da_multiplier() to make sure we don't double-dip.
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_DA;
-
-    // Note: I've turned off ALL other multipliers here now that CoE is gone. If we need to enable
-    // specific ones later, we'll have to remove the STATE_NO_MULTIPLIER flag and disable
-    // STATE_VERSATILITY (and any other relevant flags) individually.
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
-
-    // HoL doesn't double dip on anything in composite_player_multiplier(): avenging wrath, GoWoG, Divine Shield, etc.
-    // Remove it here by dividing by the resulting multiplier.
-    am /= p() -> composite_player_multiplier( SCHOOL_HOLY );
-
-    return am;
-  }
-};
 // Judgment =================================================================
 
 struct judgment_t : public paladin_melee_attack_t
@@ -3956,7 +3823,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
@@ -4153,34 +4020,6 @@ void paladin_t::trigger_grand_crusader()
   {
     // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
-  }
-}
-
-void paladin_t::trigger_shining_protector( action_state_t* s )
-{
-  if ( ! passives.shining_protector -> ok() || s -> action == active_shining_protector_proc || s -> result_raw == 0.0 )
-    return;
-
-  // flush out percent heals
-  if ( s -> action -> type == ACTION_HEAL )
-  {
-    heal_t* heal_cast = debug_cast<heal_t*>( s -> action );
-    if ( ( s -> result_type == HEAL_DIRECT && heal_cast -> base_pct_heal > 0 ) || ( s -> result_type == HEAL_OVER_TIME && heal_cast -> tick_pct_heal > 0 ) )
-      return;
-  }
-
-  // Attempt to proc the first heal
-  if ( rng().roll( composite_multistrike() ) )
-  {
-    active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = s -> result_amount;
-    active_shining_protector_proc -> schedule_execute();
-  }
-
-  // Attempt to proc the second heal
-  if ( rng().roll( composite_multistrike() ) )
-  {
-    active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = s -> result_amount;
-    active_shining_protector_proc -> schedule_execute();
   }
 }
 
@@ -4977,7 +4816,6 @@ void paladin_t::init_action_list()
   }
 
   active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
-  active_hand_of_light_multistrike_proc = new hand_of_light_multistrike_proc_t( this );
 
   // create action priority lists
   if ( action_list_str.empty() )
@@ -5083,7 +4921,6 @@ void paladin_t::init_spells()
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
-  passives.shining_protector      = find_specialization_spell( "Shining Protector" );
   passives.resolve                = find_specialization_spell( "Resolve" );
   passives.riposte                = find_specialization_spell( "Riposte" );
   passives.sacred_duty            = find_specialization_spell( "Sacred Duty" );
@@ -5159,9 +4996,6 @@ void paladin_t::init_spells()
 
   if ( passives.illuminated_healing -> ok() )
     active_illuminated_healing = new illuminated_healing_t( this );
-
-  if ( passives.shining_protector -> ok() )
-    active_shining_protector_proc = new shining_protector_t( this );
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
@@ -5394,15 +5228,6 @@ double paladin_t::composite_mastery() const
 double paladin_t::composite_mastery_rating() const
 {
   double m = player_t::composite_mastery_rating();
-  return m;
-}
-
-// paladin_t::composite_multistrike =========================================
-
-double paladin_t::composite_multistrike() const
-{
-  double m = player_t::composite_multistrike();
-
   return m;
 }
 
@@ -5874,10 +5699,6 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
 
 void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
-  // Shining Protector procs a heal every now and again
-  if ( passives.shining_protector -> ok() )
-    trigger_shining_protector( s );
-
   player_t::assess_heal( school, dmg_type, s );
 }
 
