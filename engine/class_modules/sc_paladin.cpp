@@ -323,7 +323,6 @@ public:
   virtual void      combat_begin() override;
 
   double  get_hand_of_light();
-  double  jotp_haste();
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   virtual bool has_t18_class_trinket() const override;
