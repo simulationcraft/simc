@@ -479,15 +479,20 @@ public:
     const spell_data_t* elusive_dance;
     const spell_data_t* enveloping_mist;
     const spell_data_t* eye_of_the_tiger;
+    const spell_data_t* fists_of_fury;
     const spell_data_t* gift_of_the_ox_chance;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* gift_of_the_ox_summon;
     const spell_data_t* hit_combo;
     const spell_data_t* healing_elixirs;
     const spell_data_t* keg_smash_buff;
+    const spell_data_t* rushing_jade_wind;
     const spell_data_t* special_delivery;
+    const spell_data_t* spinning_crane_kick;
+    const spell_data_t* spinning_dragon_kick;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* stance_of_the_fierce_tiger;
+    const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_2pc_tank;
@@ -879,9 +884,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       // Actual weapon damage calculation is done with the OWNER weapons for
       // special attacks, not SEF specific ones.
-      if ( main_hand || ( main_hand && off_hand ) )
-        return monk_util::monk_weapon_damage( this, &( o() -> main_hand_weapon ), &( o() -> off_hand_weapon ), weapon_power_mod, attack_power );
-      else
+//      if ( main_hand || ( main_hand && off_hand ) )
+//        return monk_util::monk_weapon_damage( this, &( o() -> main_hand_weapon ), &( o() -> off_hand_weapon ), weapon_power_mod, attack_power );
+//      else
         return base_t::calculate_weapon_damage( attack_power );
     }
 
@@ -985,6 +990,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::snapshot_internal( state, flags, rt );
 
+/*
       if ( ! o() -> dual_wield() && player -> dual_wield() )
       {
         state -> da_multiplier *= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
@@ -993,14 +999,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         state -> da_multiplier /= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
       }
+*/
     }
 
     virtual timespan_t execute_time() const override
     {
       timespan_t t = sef_melee_attack_t::execute_time();
 
-      if ( ! player -> dual_wield() )
-        t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
+//      if ( ! player -> dual_wield() )
+//        t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 
       return t;
     }
@@ -1882,10 +1889,10 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     // Use monk specific weapon damage calculation if mh or oh (monk specific weapons) are
     // specificed.
-    if ( mh || oh )
-      return monk_util::monk_weapon_damage( this, mh, oh, weapon_power_mod, ap );
+//    if ( mh || oh )
+//      return monk_util::monk_weapon_damage( this, mh, oh, weapon_power_mod, ap );
     // Otherwise, use normal weapon damage calculation. It's only used for auto-attacks currently.
-    else
+//    else
       return melee_attack_t::calculate_weapon_damage( ap );
   }
 
@@ -1984,7 +1991,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     sef_ability = SEF_TIGER_PALM;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 1.38; // hardcoded into tooltip
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_ENERGY] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 16 ).percent() : 0 ); // -50% for Brewmasters
     spell_power_mod.direct = 0.0;
   }
@@ -2126,7 +2133,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 15.0; // hardcoded into tooltip
+    attack_power_mod.direct = p -> spec.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
     if ( p -> furious_sun )
@@ -2205,7 +2212,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 7.5; // hardcoded into tooltip
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
     if ( p -> specialization() == MONK_BREWMASTER )
@@ -2315,7 +2322,7 @@ struct tick_action_t : public monk_melee_attack_t
     aoe = -1;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    radius = 10.0;
+    radius = ( p -> talent.rushing_jade_wind -> ok() ? p -> passives.rushing_jade_wind -> effectN( 1 ).radius() : p -> passives.spinning_crane_kick -> effectN( 1 ).radius() );
 
     // Reset some variables to ensure proper execution
     dot_duration = timespan_t::zero();
@@ -2381,7 +2388,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = hasted_ticks = true;
 
-    base_multiplier *= 2; // hardcoded into tooltip
+    attack_power_mod.direct = p -> passives.rushing_jade_wind -> effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
@@ -2389,6 +2396,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   }
 
   // N full ticks, but never additional ones.
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
@@ -2445,7 +2453,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = channeled = true;
 
-    base_multiplier *= 3; // hardcoded into tooltip
+    attack_power_mod.direct = p -> passives.spinning_crane_kick -> effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
@@ -2488,7 +2496,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 struct fists_of_fury_tick_t: public monk_melee_attack_t
 {
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
-    monk_melee_attack_t( name, p, p -> spec.fists_of_fury )
+    monk_melee_attack_t( name, p, p -> passives.fists_of_fury )
   {
     background = true;
     aoe = -1;
@@ -2525,7 +2533,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-    base_multiplier = 10; // hardcoded into tooltip
+    attack_power_mod.direct = p -> spec.fists_of_fury -> effectN( 5 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
@@ -2574,6 +2582,7 @@ struct spinning_dragon_strike_tick_t: public monk_melee_attack_t
   {
     background = true;
     aoe = -1;
+    radius = p -> passives.spinning_dragon_kick -> effectN( 1 ).radius();
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -2601,10 +2610,10 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
     tick_zero = false;
     base_tick_time = p -> talent.spinning_dragon_strike -> effectN( 1 ).period();
 
-    base_multiplier = 10; // hardcoded into tooltip
+    attack_power_mod.direct = p -> passives.spinning_dragon_kick -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
-    tick_action = new spinning_dragon_strike_tick_t( "spinning_dragon_strike_tick", p, p-> find_spell( 158221 ) );
+    tick_action = new spinning_dragon_strike_tick_t( "spinning_dragon_strike_tick", p, p -> passives.spinning_dragon_kick );
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
@@ -2673,7 +2682,7 @@ struct melee_t: public monk_melee_attack_t
 
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
-      base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+//      base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
       if ( player -> specialization() == MONK_MISTWEAVER )
         base_multiplier *= 1.0 + player -> passives.aura_mistweaver_monk -> effectN( 3 ).percent();
       else
@@ -2691,9 +2700,9 @@ struct melee_t: public monk_melee_attack_t
   {
     timespan_t t = monk_melee_attack_t::execute_time();
 
-    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
+/*    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       t *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
-
+*/
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
     else
@@ -2784,12 +2793,13 @@ struct keg_smash_t: public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
+    radius = p.spec.keg_smash -> effectN( 1 ).radius();
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     cooldown             = p.cooldown.brewmaster_attack;
     cooldown -> duration = p.find_spell( id ) -> cooldown();
 
-    base_multiplier = 11.6; // hardcoded into tooltip
+    attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
   }
 
   virtual bool ready() override
@@ -2833,8 +2843,9 @@ struct special_delivery_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
     aoe = -1;
+    radius = p -> passives.special_delivery -> effectN( 1 ).radius();
 
-    base_multiplier = 11.6; // hardcoded into tooltip
+    attack_power_mod.direct = p -> passives.special_delivery -> effectN( 1 ).ap_coeff();
   }
 
   virtual double cost() const override
@@ -4591,22 +4602,26 @@ void monk_t::init_spells()
   passives.elusive_dance              = find_spell( 196739 );
   passives.enveloping_mist            = find_class_spell( "Enveloping Mist" );
   passives.eye_of_the_tiger           = find_spell( 196608 );
+  passives.fists_of_fury              = find_spell( 120086 );
   passives.gift_of_the_ox_chance      = find_spell( 124502 );
   passives.gift_of_the_ox_heal        = find_spell( 124507 );
   passives.gift_of_the_ox_summon      = find_spell( 124503 );
   passives.hit_combo                  = find_spell( 196741 );
   passives.healing_elixirs            = find_spell( 122281 );
   passives.keg_smash_buff             = find_spell( 196720 );
-  passives.special_delivery           = find_spell( 196734 );
+  passives.rushing_jade_wind          = find_spell( 148187 );
+  passives.special_delivery           = find_spell( 196733 );
+  passives.spinning_crane_kick        = find_spell( 107270 );
+  passives.spinning_dragon_kick       = find_spell( 158221 );
   passives.storm_earth_and_fire       = find_spell( 138228 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
+  passives.touch_of_karma_tick        = find_spell( 124280 );
   passives.tier15_2pc_melee           = find_spell( 138311 );
   passives.tier17_2pc_heal            = find_spell( 167732 );
   passives.tier17_2pc_tank            = find_spell( 165356 );
   passives.tier17_4pc_heal            = find_spell( 167717 );
   passives.tier17_4pc_melee           = find_spell( 166603 );
   passives.hotfix_passive             = find_spell( 137022 );
-
   //MASTERY
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
