@@ -90,9 +90,6 @@ public:
     buff_t* sword_and_board;
 
     // Tier bonuses
-    buff_t* pvp_2pc_arms;
-    buff_t* pvp_2pc_fury;
-    buff_t* pvp_2pc_prot;
     buff_t* tier16_reckless_defense;
     buff_t* tier16_4pc_death_sentence;
     buff_t* tier17_2pc_arms;
@@ -1009,12 +1006,6 @@ struct bloodthirst_t: public warrior_attack_t
 
     c += crit_chance;
 
-    if ( p() -> buff.pvp_2pc_fury -> up() )
-    {
-      c += p() -> buff.pvp_2pc_fury -> default_value;
-      p() -> buff.pvp_2pc_fury -> expire();
-    }
-
     return c;
   }
 
@@ -1072,10 +1063,6 @@ struct charge_t: public warrior_attack_t
     }
 
     warrior_attack_t::execute();
-
-    p() -> buff.pvp_2pc_arms -> trigger();
-    p() -> buff.pvp_2pc_fury -> trigger();
-    p() -> buff.pvp_2pc_prot -> trigger();
 
     if ( first_charge )
       first_charge = !first_charge;
@@ -1687,19 +1674,6 @@ struct mortal_strike_t: public warrior_attack_t
     p() -> buff.tier16_4pc_death_sentence -> trigger();
   }
 
-  double composite_crit() const override
-  {
-    double cc = warrior_attack_t::composite_crit();
-
-    if ( p() -> buff.pvp_2pc_arms -> up() )
-    {
-      cc += p() -> buff.pvp_2pc_arms -> default_value;
-      p() -> buff.pvp_2pc_arms -> expire();
-    }
-
-    return cc;
-  }
-
   double cooldown_reduction() const override
   {
     double cdr = warrior_attack_t::cooldown_reduction();
@@ -2128,19 +2102,6 @@ struct shield_slam_t: public warrior_attack_t
       am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
-  }
-
-  double composite_crit() const override
-  {
-    double c = warrior_attack_t::composite_crit();
-
-    if ( p() -> buff.pvp_2pc_prot -> up() )
-    {
-      c += p() -> buff.pvp_2pc_prot -> default_value;
-      p() -> buff.pvp_2pc_prot -> expire();
-    }
-
-    return c;
   }
 
   void execute() override
@@ -3616,15 +3577,6 @@ void warrior_t::create_buffs()
 
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() )
     .tick_callback( tier17_4pc_fury );
-
-  buff.pvp_2pc_arms = buff_creator_t( this, "pvp_2pc_arms", sets.set( WARRIOR_ARMS, PVP, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( WARRIOR_ARMS, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-
-  buff.pvp_2pc_fury = buff_creator_t( this, "pvp_2pc_fury", sets.set( WARRIOR_FURY, PVP, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( WARRIOR_FURY, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-
-  buff.pvp_2pc_prot = buff_creator_t( this, "pvp_2pc_prot", sets.set( WARRIOR_PROTECTION, PVP, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( WARRIOR_PROTECTION, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // warrior_t::init_scaling ==================================================
