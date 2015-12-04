@@ -98,7 +98,7 @@ const char * _resource_strings[] =
   nullptr,
   "Maelstrom",
   "Chi",
-  "Shadow Orb",
+  "Insanity",
   "Burning Ember",
   "Demonic Fury",
   nullptr,

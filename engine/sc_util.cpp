@@ -809,7 +809,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
     case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
     case POWER_CHI:           return RESOURCE_CHI;
-    // case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
+    case POWER_INSANITY:      return RESOURCE_INSANITY;
     case POWER_MAELSTROM:     return RESOURCE_MAELSTROM;
     case POWER_FURY:          return RESOURCE_FURY;
     default:                  return RESOURCE_NONE;

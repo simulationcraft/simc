@@ -328,6 +328,7 @@ enum resource_e
   /* Unknown_2, */
   RESOURCE_MAELSTROM,
   RESOURCE_CHI,
+  RESOURCE_INSANITY,
   RESOURCE_BURNING_EMBER,
   RESOURCE_DEMONIC_FURY,
   RESOURCE_FURY,
@@ -1174,7 +1175,7 @@ enum power_e
   // Not yet used
   POWER_MAELSTROM     = 11,
   POWER_CHI           = 12,
-  // POWER_SHADOW_ORB    = 13,
+  POWER_INSANITY    = 13,
   POWER_BURNING_EMBER = 14,
   POWER_DEMONIC_FURY  = 15,
   // Not yet used?
