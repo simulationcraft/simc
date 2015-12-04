@@ -238,8 +238,6 @@ public:
   player_t* beacon_target;
   int ret_pvp_gloves;
 
-  bool bok_up;
-  bool bom_up;
   timespan_t last_extra_regen;
   timespan_t extra_regen_period;
   double extra_regen_percent;
@@ -257,8 +255,6 @@ public:
     talents( talents_t() ),
     beacon_target( nullptr ),
     ret_pvp_gloves( 0 ),
-    bok_up( false ),
-    bom_up( false ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 )
@@ -270,8 +266,6 @@ public:
     active_hand_of_light_proc          = nullptr;
     active_holy_shield_proc            = nullptr;
     active_protector_of_the_innocent   = nullptr;
-    bok_up                             = false;
-    bom_up                             = false;
 
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
 
@@ -289,7 +283,6 @@ public:
   virtual void      init_spells() override;
   virtual void      init_action_list() override;
   virtual void      reset() override;
-  virtual void      arise() override;
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
 
   // player stat functions
@@ -331,9 +324,7 @@ public:
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      combat_begin() override;
 
-  int     holy_power_stacks() const;
   double  get_hand_of_light();
-  bool    get_how_availability();
   double  jotp_haste();
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
@@ -839,34 +830,6 @@ struct beacon_of_light_heal_t : public heal_t
     trigger_gcd = timespan_t::zero();
 
     target = p -> beacon_target;
-  }
-};
-
-// Blessing of Kings ========================================================
-
-struct blessing_of_kings_t : public paladin_spell_t
-{
-  blessing_of_kings_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "blessing_of_kings", p, p -> find_class_spell( "Blessing of Kings" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    ignore_false_positive = true;
-  }
-};
-
-// Blessing of Might ========================================================
-
-struct blessing_of_might_t : public paladin_spell_t
-{
-  blessing_of_might_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "blessing_of_might", p, p -> find_class_spell( "Blessing of Might" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    ignore_false_positive = true;
   }
 };
 
@@ -2645,8 +2608,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
-  if ( name == "blessing_of_kings"         ) return new blessing_of_kings_t        ( this, options_str );
-  if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
@@ -2758,8 +2719,6 @@ void paladin_t::reset()
   player_t::reset();
 
   last_retribution_trinket_target = nullptr;
-  bok_up      = false;
-  bom_up      = false;
   last_extra_regen = timespan_t::zero();
   rppm_defender_of_the_light.reset();
 }
@@ -2923,8 +2882,6 @@ void paladin_t::generate_action_prio_list_prot()
       precombat -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
-  precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
-  precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
   precombat -> add_action( this, "Seal of Insight" );
   precombat -> add_action( this, "Seal of Righteousness", "if=role.attack|using_apl.max_dps" );
   precombat -> add_talent( this, "Sacred Shield" );
@@ -3018,8 +2975,6 @@ void paladin_t::generate_action_prio_list_ret()
     precombat -> add_action( food_action );
   }
 
-  precombat -> add_action( this, "Blessing of Kings", "if=!aura.str_agi_int.up" );
-  precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
   precombat -> add_action( this, "Seal of Truth", "if=spell_targets.divine_storm<3" );
   precombat -> add_action( this, "Seal of Righteousness", "if=spell_targets.divine_storm>=3" );
 
@@ -3147,8 +3102,6 @@ void paladin_t::generate_action_prio_list_holy_dps()
     precombat -> add_action( food_action );
   }
 
-  precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
-  precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
   precombat -> add_action( this, "Seal of Insight" );
   precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
 
@@ -3210,8 +3163,6 @@ void paladin_t::generate_action_prio_list_holy()
     precombat -> add_action( food_action );
   }
 
-  precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
-  precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
   precombat -> add_action( this, "Seal of Insight" );
   precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
   // Beacon probably goes somewhere here?
@@ -4099,13 +4050,6 @@ void paladin_t::combat_begin()
     resolve_manager.start();
 }
 
-// paladin_t::holy_power_stacks =============================================
-
-int paladin_t::holy_power_stacks() const
-{
-  return ( int ) resources.current[ RESOURCE_HOLY_POWER ];
-}
-
 // paladin_t::get_hand_of_light =============================================
 
 double paladin_t::get_hand_of_light()
@@ -4177,11 +4121,6 @@ expr_t* paladin_t::create_expression( action_t* a,
   }
 
   return player_t::create_expression( a, name_str );
-}
-
-void paladin_t::arise()
-{
-  player_t::arise();
 }
 
 /* Report Extension Class
