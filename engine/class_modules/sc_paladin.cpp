@@ -254,6 +254,8 @@ public:
     const spell_data_t* beacon_of_insight;
     const spell_data_t* saved_by_the_light;
     const spell_data_t* fires_of_justice;
+    const spell_data_t* might_of_virtue;
+    const spell_data_t* final_verdict;
   } talents;
 
   struct artifact_spell_data_t
@@ -3692,7 +3694,10 @@ struct judgment_t : public paladin_melee_attack_t
       if ( p() -> specialization() == PALADIN_RETRIBUTION )
       {
         // apply gain, attribute gain to Judgment
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
+        if ( p() -> talents.might_of_virtue -> ok() )
+        {
+          p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
+        }
       }
         // +1 Holy Power for Prot via hidden Judgments of the Wise passive
       else if ( p() -> passives.judgments_of_the_wise -> ok() )
@@ -3876,6 +3881,21 @@ struct templars_verdict_t : public paladin_melee_attack_t
       p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
     }
   }
+
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    // Final Verdict buffs CS damage by 25%
+    if ( p() -> talents.final_verdict -> ok() )
+    {
+      am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
 
   virtual void impact( action_state_t* s ) override
   {
@@ -4972,6 +4992,8 @@ void paladin_t::init_spells()
   talents.beacon_of_insight       = find_talent_spell( "Beacon of Insight" );
   talents.saved_by_the_light      = find_talent_spell( "Saved by the Light" );
   talents.fires_of_justice        = find_talent_spell( "The Fires of Justice" );
+  talents.might_of_virtue         = find_talent_spell( "The Might of Virtue" );
+  talents.final_verdict           = find_talent_spell( "Final Verdict" );
 
   artifact.wake_of_ashes          = find_artifact_spell( "Wake of Ashes" );
 
