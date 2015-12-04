@@ -128,10 +128,7 @@ public:
     const spell_data_t* lightbringer;
     const spell_data_t* plate_specialization;
     const spell_data_t* resolve;
-    const spell_data_t* righteous_vengeance;
     const spell_data_t* riposte;   // hidden
-    const spell_data_t* sacred_duty;
-    const spell_data_t* sanctified_light;
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* sanctuary;
     const spell_data_t* sword_of_light;
@@ -3157,7 +3154,6 @@ void paladin_t::init_spells()
   // Holy Passives
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
-  passives.sanctified_light       = find_specialization_spell( "Sanctified Light" );
 
   // Prot Passives
   passives.bladed_armor           = find_specialization_spell( "Bladed Armor" );
@@ -3166,12 +3162,10 @@ void paladin_t::init_spells()
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.resolve                = find_specialization_spell( "Resolve" );
   passives.riposte                = find_specialization_spell( "Riposte" );
-  passives.sacred_duty            = find_specialization_spell( "Sacred Duty" );
 
   // Ret Passives
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
-  passives.righteous_vengeance    = find_specialization_spell( "Righteous Vengeance" );
   passives.conviction             = find_spell( 185817 );
 
   if ( specialization() == PALADIN_RETRIBUTION )
@@ -3301,25 +3295,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 double paladin_t::composite_rating_multiplier( rating_e r ) const
 {
   double m = player_t::composite_rating_multiplier( r );
-
-  switch ( r )
-  {
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-    case RATING_SPELL_HASTE:
-      m *= 1.0 + passives.sacred_duty -> effectN( 1 ).percent();
-      break;
-    case RATING_MASTERY:
-      m *= 1.0 + passives.righteous_vengeance -> effectN( 1 ).percent();
-      break;
-    case RATING_MELEE_CRIT:
-    case RATING_SPELL_CRIT:
-    case RATING_RANGED_CRIT:
-      m *= 1.0 + passives.sanctified_light -> effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
 
   return m;
 
