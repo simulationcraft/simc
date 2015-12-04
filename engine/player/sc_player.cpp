@@ -662,7 +662,7 @@ player_t::player_t( sim_t*             s,
     "# SimulationCraft is always looking for updates and improvements to the default action lists.\n";
 
   if( ! is_pet() &&
-      ! is_enemy() && 
+      ! is_enemy() &&
       sim -> parent &&
       sim -> thread_index > 0 )
     parent = sim -> parent -> find_player( name() );
@@ -790,7 +790,7 @@ void player_t::init()
   {
     for (auto pet : pet_list)
     {
-      
+
       if ( pet -> regen_type != REGEN_DYNAMIC )
         continue;
 
@@ -4122,7 +4122,7 @@ void player_t::arise()
   for ( auto callback: callbacks.all_callbacks ) {
     dbc_proc_callback_t* cb = debug_cast<dbc_proc_callback_t*>( callback );
 
-    if ( cb -> cooldown && cb -> effect.item && 
+    if ( cb -> cooldown && cb -> effect.item &&
          cb -> effect.item -> parsed.initial_cd > timespan_t::zero() )
     {
       timespan_t initial_cd = std::min( cb -> effect.cooldown(), cb -> effect.item -> parsed.initial_cd );
@@ -5039,7 +5039,7 @@ bool absorb_sort( absorb_buff_t* a, absorb_buff_t* b )
 double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 {
   /* ABSORB BUFFS
-  
+
      std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
      the currently active absorb buffs of a player.
 
@@ -5050,7 +5050,7 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
      high priority (tank) absorbs and instant absorbs, by spell ID. High priority and
      instant absorbs MUST be pushed into this array inside init_absorb_priority() to
      function.
-   
+
   */
 
   /* Initialize result ignoring external absorbs for raw TMI tracking purposes. Each
@@ -5059,7 +5059,7 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 
   if ( ! ( p.absorb_buff_list.empty() && p.instant_absorb_list.empty() ) )
   {
-    /* First, handle high priority absorbs and instant absorbs. These absorbs should 
+    /* First, handle high priority absorbs and instant absorbs. These absorbs should
        obey the sequence laid out in absorb_priority. To achieve this, we loop through
        absorb_priority in order, then find and apply the appropriate high priority
        or instant absorb. */
@@ -5115,7 +5115,7 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
           }
         }
       }
-       
+
       if ( s -> result_amount <= 0 )
       {
         assert( s -> result_amount == 0 );
@@ -5369,14 +5369,6 @@ void player_t::target_mitigation( school_e school,
   if ( buffs.fortitude && buffs.fortitude -> up() )
     s -> result_amount *= 1.0 + buffs.fortitude -> data().effectN( 1 ).percent();
 
-  if ( school != SCHOOL_PHYSICAL )
-  {
-    if ( buffs.devotion_aura -> up() )
-    {
-      s -> result_amount *= 1.0 + buffs.devotion_aura -> data().effectN( 1 ).percent();
-    }
-  }
-
   if ( s -> action -> is_aoe() )
     s -> result_amount *= 1.0 - cache.avoidance();
 
@@ -5530,7 +5522,7 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 {
   for (auto t : list)
   {
-    
+
     if ( t -> name_str == name )
       return t;
   }

@@ -858,31 +858,6 @@ struct consecration_t : public paladin_spell_t
   }
 };
 
-// Devotion Aura Spell ======================================================
-
-struct devotion_aura_t : public paladin_spell_t
-{
-  devotion_aura_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "devotion_aura", p, p -> find_specialization_spell( "Devotion Aura" ) )
-  {
-    parse_options( options_str );
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim -> player_non_sleeping_list[ i ];
-      if ( p -> is_pet() )
-        continue;
-
-      p -> buffs.devotion_aura -> trigger(); // Technically these stack; we're abstracting somewhat by assuming they don't
-    }
-  }
-};
-
 // Divine Protection ========================================================
 
 struct divine_protection_t : public paladin_spell_t
@@ -2357,7 +2332,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
-  if ( name == "devotion_aura"             ) return new devotion_aura_t            ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
@@ -3896,7 +3870,6 @@ struct paladin_module_t : public module_t
   {
     p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
     p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
-    p -> buffs.devotion_aura            = buff_creator_t( p, "devotion_aura", p -> find_spell( 31821 ) );
     p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
   }
 
