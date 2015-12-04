@@ -140,6 +140,7 @@ public:
     gain_t* hp_blazing_contempt;
     gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
+    gain_t* hp_blade_of_justice;
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;
     gain_t* hp_hammer_of_wrath;
@@ -255,6 +256,7 @@ public:
     const spell_data_t* saved_by_the_light;
     const spell_data_t* fires_of_justice;
     const spell_data_t* might_of_virtue;
+    const spell_data_t* virtues_blade;
     const spell_data_t* final_verdict;
   } talents;
 
@@ -3231,6 +3233,59 @@ struct crusader_strike_t : public paladin_melee_attack_t
   }
 };
 
+// Blade of Justice =========================================================
+
+struct blade_of_justice_t : public paladin_melee_attack_t
+{
+  const spell_data_t* sword_of_light;
+  blade_of_justice_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+  {
+    parse_options( options_str );
+
+    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
+                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+  }
+
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    // Virtue's Blade buffs BoJ damage by 25%
+    if ( p() -> talents.virtues_blade -> ok() )
+    {
+      am *= 1.0 + p() -> talents.virtues_blade -> effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    // Special things that happen when BoJ connects
+    if ( result_is_hit( s -> result ) )
+    {
+      // Holy Power gains, only relevant if BoJ connects
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+    }
+
+    if ( result_is_hit_or_multistrike( s -> result ) )
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+  }
+};
+
 // Divine Storm =============================================================
 struct glyph_of_divine_storm_t : public paladin_heal_t
 {
@@ -4046,6 +4101,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
+  if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "devotion_aura"             ) return new devotion_aura_t            ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
@@ -4220,6 +4276,7 @@ void paladin_t::init_gains()
   // Holy Power
   gains.hp_blessed_life             = get_gain( "blessed_life" );
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
+  gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
   gains.hp_grand_crusader           = get_gain( "grand_crusader" );
   gains.hp_hammer_of_the_righteous  = get_gain( "hammer_of_the_righteous" );
   gains.hp_hammer_of_wrath          = get_gain( "hammer_of_wrath" );
@@ -4993,6 +5050,7 @@ void paladin_t::init_spells()
   talents.saved_by_the_light      = find_talent_spell( "Saved by the Light" );
   talents.fires_of_justice        = find_talent_spell( "The Fires of Justice" );
   talents.might_of_virtue         = find_talent_spell( "The Might of Virtue" );
+  talents.virtues_blade           = find_talent_spell( "Virtue's Blade" );
   talents.final_verdict           = find_talent_spell( "Final Verdict" );
 
   artifact.wake_of_ashes          = find_artifact_spell( "Wake of Ashes" );
