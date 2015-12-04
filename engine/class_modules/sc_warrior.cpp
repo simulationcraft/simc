@@ -2500,7 +2500,7 @@ struct defensive_stance_t: public warrior_spell_t
   bool onoffbool;
   defensive_stance_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "defensive_stance", p, p -> spell.defensive_stance ),
-    onoff( nullptr ), onoffbool( nullptr )
+    onoff( nullptr ), onoffbool( 0 )
   {
     add_option( opt_string( "toggle", onoff ) );
     parse_options( options_str );
@@ -2533,8 +2533,8 @@ struct defensive_stance_t: public warrior_spell_t
       return false;
     else if ( !onoffbool && !p() -> buff.defensive_stance -> check() )
       return false;
-    else
-      return true;
+
+    return warrior_spell_t::ready();
   }
 };
 
