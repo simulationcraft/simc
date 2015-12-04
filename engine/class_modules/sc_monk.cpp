@@ -2386,7 +2386,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
-    tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( data() ) );
+    tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( p -> passives.rushing_jade_wind ) );
   }
 
   // N full ticks, but never additional ones.
@@ -2447,7 +2447,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
-    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, &( data() ) );
+    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, &( p -> passives.spinning_crane_kick ) );
   }
 
   void execute() override
