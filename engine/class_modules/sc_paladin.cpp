@@ -30,7 +30,6 @@ struct paladin_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* execution_sentence;
-    dot_t* stay_of_execution;
     dot_t* holy_radiance;
   } dots;
 
@@ -70,7 +69,6 @@ public:
     // core
     buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
-    buff_t* bastion_of_glory;
     buff_t* divine_protection;
     buff_t* divine_shield;
     buff_t* guardian_of_ancient_kings;
@@ -987,64 +985,9 @@ struct denounce_t : public paladin_spell_t
 
 // Execution Sentence =======================================================
 
-// this is really two components: Execution Sentence is the damage portion, Stay of Execution the heal
-// it operates based on smart targeting - if the target is an enemy, Execution Sentence does its thing
-// if the target is friendly, Execution Sentence calls Stay of Execution
-struct stay_of_execution_t : public paladin_heal_t
-{
-  std::array<double, 11> soe_tick_multiplier;
-
-  stay_of_execution_t( paladin_t* p )
-    : paladin_heal_t( "stay_of_execution", p, p -> find_talent_spell( "Execution Sentence" ) ),
-      soe_tick_multiplier()
-  {
-    hasted_ticks   = false;
-    travel_speed   = 0;
-    tick_may_crit  = 1;
-    background = true;
-
-    // link with Execution Sentence's cooldown
-    cooldown = p -> get_cooldown( "execution_sentence" );
-    cooldown -> duration = data().cooldown();
-
-    // Where the 0.0374151195 comes from
-    // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
-    // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
-    // damage of the 9th.
-    // 1.1 + 1.1^2 + ... + 1.1^9 + 1.1^9 * 5 = 26.727163056
-    // 1 / 26,727163056 = 0.0374151195, which is the factor to get from the
-    // whole spells SP scaling to the base scaling of the 0th tick
-    // 1st tick is already 0th * 1.1!
-    if ( data().ok() )
-    {
-      parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
-      spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
-    }
-
-    // this is reversed from Execution Sentence's tick order
-    soe_tick_multiplier[ 10 ] = 1.0;
-    for ( int i = 9; i > 0 ; --i )
-      soe_tick_multiplier[ i ] = soe_tick_multiplier[ i + 1 ] * 1.1;
-    soe_tick_multiplier[ 0 ] = soe_tick_multiplier[ 1 ] * 5;
-
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = paladin_heal_t::composite_target_multiplier( target );
-
-    // Workaround for some clang insanity. soe_tick_multiplier.at( ... ) does not compile ..
-    assert( static_cast<size_t>( td( target ) -> dots.stay_of_execution -> current_tick ) < soe_tick_multiplier.size() && "Stay of Execution current tick > tick multiplier array" );
-    m *= soe_tick_multiplier[ td( target ) -> dots.stay_of_execution -> current_tick ];
-
-    return m;
-  }
-};
-
 struct execution_sentence_t : public paladin_spell_t
 {
   std::array<double, 11> tick_multiplier;
-  stay_of_execution_t* stay_of_execution;
 
   execution_sentence_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) ),
@@ -1083,8 +1026,9 @@ struct execution_sentence_t : public paladin_spell_t
       tick_multiplier[ 10 ] *= 5;
     }
 
-    stay_of_execution = new stay_of_execution_t( p );
-    add_child( stay_of_execution );
+    // not on GCD, usable off-GCD
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
 
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
@@ -1102,18 +1046,6 @@ struct execution_sentence_t : public paladin_spell_t
 
 
     return m;
-  }
-
-  virtual void execute() override
-  {
-    if ( target -> is_enemy() )
-    {
-      paladin_spell_t::execute();
-    }
-    else
-    {
-      stay_of_execution -> schedule_execute();
-    }
   }
 };
 
@@ -1594,32 +1526,6 @@ struct holy_shock_t : public paladin_heal_t
 
     return cdm;
   }
-};
-
-// Holy Wrath ===============================================================
-
-struct holy_wrath_t : public paladin_spell_t
-{
-  int hp_granted;
-  holy_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_wrath", p, p -> find_class_spell( "Holy Wrath" ) ),
-    hp_granted( 0 )
-  {
-    parse_options( options_str );
-
-    may_crit = true;
-    split_aoe_damage = true;
-
-    base_multiplier += p -> talents.sanctified_wrath -> effectN( 1 ).percent();
-    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-  }
-
 };
 
 // Lay on Hands Spell =======================================================
@@ -2345,9 +2251,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
-
-    // Add stack of Bastion of Glory
-    p() -> buffs.bastion_of_glory -> trigger();
   }
 };
 
@@ -2359,11 +2262,6 @@ struct templars_verdict_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( options_str );
-  }
-
-  virtual school_e get_school() const override
-  {
-    return paladin_melee_attack_t::get_school();
   }
 
   virtual void execute () override
@@ -2522,7 +2420,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 {
   dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
-  dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
 }
 
 // paladin_t::create_action =================================================
@@ -2549,7 +2446,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
-  if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
@@ -2725,7 +2621,6 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_spell( 54149 ) );
 
   // Prot
-  buffs.bastion_of_glory               = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
@@ -3997,12 +3892,13 @@ expr_t* paladin_t::create_expression( action_t* a,
   struct time_to_hpg_expr_t : public paladin_expr_t
   {
     cooldown_t* cs_cd;
+    cooldown_t* boj_cd;
     cooldown_t* j_cd;
-    cooldown_t* hw_cd;
 
     time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
       paladin_expr_t( n, p ), cs_cd( p.get_cooldown( "crusader_strike" ) ),
-      j_cd( p.get_cooldown( "judgment" ) ), hw_cd( p.get_cooldown( "holy_wrath") )
+      boj_cd ( p.get_cooldown( "blade_of_justice" )),
+      j_cd( p.get_cooldown( "judgment" ) )
     { }
 
     virtual double evaluate() override
@@ -4010,20 +3906,14 @@ expr_t* paladin_t::create_expression( action_t* a,
       timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time();
       gcd_ready = std::max( gcd_ready, timespan_t::zero() );
 
-      if ( paladin.buffs.grand_crusader -> check() )
-        return gcd_ready.total_seconds();
-
       timespan_t shortest_hpg_time = cs_cd -> remains();
 
-      if ( j_cd -> remains() < shortest_hpg_time )
-        shortest_hpg_time = j_cd -> remains();
+      if ( boj_cd -> remains() < shortest_hpg_time )
+        shortest_hpg_time = boj_cd -> remains();
 
-      if ( paladin.specialization() == PALADIN_PROTECTION )
-      {
-        // Prot-specific HPG go here
-        if ( paladin.talents.sanctified_wrath -> ok() && hw_cd -> remains() < shortest_hpg_time )
-          shortest_hpg_time = hw_cd -> remains();
-      }
+      if ( paladin.talents.might_of_virtue -> ok() )
+        if ( j_cd -> remains() < shortest_hpg_time )
+          shortest_hpg_time = j_cd -> remains();
 
       if ( gcd_ready > shortest_hpg_time )
         return gcd_ready.total_seconds();
