@@ -4950,7 +4950,6 @@ struct starsurge_t : public druid_spell_t
 };
 
 // Stellar Flare ==========================================================
-// TOCHECK: Does this snapshot mastery? Are empowerments additive or multiplicative?
 
 struct stellar_flare_t : public druid_spell_t
 {
@@ -4960,6 +4959,7 @@ struct stellar_flare_t : public druid_spell_t
     parse_options( options_str );
   }
 
+  // Dec 3 2015: Empowerments modifiers are multiplicative AND snapshot mastery.
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double pm = druid_spell_t::composite_persistent_multiplier( s );
