@@ -882,7 +882,30 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     parse_options( options );
 
-    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
+    if ( data().affected_by( p -> spec.elemental_fury -> effectN( 1 ) ) )
+    {
+      crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
+    }
+
+    if ( data().affected_by( p -> spec.shamanism -> effectN( 1 ) ) )
+    {
+      base_multiplier *= 1.0 + p -> spec.shamanism -> effectN( 1 ).percent();
+    }
+
+    if ( data().affected_by( p -> spec.shamanism -> effectN( 2 ) ) )
+    {
+      base_multiplier *= 1.0 + p -> spec.shamanism -> effectN( 2 ).percent();
+    }
+
+    if ( data().affected_by( p -> spec.shamanism -> effectN( 3 ) ) )
+    {
+      base_execute_time += p -> spec.shamanism -> effectN( 3 ).time_value();
+    }
+
+    if ( data().affected_by( p -> spec.shamanism -> effectN( 4 ) ) )
+    {
+      cooldown -> duration += p -> spec.shamanism -> effectN( 4 ).time_value();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -1800,6 +1823,36 @@ struct doom_vortex_t : public shaman_spell_t
   }
 };
 
+struct elemental_overload_spell_t : public shaman_spell_t
+{
+  double maelstrom_gain;
+
+  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s ) :
+    shaman_spell_t( name, p, s ),
+    maelstrom_gain( s -> effectN( 2 ).resource( RESOURCE_MAELSTROM ) )
+  {
+    background = true;
+    callbacks = false;
+
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( maelstrom_gain > 0 )
+    {
+      double g = maelstrom_gain;
+      if ( p() -> buff.fire_empowered -> up() )
+      {
+        g *= 1.0 + p() -> buff.fire_empowered -> data().effectN( 1 ).percent();
+      }
+
+      player -> resource_gain( RESOURCE_MAELSTROM, g, gain, this );
+    }
+  }
+};
+
 // ==========================================================================
 // Shaman Action / Spell Base
 // ==========================================================================
@@ -2682,15 +2735,21 @@ struct bloodlust_t : public shaman_spell_t
 struct chain_lightning_t: public shaman_spell_t
 {
   double maelstrom_gain;
+  elemental_overload_spell_t* overload;
 
   chain_lightning_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str ),
     maelstrom_gain( data().effectN( 2 ).resource( RESOURCE_MAELSTROM ) )
   {
-    cooldown -> duration += player -> spec.shamanism -> effectN( 4 ).time_value();
-    base_multiplier *= 1.0 + player -> spec.shamanism -> effectN( 2 ).percent();
+    aoe = 3;
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
+
+    if ( player -> mastery.elemental_overload -> ok() )
+    {
+      overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ) );
+      add_child( overload );
+    }
   }
 
   // Make Chain Lightning a single target spell for procs
@@ -2724,6 +2783,13 @@ struct chain_lightning_t: public shaman_spell_t
                                  p() -> gain.fulmination,
                                  this );
       }
+    }
+
+    if ( p() -> mastery.elemental_overload -> ok() &&
+         rng().roll( player -> cache.mastery_value() ) )
+    {
+      overload -> target = state -> target;
+      overload -> schedule_execute();
     }
 
     p() -> trigger_tier15_2pc_caster( state );
@@ -2828,7 +2894,6 @@ struct lava_beam_t : public shaman_spell_t
   lava_beam_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lava_beam", player, player -> find_spell( 114074 ), options_str )
   {
-    base_multiplier      *= 1.0 + p() -> spec.shamanism -> effectN( 2 ).percent();
     aoe                   = 5;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
@@ -2944,14 +3009,46 @@ struct fire_nova_t : public shaman_spell_t
 
 // Lava Burst Spell =========================================================
 
+struct lava_burst_overload_t : public elemental_overload_spell_t
+{
+  lava_burst_overload_t( shaman_t* p ) :
+    elemental_overload_spell_t( p, "lava_burst_overload", p -> find_spell( 77451 ) )
+  {
+    base_execute_time = timespan_t::zero(); // TODO: Check later
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> dot.flame_shock -> is_ticking() )
+    {
+      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_target_crit( player_t* ) const override
+  { return 1.0; }
+};
+
 struct lava_burst_t : public shaman_spell_t
 {
   double maelstrom_gain;
+  lava_burst_overload_t* overload;
+
   lava_burst_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "lava_burst", player, player -> find_specialization_spell( "Lava Burst" ), options_str ),
     maelstrom_gain( data().effectN( 2 ).resource( RESOURCE_MAELSTROM ) )
   {
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
+
+    if ( player -> mastery.elemental_overload -> ok() )
+    {
+      overload = new lava_burst_overload_t( player );
+      add_child( overload );
+    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3027,6 +3124,14 @@ struct lava_burst_t : public shaman_spell_t
                                p() -> gain.fulmination,
                                this );
     }
+
+    if ( p() -> mastery.elemental_overload -> ok() &&
+         rng().roll( player -> cache.mastery_value() ) )
+    {
+      overload -> target = state -> target;
+      overload -> schedule_execute();
+    }
+
   }
 };
 
@@ -3035,19 +3140,23 @@ struct lava_burst_t : public shaman_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   double max_cost, maelstrom_gain;
+  elemental_overload_spell_t* overload;
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str ),
     max_cost( data().powerN( POWER_MAELSTROM ).max_cost() ),
     maelstrom_gain( data().effectN( 2 ).resource( RESOURCE_MAELSTROM ) )
   {
-    base_multiplier *= 1.0 + player -> spec.shamanism -> effectN( 1 ).percent();
-    base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
-
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
       base_costs[ RESOURCE_MAELSTROM ] = 1; // Fake a cost so action_t::cost() will be run (in consume_resource())
       attack_power_mod.direct = 0.1; // Hardcoded to tooltip
+    }
+
+    if ( player -> mastery.elemental_overload -> ok() )
+    {
+      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload", player -> find_spell( 45284 ) );
+      add_child( overload );
     }
   }
 
@@ -3099,6 +3208,12 @@ struct lightning_bolt_t : public shaman_spell_t
                                  p() -> gain.fulmination,
                                  this );
       }
+    }
+
+    if ( p() -> mastery.elemental_overload -> ok() && rng().roll( player -> cache.mastery_value() ) )
+    {
+      overload -> target = state -> target;
+      overload -> schedule_execute();
     }
 
     p() -> trigger_tier15_2pc_caster( state );
