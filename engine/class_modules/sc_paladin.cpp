@@ -141,8 +141,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    // these seem to be required to get Art of War and Grand Crusader procs working
-    cooldown_t* ardent_defender;
+    // this seems to be required to get Grand Crusader procs working
     cooldown_t* avengers_shield;
   } cooldowns;
 
@@ -287,7 +286,6 @@ public:
     bok_up                             = false;
     bom_up                             = false;
 
-    cooldowns.ardent_defender = get_cooldown( "ardent_defender" );
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
 
     beacon_target = nullptr;
@@ -819,8 +817,6 @@ struct ardent_defender_t : public paladin_spell_t
     harmful = false;
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-
-    cooldown = p -> cooldowns.ardent_defender;
   }
 
   virtual void execute() override
