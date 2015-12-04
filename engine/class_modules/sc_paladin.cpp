@@ -80,7 +80,6 @@ public:
     buff_t* daybreak;
     buff_t* divine_protection;
     buff_t* divine_shield;
-    buff_t* enhanced_holy_shock;
     buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
@@ -167,28 +166,6 @@ public:
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
   } passives;
-
-  // Perks
-  struct
-  {
-    // Multiple
-    const spell_data_t* improved_forbearance;   // all
-
-    // Holy
-    const spell_data_t* empowered_beacon_of_light;
-    const spell_data_t* enhanced_holy_shock;
-    const spell_data_t* improved_daybreak;
-
-    // Protection
-    const spell_data_t* empowered_avengers_shield;
-    const spell_data_t* improved_block;
-    const spell_data_t* improved_consecration;
-
-    // Retribution
-    const spell_data_t* empowered_divine_storm;
-    const spell_data_t* empowered_hammer_of_wrath;
-    const spell_data_t* enhanced_hand_of_sacrifice;
-  } perk;
 
   // Procs
   struct procs_t
@@ -740,7 +717,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     double amount = s -> result_amount;
     amount *= p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
-    amount *= 1.0 + p() -> perk.empowered_beacon_of_light -> effectN( 1 ).percent();
 
     p() -> active_beacon_of_light -> base_dd_min = amount;
     p() -> active_beacon_of_light -> base_dd_max = amount;
@@ -824,7 +800,7 @@ struct avengers_shield_t : public paladin_spell_t
       background = true;
     }
 
-    aoe = 3 + p -> perk.empowered_avengers_shield -> effectN( 1 ).base_value();
+    aoe = 3;
     may_crit     = true;
 
     // link needed for trigger_grand_crusader
@@ -1094,15 +1070,6 @@ struct consecration_t : public paladin_spell_t
       paladin_spell_t::tick( d );
     }
   }
-
-  virtual double action_ta_multiplier() const override
-  {
-    double am = paladin_spell_t::action_ta_multiplier();
-
-    am *= 1.0 + p() -> perk.improved_consecration -> effectN( 1 ).percent();
-
-    return am;
-  }
 };
 
 // Daybreak =================================================================
@@ -1119,7 +1086,6 @@ struct daybreak_t : public paladin_heal_t
     may_crit = false;
 
     base_multiplier  = p -> passives.daybreak -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_daybreak -> effectN( 1 ).percent();
   }
 
   virtual void init() override
@@ -1245,7 +1211,6 @@ struct divine_shield_t : public paladin_spell_t
 
     // trigger forbearance
     timespan_t duration = p() -> debuffs.forbearance -> data().duration();
-    duration += p() -> perk.improved_forbearance -> effectN( 1 ).time_value();
     p() -> debuffs.forbearance -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration  );
   }
 
@@ -1618,9 +1583,6 @@ struct flash_of_light_t : public paladin_heal_t
     if ( p() -> talents.selfless_healer -> ok() && p() -> buffs.selfless_healer -> up() )
       p() -> buffs.selfless_healer -> expire();
 
-    // Enhanced Holy Shock trigger
-    p() -> buffs.enhanced_holy_shock -> trigger();
-
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1695,8 +1657,6 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
     may_miss = false;
     base_multiplier = data().effectN( 1 ).percent();
     target = p;
-
-    cooldown -> duration += timespan_t::from_millis( p -> perk.enhanced_hand_of_sacrifice -> effectN( 1 ).base_value() );
   }
 
   void trigger( double redirect_value )
@@ -1772,9 +1732,6 @@ struct holy_light_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.infusion_of_light -> expire();
-
-    // Enhanced Holy Shock trigger
-    p() -> buffs.enhanced_holy_shock -> trigger();
   }
 
   virtual timespan_t execute_time() const override
@@ -2179,15 +2136,7 @@ struct holy_shock_t : public paladin_heal_t
       heal -> schedule_execute();
     }
 
-
-    if ( p() -> buffs.enhanced_holy_shock -> check() )
-    {
-      // this feels like the wrong way to accomplish this, will review later
-      cooldown -> duration = timespan_t::zero();
-      p() -> buffs.enhanced_holy_shock -> expire();
-    }
-    else
-      cooldown -> duration = cd_duration;
+    cooldown -> duration = cd_duration;
 
     paladin_heal_t::execute();
   }
@@ -3674,8 +3623,6 @@ void paladin_t::init_base_stats()
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
 
-  // add improved block perk
-  base.block_reduction += perk.improved_block -> effectN( 1 ).percent();
   // add Sanctuary dodge
   base.dodge += passives.sanctuary -> effectN( 3 ).percent();
   // add Sanctuary expertise
@@ -3814,8 +3761,6 @@ void paladin_t::create_buffs()
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_spell( 88819 ) );
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_spell( 54149 ) );
-  buffs.enhanced_holy_shock    = buff_creator_t( this, "enhanced_holy_shock", find_spell( 160002 ) )
-                                 .chance( find_spell( 157478 ) -> proc_chance() );
 
   // Prot
   buffs.bastion_of_glory               = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
@@ -4494,25 +4439,6 @@ void paladin_t::init_spells()
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.righteous_vengeance    = find_specialization_spell( "Righteous Vengeance" );
-
-  // Perks
-  // Multiple
-  perk.improved_forbearance       = find_perk_spell( "Improved Forbearance" );
-
-  // Holy Perks
-  perk.empowered_beacon_of_light  = find_perk_spell( "Empowered Beacon of Light" );
-  perk.enhanced_holy_shock        = find_perk_spell( "Enhanced Holy Shock" );
-  perk.improved_daybreak          = find_perk_spell( "Improved Daybreak" );
-
-  // Prot Perks
-  perk.empowered_avengers_shield  = find_perk_spell( "Empowered Avenger's Shield" );
-  perk.improved_block             = find_perk_spell( "Improved Block" );
-  perk.improved_consecration      = find_perk_spell( "Improved Consecration" );
-
-  // Ret Perks
-  perk.empowered_divine_storm     = find_perk_spell( "Empowered Divine Storm" );
-  perk.empowered_hammer_of_wrath  = find_perk_spell( "Empowered Hammer of Wrath" );
-  perk.enhanced_hand_of_sacrifice = find_perk_spell( "Enhanced Hand of Sacrifice" );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -5268,9 +5194,8 @@ bool paladin_t::get_how_availability()
   if ( passives.sword_of_light -> ok() && buffs.avenging_wrath -> check() )
     return true;
 
-  // Otherwise, not available if target is above 20% health. Improved HoW perk raises the threshold to 35%
-  double threshold = ( perk.empowered_hammer_of_wrath -> ok() ? 15 : 0 ) + 20;
-  if ( target -> health_percentage() > threshold )
+  // Otherwise, not available if target is above 20% health.
+  if ( target -> health_percentage() > 20 )
     return false;
 
   return true;
