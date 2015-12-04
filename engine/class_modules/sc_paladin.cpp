@@ -37,7 +37,6 @@ struct paladin_td_t : public actor_target_data_t
 
   struct buffs_t
   {
-    buff_t* sacred_shield;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -84,15 +83,7 @@ public:
     buff_t* shield_of_the_righteous;
 
     // talents
-    buff_t* divine_purpose;
-    buff_t* hand_of_purity;
-    buff_t* holy_avenger;
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
-    buff_t* long_arm_of_the_law;
-    buff_t* sacred_shield;  // dummy buff for APL simplicity
-    buff_t* selfless_healer;
-    stat_buff_t* seraphim;
-    buff_t* speed_of_light;
 
     // Set Bonuses
     buff_t* crusaders_fury;       // t17_2pc_melee
@@ -122,10 +113,7 @@ public:
     gain_t* hp_blade_of_justice;
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;
-    gain_t* hp_holy_avenger;
-    gain_t* hp_pursuit_of_justice;
     gain_t* hp_sanctified_wrath;
-    gain_t* hp_selfless_healer;
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_judgment;
   } gains;
@@ -166,7 +154,6 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* divine_purpose;
     proc_t* eternal_glory;
     proc_t* focus_of_vengeance_reset;
     proc_t* crusaders_fury;
@@ -185,29 +172,69 @@ public:
   // Talents
   struct talents_t
   {
-    const spell_data_t* speed_of_light;
-    const spell_data_t* long_arm_of_the_law;
-    const spell_data_t* pursuit_of_justice;
-    const spell_data_t* hand_of_purity;
-    const spell_data_t* unbreakable_spirit;
-    const spell_data_t* clemency;
-    const spell_data_t* selfless_healer;
-    const spell_data_t* sacred_shield;
-    const spell_data_t* holy_avenger;
-    const spell_data_t* sanctified_wrath;
-    const spell_data_t* divine_purpose;
-    const spell_data_t* holy_prism;
+    // Ignore fist of justice/repentance/blinding light
+
+    // Holy
+    const spell_data_t* holy_bolt;
     const spell_data_t* lights_hammer;
-    const spell_data_t* execution_sentence;
-    const spell_data_t* seraphim;
-    const spell_data_t* holy_shield;
+    const spell_data_t* crusaders_might;
+    // TODO: Beacon of Hope seems like a pain
+    const spell_data_t* beacon_of_hope;
+    const spell_data_t* unbreakable_spirit;
+    const spell_data_t* shield_of_vengeance;
+    const spell_data_t* devotion_aura;
+    const spell_data_t* aura_of_light;
+    const spell_data_t* aura_of_mercy;
+    const spell_data_t* divine_purpose;
+    const spell_data_t* sanctified_wrath;
+    const spell_data_t* holy_prism;
+    const spell_data_t* stoicism;
+    const spell_data_t* daybreak;
+    // TODO: test
+    const spell_data_t* judgment_of_light;
     const spell_data_t* beacon_of_faith;
-    const spell_data_t* beacon_of_insight;
-    const spell_data_t* saved_by_the_light;
+    const spell_data_t* beacon_of_the_lightbringer;
+    const spell_data_t* beacon_of_the_savior;
+
+    // Protection
+    const spell_data_t* first_avenger;
+    const spell_data_t* day_of_reckoning;
+    const spell_data_t* consecrated_hammer;
+    const spell_data_t* holy_shield;
+    const spell_data_t* guardians_light;
+    const spell_data_t* last_defender;
+    const spell_data_t* blessing_of_negation;
+    const spell_data_t* blessing_of_salvation;
+    const spell_data_t* retribution_aura;
+    const spell_data_t* divine_bulwark;
+    const spell_data_t* crusaders_judgment;
+    const spell_data_t* blessed_hammer;
+    const spell_data_t* righteous_protector;
+    const spell_data_t* consecrated_ground;
+    // TODO: aegis of light has a positional requirement?
+    const spell_data_t* aegis_of_light;
+    const spell_data_t* knight_templar;
+    const spell_data_t* final_stand;
+
+    // Retribution
+    const spell_data_t* execution_sentence;
+    const spell_data_t* turalyons_might;
+    const spell_data_t* consecration;
     const spell_data_t* fires_of_justice;
-    const spell_data_t* might_of_virtue;
+    const spell_data_t* crusader_flurry;
+    const spell_data_t* zeal;
     const spell_data_t* virtues_blade;
+    const spell_data_t* blade_of_wrath;
+    const spell_data_t* divine_hammer;
+    const spell_data_t* judgments_of_the_bold;
+    const spell_data_t* might_of_virtue;
+    const spell_data_t* mass_judgment;
+    const spell_data_t* blaze_of_light;
+    const spell_data_t* divine_steed;
+    const spell_data_t* eye_for_an_eye;
     const spell_data_t* final_verdict;
+    const spell_data_t* seal_of_light;
+    const spell_data_t* holy_wrath;
   } talents;
 
   struct artifact_spell_data_t
@@ -295,7 +322,6 @@ public:
   virtual double    composite_parry_rating() const override;
   virtual double    composite_block() const override;
   virtual double    composite_block_reduction() const override;
-  virtual double    temporary_movement_modifier() const override;
 
   // combat outcome functions
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
@@ -500,10 +526,6 @@ public:
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
-      // check for divine purpose - if active, return a resource cost of 0
-      if ( p() -> buffs.divine_purpose -> check() )
-        return 0.0;
-
       // otherwise return a value equal to our current holy power,
       // lower-bounded by the ability's base cost, upper-bounded by 3
       return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
@@ -742,18 +764,6 @@ struct avengers_shield_t : public paladin_spell_t
     cooldown -> duration = data().cooldown();
   }
 
-  // Multiplicative damage effects
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_spell_t::action_multiplier();
-
-    // Holy Avenger buffs damage if Grand Crusader is active
-    if ( p() -> buffs.holy_avenger -> check() && p() -> buffs.grand_crusader -> check() )
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-
-    return am;
-  }
-
   virtual void execute() override
   {
     paladin_spell_t::execute();
@@ -765,15 +775,6 @@ struct avengers_shield_t : public paladin_spell_t
       int g = 1;
       // apply gain, attribute to Grand Crusader
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_grand_crusader );
-
-      // Holy Avenger adds another 2 Holy Power
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        // apply gain, attribute to Holy Avenger
-        p() -> resource_gain( RESOURCE_HOLY_POWER,
-                              p() -> buffs.holy_avenger -> value() - g,
-                              p() -> gains.hp_holy_avenger );
-      }
 
       // Remove Grand Crsuader buff
       p() -> buffs.grand_crusader -> expire();
@@ -1319,49 +1320,6 @@ struct flash_of_light_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
   }
 
-  virtual double cost() const override
-  {
-    // selfless healer reduces mana cost by 35% per stack
-    double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
-
-    return ( paladin_heal_t::cost() * cost_multiplier );
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    // Selfless Healer reduces cast time by 35% per stack
-    double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> current_stack * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
-
-    return ( paladin_heal_t::execute_time() * cast_multiplier );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_heal_t::action_multiplier();
-
-    // Selfless healer has two effects
-    if ( p() -> talents.selfless_healer -> ok() )
-    {
-      // multiplicative 35% per Selfless Healer stack when FoL is used on others
-      if ( target != player )
-      {
-        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> current_stack;
-      }
-    }
-
-    return am;
-  }
-
-  virtual void execute() override
-  {
-    paladin_heal_t::execute();
-
-    // if Selfless Healer is talented, expire SH buff. Call up() for benefit tracking.
-    if ( p() -> talents.selfless_healer -> ok() && p() -> buffs.selfless_healer -> up() )
-      p() -> buffs.selfless_healer -> expire();
-
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     paladin_heal_t::impact( s );
@@ -1393,31 +1351,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 
     p() -> buffs.guardian_of_ancient_kings -> trigger();
 
-  }
-};
-
-// Hand of Purity ===========================================================
-
-struct hand_of_purity_t : public paladin_spell_t
-{
-  hand_of_purity_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "hand_of_purity", p, p -> find_talent_spell( "Hand of Purity" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    may_miss = false; //probably redundant with harmul=false?
-
-    // disable if not talented
-    if ( ! ( p -> talents.hand_of_purity -> ok() ) )
-      background = true;
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.hand_of_purity -> trigger();
   }
 };
 
@@ -1458,8 +1391,6 @@ struct hand_of_sacrifice_t : public paladin_spell_t
     may_miss = false;
 //    p -> active.hand_of_sacrifice_redirect = new hand_of_sacrifice_redirect_t( p );
 
-    if ( p -> talents.clemency -> ok() )
-      cooldown -> charges = 2;
 
     // Create redirect action conditionalized on the existence of HoS.
     if ( ! p -> active.hand_of_sacrifice_redirect )
@@ -1468,30 +1399,6 @@ struct hand_of_sacrifice_t : public paladin_spell_t
 
   virtual void execute() override;
 
-};
-
-// Holy Avenger =============================================================
-
-struct holy_avenger_t : public paladin_spell_t
-{
-  holy_avenger_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_avenger", p, p -> find_talent_spell( "Holy Avenger" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-
-    // disable if not talented
-    if ( ! p -> talents.holy_avenger -> ok() )
-      background = true;
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.holy_avenger -> trigger( 1, 3 );
-  }
 };
 
 // Holy Light Spell =========================================================
@@ -2110,140 +2017,6 @@ struct light_of_dawn_t : public paladin_heal_t
   }
 };
 
-// Sacred Shield ============================================================
-// The sacred_shield_t action is the driver, which should act like a HoT that doesn't do any healing.
-// Instead it has a sacred_shield_tick_t tick_action, which is the absorb bubble.
-// In the spell data, Sacred Shield is Bizarre. The driver for prot/ret is id 20925, but for holy it's 148039.
-// The 6-second buff is id 65148 for both specs though, and presumably the value is set by the driver.
-// However, the spell power coefficients aren't stored anywhere - they're in the tooltips, but those appear hardcoded
-// (and thus frequently wrong) since they don't update automatically when the spell is buffed or nerfed. Fun!
-
-struct sacred_shield_tick_t : public absorb_t
-{
-  sacred_shield_tick_t( paladin_t* p ) :
-    absorb_t( "sacred_shield_tick", p, p -> find_spell( 65148 ) )
-  {
-    may_crit = true;
-    background = true;
-
-    // unfortunately, the following spell info is missing, and only hinted at in tooltips
-    // hardcoding these values based on testing on beta servers
-    // last updated (9/8/2014 http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=784745#p784745)
-
-    // base amount is zero for prot and holy - this SHOULD be the value in the data
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( p );
-
-    // Spell power mod in tooltip reflects protection values
-    spell_power_mod.direct = 1.3059954410;
-
-    // Holy has a different spellpower coefficient entirely, in tooltip of 148039
-    if ( p -> specialization() == PALADIN_HOLY )
-      spell_power_mod.direct = 0.9946876987;
-
-    // Ret gets a 30% larger spellpower coefficient and an extra base amount
-    else if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      spell_power_mod.direct /= 0.7;
-      base_dd_min++;
-      base_dd_max++;
-    }
-  }
-
-};
-
-struct sacred_shield_t : public paladin_heal_t
-{
-  sacred_shield_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield" ) ) // todo: find_talent_spell -> find_specialization_spell
-  {
-    parse_options( options_str );
-
-    // redirect HoT to self if not specified
-    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
-      target = p;
-
-    // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
-    tick_action = new sacred_shield_tick_t( p );
-    // tick_action doesn't natively inherit target, so set that specifically
-    tick_action -> target = target;
-    hasted_ticks = true;
-
-    // most of this is irrelevant now, I think?
-    may_crit = false;
-    tick_may_crit = false;
-    harmful = false;
-
-    // disable if not talented
-    if ( ! ( p -> talents.sacred_shield -> ok() ) )
-      background = true;
-
-    // Holy gets other special stuff - no cooldown, no target limit, 3 charges, 10-second recharge time, extra (zero) tick
-    if ( p -> specialization() == PALADIN_HOLY )
-    {
-      // 3 charges, recharge time is 10 seconds (base+4)
-      cooldown -> charges = 3;
-      cooldown -> duration += timespan_t::from_seconds( 4 );
-      // extra tick immediately upon cast
-      tick_zero = true; // TODO: retest
-    }
-
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    td( d -> state -> target ) -> buffs.sacred_shield -> expire();
-
-    paladin_heal_t::last_tick( d );
-  }
-
-  virtual void execute() override
-  {
-    paladin_heal_t::execute();
-
-    td( target ) -> buffs.sacred_shield -> trigger();
-  }
-};
-
-// Seraphim =================================================================
-
-struct seraphim_t : public paladin_spell_t
-{
-  seraphim_t( paladin_t* p, const std::string& options_str  )
-    : paladin_spell_t( "seraphim", p, p -> find_talent_spell( "Seraphim" ) )
-  {
-    parse_options( options_str );
-
-    may_miss = false;
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.seraphim -> trigger();
-
-  }
-};
-
-// Speed of Light ===========================================================
-
-struct speed_of_light_t: public paladin_spell_t
-{
-  speed_of_light_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "speed_of_light", p, p -> talents.speed_of_light )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.speed_of_light -> trigger();
-  }
-};
-
 // ==========================================================================
 // End Spells, Heals, and Absorbs
 // ==========================================================================
@@ -2415,12 +2188,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    // Holy Avenger buffs CS damage by 30% while active
-    if ( p() -> buffs.holy_avenger -> check() )
-    {
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-
     // Fires of Justice buffs CS damage by 25%
     if ( p() -> talents.fires_of_justice -> ok() )
     {
@@ -2440,13 +2207,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
       // Holy Power gains, only relevant if CS connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
-
-      // If Holy Avenger active, grant 2 more
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        //apply gain, record as due to Holy Avenger
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
-      }
 
       // Grand Crusader
       p() -> trigger_grand_crusader();
@@ -2573,18 +2333,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
   }
 
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Holy Avenger buffs HotR damage by 30% while active
-    if ( p() -> buffs.holy_avenger -> check() )
-    {
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-    return am;
-  }
-
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     paladin_melee_attack_t::available_targets( tl );
@@ -2637,12 +2385,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
 
-      // If Holy Avenger active, grant 2 more
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        //apply gain, record as due to Holy Avenger
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
-      }
       // Grand Crusader
       p() -> trigger_grand_crusader();
 
@@ -2652,19 +2394,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       hotr_aoe -> target = execute_state -> target;
       hotr_aoe -> execute();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Holy Avenger buffs HotR damage by 30% while active
-    if ( p() -> buffs.holy_avenger -> check() )
-    {
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-
-    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -2771,17 +2500,6 @@ struct judgment_t : public paladin_melee_attack_t
         // apply gain, attribute gain to Judgments of the Wise
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
       }
-
-      // Trigger Long Arm of the Law
-      if ( p() -> talents.long_arm_of_the_law -> ok() )
-        p() -> buffs.long_arm_of_the_law -> trigger();
-
-      // Holy Avenger adds 2 more Holy Power if active
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        //apply gain, attribute to Holy Avenger
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - 1, p() -> gains.hp_holy_avenger );
-      }
     }
   }
 
@@ -2789,23 +2507,6 @@ struct judgment_t : public paladin_melee_attack_t
   virtual void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
-
-    // Selfless Healer talent
-    if ( p() -> talents.selfless_healer -> ok() )
-      p() -> buffs.selfless_healer -> trigger();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Holy Avenger buffs J damage by 30% while active
-    if ( p() -> buffs.holy_avenger -> check() )
-    {
-      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-
-    return am;
   }
 };
 
@@ -3067,10 +2768,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
-
-  buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) )
-                             .cd( timespan_t::zero() ) // let ability handle cooldown
-                             .period( timespan_t::zero() );
 }
 
 // paladin_t::create_action =================================================
@@ -3094,11 +2791,9 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "fist_of_justice"           ) return new fist_of_justice_t          ( this, options_str );
-  if ( name == "hand_of_purity"            ) return new hand_of_purity_t           ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
@@ -3108,14 +2803,11 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
-  if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
 
-  if ( name == "speed_of_light"            ) return new speed_of_light_t           ( this, options_str );
-  if ( name == "sacred_shield"             ) return new sacred_shield_t            ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
@@ -3225,11 +2917,8 @@ void paladin_t::init_gains()
   gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
   gains.hp_grand_crusader           = get_gain( "grand_crusader" );
   gains.hp_hammer_of_the_righteous  = get_gain( "hammer_of_the_righteous" );
-  gains.hp_holy_avenger             = get_gain( "holy_avenger" );
   gains.hp_judgment                 = get_gain( "judgment" );
-  gains.hp_pursuit_of_justice       = get_gain( "pursuit_of_justice" );
   gains.hp_sanctified_wrath         = get_gain( "sanctified_wrath" );
-  gains.hp_selfless_healer          = get_gain( "selfless_healer" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_blazing_contempt         = get_gain( "blazing_contempt" );
 
@@ -3246,7 +2935,6 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.divine_purpose            = get_proc( "divine_purpose"                 );
   procs.eternal_glory             = get_proc( "eternal_glory"                  );
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
   procs.crusaders_fury            = get_proc( "crusaders_fury"                 );
@@ -3275,27 +2963,10 @@ void paladin_t::create_buffs()
   player_t::create_buffs();
 
   // Talents
-  buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", talents.divine_purpose )
-                                 .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() )
-                                 .chance( talents.divine_purpose -> effectN( 1 ).percent() ); // chance stored in effect
-  buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", talents.holy_avenger ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157122 ) )
                                  .school( SCHOOL_MAGIC )
                                  .source( get_stats( "holy_shield_absorb" ) )
                                  .gain( get_gain( "holy_shield_absorb" ) );
-  buffs.long_arm_of_the_law    = buff_creator_t( this, "long_arm_of_the_law", talents.long_arm_of_the_law )
-                                 .default_value( talents.long_arm_of_the_law -> effectN( 1 ).percent() );
-  buffs.speed_of_light         = buff_creator_t( this, "speed_of_light", talents.speed_of_light )
-                                 .default_value( talents.speed_of_light -> effectN( 1 ).percent() );
-  buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
-  buffs.seraphim               = stat_buff_creator_t( this, "seraphim", talents.seraphim )
-                               .add_stat( STAT_HASTE_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
-                               .add_stat( STAT_CRIT_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
-                               .add_stat( STAT_MASTERY_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
-                               .add_stat( STAT_MULTISTRIKE_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
-                               .add_stat( STAT_VERSATILITY_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
-                               .add_stat( STAT_BONUS_ARMOR, passives.bladed_armor -> ok() ? 750 : 0 )
-                               .cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
@@ -3303,7 +2974,6 @@ void paladin_t::create_buffs()
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.hand_of_purity         = buff_creator_t( this, "hand_of_purity", find_talent_spell( "Hand of Purity" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_spell( 88819 ) );
@@ -3428,13 +3098,12 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> action_list_comment_str = "This is a high-survivability (but low-DPS) configuration.\n# Invoke by adding \"actions+=/run_action_list,name=max_survival\" to the beginning of the default APL.";
 
   def -> add_action( "auto_attack" );
-  def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
   // usable items
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action ( "use_item,name=" + items[ i ].name_str + ",if=!talent.seraphim.enabled|buff.seraphim.up" );
+      def -> add_action ( "use_item,name=" + items[ i ].name_str );
 
   // profession actions
   std::vector<std::string> profession_actions = get_profession_actions();
@@ -3450,102 +3119,7 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> action_list = def -> action_list;
   surv -> action_list = def -> action_list;
 
-  def -> add_talent( this, "Holy Avenger", "", "Off-GCD spells." );
-  if ( sim -> allow_potions && potion_type.length() > 0 )
-    def -> add_action ( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
-  def -> add_talent( this, "Seraphim" );
-  def -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
-  def -> add_action( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" );
-  def -> add_action( this, "Ardent Defender", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)");
-  def -> add_action( this, "Shield of the Righteous", "if=buff.divine_purpose.react" );
-  def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
-  def -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
-
-  def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&spell_targets.avengers_shield>1" );
-  def -> add_action( this, "Hammer of the Righteous", "if=spell_targets.hammer_of_the_righteous>=3" );
-  def -> add_action( this, "Crusader Strike" );
-  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
-  def -> add_action( this, "Judgment" );
-  def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
-  def -> add_action( this, "Avenger's Shield", "if=spell_targets.avengers_shield>1" );
-  def -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
-  def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
-  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
-  def -> add_action( this, "Avenger's Shield" );
-  def -> add_talent( this, "Light's Hammer", "if=!talent.seraphim.enabled|buff.seraphim.remains>10|cooldown.seraphim.remains<6" );
-  def -> add_talent( this, "Holy Prism", "if=!talent.seraphim.enabled|buff.seraphim.up|cooldown.seraphim.remains>5|time<5" );
-  def -> add_action( this, "Consecration", "if=target.debuff.flying.down&spell_targets.consecration>=3" );
-  def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled|buff.seraphim.up|time<12" );
-  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
-  def -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
-  def -> add_action( this, "Holy Wrath" );
-  def -> add_talent( this, "Sacred Shield" );
-  def -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
-
-
-  // Max-DPS priority queue
-  dps -> add_talent( this, "Holy Avenger", "", "Off-GCD spells." );
-  if ( sim -> allow_potions && potion_type.length() > 0 )
-    dps -> add_action( "potion,name=" + potion_type + ",if=buff.holy_avenger.up|(!talent.holy_avenger.enabled&(buff.seraphim.up|(!talent.seraphim.enabled&buff.bloodlust.react)))|target.time_to_die<=20" );
-  dps -> add_talent( this, "Seraphim" );
-  dps -> add_talent( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
-  dps -> add_talent( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" );
-  dps -> add_action( this, "Shield of the Righteous", "if=buff.divine_purpose.react" );
-  dps -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|talent.holy_avenger.enabled)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
-  dps -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
-
-  dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&spell_targets.avengers_shield>1", "GCD-bound spells" );
-  dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled&buff.seraphim.react" );
-  dps -> add_action( this, "Hammer of the Righteous", "if=spell_targets.hammer_of_the_righteous>=3" );
-  dps -> add_action( this, "Crusader Strike" );
-  dps -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
-  dps -> add_action( this, "Judgment" );
-  dps -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
-  dps -> add_action( this, "Avenger's Shield", "if=spell_targets.avengers_shield>1" );
-  dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
-  dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
-  dps -> add_talent( this, "Execution Sentence", "if=spell_targets.consecration<3" );
-  dps -> add_action( this, "Avenger's Shield" );
-  dps -> add_talent( this, "Light's Hammer" );
-  dps -> add_talent( this, "Holy Prism" );
-  dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&spell_targets.consecration>=3" );
-  dps -> add_talent( this, "Execution Sentence" );
-  dps -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
-  dps -> add_action( this, "Holy Wrath" );
-  dps -> add_talent( this, "Sacred Shield" );
-  dps -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
-
-  // Max Survival priority queue
-  surv -> add_talent( this, "Holy Avenger", "", "Off-GCD spells." );
-  if ( sim -> allow_potions && potion_type.length() > 0 )
-    surv -> add_action( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
-  surv -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
-  surv -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
-  surv -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" );
-  surv -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
-  surv -> add_action( this, "Shield of the Righteous", "if=buff.divine_purpose.react" );
-  surv -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
-  surv -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
-
-  surv -> add_action( this, "Hammer of the Righteous", "if=spell_targets.hammer_of_the_righteous>=3", "GCD-bound spells" );
-  surv -> add_action( this, "Crusader Strike" );
-  surv -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
-  surv -> add_action( this, "Judgment" );
-  surv -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
-  surv -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&spell_targets.avengers_shield>1" );
-  surv -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
-  surv -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
-  surv -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
-  surv -> add_action( this, "Avenger's Shield" );
-  surv -> add_talent( this, "Light's Hammer" );
-  surv -> add_talent( this, "Holy Prism" );
-  surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&spell_targets.consecration>=3" );
-  surv -> add_talent( this, "Execution Sentence" );
-  surv -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
-  surv -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
-  surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
-  surv -> add_action( this, "Holy Wrath" );
-  surv -> add_talent( this, "Sacred Shield" );
+  // TODO: Create this.
 
 }
 
@@ -3620,11 +3194,7 @@ void paladin_t::generate_action_prio_list_ret()
       def -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
   }
 
-  def -> add_talent( this, "Speed of Light", "if=movement.distance>5" );
-  def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled" );
-  def -> add_talent( this, "Execution Sentence", "sync=seraphim,if=talent.seraphim.enabled" );
-  def -> add_talent( this, "Light's Hammer", "if=!talent.seraphim.enabled" );
-  def -> add_talent( this, "Light's Hammer", "sync=seraphim,if=talent.seraphim.enabled" );
+  def -> add_talent( this, "Execution Sentence" );
 
   // Items
   int num_items = ( int ) items.size();
@@ -3638,66 +3208,51 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
 
-  def -> add_action( this, "Avenging Wrath", "sync=seraphim,if=talent.seraphim.enabled" );
-  def -> add_action( this, "Avenging Wrath", "if=!talent.seraphim.enabled&set_bonus.tier18_4pc=0" );
-  def -> add_action( this, "Avenging Wrath", "if=!talent.seraphim.enabled&time<20&set_bonus.tier18_4pc=1" );
-  def -> add_action( this, "Avenging Wrath", "if=prev.execution_sentence&set_bonus.tier18_4pc=1&talent.execution_sentence.enabled&!talent.seraphim.enabled" );
-  def -> add_action( this, "Avenging Wrath", "if=prev.lights_hammer&set_bonus.tier18_4pc=1&talent.lights_hammer.enabled&!talent.seraphim.enabled" );
-  def -> add_talent( this, "Holy Avenger", "sync=avenging_wrath,if=!talent.seraphim.enabled" );
-  def -> add_talent( this, "Holy Avenger", "sync=seraphim,if=talent.seraphim.enabled" );
-  def -> add_talent( this, "Holy Avenger", "if=holy_power<=2&!talent.seraphim.enabled" );
+  def -> add_action( this, "Avenging Wrath", "if=set_bonus.tier18_4pc=0" );
+  def -> add_action( this, "Avenging Wrath", "if=time<20&set_bonus.tier18_4pc=1" );
+  def -> add_action( this, "Avenging Wrath", "if=prev.execution_sentence&set_bonus.tier18_4pc=1&talent.execution_sentence.enabled" );
+  def -> add_action( this, "Avenging Wrath", "if=prev.lights_hammer&set_bonus.tier18_4pc=1&talent.lights_hammer.enabled" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  def -> add_talent( this, "Seraphim" );
-  def -> add_action( "wait,sec=cooldown.seraphim.remains,if=talent.seraphim.enabled&cooldown.seraphim.remains>0&cooldown.seraphim.remains<gcd.max&holy_power>=5" );
   def -> add_action( "call_action_list,name=cleave,if=spell_targets.divine_storm>=3" );
   def -> add_action( "call_action_list,name=single" );
 
-  single -> add_action( this, "Templar's Verdict", "if=(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(buff.avenging_wrath.down|target.health.pct>35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
-  single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<3" );
-
   single -> add_action( this, "Crusader Strike", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
 
-  single -> add_action( this, "Templar's Verdict","if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
-  single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
-  single -> add_action( this, "Templar's Verdict","if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
+  single -> add_action( this, "Templar's Verdict","if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)" );
+  single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)" );
+  single -> add_action( this, "Templar's Verdict","if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)" );
 
-  single -> add_action( this, "Crusader Strike", "if=talent.seraphim.enabled" );
   single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
-  single -> add_action( this, "Judgment", "if=talent.seraphim.enabled" );
   single -> add_action( this, "Judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
 
-  single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
-  single -> add_action( this, "Templar's Verdict", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
 
-  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3" );
   single -> add_talent( this, "Holy Prism" );
 
   //Executed if three or more targets are present.
 
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
+  cleave -> add_action( this, "Divine Storm", "if=holy_power=5" );
 
   cleave -> add_action( this, "Hammer of the Righteous", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
 
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*3)" );
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)" );
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
+  cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)" );
+  cleave -> add_action( this, "Divine Storm", "if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)" );
+  cleave -> add_action( this, "Divine Storm", "if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)" );
 
-  cleave -> add_action( this, "Hammer of the Righteous", "if=spell_targets.hammer_of_the_righteous>=4&talent.seraphim.enabled" );
   cleave -> add_action( this, "Hammer of the Righteous", ",if=spell_targets.hammer_of_the_righteous>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))" );
-  cleave -> add_action( this, "Crusader Strike", "if=talent.seraphim.enabled" );
   cleave -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
 
-  cleave -> add_action( this, "judgment", "if=talent.seraphim.enabled" );
   cleave -> add_action( this, "judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
 
-  cleave -> add_action( this, "Divine Storm", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
+  cleave -> add_action( this, "Divine Storm", "if=holy_power>=4" );
 
-  cleave -> add_action( this, "Divine Storm", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
+  cleave -> add_action( this, "Divine Storm", "if=holy_power>=3" );
 
   cleave -> add_talent( this, "Holy Prism", "target=self" );
 }
@@ -3745,7 +3300,6 @@ void paladin_t::generate_action_prio_list_holy_dps()
 
   def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
   def -> add_action( "auto_attack" );
-  def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
   {
@@ -3811,7 +3365,6 @@ void paladin_t::generate_action_prio_list_holy()
   def -> add_action( "mana_potion,if=mana.pct<=75" );
 
   def -> add_action( "auto_attack" );
-  def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
@@ -3834,8 +3387,6 @@ void paladin_t::generate_action_prio_list_holy()
   // Workin on it. Phillipuh to-do
   def -> add_action( this, "Avenging Wrath" );
   def -> add_action( this, "Lay on Hands","if=incoming_damage_5s>health.max*0.7" );
-  def -> add_action( this, "Judgment", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack<3" );
-  def -> add_action( this, "Sacred Shield","if=buff.sacred_shield.down" );
   def -> add_action( "wait,if=target.health.pct>=75&mana.pct<=10" );
   def -> add_action( this, "Flash of Light", "if=target.health.pct<=30" );
   def -> add_action( this, "Divine Plea", "if=mana.pct<75" );
@@ -3848,7 +3399,6 @@ void paladin_t::generate_action_prio_list_holy()
 
 void paladin_t::init_action_list()
 {
-
   // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE && ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
   {
@@ -3909,29 +3459,61 @@ void paladin_t::init_spells()
   player_t::init_spells();
 
   // Talents
-  talents.long_arm_of_the_law     = find_talent_spell( "Long Arm of the Law" );
-  talents.speed_of_light          = find_talent_spell( "Speed of Light" );
-  talents.pursuit_of_justice      = find_talent_spell( "Pursuit of Justice" );
-  talents.hand_of_purity          = find_talent_spell( "Hand of Purity" );
-  talents.unbreakable_spirit      = find_talent_spell( "Unbreakable Spirit" );
-  talents.clemency                = find_talent_spell( "Clemency" );
-  talents.selfless_healer         = find_talent_spell( "Selfless Healer" );
-  talents.sacred_shield           = find_talent_spell( "Sacred Shield" );
-  talents.holy_avenger            = find_talent_spell( "Holy Avenger" );
-  talents.sanctified_wrath        = find_talent_spell( "Sanctified Wrath" ); // this returns the prot version of the talent
-  talents.divine_purpose          = find_talent_spell( "Divine Purpose" );
-  talents.holy_prism              = find_talent_spell( "Holy Prism" );
-  talents.lights_hammer           = find_talent_spell( "Light's Hammer" );
-  talents.execution_sentence      = find_talent_spell( "Execution Sentence" );
-  talents.seraphim                = find_talent_spell( "Seraphim" );
-  talents.holy_shield             = find_talent_spell( "Holy Shield" );
-  talents.beacon_of_faith         = find_talent_spell( "Beacon of Faith" );
-  talents.beacon_of_insight       = find_talent_spell( "Beacon of Insight" );
-  talents.saved_by_the_light      = find_talent_spell( "Saved by the Light" );
-  talents.fires_of_justice        = find_talent_spell( "The Fires of Justice" );
-  talents.might_of_virtue         = find_talent_spell( "The Might of Virtue" );
-  talents.virtues_blade           = find_talent_spell( "Virtue's Blade" );
-  talents.final_verdict           = find_talent_spell( "Final Verdict" );
+  talents.holy_bolt                  = find_talent_spell( "Holy Bolt" );
+  talents.lights_hammer              = find_talent_spell( "Light's Hammer" );
+  talents.crusaders_might            = find_talent_spell( "Crusader's Might" );
+  talents.beacon_of_hope             = find_talent_spell( "Beacon of Hope" );
+  talents.unbreakable_spirit         = find_talent_spell( "Unbreakable Spirit" );
+  talents.shield_of_vengeance        = find_talent_spell( "Shield of Vengeance" );
+  talents.devotion_aura              = find_talent_spell( "Devotion Aura" );
+  talents.aura_of_light              = find_talent_spell( "Aura of Light" );
+  talents.aura_of_mercy              = find_talent_spell( "Aura of Mercy" );
+  talents.divine_purpose             = find_talent_spell( "Divine Purpose" );
+  talents.sanctified_wrath           = find_talent_spell( "Sanctified Wrath" );
+  talents.holy_prism                 = find_talent_spell( "Holy Prism" );
+  talents.stoicism                   = find_talent_spell( "Stoicism" );
+  talents.daybreak                   = find_talent_spell( "Daybreak" );
+  talents.judgment_of_light          = find_talent_spell( "Judgment of Light" );
+  talents.beacon_of_faith            = find_talent_spell( "Beacon of Faith" );
+  talents.beacon_of_the_lightbringer = find_talent_spell( "Beacon of the Lightbringer" );
+  talents.beacon_of_the_savior       = find_talent_spell( "Beacon of the Savior" );
+
+  talents.first_avenger              = find_talent_spell( "First Avenger" );
+  talents.day_of_reckoning           = find_talent_spell( "Day of Reckoning" );
+  talents.consecrated_hammer         = find_talent_spell( "Consecrated Hammer" );
+  talents.holy_shield                = find_talent_spell( "Holy Shield" );
+  talents.guardians_light            = find_talent_spell( "Guardian's Light" );
+  talents.last_defender              = find_talent_spell( "Last Defender" );
+  talents.blessing_of_negation       = find_talent_spell( "Blessing of Negation" );
+  talents.blessing_of_salvation      = find_talent_spell( "Blessing of Salvation" );
+  talents.retribution_aura           = find_talent_spell( "Retribution Aura" );
+  talents.divine_bulwark             = find_talent_spell( "Divine Bulwark" );
+  talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
+  talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
+  talents.righteous_protector        = find_talent_spell( "Righteous Protector" );
+  talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
+  talents.aegis_of_light             = find_talent_spell( "Aegis of Light" );
+  talents.knight_templar             = find_talent_spell( "Knight Templar" );
+  talents.final_stand                = find_talent_spell( "Final Stand" );
+
+  talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
+  talents.turalyons_might            = find_talent_spell( "Turalyon's Might" );
+  talents.consecration               = find_talent_spell( "Consecration" );
+  talents.fires_of_justice           = find_talent_spell( "The Fires of Justice" );
+  talents.crusader_flurry            = find_talent_spell( "Crusader Flurry" );
+  talents.zeal                       = find_talent_spell( "Zeal" );
+  talents.virtues_blade              = find_talent_spell( "Virtue's Blade" );
+  talents.blade_of_wrath             = find_talent_spell( "Blade of Wrath" );
+  talents.divine_hammer              = find_talent_spell( "Divine Hammer" );
+  talents.judgments_of_the_bold      = find_talent_spell( "Judgments of the Bold" );
+  talents.might_of_virtue            = find_talent_spell( "The Might of Virtue" );
+  talents.mass_judgment              = find_talent_spell( "Mass Judgment" );
+  talents.blaze_of_light             = find_talent_spell( "Blaze of Light" );
+  talents.divine_steed               = find_talent_spell( "Divine Steed" );
+  talents.eye_for_an_eye             = find_talent_spell( "Eye for an Eye" );
+  talents.final_verdict              = find_talent_spell( "Final Verdict" );
+  talents.seal_of_light              = find_talent_spell( "Seal of Light" );
+  talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
 
   artifact.wake_of_ashes          = find_artifact_spell( "Wake of Ashes" );
 
@@ -4387,24 +3969,6 @@ double paladin_t::composite_parry_rating() const
   return p;
 }
 
-// paladin_t::temporary_movement_modifier ================================
-
-double paladin_t::temporary_movement_modifier() const
-{
-  double temporary = player_t::temporary_movement_modifier();
-
-  if ( buffs.speed_of_light -> up() )
-    temporary = std::max( buffs.speed_of_light -> default_value, temporary );
-  if ( buffs.long_arm_of_the_law -> up() )
-    temporary = std::max( buffs.long_arm_of_the_law -> default_value, temporary );
-  if ( talents.pursuit_of_justice -> ok() )
-    temporary = std::max( ( talents.pursuit_of_justice -> effectN( 1 ).percent() +
-                std::min( resources.current[RESOURCE_HOLY_POWER] * talents.pursuit_of_justice -> effectN( 8 ).percent(), 0.15 ) ),
-                temporary );
-
-  return temporary;
-}
-
 // paladin_t::target_mitigation =============================================
 
 void paladin_t::target_mitigation( school_e school,
@@ -4429,21 +3993,6 @@ void paladin_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + buffs.guardian_of_ancient_kings -> data().effectN( 3 ).percent();
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after GAnK is %f", s -> target -> name(), s -> result_amount );
-  }
-
-  // Hand of Purity
-  if ( buffs.hand_of_purity -> up() )
-  {
-    if ( s -> result_type == DMG_OVER_TIME )
-    {
-      s -> result_amount *= 1.0 - buffs.hand_of_purity -> data().effectN( 1 ).percent(); // for some reason, the DoT reduction is stored as +0.7
-    }
-    else
-    {
-      s -> result_amount *= 1.0 + buffs.hand_of_purity -> data().effectN( 2 ).percent();
-    }
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> out_debug.printf( "Damage to %s after Hand of Purity is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Divine Protection
@@ -4697,10 +4246,6 @@ void paladin_t::combat_begin()
 
 int paladin_t::holy_power_stacks() const
 {
-  if ( buffs.divine_purpose -> check() )
-  {
-    return std::min( ( int ) 3, ( int ) resources.current[ RESOURCE_HOLY_POWER ] );
-  }
   return ( int ) resources.current[ RESOURCE_HOLY_POWER ];
 }
 
