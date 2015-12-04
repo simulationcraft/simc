@@ -1926,15 +1926,6 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
   }
 };
 
-struct fist_of_justice_t : public paladin_melee_attack_t
-{
-  fist_of_justice_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "fist_of_justice", p, p -> find_talent_spell( "Fist of Justice" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
 // Hammer of the Righteous ==================================================
 
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
@@ -2371,7 +2362,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
-  if ( name == "fist_of_justice"           ) return new fist_of_justice_t          ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
