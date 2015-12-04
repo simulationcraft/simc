@@ -4,7 +4,7 @@
 // ==========================================================================
 /*
   TODO:
-  -Bunch of Holy Stuff (search for TODO)
+  -Bunch of Holy Stuff (search for TODO); including 7.0 mastery
   -Remove unnecessary Harsh Words code for prot post-6.1
   -Test if Grand Crusader can proc from misses
 */
@@ -55,7 +55,6 @@ public:
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
   action_t* active_holy_shield_proc;
-  absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
 
   const special_effect_t* retribution_trinket;
@@ -74,7 +73,6 @@ public:
     buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buff_t* bastion_of_glory;
-    buff_t* daybreak;
     buff_t* divine_protection;
     buff_t* divine_shield;
     buff_t* guardian_of_ancient_kings;
@@ -107,13 +105,9 @@ public:
     gain_t* mana_beacon_of_light;
 
     // Holy Power
-    gain_t* hp_blazing_contempt;
-    gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
     gain_t* hp_blade_of_justice;
-    gain_t* hp_grand_crusader;
-    gain_t* hp_hammer_of_the_righteous;
-    gain_t* hp_sanctified_wrath;
+    gain_t* hp_conviction;
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_judgment;
   } gains;
@@ -130,15 +124,14 @@ public:
   {
     const spell_data_t* bladed_armor;
     const spell_data_t* boundless_conviction;
-    const spell_data_t* daybreak;
+    const spell_data_t* conviction;
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
     const spell_data_t* holy_insight;
-    const spell_data_t* illuminated_healing;
     const spell_data_t* infusion_of_light;
-    const spell_data_t* judgments_of_the_wise;  // hidden
+    const spell_data_t* lightbringer;
     const spell_data_t* plate_specialization;
     const spell_data_t* resolve;
     const spell_data_t* righteous_vengeance;
@@ -276,7 +269,6 @@ public:
     active_enlightened_judgments       = nullptr;
     active_hand_of_light_proc          = nullptr;
     active_holy_shield_proc            = nullptr;
-    active_illuminated_healing         = nullptr;
     active_protector_of_the_innocent   = nullptr;
     bok_up                             = false;
     bom_up                             = false;
@@ -650,8 +642,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
   {
     base_t::impact( s );
 
-    trigger_illuminated_healing( s );
-
     if ( s -> target != p() -> beacon_target )
       trigger_beacon_of_light( s );
   }
@@ -686,29 +676,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     p() -> active_beacon_of_light -> execute();
   };
-
-  void trigger_illuminated_healing( action_state_t* s )
-  {
-    if ( s -> result_amount <= 0 )
-      return;
-
-    if ( proc )
-      return;
-
-    if ( ! p() -> passives.illuminated_healing -> ok() )
-      return;
-
-    // FIXME: Each player can have their own bubble, so this should probably be a vector as well
-    assert( p() -> active_illuminated_healing );
-
-    // FIXME: This should stack when the buff is present already
-
-    double bubble_value = p() -> cache.mastery_value() // Illuminated Healing is in effect 1
-                          * s -> result_amount;
-
-    p() -> active_illuminated_healing -> base_dd_min = p() -> active_illuminated_healing -> base_dd_max = bubble_value;
-    p() -> active_illuminated_healing -> execute();
-  }
 };
 
 struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
@@ -767,18 +734,6 @@ struct avengers_shield_t : public paladin_spell_t
   virtual void execute() override
   {
     paladin_spell_t::execute();
-
-    // Holy Power gains - only if Grand Crusader is active
-    if ( p() -> buffs.grand_crusader -> up() )
-    {
-      // base gain is 1 Holy Power
-      int g = 1;
-      // apply gain, attribute to Grand Crusader
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_grand_crusader );
-
-      // Remove Grand Crsuader buff
-      p() -> buffs.grand_crusader -> expire();
-    }
 
     // Protection T17 2-piece grants block buff
     if ( p() -> sets.has_set_bonus( PALADIN_PROTECTION, T17, B2 ) )
@@ -1005,56 +960,6 @@ struct consecration_t : public paladin_spell_t
       paladin_spell_t::tick( d );
     }
   }
-};
-
-// Daybreak =================================================================
-//This is the aoe healing proc triggered by Holy Shock
-
-struct daybreak_t : public paladin_heal_t
-{
-  daybreak_t( paladin_t* p )
-    : paladin_heal_t( "daybreak", p, p->find_spell( 121129 ) )
-  {
-    background = true;
-    aoe = -1;
-    split_aoe_damage = false;
-    may_crit = false;
-
-    base_multiplier  = p -> passives.daybreak -> effectN( 1 ).percent();
-  }
-
-  virtual void init() override
-  {
-    paladin_heal_t::init();
-    // add snapshot flags to allow for action_multiplier() to be called
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
-  }
-
-
-  // Daybreak ignores the target of the holy_shock_heal_t that procs it.
-  // This is the standard heal_t::available_targets() with tl.push_back( target ) removed
-  // (since we don't want to include the target) and an unnecessary group_only check removed
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    tl.clear();
-
-    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> player_non_sleeping_list[ i ];
-
-      if ( t != target )
-        tl.push_back( t );
-    }
-
-    return tl.size();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    // override action_multiplier(), as this amount is set by the triggering Holy Shock
-    return base_multiplier;
-  }
-
 };
 
 // Devotion Aura Spell ======================================================
@@ -1615,7 +1520,6 @@ struct holy_radiance_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.infusion_of_light -> expire();
-    p() -> buffs.daybreak -> trigger();
   }
 
   virtual timespan_t execute_time() const override
@@ -1682,7 +1586,6 @@ struct holy_shock_heal_t : public paladin_heal_t
 {
   double crit_chance_multiplier;
   double crit_increase;
-  daybreak_t* daybreak;
 
   holy_shock_heal_t( paladin_t* p ) :
     paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 25914 ) ),
@@ -1693,9 +1596,6 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     // this grabs the crit multiplier bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
-
-    // Daybreak gives this a 75% splash heal
-    daybreak = new daybreak_t( p );
   }
 
   virtual double composite_crit() const override
@@ -1720,21 +1620,6 @@ struct holy_shock_heal_t : public paladin_heal_t
     if ( execute_state -> result == RESULT_CRIT )
       p() -> buffs.infusion_of_light -> trigger();
 
-  }
-
-  virtual void impact ( action_state_t* s ) override
-  {
-    paladin_heal_t::impact( s );
-
-    if ( p() -> buffs.daybreak -> up() )
-    {
-      // trigger the Daybreak heal
-      daybreak -> base_dd_min = daybreak -> base_dd_max = s -> result_amount;
-      daybreak -> schedule_execute();
-
-      // expire the buff
-      p() -> buffs.daybreak -> decrement();
-    }
   }
 };
 
@@ -1828,25 +1713,8 @@ struct holy_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    if ( hp_granted > 0 && result_is_hit( execute_state -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_HOLY_POWER, hp_granted, p() -> gains.hp_sanctified_wrath );
-    }
-
   }
 
-};
-
-// Illuminated Healing ======================================================
-struct illuminated_healing_t : public paladin_absorb_t
-{
-  illuminated_healing_t( paladin_t* p ) :
-    paladin_absorb_t( "illuminated_healing", p, p -> find_spell( 86273 ) )
-  {
-    background = true;
-    proc = true;
-    trigger_gcd = timespan_t::zero();
-  }
 };
 
 // Lay on Hands Spell =======================================================
@@ -2208,9 +2076,11 @@ struct crusader_strike_t : public paladin_melee_attack_t
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
 
-      // Grand Crusader
-      p() -> trigger_grand_crusader();
-
+      // Conviction
+      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
+      }
     }
     if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
@@ -2263,6 +2133,12 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       // Holy Power gains, only relevant if BoJ connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+
+      // Conviction
+      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
+      }
     }
 
     if ( result_is_hit( s -> result ) )
@@ -2381,10 +2257,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // Special things that happen when HotR connects
     if ( result_is_hit( execute_state -> result ) )
     {
-      // Holy Power gains, only relevant if HoTR connects
-      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
-
       // Grand Crusader
       p() -> trigger_grand_crusader();
 
@@ -2493,12 +2365,6 @@ struct judgment_t : public paladin_melee_attack_t
         {
           p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
         }
-      }
-        // +1 Holy Power for Prot via hidden Judgments of the Wise passive
-      else if ( p() -> passives.judgments_of_the_wise -> ok() )
-      {
-        // apply gain, attribute gain to Judgments of the Wise
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
       }
     }
   }
@@ -2912,15 +2778,11 @@ void paladin_t::init_gains()
   gains.holy_shield                 = get_gain( "holy_shield_absorb" );
 
   // Holy Power
-  gains.hp_blessed_life             = get_gain( "blessed_life" );
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
   gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
-  gains.hp_grand_crusader           = get_gain( "grand_crusader" );
-  gains.hp_hammer_of_the_righteous  = get_gain( "hammer_of_the_righteous" );
+  gains.hp_conviction               = get_gain( "conviction" );
   gains.hp_judgment                 = get_gain( "judgment" );
-  gains.hp_sanctified_wrath         = get_gain( "sanctified_wrath" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
-  gains.hp_blazing_contempt         = get_gain( "blazing_contempt" );
 
   if ( ! retribution_trinket )
   {
@@ -2976,7 +2838,6 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Holy
-  buffs.daybreak               = buff_creator_t( this, "daybreak", find_spell( 88819 ) );
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_spell( 54149 ) );
 
   // Prot
@@ -3524,7 +3385,7 @@ void paladin_t::init_spells()
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
   passives.hand_of_light          = find_mastery_spell( PALADIN_RETRIBUTION );
-  passives.illuminated_healing    = find_mastery_spell( PALADIN_HOLY );
+  passives.lightbringer           = find_mastery_spell( PALADIN_HOLY );
 
   // Passives
 
@@ -3534,7 +3395,6 @@ void paladin_t::init_spells()
   passives.sanctity_of_battle     = find_spell( 25956 );  // find_spell fails here
 
   // Holy Passives
-  passives.daybreak               = find_specialization_spell( "Daybreak" );
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
   passives.sanctified_light       = find_specialization_spell( "Sanctified Light" );
@@ -3543,7 +3403,6 @@ void paladin_t::init_spells()
   passives.bladed_armor           = find_specialization_spell( "Bladed Armor" );
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
-  passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.resolve                = find_specialization_spell( "Resolve" );
   passives.riposte                = find_specialization_spell( "Riposte" );
@@ -3553,6 +3412,7 @@ void paladin_t::init_spells()
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.righteous_vengeance    = find_specialization_spell( "Righteous Vengeance" );
+  passives.conviction             = find_spell( 185817 );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -3567,9 +3427,6 @@ void paladin_t::init_spells()
 
   if ( find_class_spell( "Beacon of Light" ) -> ok() )
     active_beacon_of_light = new beacon_of_light_heal_t( this );
-
-  if ( passives.illuminated_healing -> ok() )
-    active_illuminated_healing = new illuminated_healing_t( this );
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
