@@ -3677,9 +3677,6 @@ void warrior_t::init_action_list()
 void warrior_t::arise()
 {
   player_t::arise();
-
-  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility && true_level >= 80 ) // Currently it is impossible to remove this aura in game.
-    sim -> auras.versatility -> trigger();
 }
 
 // warrior_t::combat_begin ==================================================
