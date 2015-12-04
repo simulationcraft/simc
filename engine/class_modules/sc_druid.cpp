@@ -20,10 +20,12 @@ namespace { // UNNAMED NAMESPACE
  Predator vs. adds
 
  Balance -------
- Shooting Stars proc chance
  Stellar Drift cast while moving
  APL
  initial_astral_power option
+ Concurrent starfalls & player proxy buff, no partial ticks
+ Artifact stuff (New Moon, OKF driver)
+ Nature's Balance cap (20s)
 
  Guardian ------
  Statistics?
@@ -1732,7 +1734,7 @@ struct shooting_stars_t : public druid_spell_t
     druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) ),
     proc_chance( 0.50 ) // not in spell data, tested Dec 3 2015
   {
-    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 };
 
@@ -4758,7 +4760,7 @@ struct solar_wrath_t : public druid_spell_t
 
     base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
-    ap_per_hit = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     benefits_from_ca = benefits_from_elune = true;
   }
 
@@ -4845,10 +4847,11 @@ struct starfall_t : public druid_spell_t
     starfall_pulse_t( druid_t* player, const std::string& name ) :
       druid_spell_t( name, player, player -> find_spell( 191037 ) )
     {
-      background = direct_tick = true;
+      background = direct_tick = true; // Legion TOCHECK
       aoe = -1;
       callbacks = false;
-
+      
+      base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
       base_multiplier *= 1.0 + p() -> talent.stellar_drift -> effectN( 2 ).percent();
     }
 
@@ -4870,18 +4873,14 @@ struct starfall_t : public druid_spell_t
     pulse( new starfall_pulse_t( player, "starfall_pulse" ) )
   {
     parse_options( options_str );
-
-    hasted_ticks = may_crit = false; // Legion TOCHECK
-
-    // Missing from spell data. Legion TOCHECK, tooltip suggests it may be 0.888s for some reason.
-    base_tick_time = timespan_t::from_seconds( 1.0 );
+    
+    may_crit = false;
     dot_duration = data().duration();
-    spell_power_mod.tick = spell_power_mod.direct = 0;
-    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
+    base_tick_time = dot_duration / 9.0; // ticks 9 times (missing from spell data)
 
     ground_aoe = true;
-    radius = data().effectN( 1 ).radius();
-    radius *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
+    radius     = data().effectN( 1 ).radius();
+    radius    *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
 
     tick_action = pulse;
     add_child( pulse );
@@ -4933,13 +4932,22 @@ struct starsurge_t : public druid_spell_t
 
     return am;
   }
+  
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    // Dec 3 2015: Starsurge only grants empowerments on hit.
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> buff.solar_empowerment -> trigger();
+      p() -> buff.lunar_empowerment -> trigger();
+    }
+  }
 
   void execute() override
   {
     druid_spell_t::execute();
-
-    p() -> buff.solar_empowerment -> trigger();
-    p() -> buff.lunar_empowerment -> trigger();
 
     if ( p() -> starshards && rng().roll( starshards_chance ) )
     {
