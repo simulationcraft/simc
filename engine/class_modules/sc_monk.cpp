@@ -15,7 +15,7 @@ GENERAL:
 - Zen Meditation
 
 WINDWALKER:
-- Make Sure the healing for Blackout Kick is working
+- Add the cooldown reduction while Serenity is active
 
 MISTWEAVER: Pretty much everything. I have no plans of fixing mistweaver. -alex 8/26/14
 Implement the following spells:
@@ -234,7 +234,6 @@ public:
     buff_t* storm_earth_and_fire;
     buff_t* gift_of_the_ox;
     buff_t* tigereye_brew;
-    buff_t* tigereye_brew_use;
 
     buff_t* zen_meditation;
 
@@ -471,6 +470,7 @@ public:
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* aura_windwalker_monk;
+    const spell_data_t* breath_of_fire_dot;
     const spell_data_t* chi_orbit;
     const spell_data_t* chi_sphere;
     const spell_data_t* chi_torpedo;
@@ -2125,7 +2125,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     cooldown -> duration = data().cooldown();
     if ( p -> specialization() == MONK_MISTWEAVER )
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
-    
+
 //    if( p -> talent.pool_of_mists -> ok() )
 //      cooldown -> charges += p -> talent.pool_of_mists -> effectN( 2 ).base_value();
 
@@ -2138,6 +2138,16 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+  }
+
+  virtual void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.serenity -> check() )
+      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
+
+    monk_melee_attack_t::update_ready( cd );
   }
 
   virtual double action_multiplier() const
@@ -2201,7 +2211,7 @@ struct blackout_kick_t: public monk_melee_attack_t
   rising_sun_kick_proc_t* rsk_proc;
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
+    monk_melee_attack_t( "blackout_kick", p, ( p -> specialization() == MONK_BREWMASTER ? spell_data_t::nil() : p -> find_class_spell( "Blackout Kick" ) ) )
   {
     parse_options( options_str );
 
@@ -2215,15 +2225,19 @@ struct blackout_kick_t: public monk_melee_attack_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
-    if ( p -> specialization() == MONK_BREWMASTER )
-    {
-      cooldown             = p -> cooldown.brewmaster_attack;
-      cooldown -> duration = p -> find_spell( id ) -> cooldown();
-    }
-    else
-      cooldown -> duration = timespan_t::zero();
+    cooldown -> duration = data().cooldown();
 
     sef_ability = SEF_BLACKOUT_KICK;
+  }
+
+  virtual void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.serenity -> check() )
+      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
+
+    monk_melee_attack_t::update_ready( cd );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2397,6 +2411,18 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
   // N full ticks, but never additional ones.
 
+  virtual void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.serenity -> check() )
+      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
+
+    cd *= p() -> cache.attack_haste();
+
+    monk_melee_attack_t::update_ready( cd );
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
@@ -2433,11 +2459,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     monk_melee_attack_t::init();
 
     update_flags &= ~STATE_HASTE;
-  }
-
-  void update_ready( timespan_t ) override
-  {
-    monk_melee_attack_t::update_ready( cooldown -> duration * p() -> cache.attack_haste() );
   }
 };
 
@@ -2544,6 +2565,16 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+  }
+
+  virtual void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.serenity -> check() )
+      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
+
+    monk_melee_attack_t::update_ready( cd );
   }
 
   void execute() override
@@ -3035,11 +3066,13 @@ struct legacy_of_the_white_tiger_t : public monk_spell_t
 struct tigereye_brew_t: public monk_spell_t
 {
   tigereye_brew_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "tigereye_brew", player, player -> spec.tigereye_brew )
+    monk_spell_t( "tigereye_brew", player, ( player -> talent.serenity -> ok() ? spell_data_t::nil() : player -> spec.tigereye_brew ) )
   {
     parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
+    cooldown -> charges = data().charges();
+    cooldown -> duration = data().duration();
   }
 
   virtual void execute() override
@@ -3487,7 +3520,7 @@ struct chi_sphere_t: public monk_spell_t
 };
 
 // ==========================================================================
-// Chi Sphere
+// Chi Orbit
 // ==========================================================================
 
 struct chi_orbit_t: public monk_spell_t
@@ -3524,7 +3557,7 @@ struct breath_of_fire_t: public monk_spell_t
   struct periodic_t: public monk_spell_t
   {
     periodic_t( monk_t& p ):
-      monk_spell_t( "breath_of_fire_dot", &p, p.find_spell( 123725 ) )
+      monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
     {
       background = true;
       tick_may_crit = may_crit = true;
@@ -3539,7 +3572,10 @@ struct breath_of_fire_t: public monk_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    radius = p.spec.breath_of_fire -> effectN( 1 ).radius();
+    attack_power_mod.direct = p.spec.breath_of_fire -> effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p.specialization() == MONK_BREWMASTER ? p.spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
+    cooldown -> duration = p.spec.breath_of_fire -> duration();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4594,6 +4630,7 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk       = find_spell( 137023 );
   passives.aura_mistweaver_monk       = find_spell( 137024 );
   passives.aura_windwalker_monk       = find_spell( 137025 );
+  passives.breath_of_fire_dot         = find_spell( 123725 );
   passives.chi_orbit                  = find_spell( 196748 );
   passives.chi_sphere                 = find_spell( 121283 );
   passives.chi_torpedo                = find_spell( 119085 );
@@ -4727,8 +4764,7 @@ void monk_t::create_buffs()
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
-  buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .duration( talent.serenity -> duration() );
+  buff.eye_of_the_tiger = buff_creator_t( this, "eye_of_the_tiger", passives.eye_of_the_tiger );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -4789,9 +4825,22 @@ void monk_t::create_buffs()
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
 
-  buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
-    .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
-    .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
+  buff.combo_strikes = buff_creator_t(this, "combo_strikes")
+    .duration( timespan_t::from_seconds( 30 ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.tier17_4pc_melee )
+    .default_value( passives.tier17_4pc_melee -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_CRIT )
+    .add_invalidate( CACHE_SPELL_CRIT );
+
+  buff.hit_combo = buff_creator_t( this, "hit_combo", passives.hit_combo )
+    .default_value( passives.hit_combo -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
+    .default_value( talent.serenity -> effectN( 2 ).percent() )
+    .duration( talent.serenity -> duration() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
@@ -4799,20 +4848,11 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.tier17_4pc_melee )
-    .default_value( passives.tier17_4pc_melee -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_CRIT )
-    .add_invalidate( CACHE_SPELL_CRIT );
-
-  buff.eye_of_the_tiger = buff_creator_t( this, "eye_of_the_tiger", passives.eye_of_the_tiger );
-
-  buff.combo_strikes = buff_creator_t(this, "combo_strikes")
-    .duration( timespan_t::from_seconds( 30 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.hit_combo = buff_creator_t( this, "hit_combo", passives.hit_combo )
-    .default_value( passives.hit_combo -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
+    .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
+    .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 }
 
 // monk_t::init_gains =======================================================
@@ -5008,7 +5048,11 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.hit_combo -> value();
   }
 
-  m *= 1.0 + buff.tigereye_brew_use -> value();
+  if ( buff.tigereye_brew -> up() )
+    m *= 1.0 + buff.tigereye_brew -> value();
+
+  if (buff.serenity->up())
+    m *= 1.0 + buff.serenity->value();
 
   if ( buff.storm_earth_and_fire -> up() )
   {
@@ -5045,7 +5089,11 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
   double m = base_t::composite_player_heal_multiplier( s );
 
-  m *= 1.0 + buff.tigereye_brew_use -> value();
+  if ( buff.tigereye_brew -> up() )
+    m *= 1.0 + spec.tigereye_brew -> effectN( 2 ).percent();
+
+  if ( buff.serenity -> up() )
+    m *= 1.0 + talent.serenity -> effectN( 3 ).percent();
 
   return m;
 }
@@ -5863,6 +5911,13 @@ void monk_t::init_action_list()
     quiet = true;
     return;
   }
+  if ( specialization() == MONK_BREWMASTER && off_hand_weapon.group() == WEAPON_1H )
+  {
+    if ( !quiet )
+      sim -> errorf( "Player %s has a Brewmaster and has equipped a 1-Hand weapon equipped in the Off-Hand when they are unable to dual weld.", name() );
+    quiet = true;
+    return;
+  }
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -6221,9 +6276,11 @@ struct monk_module_t: public module_t
 
   virtual void static_init() const override
   {
+    // WoD's Legendary Rings
     unique_gear::register_special_effect( 184906, eluding_movements );
     unique_gear::register_special_effect( 184907, soothing_breeze );
     unique_gear::register_special_effect( 184908, furious_sun );
+    // TODO: Add the Legion Legendary effects
   }
 
 
