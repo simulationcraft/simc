@@ -127,7 +127,6 @@ public:
     const spell_data_t* infusion_of_light;
     const spell_data_t* lightbringer;
     const spell_data_t* plate_specialization;
-    const spell_data_t* resolve;
     const spell_data_t* riposte;   // hidden
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* sanctuary;
@@ -2522,11 +2521,6 @@ void paladin_t::init_base_stats()
   // move holy paladins to range
   if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
     base.distance = 30;
-
-  // initialize resolve for prot
-  if ( specialization() == PALADIN_PROTECTION )
-    resolve_manager.init();
-
 }
 
 // paladin_t::reset =========================================================
@@ -3160,7 +3154,6 @@ void paladin_t::init_spells()
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
-  passives.resolve                = find_specialization_spell( "Resolve" );
   passives.riposte                = find_specialization_spell( "Riposte" );
 
   // Ret Passives
@@ -3819,9 +3812,6 @@ void paladin_t::combat_begin()
   player_t::combat_begin();
 
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
-
-  if ( passives.resolve -> ok() )
-    resolve_manager.start();
 }
 
 // paladin_t::get_hand_of_light =============================================
