@@ -4219,7 +4219,6 @@ struct celestial_alignment_t : public druid_spell_t
 };
 
 // Collapsing Stars =========================================================
-// FIXME: Should consume cost_per_sec * base_tick_time AsP on each tick.
 
 struct collapsing_stars_t : public druid_spell_t
 {
@@ -4231,6 +4230,15 @@ struct collapsing_stars_t : public druid_spell_t
     dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
       2 * sim -> expected_iteration_time :
       2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
+
+    // Tick cost is proportional to base tick time.
+    base_costs_per_tick[ RESOURCE_ASTRAL_POWER ] *= base_tick_time.total_seconds();
+  }
+
+  virtual timespan_t cost_tick_time( const dot_t& d ) const override
+  {
+    // Consumes cost each time DoT ticks.
+    return d.time_to_next_tick();
   }
 
   void impact( action_state_t* s ) override
