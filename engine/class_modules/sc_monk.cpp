@@ -250,6 +250,7 @@ public:
 
     // Windwalker
     buff_t* dizzying_kicks;
+    buff_t* transfer_the_power;
     buff_t* vital_mists;
 
     // Legion changes
@@ -445,6 +446,28 @@ public:
     const spell_data_t* windflurry;
   } spec;
 
+  // Artifact
+  struct artifact_spell_data_t
+  {
+    // Windwalker Artifact
+    artifact_power_t acrobatics;
+    artifact_power_t crosswinds;
+    artifact_power_t dark_skies;
+    artifact_power_t death_art;
+    artifact_power_t fists_of_the_wind;
+    artifact_power_t gale_burst;
+    artifact_power_t good_karma;
+    artifact_power_t healing_winds;
+    artifact_power_t inner_peace;
+    artifact_power_t light_on_your_feet;
+    artifact_power_t power_of_a_thousand_cranes;
+    artifact_power_t rising_winds;
+    artifact_power_t strike_of_the_skylord;
+    artifact_power_t strength_of_xuen;
+    artifact_power_t transfer_the_power;
+    artifact_power_t tornado_kicks;
+  } artifact;
+
   struct mastery_spells_t
   {
     const spell_data_t* combo_strikes;       // Windwalker
@@ -494,6 +517,7 @@ public:
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* touch_of_karma_tick;
+    const spell_data_t* transfer_the_power;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_2pc_tank;
@@ -2156,6 +2180,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 //    if ( p() -> talent.pool_of_mists -> ok() )
 //      am *= 1.0 + p() -> talent.pool_of_mists -> effectN( 4 ).percent();
 
+    if ( p() -> artifact.rising_winds.rank() )
+      am *= 1 + p() -> artifact.rising_winds.percent();
+
     if ( p() -> buff.teachings_of_the_monastery -> up() )
     {
       am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
@@ -2176,6 +2203,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_WINDWALKER )
       p() -> debuffs.mortal_wounds -> trigger();
+
+    if ( p() -> artifact.transfer_the_power.rank() )
+      p() -> buff.transfer_the_power -> trigger();
 
     double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
     if ( cb_chance > 0 )
@@ -2256,6 +2286,9 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     combo_strikes_trigger( CS_BLACKOUT_KICK );
 
+    if ( p() -> artifact.transfer_the_power.rank() )
+      p() -> buff.transfer_the_power -> trigger();
+
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
       if ( p() -> buff.teachings_of_the_monastery -> up() )
@@ -2275,6 +2308,9 @@ struct blackout_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
       p() -> buff.teachings_of_the_monastery -> expire();
     }
+
+    if ( p() -> artifact.dark_skies.rank() )
+      am *= 1 + p() -> artifact.dark_skies.percent();
 
     // check for melee 2p and CB: BoK, for the 50% dmg bonus
     if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> up() ) {
@@ -2457,6 +2493,16 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> passives.spinning_crane_kick );
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
+      am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
+
+    return am;
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -2533,6 +2579,22 @@ struct fists_of_fury_t: public monk_melee_attack_t
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
     monk_melee_attack_t::update_ready( cd );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.transfer_the_power -> up() )
+    {
+      am *= 1 + p() -> buff.transfer_the_power -> stack_value();
+      p() -> buff.transfer_the_power -> expire();
+    }
+
+    if ( p() -> artifact.fists_of_the_wind.rank() )
+      am *= 1 + p() -> artifact.fists_of_the_wind.percent();
+
+    return am;
   }
 
   void execute() override
@@ -3189,6 +3251,8 @@ struct chi_torpedo_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
+    if ( p() -> artifact.acrobatics.rank() )
+      cooldown -> charges += p() -> artifact.acrobatics.value();
   }
 };
 
@@ -4458,6 +4522,26 @@ void monk_t::init_spells()
   talent.focused_thunder             = find_talent_spell( "Focused Thunder" );
   talent.soothing_elegance           = find_talent_spell( "Soothing Elegance" );
 
+  // Artifact
+
+  // Windwalker
+  artifact.acrobatics                 = find_artifact_spell( "Acrobatics" );
+  artifact.crosswinds                 = find_artifact_spell( "Crosswind" );
+  artifact.dark_skies                 = find_artifact_spell( "Dark Skies" );
+  artifact.death_art                  = find_artifact_spell( "Death Art" );
+  artifact.fists_of_the_wind          = find_artifact_spell( "Fists of the Wind" );
+  artifact.gale_burst                 = find_artifact_spell( "Gale Burst" );
+  artifact.good_karma                 = find_artifact_spell( "Good Karma" );
+  artifact.healing_winds              = find_artifact_spell( "Healing Winds" );
+  artifact.inner_peace                = find_artifact_spell( "Inner Peace" );
+  artifact.light_on_your_feet         = find_artifact_spell( "Light on Your Feet" );
+  artifact.power_of_a_thousand_cranes = find_artifact_spell( "Power of a Thousand Cranes" );
+  artifact.rising_winds               = find_artifact_spell( "Rising Winds" );
+  artifact.strike_of_the_skylord      = find_artifact_spell( "Strike of the Skylord" );
+  artifact.strength_of_xuen           = find_artifact_spell( "Strength of Xuen" );
+  artifact.transfer_the_power         = find_artifact_spell( "Transfer the Power" );
+  artifact.tornado_kicks              = find_artifact_spell( "Tornado Kicks" );
+
   // General Passives
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
   spec.healing_sphere                = find_spell( 125355 );
@@ -4557,6 +4641,7 @@ void monk_t::init_spells()
   passives.storm_earth_and_fire       = find_spell( 138228 );
   passives.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   passives.touch_of_karma_tick        = find_spell( 124280 );
+  passives.transfer_the_power         = find_spell( 195321 );
   passives.tier15_2pc_melee           = find_spell( 138311 );
   passives.tier17_2pc_heal            = find_spell( 167732 );
   passives.tier17_2pc_tank            = find_spell( 165356 );
@@ -4754,9 +4839,16 @@ void monk_t::create_buffs()
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
+    .duration( spec.tigereye_brew -> duration() + 
+      ( artifact.strength_of_xuen.rank() ? timespan_t::from_seconds( artifact.strength_of_xuen.value() ) : timespan_t::zero() ) )
     .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+  buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
+    .duration( timespan_t::from_seconds( 20 ) ) // TODO: Get actual duration of buff
+    .max_stack( 3 ) // TODO: Get the max stacks
+    .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
 }
 
 // monk_t::init_gains =======================================================
@@ -5060,6 +5152,9 @@ double monk_t::composite_dodge() const
 
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
+
+  if ( artifact.light_on_your_feet.rank() )
+    d += artifact.light_on_your_feet.percent();
 
   return d;
 }
