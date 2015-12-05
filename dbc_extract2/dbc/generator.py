@@ -1526,6 +1526,7 @@ class SpellDataGenerator(DataGenerator):
           ( 195256, 0 ), ( 195222, 0 ),                 # Stormlash stuff for legion
           ( 199054, 0 ), ( 199053, 0 ),                 # Unleash Doom, DOOM I SAY
           ( 198300, 0 ),                                # Gathering Storms buff
+          ( 198830, 0 ), ( 199019, 0 ), ( 198933, 0 ),  # Doomhammer procs
         ),
 
         # Mage:
@@ -4537,7 +4538,7 @@ class ArtifactDataGenerator(DataGenerator):
 
         ranks = []
         for power in sorted(powers, key = lambda v: (v['data'].id_artifact, v['data'].id)) + [{ 'data': dbc.data.ArtifactPower.default(), 'ranks': [] }]:
-            fields = power['data'].field('id', 'id_artifact', 'max_rank')
+            fields = power['data'].field('id', 'id_artifact', 'index', 'max_rank')
             if len(power['ranks']) > 0:
                 spell = self._spell_db[power['ranks'][0].id_spell]
                 fields += spell.field('name')

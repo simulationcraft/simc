@@ -28,6 +28,7 @@ struct artifact_power_data_t
 {
   unsigned    id;
   unsigned    id_artifact;
+  unsigned    power_index;
   unsigned    max_rank;
   const char* name; // In reality, the spell name
 
