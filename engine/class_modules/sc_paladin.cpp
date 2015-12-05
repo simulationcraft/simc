@@ -80,6 +80,7 @@ public:
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
 
     buff_t* zeal;
+    buff_t* seal_of_light;
 
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
@@ -734,8 +735,9 @@ struct avenging_wrath_t : public paladin_heal_t
       background = true;
     else if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      cooldown -> duration = data().charge_cooldown();
-      cooldown -> charges = data().charges();
+      // TODO: hackfix to make it work with T18
+      cooldown -> duration = data().cooldown();
+      cooldown -> charges = 1;//data().charges();
       cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
     }
 
@@ -1988,7 +1990,7 @@ struct blade_of_justice_t : public holy_power_generator_t
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
-    background = p -> talents.blade_of_wrath -> ok();
+    background = ( p -> talents.blade_of_wrath -> ok() ) || ( p -> talents.divine_hammer -> ok() );
   }
 
   double action_multiplier() const override
@@ -2054,6 +2056,81 @@ struct blade_of_wrath_t : public holy_power_generator_t
     if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
+  }
+};
+
+// Divine Hammer =========================================================
+
+struct divine_hammer_tick_t : public paladin_melee_attack_t
+{
+  const spell_data_t* sword_of_light;
+
+  divine_hammer_tick_t( paladin_t* p )
+    : paladin_melee_attack_t( "divine_hammer_tick", p, p -> find_spell( 198137 ) ),
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+  {
+    aoe         = -1;
+    dual        = true;
+    direct_tick = true;
+    background  = true;
+    may_crit    = true;
+    ground_aoe = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> check() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      if ( p() -> talents.judgments_of_the_bold -> ok() )
+      {
+        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
+      }
+      m *= judgment_multiplier;
+    }
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+  }
+};
+
+struct divine_hammer_t : public paladin_spell_t
+{
+  divine_hammer_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "divine_hammer", p, p -> find_talent_spell( "Divine Hammer" ) )
+  {
+    parse_options( options_str );
+
+    hasted_ticks   = true;
+    may_miss       = false;
+    tick_zero      = true;
+
+    tick_action = new divine_hammer_tick_t( p );
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+
+    // Holy Power gen
+    int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
+    p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+
+    // Conviction
+    if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
   }
 };
 
@@ -2425,6 +2502,25 @@ struct templars_verdict_t : public holy_power_consumer_t
   }
 };
 
+// Seal of Light ========================================================================
+struct seal_of_light_t : public paladin_spell_t
+{
+  seal_of_light_t( paladin_t* p, const std::string& options_str  )
+    : paladin_spell_t( "seal_of_light", p, p -> find_talent_spell( "Seal of Light" ) )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.seal_of_light -> trigger();
+  }
+};
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -2557,6 +2653,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "zeal"                      ) return new zeal_t                     ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "blade_of_wrath"            ) return new blade_of_wrath_t           ( this, options_str );
+  if ( name == "divine_hammer"             ) return new divine_hammer_t            ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
@@ -2576,7 +2673,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
-
+  if ( name == "seal_of_light"             ) return new seal_of_light_t            ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
@@ -2744,6 +2841,8 @@ void paladin_t::create_buffs()
 
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 203317 ) )
+                                          .add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) )
                                           .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Tier Bonuses
@@ -3467,7 +3566,11 @@ double paladin_t::composite_melee_speed() const
 
   if ( buffs.zeal -> check() )
   {
-    m *= 1.0 / (1.0 + buffs.zeal -> stack() * buffs.zeal -> data().effectN( 4 ).percent());
+    m *= 1.0 / ( 1.0 + buffs.zeal -> stack() * buffs.zeal -> data().effectN( 4 ).percent() );
+  }
+  if ( buffs.seal_of_light -> check() )
+  {
+    m *= 1.0 / ( 1.0 + buffs.seal_of_light -> data().effectN( 1 ).percent() );
   }
 
   return m;
