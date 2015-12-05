@@ -253,8 +253,7 @@ public:
   const special_effect_t* flourish;
 
   // Druid Events
-  event_t* earthwarden_delay;
-  event_t* yseras_gift_delay;
+  std::vector<event_t*> persistent_buff_delay;
 
   // Buffs
   struct buffs_t
@@ -1125,21 +1124,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
 };
 
 // Earthwarden Driver Buff ============================================================
-
-struct earthwarden_delay_event_t : public event_t
-{
-  druid_t* player;
-
-  earthwarden_delay_event_t( druid_t* p, const timespan_t& delay ) : 
-    event_t( *p ), player( p )
-  { add_event( delay ); }
-
-  const char* name() const override
-  { return "earthwarden_driver-delay"; }
-
-  void execute() override
-  { player -> buff.earthwarden_driver -> trigger(); }
-};
 
 struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
 {
@@ -3905,21 +3889,6 @@ namespace buffs {
   
 // Ysera's Gift Driver Buff =================================================
 
-struct yseras_gift_delay_event_t : public event_t
-{
-  druid_t* player;
-
-  yseras_gift_delay_event_t( druid_t* p, const timespan_t& delay ) : 
-    event_t( *p ), player( p )
-  { add_event( delay ); }
-
-  const char* name() const override
-  { return "yseras_gift_driver-delay"; }
-
-  void execute() override
-  { player -> buff.yseras_gift -> trigger(); }
-};
-
 struct yseras_gift_driver_buff_t : public druid_buff_t < buff_t >
 {
   druid_t* druid;
@@ -5108,6 +5077,53 @@ struct wild_charge_t : public druid_spell_t
 } // end namespace spells
 
 // ==========================================================================
+// Druid Helper Functions & Structures
+// ==========================================================================
+
+// Brambles Absorb/Reflect Handler =========================================
+
+double brambles_handler( const action_state_t* s )
+{
+  druid_t* p = static_cast<druid_t*>( s -> target );
+  assert( p -> talent.brambles -> ok() );
+  assert( s );
+
+  // Pass incoming damage value so the absorb can be calculated.
+  // TOCHECK: Does this use result_amount or result_mitigated?
+  p -> active.brambles -> incoming_damage = s -> result_mitigated;
+  // Pass the triggering enemy so that the damage reflect has a target;
+  p -> active.brambles -> triggering_enemy = s -> action -> player;
+  p -> active.brambles -> execute();
+
+  return p -> active.brambles -> absorb_size;
+}
+
+// Persistent Buff Delay Event ==============================================
+
+struct persistent_buff_delay_event_t : public event_t
+{
+  buff_t* buff;
+
+  persistent_buff_delay_event_t( druid_t* p, buff_t* b ) : 
+    event_t( *p ), buff( b )
+  {
+    /* Delay triggering the buff a random amount between 0 and buff_period.
+       This prevents fixed-period driver buffs from ticking at the exact same
+       times on every iteration. 
+       
+       Buffs that use the event to activate should implement tick_zero-like
+       behavior. */
+    add_event( rng().real() * b -> buff_period );
+  }
+
+  const char* name() const override
+  { return "persistent_buff_delay"; }
+
+  void execute() override
+  { buff -> trigger(); }
+};
+
+// ==========================================================================
 // Druid Character Definition
 // ==========================================================================
 
@@ -5214,24 +5230,6 @@ void druid_t::create_pets()
     for ( pet_t*& pet : pet_fey_moonwing )
       pet = new pets::fey_moonwing_t( sim, this );
   }
-}
-
-// Brambles absorb/reflect handler =========================================
-
-double brambles_handler( const action_state_t* s )
-{
-  druid_t* p = static_cast<druid_t*>( s -> target );
-  assert( p -> talent.brambles -> ok() );
-  assert( s );
-
-  // Pass incoming damage value so the absorb can be calculated.
-  // TOCHECK: Does this use result_amount or result_mitigated?
-  p -> active.brambles -> incoming_damage = s -> result_mitigated;
-  // Pass the triggering enemy so that the damage reflect has a target;
-  p -> active.brambles -> triggering_enemy = s -> action -> player;
-  p -> active.brambles -> execute();
-
-  return p -> active.brambles -> absorb_size;
 }
 
 // druid_t::init_spells =====================================================
@@ -6196,11 +6194,7 @@ void druid_t::reset()
   main_hand_weapon = caster_form_weapon;
 
   // Reset any custom events to be safe.
-  if ( talent.earthwarden -> ok() )
-    earthwarden_delay = nullptr;
-
-  if ( buff.yseras_gift )
-    yseras_gift_delay = nullptr;
+  persistent_buff_delay.clear();
 
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
@@ -6289,23 +6283,14 @@ void druid_t::combat_begin()
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
   resources.current[ RESOURCE_ASTRAL_POWER ] = 0;
-
-  // If Ysera's Gift is talented, apply it upon entering combat
+  
+  // Trigger persistent buffs
   if ( buff.yseras_gift )
-  {
-    // Delay the first tick a random number of seconds between 0 and buff_period.
-    yseras_gift_delay = nullptr;
-    yseras_gift_delay = new (*sim) buffs::yseras_gift_delay_event_t( this, rng().real() * buff.yseras_gift -> buff_period );
-  }
+    persistent_buff_delay.push_back( new (*sim) persistent_buff_delay_event_t( this, buff.yseras_gift ) );
 
   if ( talent.earthwarden -> ok() )
-  {
-    // Delay the first tick a random number of seconds between 0 and buff_period.
-    earthwarden_delay = nullptr;
-    earthwarden_delay = new (*sim) buffs::earthwarden_delay_event_t( this, rng().real() * buff.earthwarden_driver -> buff_period );
-  }
-  
-  // Apply Bladed Armor buff 
+    persistent_buff_delay.push_back( new (*sim) persistent_buff_delay_event_t( this, buff.earthwarden_driver ) );
+
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
 }
