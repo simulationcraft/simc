@@ -350,7 +350,7 @@ Description      : Attack with an equipped wand.
 
 Name             : Mind Blast (id=8092) [Spell Family (6)] 
 Class            : Shadow Priest
-Resource         : 0 Shadow Orb w/ Voidform Modification Talent NYI (id=199312)
+Resource         : 0 Insanity w/ Voidform Modification Talent NYI (id=199312)
 Spell Level      : 18
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -367,7 +367,7 @@ Effects          :
 #1 (id=3283)     : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000
 #2 (id=139174)   : Energize Power (30)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: shadow_orb
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: unknown
 Description      : Blasts the target's mind for $s1 Shadow damage.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
@@ -525,7 +525,7 @@ Tooltip          : $?$w2=0[Taking][Movement speed slowed and taking] Shadow dama
 
 Name             : Silence (id=15487) [Spell Family (6)] 
 Class            : Shadow Priest
-Resource         : 30 Shadow Orb
+Resource         : 30 Insanity
 Spell Level      : 50
 Range            : 30 yards
 Duration         : 5 seconds
@@ -694,7 +694,7 @@ Effects          :
 #3 (id=22167)    : Trigger Spell: Mass Dispel (64)
                    Base Value: 72734 | Scaled Value: 72734 | Trigger Spell: 72734
 #4 (id=274364)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: shadow_orb
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: unknown
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful spells from each friendly target and $32592m1 beneficial $lspell:spells; from each enemy target.  Affects a maximum of 10 friendly targets and 10 enemy targets.$?s55691[  This dispel is potent enough to remove Magic effects that are normally undispellable.][]$?s185905[
 
 |cFFFFFFFFGenerates $s4 Insanity.|r][]
@@ -1516,7 +1516,7 @@ When you cast Binding Heal, the cooldowns of Holy Word: Serenity and Holy Word: 
 
 Name             : Psychic Horror (id=64044) [Spell Family (6)] 
 Class            : Shadow Priest
-Resource         : 3000 Shadow Orb
+Resource         : 3000 Insanity
 Spell Level      : 74
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -1749,7 +1749,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Mind Blast (8092), Mind Blast (186590)
 #3 (id=303773)   : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: shadow_orb
+                   Base Value: 500 | Scaled Value: 500 | Misc Value: unknown
 Description      : Blasts the target for $73510s1 Shadowfrost damage and increases the damage done by your next Mind Blast within $d by $s2%, stacking up to $u times.
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
@@ -3269,7 +3269,7 @@ Effects          :
 #1 (id=271185)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.00000
 #2 (id=273574)   : Energize Power (30)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: shadow_orb
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: unknown
 Description      : Wrap an ally in shadows which heal them for $m1, but at a price.
 
 The ally will take $?s193079[${$m1/20}][${$m1/10}] damage every $187464t1 sec, until they have taken $?s193079[${$m1/4}][${$m1/2}] total damage from all sources, or leave combat.$?s185916[
@@ -4256,7 +4256,7 @@ Effects          :
 #1 (id=303208)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000
 #2 (id=303209)   : Energize Power (30)
-                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: shadow_orb
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: unknown
 Description      : Blasts the target's mind for $s1 Shadow damage.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
@@ -4349,7 +4349,7 @@ Effects          :
 #1 (id=303253)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 205386 | Radius: 8 yards
 #2 (id=303254)   : Energize Power (30)
-                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: shadow_orb
+                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: unknown
 Description      : Hurl a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 damage to all targets within $205386A1 yards.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r

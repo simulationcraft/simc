@@ -1371,7 +1371,7 @@ Resource         : 30 Maelstrom
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Flurry (16282), Glyph of Lava Lash (55444), Item - Shaman T14 Enhancement 2P Bonus (123132), Forged in Lava (198236)
+Affecting spells : Flurry (16282), Glyph of Lava Lash (55444), Item - Shaman T14 Enhancement 2P Bonus (123132), Forged in Lava (198236), Lava Dredger (198933)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5254,6 +5254,25 @@ Effects          :
 Description      : $@spelldesc198299
 Tooltip          : Damage of Stormstrike increased by $w1%.
 
+Name             : Imbue the Elements (id=198735) [Spell Family (11), Passive] 
+Class            : Shaman
+Range            : 100 yards
+Proc Chance      : 101%
+Real PPM         : 1.25
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=292136)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 198506 | Scaled Value: 198506 | Misc Value: 51533
+Description      : When you use Flametongue, Frostbrand, or Rockbiter, you have a chance to supercharge your Doomhammer with that elemental type, causing devastating effects to your enemies.
+
 Name             : Unleash Doom (id=198736) [Spell Family (11), Passive] 
 Class            : Shaman
 Range            : 100 yards
@@ -5272,6 +5291,25 @@ Effects          :
 #1 (id=292137)   : Apply Aura (6) | Proc Trigger Spell: Unleash Doom (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 199055
 Description      : Stormstrike has a chance to cause Doomhammer to unleash the power of the elements, causing your special attacks to also cause arcs of lightning or streaks of lava at your target.
+
+Name             : Lava Dredger (id=198830) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 15 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=292298)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 51533
+Description      : $@spelldesc198735
+Tooltip          : Your next Lava Lash will deal damage $s1 extra time.
 
 Name             : Earthen Shield Totem (Air Totem) (id=198838) [Spell Family (11)] 
 Class            : Shaman
@@ -5313,6 +5351,59 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5760
 Description      : $@spelldesc198838
 Tooltip          : X damage from each attack taken is redirected to the Earthen Shield Totem.
+
+Name             : Lava Dredger (id=198933) [Spell Family (11), Hidden] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 2 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=292762)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
+                   Affected Spells: Lava Lash (60103)
+Description      : $@spelldesc198735
+Tooltip          : Your next Lava Lash will deal damage #s1 times.
+
+Name             : Earthen Might (id=199019) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=292871)   : Apply Aura (6) | Periodic Trigger Spell: Earthen Might every 2 seconds (23)
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 199022
+Description      : $@spelldesc198735
+Tooltip          : Doomhammer is causing large rocks to lift out of the ground and smash into your target every $t sec for $d.
+
+Name             : Earthen Might (id=199022) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Velocity         : 20 yards/sec
+Triggered by     : Earthen Might (199019)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=292875)   : School Damage: nature (2)
+                   Base Value: 3 | Scaled Value: 3 | AP Coefficient: 0.30000
+Description      : $@spelldesc198735
 
 Name             : Unleash Lava (id=199053) [Spell Family (11)] 
 Class            : Shaman
