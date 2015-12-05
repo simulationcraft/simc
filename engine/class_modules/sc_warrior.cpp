@@ -1658,19 +1658,17 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    radius = 10; // Meat cleaver RBs have a 10 yard range. Not found in spell data.
+    radius = 5; // Meat cleaver RBs have a 5 yard range. Not found in spell data.
+    aoe_targets++;
+    sweeping_strikes++;
   }
 
-  void execute() override
+  int n_targets() const override
   {
     if ( p() -> buff.meat_cleaver -> up() )
-      aoe = aoe_targets;
-    else // Currently, SS will not add another target or attack to meat cleaver.
-      aoe += sweeping_strikes;
-
-    if ( aoe ) ++aoe;
-
-    warrior_attack_t::execute();
+      return aoe_targets;
+    // Currently, SS will not add another target or attack to meat cleaver. If SS is not talented, this will return 1 
+    return sweeping_strikes;
   }
 
   void impact( action_state_t* s ) override
