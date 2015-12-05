@@ -26,6 +26,7 @@ namespace { // UNNAMED NAMESPACE
  Concurrent starfalls & player proxy buff, no partial ticks
  Artifact stuff (New Moon, OKF driver)
  Nature's Balance cap (20s)
+ Celestial alignment damage modifier on correct spells
 
  Guardian ------
  Statistics?
@@ -1677,6 +1678,27 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
         return;
       }
     }
+  }
+
+  virtual void trigger_natures_balance( action_state_t* s, dot_t* d )
+  {
+    if ( ! p() -> talent.natures_balance -> ok() )
+      return;
+    if ( ! result_is_hit( s -> result ) )
+      return;
+
+    // Nature's Balance may only extend the DoT to 20 seconds remaining.
+
+    timespan_t base_time;
+    if ( d == td( d -> target ) -> dots.moonfire )
+      base_time = timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 1 ).base_value() );
+    else if ( d == td( d -> target ) -> dots.sunfire )
+      base_time = timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 2 ).base_value() );
+    else
+      return;
+
+    timespan_t extension_limit = std::max( timespan_t::zero(), timespan_t::from_seconds( 20.0 ) - d -> remains() );
+    d -> extend_duration( std::min( base_time, extension_limit ) );
   }
 
   virtual timespan_t execute_time() const
@@ -4488,21 +4510,12 @@ struct lunar_strike_t : public druid_spell_t
     p() -> buff.warrior_of_elune -> up();
 
     druid_spell_t::execute();
+    
+    // Nature's Balance only extends Moonfire on the primary target.
+    trigger_natures_balance( execute_state, td( target ) -> dots.moonfire );
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    // Nature's Balance only extends Moonfire on the primary target.
-    if ( p() -> talent.natures_balance -> ok()
-      && s -> target == target && result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> dots.moonfire -> extend_duration( timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 1 ).base_value() ), 0 );
-    }
   }
 };
 
@@ -4734,18 +4747,12 @@ struct solar_wrath_t : public druid_spell_t
 
     druid_spell_t::execute();
 
+    trigger_natures_balance( execute_state, td( target ) -> dots.sunfire );
+
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
       p() -> cooldown.celestial_alignment -> adjust( -1 * p() -> sets.set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
 
     p() -> buff.solar_empowerment -> decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    if ( p() -> talent.natures_balance -> ok() && result_is_hit( s -> result ) )
-      td( s -> target ) -> dots.sunfire -> extend_duration( timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 2 ).base_value() ), 0 );
   }
 };
 
