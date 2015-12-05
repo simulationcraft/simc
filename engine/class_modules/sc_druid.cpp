@@ -553,6 +553,7 @@ public:
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
     active_rejuvenations( 0 ),
+    active_starfalls( 0 ),
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
@@ -4826,10 +4827,10 @@ struct starfall_t : public druid_spell_t
 
     void impact( action_state_t* s ) override
     {
-      druid_spell_t::impact( s );
+      // No hit check because if they're in the Starfall they should already have the debuff.
+      td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, remains );
 
-      if ( result_is_hit( s -> result ) )
-        td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, remains );
+      druid_spell_t::impact( s );
     }
   };
 
@@ -4849,7 +4850,7 @@ struct starfall_t : public druid_spell_t
     }
 
     starfall_dot_event_t( druid_t* p, starfall_t* a ) :
-      starfall_dot_event_t( p, a, 0, rng().real() * 16e6, sim().current_time() + a -> _dot_duration )
+      starfall_dot_event_t( p, a, 0, p -> rng().real() * 16e6, p -> sim -> current_time() + a -> _dot_duration )
     {}
 
     const char* name() const override
@@ -4919,6 +4920,13 @@ struct starfall_t : public druid_spell_t
 
     p() -> active_starfalls++;
     new ( *sim ) starfall_dot_event_t( p(), this );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, _dot_duration );
   }
 };
 
@@ -6281,6 +6289,8 @@ void druid_t::reset()
   max_fb_energy = spell.ferocious_bite -> powerN( 1 ).cost() - spell.ferocious_bite -> effectN( 2 ).base_value();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
+
+  active_rejuvenations = active_starfalls = 0;
 
   // Restore main hand attack / weapon to normal state
   main_hand_attack = caster_melee_attack;
