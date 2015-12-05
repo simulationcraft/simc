@@ -88,6 +88,7 @@ public:
 
     buff_t* zeal;
     buff_t* seal_of_light;
+    buff_t* turalyons_might;
 
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
@@ -850,6 +851,11 @@ struct consecration_t : public paladin_spell_t
     : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 205228 ) : p -> find_class_spell( "Consecration" ) )
   {
     parse_options( options_str );
+
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      background = ! ( p -> talents.consecration -> ok() );
+    }
 
     hasted_ticks   = false;
     may_miss       = false;
@@ -1705,7 +1711,7 @@ struct holy_power_generator_t : public paladin_melee_attack_t
 
     paladin_td_t* td = this -> td( t );
 
-    if ( td -> buffs.debuffs_judgment -> check() )
+    if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
       if ( p() -> talents.judgments_of_the_bold -> ok() )
@@ -1749,7 +1755,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
     paladin_td_t* td = this -> td( t );
 
-    if ( td -> buffs.debuffs_judgment -> check() )
+    if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
       if ( p() -> talents.judgments_of_the_bold -> ok() )
@@ -2090,7 +2096,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
 
     paladin_td_t* td = this -> td( t );
 
-    if ( td -> buffs.debuffs_judgment -> check() )
+    if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
       if ( p() -> talents.judgments_of_the_bold -> ok() )
@@ -2364,7 +2370,7 @@ struct judgment_t : public paladin_melee_attack_t
     {
       paladin_td_t* td = this -> td( t );
 
-      if ( td -> buffs.debuffs_judgment -> check() )
+      if ( td -> buffs.debuffs_judgment -> up() )
       {
         m *= 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
       }
@@ -2547,7 +2553,7 @@ struct holy_wrath_t : public paladin_spell_t
 
     paladin_td_t* td = this -> td( t );
 
-    if ( td -> buffs.debuffs_judgment -> check() )
+    if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
       if ( p() -> talents.judgments_of_the_bold -> ok() )
@@ -2563,6 +2569,111 @@ struct holy_wrath_t : public paladin_spell_t
   void tick( dot_t* d ) override
   {
     paladin_spell_t::tick( d );
+  }
+};
+
+// Turalyon's Might
+
+// This one is a doozy.
+
+struct turalyons_might_tick_t : public paladin_spell_t
+{
+  turalyons_might_tick_t( paladin_t* p )
+    : paladin_spell_t( "turalyons_might_tick", p, p -> find_spell( 204616 ) )
+  {
+    aoe         = -1;
+    dual        = true;
+    direct_tick = true;
+    background  = true;
+    may_crit    = true;
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+  }
+};
+
+struct turalyons_might_t;
+
+struct turalyons_might_charge_t : public paladin_spell_t
+{
+  // Maybe this is supposed to be 204930?
+  turalyons_might_charge_t( paladin_t* p )
+    : paladin_spell_t( "turalyons_might_charge", p, p -> find_spell( 204929 ) )
+  {
+    aoe = -1;
+    dual = true;
+    background = true;
+    may_crit = true;
+
+    // not on GCD, usable off-GCD
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+    p() -> buffs.turalyons_might -> expire();
+  }
+
+  bool ready() override
+  {
+    return p() -> buffs.turalyons_might -> up();
+  }
+};
+
+struct turalyons_might_t : public paladin_spell_t
+{
+  turalyons_might_charge_t* child;
+
+  turalyons_might_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "turalyons_might", p, p -> find_spell( 198051 ) )
+  {
+    parse_options( options_str );
+
+    background = ! ( p -> talents.turalyons_might -> ok() );
+
+    hasted_ticks   = false;
+    may_miss       = false;
+    tick_zero      = true;
+
+    dot_duration           = timespan_t::from_seconds( 8.0 );
+    base_tick_time         = timespan_t::from_seconds( 2.0 );
+
+    tick_action = new turalyons_might_tick_t( p );
+
+    // not on GCD, usable off-GCD
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
+
+    child = new turalyons_might_charge_t( p );
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+    p() -> buffs.turalyons_might -> trigger();
+  }
+
+  virtual void tick( dot_t* dot ) override
+  {
+    // As of right now on the alpha, the ticks continue to happen even when
+    // the charge has occurred.
+    //if ( p() -> buffs.turalyons_might -> up() )
+    paladin_spell_t::tick( dot );
+    //else
+    //  cancel();
+  }
+
+  virtual void last_tick( dot_t* dot ) override
+  {
+    // okay, this is a horror show of a hack.
+    // In reality, this doesn't automatically happen.
+    // But putting it in the APL seems to cause trouble.
+    child -> schedule_execute();
+    paladin_spell_t::last_tick( dot );
   }
 };
 
@@ -2704,6 +2815,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
+  if ( name == "turalyons_might"           ) return new turalyons_might_t          ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
@@ -2890,6 +3002,9 @@ void paladin_t::create_buffs()
                                           .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) )
                                           .add_invalidate( CACHE_ATTACK_SPEED );
+  // this feels like a horrible hack. Open to suggestions.
+  buffs.turalyons_might                = buff_creator_t( this, "turalyons_might" ).spell( find_spell( 198051 ) )
+                                          .duration( timespan_t::from_seconds( 8 ) );
 
   // Tier Bonuses
   // T17
@@ -3610,11 +3725,11 @@ double paladin_t::composite_melee_speed() const
 {
   double m = player_t::composite_melee_speed();
 
-  if ( buffs.zeal -> check() )
+  if ( buffs.zeal -> up() )
   {
     m *= 1.0 / ( 1.0 + buffs.zeal -> stack() * buffs.zeal -> data().effectN( 4 ).percent() );
   }
-  if ( buffs.seal_of_light -> check() )
+  if ( buffs.seal_of_light -> up() )
   {
     m *= 1.0 / ( 1.0 + buffs.seal_of_light -> data().effectN( 1 ).percent() );
   }
