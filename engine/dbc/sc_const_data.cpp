@@ -251,6 +251,17 @@ bool dbc::valid_gem_color( unsigned color )
     case SOCKET_COLOR_HYDRAULIC:
     case SOCKET_COLOR_PRISMATIC:
     case SOCKET_COLOR_COGWHEEL:
+    case SOCKET_COLOR_IRON:
+    case SOCKET_COLOR_BLOOD:
+    case SOCKET_COLOR_SHADOW:
+    case SOCKET_COLOR_FEL:
+    case SOCKET_COLOR_ARCANE:
+    case SOCKET_COLOR_FROST:
+    case SOCKET_COLOR_FIRE:
+    case SOCKET_COLOR_WATER:
+    case SOCKET_COLOR_LIFE:
+    case SOCKET_COLOR_WIND:
+    case SOCKET_COLOR_HOLY:
       return true;
     default:
       return false;

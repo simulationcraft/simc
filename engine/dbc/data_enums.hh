@@ -336,7 +336,9 @@ enum item_enchantment
     ITEM_ENCHANTMENT_STAT             = 5,
     ITEM_ENCHANTMENT_TOTEM            = 6,
     ITEM_ENCHANTMENT_USE_SPELL        = 7,
-    ITEM_ENCHANTMENT_PRISMATIC_SOCKET = 8
+    ITEM_ENCHANTMENT_PRISMATIC_SOCKET = 8,
+    ITEM_ENCHANTMENT_RELIC_RANK       = 9,
+    ITEM_ENCHANTMENT_APPLY_BONUS      = 11
 };
 
 enum item_spell_trigger_type
@@ -363,6 +365,18 @@ enum item_socket_color
   SOCKET_COLOR_HYDRAULIC            = 16,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_COGWHEEL             = 32,
+  // Legion relic data begins here
+  SOCKET_COLOR_IRON                 = 64,
+  SOCKET_COLOR_BLOOD                = 128,
+  SOCKET_COLOR_SHADOW               = 256,
+  SOCKET_COLOR_FEL                  = 512,
+  SOCKET_COLOR_ARCANE               = 1024,
+  SOCKET_COLOR_FROST                = 2048,
+  SOCKET_COLOR_FIRE                 = 4096,
+  SOCKET_COLOR_WATER                = 8192,
+  SOCKET_COLOR_LIFE                 = 16384,
+  SOCKET_COLOR_WIND                 = 32768,
+  SOCKET_COLOR_HOLY                 = 65536,
   SOCKET_COLOR_MAX
 };
 

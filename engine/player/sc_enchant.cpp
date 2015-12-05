@@ -256,6 +256,15 @@ bool enchant::initialize_item_enchant( item_t& item,
           stats.push_back( stat );
         break;
       }
+      case ITEM_ENCHANTMENT_APPLY_BONUS:
+      {
+        std::vector<const item_bonus_entry_t*> bonuses = item.player -> dbc.item_bonus( enchant.ench_prop[ i ] );
+        for ( auto bonus : bonuses )
+        {
+          item_database::apply_item_bonus( item, *bonus );
+        }
+        break;
+      }
       default:
         break;
     }
