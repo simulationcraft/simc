@@ -2188,6 +2188,13 @@ struct lava_lash_t : public shaman_attack_t
       p() -> doom_vortex -> schedule_execute();
     }
   }
+
+  void reset()
+  {
+    shaman_attack_t::reset();
+
+    background = false;
+  }
 };
 
 struct improved_lava_lash_t : public shaman_spell_t
