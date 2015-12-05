@@ -198,6 +198,7 @@ public:
     haste_buff_t* wind_strikes;
     buff_t* gathering_storms;
     buff_t* fire_empowered;
+    buff_t* lava_dredger;
   } buff;
 
   // Cooldowns
@@ -1853,6 +1854,27 @@ struct elemental_overload_spell_t : public shaman_spell_t
   }
 };
 
+struct earthen_might_damage_t : public shaman_spell_t
+{
+  earthen_might_damage_t( shaman_t* p ) :
+    shaman_spell_t( "earthen_might_damage", p, p -> find_spell( 199019 ) -> effectN( 1 ).trigger() )
+  {
+    may_crit = background = true;
+    callbacks = false;
+  }
+};
+
+struct earthen_might_t : public shaman_spell_t
+{
+  earthen_might_t( shaman_t* p ) :
+    shaman_spell_t( "earthen_might", p, p -> find_spell( 199019 ) )
+  {
+    callbacks = may_crit = may_miss = hasted_ticks = false;
+    background = true;
+    tick_action = new earthen_might_damage_t( p );
+  }
+};
+
 // ==========================================================================
 // Shaman Action / Spell Base
 // ==========================================================================
@@ -2110,6 +2132,42 @@ struct lava_lash_t : public shaman_attack_t
     if ( player -> artifact.doom_vortex.rank() )
     {
       add_child( player -> doom_vortex );
+    }
+  }
+
+  double cost() const override
+  {
+    if ( background )
+    {
+      return 0;
+    }
+
+    return shaman_attack_t::cost();
+  }
+
+  void update_ready( timespan_t cd = timespan_t::min() ) override
+  {
+    if ( background )
+    {
+      cd = timespan_t::zero();
+    }
+
+    shaman_attack_t::update_ready( cd );
+  }
+
+  void execute() override
+  {
+    shaman_attack_t::execute();
+
+    if ( p() -> buff.lava_dredger -> up() )
+    {
+      background = true;
+      schedule_execute();
+      p() -> buff.lava_dredger -> decrement();
+    }
+    else
+    {
+      background = false;
     }
   }
 
@@ -2645,6 +2703,7 @@ struct earthen_spike_t : public shaman_attack_t
     shaman_attack_t( "earthen_spike", player, player -> talent.earthen_spike )
   {
     weapon = &( player -> main_hand_weapon );
+    may_crit = true;
 
     parse_options( options_str );
   }
@@ -4944,6 +5003,7 @@ void shaman_t::create_buffs()
                       .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
   buff.gathering_storms = buff_creator_t( this, "gathering_storms", find_spell( 198300 ) );
   buff.fire_empowered = buff_creator_t( this, "fire_empowered", find_spell( 193774 ) );
+  buff.lava_dredger = buff_creator_t( this, "lava_dredger", find_spell( 198830 ) );
 }
 
 // shaman_t::init_gains =====================================================
@@ -6027,6 +6087,45 @@ static void furious_winds( special_effect_t& effect )
 // Enhancement Doomhammer of Doom of Legion fame!
 static void doomhammer( special_effect_t& effect )
 {
+  struct doomhammer_proc_callback_t : public dbc_proc_callback_t
+  {
+    earthen_might_t* earthen_might;
+
+    doomhammer_proc_callback_t( const item_t* i, const special_effect_t& effect ) :
+      dbc_proc_callback_t( i, effect ),
+      earthen_might( new earthen_might_t( debug_cast<shaman_t*>( i -> player ) ) )
+    { }
+
+    void trigger( action_t* a, void* call_data ) override
+    {
+      // Proc on Rockbiter and Flametongue (primary buttonpress) only
+      if ( a -> id != 193786 && a -> id != 193796 )
+      {
+        return;
+      }
+
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+
+    void execute( action_t* a, action_state_t* state ) override
+    {
+      shaman_t* shaman = debug_cast<shaman_t*>( state -> action -> player );
+      switch ( a -> id )
+      {
+        case 193786:
+          earthen_might -> target = state -> target;
+          earthen_might -> schedule_execute();
+          break;
+        case 193796:
+          shaman -> buff.lava_dredger -> trigger();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  new doomhammer_proc_callback_t( effect.item, effect );
 }
 
 struct shaman_module_t : public module_t
