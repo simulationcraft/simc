@@ -7,6 +7,13 @@
   -Bunch of Holy Stuff (search for TODO); including 7.0 mastery
   -Remove unnecessary Harsh Words code for prot post-6.1
   -Test if Grand Crusader can proc from misses
+
+  TODO (ret):
+    - Turalyon's Justice
+    - Artifact Powers
+
+  TODO (prot):
+    - everything, pretty much :(
 */
 #include "simulationcraft.hpp"
 
@@ -2521,6 +2528,44 @@ struct seal_of_light_t : public paladin_spell_t
   }
 };
 
+// Holy Wrath ========================================================================
+struct holy_wrath_t : public paladin_spell_t
+{
+  holy_wrath_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_wrath", p, p -> find_talent_spell( "Holy Wrath" ) )
+  {
+    parse_options( options_str );
+    channeled = true;
+    tick_zero = false;
+    direct_tick = true;
+    hasted_ticks = false;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_spell_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> check() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      if ( p() -> talents.judgments_of_the_bold -> ok() )
+      {
+        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
+      }
+      m *= judgment_multiplier;
+    }
+
+    return m;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    paladin_spell_t::tick( d );
+  }
+};
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -2671,6 +2716,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
+  if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "seal_of_light"             ) return new seal_of_light_t            ( this, options_str );
