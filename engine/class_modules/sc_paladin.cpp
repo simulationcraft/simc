@@ -840,7 +840,7 @@ struct consecration_tick_t : public paladin_spell_t
 struct consecration_t : public paladin_spell_t
 {
   consecration_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "consecration", p, p -> find_class_spell( "Consecration" ) )
+    : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 205228 ) : p -> find_class_spell( "Consecration" ) )
   {
     parse_options( options_str );
 
