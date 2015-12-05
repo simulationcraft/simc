@@ -984,6 +984,8 @@ struct execution_sentence_t : public paladin_spell_t
     travel_speed   = 0;
     tick_may_crit  = 1;
 
+    school = SCHOOL_HOLY;
+
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
     // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
@@ -1003,8 +1005,8 @@ struct execution_sentence_t : public paladin_spell_t
 
     if ( data().ok() )
     {
-      parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
-      spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
+      parse_effect_data( ( p -> find_spell( 198035 ) -> effectN( 1 ) ) );
+      spell_power_mod.tick = p -> find_spell( 198035 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
 
       tick_multiplier[ 1 ] = 1.0;
       for ( int i = 2; i <= dot_duration / base_tick_time; ++i )
