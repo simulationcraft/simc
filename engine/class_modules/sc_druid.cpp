@@ -21,9 +21,9 @@ namespace { // UNNAMED NAMESPACE
 
  Balance -------
  Stellar Drift cast while moving
+ Starfall positioning
  APL
  initial_astral_power option
- Concurrent starfalls & player proxy buff, no partial ticks
  Artifact stuff (New Moon, OKF driver)
  Nature's Balance cap (20s)
  Celestial alignment damage modifier on correct spells
@@ -89,6 +89,7 @@ struct druid_td_t : public actor_target_data_t
   {
     buff_t* lifebloom;
     buff_t* bloodletting;
+    buff_t* starfall;
   } buffs;
 
   int lacerate_stack;
@@ -207,6 +208,7 @@ private:
 public:
 
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
+  int active_starfalls;
   double max_fb_energy;
 
   // counters for snapshot tracking
@@ -1750,7 +1752,7 @@ struct moonfire_t : public druid_spell_t
   {
     double tm = druid_spell_t::composite_target_multiplier( t );
 
-    if ( p() -> spec.starfall -> ok() && td( t ) -> dots.starfall -> is_ticking() )
+    if ( td( t ) -> buffs.starfall -> up() )
       tm *= 1.0 + p() -> spec.starfall -> effectN( 1 ).percent()
               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
@@ -4589,7 +4591,7 @@ struct sunfire_t: public druid_spell_t
   {
     double tm = druid_spell_t::composite_target_multiplier( t );
 
-    if ( p() -> spec.starfall -> ok() && td( t ) -> dots.starfall -> is_ticking() )
+    if ( td( t ) -> buffs.starfall -> up() )
       tm *= 1.0 + p() -> spec.starfall -> effectN( 1 ).percent()
               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
@@ -4788,16 +4790,18 @@ struct stampeding_roar_t : public druid_spell_t
 };
 
 // Starfall Spell ===========================================================
+// TODO: Ground targeted instead of just hitting everything in the whole sim.
 
 struct starfall_t : public druid_spell_t
 {
   struct starfall_pulse_t : public druid_spell_t
   {
+    timespan_t remains;
+
     starfall_pulse_t( druid_t* player, const std::string& name ) :
       druid_spell_t( name, player, player -> find_spell( 191037 ) )
     {
-      background = direct_tick = true; // Legion TOCHECK
-      aoe = -1;
+      background = dual = direct_tick = true; // Legion TOCHECK
       callbacks = false;
       
       base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
@@ -4813,9 +4817,79 @@ struct starfall_t : public druid_spell_t
 
       return am;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      druid_spell_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+        td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, remains );
+    }
   };
 
-  spell_t* pulse;
+  struct starfall_dot_event_t : public event_t
+  {
+    druid_t* druid;
+    starfall_t* starfall;
+    timespan_t dot_end;
+    int ticks;
+    int reference_id; // for debug output purposes
+
+    starfall_dot_event_t( druid_t* p, starfall_t* a, int t, int id, timespan_t de ) : 
+      event_t( *p ), druid( p ), starfall( a ),
+      dot_end( de ), ticks( t ), reference_id( id )
+    {
+      add_event( tick_time() );
+    }
+
+    starfall_dot_event_t( druid_t* p, starfall_t* a ) :
+      starfall_dot_event_t( p, a, 0, rng().real() * 16e6, sim().current_time() + a -> _dot_duration )
+    {}
+
+    const char* name() const override
+    { return "Starfall Custom Tick"; }
+
+    timespan_t tick_time()
+    {
+      return starfall -> base_tick_time * druid -> composite_spell_haste();
+    }
+
+    void execute() override
+    {
+      ticks++;
+      sim_t& s = sim();
+
+      if ( s.log )
+        s.out_log.printf( "%s ticks (%d of %d). id=%X tt=%.3f",
+           starfall -> name(),
+           ticks,
+           ticks + (int) ( ( dot_end - s.current_time() ) / tick_time() ),
+           reference_id,
+           tick_time().total_seconds() );
+
+      starfall -> pulse -> remains = dot_end - s.current_time();
+
+      for ( size_t i = 0; i < s.actor_list.size(); i++ )
+      {
+        player_t* target = s.actor_list[ i ];
+
+        if ( target -> is_enemy() && ! target -> is_sleeping() )
+        {
+          starfall -> pulse -> target = target;
+          starfall -> pulse -> execute();
+        }
+      }
+
+      // If next tick period falls within the duration, schedule another event. (no partial ticks)
+      if ( sim().current_time() + tick_time() <= dot_end )
+        new ( sim() ) starfall_dot_event_t( druid, starfall, ticks, reference_id, dot_end );
+      else
+        druid -> active_starfalls--;
+    }
+  };
+
+  starfall_pulse_t* pulse;
+  timespan_t _dot_duration;
 
   starfall_t( druid_t* player, const std::string& options_str ):
     druid_spell_t( "starfall", player, player -> find_spell( 191034 ) ),
@@ -4824,15 +4898,21 @@ struct starfall_t : public druid_spell_t
     parse_options( options_str );
     
     may_crit = false;
-    dot_duration = data().duration();
-    base_tick_time = dot_duration / 9.0; // ticks 9 times (missing from spell data)
+    _dot_duration = data().duration();
+    base_tick_time = _dot_duration / 9.0; // ticks 9 times (missing from spell data)
 
-    ground_aoe = true;
     radius     = data().effectN( 1 ).radius();
     radius    *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
 
-    tick_action = pulse;
     add_child( pulse );
+  }
+
+  virtual void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> active_starfalls++;
+    new ( *sim ) starfall_dot_event_t( p(), this );
   }
 };
 
@@ -6607,6 +6687,10 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   {
     return make_ref_expr( "active_rejuvenations", active_rejuvenations );
   }
+  else if ( util::str_compare_ci( name_str, "active_rejuvenations" ) )
+  {
+    return make_ref_expr( "active_starfalls", active_starfalls );
+  }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
@@ -6864,11 +6948,12 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );
   dots.wild_growth      = target.get_dot( "wild_growth",      &source );
 
-  buffs.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
-  buffs.bloodletting = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
+  buffs.lifebloom       = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+  buffs.bloodletting    = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
                        .default_value( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> effectN( 1 ).percent() : 0.10 )
                        .duration( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> duration() : timespan_t::from_seconds( 6.0 ) )
                        .chance( 1.0 );
+  buffs.starfall        = buff_creator_t( *this, "starfall", source.find_spell( 197637 ) );
 }
 
 // Copypasta for reporting
