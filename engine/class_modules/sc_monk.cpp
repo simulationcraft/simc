@@ -2738,8 +2738,6 @@ struct strike_of_the_skylord_t: public monk_melee_attack_t
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
-    // Assuming that our target is stun immune
-    weapon_multiplier *= 4.00;
 
     oh_attack = new strike_of_the_skylord_off_hand_t( p, "strike_of_the_skylord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
