@@ -4828,7 +4828,8 @@ struct starfall_t : public druid_spell_t
     void impact( action_state_t* s ) override
     {
       // No hit check because if they're in the Starfall they should already have the debuff.
-      td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, remains );
+      if ( td( s -> target ) -> buffs.starfall -> remains() < remains )
+        td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, remains );
 
       druid_spell_t::impact( s );
     }
@@ -4926,7 +4927,8 @@ struct starfall_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, _dot_duration );
+    if ( td( s -> target ) -> buffs.starfall -> remains() < _dot_duration )
+      td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, _dot_duration );
   }
 };
 
