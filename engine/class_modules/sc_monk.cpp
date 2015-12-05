@@ -2406,9 +2406,8 @@ struct tick_action_t : public monk_melee_attack_t
   }
 };
 
-// ==========================================================================
-// Rushing Jade Wind
-// ==========================================================================
+
+// Rushing Jade Wind ========================================================
 
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
@@ -2425,6 +2424,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     attack_power_mod.direct = p -> passives.rushing_jade_wind -> effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
+    dot_behavior = DOT_REFRESH;
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> passives.rushing_jade_wind );
   }
@@ -2470,9 +2470,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   }
 };
 
-// ==========================================================================
-// Spinning Crane Kick
-// ==========================================================================
+// Spinning Crane Kick ======================================================
 
 struct spinning_crane_kick_t: public monk_melee_attack_t
 {
@@ -2489,6 +2487,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     attack_power_mod.direct = p -> passives.spinning_crane_kick -> effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
+
+    dot_behavior = DOT_REFRESH;
 
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> passives.spinning_crane_kick );
   }
@@ -2723,7 +2723,7 @@ struct strike_of_the_skylord_off_hand_t: public monk_melee_attack_t
   strike_of_the_skylord_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
     monk_melee_attack_t( name, p, s )
   {
-    may_dodge = may_parry = may_block = may_miss = false;
+    may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
     weapon = &( p -> off_hand_weapon );
   }
@@ -2737,7 +2737,7 @@ struct strike_of_the_skylord_t: public monk_melee_attack_t
     oh_attack( nullptr )
   {
     parse_options( options_str );
-    may_dodge = may_parry = may_block = false;
+    may_dodge = may_parry = may_block = true;
 
     oh_attack = new strike_of_the_skylord_off_hand_t( p, "strike_of_the_skylord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
