@@ -79,6 +79,8 @@ public:
     // talents
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
 
+    buff_t* zeal;
+
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
     buff_t* defender_of_the_light; // t17_4pc_tank
@@ -1838,7 +1840,7 @@ struct crusader_strike_t : public holy_power_generator_t
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
-    background = p -> talents.crusader_flurry -> ok();
+    background = ( p -> talents.crusader_flurry -> ok() ) || ( p -> talents.zeal -> ok() );
   }
 
   void execute() override
@@ -1911,6 +1913,56 @@ struct crusader_flurry_t : public holy_power_generator_t
     if ( result_is_hit( s -> result ) )
     {
       // Holy Power gains, only relevant if CF connects
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
+    }
+    if ( result_is_hit( s -> result ) )
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+  }
+};
+
+// Zeal ==========================================================
+
+struct zeal_t : public holy_power_generator_t
+{
+  const spell_data_t* sword_of_light;
+  zeal_t( paladin_t* p, const std::string& options_str )
+    : holy_power_generator_t( "zeal", p, p -> find_talent_spell( "Zeal" ), true ),
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+  {
+    parse_options( options_str );
+
+    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
+                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+  }
+
+  virtual int n_targets() const override
+  {
+    if ( p() -> buffs.zeal -> stack() )
+      return 1 + p() -> buffs.zeal -> stack();
+    return holy_power_generator_t::n_targets();
+  }
+
+  void execute() override
+  {
+    holy_power_generator_t::execute();
+    retribution_trinket_trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_generator_t::impact( s );
+
+    // Special things that happen when Zeal connects
+    if ( result_is_hit( s -> result ) )
+    {
+      // Apply Zeal stacks
+      p() -> buffs.zeal -> trigger();
+
+      // Holy Power gains, only relevant if Zeal connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
     }
@@ -2502,6 +2554,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "crusader_flurry"           ) return new crusader_flurry_t          ( this, options_str );
+  if ( name == "zeal"                      ) return new zeal_t                     ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "blade_of_wrath"            ) return new blade_of_wrath_t           ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
@@ -2690,6 +2743,8 @@ void paladin_t::create_buffs()
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
 
   // Ret
+  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 203317 ) )
+                                          .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Tier Bonuses
   // T17
@@ -3408,10 +3463,14 @@ double paladin_t::composite_melee_haste() const
 
 double paladin_t::composite_melee_speed() const
 {
-  double h = player_t::composite_melee_speed();
+  double m = player_t::composite_melee_speed();
 
-  return h;
+  if ( buffs.zeal -> check() )
+  {
+    m *= 1.0 / (1.0 + buffs.zeal -> stack() * buffs.zeal -> data().effectN( 4 ).percent());
+  }
 
+  return m;
 }
 
 // paladin_t::composite_spell_crit ==========================================
