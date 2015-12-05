@@ -4808,6 +4808,12 @@ struct starfall_t : public druid_spell_t
       base_multiplier *= 1.0 + p() -> talent.stellar_drift -> effectN( 2 ).percent();
     }
 
+    timespan_t travel_time() const override
+    {
+      // Override travel time since sim doesn't understand the missiles don't start from the player.
+      return timespan_t::from_seconds( 0.1 );
+    }
+
     double action_multiplier() const override
     {
       double am = druid_spell_t::action_multiplier();
