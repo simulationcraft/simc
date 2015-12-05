@@ -34,6 +34,7 @@ struct paladin_td_t : public actor_target_data_t
 
   struct buffs_t
   {
+    buff_t* debuffs_judgment;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -411,12 +412,12 @@ namespace buffs {
         // invalidate crit and haste
         add_invalidate( CACHE_CRIT );
         add_invalidate( CACHE_HASTE );
-      }
 
-      // Lengthen duration if Sanctified Wrath is taken
-      const spell_data_t* s = p -> find_talent_spell( "Sanctified Wrath" );
-      if ( s -> ok() )
-        buff_duration *= 1.0 + s -> effectN( 2 ).percent();
+        // Lengthen duration if Sanctified Wrath is taken
+        const spell_data_t* s = p -> find_talent_spell( "Sanctified Wrath" );
+        if ( s -> ok() )
+          buff_duration *= 1.0 + s -> effectN( 2 ).percent();
+      }
 
       // let the ability handle the cooldown
       cooldown -> duration = timespan_t::zero();
@@ -1677,6 +1678,80 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
   }
 };
 
+struct holy_power_generator_t : public paladin_melee_attack_t
+{
+  holy_power_generator_t( const std::string& n, paladin_t* p,
+                          const spell_data_t* s = spell_data_t::nil(),
+                          bool u2h = true):
+                          paladin_melee_attack_t( n, p, s, u2h )
+  {
+
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> check() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      if ( p() -> talents.judgments_of_the_bold -> ok() )
+      {
+        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
+      }
+      m *= judgment_multiplier;
+    }
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      // Conviction
+      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
+      }
+    }
+  }
+};
+
+struct holy_power_consumer_t : public paladin_melee_attack_t
+{
+  holy_power_consumer_t( const std::string& n, paladin_t* p,
+                          const spell_data_t* s = spell_data_t::nil(),
+                          bool u2h = true):
+                          paladin_melee_attack_t( n, p, s, u2h )
+  {
+
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> check() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      if ( p() -> talents.judgments_of_the_bold -> ok() )
+      {
+        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
+      }
+      m *= judgment_multiplier;
+    }
+
+    return m;
+  }
+};
+
 // Melee Attack =============================================================
 
 struct melee_t : public paladin_melee_attack_t
@@ -1749,11 +1824,11 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 
 // Crusader Strike ==========================================================
 
-struct crusader_strike_t : public paladin_melee_attack_t
+struct crusader_strike_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true ),
+    : holy_power_generator_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -1762,17 +1837,19 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+
+    background = p -> talents.crusader_flurry -> ok();
   }
 
   void execute() override
   {
-    paladin_melee_attack_t::execute();
+    holy_power_generator_t::execute();
     retribution_trinket_trigger();
   }
 
   double action_multiplier() const override
   {
-    double am = paladin_melee_attack_t::action_multiplier();
+    double am = holy_power_generator_t::action_multiplier();
 
     // Fires of Justice buffs CS damage by 25%
     if ( p() -> talents.fires_of_justice -> ok() )
@@ -1785,7 +1862,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    paladin_melee_attack_t::impact( s );
+    holy_power_generator_t::impact( s );
 
     // Special things that happen when CS connects
     if ( result_is_hit( s -> result ) )
@@ -1793,12 +1870,49 @@ struct crusader_strike_t : public paladin_melee_attack_t
       // Holy Power gains, only relevant if CS connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
+    }
+    if ( result_is_hit( s -> result ) )
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+  }
+};
 
-      // Conviction
-      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
-      }
+// Crusader Flurry ==========================================================
+
+struct crusader_flurry_t : public holy_power_generator_t
+{
+  const spell_data_t* sword_of_light;
+  crusader_flurry_t( paladin_t* p, const std::string& options_str )
+    : holy_power_generator_t( "crusader_flurry", p, p -> find_talent_spell( "Crusader Flurry" ), true ),
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+  {
+    parse_options( options_str );
+
+    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
+                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
+  }
+
+  void execute() override
+  {
+    holy_power_generator_t::execute();
+    retribution_trinket_trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_generator_t::impact( s );
+
+    // Special things that happen when CF connects
+    if ( result_is_hit( s -> result ) )
+    {
+      // Holy Power gains, only relevant if CF connects
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
     }
     if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
@@ -1808,11 +1922,11 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
 // Blade of Justice =========================================================
 
-struct blade_of_justice_t : public paladin_melee_attack_t
+struct blade_of_justice_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
+    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -1821,16 +1935,13 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-  }
 
-  void execute() override
-  {
-    paladin_melee_attack_t::execute();
+    background = p -> talents.blade_of_wrath -> ok();
   }
 
   double action_multiplier() const override
   {
-    double am = paladin_melee_attack_t::action_multiplier();
+    double am = holy_power_generator_t::action_multiplier();
 
     // Virtue's Blade buffs BoJ damage by 25%
     if ( p() -> talents.virtues_blade -> ok() )
@@ -1843,7 +1954,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    paladin_melee_attack_t::impact( s );
+    holy_power_generator_t::impact( s );
 
     // Special things that happen when BoJ connects
     if ( result_is_hit( s -> result ) )
@@ -1851,12 +1962,41 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       // Holy Power gains, only relevant if BoJ connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+    }
 
-      // Conviction
-      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
-      }
+    if ( result_is_hit( s -> result ) )
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+  }
+};
+
+// Blade of Wrath =========================================================
+
+struct blade_of_wrath_t : public holy_power_generator_t
+{
+  const spell_data_t* sword_of_light;
+  blade_of_wrath_t( paladin_t* p, const std::string& options_str )
+    : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ), true ),
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+  {
+    parse_options( options_str );
+
+    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
+                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_generator_t::impact( s );
+
+    // Special things that happen when BoW connects
+    if ( result_is_hit( s -> result ) )
+    {
+      // Holy Power gains, only relevant if BoW connects
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
     }
 
     if ( result_is_hit( s -> result ) )
@@ -1867,10 +2007,10 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 // Divine Storm =============================================================
 
-struct divine_storm_t: public paladin_melee_attack_t
+struct divine_storm_t: public holy_power_consumer_t
 {
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
+    : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
   {
     parse_options( options_str );
 
@@ -1881,7 +2021,7 @@ struct divine_storm_t: public paladin_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    paladin_melee_attack_t::impact( s );
+    holy_power_consumer_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
@@ -2041,6 +2181,12 @@ struct judgment_t : public paladin_melee_attack_t
 
     // Guarded by the Light reduces mana cost
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 8 ).percent();
+
+    if ( p -> talents.mass_judgment -> ok() )
+    {
+      aoe = -1;
+      base_aoe_multiplier = 1;
+    }
   }
 
   virtual void execute() override
@@ -2065,7 +2211,30 @@ struct judgment_t : public paladin_melee_attack_t
   // Special things that happen when Judgment damages target
   virtual void impact( action_state_t* s ) override
   {
+    if ( result_is_hit( s->result ) )
+    {
+      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+    }
+
     paladin_melee_attack_t::impact( s );
+  }
+
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> talents.might_of_virtue -> ok() )
+    {
+      paladin_td_t* td = this -> td( t );
+
+      if ( td -> buffs.debuffs_judgment -> check() )
+      {
+        m *= 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      }
+    }
+
+    return m;
   }
 };
 
@@ -2154,10 +2323,10 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 // Templar's Verdict ========================================================================
 
-struct templars_verdict_t : public paladin_melee_attack_t
+struct templars_verdict_t : public holy_power_consumer_t
 {
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
+    : holy_power_consumer_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( options_str );
   }
@@ -2167,7 +2336,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     // store cost for potential refunding (see below)
     double c = cost();
 
-    paladin_melee_attack_t::execute();
+    holy_power_consumer_t::execute();
 
     // missed/dodged/parried TVs do not consume Holy Power, but do consume Divine Purpose
     // check for a miss, and refund the appropriate amount of HP if we spent any
@@ -2180,7 +2349,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
   double action_multiplier() const override
   {
-    double am = paladin_melee_attack_t::action_multiplier();
+    double am = holy_power_consumer_t::action_multiplier();
 
     // Final Verdict buffs CS damage by 25%
     if ( p() -> talents.final_verdict -> ok() )
@@ -2194,7 +2363,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
   virtual void impact( action_state_t* s ) override
   {
-    paladin_melee_attack_t::impact( s );
+    holy_power_consumer_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2317,6 +2486,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
+  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ))
+    .duration( ( ( paladin -> talents.mass_judgment -> ok() ) ? 2 : 1 ) * paladin -> find_spell( 197277 ) -> duration() );
 }
 
 // paladin_t::create_action =================================================
@@ -2330,7 +2501,9 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
+  if ( name == "crusader_flurry"           ) return new crusader_flurry_t          ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
+  if ( name == "blade_of_wrath"            ) return new blade_of_wrath_t           ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
