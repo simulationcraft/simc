@@ -2713,6 +2713,54 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
   }
 };
 
+
+// ==========================================================================
+// Strike of the Skylord
+// ==========================================================================
+
+struct strike_of_the_skylord_off_hand_t: public monk_melee_attack_t
+{
+  strike_of_the_skylord_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
+    monk_melee_attack_t( name, p, s )
+  {
+    may_dodge = may_parry = may_block = may_miss = false;
+    dual = true;
+    weapon = &( p -> off_hand_weapon );
+  }
+};
+
+struct strike_of_the_skylord_t: public monk_melee_attack_t
+{
+  strike_of_the_skylord_off_hand_t* oh_attack;
+  strike_of_the_skylord_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "strike_of_the_skylord", p, &( p -> artifact.strike_of_the_skylord.data() ) ),
+    oh_attack( nullptr )
+  {
+    parse_options( options_str );
+    may_dodge = may_parry = may_block = false;
+
+    oh_attack = new strike_of_the_skylord_off_hand_t( p, "strike_of_the_skylord_offhand", data().effectN( 4 ).trigger() );
+    add_child( oh_attack );
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute(); // this is the MH attack
+
+    if ( oh_attack && result_is_hit( execute_state -> result ) &&
+         p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
+      oh_attack -> execute();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return monk_melee_attack_t::ready();
+  }
+};
+
 // ==========================================================================
 // Melee
 // ==========================================================================
@@ -4412,6 +4460,8 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_orbit" ) return new                 chi_orbit_t( this, options_str );
   if ( name == "spinning_dragon_strike" ) return new    spinning_dragon_strike_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
+  // Artifacts
+  if ( name == "strike_of_the_skylord" ) return new     strike_of_the_skylord_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
 
