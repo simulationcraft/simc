@@ -3,14 +3,15 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-  TODO:
-  -Bunch of Holy Stuff (search for TODO); including 7.0 mastery
-  -Remove unnecessary Harsh Words code for prot post-6.1
-  -Test if Grand Crusader can proc from misses
+  TODO (Holy):
+    - everything, pretty much :(
 
   TODO (ret):
-    - Turalyon's Justice
-    - Artifact Powers
+    - bugfixes & cleanup
+    - Turalyon's Might (properly)
+    - A few Artifact Powers
+    - Verify speculative implementations of some artifact powers + BoM
+    - BoK/BoW
 
   TODO (prot):
     - everything, pretty much :(
