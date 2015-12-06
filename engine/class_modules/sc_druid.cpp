@@ -25,7 +25,6 @@ namespace { // UNNAMED NAMESPACE
  APL
  initial_astral_power option
  Artifact stuff (New Moon, OKF driver)
- Nature's Balance cap (20s)
  Celestial alignment damage modifier on correct spells
 
  Guardian ------
@@ -548,6 +547,30 @@ public:
     const spell_data_t* stonebark;
     const spell_data_t* flourish;
   } talent;
+
+  // Artifacts
+  struct artifact_spell_data_t
+  {
+    // Balance -- Scythe of Elune
+    artifact_power_t falling_star;
+    artifact_power_t dark_side_of_the_moon;
+    artifact_power_t scythe_of_the_stars;
+    artifact_power_t empowerment;
+    artifact_power_t twilight_glow;
+    artifact_power_t sunfire_burns;
+    artifact_power_t solar_stabbing;
+    artifact_power_t bladed_feathers;
+
+    // NYI
+    artifact_power_t new_moon;
+    artifact_power_t moon_and_stars;
+    artifact_power_t power_of_goldrinn;
+    artifact_power_t scion_of_the_night_sky;
+    artifact_power_t touch_of_the_moon;
+    artifact_power_t rejuvenating_innervation;
+    artifact_power_t mooncraze;
+    artifact_power_t light_of_the_sun;
+  } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
@@ -1747,6 +1770,8 @@ struct moonfire_t : public druid_spell_t
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
+
+    base_multiplier *= 1.0 + player -> artifact.twilight_glow.percent();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1754,8 +1779,8 @@ struct moonfire_t : public druid_spell_t
     double tm = druid_spell_t::composite_target_multiplier( t );
 
     if ( td( t ) -> buffs.starfall -> up() )
-      tm *= 1.0 + p() -> spec.starfall -> effectN( 1 ).percent()
-              + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      tm *= 1.0 + td( t ) -> buffs.starfall -> current_value
+                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return tm;
   }
@@ -4463,13 +4488,14 @@ struct lunar_strike_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-
     aoe = -1;
     base_aoe_multiplier  = data().effectN( 1 ).percent();
 
     ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     benefits_from_ca = benefits_from_elune = true;
+
+    base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
+    base_crit         += player -> artifact.dark_side_of_the_moon.percent();
   }
 
   double action_multiplier() const override
@@ -4478,7 +4504,6 @@ struct lunar_strike_t : public druid_spell_t
 
     if ( p() -> buff.lunar_empowerment -> check() )
       am = 1.0 + p() -> buff.lunar_empowerment -> current_value
-               + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent()
                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
@@ -4586,6 +4611,8 @@ struct sunfire_t: public druid_spell_t
     spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
     spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
     aoe                    = -1;
+
+    base_multiplier *= 1.0 + player -> artifact.sunfire_burns.percent();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4593,8 +4620,8 @@ struct sunfire_t: public druid_spell_t
     double tm = druid_spell_t::composite_target_multiplier( t );
 
     if ( td( t ) -> buffs.starfall -> up() )
-      tm *= 1.0 + p() -> spec.starfall -> effectN( 1 ).percent()
-              + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      tm *= 1.0 + td( t ) -> buffs.starfall -> current_value
+                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return tm;
   }
@@ -4714,12 +4741,12 @@ struct solar_wrath_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-
-    base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
-
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     benefits_from_ca = benefits_from_elune = true;
+
+    base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
+    base_multiplier   *= 1.0 + player -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
+    base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
   }
 
   double action_multiplier() const override
@@ -4728,7 +4755,6 @@ struct solar_wrath_t : public druid_spell_t
 
     if ( p() -> buff.solar_empowerment -> check() )
       am = 1.0 + p() -> buff.solar_empowerment -> current_value
-               + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent()
                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
@@ -4960,9 +4986,10 @@ struct starsurge_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
-    base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
+    base_multiplier       *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
+    base_multiplier       *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
+    base_crit             += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
+    crit_bonus_multiplier *= 1.0 + player -> artifact.scythe_of_the_stars.percent();
 
     if ( player -> starshards )
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
@@ -5018,12 +5045,12 @@ struct stellar_flare_t : public druid_spell_t
     double pm = druid_spell_t::composite_persistent_multiplier( s );
 
     if ( p() -> buff.lunar_empowerment -> check() )
-      pm *= 1.0 + p() -> buff.lunar_empowerment -> current_value +
-               ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      pm = 1.0 + p() -> buff.lunar_empowerment -> current_value
+               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     if ( p() -> buff.solar_empowerment -> check() )
-      pm *= 1.0 + p() -> buff.solar_empowerment -> current_value +
-               ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      pm = 1.0 + p() -> buff.solar_empowerment -> current_value
+               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return pm;
   }
@@ -5455,6 +5482,26 @@ void druid_t::init_spells()
   talent.stonebark                      = find_talent_spell( "Stonebark" );
   talent.flourish                       = find_talent_spell( "Flourish" );
 
+  // Artifact ===============================================================
+
+  // Balance -- Scythe of Elune
+  artifact.new_moon                     = find_artifact_spell( "New Moon" );
+  artifact.moon_and_stars               = find_artifact_spell( "Moon and Stars" );
+  artifact.power_of_goldrinn            = find_artifact_spell( "Power of Goldrinn" );
+  artifact.scion_of_the_night_sky       = find_artifact_spell( "Scion of the Night Sky" );
+  artifact.falling_star                 = find_artifact_spell( "Falling Star" );
+  artifact.touch_of_the_moon            = find_artifact_spell( "Touch of the Moon" );
+  artifact.bladed_feathers              = find_artifact_spell( "Bladed Feathers" );
+  artifact.sunfire_burns                = find_artifact_spell( "Sunfire Burns" );
+  artifact.solar_stabbing               = find_artifact_spell( "Solar Stabbing" );
+  artifact.dark_side_of_the_moon        = find_artifact_spell( "Dark Side of the Moon" );
+  artifact.rejuvenating_innervation     = find_artifact_spell( "Rejuvenating Innervation" );
+  artifact.twilight_glow                = find_artifact_spell( "Twilight Glow" );
+  artifact.scythe_of_the_stars          = find_artifact_spell( "Scythe of the Stars" );
+  artifact.mooncraze                    = find_artifact_spell( "Mooncraze" );
+  artifact.light_of_the_sun             = find_artifact_spell( "Light of the Sun" );
+  artifact.empowerment                  = find_artifact_spell( "Empowerment" );
+
   // Masteries ==============================================================
 
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
@@ -5662,10 +5709,14 @@ void druid_t::create_buffs()
                                    .chance( spec.moonkin_form -> effectN( 7 ).percent() );
 
   buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
-                                   .default_value( find_spell( 164547 ) -> effectN( 1 ).percent() );
+                                   .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
+                                                 + talent.soul_of_the_forest -> effectN( 1 ).percent()
+                                                 + artifact.empowerment.percent() );
 
   buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
-                                   .default_value( find_spell( 164545 ) -> effectN( 1 ).percent() );
+                                   .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
+                                                 + talent.soul_of_the_forest -> effectN( 1 ).percent()
+                                                 + artifact.empowerment.percent() );
 
   buff.warrior_of_elune          = new warrior_of_elune_buff_t( *this );
 
@@ -6478,7 +6529,7 @@ double druid_t::composite_armor_multiplier() const
     a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
 
   if ( buff.moonkin_form -> check() )
-    a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent();
+    a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + artifact.bladed_feathers.percent();
 
   if ( buff.ironfur -> check() )
     a *= 1.0 + buff.ironfur -> current_value * buff.ironfur -> current_stack;
@@ -6968,10 +7019,11 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   buffs.lifebloom       = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
   buffs.bloodletting    = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
-                       .default_value( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> effectN( 1 ).percent() : 0.10 )
-                       .duration( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> duration() : timespan_t::from_seconds( 6.0 ) )
-                       .chance( 1.0 );
-  buffs.starfall        = buff_creator_t( *this, "starfall", source.find_spell( 197637 ) );
+                          .default_value( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> effectN( 1 ).percent() : 0.10 )
+                          .duration( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> duration() : timespan_t::from_seconds( 6.0 ) )
+                          .chance( 1.0 );
+  buffs.starfall        = buff_creator_t( *this, "starfall", source.find_spell( 197637 ) )
+                          .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() + source.artifact.falling_star.percent() );
 }
 
 // Copypasta for reporting
