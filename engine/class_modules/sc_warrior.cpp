@@ -408,7 +408,7 @@ public:
     ab::may_crit = true;
   }
 
-  void init()
+  void init() override
   {
     ab::init();
 
@@ -443,7 +443,7 @@ public:
     return c;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double am = ab::composite_target_multiplier( target );
 
@@ -455,7 +455,7 @@ public:
     return am;
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit() const override
   {
     double cc = ab::composite_crit();
 
@@ -465,12 +465,12 @@ public:
     return cc;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     ab::execute();
   }
 
-  virtual timespan_t gcd() const
+  virtual timespan_t gcd() const override
   {
     timespan_t t = ab::action_t::gcd();
 
@@ -485,7 +485,7 @@ public:
     return t;
   }
 
-  virtual double cooldown_reduction() const
+  virtual double cooldown_reduction() const override
   {
     double cdr = ab::cooldown_reduction();
 
@@ -497,7 +497,7 @@ public:
     return cdr;
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( !ab::ready() )
       return false;
@@ -509,12 +509,12 @@ public:
     return true;
   }
 
-  bool usable_moving() const
+  bool usable_moving() const override
   { // All warrior abilities are usable while moving, the issue is being in range.
     return true;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
@@ -536,7 +536,7 @@ public:
     }
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d ) override
   {
     ab::tick( d );
 
@@ -558,7 +558,7 @@ public:
     }
   }
 
-  virtual void consume_resource()
+  virtual void consume_resource() override
   {
     ab::consume_resource();
 
@@ -1070,7 +1070,7 @@ struct colossus_smash_t: public warrior_attack_t
     }
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1314,7 +1314,7 @@ struct heroic_strike_t: public warrior_attack_t
     return am;
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double dtm = warrior_attack_t::composite_target_multiplier( target );
 
