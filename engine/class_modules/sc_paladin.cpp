@@ -2255,16 +2255,16 @@ struct divine_hammer_t : public paladin_spell_t
     }
     else
     {
+      // Holy Power gen
+      int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+
+      // Conviction
+      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
+
       if ( p() -> artifact.blades_of_light.rank() )
       {
-        // Holy Power gen
-        int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
-        p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-
-        // Conviction
-        if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
-          p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
-
         background = true;
         remaining_executes = (int)(rng().range(1, 4));
         if (remaining_executes > 3) {
