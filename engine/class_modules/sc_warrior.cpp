@@ -68,6 +68,7 @@ public:
     buff_t* die_by_the_sword;
     buff_t* dragon_roar;
     buff_t* commanding_shout;
+    buff_t* overpower;
     buff_t* ravager;
     buff_t* recklessness;
     // Fury Only
@@ -148,6 +149,7 @@ public:
     const spell_data_t* intervene;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
+    const spell_data_t* overpower_driver;
     const spell_data_t* revenge_trigger;
     const spell_data_t* t17_prot_2p;
   } spell;
@@ -172,7 +174,9 @@ public:
   } proc;
 
   struct realppm_t
-  {} rppm;
+  {
+    std::unique_ptr<real_ppm_t> overpower;
+  } rppm;
 
   // Spec Passives
   struct spec_t
@@ -620,11 +624,15 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
 
 struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 { // Main Warrior Attack Class
+  bool procs_overpower;
   warrior_attack_t( const std::string& n, warrior_t* p,
                     const spell_data_t* s = spell_data_t::nil() ):
-    base_t( n, p, s )
+    base_t( n, p, s ),
+    procs_overpower( false )
   {
     special = true;
+    if ( p -> talents.overpower -> ok() )
+      procs_overpower = true;
   }
 
   virtual void assess_damage( dmg_e type, action_state_t* s ) override
@@ -635,6 +643,10 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void execute() override
   {
     base_t::execute();
+    if ( procs_overpower && execute_state -> result != RESULT_MISS && p() -> rppm.overpower -> trigger() )
+    {
+      p() -> buff.overpower -> trigger();
+    }
   }
 
   virtual double calculate_weapon_damage( double attack_power ) const override
@@ -932,16 +944,15 @@ struct bloodthirst_t: public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
   double crit_chance;
+  double rage_gain;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
-    bloodthirst_heal( nullptr )
+    bloodthirst_heal( nullptr ),
+    crit_chance( data().effectN( 4 ).percent() ),
+    rage_gain( ( data().effectN( 3 ).resource( RESOURCE_RAGE ) + p -> talents.unquenchable_thirst -> effectN( 1 ).resource( RESOURCE_RAGE ) )
+               * ( 1.0 + p -> talents.endless_rage -> effectN( 1 ).percent() ) )
   {
     parse_options( options_str );
-
-    crit_chance = data().effectN( 4 ).percent();
-
-    if ( p -> talents.unquenchable_thirst -> ok() )
-      cooldown -> duration = timespan_t::zero();
 
     weapon = &( p -> main_hand_weapon );
     if ( p -> non_dps_mechanics )
@@ -977,9 +988,7 @@ struct bloodthirst_t: public warrior_attack_t
         enrage();
     }
 
-    p() -> resource_gain( RESOURCE_RAGE,
-                          data().effectN( 3 ).resource( RESOURCE_RAGE ) * ( 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent() ),
-                          p() -> gain.bloodthirst );
+    p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.bloodthirst );
   }
 };
 
@@ -1741,6 +1750,43 @@ struct raging_blow_t: public warrior_attack_t
       return false;
 
     return warrior_attack_t::ready();
+  }
+};
+
+// Overpower ============================================================
+
+struct overpower_t: public warrior_attack_t
+{
+  double crit_chance;
+  overpower_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "overpower", p, p -> talents.overpower ),
+    crit_chance( data().effectN( 3 ).percent() )
+  {
+    parse_options( options_str );
+    may_block = may_parry = may_dodge = false;
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  double composite_crit() const override
+  {
+    double c = warrior_attack_t::composite_crit();
+
+    c += crit_chance;
+
+    return c;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> buff.overpower -> expire();
+  }
+  
+  bool ready() override
+  {
+    if ( p() -> buff.overpower -> check() )
+      return warrior_attack_t::ready();
+    return false;
   }
 };
 
@@ -2637,6 +2683,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "last_stand"           ) return new last_stand_t           ( this, options_str );
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
+  if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
   if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
@@ -2769,10 +2816,16 @@ void warrior_t::init_spells()
   spell.charge                  = find_class_spell( "Charge" );
   spell.defensive_stance        = find_class_spell( "Defensive Stance" );
   if ( specialization() == WARRIOR_FURY )
-    spell.indomitable = find_spell( 202095 );
+  { spell.indomitable = find_spell( 202095 ); }
+  else
+  { spell.indomitable = 0; }
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
+  if ( talents.overpower -> ok() )
+  { spell.overpower_driver = find_spell( 119938 ); }
+  else
+  { spell.overpower_driver = 0; }
   spell.revenge_trigger         = find_class_spell( "Revenge Trigger" );
 
   // Active spells
@@ -3250,6 +3303,13 @@ public:
 protected:
   warrior_t& warrior;
 };
+
+struct overpower_t: public warrior_real_ppm_t < real_ppm_t >
+{
+  overpower_t( warrior_t& p ):
+    base_t( p, real_ppm_t( p, p.spell.overpower_driver -> real_ppm(), 1.0, RPPM_HASTE ) )
+  {}
+};
 };
 
 // =========================================================================
@@ -3426,6 +3486,8 @@ void warrior_t::create_buffs()
 
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
+  buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() );
+
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
 
   buff.ravager_protection = buff_creator_t( this, "ravager_protection", talents.ravager )
@@ -3524,6 +3586,8 @@ void warrior_t::init_procs()
 void warrior_t::init_rng()
 {
   player_t::init_rng();
+
+  rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -3635,6 +3699,10 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
+  if ( rppm.overpower )
+  {
+    rppm.overpower -> reset();
+  }
 }
 
 // Movement related overrides. =============================================
