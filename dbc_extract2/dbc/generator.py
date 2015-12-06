@@ -1625,6 +1625,7 @@ class SpellDataGenerator(DataGenerator):
 	  ( 137542, 0 ),       # Displacer Beast buff
 	  ( 185321, 0 ),       # Stalwart Guardian buff (T18 trinket)
 	  ( 188046, 0 ),       # T18 2P Faerie casts this spell
+          ( 202771, 0 ), ( 202768, 0 ), # Eclipse stuff
         ),
     ]
 
