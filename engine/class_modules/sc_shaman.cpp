@@ -2183,13 +2183,13 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( p() -> buff.lava_dredger -> up() )
     {
-      background = true;
+      background = dual = true;
       schedule_execute();
       p() -> buff.lava_dredger -> decrement();
     }
     else
     {
-      background = false;
+      background = dual = false;
     }
   }
 
@@ -2215,7 +2215,7 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_attack_t::reset();
 
-    background = false;
+    background = dual = false;
   }
 };
 
@@ -2383,13 +2383,14 @@ struct stormstrike_base_t : public shaman_attack_t
     if ( may_stormflurry && p() -> artifact.stormflurry.rank() &&
          rng().roll( p() -> artifact.stormflurry.percent() ) )
     {
-      background = true;
+      background = dual = true;
       schedule_execute();
     }
     // Potential stormflurrying ends, reset things
     else
     {
       background = background_action;
+      dual = false;
     }
   }
 
@@ -2397,6 +2398,7 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::reset();
     background = background_action;
+    dual = false;
   }
 };
 
