@@ -242,12 +242,12 @@ public:
     artifact_power_t sharpened_edge;
     artifact_power_t deflection;
     artifact_power_t echo_of_the_highlord;
-    artifact_power_t unbreakable_will;
+    artifact_power_t unbreakable_will;              // NYI
     artifact_power_t wrath_of_the_ashbringer;
-    artifact_power_t embrace_the_light;
-    artifact_power_t divine_tempest;
-    artifact_power_t healing_storm;
-    artifact_power_t protector_of_the_ashen_blade;
+    artifact_power_t embrace_the_light;             // NYI
+    artifact_power_t divine_tempest;                // NYI
+    artifact_power_t healing_storm;                 // NYI
+    artifact_power_t protector_of_the_ashen_blade;  // NYI
     artifact_power_t blades_of_light;
   } artifact;
 
@@ -428,6 +428,12 @@ namespace buffs {
       {
         damage_modifier = data().effectN( 1 ).percent();
         healing_modifier = data().effectN( 2 ).percent();
+
+        paladin_t* paladin = static_cast<paladin_t*>( player );
+        if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
+        {
+          buff_duration += timespan_t::from_millis(paladin -> artifact.wrath_of_the_ashbringer.value());
+        }
       }
       else // we're Holy
       {
@@ -955,6 +961,9 @@ struct divine_shield_t : public paladin_spell_t
     }
 
     // trigger forbearance
+    if ( p() -> artifact.endless_resolve.rank() )
+      // But not if we have endless resolve!
+      return;
     timespan_t duration = p() -> debuffs.forbearance -> data().duration();
     p() -> debuffs.forbearance -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration  );
   }
@@ -1496,6 +1505,9 @@ struct lay_on_hands_t : public paladin_heal_t
 
     paladin_heal_t::execute();
 
+    if ( p() -> artifact.endless_resolve.rank() )
+      // Don't trigger forbearance with endless resolve
+      return;
     target -> debuffs.forbearance -> trigger();
   }
 
@@ -3669,14 +3681,17 @@ void paladin_t::init_spells()
   talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
 
-  artifact.wake_of_ashes          = find_artifact_spell( "Wake of Ashes" );
-  artifact.deliver_the_justice    = find_artifact_spell( "Deliver the Justice" );
-  artifact.highlords_judgment     = find_artifact_spell( "Highlord's Judgment" );
-  artifact.righteous_blade        = find_artifact_spell( "Righteous Blade");
-  artifact.might_of_the_templar   = find_artifact_spell( "Might of the Templar" );
-  artifact.sharpened_edge         = find_artifact_spell( "Sharpened Edge" );
-  artifact.echo_of_the_highlord   = find_artifact_spell( "Echo of the Highlord" );
-  artifact.blades_of_light        = find_artifact_spell( "Blades of Light" );
+  artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
+  artifact.deliver_the_justice     = find_artifact_spell( "Deliver the Justice" );
+  artifact.highlords_judgment      = find_artifact_spell( "Highlord's Judgment" );
+  artifact.righteous_blade         = find_artifact_spell( "Righteous Blade");
+  artifact.might_of_the_templar    = find_artifact_spell( "Might of the Templar" );
+  artifact.sharpened_edge          = find_artifact_spell( "Sharpened Edge" );
+  artifact.echo_of_the_highlord    = find_artifact_spell( "Echo of the Highlord" );
+  artifact.blades_of_light         = find_artifact_spell( "Blades of Light" );
+  artifact.wrath_of_the_ashbringer = find_artifact_spell( "Wrath of the Ashbringer" );
+  artifact.endless_resolve         = find_artifact_spell( "Endless Resolve" );
+  artifact.deflection              = find_artifact_spell( "Deflection" );
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
@@ -4110,6 +4125,10 @@ void paladin_t::target_mitigation( school_e school,
   player_t::target_mitigation( school, dt, s );
 
   // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
+
+  // Artifact sources
+  if ( artifact.deflection.rank() )
+    s -> result_amount *= 1.0 + artifact.deflection.percent();
 
   // Passive sources (Sanctuary)
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
