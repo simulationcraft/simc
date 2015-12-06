@@ -52,7 +52,7 @@
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
-#pragma warning( disable : 4265)
+#pragma warning( disable : 4265 )
 #endif
 
 #if defined( SC_WINDOWS ) && !defined( SC_VS )
@@ -62,8 +62,8 @@
 // ==========================================================================
 // Compiler Minimal Limits
 // ==========================================================================
-#if defined( SC_VS ) && SC_VS < 11
-#  error "Visual Studio 10 ( 2010 ) or lower not supported"
+#if defined( SC_VS ) && SC_VS < 12
+#  error "Visual Studio 11 ( 2012 ) or lower not supported"
 #endif
 
 #if defined( SC_CLANG ) && SC_CLANG < 30100
@@ -134,21 +134,13 @@
 template<class T>
 inline bool sc_isfinite( T x )
 {
-#if defined ( SC_VS ) && SC_VS < 12 // std::isfinite was added in vs2013
-  return _finite( x ) != 0;
-#else
   return std::isfinite( x );
-#endif
 }
 
 template<class T>
 inline bool sc_isnan( T x )
 {
-#if defined ( SC_VS ) && SC_VS < 12 // std::isnan was added in vs2013
-  return _isnan( x ) != 0;
-#else
   return std::isnan( x );
-#endif
 }
 
 #ifndef M_PI
