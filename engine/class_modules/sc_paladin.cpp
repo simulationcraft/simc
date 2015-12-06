@@ -59,6 +59,7 @@ public:
   heal_t*   active_beacon_of_light;
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
+  action_t* active_blessing_of_might_proc;
   action_t* active_holy_shield_proc;
   heal_t*   active_protector_of_the_innocent;
 
@@ -89,6 +90,7 @@ public:
     buff_t* zeal;
     buff_t* seal_of_light;
     buff_t* turalyons_might;
+    buff_t* blessing_of_might;
 
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
@@ -278,6 +280,7 @@ public:
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
     active_hand_of_light_proc          = nullptr;
+    active_blessing_of_might_proc      = nullptr;
     active_holy_shield_proc            = nullptr;
     active_protector_of_the_innocent   = nullptr;
 
@@ -746,6 +749,22 @@ struct avengers_shield_t : public paladin_spell_t
     // Protection T17 2-piece grants block buff
     if ( p() -> sets.has_set_bonus( PALADIN_PROTECTION, T17, B2 ) )
       p() -> buffs.faith_barricade -> trigger();
+  }
+};
+
+// Blessing of Might
+struct blessing_of_might_t : public paladin_heal_t
+{
+  blessing_of_might_t( paladin_t* p, const std::string& options_str )
+    : paladin_heal_t( "blessing_of_might", p, p -> find_spell( 203528 ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    paladin_heal_t::execute();
+    p() -> buffs.blessing_of_might -> trigger();
   }
 };
 
@@ -1680,12 +1699,15 @@ struct light_of_dawn_t : public paladin_heal_t
 struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 {
   bool use2hspec;
+  bool should_trigger_blessing_of_might;
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
-                          bool u2h = true ):
+                          bool u2h = true,
+                          bool bom = true ):
                           base_t( n, p, s ),
-                          use2hspec( u2h )
+                          use2hspec( u2h ),
+                          should_trigger_blessing_of_might( bom )
   {
     may_crit = true;
     special = true;
@@ -1735,9 +1757,27 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     p() -> buffs.retribution_trinket -> trigger();
   }
 
-  virtual void execute() override
+  void trigger_blessing_of_might( action_state_t* s )
   {
-    base_t::execute();
+    if ( p() -> buffs.blessing_of_might -> up() )
+    {
+      if ( rng().roll( p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent() ) )
+      {
+        double amount = s -> result_amount;
+        amount *= p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
+        p() -> active_blessing_of_might_proc -> base_dd_max = p() -> active_blessing_of_might_proc -> base_dd_min = amount;
+        p() -> active_blessing_of_might_proc -> target = s -> target;
+        p() -> active_blessing_of_might_proc -> execute();
+      }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( should_trigger_blessing_of_might )
+      trigger_blessing_of_might( s );
   }
 };
 
@@ -2402,7 +2442,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 struct hand_of_light_proc_t : public paladin_melee_attack_t
 {
   hand_of_light_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false )
+    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false, false )
   {
     school = SCHOOL_HOLY;
     may_crit    = false;
@@ -2448,6 +2488,41 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     am /= p() -> composite_player_multiplier( SCHOOL_HOLY );
 
     return am;
+  }
+};
+
+// Blessing of Might proc
+// TODO: is this a melee attack?
+struct blessing_of_might_proc_t : public paladin_melee_attack_t
+{
+  // TODO: there is an actual spell here: 205729
+  blessing_of_might_proc_t( paladin_t* p )
+    : paladin_melee_attack_t( "blessing_of_might_proc", p, spell_data_t::nil(), false, false )
+  {
+    school = SCHOOL_HOLY;
+    may_miss    = false;
+    may_dodge   = false;
+    may_parry   = false;
+    may_glance  = false;
+    background  = true;
+    trigger_gcd = timespan_t::zero();
+    id          = 205729;
+
+    // No weapon multiplier
+    weapon_multiplier = 0.0;
+    // Note that setting weapon_multiplier=0.0 prevents STATE_MUL_DA from being added
+    // to snapshot_flags because both base_dd_min && base_dd_max are zero, so we need
+    // to do it specifically in init().
+    // Alternate solution is to set weapon = NULL, but we have to use init() to disable
+    // other multipliers (Versatility) anyway.
+  }
+
+  // Disable multipliers in init() so that it doesn't double-dip on anything
+  virtual void init() override
+  {
+    paladin_melee_attack_t::init();
+    // Disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 };
 
@@ -2968,6 +3043,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
+  if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
@@ -3171,6 +3247,7 @@ void paladin_t::create_buffs()
   // this feels like a horrible hack. Open to suggestions.
   buffs.turalyons_might                = buff_creator_t( this, "turalyons_might" ).spell( find_spell( 198051 ) )
                                           .duration( timespan_t::from_seconds( 8 ) );
+  buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
 
   // Tier Bonuses
   // T17
@@ -3575,6 +3652,7 @@ void paladin_t::init_action_list()
   }
 
   active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
+  active_blessing_of_might_proc      = new blessing_of_might_proc_t     ( this );
 
   // create action priority lists
   if ( action_list_str.empty() )
