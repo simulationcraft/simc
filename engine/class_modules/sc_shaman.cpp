@@ -128,7 +128,6 @@ public:
 
   // Cached actions
   action_t* action_ancestral_awakening;
-  action_t* action_improved_lava_lash;
   action_t* action_lightning_strike;
   spell_t*  electrocute;
 
@@ -248,7 +247,6 @@ public:
     proc_t* windfury;
 
     proc_t* uf_flame_shock;
-    proc_t* uf_fire_nova;
     proc_t* uf_lava_burst;
     proc_t* uf_elemental_blast;
     proc_t* uf_wasted;
@@ -398,7 +396,6 @@ public:
     mental_quickness( 1.3 ), // TODO: Legion placeholder
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
-    action_improved_lava_lash( nullptr ),
     action_lightning_strike( nullptr ),
     pet_fire_elemental( nullptr ),
     guardian_fire_elemental( nullptr ),
@@ -449,7 +446,6 @@ public:
   // triggers
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
-  void trigger_improved_lava_lash( const action_state_t* );
   void trigger_tier15_2pc_caster( const action_state_t* );
   void trigger_tier16_2pc_melee( const action_state_t* );
   void trigger_tier16_4pc_melee( const action_state_t* );
@@ -2197,7 +2193,6 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_attack_t::impact( state );
 
-    p() -> trigger_improved_lava_lash( state );
     if ( result_is_hit( state -> result ) && p() -> buff.crash_lightning -> up() )
     {
       cl -> target = state -> target;
@@ -2216,96 +2211,6 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::reset();
 
     background = dual = false;
-  }
-};
-
-struct improved_lava_lash_t : public shaman_spell_t
-{
-  improved_lava_lash_t( shaman_t* p ) :
-    shaman_spell_t( "improved_lava_lash", p )
-  {
-    const spell_data_t* lava_lash = p -> find_specialization_spell( "Lava Lash" );
-
-    may_miss = may_crit = false;
-    proc = true;
-    callbacks = false;
-    background = true;
-    dual = true;
-
-    aoe = lava_lash -> effectN( 4 ).base_value();
-  }
-
-  // Exclude targets with your flame shock on
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    tl.clear();
-
-    shaman_td_t* main_target_td = td( target );
-    dot_t* target_dot = main_target_td -> dot.flame_shock;
-    for ( size_t i = 0, end = sim -> target_non_sleeping_list.size(); i < end; i++ )
-    {
-      player_t* actor = sim -> target_non_sleeping_list[ i ];
-      if ( actor == target )
-        continue;
-
-      if ( td( actor ) -> dot.flame_shock -> remains() >= target_dot -> remains() )
-        continue;
-
-      tl.push_back( actor );
-    }
-
-    return tl.size();
-  }
-
-  std::vector< player_t* >& target_list() const override
-  {
-    size_t total_targets = available_targets( target_cache.list );
-
-    // Reduce targets to aoe amount by removing random entries from the
-    // target list until it's at aoe amount
-    while ( total_targets > static_cast< size_t >( aoe ) )
-    {
-      bool removed = false;
-
-      // Remove targets that have a flame shock first
-      // TODO: The flame shocked targets should be randomly removed too, but
-      // this will have to do for now
-      for ( size_t i = 0; i < target_cache.list.size(); i++ )
-      {
-        shaman_td_t* td = this -> td( target_cache.list[ i ] );
-        if ( td -> dot.flame_shock -> is_ticking() )
-        {
-          target_cache.list.erase( target_cache.list.begin() + i );
-          removed = true;
-          break;
-        }
-      }
-
-      // There's no flame shocked targets to remove, eliminate a random target
-      if ( ! removed )
-        target_cache.list.erase( target_cache.list.begin() + static_cast< size_t >( const_cast<improved_lava_lash_t*>(this) -> rng().range( 0, as<double>( target_cache.list.size() ) ) ) );
-
-      total_targets--;
-    }
-
-    return target_cache.list;
-  }
-
-  // A simple impact method that triggers the proxy flame shock application
-  // on the selected target of the lava lash spread driver
-  void impact( action_state_t* state ) override
-  {
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s spreads Flame Shock (off of %s) on %s",
-                     player -> name(),
-                     target -> name(),
-                     state -> target -> name() );
-
-    dot_t* dot = td( target ) -> dot.flame_shock;
-    if ( dot -> is_ticking() )
-    {
-      dot -> copy( state -> target, DOT_COPY_CLONE );
-    }
   }
 };
 
@@ -2938,99 +2843,6 @@ struct lava_beam_t : public shaman_spell_t
       return false;
 
     return shaman_spell_t::ready();
-  }
-};
-
-// Fire Nova Spell ==========================================================
-
-struct fire_nova_explosion_t : public shaman_spell_t
-{
-  fire_nova_explosion_t( shaman_t* player ) :
-    shaman_spell_t( "fire_nova_explosion", player, player -> find_spell( 8349 ) )
-  {
-    check_spec( SHAMAN_ENHANCEMENT );
-    aoe        = -1;
-    background = true;
-    dual = true;
-  }
-
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    stats = player -> get_stats( "fire_nova" );
-  }
-
-  void execute() override
-  {
-    // The explosion has to regenerate target cache every time
-    target_cache.is_valid = false;
-    shaman_spell_t::execute();
-  }
-
-  // Fire nova does not damage the main target.
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    shaman_spell_t::available_targets( tl );
-
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-        tl.erase( tl.begin() + i );
-    }
-
-    return tl.size();
-  }
-};
-
-struct fire_nova_t : public shaman_spell_t
-{
-  fire_nova_t( shaman_t* player, const std::string& options_str ):
-    shaman_spell_t( "fire_nova", player, player -> find_specialization_spell( "Fire Nova" ), options_str )
-  {
-    may_crit = may_miss = callbacks = false;
-    aoe = -1;
-
-    impact_action = new fire_nova_explosion_t( player );
-    uses_eoe = player -> talent.echo_of_the_elements -> ok();
-  }
-
-  // Override assess_damage, as fire_nova_explosion is going to do all the
-  // damage for us.
-  void assess_damage( dmg_e type, action_state_t* s ) override
-  { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
-
-  bool ready() override
-  {
-    if ( ! td( target ) -> dot.flame_shock -> is_ticking() )
-      return false;
-
-    return shaman_spell_t::ready();
-  }
-
-  // Fire nova is emitted on all targets with a flame shock from us .. so
-  std::vector< player_t* >& target_list() const override
-  {
-    target_cache.list.clear();
-    int fire_nova_targets = 0;
-    // WoD Hotfix - 10-30-14
-    // Fire Nova now has a maximum of 6 novas that can be triggered if more than 6 targets are affected by Flame Shock.
-    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
-    {
-      if ( fire_nova_targets == 6 )
-        break;
-      player_t* e = sim -> target_non_sleeping_list[ i ];
-      if ( ! e -> is_enemy() )
-        continue;
-
-      if ( td( e ) -> dot.flame_shock -> is_ticking() )
-      {
-        target_cache.list.push_back( e );
-        fire_nova_targets++;
-      }
-    }
-
-    return target_cache.list;
   }
 };
 
@@ -4359,7 +4171,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "ghost_wolf"              ) return new               ghost_wolf_t( this, options_str );
   if ( name == "feral_lunge"             ) return new              feral_lunge_t( this, options_str );
   if ( name == "fire_elemental"          ) return new           fire_elemental_t( this, options_str );
-  if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flametongue"             ) return new              flametongue_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
   if ( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
@@ -4940,23 +4751,6 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   flametongue -> schedule_execute();
 }
 
-void shaman_t::trigger_improved_lava_lash( const action_state_t* state )
-{
-  // Do not spread the love when there is only poor Fluffy Pillow against you
-  if ( sim -> enemy_targets == 1 )
-    return;
-
-  if ( ! state -> action -> result_is_hit( state -> result ) )
-    return;
-
-  if ( ! get_target_data( state -> target ) -> dot.flame_shock -> is_ticking() )
-    return;
-
-  // Splash from the action's target
-  action_improved_lava_lash -> target = state -> target;
-  action_improved_lava_lash -> schedule_execute();
-}
-
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -5077,7 +4871,6 @@ void shaman_t::init_procs()
   proc.swings_reset_mh    = get_proc( "swings_reset_mh"         );
   proc.swings_reset_oh    = get_proc( "swings_reset_oh"         );
   proc.uf_flame_shock     = get_proc( "uf_flame_shock"          );
-  proc.uf_fire_nova       = get_proc( "uf_fire_nova"            );
   proc.uf_lava_burst      = get_proc( "uf_lava_burst"           );
   proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
   proc.uf_wasted          = get_proc( "uf_wasted"               );
@@ -5139,7 +4932,6 @@ void shaman_t::init_action_list()
   {
     windfury = new windfury_weapon_melee_attack_t( "windfury_attack", this, &( main_hand_weapon ) );
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
-    action_improved_lava_lash = new improved_lava_lash_t( this );
   }
 
   if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
@@ -5283,15 +5075,9 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Stormstrike", "if=talent.echo_of_the_elements.enabled" );
 
     // AoE
-    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3&spell_targets.fire_nova_explosion>=3" );
-    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=!talent.echo_of_the_elements.enabled&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
-    aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking&active_dot.flame_shock<spell_targets.fire_nova_explosion" );
     aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike" );
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Lava Lash" );
-    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=2&spell_targets.fire_nova_explosion>=2" );
-    aoe -> add_action( this, "Primal Strike" );
-    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=1&spell_targets.fire_nova_explosion>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {
