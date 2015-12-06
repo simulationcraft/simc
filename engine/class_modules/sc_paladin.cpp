@@ -1577,15 +1577,31 @@ struct lights_hammer_t : public paladin_spell_t
   }
 };
 
+struct wake_of_ashes_impact_t : public paladin_spell_t
+{
+  wake_of_ashes_impact_t( paladin_t* p )
+    : paladin_spell_t( "wake_of_ashes_impact", p, p -> find_spell( 205290 ))
+  {
+    aoe = -1;
+    background = true;
+
+    // TODO: is this correct?
+    weapon_power_mod = 1.0 / 3.5;
+    school = SCHOOL_HOLY;
+  }
+};
+
 struct wake_of_ashes_t : public paladin_spell_t
 {
+  wake_of_ashes_impact_t* impact_spell;
   wake_of_ashes_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "wake_of_ashes", p, p -> find_class_spell( "Wake of Ashes" ) )
+    : paladin_spell_t( "wake_of_ashes", p, p -> find_spell( 205273 ) ),
+      impact_spell( new wake_of_ashes_impact_t( p ) )
   {
     parse_options( options_str );
-
-    may_crit = true;
-    split_aoe_damage = false;
+    add_child( impact_spell );
+    impact_action = impact_spell;
+    school = SCHOOL_HOLY;
   }
 
   bool ready()
@@ -2473,6 +2489,9 @@ struct templars_verdict_t : public holy_power_consumer_t
     : holy_power_consumer_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( options_str );
+
+    // TODO: this is supposedly the correct modifier here
+    weapon_multiplier = 2.7;
   }
 
   virtual void execute () override
