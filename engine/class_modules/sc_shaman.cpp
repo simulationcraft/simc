@@ -2406,6 +2406,9 @@ struct stormstrike_t : public stormstrike_base_t
   stormstrike_t( shaman_t* player, const std::string& options_str ) :
     stormstrike_base_t( player, "stormstrike", player -> find_specialization_spell( "Stormstrike" ), options_str )
   {
+    // Only set in stormstrike, windstrike still has bogus data
+    cooldown -> duration = data().cooldown();
+
     // Actual damaging attacks are done by stormstrike_attack_t
     mh = new stormstrike_attack_t( "stormstrike_mh", player, data().effectN( 1 ).trigger(), &( player -> main_hand_weapon ) );
     add_child( mh );
