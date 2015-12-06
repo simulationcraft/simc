@@ -7428,23 +7428,18 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
     return false;
   }
 
+  static std::string decode( "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmonpqrstuvwxyz" );
+
   for ( size_t idx = 0; idx < artifact_data.size(); ++idx )
   {
-    auto data = artifact_data[ idx ];
-
-    auto first = 0;
-    auto second = (data >> 4) - 0x4;
-    if (second > 1)
+    auto value = decode.find( artifact_data[ idx ] );
+    if ( value == std::string::npos )
     {
-      first = (data & 0xF) - 0x7;
-    }
-    else
-    {
-      first = (data & 0xF) - 1;
+      continue;
     }
 
-    artifact_points[ idx * 2 ] = first;
-    artifact_points[ idx * 2 + 1 ] = second;
+    artifact_points[ idx * 2 ] = value & 0xF;
+    artifact_points[ idx * 2 + 1 ] = (value & 0xF0) >> 4;
   }
 
   return true;
