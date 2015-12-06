@@ -250,6 +250,7 @@ public:
 
     // Windwalker
     buff_t* dizzying_kicks;
+    buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
     buff_t* vital_mists;
 
@@ -498,6 +499,8 @@ public:
     const spell_data_t* chi_orbit;
     const spell_data_t* chi_sphere;
     const spell_data_t* chi_torpedo;
+    const spell_data_t* crackling_tiger_lightning;
+    const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
@@ -565,7 +568,8 @@ public:
     heavy_stagger_threshold( 0.065 ),
     eluding_movements( nullptr ),
     soothing_breeze( nullptr ),
-    furious_sun( nullptr )
+    furious_sun( nullptr ),
+    aburaq( nullptr )
   {
     // actives
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
@@ -672,6 +676,9 @@ public:
   const special_effect_t* eluding_movements;
   const special_effect_t* soothing_breeze;
   const special_effect_t* furious_sun;
+
+  // Legion Artifact effects
+  const special_effect_t* aburaq;
 };
 
 // ==========================================================================
@@ -1033,6 +1040,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
 //      if ( ! player -> dual_wield() )
 //        t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
+
+      if ( o() -> buff.swift_as_the_wind -> up() )
+        t *= 1.0 / ( 1.0 + o() -> buff.swift_as_the_wind -> value() );
 
       return t;
     }
@@ -1510,16 +1520,16 @@ private:
 
   struct crackling_tiger_lightning_driver_t: public spell_t
   {
-    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ): spell_t( "crackling_tiger_lightning_driver", p, nullptr )
+    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ): spell_t( "crackling_tiger_lightning_driver", p, p -> o() -> passives.crackling_tiger_lightning_driver )
     {
       parse_options( options_str );
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen summon duration, for example)
-      dot_duration = timespan_t::from_seconds( 45.0 );
+      dot_duration = p -> o() -> talent.invoke_xuen -> duration();
       hasted_ticks = may_miss = false;
       tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
-      base_tick_time = timespan_t::from_seconds( 1.0 ); // trigger a tick every second
-      cooldown -> duration = timespan_t::from_seconds( 45.0 ); // we're done after 45 seconds
+      base_tick_time = p -> o() -> passives.crackling_tiger_lightning_driver -> effectN( 1 ).period(); // trigger a tick every second
+      cooldown -> duration = p -> o() -> talent.invoke_xuen -> duration(); // we're done after 45 seconds
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
@@ -1527,7 +1537,7 @@ private:
 
   struct crackling_tiger_lightning_t: public melee_attack_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ): melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
+    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ): melee_attack_t( "crackling_tiger_lightning", player, player -> o() -> passives.crackling_tiger_lightning )
     {
       parse_options( options_str );
 
@@ -1576,7 +1586,7 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = 0.60;
+    owner_coeff.ap_from_ap = 1;
   }
 
   monk_t* o()
@@ -1992,6 +2002,9 @@ struct eye_of_the_tiger_t : public monk_spell_t
       return;
 
     p() -> buff.eye_of_the_tiger -> trigger();
+
+    if ( p() -> aburaq )
+      p() -> buff.swift_as_the_wind -> trigger();
   }
 
   void tick(dot_t* d) override
@@ -2802,6 +2815,10 @@ struct melee_t: public monk_melee_attack_t
 /*    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       t *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 */
+
+    if ( p() -> buff.swift_as_the_wind -> up() )
+      t * 1.0 / (1.0 + p() -> buff.swift_as_the_wind -> value() );
+
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
     else
@@ -4672,6 +4689,8 @@ void monk_t::init_spells()
   passives.chi_orbit                  = find_spell( 196748 );
   passives.chi_sphere                 = find_spell( 121283 );
   passives.chi_torpedo                = find_spell( 119085 );
+  passives.crackling_tiger_lightning  = find_spell( 123996 );
+  passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.dizzying_kicks             = find_spell( 196723 );
   passives.elusive_brawler            = find_spell( 195630 );
   passives.elusive_dance              = find_spell( 196739 );
@@ -4888,6 +4907,9 @@ void monk_t::create_buffs()
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
+  buff.swift_as_the_wind = buff_creator_t(this, "swift_as_the_wind", aburaq -> driver() )
+    .chance( aburaq -> driver() -> effectN( 1 ).percent() )
+    .default_value( aburaq -> driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
@@ -6313,6 +6335,12 @@ static void furious_sun( special_effect_t& effect )
   do_trinket_init( monk, MONK_WINDWALKER, monk -> furious_sun, effect );
 }
 
+static void aburaq( special_effect_t& effect )
+{
+  monk_t* monk = debug_cast<monk_t*> ( effect.player );
+  do_trinket_init( monk, MONK_WINDWALKER, monk -> aburaq, effect );
+}
+
 struct monk_module_t: public module_t
 {
   monk_module_t(): module_t( MONK ) {}
@@ -6331,6 +6359,10 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 184906, eluding_movements );
     unique_gear::register_special_effect( 184907, soothing_breeze );
     unique_gear::register_special_effect( 184908, furious_sun );
+
+    // Legion Artifacts
+    unique_gear::register_special_effect( 195599, aburaq );
+
     // TODO: Add the Legion Legendary effects
   }
 
