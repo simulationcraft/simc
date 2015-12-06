@@ -1041,9 +1041,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
 //      if ( ! player -> dual_wield() )
 //        t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 
-      if ( o() -> buff.swift_as_the_wind -> up() )
-        t *= 1.0 / ( 1.0 + o() -> buff.swift_as_the_wind -> value() );
-
       return t;
     }
 
@@ -4907,7 +4904,8 @@ void monk_t::create_buffs()
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
-  buff.swift_as_the_wind = buff_creator_t(this, "swift_as_the_wind", aburaq -> driver() )
+
+  buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", aburaq -> driver() -> effectN( 1 ).trigger() )
     .chance( aburaq -> driver() -> effectN( 1 ).percent() )
     .default_value( aburaq -> driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
