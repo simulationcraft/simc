@@ -2482,6 +2482,7 @@ struct fire_elemental_t : public shaman_spell_t
     shaman_spell_t( "fire_elemental", player, player -> find_specialization_spell( "Fire Elemental" ), options_str )
   {
     harmful = false;
+    cooldown -> duration += player -> talent.path_of_elements -> effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -3208,89 +3209,6 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_spell_t( "thunderstorm", player, player -> find_specialization_spell( "Thunderstorm" ), options_str )
   {
     aoe = -1;
-  }
-};
-
-// Earthquake Spell =========================================================
-
-struct earthquake_rumble_t : public shaman_spell_t
-{
-  earthquake_rumble_t( shaman_t* player ) :
-    shaman_spell_t( "earthquake_rumble", player, player -> find_spell( 77478 ) )
-  {
-    harmful = background = true;
-    aoe = -1;
-    school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.11; // Hardcoded into tooltip because it's cool
-    ground_aoe = true;
-  }
-
-  virtual double composite_spell_power() const override
-  {
-    double sp = shaman_spell_t::composite_spell_power();
-
-    sp += player -> cache.spell_power( SCHOOL_NATURE );
-
-    return sp;
-  }
-
-  virtual double target_armor( player_t* ) const override
-  { return 0; }
-};
-
-struct earthquake_t : public shaman_spell_t
-{
-  earthquake_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "earthquake", player, player -> find_specialization_spell( "Earthquake" ), options_str )
-  {
-    harmful = hasted_ticks = true;
-    may_miss = may_crit = callbacks = false;
-
-    base_td = base_dd_min = base_dd_max = 0;
-    spell_power_mod.direct = 0;
-    ignore_false_positive = true;
-
-    tick_action = new earthquake_rumble_t( player );
-
-    uses_eoe = player -> talent.echo_of_the_elements -> ok();
-  }
-
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    update_flags &= ~STATE_HASTE;
-  }
-
-  //timespan_t composite_dot_duration( const action_state_t* state ) const
-  //{ return dot_duration * state -> haste; }
-
-  void consume_resource() override
-  {
-    shaman_spell_t::consume_resource();
-
-    p() -> buff.enhanced_chain_lightning -> expire();
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = shaman_spell_t::execute_time();
-
-    if ( p() -> buff.enhanced_chain_lightning -> check() )
-    {
-      et *= 1.0 + p() -> buff.enhanced_chain_lightning -> data().effectN( 2 ).percent();
-    }
-
-    return et;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state) const override
-  {
-    double m = shaman_spell_t::composite_persistent_multiplier( state );
-
-    m *= 1.0 + p() -> buff.enhanced_chain_lightning -> check() * p() -> buff.enhanced_chain_lightning -> data().effectN( 1 ).percent();
-
-    return m;
   }
 };
 
