@@ -1424,6 +1424,7 @@ class SpellDataGenerator(DataGenerator):
             ( 58385,  0 ),          # Glyph of Hamstring
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144442, 0 ),          # T16 Melee 4 pc buff
+            ( 119938, 0 )           # Overpower
         ),
 
         # Paladin:
