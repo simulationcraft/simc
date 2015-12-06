@@ -9,6 +9,7 @@
   TODO (ret):
     - bugfixes & cleanup
     - Turalyon's Might (properly)
+    - figure out why spells 193984-193987 can't be found
     - A few Artifact Powers
     - Verify speculative implementations of some artifact powers + BoM
     - BoK/BoW
@@ -65,6 +66,7 @@ public:
   heal_t*   active_protector_of_the_innocent;
 
   const special_effect_t* retribution_trinket;
+  const special_effect_t* ashbringer;
   player_t* last_retribution_trinket_target;
 
   struct active_actions_t
@@ -2527,10 +2529,44 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
   }
 };
 
+// Ashes to Ashes
+// TODO: Does this benefit from SoL? Can it trigger BoM? etc
+struct ashen_strike_impact_t : public paladin_melee_attack_t
+{
+  ashen_strike_impact_t( paladin_t* p )
+    : paladin_melee_attack_t( "ashen_strike_impact", p, p -> find_spell( 180290 ), true, false )
+  {
+    background = true;
+    weapon_multiplier = 0.0;
+
+    school = SCHOOL_HOLY;
+  }
+};
+
+
+struct ashen_strike_t : public paladin_spell_t
+{
+  ashen_strike_impact_t* impact_spell;
+  ashen_strike_t( paladin_t* p, unsigned spell_id )
+    : paladin_spell_t( "ashen_strike", p, p -> find_spell( spell_id ) ),
+      impact_spell( new ashen_strike_impact_t( p ) )
+  {
+    add_child( impact_spell );
+    impact_action = impact_spell;
+    school = SCHOOL_HOLY;
+  }
+};
+
+
 // Judgment =================================================================
 
 struct judgment_t : public paladin_melee_attack_t
 {
+  ashen_strike_t* ashen_strike_spells[4];
+
+  // TODO: remove this hack once the missile-spawning spells can be found
+  ashen_strike_impact_t* ashen_strike_impact_spell;
+
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
@@ -2553,6 +2589,15 @@ struct judgment_t : public paladin_melee_attack_t
       base_aoe_multiplier = 1;
       // TODO: does this need to be multiplied by the Highlord's Judgment percentage too?
     }
+
+    // These spells are on Wowhead, and seem to be the original missile-spawning spells
+    // that actually get cast on an Ashes to Ashes proc. However, simc can't seem to find them.
+    // So for now, we use the impact spell directly.
+    ashen_strike_spells[0] = new ashen_strike_t( p, 193984 );
+    ashen_strike_spells[1] = new ashen_strike_t( p, 193985 );
+    ashen_strike_spells[2] = new ashen_strike_t( p, 193986 );
+    ashen_strike_spells[3] = new ashen_strike_t( p, 193987 );
+    ashen_strike_impact_spell = new ashen_strike_impact_t( p );
   }
 
   virtual void execute() override
@@ -2580,6 +2625,21 @@ struct judgment_t : public paladin_melee_attack_t
     if ( result_is_hit( s->result ) )
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+
+      if ( p() -> ashbringer )
+      {
+        // Ashes to Ashes
+        // For some reason the proc chance is effect 2, go figure
+        if ( rng().roll( p() -> ashbringer -> driver() -> effectN( 2 ).percent() ) )
+        {
+          for (unsigned i = 0; i < 4; i++)
+          {
+            // as mentioned above - simc can't find the original missile spells, so we are
+            // directly triggering the impact spell. This should be fixed.
+            ashen_strike_impact_spell -> schedule_execute();
+          }
+        }
+      }
     }
 
     paladin_melee_attack_t::impact( s );
@@ -4625,6 +4685,8 @@ static void retribution_trinket( special_effect_t& effect )
 // Ashbringer!
 static void ashbringer( special_effect_t& effect )
 {
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> ashbringer, effect );
 }
 
 // PALADIN MODULE INTERFACE =================================================
