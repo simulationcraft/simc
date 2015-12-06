@@ -9,10 +9,12 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Fix/check autoattack rage gain - Fury/Protection are g2g, Arms is not playable yet.
+// Fix/check Arms autoattack rage gain when it is playable
 // try to not break protection
 // Add Intercept
 // Add back second wind
+// Check if endless rage affects white swing rage before or after rounding, whenever they fix it in game.
+// Check meat cleaver range as beta testing proceeds, it was 10, currently it's 5.
 // ==========================================================================
 
 struct warrior_t;
@@ -592,7 +594,7 @@ public:
   void enrage()
   {
     // Crit BTs give rage, and refresh enrage
-    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
+    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ) * ( 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent() ), p() -> gain.enrage );
     p() -> buff.enrage -> trigger();
   }
 };
@@ -746,7 +748,7 @@ struct melee_t: public warrior_attack_t
 
   void trigger_rage_gain( action_state_t* s )
   {
-    weapon_t*  w = weapon;
+    weapon_t* w = weapon;
     double rage_gain = w -> swing_time.total_seconds() * base_rage_generation;
 
     if ( p() -> specialization() == WARRIOR_ARMS )
@@ -763,6 +765,7 @@ struct melee_t: public warrior_attack_t
         rage_gain *= 0.5;
     }
 
+    rage_gain *= 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent();
     rage_gain = util::round( rage_gain, 1 );
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
@@ -975,7 +978,7 @@ struct bloodthirst_t: public warrior_attack_t
     }
 
     p() -> resource_gain( RESOURCE_RAGE,
-                          data().effectN( 3 ).resource( RESOURCE_RAGE ),
+                          data().effectN( 3 ).resource( RESOURCE_RAGE ) * ( 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent() ),
                           p() -> gain.bloodthirst );
   }
 };
@@ -991,7 +994,7 @@ struct charge_t: public warrior_attack_t
     first_charge( true ),
     movement_speed_increase( 5.0 ),
     min_range( data().min_range() ),
-    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) * ( 1.0 + p -> talents.endless_rage -> effectN( 1 ).percent() ) )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -1721,7 +1724,7 @@ struct raging_blow_t: public warrior_attack_t
       if ( p() -> talents.enraging_blows -> ok() )
       {
         p() -> resource_gain( RESOURCE_RAGE,
-                              p() -> talents.enraging_blows -> effectN( 2 ).resource( RESOURCE_RAGE ),
+                              p() -> talents.enraging_blows -> effectN( 2 ).resource( RESOURCE_RAGE ) * ( 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent() ),
                               p() -> gain.raging_blow );
       }
     }
