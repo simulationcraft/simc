@@ -3447,6 +3447,8 @@ void paladin_t::generate_action_prio_list_ret()
   }
 
   def -> add_talent( this, "Execution Sentence" );
+  def -> add_talent( this, "Turalyon's Might" );
+  def -> add_talent( this, "Consecration" );
 
   // Items
   int num_items = ( int ) items.size();
@@ -3460,9 +3462,7 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
 
-  def -> add_action( this, "Avenging Wrath", "if=set_bonus.tier18_4pc=0" );
-  def -> add_action( this, "Avenging Wrath", "if=time<20&set_bonus.tier18_4pc=1" );
-  def -> add_action( this, "Avenging Wrath", "if=prev.execution_sentence&set_bonus.tier18_4pc=1&talent.execution_sentence.enabled" );
+  def -> add_action( this, "Avenging Wrath", "if=!buff.avenging_wrath.up" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -3471,19 +3471,46 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( "call_action_list,name=cleave,if=spell_targets.divine_storm>=3" );
   def -> add_action( "call_action_list,name=single" );
 
+  single -> add_action( this, "Judgment", "if=dot.judgment.remains<1");
+
+  single -> add_action( "wake_of_ashes" );
+
+  single -> add_talent( this, "Zeal", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
+  single -> add_talent( this, "Crusader Flurry", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
   single -> add_action( this, "Crusader Strike", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
 
-  single -> add_action( this, "Templar's Verdict","if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)" );
-  single -> add_action( this, "Templar's Verdict","if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)" );
-  single -> add_action( this, "Templar's Verdict","if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power=5" );
 
-  single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
+  single -> add_talent( this, "Divine Hammer", "if=holy_power<=3" );
+  single -> add_action( this, "Blade of Justice", "if=holy_power<=2" );
 
-  single -> add_action( this, "Judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
+  single -> add_talent( this, "Zeal", "if=holy_power<=3" );
+  single -> add_talent( this, "Crusader Flurry", "if=holy_power<=3" );
+  single -> add_action( this, "Crusader Strike", "if=holy_power<=3" );
+
+  single -> add_talent( this, "Blade of Wrath", "if=holy_power<=3" );
 
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
 
-  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3" );
+  single -> add_talent( this, "Divine Hammer", "if=holy_power<=4" );
+  single -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
+
+  single -> add_talent( this, "Zeal", "if=holy_power<=4" );
+  single -> add_talent( this, "Crusader Flurry", "if=holy_power<=4" );
+  single -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
+
+  single -> add_talent( this, "Blade of Wrath", "if=holy_power<=4" );
+
+  single -> add_action( this, "Judgment" );
+
+  single -> add_talent( this, "Blade of Wrath" );
+
+  single -> add_talent( this, "Zeal" );
+  single -> add_talent( this, "Crusader Flurry" );
+  single -> add_action( this, "Crusader Strike" );
+
+  single -> add_talent( this, "Divine Hammer" );
+  single -> add_action( this, "Blade of Justice" );
 
   //Executed if three or more targets are present.
 
