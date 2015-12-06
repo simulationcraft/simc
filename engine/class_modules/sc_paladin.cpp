@@ -4645,7 +4645,7 @@ struct paladin_module_t : public module_t
   virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184911, retribution_trinket );
-    unique_gear::register_special_effect( 198735, ashbringer );
+    unique_gear::register_special_effect( 179546, ashbringer );
   }
 
   virtual void init( player_t* p ) const override
