@@ -2349,6 +2349,31 @@ struct divine_storm_t: public holy_power_consumer_t
     aoe = -1;
   }
 
+  virtual double cost() const override
+  {
+    if ( background )
+      return 0;
+    return holy_power_consumer_t::cost();
+  }
+
+  virtual void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    if ( background )
+    {
+      background = false;
+    }
+    else
+    {
+      if ( p() -> artifact.echo_of_the_highlord.rank() )
+      {
+        background = true;
+        schedule_execute();
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     holy_power_consumer_t::impact( s );
@@ -2760,6 +2785,13 @@ struct templars_verdict_t : public holy_power_consumer_t
     weapon_multiplier = 2.7;
 
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
+  }
+
+  virtual double cost() const override
+  {
+    if ( background )
+      return 0;
+    return holy_power_consumer_t::cost();
   }
 
   virtual void execute () override
