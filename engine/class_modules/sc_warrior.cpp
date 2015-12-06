@@ -2532,7 +2532,7 @@ struct recklessness_t: public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
-    cooldown -> duration *= 1.0 + p ->talents.reckless_abandon -> effectN( 1 ).percent();
+    cooldown -> duration *= 1.0 + p -> talents.reckless_abandon -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -2817,15 +2817,10 @@ void warrior_t::init_spells()
   spell.defensive_stance        = find_class_spell( "Defensive Stance" );
   if ( specialization() == WARRIOR_FURY )
   { spell.indomitable = find_spell( 202095 ); }
-  else
-  { spell.indomitable = 0; }
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
-  if ( talents.overpower -> ok() )
-  { spell.overpower_driver = find_spell( 119938 ); }
-  else
-  { spell.overpower_driver = 0; }
+  spell.overpower_driver = find_spell( 119938 );
   spell.revenge_trigger         = find_class_spell( "Revenge Trigger" );
 
   // Active spells
@@ -3467,7 +3462,7 @@ void warrior_t::create_buffs()
   buff.dragon_roar = buff_creator_t( this, "dragon_roar", talents.dragon_roar )
     .default_value( talents.dragon_roar -> effectN( 2 ).percent() );
 
-  buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 1 ).trigger() )
+  buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 2 ).trigger() )
     .can_cancel( false )
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
