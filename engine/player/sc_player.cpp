@@ -7428,7 +7428,7 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
     return false;
   }
 
-  static std::string decode( "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmonpqrstuvwxyz" );
+  static const std::string decode( "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmonpqrstuvwxyz" );
 
   for ( size_t idx = 0; idx < artifact_data.size(); ++idx )
   {
