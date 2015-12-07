@@ -4482,22 +4482,6 @@ struct incanters_flow_t : public buff_t
   }
 };
 
-
-// Buff callback functions
-
-static void frost_t17_4pc_fof_gain( buff_t* buff, int, int )
-{
-  mage_t* p = debug_cast<mage_t*>( buff -> player );
-
-  p -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-  if ( p -> sim -> debug )
-  {
-    p -> sim -> out_debug.printf( "%s gains Fingers of Frost from 4T17",
-                                  p -> name() );
-  }
-}
-
-
 // mage_t::create_buffs =======================================================
 
 void mage_t::create_buffs()
@@ -4552,7 +4536,13 @@ void mage_t::create_buffs()
                                   .duration( find_spell( 84714 ) -> duration() )
                                   .period( find_spell( 165470 ) -> effectN( 1 ).time_value() )
                                   .quiet( true )
-                                  .tick_callback( frost_t17_4pc_fof_gain );
+                                  .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                    buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+                                    if ( sim -> debug )
+                                    {
+                                      sim -> out_debug.printf( "%s gains Fingers of Frost from 4T17", name() );
+                                    }
+                                  } );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
   buffs.shatterlance          = buff_creator_t( this, "shatterlance")
                                   .duration( timespan_t::from_seconds( 0.9 ) )

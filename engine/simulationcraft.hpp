@@ -561,6 +561,10 @@ struct buff_uptime_t : public uptime_common_t
     uptime_common_t() {}
 };
 
+typedef std::function<void(buff_t*, int, const timespan_t&)> buff_tick_callback_t;
+typedef std::function<timespan_t(const buff_t*, unsigned)> buff_tick_time_callback_t;
+typedef std::function<timespan_t(const buff_t*, const timespan_t&)> buff_refresh_duration_callback_t;
+
 // Buff Creation ====================================================================
 namespace buff_creation {
 
@@ -579,10 +583,13 @@ protected:
   timespan_t _duration, _cooldown, _period;
   int _quiet, _reverse, _activated, _can_cancel;
   int _affects_regen;
+  buff_tick_time_callback_t _tick_time_callback;
   buff_tick_behavior_e _behavior;
+  bool _initial_tick;
+  buff_tick_time_e _tick_time_behavior;
   buff_refresh_behavior_e _refresh_behavior;
-  std::function<void(buff_t*, int, int)> _tick_callback;
-  std::function<timespan_t(const buff_t*, const timespan_t&)> _refresh_duration_callback;
+  buff_tick_callback_t _tick_callback;
+  buff_refresh_duration_callback_t _refresh_duration_callback;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
   friend struct ::debuff_t;
@@ -642,14 +649,20 @@ public:
   { _invalidate_list.push_back( c ); return *( static_cast<bufftype*>( this ) ); }
   bufftype& tick_behavior( buff_tick_behavior_e b )
   { _behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_callback( std::function<void(buff_t*, int, int)> cb )
+  bufftype& tick_zero( bool v )
+  { _initial_tick = v; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_time_behavior( buff_tick_time_e b )
+  { _tick_time_behavior = b; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_time_callback( const buff_tick_time_callback_t& cb )
+  { _tick_time_behavior = BUFF_TICK_TIME_CUSTOM; _tick_time_callback = cb; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_callback( const buff_tick_callback_t& cb )
   { _tick_callback = cb; return *( static_cast<bufftype*>( this ) ); }
   bufftype& affects_regen( bool state )
   { _affects_regen = state; return *( static_cast<bufftype*>( this ) ); }
   bufftype& refresh_behavior( buff_refresh_behavior_e b )
   { _refresh_behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& refresh_duration_callback( std::function<timespan_t(const buff_t*, const timespan_t&)> cb )
-  { _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& refresh_duration_callback( const buff_refresh_duration_callback_t& cb )
+  { _refresh_behavior = BUFF_REFRESH_CUSTOM; _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -810,13 +823,17 @@ public:
   std::vector<event_t*> stack_react_ready_triggers;
 
   buff_refresh_behavior_e refresh_behavior;
-  std::function<timespan_t(const buff_t*, const timespan_t&)> refresh_duration_callback;
+  buff_refresh_duration_callback_t refresh_duration_callback;
 
   // Ticking buff values
+  unsigned current_tick;
   timespan_t buff_period;
+  buff_tick_time_e tick_time_behavior;
   buff_tick_behavior_e tick_behavior;
   event_t* tick_event;
-  std::function<void(buff_t*, int, int)> tick_callback;
+  buff_tick_callback_t tick_callback;
+  buff_tick_time_callback_t tick_time_callback;
+  bool tick_zero;
 
   // tmp data collection
 protected:
@@ -937,6 +954,7 @@ public:
   virtual void datacollection_end();
 
   virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
+  virtual timespan_t tick_time() const;
 
   void add_invalidate( cache_e );
 #if defined(SC_USE_STAT_CACHE)

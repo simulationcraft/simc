@@ -54,37 +54,36 @@ struct tick_t : public buff_event_t
 {
   double current_value;
   int current_stacks;
+  timespan_t tick_time;
 
   tick_t( buff_t* b, timespan_t d, double value, int stacks ) :
-    buff_event_t( b, d ), current_value( value ), current_stacks( stacks )
+    buff_event_t( b, d ), current_value( value ), current_stacks( stacks ), tick_time( d )
   { }
 
   void execute() override
   {
     buff -> tick_event = nullptr;
+    buff -> current_tick++;
 
     // For tick number calculations, always include the +1ms so we get correct
     // tick number labeling on the last tick, just before the buff expires.
-    timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time() ) + timespan_t::from_millis( 1 );
-    timespan_t total_duration = buff -> expiration ? (elapsed + buff -> remains() ): timespan_t::max();
-    int current_tick = static_cast<int>( elapsed / buff -> buff_period );
-    int total_ticks = buff -> expiration ? static_cast<int>( total_duration / buff -> buff_period ) : -1;
+    int total_ticks = buff -> expiration ? buff -> current_tick + static_cast<int>( buff -> remains() / buff -> tick_time() ) : -1;
 
     if ( buff -> sim -> debug )
-      buff -> sim -> out_debug.printf( "%s buff %s ticks (%d of %d).", buff -> player -> name(), buff -> name(), current_tick, total_ticks );
+      buff -> sim -> out_debug.printf( "%s buff %s ticks (%d of %d).", buff -> player -> name(), buff -> name(), buff -> current_tick, total_ticks );
 
     // Tick callback is called before the aura stack count is altered to ensure
     // that the buff is always up during the "tick". Last tick detection can be
     // made through the int arguments passed to the function call.
     if ( buff -> tick_callback )
-      buff -> tick_callback( buff, current_tick, total_ticks );
+      buff -> tick_callback( buff, total_ticks, tick_time );
 
     if ( ! buff -> reverse )
       buff -> bump( current_stacks, current_value );
     else
       buff -> decrement( current_stacks, current_value );
 
-    timespan_t period = buff -> buff_period;
+    timespan_t period = buff -> tick_time();
     if ( buff -> remains() >= period || buff -> buff_duration == timespan_t::zero() )
     {
       // Reorder the last tick to happen 1ms before expiration
@@ -155,9 +154,12 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   current_stack(),
   buff_duration( timespan_t() ),
   default_chance( 1.0 ),
+  current_tick( 0 ),
   buff_period( timespan_t::min() ),
+  tick_time_behavior( BUFF_TICK_TIME_UNHASTED ),
   tick_behavior( BUFF_TICK_NONE ),
   tick_event( nullptr ),
+  tick_zero( false ),
   last_start( timespan_t() ),
   last_trigger( timespan_t() ),
   iteration_uptime_sum( timespan_t() ),
@@ -307,6 +309,13 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._tick_callback )
     tick_callback = params._tick_callback;
 
+  tick_zero = params._initial_tick;
+  tick_time_behavior = params._tick_time_behavior;
+  if ( tick_time_behavior == BUFF_TICK_TIME_CUSTOM )
+  {
+    tick_time_callback = params._tick_time_callback;
+  }
+
   if ( params._affects_regen == -1 && player && player -> regen_type == REGEN_DYNAMIC )
   {
     for (auto & elem : params._invalidate_list)
@@ -432,7 +441,8 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
       return new_duration;
     case BUFF_REFRESH_TICK:
     {
-      timespan_t residual = remains() % buff_period;
+      assert( tick_event );
+      timespan_t residual = remains() % static_cast< tick_t* >( tick_event ) -> tick_time;
       if ( sim -> debug )
         sim -> out_debug.printf( "%s %s carryover duration from ongoing tick: %.3f, refresh_duration=%.3f new_duration=%.3f",
             player -> name(), name(), residual.total_seconds(), new_duration.total_seconds(), ( new_duration + residual ).total_seconds() );
@@ -457,6 +467,22 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
       assert( 0 );
       return new_duration;
     }
+  }
+}
+
+// buff_t::tick_time ======================================================
+
+timespan_t buff_t::tick_time() const
+{
+  switch ( tick_time_behavior )
+  {
+    case BUFF_TICK_TIME_HASTED:
+      return buff_period * player -> cache.spell_speed();
+    case BUFF_TICK_TIME_CUSTOM:
+      assert( tick_time_callback );
+      return tick_time_callback( this, current_tick );
+    default:
+      return buff_period;
   }
 }
 
@@ -808,15 +834,22 @@ void buff_t::start( int        stacks,
   if ( d > timespan_t::zero() )
     expiration = new ( *sim ) expiration_t( this, d );
 
-  if ( tick_behavior != BUFF_TICK_NONE && buff_period > timespan_t::zero()
-    && ( buff_period <= d || d == timespan_t::zero() ) )
+  timespan_t period = tick_time();
+  if ( tick_behavior != BUFF_TICK_NONE && period > timespan_t::zero()
+    && ( period <= d || d == timespan_t::zero() ) )
   {
-    timespan_t tick_time = buff_period;
+    current_tick = 0;
+
     // Reorder the last tick to happen 1ms before expiration
-    if ( tick_time == d )
-      tick_time -= timespan_t::from_millis( 1 );
+    if ( period == d )
+      period -= timespan_t::from_millis( 1 );
     assert( ! tick_event );
-    tick_event = new ( *sim ) tick_t( this, tick_time, current_value, reverse ? 1 : stacks );
+    tick_event = new ( *sim ) tick_t( this, period, current_value, reverse ? 1 : stacks );
+
+    if ( tick_zero && tick_callback )
+    {
+      tick_callback( this, expiration ? remains() / period : -1, timespan_t::zero() );
+    }
   }
 }
 
@@ -872,11 +905,17 @@ void buff_t::refresh( int        stacks,
     if ( tick_event && tick_behavior == BUFF_TICK_CLIP )
     {
       event_t::cancel( tick_event );
-      timespan_t tick_time = buff_period;
+      current_tick = 0;
+      timespan_t period = tick_time();
       // Reorder the last tick to happen 1ms before expiration
-      if ( tick_time == d )
-        tick_time -= timespan_t::from_millis( 1 );
-      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, reverse ? 1 : stacks );
+      if ( period == d )
+        period -= timespan_t::from_millis( 1 );
+      tick_event = new ( *sim ) tick_t( this, period, current_value, reverse ? 1 : stacks );
+    }
+
+    if ( tick_zero && tick_callback )
+    {
+      tick_callback( this, expiration ? remains() / tick_time() : -1, timespan_t::zero() );
     }
   }
 }
@@ -1859,10 +1898,12 @@ void buff_creator_basics_t::init()
   _reverse = -1;
   _activated = -1;
   _can_cancel = -1;
+  _tick_time_behavior = BUFF_TICK_TIME_UNHASTED;
   _behavior = BUFF_TICK_NONE;
   _refresh_behavior = BUFF_REFRESH_NONE;
   _default_value = buff_t::DEFAULT_VALUE();
   _affects_regen = -1;
+  _initial_tick = false;
 }
 
 buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp, const item_t* item ) :

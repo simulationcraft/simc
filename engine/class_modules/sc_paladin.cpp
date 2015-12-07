@@ -377,21 +377,17 @@ public:
 // containing ones that require action_t definitions to function properly.
 
 namespace buffs {
-  void wings_of_liberty( buff_t* buff, int, int )
-  {
-    paladin_t* p = debug_cast<paladin_t*>( buff -> player );
-
-    p -> buffs.wings_of_liberty -> trigger( 1 );
-  }
   struct wings_of_liberty_driver_t: public buff_t
   {
     wings_of_liberty_driver_t( player_t* p ):
       buff_t( buff_creator_t( p, "wings_of_liberty_driver", p -> find_spell( 185655 ) )
       .chance( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
       .quiet( true )
-      .tick_callback( wings_of_liberty ) )
-    {
-    }
+      .tick_callback( [ p ]( buff_t*, int, const timespan_t& ) {
+        paladin_t* paladin = debug_cast<paladin_t*>( p );
+        paladin -> buffs.wings_of_liberty -> trigger( 1 );
+      } ) )
+    { }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {

@@ -1123,27 +1123,6 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Blessing of An'she Buff ====================================================
-
-struct blessing_of_anshe_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  blessing_of_anshe_buff_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "blessing_of_anshe", p.spell.blessing_of_anshe ) ),
-    druid( &p )
-  {
-    tick_behavior = BUFF_TICK_NONE; // ticking is handled by DoT
-  }
-
-  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::expire_override( stacks, duration );
-
-    druid -> get_dot( "blessing_of_anshe", druid ) -> cancel();
-  }
-};
-
 // Cat Form =================================================================
 
 struct cat_form_t : public druid_buff_t< buff_t >
@@ -1203,14 +1182,8 @@ struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
   earthwarden_driver_buff_t( druid_t& p ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "earthwarden_driver", p.talent.earthwarden )
     .quiet( true )
-    .tick_callback( callback ) ), druid( &p )
+    .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ) { p.buff.earthwarden -> increment(); } ) ), druid( &p )
   {}
-
-  static void callback( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-    p -> buff.earthwarden -> trigger();
-  }
 
   void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
   {
@@ -1227,18 +1200,14 @@ struct elunes_guidance_buff_t : public druid_buff_t < buff_t >
 {
   elunes_guidance_buff_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "elunes_guidance", p.talent.elunes_guidance )
-     .tick_callback( callback ) )
+     .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ) {
+        p.resource_gain( RESOURCE_COMBO_POINT,
+          p.talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+          p.gain.elunes_guidance );
+     } ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
     buff_period = data().effectN( 2 ).period();
-  }
-
-  static void callback( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-    p -> resource_gain( RESOURCE_COMBO_POINT,
-      p -> talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
-      p -> gain.elunes_guidance );
   }
 };
 
@@ -1347,17 +1316,10 @@ struct the_reaping_driver_buff_t : public druid_buff_t < buff_t >
   the_reaping_driver_buff_t( druid_t& p ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "the_reaping_driver", p.scythe_of_elune -> driver() )
     .quiet( true )
-    .tick_callback( callback )
+    .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ){ p.buff.owlkin_frenzy ->  trigger( 1, buff_t::DEFAULT_VALUE(), p.buff.the_reaping -> current_value ); } )
     .default_value( p.buff.owlkin_frenzy -> default_chance * ( p.artifact.mooncraze.rank() ? 2.0 : 1.0 ) ) ),
     druid( &p )
   {}
-
-  static void callback( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-
-    p -> buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), p -> buff.the_reaping -> current_value );
-  }
 
   void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
   {
@@ -4049,15 +4011,11 @@ struct yseras_gift_driver_buff_t : public druid_buff_t < buff_t >
   yseras_gift_driver_buff_t( druid_t& p ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "yseras_gift_driver", p.spell.yseras_gift )
     .quiet( true )
-    .tick_callback( yseras_gift_driver_tick ) ), druid( &p )
+    .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ) {
+      p.active.yseras_gift -> base_dd_min = p.spell.yseras_gift -> effectN( 1 ).percent() * p.resources.max[ RESOURCE_HEALTH ];
+      p.active.yseras_gift -> execute();
+    } ) ), druid( &p )
   {}
-
-  static void yseras_gift_driver_tick( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-    p -> active.yseras_gift -> base_dd_min = p -> spell.yseras_gift -> effectN( 1 ).percent() * p -> resources.max[ RESOURCE_HEALTH ];
-    p -> active.yseras_gift -> execute();
-  }
 
   // Emulate tick_zero behavior.
   virtual void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
@@ -4181,15 +4139,8 @@ struct blessing_of_anshe_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    target = player; // apply DoT to self
-    dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
-      2 * sim -> expected_iteration_time :
-      2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-    harmful = may_crit = tick_may_crit = false;
-    hasted_ticks = true;
+    harmful = may_crit = false;
     ignore_false_positive = true;
-
-    ap_per_tick = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void execute() override
@@ -5914,7 +5865,11 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.blessing_of_anshe         = new blessing_of_anshe_buff_t( *this );
+  buff.blessing_of_anshe         = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe )
+                                   .tick_time_behavior( BUFF_TICK_TIME_HASTED )
+                                   .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                       resource_gain( RESOURCE_ASTRAL_POWER, b -> data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) );
+                                    });
 
   buff.blessing_of_elune         = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
 
