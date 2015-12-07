@@ -2,17 +2,6 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-//
-// ==========================================================================
-// WOD TODO
-// ==========================================================================
-// - Unleash Flame expiration delay
-// - Precision power inherit coefficients for pets
-// - Echo of the Elements buff spell data (159101, 159105, 159103)
-//
-// ==========================================================================
-// BUGS
-// ==========================================================================
 
 #include "simulationcraft.hpp"
 
@@ -48,6 +37,7 @@ struct shaman_td_t : public actor_target_data_t
   {
     buff_t* t16_2pc_caster;
     buff_t* earthen_spike;
+    buff_t* lightning_rod;
   } debuff;
 
   struct heals
@@ -543,7 +533,10 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) ) );
   debuff.earthen_spike  = buff_creator_t( *this, "earthen_spike", p -> talent.earthen_spike )
                           // -10% resistance in spell data, treat it as a multiplier instead
-                          .default_value( -p -> talent.earthen_spike -> effectN( 2 ).percent() );
+                          .default_value( 1.0 - p -> talent.earthen_spike -> effectN( 2 ).percent() );
+  debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod )
+                         .default_value( 1.0 + p -> talent.lightning_rod -> effectN( 1 ).percent() )
+                         .cd( timespan_t::zero() ); // Cooldown handled by action
 }
 
 // ==========================================================================
@@ -957,7 +950,14 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( td( target ) -> debuff.earthen_spike -> up() &&
          ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
     {
-      m *= 1.0 + td( target ) -> debuff.earthen_spike -> check_value();
+      m *= td( target ) -> debuff.earthen_spike -> check_value();
+    }
+
+    // TODO: Spell specific affected-by, this will work for now. Note that tooltip claims "nature
+    // spells", but the spell data affects fire spells too.
+    if ( td( target ) -> debuff.lightning_rod -> up() )
+    {
+      m *= td( target ) -> debuff.lightning_rod -> check_value();
     }
 
     return m;
@@ -3358,6 +3358,38 @@ struct feral_lunge_t : public shaman_spell_t
   }
 };
 
+// TODO: AoE to shaman_spell_t::impact when sensible values arrive
+struct lightning_rod_t : public shaman_spell_t
+{
+  lightning_rod_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "lightning_rod", player, player -> talent.lightning_rod, options_str )
+  { }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    td( state -> target ) -> debuff.lightning_rod -> trigger();
+  }
+};
+
+struct storm_elemental_t : public shaman_spell_t
+{
+  storm_elemental_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "storm_elemental", player, player -> talent.storm_elemental, options_str )
+  {
+    harmful = false;
+    cooldown -> duration += player -> talent.path_of_elements -> effectN( 1 ).time_value();
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> guardian_storm_elemental -> summon( data().duration() );
+  }
+};
+
 // ==========================================================================
 // Shaman Shock Spells
 // ==========================================================================
@@ -3938,51 +3970,55 @@ struct maelstrom_totem_t : public shaman_totem_pet_t
   }
 };
 
-// Liquid Magma Spell =======================================================
+// Liquid Magma totem =======================================================
 
-struct liquid_magma_t: public shaman_spell_t
+struct liquid_magma_globule_t : public spell_t
 {
-  struct liquid_magma_aoe_t : public shaman_spell_t
+  liquid_magma_globule_t( shaman_totem_pet_t* p ) :
+    spell_t( "liquid_magma", p, p -> find_spell( 192231 ) )
   {
-    liquid_magma_aoe_t( shaman_t* player ) :
-      shaman_spell_t( "liquid_magma_aoe", player, player -> find_spell( 177601 ) )
-    {
-      background = true;
-      range = 0;
-      radius = 40; // in tooltip
-      aoe = -1;
-    }
-  };
+    aoe = -1;
+    background = may_crit = true;
+    callbacks = false;
+  }
+};
 
-  liquid_magma_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "liquid_magma", player, player -> find_talent_spell( "Liquid Magma" ), options_str )
+struct liquid_magma_totem_pulse_t : public totem_pulse_action_t
+{
+  liquid_magma_globule_t* globule;
+
+  liquid_magma_totem_pulse_t( shaman_totem_pet_t* totem ) :
+    totem_pulse_action_t( "liquid_magma_driver", totem, totem -> find_spell( 192222 ) ),
+    globule( new liquid_magma_globule_t( totem ) )
   {
-    tick_zero = true;
-    hasted_ticks = true;
-    tick_action = new liquid_magma_aoe_t( player );
+    // TODO: "Random enemies" implicates number of targets
+    aoe = 1;
+    hasted_pulse = quiet = true;
+    dot_duration = timespan_t::zero();
   }
 
-  void tick( dot_t* d ) override
+  void impact( action_state_t* state )
   {
-    // Liquid Magma never has partial ticks
-    d -> last_tick_factor = 1;
+    totem_pulse_action_t::impact( state );
 
-    shaman_spell_t::tick( d );
+    globule -> target = state -> target;
+    globule -> schedule_execute();
+  }
+};
+
+struct liquid_magma_totem_t : public shaman_totem_pet_t
+{
+  liquid_magma_totem_t( shaman_t* owner ):
+    shaman_totem_pet_t( owner, "liquid_magma_totem" )
+  {
+    pulse_amplitude = owner -> find_spell( 192222 ) -> effectN( 2 ).period();
   }
 
-  void execute() override
+  void init_spells() override
   {
-    shaman_spell_t::execute();
+    shaman_totem_pet_t::init_spells();
 
-    p() -> buff.liquid_magma -> trigger();
-  }
-
-  bool ready() override
-  {
-    if ( ! p() -> totems[ TOTEM_FIRE ] )
-      return false;
-
-    return shaman_spell_t::ready();
+    pulse_action = new liquid_magma_totem_pulse_t( this );
   }
 };
 
@@ -4152,9 +4188,9 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
   if ( name == "lava_lash"               ) return new                lava_lash_t( this, options_str );
   if ( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options_str );
+  if ( name == "lightning_rod"           ) return new            lightning_rod_t( this, options_str );
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
-  if ( name == "liquid_magma"            ) return new             liquid_magma_t( this, options_str );
   if ( name == "windstrike"              ) return new               windstrike_t( this, options_str );
   if ( name == "feral_kin"               ) return new                feral_kin_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
@@ -4163,6 +4199,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "spirit_walk"             ) return new              spirit_walk_t( this, options_str );
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
   if ( name == "stonefist_strike"        ) return new         stonefist_strike_t( this, options_str );
+  if ( name == "storm_elemental"         ) return new          storm_elemental_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "sundering"               ) return new                sundering_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
@@ -4184,6 +4221,11 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "maelstrom_totem" )
   {
     return new  shaman_totem_t( "maelstrom_totem", this, options_str, talent.maelstrom_totem );
+  }
+
+  if ( name == "liquid_magma_totem" )
+  {
+    return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
   }
 
   return player_t::create_action( name, options_str );
@@ -4213,6 +4255,7 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   if ( pet_name == "earth_elemental_guardian" ) return new pet::earth_elemental_t( this, true );
   if ( pet_name == "earthquake_totem"         ) return new earthquake_totem_t( this );
   if ( pet_name == "maelstrom_totem"          ) return new maelstrom_totem_t( this );
+  if ( pet_name == "liquid_magma_totem"       ) return new liquid_magma_totem_t( this );
 
   return nullptr;
 }
@@ -4264,6 +4307,11 @@ void shaman_t::create_pets()
   if ( talent.maelstrom_totem -> ok() && find_action( "maelstrom_totem" ) )
   {
     create_pet( "maelstrom_totem" );
+  }
+
+  if ( talent.liquid_magma_totem -> ok() && find_action( "liquid_magma_totem" ) )
+  {
+    create_pet( "liquid_magma_totem" );
   }
 
   if ( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
