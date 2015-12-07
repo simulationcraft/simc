@@ -15,25 +15,28 @@ namespace { // UNNAMED NAMESPACE
  Astral Influence
  Affinity active components
 
- Feral ---------
- APL
+ Feral ================================
  Predator vs. adds
 
- Balance -------
+ Balance ==============================
  Stellar Drift cast while moving
  Starfall positioning
- APL
- initial_astral_power option
  Artifact stuff (New Moon, OKF driver)
  Celestial alignment damage modifier on correct spells
 
- Guardian ------
+ Guardian =============================
  Statistics?
  Incarnation CD modifier rework
 
- Resto ---------
+ Resto ================================
  All the things
 
+ Needs Documenting ====================
+ predator_rppm option
+ initial_astral_power option
+ initial_moon_stage option
+ active_starfalls expression
+ moon stage expressions
 */
 
 // Forward declarations
@@ -62,6 +65,12 @@ enum form_e {
   BEAR_FORM      = 0x10,
   DIRE_BEAR_FORM = 0x40, // Legacy
   MOONKIN_FORM   = 0x40000000,
+};
+
+enum moon_stage_e {
+  NEW_MOON,
+  HALF_MOON,
+  FULL_MOON,
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -205,10 +214,10 @@ struct druid_t : public player_t
 private:
   form_e form; // Active druid form
 public:
-
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   int active_starfalls;
   double max_fb_energy;
+  moon_stage_e moon_stage;
 
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
@@ -223,6 +232,8 @@ public:
 
   // Options
   double predator_rppm_rate;
+  double initial_astral_power;
+  int    initial_moon_stage;
   
   struct active_actions_t
   {
@@ -326,6 +337,7 @@ public:
     cooldown_t* growl;
     cooldown_t* mangle;
     cooldown_t* maul;
+    cooldown_t* moon_cd; // New / Half / Full Moon
     cooldown_t* wod_pvp_4pc_melee;
     cooldown_t* swiftmend;
     cooldown_t* tigers_fury;
@@ -578,6 +590,8 @@ public:
     active_rejuvenations( 0 ),
     active_starfalls( 0 ),
     max_fb_energy( 0 ),
+    initial_astral_power( 0 ),
+    initial_moon_stage( NEW_MOON ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     balance_tier18_2pc( *this ),
@@ -608,6 +622,7 @@ public:
     cooldown.growl               = get_cooldown( "growl"               );
     cooldown.mangle              = get_cooldown( "mangle"              );
     cooldown.maul                = get_cooldown( "maul"                );
+    cooldown.moon_cd             = get_cooldown( "moon_cd"             );
     cooldown.wod_pvp_4pc_melee   = get_cooldown( "wod_pvp_4pc_melee"   );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
@@ -4333,6 +4348,72 @@ struct elunes_guidance_t : public druid_spell_t
   }
 };
 
+// Full Moon Spell ===========================================================
+
+struct full_moon_t : public druid_spell_t
+{
+  full_moon_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "full_moon", player, player -> find_spell( 202771 ) )
+  {
+    parse_options( options_str );
+
+    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ); // TOCHECK
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> moon_stage = NEW_MOON; // TOCHECK: Requires hit?
+
+    p() -> cooldown.moon_cd -> start( cooldown -> duration );
+  }
+
+  bool ready() override
+  {
+    if ( ! p() -> artifact.new_moon.rank() )
+      return false;
+    if ( p() -> moon_stage != FULL_MOON )
+      return false;
+    if ( ! p() -> cooldown.moon_cd -> up() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
+// Half Moon Spell ===========================================================
+
+struct half_moon_t : public druid_spell_t
+{
+  half_moon_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "half_moon", player, player -> find_spell( 202768 ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> moon_stage++;
+
+    p() -> cooldown.moon_cd -> start( cooldown -> duration );
+  }
+
+  bool ready() override
+  {
+    if ( ! p() -> artifact.new_moon.rank() )
+      return false;
+    if ( p() -> moon_stage != HALF_MOON )
+      return false;
+    if ( ! p() -> cooldown.moon_cd -> up() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Incarnation ==============================================================
 
 struct incarnation_t : public druid_spell_t
@@ -4590,13 +4671,45 @@ struct mark_of_ursol_t : public druid_spell_t
   }
 };
 
+// New Moon Spell ===========================================================
+
+struct new_moon_t : public druid_spell_t
+{
+  new_moon_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "new_moon", player, player -> artifact.new_moon.spell_ )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> moon_stage++;
+
+    p() -> cooldown.moon_cd -> start( cooldown -> duration );
+  }
+
+  bool ready() override
+  {
+    if ( ! p() -> artifact.new_moon.rank() )
+      return false;
+    if ( p() -> moon_stage != NEW_MOON )
+      return false;
+    if ( ! p() -> cooldown.moon_cd -> up() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Sunfire Spell ============================================================
 
-struct sunfire_t: public druid_spell_t
+struct sunfire_t : public druid_spell_t
 {
   shooting_stars_t* shooting_stars;
 
-  sunfire_t( druid_t* player, const std::string& options_str ):
+  sunfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) ),
     shooting_stars( new shooting_stars_t( player ) )
   {
@@ -5287,7 +5400,9 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "elunes_guidance"        ) return new        elunes_guidance_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
+  if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
   if ( name == "growl"                  ) return new                  growl_t( this, options_str );
+  if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
@@ -5302,6 +5417,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
   if ( name == "moonfire_cat" ||
        name == "lunar_inspiration" )      return new      lunar_inspiration_t( this, options_str );
+  if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
@@ -6247,7 +6363,7 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   proc.clearcasting             = get_proc( "clearcasting"           );
-  proc.clearcasting_wasted      = get_proc( "clearcasting_wasted" );
+  proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.predator                 = get_proc( "predator"               );
   proc.predator_wasted          = get_proc( "predator_wasted"        );
   proc.primal_fury              = get_proc( "primal_fury"            );
@@ -6261,6 +6377,10 @@ void druid_t::init_procs()
 void druid_t::init_resources( bool force )
 {
   player_t::init_resources( force );
+
+  resources.current[ RESOURCE_RAGE ] = 0;
+  resources.current[ RESOURCE_COMBO_POINT ] = 0;
+  resources.current[ RESOURCE_ASTRAL_POWER ] = initial_astral_power;
 }
 
 // druid_t::init_rng =======================================================
@@ -6337,13 +6457,12 @@ void druid_t::reset()
 {
   player_t::reset();
 
+  // Reset druid_t variables to their original state.
   form = NO_FORM;
-
   max_fb_energy = spell.ferocious_bite -> powerN( 1 ).cost() - spell.ferocious_bite -> effectN( 2 ).base_value();
+  active_rejuvenations = active_starfalls = 0;
 
   base_gcd = timespan_t::from_seconds( 1.5 );
-
-  active_rejuvenations = active_starfalls = 0;
 
   // Restore main hand attack / weapon to normal state
   main_hand_attack = caster_melee_attack;
@@ -6425,6 +6544,8 @@ void druid_t::arise()
 {
   player_t::arise();
 
+  moon_stage = ( moon_stage_e ) initial_moon_stage;
+
   if ( talent.earthwarden -> ok() )
     buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
 }
@@ -6434,11 +6555,6 @@ void druid_t::arise()
 void druid_t::combat_begin()
 {
   player_t::combat_begin();
-
-  // Start the fight with 0 rage and 0 combo points
-  resources.current[ RESOURCE_RAGE ] = 0;
-  resources.current[ RESOURCE_COMBO_POINT ] = 0;
-  resources.current[ RESOURCE_ASTRAL_POWER ] = 0;
   
   // Trigger persistent buffs
   if ( buff.yseras_gift )
@@ -6768,6 +6884,34 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   {
     return make_ref_expr( "max_fb_energy", max_fb_energy );
   }
+  else if ( util::str_compare_ci( name_str, "new_moon" )
+         || util::str_compare_ci( name_str, "half_moon" )
+         || util::str_compare_ci( name_str, "full_moon" )  )
+  {
+    struct moon_stage_expr_t : public expr_t
+    {
+      druid_t& druid;
+      int stage;
+
+      moon_stage_expr_t( druid_t& p, const std::string& name_str ) :
+        expr_t( name_str ), druid( p )
+      {
+        if ( util::str_compare_ci( name_str, "new_moon" ) )
+          stage = 0;
+        else if ( util::str_compare_ci( name_str, "half_moon" ) )
+          stage = 1;
+        else if ( util::str_compare_ci( name_str, "full_moon" ) )
+          stage = 2;
+        else
+          assert( "Bad name_str passed to moon_stage_expr_t" );
+      }
+
+      virtual double evaluate() override
+      { return druid.moon_stage == stage; }
+    };
+
+    return new moon_stage_expr_t( *this, name_str );
+  }
   return player_t::create_expression( a, name_str );
 }
 
@@ -6778,6 +6922,8 @@ void druid_t::create_options()
   player_t::create_options();
 
   add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
+  add_option( opt_float( "initial_astral_power", initial_astral_power ) );
+  add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
 }
 
 // druid_t::create_proc_action =============================================
