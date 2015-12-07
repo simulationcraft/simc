@@ -1671,13 +1671,11 @@ struct ignite_t : public residual_action_t
   {
     residual_action_t::tick( dot );
     ignite_state_t* ignite_state = debug_cast<ignite_state_t*>( dot -> state);
-    if ( ignite_state -> spread_helper )
+    if ( ignite_state -> spread_helper && dot -> remains() > base_tick_time)
     {
-      ignite_state -> spread_helper = false;
-      if ( sim -> log ) sim -> out_log << "Ignite spreads";
+      if ( sim -> log ) sim -> out_log << "Ignite spreads"; //Remove or alter message
     }
-    else
-      ignite_state -> spread_helper = true;
+    ignite_state -> spread_helper =  ignite_state -> spread_helper ? false : true;
   }
 };
 
