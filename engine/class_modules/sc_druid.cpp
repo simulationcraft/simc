@@ -23,6 +23,7 @@ namespace { // UNNAMED NAMESPACE
  Starfall positioning
  Artifact stuff (New Moon, OKF driver)
  Celestial alignment damage modifier on correct spells
+ Accurate starfall travel time & debuff mechanics ?
 
  Guardian =============================
  Statistics?
@@ -226,6 +227,9 @@ public:
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
 
+  // Artifacts
+  const special_effect_t* scythe_of_elune;
+
   // RPPM objects
   real_ppm_t balance_tier18_2pc;
   real_ppm_t predator; // Optional RPPM approximation
@@ -294,6 +298,7 @@ public:
     buff_t* owlkin_frenzy;
     buff_t* solar_empowerment;
     buff_t* star_power; // Moon and Stars artifact medal
+    buff_t* the_reaping;
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
 
@@ -569,6 +574,7 @@ public:
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t empowerment;
     artifact_power_t falling_star;
+    artifact_power_t moon_and_stars;
     artifact_power_t new_moon;
     artifact_power_t scythe_of_the_stars;
     artifact_power_t solar_stabbing;
@@ -576,7 +582,6 @@ public:
     artifact_power_t twilight_glow;
 
     // NYI
-    artifact_power_t moon_and_stars;
     artifact_power_t power_of_goldrinn;
     artifact_power_t scion_of_the_night_sky;
     artifact_power_t touch_of_the_moon;
@@ -595,6 +600,7 @@ public:
     initial_moon_stage( NEW_MOON ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
+    scythe_of_elune(),
     balance_tier18_2pc( *this ),
     predator( *this ),
     active( active_actions_t() ),
@@ -1188,8 +1194,6 @@ struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
   }
 };
 
-
-
 // Earthwarden Driver Buff ============================================================
 
 struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
@@ -1199,10 +1203,10 @@ struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
   earthwarden_driver_buff_t( druid_t& p ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "earthwarden_driver", p.talent.earthwarden )
     .quiet( true )
-    .tick_callback( earthwarden_driver_tick ) ), druid( &p )
+    .tick_callback( callback ) ), druid( &p )
   {}
 
-  static void earthwarden_driver_tick( buff_t* buff, int, int )
+  static void callback( buff_t* buff, int, int )
   {
     druid_t* p = debug_cast<druid_t*>( buff -> player );
     p -> buff.earthwarden -> trigger();
@@ -1219,22 +1223,22 @@ struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
 
 // Elune's Guidance Buff ====================================================
 
-static void elunes_guidance_tick( buff_t* buff, int, int )
-{
-  druid_t* p = debug_cast<druid_t*>( buff -> player );
-  p -> resource_gain( RESOURCE_COMBO_POINT,
-    p -> talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
-    p -> gain.elunes_guidance );
-}
-
 struct elunes_guidance_buff_t : public druid_buff_t < buff_t >
 {
   elunes_guidance_buff_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "elunes_guidance", p.talent.elunes_guidance )
-     .tick_callback( elunes_guidance_tick ) )
+     .tick_callback( callback ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
     buff_period = data().effectN( 2 ).period();
+  }
+
+  static void callback( buff_t* buff, int, int )
+  {
+    druid_t* p = debug_cast<druid_t*>( buff -> player );
+    p -> resource_gain( RESOURCE_COMBO_POINT,
+      p -> talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+      p -> gain.elunes_guidance );
   }
 };
 
@@ -1282,7 +1286,7 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
   }
 };
 
-// Clearcasting =============================================================
+// Clearcasting Buff =============================================================
 
 struct clearcasting_buff_t : public druid_buff_t<buff_t>
 {
@@ -1315,7 +1319,7 @@ struct clearcasting_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Warrior of Elune ========================================================
+// Warrior of Elune Buff ========================================================
 
 struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 {
@@ -1329,6 +1333,35 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 
     // disabled for now since they'll probably institute this behavior later.
     // druid.cooldown.warrior_of_elune -> start();
+  }
+};
+
+// The Reaping Driver Buff ============================================================
+
+struct the_reaping_driver_buff_t : public druid_buff_t < buff_t >
+{
+  druid_t* druid;
+
+  the_reaping_driver_buff_t( druid_t& p ) :
+    druid_buff_t<buff_t>( p, buff_creator_t( &p, "the_reaping_driver", p.scythe_of_elune -> driver() )
+    .quiet( true )
+    .tick_callback( callback )
+    .default_value( p.buff.owlkin_frenzy -> default_chance * ( 1.0 + p.artifact.mooncraze.percent() ) ) ), druid( &p )
+  {}
+
+  static void callback( buff_t* buff, int, int )
+  {
+    druid_t* p = debug_cast<druid_t*>( buff -> player );
+
+    p -> buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), p -> buff.the_reaping -> current_value );
+  }
+
+  void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
+  {
+    druid_buff_t<buff_t>::start( stacks, value, duration );
+
+    // Emulate tick_zero behavior.
+    druid -> buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), current_value );
   }
 };
 
@@ -1626,19 +1659,38 @@ namespace spells {
 
 struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
+private:
+  bool consumed_owlkin_frenzy;
+public:
   double ap_per_hit, ap_per_tick, ap_per_cast;
   bool benefits_from_ca, benefits_from_elune;
+  bool consumes_owlkin_frenzy;
   gain_t* ap_gain;
 
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
     base_t( token, p, s ), ap_per_hit( 0 ), ap_per_tick( 0 ),
-    ap_per_cast( 0 ),
+    ap_per_cast( 0 ), consumes_owlkin_frenzy( false ),
     benefits_from_ca( false ), benefits_from_elune( false ),
     ap_gain( p -> get_gain( name() ) )
   {
     parse_options( options );
+  }
+
+  virtual void reset()
+  {
+    spell_t::reset();
+
+    // Allows precasted spells, which circumvent schedule_execute(), to consume Owlkin Frenzy.
+    consumed_owlkin_frenzy = consumes_owlkin_frenzy;
+  }
+
+  virtual void schedule_execute( action_state_t* s ) override
+  {
+    spell_t::schedule_execute( s );
+
+    consumed_owlkin_frenzy = consumes_owlkin_frenzy && p() -> buff.owlkin_frenzy -> up();
   }
 
   virtual void execute() override
@@ -1659,11 +1711,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
     spell_t::execute();
 
-    if ( base_execute_time > timespan_t::zero() )
-    {
-      p() -> buff.owlkin_frenzy -> up();
+    if ( consumed_owlkin_frenzy )
       p() -> buff.owlkin_frenzy -> decrement();
-    }
 
     trigger_astral_power_gain( ap_per_cast );
 
@@ -1698,6 +1747,14 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       am *= 1.0 + p() -> buff.celestial_alignment -> current_value;
 
     return am;
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    if ( consumes_owlkin_frenzy && p() -> buff.owlkin_frenzy -> check() )
+      return timespan_t::zero();
+
+    return spell_t::execute_time();
   }
 
   virtual void trigger_astral_power_gain( double base_ap )
@@ -1775,14 +1832,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
     timespan_t extension_limit = std::max( timespan_t::zero(), timespan_t::from_seconds( 20.0 ) - d -> remains() );
     d -> extend_duration( std::min( base_time, extension_limit ) );
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    if ( p() -> buff.owlkin_frenzy -> check() )
-      return timespan_t::zero();
-
-    return spell_t::execute_time();
   }
 }; // end druid_spell_t
 
@@ -4610,6 +4659,7 @@ struct lunar_strike_t : public druid_spell_t
 
     ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     benefits_from_ca = benefits_from_elune = true;
+    consumes_owlkin_frenzy = true;
 
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
@@ -4791,6 +4841,13 @@ struct sunfire_t : public druid_spell_t
         trigger_balance_tier18_2pc();
     }
   }
+
+  bool ready() override
+  {
+    p() -> buff.owlkin_frenzy -> check();
+
+    return druid_spell_t::ready();
+  }
 };
 
 // Moonkin Form Spell =======================================================
@@ -4892,6 +4949,7 @@ struct solar_wrath_t : public druid_spell_t
 
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     benefits_from_ca = benefits_from_elune = true;
+    consumes_owlkin_frenzy = true;
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
@@ -5135,6 +5193,8 @@ struct starsurge_t : public druid_spell_t
   {
     parse_options( options_str );
 
+    consumes_owlkin_frenzy = true;
+
     base_multiplier       *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
     base_multiplier       *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
     base_crit             += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
@@ -5153,22 +5213,17 @@ struct starsurge_t : public druid_spell_t
 
     return am;
   }
-  
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    // Dec 3 2015: Starsurge only grants empowerments on hit.
-    if ( result_is_hit( s -> result ) )
-    {
-      p() -> buff.solar_empowerment -> trigger();
-      p() -> buff.lunar_empowerment -> trigger();
-    }
-  }
 
   void execute() override
   {
     druid_spell_t::execute();
+
+    // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buff.solar_empowerment -> trigger();
+      p() -> buff.lunar_empowerment -> trigger();
+    }
 
     if ( p() -> starshards && rng().roll( starshards_chance ) )
     {
@@ -5186,6 +5241,8 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
   {
     parse_options( options_str );
+
+    consumes_owlkin_frenzy = true;
   }
 
   // Dec 3 2015: Empowerments modifiers are multiplicative AND snapshot mastery.
@@ -5856,7 +5913,7 @@ void druid_t::create_buffs()
                                    .max_stack( 10 ); // Tracking buff for APL use
 
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", find_spell( 157228 ) )
-                                   .chance( spec.moonkin_form -> effectN( 7 ).percent() );
+                                   .chance( spec.moonkin_form -> proc_chance() );
 
   buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                    .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
@@ -6586,6 +6643,15 @@ void druid_t::arise()
 
   if ( talent.earthwarden -> ok() )
     buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
+
+  if ( scythe_of_elune )
+  {
+    // Calculate chance for a Reaping proc to have occurred prior to combat.
+    int ticks = buff.owlkin_frenzy -> buff_duration / buff.the_reaping -> buff_period;
+    double chance = 1.0 - std::pow( 1.0 - buff.the_reaping -> default_value, ticks );
+
+    buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+  }
 }
 
 // druid_t::combat_begin ====================================================
@@ -6600,6 +6666,9 @@ void druid_t::combat_begin()
 
   if ( talent.earthwarden -> ok() )
     persistent_buff_delay.push_back( new (*sim) persistent_buff_delay_event_t( this, buff.earthwarden_driver ) );
+
+  if ( scythe_of_elune )
+    persistent_buff_delay.push_back( new (*sim) persistent_buff_delay_event_t( this, buff.the_reaping ) );
 
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
@@ -7345,7 +7414,7 @@ private:
   druid_t& p;
 };
 
-// DRUID MODULE INTERFACE ===================================================
+// Druid Special Effects ====================================================
 
 static void do_trinket_init( druid_t*                player,
                              specialization_e         spec,
@@ -7416,6 +7485,17 @@ static void flourish( special_effect_t& effect )
   do_trinket_init( s, DRUID_RESTORATION, s -> flourish, effect );
 }
 
+// Scythe of Elune
+static void scythe_of_elune( special_effect_t& effect )
+{
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_BALANCE, s -> scythe_of_elune, effect );
+
+  s -> buff.the_reaping = new buffs::the_reaping_driver_buff_t( *s );
+}
+
+// DRUID MODULE INTERFACE ===================================================
+
 struct druid_module_t : public module_t
 {
   druid_module_t() : module_t( DRUID ) {}
@@ -7440,6 +7520,7 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 184877, wildcat_celerity );
     unique_gear::register_special_effect( 184878, stalwart_guardian );
     unique_gear::register_special_effect( 184879, flourish );
+    unique_gear::register_special_effect( 202509, scythe_of_elune );
   } 
 
   virtual void register_hotfixes() const override
