@@ -178,11 +178,9 @@ public:
 
     haste_buff_t* tier13_4pc_healer;
 
-    stat_buff_t* elemental_blast_agility;
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
-    stat_buff_t* elemental_blast_multistrike;
     stat_buff_t* tier13_2pc_caster;
     stat_buff_t* tier13_4pc_caster;
 
@@ -224,6 +222,7 @@ public:
     gain_t* feral_spirit;
     gain_t* fulmination;
     gain_t* spirit_of_the_maelstrom;
+    gain_t* maelstrom_totem;
   } gain;
 
   // Tracked Procs
@@ -921,6 +920,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
       cooldown -> duration += p -> spec.shamanism -> effectN( 4 ).time_value();
     }
+
+    may_crit = true;
   }
 
   void impact( action_state_t* state ) override
@@ -1846,11 +1847,11 @@ struct elemental_overload_spell_t : public shaman_spell_t
 
   elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s ) :
     shaman_spell_t( name, p, s ),
-    maelstrom_gain( s -> effectN( 2 ).resource( RESOURCE_MAELSTROM ) )
+    maelstrom_gain( s -> effect_count() >= 2 ? s -> effectN( 2 ).resource( RESOURCE_MAELSTROM ) : 0 )
   {
+    base_execute_time = timespan_t::zero();
     background = true;
     callbacks = false;
-
   }
 
   void execute() override
@@ -2145,7 +2146,6 @@ struct lava_lash_t : public shaman_attack_t
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
 
-    uses_eoe = player -> talent.echo_of_the_elements -> ok();
     add_child( cl );
     if ( player -> artifact.doom_vortex.rank() )
     {
@@ -2853,9 +2853,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   lava_burst_overload_t( shaman_t* p ) :
     elemental_overload_spell_t( p, "lava_burst_overload", p -> find_spell( 77451 ) )
-  {
-    base_execute_time = timespan_t::zero(); // TODO: Check later
-  }
+  { }
 
   double composite_target_multiplier( player_t* target ) const override
   {
@@ -3065,9 +3063,16 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
+  elemental_overload_spell_t* overload;
   elemental_blast_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str )
-  { }
+  {
+    if ( player -> mastery.elemental_overload -> ok() )
+    {
+      overload = new elemental_overload_spell_t( player, "elemental_blast_overload", player -> find_spell( 120588 ) );
+      add_child( overload );
+    }
+  }
 
   result_e calculate_result( action_state_t* s ) const override
   {
@@ -3082,16 +3087,14 @@ struct elemental_blast_t : public shaman_spell_t
     if ( result == RESULT_NONE )
     {
       result = RESULT_HIT;
-      unsigned max_buffs = 4 + ( p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
+      unsigned max_buffs = 3;
 
       unsigned b = static_cast< unsigned >( rng().range( 0, max_buffs ) );
       assert( b < max_buffs );
 
-      p() -> buff.elemental_blast_agility -> expire();
       p() -> buff.elemental_blast_crit -> expire();
       p() -> buff.elemental_blast_haste -> expire();
       p() -> buff.elemental_blast_mastery -> expire();
-      p() -> buff.elemental_blast_multistrike -> expire();
 
       if ( b == 0 )
         p() -> buff.elemental_blast_crit -> trigger();
@@ -3099,10 +3102,6 @@ struct elemental_blast_t : public shaman_spell_t
         p() -> buff.elemental_blast_haste -> trigger();
       else if ( b == 2 )
         p() -> buff.elemental_blast_mastery -> trigger();
-      else if ( b == 3 )
-        p() -> buff.elemental_blast_multistrike -> trigger();
-      else
-        p() -> buff.elemental_blast_agility -> trigger();
 
       if ( rng().roll( std::max( composite_crit() + composite_target_crit( s -> target ), 0.0 ) ) )
         result = RESULT_CRIT;
@@ -3118,6 +3117,17 @@ struct elemental_blast_t : public shaman_spell_t
       s -> debug();
 
     return result;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    if ( p() -> mastery.elemental_overload -> ok() && rng().roll( player -> cache.mastery_value() ) )
+    {
+      overload -> target = state -> target;
+      overload -> schedule_execute();
+    }
   }
 };
 
@@ -3423,7 +3433,10 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::tick( d );
 
-    if ( rng().roll( p() -> spec.lava_surge -> proc_chance() ) )
+    double proc_chance = p() -> spec.lava_surge -> proc_chance();
+    proc_chance += p() -> talent.elemental_fusion -> effectN( 1 ).percent();
+
+    if ( rng().roll( proc_chance ) )
     {
       if ( p() -> buff.lava_surge -> check() )
         p() -> proc.wasted_lava_surge -> occur();
@@ -3574,8 +3587,6 @@ struct riptide_t : public shaman_heal_t
     shaman_heal_t( player, player -> find_specialization_spell( "Riptide" ), options_str )
   {
     resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
-
-    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 };
 
@@ -3768,6 +3779,9 @@ struct totem_pulse_action_t : public spell_t
     crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
+  shaman_t* o()
+  { return debug_cast< shaman_t* >( player -> cast_pet() -> owner ); }
+
   double action_multiplier() const override
   {
     double m = spell_t::action_multiplier();
@@ -3857,7 +3871,7 @@ struct earthquake_totem_pulse_t : public totem_pulse_action_t
     totem_pulse_action_t( "earthquake", totem, totem -> find_spell( 77478 ) )
   {
     aoe = -1;
-    background = ground_aoe = true;
+    ground_aoe = true;
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.11; // Hardcoded into tooltip because it's cool
     hasted_pulse = true;
@@ -3880,6 +3894,47 @@ struct earthquake_totem_t : public shaman_totem_pet_t
     shaman_totem_pet_t::init_spells();
 
     pulse_action = new earthquake_totem_pulse_t( this );
+  }
+};
+
+// Maelstrom totem ==========================================================
+
+struct maelstrom_totem_pulse_t : public totem_pulse_action_t
+{
+  const spell_data_t* energize;
+
+  maelstrom_totem_pulse_t( shaman_totem_pet_t* totem ) :
+    totem_pulse_action_t( "maelstrom_bolt", totem, totem -> find_spell( 202192 ) ),
+    energize( totem -> find_spell( 202205 ) )
+  {
+    // TODO: Check if pulses are hasted
+    hasted_pulse = true;
+  }
+
+  void execute() override
+  {
+    totem_pulse_action_t::execute();
+
+    o() -> resource_gain( RESOURCE_MAELSTROM,
+                          energize -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                          o() -> gain.maelstrom_totem,
+                          this );
+  }
+};
+
+struct maelstrom_totem_t : public shaman_totem_pet_t
+{
+  maelstrom_totem_t( shaman_t* owner ):
+    shaman_totem_pet_t( owner, "maelstrom_totem" )
+  {
+    pulse_amplitude = owner -> find_spell( 202192 ) -> cast_time( owner -> level() );
+  }
+
+  void init_spells() override
+  {
+    shaman_totem_pet_t::init_spells();
+
+    pulse_action = new maelstrom_totem_pulse_t( this );
   }
 };
 
@@ -4126,6 +4181,11 @@ action_t* shaman_t::create_action( const std::string& name,
     return new  shaman_totem_t( "earthquake_totem", this, options_str, find_specialization_spell( "Earthquake Totem" ) );
   }
 
+  if ( name == "maelstrom_totem" )
+  {
+    return new  shaman_totem_t( "maelstrom_totem", this, options_str, talent.maelstrom_totem );
+  }
+
   return player_t::create_action( name, options_str );
 }
 
@@ -4152,6 +4212,7 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   if ( pet_name == "earth_elemental_pet"      ) return new pet::earth_elemental_t( this, false );
   if ( pet_name == "earth_elemental_guardian" ) return new pet::earth_elemental_t( this, true );
   if ( pet_name == "earthquake_totem"         ) return new earthquake_totem_t( this );
+  if ( pet_name == "maelstrom_totem"          ) return new maelstrom_totem_t( this );
 
   return nullptr;
 }
@@ -4198,6 +4259,11 @@ void shaman_t::create_pets()
   if ( find_action( "earthquake_totem" ) )
   {
     create_pet( "earthquake_totem" );
+  }
+
+  if ( talent.maelstrom_totem -> ok() && find_action( "maelstrom_totem" ) )
+  {
+    create_pet( "maelstrom_totem" );
   }
 
   if ( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
@@ -4701,10 +4767,6 @@ void shaman_t::create_buffs()
                                  .max_stack( 1 );
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 173184 ) )
                                  .max_stack( 1 );
-  buff.elemental_blast_multistrike = stat_buff_creator_t( this, "elemental_blast_multistrike", find_spell( 173185 ) )
-                                 .max_stack( 1 );
-  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 173186 ) )
-                                 .max_stack( 1 );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
 
@@ -4774,6 +4836,7 @@ void shaman_t::init_gains()
   gain.feral_spirit         = get_gain( "Feral Spirit"      );
   gain.fulmination          = get_gain( "Fulmination"       );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
+  gain.maelstrom_totem      = get_gain( "Maelstrom Totem"   );
 }
 
 // shaman_t::init_procs =====================================================
