@@ -6721,6 +6721,7 @@ struct cancel_buff_t : public action_t
       sim -> cancel();
     }
     trigger_gcd = timespan_t::zero();
+    harmful = false;
   }
 
   virtual void execute() override
