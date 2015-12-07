@@ -1619,15 +1619,16 @@ class SpellDataGenerator(DataGenerator):
           ( 150017, 5 ),       # Rake for Treants
           ( 146874, 0 ),       # Feral Rage (T16 4pc feral bonus)
           ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
-	  ( 155627, 0 ),       # Lunar Inspiration
-	  ( 155625, 0 ),       # Lunar Inspiration Moonfire
-	  ( 145152, 0 ),       # Bloodtalons buff
-	  ( 135597, 0 ),       # Tooth and Claw absorb buff
-	  ( 155784, 0 ),       # Primal Tenacity buff
-	  ( 137542, 0 ),       # Displacer Beast buff
-	  ( 185321, 0 ),       # Stalwart Guardian buff (T18 trinket)
-	  ( 188046, 0 ),       # T18 2P Faerie casts this spell
-          ( 202771, 0 ), ( 202768, 0 ), # Eclipse stuff
+		  ( 155627, 0 ),       # Lunar Inspiration
+		  ( 155625, 0 ),       # Lunar Inspiration Moonfire
+		  ( 145152, 0 ),       # Bloodtalons buff
+		  ( 135597, 0 ),       # Tooth and Claw absorb buff
+		  ( 155784, 0 ),       # Primal Tenacity buff
+		  ( 137542, 0 ),       # Displacer Beast buff
+		  ( 185321, 0 ),       # Stalwart Guardian buff (T18 trinket)
+		  ( 188046, 0 ),       # T18 2P Faerie casts this spell
+          ( 202771, 0 ), ( 202768, 0 ), # Half Moon, Full Moon artifact powers
+		  ( 203001, 0 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
         ),
     ]
 
