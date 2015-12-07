@@ -1281,7 +1281,7 @@ void set_bonus::t18_lfr_4pc_clothcaster( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-static void fel_winds_callback( buff_t* buff, int ct, int )
+static void fel_winds_callback( buff_t* buff, int ct, const timespan_t& )
 {
   double old_mas = buff -> player -> cache.attack_speed();
   // .. aand force recomputation of attack speed so reschedule_auto_attack will see the new value.
@@ -3443,7 +3443,7 @@ void item::mirror_of_the_blademaster( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_USE;
 }
   
-static void tyrants_decree_driver_callback( buff_t* buff, int, int )
+static void tyrants_decree_driver_callback( buff_t* buff, int, const timespan_t& )
 {
   if ( buff -> player -> resources.pct( RESOURCE_HEALTH ) >= buff -> data().effectN( 2 ).percent() )
     buff -> player -> buffs.tyrants_immortality -> trigger();
@@ -3472,7 +3472,7 @@ void item::tyrants_decree( special_effect_t& effect )
   buff_t* driver  = buff_creator_t( effect.player, "tyrants_decree_driver", effect.driver() )
                     .period( effect.driver() -> effectN( 1 ).period() )
                     .tick_behavior( BUFF_TICK_REFRESH )
-                    .tick_callback( &tyrants_decree_driver_callback )
+                    .tick_callback( tyrants_decree_driver_callback )
                     .quiet( true );
   buff_t* trigger = stat_buff_creator_t( effect.player, "tyrants_immortality", effect.player -> find_spell( 184770 ) )
                     .add_stat( STAT_STAMINA, effect.player -> find_spell( 184770 ) -> effectN( 1 ).average( effect.item ) )

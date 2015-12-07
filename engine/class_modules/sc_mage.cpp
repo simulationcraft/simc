@@ -1631,14 +1631,53 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
 // Ignite ===================================================================
 
+
+
+
 struct ignite_t : public residual_action_t
 {
+  struct ignite_state_t : public residual_periodic_state_t
+  {
+    bool spread_helper;
+    mage_t* mage;
+
+    ignite_state_t(mage_t* p, action_t* a, player_t* target) :
+      residual_periodic_state_t( a, target ), spread_helper( false ), mage( p )
+    { }
+
+    void copy_state( const action_state_t* state ) override
+    {
+      action_state_t::copy_state( state );
+      const ignite_state_t* ignite_state = debug_cast<const ignite_state_t*>( state );
+      spread_helper = ignite_state -> spread_helper;
+    }
+  };
+
+
   ignite_t( mage_t* player ) :
     residual_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
     dot_duration = dbc::find_spell( player, 12654 ) -> duration();
     base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
+  }
+
+  residual_periodic_state_t* new_state() override
+  {
+    return new ignite_state_t( p(), this, target);
+  }
+
+  void tick(dot_t* dot) override
+  {
+    residual_action_t::tick( dot );
+    ignite_state_t* ignite_state = debug_cast<ignite_state_t*>( dot -> state);
+    if ( ignite_state -> spread_helper )
+    {
+      ignite_state -> spread_helper = false;
+      if ( sim -> log ) sim -> out_log << "Ignite spreads";
+    }
+    else
+      ignite_state -> spread_helper = true;
   }
 };
 
@@ -4443,22 +4482,6 @@ struct incanters_flow_t : public buff_t
   }
 };
 
-
-// Buff callback functions
-
-static void frost_t17_4pc_fof_gain( buff_t* buff, int, int )
-{
-  mage_t* p = debug_cast<mage_t*>( buff -> player );
-
-  p -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-  if ( p -> sim -> debug )
-  {
-    p -> sim -> out_debug.printf( "%s gains Fingers of Frost from 4T17",
-                                  p -> name() );
-  }
-}
-
-
 // mage_t::create_buffs =======================================================
 
 void mage_t::create_buffs()
@@ -4513,7 +4536,13 @@ void mage_t::create_buffs()
                                   .duration( find_spell( 84714 ) -> duration() )
                                   .period( find_spell( 165470 ) -> effectN( 1 ).time_value() )
                                   .quiet( true )
-                                  .tick_callback( frost_t17_4pc_fof_gain );
+                                  .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                    buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+                                    if ( sim -> debug )
+                                    {
+                                      sim -> out_debug.printf( "%s gains Fingers of Frost from 4T17", name() );
+                                    }
+                                  } );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
   buffs.shatterlance          = buff_creator_t( this, "shatterlance")
                                   .duration( timespan_t::from_seconds( 0.9 ) )
@@ -5896,4 +5925,3 @@ const module_t* module_t::mage()
   static mage_module_t m;
   return &m;
 }
-

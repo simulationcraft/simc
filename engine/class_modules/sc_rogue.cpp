@@ -5971,37 +5971,6 @@ void rogue_t::init_resources( bool force )
 
 // rogue_t::init_buffs ======================================================
 
-static void energetic_recovery( buff_t* buff, int, int )
-{
-  rogue_t* p = debug_cast<rogue_t*>( buff -> player );
-
-  if ( p -> spec.energetic_recovery -> ok() )
-    p -> resource_gain( RESOURCE_ENERGY,
-                        p -> spec.energetic_recovery -> effectN( 1 ).base_value(),
-                        p -> gains.energetic_recovery );
-}
-
-static void combat_t18_2pc_bonus( buff_t* buff, int, int )
-{
-  rogue_t* p = debug_cast<rogue_t*>( buff -> player );
-
-  if ( p -> rng().roll( p -> sets.set( ROGUE_OUTLAW, T18, B2 ) -> proc_chance() ) )
-  {
-    if ( p -> buffs.adrenaline_rush -> check() )
-    {
-      p -> buffs.adrenaline_rush -> extend_duration( p, p -> spell.tier18_2pc_combat_ar -> duration() );
-    }
-    else
-    {
-      if ( p -> buffs.adrenaline_rush -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-          p -> spell.tier18_2pc_combat_ar -> duration() ) )
-      {
-        p -> procs.t18_2pc_combat -> occur();
-      }
-    }
-  }
-}
-
 void rogue_t::create_buffs()
 {
   // Handle the Legendary here, as it's called after init_items()
@@ -6093,14 +6062,34 @@ void rogue_t::create_buffs()
   {
     snd_creator.period( find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() );
     snd_creator.tick_behavior( BUFF_TICK_REFRESH );
-    snd_creator.tick_callback( &energetic_recovery );
+    snd_creator.tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+       resource_gain( RESOURCE_ENERGY,
+                      spec.energetic_recovery -> effectN( 1 ).base_value(),
+                      gains.energetic_recovery );
+    } );
   }
   // Presume that combat re-uses the ticker for the T18 2pc set bonus
   else if ( sets.has_set_bonus( ROGUE_OUTLAW, T18, B2 ) )
   {
     snd_creator.period( find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() );
     snd_creator.tick_behavior( BUFF_TICK_REFRESH );
-    snd_creator.tick_callback( &combat_t18_2pc_bonus );
+    snd_creator.tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+      if ( ! rng().roll( sets.set( ROGUE_OUTLAW, T18, B2 ) -> proc_chance() ) )
+        return;
+
+      if ( buffs.adrenaline_rush -> check() )
+      {
+        buffs.adrenaline_rush -> extend_duration( this, spell.tier18_2pc_combat_ar -> duration() );
+      }
+      else
+      {
+        if ( buffs.adrenaline_rush -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+             spell.tier18_2pc_combat_ar -> duration() ) )
+        {
+          procs.t18_2pc_combat -> occur();
+        }
+      }
+    } );
   }
 
   buffs.slice_and_dice = snd_creator;

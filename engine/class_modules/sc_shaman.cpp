@@ -4783,7 +4783,7 @@ void shaman_t::create_buffs()
                                .chance( static_cast< double >( sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
   buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
   buff.feral_spirit2         = haste_buff_creator_t( this, "feral_spirit", find_specialization_spell( "Feral Spirit" ) -> effectN( 2 ).trigger() )
-                               .tick_callback( [ this ]( buff_t* b, int, int ) {
+                               .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                                      double g = b -> data().effectN( 1 ).base_value();
                                      g += this -> talent.spiritual_resonance -> effectN( 2 ).base_value();
                                      this -> resource_gain( RESOURCE_MAELSTROM, g, this -> gain.feral_spirit );
@@ -4821,7 +4821,7 @@ void shaman_t::create_buffs()
   buff.lava_dredger = buff_creator_t( this, "lava_dredger", find_spell( 198830 ) );
   buff.ghost_wolf = buff_creator_t( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
                     .period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 ) -> effectN( 1 ).period() : timespan_t::min() )
-                    .tick_callback( [ this ]( buff_t*, int, int ) {
+                    .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                         this -> resource_gain( RESOURCE_MAELSTROM, this -> artifact.spirit_of_the_maelstrom.value(), this -> gain.spirit_of_the_maelstrom, nullptr );
                     });
 }
