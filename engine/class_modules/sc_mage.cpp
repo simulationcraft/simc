@@ -1631,14 +1631,53 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
 // Ignite ===================================================================
 
+
+
+
 struct ignite_t : public residual_action_t
 {
+  struct ignite_state_t : public residual_periodic_state_t
+  {
+    bool spread_helper;
+    mage_t* mage;
+
+    ignite_state_t(mage_t* p, action_t* a, player_t* target) :
+      residual_periodic_state_t( a, target ), spread_helper( false ), mage( p )
+    { }
+
+    void copy_state( const action_state_t* state ) override
+    {
+      action_state_t::copy_state( state );
+      const ignite_state_t* ignite_state = debug_cast<const ignite_state_t*>( state );
+      spread_helper = ignite_state -> spread_helper;
+    }
+  };
+
+
   ignite_t( mage_t* player ) :
     residual_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
     dot_duration = dbc::find_spell( player, 12654 ) -> duration();
     base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
+  }
+
+  residual_periodic_state_t* new_state() override
+  {
+    return new ignite_state_t( p(), this, target);
+  }
+
+  void tick(dot_t* dot) override
+  {
+    residual_action_t::tick( dot );
+    ignite_state_t* ignite_state = debug_cast<ignite_state_t*>( dot -> state);
+    if ( ignite_state -> spread_helper )
+    {
+      ignite_state -> spread_helper = false;
+      if ( sim -> log ) sim -> out_log << "Ignite spreads";
+    }
+    else
+      ignite_state -> spread_helper = true;
   }
 };
 
@@ -5896,4 +5935,3 @@ const module_t* module_t::mage()
   static mage_module_t m;
   return &m;
 }
-
