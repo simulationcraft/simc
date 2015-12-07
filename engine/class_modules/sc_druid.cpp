@@ -4841,13 +4841,6 @@ struct sunfire_t : public druid_spell_t
         trigger_balance_tier18_2pc();
     }
   }
-
-  bool ready() override
-  {
-    p() -> buff.owlkin_frenzy -> check();
-
-    return druid_spell_t::ready();
-  }
 };
 
 // Moonkin Form Spell =======================================================
