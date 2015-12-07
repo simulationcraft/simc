@@ -1528,6 +1528,7 @@ class SpellDataGenerator(DataGenerator):
           ( 199054, 0 ), ( 199053, 0 ),                 # Unleash Doom, DOOM I SAY
           ( 198300, 0 ),                                # Gathering Storms buff
           ( 198830, 0 ), ( 199019, 0 ), ( 198933, 0 ),  # Doomhammer procs
+          ( 197576, 0 ),                                # Magnitude ground? effect
         ),
 
         # Mage:
@@ -1584,6 +1585,7 @@ class SpellDataGenerator(DataGenerator):
             ( 189298, 0 ),        # Demonology Warlock T18 4P Pet
             ( 189296, 0 ),        # Demonology Warlock T18 4P Pet
             ( 157701, 0 ),        # Charred Remains Chaos Bolt
+            ( 17941, 0 ),         # Agony energize
         ),
 
         # Monk:

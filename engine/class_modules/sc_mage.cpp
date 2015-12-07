@@ -168,7 +168,6 @@ public:
           * arcane_missiles,
           * arcane_power,
           * presence_of_mind,
-          * improved_blink,        // Perk
           * arcane_affinity,       // T17 2pc Arcane
           * arcane_instability,    // T17 4pc Arcane
           * temporal_power;        // T18 4pc Arcane
@@ -179,8 +178,7 @@ public:
     buff_t* heating_up,
           * molten_armor,
           * pyroblast,
-          * enhanced_pyrotechnics, // Perk
-          * improved_scorch,       // Perk
+          * enhanced_pyrotechnics,
           * pyromaniac,            // T17 4pc Fire
           * icarus_uprising;       // T18 4pc Fire
 
@@ -216,15 +214,6 @@ public:
     gain_t* evocation;
   } gains;
 
-  // Passives
-  struct passives_t
-  {
-    const spell_data_t* frost_armor;
-    const spell_data_t* mage_armor;
-    const spell_data_t* molten_armor;
-    const spell_data_t* shatter;
-  } passives;
-
   // Pets
   struct pets_t
   {
@@ -250,57 +239,82 @@ public:
     //       called "Arcane Charge" (Spell ID: 114664).
     //       It contains Spellsteal's mana cost reduction, Evocation's mana
     //       gain reduction, and a deprecated Scorch damage reduction.
-                      * arcane_charge_passive;
+                      * arcane_charge_passive,
+                      * mage_armor,
+                      * savant;
 
     // Fire
     const spell_data_t* critical_mass,
-                      * ignite;
+                      * ignite,
+                      * molten_armor;
 
     // Frost
     const spell_data_t* brain_freeze,
                       * fingers_of_frost,
+                      * frost_armor,
                       * icicles,
-                      * icicles_driver;
+                      * icicles_driver,
+                      * shatter;
   } spec;
 
   // Talents
   struct talents_list_t
   {
     // Tier 15
-    const spell_data_t* evanesce, // NYI
-                      * blazing_speed,
-                      * ice_floes;
+    const spell_data_t* arcane_familiar, // NYI
+                      * arcane_static, // NYI
+                      * torrent, // NYI
+                      * pyromaniac, // NYI
+                      * conflagration, // NYI
+                      * fire_starter, // NYI
+                      * ray_of_frost, // NYI
+                      * lonely_winter, // NYI
+                      * bone_chilling; // NYI
+
     // Tier 30
-    const spell_data_t* alter_time, // NYI
-                      * flameglow, // NYI
-                      * ice_barrier;
+    const spell_data_t* shimmer, // NYI
+                      * cauterize, // NYI
+                      * ice_block; // NYI
+
     // Tier 45
-    const spell_data_t* ring_of_frost, // NYI
-                      * ice_ward, // NYI
-                      * frostjaw; //NYI
+    const spell_data_t* mirror_image,
+                      * rune_of_power,
+                      * incanters_flow;
+
     // Tier 60
-    const spell_data_t* greater_invis, //NYI
-                      * cauterize, //NYI
-                      * cold_snap;
+    const spell_data_t* supernova,
+                      * charged_up, // NYI
+                      * words_of_power, // NYI
+                      * blast_wave,
+                      * flame_on, // NYI
+                      * controlled_burn, // NYI
+                      * ice_nova,
+                      * frozen_touch, // NYI
+                      * bitter_cold; // NYI
+
     // Tier 75
+    const spell_data_t* ice_floes,
+                      * ring_of_frost, // NYI
+                      * ice_ward; // NYI
+
+    // Tier 90
     const spell_data_t* nether_tempest,
                       * living_bomb,
                       * frost_bomb,
                       * unstable_magic,
-                      * supernova,
-                      * blast_wave,
-                      * ice_nova;
-    // Tier 90
-    const spell_data_t* mirror_image,
-                      * rune_of_power,
-                      * incanters_flow;
+                      * erosion, // NYI
+                      * flame_patch, // NYI
+                      * arctic_gale; // NYI
+
     // Tier 100
     const spell_data_t* overpowered,
-                      * kindling,
-                      * thermal_void,
-                      * prismatic_crystal,
+                      * quickening, // NYI
                       * arcane_orb,
+                      * kindling,
+                      * cinderstorm, // NYI
                       * meteor,
+                      * thermal_void,
+                      * glacial_spike, // NYI
                       * comet_storm;
   } talents;
 
@@ -325,7 +339,6 @@ public:
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
-    passives( passives_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
     spec( specializations_t() ),
@@ -1276,9 +1289,9 @@ public:
   {
     double m = mage_spell_t::composite_crit_multiplier();
 
-    if ( frozen && p() -> passives.shatter -> ok() )
+    if ( frozen && p() -> spec.shatter -> ok() )
     {
-      m *= 1.0 + p() -> passives.shatter -> effectN( 2 ).percent();
+      m *= 1.0 + p() -> spec.shatter -> effectN( 2 ).percent();
     }
 
     return m;
@@ -1290,9 +1303,9 @@ public:
     spell_t::snapshot_internal( s, flags, rt );
 
     // Shatter's +50% crit bonus needs to be added after multipliers etc
-    if ( ( flags & STATE_CRIT ) && frozen && p() -> passives.shatter -> ok() )
+    if ( ( flags & STATE_CRIT ) && frozen && p() -> spec.shatter -> ok() )
     {
-      s -> crit += p() -> passives.shatter -> effectN( 2 ).percent();
+      s -> crit += p() -> spec.shatter -> effectN( 2 ).percent();
     }
   }
 
@@ -4295,61 +4308,74 @@ void mage_t::init_spells()
 
   // Talents
   // Tier 15
-  talents.evanesce           = find_talent_spell( "Evanesce"             );
-  talents.blazing_speed      = find_talent_spell( "Blazing Speed"        );
-  talents.ice_floes          = find_talent_spell( "Ice Floes"            );
+  talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
+  talents.arcane_static   = find_talent_spell( "Static"          );
+  talents.torrent         = find_talent_spell( "Torrent"         );
+  talents.pyromaniac      = find_talent_spell( "Pyormaniac"      );
+  talents.conflagration   = find_talent_spell( "Conflagration"   );
+  talents.fire_starter    = find_talent_spell( "Fire Starter"    );
+  talents.ray_of_frost    = find_talent_spell( "Ray of Frost"    );
+  talents.lonely_winter   = find_talent_spell( "Lonely Winter"   );
+  talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
   // Tier 30
-  talents.alter_time         = find_talent_spell( "Alter Time"           );
-  talents.flameglow          = find_talent_spell( "Flameglow"            );
-  talents.ice_barrier        = find_talent_spell( "Ice Barrier"          );
+  talents.shimmer         = find_talent_spell( "Shimmer"         );
+  talents.cauterize       = find_talent_spell( "Cauterize"       );
+  talents.ice_block       = find_talent_spell( "Ice Block"       );
   // Tier 45
-  talents.ring_of_frost      = find_talent_spell( "Ring of Frost"        );
-  talents.ice_ward           = find_talent_spell( "Ice Ward"             );
-  talents.frostjaw           = find_talent_spell( "Frostjaw"             );
+  talents.mirror_image    = find_talent_spell( "Mirror Image"    );
+  talents.rune_of_power   = find_talent_spell( "Rune of Power"   );
+  talents.incanters_flow  = find_talent_spell( "Incanter's Flow" );
   // Tier 60
-  talents.greater_invis      = find_talent_spell( "Greater Invisibility" );
-  talents.cauterize          = find_talent_spell( "Cauterize"            );
-  talents.cold_snap          = find_talent_spell( "Cold Snap"            );
+  talents.supernova       = find_talent_spell( "Supernova"       );
+  talents.charged_up      = find_talent_spell( "Charged Up"      );
+  talents.words_of_power  = find_talent_spell( "Words of Power"  );
+  talents.blast_wave      = find_talent_spell( "Blast Wave"      );
+  talents.flame_on        = find_talent_spell( "Flame On"        );
+  talents.controlled_burn = find_talent_spell( "Controlled Burn" );
+  talents.ice_nova        = find_talent_spell( "Ice Nova"        );
+  talents.frozen_touch    = find_talent_spell( "Frozen Touch"    );
+  talents.bitter_cold     = find_talent_spell( "Bitter Cold"     );
   // Tier 75
-  talents.nether_tempest     = find_talent_spell( "Nether Tempest"       );
-  talents.living_bomb        = find_talent_spell( "Living Bomb"          );
-  talents.frost_bomb         = find_talent_spell( "Frost Bomb"           );
-  talents.unstable_magic     = find_talent_spell( "Unstable Magic"       );
-  talents.supernova          = find_talent_spell( "Supernova"            );
-  talents.blast_wave         = find_talent_spell( "Blast Wave"           );
-  talents.ice_nova           = find_talent_spell( "Ice Nova"             );
+  talents.ice_floes       = find_talent_spell( "Ice Floes"       );
+  talents.ring_of_frost   = find_talent_spell( "Ring of Frost"   );
+  talents.ice_ward        = find_talent_spell( "Ice Ward"        );
   // Tier 90
-  talents.mirror_image       = find_talent_spell( "Mirror Image"         );
-  talents.rune_of_power      = find_talent_spell( "Rune of Power"        );
-  talents.incanters_flow     = find_talent_spell( "Incanter's Flow"      );
+  talents.nether_tempest  = find_talent_spell( "Nether Tempest"  );
+  talents.living_bomb     = find_talent_spell( "Living Bomb"     );
+  talents.frost_bomb      = find_talent_spell( "Frost Bomb"      );
+  talents.unstable_magic  = find_talent_spell( "Unstable Magic"  );
+  talents.erosion         = find_talent_spell( "Erosion"         );
+  talents.flame_patch     = find_talent_spell( "Flame Patch"     );
+  talents.arctic_gale     = find_talent_spell( "Arctic Gale"     );
   // Tier 100
-  talents.overpowered        = find_talent_spell( "Overpowered"          );
-  talents.kindling           = find_talent_spell( "Kindling"             );
-  talents.thermal_void       = find_talent_spell( "Thermal Void"         );
-  talents.prismatic_crystal  = find_talent_spell( "Prismatic Crystal"    );
-  talents.arcane_orb         = find_talent_spell( "Arcane Orb"           );
-  talents.meteor             = find_talent_spell( "Meteor"               );
-  talents.comet_storm        = find_talent_spell( "Comet Storm"          );
-
-  // Passive Spells
-  passives.shatter           = find_specialization_spell( "Shatter" );
-  passives.frost_armor       = find_specialization_spell( "Frost Armor" );
-  passives.mage_armor        = find_specialization_spell( "Mage Armor" );
-  passives.molten_armor      = find_specialization_spell( "Molten Armor" );
+  talents.overpowered     = find_talent_spell( "Overpowered"     );
+  talents.quickening      = find_talent_spell( "Quickening"      );
+  talents.arcane_orb      = find_talent_spell( "Arcane Orb"      );
+  talents.kindling        = find_talent_spell( "Kindling"        );
+  talents.cinderstorm     = find_talent_spell( "Cinderstorm"     );
+  talents.meteor          = find_talent_spell( "Meteor"          );
+  talents.thermal_void    = find_talent_spell( "Thermal Void"    );
+  talents.glacial_spike   = find_talent_spell( "Glacial Spike"   );
+  talents.comet_storm     = find_talent_spell( "Comet Storm"     );
 
   // Spec Spells
   spec.arcane_charge         = find_spell( 36032 );
   spec.arcane_charge_passive = find_spell( 114664 );
+  spec.mage_armor            = find_specialization_spell( "Mage Armor" );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
+  spec.molten_armor          = find_specialization_spell( "Molten Armor" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
+  spec.frost_armor           = find_specialization_spell( "Frost Armor" );
+  spec.shatter               = find_specialization_spell( "Shatter"          );
 
   // Mastery
+  spec.savant                = find_mastery_spell( MAGE_ARCANE );
+  spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.icicles               = find_mastery_spell( MAGE_FROST );
   spec.icicles_driver        = find_spell( 148012 );
-  spec.ignite                = find_mastery_spell( MAGE_FIRE );
 
   // Active spells
   if ( spec.ignite -> ok()  )
@@ -5403,11 +5429,11 @@ void mage_t::arise()
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
 
-  if ( passives.molten_armor -> ok() )
+  if ( spec.molten_armor -> ok() )
     buffs.molten_armor -> trigger();
-  else if ( passives.frost_armor -> ok() )
+  else if ( spec.frost_armor -> ok() )
     buffs.frost_armor -> trigger();
-  else if ( passives.mage_armor -> ok() )
+  else if ( spec.mage_armor -> ok() )
     buffs.mage_armor -> trigger();
 }
 
