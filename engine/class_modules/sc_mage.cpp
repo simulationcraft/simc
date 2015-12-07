@@ -1422,8 +1422,10 @@ namespace actions {
 
 struct mage_spell_t : public spell_t
 {
-  bool frozen, may_proc_missiles, consumes_ice_floes;
-  bool hasted_by_pom; // True if the spells time_to_execute was set to zero exactly because of Presence of Mind
+  bool frozen,
+       may_proc_missiles,
+       consumes_ice_floes,
+       hasted_by_pom; // True if execute_time was set to zero because of PoM
 
 private:
   // Helper variable to disable the functionality of PoM in mage_spell_t::execute_time(),
@@ -1458,9 +1460,8 @@ public:
 
     if ( p() -> buffs.arcane_power -> check() )
     {
-      double m = 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent() + p() -> perks.improved_arcane_power -> effectN( 1 ).percent();
-
-      c *= m;
+      c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
+               + p() -> perks.improved_arcane_power -> effectN( 1 ).percent();
     }
 
     return c;
@@ -1470,19 +1471,27 @@ public:
   {
     timespan_t t = spell_t::execute_time();
 
-    if ( ! channeled && pom_enabled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> up() )
+    if ( !channeled &&
+         pom_enabled &&
+         t > timespan_t::zero() &&
+         p() -> buffs.presence_of_mind -> up() )
+    {
       return timespan_t::zero();
+    }
+
     return t;
   }
 
   virtual double action_multiplier() const override
   {
-    double am=spell_t::action_multiplier();
+    double am = spell_t::action_multiplier();
+
     if ( p() -> specialization() == MAGE_ARCANE )
     {
       double mana_pct= p() -> resources.pct( RESOURCE_MANA );
       am *= 1.0 + mana_pct * p() -> composite_mastery_value();
     }
+
     return am;
   }
 
@@ -1511,11 +1520,12 @@ public:
 
     spell_t::schedule_execute( state );
 
-    if ( ! channeled )
+    if ( !channeled )
     {
       assert( pom_enabled );
       pom_enabled = false;
-      if ( execute_time() > timespan_t::zero() && p() -> buffs.presence_of_mind -> check() )
+      if ( execute_time() > timespan_t::zero() &&
+           p() -> buffs.presence_of_mind -> check() )
       {
         hasted_by_pom = true;
       }
@@ -1530,6 +1540,7 @@ public:
 
     return spell_t::usable_moving();
   }
+
   virtual double composite_crit_multiplier() const override
   {
     double m = spell_t::composite_crit_multiplier();
@@ -1728,6 +1739,22 @@ public:
   }
 };
 
+
+// ============================================================================
+// Arcane Mage Spell
+// ============================================================================
+//
+
+struct arcane_mage_spell_t : public mage_spell_t
+{
+public:
+  arcane_mage_spell_t( const std::string& n, mage_t* p,
+                       const spell_data_t* s = spell_data_t::nil() ) :
+    mage_spell_t( n, p, s )
+  {}
+};
+
+
 typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
 
 // Icicles ==================================================================
@@ -1830,10 +1857,11 @@ struct icicle_t : public mage_spell_t
 
 // Presence of Mind Spell ===================================================
 
-struct presence_of_mind_t : public mage_spell_t
+struct presence_of_mind_t : public arcane_mage_spell_t
 {
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "presence_of_mind", p, p -> find_class_spell( "Presence of Mind" )  )
+    arcane_mage_spell_t( "presence_of_mind", p,
+                         p -> find_class_spell( "Presence of Mind" )  )
   {
     parse_options( options_str );
     harmful = false;
@@ -1846,12 +1874,12 @@ struct presence_of_mind_t : public mage_spell_t
       return false;
     }
 
-    return mage_spell_t::ready();
+    return arcane_mage_spell_t::ready();
   }
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     p() -> buffs.presence_of_mind -> trigger();
   }
@@ -1880,10 +1908,11 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
 
 // Arcane Barrage Spell =====================================================
 
-struct arcane_barrage_t : public mage_spell_t
+struct arcane_barrage_t : public arcane_mage_spell_t
 {
   arcane_barrage_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) )
+    arcane_mage_spell_t( "arcane_barrage", p,
+                         p -> find_class_spell( "Arcane Barrage" ) )
   {
     parse_options( options_str );
 
@@ -1900,14 +1929,14 @@ struct arcane_barrage_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( i == charges );
     }
 
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
   }
 
   virtual double action_multiplier() const override
   {
-    double am = mage_spell_t::action_multiplier();
+    double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
                 p() -> spec.arcane_charge -> effectN( 1 ).percent() *
@@ -1920,12 +1949,13 @@ struct arcane_barrage_t : public mage_spell_t
 
 // Arcane Blast Spell =======================================================
 
-struct arcane_blast_t : public mage_spell_t
+struct arcane_blast_t : public arcane_mage_spell_t
 {
   double wild_arcanist_effect;
 
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) ),
+    arcane_mage_spell_t( "arcane_blast", p,
+                         p -> find_class_spell( "Arcane Blast" ) ),
     wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
@@ -1940,7 +1970,7 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual double cost() const override
   {
-    double c = mage_spell_t::cost();
+    double c = arcane_mage_spell_t::cost();
 
     if ( p() -> buffs.arcane_charge -> check() )
     {
@@ -1970,7 +2000,7 @@ struct arcane_blast_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
 
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> trigger();
     p() -> buffs.profound_magic -> expire();
@@ -1984,7 +2014,7 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual double action_multiplier() const override
   {
-    double am = mage_spell_t::action_multiplier();
+    double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
                 p() -> spec.arcane_charge -> effectN( 1 ).percent() *
@@ -2001,7 +2031,7 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual timespan_t execute_time() const override
   {
-    timespan_t t = mage_spell_t::execute_time();
+    timespan_t t = arcane_mage_spell_t::execute_time();
 
     if ( p() -> perks.enhanced_arcane_blast -> ok() )
     {
@@ -2024,7 +2054,7 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual timespan_t gcd() const override
   {
-    timespan_t t = mage_spell_t::gcd();
+    timespan_t t = arcane_mage_spell_t::gcd();
 
     if ( p() -> perks.enhanced_arcane_blast -> ok() )
     {
@@ -2045,7 +2075,7 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit_or_multistrike( s -> result ) )
     {
@@ -2058,12 +2088,13 @@ struct arcane_blast_t : public mage_spell_t
 
 };
 
-// Arcane Explosion Spell ===========================================================
+// Arcane Explosion Spell =====================================================
 
-struct arcane_explosion_t : public mage_spell_t
+struct arcane_explosion_t : public arcane_mage_spell_t
 {
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
+    arcane_mage_spell_t( "arcane_explosion", p,
+                         p -> find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -2076,7 +2107,7 @@ struct arcane_explosion_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2100,24 +2131,26 @@ struct arcane_explosion_t : public mage_spell_t
 
 // Arcane Missiles Spell ====================================================
 
-struct arcane_missiles_tick_t : public mage_spell_t
+struct arcane_missiles_tick_t : public arcane_mage_spell_t
 {
   arcane_missiles_tick_t( mage_t* p ) :
-    mage_spell_t( "arcane_missiles_tick", p, p -> find_class_spell( "Arcane Missiles" ) -> effectN( 2 ).trigger() )
+    arcane_mage_spell_t( "arcane_missiles_tick", p,
+                         p -> find_class_spell( "Arcane Missiles" )
+                           -> effectN( 2 ).trigger() )
   {
     background  = true;
     dot_duration = timespan_t::zero();
   }
 };
 
-struct arcane_missiles_t : public mage_spell_t
+struct arcane_missiles_t : public arcane_mage_spell_t
 {
   timespan_t missiles_tick_time;
   timespan_t temporal_hero_duration;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_missiles", p,
-                  p -> find_class_spell( "Arcane Missiles" ) ),
+    arcane_mage_spell_t( "arcane_missiles", p,
+                         p -> find_class_spell( "Arcane Missiles" ) ),
     missiles_tick_time( timespan_t::zero() ),
     temporal_hero_duration( timespan_t::zero() )
   {
@@ -2138,7 +2171,7 @@ struct arcane_missiles_t : public mage_spell_t
 
   virtual double action_multiplier() const override
   {
-    double am = mage_spell_t::action_multiplier();
+    double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
                 p() -> spec.arcane_charge -> effectN( 1 ).percent() *
@@ -2175,7 +2208,7 @@ struct arcane_missiles_t : public mage_spell_t
       p() -> buffs.arcane_instability -> expire();
     }
 
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     if ( p() -> buffs.arcane_power -> check() && p() -> talents.overpowered -> ok() )
       p() -> buffs.arcane_power -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.overpowered -> effectN( 1 ).base_value() ) );
@@ -2210,7 +2243,7 @@ struct arcane_missiles_t : public mage_spell_t
 
   virtual void last_tick ( dot_t * d) override
   {
-    mage_spell_t::last_tick( d );
+    arcane_mage_spell_t::last_tick( d );
 
     p() -> buffs.arcane_charge -> trigger();
 
@@ -2226,15 +2259,15 @@ struct arcane_missiles_t : public mage_spell_t
     if ( ! p() -> buffs.arcane_missiles -> check() )
       return false;
 
-    return mage_spell_t::ready();
+    return arcane_mage_spell_t::ready();
   }
 };
 
 // Arcane Orb Spell =========================================================
-struct arcane_orb_bolt_t : public mage_spell_t
+struct arcane_orb_bolt_t : public arcane_mage_spell_t
 {
   arcane_orb_bolt_t( mage_t* p ) :
-    mage_spell_t( "arcane_orb_bolt", p, p -> find_spell( 153640 ) )
+    arcane_mage_spell_t( "arcane_orb_bolt", p, p -> find_spell( 153640 ) )
   {
     aoe = -1;
     background = true;
@@ -2249,7 +2282,7 @@ struct arcane_orb_bolt_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
 
-    mage_spell_t::impact( s );
+    arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2265,12 +2298,13 @@ struct arcane_orb_bolt_t : public mage_spell_t
   }
 };
 
-struct arcane_orb_t : public mage_spell_t
+struct arcane_orb_t : public arcane_mage_spell_t
 {
   arcane_orb_bolt_t* orb_bolt;
 
   arcane_orb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_orb", p, p -> find_talent_spell( "Arcane Orb" ) ),
+    arcane_mage_spell_t( "arcane_orb", p,
+                         p -> find_talent_spell( "Arcane Orb" ) ),
     orb_bolt( new arcane_orb_bolt_t( p ) )
   {
     parse_options( options_str );
@@ -2287,7 +2321,7 @@ struct arcane_orb_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
 
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
     p() -> buffs.arcane_charge -> trigger();
 
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
@@ -2306,7 +2340,7 @@ struct arcane_orb_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    arcane_mage_spell_t::impact( s );
 
     orb_bolt -> execute();
   }
@@ -2314,10 +2348,11 @@ struct arcane_orb_t : public mage_spell_t
 
 // Arcane Power Spell =======================================================
 
-struct arcane_power_t : public mage_spell_t
+struct arcane_power_t : public arcane_mage_spell_t
 {
   arcane_power_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_power", p, p -> find_class_spell( "Arcane Power" ) )
+    arcane_mage_spell_t( "arcane_power", p,
+                         p -> find_class_spell( "Arcane Power" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -2330,7 +2365,7 @@ struct arcane_power_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_power -> trigger( 1, data().effectN( 1 ).percent() );
   }
@@ -2746,13 +2781,14 @@ struct dragons_breath_t : public mage_spell_t
 
 // Evocation Spell ==========================================================
 
-class evocation_t : public mage_spell_t
+class evocation_t : public arcane_mage_spell_t
 {
   int arcane_charges;
 
 public:
   evocation_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "evocation", p,  p -> find_class_spell( "Evocation" ) ),
+    arcane_mage_spell_t( "evocation", p,
+                         p -> find_class_spell( "Evocation" ) ),
     arcane_charges( 0 )
   {
     parse_options( options_str );
@@ -2774,7 +2810,7 @@ public:
 
   virtual void tick( dot_t* d ) override
   {
-    mage_spell_t::tick( d );
+    arcane_mage_spell_t::tick( d );
 
     double mana_gain = p() -> resources.max[ RESOURCE_MANA ] *
                        (data().effectN( 1 ).percent() +
@@ -2798,9 +2834,12 @@ public:
   {
     mage_t& p = *this -> p();
 
-    mage_spell_t::last_tick( d );
+    arcane_mage_spell_t::last_tick( d );
+
     if ( p.sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
+    {
       p.buffs.arcane_affinity -> trigger();
+    }
   }
 
   virtual void execute() override
@@ -2809,7 +2848,8 @@ public:
 
     arcane_charges = p.buffs.arcane_charge -> check();
     p.buffs.arcane_charge -> expire();
-    mage_spell_t::execute();
+
+    arcane_mage_spell_t::execute();
   }
 };
 
@@ -4025,10 +4065,10 @@ struct mirror_image_t : public mage_spell_t
 };
 
 // Nether Tempest AoE Spell ====================================================
-struct nether_tempest_aoe_t: public mage_spell_t
+struct nether_tempest_aoe_t: public arcane_mage_spell_t
 {
   nether_tempest_aoe_t( mage_t* p ) :
-    mage_spell_t( "nether_tempest_aoe", p, p -> find_spell( 114954 ) )
+    arcane_mage_spell_t( "nether_tempest_aoe", p, p -> find_spell( 114954 ) )
   {
     aoe = -1;
     background = true;
@@ -4044,12 +4084,12 @@ struct nether_tempest_aoe_t: public mage_spell_t
 };
 
 // Nether Tempest Spell ===========================================================
-struct nether_tempest_t : public mage_spell_t
+struct nether_tempest_t : public arcane_mage_spell_t
 {
   nether_tempest_aoe_t* nether_tempest_aoe;
 
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
+    arcane_mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
     nether_tempest_aoe( new nether_tempest_aoe_t( p ) )
   {
     parse_options( options_str );
@@ -4058,7 +4098,7 @@ struct nether_tempest_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4078,7 +4118,7 @@ struct nether_tempest_t : public mage_spell_t
       p() -> do_dynamic_regen();
     }
 
-    mage_spell_t::tick( d );
+    arcane_mage_spell_t::tick( d );
 
     action_state_t* aoe_state = nether_tempest_aoe -> get_state( d -> state );
     aoe_state -> target = d -> target;
@@ -4088,7 +4128,7 @@ struct nether_tempest_t : public mage_spell_t
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
-    double m = mage_spell_t::composite_persistent_multiplier( state );
+    double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
 
     m *= 1.0 +  p() -> buffs.arcane_charge -> stack() *
                 p() -> spec.arcane_charge -> effectN( 1 ).percent();
@@ -4358,10 +4398,10 @@ struct scorch_t : public mage_spell_t
 
 // Slow Spell ===============================================================
 
-struct slow_t : public mage_spell_t
+struct slow_t : public arcane_mage_spell_t
 {
   slow_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "slow", p, p -> find_class_spell( "Slow" ) )
+    arcane_mage_spell_t( "slow", p, p -> find_class_spell( "Slow" ) )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -4369,7 +4409,7 @@ struct slow_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -4380,10 +4420,10 @@ struct slow_t : public mage_spell_t
 
 // Supernova Spell ==========================================================
 
-struct supernova_t : public mage_spell_t
+struct supernova_t : public arcane_mage_spell_t
 {
   supernova_t( mage_t* p, const std::string& options_str ) :
-     mage_spell_t( "supernova", p, p -> talents.supernova )
+    arcane_mage_spell_t( "supernova", p, p -> talents.supernova )
   {
     parse_options( options_str );
     aoe = -1;
@@ -4393,7 +4433,7 @@ struct supernova_t : public mage_spell_t
 
   virtual void init() override
   {
-    mage_spell_t::init();
+    arcane_mage_spell_t::init();
 
     // NOTE: Cooldown missing from tooltip since WoD beta build 18379
     cooldown -> duration = timespan_t::from_seconds( 25.0 );
@@ -4402,7 +4442,7 @@ struct supernova_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) &&
          execute_state -> n_targets > 1 )
