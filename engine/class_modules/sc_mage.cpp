@@ -1557,51 +1557,6 @@ public:
       s -> crit += p() -> passives.shatter -> effectN( 2 ).percent();
   }
 
-  virtual void expire_heating_up() // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
-  {
-    mage_t* p = this -> p();
-
-    if ( ! travel_speed )
-    {
-      p -> buffs.heating_up -> expire();
-    }
-    else
-    {
-      // delay heating up removal
-      if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
-      p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
-    }
-  }
-
-  void trigger_hot_streak( action_state_t* s )
-  {
-    mage_t* p = this -> p();
-
-    p -> procs.test_for_crit_hotstreak -> occur();
-
-    if ( s -> result == RESULT_CRIT )
-    {
-      p -> procs.crit_for_hotstreak -> occur();
-
-      if ( ! p -> buffs.heating_up -> up() )
-      {
-        p -> buffs.heating_up -> trigger();
-      }
-      else
-      {
-        p -> procs.hotstreak  -> occur();
-        p -> buffs.heating_up -> expire();
-        p -> buffs.pyroblast  -> trigger();
-        if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B4 ) && p -> rppm_pyromaniac.trigger() )
-          p -> buffs.pyromaniac -> trigger();
-      }
-    }
-    else
-    {
-      if ( p -> buffs.heating_up -> up() ) expire_heating_up();
-    }
-  }
-
   void trigger_icicle_gain( action_state_t* state, stats_t* stats )
   {
     if ( ! p() -> spec.icicles -> ok() )
@@ -1704,7 +1659,6 @@ public:
     hasted_by_pom = false;
   }
 
-  void trigger_ignite( action_state_t* state );
   void trigger_unstable_magic( action_state_t* state );
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -1752,6 +1706,61 @@ public:
                        const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s )
   {}
+};
+
+
+// ============================================================================
+// Fire Mage Spell
+// ============================================================================
+//
+
+struct fire_mage_spell_t : public mage_spell_t
+{
+public:
+  fire_mage_spell_t( const std::string& n, mage_t* p,
+                     const spell_data_t* s = spell_data_t::nil() ) :
+    mage_spell_t( n, p, s )
+  {}
+
+  // Delay 0.25s the removal of heating up on non-critting spell
+  virtual void expire_heating_up()
+  {
+    mage_t* p = this -> p();
+
+    if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
+    p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
+  }
+
+  void trigger_hot_streak( action_state_t* s )
+  {
+    mage_t* p = this -> p();
+
+    p -> procs.test_for_crit_hotstreak -> occur();
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      p -> procs.crit_for_hotstreak -> occur();
+
+      if ( ! p -> buffs.heating_up -> up() )
+      {
+        p -> buffs.heating_up -> trigger();
+      }
+      else
+      {
+        p -> procs.hotstreak  -> occur();
+        p -> buffs.heating_up -> expire();
+        p -> buffs.pyroblast  -> trigger();
+        if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B4 ) && p -> rppm_pyromaniac.trigger() )
+          p -> buffs.pyromaniac -> trigger();
+      }
+    }
+    else
+    {
+      if ( p -> buffs.heating_up -> up() ) expire_heating_up();
+    }
+  }
+
+  void trigger_ignite( action_state_t* state );
 };
 
 
@@ -1898,7 +1907,7 @@ struct ignite_t : public residual_action_t
   }
 };
 
-void mage_spell_t::trigger_ignite( action_state_t* state )
+void fire_mage_spell_t::trigger_ignite( action_state_t* state )
 {
   mage_t& p = *this -> p();
   if ( ! p.active_ignite ) return;
@@ -2373,20 +2382,22 @@ struct arcane_power_t : public arcane_mage_spell_t
 
 // Blast Wave Spell ==========================================================
 
-struct blast_wave_t : public mage_spell_t
+struct blast_wave_t : public fire_mage_spell_t
 {
     blast_wave_t( mage_t* p, const std::string& options_str ) :
-       mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
+       fire_mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
     {
         parse_options( options_str );
-        base_multiplier *= 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
+
+        base_multiplier *= 1.0 + p -> talents.blast_wave
+                                   -> effectN( 1 ).percent();
         base_aoe_multiplier *= 0.5;
         aoe = -1;
     }
 
     virtual void init() override
     {
-        mage_spell_t::init();
+        fire_mage_spell_t::init();
 
         // NOTE: Cooldown missing from tooltip since WoD beta build 18379
         cooldown -> duration = timespan_t::from_seconds( 25.0 );
@@ -2547,12 +2558,13 @@ struct cold_snap_t : public mage_spell_t
 
 // Combustion Spell =========================================================
 
-struct combustion_t : public mage_spell_t
+struct combustion_t : public fire_mage_spell_t
 {
   const spell_data_t* tick_spell;
 
   combustion_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "combustion", p, p -> find_class_spell( "Combustion" ) ),
+    fire_mage_spell_t( "combustion", p,
+                       p -> find_class_spell( "Combustion" ) ),
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     tick_spell( p -> find_spell( 83853, "combustion_dot" ) )
   {
@@ -2618,7 +2630,7 @@ struct combustion_t : public mage_spell_t
 
     if ( ignite_dot -> is_ticking() )
     {
-      mage_spell_t::trigger_dot( s );
+      fire_mage_spell_t::trigger_dot( s );
 
       residual_periodic_state_t* combustion_dot_state_t = debug_cast<residual_periodic_state_t*>( combustion_dot -> state );
       const residual_periodic_state_t* ignite_dot_state_t = debug_cast<const residual_periodic_state_t*>( ignite_dot -> state );
@@ -2636,7 +2648,7 @@ struct combustion_t : public mage_spell_t
   {
     p() -> cooldowns.inferno_blast -> reset( false );
 
-    mage_spell_t::execute();
+    fire_mage_spell_t::execute();
   }
 
   double last_tick_factor( const dot_t* /* d */, const timespan_t& /* time_to_tick */,
@@ -2757,10 +2769,10 @@ struct counterspell_t : public mage_spell_t
 
 // Dragon's Breath Spell ====================================================
 
-struct dragons_breath_t : public mage_spell_t
+struct dragons_breath_t : public fire_mage_spell_t
 {
   dragons_breath_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "dragons_breath", p, p -> find_class_spell( "Dragon's Breath" ) )
+    fire_mage_spell_t( "dragons_breath", p, p -> find_class_spell( "Dragon's Breath" ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -2768,7 +2780,7 @@ struct dragons_breath_t : public mage_spell_t
 
   virtual double action_multiplier() const override
   {
-    double am = mage_spell_t::action_multiplier();
+    double am = fire_mage_spell_t::action_multiplier();
 
     if ( p() -> glyphs.dragons_breath -> ok() )
     {
@@ -2853,36 +2865,25 @@ public:
   }
 };
 
-// Fire Blast Spell =========================================================
-
-struct fire_blast_t : public mage_spell_t
-{
-  fire_blast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "fire_blast", p, p -> find_class_spell( "Fire Blast" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
 // Fireball Spell ===========================================================
 
-struct fireball_t : public mage_spell_t
+struct fireball_t : public fire_mage_spell_t
 {
   fireball_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
+    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
   }
 
   virtual timespan_t travel_time() const override
   {
-    timespan_t t = mage_spell_t::travel_time();
+    timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( timespan_t::from_seconds( 0.75 ), t );
   }
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2920,7 +2921,7 @@ struct fireball_t : public mage_spell_t
 
   double composite_target_crit( player_t* target ) const override
   {
-    double c = mage_spell_t::composite_target_crit( target );
+    double c = fire_mage_spell_t::composite_target_crit( target );
 
     // Fire PvP 4pc set bonus
     if ( td( target ) -> debuffs.firestarter -> check() )
@@ -2934,7 +2935,7 @@ struct fireball_t : public mage_spell_t
 
   virtual double composite_crit() const override
   {
-    double c = mage_spell_t::composite_crit();
+    double c = fire_mage_spell_t::composite_crit();
 
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger()
@@ -2945,7 +2946,7 @@ struct fireball_t : public mage_spell_t
 
   double composite_crit_multiplier() const override
   {
-    double m = mage_spell_t::composite_crit_multiplier();
+    double m = fire_mage_spell_t::composite_crit_multiplier();
 
     m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -2955,10 +2956,11 @@ struct fireball_t : public mage_spell_t
 
 // Flamestrike Spell ========================================================
 
-struct flamestrike_t : public mage_spell_t
+struct flamestrike_t : public fire_mage_spell_t
 {
   flamestrike_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "flamestrike", p, p -> find_specialization_spell( "Flamestrike" ) )
+    fire_mage_spell_t( "flamestrike", p,
+                       p -> find_specialization_spell( "Flamestrike" ) )
   {
     parse_options( options_str );
 
@@ -2973,7 +2975,7 @@ struct flamestrike_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
 
     if ( result_is_hit_or_multistrike( s -> result ) )
     {
@@ -3301,8 +3303,6 @@ struct frostfire_bolt_t : public mage_spell_t
         }
       }
 
-      trigger_hot_streak( s );
-
       if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
       {
         p() -> cooldowns.combustion
@@ -3313,11 +3313,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( result_is_hit_or_multistrike( s -> result ) )
     {
-      if ( p() -> specialization() == MAGE_FIRE )
-      {
-        trigger_ignite( s );
-      }
-      else if ( p() -> specialization() == MAGE_FROST )
+      if ( p() -> specialization() == MAGE_FROST )
       {
         trigger_icicle_gain( s, icicle );
       }
@@ -3700,14 +3696,14 @@ struct icy_veins_t : public mage_spell_t
 
 // Inferno Blast Spell ======================================================
 
-struct inferno_blast_t : public mage_spell_t
+struct inferno_blast_t : public fire_mage_spell_t
 {
   int max_spread_targets;
   double pyrosurge_chance;
   flamestrike_t* pyrosurge_flamestrike;
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "inferno_blast", p,
-                  p -> find_class_spell( "Inferno Blast" ) ),
+    fire_mage_spell_t( "inferno_blast", p,
+                       p -> find_class_spell( "Inferno Blast" ) ),
     pyrosurge_chance( 0.0 )
   {
     parse_options( options_str );
@@ -3741,7 +3737,7 @@ struct inferno_blast_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3844,7 +3840,7 @@ struct inferno_blast_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    fire_mage_spell_t::execute();
 
     if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) &&
          p() -> level() <= 90 )
@@ -3856,10 +3852,10 @@ struct inferno_blast_t : public mage_spell_t
 
 // Living Bomb Spell ========================================================
 
-struct living_bomb_explosion_t : public mage_spell_t
+struct living_bomb_explosion_t : public fire_mage_spell_t
 {
   living_bomb_explosion_t( mage_t* p ) :
-    mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
+    fire_mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
   {
     aoe = -1;
     radius = 10;
@@ -3870,12 +3866,12 @@ struct living_bomb_explosion_t : public mage_spell_t
   { return RESOURCE_NONE; }
 };
 
-struct living_bomb_t : public mage_spell_t
+struct living_bomb_t : public fire_mage_spell_t
 {
   living_bomb_explosion_t* explosion;
 
   living_bomb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
+    fire_mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
     explosion( new living_bomb_explosion_t( p ) )
   {
     parse_options( options_str );
@@ -3892,12 +3888,12 @@ struct living_bomb_t : public mage_spell_t
         explosion -> execute();
       }
     }
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
   }
 
   void last_tick( dot_t* d ) override
   {
-    mage_spell_t::last_tick( d );
+    fire_mage_spell_t::last_tick( d );
 
     explosion -> target = d -> target;
     explosion -> execute();
@@ -3919,10 +3915,10 @@ struct living_bomb_t : public mage_spell_t
 // None of these specify the 1 second falling duration given by Celestalon, so
 // we're forced to hardcode it.
 
-struct meteor_burn_t : public mage_spell_t
+struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets ) :
-    mage_spell_t( "meteor_burn", p, p -> find_spell( 155158 ) )
+    fire_mage_spell_t( "meteor_burn", p, p -> find_spell( 155158 ) )
   {
     background = true;
     aoe = targets;
@@ -3940,10 +3936,10 @@ struct meteor_burn_t : public mage_spell_t
   }
 };
 
-struct meteor_impact_t: public mage_spell_t
+struct meteor_impact_t: public fire_mage_spell_t
 {
   meteor_impact_t( mage_t* p, int targets ):
-    mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) )
+    fire_mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) )
   {
     background = true;
     aoe = targets;
@@ -3959,7 +3955,7 @@ struct meteor_impact_t: public mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
 
     if ( result_is_hit_or_multistrike( s -> result ) )
     {
@@ -3968,7 +3964,7 @@ struct meteor_impact_t: public mage_spell_t
   }
 };
 
-struct meteor_t : public mage_spell_t
+struct meteor_t : public fire_mage_spell_t
 {
   int targets;
   meteor_impact_t* meteor_impact;
@@ -3976,7 +3972,7 @@ struct meteor_t : public mage_spell_t
   timespan_t meteor_delay;
   timespan_t actual_tick_time;
   meteor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
+    fire_mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
     targets( -1 ),
     meteor_impact( new meteor_impact_t( p, targets ) ),
     meteor_burn( new meteor_burn_t( p, targets ) ),
@@ -4006,7 +4002,7 @@ struct meteor_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     base_tick_time = timespan_t::from_seconds( 2 ); // Yep. Don't hate. Need to make the dot tick 1 second after impact.
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
     meteor_impact -> target = s -> target;
     meteor_impact -> execute();
     base_tick_time = actual_tick_time;
@@ -4014,7 +4010,7 @@ struct meteor_t : public mage_spell_t
 
   void tick( dot_t* d ) override
   {
-    mage_spell_t::tick( d );
+    fire_mage_spell_t::tick( d );
     meteor_burn -> target = d -> target;
     meteor_burn -> execute();
   }
@@ -4140,10 +4136,10 @@ struct nether_tempest_t : public arcane_mage_spell_t
 // Pyroblast Spell ==========================================================
 
 //Mage T18 2pc Fire Set Bonus
-struct conjure_phoenix_t : public mage_spell_t
+struct conjure_phoenix_t : public fire_mage_spell_t
 {
   conjure_phoenix_t( mage_t* p ) :
-    mage_spell_t( "conjure_phoenix", p, p -> find_spell( 186181 ) )
+    fire_mage_spell_t( "conjure_phoenix", p, p -> find_spell( 186181 ) )
   {
     background = true;
     callbacks = false;
@@ -4151,7 +4147,7 @@ struct conjure_phoenix_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    fire_mage_spell_t::execute();
 
     if ( p() -> sets.has_set_bonus( MAGE_FIRE, T18, B4 ) )
       p() -> buffs.icarus_uprising -> trigger();
@@ -4159,7 +4155,7 @@ struct conjure_phoenix_t : public mage_spell_t
 
 };
 
-struct pyroblast_t : public mage_spell_t
+struct pyroblast_t : public fire_mage_spell_t
 {
   bool is_hot_streak,
        dot_is_hot_streak;
@@ -4167,7 +4163,7 @@ struct pyroblast_t : public mage_spell_t
   conjure_phoenix_t* conjure_phoenix;
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
+    fire_mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
     is_hot_streak( false ), dot_is_hot_streak( false ),
     conjure_phoenix( nullptr )
   {
@@ -4182,7 +4178,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
-    mage_spell_t::schedule_execute( state );
+    fire_mage_spell_t::schedule_execute( state );
 
     p() -> buffs.pyroblast -> up();
   }
@@ -4194,7 +4190,7 @@ struct pyroblast_t : public mage_spell_t
       return timespan_t::zero();
     }
 
-    return mage_spell_t::execute_time();
+    return fire_mage_spell_t::execute_time();
   }
 
   virtual double cost() const override
@@ -4202,12 +4198,12 @@ struct pyroblast_t : public mage_spell_t
     if ( p() -> buffs.pyroblast -> check() || p() -> buffs.pyromaniac -> check() )
       return 0.0;
 
-    return mage_spell_t::cost();
+    return fire_mage_spell_t::cost();
   }
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    fire_mage_spell_t::execute();
 
     if ( p() -> buffs.pyroblast -> check() && p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
@@ -4222,7 +4218,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    timespan_t t = mage_spell_t::travel_time();
+    timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( t, timespan_t::from_seconds( 0.75 ) );
   }
 
@@ -4230,7 +4226,7 @@ struct pyroblast_t : public mage_spell_t
   {
     dot_is_hot_streak = is_hot_streak;
 
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -4264,7 +4260,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual double composite_crit_multiplier() const override
   {
-    double m = mage_spell_t::composite_crit_multiplier();
+    double m = fire_mage_spell_t::composite_crit_multiplier();
 
     m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -4273,7 +4269,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual double composite_crit() const override
   {
-    double c = mage_spell_t::composite_crit();
+    double c = fire_mage_spell_t::composite_crit();
 
     c += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent();
 
@@ -4285,7 +4281,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual double action_da_multiplier() const override
   {
-    double am = mage_spell_t::action_da_multiplier();
+    double am = fire_mage_spell_t::action_da_multiplier();
 
     if ( p() -> buffs.pyroblast -> up() )
     {
@@ -4297,7 +4293,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual double action_ta_multiplier() const override
   {
-    double am = mage_spell_t::action_ta_multiplier();
+    double am = fire_mage_spell_t::action_ta_multiplier();
 
     if ( dot_is_hot_streak )
     {
@@ -4309,7 +4305,7 @@ struct pyroblast_t : public mage_spell_t
 
   void reset() override
   {
-    mage_spell_t::reset();
+    fire_mage_spell_t::reset();
 
     is_hot_streak = false;
     dot_is_hot_streak = false;
@@ -4340,10 +4336,11 @@ struct rune_of_power_t : public mage_spell_t
 
 // Scorch Spell =============================================================
 
-struct scorch_t : public mage_spell_t
+struct scorch_t : public fire_mage_spell_t
 {
   scorch_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "scorch", p, p -> find_specialization_spell( "Scorch" ) )
+    fire_mage_spell_t( "scorch", p,
+                       p -> find_specialization_spell( "Scorch" ) )
   {
     parse_options( options_str );
 
@@ -4352,7 +4349,7 @@ struct scorch_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    fire_mage_spell_t::execute();
 
     if ( p() -> perks.improved_scorch -> ok() )
     {
@@ -4362,7 +4359,7 @@ struct scorch_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result) )
     {
@@ -4377,7 +4374,7 @@ struct scorch_t : public mage_spell_t
 
   double composite_crit_multiplier() const override
   {
-    double m = mage_spell_t::composite_crit_multiplier();
+    double m = fire_mage_spell_t::composite_crit_multiplier();
 
     m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -5190,7 +5187,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
   if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
-  if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
