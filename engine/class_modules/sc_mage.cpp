@@ -1543,42 +1543,26 @@ public:
 
   virtual double composite_crit_multiplier() const override
   {
-    double m = spell_t::composite_crit_multiplier();
+    double m = mage_spell_t::composite_crit_multiplier();
+
     if ( frozen && p() -> passives.shatter -> ok() )
-      m *= 1.5;
+    {
+      m *= 1.0 + p() -> passives.shatter -> effectN( 2 ).percent();
+    }
+
     return m;
   }
 
-  void snapshot_internal( action_state_t* s, uint32_t flags, dmg_e rt ) override
+  void snapshot_internal( action_state_t* s, uint32_t flags,
+                          dmg_e rt ) override
   {
     spell_t::snapshot_internal( s, flags, rt );
+
     // Shatter's +50% crit bonus needs to be added after multipliers etc
     if ( ( flags & STATE_CRIT ) && frozen && p() -> passives.shatter -> ok() )
+    {
       s -> crit += p() -> passives.shatter -> effectN( 2 ).percent();
-  }
-
-  void trigger_icicle_gain( action_state_t* state, stats_t* stats )
-  {
-    if ( ! p() -> spec.icicles -> ok() )
-      return;
-
-    if ( ! result_is_hit_or_multistrike( state -> result ) )
-      return;
-
-    // Icicles do not double dip on target based multipliers
-    double amount = state -> result_amount / ( state -> target_da_multiplier * state -> versatility ) * p() -> cache.mastery_value();
-
-    assert( as<int>( p() -> icicles.size() ) <= p() -> spec.icicles -> effectN( 2 ).base_value() );
-    // Shoot one
-    if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
-      p() -> trigger_icicle( state );
-    p() -> icicles.push_back( icicle_tuple_t( p() -> sim -> current_time(), icicle_data_t( amount, stats ) ) );
-
-    if ( p() -> sim -> debug )
-      p() -> sim -> out_debug.printf( "%s icicle gain, damage=%f, total=%u",
-                                      p() -> name(),
-                                      amount,
-                                      as<unsigned>(p() -> icicles.size() ) );
+    }
   }
 
   virtual void execute() override
@@ -1764,6 +1748,48 @@ public:
 };
 
 
+// ============================================================================
+// Frost Mage Spell
+// ============================================================================
+//
+
+struct frost_mage_spell_t : public mage_spell_t
+{
+  bool frozen;
+
+public:
+  frost_mage_spell_t( const std::string& n, mage_t* p,
+                      const spell_data_t* s = spell_data_t::nil() ) :
+    mage_spell_t( n, p, s ),
+    frozen( false )
+  {}
+
+  void trigger_icicle_gain( action_state_t* state, stats_t* stats )
+  {
+    if ( ! p() -> spec.icicles -> ok() )
+      return;
+
+    if ( ! result_is_hit_or_multistrike( state -> result ) )
+      return;
+
+    // Icicles do not double dip on target based multipliers
+    double amount = state -> result_amount / ( state -> target_da_multiplier * state -> versatility ) * p() -> cache.mastery_value();
+
+    assert( as<int>( p() -> icicles.size() ) <= p() -> spec.icicles -> effectN( 2 ).base_value() );
+    // Shoot one
+    if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
+      p() -> trigger_icicle( state );
+    p() -> icicles.push_back( icicle_tuple_t( p() -> sim -> current_time(), icicle_data_t( amount, stats ) ) );
+
+    if ( p() -> sim -> debug )
+      p() -> sim -> out_debug.printf( "%s icicle gain, damage=%f, total=%u",
+                                      p() -> name(),
+                                      amount,
+                                      as<unsigned>(p() -> icicles.size() ) );
+  }
+};
+
+
 typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
 
 // Icicles ==================================================================
@@ -1790,10 +1816,10 @@ struct icicle_state_t : public action_state_t
   }
 };
 
-struct icicle_t : public mage_spell_t
+struct icicle_t : public frost_mage_spell_t
 {
   icicle_t( mage_t* p ) :
-    mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
+    frost_mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
   {
     may_crit = false;
     may_multistrike = 0;
@@ -1817,7 +1843,7 @@ struct icicle_t : public mage_spell_t
     assert( is -> source );
     stats = is -> source;
 
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
   }
 
   // Due to the mage targeting system, the pre_execute_state in is emptied by
@@ -1830,7 +1856,7 @@ struct icicle_t : public mage_spell_t
     icicle_state_t* is = debug_cast<icicle_state_t*>( state );
     is -> source = stats;
 
-    mage_spell_t::schedule_travel( state );
+    frost_mage_spell_t::schedule_travel( state );
   }
 
   // And again, once the icicle impacts, we set the stats object here again
@@ -1850,7 +1876,7 @@ struct icicle_t : public mage_spell_t
     assert( is -> source );
     stats = is -> source;
 
-    mage_spell_t::impact( state );
+    frost_mage_spell_t::impact( state );
   }
 
   action_state_t* new_state() override
@@ -1858,7 +1884,7 @@ struct icicle_t : public mage_spell_t
 
   void init() override
   {
-    mage_spell_t::init();
+    frost_mage_spell_t::init();
 
     snapshot_flags &= ~( STATE_MUL_DA | STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
   }
@@ -2457,10 +2483,10 @@ struct blink_t : public mage_spell_t
 
 // Blizzard Spell ===========================================================
 
-struct blizzard_shard_t : public mage_spell_t
+struct blizzard_shard_t : public frost_mage_spell_t
 {
   blizzard_shard_t( mage_t* p ) :
-    mage_spell_t( "blizzard_shard", p, p -> find_class_spell( "Blizzard" ) -> effectN( 2 ).trigger() )
+    frost_mage_spell_t( "blizzard_shard", p, p -> find_class_spell( "Blizzard" ) -> effectN( 2 ).trigger() )
   {
     aoe = -1;
     background = true;
@@ -2475,7 +2501,7 @@ struct blizzard_shard_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2494,12 +2520,12 @@ struct blizzard_shard_t : public mage_spell_t
   }
 };
 
-struct blizzard_t : public mage_spell_t
+struct blizzard_t : public frost_mage_spell_t
 {
   blizzard_shard_t* shard;
 
   blizzard_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "blizzard", p, p -> find_specialization_spell( "Blizzard" ) ),
+    frost_mage_spell_t( "blizzard", p, p -> find_specialization_spell( "Blizzard" ) ),
     shard( new blizzard_shard_t( p ) )
   {
     parse_options( options_str );
@@ -2514,7 +2540,7 @@ struct blizzard_t : public mage_spell_t
 
   void tick( dot_t* d ) override
   {
-    mage_spell_t::tick( d );
+    frost_mage_spell_t::tick( d );
 
     shard -> execute();
   }
@@ -2660,10 +2686,10 @@ struct combustion_t : public fire_mage_spell_t
 
 // Comet Storm Spell =======================================================
 
-struct comet_storm_projectile_t : public mage_spell_t
+struct comet_storm_projectile_t : public frost_mage_spell_t
 {
   comet_storm_projectile_t( mage_t* p) :
-    mage_spell_t( "comet_storm_projectile", p, p -> find_spell( 153596 ) )
+    frost_mage_spell_t( "comet_storm_projectile", p, p -> find_spell( 153596 ) )
   {
     aoe = -1;
     split_aoe_damage = true;
@@ -2677,12 +2703,12 @@ struct comet_storm_projectile_t : public mage_spell_t
   }
 };
 
-struct comet_storm_t : public mage_spell_t
+struct comet_storm_t : public frost_mage_spell_t
 {
   comet_storm_projectile_t* projectile;
 
   comet_storm_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "comet_storm", p, p -> talents.comet_storm ),
+    frost_mage_spell_t( "comet_storm", p, p -> talents.comet_storm ),
     projectile( new comet_storm_projectile_t( p ) )
   {
     parse_options( options_str );
@@ -2699,13 +2725,13 @@ struct comet_storm_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
     projectile -> execute();
   }
 
   void tick( dot_t* d ) override
   {
-    mage_spell_t::tick( d );
+    frost_mage_spell_t::tick( d );
     projectile -> execute();
   }
 };
@@ -2986,10 +3012,10 @@ struct flamestrike_t : public fire_mage_spell_t
 
 // Frost Bomb Spell ===============================================================
 
-struct frost_bomb_explosion_t : public mage_spell_t
+struct frost_bomb_explosion_t : public frost_mage_spell_t
 {
   frost_bomb_explosion_t( mage_t* p ) :
-    mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
+    frost_mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
   {
     background = true;
     callbacks = false;
@@ -3007,17 +3033,17 @@ struct frost_bomb_explosion_t : public mage_spell_t
   { return timespan_t::zero(); }
 };
 
-struct frost_bomb_t : public mage_spell_t
+struct frost_bomb_t : public frost_mage_spell_t
 {
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
+    frost_mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
   {
     parse_options( options_str );
   }
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -3033,7 +3059,7 @@ struct frost_bomb_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3044,7 +3070,7 @@ struct frost_bomb_t : public mage_spell_t
 
 // Frostbolt Spell ==========================================================
 
-struct frostbolt_t : public mage_spell_t
+struct frostbolt_t : public frost_mage_spell_t
 {
   double bf_multistrike_bonus;
   timespan_t enhanced_frostbolt_duration;
@@ -3054,7 +3080,8 @@ struct frostbolt_t : public mage_spell_t
   stats_t* icicle;
 
   frostbolt_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frostbolt", p, p -> find_specialization_spell( "Frostbolt" ) ),
+    frost_mage_spell_t( "frostbolt", p,
+                        p -> find_specialization_spell( "Frostbolt" ) ),
     bf_multistrike_bonus( 0.0 ),
     enhanced_frostbolt_duration( p -> find_spell( 157648 ) -> duration() ),
     icicle( p -> get_stats( "icicle_fb" ) )
@@ -3076,12 +3103,14 @@ struct frostbolt_t : public mage_spell_t
       p() -> buffs.enhanced_frostbolt -> trigger();
     }
 
-    mage_spell_t::schedule_execute( execute_state );
+    frost_mage_spell_t::schedule_execute( execute_state );
   }
 
-  virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier ) override
+  virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type,
+                                    double tick_multiplier ) override
   {
-    int sm = mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
+    int sm = frost_mage_spell_t::schedule_multistrike( s, dmg_type,
+                                                       tick_multiplier );
 
     bf_multistrike_bonus = sm * p() -> spec.brain_freeze
                                     -> effectN( 2 ).percent();
@@ -3091,19 +3120,28 @@ struct frostbolt_t : public mage_spell_t
 
   virtual timespan_t execute_time() const override
   {
-    timespan_t cast = mage_spell_t::execute_time();
+    timespan_t cast = frost_mage_spell_t::execute_time();
 
     if ( p() -> buffs.enhanced_frostbolt -> check() )
-      cast *= 1.0 + p() -> perks.enhanced_frostbolt -> effectN( 1 ).time_value().total_seconds() /
-                  base_execute_time.total_seconds();
+    {
+      cast *= 1.0 + ( p() -> perks.enhanced_frostbolt
+                          -> effectN( 1 ).time_value().total_seconds() /
+                      base_execute_time.total_seconds() );
+    }
+
     if ( p() -> buffs.ice_shard -> up() )
-      cast *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 1 ).percent() );
+    {
+      cast *= 1.0 + ( p() -> buffs.ice_shard -> stack() *
+                      p() -> buffs.ice_shard
+                          -> data().effectN( 1 ).percent() );
+    }
+
     return cast;
   }
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
 
     if ( p() -> buffs.enhanced_frostbolt -> up() )
     {
@@ -3116,7 +3154,8 @@ struct frostbolt_t : public mage_spell_t
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 1 ).percent();
 
-      fof_proc_chance += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 3 ).percent();
+      fof_proc_chance += p() -> sets.set( SET_CASTER, T15, B4 )
+                             -> effectN( 3 ).percent();
 
       if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
@@ -3141,7 +3180,7 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    frost_mage_spell_t::impact( s );
 
     if ( result_is_hit_or_multistrike( s -> result ) )
     {
@@ -3168,7 +3207,7 @@ struct frostbolt_t : public mage_spell_t
 
   virtual double action_multiplier() const override
   {
-    double am = mage_spell_t::action_multiplier();
+    double am = frost_mage_spell_t::action_multiplier();
 
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
@@ -3187,10 +3226,10 @@ struct frostbolt_t : public mage_spell_t
 // Frostfire Bolt Spell =====================================================
 
 // Cast by Frost T16 4pc bonus when Brain Freeze FFB is cast
-struct frigid_blast_t : public mage_spell_t
+struct frigid_blast_t : public frost_mage_spell_t
 {
   frigid_blast_t( mage_t* p ) :
-    mage_spell_t( "frigid_blast", p, p -> find_spell( 145264 ) )
+    frost_mage_spell_t( "frigid_blast", p, p -> find_spell( 145264 ) )
   {
     background = true;
     may_crit = true;
@@ -3313,11 +3352,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( result_is_hit_or_multistrike( s -> result ) )
     {
-      if ( p() -> specialization() == MAGE_FROST )
-      {
-        trigger_icicle_gain( s, icicle );
-      }
-
       if ( p() -> talents.unstable_magic -> ok() )
       {
         trigger_unstable_magic( s );
@@ -3390,10 +3424,13 @@ struct frostfire_bolt_t : public mage_spell_t
 
 // Frozen Orb Spell =========================================================
 
-struct frozen_orb_bolt_t : public mage_spell_t
+struct frozen_orb_bolt_t : public frost_mage_spell_t
 {
   frozen_orb_bolt_t( mage_t* p ) :
-    mage_spell_t( "frozen_orb_bolt", p, p -> find_class_spell( "Frozen Orb" ) -> ok() ? p -> find_spell( 84721 ) : spell_data_t::not_found() )
+    frost_mage_spell_t( "frozen_orb_bolt", p,
+                        p -> find_class_spell( "Frozen Orb" ) -> ok() ?
+                          p -> find_spell( 84721 ) :
+                          spell_data_t::not_found() )
   {
     aoe = -1;
     background = true;
@@ -3403,7 +3440,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3421,11 +3458,12 @@ struct frozen_orb_bolt_t : public mage_spell_t
   }
 };
 
-struct frozen_orb_t : public mage_spell_t
+struct frozen_orb_t : public frost_mage_spell_t
 {
   frozen_orb_bolt_t* frozen_orb_bolt;
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frozen_orb", p, p -> find_class_spell( "Frozen Orb" ) ),
+    frost_mage_spell_t( "frozen_orb", p,
+                        p -> find_class_spell( "Frozen Orb" ) ),
     frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
   {
     parse_options( options_str );
@@ -3440,7 +3478,7 @@ struct frozen_orb_t : public mage_spell_t
 
   void tick( dot_t* d ) override
   {
-    mage_spell_t::tick( d );
+    frost_mage_spell_t::tick( d );
     // "travel time" reduction of ticks based on distance from target - set on the side of less ticks lost.
     if ( d -> current_tick <= ( d -> num_ticks - util::round( ( ( player -> current.distance - 16.0 ) / 16.0 ), 0 ) ) )
     {
@@ -3451,7 +3489,7 @@ struct frozen_orb_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
 
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
@@ -3461,7 +3499,7 @@ struct frozen_orb_t : public mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::impact( s );
+    frost_mage_spell_t::impact( s );
 
     p() -> buffs.fingers_of_frost
         -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
@@ -3510,7 +3548,7 @@ struct ice_floes_t : public mage_spell_t
 
 // Ice Lance Spell ==========================================================
 
-struct ice_lance_t : public mage_spell_t
+struct ice_lance_t : public frost_mage_spell_t
 {
   int frozen_orb_action_id;
   frost_bomb_explosion_t* frost_bomb_explosion;
@@ -3518,7 +3556,7 @@ struct ice_lance_t : public mage_spell_t
   double shatterlance_effect;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
+    frost_mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     frost_bomb_explosion( nullptr ),
     shatterlance_effect( 0.0 )
   {
@@ -3549,11 +3587,14 @@ struct ice_lance_t : public mage_spell_t
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> up() != 0;
 
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
 
-    if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> check() )
+    if ( p() -> talents.thermal_void -> ok() &&
+         p() -> buffs.icy_veins -> check() )
     {
-      p() -> buffs.icy_veins -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.thermal_void -> effectN( 1 ).base_value() ) );
+      timespan_t tv_extension = p() -> talents.thermal_void
+                                    -> effectN( 1 ).time_value() * 1000;
+      p() -> buffs.icy_veins -> extend_duration( p(), tv_extension);
     }
 
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) &&
@@ -3584,7 +3625,7 @@ struct ice_lance_t : public mage_spell_t
       return 0;
     }
 
-    return mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
+    return frost_mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3596,7 +3637,7 @@ struct ice_lance_t : public mage_spell_t
       return;
     }
 
-    mage_spell_t::impact( s );
+    frost_mage_spell_t::impact( s );
 
     if ( td( s -> target ) -> debuffs.frost_bomb -> check() &&
          frozen && result_is_hit( s -> result ) )
@@ -3608,14 +3649,14 @@ struct ice_lance_t : public mage_spell_t
 
   virtual void init() override
   {
-    mage_spell_t::init();
+    frost_mage_spell_t::init();
 
     frozen_orb_action_id = p() -> find_action_id( "frozen_orb" );
   }
 
   virtual double action_multiplier() const override
   {
-    double am = mage_spell_t::action_multiplier();
+    double am = frost_mage_spell_t::action_multiplier();
 
     if ( frozen )
     {
@@ -3648,10 +3689,10 @@ struct ice_lance_t : public mage_spell_t
 
 // Ice Nova Spell ==========================================================
 
-struct ice_nova_t : public mage_spell_t
+struct ice_nova_t : public frost_mage_spell_t
 {
   ice_nova_t( mage_t* p, const std::string& options_str ) :
-     mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
+     frost_mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
   {
     parse_options( options_str );
     base_multiplier *= 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
@@ -3661,7 +3702,7 @@ struct ice_nova_t : public mage_spell_t
 
   virtual void init() override
   {
-    mage_spell_t::init();
+    frost_mage_spell_t::init();
 
     // NOTE: Cooldown missing from tooltip since WoD beta build 18379
     cooldown -> duration = timespan_t::from_seconds( 25.0 );
@@ -3671,10 +3712,10 @@ struct ice_nova_t : public mage_spell_t
 
 // Icy Veins Spell ==========================================================
 
-struct icy_veins_t : public mage_spell_t
+struct icy_veins_t : public frost_mage_spell_t
 {
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "icy_veins", p, p -> find_class_spell( "Icy Veins" ) )
+    frost_mage_spell_t( "icy_veins", p, p -> find_class_spell( "Icy Veins" ) )
   {
     check_spec( MAGE_FROST );
     parse_options( options_str );
@@ -3688,7 +3729,7 @@ struct icy_veins_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
 
     p() -> buffs.icy_veins -> trigger();
   }
@@ -4492,10 +4533,10 @@ struct time_warp_t : public mage_spell_t
 
 // Water Elemental Spell ====================================================
 
-struct summon_water_elemental_t : public mage_spell_t
+struct summon_water_elemental_t : public frost_mage_spell_t
 {
   summon_water_elemental_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
+    frost_mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -4505,14 +4546,14 @@ struct summon_water_elemental_t : public mage_spell_t
 
   virtual void execute() override
   {
-    mage_spell_t::execute();
+    frost_mage_spell_t::execute();
 
     p() -> pets.water_elemental -> summon();
   }
 
   virtual bool ready() override
   {
-    if ( ! mage_spell_t::ready() )
+    if ( ! frost_mage_spell_t::ready() )
       return false;
 
     return ! ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> is_sleeping() );
