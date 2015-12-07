@@ -293,6 +293,7 @@ public:
     buff_t* moonkin_form;
     buff_t* owlkin_frenzy;
     buff_t* solar_empowerment;
+    buff_t* star_power; // Moon and Stars artifact medal
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
 
@@ -564,17 +565,17 @@ public:
   struct artifact_spell_data_t
   {
     // Balance -- Scythe of Elune
-    artifact_power_t falling_star;
-    artifact_power_t dark_side_of_the_moon;
-    artifact_power_t scythe_of_the_stars;
-    artifact_power_t empowerment;
-    artifact_power_t twilight_glow;
-    artifact_power_t sunfire_burns;
-    artifact_power_t solar_stabbing;
     artifact_power_t bladed_feathers;
+    artifact_power_t dark_side_of_the_moon;
+    artifact_power_t empowerment;
+    artifact_power_t falling_star;
+    artifact_power_t new_moon;
+    artifact_power_t scythe_of_the_stars;
+    artifact_power_t solar_stabbing;
+    artifact_power_t sunfire_burns;
+    artifact_power_t twilight_glow;
 
     // NYI
-    artifact_power_t new_moon;
     artifact_power_t moon_and_stars;
     artifact_power_t power_of_goldrinn;
     artifact_power_t scion_of_the_night_sky;
@@ -674,6 +675,7 @@ public:
   virtual double    composite_persistent_multiplier( school_e ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    temporary_movement_modifier() const override;
   virtual double    passive_movement_modifier() const override;
@@ -1165,6 +1167,29 @@ struct cat_form_t : public druid_buff_t< buff_t >
   }
 };
 
+// Celestial Alignment Buff ====================================================
+
+struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
+{
+  druid_t* druid;
+
+  celestial_alignment_buff_t( druid_t& p ) :
+    druid_buff_t<buff_t>( p, buff_creator_t( &p, "celestial_alignment", p.spec.celestial_alignment )
+               .cd( timespan_t::zero() ) // handled by spell
+               .default_value( p.spec.celestial_alignment -> effectN( 1 ).percent() ) ),
+    druid( &p )
+  {}
+
+  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
+  {
+    druid_buff_t<buff_t>::expire_override( stacks, duration );
+
+    druid -> buff.star_power -> expire();
+  }
+};
+
+
+
 // Earthwarden Driver Buff ============================================================
 
 struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
@@ -1180,7 +1205,7 @@ struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
   static void earthwarden_driver_tick( buff_t* buff, int, int )
   {
     druid_t* p = debug_cast<druid_t*>( buff -> player );
-    p -> buff.earthwarden -> increment();
+    p -> buff.earthwarden -> trigger();
   }
 
   void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
@@ -1188,7 +1213,7 @@ struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
     druid_buff_t<buff_t>::start( stacks, value, duration );
 
     // Emulate tick_zero behavior.
-    druid -> buff.earthwarden -> increment();
+    druid -> buff.earthwarden -> trigger();
   }
 };
 
@@ -1228,7 +1253,7 @@ struct ironfur_buff_t : public druid_buff_t < buff_t >
   {
     druid_buff_t<buff_t>::start( stacks, value, duration );
 
-    p().buff.ironfur -> increment();
+    p().buff.ironfur -> trigger();
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1629,14 +1654,21 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       }
     }
 
-    p() -> buff.owlkin_frenzy -> up();
+    if ( harmful && trigger_gcd > timespan_t::zero() )
+      p() -> buff.star_power -> up();
 
     spell_t::execute();
 
     if ( base_execute_time > timespan_t::zero() )
+    {
+      p() -> buff.owlkin_frenzy -> up();
       p() -> buff.owlkin_frenzy -> decrement();
+    }
 
     trigger_astral_power_gain( ap_per_cast );
+
+    if ( p() -> artifact.moon_and_stars.rank() && p() -> buff.celestial_alignment -> check() && ! background )
+      p() -> buff.star_power -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1649,6 +1681,9 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual void tick( dot_t* d ) override
   {
+    if ( hasted_ticks && d -> state -> result_amount > 0 )
+      p() -> buff.star_power -> up();
+
     spell_t::tick( d );
 
     if ( result_is_hit( d -> state -> result ) )
@@ -1761,6 +1796,7 @@ struct shooting_stars_t : public druid_spell_t
     druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) ),
     proc_chance( 0.50 ) // not in spell data, tested Dec 3 2015
   {
+    background = true;
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 };
@@ -4264,7 +4300,7 @@ struct collapsing_stars_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! refresh )
-      p() -> buff.collapsing_stars_up -> increment();
+      p() -> buff.collapsing_stars_up -> trigger();
   }
 
   void cancel() override
@@ -5814,9 +5850,7 @@ void druid_t::create_buffs()
 
   buff.blessing_of_elune         = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
 
-  buff.celestial_alignment       = buff_creator_t( this, "celestial_alignment", spec.celestial_alignment )
-                                   .cd( timespan_t::zero() ) // handled by spell
-                                   .default_value( spec.celestial_alignment -> effectN( 1 ).percent() );
+  buff.celestial_alignment       = new celestial_alignment_buff_t( *this );
 
   buff.collapsing_stars_up       = buff_creator_t( this, "collapsing_stars_up", spell_data_t::nil() )
                                    .max_stack( 10 ); // Tracking buff for APL use
@@ -5833,6 +5867,10 @@ void druid_t::create_buffs()
                                    .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
                                                  + talent.soul_of_the_forest -> effectN( 1 ).percent()
                                                  + artifact.empowerment.percent() );
+
+  buff.star_power                = buff_creator_t( this, "star_power", find_spell( 202942 ) )
+                                   .default_value( find_spell( 202942 ) -> effectN( 1 ).percent() )
+                                   .add_invalidate( CACHE_SPELL_HASTE );
 
   buff.warrior_of_elune          = new warrior_of_elune_buff_t( *this );
 
@@ -6761,6 +6799,17 @@ double druid_t::composite_spell_crit() const
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
+}
+
+// druid_t::composite_spell_haste ============================================
+
+double druid_t::composite_spell_haste() const
+{
+  double sh = player_t::composite_spell_haste();
+
+  sh /= 1.0 + buff.star_power -> current_value * buff.star_power -> current_stack;
+
+  return sh;
 }
 
 // druid_t::composite_spell_power ===========================================
