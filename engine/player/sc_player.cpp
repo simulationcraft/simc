@@ -371,8 +371,7 @@ bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
   {
     ret = sim -> active_player -> parse_artifact_wowdb( value );
   }
-  // Otherwise, if the string is exactly 9 or 8 characters, presume it's a shortened wowdb string
-  else if ( value.size() == 8 || value.size() == 9 )
+  else if ( value.size() >= 9 )
   {
     ret = sim -> active_player -> parse_artifact_wowdb( value );
   }
@@ -7401,8 +7400,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
 {
   auto data_offset = artifact_string.find( '#' );
-  if ( data_offset == std::string::npos && artifact_string.size() != 8 &&
-       artifact_string.size() != 9 )
+  if ( data_offset == std::string::npos && artifact_string.size() < 9 )
   {
     return false;
   }
@@ -7411,22 +7409,12 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
   // Full url
   if ( data_offset != std::string::npos )
   {
-    artifact_data = artifact_string.substr( data_offset + 2 );
-  }
-  // Only the actual artifact data (AAAAAAAA)
-  else if ( artifact_string.size() == 8 )
-  {
-    artifact_data = artifact_string;
+    artifact_data = artifact_string.substr( data_offset + 2, 8 );
   }
   // Spec + artifact data, we skip the spec for now (dAAAAAAAA)
-  else if ( artifact_string.size() == 9 )
+  else
   {
-    artifact_data = artifact_string.substr( 1 );
-  }
-
-  if ( artifact_data.size() * 2 != artifact_points.size() )
-  {
-    return false;
+    artifact_data = artifact_string.substr( 1, 8 );
   }
 
   static const std::string decode( "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmonpqrstuvwxyz" );
@@ -7439,8 +7427,8 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
       continue;
     }
 
-    artifact_points[ idx * 2 ] = value & 0xF;
-    artifact_points[ idx * 2 + 1 ] = (value & 0xF0) >> 4;
+    artifact_points[ idx * 2 ] = value & 0x7;
+    artifact_points[ idx * 2 + 1 ] = (value & 0x38) >> 3;
   }
 
   return true;

@@ -4849,8 +4849,6 @@ struct moonkin_form_t : public druid_spell_t
 
     harmful           = false;
     ignore_false_positive = true;
-
-    base_costs[ RESOURCE_MANA ] = 0;
   }
 
   void execute() override
@@ -5173,7 +5171,20 @@ struct starshards_t : public starfall_t
 
 struct starsurge_t : public druid_spell_t
 {
+  struct goldrinns_fang_t : public druid_spell_t
+  {
+    goldrinns_fang_t( druid_t* player ) :
+      druid_spell_t( "goldrinns_fang", player, player -> find_spell( 203001 ) )
+    {
+      background = true;
+      may_miss = false;
+      aoe = -1;
+      radius = 5.0; // placeholder radius since the spell data has none
+    }
+  };
+
   double starshards_chance;
+  goldrinns_fang_t* power_of_goldrinn;
 
   starsurge_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge") ),
@@ -5190,6 +5201,12 @@ struct starsurge_t : public druid_spell_t
 
     if ( player -> starshards )
       starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
+
+    if ( player -> artifact.power_of_goldrinn.rank() )
+    {
+      power_of_goldrinn = new goldrinns_fang_t( player );
+      add_child( power_of_goldrinn );
+    }
   }
 
   double action_multiplier() const override
@@ -5206,9 +5223,15 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
     if ( result_is_hit( execute_state -> result ) )
     {
+      if ( p() -> artifact.power_of_goldrinn.rank() )
+      {
+        power_of_goldrinn -> target = target;
+        power_of_goldrinn -> execute();
+      }
+
+      // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
       p() -> buff.solar_empowerment -> trigger();
       p() -> buff.lunar_empowerment -> trigger();
     }
@@ -6977,7 +7000,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   {
     return make_ref_expr( "active_rejuvenations", active_rejuvenations );
   }
-  else if ( util::str_compare_ci( name_str, "active_rejuvenations" ) )
+  else if ( util::str_compare_ci( name_str, "active_starfalls" ) )
   {
     return make_ref_expr( "active_starfalls", active_starfalls );
   }
