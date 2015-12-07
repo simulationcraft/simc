@@ -1274,8 +1274,10 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 {
   moonkin_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "moonkin_form", p.spec.moonkin_form )
-               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  { }
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+               .add_invalidate( CACHE_ARMOR )
+               .chance( 1.0 ) )
+  {}
 
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
@@ -1346,7 +1348,8 @@ struct the_reaping_driver_buff_t : public druid_buff_t < buff_t >
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "the_reaping_driver", p.scythe_of_elune -> driver() )
     .quiet( true )
     .tick_callback( callback )
-    .default_value( p.buff.owlkin_frenzy -> default_chance * ( 1.0 + p.artifact.mooncraze.percent() ) ) ), druid( &p )
+    .default_value( p.buff.owlkin_frenzy -> default_chance * ( p.artifact.mooncraze.rank() ? 2.0 : 1.0 ) ) ),
+    druid( &p )
   {}
 
   static void callback( buff_t* buff, int, int )
@@ -4163,7 +4166,7 @@ struct bear_form_t : public druid_spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    druid_spell_t::execute();
 
     p() -> shapeshift( BEAR_FORM );
   }
@@ -4191,7 +4194,7 @@ struct blessing_of_anshe_t : public druid_spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    druid_spell_t::execute();
 
     p() -> buff.blessing_of_elune -> expire();
     p() -> buff.blessing_of_anshe -> start();
@@ -4223,7 +4226,7 @@ struct blessing_of_elune_t : public druid_spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    druid_spell_t::execute();
 
     p() -> buff.blessing_of_anshe -> expire();
     p() -> buff.blessing_of_elune -> start();
@@ -4282,7 +4285,7 @@ struct cat_form_t : public druid_spell_t
 
   void execute() override
   {
-    spell_t::execute();
+    druid_spell_t::execute();
 
     p() -> shapeshift( CAT_FORM );
   }
@@ -4670,20 +4673,10 @@ struct lunar_strike_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.lunar_empowerment -> check() )
-      am = 1.0 + p() -> buff.lunar_empowerment -> current_value
-               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      am *= 1.0 + p() -> buff.lunar_empowerment -> current_value
+                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
-  }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double dm = druid_spell_t::composite_target_da_multiplier( t );
-
-    if ( target == t )
-      dm *= 1.0 + p() -> talent.full_moon -> effectN( 1 ).percent();
-
-    return dm;
   }
 
   timespan_t execute_time() const override
@@ -4856,11 +4849,13 @@ struct moonkin_form_t : public druid_spell_t
 
     harmful           = false;
     ignore_false_positive = true;
+
+    base_costs[ RESOURCE_MANA ] = 0;
   }
 
   void execute() override
   {
-    spell_t::execute();
+    druid_spell_t::execute();
 
     p() -> shapeshift( MOONKIN_FORM );
   }
@@ -4954,8 +4949,8 @@ struct solar_wrath_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.solar_empowerment -> check() )
-      am = 1.0 + p() -> buff.solar_empowerment -> current_value
-               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      am *= 1.0 + p() -> buff.solar_empowerment -> current_value
+                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
   }
@@ -5244,12 +5239,12 @@ struct stellar_flare_t : public druid_spell_t
     double pm = druid_spell_t::composite_persistent_multiplier( s );
 
     if ( p() -> buff.lunar_empowerment -> check() )
-      pm = 1.0 + p() -> buff.lunar_empowerment -> current_value
-               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      pm *= 1.0 + p() -> buff.lunar_empowerment -> current_value
+                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     if ( p() -> buff.solar_empowerment -> check() )
-      pm = 1.0 + p() -> buff.solar_empowerment -> current_value
-               + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      pm *= 1.0 + p() -> buff.solar_empowerment -> current_value
+                + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return pm;
   }
@@ -5822,7 +5817,7 @@ void druid_t::init_base_stats()
   base_energy_regen_per_second = 10;
 
   // Max Mana & Mana Regen modifiers
-  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + spec.natural_insight -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
   base.mana_regen_per_second *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
   base.mana_regen_per_second *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
 
@@ -6549,6 +6544,7 @@ void druid_t::reset()
   form = NO_FORM;
   max_fb_energy = spell.ferocious_bite -> powerN( 1 ).cost() - spell.ferocious_bite -> effectN( 2 ).base_value();
   active_rejuvenations = active_starfalls = 0;
+  moon_stage = ( moon_stage_e ) initial_moon_stage;
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -6601,7 +6597,7 @@ double druid_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  if ( buff.moonkin_form -> check() ) //Boomkins get 150% increased mana regeneration, scaling with haste.
+  if ( buff.moonkin_form -> check() ) // Boomkins get 150% increased mana regeneration, scaling with haste.
     mp5 *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
 
   mp5 *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
@@ -6631,8 +6627,6 @@ timespan_t druid_t::available() const
 void druid_t::arise()
 {
   player_t::arise();
-
-  moon_stage = ( moon_stage_e ) initial_moon_stage;
 
   if ( talent.earthwarden -> ok() )
     buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
