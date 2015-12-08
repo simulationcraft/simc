@@ -4095,7 +4095,6 @@ struct bear_form_t : public druid_spell_t
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
-    player -> resources.active_resource[ RESOURCE_RAGE ] = true;
 
     if ( ! player -> bear_melee_attack )
     {
@@ -4208,8 +4207,6 @@ struct cat_form_t : public druid_spell_t
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
-    player -> resources.active_resource[ RESOURCE_ENERGY ] = 
-    player -> resources.active_resource[ RESOURCE_COMBO_POINT ] = true;
 
     if ( ! player -> cat_melee_attack )
     {
