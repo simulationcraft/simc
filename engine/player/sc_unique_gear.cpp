@@ -469,6 +469,7 @@ void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
   }
 
   effect.execute_action = bleed;
+  effect.proc_flags_ = PF_ALL_DAMAGE; // DBC says procs off heals, but that's nothing but trouble.
 
   new dbc_proc_callback_t( effect.item, effect );
 }
