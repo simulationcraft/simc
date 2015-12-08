@@ -231,27 +231,28 @@ const int MAX_ILEVEL = 1000;
 struct artifact_power_t
 {
   artifact_power_t() :
-    spell_( spell_data_t::not_found() ), rank_( artifact_power_rank_t::nil() ),
+    rank_( 0 ), spell_( spell_data_t::not_found() ), rank_data_( artifact_power_rank_t::nil() ),
     power_( artifact_power_data_t::nil() )
   { }
 
-  artifact_power_t( const spell_data_t* s, const artifact_power_data_t* p, const artifact_power_rank_t* r ):
-    spell_( s ), rank_( r ), power_( p )
+  artifact_power_t( unsigned rv, const spell_data_t* s, const artifact_power_data_t* p, const artifact_power_rank_t* r ):
+    rank_( rv ), spell_( s ), rank_data_( r ), power_( p )
   { }
 
+  unsigned rank_;
   const spell_data_t* spell_;
-  const artifact_power_rank_t* rank_;
+  const artifact_power_rank_t* rank_data_;
   const artifact_power_data_t* power_;
 
   double value() const
   {
-    if ( power_ -> max_rank == 1 )
+    if ( rank() == 1 )
     {
       return spell_ -> effectN( 1 ).base_value();
     }
     else
     {
-      return rank_ -> value;
+      return rank_data_ -> value;
     }
   }
 
@@ -262,16 +263,7 @@ struct artifact_power_t
   { return *spell_; }
 
   unsigned rank() const
-  {
-    if ( power_ -> max_rank == 1 )
-    {
-      return rank_ -> index + 1;
-    }
-    return rank_ -> index;
-  }
-
-  unsigned max_rank() const
-  { return power_ -> max_rank; }
+  { return rank_; }
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
