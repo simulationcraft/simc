@@ -4458,8 +4458,15 @@ double player_t::resource_loss( resource_e resource_type,
   }
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "Player %s loses %.2f (%.2f) %s. health pct: %.2f (%.0f/%.0f)",
-                   name(), actual_amount, amount, util::resource_type_string( resource_type ), health_percentage(), resources.current[ resource_type ], resources.max[ resource_type ] );
+    sim -> out_debug.printf( "Player %s loses %.2f (%.2f) %s. pct=%.2f%% (%.0f/%.0f)",
+                   name(),
+                   actual_amount,
+                   amount,
+                   util::resource_type_string( resource_type ),
+                   util::resource_type_string( resource_type ),
+                   resources.pct( resource_type ) * 100,
+                   resources.current[ resource_type ],
+                   resources.max[ resource_type ] );
 
   return actual_amount;
 }
