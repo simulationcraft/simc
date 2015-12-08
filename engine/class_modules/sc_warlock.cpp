@@ -8,8 +8,19 @@
 // ==========================================================================
 //
 // TODO:
+// Pets
+//
 // Affliction -
 // Seed of Corruption
+// UA ignite
+// Haunt reset
+// 100 talents
+// GoSac
+//
+// Destruction - Everything
+//
+// Demo - Everything
+// 
 // ==========================================================================
 namespace { // unnamed namespace
 
@@ -34,11 +45,11 @@ struct warlock_td_t: public actor_target_data_t
   dot_t*  dots_corruption;
   dot_t*  dots_doom;
   dot_t*  dots_drain_soul;
-  dot_t*  dots_haunt;
   dot_t*  dots_immolate;
   dot_t*  dots_seed_of_corruption;
   dot_t*  dots_shadowflame;
   dot_t*  dots_unstable_affliction;
+  dot_t*  dots_siphon_life;
 
   buff_t* debuffs_haunt;
   buff_t* debuffs_shadowflame;
@@ -148,6 +159,7 @@ public:
     cooldown_t* infernal;
     cooldown_t* doomguard;
     cooldown_t* hand_of_guldan;
+    cooldown_t* haunt;
   } cooldowns;
 
   // Passives
@@ -177,6 +189,7 @@ public:
     buff_t* fire_and_brimstone;
     buff_t* grimoire_of_sacrifice;
     buff_t* havoc;
+    buff_t* mana_tap;
 
     buff_t* tier18_2pc_demonology;
   } buffs;
@@ -191,9 +204,9 @@ public:
     gain_t* immolate;
     gain_t* shadowburn_ember;
     gain_t* miss_refund;
-    gain_t* siphon_life;
     gain_t* seed_of_corruption;
-    gain_t* shard_target_death;
+    gain_t* drain_soul;
+    gain_t* soul_harvest;
   } gains;
 
   // Procs
@@ -1789,6 +1802,12 @@ public:
   {
     double m = 1.0;
 
+    warlock_td_t* td = this -> td( t );
+
+    // Contagion - change to effect 2 spelldata list
+    if ( td -> dots_unstable_affliction -> is_ticking() )
+      m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
+
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
@@ -1898,10 +1917,32 @@ struct agony_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-    if ( td( d -> state -> target ) -> agony_stack < ( 10 ) ) 
+    if ( td( d -> state -> target ) -> agony_stack < ( 20 ) )
+      td( d -> state -> target ) -> agony_stack++;
+    else if ( td( d -> state -> target ) -> agony_stack < ( 10 ) ) 
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
+
+    if ( p() -> spec.nightfall -> ok() )
+    {
+
+      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10;
+
+      if ( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
+      {
+          p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+
+        // If going from 0 to 1 shard was a surprise, the player would have to react to it
+        if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
+          p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
+        else if ( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
+          p() -> shard_react = p() -> sim -> current_time();
+        else
+          p() -> shard_react = timespan_t::max();
+      }
+    }
+
     warlock_spell_t::tick( d );
   }
 
@@ -1925,10 +1966,10 @@ struct agony_t: public warlock_spell_t
   }
 };
 
-struct unstable_affliction_t : public warlock_spell_t
+struct unstable_affliction_t : public residual_action::residual_periodic_action_t< warlock_spell_t >
 {
-  unstable_affliction_t (warlock_t* p ) :
-    warlock_spell_t( p, "Unstable Affliction" )
+  unstable_affliction_t ( warlock_t* p ) :
+    residual_action::residual_periodic_action_t<warlock_spell_t>("unstable_affliction", p, p -> find_spell( 30108 ) )
   {
     may_crit = false;
 
@@ -1973,43 +2014,18 @@ struct corruption_t: public warlock_spell_t
       base_tick_time *= 1.0 + period_value;
       dot_duration *= 1.0 + duration_value;
     }
+
+    if ( p -> talents.absolute_corruption -> ok() )
+    {
+      dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
+        2 * sim -> expected_iteration_time :
+        2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
+    }
   }
 
   timespan_t travel_time() const override
   {
     return timespan_t::from_millis( 100 );
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    warlock_spell_t::tick( d );
-
-    if ( p() -> spec.nightfall -> ok() ) //5.4 only the latest corruption procs it
-    {
-
-      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10;
-
-      if ( rng().roll( nightfall_chance ) )
-      {
-        if ( p() -> double_nightfall == 3 )
-        {
-          p() -> resource_gain( RESOURCE_SOUL_SHARD, 2, p() -> gains.nightfall );
-          p() -> double_nightfall = 0;
-        }
-        else
-        {
-          p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
-          p() -> double_nightfall++;
-        }
-        // If going from 0 to 1 shard was a surprise, the player would have to react to it
-        if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
-          p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
-        else if ( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
-          p() -> shard_react = p() -> sim -> current_time();
-        else
-          p() -> shard_react = timespan_t::max();
-      }
-    }
   }
 
   virtual double action_multiplier() const override
@@ -2023,50 +2039,40 @@ struct corruption_t: public warlock_spell_t
   }
 };
 
-struct drain_life_heal_t: public warlock_heal_t
-{
-  const spell_data_t* real_data;
-
-  drain_life_heal_t( warlock_t* p ):
-    warlock_heal_t( "drain_life_heal", p, 89653 )
-  {
-    background = true;
-    may_miss = false;
-    base_dd_min = base_dd_max = 0; // Is parsed as 2
-    real_data = p -> find_spell( 689 );
-  }
-
-  virtual void execute() override
-  {
-    double heal_pct = real_data -> effectN( 2 ).percent();
-
-    base_dd_min = base_dd_max = player -> resources.max[RESOURCE_HEALTH] * heal_pct;
-
-    warlock_heal_t::execute();
-  }
-};
-
 struct drain_life_t: public warlock_spell_t
 {
-  drain_life_heal_t* heal;
-
   drain_life_t( warlock_t* p ):
-    warlock_spell_t( p, "Drain Life" ), heal( nullptr )
+    warlock_spell_t( p, "Drain Life" )
   {
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
-
-    heal = new drain_life_heal_t( p );
   }
 
   void tick( dot_t* d ) override
   {
     spell_t::tick( d );
 
-    heal -> execute();
-
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
+  }
+
+  virtual bool ready() override
+  {
+    if ( p() -> talents.drain_soul -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+};
+
+struct drain_soul_t: public warlock_spell_t
+{
+  drain_soul_t( warlock_t* p ):
+    warlock_spell_t( "Drain Soul", p, p -> find_spell( 103103 ) )
+  {
+    channeled = true;
+    hasted_ticks = false;
+    may_crit = false;
   }
 };
 
@@ -2075,17 +2081,6 @@ struct haunt_t: public warlock_spell_t
   haunt_t( warlock_t* p ):
     warlock_spell_t( p, "Haunt" )
   {
-    hasted_ticks = false;
-    tick_may_crit = false;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2095,7 +2090,6 @@ struct haunt_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs_haunt -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, td( s -> target ) -> dots_haunt -> remains() );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }
@@ -2116,10 +2110,10 @@ struct life_tap_t: public warlock_spell_t
     warlock_spell_t::execute();
 
     double health = player -> resources.max[RESOURCE_HEALTH];
+    double mana = player -> resources.max[RESOURCE_MANA];
 
-    player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 3 ).percent() );
-    player -> resource_gain( RESOURCE_MANA, health * data().effectN( 1 ).percent(), p() -> gains.life_tap );
-
+    player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 2 ).percent() );
+    player -> resource_gain( RESOURCE_MANA, mana * data().effectN( 1 ).percent(), p() -> gains.life_tap );
   }
 };
 
@@ -2803,47 +2797,7 @@ struct t: public warlock_spell_t
   }
 };
 
-struct drain_soul_t: public warlock_spell_t
-{
-  bool haunt_t18_4p_bonus;
-  drain_soul_t( warlock_t* p ):
-    warlock_spell_t( "Drain Soul", p, p -> find_spell( 103103 ) ),
-    haunt_t18_4p_bonus( false )
-  {
-    channeled = true;
-    hasted_ticks = false;
-    may_crit = false;
 
-    stats -> add_child( p -> get_stats( "agony_ds" ) );
-    stats -> add_child( p -> get_stats( "corruption_ds" ) );
-    stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
-
-    if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
-      haunt_t18_4p_bonus = true;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent();
-
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    warlock_spell_t::tick( d );
-
-    trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
-
-    double multiplier = data().effectN( 3 ).percent();
-
-    multiplier *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-  }
-};
 
 struct fire_and_brimstone_t: public warlock_spell_t
 {
@@ -3249,6 +3203,49 @@ struct mortal_coil_t: public warlock_spell_t
   }
 };
 
+struct mana_tap_t : public warlock_spell_t
+{
+  mana_tap_t( warlock_t* p ) :
+    warlock_spell_t( "mana_tap", p, p -> talents.mana_tap )
+  {
+    harmful = false;
+    ignore_false_positive = true;
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+      p() -> buffs.mana_tap -> trigger();
+      // mana cost??
+  }
+};
+
+struct siphon_life_t : public warlock_spell_t
+{
+  siphon_life_t(warlock_t* p) :
+    warlock_spell_t( "siphon_life", p, p -> talents.siphon_life )
+  {
+    may_crit = false;
+  }
+};
+
+struct soul_harvest_t : public warlock_spell_t
+{
+  soul_harvest_t( warlock_t* p ) :
+    warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
+  {
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 5, p() -> gains.soul_harvest );
+  }
+};
+
 struct grimoire_of_sacrifice_t: public warlock_spell_t
 {
   grimoire_of_sacrifice_t( warlock_t* p ):
@@ -3315,7 +3312,7 @@ warlock( p )
   dots_immolate = target -> get_dot( "immolate", &p );
   dots_shadowflame = target -> get_dot( "shadowflame", &p );
   dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", &p );
-  dots_haunt = target -> get_dot( "haunt", &p );
+  
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -3345,7 +3342,7 @@ void warlock_td_t::target_demise()
     {
       warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s gains a shard by channeling drain soul during this.", target -> name(), warlock.name() );
     }
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.shard_target_death );
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
 }
 
@@ -3367,7 +3364,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     spells( spells_t() ),
     default_pet( "" ),
     shard_react( timespan_t::zero() ),
-    initial_soul_shards( 5 ),
+    initial_soul_shards( 1 ),
     affliction_trinket( nullptr ),
     demonology_trinket( nullptr ),
     destruction_trinket( nullptr )
@@ -3396,6 +3393,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     double mastery = cache.mastery();
     m *= 1.0 + mastery * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
+
+  if ( buffs.mana_tap -> up() )
+    m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
 
   return m;
 }
@@ -3521,6 +3521,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
   else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
+  else if ( action_name == "mana_tap"              ) a = new              mana_tap_t( this );
   else if ( action_name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( action_name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( action_name == "shadowburn"            ) a = new            shadowburn_t( this );
@@ -3693,7 +3694,7 @@ void warlock_t::init_base_stats()
 
   base.mana_regen_per_second = resources.base[RESOURCE_MANA] * 0.01;
 
-  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[RESOURCE_SOUL_SHARD] = 5;
+  resources.base[RESOURCE_SOUL_SHARD] = 5;
 
   if ( default_pet.empty() )
   {
@@ -3735,6 +3736,8 @@ void warlock_t::create_buffs()
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
+  buffs.mana_tap = buff_creator_t( this, "mana_tap", talents.mana_tap )
+    .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
 
   buffs.fire_and_brimstone = buff_creator_t( this, "fire_and_brimstone", talents.fire_and_brimstone )
     .cd( timespan_t::zero() );
@@ -3762,9 +3765,9 @@ void warlock_t::init_gains()
   gains.immolate = get_gain( "immolate" );
   gains.shadowburn_ember = get_gain( "shadowburn_ember" );
   gains.miss_refund = get_gain( "miss_refund" );
-  gains.siphon_life = get_gain( "siphon_life" );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
-  gains.shard_target_death = get_gain( "shard_target_death" );
+  gains.drain_soul = get_gain( "drain_soul" );
+  gains.soul_harvest = get_gain( "soul_harvest" );
 }
 
 // warlock_t::init_procs ===============================================
@@ -3936,7 +3939,7 @@ std::string warlock_t::create_profile( save_e stype )
 
   if ( stype == SAVE_ALL )
   {
-    if ( initial_soul_shards != 5 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
+    if ( initial_soul_shards != 1 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( ! default_pet.empty() )       profile_str += "default_pet=" + default_pet + "\n";
   }
 
