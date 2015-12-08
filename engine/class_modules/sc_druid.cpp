@@ -667,7 +667,6 @@ public:
   virtual void      combat_begin() override;
   virtual void      reset() override;
   virtual void      merge( player_t& other ) override;
-  virtual void      regen( timespan_t periodicity ) override;
   virtual timespan_t available() const override;
   virtual double    composite_armor_multiplier() const override;
   virtual double    composite_attack_power_multiplier() const override;
@@ -4096,6 +4095,7 @@ struct bear_form_t : public druid_spell_t
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
+    player -> resources.active_resource[ RESOURCE_RAGE ] = true;
 
     if ( ! player -> bear_melee_attack )
     {
@@ -4208,6 +4208,8 @@ struct cat_form_t : public druid_spell_t
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
+    player -> resources.active_resource[ RESOURCE_ENERGY ] = 
+    player -> resources.active_resource[ RESOURCE_COMBO_POINT ] = true;
 
     if ( ! player -> cat_melee_attack )
     {
@@ -5761,14 +5763,18 @@ void druid_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here (none for druids at the moment).
-
+  // Resources
   resources.base[ RESOURCE_ENERGY       ] = 100 + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY );
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
+  
+  resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
+  resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
+  resources.active_resource[ RESOURCE_MANA         ] = primary_role() == ROLE_HEAL || talent.restoration_affinity -> ok() || talent.balance_affinity -> ok();
+  resources.active_resource[ RESOURCE_ENERGY       ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
+  resources.active_resource[ RESOURCE_COMBO_POINT  ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
+  resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
 
   base_energy_regen_per_second = 10;
 
@@ -6537,20 +6543,6 @@ void druid_t::merge( player_t& other )
     counters[ i ] -> merge( *od.counters[ i ] );
 }
 
-// druid_t::regen ===========================================================
-
-void druid_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-
-  // player_t::regen() only regens your primary resource, so we need to account for that here
-  if ( primary_resource() != RESOURCE_MANA && mana_regen_per_second() )
-    resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
-  if ( primary_resource() != RESOURCE_ENERGY && energy_regen_per_second() )
-    resource_gain( RESOURCE_ENERGY, energy_regen_per_second() * periodicity.total_seconds(), gains.energy_regen );
-
-}
-
 // druid_t::mana_regen_per_second ============================================================
 
 double druid_t::mana_regen_per_second() const
@@ -7099,10 +7091,10 @@ stat_e druid_t::convert_hybrid_stat( stat_e s ) const
 
 resource_e druid_t::primary_resource() const
 {
-  if ( primary_role() == ROLE_SPELL )
+  if ( specialization() == DRUID_BALANCE && primary_role() == ROLE_SPELL )
     return RESOURCE_ASTRAL_POWER;
 
-  if ( primary_role() == ROLE_HEAL )
+  if ( primary_role() == ROLE_HEAL || primary_role() == ROLE_SPELL )
     return RESOURCE_MANA;
 
   if ( primary_role() == ROLE_TANK )

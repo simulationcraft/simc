@@ -1010,13 +1010,17 @@ void report::generate_player_charts( player_t& p, player_processed_report_inform
     for ( size_t i = 0; i < cd.resource_timelines.size(); ++i )
     {
       resource_e rt = cd.resource_timelines[ i ].type;
-      ri.timeline_resource_chart[ rt ] =
-        chart::timeline( cd.resource_timelines[ i ].timeline.data(),
-                         encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
-                         cd.resource_timelines[ i ].timeline.mean(),
-                         color::resource_color( rt ).hex_str(),
-                         max_buckets );
-      ri.gains_chart[ rt ] = chart::gains( p, rt );
+
+      if ( p.resources.active_resource[ rt ] || p.sim -> maximize_reporting )
+      {
+        ri.timeline_resource_chart[ rt ] =
+          chart::timeline( cd.resource_timelines[ i ].timeline.data(),
+                           encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
+                           cd.resource_timelines[ i ].timeline.mean(),
+                           color::resource_color( rt ).hex_str(),
+                           max_buckets );
+        ri.gains_chart[ rt ] = chart::gains( p, rt );
+      }
     }
 
     // Stat Charts

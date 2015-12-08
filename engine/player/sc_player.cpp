@@ -4345,34 +4345,39 @@ void player_t::regen( timespan_t periodicity )
     sim -> out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f",
         name(), last_regen.total_seconds(), periodicity.total_seconds() );
 
-  resource_e r = primary_resource();
-  double base;
-  gain_t* gain;
-
-  switch ( r )
+  for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
   {
-    case RESOURCE_ENERGY:
-      base = energy_regen_per_second();
-      gain = gains.energy_regen;
-      break;
+    if ( resources.is_active( r ) )
+    {
+      double base;
+      gain_t* gain;
 
-    case RESOURCE_FOCUS:
-      base = focus_regen_per_second();
-      gain = gains.focus_regen;
-      break;
+      switch ( r )
+      {
+        case RESOURCE_ENERGY:
+          base = energy_regen_per_second();
+          gain = gains.energy_regen;
+          break;
 
-    case RESOURCE_MANA:
-      base = mana_regen_per_second();
-      gain = gains.mp5_regen;
-      break;
+        case RESOURCE_FOCUS:
+          base = focus_regen_per_second();
+          gain = gains.focus_regen;
+          break;
 
-    default:
-      return;
+        case RESOURCE_MANA:
+          base = mana_regen_per_second();
+          gain = gains.mp5_regen;
+          break;
+
+        default:
+          continue;
+          break;
+      }
+
+      if ( gain && base )
+        resource_gain( r, base * periodicity.total_seconds(), gain );
+    }
   }
-
-  if ( gain && base )
-    resource_gain( r, base * periodicity.total_seconds(), gain );
-
 }
 
 // player_t::collect_resource_timeline_information ==========================

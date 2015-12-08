@@ -3529,6 +3529,7 @@ struct player_t : public actor_t
     std::array<double, RESOURCE_MAX> base, initial, max, current, temporary,
         base_multiplier, initial_multiplier;
     std::array<int, RESOURCE_MAX> infinite_resource;
+    std::array<bool, RESOURCE_MAX> active_resource;
 
     resources_t()
     {
@@ -3540,6 +3541,7 @@ struct player_t : public actor_t
       range::fill( base_multiplier, 1.0 );
       range::fill( initial_multiplier, 1.0 );
       range::fill( infinite_resource, 0 );
+      range::fill( active_resource, true );
     }
 
     double pct( resource_e rt ) const
@@ -3547,6 +3549,9 @@ struct player_t : public actor_t
 
     bool is_infinite( resource_e rt ) const
     { return infinite_resource[ rt ] != 0; }
+
+    bool is_active( resource_e rt ) const
+    { return active_resource[ rt ] && current[ rt ] >= 0.0; }
   } resources;
 
   struct consumables_t {
