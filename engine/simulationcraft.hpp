@@ -4086,6 +4086,7 @@ struct player_t : public actor_t
   bool parse_talents_wowhead( const std::string& talent_string );
 
   bool parse_artifact_wowdb( const std::string& artifact_string );
+  bool parse_artifact_wowhead( const std::string& artifact_string );
 
   void create_talents_numbers();
   void create_talents_armory();
