@@ -4521,8 +4521,12 @@ bool player_t::resource_available( resource_e resource_type,
 
   bool available = resources.current[ resource_type ] >= cost;
 
+#ifndef NDEBUG
   if ( ! resources.active_resource[ resource_type ] )
+  {
     assert( available && "Insufficient inactive resource to cast!" );
+  }
+#endif
 
   return available;
 }
