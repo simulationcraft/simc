@@ -1173,44 +1173,6 @@ struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
   }
 };
 
-// Earthwarden Driver Buff ============================================================
-
-struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  earthwarden_driver_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "earthwarden_driver", p.talent.earthwarden )
-    .quiet( true )
-    .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ) { p.buff.earthwarden -> increment(); } ) ), druid( &p )
-  {}
-
-  void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::start( stacks, value, duration );
-
-    // Emulate tick_zero behavior.
-    druid -> buff.earthwarden -> trigger();
-  }
-};
-
-// Elune's Guidance Buff ====================================================
-
-struct elunes_guidance_buff_t : public druid_buff_t < buff_t >
-{
-  elunes_guidance_buff_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "elunes_guidance", p.talent.elunes_guidance )
-     .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ) {
-        p.resource_gain( RESOURCE_COMBO_POINT,
-          p.talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
-          p.gain.elunes_guidance );
-     } ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-    buff_period = data().effectN( 2 ).period();
-  }
-};
-
 // Ironfur Buff ============================================================
 
 struct ironfur_buff_t : public druid_buff_t < buff_t >
@@ -1304,29 +1266,6 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 
     // disabled for now since they'll probably institute this behavior later.
     // druid.cooldown.warrior_of_elune -> start();
-  }
-};
-
-// The Reaping Driver Buff ============================================================
-
-struct the_reaping_driver_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  the_reaping_driver_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "the_reaping_driver", p.scythe_of_elune -> driver() )
-    .quiet( true )
-    .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ){ p.buff.owlkin_frenzy ->  trigger( 1, buff_t::DEFAULT_VALUE(), p.buff.the_reaping -> current_value ); } )
-    .default_value( p.buff.owlkin_frenzy -> default_chance * ( p.artifact.mooncraze.rank() ? 2.0 : 1.0 ) ) ),
-    druid( &p )
-  {}
-
-  void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::start( stacks, value, duration );
-
-    // Emulate tick_zero behavior.
-    druid -> buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), current_value );
   }
 };
 
@@ -3981,35 +3920,6 @@ struct yseras_tick_t : public druid_heal_t
 
 } // end namespace heals
 
-namespace buffs {
-  
-// Ysera's Gift Driver Buff =================================================
-
-struct yseras_gift_driver_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  yseras_gift_driver_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "yseras_gift_driver", p.spell.yseras_gift )
-    .quiet( true )
-    .tick_callback( [ &p ]( buff_t*, int, const timespan_t& ) {
-      p.active.yseras_gift -> base_dd_min = p.spell.yseras_gift -> effectN( 1 ).percent() * p.resources.max[ RESOURCE_HEALTH ];
-      p.active.yseras_gift -> execute();
-    } ) ), druid( &p )
-  {}
-
-  // Emulate tick_zero behavior.
-  virtual void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::start( stacks, value, duration );
-    
-    druid -> active.yseras_gift -> base_dd_min = druid -> spell.yseras_gift -> effectN( 1 ).percent() * druid -> resources.max[ RESOURCE_HEALTH ];
-    druid -> active.yseras_gift -> execute();
-  }
-};
-
-}
-
 namespace spells {
 
 // ==========================================================================
@@ -4271,7 +4181,7 @@ struct collapsing_stars_t : public druid_spell_t
     base_costs_per_tick[ RESOURCE_ASTRAL_POWER ] *= base_tick_time.total_seconds();
   }
 
-  virtual timespan_t cost_tick_time( const dot_t& d ) const override
+  timespan_t cost_tick_time( const dot_t& d ) const override
   {
     // Consumes cost each time DoT ticks.
     return d.time_to_next_tick();
@@ -5846,7 +5756,13 @@ void druid_t::create_buffs()
   buff.bloodtalons        = buff_creator_t( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
                             .max_stack( 2 );
 
-  buff.elunes_guidance    = new elunes_guidance_buff_t( *this );
+  buff.elunes_guidance    = buff_creator_t( this, "elunes_guidance", talent.elunes_guidance )
+                            .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                              resource_gain( RESOURCE_COMBO_POINT,
+                                talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+                                gain.elunes_guidance ); } )
+                            .cd( timespan_t::zero() )
+                            .period( talent.elunes_guidance -> effectN( 2 ).period() );
 
   // Balance
 
@@ -5912,7 +5828,10 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() );
   buff.earthwarden           = buff_creator_t( this, "earthwarden", find_spell( 203975 ) )
                                .default_value( talent.earthwarden -> effectN( 1 ).percent() );
-  buff.earthwarden_driver    = new earthwarden_driver_buff_t( *this );
+  buff.earthwarden_driver    = buff_creator_t( this, "earthwarden_driver", talent.earthwarden )
+                               .quiet( true )
+                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> increment(); } )
+                               .tick_zero( true );
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() ) // cooldown handled by spell
@@ -5948,7 +5867,14 @@ void druid_t::create_buffs()
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
 
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
-    buff.yseras_gift         = new yseras_gift_driver_buff_t( *this );
+  {
+    buff.yseras_gift         = buff_creator_t( this, "yseras_gift_driver", spell.yseras_gift )
+                               .quiet( true )
+                               .tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+                                               { active.yseras_gift -> base_dd_min = spell.yseras_gift -> effectN( 1 ).percent() * resources.max[ RESOURCE_HEALTH ];
+                                                 active.yseras_gift -> execute(); } )
+                               .tick_zero( true );
+  }
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -7427,7 +7353,12 @@ static void scythe_of_elune( special_effect_t& effect )
   druid_t* s = debug_cast<druid_t*>( effect.player );
   do_trinket_init( s, DRUID_BALANCE, s -> scythe_of_elune, effect );
 
-  s -> buff.the_reaping = new buffs::the_reaping_driver_buff_t( *s );
+  s -> buff.the_reaping = buff_creator_t( s, "the_reaping_driver", s -> scythe_of_elune -> driver() )
+                          .quiet( true )
+                          .tick_callback( [ s ]( buff_t*, int, const timespan_t& )
+                                          { s -> buff.owlkin_frenzy ->  trigger( 1, buff_t::DEFAULT_VALUE(), s -> buff.the_reaping -> current_value ); } )
+                          .default_value( s -> buff.owlkin_frenzy -> default_chance * ( s -> artifact.mooncraze.rank() ? 2.0 : 1.0 ) )
+                          .tick_zero( true );
 }
 
 // DRUID MODULE INTERFACE ===================================================
