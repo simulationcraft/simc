@@ -21,9 +21,10 @@ namespace { // UNNAMED NAMESPACE
  Balance ==============================
  Stellar Drift cast while moving
  Starfall positioning
- Artifact stuff (New Moon, OKF driver)
+ Utility & NYI artifact perks (see p() -> artifact).
  Celestial alignment damage modifier on correct spells
  Accurate starfall travel time & debuff mechanics ?
+ Force of Nature!
 
  Guardian =============================
  Statistics?
@@ -574,19 +575,19 @@ public:
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t empowerment;
     artifact_power_t falling_star;
+    artifact_power_t mooncraze;
     artifact_power_t moon_and_stars;
     artifact_power_t new_moon;
+    artifact_power_t power_of_goldrinn;
     artifact_power_t scythe_of_the_stars;
     artifact_power_t solar_stabbing;
     artifact_power_t sunfire_burns;
     artifact_power_t twilight_glow;
 
     // NYI
-    artifact_power_t power_of_goldrinn;
     artifact_power_t scion_of_the_night_sky;
     artifact_power_t touch_of_the_moon;
     artifact_power_t rejuvenating_innervation;
-    artifact_power_t mooncraze;
     artifact_power_t light_of_the_sun;
   } artifact;
 
@@ -2488,18 +2489,8 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
     residual_action::residual_periodic_action_t<cat_attack_t>( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
     background = dual = proc = true;
-
     consume_ooc = may_miss = may_dodge = may_parry = false;
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    residual_action::residual_periodic_action_t<cat_attack_t>::tick( d );
-
-    if ( trigger_tier17_2pc )
-      p() -> resource_gain( RESOURCE_ENERGY,
-                            p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
-                            p() -> gain.feral_tier17_2pc );
+    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 };
 
@@ -2567,15 +2558,6 @@ struct rake_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
-  }
-
-  virtual void execute() override
-  {
-    cat_attack_t::execute();
-
-    // Track buff benefits
-    if ( p() -> specialization() == DRUID_FERAL )
-      p() -> buff.incarnation -> up();
   }
 };
 
