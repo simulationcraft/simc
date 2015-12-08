@@ -4519,7 +4519,12 @@ bool player_t::resource_available( resource_e resource_type,
     return true;
   }
 
-  return resources.current[ resource_type ] >= cost;
+  bool available = resources.current[ resource_type ] >= cost;
+
+  if ( ! resources.active_resource[ resource_type ] )
+    assert( available && "Insufficient inactive resource to cast!" );
+
+  return available;
 }
 
 // player_t::recalculate_resources.max ======================================
