@@ -1986,8 +1986,6 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    combo_strikes_trigger( CS_TIGER_PALM );
-
     if ( p() -> talent.eye_of_the_tiger -> ok() )
       dot -> execute();
 
@@ -1995,13 +1993,18 @@ struct tiger_palm_t: public monk_melee_attack_t
       p() -> buff.teachings_of_the_monastery -> trigger();
     else if ( p() -> specialization () == MONK_WINDWALKER)
     {
+      // Trigger Combo Strikes
+      combo_strikes_trigger(CS_TIGER_PALM);
+
+      // If A'Buraq is equipped, chance to trigger the weapon effect buff
       if ( p() -> aburaq )
         p() -> buff.swift_as_the_wind -> trigger();
 
-      // Chi Gain
+      // Calculate how much Chi is generated
       double chi_gain = data().effectN( 2 ).base_value();
       chi_gain += p() -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
 
+      // Power Strike activation
       if ( p() -> buff.power_strikes -> up() )
       {
         if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
@@ -2013,10 +2016,12 @@ struct tiger_palm_t: public monk_melee_attack_t
       }
       player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
 
+      // Combo Breaker calculation
       double cb_chance = combo_breaker_chance( CS_TIGER_PALM );
       if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
         p() -> proc.combo_breaker_bok -> occur();
 
+      //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
       if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2) -> proc_chance() ) )
       {
         p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
@@ -2025,10 +2030,11 @@ struct tiger_palm_t: public monk_melee_attack_t
     }
     else if ( p() -> specialization() == MONK_BREWMASTER )
     {
-          
+      // Reduces the remaining cooldown on your Brews by 1 sec
       if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
         p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
 
+      // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
       if ( p() -> talent.secret_ingredients -> ok() )
         p() -> buff.keg_smash_talent -> trigger();
     }
@@ -2082,9 +2088,11 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
+    // Apply Mortal Wonds
     if ( p() -> specialization() == MONK_WINDWALKER )
       p() -> debuffs.mortal_wounds -> trigger();
 
+    // Combo Breaker if T18 2-piece (Your Rising Sun Kick has a 30% chance to generate Combo Breaker.)
     double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
     if ( cb_chance > 0 )
     {
@@ -2130,6 +2138,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
+    // Update the cooldown while Serenity is active
     if ( p() -> buff.serenity -> check() )
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
@@ -2162,19 +2171,24 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    combo_strikes_trigger( CS_RISING_SUN_KICK );
-
     if ( p() -> specialization() == MONK_WINDWALKER )
+    {
       p() -> debuffs.mortal_wounds -> trigger();
 
-    if ( p() -> artifact.transfer_the_power.rank() )
-      p() -> buff.transfer_the_power -> trigger();
+      // Trigger Windwalker Mastery
+      combo_strikes_trigger( CS_RISING_SUN_KICK );
 
-    double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
-    if ( cb_chance > 0 )
-    {
-      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-          p() -> proc.combo_breaker_bok -> occur();
+      // Activate A'Buraq's Trait
+      if ( p() -> artifact.transfer_the_power.rank() )
+        p() -> buff.transfer_the_power -> trigger();
+
+      // Combo Breaker if T18 2-piece (Your Rising Sun Kick has a 30% chance to generate Combo Breaker.)
+      double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
+      if ( cb_chance > 0 )
+      {
+        if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+            p() -> proc.combo_breaker_bok -> occur();
+      }
     }
   }
 
@@ -2216,9 +2230,10 @@ struct blackout_kick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
     cooldown -> duration = data().cooldown();
+    // Brewmasters cannot learn this but the auras are in the database. just being a completionist about this
     if ( p -> specialization() == MONK_BREWMASTER )
       base_costs[RESOURCE_CHI] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
-    else if ( p -> specialization() == MONK_BREWMASTER )
+    else if ( p -> specialization() == MONK_WINDWALKER )
       cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
 
     sef_ability = SEF_BLACKOUT_KICK;
@@ -2228,6 +2243,7 @@ struct blackout_kick_t: public monk_melee_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
+    // Update the cooldown while Serenity is active
     if ( p() -> buff.serenity -> check() )
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
@@ -2238,6 +2254,7 @@ struct blackout_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
+    // Apply Dizzing Kick debuff onto the target if talented
     if ( p() -> talent.dizzying_kicks -> ok() )
       td( s -> target ) -> debuff.dizzing_kicks -> trigger();
   }
@@ -2251,9 +2268,6 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     combo_strikes_trigger( CS_BLACKOUT_KICK );
 
-    if ( p() -> artifact.transfer_the_power.rank() )
-      p() -> buff.transfer_the_power -> trigger();
-
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
       if ( p() -> buff.teachings_of_the_monastery -> up() )
@@ -2261,6 +2275,11 @@ struct blackout_kick_t: public monk_melee_attack_t
         if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
           p() -> cooldown.rising_sun_kick -> reset( true );
       }
+    }
+    else if ( p() -> specialization() == MONK_WINDWALKER )
+    {
+      if ( p() -> artifact.transfer_the_power.rank() )
+        p() -> buff.transfer_the_power -> trigger();
     }
   }
 
@@ -2273,14 +2292,16 @@ struct blackout_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
       p() -> buff.teachings_of_the_monastery -> expire();
     }
+    if ( p() -> specialization() == MONK_WINDWALKER )
+    {
+      if ( p() -> artifact.dark_skies.rank() )
+        am *= 1 + p() -> artifact.dark_skies.percent();
 
-    if ( p() -> artifact.dark_skies.rank() )
-      am *= 1 + p() -> artifact.dark_skies.percent();
-
-    // check for melee 2p and CB: BoK, for the 50% dmg bonus
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> up() ) {
-      // damage increased by 40% for WW 2pc upon CB
-      am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
+      // check for T16 melee 2p and CB: BoK, for the 50% dmg bonus
+      if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> up() ) {
+        // damage increased by 40% for WW 2pc upon CB
+        am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
+      }
     }
     return am;
   }
@@ -2334,7 +2355,8 @@ struct blackout_strike_t: public monk_melee_attack_t
     cooldown -> duration = data().cooldown();
     if ( p -> specialization() == MONK_BREWMASTER )
       base_costs[RESOURCE_CHI] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
-    else if ( p -> specialization() == MONK_BREWMASTER )
+    // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
+    else if ( p -> specialization() == MONK_WINDWALKER ) 
       cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
   }
 
@@ -2342,6 +2364,8 @@ struct blackout_strike_t: public monk_melee_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
+    // Update the cooldown while Serenity is active
+    // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
     if ( p() -> buff.serenity -> check() )
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
@@ -2363,7 +2387,7 @@ struct tick_action_t : public monk_melee_attack_t
     aoe = -1;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    radius = ( p -> talent.rushing_jade_wind -> ok() ? p -> passives.rushing_jade_wind_damage -> effectN( 1 ).radius() : p -> passives.spinning_crane_kick_damage -> effectN( 1 ).radius() );
+    radius = data -> effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
     dot_duration = timespan_t::zero();
@@ -2391,7 +2415,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     attack_power_mod.direct = p -> passives.rushing_jade_wind_damage -> effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
-    dot_behavior = DOT_REFRESH;
+    dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> passives.rushing_jade_wind_damage );
   }
@@ -2400,6 +2424,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
+    // Update the cooldown while Serenity is active
     if ( p() -> buff.serenity -> check() )
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
@@ -2452,10 +2477,11 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_zero = channeled = true;
 
     attack_power_mod.direct = p -> passives.spinning_crane_kick_damage -> effectN( 1 ).ap_coeff();
+    // Brewmasters cannot learn this but the auras are in the database. just being a completionist about this
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
-    dot_behavior = DOT_REFRESH;
+    dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics
 
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> passives.spinning_crane_kick_damage );
   }
@@ -2530,7 +2556,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value(); // Saved as -5000
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
@@ -2542,6 +2568,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     timespan_t cd = cooldown -> duration;
 
+    // Update the cooldown while Serenity is active
     if ( p() -> buff.serenity -> check() )
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
@@ -2600,7 +2627,7 @@ struct spinning_dragon_strike_tick_t: public monk_melee_attack_t
   {
     background = true;
     aoe = -1;
-    radius = p -> passives.spinning_dragon_strike -> effectN( 1 ).radius();
+    radius = s -> effectN( 1 ).radius();
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -2672,6 +2699,7 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
 
   virtual bool ready() override
   {
+    // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
     if ( p() -> cooldown.fists_of_fury -> down() && p() -> cooldown.rising_sun_kick -> down() )
       return monk_melee_attack_t::ready();
 
@@ -2870,6 +2898,7 @@ struct keg_smash_t: public monk_melee_attack_t
 
   virtual bool ready() override
   {
+    // Secret Ingredients allows Tiger Palm to have a 30% chance to reset the cooldown of Keg Smash
     if ( p() -> buff.keg_smash_talent -> check() )
       return true;
 
@@ -2887,9 +2916,11 @@ struct keg_smash_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    // If cooldown was reset by Secret Ingredients talent, to end the buff
     if ( p() -> buff.keg_smash_talent -> check() )
       p() -> buff.keg_smash_talent -> expire();
     
+    // Reduces the remaining cooldown on your Brews by 4 sec.
     if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
       p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
   }
@@ -2909,7 +2940,7 @@ struct special_delivery_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
     aoe = -1;
-    radius = p -> passives.special_delivery -> effectN( 1 ).radius();
+    radius = data().effectN( 1 ).radius();
   }
 
   virtual double cost() const override
@@ -3088,15 +3119,21 @@ struct energizing_elixir_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
+    // Effect says 200 so figure out the max between Max Energy and 200
     int energy_max_refund = std::min( p() -> talent.energizing_elixir -> effectN( 1 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_ENERGY] ) );
+    // Then refund the difference between the max energy that can be refunded and the current energy
     int energy_refund = energy_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_ENERGY] );
 
+    // Effect says 10 so figure out the max between Max Chi and 10
     int chi_max_refund = std::min( p() -> talent.energizing_elixir -> effectN( 2 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_CHI] ) );
+    // Then refund the difference between the max chi that can be refunded and the current chi
     int chi_refund = chi_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_CHI] );
 
     p() -> resource_gain( RESOURCE_ENERGY, energy_refund, p() -> gain.energy_refund );
     p() -> resource_gain( RESOURCE_CHI, chi_refund, p() -> gain.chi_refund );
 
+    // Energizing Brew increases your critical strike damage by 20% for 30 sec.
+    // Since Energizing Brew was renamed to Energizing Elixer keep the code in for the time being
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
       p() -> buff.forceful_winds -> trigger();
   }
@@ -3122,9 +3159,12 @@ struct black_ox_brew_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
+    // Effect says 200 so figure out the max between Max Energy and 200
     int energy_max_refund = std::min( p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_ENERGY] ) );
+    // Then refund the difference between the max energy that can be refunded and the current energy
     int energy_refund = energy_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_ENERGY] );
 
+    // Chug some Black Ox Brew, which instantly refills your Energy, and your Ironskin Brew and Purifying Brew charges.
     p() -> resource_gain( RESOURCE_ENERGY, energy_refund, p() -> gain.energy_refund );
 
     p() -> cooldown.brewmaster_active_mitigation -> reset( true );
@@ -4696,22 +4736,27 @@ void monk_t::init_base_stats()
   if ( spec.stance_of_the_fierce_tiger -> ok() )
     base_gcd -= timespan_t::from_millis( spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
 
-  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value();
-  resources.base[RESOURCE_ENERGY] = 100 + sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 2 ).base_value();
-  if ( artifact.inner_peace.rank() )
-    resources.base[RESOURCE_ENERGY] += artifact.inner_peace.value();
+  resources.base[RESOURCE_CHI] = 0;
+  if ( specialization() == MONK_MISTWEAVER )
+    base.spell_power_per_intellect = 1.0;
+  else
+  {
+    base.attack_power_per_agility = 1.0;
+    resources.base[RESOURCE_ENERGY] = 100;
+    if (specialization() == MONK_WINDWALKER)
+    {
+      resources.base[RESOURCE_CHI] = 5 + talent.ascension -> effectN( 1 ).base_value();
+      resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
+      if ( artifact.inner_peace.rank() )
+        resources.base[RESOURCE_ENERGY] += artifact.inner_peace.value();
+    }
+    else if (specialization() == MONK_BREWMASTER)
+    // initialize resolve for Berwmaster
+      resolve_manager.init();
+  }
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
-
-  if ( specialization() != MONK_MISTWEAVER )
-    base.attack_power_per_agility = 1.0;
-  if ( specialization() == MONK_MISTWEAVER )
-    base.spell_power_per_intellect = 1.0;
-
-  // initialize resolve for Berwmaster
-  if ( specialization() == MONK_BREWMASTER )
-    resolve_manager.init();
 }
 
 // monk_t::init_scaling =====================================================
@@ -5349,15 +5394,6 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 void monk_t::pre_analyze_hook()
 {
   base_t::pre_analyze_hook();
-
-  if ( stats_t* zen_sphere = find_stats( "zen_sphere" ) )
-  {
-    if ( stats_t* zen_sphere_dmg = find_stats( "zen_sphere_dmg" ) )
-    {
-      zen_sphere_dmg -> total_execute_time = zen_sphere -> total_execute_time;
-      zen_sphere_dmg -> num_executes       = zen_sphere -> num_executes;
-    }
-  }
 }
 
 // monk_t::energy_regen_per_second ==========================================
@@ -5377,34 +5413,35 @@ void monk_t::combat_begin()
 {
   base_t::combat_begin();
 
-  resources.current[RESOURCE_CHI] = 0;
-
-  if ( specialization() == MONK_WINDWALKER && !buffs.fierce_tiger_movement_aura -> up() )
+  if ( specialization() == MONK_WINDWALKER)
   {
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim -> player_non_sleeping_list[i];
-      if ( p -> type == PLAYER_GUARDIAN )
-        continue;
+    resources.current[RESOURCE_CHI] = 0;
 
-      p -> buffs.fierce_tiger_movement_aura -> trigger();
+    if ( !buffs.fierce_tiger_movement_aura -> up() )
+    {
+      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+      {
+        player_t* p = sim -> player_non_sleeping_list[i];
+        if ( p -> type == PLAYER_GUARDIAN )
+          continue;
+
+        p -> buffs.fierce_tiger_movement_aura -> trigger();
+      }
     }
+
+    if ( talent.chi_orbit -> ok() )
+    {
+      // If Chi Orbit, start out with max stacks
+      buff.chi_orbit -> trigger( 4 );
+      new ( *sim ) chi_orbit_event_t( *this, timespan_t::zero() );
+    }
+
+    if ( talent.power_strikes -> ok() )
+      new ( *sim ) power_strikes_event_t( *this, timespan_t::zero() );
   }
 
   if ( spec.resolve -> ok() )
     resolve_manager.start();
-
-  if ( talent.chi_orbit -> ok() )
-  {
-    // If Chi Orbit, start out with max stacks
-    buff.chi_orbit -> trigger( 4 );
-    new ( *sim ) chi_orbit_event_t( *this, timespan_t::zero() );
-  }
-
-  if ( talent.power_strikes -> ok() )
-  {
-    new ( *sim ) power_strikes_event_t( *this, timespan_t::zero() );
-  }
 
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
