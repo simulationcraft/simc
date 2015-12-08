@@ -694,7 +694,8 @@ public:
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    mana_regen_per_second() const override;
-  virtual void      assess_damage( school_e school, dmg_e, action_state_t* ) override;
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
   virtual void      recalculate_resource_max( resource_e ) override;
@@ -5830,7 +5831,7 @@ void druid_t::create_buffs()
                                .default_value( talent.earthwarden -> effectN( 1 ).percent() );
   buff.earthwarden_driver    = buff_creator_t( this, "earthwarden_driver", talent.earthwarden )
                                .quiet( true )
-                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> increment(); } )
+                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
                                .tick_zero( true );
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
@@ -7036,27 +7037,22 @@ void druid_t::init_absorb_priority()
   absorb_priority.push_back( talent.brambles -> id() ); // Brambles
 }
 
-// druid_t::assess_damage ===================================================
+// druid_t::target_mitigation ===============================================
 
-void druid_t::assess_damage( school_e school,
-                             dmg_e    dtype,
-                             action_state_t* s )
+void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s )
 {
-  if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.ironfur -> check() )
-    buff.guardian_tier15_2pc -> trigger();
-
   s -> result_amount *= 1.0 + buff.barkskin -> value();
 
   s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
 
-  if ( spell.thick_hide )
-    s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
-
   // TOCHECK: This talent only has one effect for some reason, may change in the future.
   if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
     s -> result_amount *= 1.0 - talent.galactic_guardian -> effectN( 1 ).percent();
+
+  if ( spell.thick_hide )
+    s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
 
   if ( talent.earthwarden -> ok() && ! s -> action -> special && buff.earthwarden -> up() )
   {
@@ -7068,22 +7064,25 @@ void druid_t::assess_damage( school_e school,
     s -> result_amount *= 1.0 - talent.rend_and_tear -> effectN( 2 ).percent()
                               * get_target_data( s -> action -> player ) -> lacerate_stack;
 
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
-    buff.ironfur -> up();
-
   if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
 
+  player_t::target_mitigation( school, type, s );
+}
+
+// druid_t::assess_damage ===================================================
+
+void druid_t::assess_damage( school_e school,
+                             dmg_e    dtype,
+                             action_state_t* s )
+{
+  if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.ironfur -> check() )
+    buff.guardian_tier15_2pc -> trigger();
+
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
+    buff.ironfur -> up();
+
   player_t::assess_damage( school, dtype, s );
-
-  if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
-  {
-    // TOCHECK: This is a total guess based on ancient wiki pages on how Berserk Stance worked.
-    // 1 rage per 1% health taken
-    double rage = s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100;
-
-    resource_gain( RESOURCE_RAGE, rage, gain.bristling_fur );
-  }
 }
 
 // druid_t::assess_damage_imminent_preabsorb ================================
@@ -7097,6 +7096,15 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
 
   if ( buff.moonkin_form -> up() && s -> result_amount > 0 && ! s -> action -> aoe )
     buff.owlkin_frenzy -> trigger();
+
+  if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
+  {
+    // TOCHECK: This is a total guess based on ancient wiki pages on how Berserk Stance worked.
+    // 1 rage per 1% health taken
+    double rage = s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100;
+
+    resource_gain( RESOURCE_RAGE, rage, gain.bristling_fur );
+  }
 }
 
 // druid_t::assess_heal =====================================================
