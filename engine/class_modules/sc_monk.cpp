@@ -2817,6 +2817,7 @@ struct strike_of_the_skylord_t: public monk_melee_attack_t
     add_child( oh_attack );
   }
 
+/*
   virtual double cost() const override
   {
     if ( p() -> buff.serenity -> check() )
@@ -2832,6 +2833,7 @@ struct strike_of_the_skylord_t: public monk_melee_attack_t
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
+*/
 
   void execute() override
   {
