@@ -3,11 +3,15 @@ level=104
 race=troll
 role=spell
 position=back
-talents=0300000
+talents=0000030
 spec=affliction
 
-actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3
+actions.precombat+=/summon_pet,if=buff.demonic_power.down
+actions.precombat+=/grimoire_of_sacrifice
+
+actions+=/unstable_affliction,if=!remains
 actions+=/drain_life,chain=1,interrupt=1
-actions+=/life_tap,if=mana.pct<=30
 
 soul_shards=5
+
+default_pet=imp

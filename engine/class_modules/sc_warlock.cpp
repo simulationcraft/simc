@@ -11,6 +11,7 @@
 // Pets
 //
 // Affliction -
+// UA ignite, totally not right.
 // Seed of Corruption
 // Haunt reset
 // 100 talents
@@ -152,6 +153,7 @@ public:
   } mastery_spells;
 
   //Procs and RNG
+  real_ppm_t demonic_power_rppm; // grimoire of sacrifice
   real_ppm_t grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
   real_ppm_t grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
 
@@ -190,7 +192,7 @@ public:
     buff_t* backdraft;
     buff_t* demonic_synergy;
     buff_t* fire_and_brimstone;
-    buff_t* grimoire_of_sacrifice;
+    buff_t* demonic_power;
     buff_t* havoc;
     buff_t* mana_tap;
 
@@ -1953,7 +1955,6 @@ struct unstable_affliction_t : public warlock_spell_t
   unstable_affliction_t( warlock_t* p ) :
     warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction )
   {
-    may_crit = false;
     ua_dot = new unstable_affliction_dot_t( p );
 
     if ( p -> affliction_trinket )
@@ -2743,8 +2744,8 @@ struct summon_main_pet_t: public summon_pet_t
 
     p() -> pets.active = p() -> pets.last = pet;
 
-    if ( p() -> buffs.grimoire_of_sacrifice -> check() )
-      p() -> buffs.grimoire_of_sacrifice -> expire();
+    if ( p() -> buffs.demonic_power -> check() )
+      p() -> buffs.demonic_power -> expire();
   }
 };
 
@@ -2990,8 +2991,6 @@ struct shadowburn_t: public warlock_spell_t
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
     return m;
   }
 
@@ -3072,6 +3071,14 @@ struct siphon_life_t : public warlock_spell_t
   {
     may_crit = false;
   }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> talents.siphon_life -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
 };
 
 struct soul_harvest_t : public warlock_spell_t
@@ -3122,10 +3129,19 @@ struct grimoire_of_sacrifice_t: public warlock_spell_t
 
       p() -> pets.active -> dismiss();
       p() -> pets.active = nullptr;
-      p() -> buffs.grimoire_of_sacrifice -> trigger();
+      p() -> buffs.demonic_power -> trigger();
 
-      // FIXME: Add heal event.
     }
+  }
+};
+
+struct demonic_power_damage_t : public warlock_spell_t
+{
+  demonic_power_damage_t( warlock_t* p ) :
+    warlock_spell_t( "demonic_power", p, p -> find_spell( 196100 ) )
+  {
+    background = true;
+    proc = true;
   }
 };
 
@@ -3244,6 +3260,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     talents( talents_t() ),
     glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
+    demonic_power_rppm( *this ),
     grimoire_of_synergy( *this ),
     grimoire_of_synergy_pet( *this ),
     cooldowns( cooldowns_t() ),
@@ -3403,6 +3420,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
   else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
   else if ( action_name == "soul_harvest"          ) a = new          soul_harvest_t( this );
+  else if ( action_name == "siphon_life"           ) a = new             siphon_life_t(this);
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
   else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
@@ -3624,7 +3642,7 @@ void warlock_t::create_buffs()
   player_t::create_buffs();
 
   buffs.backdraft = buff_creator_t( this, "backdraft", talents.backdraft -> effectN( 1 ).trigger() );
-  buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
+  buffs.demonic_power = buff_creator_t( this, "demonic_power", talents.grimoire_of_sacrifice -> effectN( 2 ).trigger() );
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
@@ -3640,8 +3658,9 @@ void warlock_t::create_buffs()
 void warlock_t::init_rng()
 {
   player_t::init_rng();
-  grimoire_of_synergy.set_frequency( 1.333 );
-  grimoire_of_synergy_pet.set_frequency( 1.333 );
+  demonic_power_rppm.set_frequency( find_spell( 196099 ) -> real_ppm() );
+  grimoire_of_synergy.set_frequency( find_spell( 171975 ) -> real_ppm() );
+  grimoire_of_synergy_pet.set_frequency( find_spell( 171975 ) -> real_ppm() );
 }
 
 void warlock_t::init_gains()
@@ -3812,6 +3831,7 @@ void warlock_t::reset()
   havoc_target = nullptr;
   double_nightfall = 0;
 
+  demonic_power_rppm.reset();
   grimoire_of_synergy.reset();
   grimoire_of_synergy_pet.reset();
 }
