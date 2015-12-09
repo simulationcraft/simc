@@ -138,8 +138,8 @@ void dbc::apply_hotfixes()
    * no multiplication, addition, etc.
    */
 
-  spell_data_t* s;
-  spelleffect_data_t* e;
+  // spell_data_t* s;
+  // spelleffect_data_t* e;
 
   // Hunter
 
