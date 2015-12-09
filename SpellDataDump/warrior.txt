@@ -1366,6 +1366,27 @@ Effects          :
 #1 (id=51769)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 490
 
+Name             : Overpower! (id=60503) [Spell Family (4)] 
+Class            : Warrior
+Spell Level      : 1
+Duration         : 12 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Overpower (119938)
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=54207)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5
+Description      : $@spelldesc7384
+Tooltip          : Overpower activated!
+
 Name             : Mechanized Snow Goggles (id=61483) 
 Class            : Warrior, Paladin, Death Knight
 Cast Time        : 2 seconds
@@ -2260,6 +2281,23 @@ Effects          :
 #2 (id=149902)   : Apply Aura (6) | Scale% (61)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc34428
+
+Name             : Overpower (id=119938) [Passive, Hidden] 
+Class            : Warrior
+Proc Chance      : 100%
+Real PPM         : 5 (Haste multiplier)
+Proc Flags       : ..x.x... ........ ........ ........ 
+                 : White Melee, Yellow Melee
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=139085)   : Apply Aura (6) | Proc Trigger Spell: Overpower! (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 60503
 
 Name             : Glyph of Mystic Shout (id=121186) [Spell Family (4), Hidden] 
 Class            : Warrior

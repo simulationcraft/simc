@@ -231,27 +231,28 @@ const int MAX_ILEVEL = 1000;
 struct artifact_power_t
 {
   artifact_power_t() :
-    spell_( spell_data_t::not_found() ), rank_( artifact_power_rank_t::nil() ),
+    rank_( 0 ), spell_( spell_data_t::not_found() ), rank_data_( artifact_power_rank_t::nil() ),
     power_( artifact_power_data_t::nil() )
   { }
 
-  artifact_power_t( const spell_data_t* s, const artifact_power_data_t* p, const artifact_power_rank_t* r ):
-    spell_( s ), rank_( r ), power_( p )
+  artifact_power_t( unsigned rv, const spell_data_t* s, const artifact_power_data_t* p, const artifact_power_rank_t* r ):
+    rank_( rv ), spell_( s ), rank_data_( r ), power_( p )
   { }
 
+  unsigned rank_;
   const spell_data_t* spell_;
-  const artifact_power_rank_t* rank_;
+  const artifact_power_rank_t* rank_data_;
   const artifact_power_data_t* power_;
 
   double value() const
   {
-    if ( power_ -> max_rank == 1 )
+    if ( rank() == 1 )
     {
       return spell_ -> effectN( 1 ).base_value();
     }
     else
     {
-      return rank_ -> value;
+      return rank_data_ -> value;
     }
   }
 
@@ -262,16 +263,7 @@ struct artifact_power_t
   { return *spell_; }
 
   unsigned rank() const
-  {
-    if ( power_ -> max_rank == 1 )
-    {
-      return rank_ -> index + 1;
-    }
-    return rank_ -> index;
-  }
-
-  unsigned max_rank() const
-  { return power_ -> max_rank; }
+  { return rank_; }
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
@@ -561,6 +553,10 @@ struct buff_uptime_t : public uptime_common_t
     uptime_common_t() {}
 };
 
+typedef std::function<void(buff_t*, int, const timespan_t&)> buff_tick_callback_t;
+typedef std::function<timespan_t(const buff_t*, unsigned)> buff_tick_time_callback_t;
+typedef std::function<timespan_t(const buff_t*, const timespan_t&)> buff_refresh_duration_callback_t;
+
 // Buff Creation ====================================================================
 namespace buff_creation {
 
@@ -579,10 +575,13 @@ protected:
   timespan_t _duration, _cooldown, _period;
   int _quiet, _reverse, _activated, _can_cancel;
   int _affects_regen;
+  buff_tick_time_callback_t _tick_time_callback;
   buff_tick_behavior_e _behavior;
+  bool _initial_tick;
+  buff_tick_time_e _tick_time_behavior;
   buff_refresh_behavior_e _refresh_behavior;
-  std::function<void(buff_t*, int, int)> _tick_callback;
-  std::function<timespan_t(const buff_t*, const timespan_t&)> _refresh_duration_callback;
+  buff_tick_callback_t _tick_callback;
+  buff_refresh_duration_callback_t _refresh_duration_callback;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
   friend struct ::debuff_t;
@@ -642,14 +641,20 @@ public:
   { _invalidate_list.push_back( c ); return *( static_cast<bufftype*>( this ) ); }
   bufftype& tick_behavior( buff_tick_behavior_e b )
   { _behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_callback( std::function<void(buff_t*, int, int)> cb )
+  bufftype& tick_zero( bool v )
+  { _initial_tick = v; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_time_behavior( buff_tick_time_e b )
+  { _tick_time_behavior = b; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_time_callback( const buff_tick_time_callback_t& cb )
+  { _tick_time_behavior = BUFF_TICK_TIME_CUSTOM; _tick_time_callback = cb; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_callback( const buff_tick_callback_t& cb )
   { _tick_callback = cb; return *( static_cast<bufftype*>( this ) ); }
   bufftype& affects_regen( bool state )
   { _affects_regen = state; return *( static_cast<bufftype*>( this ) ); }
   bufftype& refresh_behavior( buff_refresh_behavior_e b )
   { _refresh_behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& refresh_duration_callback( std::function<timespan_t(const buff_t*, const timespan_t&)> cb )
-  { _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& refresh_duration_callback( const buff_refresh_duration_callback_t& cb )
+  { _refresh_behavior = BUFF_REFRESH_CUSTOM; _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -810,13 +815,17 @@ public:
   std::vector<event_t*> stack_react_ready_triggers;
 
   buff_refresh_behavior_e refresh_behavior;
-  std::function<timespan_t(const buff_t*, const timespan_t&)> refresh_duration_callback;
+  buff_refresh_duration_callback_t refresh_duration_callback;
 
   // Ticking buff values
+  unsigned current_tick;
   timespan_t buff_period;
+  buff_tick_time_e tick_time_behavior;
   buff_tick_behavior_e tick_behavior;
   event_t* tick_event;
-  std::function<void(buff_t*, int, int)> tick_callback;
+  buff_tick_callback_t tick_callback;
+  buff_tick_time_callback_t tick_time_callback;
+  bool tick_zero;
 
   // tmp data collection
 protected:
@@ -937,6 +946,7 @@ public:
   virtual void datacollection_end();
 
   virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
+  virtual timespan_t tick_time() const;
 
   void add_invalidate( cache_e );
 #if defined(SC_USE_STAT_CACHE)
@@ -3511,6 +3521,7 @@ struct player_t : public actor_t
     std::array<double, RESOURCE_MAX> base, initial, max, current, temporary,
         base_multiplier, initial_multiplier;
     std::array<int, RESOURCE_MAX> infinite_resource;
+    std::array<bool, RESOURCE_MAX> active_resource;
 
     resources_t()
     {
@@ -3522,6 +3533,7 @@ struct player_t : public actor_t
       range::fill( base_multiplier, 1.0 );
       range::fill( initial_multiplier, 1.0 );
       range::fill( infinite_resource, 0 );
+      range::fill( active_resource, true );
     }
 
     double pct( resource_e rt ) const
@@ -3529,6 +3541,9 @@ struct player_t : public actor_t
 
     bool is_infinite( resource_e rt ) const
     { return infinite_resource[ rt ] != 0; }
+
+    bool is_active( resource_e rt ) const
+    { return active_resource[ rt ] && current[ rt ] >= 0.0; }
   } resources;
 
   struct consumables_t {
@@ -4071,6 +4086,7 @@ struct player_t : public actor_t
   bool parse_talents_wowhead( const std::string& talent_string );
 
   bool parse_artifact_wowdb( const std::string& artifact_string );
+  bool parse_artifact_wowhead( const std::string& artifact_string );
 
   void create_talents_numbers();
   void create_talents_armory();

@@ -21,9 +21,10 @@ namespace { // UNNAMED NAMESPACE
  Balance ==============================
  Stellar Drift cast while moving
  Starfall positioning
- Artifact stuff (New Moon, OKF driver)
+ Utility & NYI artifact perks (see p() -> artifact).
  Celestial alignment damage modifier on correct spells
  Accurate starfall travel time & debuff mechanics ?
+ Force of Nature!
 
  Guardian =============================
  Statistics?
@@ -574,19 +575,19 @@ public:
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t empowerment;
     artifact_power_t falling_star;
+    artifact_power_t mooncraze;
     artifact_power_t moon_and_stars;
     artifact_power_t new_moon;
+    artifact_power_t power_of_goldrinn;
     artifact_power_t scythe_of_the_stars;
     artifact_power_t solar_stabbing;
     artifact_power_t sunfire_burns;
     artifact_power_t twilight_glow;
 
     // NYI
-    artifact_power_t power_of_goldrinn;
     artifact_power_t scion_of_the_night_sky;
     artifact_power_t touch_of_the_moon;
     artifact_power_t rejuvenating_innervation;
-    artifact_power_t mooncraze;
     artifact_power_t light_of_the_sun;
   } artifact;
 
@@ -666,7 +667,6 @@ public:
   virtual void      combat_begin() override;
   virtual void      reset() override;
   virtual void      merge( player_t& other ) override;
-  virtual void      regen( timespan_t periodicity ) override;
   virtual timespan_t available() const override;
   virtual double    composite_armor_multiplier() const override;
   virtual double    composite_attack_power_multiplier() const override;
@@ -694,7 +694,8 @@ public:
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    mana_regen_per_second() const override;
-  virtual void      assess_damage( school_e school, dmg_e, action_state_t* ) override;
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
   virtual void      recalculate_resource_max( resource_e ) override;
@@ -1123,27 +1124,6 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Blessing of An'she Buff ====================================================
-
-struct blessing_of_anshe_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  blessing_of_anshe_buff_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "blessing_of_anshe", p.spell.blessing_of_anshe ) ),
-    druid( &p )
-  {
-    tick_behavior = BUFF_TICK_NONE; // ticking is handled by DoT
-  }
-
-  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::expire_override( stacks, duration );
-
-    druid -> get_dot( "blessing_of_anshe", druid ) -> cancel();
-  }
-};
-
 // Cat Form =================================================================
 
 struct cat_form_t : public druid_buff_t< buff_t >
@@ -1191,54 +1171,6 @@ struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
     druid_buff_t<buff_t>::expire_override( stacks, duration );
 
     druid -> buff.star_power -> expire();
-  }
-};
-
-// Earthwarden Driver Buff ============================================================
-
-struct earthwarden_driver_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  earthwarden_driver_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "earthwarden_driver", p.talent.earthwarden )
-    .quiet( true )
-    .tick_callback( callback ) ), druid( &p )
-  {}
-
-  static void callback( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-    p -> buff.earthwarden -> trigger();
-  }
-
-  void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::start( stacks, value, duration );
-
-    // Emulate tick_zero behavior.
-    druid -> buff.earthwarden -> trigger();
-  }
-};
-
-// Elune's Guidance Buff ====================================================
-
-struct elunes_guidance_buff_t : public druid_buff_t < buff_t >
-{
-  elunes_guidance_buff_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "elunes_guidance", p.talent.elunes_guidance )
-     .tick_callback( callback ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-    buff_period = data().effectN( 2 ).period();
-  }
-
-  static void callback( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-    p -> resource_gain( RESOURCE_COMBO_POINT,
-      p -> talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
-      p -> gain.elunes_guidance );
   }
 };
 
@@ -1335,36 +1267,6 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 
     // disabled for now since they'll probably institute this behavior later.
     // druid.cooldown.warrior_of_elune -> start();
-  }
-};
-
-// The Reaping Driver Buff ============================================================
-
-struct the_reaping_driver_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  the_reaping_driver_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "the_reaping_driver", p.scythe_of_elune -> driver() )
-    .quiet( true )
-    .tick_callback( callback )
-    .default_value( p.buff.owlkin_frenzy -> default_chance * ( p.artifact.mooncraze.rank() ? 2.0 : 1.0 ) ) ),
-    druid( &p )
-  {}
-
-  static void callback( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-
-    p -> buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), p -> buff.the_reaping -> current_value );
-  }
-
-  void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::start( stacks, value, duration );
-
-    // Emulate tick_zero behavior.
-    druid -> buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), current_value );
   }
 };
 
@@ -2526,18 +2428,8 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
     residual_action::residual_periodic_action_t<cat_attack_t>( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
     background = dual = proc = true;
-
     consume_ooc = may_miss = may_dodge = may_parry = false;
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    residual_action::residual_periodic_action_t<cat_attack_t>::tick( d );
-
-    if ( trigger_tier17_2pc )
-      p() -> resource_gain( RESOURCE_ENERGY,
-                            p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
-                            p() -> gain.feral_tier17_2pc );
+    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 };
 
@@ -2605,15 +2497,6 @@ struct rake_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
-  }
-
-  virtual void execute() override
-  {
-    cat_attack_t::execute();
-
-    // Track buff benefits
-    if ( p() -> specialization() == DRUID_FERAL )
-      p() -> buff.incarnation -> up();
   }
 };
 
@@ -4038,39 +3921,6 @@ struct yseras_tick_t : public druid_heal_t
 
 } // end namespace heals
 
-namespace buffs {
-  
-// Ysera's Gift Driver Buff =================================================
-
-struct yseras_gift_driver_buff_t : public druid_buff_t < buff_t >
-{
-  druid_t* druid;
-
-  yseras_gift_driver_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "yseras_gift_driver", p.spell.yseras_gift )
-    .quiet( true )
-    .tick_callback( yseras_gift_driver_tick ) ), druid( &p )
-  {}
-
-  static void yseras_gift_driver_tick( buff_t* buff, int, int )
-  {
-    druid_t* p = debug_cast<druid_t*>( buff -> player );
-    p -> active.yseras_gift -> base_dd_min = p -> spell.yseras_gift -> effectN( 1 ).percent() * p -> resources.max[ RESOURCE_HEALTH ];
-    p -> active.yseras_gift -> execute();
-  }
-
-  // Emulate tick_zero behavior.
-  virtual void start( int stacks, double value, timespan_adl_barrier::timespan_t duration )
-  {
-    druid_buff_t<buff_t>::start( stacks, value, duration );
-    
-    druid -> active.yseras_gift -> base_dd_min = druid -> spell.yseras_gift -> effectN( 1 ).percent() * druid -> resources.max[ RESOURCE_HEALTH ];
-    druid -> active.yseras_gift -> execute();
-  }
-};
-
-}
-
 namespace spells {
 
 // ==========================================================================
@@ -4181,15 +4031,8 @@ struct blessing_of_anshe_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    target = player; // apply DoT to self
-    dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
-      2 * sim -> expected_iteration_time :
-      2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-    harmful = may_crit = tick_may_crit = false;
-    hasted_ticks = true;
+    harmful = may_crit = false;
     ignore_false_positive = true;
-
-    ap_per_tick = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void execute() override
@@ -4339,7 +4182,7 @@ struct collapsing_stars_t : public druid_spell_t
     base_costs_per_tick[ RESOURCE_ASTRAL_POWER ] *= base_tick_time.total_seconds();
   }
 
-  virtual timespan_t cost_tick_time( const dot_t& d ) const override
+  timespan_t cost_tick_time( const dot_t& d ) const override
   {
     // Consumes cost each time DoT ticks.
     return d.time_to_next_tick();
@@ -5828,14 +5671,18 @@ void druid_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here (none for druids at the moment).
-
+  // Resources
   resources.base[ RESOURCE_ENERGY       ] = 100 + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY );
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
+  
+  resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
+  resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
+  resources.active_resource[ RESOURCE_MANA         ] = primary_role() == ROLE_HEAL || talent.restoration_affinity -> ok() || talent.balance_affinity -> ok();
+  resources.active_resource[ RESOURCE_ENERGY       ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
+  resources.active_resource[ RESOURCE_COMBO_POINT  ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
+  resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
 
   base_energy_regen_per_second = 10;
 
@@ -5910,11 +5757,21 @@ void druid_t::create_buffs()
   buff.bloodtalons        = buff_creator_t( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
                             .max_stack( 2 );
 
-  buff.elunes_guidance    = new elunes_guidance_buff_t( *this );
+  buff.elunes_guidance    = buff_creator_t( this, "elunes_guidance", talent.elunes_guidance )
+                            .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                              resource_gain( RESOURCE_COMBO_POINT,
+                                talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+                                gain.elunes_guidance ); } )
+                            .cd( timespan_t::zero() )
+                            .period( talent.elunes_guidance -> effectN( 2 ).period() );
 
   // Balance
 
-  buff.blessing_of_anshe         = new blessing_of_anshe_buff_t( *this );
+  buff.blessing_of_anshe         = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe )
+                                   .tick_time_behavior( BUFF_TICK_TIME_HASTED )
+                                   .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                       resource_gain( RESOURCE_ASTRAL_POWER, b -> data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ), gain.blessing_of_anshe );
+                                    });
 
   buff.blessing_of_elune         = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
 
@@ -5972,7 +5829,10 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() );
   buff.earthwarden           = buff_creator_t( this, "earthwarden", find_spell( 203975 ) )
                                .default_value( talent.earthwarden -> effectN( 1 ).percent() );
-  buff.earthwarden_driver    = new earthwarden_driver_buff_t( *this );
+  buff.earthwarden_driver    = buff_creator_t( this, "earthwarden_driver", talent.earthwarden )
+                               .quiet( true )
+                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
+                               .tick_zero( true );
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() ) // cooldown handled by spell
@@ -6008,7 +5868,14 @@ void druid_t::create_buffs()
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
 
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
-    buff.yseras_gift         = new yseras_gift_driver_buff_t( *this );
+  {
+    buff.yseras_gift         = buff_creator_t( this, "yseras_gift_driver", spell.yseras_gift )
+                               .quiet( true )
+                               .tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+                                               { active.yseras_gift -> base_dd_min = spell.yseras_gift -> effectN( 1 ).percent() * resources.max[ RESOURCE_HEALTH ];
+                                                 active.yseras_gift -> execute(); } )
+                               .tick_zero( true );
+  }
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -6600,20 +6467,6 @@ void druid_t::merge( player_t& other )
     counters[ i ] -> merge( *od.counters[ i ] );
 }
 
-// druid_t::regen ===========================================================
-
-void druid_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-
-  // player_t::regen() only regens your primary resource, so we need to account for that here
-  if ( primary_resource() != RESOURCE_MANA && mana_regen_per_second() )
-    resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
-  if ( primary_resource() != RESOURCE_ENERGY && energy_regen_per_second() )
-    resource_gain( RESOURCE_ENERGY, energy_regen_per_second() * periodicity.total_seconds(), gains.energy_regen );
-
-}
-
 // druid_t::mana_regen_per_second ============================================================
 
 double druid_t::mana_regen_per_second() const
@@ -7162,10 +7015,10 @@ stat_e druid_t::convert_hybrid_stat( stat_e s ) const
 
 resource_e druid_t::primary_resource() const
 {
-  if ( primary_role() == ROLE_SPELL )
+  if ( specialization() == DRUID_BALANCE && primary_role() == ROLE_SPELL )
     return RESOURCE_ASTRAL_POWER;
 
-  if ( primary_role() == ROLE_HEAL )
+  if ( primary_role() == ROLE_HEAL || primary_role() == ROLE_SPELL )
     return RESOURCE_MANA;
 
   if ( primary_role() == ROLE_TANK )
@@ -7184,27 +7037,22 @@ void druid_t::init_absorb_priority()
   absorb_priority.push_back( talent.brambles -> id() ); // Brambles
 }
 
-// druid_t::assess_damage ===================================================
+// druid_t::target_mitigation ===============================================
 
-void druid_t::assess_damage( school_e school,
-                             dmg_e    dtype,
-                             action_state_t* s )
+void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s )
 {
-  if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.ironfur -> check() )
-    buff.guardian_tier15_2pc -> trigger();
-
   s -> result_amount *= 1.0 + buff.barkskin -> value();
 
   s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
 
-  if ( spell.thick_hide )
-    s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
-
   // TOCHECK: This talent only has one effect for some reason, may change in the future.
   if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
     s -> result_amount *= 1.0 - talent.galactic_guardian -> effectN( 1 ).percent();
+
+  if ( spell.thick_hide )
+    s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
 
   if ( talent.earthwarden -> ok() && ! s -> action -> special && buff.earthwarden -> up() )
   {
@@ -7216,22 +7064,25 @@ void druid_t::assess_damage( school_e school,
     s -> result_amount *= 1.0 - talent.rend_and_tear -> effectN( 2 ).percent()
                               * get_target_data( s -> action -> player ) -> lacerate_stack;
 
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
-    buff.ironfur -> up();
-
   if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
 
+  player_t::target_mitigation( school, type, s );
+}
+
+// druid_t::assess_damage ===================================================
+
+void druid_t::assess_damage( school_e school,
+                             dmg_e    dtype,
+                             action_state_t* s )
+{
+  if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.ironfur -> check() )
+    buff.guardian_tier15_2pc -> trigger();
+
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
+    buff.ironfur -> up();
+
   player_t::assess_damage( school, dtype, s );
-
-  if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
-  {
-    // TOCHECK: This is a total guess based on ancient wiki pages on how Berserk Stance worked.
-    // 1 rage per 1% health taken
-    double rage = s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100;
-
-    resource_gain( RESOURCE_RAGE, rage, gain.bristling_fur );
-  }
 }
 
 // druid_t::assess_damage_imminent_preabsorb ================================
@@ -7245,6 +7096,15 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
 
   if ( buff.moonkin_form -> up() && s -> result_amount > 0 && ! s -> action -> aoe )
     buff.owlkin_frenzy -> trigger();
+
+  if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
+  {
+    // TOCHECK: This is a total guess based on ancient wiki pages on how Berserk Stance worked.
+    // 1 rage per 1% health taken
+    double rage = s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100;
+
+    resource_gain( RESOURCE_RAGE, rage, gain.bristling_fur );
+  }
 }
 
 // druid_t::assess_heal =====================================================
@@ -7501,7 +7361,12 @@ static void scythe_of_elune( special_effect_t& effect )
   druid_t* s = debug_cast<druid_t*>( effect.player );
   do_trinket_init( s, DRUID_BALANCE, s -> scythe_of_elune, effect );
 
-  s -> buff.the_reaping = new buffs::the_reaping_driver_buff_t( *s );
+  s -> buff.the_reaping = buff_creator_t( s, "the_reaping_driver", s -> scythe_of_elune -> driver() )
+                          .quiet( true )
+                          .tick_callback( [ s ]( buff_t*, int, const timespan_t& )
+                                          { s -> buff.owlkin_frenzy ->  trigger( 1, buff_t::DEFAULT_VALUE(), s -> buff.the_reaping -> current_value ); } )
+                          .default_value( s -> buff.owlkin_frenzy -> default_chance * ( s -> artifact.mooncraze.rank() ? 2.0 : 1.0 ) )
+                          .tick_zero( true );
 }
 
 // DRUID MODULE INTERFACE ===================================================

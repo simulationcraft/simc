@@ -1590,19 +1590,21 @@ class SpellDataGenerator(DataGenerator):
 
         # Monk:
         (
-          ( 116768, 3 ), # Combo Breaker: Blackout Kick
-          ( 159407, 3 ), # Combo Breaker: Chi Explosion
-		  ( 195630, 1, False ), # Brewmaster Mastery Buff
-          ( 126890, 0, False ), # Eminence false positives for activatable abilities
-          ( 117895, 0, False ),
-		  ( 121283, 0 ), # Chi Sphere from Power Strikes
-          ( 159620, 0 ), # Spirited Crane Chi Explosion
-          ( 140737, 0 ), # Way of the Monk 2-Hander Weapon Speed modifier
-          ( 138228, 0 ), # Storm, Earth, and Fire buff
+          # General
+          #( 140737, 0 ), # Way of the Monk 2-Hander Weapon Speed modifier - Comment out for time being
+          # Brewmaster
+          ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 124503, 0 ), # Gift of the Ox Orb Left
           ( 124506, 0 ), # Gift of the Ox Orb Right
           ( 178173, 0 ), # Gift of the Ox Explosion
+          ( 124275, 0 ), # Light Stagger
+          ( 124274, 0 ), # Medium Stagger
+          ( 124273, 0 ), # Heavy Stagger
+          # Mistweaver
           ( 167732, 0 ), # Tier 17 2-piece Healer Buff
+          # Windwalker
+          ( 116768, 3 ), # Combo Breaker: Blackout Kick
+          ( 121283, 0 ), # Chi Sphere from Power Strikes
         ),
 
         # Druid:

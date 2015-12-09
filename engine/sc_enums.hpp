@@ -50,6 +50,13 @@ enum buff_tick_behavior_e
   BUFF_TICK_REFRESH
 };
 
+enum buff_tick_time_e
+{
+  BUFF_TICK_TIME_UNHASTED,
+  BUFF_TICK_TIME_HASTED,
+  BUFF_TICK_TIME_CUSTOM
+};
+
 /**
  * @brief Buff refresh mechanism during trigger.
  *
@@ -329,8 +336,6 @@ enum resource_e
   RESOURCE_MAELSTROM,
   RESOURCE_CHI,
   RESOURCE_INSANITY,
-  RESOURCE_BURNING_EMBER,
-  RESOURCE_DEMONIC_FURY,
   RESOURCE_FURY,
   /* Dummy resources for reporting */
   RESOURCE_RUNE,
@@ -1238,3 +1243,4 @@ enum rppm_scale_e
   RPPM_HASTE,
   RPPM_CRIT,
 };
+

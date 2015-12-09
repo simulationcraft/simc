@@ -1873,14 +1873,14 @@ void print_html_player_scale_factors( report::sc_html_stream& os, const player_t
 
 bool print_html_sample_sequence_resource( const player_t& p, const player_collected_data_t::action_sequence_data_t& data, resource_e r )
 {
-  if ( r == RESOURCE_ASTRAL_POWER && p.specialization() == DRUID_BALANCE ) // Eclipse dips into the negatives.
-    return true;
+  if ( ! p.resources.active_resource[ r ] && ! p.sim -> maximize_reporting )
+    return false;
 
   if ( data.resource_snapshot[ r ] < 0 )
     return false;
 
   if ( p.role == ROLE_TANK && r == RESOURCE_HEALTH )
-      return true;
+    return true;
 
   if ( p.resources.is_infinite( r ) )
     return false;
@@ -1914,9 +1914,20 @@ void print_html_sample_sequence_string_entry( report::sc_html_stream& os,
     data.action -> name(),
     ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
 
+  resource_e pr = p.primary_resource();
+
+  if ( print_html_sample_sequence_resource( p, data, pr ) )
+  {
+    if ( pr == RESOURCE_HEALTH || pr == RESOURCE_MANA )
+      os.format( " %d%%", ( int ) ( ( data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] ) * 100 ) );
+    else
+      os.format( " %.1f", data.resource_snapshot[ pr ] );
+    os.format( " %s |", util::resource_type_string( pr ) );
+  }
+
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
   {
-    if ( print_html_sample_sequence_resource( p, data, r ) ) // Eclipse currently dips into the negatives.
+    if ( print_html_sample_sequence_resource( p, data, r ) && r != pr )
     {
       if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
         os.format( " %d%%", ( int ) ( ( data.resource_snapshot[ r ] / data.resource_max_snapshot[ r ] ) * 100 ) );
@@ -1976,9 +1987,23 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   os.format( "<td class=\"left\">" );
 
   bool first = true;
+  resource_e pr = p.primary_resource();
+
+  if ( print_html_sample_sequence_resource( p, data, pr ) )
+  {
+    if ( first )
+      first = false;
+
+    os.format( " %.1f/%.0f: <b>%.0f%%",
+                data.resource_snapshot[ pr ],
+                data.resource_max_snapshot[ pr ],
+                data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] * 100.0 );
+    os.format( " %s</b>", util::resource_type_string( pr ) );
+  }
+
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
   {
-    if ( print_html_sample_sequence_resource( p, data, r ) ) // Eclipse currently dips into the negatives.
+    if ( print_html_sample_sequence_resource( p, data, r ) && r != pr )
     {
       if ( first )
         first = false;

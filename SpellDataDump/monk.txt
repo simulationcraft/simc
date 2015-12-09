@@ -2381,6 +2381,46 @@ Tooltip          : $w1 damage is being staggered every 1 sec.
 
 Stagger Remaining: $w2
 
+Name             : Moderate Stagger (id=124274) [Spell Family (53)] 
+Class            : Monk
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... .....x.. 
+                 : .......x x....... ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ....x... 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player procs (112)
+Effects          :
+#1 (id=157257)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=179270)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc124255
+Tooltip          : $w1 damage is being staggered every 1 sec.
+
+Stagger Remaining: $w2
+
+Name             : Light Stagger (id=124275) [Spell Family (53)] 
+Class            : Monk
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... .....x.. 
+                 : .......x x....... ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ....x... 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player procs (112)
+Effects          :
+#1 (id=157258)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=179269)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc124255
+Tooltip          : $w1 damage is being staggered every 1 sec.
+
+Stagger Remaining: $w2
+
 Name             : Touch of Karma (id=124280) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
@@ -3500,30 +3540,6 @@ Effects          :
 #1 (id=220760)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Radius: 0 - 8 yards
 Description      : $@spelldesc152175
-
-Name             : Combo Breaker: Chi Explosion (id=159407) [Spell Family (53)] 
-Class            : Monk
-Spell Level      : 1
-Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... ........ ........ 
-                 : Yellow Melee, AOE Hostile Spell
-Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=223279)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2
-#2 (id=223280)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=223281)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0
-Description      : $@spelldesc137384
-Tooltip          : Your next Chi Explosion refunds $s1 Chi.
 
 Name             : Bladed Armor (id=161608) [Passive] 
 Class            : Protection Protection Brewmaster Guardian Warrior, Paladin, Monk, Druid

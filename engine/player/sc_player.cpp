@@ -5,6 +5,8 @@
 
 #include <cerrno>
 
+#include "util/basen.hpp"
+
 #include "simulationcraft.hpp"
 
 namespace {
@@ -371,9 +373,9 @@ bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
   {
     ret = sim -> active_player -> parse_artifact_wowdb( value );
   }
-  else if ( value.size() >= 9 )
+  else if ( util::str_in_str_ci( value, ".wowhead.com/artifact-calc#" ) )
   {
-    ret = sim -> active_player -> parse_artifact_wowdb( value );
+    ret = sim -> active_player -> parse_artifact_wowhead( value );
   }
 
   if ( ret )
@@ -4345,34 +4347,39 @@ void player_t::regen( timespan_t periodicity )
     sim -> out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f",
         name(), last_regen.total_seconds(), periodicity.total_seconds() );
 
-  resource_e r = primary_resource();
-  double base;
-  gain_t* gain;
-
-  switch ( r )
+  for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
   {
-    case RESOURCE_ENERGY:
-      base = energy_regen_per_second();
-      gain = gains.energy_regen;
-      break;
+    if ( resources.is_active( r ) )
+    {
+      double base;
+      gain_t* gain;
 
-    case RESOURCE_FOCUS:
-      base = focus_regen_per_second();
-      gain = gains.focus_regen;
-      break;
+      switch ( r )
+      {
+        case RESOURCE_ENERGY:
+          base = energy_regen_per_second();
+          gain = gains.energy_regen;
+          break;
 
-    case RESOURCE_MANA:
-      base = mana_regen_per_second();
-      gain = gains.mp5_regen;
-      break;
+        case RESOURCE_FOCUS:
+          base = focus_regen_per_second();
+          gain = gains.focus_regen;
+          break;
 
-    default:
-      return;
+        case RESOURCE_MANA:
+          base = mana_regen_per_second();
+          gain = gains.mp5_regen;
+          break;
+
+        default:
+          continue;
+          break;
+      }
+
+      if ( gain && base )
+        resource_gain( r, base * periodicity.total_seconds(), gain );
+    }
   }
-
-  if ( gain && base )
-    resource_gain( r, base * periodicity.total_seconds(), gain );
-
 }
 
 // player_t::collect_resource_timeline_information ==========================
@@ -4453,8 +4460,15 @@ double player_t::resource_loss( resource_e resource_type,
   }
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "Player %s loses %.2f (%.2f) %s. health pct: %.2f (%.0f/%.0f)",
-                   name(), actual_amount, amount, util::resource_type_string( resource_type ), health_percentage(), resources.current[ resource_type ], resources.max[ resource_type ] );
+    sim -> out_debug.printf( "Player %s loses %.2f (%.2f) %s. pct=%.2f%% (%.0f/%.0f)",
+                   name(),
+                   actual_amount,
+                   amount,
+                   util::resource_type_string( resource_type ),
+                   util::resource_type_string( resource_type ),
+                   resources.pct( resource_type ) * 100,
+                   resources.current[ resource_type ],
+                   resources.max[ resource_type ] );
 
   return actual_amount;
 }
@@ -4507,7 +4521,16 @@ bool player_t::resource_available( resource_e resource_type,
     return true;
   }
 
-  return resources.current[ resource_type ] >= cost;
+  bool available = resources.current[ resource_type ] >= cost;
+
+#ifndef NDEBUG
+  if ( ! resources.active_resource[ resource_type ] )
+  {
+    assert( available && "Insufficient inactive resource to cast!" );
+  }
+#endif
+
+  return available;
 }
 
 // player_t::recalculate_resources.max ======================================
@@ -7399,25 +7422,15 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
 bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
 {
+  static const std::string decode( "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/_" );
+
   auto data_offset = artifact_string.find( '#' );
-  if ( data_offset == std::string::npos && artifact_string.size() < 9 )
+  if ( data_offset == std::string::npos )
   {
     return false;
   }
 
-  std::string artifact_data;
-  // Full url
-  if ( data_offset != std::string::npos )
-  {
-    artifact_data = artifact_string.substr( data_offset + 2, 8 );
-  }
-  // Spec + artifact data, we skip the spec for now (dAAAAAAAA)
-  else
-  {
-    artifact_data = artifact_string.substr( 1, 8 );
-  }
-
-  static const std::string decode( "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmonpqrstuvwxyz" );
+  std::string artifact_data = artifact_string.substr( data_offset + 2, 8 );
 
   for ( size_t idx = 0; idx < artifact_data.size(); ++idx )
   {
@@ -7429,6 +7442,109 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
 
     artifact_points[ idx * 2 ] = value & 0x7;
     artifact_points[ idx * 2 + 1 ] = (value & 0x38) >> 3;
+  }
+
+  return true;
+}
+
+// player_t::parse_artifact_wowhead =========================================
+
+bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
+{
+  auto data_offset = artifact_string.find( '#' );
+  if ( data_offset == std::string::npos )
+  {
+    return false;
+  }
+
+  std::string artifact_data;
+  // Full url
+  if ( data_offset != std::string::npos )
+  {
+    artifact_data = artifact_string.substr( data_offset + 1 );
+  }
+  else
+  {
+    return false;
+  }
+
+  std::vector<uint8_t> data;
+  // Base64url, convert prohibidado characters to correct ones before decoding
+  std::replace( artifact_data.begin(), artifact_data.end(), '_', '/' );
+  std::replace( artifact_data.begin(), artifact_data.end(), '-', '+' );
+
+  bn::decode_b64( artifact_data.begin(), artifact_data.end(), std::back_inserter( data ) );
+
+  //uint8_t message_length = data[ 0 ];
+  //uint8_t version = ( data[ 3 ] & 0xF0 ) >> 4;
+  uint8_t artifact_id = ( data[ 3 ] & 0xF ) << 4 | ( data[ 4 ] & 0xF0 ) >> 4;
+
+  // Relic insertion indicators, 4 bits (only first two bits used?)
+  uint8_t relics = data[ 4 ] & 0xF;
+
+  std::vector<unsigned> relic_item_ids;
+  size_t offset = 5;
+  while ( relics )
+  {
+    assert( relics & 0x1 );
+
+    unsigned relic_item_id = 0;
+    // Relic is a 20-bit item identifier of the gem. Little endian.
+    if ( relic_item_ids.size() % 2 == 0 )
+    {
+      relic_item_id = data[offset] << 12 | (data[offset + 1] << 4) | ((data[offset + 2] & 0xF0) >> 4);
+      offset += 2;
+    }
+    else
+    {
+      relic_item_id = ((data[offset] & 0xF) << 16) | (data[offset + 1] << 8) | data[offset + 2];
+      offset += 3;
+    }
+
+    if ( relic_item_id > 0 )
+    {
+      relic_item_ids.push_back( relic_item_id );
+    }
+
+    relics >>= 1;
+  }
+
+  // Rest of the data is artifact powers
+  std::vector<std::pair<unsigned, unsigned>> powers;
+  while ( offset < data.size() )
+  {
+    unsigned power_id = 0;
+    unsigned rank_id = 0;
+    // Power is 12 bits of power id / 4 bits of rank number. Little endian.
+    if ( relic_item_ids.size() % 2 == 0 )
+    {
+      power_id = (data[offset] << 4) | ((data[offset + 1] & 0xF0) >> 4);
+      rank_id = data[offset + 1] & 0xF;
+    }
+    else
+    {
+      power_id = ((data[offset] & 0xF) << 8) | data[offset + 1];
+      rank_id = (data[offset + 2] & 0xF0) >> 4;
+    }
+    if ( power_id > 0 && rank_id > 0 )
+    {
+      powers.push_back( std::make_pair( power_id, rank_id ) );
+    }
+    offset += 2;
+  }
+
+  std::vector<const artifact_power_data_t*> artifact_powers = sim -> active_player -> dbc.artifact_powers( artifact_id );
+  for ( const auto& v : powers )
+  {
+    auto pos = range::find_if( artifact_powers,
+                               [ &v ]( const artifact_power_data_t* power_data ) {
+                                 return power_data->id == v.first;
+                               } );
+
+    if ( pos != artifact_powers.end() )
+    {
+      sim -> active_player -> artifact_points[ pos - artifact_powers.begin() ] = v.second;
+    }
   }
 
   return true;
@@ -7692,29 +7808,17 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name ) const
     return artifact_power_t();
   }
 
-  // Multi-rank powers have a system whereby they can go +2 over the max rank of the power (as
-  // indicated by the DBC file).
-  if ( power_data -> max_rank > 1 &&
-       artifact_points[ power_index ] - 1 > ( power_data -> max_rank + 2 ) )
-  {
-    return artifact_power_t();
-  }
-
   // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
   std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
-  unsigned rank_index = artifact_points[ power_index ];
-  if ( ranks.size() == 1 )
-  {
-    rank_index--;
-  }
+  unsigned rank_index = artifact_points[ power_index ] - 1;
 
   // Rank data missing for the power
-  if ( rank_index > ranks[ ranks.size() - 1 ] -> index )
+  if ( rank_index > ranks.size() - 1 )
   {
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s (index %u)",
-          this -> name(), artifact_points[ power_index ], ranks[ ranks.size() - 1 ] -> index,
+          this -> name(), artifact_points[ power_index ], ranks.size(),
           power_data -> name ? power_data -> name : "Unknown", power_index );
     }
 
@@ -7722,7 +7826,10 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name ) const
   }
 
   // Finally, all checks satisfied, return a real spell
-  return artifact_power_t( find_spell( ranks[ rank_index ] -> id_spell ), power_data, ranks[ rank_index ] );
+  return artifact_power_t( artifact_points[ power_index ],
+                           find_spell( ranks[ rank_index ] -> id_spell ),
+                           power_data,
+                           ranks[ rank_index ] );
 }
 
 // player_t::find_perk_spell ======================================

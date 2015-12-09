@@ -3307,19 +3307,6 @@ struct overpower_t: public warrior_real_ppm_t < real_ppm_t >
 };
 };
 
-// =========================================================================
-// Buff Help Classes
-// =========================================================================
-
-// Fury T17 4 piece ========================================================
-
-void tier17_4pc_fury( buff_t* buff, int, int )
-{
-  warrior_t* p = debug_cast<warrior_t*>( buff -> player );
-
-  p -> buff.tier17_4pc_fury -> trigger( 1 );
-}
-
 // ==========================================================================
 // Warrior Buffs
 // ==========================================================================
@@ -3510,7 +3497,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_CRIT );
 
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() )
-    .tick_callback( tier17_4pc_fury );
+    .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.tier17_4pc_fury -> trigger( 1 ); } );
 }
 
 // warrior_t::init_scaling ==================================================
