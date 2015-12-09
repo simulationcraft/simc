@@ -2062,11 +2062,19 @@ struct drain_life_t: public warlock_spell_t
 struct drain_soul_t: public warlock_spell_t
 {
   drain_soul_t( warlock_t* p ):
-    warlock_spell_t( "Drain Soul", p, p -> find_spell( 103103 ) )
+    warlock_spell_t( "drain_soul", p, p -> find_spell( 198590 ) )
   {
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
+  }
+
+  virtual bool ready() override
+  {
+   if ( !p() -> talents.drain_soul -> ok() ) 
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
