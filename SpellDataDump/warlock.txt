@@ -785,6 +785,19 @@ Effects          :
 Description      : Instantly blasts a target for $s1 Shadow damage. Generates $29341s1 Soul Shards if the target dies within $d.
 Tooltip          : If the target dies, the Warlock gains $29341s1 Soul Shards.
 
+Name             : Agony (id=17941) [Spell Family (5)] 
+Class            : Warlock
+Attributes       : ........ ........ x....... x..x....   ........ ..x..... ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ x....... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=9524)     : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard
+Description      : $@spelldesc980
+
 Name             : Conflagrate (id=17962) [Spell Family (5)] 
 Class            : Destruction Warlock
 Resource         : 2% Base Mana (22000 @Level 110)

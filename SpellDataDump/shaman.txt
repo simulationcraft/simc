@@ -1789,7 +1789,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Chain Multiplier: 0.2
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -5125,6 +5125,20 @@ Effects          :
 #1 (id=290283)   : School Damage: physical (2)
                    Base Value: 500 | Scaled Value: 500 | Radius: 0 - 20 yards
 Description      : Mark the target to become a lightning rod, causing your nature spells to deal $s1% more damage to the target, and also deal X damage to nearby enemies.
+
+Name             : Magnitude (id=197576) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=290298)   : School Damage: fire (2)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
+Description      : Deal damage if flame shocked
 
 Name             : Landslide (id=197992) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman

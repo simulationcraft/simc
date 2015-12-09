@@ -524,6 +524,7 @@ public:
     const spell_data_t* aura_windwalker_monk;
     const spell_data_t* chi_orbit;
     const spell_data_t* chi_sphere;
+    const spell_data_t* combo_breaker_bok;
     const spell_data_t* crackling_tiger_lightning;
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* dizzying_kicks;
@@ -1754,8 +1755,6 @@ public:
       double chi_restored = ab::resource_consumed;
       if ( !ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
         p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
-      else if ( p() -> buff.serenity -> up() )
-        p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.serenity );
     }
 
     // Energy refund, estimated at 80%
@@ -2196,6 +2195,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
+
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
     if ( p() -> furious_sun )
@@ -2206,6 +2208,15 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         rsk_proc -> execute();
     }
   }
+
+  virtual double cost() const override
+  {
+    if ( p() -> buff.serenity -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
+
+    return monk_melee_attack_t::cost();
+  }
+
 };
 
 // ==========================================================================
@@ -2309,7 +2320,10 @@ struct blackout_kick_t: public monk_melee_attack_t
   virtual double cost() const override
   {
     if ( p() -> buff.combo_breaker_bok -> check() )
-      return 0.0;
+      return monk_melee_attack_t::cost() * ( 1 + p() -> passives.combo_breaker_bok -> effectN ( 1 ).percent() );
+
+    if ( p() -> buff.serenity -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
 
     return monk_melee_attack_t::cost();
   }
@@ -2325,6 +2339,8 @@ struct blackout_kick_t: public monk_melee_attack_t
       p() -> buff.combo_breaker_bok -> expire();
       p() -> gain.combo_breaker_bok -> add( RESOURCE_CHI, savings );
     }
+    else if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, savings );
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
@@ -2370,6 +2386,22 @@ struct blackout_strike_t: public monk_melee_attack_t
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
     monk_melee_attack_t::update_ready( cd );
+  }
+
+  virtual double cost() const override
+  {
+    if ( p() -> buff.serenity -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
+
+    return monk_melee_attack_t::cost();
+  }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
 };
 
@@ -2454,6 +2486,22 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         composite_dot_duration( execute_state ) );
   }
 
+  virtual double cost() const override
+  {
+    if ( p() -> buff.serenity -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
+
+    return monk_melee_attack_t::cost();
+  }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
+  }
+
   void init() override
   {
     monk_melee_attack_t::init();
@@ -2494,6 +2542,22 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
     return am;
+  }
+
+  virtual double cost() const override
+  {
+    if ( p() -> buff.serenity -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
+
+    return monk_melee_attack_t::cost();
+  }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
 
   void execute() override
@@ -2573,6 +2637,22 @@ struct fists_of_fury_t: public monk_melee_attack_t
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
     monk_melee_attack_t::update_ready( cd );
+  }
+
+  virtual double cost() const override
+  {
+    if ( p() -> buff.serenity -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
+
+    return monk_melee_attack_t::cost();
+  }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
 
   virtual double action_multiplier() const override
@@ -2736,6 +2816,24 @@ struct strike_of_the_skylord_t: public monk_melee_attack_t
     oh_attack = new strike_of_the_skylord_off_hand_t( p, "strike_of_the_skylord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
   }
+
+/*
+  virtual double cost() const override
+  {
+    if ( p() -> buff.serenity -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
+
+    return monk_melee_attack_t::cost();
+  }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
+  }
+*/
 
   void execute() override
   {
@@ -4693,6 +4791,7 @@ void monk_t::init_spells()
   passives.aura_windwalker_monk       = find_spell( 137025 );
   passives.chi_orbit                  = find_spell( 196748 );
   passives.chi_sphere                 = find_spell( 121283 );
+  passives.combo_breaker_bok          = find_spell( 116768 );
   passives.crackling_tiger_lightning  = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.dizzying_kicks             = find_spell( 196723 );
@@ -4873,7 +4972,7 @@ void monk_t::create_buffs()
     .default_value( passives.chi_sphere -> effectN( 1 ).base_value() )
     .max_stack( 8 );
 
-  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_spell( 116768 ) );
+  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", passives.combo_breaker_bok );
 
   buff.combo_strikes = buff_creator_t(this, "combo_strikes")
     .duration( timespan_t::from_seconds( 30 ) )

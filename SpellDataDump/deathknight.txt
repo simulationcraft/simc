@@ -3923,7 +3923,7 @@ Effects          :
                    Affected Spells: Anti-Magic Shell (48707)
 #2 (id=288199)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Trigger Spell: 48707
-Description      : Increases Anti-Magic Shellâ€™s duration by $s1% and maximum absorption value by $s2%.
+Description      : Increases Anti-Magic Shell’s duration by $s1% and maximum absorption value by $s2%.
 
 Name             : Exhume (id=194837) [Spell Family (15)] 
 Class            : Death Knight
