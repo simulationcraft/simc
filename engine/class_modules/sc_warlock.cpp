@@ -9,10 +9,10 @@
 //
 // TODO:
 // Pets
+// Revise target_demise() per reia's
 //
 // Affliction -
 // Seed of Corruption
-// UA ignite
 // Haunt reset
 // 100 talents
 // GoSac
@@ -2059,45 +2059,6 @@ struct drain_life_t: public warlock_spell_t
   }
 };
 
-struct drain_soul_t: public warlock_spell_t
-{
-  drain_soul_t( warlock_t* p ):
-    warlock_spell_t( "drain_soul", p, p -> find_spell( 198590 ) )
-  {
-    channeled = true;
-    hasted_ticks = false;
-    may_crit = false;
-  }
-
-  virtual bool ready() override
-  {
-   if ( !p() -> talents.drain_soul -> ok() ) 
-      return false;
-
-    return warlock_spell_t::ready();
-  }
-};
-
-struct haunt_t: public warlock_spell_t
-{
-  haunt_t( warlock_t* p ):
-    warlock_spell_t( p, "Haunt" )
-  {
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-
-      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
-    }
-  }
-};
-
 struct life_tap_t: public warlock_spell_t
 {
   life_tap_t( warlock_t* p ):
@@ -2146,24 +2107,6 @@ struct doom_t: public warlock_spell_t
   }
 };
 
-struct demonbolt_t: public warlock_spell_t
-{
-  demonbolt_t( warlock_t* p ):
-    warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
-  {
-  }
-
-  virtual bool ready() override
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( !p() -> talents.demonbolt -> ok() ) 
-      r = false;
-
-    return r;
-  }
-};
-
 struct havoc_t: public warlock_spell_t
 {
   havoc_t( warlock_t* p ): warlock_spell_t( p, "Havoc" )
@@ -2180,41 +2123,8 @@ struct havoc_t: public warlock_spell_t
   }
 };
 
-struct shadowflame_t: public warlock_spell_t
-{
-  shadowflame_t( warlock_t* p ):
-    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
-  {
-    background = true;
-    may_miss = false;
-    spell_power_mod.tick *= 0.8; // Check
-  }
-
-  virtual timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 1.5 );
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_spell_t::composite_target_multiplier( target );
-
-    m *= td( target ) -> debuffs_shadowflame -> stack();
-
-    return m;
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    warlock_spell_t::last_tick( d );
-
-    td ( d -> state -> target ) -> debuffs_shadowflame -> expire();
-  }
-};
-
 struct hand_of_guldan_t: public warlock_spell_t
 {
-  shadowflame_t* shadowflame;
 
   double demonology_trinket_chance;
 
@@ -2225,9 +2135,6 @@ struct hand_of_guldan_t: public warlock_spell_t
     aoe = -1;
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
-
-    shadowflame = new shadowflame_t( p );
-    add_child( shadowflame );
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
 
@@ -2244,15 +2151,6 @@ struct hand_of_guldan_t: public warlock_spell_t
     return timespan_t::from_seconds( 1.5 );
   }
 
-  void schedule_travel( action_state_t* s ) override
-  {
-    /* Executed at the same time as HoG and given a travel time,
-    so that it can snapshot meta at the appropriate time. */
-    shadowflame -> target = s -> target;
-    shadowflame -> execute();
-    warlock_spell_t::schedule_travel( s );
-  }
-
   virtual void execute() override
   {
     warlock_spell_t::execute();
@@ -2265,16 +2163,6 @@ struct hand_of_guldan_t: public warlock_spell_t
       p() -> procs.fragment_wild_imp -> occur();
       p() -> procs.fragment_wild_imp -> occur();
       p() -> procs.fragment_wild_imp -> occur();
-    }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs_shadowflame -> trigger();
     }
   }
 };
@@ -2298,69 +2186,6 @@ struct shadow_bolt_t: public warlock_spell_t
     {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
     }
-  }
-};
-
-struct shadowburn_t: public warlock_spell_t
-{
-  struct resource_event_t: public player_event_t
-  {
-    shadowburn_t* spell;
-    gain_t* ember_gain;
-    player_t* target;
-
-    resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
-      player_event_t( *p ), spell( s ), ember_gain( p -> gains.shadowburn_shard), target(t)
-    {
-      add_event( spell -> delay );
-    }
-    virtual const char* name() const override
-    { return "shadowburn_execute_gain"; }
-    virtual void execute() override
-    {
-      if ( target -> is_sleeping() )
-      {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 2, ember_gain ); //TODO look up ember amount in shadowburn spell
-      }
-    }
-  };
-
-  resource_event_t* resource_event;
-  timespan_t delay;
-  shadowburn_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadowburn" ), resource_event( nullptr )
-  {
-    min_gcd = timespan_t::from_millis( 500 );
-    havoc_consume = 1;
-    delay = data().effectN( 1 ).trigger() -> duration();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-
-    resource_event = new ( *sim ) resource_event_t( p(), this, s -> target );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> mastery_spells.emberstorm -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
-  }
-
-  virtual bool ready() override
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( target -> health_percentage() >= 20 ) r = false;
-
-    return r;
   }
 };
 
@@ -2687,15 +2512,6 @@ struct chaos_bolt_t: public warlock_spell_t
   }
 };
 
-struct fire_and_brimstone_t: public warlock_spell_t
-{
-  fire_and_brimstone_t( warlock_t* p ):
-    warlock_spell_t( p, "Fire and Brimstone" )
-  {
-    harmful = false;
-  }
-};
-
 // AOE SPELLS
 
 struct seed_of_corruption_aoe_t: public warlock_spell_t
@@ -2814,23 +2630,6 @@ struct hellfire_t: public warlock_spell_t
   virtual bool usable_moving() const override
   {
     return true;
-  }
-};
-
-struct cataclysm_t: public warlock_spell_t
-{
-  cataclysm_t( warlock_t* p ):
-    warlock_spell_t( "cataclysm", p, p -> find_spell( 152108 ) )
-  {
-    aoe = -1;
-  }
-  virtual bool ready() override
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( !p() -> talents.cataclysm -> ok() ) r = false;
-
-    return r;
   }
 };
 
@@ -3047,42 +2846,181 @@ struct summon_doomguard_t: public warlock_spell_t
 
 // TALENT SPELLS
 
-struct mortal_coil_heal_t: public warlock_heal_t
+struct shadowflame_t: public warlock_spell_t
 {
-  mortal_coil_heal_t( warlock_t* p, const spell_data_t& s ):
-    warlock_heal_t( "mortal_coil_heal", p, s.effectN( 3 ).trigger_spell_id() )
+  shadowflame_t( warlock_t* p ):
+    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
   {
     background = true;
     may_miss = false;
+    spell_power_mod.tick *= 0.8; // Check
   }
 
-  virtual void execute() override
+  virtual timespan_t travel_time() const override
   {
-    double heal_pct = data().effectN( 1 ).percent();
-    base_dd_min = base_dd_max = player -> resources.max[RESOURCE_HEALTH] * heal_pct;
+    return timespan_t::from_seconds( 1.5 );
+  }
 
-    warlock_heal_t::execute();
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_spell_t::composite_target_multiplier( target );
+
+    m *= td( target ) -> debuffs_shadowflame -> stack();
+
+    return m;
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    warlock_spell_t::last_tick( d );
+
+    td ( d -> state -> target ) -> debuffs_shadowflame -> expire();
   }
 };
 
-struct mortal_coil_t: public warlock_spell_t
+struct drain_soul_t: public warlock_spell_t
 {
-  mortal_coil_heal_t* heal;
-
-  mortal_coil_t( warlock_t* p ):
-    warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( nullptr )
+  drain_soul_t( warlock_t* p ):
+    warlock_spell_t( "drain_soul", p, p -> talents.drain_soul )
   {
+    channeled = true;
+    hasted_ticks = false;
+    may_crit = false;
+  }
+
+  virtual bool ready() override
+  {
+   if ( !p() -> talents.drain_soul -> ok() ) 
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+};
+
+struct demonbolt_t: public warlock_spell_t
+{
+  demonbolt_t( warlock_t* p ):
+    warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
+  {
+  }
+
+  virtual bool ready() override
+  {
+    bool r = warlock_spell_t::ready();
+
+    if ( !p() -> talents.demonbolt -> ok() ) 
+      r = false;
+
+    return r;
+  }
+};
+
+struct cataclysm_t: public warlock_spell_t
+{
+  cataclysm_t( warlock_t* p ):
+    warlock_spell_t( "cataclysm", p, p -> talents.cataclysm )
+  {
+    aoe = -1;
+  }
+  virtual bool ready() override
+  {
+    bool r = warlock_spell_t::ready();
+
+    if ( !p() -> talents.cataclysm -> ok() ) r = false;
+
+    return r;
+  }
+};
+
+struct fire_and_brimstone_t: public warlock_spell_t
+{
+  fire_and_brimstone_t( warlock_t* p ):
+    warlock_spell_t( "fire_and_brimstone", p, p -> talents.fire_and_brimstone )
+  {
+    harmful = false;
+  }
+};
+
+struct shadowburn_t: public warlock_spell_t
+{
+  struct resource_event_t: public player_event_t
+  {
+    shadowburn_t* spell;
+    gain_t* ember_gain;
+    player_t* target;
+
+    resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
+      player_event_t( *p ), spell( s ), ember_gain( p -> gains.shadowburn_shard), target(t)
+    {
+      add_event( spell -> delay );
+    }
+    virtual const char* name() const override
+    { return "shadowburn_execute_gain"; }
+    virtual void execute() override
+    {
+      if ( target -> is_sleeping() )
+      {
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 2, ember_gain ); //TODO look up ember amount in shadowburn spell
+      }
+    }
+  };
+
+  resource_event_t* resource_event;
+  timespan_t delay;
+  shadowburn_t( warlock_t* p ):
+    warlock_spell_t( "shadowburn", p, p -> talents.shadowburn ), resource_event( nullptr )
+  {
+    min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
-    base_dd_min = base_dd_max = 0;
-    heal = new mortal_coil_heal_t( p, data() );
+    delay = data().effectN( 1 ).trigger() -> duration();
   }
 
   virtual void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
+    resource_event = new ( *sim ) resource_event_t( p(), this, s -> target );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p() -> mastery_spells.emberstorm -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
+
+  virtual bool ready() override
+  {
+    bool r = warlock_spell_t::ready();
+
+    if ( target -> health_percentage() >= 20 ) r = false;
+
+    return r;
+  }
+};
+
+struct haunt_t: public warlock_spell_t
+{
+  haunt_t( warlock_t* p ):
+    warlock_spell_t( "haunt", p, p -> talents.haunt )
+  {
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+
+    warlock_spell_t::impact( s );
+
     if ( result_is_hit( s -> result ) )
-      heal -> execute();
+    {
+
+      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
+    }
   }
 };
 
@@ -3100,7 +3038,10 @@ struct mana_tap_t : public warlock_spell_t
     warlock_spell_t::execute();
 
       p() -> buffs.mana_tap -> trigger();
-      // mana cost??
+      
+      double mana = player -> resources.current[RESOURCE_MANA];
+
+      player -> resource_loss( RESOURCE_MANA, mana * data().effectN( 2 ).percent() );
   }
 };
 
@@ -3176,6 +3117,45 @@ struct grimoire_of_service_t: public summon_pet_t
       pet -> summon_stats = stats;
 
     return summon_pet_t::init_finished();
+  }
+};
+
+struct mortal_coil_heal_t: public warlock_heal_t
+{
+  mortal_coil_heal_t( warlock_t* p, const spell_data_t& s ):
+    warlock_heal_t( "mortal_coil_heal", p, s.effectN( 3 ).trigger_spell_id() )
+  {
+    background = true;
+    may_miss = false;
+  }
+
+  virtual void execute() override
+  {
+    double heal_pct = data().effectN( 1 ).percent();
+    base_dd_min = base_dd_max = player -> resources.max[RESOURCE_HEALTH] * heal_pct;
+
+    warlock_heal_t::execute();
+  }
+};
+
+struct mortal_coil_t: public warlock_spell_t
+{
+  mortal_coil_heal_t* heal;
+
+  mortal_coil_t( warlock_t* p ):
+    warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( nullptr )
+  {
+    havoc_consume = 1;
+    base_dd_min = base_dd_max = 0;
+    heal = new mortal_coil_heal_t( p, data() );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      heal -> execute();
   }
 };
 
@@ -3614,7 +3594,8 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
   buffs.mana_tap = buff_creator_t( this, "mana_tap", talents.mana_tap )
-    .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.havoc = new havoc_buff_t( this );
 
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
