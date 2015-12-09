@@ -9,7 +9,6 @@
 //
 // TODO:
 // Pets
-// Revise target_demise() per reia's
 //
 // Affliction -
 // Seed of Corruption
@@ -211,6 +210,7 @@ public:
     gain_t* seed_of_corruption;
     gain_t* drain_soul;
     gain_t* soul_harvest;
+    gain_t* mana_tap;
   } gains;
 
   // Procs
@@ -2076,6 +2076,7 @@ struct life_tap_t: public warlock_spell_t
     double mana = player -> resources.max[RESOURCE_MANA];
 
     player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 2 ).percent() );
+    // FIXME run through resource usage
     player -> resource_gain( RESOURCE_MANA, mana * data().effectN( 1 ).percent(), p() -> gains.life_tap );
   }
 };
@@ -3041,7 +3042,7 @@ struct mana_tap_t : public warlock_spell_t
       
       double mana = player -> resources.current[RESOURCE_MANA];
 
-      player -> resource_loss( RESOURCE_MANA, mana * data().effectN( 2 ).percent() );
+      player -> resource_loss( RESOURCE_MANA, mana * data().effectN( 2 ).percent(), p() -> gains.mana_tap );
   }
 };
 
@@ -3613,16 +3614,17 @@ void warlock_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.life_tap = get_gain( "life_tap" );
-  gains.soul_leech = get_gain( "soul_leech" );
-  gains.nightfall = get_gain( "nightfall" );
-  gains.conflagrate = get_gain( "conflagrate" );
-  gains.immolate = get_gain( "immolate" );
-  gains.shadowburn_shard = get_gain( "shadowburn_shard" );
-  gains.miss_refund = get_gain( "miss_refund" );
-  gains.seed_of_corruption = get_gain( "seed_of_corruption" );
-  gains.drain_soul = get_gain( "drain_soul" );
-  gains.soul_harvest = get_gain( "soul_harvest" );
+  gains.life_tap            = get_gain( "life_tap" );
+  gains.soul_leech          = get_gain( "soul_leech" );
+  gains.nightfall           = get_gain( "nightfall" );
+  gains.conflagrate         = get_gain( "conflagrate" );
+  gains.immolate            = get_gain( "immolate" );
+  gains.shadowburn_shard    = get_gain( "shadowburn_shard" );
+  gains.miss_refund         = get_gain( "miss_refund" );
+  gains.seed_of_corruption  = get_gain( "seed_of_corruption" );
+  gains.drain_soul          = get_gain( "drain_soul" );
+  gains.soul_harvest        = get_gain( "soul_harvest" );
+  gains.mana_tap            = get_gain( "mana_tap" );
 }
 
 // warlock_t::init_procs ===============================================
