@@ -28,8 +28,6 @@ namespace { // unnamed namespace
 // Warlock
 // ==========================================================================
 
-static const int META_FURY_MINIMUM = 40;
-
 struct warlock_t;
 
 namespace pets {
@@ -202,7 +200,7 @@ public:
     gain_t* nightfall;
     gain_t* conflagrate;
     gain_t* immolate;
-    gain_t* shadowburn_ember;
+    gain_t* shadowburn_shard;
     gain_t* miss_refund;
     gain_t* seed_of_corruption;
     gain_t* drain_soul;
@@ -347,7 +345,6 @@ namespace pets {
 
   struct warlock_pet_t: public pet_t
   {
-    gain_t* owner_fury_gain;
     action_t* special_action;
     action_t* special_action_two;
     melee_attack_t* melee_attack;
@@ -413,12 +410,9 @@ private:
 public:
   typedef warlock_pet_action_t base_t;
 
-  double generate_fury;
-
   warlock_pet_action_t( const std::string& n, warlock_pet_t* p,
                         const spell_data_t* s = spell_data_t::nil() ):
-                        ab( n, p, s ),
-                        generate_fury( get_fury_gain( ab::data() ) )
+                        ab( n, p, s )
   {
     ab::may_crit = true;
   }
@@ -442,23 +436,6 @@ public:
       bool procced = p() -> o() -> grimoire_of_synergy_pet.trigger(); //check for RPPM
       if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
     }
-  }
-
-  double get_fury_gain( const spell_data_t& data )
-  {
-    if ( data._effects -> size() >= 3 && data.effectN( 3 ).trigger_spell_id() == 104330 )
-    {
-      if ( p() -> o() -> talents.grimoire_of_supremacy -> ok() && p() -> pet_type != PET_WILD_IMP )
-      {
-        return  std::floor( data.effectN( 3 ).base_value() * ( 1 + p() -> o() -> talents.grimoire_of_supremacy -> effectN( 1 ).percent()) );
-      }
-      else 
-      {
-        return  data.effectN( 3 ).base_value();
-      }
-    }
-    else
-      return 0.0;
   }
 };
 
@@ -871,7 +848,6 @@ struct wild_firebolt_t: public warlock_pet_spell_t
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
 pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr )
 {
-  owner_fury_gain = owner -> get_gain( pet_name );
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   supremacy = find_spell( 115578 );
@@ -948,12 +924,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> race == RACE_ORC )
     m *= 1.0 + command -> effectN( 1 ).percent();
-
-  if ( o() -> mastery_spells.master_demonologist -> ok() )
-  {
-    double mastery = o() -> cache.mastery();
-    m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
-  }
 
   m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
 
@@ -1541,12 +1511,6 @@ struct inner_demon_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    if ( o() -> mastery_spells.master_demonologist -> ok() )
-    {
-      double mastery = o() -> cache.mastery();
-      m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
-    }
-
     return m;
   }
 
@@ -1638,13 +1602,13 @@ public:
 
   event_t* cost_event;
 
-  warlock_spell_t( warlock_t* p, const std::string& n ) :
+  warlock_spell_t( warlock_t* p, const std::string& n ):
     spell_t( n, p, p -> find_class_spell( n ) )
   {
     _init_warlock_spell_t();
   }
 
-  warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+  warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ):
     spell_t( token, p, s )
   {
     _init_warlock_spell_t();
@@ -1770,7 +1734,6 @@ public:
   {
     spell_t::consume_resource();
 
-
     if ( use_havoc() )
     {
       havoc_proc -> occur();
@@ -1820,8 +1783,7 @@ public:
 
   virtual resource_e current_resource() const override
   {
-
-      return spell_t::current_resource();
+    return spell_t::current_resource();
   }
 
   virtual double composite_target_crit( player_t* target ) const override
@@ -2151,11 +2113,14 @@ struct demonbolt_t: public warlock_spell_t
   {
   }
 
-  virtual double action_multiplier() const override
+  virtual bool ready() override
   {
-    double am = warlock_spell_t::action_multiplier();
+    bool r = warlock_spell_t::ready();
 
-    return am;
+    if ( !p() -> talents.demonbolt -> ok() ) 
+      r = false;
+
+    return r;
   }
 };
 
@@ -2305,7 +2270,7 @@ struct shadowburn_t: public warlock_spell_t
     player_t* target;
 
     resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
-      player_event_t( *p ), spell( s ), ember_gain( p -> gains.shadowburn_ember), target(t)
+      player_event_t( *p ), spell( s ), ember_gain( p -> gains.shadowburn_shard), target(t)
     {
       add_event( spell -> delay );
     }
@@ -2412,42 +2377,6 @@ struct immolate_t: public warlock_spell_t
     return cc;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = warlock_spell_t::composite_persistent_multiplier( state );
-
-    // Snapshot the FnB penalty
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-    {
-      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
-    }
-
-    return m;
-  }
-
-  virtual double composite_ta_multiplier( const action_state_t* state ) const override
-  {
-    double m = warlock_spell_t::composite_ta_multiplier( state );
-
-    // A rather impressive hack to determine if the immolate dot was cast with FnB or not
-    if ( state -> persistent_multiplier < 1 )
-    {
-      if ( p() -> mastery_spells.emberstorm -> ok() )
-      {
-        m *= 1.0 + p() -> cache.mastery_value();
-      }
-    }
-
-    return m;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    return m;
-  }
-
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
@@ -2515,20 +2444,6 @@ struct conflagrate_t: public warlock_spell_t
       p() -> buffs.backdraft -> trigger( 3 );
   }
 
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-    {
-      if ( p() -> mastery_spells.emberstorm -> ok() )
-        m *= 1.0 + p() -> cache.mastery_value();
-      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
-    }
-
-    return m;
-  }
-
   virtual bool ready() override
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
@@ -2587,25 +2502,6 @@ struct incinerate_t: public warlock_spell_t
     double cc = warlock_spell_t::composite_crit();
 
     return cc;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-    {
-      if ( p() -> mastery_spells.emberstorm -> ok() )
-        m *= 1.0 + p() -> cache.mastery_value();
-      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
-    }
-
-    if ( !p() -> buffs.fire_and_brimstone -> check() )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
-
-    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -2749,55 +2645,7 @@ struct chaos_bolt_t: public warlock_spell_t
 
     return c;
   }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if (p()->buffs.fire_and_brimstone->check())
-    {
-      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    if ( p() -> mastery_spells.emberstorm -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    if ( !p() -> buffs.fire_and_brimstone -> check() )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
-  }
 };
-
-struct t: public warlock_spell_t
-{
-  t( warlock_t* p ):
-    warlock_spell_t( p, "Metamorphosis" )
-  {
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-    background = true;
-    ignore_false_positive = true;
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    assert( cost_event == nullptr );
-    cost_event = new ( *sim ) cost_event_t( p(), this );
-  }
-
-  virtual void cancel() override
-  {
-    warlock_spell_t::cancel();
-
-    event_t::cancel( cost_event );
-  }
-};
-
-
 
 struct fire_and_brimstone_t: public warlock_spell_t
 {
@@ -3042,11 +2890,6 @@ struct summon_main_pet_t: public summon_pet_t
   virtual bool ready() override
   {
     if ( p() -> pets.active == pet )
-      return false;
-
-    // FIXME: Currently on beta (2012/05/06) summoning a pet during metamorphosis makes you unable
-    //        to summon another one for a full minute, regardless of meta. This may not be intended.
-    if ( ( p() -> specialization() == WARLOCK_DEMONOLOGY ) && instant_cooldown -> down() )
       return false;
 
     if ( p() -> talents.demonic_servitude -> ok() ) //if we have the uberpets, we can't summon our standard pets
@@ -3313,7 +3156,6 @@ warlock( p )
   dots_shadowflame = target -> get_dot( "shadowflame", &p );
   dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", &p );
   
-
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
@@ -3387,12 +3229,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
-
-  if ( mastery_spells.master_demonologist -> ok() )
-  {
-    double mastery = cache.mastery();
-    m *= 1.0 + mastery * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
-  }
 
   if ( buffs.mana_tap -> up() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
@@ -3652,7 +3488,7 @@ void warlock_t::init_spells()
   talents.writhe_in_agony       = find_talent_spell( "Writhe in Agony" );
   talents.drain_soul            = find_talent_spell( "Drain Soul" );
 
-  talents.backdraft             = find_talent_spell( "Drain Soul" );
+  talents.backdraft             = find_talent_spell( "Backdraft" );
 
   talents.contagion             = find_talent_spell( "Contagion" );
   talents.absolute_corruption   = find_talent_spell( "Absolute Corruption" );
@@ -3694,7 +3530,7 @@ void warlock_t::init_base_stats()
 
   base.mana_regen_per_second = resources.base[RESOURCE_MANA] * 0.01;
 
-  resources.base[RESOURCE_SOUL_SHARD] = 5;
+  resources.base[RESOURCE_SOUL_SHARD] = 1;
 
   if ( default_pet.empty() )
   {
@@ -3731,16 +3567,13 @@ void warlock_t::create_buffs()
 {
   player_t::create_buffs();
 
-  buffs.backdraft = buff_creator_t( this, "backdraft", talents.backdraft -> effectN( 1 ).trigger() ).max_stack( 6 );
+  buffs.backdraft = buff_creator_t( this, "backdraft", talents.backdraft -> effectN( 1 ).trigger() );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
   buffs.mana_tap = buff_creator_t( this, "mana_tap", talents.mana_tap )
     .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
-
-  buffs.fire_and_brimstone = buff_creator_t( this, "fire_and_brimstone", talents.fire_and_brimstone )
-    .cd( timespan_t::zero() );
   buffs.havoc = new havoc_buff_t( this );
 
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
@@ -3763,7 +3596,7 @@ void warlock_t::init_gains()
   gains.nightfall = get_gain( "nightfall" );
   gains.conflagrate = get_gain( "conflagrate" );
   gains.immolate = get_gain( "immolate" );
-  gains.shadowburn_ember = get_gain( "shadowburn_ember" );
+  gains.shadowburn_shard = get_gain( "shadowburn_shard" );
   gains.miss_refund = get_gain( "miss_refund" );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
   gains.drain_soul = get_gain( "drain_soul" );
