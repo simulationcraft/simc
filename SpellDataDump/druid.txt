@@ -5945,6 +5945,27 @@ Effects          :
 Description      : Grants 3 Astral Power every $t1 sec.
 Tooltip          : Grants 3 Astral Power every $t1 sec.
 
+Name             : Half Moon (id=202768) 
+Class            : Druid
+Range            : 40 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Velocity         : 20 yards/sec
+Cooldown         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=298965)   : School Damage: arcane (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
+#2 (id=299004)   : Trigger Spell: Half Moon Override (64)
+                   Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788
+Description      : Deals $m1 Arcane damage to your current target.  Empowers Half Moon to become Full Moon.
+Tooltip          : Deals $m1 Arcane damage to your current target.
+
 Name             : Collapsing Stars (id=202770) [Spell Family (7)] 
 Class            : Druid
 Resource         : 10 Eclipse and 10 Eclipse per second or tick
@@ -5967,6 +5988,80 @@ Description      : Burns the target for $s1 Spellstorm damage, and then an addit
 
 Replaces Celestial Alignment.
 Tooltip          : Suffering $w2 Spellstorm damage every $t seconds.
+
+Name             : Full Moon (id=202771) 
+Class            : Druid
+Range            : 40 yards
+Cast Time        : 4 seconds
+GCD              : 1.5 seconds
+Cooldown         : 20 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=298969)   : School Damage: arcane (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000
+#2 (id=298970)   : Energize Power (30)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: astral_power
+#3 (id=299005)   : Unknown effect type (164)
+                   Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788
+#4 (id=299044)   : Unknown effect type (164)
+                   Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787
+#5 (id=302252)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Deals $m1 Arcane damage to your current target. Grants $m2 Lunar Power.  Resets Full Moon to become New Moon.
+Tooltip          : Deals $m1 Arcane damage to your current target. Grants $m2 Lunar Power.
+
+Name             : New Moon Override (id=202787) [Hidden] 
+Class            : Druid
+Duration         : Aura (infinite)
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Triggered by     : New Moon (202767), Full Moon (202771)
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=298996)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 202768 | Scaled Value: 202768 | Misc Value: 202767
+
+Name             : Half Moon Override (id=202788) 
+Class            : Druid
+Duration         : Aura (infinite)
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Triggered by     : Half Moon (202768), Full Moon (202771)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+Effects          :
+#1 (id=298997)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 202771 | Scaled Value: 202771 | Misc Value: 202767
+
+Name             : Goldrinn's Fang (id=203001) 
+Class            : Druid
+Range            : 60 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=299322)   : School Damage: arcane (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000
+Description      : Deals $m1 Arcane damage.
+Tooltip          : Deals $m1 Arcane damage.
 
 Name             : Brambles (id=203953) [Spell Family (7), Passive] 
 Class            : Druid
