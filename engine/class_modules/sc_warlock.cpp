@@ -1928,10 +1928,10 @@ struct agony_t: public warlock_spell_t
   }
 };
 
-struct unstable_affliction_t : public residual_action::residual_periodic_action_t< warlock_spell_t >
+struct unstable_affliction_t : public warlock_spell_t
 {
-  unstable_affliction_t ( warlock_t* p ) :
-    residual_action::residual_periodic_action_t<warlock_spell_t>("unstable_affliction", p, p -> find_spell( 30108 ) )
+  unstable_affliction_t( warlock_t* p ) :
+    warlock_spell_t( "unstable_affliction", p, p -> find_spell( 30108 ) )
   {
     may_crit = false;
 
