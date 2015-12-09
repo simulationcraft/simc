@@ -375,78 +375,59 @@ public:
     const spell_data_t* blackout_kick;
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
-    const spell_data_t* healing_sphere;
-    const spell_data_t* effuse;
     const spell_data_t* leather_specialization;
-    const spell_data_t* legacy_of_the_white_tiger;
-    const spell_data_t* legacy_of_the_emperor;
     const spell_data_t* rising_sun_kick;
+    const spell_data_t* roll;
     const spell_data_t* spinning_crane_kick;
+    const spell_data_t* spear_hand_strike;
     const spell_data_t* tiger_palm;
-    const spell_data_t* touch_of_death;
+    const spell_data_t* vivify;
+    const spell_data_t* zen_meditation;
 //    const spell_data_t* way_of_the_monk_aa_damage;
 //    const spell_data_t* way_of_the_monk_aa_speed;
-    const spell_data_t* zen_meditaiton;
-    const spell_data_t* fortifying_brew;
 
     // Brewmaster
     const spell_data_t* blackout_strike;
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
-    const spell_data_t* desperate_measures;
-    const spell_data_t* dizzying_haze;
-    const spell_data_t* ferment;
+    const spell_data_t* fortifying_brew;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash;
     const spell_data_t* provoke;
     const spell_data_t* purifying_brew;
-    const spell_data_t* resolve;
-    const spell_data_t* summon_black_ox_statue;
     const spell_data_t* stagger;
     const spell_data_t* light_stagger;
     const spell_data_t* moderate_stagger;
     const spell_data_t* heavy_stagger;
 
     // Mistweaver
-    const spell_data_t* brewing_mana_tea;
-    const spell_data_t* crane_style_techniques;
-    const spell_data_t* detonate_chi;
+    const spell_data_t* detox;
+    const spell_data_t* effuse;
     const spell_data_t* enveloping_mist;
-    const spell_data_t* jade_mists;
+    const spell_data_t* essence_font;
     const spell_data_t* life_cocoon;
-    const spell_data_t* mana_tea;
-    const spell_data_t* mana_tea_driver;
     const spell_data_t* renewing_mist;
-    const spell_data_t* renewing_mist_heal;
+    const spell_data_t* resuscitate;
     const spell_data_t* revival;
     const spell_data_t* soothing_mist;
-    const spell_data_t* soothing_mists_trigger;
-    const spell_data_t* soothing_mist_statue;
-    const spell_data_t* summon_jade_serpent_statue;
     const spell_data_t* teachings_of_the_monastery;
-    const spell_data_t* teachings_of_the_monastery_buff;
     const spell_data_t* thunder_focus_tea;
-    const spell_data_t* uplift;
-    const spell_data_t* eminence;
-    const spell_data_t* eminence_statue;
-    const spell_data_t* breath_of_the_serpent_heal;
-    const spell_data_t* extend_life;
 
     // Windwalker
     const spell_data_t* afterlife;
-    const spell_data_t* battle_trance;
     const spell_data_t* combat_conditioning;
     const spell_data_t* combo_breaker;
     const spell_data_t* disable;
     const spell_data_t* fists_of_fury;
     const spell_data_t* flying_serpent_kick;
-    const spell_data_t* rising_sun_kick_trinket;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* tigereye_brew;
+    const spell_data_t* touch_of_death;
     const spell_data_t* touch_of_karma;
-    const spell_data_t* windflurry;
+    const spell_data_t* windwalker_monk;
+    const spell_data_t* windwalking;
   } spec;
 
   // Artifact
@@ -475,7 +456,7 @@ public:
   {
     const spell_data_t* combo_strikes;       // Windwalker
     const spell_data_t* elusive_brawler;     // Brewmaster
-    const spell_data_t* gust_of_mists; // Mistweaver
+    const spell_data_t* gust_of_mists;       // Mistweaver
   } mastery;
 
   // Cooldowns
@@ -487,7 +468,6 @@ public:
     cooldown_t* fists_of_fury;
     cooldown_t* fortifying_brew;
     cooldown_t* healing_elixirs;
-    cooldown_t* healing_sphere;
     cooldown_t* rising_sun_kick;
     cooldown_t* touch_of_death;
   } cooldown;
@@ -509,7 +489,6 @@ public:
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
-    const spell_data_t* gift_of_the_ox_chance;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* gift_of_the_ox_summon;
     const spell_data_t* keg_smash_buff;
@@ -518,8 +497,13 @@ public:
     const spell_data_t* tier17_2pc_tank;
     // Mistweaver
     const spell_data_t* aura_mistweaver_monk;
+    const spell_data_t* renewing_mist_heal;
+    const spell_data_t* soothing_mist_heal;
+    const spell_data_t* soothing_mist_statue;
+    const spell_data_t* teachings_of_the_monastery_buff;
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_4pc_heal;
+    const spell_data_t* tier18_4pc_heal;
     // Windwalker
     const spell_data_t* aura_windwalker_monk;
     const spell_data_t* chi_orbit;
@@ -529,6 +513,7 @@ public:
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* hit_combo;
+    const spell_data_t* rising_sun_kick_trinket;
     const spell_data_t* spinning_dragon_strike;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier15_2pc_melee;
@@ -581,7 +566,6 @@ public:
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
-    cooldown.healing_sphere               = get_cooldown( "healing_sphere" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
 
@@ -1138,7 +1122,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   {
 
     sef_rising_sun_kick_trinket_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> spec.rising_sun_kick_trinket )
+      sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> passives.rising_sun_kick_trinket )
     {
       player -> find_action( "rising_sun_kick" ) -> add_child( this );
     }
@@ -2126,11 +2110,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    attack_power_mod.direct = p -> spec.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = p -> passives.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
     if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
   virtual void update_ready( timespan_t ) override
@@ -2234,7 +2218,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
     {
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
     }
 
     mh = &( player -> main_hand_weapon );
@@ -2625,7 +2609,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
     if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
   virtual void update_ready( timespan_t ) override
@@ -2740,7 +2724,7 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
     tick_action = new spinning_dragon_strike_tick_t( "spinning_dragon_strike_tick", p, p -> passives.spinning_dragon_strike );
 
     if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> spec.rising_sun_kick_trinket );
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
   void execute() override
@@ -3960,8 +3944,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     procs_courageous_primal_diamond = false;
-    base_tick_time *= 1.0 + p.spec.crane_style_techniques -> effectN( 4 ).percent();
-    dot_duration *= 1.0 + p.spec.crane_style_techniques -> effectN( 5 ).percent();
     base_costs_per_tick[RESOURCE_ENERGY] = ( p.specialization() == MONK_MISTWEAVER ? 0 : 15 );
   }
 
@@ -4073,7 +4055,7 @@ struct renewing_mist_t: public monk_heal_t
   {
     parse_options( options_str );
     may_crit = may_miss = false;
-    dot_duration = p.spec.renewing_mist_heal -> duration();
+    dot_duration = p.passives.renewing_mist_heal -> duration();
   }
 
   virtual double cost() const override
@@ -4599,7 +4581,7 @@ void monk_t::init_spells()
 {
   base_t::init_spells();
 
-  //TALENTS
+  // Talents spells =====================================
   // Tier 15 Talents
   talent.chi_burst                   = find_talent_spell( "Chi Burst" );
   talent.eye_of_the_tiger            = find_talent_spell( "Eye of the Tiger" ); // Brewmaster & Windwalker
@@ -4662,12 +4644,11 @@ void monk_t::init_spells()
   talent.spinning_dragon_strike      = find_talent_spell( "Spinning Dragon Strike" );
   talent.serenity                    = find_talent_spell( "Serenity" );
   // Mistweaver
-  talent.mistwalk                    = find_talent_spell ("Mistwalk" );
+  talent.mistwalk                    = find_talent_spell( "Mistwalk" );
   talent.focused_thunder             = find_talent_spell( "Focused Thunder" );
   talent.soothing_elegance           = find_talent_spell( "Soothing Elegance" );
 
-  // Artifact
-
+  // Artifact spells ========================================
   // Windwalker
   artifact.acrobatics                 = find_artifact_spell( "Acrobatics" );
   artifact.crosswinds                 = find_artifact_spell( "Crosswind" );
@@ -4686,122 +4667,114 @@ void monk_t::init_spells()
   artifact.transfer_the_power         = find_artifact_spell( "Transfer the Power" );
   artifact.tornado_kicks              = find_artifact_spell( "Tornado Kicks" );
 
-  // General Passives
+  // Specialization spells ====================================
+  // Multi-Specialization & Class Spells
   spec.blackout_kick                 = find_class_spell( "Blackout Kick" );
   spec.crackling_jade_lightning      = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
-  spec.healing_sphere                = find_spell( 125355 );
-  spec.effuse                        = find_class_spell( "Effuse" );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
-  spec.legacy_of_the_white_tiger     = find_specialization_spell( "Legacy of the White Tiger" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
+  spec.roll                          = find_class_spell( "Roll" );
+  spec.spear_hand_strike             = find_specialization_spell( "Spear Hand Strike" );
   spec.spinning_crane_kick           = find_class_spell( "Spinning Crane Kick" );
   spec.tiger_palm                    = find_class_spell( "Tiger Palm" );
-  spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
+  spec.vivify                        = find_class_spell( "Vivify" );
+  spec.zen_meditation                = find_specialization_spell( "Zen Meditation" );
 //  spec.way_of_the_monk_aa_damage     = find_spell( 108977 );
 //  spec.way_of_the_monk_aa_speed      = find_spell( 140737 );
-  spec.fortifying_brew               = find_class_spell( "Fortifying Brew" );
 
-  // Windwalker Passives
-  spec.combo_breaker                 = find_specialization_spell( "Combo Breaker" );
-  spec.fists_of_fury                 = find_specialization_spell( "Fists of Fury" );
-  spec.flying_serpent_kick           = find_specialization_spell( "Flying Serpent Kick" );
-  spec.afterlife                     = find_specialization_spell( "Afterlife" );
-  spec.disable                       = find_specialization_spell( "Disable" );
-  spec.tigereye_brew                 = find_specialization_spell( "Tigereye Brew" );
-  spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
-  spec.combat_conditioning           = find_specialization_spell( "Combat Conditioning" );
-  spec.stance_of_the_fierce_tiger    = find_specialization_spell( "Stance of the Fierce Tiger" );
-  spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
-  spec.battle_trance                 = find_specialization_spell( "Battle Trance" );
-  spec.windflurry                    = find_specialization_spell( "Windflurry" );
-  spec.rising_sun_kick_trinket       = find_spell( 185099 );
-
-  // Brewmaster Passives
+  // Brewmaster Specialization
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
-  spec.desperate_measures            = find_specialization_spell( "Desperate Measures" );
+  spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
-  spec.summon_black_ox_statue        = find_specialization_spell( "Summon Black Ox Statue" );
+  spec.fortifying_brew               = find_specialization_spell( "Fortifying Brew" );
+  spec.gift_of_the_ox                = find_specialization_spell( "Gift of the Ox" );
+  spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
   spec.ironskin_brew                 = find_specialization_spell( "Ironskin Brew" );
   spec.provoke                       = find_specialization_spell( "Provoke" );
   spec.purifying_brew                = find_specialization_spell( "Purifying Brew" );
-  spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
-  spec.gift_of_the_ox                = find_specialization_spell( "Gift of the Ox" );
-  spec.resolve                       = find_specialization_spell( "Resolve" );
-  spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
-  spec.ferment                       = find_specialization_spell( "Ferment" );
   spec.stagger                       = find_specialization_spell( "Stagger" );
   spec.light_stagger                 = find_spell( 124275 );
   spec.moderate_stagger              = find_spell( 124274 );
   spec.heavy_stagger                 = find_spell( 124273 );
 
-  // Mistweaver Passives
-  spec.brewing_mana_tea              = find_specialization_spell( "Brewing: Mana Tea" );
-  spec.crane_style_techniques        = find_specialization_spell( "Crane Style Techniques" );
-  spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
-  spec.teachings_of_the_monastery_buff = find_spell( 202090 );
-  spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
-  spec.renewing_mist_heal            = find_spell( 119611 );
-  spec.soothing_mist                 = find_specialization_spell( "Soothing Mist" );
-  spec.soothing_mist_statue          = find_spell( 125953 );
-  spec.mana_tea                      = find_specialization_spell( "Mana Tea" );
-  spec.revival                       = find_specialization_spell( "Revival" );
-  spec.summon_jade_serpent_statue    = find_specialization_spell( "Summon Jade Serpent Statue" );
-  spec.detonate_chi                  = find_specialization_spell( "Detonate Chi" );
-  spec.mana_tea_driver               = find_specialization_spell( "Mana Tea Driver" );
-  spec.legacy_of_the_emperor         = find_specialization_spell( "Legacy of the Emperor" );
-  spec.soothing_mists_trigger        = find_specialization_spell( "Soothing Mists Trigger" );
-  spec.uplift                        = find_specialization_spell( "Uplift" );
-  spec.thunder_focus_tea             = find_specialization_spell( "Thunder Focus Tea" );
-  spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
+  // Mistweaver Specialization
+  spec.detox                         = find_specialization_spell( "Detox" );
+  spec.effuse                        = find_specialization_spell( "Effuse" );
   spec.enveloping_mist               = find_specialization_spell( "Enveloping Mist" );
-  spec.jade_mists                    = find_specialization_spell( "Jade Mists" );
-  spec.eminence                      = find_spell( 126890 );
-  spec.eminence_statue               = find_spell( 117895 );
-  spec.breath_of_the_serpent_heal    = find_spell( 157590 );
-  spec.extend_life                   = find_spell( 185158 ); // Tier 18 bonus
+  spec.essence_font                  = find_specialization_spell( "Essence Font" );
+  spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
+  spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
+  spec.resuscitate                   = find_specialization_spell( "Resuscitate" );
+  spec.revival                       = find_specialization_spell( "Revival" );
+  spec.soothing_mist                 = find_specialization_spell( "Soothing Mist" );
+  spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
+  spec.thunder_focus_tea             = find_specialization_spell( "Thunder Focus Tea" );
 
+  // Windwalker Specialization
+  spec.afterlife                     = find_specialization_spell( "Afterlife" );
+  spec.combat_conditioning           = find_specialization_spell( "Combat Conditioning" );
+  spec.combo_breaker                 = find_specialization_spell( "Combo Breaker" );
+  spec.disable                       = find_specialization_spell( "Disable" );
+  spec.fists_of_fury                 = find_specialization_spell( "Fists of Fury" );
+  spec.flying_serpent_kick           = find_specialization_spell( "Flying Serpent Kick" );
+  spec.tigereye_brew                 = find_specialization_spell( "Tigereye Brew" );
+  spec.stance_of_the_fierce_tiger    = find_specialization_spell( "Stance of the Fierce Tiger" );
+  spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
+  spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
+  spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
+  spec.windwalker_monk               = find_specialization_spell( "Windwalker Monk" );
+  spec.windwalking                   = find_specialization_spell( "Windwalking" );
+
+  // Passives =========================================
   // General
-  passives.chi_burst_damage           = find_spell( 148135 );
-  passives.chi_burst_heal             = find_spell( 130654 );
-  passives.chi_torpedo                = find_spell( 119085 );
-  passives.chi_wave_damage            = find_spell( 132467 );
-  passives.chi_wave_heal              = find_spell( 132463 );
-  passives.eye_of_the_tiger           = find_spell( 196608 );
-  passives.healing_elixirs            = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() 
-  passives.rushing_jade_wind_damage   = find_spell( 148187 );
-  passives.spinning_crane_kick_damage = find_spell( 107270 );
-  // Brewmaster
-  passives.aura_brewmaster_monk       = find_spell( 137023 );
-  passives.breath_of_fire_dot         = find_spell( 123725 );
-  passives.elusive_brawler            = find_spell( 195630 );
-  passives.elusive_dance              = find_spell( 196739 );
-  passives.gift_of_the_ox_chance      = find_spell( 124502 );
-  passives.gift_of_the_ox_heal        = find_spell( 124507 );
-  passives.gift_of_the_ox_summon      = find_spell( 124503 );
-  passives.keg_smash_buff             = find_spell( 196720 );
-  passives.special_delivery           = find_spell( 196733 );
-  passives.stagger_self_damage        = find_spell( 124255 );
-  passives.tier17_2pc_tank            = find_spell( 165356 );
-  // Mistweaver
-  passives.aura_mistweaver_monk       = find_spell( 137024 );
-  passives.tier17_2pc_heal            = find_spell( 167732 );
-  passives.tier17_4pc_heal            = find_spell( 167717 );
-  // Windwalker
-  passives.aura_windwalker_monk       = find_spell( 137025 );
-  passives.chi_orbit                  = find_spell( 196748 );
-  passives.chi_sphere                 = find_spell( 121283 );
-  passives.combo_breaker_bok          = find_spell( 116768 );
-  passives.crackling_tiger_lightning  = find_spell( 123996 );
-  passives.crackling_tiger_lightning_driver = find_spell( 123999 );
-  passives.dizzying_kicks             = find_spell( 196723 );
-  passives.hit_combo                  = find_spell( 196741 );
-  passives.spinning_dragon_strike     = find_spell( 158221 );
-  passives.touch_of_karma_tick        = find_spell( 124280 );
-  passives.tier15_2pc_melee           = find_spell( 138311 );
-  passives.tier17_4pc_melee           = find_spell( 166603 );
+  passives.chi_burst_damage                 = find_spell( 148135 );
+  passives.chi_burst_heal                   = find_spell( 130654 );
+  passives.chi_torpedo                      = find_spell( 119085 );
+  passives.chi_wave_damage                  = find_spell( 132467 );
+  passives.chi_wave_heal                    = find_spell( 132463 );
+  passives.eye_of_the_tiger                 = find_spell( 196608 );
+  passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() 
+  passives.rushing_jade_wind_damage         = find_spell( 148187 );
+  passives.spinning_crane_kick_damage       = find_spell( 107270 );
 
-  //MASTERY
+  // Brewmaster
+  passives.aura_brewmaster_monk             = find_spell( 137023 );
+  passives.breath_of_fire_dot               = find_spell( 123725 );
+  passives.elusive_brawler                  = find_spell( 195630 );
+  passives.elusive_dance                    = find_spell( 196739 );
+  passives.gift_of_the_ox_heal              = find_spell( 124507 );
+  passives.gift_of_the_ox_summon            = find_spell( 124503 );
+  passives.keg_smash_buff                   = find_spell( 196720 );
+  passives.special_delivery                 = find_spell( 196733 );
+  passives.stagger_self_damage              = find_spell( 124255 );
+  passives.tier17_2pc_tank                  = find_spell( 165356 );
+
+  // Mistweaver
+  passives.aura_mistweaver_monk             = find_spell( 137024 );
+  passives.renewing_mist_heal               = find_spell( 119611 );
+  passives.soothing_mist_heal               = find_spell( 115175 );
+  passives.soothing_mist_statue             = find_spell( 198533 );
+  passives.teachings_of_the_monastery_buff  = find_spell( 202090 );
+  passives.tier17_2pc_heal                  = find_spell( 167732 );
+  passives.tier17_4pc_heal                  = find_spell( 167717 );
+  passives.tier18_4pc_heal                  = find_spell( 185158 ); // Extend Life
+
+  // Windwalker
+  passives.chi_orbit                        = find_spell( 196748 );
+  passives.chi_sphere                       = find_spell( 121283 );
+  passives.combo_breaker_bok                = find_spell( 116768 );
+  passives.crackling_tiger_lightning        = find_spell( 123996 );
+  passives.crackling_tiger_lightning_driver = find_spell( 123999 );
+  passives.dizzying_kicks                   = find_spell( 196723 );
+  passives.hit_combo                        = find_spell( 196741 );
+  passives.rising_sun_kick_trinket          = find_spell( 185099 );
+  passives.spinning_dragon_strike           = find_spell( 158221 );
+  passives.touch_of_karma_tick              = find_spell( 124280 );
+  passives.tier15_2pc_melee                 = find_spell( 138311 );
+  passives.tier17_4pc_melee                 = find_spell( 166603 );
+
+  // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
   mastery.gust_of_mists              = find_mastery_spell( MONK_MISTWEAVER );
@@ -4849,9 +4822,6 @@ void monk_t::init_base_stats()
       if ( artifact.inner_peace.rank() )
         resources.base[RESOURCE_ENERGY] += artifact.inner_peace.value();
     }
-    else if (specialization() == MONK_BREWMASTER)
-    // initialize resolve for Berwmaster
-      resolve_manager.init();
   }
 
   base_chi_regen_per_second = 0;
@@ -4950,8 +4920,8 @@ void monk_t::create_buffs()
   buff.mana_tea = buff_creator_t( this, "mana_tea", talent.mana_tea )
     .default_value( talent.mana_tea -> effectN( 1 ).percent() );
 
-  buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", spec.teachings_of_the_monastery_buff )
-    .default_value( spec.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
+  buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", passives.teachings_of_the_monastery_buff )
+    .default_value( passives.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
 
   buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
 
@@ -5338,21 +5308,6 @@ double monk_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = base_t::composite_rating_multiplier( rating );
 
-  switch ( rating )
-  {
-  case RATING_MELEE_CRIT:
-    return m *= 1.0 + spec.ferment -> effectN( 1 ).percent();
-  case RATING_SPELL_CRIT:
-    return m *= 1.0 + spec.ferment -> effectN( 1 ).percent();
-  case RATING_MULTISTRIKE:
-    m *= 1.0 + spec.battle_trance -> effectN( 1 ).percent();
-    m *= 1.0 + spec.jade_mists -> effectN( 1 ).percent();
-    return m;
-    break;
-  default:
-    break;
-  }
-
   return m;
 }
 
@@ -5539,9 +5494,6 @@ void monk_t::combat_begin()
       new ( *sim ) power_strikes_event_t( *this, timespan_t::zero() );
   }
 
-  if ( spec.resolve -> ok() )
-    resolve_manager.start();
-
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
 }
@@ -5586,7 +5538,7 @@ void monk_t::assess_damage(school_e school,
         buff.elusive_brawler -> trigger();
 
       // TODO: Check if 35% chance is baseline and increased by HP percent from there
-      if ( rng().roll( fmax( passives.gift_of_the_ox_chance -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
+      if ( rng().roll( fmax( spec.gift_of_the_ox -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
         buff.gift_of_the_ox -> trigger();
     }
   }
