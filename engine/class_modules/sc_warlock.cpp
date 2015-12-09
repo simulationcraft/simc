@@ -1572,6 +1572,8 @@ private:
       affected_by_flamelicked = false;
     }
 
+    affected_by_contagion = data().affected_by( p() -> find_spell( 30108 ) -> effectN( 2 ) );
+
     parse_spell_coefficient( *this );
 
   }
@@ -1585,6 +1587,7 @@ public:
   proc_t* havoc_proc;
 
   bool affected_by_flamelicked;
+  bool affected_by_contagion;
 
   struct cost_event_t: player_event_t
   {
@@ -1774,7 +1777,7 @@ public:
     warlock_td_t* td = this -> td( t );
 
     // Contagion - change to effect 2 spelldata list
-    if ( td -> dots_unstable_affliction -> is_ticking() )
+    if ( affected_by_contagion && td -> dots_unstable_affliction -> is_ticking() )
       m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
     return spell_t::composite_target_multiplier( t ) * m;
