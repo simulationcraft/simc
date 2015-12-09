@@ -37,6 +37,11 @@ struct t18_prince_malchezaar_t;
 struct t18_vicious_hellhound_t;
 }
 
+struct actives_t
+{
+  action_t*           unstable_affliction;
+} active;
+
 struct warlock_td_t: public actor_target_data_t
 {
   dot_t*  dots_agony;
@@ -169,6 +174,7 @@ public:
 
     // Affliction only
     const spell_data_t* nightfall;
+    const spell_data_t* unstable_affliction;
 
     // Demonology only
     const spell_data_t* doom;
@@ -1930,10 +1936,22 @@ struct agony_t: public warlock_spell_t
 
 struct unstable_affliction_t : public warlock_spell_t
 {
+  struct unstable_affliction_dot_t : public residual_action::residual_periodic_action_t <warlock_spell_t>
+  {
+    unstable_affliction_dot_t( warlock_t* p ) :
+      base_t( "unstable_affliction", p, p -> spec.unstable_affliction )
+    {
+      dual = true;
+    }
+  };
+
+  unstable_affliction_dot_t* ua_dot;
+
   unstable_affliction_t( warlock_t* p ) :
-    warlock_spell_t( "unstable_affliction", p, p -> find_spell( 30108 ) )
+    warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction )
   {
     may_crit = false;
+    ua_dot = new unstable_affliction_dot_t( p );
 
     if ( p -> affliction_trinket )
     {
@@ -1954,6 +1972,17 @@ struct unstable_affliction_t : public warlock_spell_t
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      const spell_data_t* ua_tick = p() -> find_spell( 30108 );
+      double damage = s -> spell_power * ( ua_tick -> effectN( 3 ).sp_coeff() * ( ua_tick -> duration() / ua_tick -> effectN( 3 ).period() ) );
+
+      residual_action::trigger( ua_dot, s -> target, damage );
+    }
   }
 };
 
@@ -3473,6 +3502,7 @@ void warlock_t::init_spells()
   spec.immolate               = find_specialization_spell( "Immolate" );
   spec.nightfall              = find_specialization_spell( "Nightfall" );
   spec.wild_imps              = find_specialization_spell( "Wild Imps" );
+  spec.unstable_affliction    = find_specialization_spell( "Unstable Affliction" );
 
   // Removed terniary for compat.
   spec.doom                   = find_spell( 603 );
@@ -3530,7 +3560,7 @@ void warlock_t::init_base_stats()
 
   base.mana_regen_per_second = resources.base[RESOURCE_MANA] * 0.01;
 
-  resources.base[RESOURCE_SOUL_SHARD] = 1;
+  resources.base[RESOURCE_SOUL_SHARD] = 5;
 
   if ( default_pet.empty() )
   {
