@@ -2999,7 +2999,10 @@ struct shadowburn_t: public warlock_spell_t
   {
     bool r = warlock_spell_t::ready();
 
-    if ( target -> health_percentage() >= 20 ) r = false;
+    if ( target -> health_percentage() >= 20 ) 
+      r = false;
+    if ( !p() -> talents.shadowburn -> ok() )
+      r = false;
 
     return r;
   }
@@ -3023,6 +3026,14 @@ struct haunt_t: public warlock_spell_t
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }
   }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> talents.haunt -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
 };
 
 struct mana_tap_t : public warlock_spell_t
@@ -3043,6 +3054,14 @@ struct mana_tap_t : public warlock_spell_t
       double mana = player -> resources.current[RESOURCE_MANA];
 
       player -> resource_loss( RESOURCE_MANA, mana * data().effectN( 2 ).percent(), p() -> gains.mana_tap );
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> talents.mana_tap -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -3068,6 +3087,14 @@ struct soul_harvest_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> resource_gain( RESOURCE_SOUL_SHARD, 5, p() -> gains.soul_harvest );
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> talents.soul_harvest -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -3375,6 +3402,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "drain_soul"            ) a = new            drain_soul_t( this );
   else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
   else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
+  else if ( action_name == "soul_harvest"          ) a = new          soul_harvest_t( this );
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
   else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
@@ -3511,6 +3539,8 @@ void warlock_t::init_spells()
   talents.drain_soul            = find_talent_spell( "Drain Soul" );
 
   talents.backdraft             = find_talent_spell( "Backdraft" );
+  talents.fire_and_brimstone    = find_talent_spell( "Fire and Brimstone" );
+  talents.shadowburn            = find_talent_spell( "Shadowburn" );
 
   talents.contagion             = find_talent_spell( "Contagion" );
   talents.absolute_corruption   = find_talent_spell( "Absolute Corruption" );
@@ -3519,6 +3549,10 @@ void warlock_t::init_spells()
   talents.soul_leech            = find_talent_spell( "Soul Leech" );
   talents.mortal_coil           = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror        = find_talent_spell( "Howl of Terror" );
+
+  talents.siphon_life           = find_talent_spell( "Siphon Life" );
+  talents.sow_the_seeds         = find_talent_spell( "Sow the Seeds" );
+  talents.soul_harvest          = find_talent_spell( "Soul Harvest" );
 
   talents.demonic_circle        = find_talent_spell( "Demonic Circle" );
   talents.burning_rush          = find_talent_spell( "Burning Rush" );
