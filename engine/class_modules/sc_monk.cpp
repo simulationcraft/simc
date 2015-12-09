@@ -67,6 +67,7 @@ enum combo_strikes_e {
   // Spells begin here
   CS_CHI_BURST,
   CS_CHI_WAVE,
+  CS_CRACKLING_JADE_LIGHTNING,
   CS_SPELL_MAX,
 
   // Misc
@@ -93,6 +94,7 @@ enum sef_ability_e {
   // Spells begin here
   SEF_CHI_BURST,
   SEF_CHI_WAVE,
+  SEF_CRACKLING_JADE_LIGHTNING,
   SEF_SPELL_MAX,
   // Spells end here
 
@@ -1269,6 +1271,17 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_crackling_jade_lightning_t : public sef_spell_t
+  {
+    sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "crackling_jade_lightning", player, player -> o() -> spec.crackling_jade_lightning )
+    {
+      tick_may_crit = true;
+      hasted_ticks = false;
+      interrupt_auto_attack = true;
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   std::vector<sef_melee_attack_t*> attacks;
@@ -1336,8 +1349,9 @@ public:
     attacks[ SEF_RUSHING_JADE_WIND       ] = new sef_rushing_jade_wind_t( this );
     attacks[ SEF_SPINNING_DRAGON_STRIKE  ] = new sef_spinning_dragon_strike_t( this );
 
-    spells[ sef_spell_idx( SEF_CHI_BURST )  ] = new sef_chi_burst_t( this );
-    spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
+    spells[ sef_spell_idx( SEF_CHI_BURST )                ] = new sef_chi_burst_t( this );
+    spells[ sef_spell_idx( SEF_CHI_WAVE )                 ] = new sef_chi_wave_t( this );
+    spells[ sef_spell_idx( SEF_CRACKLING_JADE_LIGHTNING ) ] = new sef_crackling_jade_lightning_t( this );
   }
 
   void init_action_list() override
@@ -3939,19 +3953,23 @@ struct crackling_jade_lightning_t: public monk_spell_t
   crackling_jade_lightning_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
   {
+    sef_ability = SEF_CRACKLING_JADE_LIGHTNING;
+
     parse_options( options_str );
 
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
-    procs_courageous_primal_diamond = false;
-    base_costs_per_tick[RESOURCE_ENERGY] = ( p.specialization() == MONK_MISTWEAVER ? 0 : 15 );
+    interrupt_auto_attack = true;
   }
 
-  double cost() const override
+  virtual void execute() override
   {
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      return 0;
-    return monk_spell_t::cost();
+    monk_spell_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
   }
 
   void last_tick( dot_t* dot ) override
