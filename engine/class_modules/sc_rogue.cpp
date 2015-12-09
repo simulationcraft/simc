@@ -2473,8 +2473,9 @@ struct pistol_shot_t : public rogue_attack_t
 
     double cost() const override
     {
-      if (p()->buffs.opportunity->check())
+      if ( p()->buffs.opportunity->check() )
         return 0;
+      return rogue_attack_t::cost();
     }
 };
 

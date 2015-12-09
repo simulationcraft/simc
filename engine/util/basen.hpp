@@ -155,11 +155,11 @@ void decode(Iter1 start, Iter1 end, Iter2 out)
             ++iter;
             continue;
         }
-        unsigned int bits_in_current_byte = std::min<int>(output_current_bit + ConversionTraits::group_length(), 8) - output_current_bit;
+        unsigned int bits_in_current_byte = std::min<int>(output_current_bit + static_cast<int>( ConversionTraits::group_length() ), 8) - output_current_bit;
         if (bits_in_current_byte == ConversionTraits::group_length()) {
             // the value fits within current byte, so we can extract it directly
             buffer |= value << (8 - output_current_bit - ConversionTraits::group_length());
-            output_current_bit += ConversionTraits::group_length();
+            output_current_bit += static_cast<int>( ConversionTraits::group_length() );
             // check if we filled up current byte completely; in such case we flush output and continue
             if (output_current_bit == 8) {
                 *out++ = buffer;
@@ -168,7 +168,7 @@ void decode(Iter1 start, Iter1 end, Iter2 out)
             }
         } else {
             // the value span across current and next byte
-            int bits_in_next_byte = ConversionTraits::group_length() - bits_in_current_byte;
+            int bits_in_next_byte = static_cast<int>( ConversionTraits::group_length() - bits_in_current_byte );
             // fill current byte and flush it to our output
             buffer |= value >> bits_in_next_byte;
             *out++ = buffer;

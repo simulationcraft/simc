@@ -1287,7 +1287,7 @@ public:
 
   virtual double composite_crit_multiplier() const override
   {
-    double m = mage_spell_t::composite_crit_multiplier();
+    double m = spell_t::composite_crit_multiplier();
 
     if ( frozen && p() -> spec.shatter -> ok() )
     {
