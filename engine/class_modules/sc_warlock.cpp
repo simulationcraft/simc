@@ -14,8 +14,8 @@
 // UA ignite, totally not right.
 // Seed of Corruption
 // Haunt reset
-// 100 talents
 // GoSac
+// Soul Effigy
 //
 // Destruction - Everything
 //
@@ -1607,7 +1607,7 @@ struct unstable_affliction_t : public warlock_spell_t
     if ( p -> affliction_trinket )
     {
       const spell_data_t* data = p -> affliction_trinket -> driver();
-      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item) / 100.0;
+      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
       double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
 
       base_tick_time *= 1.0 + period_value;
