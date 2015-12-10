@@ -2653,7 +2653,30 @@ struct flamestrike_t : public fire_mage_spell_t
   }
 };
 
-// Frost Bomb Spell ===============================================================
+
+// Flame On Spell =============================================================
+
+struct flame_on_t : public fire_mage_spell_t
+{
+  flame_on_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "flame_on", p, p -> talents.flame_on )
+  {
+    parse_options( options_str );
+  }
+
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    // TODO: Change reset() to accept # of charges as parameter?
+    for ( int i = data().effectN( 1 ).base_value(); i > 0; i-- )
+    {
+      p() -> cooldowns.inferno_blast -> reset( false );
+    }
+  }
+};
+
+// Frost Bomb Spell ===========================================================
 
 struct frost_bomb_explosion_t : public frost_mage_spell_t
 {
@@ -2918,7 +2941,7 @@ struct ice_floes_t : public mage_spell_t
     icd = p -> get_cooldown( "ice_floes_icd" );
   }
 
-  bool ready() override
+  virtual bool ready() override
   {
     if ( icd -> down() )
     {
@@ -2928,7 +2951,7 @@ struct ice_floes_t : public mage_spell_t
     return mage_spell_t::ready();
   }
 
-  void execute() override
+  virtual void execute() override
   {
     mage_spell_t::execute();
 
@@ -4316,6 +4339,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
+  if ( name == "flame_on"          ) return new                flame_on_t( this, options_str );
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
   if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
