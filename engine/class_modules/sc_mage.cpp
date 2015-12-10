@@ -170,10 +170,11 @@ public:
     stat_buff_t* mage_armor;
 
     // Fire
-    buff_t* heating_up,
-          * molten_armor,
-          * hot_streak,
+    buff_t* combustion,
           * enhanced_pyrotechnics,
+          * heating_up,
+          * hot_streak,
+          * molten_armor,
           * pyromaniac,            // T17 4pc Fire
           * icarus_uprising;       // T18 4pc Fire
 
@@ -413,6 +414,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    mana_regen_per_second() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_mastery_rating() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
@@ -2291,68 +2293,19 @@ struct blizzard_t : public frost_mage_spell_t
 
 // Combustion Spell =========================================================
 
-// TODO: New combustion implementation
 struct combustion_t : public fire_mage_spell_t
 {
-  const spell_data_t* tick_spell;
-
   combustion_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "combustion", p,
-                       p -> find_class_spell( "Combustion" ) ),
-    // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
-    tick_spell( p -> find_spell( 83853, "combustion_dot" ) )
+    fire_mage_spell_t( "combustion", p, p -> find_class_spell( "Combustion" ) )
   {
     parse_options( options_str );
-
-    base_tick_time = tick_spell -> effectN( 1 ).period();
-    dot_duration   = tick_spell -> duration();
-    tick_may_crit  = true;
   }
 
-  action_state_t* new_state() override
-  { return new residual_periodic_state_t( this, target ); }
-
-  virtual double calculate_tick_amount( action_state_t* state,
-                                        double dmg_multiplier ) const override
+  virtual void execute() override
   {
-    double amount = 0.0;
+    fire_mage_spell_t::execute();
 
-    if ( dot_t* d = find_dot( state -> target ) )
-    {
-
-      const residual_periodic_state_t* dps_t =
-        debug_cast<const residual_periodic_state_t*>( d -> state );
-      amount += dps_t -> tick_amount;
-    }
-
-    state -> result_raw = amount;
-
-    if ( state -> result == RESULT_CRIT )
-      amount *= 1.0 + total_crit_bonus();
-
-    amount *= dmg_multiplier;
-
-    state -> result_total = amount;
-
-    return amount;
-  }
-
-  virtual void trigger_dot( action_state_t* s ) override
-  {
-    mage_td_t* this_td = td( s -> target );
-
-    dot_t* ignite_dot     = this_td -> dots.ignite;
-
-    if ( ignite_dot -> is_ticking() )
-    {
-      fire_mage_spell_t::trigger_dot( s );
-    }
-  }
-
-  double last_tick_factor( const dot_t* /* d */, const timespan_t& /* time_to_tick */,
-                           const timespan_t& /* duration */ ) const override
-  {
-    return 1.0;
+    p() -> buffs.combustion -> trigger();
   }
 };
 
@@ -4607,11 +4560,14 @@ void mage_t::create_buffs()
                                   .max_stack( 10 );
 
   // Fire
+  buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
+                                  .add_invalidate( CACHE_SPELL_CRIT )
+                                  .add_invalidate( CACHE_MASTERY );
+  buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.molten_armor          = buff_creator_t( this, "molten_armor", find_spell( 30482 ) )
                                   .add_invalidate( CACHE_SPELL_CRIT );
-  buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
@@ -5445,7 +5401,21 @@ double mage_t::composite_player_multiplier( school_e school ) const
 }
 
 
-// mage_t::composite_spell_crit =============================================
+// mage_t::composite_mastery_rating ===========================================
+
+double mage_t::composite_mastery_rating() const
+{
+  double m = player_t::composite_mastery_rating();
+
+  if ( buffs.combustion -> up() )
+  {
+    m += mage_t::composite_spell_crit_rating();
+  }
+
+  return m;
+}
+
+// mage_t::composite_spell_crit ===============================================
 
 double mage_t::composite_spell_crit() const
 {
@@ -5456,10 +5426,15 @@ double mage_t::composite_spell_crit() const
     c += buffs.molten_armor -> data().effectN( 1 ).percent();
   }
 
+  if ( buffs.combustion -> up() )
+  {
+    c += buffs.combustion -> data().effectN( 1 ).percent();
+  }
+
   return c;
 }
 
-// mage_t::composite_spell_haste ============================================
+// mage_t::composite_spell_haste ==============================================
 
 double mage_t::composite_spell_haste() const
 {
