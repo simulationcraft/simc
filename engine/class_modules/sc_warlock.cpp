@@ -53,6 +53,7 @@ struct warlock_td_t: public actor_target_data_t
   dot_t*  dots_shadowflame;
   dot_t*  dots_unstable_affliction;
   dot_t*  dots_siphon_life;
+  dot_t*  dots_phantom_singularity;
 
   buff_t* debuffs_haunt;
   buff_t* debuffs_shadowflame;
@@ -2660,21 +2661,50 @@ struct haunt_t: public warlock_spell_t
   {
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual bool ready() override
   {
+    if ( !p() -> talents.haunt -> ok() )
+      return false;
 
-    warlock_spell_t::impact( s );
+    return warlock_spell_t::ready();
+  }
+};
 
-    if ( result_is_hit( s -> result ) )
-    {
+struct phantom_singularity_tick_t : public warlock_spell_t
+{
+  phantom_singularity_tick_t( warlock_t* p ):
+    warlock_spell_t( "phantom_singularity_tick", p, p -> find_spell( 205246 ) )
+  {
+    background = true;
+    may_miss = false;
+    dual = true;
+    aoe = -1;
+  }
+};
 
-      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
-    }
+struct phantom_singularity_t : public warlock_spell_t
+{
+  phantom_singularity_tick_t* phantom_singularity;
+
+  phantom_singularity_t( warlock_t* p ):
+    warlock_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
+  {
+    ignore_false_positive = true;
+    hasted_ticks = callbacks = false; // FIXME check for hasted ticks.
+
+    phantom_singularity = new phantom_singularity_tick_t( p );
+    add_child( phantom_singularity );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    phantom_singularity -> execute();
+    warlock_spell_t::tick( d );
   }
 
   virtual bool ready() override
   {
-    if ( !p() -> talents.haunt -> ok() )
+    if ( !p() -> talents.phantom_singularity -> ok() )
       return false;
 
     return warlock_spell_t::ready();
@@ -2865,6 +2895,7 @@ warlock( p )
   dots_immolate = target -> get_dot( "immolate", &p );
   dots_shadowflame = target -> get_dot( "shadowflame", &p );
   dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", &p );
+  dots_phantom_singularity = target -> get_dot( "phantom_singularity", &p );
   
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -3054,8 +3085,9 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "drain_soul"            ) a = new            drain_soul_t( this );
   else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
   else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
+  else if ( action_name == "phantom_singularity"   ) a = new   phantom_singularity_t( this );
   else if ( action_name == "soul_harvest"          ) a = new          soul_harvest_t( this );
-  else if ( action_name == "siphon_life"           ) a = new             siphon_life_t(this);
+  else if ( action_name == "siphon_life"           ) a = new           siphon_life_t( this );
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
   else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
