@@ -1713,9 +1713,6 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
 // Ignite ===================================================================
 
-
-
-
 struct ignite_t : public residual_action_t
 {
   struct ignite_state_t : public residual_periodic_state_t
@@ -2089,6 +2086,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
 
 // Arcane Orb Spell =========================================================
+
 struct arcane_orb_bolt_t : public arcane_mage_spell_t
 {
   arcane_orb_bolt_t( mage_t* p ) :
@@ -4490,7 +4488,7 @@ void mage_t::init_base_stats()
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;
 
-  base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.018;
+  base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.045;
 
   // Reduce fire mage distance to avoid proc munching at high haste.
   // TODO: Do we still need this?
