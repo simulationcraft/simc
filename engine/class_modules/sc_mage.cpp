@@ -2623,6 +2623,36 @@ struct flamestrike_t : public fire_mage_spell_t
 
     aoe = -1;
   }
+
+  virtual action_state_t* new_state() override
+  {
+    return new ignite_spell_state_t( this, target );
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    if ( p() -> buffs.hot_streak -> check() )
+    {
+      return timespan_t::zero();
+    }
+
+    return fire_mage_spell_t::execute_time();
+  }
+
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    p() -> buffs.hot_streak -> expire();
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    fire_mage_spell_t::snapshot_state( s, rt );
+
+    ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
+    is -> hot_streak = ( p() -> buffs.hot_streak -> check() != 0 );
+  }
 };
 
 // Frost Bomb Spell ===============================================================
