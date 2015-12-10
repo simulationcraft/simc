@@ -3504,7 +3504,15 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    p() -> buffs.hot_streak -> expire();
+    // TODO: Use client data when it's updated
+    if ( p() -> talents.pyromaniac -> ok() && rng().roll( 0.5 ) )
+    {
+      return;
+    }
+    else
+    {
+      p() -> buffs.hot_streak -> expire();
+    }
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -4391,7 +4399,7 @@ void mage_t::init_spells()
   talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
   talents.arcane_static   = find_talent_spell( "Static"          );
   talents.torrent         = find_talent_spell( "Torrent"         );
-  talents.pyromaniac      = find_talent_spell( "Pyormaniac"      );
+  talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
   talents.fire_starter    = find_talent_spell( "Fire Starter"    );
   talents.ray_of_frost    = find_talent_spell( "Ray of Frost"    );
