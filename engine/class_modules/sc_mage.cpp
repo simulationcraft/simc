@@ -82,11 +82,6 @@ public:
   }
 };
 
-namespace actions {
-struct ignite_t;
-struct unstable_magic_explosion_t;
-} // actions
-
 namespace pets {
 struct water_elemental_pet_t;
 }
@@ -131,8 +126,8 @@ public:
   event_t* icicle_event;
 
   // Active
-  actions::ignite_t* active_ignite;
-  actions::unstable_magic_explosion_t* unstable_magic_explosion;
+  action_t* active_ignite;
+  action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
   // RPPM objects
@@ -177,7 +172,7 @@ public:
     // Fire
     buff_t* heating_up,
           * molten_armor,
-          * pyroblast,
+          * hot_streak,
           * enhanced_pyrotechnics,
           * pyromaniac,            // T17 4pc Fire
           * icarus_uprising;       // T18 4pc Fire
@@ -225,9 +220,18 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* test_for_crit_hotstreak;
-    proc_t* crit_for_hotstreak;
-    proc_t* hotstreak;
+    proc_t* heating_up_generated, // Crits without HU/HS
+          * heating_up_removed, // Non-crits with HU
+          * heating_up_ib_converted, // IBs used on HU
+          * hot_streak, // Total HS generated
+          * hot_streak_spell, // HU/HS spell impacts
+          * hot_streak_spell_crit, // HU/HS spell crits
+          * hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
+
+    proc_t* ignite_applied, // Direct ignite applications
+          * ignite_spread, // Spread events
+          * ignite_new_spread, // Spread to new target
+          * ignite_overwrite; // Spread to target with existing ignite
   } procs;
 
   // Specializations
@@ -1199,7 +1203,10 @@ public:
     hasted_by_pom( false ),
     may_proc_missiles( true ),
     pom_enabled( true )
-  {}
+  {
+    may_crit      = true;
+    tick_may_crit = true;
+  }
 
   mage_t* p()
   { return static_cast<mage_t*>( player ); }
@@ -1390,6 +1397,8 @@ public:
   void trigger_unstable_magic( action_state_t* state );
 };
 
+typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
+
 
 // ============================================================================
 // Arcane Mage Spell
@@ -1398,7 +1407,6 @@ public:
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
-public:
   arcane_mage_spell_t( const std::string& n, mage_t* p,
                        const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s )
@@ -1409,62 +1417,140 @@ public:
 // ============================================================================
 // Fire Mage Spell
 // ============================================================================
-//
+
+struct ignite_spell_state_t : action_state_t
+{
+  bool hot_streak;
+
+  ignite_spell_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target ),
+    hot_streak( false )
+  { }
+
+  virtual void initialize() override
+  {
+    action_state_t:: initialize();
+    hot_streak = false;
+  }
+
+  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s ) << " hot_streak=" << hot_streak;
+    return s;
+  }
+
+  virtual void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    const ignite_spell_state_t* is =
+      debug_cast<const ignite_spell_state_t*>( s );
+    hot_streak = is -> hot_streak;
+  }
+};
 
 struct fire_mage_spell_t : public mage_spell_t
 {
-public:
+  bool triggers_hot_streak,
+       triggers_ignite;
+
   fire_mage_spell_t( const std::string& n, mage_t* p,
                      const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s )
+    mage_spell_t( n, p, s ),
+    triggers_hot_streak( false ),
+    triggers_ignite( false )
   {}
 
-  // Delay 0.25s the removal of heating up on non-critting spell
-  virtual void expire_heating_up()
+  virtual void impact( action_state_t* s ) override
   {
-    mage_t* p = this -> p();
+    mage_spell_t::impact( s );
 
-    if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
-    p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
+    if ( triggers_ignite && result_is_hit( s -> result ) )
+    {
+      trigger_ignite( s );
+    }
+
+    if ( triggers_hot_streak && result_is_hit( s -> result ) )
+    {
+      handle_hot_streak( s );
+    }
   }
 
-  void trigger_hot_streak( action_state_t* s )
+  void handle_hot_streak( action_state_t* s )
   {
     mage_t* p = this -> p();
 
-    p -> procs.test_for_crit_hotstreak -> occur();
+    p -> procs.hot_streak_spell -> occur();
 
     if ( s -> result == RESULT_CRIT )
     {
-      p -> procs.crit_for_hotstreak -> occur();
+      p -> procs.hot_streak_spell_crit -> occur();
 
-      if ( ! p -> buffs.heating_up -> up() )
+      // Crit with HS => wasted crit
+      if ( p -> buffs.hot_streak -> check() )
       {
-        p -> buffs.heating_up -> trigger();
+        p -> procs.hot_streak_spell_crit_wasted -> occur();
       }
       else
       {
-        p -> procs.hotstreak  -> occur();
-        p -> buffs.heating_up -> expire();
-        p -> buffs.pyroblast  -> trigger();
-
-        if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B4 ) &&
-             p -> rppm_pyromaniac.trigger() )
+        // Crit with HU => convert to HS
+        if ( p -> buffs.heating_up -> up() )
         {
-          p -> buffs.pyromaniac -> trigger();
+          p -> procs.hot_streak -> occur();
+          // Check if HS was triggered by IB
+          if ( s -> action -> s_data -> _id == 108853 )
+          {
+            p -> procs.heating_up_ib_converted -> occur();
+          }
+
+          p -> buffs.heating_up -> expire();
+          p -> buffs.hot_streak -> trigger();
+
+          if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B4 ) &&
+               p -> rppm_pyromaniac.trigger() )
+          {
+            p -> buffs.pyromaniac -> trigger();
+          }
+        }
+        // Crit without HU => generate HU
+        else
+        {
+          p -> procs.heating_up_generated -> occur();
+          p -> buffs.heating_up -> trigger();
         }
       }
     }
-    else
+    else // Non-crit
     {
-      if ( p -> buffs.heating_up -> up() )
+      // Non-crit with HU => remove HU
+      if ( p -> buffs.heating_up -> check() )
       {
-        expire_heating_up();
+        if ( sim -> log )
+        {
+          sim -> out_log.printf( "Heating up delay by 0.25s" );
+        }
+
+        p -> procs.heating_up_removed -> occur();
+        // HU removal happens 0.25 seconds after non-crit occurs
+        p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
       }
     }
   }
 
-  void trigger_ignite( action_state_t* state );
+  void trigger_ignite( action_state_t* s )
+  {
+    mage_t* p = this -> p();
+
+    double amount = s -> result_amount * p -> cache.mastery_value();
+
+    ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
+    if ( is -> hot_streak )
+    {
+      // TODO: Use client data from hot streak
+      amount *= 2.0;
+    }
+
+    trigger( p -> active_ignite, s -> target, amount );
+  }
 };
 
 
@@ -1477,7 +1563,6 @@ struct frost_mage_spell_t : public mage_spell_t
 {
   bool frozen;
 
-public:
   frost_mage_spell_t( const std::string& n, mage_t* p,
                       const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
@@ -1508,9 +1593,6 @@ public:
                                       as<unsigned>(p() -> icicles.size() ) );
   }
 };
-
-
-typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
 
 
 // Icicles ==================================================================
@@ -1678,14 +1760,6 @@ struct ignite_t : public residual_action_t
     ignite_state -> spread_helper =  ignite_state -> spread_helper ? false : true;
   }
 };
-
-void fire_mage_spell_t::trigger_ignite( action_state_t* state )
-{
-  mage_t& p = *this -> p();
-  if ( ! p.active_ignite ) return;
-  double amount = state -> result_amount * p.cache.mastery_value();
-  trigger( p.active_ignite, state -> target, amount );
-}
 
 
 // Arcane Barrage Spell =====================================================
@@ -2277,13 +2351,6 @@ struct combustion_t : public fire_mage_spell_t
     }
   }
 
-  virtual void execute() override
-  {
-    p() -> cooldowns.inferno_blast -> reset( false );
-
-    fire_mage_spell_t::execute();
-  }
-
   double last_tick_factor( const dot_t* /* d */, const timespan_t& /* time_to_tick */,
                            const timespan_t& /* duration */ ) const override
   {
@@ -2465,6 +2532,9 @@ struct fireball_t : public fire_mage_spell_t
     fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
+
+    triggers_hot_streak = true;
+    triggers_ignite = true;
   }
 
   virtual timespan_t travel_time() const override
@@ -2488,8 +2558,6 @@ struct fireball_t : public fire_mage_spell_t
         p() -> buffs.enhanced_pyrotechnics -> trigger();
       }
 
-      trigger_hot_streak( s );
-
       if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
       {
         p() -> cooldowns.combustion
@@ -2504,7 +2572,6 @@ struct fireball_t : public fire_mage_spell_t
       {
         trigger_unstable_magic( s );
       }
-      trigger_ignite( s );
     }
   }
 
@@ -2532,7 +2599,7 @@ struct fireball_t : public fire_mage_spell_t
     return c;
   }
 
-  double composite_crit_multiplier() const override
+  virtual double composite_crit_multiplier() const override
   {
     double m = fire_mage_spell_t::composite_crit_multiplier();
 
@@ -2552,17 +2619,9 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     parse_options( options_str );
 
+    triggers_ignite = true;
+
     aoe = -1;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit_or_multistrike( s -> result ) )
-    {
-      trigger_ignite( s );
-    }
   }
 };
 
@@ -3008,6 +3067,9 @@ struct inferno_blast_t : public fire_mage_spell_t
     parse_options( options_str );
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
 
+    triggers_hot_streak = true;
+    triggers_ignite = true;
+
     // TODO: How many targets can IB spread LB to?
     max_spread_targets = 3;
     // TODO: Is the spread range still 10 yards?
@@ -3042,19 +3104,12 @@ struct inferno_blast_t : public fire_mage_spell_t
         pyrosurge_flamestrike -> execute();
       }
 
-      trigger_hot_streak( s );
-
       if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
       {
         p() -> cooldowns.combustion
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value() );
       }
-    }
-
-    if ( result_is_hit_or_multistrike( s -> result ) )
-    {
-      trigger_ignite( s );
     }
   }
 
@@ -3165,21 +3220,13 @@ struct meteor_impact_t: public fire_mage_spell_t
     split_aoe_damage = true;
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     ground_aoe = true;
+
+    triggers_ignite = true;
   }
 
   timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 1.0 );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit_or_multistrike( s -> result ) )
-    {
-      trigger_ignite( s );
-    }
   }
 };
 
@@ -3382,16 +3429,16 @@ struct conjure_phoenix_t : public fire_mage_spell_t
 
 struct pyroblast_t : public fire_mage_spell_t
 {
-  bool is_hot_streak;
-
   conjure_phoenix_t* conjure_phoenix;
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
-    is_hot_streak( false ),
     conjure_phoenix( nullptr )
   {
     parse_options( options_str );
+
+    triggers_ignite = true;
+    triggers_hot_streak = true;
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) )
     {
@@ -3400,16 +3447,21 @@ struct pyroblast_t : public fire_mage_spell_t
     }
   }
 
+  virtual action_state_t* new_state() override
+  {
+    return new ignite_spell_state_t( this, target );
+  }
+
   virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     fire_mage_spell_t::schedule_execute( state );
 
-    p() -> buffs.pyroblast -> up();
+    p() -> buffs.hot_streak -> up();
   }
 
   virtual timespan_t execute_time() const override
   {
-    if ( p() -> buffs.pyroblast -> check() ||
+    if ( p() -> buffs.hot_streak -> check() ||
          p() -> buffs.pyromaniac -> check() )
     {
       return timespan_t::zero();
@@ -3422,9 +3474,15 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    is_hot_streak = p() -> buffs.pyroblast -> check() != 0;
+    p() -> buffs.hot_streak -> expire();
+  }
 
-    p() -> buffs.pyroblast -> expire();
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    fire_mage_spell_t::snapshot_state( s, rt );
+
+    ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
+    is -> hot_streak = ( p() -> buffs.hot_streak -> check() != 0 );
   }
 
   virtual timespan_t travel_time() const override
@@ -3446,9 +3504,9 @@ struct pyroblast_t : public fire_mage_spell_t
                                    -> effectN( 1 ).time_value()  );
       }
 
-      trigger_hot_streak( s );
-
-      if ( p() -> sets.has_set_bonus( MAGE_FIRE, PVP, B4 ) && is_hot_streak )
+      ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
+      if ( p() -> sets.has_set_bonus( MAGE_FIRE, PVP, B4 ) &&
+           is -> hot_streak )
       {
         td( s -> target ) -> debuffs.firestarter -> trigger();
       }
@@ -3459,11 +3517,6 @@ struct pyroblast_t : public fire_mage_spell_t
       {
          conjure_phoenix -> schedule_execute();
       }
-    }
-
-    if ( result_is_hit_or_multistrike( s -> result) )
-    {
-      trigger_ignite( s );
     }
   }
 
@@ -3486,25 +3539,6 @@ struct pyroblast_t : public fire_mage_spell_t
     }
 
     return c;
-  }
-
-  virtual double action_da_multiplier() const override
-  {
-    double am = fire_mage_spell_t::action_da_multiplier();
-
-    if ( p() -> buffs.pyroblast -> up() )
-    {
-      am *= 1.0 + p() -> buffs.pyroblast -> data().effectN( 3 ).percent();
-    }
-
-    return am;
-  }
-
-  void reset() override
-  {
-    fire_mage_spell_t::reset();
-
-    is_hot_streak = false;
   }
 };
 
@@ -3541,22 +3575,10 @@ struct scorch_t : public fire_mage_spell_t
   {
     parse_options( options_str );
 
+    triggers_hot_streak = true;
+    triggers_ignite = true;
+
     consumes_ice_floes = false;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result) )
-    {
-      trigger_hot_streak( s );
-    }
-
-    if ( result_is_hit_or_multistrike( s -> result) )
-    {
-      trigger_ignite( s );
-    }
   }
 
   double composite_crit_multiplier() const override
@@ -3570,15 +3592,6 @@ struct scorch_t : public fire_mage_spell_t
 
   virtual bool usable_moving() const override
   { return true; }
-
-  // TODO: Is this even used?
-  // delay 0.25s the removal of heating up on non-critting scorch
-  virtual void expire_heating_up() override
-  {
-    mage_t* p = this -> p();
-    if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
-    p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
-  }
 };
 
 
@@ -4511,9 +4524,9 @@ void mage_t::create_buffs()
 
   // Fire
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
+  buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.molten_armor          = buff_creator_t( this, "molten_armor", find_spell( 30482 ) )
                                   .add_invalidate( CACHE_SPELL_CRIT );
-  buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_spell( 48108 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -4570,9 +4583,32 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak" );
-  procs.crit_for_hotstreak      = get_proc( "crit_test_hotstreak"     );
-  procs.hotstreak               = get_proc( "hotstreak"               );
+  switch ( specialization() )
+  {
+    case MAGE_ARCANE:
+      break;
+    case MAGE_FROST:
+      break;
+    case MAGE_FIRE:
+      procs.heating_up_generated    = get_proc( "Heating Up generated" );
+      procs.heating_up_removed      = get_proc( "Heating Up removed" );
+      procs.heating_up_ib_converted = get_proc( "IB conversions of HU" );
+      procs.hot_streak              = get_proc( "Total Hot Streak procs" );
+      procs.hot_streak_spell        = get_proc( "Hot Streak spells used" );
+      procs.hot_streak_spell_crit   = get_proc( "Hot Streak spell crits" );
+      procs.hot_streak_spell_crit_wasted =
+        get_proc( "Wasted Hot Streak spell crits" );
+
+      procs.ignite_applied    = get_proc( "Direct Ignite applications" );
+      procs.ignite_spread     = get_proc( "Ignites spread" );
+      procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
+      procs.ignite_overwrite  =
+        get_proc( "Ignites spread to target with existing ignite" );
+      break;
+    default:
+      // This shouldn't happen
+      break;
+  }
 }
 
 // mage_t::init_uptimes =====================================================
