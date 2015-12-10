@@ -1630,63 +1630,9 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
 
 // Ignite ===================================================================
-struct ignite_spread_event_t : public event_t
-{
-  dot_t* dot;
 
-  ignite_spread_event_t(dot_t* d) :
-    event_t( *d -> source -> sim),
-    dot( d )
-  {
-    add_event( timespan_t::zero() );
-  }
 
-  virtual const char* name() const override
-  {
-    return "ignite_spread";
-  }
 
-  void execute() override
-  {
-    if (dot -> target -> is_sleeping() )
-      return;
-
-    player_t* source = debug_cast<player_t*>( dot -> source );
-    player_t* new_target = nullptr;
-    for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i ++ )
-    {
-      player_t* t = sim().target_non_sleeping_list[ i ];
-      if ( t == dot -> state -> target )
-        continue;
-
-      mage_td_t* tdata = debug_cast<mage_td_t*>( source -> get_target_data( t ) );
-      residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( dot -> state );
-      residual_periodic_state_t* tdata_dot_state = debug_cast<residual_periodic_state_t*>( tdata -> dots.ignite -> state );
-      if (! tdata -> dots.ignite -> is_ticking()
-          ||  dot_state -> tick_amount * dot -> ticks_left() > tdata_dot_state -> tick_amount * tdata -> dots.ignite -> ticks_left() )
-      {
-        new_target = t;
-        break;
-      }
-    }
-
-    if ( new_target )
-    {
-      if ( sim().debug )
-        sim().out_debug.printf( "Player %s spreading Ignite from %s to %s with %f damage.",
-            dot -> current_action -> player -> name(),
-            dot -> target -> name(),
-            new_target -> name(),
-            debug_cast<residual_periodic_state_t*>( dot -> state ) -> tick_amount * dot -> ticks_left() );
-
-      mage_td_t* tdata = debug_cast<mage_td_t*>( source -> get_target_data( new_target ) );
-      tdata -> dots.ignite -> cancel();
-      dot -> copy( new_target, DOT_COPY_CLONE );
-
-      assert( ! tdata -> dots.ignite -> ticking );
-    }
-  }
-};
 
 struct ignite_t : public residual_action_t
 {
@@ -1702,9 +1648,7 @@ struct ignite_t : public residual_action_t
     void copy_state( const action_state_t* state ) override
     {
       action_state_t::copy_state( state );
-      residual_periodic_state_t::copy_state( state );
       const ignite_state_t* ignite_state = debug_cast<const ignite_state_t*>( state );
-      mage = ignite_state -> mage;
       spread_helper = ignite_state -> spread_helper;
     }
   };
@@ -1727,10 +1671,9 @@ struct ignite_t : public residual_action_t
   {
     residual_action_t::tick( dot );
     ignite_state_t* ignite_state = debug_cast<ignite_state_t*>( dot -> state);
-
-    if ( result_is_hit( ignite_state -> result ) && ignite_state -> spread_helper && dot -> ticks_left() > 0)
+    if ( ignite_state -> spread_helper && dot -> remains() > base_tick_time)
     {
-      new ( *sim ) ignite_spread_event_t( dot );
+      if ( sim -> log ) sim -> out_log << "Ignite spreads"; //Remove or alter message
     }
     ignite_state -> spread_helper =  ignite_state -> spread_helper ? false : true;
   }
@@ -1743,7 +1686,6 @@ void fire_mage_spell_t::trigger_ignite( action_state_t* state )
   double amount = state -> result_amount * p.cache.mastery_value();
   trigger( p.active_ignite, state -> target, amount );
 }
-
 
 
 // Arcane Barrage Spell =====================================================
