@@ -3086,6 +3086,7 @@ struct inferno_blast_t : public fire_mage_spell_t
   int max_spread_targets;
   double pyrosurge_chance;
   flamestrike_t* pyrosurge_flamestrike;
+  cooldown_t* icd;
 
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "inferno_blast", p,
@@ -3094,6 +3095,12 @@ struct inferno_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
+
+    trigger_gcd = timespan_t::zero();
+    cooldown -> charges = data().charges();
+    // TODO: Recharge time is reduced by haste
+    cooldown -> duration = data().charge_cooldown();
+    icd = p -> get_cooldown( "inferno_blast_icd" );
 
     triggers_hot_streak = true;
     triggers_ignite = true;
@@ -3113,6 +3120,23 @@ struct inferno_blast_t : public fire_mage_spell_t
       pyrosurge_flamestrike -> background = true;
       pyrosurge_flamestrike -> callbacks = false;
     }
+  }
+
+  virtual bool ready() override
+  {
+    if ( icd -> down() )
+    {
+      return false;
+    }
+
+    return fire_mage_spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    icd -> start( data().cooldown() );
   }
 
   virtual void impact( action_state_t* s ) override
