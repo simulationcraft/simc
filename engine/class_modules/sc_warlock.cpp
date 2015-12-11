@@ -11,7 +11,7 @@
 // Pets
 //
 // Affliction -
-// UA ignite, totally not right.
+// Felhunter - Shadow Bite
 // Seed of Corruption
 // Haunt reset
 // GoSac
@@ -446,6 +446,11 @@ public:
       if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
     }
   }
+
+  warlock_td_t* td( player_t* t ) const
+  {
+    return p() -> o() -> get_target_data( t );
+  }
 };
 
 struct warlock_pet_melee_t: public melee_attack_t
@@ -623,6 +628,28 @@ struct shadow_bite_t: public warlock_pet_spell_t
   shadow_bite_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Shadow Bite" )
   { }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    double dots = 0;
+
+    if ( td -> dots_unstable_affliction -> is_ticking() )
+      dots += 0.5;
+
+    if ( td -> dots_agony -> is_ticking() )
+      dots += 0.5;
+
+    if ( td -> dots_corruption -> is_ticking() )
+      dots += 0.5;
+
+    m *= 1.0 + dots;
+
+    return m;
+  }
 };
 
 struct lash_of_pain_t: public warlock_pet_spell_t
@@ -889,7 +916,6 @@ struct imp_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
     action_list_str = "firebolt";
-    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -906,7 +932,6 @@ struct felguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
-    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base_stats() override
@@ -1000,7 +1025,6 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
-    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base_stats() override
@@ -1051,7 +1075,6 @@ struct voidwalker_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
     action_list_str = "torment";
-    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base_stats() override
@@ -1074,7 +1097,6 @@ struct infernal_pet_t: public warlock_pet_t
   infernal_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "infernal"   ):
     warlock_pet_t( sim, owner, name, PET_INFERNAL, name != "infernal" )
   {
-    owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats() override
@@ -1101,7 +1123,6 @@ struct doomguard_pet_t: public warlock_pet_t
     doomguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "doomguard"  ):
     warlock_pet_t( sim, owner, name, PET_DOOMGUARD, name != "doomguard" )
   {
-    owner_coeff.ap_from_sp = 0.065934;
     action_list_str = "doom_bolt";
   }
 
