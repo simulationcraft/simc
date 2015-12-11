@@ -221,7 +221,6 @@ public:
     buff_t* bladed_armor;
     buff_t* channeling_soothing_mist;
     buff_t* chi_orbit;
-    buff_t* chi_sphere;
     buff_t* chi_torpedo;
     buff_t* combo_breaker_bok;
     buff_t* cranes_zeal;
@@ -509,7 +508,6 @@ public:
     // Windwalker
     const spell_data_t* aura_windwalker_monk;
     const spell_data_t* chi_orbit;
-    const spell_data_t* chi_sphere;
     const spell_data_t* combo_breaker_bok;
     const spell_data_t* crackling_tiger_lightning;
     const spell_data_t* crackling_tiger_lightning_driver;
@@ -2002,13 +2000,10 @@ struct tiger_palm_t: public monk_melee_attack_t
       chi_gain += p() -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
 
       // Power Strike activation
-      if ( p() -> buff.power_strikes -> up() )
+      // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
+      if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] ) )
       {
-        if ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] )
-          player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> default_value, p() -> gain.power_strikes, this );
-        else
-          p() -> buff.chi_sphere -> trigger();
-
+        chi_gain += p() -> buff.power_strikes -> value();
         p() -> buff.power_strikes -> expire();
       }
       player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
@@ -3610,35 +3605,6 @@ void sef_despawn_cb_t::operator()(player_t*)
 }
 
 // ==========================================================================
-// Chi Sphere
-// ==========================================================================
-
-struct chi_sphere_t: public monk_spell_t
-{
-  chi_sphere_t( monk_t* p, const std::string& options_str ):
-    monk_spell_t( "chi_sphere", p, p -> passives.chi_sphere )
-  {
-    parse_options( options_str );
-    harmful = false;
-    ignore_false_positive = true;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p() -> buff.chi_sphere -> up() )
-    {
-      // Only use 1 Orb per execution
-      player -> resource_gain( RESOURCE_CHI, p() -> buff.chi_sphere -> value(), p() -> gain.power_strikes, this );
-
-      p() -> buff.chi_sphere -> decrement();
-    }
-  }
-};
-
-// ==========================================================================
 // Chi Orbit
 // ==========================================================================
 
@@ -4544,7 +4510,6 @@ action_t* monk_t::create_action( const std::string& name,
   // Talents
   if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
   if ( name == "chi_burst" ) return new                 chi_burst_t( this, options_str );
-  if ( name == "chi_sphere" ) return new                chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "black_ox_brew" ) return new             black_ox_brew_t( this, options_str );
   if ( name == "dampen_harm" ) return new               dampen_harm_t( *this, options_str );
   if ( name == "diffuse_magic" ) return new             diffuse_magic_t( *this, options_str );
@@ -4780,7 +4745,6 @@ void monk_t::init_spells()
 
   // Windwalker
   passives.chi_orbit                        = find_spell( 196748 );
-  passives.chi_sphere                       = find_spell( 121283 );
   passives.combo_breaker_bok                = find_spell( 116768 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
@@ -4955,10 +4919,6 @@ void monk_t::create_buffs()
   buff.chi_orbit = buff_creator_t( this, "chi_orbit", talent.chi_orbit )
     .default_value( passives.chi_orbit -> effectN( 1 ).ap_coeff() )
     .max_stack( 4 );
-
-  buff.chi_sphere = buff_creator_t( this, "chi_sphere", passives.chi_sphere )
-    .default_value( passives.chi_sphere -> effectN( 1 ).base_value() )
-    .max_stack( 8 );
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", passives.combo_breaker_bok );
 
@@ -5806,7 +5766,6 @@ void monk_t::apl_combat_brewmaster()
       def -> add_action( racial_actions[i] + ",if=energy<=40" );
   }
 
-  def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2)" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
   def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
@@ -5876,7 +5835,6 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down" );
   def -> add_action( "chi_orbit,if=talent.chi_orbit.enabled" );
   def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
-  def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<chi.max" );
 
   if ( sim -> allow_potions )
   {
@@ -6000,8 +5958,6 @@ void monk_t::apl_combat_mistweaver()
 
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
-  def -> add_action( "chi_sphere,if=buff.chi_sphere.react" );
-
 
   st -> add_action( this, "Rising Sun Kick", "if=buff.teachings_of_the_monastery.up" );
   st -> add_action( this, "Blackout Kick", "if=buff.teachings_of_the_monastery.up" );
