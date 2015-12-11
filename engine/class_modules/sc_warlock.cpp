@@ -2859,6 +2859,14 @@ struct grimoire_of_service_t: public summon_pet_t
 
     return summon_pet_t::init_finished();
   }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> talents.grimoire_of_service -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
 };
 
 struct mortal_coil_heal_t: public warlock_heal_t
@@ -2897,6 +2905,14 @@ struct mortal_coil_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
       heal -> execute();
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> talents.mortal_coil -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
