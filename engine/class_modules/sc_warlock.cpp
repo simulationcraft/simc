@@ -1544,10 +1544,11 @@ struct agony_t: public warlock_spell_t
 
     td( d -> target ) -> debuffs_agony -> trigger();
 
-    if ( p() -> spec.nightfall -> ok() )
-    {
-
-      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10;
+    //if ( p() -> spec.nightfall -> ok() )
+    //{
+      // FIXME currently no spelldata for nightfall.
+      // double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10;
+      double nightfall_chance = 0.1386;  // 211 procs out of 1522 ticks, estimate for now.
 
       if ( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
       {
@@ -1561,7 +1562,7 @@ struct agony_t: public warlock_spell_t
         else
           p() -> shard_react = timespan_t::max();
       }
-    }
+    //}
 
     warlock_spell_t::tick( d );
   }
