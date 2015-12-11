@@ -1594,31 +1594,50 @@ struct unstable_affliction_t : public warlock_spell_t
       base_t( "unstable_affliction", p, p -> spec.unstable_affliction )
     {
       dual = true;
+      tick_may_crit = hasted_ticks = true;
+
+      if ( p -> affliction_trinket )
+      {
+        const spell_data_t* data = p -> affliction_trinket -> driver();
+        double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
+        double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
+
+        base_tick_time *= 1.0 + period_value;
+        dot_duration *= 1.0 + duration_value;
+      }
+    }
+
+    void init() override
+    {
+      base_t::init();
+
+      update_flags = snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
     }
   };
 
   unstable_affliction_dot_t* ua_dot;
 
   unstable_affliction_t( warlock_t* p ) :
-    warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction )
+    warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
+    ua_dot( new unstable_affliction_dot_t( p ) )
   {
-    ua_dot = new unstable_affliction_dot_t( p );
+    spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
+    base_multiplier *= dot_duration / base_tick_time;
+    dot_duration = timespan_t::zero(); // DoT managed by ignite action.
+  }
 
-    if ( p -> affliction_trinket )
-    {
-      const spell_data_t* data = p -> affliction_trinket -> driver();
-      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
-      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
+  void init() override
+  {
+    warlock_spell_t::init();
 
-      base_tick_time *= 1.0 + period_value;
-      dot_duration *= 1.0 + duration_value;
-    }
+    snapshot_flags &= ~( STATE_CRIT | STATE_TGT_CRIT );
   }
 
   virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
+    // Does this snapshot on the base damage or apply to the DoT dynamically?
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
@@ -1628,12 +1647,7 @@ struct unstable_affliction_t : public warlock_spell_t
   virtual void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
-    {
-      const spell_data_t* ua_tick = p() -> find_spell( 30108 );
-      double damage = s -> spell_power * ( ua_tick -> effectN( 3 ).sp_coeff() * ( ua_tick -> duration() / ua_tick -> effectN( 3 ).period() ) );
-
-      residual_action::trigger( ua_dot, s -> target, damage );
-    }
+      residual_action::trigger( ua_dot, s -> target, s -> result_amount );
   }
 };
 
