@@ -2182,6 +2182,12 @@ struct seed_of_corruption_t: public warlock_spell_t
   {
     may_crit = false;
 
+    if ( p -> talents.sow_the_seeds -> ok() )
+    {
+      aoe = 4;
+      base_costs[RESOURCE_SOUL_SHARD] = 1;
+    }
+
     if ( ! p -> spells.seed_of_corruption_aoe ) p -> spells.seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
   }
 
