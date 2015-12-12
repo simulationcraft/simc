@@ -11,7 +11,6 @@
 // Check all false-positive flags
 //
 // Affliction -
-// Seed of Corruption
 // Haunt reset
 // Soul Effigy
 //
@@ -1447,7 +1446,7 @@ public:
     }
 
     p() -> buffs.mana_tap -> up();
-    p() ->buffs.demonic_synergy -> up();
+    p() -> buffs.demonic_synergy -> up();
   }
 
   virtual void impact( action_state_t* s ) override
