@@ -29,10 +29,10 @@ namespace { // unnamed namespace
 struct warlock_t;
 
 namespace pets {
-struct wild_imp_pet_t;
-struct t18_illidari_satyr_t;
-struct t18_prince_malchezaar_t;
-struct t18_vicious_hellhound_t;
+  struct wild_imp_pet_t;
+  struct t18_illidari_satyr_t;
+  struct t18_prince_malchezaar_t;
+  struct t18_vicious_hellhound_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -54,7 +54,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_flamelicked;
 
   int agony_stack;
-  double soc_trigger;
+  double soc_threshold;
 
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
@@ -62,7 +62,7 @@ struct warlock_td_t: public actor_target_data_t
   void reset()
   {
     agony_stack = 1;
-    soc_trigger = 0;
+    soc_threshold = 0;
   }
 
   void target_demise();
@@ -228,8 +228,8 @@ public:
 
   struct spells_t
   {
-    spell_t* seed_of_corruption_aoe;
     spell_t* melee;
+    spell_t* seed_of_corruption_aoe;
   } spells;
 
   int initial_soul_shards;
@@ -1440,7 +1440,11 @@ public:
   {
     spell_t::tick( d );
 
-    trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
+    if ( result_is_hit( d -> state -> result ) && td( d -> target ) -> dots_seed_of_corruption -> is_ticking()
+         && id != p() -> spells.seed_of_corruption_aoe -> id )
+    {
+      accumulate_seed_of_corruption( td( d -> target ), d -> state -> result_amount );
+    }
 
     p() -> buffs.mana_tap -> up();
     p() ->buffs.demonic_synergy -> up();
@@ -1450,7 +1454,11 @@ public:
   {
     spell_t::impact( s );
 
-    trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
+    if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_seed_of_corruption -> is_ticking()
+         && id != p() -> spells.seed_of_corruption_aoe -> id )
+    {
+      accumulate_seed_of_corruption( td( s -> target ), s -> result_amount );
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -1487,20 +1495,6 @@ public:
     return c;
   }
 
-  void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
-  {
-    if ( ( ( td -> dots_seed_of_corruption -> current_action && id == td -> dots_seed_of_corruption -> current_action -> id )
-      || td -> dots_seed_of_corruption -> is_ticking() ) && td -> soc_trigger > 0 )
-    {
-      td -> soc_trigger -= amount;
-      if ( td -> soc_trigger <= 0 )
-      {
-        p -> spells.seed_of_corruption_aoe -> execute();
-        td -> dots_seed_of_corruption -> cancel();
-      }
-    }
-  }
-
   bool consume_cost_per_tick( const dot_t& dot ) override
   {
     bool consume = spell_t::consume_cost_per_tick( dot );
@@ -1517,6 +1511,14 @@ public:
       //FIXME: This is roughly how it works, but we need more testing
       dot -> extend_duration( extend_duration, dot -> current_action -> dot_duration * 1.5 );
     }
+  }
+
+  static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
+  {
+    td -> soc_threshold -= amount;
+
+    if ( td -> soc_threshold <= 0 )
+      td -> dots_seed_of_corruption -> cancel();
   }
 
   static void trigger_soul_leech( warlock_t* p, double amount )
@@ -1738,13 +1740,6 @@ struct drain_life_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    spell_t::tick( d );
-
-    trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
   }
 
   virtual bool ready() override
@@ -2212,42 +2207,83 @@ struct chaos_bolt_t: public warlock_spell_t
 
 // AOE SPELLS
 
-struct seed_of_corruption_aoe_t: public warlock_spell_t
-{
-  seed_of_corruption_aoe_t( warlock_t* p ):
-    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
-  {
-    aoe = -1;
-    dual = true;
-    background = true;
-    callbacks = false;
-  }
-};
-
 struct seed_of_corruption_t: public warlock_spell_t
 {
+  struct seed_of_corruption_aoe_t: public warlock_spell_t
+  {
+    seed_of_corruption_aoe_t( warlock_t* p ):
+      warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
+    {
+      aoe = -1;
+      dual = true;
+      background = true;
+      callbacks = false;
+
+      p -> spells.seed_of_corruption_aoe = this;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        warlock_td_t* tdata = td( s -> target );
+
+        if ( tdata -> dots_seed_of_corruption -> is_ticking() && tdata -> soc_threshold > 0 )
+        {
+          tdata -> soc_threshold = 0;
+          tdata -> dots_seed_of_corruption -> cancel();
+        }
+      }
+    }
+  };
+
+  double threshold_mod;
+  seed_of_corruption_aoe_t* explosion;
+
   seed_of_corruption_t( warlock_t* p ):
-    warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) )
+    warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ),
+    explosion( new seed_of_corruption_aoe_t( p ) )
   {
     may_crit = false;
+    threshold_mod = 3.0;
+
+    base_tick_time = dot_duration;
+    hasted_ticks = false;
+
+    add_child( explosion );
 
     if ( p -> talents.sow_the_seeds -> ok() )
     {
       aoe = 4;
       base_costs[RESOURCE_SOUL_SHARD] = 1;
     }
-
-    if ( ! p -> spells.seed_of_corruption_aoe ) p -> spells.seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void init() override
   {
-    warlock_spell_t::impact( s );
+    warlock_spell_t::init();
 
+    snapshot_flags |= STATE_SP;
+  }
+
+  void impact( action_state_t* s ) override
+  {
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> soc_trigger = s -> composite_spell_power() * data().effectN( 1 ).sp_coeff() * 3;
+      td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
     }
+
+    warlock_spell_t::impact( s );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warlock_spell_t::last_tick( d );
+
+    explosion -> target = d -> target;
+    explosion -> execute();
   }
 };
 
@@ -2879,7 +2915,7 @@ struct mortal_coil_t: public warlock_spell_t
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
 actor_target_data_t( target, &p ),
 agony_stack( 1 ),
-soc_trigger( 0 ),
+soc_threshold( 0 ),
 warlock( p )
 {
   dots_corruption = target -> get_dot( "corruption", &p );
