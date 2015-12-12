@@ -11,7 +11,6 @@
 // Pets
 //
 // Affliction -
-// Felhunter - Shadow Bite
 // Seed of Corruption
 // Haunt reset
 // GoSac
@@ -636,15 +635,16 @@ struct shadow_bite_t: public warlock_pet_spell_t
     warlock_td_t* td = this -> td( target );
 
     double dots = 0;
+    double multiplier = data().effectN( 2 ).percent();
 
     if ( td -> dots_unstable_affliction -> is_ticking() )
-      dots += 0.5;
+      dots += multiplier;
 
     if ( td -> dots_agony -> is_ticking() )
-      dots += 0.5;
+      dots += multiplier;
 
     if ( td -> dots_corruption -> is_ticking() )
-      dots += 0.5;
+      dots += multiplier;
 
     m *= 1.0 + dots;
 
