@@ -2240,6 +2240,8 @@ struct seed_of_corruption_t: public warlock_spell_t
   };
 
   double threshold_mod;
+  double sow_the_seeds_targets;
+  double sow_the_seeds_cost;
   seed_of_corruption_aoe_t* explosion;
 
   seed_of_corruption_t( warlock_t* p ):
@@ -2248,17 +2250,13 @@ struct seed_of_corruption_t: public warlock_spell_t
   {
     may_crit = false;
     threshold_mod = 3.0;
-
     base_tick_time = dot_duration;
     hasted_ticks = false;
 
-    add_child( explosion );
+    sow_the_seeds_targets = p -> talents.sow_the_seeds -> effectN( 1 ).base_value();
+    sow_the_seeds_cost    = 1.0;
 
-    if ( p -> talents.sow_the_seeds -> ok() )
-    {
-      aoe = 4;
-      base_costs[RESOURCE_SOUL_SHARD] = 1;
-    }
+    add_child( explosion );
   }
 
   void init() override
@@ -2266,6 +2264,26 @@ struct seed_of_corruption_t: public warlock_spell_t
     warlock_spell_t::init();
 
     snapshot_flags |= STATE_SP;
+  }
+
+  void execute() override
+  {
+    bool sow_the_seeds = false;
+
+    if ( p() -> talents.sow_the_seeds -> ok() && p() -> resources.current[ RESOURCE_SOUL_SHARD ] >= sow_the_seeds_cost )
+    {
+      sow_the_seeds = true;
+      p() -> resource_loss( RESOURCE_SOUL_SHARD, sow_the_seeds_cost, 0, this );
+      stats -> consume_resource( RESOURCE_SOUL_SHARD, sow_the_seeds_cost );
+      aoe += sow_the_seeds_targets;
+    }
+
+    warlock_spell_t::execute();
+
+    if ( sow_the_seeds )
+    {
+      aoe -= sow_the_seeds_targets;
+    }
   }
 
   void impact( action_state_t* s ) override
