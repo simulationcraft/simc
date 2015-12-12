@@ -216,7 +216,6 @@ struct druid_t : public player_t
 private:
   form_e form; // Active druid form
 public:
-  int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   int active_starfalls;
   double max_fb_energy;
   moon_stage_e moon_stage;
@@ -594,7 +593,6 @@ public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
-    active_rejuvenations( 0 ),
     active_starfalls( 0 ),
     max_fb_energy( 0 ),
     initial_astral_power( 0 ),
@@ -1383,24 +1381,29 @@ public:
 
   virtual expr_t* create_expression( const std::string& name_str )
   {
-    if ( ! util::str_compare_ci( name_str, "dot.lacerate.stack" ) )
-      return ab::create_expression( name_str );
-
-    struct lacerate_stack_expr_t : public expr_t
+    if ( util::str_compare_ci( name_str, "active_dot.starfall" ) )
     {
-      druid_t& druid;
-      action_t& action;
-
-      lacerate_stack_expr_t( action_t& a, druid_t& p ) :
-        expr_t( "stack" ), druid( p ), action( a )
-      {}
-      virtual double evaluate() override
+      return make_ref_expr( "starfall", p() -> active_starfalls );
+    }
+    else if ( util::str_compare_ci( name_str, "dot.lacerate.stack" ) )
+    {
+      struct lacerate_stack_expr_t : public expr_t
       {
-        return druid.get_target_data( action.target ) -> lacerate_stack;
-      }
-    };
+        druid_t& druid;
+        action_t* action;
 
-    return new lacerate_stack_expr_t( *this, *p() );
+        lacerate_stack_expr_t( druid_t& p, action_t* a ) :
+          expr_t( "stack" ), druid( p ), action( a )
+        {}
+
+        virtual double evaluate() override
+        { return druid.get_target_data( action -> target ) -> lacerate_stack; }
+      };
+
+      return new lacerate_stack_expr_t( *p(), this );
+    }
+
+    return ab::create_expression( name_str );
   }
 };
 
@@ -3738,22 +3741,6 @@ struct rejuvenation_t : public druid_heal_t
 
     return atm;
   }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    if ( ! find_dot( s -> target ) -> is_ticking() && result_is_hit( s -> result ) )
-      p() -> active_rejuvenations += 1;
-
-    druid_heal_t::impact( s );
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    druid_heal_t::last_tick( d );
-
-    p() -> active_rejuvenations -= 1;
-  }
-
 };
 
 // Renewal ============================================================
@@ -6433,7 +6420,7 @@ void druid_t::reset()
   // Reset druid_t variables to their original state.
   form = NO_FORM;
   max_fb_energy = spell.ferocious_bite -> powerN( 1 ).cost() - spell.ferocious_bite -> effectN( 2 ).base_value();
-  active_rejuvenations = active_starfalls = 0;
+  active_starfalls = 0;
   moon_stage = ( moon_stage_e ) initial_moon_stage;
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -6839,8 +6826,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     druid_t& druid;
     druid_expr_t( const std::string& n, druid_t& p ) :
       expr_t( n ), druid( p )
-    {
-    }
+    {}
   };
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -6848,14 +6834,6 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   if ( util::str_compare_ci( name_str, "astral_power" ) )
   {
     return make_ref_expr( name_str, resources.current[ RESOURCE_ASTRAL_POWER ] );
-  }
-  else if ( util::str_compare_ci( name_str, "active_rejuvenations" ) )
-  {
-    return make_ref_expr( "active_rejuvenations", active_rejuvenations );
-  }
-  else if ( util::str_compare_ci( name_str, "active_starfalls" ) )
-  {
-    return make_ref_expr( "active_starfalls", active_starfalls );
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
@@ -6869,13 +6847,12 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
          || util::str_compare_ci( name_str, "half_moon" )
          || util::str_compare_ci( name_str, "full_moon" )  )
   {
-    struct moon_stage_expr_t : public expr_t
+    struct moon_stage_expr_t : public druid_expr_t
     {
-      druid_t& druid;
       int stage;
 
       moon_stage_expr_t( druid_t& p, const std::string& name_str ) :
-        expr_t( name_str ), druid( p )
+        druid_expr_t( name_str, p )
       {
         if ( util::str_compare_ci( name_str, "new_moon" ) )
           stage = 0;
@@ -6893,6 +6870,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
 
     return new moon_stage_expr_t( *this, name_str );
   }
+
   return player_t::create_expression( a, name_str );
 }
 
