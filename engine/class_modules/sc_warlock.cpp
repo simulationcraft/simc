@@ -36,11 +36,6 @@ struct t18_prince_malchezaar_t;
 struct t18_vicious_hellhound_t;
 }
 
-struct actives_t
-{
-  action_t*           unstable_affliction;
-} active;
-
 struct warlock_td_t: public actor_target_data_t
 {
   dot_t*  dots_agony;
@@ -96,6 +91,11 @@ public:
   } pets;
 
   std::vector<std::string> pet_name_list;
+
+  struct active_t
+  {
+    action_t* demonic_power_proc;
+  } active;
 
   // Talents
   struct talents_t
@@ -231,7 +231,6 @@ public:
   {
     spell_t* seed_of_corruption_aoe;
     spell_t* melee;
-
   } spells;
 
   int initial_soul_shards;
@@ -1395,6 +1394,15 @@ public:
       {
         bool procced = p() -> grimoire_of_synergy.trigger();
         if ( procced ) my_pet -> buffs.demonic_synergy -> trigger();
+      }
+    }
+    if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_sacrifice -> ok() && p() -> buffs.demonic_power -> up() )
+    {
+      bool procced = p() -> demonic_power_rppm.trigger();
+      if ( procced )
+      {
+         p() -> active.demonic_power_proc -> target = execute_state -> target;
+         p()->active.demonic_power_proc -> execute();
       }
     }
   }
@@ -2999,6 +3007,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     grimoire_of_synergy( *this ),
     grimoire_of_synergy_pet( *this ),
     cooldowns( cooldowns_t() ),
+    active( active_t() ),
     spec( specs_t() ),
     buffs( buffs_t() ),
     gains( gains_t() ),
@@ -3307,6 +3316,9 @@ void warlock_t::init_spells()
   talents.shadowfury            = find_talent_spell( "Shadowfury" );
   
   // Glyphs
+
+  // Active Spells
+  active.demonic_power_proc = new actions::demonic_power_damage_t( this );
 }
 
 void warlock_t::init_base_stats()
