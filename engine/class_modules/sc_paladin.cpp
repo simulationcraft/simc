@@ -5334,8 +5334,10 @@ void paladin_t::generate_action_prio_list_ret()
  
   precombat -> add_action( this, "Blessing of Kings", "if=!aura.str_agi_int.up" );
   precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
-  precombat -> add_action( this, "Seal of Truth", "if=spell_targets.divine_storm<3" );
-  precombat -> add_action( this, "Seal of Righteousness", "if=spell_targets.divine_storm>=3" );
+  precombat -> add_action( this, "Seal of Truth", "if=equipped.empty_drinking_horn&spell_targets.divine_storm<2" );
+  precombat -> add_action( this, "Seal of Righteousness", "if=equipped.empty_drinking_horn&spell_targets.divine_storm>=2" );
+  precombat -> add_action( this, "Seal of Truth", "if=spell_targets.divine_storm<3&!equipped.empty_drinking_horn" );
+  precombat -> add_action( this, "Seal of Righteousness", "if=spell_targets.divine_storm>=3&!equipped.empty_drinking_horn" );
  
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -5372,6 +5374,10 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( "auto_attack,target_if=dot.censure.remains<4" );
   def -> add_talent( this, "Speed of Light", "if=movement.distance>5" );
   def -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&time<2" );
+  def -> add_action( this, "Seal of Truth", "if=equipped.empty_drinking_horn&spell_targets.divine_storm<2&!talent.empowered_seals.enabled" );
+  def -> add_action( this, "Seal of Righteousness", "if=equipped.empty_drinking_horn&spell_targets.divine_storm>=2&!talent.empowered_seals.enabled" );
+  def -> add_action( this, "Seal of Truth", "if=spell_targets.divine_storm<3&!talent.empowered_seals.enabled&!equipped.empty_drinking_horn" );
+  def -> add_action( this, "Seal of Righteousness", "if=spell_targets.divine_storm>=3&!talent.empowered_seals.enabled&!equipped.empty_drinking_horn" );
   def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled" );
   def -> add_talent( this, "Execution Sentence", "sync=seraphim,if=talent.seraphim.enabled" );
   def -> add_talent( this, "Light's Hammer", "if=!talent.seraphim.enabled" );
