@@ -13,7 +13,6 @@
 // Affliction -
 // Seed of Corruption
 // Haunt reset
-// GoSac
 // Soul Effigy
 //
 // Destruction - Everything
@@ -2887,14 +2886,6 @@ struct grimoire_of_service_t: public summon_pet_t
       pet -> summon_stats = stats;
 
     return summon_pet_t::init_finished();
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> talents.grimoire_of_service -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
