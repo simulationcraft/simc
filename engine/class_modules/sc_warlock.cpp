@@ -8,7 +8,7 @@
 // ==========================================================================
 //
 // TODO:
-// Pets
+// Check all false-positive flags
 //
 // Affliction -
 // Seed of Corruption
@@ -1404,6 +1404,9 @@ public:
          p()->active.demonic_power_proc -> execute();
       }
     }
+
+    p() -> buffs.mana_tap -> up();
+    p() -> buffs.demonic_synergy -> up();
   }
 
   virtual timespan_t execute_time() const override
@@ -1438,6 +1441,9 @@ public:
     spell_t::tick( d );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
+
+    p() -> buffs.mana_tap -> up();
+    p() ->buffs.demonic_synergy -> up();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2585,14 +2591,6 @@ struct drain_soul_t: public warlock_spell_t
     hasted_ticks = false;
     may_crit = false;
   }
-
-  virtual bool ready() override
-  {
-   if ( !p() -> talents.drain_soul -> ok() ) 
-      return false;
-
-    return warlock_spell_t::ready();
-  }
 };
 
 struct demonbolt_t: public warlock_spell_t
@@ -2600,16 +2598,6 @@ struct demonbolt_t: public warlock_spell_t
   demonbolt_t( warlock_t* p ):
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
-  }
-
-  virtual bool ready() override
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( !p() -> talents.demonbolt -> ok() ) 
-      r = false;
-
-    return r;
   }
 };
 
@@ -2619,14 +2607,6 @@ struct cataclysm_t: public warlock_spell_t
     warlock_spell_t( "cataclysm", p, p -> talents.cataclysm )
   {
     aoe = -1;
-  }
-  virtual bool ready() override
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( !p() -> talents.cataclysm -> ok() ) r = false;
-
-    return r;
   }
 };
 
@@ -2696,8 +2676,6 @@ struct shadowburn_t: public warlock_spell_t
 
     if ( target -> health_percentage() >= 20 ) 
       r = false;
-    if ( !p() -> talents.shadowburn -> ok() )
-      r = false;
 
     return r;
   }
@@ -2708,14 +2686,6 @@ struct haunt_t: public warlock_spell_t
   haunt_t( warlock_t* p ):
     warlock_spell_t( "haunt", p, p -> talents.haunt )
   {
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> talents.haunt -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -2750,59 +2720,42 @@ struct phantom_singularity_t : public warlock_spell_t
     phantom_singularity -> execute();
     warlock_spell_t::tick( d );
   }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> talents.phantom_singularity -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
-  }
 };
 
 struct mana_tap_t : public warlock_spell_t
 {
+  double expenditure;
   mana_tap_t( warlock_t* p ) :
     warlock_spell_t( "mana_tap", p, p -> talents.mana_tap )
   {
     harmful = false;
     ignore_false_positive = true;
+    may_crit = false;
+    dot_duration = timespan_t::zero();
+    resource_current = RESOURCE_MANA;
+    base_costs[RESOURCE_MANA] = 1.0;
+    expenditure = data().effectN( 2 ).percent();
   }
-
+ 
   void execute() override
   {
     warlock_spell_t::execute();
-
+ 
       p() -> buffs.mana_tap -> trigger();
-      
-      double mana = player -> resources.current[RESOURCE_MANA];
-
-      player -> resource_loss( RESOURCE_MANA, mana * data().effectN( 2 ).percent(), p() -> gains.mana_tap );
   }
-
-  virtual bool ready() override
+ 
+  double cost() const override
   {
-    if ( !p() -> talents.mana_tap -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
+    return p() -> resources.current[RESOURCE_MANA] * expenditure;
   }
 };
 
 struct siphon_life_t : public warlock_spell_t
 {
-  siphon_life_t(warlock_t* p) :
+  siphon_life_t( warlock_t* p ) :
     warlock_spell_t( "siphon_life", p, p -> talents.siphon_life )
   {
     may_crit = false;
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> talents.siphon_life -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -2812,6 +2765,7 @@ struct soul_harvest_t : public warlock_spell_t
     warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
   {
     harmful = false;
+    may_crit = false;
   }
 
   virtual void execute() override
@@ -2819,14 +2773,6 @@ struct soul_harvest_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> resource_gain( RESOURCE_SOUL_SHARD, 5, p() -> gains.soul_harvest );
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> talents.soul_harvest -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -2926,14 +2872,6 @@ struct mortal_coil_t: public warlock_spell_t
     if ( result_is_hit( s -> result ) )
       heal -> execute();
   }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> talents.mortal_coil -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
-  }
 };
 
 } // end actions namespace
@@ -3027,10 +2965,10 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.demonic_synergy -> up() )
+  if ( buffs.demonic_synergy -> check() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
-  if ( buffs.mana_tap -> up() )
+  if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
 
   return m;
@@ -3368,7 +3306,8 @@ void warlock_t::create_buffs()
     .chance( 1 );
   buffs.mana_tap = buff_creator_t( this, "mana_tap", talents.mana_tap )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC )
+    .tick_behavior( BUFF_TICK_NONE );
   buffs.havoc = new havoc_buff_t( this );
 
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
