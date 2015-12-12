@@ -1083,8 +1083,16 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
                         "It contains all the input options of the last simulation"
                         " and helps us reproduce the issue.<br>");
 
+        // Build error details which users can copy-paste into a ticket
         // Use simulation options used, same as goes to simc_gui.simc
-        QString errorDetails = simulateThread -> getOptions();
+        QString errorDetails;
+        errorDetails += "# SimulationCraft encountered an error!\n";
+        errorDetails += QString("* Category: %1\n").arg(simulateThread -> getErrorCategory());
+        errorDetails += QString("* Error: %1\n\n").arg(simulateThread -> getError());
+        errorDetails += "## All options used for simulation:\n";
+        errorDetails += "``` ini\n"; // start code section
+        errorDetails += simulateThread -> getOptions();
+        errorDetails += "\n```\n"; // end code section
 
         QMessageBox mBox;
         mBox.setWindowTitle(simulateThread -> getErrorCategory());
