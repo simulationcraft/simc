@@ -74,7 +74,6 @@ public:
     buff_t* holy_evangelism;
     buff_t* inner_focus;
     buff_t* spirit_shell;
-    buff_t* saving_grace_penalty;
 
     // Holy
     buff_t* chakra_chastise;
@@ -212,7 +211,6 @@ public:
     // Shadow
     const spell_data_t* voidform;
     const spell_data_t* shadowy_apparitions;
-    const spell_data_t* mastermind;
   } specs;
 
   // Mastery Spells
@@ -220,7 +218,7 @@ public:
   {
     const spell_data_t* shield_discipline;
     const spell_data_t* echo_of_light;
-    const spell_data_t* mental_anguish;
+    const spell_data_t* madness;
   } mastery_spells;
 
   // Cooldowns
@@ -243,6 +241,11 @@ public:
     gain_t* devouring_plague_health;
     gain_t* shadowy_insight_shadow_word_pain;
     gain_t* mindbender;
+    gain_t* insanity_mind_blast;
+    gain_t* insanity_shadow_word_death;
+    gain_t* insanity_mind_flay;
+    gain_t* insanity_shadow_word_void;
+    gain_t* insanity_shadow_crash;
     gain_t* power_word_solace;
   } gains;
 
@@ -259,15 +262,6 @@ public:
     proc_t* shadowy_insight;
     proc_t* shadowy_insight_from_shadow_word_pain;
     proc_t* shadowy_insight_overflow;
-    proc_t* mind_spike_dot_removal;
-    proc_t* mind_spike_dot_removal_devouring_plague;
-    proc_t* mind_spike_dot_removal_devouring_plague_ticks;
-    proc_t* mind_spike_dot_removal_shadow_word_pain;
-    proc_t* mind_spike_dot_removal_shadow_word_pain_ticks;
-    proc_t* mind_spike_dot_removal_vampiric_touch;
-    proc_t* mind_spike_dot_removal_vampiric_touch_ticks;
-    proc_t* mind_spike_dot_removal_void_entropy;
-    proc_t* mind_spike_dot_removal_void_entropy_ticks;
     proc_t* serendipity;
     proc_t* serendipity_overflow;
     proc_t* shadowy_apparition;
@@ -348,6 +342,7 @@ public:
 
   // player_t overrides
   void init_base_stats() override;
+  void init_resources( bool force ) override;
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
@@ -384,7 +379,6 @@ public:
       const action_state_t* s ) const override;
   double temporary_movement_modifier() const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
-  double composite_rating_multiplier( rating_e rating ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void invalidate_cache( cache_e ) override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
@@ -1670,6 +1664,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
     atonement->trigger( s->result_amount, direct_tick ? DMG_OVER_TIME : type,
                         s->result );
   }
+
+  void generate_insanity( double num_amount, gain_t* g = nullptr )
+  {
+    double amount = num_amount;
+
+    if ( priest.buffs.power_infusion->check() )
+      amount *= 1.0 + priest.buffs.power_infusion->data().effectN( 3 ).percent();
+
+    if ( priest.specialization() == PRIEST_SHADOW )
+      priest.resource_gain( RESOURCE_INSANITY, amount, g, this );
+
+  }
+
 };
 
 namespace spells
@@ -2108,59 +2115,26 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
 struct mind_blast_t : public priest_spell_t
 {
-  bool casted_with_shadowy_insight;
+  double insanity_gain;
 
   mind_blast_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "mind_blast", player,
-                      player.find_class_spell( "Mind Blast" ) ),
-      casted_with_shadowy_insight( false )
+    : priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ), 
+    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 )
   {
     parse_options( options_str );
     instant_multistrike = 0;
     is_mind_spell       = true;
+
   }
 
   void execute() override
   {
     priest_spell_t::execute();
-
-    casted_with_shadowy_insight = false;
-  }
-
-  void consume_resource() override
-  {
-    if ( casted_with_shadowy_insight )
-      resource_consumed = 0.0;
-    else
-      resource_consumed = cost();
-
-    player->resource_loss( current_resource(), resource_consumed, nullptr,
-                           this );
-
-    if ( sim->log )
-      sim->out_log.printf(
-          "%s consumes %.1f %s for %s (%.0f)", player->name(),
-          resource_consumed, util::resource_type_string( current_resource() ),
-          name(), player->resources.current[ current_resource() ] );
-
-    stats->consume_resource( current_resource(), resource_consumed );
-  }
-
-  double cost() const override
-  {
-    if ( priest.buffs.shadowy_insight->check() )
-      return 0.0;
-
-    return priest_spell_t::cost();
+    generate_insanity( insanity_gain, priest.gains.insanity_mind_blast ); // FIXME Check if execute or impact;
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
   {
-    if ( priest.buffs.shadowy_insight->up() )
-    {
-      casted_with_shadowy_insight = true;
-    }
-
     priest_spell_t::schedule_execute( state );
 
     priest.buffs.shadowy_insight->expire();
@@ -2182,20 +2156,6 @@ struct mind_blast_t : public priest_spell_t
     priest.buffs.empowered_shadows->expire();
   }
 
-  timespan_t execute_time() const override
-  {
-    timespan_t et = priest_spell_t::execute_time();
-
-    return et;
-  }
-
-  void reset() override
-  {
-    priest_spell_t::reset();
-
-    casted_with_shadowy_insight = false;
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
@@ -2204,11 +2164,6 @@ struct mind_blast_t : public priest_spell_t
       d *= 1.0 +
            priest.buffs.empowered_shadows->current_value *
                priest.buffs.empowered_shadows->check();
-
-    if ( priest.mastery_spells.mental_anguish->ok() )
-    {
-      d *= 1.0 + priest.cache.mastery_value();
-    }
 
     d *= 1.0 + priest.sets.set( SET_CASTER, T16, B2 )->effectN( 1 ).percent();
 
@@ -2258,11 +2213,6 @@ struct mind_spike_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if ( priest.mastery_spells.mental_anguish->ok() )
-    {
-      d *= 1.0 + priest.cache.mastery_value();
-    }
-
     if ( priest.buffs.empowered_shadows->check() )
       d *= 1.0 +
            priest.buffs.empowered_shadows->current_value *
@@ -2300,13 +2250,10 @@ struct mind_sear_tick_t : public priest_spell_t
   }
 };
 
-template <bool insanity = false>
-struct mind_sear_base_t : public priest_spell_t
+struct mind_sear_t : public priest_spell_t
 {
-  mind_sear_base_t( priest_t& p, const std::string& options_str,
-                    const std::string& name = "mind_sear" )
-    : priest_spell_t( name, p, p.find_class_spell( insanity ? "Searing Insanity"
-                                                            : "Mind Sear" ) )
+  mind_sear_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "mind_sear", p, p.find_specialization_spell( ( "Mind Sear" ) ))
   {
     parse_options( options_str );
     channeled           = true;
@@ -2318,7 +2265,7 @@ struct mind_sear_base_t : public priest_spell_t
     is_mind_spell       = true;
 
     tick_action = new mind_sear_tick_t(
-        p, p.find_class_spell( insanity ? "Searing Insanity" : "Mind Sear" ) );
+        p, p.find_class_spell( "Mind Sear" ) );
   }
 
   double action_multiplier() const override
@@ -2359,106 +2306,25 @@ struct mind_sear_base_t : public priest_spell_t
   }
 };
 
-struct searing_insanity_t : public mind_sear_base_t<true>
-{
-  typedef mind_sear_base_t<true> base_t;
-
-  searing_insanity_t( priest_t& p, const std::string& options_str )
-    : base_t( p, options_str, "searing_insanity" )
-  {
-  }
-
-  void execute() override
-  {
-    // benefit tracking
-    priest.buffs.insanity->up();
-
-    base_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( !priest.buffs.insanity->check() )
-      return false;
-
-    return base_t::ready();
-  }
-};
-
 // Shadow Word Death Spell ==================================================
 
 struct shadow_word_death_t : public priest_spell_t
 {
-  struct shadow_word_death_backlash_t : public priest_spell_t
-  {
-    double spellpower;
-    double multiplier;
-
-    shadow_word_death_backlash_t( priest_t& p )
-      : priest_spell_t( "shadow_word_death_backlash", p,
-                        p.find_class_spell( "Shadow Word: Death" ) ),
-        spellpower( 0.0 ),
-        multiplier( 1.0 )
-    {
-      background = true;
-      harmful    = false;
-      proc       = true;
-      may_crit   = false;
-      callbacks  = false;
-
-      target = &priest;
-
-      ability_lag        = sim->default_aura_delay;
-      ability_lag_stddev = sim->default_aura_delay_stddev;
-    }
-
-    void init() override
-    {
-      priest_spell_t::init();
-
-      stats->type = STATS_NEUTRAL;
-    }
-
-    double composite_spell_power() const override
-    {
-      return spellpower;
-    }
-
-    double composite_da_multiplier(
-        const action_state_t* /* state */ ) const override
-    {
-      double d = multiplier;
-
-      return d / 4.0;
-    }
-  };
-
-  shadow_word_death_backlash_t* backlash;
+  double insanity_gain;
 
   shadow_word_death_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "shadow_word_death", p,
-                      p.find_specialization_spell( "Shadow Word: Death" ) ),
-      backlash( new shadow_word_death_backlash_t( p ) )
+      p.find_class_spell( "Shadow Word: Death" ) ),
+    insanity_gain( 30.0 ) // TODO FIXME not in spelldata
   {
     parse_options( options_str );
     instant_multistrike = 0;
 
-    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+    base_multiplier *= 4.0;
+
     base_multiplier *=
-        1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
-  }
+      1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
 
-  void execute() override
-  {
-    bool below_20 = ( target->health_percentage() < 20.0 );
-
-    priest_spell_t::execute();
-
-    if ( below_20 && !priest.buffs.shadow_word_death_reset_cooldown->up() )
-    {
-      cooldown->reset( false );
-      priest.buffs.shadow_word_death_reset_cooldown->trigger();
-    }
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -2467,26 +2333,15 @@ struct shadow_word_death_t : public priest_spell_t
 
     priest.buffs.empowered_shadows->up();  // benefit tracking
     priest.buffs.empowered_shadows->expire();
+
   }
 
   void impact( action_state_t* s ) override
   {
-    s->result_amount = floor( s->result_amount );
-
-    bool over_20 = ( s->target->health_percentage() >= 20.0 );
-    if ( backlash && over_20 && s->result == RESULT_HIT )
-    {
-      backlash->spellpower = s->composite_spell_power();
-      backlash->multiplier = s->da_multiplier;
-      backlash->schedule_execute();
-    }
-
     if ( result_is_hit( s->result ) )
     {
-      if ( over_20 )
-      {
-        s->result_amount /= 4.0;
-      }
+      if ( priest.talents.reaper_of_souls->ok() )
+        generate_insanity( insanity_gain, priest.gains.insanity_shadow_word_death ); //FIXME Execute or Impact
     }
 
     priest_spell_t::impact( s );
@@ -2498,21 +2353,36 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( priest.buffs.empowered_shadows->check() )
       d *= 1.0 +
-           priest.buffs.empowered_shadows->current_value *
-               priest.buffs.empowered_shadows->check();
+      priest.buffs.empowered_shadows->current_value *
+      priest.buffs.empowered_shadows->check();
 
     return d;
   }
+
+  bool ready() override
+  {
+    if ( !priest_spell_t::ready() )
+      return false;
+
+    if ( priest.talents.reaper_of_souls->ok() && target->health_percentage() < 35.0 )
+      return true;
+    if ( target->health_percentage() < 20.0 ) //TODO Check if it's effect2?
+      return true;
+
+    return false;
+  }
 };
 
+
 // Mind Flay Spell ==========================================================
-template <bool insanity = false>
-struct mind_flay_base_t : public priest_spell_t
+struct mind_flay_t : public priest_spell_t
 {
-  mind_flay_base_t( priest_t& p, const std::string& options_str,
-                    const std::string& name = "mind_flay" )
+  double insanity_gain;
+
+  mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t(
-          name, p, p.find_class_spell( insanity ? "Insanity" : "Mind Flay" ) )
+          "mind_flay" , p, p.find_specialization_spell( "Mind Flay" ) ),
+    insanity_gain( 3.0 ) // FIXME Spelldata has some odd value added data().effectN(3).resource(RESOURCE_INSANITY) / 100
   {
     parse_options( options_str );
 
@@ -2526,11 +2396,6 @@ struct mind_flay_base_t : public priest_spell_t
   double action_multiplier() const override
   {
     double am = priest_spell_t::action_multiplier();
-
-    if ( priest.mastery_spells.mental_anguish->ok() )
-    {
-      am *= 1.0 + priest.cache.mastery_value();
-    }
 
     return am;
   }
@@ -2548,32 +2413,8 @@ struct mind_flay_base_t : public priest_spell_t
         td.buffs.mental_fatigue->trigger();
       }
     }
-  }
-};
 
-struct insanity_t : public mind_flay_base_t<true>
-{
-  typedef mind_flay_base_t<true> base_t;
-
-  insanity_t( priest_t& p, const std::string& options_str )
-    : base_t( p, options_str, "insanity" )
-  {
-  }
-
-  double composite_persistent_multiplier(
-      const action_state_t* s ) const override
-  {
-    double am = base_t::composite_persistent_multiplier( s );
-
-    return am;
-  }
-
-  bool ready() override
-  {
-    if ( !priest.buffs.insanity->up() )
-      return false;
-
-    return base_t::ready();
+    generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
   }
 };
 
@@ -2630,6 +2471,17 @@ struct shadow_word_pain_t : public priest_spell_t
       if ( trigger_shadowy_insight() )
         priest.procs.shadowy_insight_from_shadow_word_pain->occur();
   }
+
+  virtual double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if ( priest.mastery_spells.madness->ok() )
+      m *= 1.0 + priest.cache.mastery_value();
+
+    return m;
+  }
+
 };
 
 // Vampiric Embrace Spell ===================================================
@@ -2702,6 +2554,18 @@ struct vampiric_touch_t : public priest_spell_t
       }
     }
   }
+
+  virtual double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if ( priest.mastery_spells.madness->ok() )
+      m *= 1.0 + priest.cache.mastery_value();
+
+    return m;
+  }
+
+
 };
 
 // Holy Fire Base =====================================================
@@ -4404,38 +4268,6 @@ struct clarity_of_purpose_t : public priest_heal_t
   }
 };
 
-struct saving_grace_t : public priest_heal_t
-{
-  saving_grace_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "saving_grace", p,
-                     p.find_spell( 0 /*p.talents.spiritual_guidance */ ) )
-  {
-    parse_options( options_str );
-    // can_trigger_spirit_shell = true; ?
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    priest.buffs.saving_grace_penalty->trigger();
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = priest_heal_t::execute_time();
-
-    return et;
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_surge_of_light();
-  }
-};
-
 }  // NAMESPACE heals
 
 }  // NAMESPACE actions
@@ -4747,6 +4579,7 @@ void priest_t::create_cooldowns()
   {
     cooldowns.power_word_shield->duration = timespan_t::from_seconds( 4.0 );
   }
+
 }
 
 /* Construct priest gains
@@ -4757,6 +4590,15 @@ void priest_t::create_gains()
   gains.mindbender              = get_gain( "Mindbender Mana" );
   gains.power_word_solace       = get_gain( "Power Word: Solace Mana" );
   gains.devouring_plague_health = get_gain( "Devouring Plague Health" );
+  gains.insanity_mind_flay =
+    get_gain( "Insanity from Mind Flay or Mind Spike" );
+  gains.insanity_mind_blast = get_gain( "Insanity from Mind Blast" );
+  gains.insanity_shadow_word_void =
+    get_gain( "Insanity from Shadow Word: Void" );
+  gains.insanity_shadow_word_death =
+    get_gain( "Insanity from Shadow Word: Death" );
+  gains.insanity_shadow_crash = get_gain( "Insanity from Shadow Crash" );
+
 }
 
 /* Construct priest procs
@@ -4775,23 +4617,6 @@ void priest_t::create_procs()
       get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
   procs.surge_of_light          = get_proc( "Surge of Light" );
   procs.surge_of_light_overflow = get_proc( "Surge of Light lost to overflow" );
-  procs.mind_spike_dot_removal  = get_proc( "Mind Spike removed DoTs" );
-  procs.mind_spike_dot_removal_devouring_plague =
-      get_proc( "Mind Spike removed Devouring Plague" );
-  procs.mind_spike_dot_removal_shadow_word_pain =
-      get_proc( "Mind Spike removed Shadow Word: Pain" );
-  procs.mind_spike_dot_removal_vampiric_touch =
-      get_proc( "Mind Spike removed Vampiric Touch" );
-  procs.mind_spike_dot_removal_void_entropy =
-      get_proc( "Mind Spike removed Void Entropy" );
-  procs.mind_spike_dot_removal_devouring_plague_ticks =
-      get_proc( "Devouring Plague ticks lost from Mind Spike removal" );
-  procs.mind_spike_dot_removal_shadow_word_pain_ticks =
-      get_proc( "Shadow Word: Pain ticks lost from Mind Spike removal" );
-  procs.mind_spike_dot_removal_vampiric_touch_ticks =
-      get_proc( "Vampiric Touch ticks lost from Mind Spike removal" );
-  procs.mind_spike_dot_removal_void_entropy_ticks =
-      get_proc( "Void Entropy ticks lost from Mind Spike removal" );
   procs.t15_2pc_caster = get_proc( "Tier15 2pc caster" );
   procs.t15_4pc_caster = get_proc( "Tier15 4pc caster" );
   procs.t15_2pc_caster_shadow_word_pain =
@@ -5158,35 +4983,6 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
-// priest_t::composite_rating_multiplier ====================================
-
-double priest_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
-
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:  // Shadow
-    case RATING_MELEE_HASTE:  // Shadow, for Shadowfiend/Mindbender
-      if ( specs.mastermind->ok() )
-        m *= 1.0 + specs.mastermind->effectN( 1 ).percent();
-      break;
-    case RATING_SPELL_CRIT:  // Discipline
-    case RATING_MELEE_CRIT:  // Discipline, for Shadowfiend/Mindbender
-      if ( specs.enlightenment->ok() )
-        m *= 1.0 + specs.enlightenment->effectN( 2 ).percent();
-      break;
-    case RATING_MULTISTRIKE:  // Holy
-      if ( specs.divine_providence->ok() )
-        m *= 1.0 + specs.divine_providence->effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
-
-  return m;
-}
-
 // priest_t::matching_gear_multiplier =======================================
 
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
@@ -5235,17 +5031,13 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "mind_blast" )
     return new mind_blast_t( *this, options_str );
   if ( name == "mind_flay" )
-    return new mind_flay_base_t<>( *this, options_str );
-  if ( name == "insanity" )
-    return new insanity_t( *this, options_str );
+    return new mind_flay_t( *this, options_str );
   if ( name == "mind_spike" )
     return new mind_spike_t( *this, options_str );
   if ( name == "mind_sear" )
-    return new mind_sear_base_t<>( *this, options_str );
+    return new mind_sear_t( *this, options_str );
   if ( name == "penance" )
     return new penance_t( *this, options_str );
-  if ( name == "searing_insanity" )
-    return new searing_insanity_t( *this, options_str );
   if ( name == "shadow_word_death" )
     return new shadow_word_death_t( *this, options_str );
   if ( name == "shadow_word_pain" )
@@ -5304,8 +5096,6 @@ action_t* priest_t::create_action( const std::string& name,
     return new clarity_of_will_t( *this, options_str );
   // if ( name == "clarity_of_purpose"     ) return new clarity_of_purpose_t
   // ( *this, options_str );
-  if ( name == "saving_grace" )
-    return new saving_grace_t( *this, options_str );
 
   if ( find_class_spell( "Lightwell" )->ok() )
     if ( name == "lightwell" )
@@ -5367,12 +5157,26 @@ void priest_t::init_base_stats()
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
 
+  if ( specialization() == PRIEST_SHADOW )
+    resources.base[RESOURCE_INSANITY] = 100;
+
   // Discipline/Holy
   base.mana_regen_from_spirit_multiplier =
       specs.meditation_disc->ok()
           ? specs.meditation_disc->effectN( 1 ).percent()
           : specs.meditation_holy->effectN( 1 ).percent();
 }
+
+// priest_t::init_resources ===================================================
+
+void priest_t::init_resources( bool force )
+{
+  base_t::init_resources( force );
+
+  resources.current[RESOURCE_INSANITY] = 0;
+}
+
+
 
 // priest_t::init_scaling ===================================================
 
@@ -5500,12 +5304,11 @@ void priest_t::init_spells()
   specs.voidform = find_specialization_spell( "Voidform" );
   specs.shadowy_apparitions =
       find_specialization_spell( "Shadowy Apparitions" );
-  specs.mastermind = find_specialization_spell( "Mastermind" );
 
   // Mastery Spells
   mastery_spells.shield_discipline = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light     = find_mastery_spell( PRIEST_HOLY );
-  mastery_spells.mental_anguish    = find_mastery_spell( PRIEST_SHADOW );
+  mastery_spells.madness    = find_mastery_spell( PRIEST_SHADOW );
 
   ///////////////
   // Glyphs    //
@@ -5640,15 +5443,6 @@ void priest_t::create_buffs()
       buff_creator_t( this, "vampiric_embrace",
                       find_class_spell( "Vampiric Embrace" ) )
           .duration( find_class_spell( "Vampiric Embrace" )->duration() );
-
-  buffs.shadow_word_death_reset_cooldown =
-      buff_creator_t( this, "shadow_word_death_reset_cooldown" )
-          .max_stack( 1 )
-          .duration( timespan_t::from_seconds( 9.0 ) );  // data in the old
-  // deprecated glyph. Leave
-  // hardcoded for now,
-  // 3/12/2012; 9.0sec ICD in
-  // 5.4 (2013/08/18)
 
   buffs.mind_sear_on_hit_reset =
       buff_creator_t( this, "mind_sear_on_hit_reset" )

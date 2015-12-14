@@ -720,6 +720,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_COMBO_POINT:   return "combo_points";
     case RESOURCE_MAELSTROM:     return "maelstrom";
     case RESOURCE_FURY:          return "fury";
+    case RESOURCE_INSANITY:      return "insanity";
     default:                     return "unknown";
   }
 }
