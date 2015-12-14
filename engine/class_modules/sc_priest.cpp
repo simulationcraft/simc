@@ -253,6 +253,7 @@ public:
     gain_t* insanity_shadow_crash;
     gain_t* power_word_solace;
     gain_t* insanity_drain;
+    gain_t* vampiric_touch_health;
   } gains;
 
   // Benefits
@@ -828,15 +829,28 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     if ( result_is_hit( s->result ) )
     {
-      double mana_reg_pct = p().mana_return_percent();
-      if ( mana_reg_pct > 0.0 )
+      if ( p().o().specialization() == PRIEST_SHADOW )
       {
-        p().o().resource_gain(
+        p().o().resource_gain( RESOURCE_INSANITY, p().o().talents.mindbender->effectN( 3 ).base_value(), p().gains.fiend );
+
+        if ( p().o().specs.voidform->ok() && p().o().resources.current[RESOURCE_INSANITY] >= p().o().resources.max[RESOURCE_INSANITY] && !p().o().buffs.voidform->check() )
+        {
+          p().o().active_spells.voidform->execute();
+        }
+      }
+      else
+      {
+        double mana_reg_pct = p().mana_return_percent();
+        if ( mana_reg_pct > 0.0 )
+        {
+          p().o().resource_gain(
             RESOURCE_MANA,
-            p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
+            p().o().resources.max[RESOURCE_MANA] * p().mana_return_percent(),
             p().gains.fiend );
+        }
       }
     }
+
   }
 };
 
@@ -1644,7 +1658,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void trigger_vampiric_embrace( action_state_t* s )
   {
     double amount = s->result_amount;
-    amount *= priest.buffs.vampiric_embrace->data().effectN( 1 ).percent();
+    amount *= priest.buffs.vampiric_embrace->data().effectN( 1 ).percent()*( 1.0 + priest.talents.sanlayn->effectN(2).percent() ); //FIXME additive or multiplicate?
 
     // Get all non-pet, non-sleeping players
     std::vector<player_t*> ally_list;
@@ -1934,7 +1948,7 @@ struct power_infusion_t : public priest_spell_t
   }
 };
 
-// Shadowform Spell ========================================================
+// Voidform Spell ========================================================
 
 struct voidform_t : public priest_spell_t
 {
@@ -2485,6 +2499,32 @@ struct mind_flay_t : public priest_spell_t
 
 };
 
+// Shadow Crash Spell ===================================================
+
+struct shadow_crash_t : public priest_spell_t
+{
+  double insanity_gain;
+
+  shadow_crash_t( priest_t& p, const std::string& options_str ) :
+    priest_spell_t( "shadow_crash", p, p.talents.shadow_crash ),
+    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    generate_insanity( insanity_gain, priest.gains.insanity_shadow_crash );
+
+  }
+
+};
+
 // Shadow Word Pain Spell ===================================================
 
 struct shadow_word_pain_t : public priest_spell_t
@@ -2630,6 +2670,8 @@ struct vampiric_touch_t : public priest_spell_t
     dot_duration +=
         p.sets.set( SET_CASTER, T14, B4 )->effectN( 1 ).time_value();
 
+    spell_power_mod.tick *= 1.0 + p.talents.sanlayn->effectN( 1 ).percent();
+
     if ( priest.specs.shadowy_apparitions->ok() &&
          priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) &&
          !priest.active_spells.shadowy_apparitions )
@@ -2642,6 +2684,8 @@ struct vampiric_touch_t : public priest_spell_t
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
+
+    priest.resource_gain( RESOURCE_HEALTH, d->state->result_amount, priest.gains.vampiric_touch_health );
 
     if ( priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
     {
@@ -4773,7 +4817,7 @@ void priest_t::create_gains()
     get_gain( "Insanity from Shadow Word: Death" );
   gains.insanity_shadow_crash = get_gain( "Insanity from Shadow Crash" );
   gains.insanity_drain = get_gain( " Insanity Drained by Voidform " );
-
+  gains.vampiric_touch_health = get_gain ( " Health by Vampiric Touch" );
 
 }
 
@@ -4946,7 +4990,7 @@ double priest_t::composite_spell_haste() const
 
   if ( buffs.lingering_insanity->check() )
   {
-    h /= 1.0 + (buffs.lingering_insanity->check() - 1) * buffs.lingering_insanity->data().effectN( 1 ).percent();
+    h /= 1.0 + ( buffs.lingering_insanity->check() - 1 ) * buffs.lingering_insanity->data().effectN( 1 ).percent();
   }
 
 
@@ -4972,9 +5016,8 @@ double priest_t::composite_melee_haste() const
 
   if ( buffs.lingering_insanity->check() )
   {
-    h /= 1.0 + (buffs.lingering_insanity->check() - 1) * buffs.lingering_insanity->data().effectN( 1 ).percent();
+    h /= 1.0 + ( buffs.lingering_insanity->check() - 1 ) * buffs.lingering_insanity->data().effectN( 1 ).percent();
   }
-
 
   return h;
 }
@@ -5235,6 +5278,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new mind_sear_t( *this, options_str );
   if ( name == "penance" )
     return new penance_t( *this, options_str );
+  if ( name == "shadow_crash" )
+    return new shadow_crash_t( *this, options_str );
   if ( name == "shadow_word_death" )
     return new shadow_word_death_t( *this, options_str );
   if ( name == "shadow_word_pain" )
