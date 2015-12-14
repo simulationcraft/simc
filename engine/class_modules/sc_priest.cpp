@@ -93,6 +93,7 @@ public:
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
     buff_t* dispersion;
+    buff_t* lingering_insanity;
 
     // Set Bonus
     buff_t* empowered_shadows;  // t16 4pc caster
@@ -247,6 +248,7 @@ public:
     gain_t* insanity_shadow_word_void;
     gain_t* insanity_shadow_crash;
     gain_t* power_word_solace;
+    gain_t* insanity_drain;
   } gains;
 
   // Benefits
@@ -286,6 +288,7 @@ public:
     const spell_data_t* surge_of_darkness;
     action_t* echo_of_light;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
+    spell_t* voidform;
   } active_spells;
 
   struct
@@ -1675,6 +1678,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( priest.specialization() == PRIEST_SHADOW )
       priest.resource_gain( RESOURCE_INSANITY, amount, g, this );
 
+    if ( priest.specs.voidform -> ok() && priest.resources.current[RESOURCE_INSANITY] >= priest.resources.max[RESOURCE_INSANITY] && !priest.buffs.voidform->check() )
+    {
+      priest.active_spells.voidform->execute();
+    }
+
   }
 
 };
@@ -1926,22 +1934,64 @@ struct power_infusion_t : public priest_spell_t
 
 struct voidform_t : public priest_spell_t
 {
-  voidform_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "voidform", p, p.specs.voidform )
+  struct insanity_loss_event_t : player_event_t
   {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    background = true;
+    voidform_t* vf;
+    priest_t *priest;
+
+    insanity_loss_event_t( voidform_t *s ) :
+      player_event_t( *s->player ), vf( s ), priest( debug_cast<priest_t*>(s->player) )
+    {
+      add_event( timespan_t::from_seconds( 0.25 ) );  // FIXME Spelldata ?
+    }
+    virtual const char* name() const override
+    {
+      return  "voidform_insanity_loss";
+    }
+    virtual void execute() override
+    {
+      vf->insanity_loss_t = new (sim()) insanity_loss_event_t( vf );
+
+      double insanity_loss = (6 * 0.25) + (priest->buffs.voidform->check() - 1)*0.125; // FIXME EffectN(2) has drain over 5 sec
+      priest->resource_loss( RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_drain, vf );
+
+      if ( priest->resources.current[RESOURCE_INSANITY] == 0 )
+      {
+        if ( priest->buffs.voidform->check() )
+          priest->buffs.voidform->expire();
+      }
+    }
+  };
+
+  insanity_loss_event_t* insanity_loss_t;
+
+  voidform_t( priest_t& p )
+    : priest_spell_t( "voidform", p, p.specs.voidform ), insanity_loss_t( nullptr )
+  {
     harmful = false;
+    background = true;
+    ignore_false_positive = true;
+    quiet = true;
   }
 
-  void execute() override
+  virtual void execute() override
   {
     priest_spell_t::execute();
 
+    assert( insanity_loss_t == nullptr );
     priest.buffs.voidform->trigger();
+    insanity_loss_t = new (*sim) insanity_loss_event_t( this );
+  }
+
+  virtual void cancel() override
+  {
+    event_t::cancel( insanity_loss_t );
+
+    priest_spell_t::cancel();
+
   }
 };
+
 
 // Spirit Shell Spell =======================================================
 
@@ -2148,7 +2198,7 @@ struct mind_blast_t : public priest_spell_t
     // CD is now always reduced by haste. Documented in the WoD Alpha Patch
     // Notes, unfortunately not in any tooltip!
     // 2014-06-17
-    cd_duration = cooldown->duration * composite_haste();
+    cd_duration = (cooldown->duration + priest.buffs.voidform->data().effectN( 6 ).time_value() * priest.buffs.voidform->up()) * composite_haste();
 
     priest_spell_t::update_ready( cd_duration );
 
@@ -2565,6 +2615,66 @@ struct vampiric_touch_t : public priest_spell_t
     return m;
   }
 
+
+};
+
+// Void Bolt Spell =========================================================
+
+struct void_bolt_t : public priest_spell_t
+{
+  void_bolt_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "void_bolt", player,
+      player.find_specialization_spell( "Void Bolt" ) )
+  {
+    parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest_td_t& td = get_td( s->target );
+    timespan_t extend_duration = timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    // extend_duration *= composite_haste(); FIXME Check is it is reduced by haste or not
+    // TODO Add extension tracker
+    if ( td.dots.shadow_word_pain->is_ticking() )
+    {
+      td.dots.shadow_word_pain->extend_duration( extend_duration );
+    }
+
+    if ( td.dots.vampiric_touch->is_ticking() )
+    {
+      td.dots.vampiric_touch->extend_duration( extend_duration );
+    }
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( cd_duration < timespan_t::zero() )
+      cd_duration = cooldown->duration;
+
+    cd_duration = cooldown->duration * composite_haste();
+
+    priest_spell_t::update_ready( cd_duration );
+  }
+
+  bool ready() override
+  {
+    if ( !priest.buffs.voidform->check() )
+      return false;
+
+    return priest_spell_t::ready();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if ( priest.mastery_spells.madness->ok() )
+      m *= 1.0 + priest.cache.mastery_value();
+
+    return m;
+  }
 
 };
 
@@ -4313,14 +4423,22 @@ struct voidform_t : public priest_buff_t<buff_t>
 {
   voidform_t( priest_t& p )
     : base_t( p, buff_creator_t( &p, "voidform" )
-                     .spell( p.find_spell( 194249 ) )
-                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                     .add_invalidate( CACHE_HASTE ) )
+      .spell( p.find_spell( 194249 ) )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      .add_invalidate( CACHE_HASTE )
+      .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER ) )
   {
+
+    if ( sim->debug )
+    {
+      sim->out_debug.printf(
+        "Voidform depletion %d or %.2f.",
+        data().effectN( 2 ).base_value() / 500, data().effectN( 2 ).base_value() );
+    }
   }
 
   bool trigger( int stacks, double value, double chance,
-                timespan_t duration ) override
+    timespan_t duration ) override
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
@@ -4328,8 +4446,14 @@ struct voidform_t : public priest_buff_t<buff_t>
   }
 
   void expire_override( int expiration_stacks,
-                        timespan_t remaining_duration ) override
+    timespan_t remaining_duration ) override
   {
+    if ( priest.buffs.lingering_insanity->check() )
+      priest.buffs.lingering_insanity->expire();
+
+    priest.buffs.lingering_insanity->trigger( expiration_stacks - 1 );
+    priest.active_spells.voidform->cancel();
+
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -4598,6 +4722,8 @@ void priest_t::create_gains()
   gains.insanity_shadow_word_death =
     get_gain( "Insanity from Shadow Word: Death" );
   gains.insanity_shadow_crash = get_gain( "Insanity from Shadow Crash" );
+  gains.insanity_drain = get_gain( " Insanity Drained by Voidform " );
+
 
 }
 
@@ -4768,6 +4894,12 @@ double priest_t::composite_spell_haste() const
          buffs.mental_instinct->data().effectN( 1 ).percent() *
              buffs.mental_instinct->check();
 
+  if ( buffs.lingering_insanity->check() )
+  {
+    h /= 1.0 + (buffs.lingering_insanity->check() - 1) * buffs.lingering_insanity->data().effectN( 1 ).percent();
+  }
+
+
   return h;
 }
 
@@ -4787,6 +4919,12 @@ double priest_t::composite_melee_haste() const
     h /= 1.0 +
          buffs.mental_instinct->data().effectN( 1 ).percent() *
              buffs.mental_instinct->check();
+
+  if ( buffs.lingering_insanity->check() )
+  {
+    h /= 1.0 + (buffs.lingering_insanity->check() - 1) * buffs.lingering_insanity->data().effectN( 1 ).percent();
+  }
+
 
   return h;
 }
@@ -5042,6 +5180,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new shadow_word_death_t( *this, options_str );
   if ( name == "shadow_word_pain" )
     return new shadow_word_pain_t( *this, options_str );
+  if ( name == "void_bolt" )
+    return new void_bolt_t( *this, options_str );
   if ( name == "smite" )
     return new smite_t( *this, options_str );
   if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) )
@@ -5338,6 +5478,9 @@ void priest_t::init_spells()
   if ( mastery_spells.echo_of_light->ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
 
+  if (specs.voidform->ok() )
+    active_spells.voidform = new actions::spells::voidform_t( *this );
+
   // Range Based on Talents
   if ( talents.divine_star->ok() )
     base.distance = 24.0;
@@ -5438,6 +5581,8 @@ void priest_t::create_buffs()
   // Shadow
 
   buffs.voidform = new buffs::voidform_t( *this );
+
+  buffs.lingering_insanity = buff_creator_t( this, "lingering_insanity" ).spell( find_spell( 197937 ) ).add_invalidate( CACHE_HASTE );
 
   buffs.vampiric_embrace =
       buff_creator_t( this, "vampiric_embrace",
