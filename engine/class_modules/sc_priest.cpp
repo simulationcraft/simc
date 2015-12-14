@@ -67,6 +67,9 @@ public:
     buff_t* power_infusion;
     buff_t* twist_of_fate;
     buff_t* surge_of_light;
+    buff_t* legacy_of_the_void;
+    buff_t* surrender_to_madness;
+    buff_t* void_ray;
 
     // Discipline
     buff_t* archangel;
@@ -233,6 +236,7 @@ public:
     cooldown_t* power_word_shield;
     cooldown_t* shadowfiend;
     cooldown_t* silence;
+    cooldown_t* shadow_word_void;
   } cooldowns;
 
   // Gains
@@ -2169,11 +2173,13 @@ struct mind_blast_t : public priest_spell_t
 
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ), 
-    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 )
+    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 * (1.0 + player.talents.fortress_of_the_mind -> effectN( 2 ).percent()) )
   {
     parse_options( options_str );
     instant_multistrike = 0;
     is_mind_spell       = true;
+
+    spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
   }
 
@@ -2370,7 +2376,7 @@ struct shadow_word_death_t : public priest_spell_t
     parse_options( options_str );
     instant_multistrike = 0;
 
-    base_multiplier *= 4.0;
+    base_multiplier *= 4.0;  // FIXME remove when spelldata is fixed
 
     base_multiplier *=
       1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
@@ -2414,9 +2420,9 @@ struct shadow_word_death_t : public priest_spell_t
     if ( !priest_spell_t::ready() )
       return false;
 
-    if ( priest.talents.reaper_of_souls->ok() && target->health_percentage() < 35.0 )
+    if ( priest.talents.reaper_of_souls->ok() && target->health_percentage() < 35.0 ) //FIXME Spelldata effectN(2)?
       return true;
-    if ( target->health_percentage() < 20.0 ) //TODO Check if it's effect2?
+    if ( target->health_percentage() < 20.0 ) //FIXME Spelldata effectN(2)?
       return true;
 
     return false;
@@ -2432,7 +2438,7 @@ struct mind_flay_t : public priest_spell_t
   mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t(
           "mind_flay" , p, p.find_specialization_spell( "Mind Flay" ) ),
-    insanity_gain( 3.0 ) // FIXME Spelldata has some odd value added data().effectN(3).resource(RESOURCE_INSANITY) / 100
+    insanity_gain( 3.0 * (1.0 + p.talents.fortress_of_the_mind -> effectN( 1 ).percent()) ) // FIXME Spelldata has some odd value added data().effectN(3).resource(RESOURCE_INSANITY) / 100
   {
     parse_options( options_str );
 
@@ -2441,14 +2447,21 @@ struct mind_flay_t : public priest_spell_t
     hasted_ticks  = false;
     use_off_gcd   = true;
     is_mind_spell = true;
+
+    spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+
   }
 
   double action_multiplier() const override
   {
     double am = priest_spell_t::action_multiplier();
 
+    if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->up() )
+      am *= 1.0 + priest.buffs.void_ray->check() * priest.buffs.void_ray->data().effectN( 1 ).percent();
+
     return am;
   }
+
 
   void tick( dot_t* d ) override
   {
@@ -2464,8 +2477,12 @@ struct mind_flay_t : public priest_spell_t
       }
     }
 
+    if ( priest.talents.void_ray->ok() )
+      priest.buffs.void_ray->trigger();
+
     generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
   }
+
 };
 
 // Shadow Word Pain Spell ===================================================
@@ -2533,6 +2550,43 @@ struct shadow_word_pain_t : public priest_spell_t
   }
 
 };
+
+// Shadow Word Void Spell ==================================================
+
+struct shadow_word_void_t : public priest_spell_t
+{
+  double insanity_gain;
+
+  shadow_word_void_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "shadow_word_void", player, player.talents.shadow_word_void ),
+    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 )
+  {
+    parse_options( options_str );
+
+    cooldown->charges = data().charges();
+    cooldown->duration = data().charge_cooldown();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    generate_insanity( insanity_gain, priest.gains.insanity_shadow_word_void );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    return d;
+  }
+};
+
 
 // Vampiric Embrace Spell ===================================================
 
@@ -4429,12 +4483,6 @@ struct voidform_t : public priest_buff_t<buff_t>
       .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER ) )
   {
 
-    if ( sim->debug )
-    {
-      sim->out_debug.printf(
-        "Voidform depletion %d or %.2f.",
-        data().effectN( 2 ).base_value() / 500, data().effectN( 2 ).base_value() );
-    }
   }
 
   bool trigger( int stacks, double value, double chance,
@@ -4691,6 +4739,8 @@ void priest_t::create_cooldowns()
   cooldowns.power_word_shield = get_cooldown( "power_word_shield" );
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );
+  cooldowns.shadow_word_void  = get_cooldown( "shadow_word_void" );
+
 
   cooldowns.angelic_feather->charges  = 3;
   cooldowns.angelic_feather->duration = timespan_t::from_seconds( 10.0 );
@@ -5028,7 +5078,10 @@ double priest_t::composite_player_multiplier( school_e school ) const
   if ( specs.voidform->ok() && dbc::is_school( SCHOOL_SHADOWFROST, school ) &&
        buffs.voidform->check() )
   {
-    m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
+    if ( talents.void_lord -> ok() )
+      m*= 1.0 + talents.void_lord->effectN( 1 ).percent();
+    else
+      m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
   }
 
   if ( dbc::is_school( SCHOOL_SHADOWLIGHT, school ) )
@@ -5066,6 +5119,9 @@ double priest_t::composite_player_heal_multiplier(
     m *= 1.0 + buffs.twist_of_fate->current_value;
   }
 
+  if ( specs.voidform->ok() && talents.void_lord->ok() && buffs.voidform->check() )
+    m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
+
   if ( mastery_spells.shield_discipline->ok() )
   {
     m *= 1.0 +
@@ -5089,6 +5145,9 @@ double priest_t::composite_player_absorb_multiplier(
     const action_state_t* s ) const
 {
   double m = player_t::composite_player_absorb_multiplier( s );
+
+  if ( specs.voidform -> ok() &&  talents.void_lord->ok() && buffs.voidform -> check()  )
+    m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
 
   if ( specs.grace->ok() )
     m *= 1.0 + specs.grace->effectN( 2 ).percent();
@@ -5180,6 +5239,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new shadow_word_death_t( *this, options_str );
   if ( name == "shadow_word_pain" )
     return new shadow_word_pain_t( *this, options_str );
+  if ( name == "shadow_word_void" )
+    return new shadow_word_void_t( *this, options_str );
   if ( name == "void_bolt" )
     return new void_bolt_t( *this, options_str );
   if ( name == "smite" )
@@ -5530,6 +5591,10 @@ void priest_t::create_buffs()
       buff_creator_t( this, "shadowy_insight" )
           .spell( talents.shadowy_insight )
           .chance( talents.shadowy_insight->effectN( 4 ).percent() );
+
+  buffs.void_ray = 
+    buff_creator_t( this, "void_ray" )
+    .spell( talents.void_ray->effectN( 1 ).trigger() );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
