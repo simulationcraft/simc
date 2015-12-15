@@ -271,7 +271,7 @@ elif options.type == 'artifact':
     g.generate(ids)
 elif options.type == 'header':
     dbcs = [ ]
-    for fn in args:
+    for fn in options.args:
         for i in glob.glob(fn):
             dbcs.append(i)
             

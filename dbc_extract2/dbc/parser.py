@@ -28,7 +28,7 @@ class DBCParser(object):
             self._class = getattr(dbc.data, '%s' % table_name)
 
     # DBC IDs in an idblock + potential ID cloning
-    def __build_idtable(self):
+    def _build_idtable(self):
         if self._id_offset == 0:
             return
 
@@ -124,10 +124,10 @@ class DBCParser(object):
         self._magic = self._data[:4]
         offset = len(self._magic)
 
-        if self._magic not in [b'WDBC', b'WDB2', b'WDB3', b'WCH4']:
+        if self._magic not in [b'WDBC', b'WDB2', b'WDB3', b'WDB4', b'WCH4']:
             self._data.close()
             self._f.close()
-            sys.stderr.write('Invalid file format, got %s.' % magic)
+            sys.stderr.write('Invalid file format, got %s.\n' % self._magic)
             sys.exit(1)
 
         self._records, self._fields, self._record_size, self._string_block_size = _BASE_HEADER.unpack_from(self._data, offset)
@@ -137,17 +137,27 @@ class DBCParser(object):
             raise Exception('Invalid data format size in %s, record_size=%u, dataformat_size=%u' % (
                 self._fname, self._record_size, self._class._parser.size))
 
-        if self._magic in [b'WDB2', b'WDB3', b'WCH4']:
+        if self._magic in [b'WDB2', b'WDB3', b'WCH4', b'WDB4']:
             self._table_hash, self._build, self._timestamp = _DB_HEADER_1.unpack_from(self._data, offset)
             offset += _DB_HEADER_1.size
 
             self._first_id, self._last_id, self._locale, self._clone_segment_size = _DB_HEADER_2.unpack_from(self._data, offset)
             offset += _DB_HEADER_2.size
+
+            # Another unknown field, yay. TODO: Where is this used? Item-sparse has value 5, the
+            # rest of the db2 files have value of 4.
+            if self._magic == b'WDB4':
+                self._unk = struct.unpack_from('I', self._data, offset)[0]
+                offset += 4
+            else:
+                self._unk = 0
+
         # Figure out first/last ids manually
         else:
             self._table_hash = self._build = self._timestamp = self._locale = self._clone_segment_size = 0
             self._first_id = struct.unpack_from('I', self._data, offset)[0]
             self._last_id = struct.unpack_from('I', self._data, offset + (self._records - 1) * self._record_size)[0]
+            self._unk = 0
 
         # Setup offsets
         self._data_offset = offset
@@ -167,11 +177,11 @@ class DBCParser(object):
             self._clone_segment_size = 0
             self._clone_segment_offset = 0
 
-        self.__build_idtable()
+        self._build_idtable()
 
         if not self._class:
             self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size, self._id_offset > 0,
-                    self._magic == b'WDB3' and self.count_pad_bytes() or 0)
+                    self._magic in [ b'WDB3', b'WDB4' ] and self.count_pad_bytes() or 0)
 
         if not self._options.raw and hasattr(self._class, '_ff') and self._records > 0:
             self._class._ff = (self.compute_id_output_format(),) + self._class._ff[1:]
@@ -228,12 +238,12 @@ class DBCParser(object):
         return parsed_record
 
     def __str__(self):
-        return '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%u, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u)' % (
+        return '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, unk=%u, hash=%#.8x)' % (
                 self.full_name(), self._magic.decode('ascii'), len(self._data), self._build, self._timestamp, self._locale, 
                 self._records, self.n_cloned_records(), self._fields, self._record_size,
                 self._string_block_size, self._clone_segment_size, self._first_id,
                 self._last_id, self._data_offset, self._sb_offset, self._id_offset,
-                self._clone_segment_offset)
+                self._clone_segment_offset, self._unk, self._table_hash)
 
 _ITEMRECORD = struct.Struct('IH')
 
@@ -246,8 +256,17 @@ class ItemSparseParser(DBCParser):
     def open_dbc(self):
         ret = DBCParser.open_dbc(self)
 
-        self._id_offset = 0
         self._sb_offset = 0
+        # WDB4 Item-sparse changes things somewhat. Need to build an idtable for it just like any
+        # WDB3-based file, but the ID block offset needs to be computed from the end of the file for
+        # now, instead of relying on string block offset + size (string block size seems to be used
+        # as an end-of-record data marker).
+        if self._magic == b'WDB4':
+            self._id_offset = len(self._data) - 4 * self._records
+            self._record_offset = self._data_offset
+            self._build_idtable()
+        else:
+            self._id_offset = 0
 
         return ret
 
@@ -266,6 +285,13 @@ class ItemSparseParser(DBCParser):
         if not self._data and not self.open_dbc():
             return None
 
+        if self._magic == b'WDB3':
+            return self.__find_wdb3(dbcid)
+        # No searching for wdb4 for now.
+        else:
+            return None
+
+    def __find_wdb3(self, dbcid):
         while self._last_record_id < (self._last_id - self._first_id + 1):
             record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)
             self._last_record_id += 1
@@ -282,6 +308,12 @@ class ItemSparseParser(DBCParser):
         if not self._data and not self.open_dbc():
             return None
 
+        if self._magic == b'WDB4':
+            return self.__next_record_wdb4()
+        else:
+            return self.__next_record_wdb3()
+
+    def __next_record_wdb3(self):
         if self._records == 0 or self._last_record_id == (self._last_id - self._first_id + 1):
             return None
 
@@ -291,7 +323,17 @@ class ItemSparseParser(DBCParser):
             record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)
             self._last_record_id += 1
 
-        return self._class(self, self._data[record_offset:record_offset + record_bytes], self._first_id + self._last_record_id - 1, record_offset)
+        return self._class(self, self._data, self._first_id + self._last_record_id - 1, record_offset)
+
+    def __next_record_wdb4(self):
+        if self._records == 0 or self._last_record_id == self._records:
+            return None
+
+        dbc_id, record_id = self._idtable[self._last_record_id]
+        parsed_record = self._class(self, self._data, dbc_id, self._record_offset)
+        self._last_record_id += 1
+
+        return parsed_record
 
 def get_parser(opts, for_file):
     if 'Item-sparse' in for_file:

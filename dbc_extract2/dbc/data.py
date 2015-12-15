@@ -186,6 +186,8 @@ class Item_sparse(DBCRecord):
     _p1 = None
     _p2 = None
 
+    # Note, parses data directly from the full record using record_offset, instead of receiving a
+    # slice of specific record length.
     def __init__(self, dbc_parser, record, dbc_id, record_offset):
         # Create dummy parsers, splits out name/desc, and eliminates extra padding from the whole
         # data format
@@ -212,14 +214,14 @@ class Item_sparse(DBCRecord):
 
         # Unpack first set of data, note that field indexing is +1 because 'id' is
         # the first field, and not included in the dbc record data
-        d = self._p1.unpack_from(record)
+        d = self._p1.unpack_from(record, record_offset)
         self._d = (dbc_id,) + d
 
         # Name as an inline string, beginning immediately after the first set of data
-        start_offset, end_offset = _getstring(record, self._p1.size)
+        start_offset, end_offset = _getstring(record, record_offset + self._p1.size)
         # Insert as a field to the string start offset in the file. Specialized DBC file parser will
         # handle string extraction when the time comes
-        self._d += (record_offset + start_offset,)
+        self._d += (start_offset,)
         # Padded with 4 bytes, fifth byte may be non-zero if desc is available
         end_offset += 4
 
@@ -227,7 +229,7 @@ class Item_sparse(DBCRecord):
         p2_offset = 0
         if record[end_offset] != 0:
             start_offset, end_offset = _getstring(record, end_offset)
-            self._d += (record_offset + start_offset,)
+            self._d += (start_offset,)
         else:
             self._d += (0,)
 
@@ -237,6 +239,13 @@ class Item_sparse(DBCRecord):
         # name | 4 bytes | desc | 1 byte
         d = self._p2.unpack_from(record, end_offset + 1)
         self._d += d
+
+        # WDB4 files do not have the record size in the same way WDB3 Item-sparse does. For now,
+        # just ugly hack it into the parser by setting the record offset directly once we have
+        # parsed out the data. It's likely the unknown data in the Item-sparse WDB4 file somehow
+        # contains the record size.
+        if dbc_parser._magic == b'WDB4':
+            dbc_parser._record_offset = end_offset + 1 + self._p2.size
 
 class SpellEffect(DBCRecord):
     def __init__(self, dbc_parser, record, dbc_id, record_offset):
