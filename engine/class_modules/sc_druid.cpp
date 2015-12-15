@@ -507,13 +507,13 @@ public:
     const spell_data_t* lunar_inspiration;
 
     const spell_data_t* incarnation_cat;
-    const spell_data_t* bloody_slash;
+    const spell_data_t* savage_roar;
 
     const spell_data_t* sabertooth;
     const spell_data_t* jagged_wounds;
     const spell_data_t* elunes_guidance;
 
-    const spell_data_t* savage_roar;
+    const spell_data_t* bloody_slash;
     const spell_data_t* bloodtalons;
     
     // Balance
@@ -2134,6 +2134,8 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                                name(),
                                (int) player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
+      stats -> consume_resource( RESOURCE_COMBO_POINT, consumed );
+
       if ( p() -> talent.soul_of_the_forest -> ok() && p() -> specialization() == DRUID_FERAL )
         p() -> resource_gain( RESOURCE_ENERGY,
                               consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
@@ -2585,8 +2587,7 @@ struct savage_roar_t : public cat_attack_t
     cat_attack_t( "savage_roar", p, p -> talent.savage_roar, options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    base_costs[ RESOURCE_ENERGY ] = 25; // FIXME
-    may_multistrike = may_crit = may_miss = harmful = false;
+    may_crit = may_miss = harmful = false;
     dot_duration  = timespan_t::zero();
     base_tick_time = timespan_t::zero();
 
@@ -2601,7 +2602,7 @@ struct savage_roar_t : public cat_attack_t
     if ( combo_points == -1 )
       combo_points = (int) p() -> resources.current[ RESOURCE_COMBO_POINT ];
   
-    timespan_t d = data().duration() + timespan_t::from_seconds( 6.0 ) * combo_points;
+    timespan_t d = data().duration() + timespan_t::from_seconds( 4.0 ) * combo_points;
 
     // Maximum duration is 130% of the raw duration of the new Savage Roar.
     if ( p() -> buff.savage_roar -> check() )
