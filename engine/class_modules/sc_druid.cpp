@@ -574,7 +574,6 @@ public:
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t empowerment;
     artifact_power_t falling_star;
-    artifact_power_t mooncraze;
     artifact_power_t moon_and_stars;
     artifact_power_t new_moon;
     artifact_power_t power_of_goldrinn;
@@ -588,6 +587,7 @@ public:
     artifact_power_t touch_of_the_moon;
     artifact_power_t rejuvenating_innervation;
     artifact_power_t light_of_the_sun;
+    artifact_power_t mooncraze; // will be replaced
   } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -7343,7 +7343,7 @@ static void scythe_of_elune( special_effect_t& effect )
                           .quiet( true )
                           .tick_callback( [ s ]( buff_t*, int, const timespan_t& )
                                           { s -> buff.owlkin_frenzy ->  trigger( 1, buff_t::DEFAULT_VALUE(), s -> buff.the_reaping -> current_value ); } )
-                          .default_value( s -> buff.owlkin_frenzy -> default_chance * ( s -> artifact.mooncraze.rank() ? 2.0 : 1.0 ) )
+                          .default_value( s -> buff.owlkin_frenzy -> default_chance )
                           .tick_zero( true );
 }
 
