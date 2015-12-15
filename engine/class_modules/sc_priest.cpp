@@ -1975,22 +1975,27 @@ struct voidform_t : public priest_spell_t
     insanity_loss_event_t( voidform_t *s ) :
       player_event_t( *s->player ), vf( s ), priest( debug_cast<priest_t*>(s->player) )
     {
-      add_event( timespan_t::from_seconds( 0.25 ) );  // FIXME Spelldata ?
+      add_event( timespan_t::from_seconds( 0.2 ) );  // FIXME Is there spelldata for tick intervall ?
     }
+
     virtual const char* name() const override
     {
       return  "voidform_insanity_loss";
     }
+
     virtual void execute() override
     {
       vf->insanity_loss_t = new (sim()) insanity_loss_event_t( vf );
 
-      double insanity_loss = (6 * 0.25) + (priest->buffs.voidform->check() - 1)*0.125; // FIXME Use Spelldata? EffectN(2) has drain over 5 sec
+      // http://howtopriest.com/viewtopic.php?f=95&t=8069&start=20#p69794
+      // Drain starts at 12 over 2 seconds and increases by 1 over 2 seconds per stack of Voidform.
+      // Ticks either happen every 0.2 or 0.25 sec
+      // FIXME Use Spelldata? EffectN(2) has drain over 5 sec
+      double insanity_loss = ( 12 * 0.1 ) + ( priest->buffs.voidform->check() - 1 ) * 0.1 ; 
       priest->resource_loss( RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_drain, vf );
 
-      if ( priest->resources.current[RESOURCE_INSANITY] == 0 )
+      if ( priest->resources.current[RESOURCE_INSANITY] == 0 && priest->buffs.voidform->check() )
       {
-        if ( priest->buffs.voidform->check() )
           priest->buffs.voidform->expire();
       }
     }
@@ -2021,7 +2026,6 @@ struct voidform_t : public priest_spell_t
     event_t::cancel( insanity_loss_t );
 
     priest_spell_t::cancel();
-
   }
 };
 
@@ -2050,7 +2054,6 @@ struct surrender_to_madness_t : public priest_spell_t
 
     return priest_spell_t::ready();
   }
-
 };
 
 // Spirit Shell Spell =======================================================
@@ -2343,8 +2346,6 @@ struct mind_spike_t : public priest_spell_t
 
     return priest_spell_t::ready();
   }
-
-
 };
 
 
@@ -2557,8 +2558,6 @@ struct mind_flay_t : public priest_spell_t
 
     return priest_spell_t::ready();
   }
-
-
 };
 
 // Shadow Crash Spell ===================================================
@@ -2574,7 +2573,6 @@ struct shadow_crash_t : public priest_spell_t
     parse_options( options_str );
 
     aoe = -1;
-
   }
 
   void execute() override
@@ -2582,9 +2580,7 @@ struct shadow_crash_t : public priest_spell_t
     priest_spell_t::execute();
 
     generate_insanity( insanity_gain, priest.gains.insanity_shadow_crash );
-
   }
-
 };
 
 // Shadow Word Pain Spell ===================================================
@@ -2670,7 +2666,6 @@ struct shadow_word_pain_t : public priest_spell_t
 
     return m;
   }
-
 };
 
 // Shadow Word Void Spell ==================================================
@@ -2714,9 +2709,7 @@ struct shadow_word_void_t : public priest_spell_t
 
     return d;
   }
-
 };
-
 
 // Vampiric Embrace Spell ===================================================
 
@@ -2802,7 +2795,6 @@ struct vampiric_touch_t : public priest_spell_t
 
     return m;
   }
-
 };
 
 // Void Bolt Spell =========================================================
@@ -2861,7 +2853,6 @@ struct void_bolt_t : public priest_spell_t
 
     return m;
   }
-
 };
 
 // Holy Fire Base =====================================================
@@ -5498,7 +5489,7 @@ void priest_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   if ( specialization() == PRIEST_SHADOW )
-    resources.base[RESOURCE_INSANITY] = 100;
+    resources.base[RESOURCE_INSANITY] = 100.0;
 
   // Discipline/Holy
   base.mana_regen_from_spirit_multiplier =
@@ -5513,7 +5504,7 @@ void priest_t::init_resources( bool force )
 {
   base_t::init_resources( force );
 
-  resources.current[RESOURCE_INSANITY] = 0;
+  resources.current[RESOURCE_INSANITY] = 0.0;
 }
 
 
