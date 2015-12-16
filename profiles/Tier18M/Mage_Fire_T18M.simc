@@ -60,9 +60,9 @@ actions.crystal_sequence+=/call_action_list,name=single_target
 # Combustion sequence initialization
 # This sequence lists the requirements for preparing a Combustion combo with each talent choice
 # Meteor Combustion
-actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&((cooldown.combustion.remains<gcd.max*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
+actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Prismatic Crystal Combustion
-actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
+actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Unglyphed Combustions between Prismatic Crystals
 actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Kindling or Level 90 Combustion
@@ -124,28 +124,28 @@ head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567,upgrade=2
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-chest=raiment_of_divine_clarity,id=124170,bonus_id=567,upgrade=2
+chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
-legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567,upgrade=2
+legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 finger2=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_critical_strike
-trinket1=goren_soul_repository,id=119194,bonus_id=567
+trinket1=sandmans_pouch,id=112320,bonus_id=618,upgrade=2
 trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=739.00
-# gear_stamina=7014
-# gear_intellect=5048
+# gear_ilvl=741.00
+# gear_stamina=7045
+# gear_intellect=5080
 # gear_spell_power=2792
-# gear_crit_rating=2160
-# gear_haste_rating=1071
-# gear_mastery_rating=2307
-# gear_multistrike_rating=1067
+# gear_crit_rating=2058
+# gear_haste_rating=1806
+# gear_mastery_rating=2181
+# gear_multistrike_rating=590
 # gear_versatility_rating=391
-# gear_armor=1198
+# gear_armor=1204
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

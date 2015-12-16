@@ -8,7 +8,7 @@ talents=3003222
 glyphs=cone_of_cold
 spec=arcane
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
-neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,upgrade=2,enchant=gift_of_haste
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_haste
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567,upgrade=2
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_haste
 chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567,upgrade=2
@@ -36,15 +36,15 @@ head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567,upgrade=2
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-chest=raiment_of_divine_clarity,id=124170,bonus_id=567,upgrade=2
+chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
-legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567,upgrade=2
+legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 finger2=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_critical_strike
-trinket1=goren_soul_repository,id=119194,bonus_id=567
+trinket1=sandmans_pouch,id=112320,bonus_id=618,upgrade=2
 trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T18M.simc
@@ -71,6 +71,6 @@ finger1=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant=gift_of
 finger2=nithramus_the_allseer,id=124635,enchant=gift_of_multistrike,bonus_id=641
 trinket1=tome_of_shifting_words,id=124516,bonus_id=567,upgrade=2
 trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567,upgrade=2
-main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_frostwolf
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 save=Mage_Frost_T18M.simc
 

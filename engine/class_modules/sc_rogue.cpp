@@ -475,6 +475,7 @@ struct rogue_t : public player_t
 
   // Options
   uint32_t fof_p1, fof_p2, fof_p3;
+  int initial_combo_points;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
@@ -503,7 +504,8 @@ struct rogue_t : public player_t
     procs( procs_t() ),
     tot_target( nullptr ),
     virtual_hat_callback( nullptr ),
-    fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
+    fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 ),
+    initial_combo_points( 0 )
   {
     // Cooldowns
     cooldowns.honor_among_thieves = get_cooldown( "honor_among_thieves" );
@@ -558,6 +560,7 @@ struct rogue_t : public player_t
   virtual double    energy_regen_per_second() const override;
   virtual double    passive_movement_modifier() const override;
   virtual double    temporary_movement_modifier() const override;
+  void combat_begin() override;
 
   bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
@@ -6034,6 +6037,7 @@ void rogue_t::create_options()
 {
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
+  add_option( opt_int( "initial_combo_points", initial_combo_points ) );
 
   player_t::create_options();
 }
@@ -6324,6 +6328,14 @@ double rogue_t::passive_movement_modifier() const
   return ms;
 }
 
+void rogue_t::combat_begin()
+{
+
+  player_t::combat_begin();
+
+  if ( initial_combo_points > 0 )
+    resources.current[RESOURCE_COMBO_POINT] = initial_combo_points; // User specified Combo Points.
+}
 
 // rogue_t::regen ===========================================================
 

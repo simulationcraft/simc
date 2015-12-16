@@ -844,7 +844,7 @@ public:
   simple_sample_data_t avg_start, avg_refresh;
   simple_sample_data_t avg_overflow_count, avg_overflow_total;
   simple_sample_data_t uptime_pct, start_intervals, trigger_intervals;
-  auto_dispose< std::vector<buff_uptime_t*> > stack_uptime;
+  std::vector<buff_uptime_t> stack_uptime;
 
   virtual ~buff_t() {}
 
@@ -1115,10 +1115,28 @@ struct expression_t
 
 struct expr_t
 {
-  expr_t( const std::string& name, token_e op=TOK_UNKNOWN ) : name_( name ), op_( op ) { id_=get_global_id(); }
-  virtual ~expr_t() {}
+  expr_t( const std::string&, token_e op = TOK_UNKNOWN )
+    : op_( op )
+#if !defined( NDEBUG )
+      ,
+      id_( get_global_id() )
+#endif
+  {
+  }
+  virtual ~expr_t()
+  {
+  }
 
-  const std::string& name() { return name_; }
+  virtual const char* name() const
+  { return "anonymous expression"; }
+  int id() const
+  {
+#if !defined( NDEBUG )
+    return id_;
+#else
+    return -1;
+#endif
+  }
 
   double eval() { return evaluate(); }
   bool success() { return eval() != 0; }
@@ -1136,8 +1154,9 @@ struct expr_t
   bool always_true()  { double v; return is_constant( &v ) && v != 0.0; }
   bool always_false() { double v; return is_constant( &v ) && v == 0.0; }
 
-  std::string name_;
   token_e op_;
+private:
+#if !defined( NDEBUG )
   int id_;
 
   int get_global_id()
@@ -1146,6 +1165,7 @@ struct expr_t
   }
 
   static std::atomic<int> unique_id;
+#endif
 };
 
 // Reference Expression - ref_expr_t
@@ -2521,9 +2541,12 @@ struct item_t
   // Extracted data
   gear_stats_t base_stats, stats;
 
+  mutable int cached_upgrade_item_level;
+
   item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), unique( false ),
     unique_addon( false ), is_ptr( false ),
-    parsed(), xml() { }
+    parsed(), xml(),
+    cached_upgrade_item_level( -1 ){ }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
@@ -2541,6 +2564,7 @@ struct item_t
 
   unsigned item_level() const;
   unsigned upgrade_level() const;
+  unsigned upgrade_item_level() const;
   unsigned base_item_level() const;
   stat_e stat( size_t idx ) const;
   int stat_value( size_t idx ) const;
@@ -4678,10 +4702,10 @@ public:
     void datacollection_begin();
     void datacollection_end();
   };
-  std::vector<stats_results_t> direct_results;
-  std::vector<stats_results_t> direct_results_detail;
-  std::vector<stats_results_t> tick_results;
-  std::vector<stats_results_t> tick_results_detail;
+  std::array<stats_results_t,RESULT_MAX> direct_results;
+  std::array<stats_results_t,FULLTYPE_MAX> direct_results_detail;
+  std::array<stats_results_t,RESULT_MAX> tick_results;
+  std::array<stats_results_t,FULLTYPE_MAX> tick_results_detail;
 
   sc_timeline_t timeline_amount;
 
@@ -6747,7 +6771,7 @@ std::string stat_to_str( int stat, int stat_amount );
 double approx_scale_coefficient( unsigned current_ilevel, unsigned new_ilevel );
 int scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel );
 
-int upgrade_ilevel( const item_t& item, unsigned upgrade_level );
+unsigned upgrade_ilevel( const item_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );

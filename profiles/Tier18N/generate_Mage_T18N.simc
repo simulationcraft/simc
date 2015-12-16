@@ -8,7 +8,7 @@ talents=3003222
 glyphs=cone_of_cold
 spec=arcane
 head=demon_princes_ascendant_crown,id=124159
-neck=choker_of_forbidden_indulgence,id=124391,enchant=gift_of_haste
+neck=vial_of_immiscible_liquid,id=124212,enchant=gift_of_haste
 shoulders=mantle_of_the_arcanic_conclave,id=124177
 back=cloak_of_hideous_unity,id=124138,enchant=gift_of_haste
 chest=robe_of_the_arcanic_conclave,id=124171

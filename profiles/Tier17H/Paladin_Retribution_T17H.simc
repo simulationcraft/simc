@@ -19,8 +19,10 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
-actions.precombat+=/seal_of_truth,if=spell_targets.divine_storm<3
-actions.precombat+=/seal_of_righteousness,if=spell_targets.divine_storm>=3
+actions.precombat+=/seal_of_truth,if=equipped.empty_drinking_horn&spell_targets.divine_storm<2
+actions.precombat+=/seal_of_righteousness,if=equipped.empty_drinking_horn&spell_targets.divine_storm>=2
+actions.precombat+=/seal_of_truth,if=spell_targets.divine_storm<3&!equipped.empty_drinking_horn
+actions.precombat+=/seal_of_righteousness,if=spell_targets.divine_storm>=3&!equipped.empty_drinking_horn
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
@@ -32,6 +34,10 @@ actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wr
 actions+=/auto_attack,target_if=dot.censure.remains<4
 actions+=/speed_of_light,if=movement.distance>5
 actions+=/judgment,if=talent.empowered_seals.enabled&time<2
+actions+=/seal_of_truth,if=equipped.empty_drinking_horn&spell_targets.divine_storm<2&!talent.empowered_seals.enabled
+actions+=/seal_of_righteousness,if=equipped.empty_drinking_horn&spell_targets.divine_storm>=2&!talent.empowered_seals.enabled
+actions+=/seal_of_truth,if=spell_targets.divine_storm<3&!talent.empowered_seals.enabled&!equipped.empty_drinking_horn
+actions+=/seal_of_righteousness,if=spell_targets.divine_storm>=3&!talent.empowered_seals.enabled&!equipped.empty_drinking_horn
 actions+=/execution_sentence,if=!talent.seraphim.enabled
 actions+=/execution_sentence,sync=seraphim,if=talent.seraphim.enabled
 actions+=/lights_hammer,if=!talent.seraphim.enabled

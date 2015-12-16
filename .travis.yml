@@ -5,6 +5,10 @@ language: cpp
 branches:
   only:
     - master
+    
+# Enable Trusty (Ubuntu 14.04 LTS) Beta
+sudo: required
+dist: trusty
 
 os:
   - linux

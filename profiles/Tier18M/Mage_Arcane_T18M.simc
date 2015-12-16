@@ -44,7 +44,7 @@ actions.movement+=/blazing_speed,if=movement.remains>0
 actions.movement+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<2*spell_haste)
 
 # Regular burn with evocation
-actions.init_burn=start_burn_phase,if=buff.arcane_charge.stack>=4&(legendary_ring.cooldown.up|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&(cooldown.prismatic_crystal.up|!talent.prismatic_crystal.enabled)&(cooldown.arcane_power.up|(glyph.arcane_power.enabled&cooldown.arcane_power.remains>60))&(cooldown.evocation.remains-2*buff.arcane_missiles.stack*spell_haste-gcd.max*talent.prismatic_crystal.enabled)*0.75*(1-0.1*(cooldown.arcane_power.remains<5))*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)<mana.pct-20-2.5*active_enemies*(9-active_enemies)+(cooldown.evocation.remains*1.8%spell_haste)
+actions.init_burn=start_burn_phase,if=buff.arcane_charge.stack>=4&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&(cooldown.prismatic_crystal.up|!talent.prismatic_crystal.enabled)&(cooldown.arcane_power.up|(glyph.arcane_power.enabled&cooldown.arcane_power.remains>60))&(cooldown.evocation.remains-2*buff.arcane_missiles.stack*spell_haste-gcd.max*talent.prismatic_crystal.enabled)*0.75*(1-0.1*(cooldown.arcane_power.remains<5))*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)<mana.pct-20-2.5*active_enemies*(9-active_enemies)+(cooldown.evocation.remains*1.8%spell_haste)
 # End of fight burn
 actions.init_burn+=/start_burn_phase,if=target.time_to_die*0.75*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)*1.1<mana.pct-10+(target.time_to_die*1.8%spell_haste)
 
@@ -126,7 +126,7 @@ actions.conserve+=/arcane_blast
 actions.conserve+=/arcane_barrage
 
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
-neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,upgrade=2,enchant=gift_of_haste
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_haste
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567,upgrade=2
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_haste
 chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567,upgrade=2
@@ -142,14 +142,14 @@ trinket2=prophecy_of_fear,id=124230,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=743.00
-# gear_stamina=7054
-# gear_intellect=5278
+# gear_ilvl=743.33
+# gear_stamina=7072
+# gear_intellect=5290
 # gear_spell_power=2792
-# gear_crit_rating=818
-# gear_haste_rating=2044
-# gear_mastery_rating=2336
-# gear_multistrike_rating=1081
+# gear_crit_rating=933
+# gear_haste_rating=1814
+# gear_mastery_rating=2570
+# gear_multistrike_rating=979
 # gear_versatility_rating=228
 # gear_armor=1204
 # set_bonus=tier18_2pc=1

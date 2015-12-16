@@ -1223,7 +1223,7 @@ bool item_database::download_glyph( player_t* player, std::string& glyph_name,
 // item_database::upgrade_ilevel ============================================
 
 // TODO: DBC Based upgrading system would be safer, this works for now, probably
-int item_database::upgrade_ilevel( const item_t& item, unsigned upgrade_level )
+unsigned item_database::upgrade_ilevel( const item_t& item, unsigned upgrade_level )
 {
   if ( upgrade_level == 0 )
   {
