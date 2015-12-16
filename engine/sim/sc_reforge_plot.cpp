@@ -46,13 +46,13 @@ std::vector<reforge_plot_run_t> build_reforge_plot_stats(
   std::vector<reforge_plot_run_t> result;
 
   // First split string into separate reforge plots
-  std::vector<std::string> plot_list = util::string_split( stat_string, "," );
+  std::vector<std::string> plot_list = util::string_split( stat_string, "/" );
 
   // Now split each reforge plot string into its stats and parse them
   for ( const std::string& plot : plot_list )
   {
     reforge_plot_run_t r;
-    std::vector<std::string> stat_list = util::string_split( plot, "/" );
+    std::vector<std::string> stat_list = util::string_split( plot, "," );
 
     for ( const std::string& s : stat_list )
     {
