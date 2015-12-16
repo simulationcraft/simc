@@ -309,9 +309,9 @@
     { "data_type": "b", "field": "index" },
     { "data_type": "b", "field": "trigger_type" }
   ],
-  "ItemNameDescription.dbc": [
-    { "data_type": "I", "field": "id"                                  },
-    { "data_type": "S", "field": "desc", "formats": { "cpp": "%-30s" } }
+  "ItemNameDescription.db2": [
+    { "data_type": "S", "field": "desc", "formats": { "cpp": "%-30s" } },
+    { "data_type": "I", "field": "flags"                               }
   ],
   "ItemRandomSuffix.db2": [
     { "data_type": "S", "field": "name",           "formats": { "cpp": "%-25s" } },
