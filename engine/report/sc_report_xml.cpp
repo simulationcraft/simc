@@ -1419,25 +1419,8 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
   writer.end_tag( "action_definitions" );
 }
 
-} // UNNAMED NAMESPACE ====================================================
-
-
-namespace report {
-
-void print_xml( sim_t* sim )
+void print_xml_report( xml_writer_t& writer, sim_t* sim )
 {
-  int num_players = ( int ) sim -> players_by_name.size();
-
-  if ( num_players == 0 ) return;
-  if ( sim -> simulation_length.mean() == 0 ) return;
-  if ( sim -> xml_file_str.empty() ) return;
-
-  xml_writer_t writer( sim -> xml_file_str.c_str() );
-  if ( !writer.ready() )
-  {
-    sim -> errorf( "Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
-    return;
-  }
 
   report::generate_sim_report_information( sim, sim->report_information );
 
@@ -1470,6 +1453,36 @@ void print_xml( sim_t* sim )
   print_xml_errors( sim, writer );
 
   writer.end_tag( "simulationcraft" );
+}
+
+} // UNNAMED NAMESPACE ====================================================
+
+
+namespace report {
+
+void print_xml( sim_t* sim )
+{
+  if ( sim->simulation_length.mean() == 0 )
+    return;
+
+  if ( sim->xml_file_str.empty() )
+    return;
+
+  xml_writer_t writer( sim -> xml_file_str );
+  if ( !writer.ready() )
+  {
+    sim -> errorf( "Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
+    return;
+  }
+
+  try
+  {
+    Timer t("xml report");
+    print_xml_report( writer, sim );
+  } catch ( const std::exception& e )
+  {
+    sim -> errorf( "Failed to print xml output! %s", e.what() );
+  }
 }
 
 } // END report NAMESPACE

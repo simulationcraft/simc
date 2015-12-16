@@ -670,7 +670,7 @@ bool item_t::parse_options()
 
 // item_t::encoded_item =====================================================
 
-void item_t::encoded_item( xml_writer_t& writer )
+void item_t::encoded_item( xml_writer_t& writer ) const
 {
   writer.begin_tag( "item" );
   writer.print_attribute( "name", name_str );

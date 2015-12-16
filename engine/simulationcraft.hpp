@@ -1978,7 +1978,7 @@ struct scaling_t
   void derive();
   double progress( std::string& phase, std::string* detailed = nullptr );
   void create_options();
-  bool has_scale_factors();
+  bool has_scale_factors() const;
 };
 
 // Plot =====================================================================
@@ -2543,7 +2543,7 @@ struct item_t
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item() const;
-  void encoded_item( xml_writer_t& writer );
+  void encoded_item( xml_writer_t& writer ) const;
   std::string encoded_comment();
 
   std::string encoded_stats() const;
