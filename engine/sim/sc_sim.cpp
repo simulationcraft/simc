@@ -2225,7 +2225,7 @@ bool sim_t::init()
 
 void sim_t::analyze()
 {
-  simulation_length.analyze_all();
+  simulation_length.analyze();
   if ( simulation_length.mean() == 0 ) return;
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
