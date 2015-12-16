@@ -19,41 +19,37 @@ namespace statistics {
 
 /* Arithmetic Sum
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_sum( iterator begin, iterator end )
+template <typename Range>
+typename Range::value_type calculate_sum( Range r )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  return std::accumulate( begin, end, value_t() );
+  using value_t = typename Range::value_type;
+  return std::accumulate( std::begin(r), std::end(r), value_t{} );
 }
 
 /* Arithmetic Mean
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_mean( iterator begin, iterator end )
+template <typename Range>
+typename Range::value_type calculate_mean( Range r )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
-  diff_t length = end - begin;
-  value_t tmp = calculate_sum( begin, end );
-  if ( length > 1 )
+  auto length = std::distance( std::begin(r), std::end(r));
+  auto tmp = calculate_sum( r );
     tmp /= length;
   return tmp;
 }
 
 /* Expected Value of the squared deviation from a given mean
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_variance( iterator begin, iterator end, typename std::iterator_traits<iterator>::value_type mean )
+template <typename Range>
+typename Range::value_type calculate_variance( Range r, typename Range::value_type mean )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
-  diff_t length = end - begin;
-  value_t tmp = value_t();
+  using value_t = typename Range::value_type;
+  auto tmp = value_t{};
 
-  for( ; begin != end; ++begin )
+  for( auto value : r )
   {
-    tmp += ( *begin - mean ) * ( *begin - mean );
+    tmp += ( value - mean ) * ( value - mean );
   }
+  auto length = std::distance( std::begin(r), std::end(r));
   if ( length > 1 )
     tmp /= length;
   return tmp;
@@ -61,41 +57,35 @@ typename std::iterator_traits<iterator>::value_type calculate_variance( iterator
 
 /* Expected Value of the squared deviation
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_variance( iterator begin, iterator end )
+template <typename Range>
+typename Range::value_type calculate_variance( Range r )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  value_t mean = calculate_mean( begin, end );
-  return calculate_variance( begin, end, mean );
+  return calculate_variance( r, calculate_mean( r ) );
 }
 
 /* Standard Deviation from a given mean
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_stddev( iterator begin, iterator end, typename std::iterator_traits<iterator>::value_type mean )
+template <typename Range>
+typename Range::value_type calculate_stddev( Range r, typename Range::value_type mean )
 {
-  return std::sqrt( calculate_variance( begin, end, mean ) );
+  return std::sqrt( calculate_variance( r, mean ) );
 }
 
 /* Standard Deviation
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_stddev( iterator begin, iterator end )
+template <typename Range>
+typename Range::value_type calculate_stddev( Range r )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  value_t mean = calculate_mean( begin, end );
-  return std::sqrt( calculate_variance( begin, end, mean ) );
+  return std::sqrt( calculate_variance( r, calculate_mean( r ) ) );
 }
 
 /* Standard Deviation of a given sample mean distribution, according to Central Limit Theorem
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_mean_stddev( iterator begin, iterator end, typename std::iterator_traits<iterator>::value_type mean )
+template <typename Range>
+typename Range::value_type calculate_mean_stddev( Range r, typename Range::value_type mean )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
-  diff_t length = end - begin;
-  value_t tmp = calculate_variance( begin, end, mean );
+  auto tmp = calculate_variance( r, mean );
+  auto length = std::distance( std::begin(r), std::begin(r));
   if ( length > 1 )
     tmp /= length;
   return std::sqrt( tmp );
@@ -103,95 +93,31 @@ typename std::iterator_traits<iterator>::value_type calculate_mean_stddev( itera
 
 /* Standard Deviation of a given sample mean distribution, according to Central Limit Theorem
  */
-template <typename iterator>
-typename std::iterator_traits<iterator>::value_type calculate_mean_stddev( iterator begin, iterator end )
+template <typename Range>
+typename Range::value_type calculate_mean_stddev( Range r )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  value_t mean = calculate_mean( begin, end );
-  return calculate_mean_stddev( begin, end, mean );
+  return calculate_mean_stddev( r, calculate_mean( r ) );
 }
 
-/* Pearson product-moment correlation coefficient
- */
-template <typename iterator1, typename iterator2>
-typename std::iterator_traits<iterator1>::value_type calculate_correlation_coefficient( iterator1 first_begin, iterator1 first_end, typename std::iterator_traits<iterator1>::value_type mean1, typename std::iterator_traits<iterator1>::value_type std_dev1, iterator2 second_begin, iterator2 second_end, typename std::iterator_traits<iterator2>::value_type mean2, typename std::iterator_traits<iterator2>::value_type std_dev2 )
-{
-  typedef typename std::iterator_traits<iterator1>::value_type value1_t;
-  typedef typename std::iterator_traits<iterator1>::difference_type diff1_t;
-  typedef typename std::iterator_traits<iterator1>::difference_type diff2_t;
-  static_assert( ( std::is_same<value1_t, typename std::iterator_traits<iterator2>::value_type>::value ), "Value type of iterators not equal" );
-
-  value1_t result = value1_t();
-
-  diff1_t length1 = first_end - first_begin;
-  diff2_t length2 = second_end - second_begin;
-
-  if ( length1 != length2 )
-    return result;
-
-  for( ; first_begin != first_end && second_begin != second_end; )
-  {
-    result += ( *first_begin++ - mean1 ) * ( *second_begin++ - mean2 );
-  }
-
-  if ( length1 > 2 )
-    result /= ( length1 - 1 );
-
-  result /= std_dev1;
-  result /= std_dev2;
-
-  return result;
-}
-
-/* Pearson product-moment correlation coefficient
- */
-template <typename iterator1, typename iterator2>
-typename std::iterator_traits<iterator1>::value_type calculate_correlation_coefficient( iterator1 first_begin, iterator1 first_end, iterator2 second_begin, iterator2 second_end )
-{
-  typedef typename std::iterator_traits<iterator1>::value_type value1_t;
-  typedef typename std::iterator_traits<iterator2>::value_type value2_t;
-  typedef typename std::iterator_traits<iterator1>::difference_type diff1_t;
-  typedef typename std::iterator_traits<iterator1>::difference_type diff2_t;
-  static_assert( ( std::is_same<value1_t, value2_t>::value ), "Value type of iterators not equal" );
-
-  value1_t result = value1_t();
-
-  diff1_t length1 = first_end - first_begin;
-  diff2_t length2 = second_end - second_begin;
-
-  if ( length1 != length2 )
-    return result;
-
-  value1_t mean1 = calculate_mean( first_begin, first_end );
-  value1_t mean2 = calculate_mean( second_begin, second_end );
-
-  value1_t std_dev1 = calculate_stddev( first_begin, first_end );
-  value2_t std_dev2 = calculate_stddev( second_begin, second_end );
-
-  result = calculate_correlation_coefficient( first_begin, first_end, mean1, std_dev1, second_begin, second_end, mean2, std_dev2 );
-  return result;
-}
-
-template <typename iterator>
-std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_buckets, typename std::iterator_traits<iterator>::value_type min, typename std::iterator_traits<iterator>::value_type max )
+template <typename Range>
+std::vector<size_t> create_histogram( Range r, size_t num_buckets, typename Range::value_type min, typename Range::value_type max )
 {
   std::vector<size_t> result;
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  if ( begin == end )
+  if ( std::begin(r) == std::end(r) )
     return result;
 
-  assert( min <= *std::min_element( begin, end ) );
-  assert( max >= *std::max_element( begin, end ) );
+  assert( min <= *range::min_element( r ) );
+  assert( max >= *range::max_element( r ) );
 
-
-  value_t range = max - min;
-  if ( range <= value_t() )
+  if ( max >= min )
     return result;
 
-  result.assign( num_buckets, size_t() );
-  for ( ; begin != end; ++begin )
+  auto range = max - min;
+
+  result.assign( num_buckets, size_t{} );
+  for ( auto value : r )
   {
-    value_t position = ( *begin - min ) / range;
+    auto position = ( value - min ) / range;
     size_t index = static_cast<size_t>( num_buckets * position );
     if ( index == num_buckets ) // if *begin == max, we want to downgrade it into the last bucket
       --index;
@@ -202,17 +128,17 @@ std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_b
   return result;
 }
 
-template <typename iterator>
-std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_buckets )
+template <typename Range>
+std::vector<size_t> create_histogram( Range r, size_t num_buckets )
 {
-  typedef typename std::iterator_traits<iterator>::value_type value_t;
-  if ( begin == end )
+  if ( std::begin(r) == std::end(r) )
     return std::vector<size_t>();
 
-  value_t min = *std::min_element( begin, end );
-  value_t max = *std::max_element( begin, end );
+  auto mm = std::minmax_element( std::begin(r), std::end(r) );
+  auto min = *mm.first;
+  auto max = *mm.second;
 
-  return create_histogram( begin, end, num_buckets, min, max );
+  return create_histogram( r, num_buckets, min, max );
 }
 
 /* Normalizes a histogram.
@@ -269,17 +195,16 @@ std::vector<double> create_normalized_histogram( iterator begin, iterator end, s
 class simple_sample_data_t
 {
 public:
-  typedef double value_t;
+  using value_t = double;
 protected:
   static const bool SAMPLE_DATA_NO_NAN = true;
-  value_t _sum;
-  size_t _count;
+  value_t _sum = 0.0;
+  size_t _count = 0;
 
   static value_t nan()
   { return SAMPLE_DATA_NO_NAN ? value_t() : std::numeric_limits<value_t>::quiet_NaN(); }
 
 public:
-  simple_sample_data_t() : _sum(), _count() {}
 
   void add( double x )
   { _sum += x; ++_count; }
@@ -315,7 +240,7 @@ public:
 class simple_sample_data_with_min_max_t : public simple_sample_data_t
 {
 private:
-  typedef simple_sample_data_t base_t;
+  using base_t = simple_sample_data_t;
 
 protected:
   bool _found;
@@ -467,13 +392,13 @@ public:
     { // If we have sorted data, we can just take the front/back as min/max
       base_t::set_min( *_sorted_data.front() );
       base_t::set_max( *_sorted_data.back() );
-      base_t::_sum = statistics::calculate_sum( data().begin(), data().end() );
+      base_t::_sum = statistics::calculate_sum( data() );
     }
     else
     {
       base_t::set_min( *std::min_element( data().begin(), data().end() ) );
       base_t::set_max( *std::max_element( data().begin(), data().end() ) );
-      base_t::_sum = statistics::calculate_sum( data().begin(), data().end() );
+      base_t::_sum = statistics::calculate_sum( data() );
     }
 
     _mean = base_t::_sum / sample_size;
@@ -499,7 +424,7 @@ public:
     if ( sample_size == 0 )
       return;
 
-    variance = statistics::calculate_variance( data().begin(), data().end(), mean() );
+    variance = statistics::calculate_variance( data(), mean() );
     std_dev = std::sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
@@ -544,7 +469,7 @@ public:
     if ( data().empty() )
       return;
 
-    distribution = statistics::create_histogram( data().begin(), data().end(), num_buckets, base_t::min(), base_t::max() );
+    distribution = statistics::create_histogram( data(), num_buckets, base_t::min(), base_t::max() );
   }
 
   void clear()
@@ -599,17 +524,5 @@ public:
   }
 
 }; // sample_data_t
-
-/* Requires: Analyzed mean & stddev
- */
-inline extended_sample_data_t::value_t covariance( const extended_sample_data_t& x, const extended_sample_data_t& y )
-{
-  if ( x.simple || y.simple )
-    return 0;
-
-  return statistics::calculate_correlation_coefficient( x.data().begin(), x.data().end(), x.mean(), x.std_dev, y.data().begin(), y.data().end(), y.mean(), y.std_dev );
-}
-
-
 
 #endif // SAMPLE_DATA_HPP

@@ -121,7 +121,7 @@ public:
     if ( data().size() == 0 )
       return 0;
 
-    return statistics::calculate_mean( data().begin(), data().end() );
+    return statistics::calculate_mean( data() );
   }
 
   double mean_stddev() const
@@ -129,7 +129,7 @@ public:
     if ( data().size() == 0 )
       return 0;
 
-    return statistics::calculate_mean_stddev( data().begin(), data().end() ); 
+    return statistics::calculate_mean_stddev( data() );
   }
 
   // Merge with other timeline
@@ -226,7 +226,7 @@ public:
       return;
     clear();
     _min = min; _max = max;
-    _data = statistics::create_histogram( tl.data().begin(), tl.data().end(), num_buckets, _min, _max );
+    _data = statistics::create_histogram( tl.data(), num_buckets, _min, _max );
     calculate_num_entries();
   }
 
@@ -249,7 +249,7 @@ public:
       return;
     clear();
     _min = min; _max = max;
-    _data = statistics::create_histogram( sd.data().begin(), sd.data().end(), num_buckets, _min, _max );
+    _data = statistics::create_histogram( sd.data(), num_buckets, _min, _max );
     calculate_num_entries();
   }
 
