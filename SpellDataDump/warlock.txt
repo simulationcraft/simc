@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -142,7 +142,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Devourer of Life (196301), Eradication (196414), Drained to a Husk (199120), Perdition (199158), Secrets of the Necrolyte (205183)
+Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Devourer of Life (196301), Eradication (196414), Drained to a Husk (199120), Perdition (199158)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -1797,7 +1797,7 @@ Tooltip          : You have summoned a Doomguard.
 
 Name             : Siphon Life (id=63106) [Spell Family (5)] 
 Class            : Warlock
-Range            : 50000 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Affecting spells : Unstable Affliction (30108)
@@ -1810,7 +1810,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000
-Description      : Siphon the target's life essence, dealing $o1 damage over $d, healing you for X each time it deals damage.
+Description      : Siphon the target's life essence, dealing $o1 damage over $d, healing you for ${$e1*100}% of the damage it deals.
+Tooltip          : Siphoning $w1 life to the caster every $t1 sec.
 
 Name             : Glyph of Crimson Banish (id=63312) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -4876,7 +4877,7 @@ Name             : Implosion (id=196278)
 Class            : Warlock
 Spell Level      : 45
 Range            : 100 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5091,7 +5092,7 @@ Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Devourer of Life (196301), Eradication (196414), Drained to a Husk (199120), Perdition (199158), Secrets of the Necrolyte (205183)
+Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Devourer of Life (196301), Eradication (196414), Drained to a Husk (199120), Perdition (199158)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -5199,7 +5200,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=303022)   : Summon (28)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards
-Description      : Create a Soul Effigy bound to the target, which is attackable by only the Warlock. $s1% of all damage taken by the Effigy is replicated on the original target. Limit 1. Lasts $d.
+Description      : Create a Soul Effigy bound to the target, which is attackable by only the Warlock. $s2% of all damage taken by the Effigy is replicated on the original target. Limit 1. Lasts $d.
 
 Name             : Phantom Singularity (id=205179) [Spell Family (5)] 
 Class            : Warlock
@@ -5260,19 +5261,18 @@ Effects          :
 Description      : Lob a ball of Shadowflame at the target, dealing $s1 Shadowflame damage, and $o2 Shadowflame damage over $d, stacking. Generates $m3 Soul Shard.
 Tooltip          : Suffering $w2 Shadowflame damage every $t2.
 
-Name             : Secrets of the Necrolyte (id=205183) [Spell Family (5), Passive, Hidden] 
+Name             : Secrets of the Necrolyte (id=205183) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
+                 : Passive (6)
 Effects          :
-#1 (id=302913)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+#1 (id=302913)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 3
-                   Affected Spells: Drain Life (689), Drain Soul (198590)
 Description      : Your Drain Life is massively empowered, dealing $s1% increased damage.
 
 Name             : Roaring Blaze (id=205184) [Spell Family (5), Passive] 

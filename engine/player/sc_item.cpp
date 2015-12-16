@@ -29,7 +29,8 @@ item_t::item_t( player_t* p, const std::string& o ) :
   parsed(),
   xml(),
   options_str( o ),
-  option_initial_cd( 0 )
+  option_initial_cd( 0 ),
+  cached_upgrade_item_level( -1 )
 {
   parsed.data.name = name_str.c_str();
 }
@@ -414,6 +415,17 @@ unsigned item_t::upgrade_level() const
   return parsed.upgrade_level + sim -> global_item_upgrade_level;
 }
 
+unsigned item_t::upgrade_item_level() const
+{
+  // upgrade_ilevel call is expensive, thus cache it.
+  if ( cached_upgrade_item_level < 0 )
+  {
+    cached_upgrade_item_level = item_database::upgrade_ilevel( *this, upgrade_level() );
+  }
+  assert( as<unsigned>(cached_upgrade_item_level) == item_database::upgrade_ilevel( *this, upgrade_level() ) );
+  return as<unsigned>(cached_upgrade_item_level);
+}
+
 // item_t::item_level =======================================================
 
 unsigned item_t::item_level() const
@@ -426,7 +438,7 @@ unsigned item_t::item_level() const
   if ( parsed.item_level > 0 )
     ilvl = parsed.item_level;
   else
-    ilvl = parsed.data.level + item_database::upgrade_ilevel( *this, upgrade_level() );
+    ilvl = parsed.data.level + upgrade_item_level();
 
   if ( sim -> scale_to_itemlevel > 0 && sim -> scale_itemlevel_down_only )
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );

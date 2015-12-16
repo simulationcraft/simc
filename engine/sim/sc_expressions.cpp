@@ -7,23 +7,34 @@
 
 #define EXPRESSION_DEBUG false
 
+#if !defined( NDEBUG )
 std::atomic<int> expr_t::unique_id( 0 );
+#endif
 
-namespace { // ANONYMOUS ====================================================
+
+namespace
+{  // ANONYMOUS ====================================================
 
 class const_expr_t : public expr_t
 {
   double value;
 
 public:
-  const_expr_t( const std::string& name, double value_ ) :
-    expr_t( name, TOK_NUM ), value( value_ ) {}
+  const_expr_t( const std::string& name, double value_ )
+    : expr_t( name, TOK_NUM ), value( value_ )
+  {
+  }
 
-  double evaluate() override // override
-  { return value; }
+  double evaluate() override  // override
+  {
+    return value;
+  }
 
-  bool is_constant( double* v ) override // override
-  { *v = value; return true; }
+  bool is_constant( double* v ) override  // override
+  {
+    *v = value;
+    return true;
+  }
 };
 
 // Unary Operators ==========================================================
@@ -34,36 +45,67 @@ class expr_unary_t : public expr_t
   expr_t* input;
 
 public:
-  expr_unary_t( const std::string& n, token_e o, expr_t* i ) :
-    expr_t( n, o ), input( i )
-  { assert( input ); }
+  expr_unary_t( const std::string& n, token_e o, expr_t* i )
+    : expr_t( n, o ), input( i )
+  {
+    assert( input );
+  }
 
-  ~expr_unary_t() { delete input; }
+  ~expr_unary_t()
+  {
+    delete input;
+  }
 
-  double evaluate() override // override
-  { return F( input -> eval() ); }
+  double evaluate() override  // override
+  {
+    return F( input->eval() );
+  }
 };
 
-namespace unary {
-inline double minus( double val ) { return -val; }
-inline double lnot ( double val ) { return val == 0; }
-inline double abs  ( double val ) { return std::fabs( val ); }
-inline double floor( double val ) { return std::floor( val ); }
-inline double ceil ( double val ) { return std::ceil( val ); }
+namespace unary
+{
+inline double minus( double val )
+{
+  return -val;
+}
+inline double lnot( double val )
+{
+  return val == 0;
+}
+inline double abs( double val )
+{
+  return std::fabs( val );
+}
+inline double floor( double val )
+{
+  return std::floor( val );
+}
+inline double ceil( double val )
+{
+  return std::ceil( val );
+}
 }
 
 expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
 {
   switch ( op )
   {
-    case TOK_PLUS:  return input; // No need to modify input
-    case TOK_MINUS: return new expr_unary_t<unary::minus>( name, op, input );
-    case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, op, input );
-    case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, op, input );
-    case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, op, input );
-    case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, op, input );
+    case TOK_PLUS:
+      return input;  // No need to modify input
+    case TOK_MINUS:
+      return new expr_unary_t<unary::minus>( name, op, input );
+    case TOK_NOT:
+      return new expr_unary_t<unary::lnot>( name, op, input );
+    case TOK_ABS:
+      return new expr_unary_t<unary::abs>( name, op, input );
+    case TOK_FLOOR:
+      return new expr_unary_t<unary::floor>( name, op, input );
+    case TOK_CEIL:
+      return new expr_unary_t<unary::ceil>( name, op, input );
 
-    default: assert( false ); return nullptr; // throw?
+    default:
+      assert( false );
+      return nullptr;  // throw?
   }
 }
 
@@ -75,82 +117,114 @@ public:
   expr_t* left;
   expr_t* right;
 
-  binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
-    expr_t( n, o ), left( l ), right( r )
+  binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r )
+    : expr_t( n, o ), left( l ), right( r )
   {
     assert( left );
     assert( right );
   }
 
-  ~binary_base_t() { delete left; delete right; }
+  ~binary_base_t()
+  {
+    delete left;
+    delete right;
+  }
 };
 
 class logical_and_t : public binary_base_t
 {
 public:
-  logical_and_t( const std::string& n, expr_t* l, expr_t* r ) :
-    binary_base_t( n, TOK_AND, l, r )
-  {}
+  logical_and_t( const std::string& n, expr_t* l, expr_t* r )
+    : binary_base_t( n, TOK_AND, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { return left -> eval() && right -> eval(); }
+  double evaluate() override  // override
+  {
+    return left->eval() && right->eval();
+  }
 };
 
 class logical_or_t : public binary_base_t
 {
 public:
-  logical_or_t( const std::string& n, expr_t* l, expr_t* r ) :
-    binary_base_t( n, TOK_OR, l, r )
-  {}
+  logical_or_t( const std::string& n, expr_t* l, expr_t* r )
+    : binary_base_t( n, TOK_OR, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { return left -> eval() || right -> eval(); }
+  double evaluate() override  // override
+  {
+    return left->eval() || right->eval();
+  }
 };
 
 class logical_xor_t : public binary_base_t
 {
 public:
-  logical_xor_t( const std::string& n, expr_t* l, expr_t* r ) :
-    binary_base_t( n, TOK_XOR, l, r )
-  {}
+  logical_xor_t( const std::string& n, expr_t* l, expr_t* r )
+    : binary_base_t( n, TOK_XOR, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { return bool( left -> eval() != 0 ) != bool( right -> eval() != 0 ); }
+  double evaluate() override  // override
+  {
+    return bool( left->eval() != 0 ) != bool( right->eval() != 0 );
+  }
 };
 
-template <template<typename> class F>
+template <template <typename> class F>
 class expr_binary_t : public binary_base_t
 {
 public:
-  expr_binary_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
-    binary_base_t( n, o, l, r )
-  {}
+  expr_binary_t( const std::string& n, token_e o, expr_t* l, expr_t* r )
+    : binary_base_t( n, o, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { return F<double>()( left -> eval(), right -> eval() ); }
+  double evaluate() override  // override
+  {
+    return F<double>()( left->eval(), right->eval() );
+  }
 };
 
-expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t* right )
+expr_t* select_binary( const std::string& name, token_e op, expr_t* left,
+                       expr_t* right )
 {
   switch ( op )
   {
-    case TOK_AND:   return new logical_and_t                     ( name, left, right );
-    case TOK_OR:    return new logical_or_t                      ( name, left, right );
-    case TOK_XOR:   return new logical_xor_t                     ( name, left, right );
+    case TOK_AND:
+      return new logical_and_t( name, left, right );
+    case TOK_OR:
+      return new logical_or_t( name, left, right );
+    case TOK_XOR:
+      return new logical_xor_t( name, left, right );
 
-    case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, op, left, right );
-    case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, op, left, right );
-    case TOK_MULT:  return new expr_binary_t<std::multiplies>    ( name, op, left, right );
-    case TOK_DIV:   return new expr_binary_t<std::divides>       ( name, op, left, right );
+    case TOK_ADD:
+      return new expr_binary_t<std::plus>( name, op, left, right );
+    case TOK_SUB:
+      return new expr_binary_t<std::minus>( name, op, left, right );
+    case TOK_MULT:
+      return new expr_binary_t<std::multiplies>( name, op, left, right );
+    case TOK_DIV:
+      return new expr_binary_t<std::divides>( name, op, left, right );
 
-    case TOK_EQ:    return new expr_binary_t<std::equal_to>      ( name, op, left, right );
-    case TOK_NOTEQ: return new expr_binary_t<std::not_equal_to>  ( name, op, left, right );
-    case TOK_LT:    return new expr_binary_t<std::less>          ( name, op, left, right );
-    case TOK_LTEQ:  return new expr_binary_t<std::less_equal>    ( name, op, left, right );
-    case TOK_GT:    return new expr_binary_t<std::greater>       ( name, op, left, right );
-    case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, op, left, right );
+    case TOK_EQ:
+      return new expr_binary_t<std::equal_to>( name, op, left, right );
+    case TOK_NOTEQ:
+      return new expr_binary_t<std::not_equal_to>( name, op, left, right );
+    case TOK_LT:
+      return new expr_binary_t<std::less>( name, op, left, right );
+    case TOK_LTEQ:
+      return new expr_binary_t<std::less_equal>( name, op, left, right );
+    case TOK_GT:
+      return new expr_binary_t<std::greater>( name, op, left, right );
+    case TOK_GTEQ:
+      return new expr_binary_t<std::greater_equal>( name, op, left, right );
 
-    default: assert( false ); return nullptr; // throw?
+    default:
+      assert( false );
+      return nullptr;  // throw?
   }
 }
 
@@ -162,26 +236,33 @@ class expr_analyze_unary_t : public expr_t
   expr_t* input;
 
 public:
-  expr_analyze_unary_t( const std::string& n, token_e o, expr_t* i ) :
-    expr_t( n, o ), input( i )
-  { assert( input ); }
-
-  ~expr_analyze_unary_t() {  }
-
-  double evaluate() override // override
-  { 
-    return F( input -> eval() ); 
+  expr_analyze_unary_t( const std::string& n, token_e o, expr_t* i )
+    : expr_t( n, o ), input( i )
+  {
+    assert( input );
   }
 
-  expr_t* optimize( int spacing ) override // override
+  ~expr_analyze_unary_t()
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s )\n", spacing, id_, name().c_str(), input -> name().c_str() );
-    input = input -> optimize( spacing+2 );
+  }
+
+  double evaluate() override  // override
+  {
+    return F( input->eval() );
+  }
+
+  expr_t* optimize( int spacing ) override  // override
+  {
+    if ( EXPRESSION_DEBUG )
+      printf( "%*d %s ( %s )\n", spacing, id(), name(), input->name() );
+    input = input->optimize( spacing + 2 );
     double input_value;
-    if( input -> is_constant( &input_value ) )
+    if ( input->is_constant( &input_value ) )
     {
       double result = F( input_value );
-      if( EXPRESSION_DEBUG ) printf( "%*d %s unary expression reduced to %f\n", spacing, id_, name().c_str(), result );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s unary expression reduced to %f\n", spacing, id(),
+                name(), result );
       delete input;
       delete this;
       return new const_expr_t( "const_unary", result );
@@ -192,18 +273,27 @@ public:
   }
 };
 
-expr_t* select_analyze_unary( const std::string& name, token_e op, expr_t* input )
+expr_t* select_analyze_unary( const std::string& name, token_e op,
+                              expr_t* input )
 {
   switch ( op )
   {
-    case TOK_PLUS:  return input;
-    case TOK_MINUS: return new expr_analyze_unary_t<unary::minus>( name, op, input );
-    case TOK_NOT:   return new expr_analyze_unary_t<unary::lnot> ( name, op, input );
-    case TOK_ABS:   return new expr_analyze_unary_t<unary::abs>  ( name, op, input );
-    case TOK_FLOOR: return new expr_analyze_unary_t<unary::floor>( name, op, input );
-    case TOK_CEIL:  return new expr_analyze_unary_t<unary::ceil> ( name, op, input );
+    case TOK_PLUS:
+      return input;
+    case TOK_MINUS:
+      return new expr_analyze_unary_t<unary::minus>( name, op, input );
+    case TOK_NOT:
+      return new expr_analyze_unary_t<unary::lnot>( name, op, input );
+    case TOK_ABS:
+      return new expr_analyze_unary_t<unary::abs>( name, op, input );
+    case TOK_FLOOR:
+      return new expr_analyze_unary_t<unary::floor>( name, op, input );
+    case TOK_CEIL:
+      return new expr_analyze_unary_t<unary::ceil>( name, op, input );
 
-    default: assert( false ); return nullptr; // throw?
+    default:
+      assert( false );
+      return nullptr;  // throw?
   }
 }
 
@@ -221,9 +311,14 @@ protected:
   uint64_t left_false, right_false;
 
 public:
-  analyze_binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
-    expr_t( n, o ), left( l ), right( r ), 
-    left_true( 0 ), right_true( 0 ), left_false( 0 ), right_false( 0 )
+  analyze_binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r )
+    : expr_t( n, o ),
+      left( l ),
+      right( r ),
+      left_true( 0 ),
+      right_true( 0 ),
+      left_false( 0 ),
+      right_false( 0 )
   {
     assert( left );
     assert( right );
@@ -231,94 +326,129 @@ public:
 
   void analyze_boolean()
   {
-    if(  left_result != 0 )  left_true++; else  left_false++;
-    if( right_result != 0 ) right_true++; else right_false++;
+    if ( left_result != 0 )
+      left_true++;
+    else
+      left_false++;
+    if ( right_result != 0 )
+      right_true++;
+    else
+      right_false++;
   }
 
-  ~analyze_binary_base_t() {}
+  ~analyze_binary_base_t()
+  {
+  }
 };
 
 class analyze_logical_and_t : public analyze_binary_base_t
 {
 public:
-  analyze_logical_and_t( const std::string& n, expr_t* l, expr_t* r ) :
-    analyze_binary_base_t( n, TOK_AND, l, r )
-  {}
+  analyze_logical_and_t( const std::string& n, expr_t* l, expr_t* r )
+    : analyze_binary_base_t( n, TOK_AND, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { 
-    left_result  = left  -> eval();
-    right_result = right -> eval(); 
-    result = ( left_result && right_result ) ? 1.0 : 0.0;
+  double evaluate() override  // override
+  {
+    left_result  = left->eval();
+    right_result = right->eval();
+    result       = ( left_result && right_result ) ? 1.0 : 0.0;
     analyze_boolean();
     return result;
   }
 
-  expr_t* optimize( int spacing ) override // override
+  expr_t* optimize( int spacing ) override  // override
   {
     if ( EXPRESSION_DEBUG )
     {
-      util::printf( "%*d and %lu %lu %lu %lu ( %s %s )\n", spacing, id_, left_true,
-        left_false, right_true, right_false, left->name().c_str(), right->name().c_str() );
+      util::printf( "%*d and %lu %lu %lu %lu ( %s %s )\n", spacing, id(),
+                    left_true, left_false, right_true, right_false,
+                    left->name(), right->name() );
     }
-    left  = left  -> optimize( spacing+2 );
-    right = right -> optimize( spacing+2 );
-    bool left_always_true  = left -> always_true();
-    bool left_always_false = left -> always_false();
-    bool right_always_true  = right -> always_true();
-    bool right_always_false = right -> always_false();
-    if( EXPRESSION_DEBUG )
+    left                    = left->optimize( spacing + 2 );
+    right                   = right->optimize( spacing + 2 );
+    bool left_always_true   = left->always_true();
+    bool left_always_false  = left->always_false();
+    bool right_always_true  = right->always_true();
+    bool right_always_false = right->always_false();
+    if ( EXPRESSION_DEBUG )
     {
-      if( left -> op_ == TOK_UNKNOWN )
-  if( ( ! left_always_true  && left_false == 0 ) ||
-      ( ! left_always_false && left_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", left -> id_, left -> name().c_str() );
-      if( right -> op_ == TOK_UNKNOWN )
-  if( ( ! right_always_true  && right_false == 0 ) ||
-      ( ! right_always_false && right_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", right -> id_, right -> name().c_str() );
+      if ( left->op_ == TOK_UNKNOWN )
+      {
+        if ( ( !left_always_true && left_false == 0 ) ||
+             ( !left_always_false && left_true == 0 ) )
+        {
+          printf( "consider marking expression %d %s as constant\n", left->id(),
+                  left->name() );
+        }
+      }
+      if ( right->op_ == TOK_UNKNOWN )
+      {
+        if ( ( !right_always_true && right_false == 0 ) ||
+             ( !right_always_false && right_true == 0 ) )
+        {
+          printf( "consider marking expression %d %s as constant\n",
+                  right->id(), right->name() );
+        }
+      }
     }
-    if( left_always_false || right_always_false )
+    if ( left_always_false || right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to false\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+      {
+        printf( "%*d %s and expression reduced to false\n", spacing, id(),
+                name() );
+      }
       delete left;
       delete right;
       delete this;
       return new const_expr_t( "const_and", 0.0 );
     }
-    if( left_always_true && right_always_true )
+    if ( left_always_true && right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to true\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+      {
+        printf( "%*d %s and expression reduced to true\n", spacing, id(),
+                name() );
+      }
       delete left;
       delete right;
       delete this;
       return new const_expr_t( "const_and", 1.0 );
     }
-    if( left_always_true )
+    if ( left_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to right\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s and expression reduced to right\n", spacing, id(),
+                name() );
       delete left;
       expr_t* prev_right = right;
       delete this;
       return prev_right;
     }
-    if( right_always_true )
+    if ( right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to left\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s and expression reduced to left\n", spacing, id(),
+                name() );
       expr_t* prev_left = left;
       delete right;
       delete this;
       return prev_left;
     }
-    // We need to separate constant propagation and flattening for proper term sorting.
-    if( left_false < right_false ) 
+    // We need to separate constant propagation and flattening for proper term
+    // sorting.
+    if ( left_false < right_false )
     {
-      std::swap( left, right -> op_ == TOK_AND ? ( (logical_and_t*) right ) -> left : right );
+      std::swap( left, right->op_ == TOK_AND
+                           ? static_cast<logical_and_t*>( right )->left
+                           : right );
     }
-    else if( left -> op_ == TOK_AND )
+    else if ( left->op_ == TOK_AND )
     {
       std::swap( left, right );
-      std::swap( left, ( (logical_and_t*) right ) -> left );
+      std::swap( left, static_cast<logical_and_t*>( right )->left );
     }
     expr_t* and_expr = new logical_and_t( name(), left, right );
     delete this;
@@ -329,84 +459,107 @@ public:
 class analyze_logical_or_t : public analyze_binary_base_t
 {
 public:
-  analyze_logical_or_t( const std::string& n, expr_t* l, expr_t* r ) :
-    analyze_binary_base_t( n, TOK_OR, l, r )
-  {}
+  analyze_logical_or_t( const std::string& n, expr_t* l, expr_t* r )
+    : analyze_binary_base_t( n, TOK_OR, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { 
-    left_result  = left  -> eval();
-    right_result = right -> eval(); 
-    result = ( left_result || right_result ) ? 1.0 : 0.0;
+  double evaluate() override  // override
+  {
+    left_result  = left->eval();
+    right_result = right->eval();
+    result       = ( left_result || right_result ) ? 1.0 : 0.0;
     analyze_boolean();
     return result;
   }
 
-  expr_t* optimize( int spacing ) override // override
+  expr_t* optimize( int spacing ) override  // override
   {
     if ( EXPRESSION_DEBUG )
     {
-      util::printf( "%*d or %lu %lu %lu %lu ( %s %s )\n", spacing, id_, left_true, left_false,
-        right_true, right_false, left->name().c_str(), right->name().c_str() );
+      util::printf( "%*d or %lu %lu %lu %lu ( %s %s )\n", spacing, id(),
+                    left_true, left_false, right_true, right_false,
+                    left->name(), right->name() );
     }
-    left  = left  -> optimize( spacing+2 );
-    right = right -> optimize( spacing+2 );
-    bool left_always_true  = left -> always_true();
-    bool left_always_false = left -> always_false();
-    bool right_always_true  = right -> always_true();
-    bool right_always_false = right -> always_false();
-    if( EXPRESSION_DEBUG )
+    left                    = left->optimize( spacing + 2 );
+    right                   = right->optimize( spacing + 2 );
+    bool left_always_true   = left->always_true();
+    bool left_always_false  = left->always_false();
+    bool right_always_true  = right->always_true();
+    bool right_always_false = right->always_false();
+    if ( EXPRESSION_DEBUG )
     {
-      if( left -> op_ == TOK_UNKNOWN )
-  if( ( ! left_always_true  && left_false == 0 ) ||
-      ( ! left_always_false && left_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", left -> id_, left -> name().c_str() );
-      if( right -> op_ == TOK_UNKNOWN )
-  if( ( ! right_always_true  && right_false == 0 ) ||
-      ( ! right_always_false && right_true  == 0 ) )
-    printf( "consider marking expression %d %s as constant\n", right -> id_, right -> name().c_str() );
+      if ( left->op_ == TOK_UNKNOWN )
+      {
+        if ( ( !left_always_true && left_false == 0 ) ||
+             ( !left_always_false && left_true == 0 ) )
+        {
+          printf( "consider marking expression %d %s as constant\n", left->id(),
+                  left->name() );
+        }
+      }
+      if ( right->op_ == TOK_UNKNOWN )
+      {
+        if ( ( !right_always_true && right_false == 0 ) ||
+             ( !right_always_false && right_true == 0 ) )
+        {
+          printf( "consider marking expression %d %s as constant\n",
+                  right->id(), right->name() );
+        }
+      }
     }
-    if( left_always_true || right_always_true )
+    if ( left_always_true || right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to true\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s or expression reduced to true\n", spacing, id(),
+                name() );
       delete left;
       delete right;
       delete this;
       return new const_expr_t( "const_or", 1.0 );
     }
-    if( left_always_false && right_always_false )
+    if ( left_always_false && right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to false\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s or expression reduced to false\n", spacing, id(),
+                name() );
       delete left;
       delete right;
       delete this;
       return new const_expr_t( "const_or", 0.0 );
     }
-    if( left_always_false )
+    if ( left_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to right\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s or expression reduced to right\n", spacing, id(),
+                name() );
       delete left;
       expr_t* prev_right = right;
       delete this;
       return prev_right;
     }
-    if( right_always_false )
+    if ( right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to left\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s or expression reduced to left\n", spacing, id(),
+                name() );
       expr_t* prev_left = left;
       delete right;
       delete this;
       return prev_left;
     }
-    // We need to separate constant propagation and flattening for proper term sorting.
-    if( left_true < right_true )
+    // We need to separate constant propagation and flattening for proper term
+    // sorting.
+    if ( left_true < right_true )
     {
-      std::swap( left, right -> op_ == TOK_OR ? ( (logical_or_t*) right ) -> left : right );
+      std::swap( left, right->op_ == TOK_OR
+                           ? static_cast<logical_or_t*>( right )->left
+                           : right );
     }
-    else if( left -> op_ == TOK_OR )
+    else if ( left->op_ == TOK_OR )
     {
       std::swap( left, right );
-      std::swap( left, ( (logical_or_t*) right ) -> left );
+      std::swap( left, static_cast<logical_or_t*>( right )->left );
     }
     expr_t* or_expr = new logical_or_t( name(), left, right );
     delete this;
@@ -417,73 +570,89 @@ public:
 class analyze_logical_xor_t : public analyze_binary_base_t
 {
 public:
-  analyze_logical_xor_t( const std::string& n, expr_t* l, expr_t* r ) :
-    analyze_binary_base_t( n, TOK_XOR, l, r )
-  {}
+  analyze_logical_xor_t( const std::string& n, expr_t* l, expr_t* r )
+    : analyze_binary_base_t( n, TOK_XOR, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { 
-    left_result  = left  -> eval();
-    right_result = right -> eval(); 
-    result = ( bool( left_result != 0 ) != bool( right_result != 0 ) ) ? 1.0 : 0.0;
+  double evaluate() override  // override
+  {
+    left_result  = left->eval();
+    right_result = right->eval();
+    result =
+        ( bool( left_result != 0 ) != bool( right_result != 0 ) ) ? 1.0 : 0.0;
     analyze_boolean();
     return result;
   }
 
-  expr_t* optimize( int spacing ) override // override
+  expr_t* optimize( int spacing ) override  // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d xor ( %s %s )\n", spacing, id_, left -> name().c_str(), right -> name().c_str() );
-    left  = left  -> optimize( spacing+2 );
-    right = right -> optimize( spacing+2 );
-    bool left_always_true  = left -> always_true();
-    bool left_always_false = left -> always_false();
-    bool right_always_true  = right -> always_true();
-    bool right_always_false = right -> always_false();
-    if( ( left_always_true  && right_always_false ) ||
-  ( left_always_false && right_always_true  ) )
+    if ( EXPRESSION_DEBUG )
+      printf( "%*d xor ( %s %s )\n", spacing, id(), left->name(),
+              right->name() );
+    left                    = left->optimize( spacing + 2 );
+    right                   = right->optimize( spacing + 2 );
+    bool left_always_true   = left->always_true();
+    bool left_always_false  = left->always_false();
+    bool right_always_true  = right->always_true();
+    bool right_always_false = right->always_false();
+    if ( ( left_always_true && right_always_false ) ||
+         ( left_always_false && right_always_true ) )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to true\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s xor expression reduced to true\n", spacing, id(),
+                name() );
       delete left;
       delete right;
       delete this;
       return new const_expr_t( "const_xor", 1.0 );
     }
-    if( ( left_always_true  && right_always_true  ) ||
-  ( left_always_false && right_always_false ) )
+    if ( ( left_always_true && right_always_true ) ||
+         ( left_always_false && right_always_false ) )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to false\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s xor expression reduced to false\n", spacing, id(),
+                name() );
       delete left;
       delete right;
       delete this;
       return new const_expr_t( "const_xor", 0.0 );
     }
-    if( left_always_false )
+    if ( left_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to right\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s xor expression reduced to right\n", spacing, id(),
+                name() );
       delete left;
       expr_t* prev_right = right;
       delete this;
       return prev_right;
     }
-    if( right_always_false )
+    if ( right_always_false )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to left\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s xor expression reduced to left\n", spacing, id(),
+                name() );
       expr_t* prev_left = left;
       delete right;
       delete this;
       return prev_left;
     }
-    if( left_always_true )
+    if ( left_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !right\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s xor expression reduced to !right\n", spacing, id(),
+                name() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, right );
       delete left;
       delete this;
       return not_expr;
     }
-    if( right_always_true )
+    if ( right_always_true )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !left\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s xor expression reduced to !left\n", spacing, id(),
+                name() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, left );
       delete right;
       delete this;
@@ -495,62 +664,83 @@ public:
   }
 };
 
-template <template<typename> class F>
+template <template <typename> class F>
 class expr_analyze_binary_t : public analyze_binary_base_t
 {
 public:
-  expr_analyze_binary_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
-    analyze_binary_base_t( n, o, l, r )
-  {}
+  expr_analyze_binary_t( const std::string& n, token_e o, expr_t* l, expr_t* r )
+    : analyze_binary_base_t( n, o, l, r )
+  {
+  }
 
-  double evaluate() override // override
-  { 
-    result = F<double>()( left -> eval(), right -> eval() );
+  double evaluate() override  // override
+  {
+    result = F<double>()( left->eval(), right->eval() );
     return result;
   }
-  
-  expr_t* optimize( int spacing ) override // override
+
+  expr_t* optimize( int spacing ) override  // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s %s )\n", spacing, id_, name().c_str(), left -> name().c_str(), right -> name().c_str() );
-    left  = left  -> optimize( spacing+2 );
-    right = right -> optimize( spacing+2 );
+    if ( EXPRESSION_DEBUG )
+      printf( "%*d %s ( %s %s )\n", spacing, id(), name(), left->name(),
+              right->name() );
+    left  = left->optimize( spacing + 2 );
+    right = right->optimize( spacing + 2 );
     double left_value, right_value;
-    bool left_constant  = left  -> is_constant( &left_value  );
-    bool right_constant = right -> is_constant( &right_value );
-    if( left_constant && right_constant )
+    bool left_constant  = left->is_constant( &left_value );
+    bool right_constant = right->is_constant( &right_value );
+    if ( left_constant && right_constant )
     {
       result = F<double>()( left_value, right_value );
-      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced to %f\n", spacing, id_, name().c_str(), result );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s binary expression reduced to %f\n", spacing, id(),
+                name(), result );
       delete left;
       delete right;
       expr_t* reduced = new const_expr_t( "const_binary", result );
       delete this;
       return reduced;
     }
-    if( left_constant )
+    if ( left_constant )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced left\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s binary expression reduced left\n", spacing, id(),
+                name() );
       struct left_reduced_t : public expr_t
       {
-  double left;
-  expr_t* right;
-  left_reduced_t( const std::string& n, token_e o, double l, expr_t* r ) : expr_t( n, o ), left(l), right(r) {}
-  double evaluate() override { return F<double>()( left, right -> eval() ); }
+        double left;
+        expr_t* right;
+        left_reduced_t( const std::string& n, token_e o, double l, expr_t* r )
+          : expr_t( n, o ), left( l ), right( r )
+        {
+        }
+        double evaluate() override
+        {
+          return F<double>()( left, right->eval() );
+        }
       };
       expr_t* reduced = new left_reduced_t( name(), op_, left_value, right );
       delete left;
       delete this;
       return reduced;
     }
-    if( right_constant )
+    if ( right_constant )
     {
-      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced right\n", spacing, id_, name().c_str() );
+      if ( EXPRESSION_DEBUG )
+        printf( "%*d %s binary expression reduced right\n", spacing, id(),
+                name() );
       struct right_reduced_t : public expr_t
       {
-  expr_t* left;
-  double right;
-  right_reduced_t( const std::string& n, token_e o, expr_t* l, double r ) : expr_t( n, o ), left(l), right(r) {}
-  double evaluate() override { return F<double>()( left -> eval(), right ); }
+        expr_t* left;
+        double right;
+        right_reduced_t( const std::string& n, token_e o, expr_t* l, double r )
+          : expr_t( n, o ), left( l ), right( r )
+        {
+        }
+        double evaluate() override
+        {
+          return F<double>()( left->eval(), right );
+        }
       };
       expr_t* reduced = new right_reduced_t( name(), op_, left, right_value );
       delete right;
@@ -563,31 +753,51 @@ public:
   }
 };
 
-expr_t* select_analyze_binary( const std::string& name, token_e op, expr_t* left, expr_t* right )
+expr_t* select_analyze_binary( const std::string& name, token_e op,
+                               expr_t* left, expr_t* right )
 {
   switch ( op )
   {
-    case TOK_AND:   return new analyze_logical_and_t                     ( name, left, right );
-    case TOK_OR:    return new analyze_logical_or_t                      ( name, left, right );
-    case TOK_XOR:   return new analyze_logical_xor_t                     ( name, left, right );
+    case TOK_AND:
+      return new analyze_logical_and_t( name, left, right );
+    case TOK_OR:
+      return new analyze_logical_or_t( name, left, right );
+    case TOK_XOR:
+      return new analyze_logical_xor_t( name, left, right );
 
-    case TOK_ADD:   return new expr_analyze_binary_t<std::plus>          ( name, op, left, right );
-    case TOK_SUB:   return new expr_analyze_binary_t<std::minus>         ( name, op, left, right );
-    case TOK_MULT:  return new expr_analyze_binary_t<std::multiplies>    ( name, op, left, right );
-    case TOK_DIV:   return new expr_analyze_binary_t<std::divides>       ( name, op, left, right );
+    case TOK_ADD:
+      return new expr_analyze_binary_t<std::plus>( name, op, left, right );
+    case TOK_SUB:
+      return new expr_analyze_binary_t<std::minus>( name, op, left, right );
+    case TOK_MULT:
+      return new expr_analyze_binary_t<std::multiplies>( name, op, left,
+                                                         right );
+    case TOK_DIV:
+      return new expr_analyze_binary_t<std::divides>( name, op, left, right );
 
-    case TOK_EQ:    return new expr_analyze_binary_t<std::equal_to>      ( name, op, left, right );
-    case TOK_NOTEQ: return new expr_analyze_binary_t<std::not_equal_to>  ( name, op, left, right );
-    case TOK_LT:    return new expr_analyze_binary_t<std::less>          ( name, op, left, right );
-    case TOK_LTEQ:  return new expr_analyze_binary_t<std::less_equal>    ( name, op, left, right );
-    case TOK_GT:    return new expr_analyze_binary_t<std::greater>       ( name, op, left, right );
-    case TOK_GTEQ:  return new expr_analyze_binary_t<std::greater_equal> ( name, op, left, right );
+    case TOK_EQ:
+      return new expr_analyze_binary_t<std::equal_to>( name, op, left, right );
+    case TOK_NOTEQ:
+      return new expr_analyze_binary_t<std::not_equal_to>( name, op, left,
+                                                           right );
+    case TOK_LT:
+      return new expr_analyze_binary_t<std::less>( name, op, left, right );
+    case TOK_LTEQ:
+      return new expr_analyze_binary_t<std::less_equal>( name, op, left,
+                                                         right );
+    case TOK_GT:
+      return new expr_analyze_binary_t<std::greater>( name, op, left, right );
+    case TOK_GTEQ:
+      return new expr_analyze_binary_t<std::greater_equal>( name, op, left,
+                                                            right );
 
-    default: assert( false ); return nullptr; // throw?
+    default:
+      assert( false );
+      return nullptr;  // throw?
   }
 }
 
-} // UNNAMED NAMESPACE ====================================================
+}  // UNNAMED NAMESPACE ====================================================
 
 // precedence ===============================================================
 
@@ -686,65 +896,101 @@ bool expression_t::is_binary( token_e expr_token_type )
 // next_token ===============================================================
 
 token_e expression_t::next_token( action_t* action, const std::string& expr_str,
-                                  int& current_index, std::string& token_str, token_e prev_token )
+                                  int& current_index, std::string& token_str,
+                                  token_e prev_token )
 {
   unsigned char c = expr_str[ current_index++ ];
 
-  if ( c == '\0' ) return TOK_UNKNOWN;
+  if ( c == '\0' )
+    return TOK_UNKNOWN;
   if ( ( prev_token == TOK_FLOOR || prev_token == TOK_CEIL ) && c != '(' )
     return TOK_UNKNOWN;
 
   token_str = c;
 
-  if ( c == '@' ) return TOK_ABS;
-  if ( c == '+' ) return TOK_ADD;
-  if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) ) return TOK_SUB;
-  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( static_cast<unsigned char>( expr_str[ current_index ] ) ) ) return TOK_SUB;
-  if ( c == '*' ) return TOK_MULT;
-  if ( c == '%' ) return TOK_DIV;
+  if ( c == '@' )
+    return TOK_ABS;
+  if ( c == '+' )
+    return TOK_ADD;
+  if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) )
+    return TOK_SUB;
+  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM &&
+       !isdigit( static_cast<unsigned char>( expr_str[ current_index ] ) ) )
+    return TOK_SUB;
+  if ( c == '*' )
+    return TOK_MULT;
+  if ( c == '%' )
+    return TOK_DIV;
   if ( c == '&' )
   {
-    if ( expr_str[ current_index ] == '&' ) current_index++;
+    if ( expr_str[ current_index ] == '&' )
+      current_index++;
     return TOK_AND;
   }
   if ( c == '|' )
   {
-    if ( expr_str[ current_index ] == '|' ) current_index++;
+    if ( expr_str[ current_index ] == '|' )
+      current_index++;
     return TOK_OR;
   }
   if ( c == '^' )
   {
-    if ( expr_str[ current_index ] == '^' ) current_index++;
+    if ( expr_str[ current_index ] == '^' )
+      current_index++;
     return TOK_XOR;
   }
   if ( c == '~' )
   {
-    if ( expr_str[ current_index ] == '~' ) current_index++;
+    if ( expr_str[ current_index ] == '~' )
+      current_index++;
     return TOK_IN;
   }
   if ( c == '!' )
   {
-    if ( expr_str[ current_index ] == '=' ) { current_index++; token_str += "="; return TOK_NOTEQ; }
-    if ( expr_str[ current_index ] == '~' ) { current_index++; token_str += "~"; return TOK_NOTIN; }
+    if ( expr_str[ current_index ] == '=' )
+    {
+      current_index++;
+      token_str += "=";
+      return TOK_NOTEQ;
+    }
+    if ( expr_str[ current_index ] == '~' )
+    {
+      current_index++;
+      token_str += "~";
+      return TOK_NOTIN;
+    }
     return TOK_NOT;
   }
   if ( c == '=' )
   {
-    if ( expr_str[ current_index ] == '=' ) current_index++;
+    if ( expr_str[ current_index ] == '=' )
+      current_index++;
     return TOK_EQ;
   }
   if ( c == '<' )
   {
-    if ( expr_str[ current_index ] == '=' ) { current_index++; token_str += "="; return TOK_LTEQ; }
+    if ( expr_str[ current_index ] == '=' )
+    {
+      current_index++;
+      token_str += "=";
+      return TOK_LTEQ;
+    }
     return TOK_LT;
   }
   if ( c == '>' )
   {
-    if ( expr_str[ current_index ] == '=' ) { current_index++; token_str += "="; return TOK_GTEQ; }
+    if ( expr_str[ current_index ] == '=' )
+    {
+      current_index++;
+      token_str += "=";
+      return TOK_GTEQ;
+    }
     return TOK_GT;
   }
-  if ( c == '(' ) return TOK_LPAR;
-  if ( c == ')' ) return TOK_RPAR;
+  if ( c == '(' )
+    return TOK_LPAR;
+  if ( c == ')' )
+    return TOK_RPAR;
 
   if ( isalpha( c ) )
   {
@@ -777,7 +1023,9 @@ token_e expression_t::next_token( action_t* action, const std::string& expr_str,
 
   if ( action )
   {
-    action -> sim -> errorf( "%s-%s: Unexpected token (%c) in %s\n", action -> player -> name(), action -> name(), c, expr_str.c_str() );
+    action->sim->errorf( "%s-%s: Unexpected token (%c) in %s\n",
+                         action->player->name(), action->name(), c,
+                         expr_str.c_str() );
   }
   else
   {
@@ -789,17 +1037,17 @@ token_e expression_t::next_token( action_t* action, const std::string& expr_str,
 
 // parse_tokens =============================================================
 
-std::vector<expr_token_t>
-expression_t::parse_tokens( action_t* action,
-                            const std::string& expr_str )
+std::vector<expr_token_t> expression_t::parse_tokens(
+    action_t* action, const std::string& expr_str )
 {
   std::vector<expr_token_t> tokens;
 
   expr_token_t token;
   int current_index = 0;
-  token_e t = TOK_UNKNOWN;
+  token_e t         = TOK_UNKNOWN;
 
-  while ( ( token.type = next_token( action, expr_str, current_index, token.label, t ) ) != TOK_UNKNOWN )
+  while ( ( token.type = next_token( action, expr_str, current_index,
+                                     token.label, t ) ) != TOK_UNKNOWN )
   {
     t = token.type;
     tokens.push_back( token );
@@ -824,7 +1072,7 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
       str += " | ";
   }
 
-  sim -> out_debug << str;
+  sim->out_debug << str;
 }
 
 // convert_to_unary =========================================================
@@ -839,12 +1087,11 @@ void expression_t::convert_to_unary( std::vector<expr_token_t>& tokens )
     bool left_side = false;
 
     if ( i > 0 )
-      if ( tokens[ i - 1 ].type == TOK_NUM ||
-           tokens[ i - 1 ].type == TOK_STR ||
+      if ( tokens[ i - 1 ].type == TOK_NUM || tokens[ i - 1 ].type == TOK_STR ||
            tokens[ i - 1 ].type == TOK_RPAR )
         left_side = true;
 
-    if ( ! left_side && ( t.type == TOK_ADD || t.type == TOK_SUB ) )
+    if ( !left_side && ( t.type == TOK_ADD || t.type == TOK_SUB ) )
     {
       // Must be unary.
       t.type = ( t.type == TOK_ADD ) ? TOK_PLUS : TOK_MINUS;
@@ -875,7 +1122,11 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
     {
       while ( true )
       {
-        if ( stack.empty() ) { printf( "rpar stack empty\n" ); return false; }
+        if ( stack.empty() )
+        {
+          printf( "rpar stack empty\n" );
+          return false;
+        }
         expr_token_t& s = stack.back();
         if ( s.type == TOK_LPAR )
         {
@@ -889,14 +1140,17 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
         }
       }
     }
-    else // operator
+    else  // operator
     {
       while ( true )
       {
-        if ( stack.empty() ) break;
+        if ( stack.empty() )
+          break;
         expr_token_t& s = stack.back();
-        if ( s.type == TOK_LPAR ) break;
-        if ( precedence( t.type ) > precedence( s.type ) ) break;
+        if ( s.type == TOK_LPAR )
+          break;
+        if ( precedence( t.type ) > precedence( s.type ) )
+          break;
         rpn.push_back( s );
         stack.pop_back();
       }
@@ -904,10 +1158,14 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
     }
   }
 
-  while ( ! stack.empty() )
+  while ( !stack.empty() )
   {
     expr_token_t& s = stack.back();
-    if ( s.type == TOK_LPAR ) { printf( "stack lpar\n" ); return false; }
+    if ( s.type == TOK_LPAR )
+    {
+      printf( "stack lpar\n" );
+      return false;
+    }
     rpn.push_back( s );
     stack.pop_back();
   }
@@ -921,9 +1179,9 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
 
 static expr_t* build_expression_tree( action_t* action,
                                       std::vector<expr_token_t>& tokens,
-              bool optimize )
+                                      bool optimize )
 {
-  auto_dispose< std::vector<expr_t*> > stack;
+  auto_dispose<std::vector<expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )
@@ -936,11 +1194,12 @@ static expr_t* build_expression_tree( action_t* action,
     }
     else if ( t.type == TOK_STR )
     {
-      expr_t* e = action -> create_expression( t.label );
-      if ( ! e )
+      expr_t* e = action->create_expression( t.label );
+      if ( !e )
       {
-        action -> sim -> errorf( "Player %s action %s : Unable to decode expression function '%s'\n",
-                                 action -> player -> name(), action -> name(), t.label.c_str() );
+        action->sim->errorf(
+            "Player %s action %s : Unable to decode expression function '%s'\n",
+            action->player->name(), action->name(), t.label.c_str() );
         return nullptr;
       }
       stack.push_back( e );
@@ -949,24 +1208,26 @@ static expr_t* build_expression_tree( action_t* action,
     {
       if ( stack.size() < 1 )
         return nullptr;
-      expr_t* input = stack.back(); stack.pop_back();
+      expr_t* input = stack.back();
+      stack.pop_back();
       assert( input );
-      expr_t* expr = ( optimize ? 
-           select_analyze_unary( t.label, t.type, input ) : 
-           select_unary        ( t.label, t.type, input ) );
+      expr_t* expr = ( optimize ? select_analyze_unary( t.label, t.type, input )
+                                : select_unary( t.label, t.type, input ) );
       stack.push_back( expr );
     }
     else if ( expression_t::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
         return nullptr;
-      expr_t* right = stack.back(); stack.pop_back();
+      expr_t* right = stack.back();
+      stack.pop_back();
       assert( right );
-      expr_t* left  = stack.back(); stack.pop_back();
+      expr_t* left = stack.back();
+      stack.pop_back();
       assert( left );
-      expr_t* expr = ( optimize ? 
-           select_analyze_binary( t.label, t.type, left, right ) : 
-           select_binary        ( t.label, t.type, left, right ) );
+      expr_t* expr =
+          ( optimize ? select_analyze_binary( t.label, t.type, left, right )
+                     : select_binary( t.label, t.type, left, right ) );
       stack.push_back( expr );
     }
   }
@@ -981,50 +1242,61 @@ static expr_t* build_expression_tree( action_t* action,
 
 // action_expr_t::create_constant ===========================================
 
-expr_t* expr_t::create_constant( const std::string& name,
-         double value )
+expr_t* expr_t::create_constant( const std::string& name, double value )
 {
   return new const_expr_t( name, value );
 }
 
 // action_expr_t::parse =====================================================
 
-expr_t* expr_t::parse( action_t* action,
-                       const std::string& expr_str,
-           bool optimize )
+expr_t* expr_t::parse( action_t* action, const std::string& expr_str,
+                       bool optimize )
 {
-  if ( expr_str.empty() ) return nullptr;
+  if ( expr_str.empty() )
+    return nullptr;
 
-  std::vector<expr_token_t> tokens = expression_t::parse_tokens( action, expr_str );
+  std::vector<expr_token_t> tokens =
+      expression_t::parse_tokens( action, expr_str );
 
-  if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
+  if ( action->sim->debug )
+    expression_t::print_tokens( tokens, action->sim );
 
   expression_t::convert_to_unary( tokens );
 
-  if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
+  if ( action->sim->debug )
+    expression_t::print_tokens( tokens, action->sim );
 
-  if ( ! expression_t::convert_to_rpn( tokens ) )
+  if ( !expression_t::convert_to_rpn( tokens ) )
   {
-    action -> sim -> errorf( "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
-    action -> sim -> cancel();
+    action->sim->errorf( "%s-%s: Unable to convert %s into RPN\n",
+                         action->player->name(), action->name(),
+                         expr_str.c_str() );
+    action->sim->cancel();
     return nullptr;
   }
 
-  if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
+  if ( action->sim->debug )
+    expression_t::print_tokens( tokens, action->sim );
 
   if ( expr_t* e = build_expression_tree( action, tokens, optimize ) )
     return e;
 
-  action -> sim -> errorf( "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
-  action -> sim -> cancel();
+  action->sim->errorf( "%s-%s: Unable to build expression tree from %s\n",
+                       action->player->name(), action->name(),
+                       expr_str.c_str() );
+  action->sim->cancel();
   return nullptr;
 }
 
 #ifdef UNIT_TEST
 
-uint32_t dbc::get_school_mask( school_e ) { return 0; }
+uint32_t dbc::get_school_mask( school_e )
+{
+  return 0;
+}
 
-namespace {
+namespace
+{
 expr_t* parse_expression( const char* arg )
 {
   std::vector<expr_token_t> tokens = expression_t::parse_tokens( 0, arg );
@@ -1044,18 +1316,20 @@ expr_t* parse_expression( const char* arg )
 
 void time_test( expr_t* expr, uint64_t n )
 {
-  double value = 0;
+  double value        = 0;
   const int64_t start = util::milliseconds();
-  for ( uint64_t i = 0; i < n ; ++i )
-    value = expr -> eval();
+  for ( uint64_t i = 0; i < n; ++i )
+    value            = expr->eval();
   const int64_t stop = util::milliseconds();
   printf( "evaluate: %f in %.4f seconds\n", value, ( stop - start ) / 1000.0 );
 }
 }
 
-void sim_t::cancel() {}
+void sim_t::cancel()
+{
+}
 
-int sim_t::errorf( const char *format, ... )
+int sim_t::errorf( const char* format, ... )
 {
   va_list ap;
   va_start( ap, format );
@@ -1064,7 +1338,7 @@ int sim_t::errorf( const char *format, ... )
   return result;
 }
 
-void sim_t::output( sim_t*, const char *format, ... )
+void sim_t::output( sim_t*, const char* format, ... )
 {
   va_list ap;
   va_start( ap, format );
@@ -1094,7 +1368,7 @@ int main( int argc, char** argv )
       if ( n_evals == 1 )
       {
         puts( "evaluate:" );
-        printf( "%f\n", expr -> eval() );
+        printf( "%f\n", expr->eval() );
       }
       else
         time_test( expr, n_evals );

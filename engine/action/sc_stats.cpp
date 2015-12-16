@@ -32,10 +32,10 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   total_amount( name_str + " Total Amount", p -> sim -> statistics_level < 3 ),
   portion_aps( name_str + " Portion APS", p -> sim -> statistics_level < 3 ),
   portion_apse( name_str + " Portion APSe", p -> sim -> statistics_level < 3 ),
-  direct_results( RESULT_MAX ),
-  direct_results_detail( FULLTYPE_MAX ),
-  tick_results( RESULT_MAX ),
-  tick_results_detail( FULLTYPE_MAX ),
+  direct_results(),
+  direct_results_detail(),
+  tick_results(),
+  tick_results_detail(),
   // Reporting only
   resource_portion(), apr(), rpe(),
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
@@ -320,8 +320,8 @@ void stats_t::analyze()
     }
   }
 
-  portion_aps.analyze_all();
-  portion_apse.analyze_all();
+  portion_aps.analyze();
+  portion_apse.analyze();
 
   resource_gain.analyze( sim );
 
@@ -335,8 +335,8 @@ void stats_t::analyze()
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
 
-  total_amount.analyze_all();
-  actual_amount.analyze_all();
+  total_amount.analyze();
+  actual_amount.analyze();
 
   compound_amount = actual_amount.count() ? actual_amount.mean() : 0.0;
 

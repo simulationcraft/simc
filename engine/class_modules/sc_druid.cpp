@@ -507,13 +507,13 @@ public:
     const spell_data_t* lunar_inspiration;
 
     const spell_data_t* incarnation_cat;
-    const spell_data_t* bloody_slash;
+    const spell_data_t* savage_roar;
 
     const spell_data_t* sabertooth;
     const spell_data_t* jagged_wounds;
     const spell_data_t* elunes_guidance;
 
-    const spell_data_t* savage_roar;
+    const spell_data_t* bloody_slash;
     const spell_data_t* bloodtalons;
     
     // Balance
@@ -574,7 +574,6 @@ public:
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t empowerment;
     artifact_power_t falling_star;
-    artifact_power_t mooncraze;
     artifact_power_t moon_and_stars;
     artifact_power_t new_moon;
     artifact_power_t power_of_goldrinn;
@@ -588,6 +587,7 @@ public:
     artifact_power_t touch_of_the_moon;
     artifact_power_t rejuvenating_innervation;
     artifact_power_t light_of_the_sun;
+    artifact_power_t mooncraze; // will be replaced
   } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -595,13 +595,13 @@ public:
     form( NO_FORM ),
     active_starfalls( 0 ),
     max_fb_energy( 0 ),
-    initial_astral_power( 0 ),
-    initial_moon_stage( NEW_MOON ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     scythe_of_elune(),
     balance_tier18_2pc( *this ),
     predator( *this ),
+    initial_astral_power( 0 ),
+    initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     caster_form_weapon(),
@@ -1576,12 +1576,16 @@ public:
   gain_t* ap_gain;
 
   druid_spell_t( const std::string& token, druid_t* p,
-                 const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string() ) :
-    base_t( token, p, s ), ap_per_hit( 0 ), ap_per_tick( 0 ),
-    ap_per_cast( 0 ), consumes_owlkin_frenzy( false ),
-    benefits_from_ca( false ), benefits_from_elune( false ),
-    ap_gain( p -> get_gain( name() ) )
+                 const spell_data_t* s      = spell_data_t::nil(),
+                 const std::string& options = std::string() )
+    : base_t( token, p, s ),
+      ap_per_hit( 0 ),
+      ap_per_tick( 0 ),
+      ap_per_cast( 0 ),
+      benefits_from_ca( false ),
+      benefits_from_elune( false ),
+      consumes_owlkin_frenzy( false ),
+      ap_gain( p->get_gain( name() ) )
   {
     parse_options( options );
   }
@@ -2134,6 +2138,8 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                                name(),
                                (int) player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
+      stats -> consume_resource( RESOURCE_COMBO_POINT, consumed );
+
       if ( p() -> talent.soul_of_the_forest -> ok() && p() -> specialization() == DRUID_FERAL )
         p() -> resource_gain( RESOURCE_ENERGY,
                               consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
@@ -2585,8 +2591,7 @@ struct savage_roar_t : public cat_attack_t
     cat_attack_t( "savage_roar", p, p -> talent.savage_roar, options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    base_costs[ RESOURCE_ENERGY ] = 25; // FIXME
-    may_multistrike = may_crit = may_miss = harmful = false;
+    may_crit = may_miss = harmful = false;
     dot_duration  = timespan_t::zero();
     base_tick_time = timespan_t::zero();
 
@@ -2601,7 +2606,7 @@ struct savage_roar_t : public cat_attack_t
     if ( combo_points == -1 )
       combo_points = (int) p() -> resources.current[ RESOURCE_COMBO_POINT ];
   
-    timespan_t d = data().duration() + timespan_t::from_seconds( 6.0 ) * combo_points;
+    timespan_t d = data().duration() + timespan_t::from_seconds( 4.0 ) * combo_points;
 
     // Maximum duration is 130% of the raw duration of the new Savage Roar.
     if ( p() -> buff.savage_roar -> check() )
@@ -7139,7 +7144,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 }
 
 // Copypasta for reporting
-bool has_amount_results( const std::vector<stats_t::stats_results_t>& res )
+bool has_amount_results( const std::array<stats_t::stats_results_t,RESULT_MAX>& res )
 {
   return (
       res[ RESULT_HIT ].actual_amount.mean() > 0 ||
@@ -7343,7 +7348,7 @@ static void scythe_of_elune( special_effect_t& effect )
                           .quiet( true )
                           .tick_callback( [ s ]( buff_t*, int, const timespan_t& )
                                           { s -> buff.owlkin_frenzy ->  trigger( 1, buff_t::DEFAULT_VALUE(), s -> buff.the_reaping -> current_value ); } )
-                          .default_value( s -> buff.owlkin_frenzy -> default_chance * ( s -> artifact.mooncraze.rank() ? 2.0 : 1.0 ) )
+                          .default_value( s -> buff.owlkin_frenzy -> default_chance )
                           .tick_zero( true );
 }
 

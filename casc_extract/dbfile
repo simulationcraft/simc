@@ -18,7 +18,7 @@ DBFilesClient\AreaPOIState.db2
 DBFilesClient\AreaTable.dbc
 DBFilesClient\AreaTrigger.dbc
 DBFilesClient\AreaTriggerActionSet.dbc
-DBFilesClient\AreaTriggerBox.dbc
+DBFilesClient\AreaTriggerBox.db2
 DBFilesClient\AreaTriggerCylinder.db2
 DBFilesClient\AreaTriggerSphere.db2
 DBFilesClient\ArmorLocation.db2
@@ -93,6 +93,7 @@ DBFilesClient\Creature.db2
 DBFilesClient\CreatureDifficulty.db2
 DBFilesClient\CreatureDispXUiCamera.db2
 DBFilesClient\CreatureDisplayInfo.db2
+DBFilesClient\CreatureDisplayInfoCond.db2
 DBFilesClient\CreatureDisplayInfoExtra.db2
 DBFilesClient\CreatureDisplayInfoTrn.db2
 DBFilesClient\CreatureFamily.dbc
@@ -132,7 +133,6 @@ DBFilesClient\Exhaustion.dbc
 DBFilesClient\Faction.dbc
 DBFilesClient\FactionGroup.dbc
 DBFilesClient\FactionTemplate.dbc
-DBFilesClient\FileData.dbc
 DBFilesClient\FootprintTextures.db2
 DBFilesClient\FootstepTerrainLookup.db2
 DBFilesClient\FriendshipRepReaction.db2
@@ -177,6 +177,7 @@ DBFilesClient\GarrPlotUICategory.db2
 DBFilesClient\GarrSiteLevel.db2
 DBFilesClient\GarrSiteLevelPlotInst.db2
 DBFilesClient\GarrSpecialization.db2
+DBFilesClient\GarrType.db2
 DBFilesClient\GarrUiAnimClassInfo.db2
 DBFilesClient\GarrUiAnimRaceInfo.db2
 DBFilesClient\GemProperties.dbc
@@ -206,6 +207,7 @@ DBFilesClient\ImportPriceArmor.db2
 DBFilesClient\ImportPriceQuality.db2
 DBFilesClient\ImportPriceShield.db2
 DBFilesClient\ImportPriceWeapon.db2
+DBFilesClient\InvasionClientData.db2
 DBFilesClient\Item-sparse.db2
 DBFilesClient\Item.db2
 DBFilesClient\ItemAppearance.db2
@@ -235,7 +237,7 @@ DBFilesClient\ItemGroupSounds.db2
 DBFilesClient\ItemLimitCategory.db2
 DBFilesClient\ItemModifiedAppearance.db2
 DBFilesClient\ItemModifiedAppearanceExtra.db2
-DBFilesClient\ItemNameDescription.dbc
+DBFilesClient\ItemNameDescription.db2
 DBFilesClient\ItemPetFood.db2
 DBFilesClient\ItemPriceBase.db2
 DBFilesClient\ItemRandomProperties.db2
@@ -274,7 +276,7 @@ DBFilesClient\LfgDungeonsGroupingMap.dbc
 DBFilesClient\LfgRoleRequirement.db2
 DBFilesClient\Light.dbc
 DBFilesClient\LightData.dbc
-DBFilesClient\LightParams.dbc
+DBFilesClient\LightParams.db2
 DBFilesClient\LightSkybox.db2
 DBFilesClient\LiquidMaterial.db2
 DBFilesClient\LiquidObject.db2
@@ -298,7 +300,7 @@ DBFilesClient\MapDifficulty.dbc
 DBFilesClient\MarketingPromotionsXLocale.db2
 DBFilesClient\Material.db2
 DBFilesClient\MinorTalent.dbc
-DBFilesClient\ModelFileData.dbc
+DBFilesClient\ModelFileData.db2
 DBFilesClient\ModelManifest.db2
 DBFilesClient\ModelNameToManifest.db2
 DBFilesClient\ModifierTree.db2
@@ -306,7 +308,7 @@ DBFilesClient\Mount.db2
 DBFilesClient\MountCapability.db2
 DBFilesClient\MountType.db2
 DBFilesClient\MountTypeXCapability.db2
-DBFilesClient\Movie.dbc
+DBFilesClient\Movie.db2
 DBFilesClient\MovieFileData.db2
 DBFilesClient\MovieVariation.dbc
 DBFilesClient\NPCSounds.db2
@@ -335,7 +337,7 @@ DBFilesClient\PlayerCondition.db2
 DBFilesClient\Positioner.db2
 DBFilesClient\PositionerState.db2
 DBFilesClient\PositionerStateEntry.db2
-DBFilesClient\PowerDisplay.dbc
+DBFilesClient\PowerDisplay.db2
 DBFilesClient\PowerType.db2
 DBFilesClient\PrestigeLevelInfo.db2
 DBFilesClient\PvpDifficulty.dbc
@@ -486,6 +488,7 @@ DBFilesClient\TotemCategory.db2
 DBFilesClient\Toy.db2
 DBFilesClient\TradeSkillCategory.db2
 DBFilesClient\TradeSkillItem.db2
+DBFilesClient\TransformMatrix.db2
 DBFilesClient\TransportAnimation.db2
 DBFilesClient\TransportPhysics.db2
 DBFilesClient\TransportRotation.db2
@@ -530,7 +533,7 @@ DBFilesClient\WorldMapContinent.dbc
 DBFilesClient\WorldMapOverlay.db2
 DBFilesClient\WorldMapTransforms.db2
 DBFilesClient\WorldState.dbc
-DBFilesClient\WorldStateExpression.dbc
+DBFilesClient\WorldStateExpression.db2
 DBFilesClient\WorldStateUI.dbc
 DBFilesClient\WorldStateZoneSounds.db2
 DBFilesClient\World_PVP_Area.db2
@@ -543,6 +546,8 @@ DBFilesClient\gtArtifactLevelXP.dbc
 DBFilesClient\gtBarberShopCostBase.dbc
 DBFilesClient\gtBattlePetTypeDamageMod.dbc
 DBFilesClient\gtBattlePetXP.dbc
+DBFilesClient\gtChallengeModeDamage.dbc
+DBFilesClient\gtChallengeModeHealth.dbc
 DBFilesClient\gtChanceToMeleeCrit.dbc
 DBFilesClient\gtChanceToMeleeCritBase.dbc
 DBFilesClient\gtChanceToSpellCrit.dbc
@@ -574,4 +579,3 @@ DBFilesClient\gtResilienceDR.dbc
 DBFilesClient\gtSandboxScaling.dbc
 DBFilesClient\gtSpellScaling.dbc
 game.db2
-spectatedb2
