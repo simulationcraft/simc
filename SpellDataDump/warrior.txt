@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -179,10 +179,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards
 #3 (id=292881)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Siegebreaker (176289), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Heroic Strike (202562), Heroic Strike (202563)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Siegebreaker (176289), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Heroic Strike (202563)
 #4 (id=298857)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Siegebreaker (176289), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Heroic Strike (202562), Heroic Strike (202563)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Siegebreaker (176289), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Heroic Strike (202563)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage
 Description      : $?s199023[Demoralizes all enemies within $A1 yards, reducing the damage they do by $s1% for $d.][Demoralizes all enemies within $A1 yards, reducing the damage they do to you by $s1% for $d.]
@@ -270,7 +270,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=524)      : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Execute (5308), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874), Bladestorm (168969), Siegebreaker (176289), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Heroic Strike (202562), Heroic Strike (202563)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Execute (5308), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874), Bladestorm (168969), Siegebreaker (176289), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Heroic Strike (202563)
 #2 (id=292217)   : Server Side Script (77)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards
 #3 (id=298936)   : Energize Power (30)
@@ -331,7 +331,6 @@ Effects          :
 #2 (id=135068)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 25 yards
 Description      : Run at high speed toward an ally within $A1 yards, intercepting the next melee or ranged attack within $147833d while the target remains within $147833A2 yards.
-Tooltip          : The next melee or ranged attack made against you will be made against the intervening Warrior instead.
 
 Name             : Revenge Trigger (id=5301) [Passive, Hidden] 
 Class            : Warrior
@@ -371,7 +370,7 @@ Effects          :
 
 Name             : Execute (id=5308) [Spell Family (4)] 
 Class            : Fury Warrior
-Resource         : 30 Rage
+Resource         : 40 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -643,8 +642,8 @@ Name             : Berserker Rage (id=18499) [Spell Family (4)]
 Class            : Arms Fury Warrior
 Spell Level      : 50
 Duration         : 6 seconds
-Cooldown         : 30 seconds
-Affecting spells : Item - Warrior T18 Protection 2P Bonus (185796), Raging Berserker (200861)
+Cooldown         : 60 seconds
+Affecting spells : Item - Warrior T18 Protection 2P Bonus (185796), Raging Berserker (200861), Outburst (206320)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -662,7 +661,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23
 #5 (id=256727)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0
-Description      : You go berserk, removing and granting immunity to Fear, Sap and Incapacitate effects for $d.$?s184361[
+Description      : You go berserk, removing and granting immunity to Fear, Sap and Incapacitate effects for $d.$?(a206320&s184361)[
 
 Also Enrages you for $184362d.][]
 Tooltip          : Immune to Fear, Sap, and Incapacitate effects.
@@ -760,11 +759,11 @@ Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 175 | Scaled Value: 1.75
+                   Base Value: 200 | Scaled Value: 2
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage
 #4 (id=226744)   : Dummy (3)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 25 | Scaled Value: 25
 Description      : Attack the target in a bloodthirsty craze, dealing $sw2 Physical damage, generating ${$m3/10} Rage, and restoring $117313s1% of your health.
  
 Bloodthirst has an additional $m4% chance to be a critical strike.
@@ -791,7 +790,8 @@ Effects          :
 #2 (id=280400)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e
 Description      : Raise your shield, reflecting spells cast on you and reducing magical damage taken by $s2%. Lasts $d or until a spell is reflected.
-Tooltip          : Reflects a spell cast on you.
+Tooltip          : Reflects a spell cast on you.
+Magical damage taken reduced by $s2%.
 
 Name             : Shield Slam (id=23922) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -819,7 +819,7 @@ Generates $/10;s3 Rage.
 Variables        : $apmult=${0.561+$gte($PL,80)*0.426+$gte($PL,85)*2.46}
 $gladmult=$?a156291[${1.05}][${1.0}]
 $shieldchargemult=$?a169667[${1.25}][${1.0}]
-$shieldslam=${$AP*$<apmult>*$<gladmult>*$<shieldchargemult>*(1+$@versadmg)}
+$shieldslam=${$m1+$AP*$<apmult>*$<gladmult>*$<shieldchargemult>*(1+$@versadmg)}
 
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
@@ -946,7 +946,7 @@ Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
 Name             : Victory Rush (id=34428) [Scaling Spell (12), Spell Family (4)] 
-Class            : Arms Warrior
+Class            : Arms Protection Warrior
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1658,11 +1658,10 @@ Reduces the cooldown of your Shield Wall by $/60000;S2 min.
 
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
 Class            : Fury Warrior
-Resource         : 10 Rage
 Spell Level      : 10 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Meat Cleaver (85739), Headlong Rush (158836), Wrath and Fury (200849), Sweeping Strikes (202161), Enraging Blows (202321), 
+Affecting spells : Recklessness (1719), Meat Cleaver (85739), Headlong Rush (158836), Wrath and Fury (200849), Sweeping Strikes (202161), Enraging Blows (202321)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1675,10 +1674,12 @@ Effects          :
 #2 (id=86559)    : Trigger Spell: Raging Blow (64)
                    Base Value: 80 | Scaled Value: 80 | Trigger Spell: 85384
 #3 (id=244038)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: rage
-Description      : A mighty blow with both weapons that deals a total of ${$96103sw2+$85384sw2} Physical damage$?s202321[ and generates ${$m3/10} Rage][].
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: rage
+Description      : A mighty blow with both weapons that deals a total of ${$96103sw2+$85384sw2} Physical damage.
 
-Only usable while Enraged.
+Generates ${$m3/10} Rage.$?a202321[][
+
+Only usable while Enraged.]
 
 Name             : Raging Blow (id=85384) [Spell Family (4)] 
 Class            : Warrior
@@ -1702,7 +1703,7 @@ Description      : $@spelldesc85288
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
 Class            : Warrior
-Duration         : 6 seconds
+Duration         : 8 seconds
 Proc Chance      : 101%
 Triggered by     : Meat Cleaver (12950)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1715,8 +1716,11 @@ Effects          :
 #1 (id=87073)    : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17
                    Affected Spells: Raging Blow (85288), Raging Blow (85384), Raging Blow (96103)
+#2 (id=304546)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17
+                   Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
 Description      : $@spelldesc1680
-Tooltip          : Increases the number of targets hit by Raging Blow by $w1.
+Tooltip          : Increases the number of targets hit by Raging Blow $?a206312[and Rampage ][]by $w1.
 
 Name             : Plate Specialization (id=86101) [Passive, Hidden] 
 Class            : Arms Warrior
@@ -1863,6 +1867,33 @@ Effects          :
 Description      : $@spelldesc97462
 Tooltip          : Health increased by $97462s1% of maximum.
 
+Name             : Furious Slash (id=100130) [Spell Family (4)] 
+Class            : Fury Warrior
+Spell Level      : 10
+Range            : 5 yards
+GCD              : 1.5 seconds
+Charges          : 2 (4.5 seconds cooldown)
+Proc Chance      : 101%
+Affecting spells : Recklessness (1719), Headlong Rush (158836), 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=107864)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=107865)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0
+#3 (id=107866)   : Weapon Damage% (31)
+                   Base Value: 250 | Scaled Value: 2.5
+#4 (id=305220)   : Energize Power (30)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage
+Description      : An aggressive strike with your off-hand weapon that deals $sw3 Physical damage
+
+Generates ${$s4/10} Rage.
+
 Name             : Double Time (id=103827) [Spell Family (4), Passive] 
 Class            : Warrior
 Spell Level      : 1
@@ -1891,7 +1922,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=113014)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
-Description      : Your Intercept now deals $7922s1 damage to all enemies within $7922A1 yds, and stuns them for $7922d.
+Description      : Your Intercept now deals $7922s1 damage to all enemies within $7922A1 yds of the target, and stuns them for $7922d.
 
 Name             : Impending Victory (id=103840) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -2031,7 +2062,7 @@ Effects          :
 #2 (id=128463)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
                    Affected Spells: Taunt (355)
-Description      : Protect a party or raid member for $d, reducing damage they take by $s1% and allowing you to use Taunt with no cooldown.
+Description      : Protect an ally for $d, reducing damage they take by $s1% and allowing you to use Taunt with no cooldown.
 Tooltip          : Reduces damage taken by $s1%.
 
 Name             : Deep Wounds (id=115767) [Spell Family (4)] 
@@ -2193,6 +2224,7 @@ Effects          :
 Name             : Bloodthirst Heal (id=117313) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
+Affecting spells : Enraged Regeneration (184364)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2315,7 +2347,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
 
 Name             : Ultimatum (id=122509) [Spell Family (4), Passive] 
-Class            : Protection Warrior
+Class            : Warrior
 Spell Level      : 10
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2654,8 +2686,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179734)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: -40 | Scaled Value: -40
+#1 (id=179734)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 #2 (id=191010)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191011)   : Apply Aura (6) | Dummy (4)
@@ -2835,7 +2867,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0xc419 | Trigger Spell: 199114
 #2 (id=200741)   : Apply Aura (6) | Unknown effect sub type (111)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards
-Description      : Run at high speed towards an ally, intercepting the next melee or ranged attack within $d while the target remains within $A2 yards.
+Description      : $@spelldesc3411
 Tooltip          : The next melee or ranged attack made against you will be made against the intervening Warrior instead.
 
 Name             : Raging Whirlwind (id=148107) 
@@ -3004,10 +3036,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=222399)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Thunder Clap (6343), Overpower (7384), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Heroic Strike (202562), Heroic Strike (202563)
+                   Affected Spells: Thunder Clap (6343), Overpower (7384), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Furious Slash (100130), Heroic Strike (202563)
 #2 (id=222415)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Defensive Stance (71), Rend (772), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874), Bladestorm (168969), Siegebreaker (176289), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Heroic Strike (202562), Heroic Strike (202563)
+                   Affected Spells: Defensive Stance (71), Rend (772), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874), Bladestorm (168969), Siegebreaker (176289), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Heroic Strike (202563)
 Description      : Haste reduces your global cooldown, and the cooldown of $?s12294[Mortal Strike and Thunder Clap]?s23881[Bloodthirst][Shield Slam and Thunder Clap].
 
 Name             : Bladed Armor (id=161608) [Passive] 
@@ -3225,9 +3257,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.00000
 #4 (id=252299)   : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 240
-#5 (id=252300)   : Trigger Spell: (176318) (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 176318
-Description      : Use your full strength to slam the target with $?s23881[both weapons][your weapon], dealing $sw2 damage, and knocking them back and down for $d.
+Description      : Use your full strength to bodyslam the target, dealing $sw2 damage, and knocking them back and down for $d.
 Tooltip          : Knocked down.
 
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
@@ -3251,13 +3281,13 @@ Effects          :
 #3 (id=267821)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 20 | Scaled Value: 20
 #4 (id=267868)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: 100 | Scaled Value: 100
-Description      : Bloodthirst critical strikes or activating Berserker Rage will Enrage you, increasing attack speed by $184362s1% and damage taken by $184362s2% for $184362d.
+                   Base Value: 20 | Scaled Value: 20
+Description      : Bloodthirst critical strikes $?a206320[or activating Berserker Rage ][]will Enrage you, increasing attack speed by $184362s1% and damage taken by $184362s2% for $184362d.
 
 Name             : Enrage (id=184362) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Duration         : 6 seconds
+Duration         : 5 seconds
 Affecting spells : Item - Warrior T18 Protection 2P Bonus (185796), Raging Berserker (200861)
 Triggered by     : Enrage (184361)
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
@@ -3277,8 +3307,9 @@ Tooltip          : Attack speed increased by $s1% and damage taken increased by 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
 Class            : Fury Warrior
 Spell Level      : 12
+Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Seething Rage (202196), 
+Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924)
 Attributes       : ....x... ........ x.x..... ........   ........ .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -3287,20 +3318,26 @@ Attributes       : ....x... ........ x.x..... ........   ........ .......x x....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112)
 Effects          :
-#1 (id=267211)   : Direct Heal% (136)
-                   Base Value: 50 | Scaled Value: 50
-Description      : Instantly heals you for $s1% of your maximum health, but requires and consumes Enrage. Usable while stunned.
+#1 (id=267211)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f
+#2 (id=304657)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
+                   Affected Spells: Bloodthirst Heal (117313)
+Description      : Reduces damage taken by $s1%, and Bloodthirst restores an additional $s2% health. Usable while stunned. Lasts $d.
+
+Only usable while Enraged.
+Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additional $s2% health.
 
 Name             : Rampage (id=184367) [Spell Family (4)] 
 Class            : Fury Warrior
-Resource         : 50 Rage
+Resource         : 90 Rage
 Spell Level      : 18
 Range            : 5 yards
 GCD              : 2 seconds
-Affecting spells : Recklessness (1719), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), 
+Affecting spells : Recklessness (1719), Meat Cleaver (85739), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Attributes       : ........ ........ ........ ........   ........ .xx..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3330,7 +3367,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), 
+Affecting spells : Recklessness (1719), Meat Cleaver (85739), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -3350,7 +3387,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), 
+Affecting spells : Recklessness (1719), Meat Cleaver (85739), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3406,7 +3443,7 @@ Tooltip          : Increases the damage done by your next Whirlwind by $w1%.
 
 Name             : Whirlwind (id=190411) [Spell Family (4)] 
 Class            : Fury Warrior
-Resource         : 30 Rage
+Resource         : 20 Rage
 Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
 Affecting spells : Demoralizing Shout (1160), Recklessness (1719), Headlong Rush (158836), Colossus Smash (167105), Cleave (188923), Dauntless (202297), Scales of Earth (203564)
@@ -3501,6 +3538,7 @@ Replaces         : Charge (id=100)
 Class            : Protection Warrior
 Spell Level      : 72
 Range            : 8 - 25 yards
+Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Affecting spells : Wall of Steel (NYI) (203261)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -3701,7 +3739,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), 
+Affecting spells : Recklessness (1719), Meat Cleaver (85739), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3722,7 +3760,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), 
+Affecting spells : Recklessness (1719), Meat Cleaver (85739), Headlong Rush (158836), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -3796,7 +3834,7 @@ Effects          :
                    Affected Spells: Execute (5308), Mortal Strike (12294), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Execute (163201), Execute Off-Hand (163558), Execute (168874)
 Description      : $?c2[Raging Blow][Mortal Strike] and Execute hit a second nearby target.
 
-Name             : Bounding Strike (id=202163) [Spell Family (4), Passive, Hidden] 
+Name             : Bounding Stride (id=202163) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3824,24 +3862,6 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70
 Description      : $@spelldesc202163
 Tooltip          : Movement speed increased by $s1%.
-
-Name             : Seething Rage (id=202196) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=298007)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11
-                   Affected Spells: Enraged Regeneration (184364)
-#2 (id=298008)   : Apply Aura (6) | Unknown effect sub type (262)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Enraged Regeneration (184364)
-Description      : Enraged Regeneration no longer requires or consumes Enrage, and its cooldown is reduced by ${$m1/-1000} sec.
 
 Name             : Furious Charge (id=202224) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -3916,7 +3936,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298223)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Execute (168874), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Heroic Strike (202562), Heroic Strike (202563)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Execute (168874), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Heroic Strike (202563)
 Description      : Your abilities cost $s1% less Rage.
 
 Name             : Imposing Roar (id=202305) [Spell Family (4), Passive, Hidden] 
@@ -3970,35 +3990,30 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=298259)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
+#1 (id=298259)   : Apply Aura (6) | Unknown effect sub type (262)
+                   Base Value: 0 | Scaled Value: 0
                    Affected Spells: Raging Blow (85288)
-#2 (id=298260)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 23
-                   Affected Spells: Raging Blow (85288)
-Description      : Raging Blow now generates ${$m2/10} Rage, instead of costing Rage.
+Description      : Raging Blow may be used while you are not Enraged.
+
+Replaces Furious Slash.
 
 Name             : Frenzy (id=202539) [Spell Family (4)] 
 Class            : Warrior
-Resource         : 15 Rage
 Spell Level      : 30
-Range            : 5 yards
-GCD              : 0.75 seconds
 Duration         : 10 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
+Triggered by     : Frenzy (206313)
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298590)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
-#2 (id=298591)   : Apply Aura (6) | Modify All Haste% (193)
+#1 (id=298590)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5
-Description      : Furiously slash at the target, dealing $s1 Physical damage, and increasing your Haste by $s2% for $d. Stacks up to $u times.
+Description      : Furious Slash increases your Haste by $s2% for $d. Stacks up to $u times.
 Tooltip          : Haste increased by $s2%.
 
 Name             : Best Served Cold (id=202559) 
@@ -4041,28 +4056,6 @@ Effects          :
 #1 (id=298627)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 11
 Description      : Ignore Pain will ignore up to $s1% more damage, based on your missing health.
-
-Name             : Heroic Strike (id=202562) [Spell Family (4)] 
-Class            : Warrior
-Resource         : 15 Rage
-Spell Level      : 1
-Range            : 5 yards
-Cooldown         : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160), Recklessness (1719), Headlong Rush (158836), Dauntless (202297)
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=298628)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=298629)   : Weapon Damage% (31)
-                   Base Value: 130 | Scaled Value: 1.3
-Description      : Instantly deals $sw2 Physical damage. Heroic Strike gains double the normal damage bonus from Enrage.
-
-This ability is not on the global cooldown.
 
 Name             : Heroic Strike (id=202563) [Spell Family (4)] 
 Class            : Warrior
@@ -4241,13 +4234,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=299230)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
+#1 (id=299230)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
+                   Base Value: -400 | Scaled Value: -400 | Misc Value: 14
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
 #2 (id=299233)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | Misc Value: 1
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
-Description      : Rampage deals $s1% additional damage, and consumes all of your remaining Rage to further increase its damage, proportional to Rage spent.
+Description      : Reduces the cost of Rampage by ${$s1/-10} Rage. Rampage consumes all of your remaining Rage to further increase its damage, proportional to Rage spent.
 
 Name             : Heavy Repercussions (id=203177) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4326,7 +4319,7 @@ Spell Level      : 1
 Range            : 5 yards
 Duration         : Aura (infinite)
 Cooldown         : 1.5 seconds
-Stacks           : 1 initial, 1 maximum
+Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4334,7 +4327,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301805)   : Apply Aura (6) | Add Flat Modifier: Generic Modifier (107)
@@ -4343,10 +4336,12 @@ Effects          :
 #2 (id=301810)   : Apply Aura (6) | Add Flat Modifier: Generic Modifier (107)
                    Base Value: 105 | Scaled Value: 105
                    Affected Spells: Shield Slam (23922)
-Description      : Focus your Rage into your next Devastate or Shield Slam, causing it to deal ${$AP*$s1/100} additional damage.
+#3 (id=305908)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Focus your Rage into your next Devastate or Shield Slam, causing it to deal ${$AP*$s1/100} additional damage.  Stacks up to $u times.
 
 This ability is not on the global cooldown.
-Tooltip          : Next Devastate or Shield Slam deals $w1 more damage.
+Tooltip          : Next Devastate or Shield Slam deals $w3 more damage.
 
 Name             : Inspiring Presence (id=205484) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4361,5 +4356,102 @@ Effects          :
 #1 (id=303446)   : Apply Friendly Area Aura (128) | Unknown effect sub type (443)
                    Base Value: 3 | Scaled Value: 3 | Radius: 60 yards
 Description      : You inspire your allies within $a1, granting them $s1% Leech.
+
+Name             : Meat Grinder (id=206312) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=305081)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12
+Description      : For 8 sec after using Whirlwind, your Rampage will strike 4 additional targets.
+
+Name             : Frenzy (id=206313) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=305082)   : Apply Aura (6) | Proc Trigger Spell: Frenzy (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202539
+Description      : $@spelldesc202539
+
+Name             : Massacre (id=206315) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=305084)   : Apply Aura (6) | Proc Trigger Spell: Massacre (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206316
+Description      : Execute critical strikes cause your next Rampage to cost no Rage.
+
+Name             : Massacre (id=206316) [Spell Family (4)] 
+Class            : Warrior
+Duration         : 10 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Massacre (206315)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=305085)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
+                   Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+Description      : $@spelldesc206315
+Tooltip          : Rampage costs no Rage.
+
+Name             : Outburst (id=206320) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=305090)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11
+                   Affected Spells: Berserker Rage (18499)
+Description      : Berserker Rage now Enrages you for $184362d, and its cooldown is reduced by ${$s1/-1000} sec.
+
+Name             : Cruelty (id=206400) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=305240)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Furious Slash always deals damage as if you were Enraged.
 
 

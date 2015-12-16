@@ -1,4 +1,30 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20773)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
+
+Name             : Invisibility (id=66) [Spell Family (3)] 
+Class            : Fire Frost Mage
+Resource         : 3% Base Mana (33000 @Level 110)
+Spell Level      : 56
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Cooldown         : 300 seconds
+Affecting spells : Erosion (205039)
+Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=39)       : Apply Aura (6) | Periodic Trigger Spell: (35009) (23)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35009
+#3 (id=40)       : None (0)
+                   Base Value: 100 | Scaled Value: 100
+Description      : Turns the caster invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d.$?s56366[
+
+You move $87833s1% faster while invisible. ][]
+
+Invisibility is cancelled if you perform any actions.
+Tooltip          : Fading.
 
 Name             : Frostbolt (id=116) [Spell Family (3)] 
 Class            : Frost Mage
@@ -375,7 +401,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=4830)     : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 10 | Scaled Value: 0 (avg=4.401) | Misc Value: 127
-Description      : Instantly shields you for $d, absorbing ${$m1+$SPFR*4.95} damage. While the shield holds, spellcasting will not be interrupted by damage.
+Description      : Instantly shields you for $d, absorbing ${$m1+$SPFR*10} damage. While the shield holds, spellcasting will not be interrupted by damage.
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Arcane Power (id=12042) [Spell Family (3)] 
@@ -754,6 +780,28 @@ Effects          :
 #1 (id=21340)    : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.25) | SP Coefficient: 0.60600
 Description      : Deals $s1 Frost damage to the target.
+
+Name             : Invisibility (id=32612) [Spell Family (3)] 
+Class            : Mage
+Spell Level      : 56
+Duration         : 20 seconds
+Affecting spells : Erosion (205039)
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=22383)    : Unknown effect type (176)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=22384)    : Apply Aura (6) | Invisibility (18)
+                   Base Value: 340 | Scaled Value: 610 | Points Per Level: 5
+#3 (id=22385)    : Apply Aura (6) | Unknown effect sub type (335)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc66
+Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
@@ -1617,6 +1665,20 @@ Effects          :
 Description      : $@spelldesc86949
 Tooltip          : You have recently benefited from Cauterize and cannot benefit from it again.
 
+Name             : Invisibility Speed (id=87833) [Spell Family (3), Hidden] 
+Class            : Mage
+Duration         : Aura (infinite)
+Attributes       : .......x x....... ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Not a proc (105)
+Effects          :
+#1 (id=89935)    : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 40 | Scaled Value: 40
+
 Name             : Fireball (id=88082) [Scaling Spell (5)] 
 Class            : Mage
 Resource         : 0.1% Base Mana (1100 @Level 110)
@@ -1795,6 +1857,50 @@ Description      : Blasts the enemy for $s1 Fire damage. This damage is always a
 
 Inferno Blast is not on the global cooldown, and can be cast while casting other spells.
 
+Name             : Greater Invisibility (id=110959) [Spell Family (3)] 
+Class            : Arcane Mage
+Spell Level      : 56
+GCD              : 1.5 seconds
+Cooldown         : 90 seconds
+Affecting spells : Erosion (205039)
+Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=123208)   : Trigger Spell: Greater Invisibility (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 110960
+Description      : Instantly makes you invisible and untargetable for $110960d, removing all threat and two damage over time effects.  Any action taken cancels this effect.  You take $113862s1% reduced damage while invisible and for 3 sec after the effect expires.$?s56366[
+
+You move $87833s1% faster while invisible. ][]
+
+Replaces Invisibility.
+
+Name             : Greater Invisibility (id=110960) [Spell Family (3)] 
+Class            : Mage
+Spell Level      : 56
+Duration         : 20 seconds
+Affecting spells : Erosion (205039)
+Triggered by     : Greater Invisibility (110959)
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=123204)   : Unknown effect type (176)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=123205)   : Apply Aura (6) | Invisibility (18)
+                   Base Value: 340 | Scaled Value: 610 | Points Per Level: 5
+#3 (id=123206)   : Apply Aura (6) | Unknown effect sub type (335)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc110959
+Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
+
 Name             : Frost Bomb (id=112948) [Spell Family (3)] 
 Class            : Mage
 Resource         : 1.25% Base Mana (13750 @Level 110)
@@ -1886,6 +1992,22 @@ Effects          :
 #3 (id=131422)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 6.5 - 8 yards
 Description      : Summons a Ring of Frost for $d at the target location. Enemies entering the ring will become incapacitated for $82691d.  Limit 10 targets.
+
+Name             : Greater Invisibility (id=113862) [Spell Family (3)] 
+Class            : Mage
+Spell Level      : 1
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=126901)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -90 | Scaled Value: -90 | Misc Value: 0x7f
+Description      : $@spelldesc110959
+Tooltip          : Damage taken is reduced by $s1%.
 
 Name             : Arcane Charge (id=114664) [Spell Family (3), Passive] 
 Class            : Arcane Mage
@@ -1979,6 +2101,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
+Charges          : 2 (45 seconds cooldown)
 Affecting spells : Ice Floes (108839)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3509,7 +3632,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302650)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Enemies affected by Ignite have a chance to Flare Up for $205301d. While Flared Up, nearby enemies take $205345s1 Fire damage each second.
+Description      : Enemies affected by Ignite have a chance to flare up for $205301d. While flared up, nearby enemies take an additional $205345s1 Fire damage every $205301t sec.
 
 Name             : Lonely Winter (id=205024) [Spell Family (3), Passive] 
 Class            : Mage
@@ -3762,11 +3885,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302666)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Arcane Barrage (44425), Ancient Teleport: Dalaran (120145), Arcane Orb (153640)
+                   Affected Spells: Invisibility (66), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Invisibility (32612), Arcane Barrage (44425), Greater Invisibility (110959), Greater Invisibility (110960), Ancient Teleport: Dalaran (120145), Arcane Orb (153640)
 Description      : Erode the targets resistances, increasing damage taken by all of your Arcane spells by $s1% for $d.
 Tooltip          : Damage taken from Arcane spells increased by $s1%.
 
-Name             : Flare Up (id=205301) [Spell Family (3)] 
+Name             : Conflagration (id=205301) [Spell Family (3)] 
 Class            : Mage
 Spell Level      : 3
 Range            : 100 yards
@@ -3778,16 +3901,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=303128)   : Apply Aura (6) | Periodic Trigger Spell: Flare Up every 1.5 seconds (23)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Trigger Spell: 205345
+#1 (id=303128)   : Apply Aura (6) | Periodic Dummy: every 1.5 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Explodes with fire.
 Tooltip          : Exploding with fire.
 
-Name             : Flare Up (id=205345) [Spell Family (3)] 
+Name             : Conflagration (id=205345) [Spell Family (3)] 
 Class            : Mage
 Spell Level      : 3
 Range            : 100 yards
-Triggered by     : Flare Up (205301)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3799,7 +3921,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Radius: 0 - 3 yards
 Description      : Explodes with fire.
 
-Name             : Flamestrike (id=205472) [Spell Family (3)] 
+Name             : Flame Patch (id=205472) [Spell Family (3)] 
 Class            : Mage
 Spell Level      : 44
 Range            : 100 yards
@@ -3811,8 +3933,8 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Radius: 0 - 8 yards
-Description      : Burning enemies for $s1% Fire damage.
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000
+Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
 Class            : Mage
