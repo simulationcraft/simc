@@ -349,9 +349,8 @@ public:
 private:
   std::vector<value_t> _data;
   std::vector<value_t> _sorted_data;  // extra sequence so we can keep the
-                                       // original, unsorted order ( for example
-                                       // to do regression on it )
-  bool is_sorted;
+                                      // original, unsorted order ( for example
+                                      // to do regression on it )
 
 public:
   extended_sample_data_t( const std::string& n, bool s = true )
@@ -362,8 +361,7 @@ public:
       std_dev(),
       mean_variance(),
       mean_std_dev(),
-      simple( s ),
-      is_sorted( false )
+      simple( s )
   {
   }
 
@@ -396,13 +394,7 @@ public:
     else
     {
       _data.push_back( x );
-      is_sorted = false;
     }
-  }
-
-  bool sorted() const
-  {
-    return is_sorted;
   }
 
   size_t size() const
@@ -435,17 +427,9 @@ public:
     if ( data().empty() )
       return;
 
-    if ( sorted() )
-    {  // If we have sorted data, we can just take the front/back as min/max
-      base_t::set_min( _sorted_data.front() );
-      base_t::set_max( _sorted_data.back() );
-    }
-    else
-    {
-      auto minmax = std::minmax_element( data().begin(), data().end() );
-      base_t::set_min( *minmax.first );
-      base_t::set_max( *minmax.second );
-    }
+    auto minmax = std::minmax_element( data().begin(), data().end() );
+    base_t::set_min( *minmax.first );
+    base_t::set_max( *minmax.second );
 
     base_t::_sum = statistics::calculate_sum( data() );
     _mean = base_t::_sum / data().size();
@@ -490,17 +474,12 @@ public:
   // sort data
   void sort()
   {
-    if ( is_sorted )
-    {
-      return;
-    }
     if ( simple )
     {
       return;
     }
     _sorted_data = _data;
     range::sort( _sorted_data );
-    is_sorted = true;
   }
 
   /* Create histogram ( not normalized ) of the data
@@ -540,9 +519,6 @@ public:
 
     if ( data().empty() )
       return 0;
-
-    if ( !is_sorted )
-      return base_t::nan();
 
     // Should be improved to use linear interpolation
     return ( sorted_data()[ (int)( x * ( sorted_data().size() - 1 ) ) ] );
