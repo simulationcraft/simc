@@ -447,7 +447,7 @@ public:
     artifact_power_t light_on_your_feet;
     artifact_power_t power_of_a_thousand_cranes;
     artifact_power_t rising_winds;
-    artifact_power_t strike_of_the_skylord;
+    artifact_power_t strike_of_the_windlord;
     artifact_power_t strength_of_xuen;
     artifact_power_t transfer_the_power;
     artifact_power_t tornado_kicks;
@@ -2003,7 +2003,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
       if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] ) )
       {
-        chi_gain += p() -> buff.power_strikes -> value();
+        player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> value(), p() -> gain.power_strikes, this );
         p() -> buff.power_strikes -> expire();
       }
       player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
@@ -2782,31 +2782,35 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
 
 
 // ==========================================================================
-// Strike of the Skylord
+// Strike of the Windlord
 // ==========================================================================
+// Off hand hits first followed by main hand
+// TODO: make sure AoE is using the n^2 calculation or straight up AoE
 
-struct strike_of_the_skylord_off_hand_t: public monk_melee_attack_t
+struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
 {
-  strike_of_the_skylord_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
+  strike_of_the_windlord_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
     monk_melee_attack_t( name, p, s )
   {
     may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
     weapon = &( p -> off_hand_weapon );
+    aoe = -1;
   }
 };
 
-struct strike_of_the_skylord_t: public monk_melee_attack_t
+struct strike_of_the_windlord_t: public monk_melee_attack_t
 {
-  strike_of_the_skylord_off_hand_t* oh_attack;
-  strike_of_the_skylord_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "strike_of_the_skylord", p, &( p -> artifact.strike_of_the_skylord.data() ) ),
+  strike_of_the_windlord_off_hand_t* oh_attack;
+  strike_of_the_windlord_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "strike_of_the_windlord", p, &( p -> artifact.strike_of_the_windlord.data() ) ),
     oh_attack( nullptr )
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
+    aoe = -1;
 
-    oh_attack = new strike_of_the_skylord_off_hand_t( p, "strike_of_the_skylord_offhand", data().effectN( 4 ).trigger() );
+    oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
   }
 
@@ -4520,7 +4524,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "spinning_dragon_strike" ) return new    spinning_dragon_strike_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   // Artifacts
-  if ( name == "strike_of_the_skylord" ) return new     strike_of_the_skylord_t( this, options_str );
+  if ( name == "strike_of_the_windlord" ) return new    strike_of_the_windlord_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
 
@@ -4645,7 +4649,7 @@ void monk_t::init_spells()
   artifact.light_on_your_feet         = find_artifact_spell( "Light on Your Feet" );
   artifact.power_of_a_thousand_cranes = find_artifact_spell( "Power of a Thousand Cranes" );
   artifact.rising_winds               = find_artifact_spell( "Rising Winds" );
-  artifact.strike_of_the_skylord      = find_artifact_spell( "Strike of the Skylord" );
+  artifact.strike_of_the_windlord     = find_artifact_spell( "Strike of the Windlord" );
   artifact.strength_of_xuen           = find_artifact_spell( "Strength of Xuen" );
   artifact.transfer_the_power         = find_artifact_spell( "Transfer the Power" );
   artifact.tornado_kicks              = find_artifact_spell( "Tornado Kicks" );
