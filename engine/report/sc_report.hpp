@@ -22,6 +22,8 @@ class extended_sample_data_t;
 struct player_processed_report_information_t;
 struct sim_report_information_t;
 struct spell_data_expr_t;
+class reforge_plot_run_t;
+struct plot_data_t;
 
 #include <chrono>
 /**
@@ -71,7 +73,7 @@ std::string timeline           ( const std::vector<double>&, const std::string&,
 std::string timeline_dps_error ( const player_t& );
 std::string scale_factors      ( const player_t& );
 std::string scaling_dps        ( const player_t& );
-std::string reforge_dps        ( const player_t& );
+std::vector<std::pair<unsigned,std::string>> reforge_dps        ( const player_t& );
 std::string distribution       ( const std::vector<size_t>& /*dist_data*/, const std::string&, double, double, double );
 std::string normal_distribution(  double mean, double std_dev, double confidence, double tolerance_interval = 0  );
 std::string dps_error( player_t& );
@@ -106,7 +108,7 @@ highchart::time_series_t& generate_actor_timeline( highchart::time_series_t&,
 bool generate_actor_dps_series( highchart::time_series_t& series, const player_t& p );
 bool generate_scale_factors( highchart::bar_chart_t& bc, const player_t& p, scale_metric_e metric );
 bool generate_scaling_plot( highchart::chart_t& bc, const player_t& p, scale_metric_e metric );
-bool generate_reforge_plot( highchart::chart_t& bc, const player_t& p );
+bool generate_reforge_plot( highchart::chart_t& bc, const player_t& p, const std::pair<const reforge_plot_run_t*,std::vector<std::vector<plot_data_t>>>& plr  );
  
 } // end namespace sc_chart
 

@@ -847,12 +847,15 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
       writer.end_tag( "chart" );
     }
 
-    if ( ! ri.reforge_dps_chart.empty() )
+    for ( const auto& reforge_dps_chart : ri.reforge_dps_charts )
     {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "reforge_dps" );
-      writer.print_attribute_unescaped( "href", ri.reforge_dps_chart );
-      writer.end_tag( "chart" );
+      if ( ! reforge_dps_chart.second.empty() )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "reforge_dps" );
+        writer.print_attribute_unescaped( "href", reforge_dps_chart.second );
+        writer.end_tag( "chart" );
+      }
     }
 
     if ( ! ri.scale_factors_chart.empty() )
@@ -928,13 +931,15 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
       writer.end_tag( "chart" );
     }
 
-    highchart::chart_t reforge( highchart::build_id( *p, "reforge_plot" ), p -> sim );
-    if ( chart::generate_reforge_plot( reforge, *p ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "reforge_dps" );
-      writer.print_text( reforge.to_xml() );
-      writer.end_tag( "chart" );
+    for ( const auto& plot_pair : p->reforge_plot_data ) {
+      highchart::chart_t reforge( highchart::build_id( *p, "reforge_plot" ), p -> sim );
+      if ( chart::generate_reforge_plot( reforge, *p, plot_pair ) )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "reforge_dps" );
+        writer.print_text( reforge.to_xml() );
+        writer.end_tag( "chart" );
+      }
     }
 
     scaling_metric_data_t scaling_data = p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );

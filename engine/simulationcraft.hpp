@@ -2007,13 +2007,18 @@ private:
 };
 
 // Reforge Plot =============================================================
-
+class reforge_plot_run_t
+{
+public:
+  std::vector<stat_e> reforge_plot_stat_indices;
+};
 struct reforge_plot_t
 {
+
   sim_t* sim;
   sim_t* current_reforge_sim;
   std::string reforge_plot_stat_str;
-  std::vector<stat_e> reforge_plot_stat_indices;
+  std::vector<reforge_plot_run_t> reforge_plots;
   int    reforge_plot_step;
   int    reforge_plot_amount;
   int    reforge_plot_iterations;
@@ -2024,16 +2029,18 @@ struct reforge_plot_t
 
   reforge_plot_t( sim_t* s );
 
+  void start();
+  void run_plots();
+  double progress( std::string& phase, std::string* detailed = nullptr );
+private:
   void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
                            const std::vector<stat_e> &stat_indices,
                            int cur_mod_stat,
                            std::vector<int> cur_stat_mods );
-  void analyze();
-  void analyze_stats();
-  double progress( std::string& phase, std::string* detailed = nullptr );
-private:
   void write_output_file();
   void create_options();
+  void run_reforge_plot( const reforge_plot_run_t& );
+  void debug_plot(  const reforge_plot_run_t&, const std::vector<std::vector<int>>& stat_mods);
 };
 
 struct plot_data_t
@@ -3020,7 +3027,9 @@ struct player_processed_report_information_t
   std::array<std::string, STAT_MAX> timeline_stat_chart;
   std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-  std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
+  std::vector<std::pair<unsigned,std::string>> reforge_dps_charts;
+  std::string dps_error_chart;
+  std::string distribution_deaths_chart;
   std::string health_change_chart, health_change_sliding_chart;
   std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
   std::string save_str;
@@ -3599,7 +3608,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<uptime_t*> > uptime_list;
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
-  std::vector<std::vector<plot_data_t> > reforge_plot_data;
+  std::unordered_map<const reforge_plot_run_t*, std::vector<std::vector<plot_data_t>>> reforge_plot_data;
   auto_dispose< std::vector<luxurious_sample_data_t*> > sample_data_list;
 
   // All Data collected during / end of combat

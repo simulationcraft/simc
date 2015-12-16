@@ -1177,288 +1177,295 @@ std::string chart::scaling_dps( const player_t& p )
 
 // chart::reforge_dps =======================================================
 
-std::string chart::reforge_dps( const player_t& p )
+std::vector<std::pair<unsigned,std::string>> chart::reforge_dps( const player_t& p )
 {
-  const std::vector< std::vector<plot_data_t> >& pd = p.reforge_plot_data;
-  if ( pd.empty() )
-    return std::string();
-
-  double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
-
-  size_t num_stats = pd[ 0 ].size() - 1;
-  if ( num_stats != 3 && num_stats != 2 )
+  std::vector<std::pair<unsigned,std::string>> result;
+  for ( const auto& pd_pair : p.reforge_plot_data )
   {
-    p.sim -> errorf( "You must choose 2 or 3 stats to generate a reforge plot.\n" );
-    return std::string();
-  }
+    const auto& pd = pd_pair.second;
+    const std::vector<stat_e>& stat_indices = pd_pair.first->reforge_plot_stat_indices;
 
-  for ( size_t i = 0; i < pd.size(); i++ )
-  {
-    assert( num_stats < pd[ i ].size() );
-    if ( pd[ i ][ num_stats ].value < min_dps )
-      min_dps = pd[ i ][ num_stats ].value;
-    if ( pd[ i ][ num_stats ].value > max_dps )
-      max_dps = pd[ i ][ num_stats ].value;
-  }
+    if ( pd.empty() )
+      continue;
 
-  dps_range = max_dps - min_dps;
+    double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
 
-  std::ostringstream s;
-  s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
-  if ( num_stats == 2 )
-  {
-    int num_points = ( int ) pd.size();
-    std::vector<stat_e> stat_indices = p.sim -> reforge_plot -> reforge_plot_stat_indices;
-    const plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
-    double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
-    double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
-    double max_ydelta = std::max( min_delta, max_delta );
-    int ysteps = 5;
-    double ystep_amount = max_ydelta / ysteps;
-
-    int negative_steps = 0, positive_steps = 0, positive_offset = -1;
-
-    for ( int i = 0; i < num_points; i++ )
+    size_t num_stats = pd[ 0 ].size() - 1;
+    if ( num_stats != 3 && num_stats != 2 )
     {
-      if ( pd[ i ][ 0 ].value < 0 )
-        negative_steps++;
-      else if ( pd[ i ][ 0 ].value > 0 )
-      {
-        if ( positive_offset == -1 )
-          positive_offset = i;
-        positive_steps++;
-      }
+      p.sim -> errorf( "You must choose 2 or 3 stats to generate a reforge plot.\n" );
+      return result;
     }
 
-    // We want to fit about 4 labels per side, but if there's many plot points, have some sane 
-    int negative_mod = static_cast<int>( std::max( std::ceil( negative_steps / 4 ), 4.0 ) );
-    int positive_mod = static_cast<int>( std::max( std::ceil( positive_steps / 4 ), 4.0 ) );
-
-    scaling_metric_data_t scaling_data = p.scaling_for_metric( SCALE_METRIC_DPS );
-    std::string formatted_name = util::google_image_chart_encode( scaling_data.name );
-    util::urlencode( formatted_name );
-
-    sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE );
-    chart.set_height( 400 );
-
-    s << chart.create();
-
-    // Generate reasonable X-axis labels in conjunction with the X data series.
-    std::string xl1, xl2;
-
-    // X series
-    s << "chd=t2:";
-    for ( int i = 0; i < num_points; i++ )
+    for ( size_t i = 0; i < pd.size(); i++ )
     {
-      s << static_cast< int >( pd[ i ][ 0 ].value );
-      if ( i < num_points - 1 )
-        s << ",";
+      assert( num_stats < pd[ i ].size() );
+      if ( pd[ i ][ num_stats ].value < min_dps )
+        min_dps = pd[ i ][ num_stats ].value;
+      if ( pd[ i ][ num_stats ].value > max_dps )
+        max_dps = pd[ i ][ num_stats ].value;
+    }
 
-      bool label = false;
-      // Label start
-      if ( i == 0 )
-        label = true;
-      // Label end
-      else if ( i == num_points - 1 )
-        label = true;
-      // Label baseline
-      else if ( pd[ i ][ 0 ].value == 0 )
-        label = true;
-      // Label every negative_modth value (left side of baseline)
-      else if ( pd[ i ][ 0 ].value < 0 && i % negative_mod == 0 )
-        label = true;
-      // Label every positive_modth value (right side of baseline), if there is
-      // enough room until the end of the graph
-      else if ( pd[ i ][ 0 ].value > 0 && i <= num_points - positive_mod && ( i - positive_offset ) > 0 && ( i - positive_offset + 1 ) % positive_mod == 0 )
-        label = true;
+    dps_range = max_dps - min_dps;
 
-      if ( label )
+    std::ostringstream s;
+    s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
+    if ( num_stats == 2 )
+    {
+      int num_points = ( int ) pd.size();
+      const plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
+      double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
+      double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
+      double max_ydelta = std::max( min_delta, max_delta );
+      int ysteps = 5;
+      double ystep_amount = max_ydelta / ysteps;
+
+      int negative_steps = 0, positive_steps = 0, positive_offset = -1;
+
+      for ( int i = 0; i < num_points; i++ )
       {
-        xl1 += util::to_string( pd[ i ][ 0 ].value );
-        if ( i == 0 || i == num_points - 1 )
+        if ( pd[ i ][ 0 ].value < 0 )
+          negative_steps++;
+        else if ( pd[ i ][ 0 ].value > 0 )
+        {
+          if ( positive_offset == -1 )
+            positive_offset = i;
+          positive_steps++;
+        }
+      }
+
+      // We want to fit about 4 labels per side, but if there's many plot points, have some sane
+      int negative_mod = static_cast<int>( std::max( std::ceil( negative_steps / 4 ), 4.0 ) );
+      int positive_mod = static_cast<int>( std::max( std::ceil( positive_steps / 4 ), 4.0 ) );
+
+      scaling_metric_data_t scaling_data = p.scaling_for_metric( SCALE_METRIC_DPS );
+      std::string formatted_name = util::google_image_chart_encode( scaling_data.name );
+      util::urlencode( formatted_name );
+
+      sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE );
+      chart.set_height( 400 );
+
+      s << chart.create();
+
+      // Generate reasonable X-axis labels in conjunction with the X data series.
+      std::string xl1, xl2;
+
+      // X series
+      s << "chd=t2:";
+      for ( int i = 0; i < num_points; i++ )
+      {
+        s << static_cast< int >( pd[ i ][ 0 ].value );
+        if ( i < num_points - 1 )
+          s << ",";
+
+        bool label = false;
+        // Label start
+        if ( i == 0 )
+          label = true;
+        // Label end
+        else if ( i == num_points - 1 )
+          label = true;
+        // Label baseline
+        else if ( pd[ i ][ 0 ].value == 0 )
+          label = true;
+        // Label every negative_modth value (left side of baseline)
+        else if ( pd[ i ][ 0 ].value < 0 && i % negative_mod == 0 )
+          label = true;
+        // Label every positive_modth value (right side of baseline), if there is
+        // enough room until the end of the graph
+        else if ( pd[ i ][ 0 ].value > 0 && i <= num_points - positive_mod && ( i - positive_offset ) > 0 && ( i - positive_offset + 1 ) % positive_mod == 0 )
+          label = true;
+
+        if ( label )
+        {
+          xl1 += util::to_string( pd[ i ][ 0 ].value );
+          if ( i == 0 || i == num_points - 1 )
+          {
+            xl1 += "+";
+            xl1 += util::stat_type_abbrev( stat_indices[ 0 ] );
+          }
+
+          xl2 += util::to_string( pd[ i ][ 1 ].value );
+          if ( i == 0 || i == num_points - 1 )
+          {
+            xl2 += "+";
+            xl2 += util::stat_type_abbrev( stat_indices[ 1 ] );
+          }
+
+        }
+        // Otherwise, "fake" a label by adding simply a space. This is required
+        // so that we can get asymmetric reforge ranges to correctly display the
+        // baseline position on the X axis
+        else
         {
           xl1 += "+";
-          xl1 += util::stat_type_abbrev( stat_indices[ 0 ] );
-        }
-
-        xl2 += util::to_string( pd[ i ][ 1 ].value );
-        if ( i == 0 || i == num_points - 1 )
-        {
           xl2 += "+";
-          xl2 += util::stat_type_abbrev( stat_indices[ 1 ] );
         }
 
-      }
-      // Otherwise, "fake" a label by adding simply a space. This is required
-      // so that we can get asymmetric reforge ranges to correctly display the
-      // baseline position on the X axis
-      else
-      {
-        xl1 += "+";
-        xl2 += "+";
+        if ( i < num_points - 1 )
+          xl1 += "|";
+        if ( i < num_points - 1 )
+          xl2 += "|";
       }
 
-      if ( i < num_points - 1 )
-        xl1 += "|";
-      if ( i < num_points - 1 )
-        xl2 += "|";
-    }
-
-    // Y series
-    s << "|";
-    for ( int i = 0; i < num_points; i++ )
-    {
-      s << static_cast< int >( pd[ i ][ 2 ].value );
-      if ( i < num_points - 1 )
-        s << ",";
-    }
-
-    // Min Y series
-    s << "|-1|";
-    for ( int i = 0; i < num_points; i++ )
-    {
-      s << static_cast< int >( pd[ i ][ 2 ].value - pd[ i ][ 2 ].error / 2 );
-      if ( i < num_points - 1 )
-        s << ",";
-    }
-
-    // Max Y series
-    s << "|-1|";
-    for ( int i = 0; i < num_points; i++ )
-    {
-      s << static_cast< int >( pd[ i ][ 2 ].value + pd[ i ][ 2 ].error / 2 );
-      if ( i < num_points - 1 )
-        s << ",";
-    }
-
-    s << amp;
-
-    // Axis dimensions
-    s << "chds=" << ( int ) pd[ 0 ][ 0 ].value << "," << ( int ) pd[ num_points - 1 ][ 0 ].value << "," << static_cast< int >( floor( baseline.value - max_ydelta ) ) << "," << static_cast< int >( ceil( baseline.value + max_ydelta ) );
-    s << amp;
-
-    s << "chxt=x,y,x";
-    s << amp;
-
-    // X Axis labels (generated above)
-    s << "chxl=0:|" << xl1 << "|2:|" << xl2 << "|";
-
-    // Y Axis labels
-    s << "1:|";
-    for ( int i = ysteps; i >= 1; i -= 1 )
-    {
-      s << ( int ) util::round( baseline.value - i * ystep_amount ) << " (" << - ( int ) util::round( i * ystep_amount ) << ")|";
-    }
-    s << static_cast< int >( baseline.value ) << "|";
-    for ( int i = 1; i <= ysteps; i += 1 )
-    {
-      s << ( int ) util::round( baseline.value + i * ystep_amount ) << " (%2b" << ( int ) util::round( i * ystep_amount ) << ")";
-      if ( i < ysteps )
-        s << "|";
-    }
-    s << amp;
-
-    // Chart legend
-    s << "chdls=dddddd,12";
-    s << amp;
-
-    // Chart color
-    s << "chco=";
-    s << color::stat_color( stat_indices[ 0 ] ).hex_str();
-    s << amp;
-
-    // Grid lines
-    s << "chg=" << util::to_string( 100 / ( 1.0 * num_points ) ) << ",";
-    s << util::to_string( 100 / ( ysteps * 2 ) );
-    s << ",3,3,0,0";
-    s << amp;
-
-    // Chart markers (Errorbars and Center-line)
-    s << "chm=E,FF2222,1,-1,1:5|h,888888,1,0.5,1,-1.0";
-  }
-  else if ( num_stats == 3 )
-  {
-    if ( max_dps == 0 ) return nullptr;
-
-    std::vector<std::vector<double> > triangle_points;
-    std::vector< std::string > colors;
-    for ( int i = 0; i < ( int ) pd.size(); i++ )
-    {
-      std::vector<plot_data_t> scaled_dps = pd[ i ];
-      int ref_plot_amount = p.sim -> reforge_plot -> reforge_plot_amount;
-      for ( int j = 0; j < 3; j++ )
-        scaled_dps[ j ].value = ( scaled_dps[ j ].value + ref_plot_amount ) / ( 3. * ref_plot_amount );
-      triangle_points.push_back( ternary_coords( scaled_dps ) );
-      colors.push_back( color_temperature_gradient( pd[ i ][ 3 ].value, min_dps, dps_range ) );
-    }
-
-    s << "<form action='";
-    s << get_chart_base_url();
-    s << "' method='POST'>";
-    s << "<input type='hidden' name='chs' value='525x425' />";
-    s << "\n";
-    s << "<input type='hidden' name='cht' value='s' />";
-    s << "\n";
-    s << "<input type='hidden' name='chf' value='bg,s,333333' />";
-    s << "\n";
-
-    s << "<input type='hidden' name='chd' value='t:";
-    for ( size_t j = 0; j < 2; j++ )
-    {
-      for ( size_t i = 0; i < triangle_points.size(); i++ )
+      // Y series
+      s << "|";
+      for ( int i = 0; i < num_points; i++ )
       {
-        s << triangle_points[ i ][ j ];
-        if ( i < triangle_points.size() - 1 )
+        s << static_cast< int >( pd[ i ][ 2 ].value );
+        if ( i < num_points - 1 )
           s << ",";
       }
-      if ( j == 0 )
-        s << "|";
+
+      // Min Y series
+      s << "|-1|";
+      for ( int i = 0; i < num_points; i++ )
+      {
+        s << static_cast< int >( pd[ i ][ 2 ].value - pd[ i ][ 2 ].error / 2 );
+        if ( i < num_points - 1 )
+          s << ",";
+      }
+
+      // Max Y series
+      s << "|-1|";
+      for ( int i = 0; i < num_points; i++ )
+      {
+        s << static_cast< int >( pd[ i ][ 2 ].value + pd[ i ][ 2 ].error / 2 );
+        if ( i < num_points - 1 )
+          s << ",";
+      }
+
+      s << amp;
+
+      // Axis dimensions
+      s << "chds=" << ( int ) pd[ 0 ][ 0 ].value << "," << ( int ) pd[ num_points - 1 ][ 0 ].value << "," << static_cast< int >( floor( baseline.value - max_ydelta ) ) << "," << static_cast< int >( ceil( baseline.value + max_ydelta ) );
+      s << amp;
+
+      s << "chxt=x,y,x";
+      s << amp;
+
+      // X Axis labels (generated above)
+      s << "chxl=0:|" << xl1 << "|2:|" << xl2 << "|";
+
+      // Y Axis labels
+      s << "1:|";
+      for ( int i = ysteps; i >= 1; i -= 1 )
+      {
+        s << ( int ) util::round( baseline.value - i * ystep_amount ) << " (" << - ( int ) util::round( i * ystep_amount ) << ")|";
+      }
+      s << static_cast< int >( baseline.value ) << "|";
+      for ( int i = 1; i <= ysteps; i += 1 )
+      {
+        s << ( int ) util::round( baseline.value + i * ystep_amount ) << " (%2b" << ( int ) util::round( i * ystep_amount ) << ")";
+        if ( i < ysteps )
+          s << "|";
+      }
+      s << amp;
+
+      // Chart legend
+      s << "chdls=dddddd,12";
+      s << amp;
+
+      // Chart color
+      s << "chco=";
+      s << color::stat_color( stat_indices[ 0 ] ).hex_str();
+      s << amp;
+
+      // Grid lines
+      s << "chg=" << util::to_string( 100 / ( 1.0 * num_points ) ) << ",";
+      s << util::to_string( 100 / ( ysteps * 2 ) );
+      s << ",3,3,0,0";
+      s << amp;
+
+      // Chart markers (Errorbars and Center-line)
+      s << "chm=E,FF2222,1,-1,1:5|h,888888,1,0.5,1,-1.0";
     }
-    s << "' />";
-    s << "\n";
-    s << "<input type='hidden' name='chco' value='";
-    for ( int i = 0; i < ( int ) colors.size(); i++ )
+    else if ( num_stats == 3 )
     {
-      s << colors[ i ];
-      if ( i < ( int ) colors.size() - 1 )
-        s << "|";
+      if ( max_dps == 0 )
+      {
+        continue;
+      }
+
+      std::vector<std::vector<double> > triangle_points;
+      std::vector< std::string > colors;
+      for ( int i = 0; i < ( int ) pd.size(); i++ )
+      {
+        std::vector<plot_data_t> scaled_dps = pd[ i ];
+        int ref_plot_amount = p.sim -> reforge_plot -> reforge_plot_amount;
+        for ( int j = 0; j < 3; j++ )
+          scaled_dps[ j ].value = ( scaled_dps[ j ].value + ref_plot_amount ) / ( 3. * ref_plot_amount );
+        triangle_points.push_back( ternary_coords( scaled_dps ) );
+        colors.push_back( color_temperature_gradient( pd[ i ][ 3 ].value, min_dps, dps_range ) );
+      }
+
+      s << "<form action='";
+      s << get_chart_base_url();
+      s << "' method='POST'>";
+      s << "<input type='hidden' name='chs' value='525x425' />";
+      s << "\n";
+      s << "<input type='hidden' name='cht' value='s' />";
+      s << "\n";
+      s << "<input type='hidden' name='chf' value='bg,s,333333' />";
+      s << "\n";
+
+      s << "<input type='hidden' name='chd' value='t:";
+      for ( size_t j = 0; j < 2; j++ )
+      {
+        for ( size_t i = 0; i < triangle_points.size(); i++ )
+        {
+          s << triangle_points[ i ][ j ];
+          if ( i < triangle_points.size() - 1 )
+            s << ",";
+        }
+        if ( j == 0 )
+          s << "|";
+      }
+      s << "' />";
+      s << "\n";
+      s << "<input type='hidden' name='chco' value='";
+      for ( int i = 0; i < ( int ) colors.size(); i++ )
+      {
+        s << colors[ i ];
+        if ( i < ( int ) colors.size() - 1 )
+          s << "|";
+      }
+      s << "' />\n";
+      s << "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
+      s << "\n";
+
+      s << "<input type='hidden' name='chdls' value='dddddd,12' />";
+      s << "\n";
+      s << "\n";
+      s << "<input type='hidden' name='chg' value='5,10,1,3'";
+      s << "\n";
+      std::string formatted_name = p.name_str;
+      util::urlencode( formatted_name );
+      s << "<input type='hidden' name='chtt' value='";
+      s << formatted_name;
+      s << "+Reforge+Scaling' />";
+      s << "\n";
+      s << "<input type='hidden' name='chts' value='dddddd,18' />";
+      s << "\n";
+      s << "<input type='hidden' name='chem' value='";
+      s << "y;s=text_outline;d=FF9473,18,l,000000,_,";
+      s << util::stat_type_string( stat_indices[ 0 ] );
+      s << ";py=1.0;po=0.0,0.01;";
+      s << "|y;s=text_outline;d=FF9473,18,r,000000,_,";
+      s << util::stat_type_string( stat_indices[ 1 ] );
+      s << ";py=1.0;po=1.0,0.01;";
+      s << "|y;s=text_outline;d=FF9473,18,h,000000,_,";
+      s << util::stat_type_string( stat_indices[ 2 ] );
+      s << ";py=1.0;po=0.5,0.9' />";
+      s << "\n";
+      s << "<input type='submit' value='Get Reforge Plot Chart'>";
+      s << "\n";
+      s << "</form>";
+      s << "\n";
     }
-    s << "' />\n";
-    s << "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
-    s << "\n";
-
-    s << "<input type='hidden' name='chdls' value='dddddd,12' />";
-    s << "\n";
-    s << "\n";
-    s << "<input type='hidden' name='chg' value='5,10,1,3'";
-    s << "\n";
-    std::string formatted_name = p.name_str;
-    util::urlencode( formatted_name );
-    s << "<input type='hidden' name='chtt' value='";
-    s << formatted_name;
-    s << "+Reforge+Scaling' />";
-    s << "\n";
-    s << "<input type='hidden' name='chts' value='dddddd,18' />";
-    s << "\n";
-    s << "<input type='hidden' name='chem' value='";
-    std::vector<stat_e> stat_indices = p.sim -> reforge_plot -> reforge_plot_stat_indices;
-    s << "y;s=text_outline;d=FF9473,18,l,000000,_,";
-    s << util::stat_type_string( stat_indices[ 0 ] );
-    s << ";py=1.0;po=0.0,0.01;";
-    s << "|y;s=text_outline;d=FF9473,18,r,000000,_,";
-    s << util::stat_type_string( stat_indices[ 1 ] );
-    s << ";py=1.0;po=1.0,0.01;";
-    s << "|y;s=text_outline;d=FF9473,18,h,000000,_,";
-    s << util::stat_type_string( stat_indices[ 2 ] );
-    s << ";py=1.0;po=0.5,0.9' />";
-    s << "\n";
-    s << "<input type='submit' value='Get Reforge Plot Chart'>";
-    s << "\n";
-    s << "</form>";
-    s << "\n";
+    std::pair<unsigned,std::string> p(stat_indices.size(), s.str());
+    result.push_back( p );
   }
-
-  return s.str();
 }
 
 // chart::timeline ==========================================================
@@ -2355,17 +2362,19 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
   return true;
 }
 
-bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
+bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p, const std::pair<const reforge_plot_run_t*,std::vector<std::vector<plot_data_t>>>& plot_data )
 {
-  if ( p.reforge_plot_data.empty() )
+  const auto& pd = plot_data.second;
+  const auto& reforge_plot_stat_indices = plot_data.first->reforge_plot_stat_indices;
+  if ( pd.empty() )
   {
     return false;
   }
 
   double max_dps = 0, min_dps = std::numeric_limits<double>::max(), baseline = 0;
-  size_t num_stats = p.reforge_plot_data.front().size() - 1;
+  size_t num_stats = pd.front().size() - 1;
 
-  for ( const auto& pdata : p.reforge_plot_data )
+  for ( const auto& pdata : pd )
   {
     assert( num_stats < pdata.size() );
     if ( pdata[ num_stats ].value < min_dps )
@@ -2389,10 +2398,10 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
   ac.set_title( p.name_str + " Reforge Plot" );
   ac.set_yaxis_title( "Damage Per Second" );
   std::string from_stat, to_stat, from_color, to_color;
-  from_stat = util::stat_type_abbrev( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 0 ] );
-  to_stat = util::stat_type_abbrev( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 1 ] );
-  from_color = color::stat_color( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 0 ] );
-  to_color = color::stat_color( p.sim -> reforge_plot -> reforge_plot_stat_indices[ 1 ] );
+  from_stat = util::stat_type_abbrev( reforge_plot_stat_indices[ 0 ] );
+  to_stat = util::stat_type_abbrev( reforge_plot_stat_indices[ 1 ] );
+  from_color = color::stat_color( reforge_plot_stat_indices[ 0 ] );
+  to_color = color::stat_color( reforge_plot_stat_indices[ 1 ] );
 
   std::string span_from_stat = "<span style=\"color:" + from_color + ";font-weight:bold;\">" + from_stat + "</span>";
   std::string span_from_stat_abbrev = "<span style=\"color:" + from_color + ";font-weight:bold;\">" + from_stat.substr( 0, 2 ) + "</span>";
@@ -2420,7 +2429,7 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
   std::vector<std::pair<double, double> > mean;
   std::vector<highchart::data_triple_t> range;
 
-  for ( const auto& pdata : p.reforge_plot_data )
+  for ( const auto& pdata : pd )
   {
     double x = util::round( pdata[ 0 ].value, p.sim -> report_precision );
     double v = util::round( pdata[ 2 ].value, p.sim -> report_precision );

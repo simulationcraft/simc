@@ -244,7 +244,7 @@ int sim_t::main( const std::vector<std::string>& args )
     {
       scaling      -> analyze();
       plot         -> analyze();
-      reforge_plot -> analyze();
+      reforge_plot -> start();
       report::print_suite( this );
     }
     else

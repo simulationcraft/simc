@@ -977,7 +977,7 @@ void report::generate_player_charts( player_t& p, player_processed_report_inform
     ri.action_dmg_chart     = chart::aps_portion  ( p );
     ri.time_spent_chart     = chart::time_spent   ( p );
     ri.scaling_dps_chart    = chart::scaling_dps  ( p );
-    ri.reforge_dps_chart    = chart::reforge_dps  ( p );
+    ri.reforge_dps_charts    = chart::reforge_dps  ( p );
     ri.scale_factors_chart  = chart::scale_factors( p );
 
     std::string encoded_name = util::google_image_chart_encode( p.name_str );
