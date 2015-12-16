@@ -17,6 +17,8 @@ Shadow
  Shadowmend 
  Fix/Check the Fixme's on new build
 
+ Shadowy Insight - Find out what happens when it procs while casting
+
  Setbonuses - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer work.
 
 */
@@ -2232,7 +2234,7 @@ struct mind_blast_t : public priest_spell_t
 
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ), 
-    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 * (1.0 + player.talents.fortress_of_the_mind -> effectN( 2 ).percent()) )
+    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) * (1.0 + player.talents.fortress_of_the_mind -> effectN( 2 ).percent()) )
   {
     parse_options( options_str );
     instant_multistrike = 0;
@@ -2319,7 +2321,7 @@ struct mind_spike_t : public priest_spell_t
   mind_spike_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_spike", player,
       player.talents.mind_spike ),
-    insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) / 100 )
+    insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
     instant_multistrike = 0;
@@ -2432,7 +2434,7 @@ struct shadow_word_death_t : public priest_spell_t
   shadow_word_death_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "shadow_word_death", p,
       p.find_class_spell( "Shadow Word: Death" ) ),
-    insanity_gain( 30.0 ) // TODO FIXME not in spelldata
+    insanity_gain( 30.0 ) // FIXME not in spelldata
   {
     parse_options( options_str );
     instant_multistrike = 0;
@@ -2506,7 +2508,7 @@ struct mind_flay_t : public priest_spell_t
   mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t(
           "mind_flay" , p, p.find_specialization_spell( "Mind Flay" ) ),
-    insanity_gain( 3.0 * (1.0 + p.talents.fortress_of_the_mind -> effectN( 1 ).percent()) ) // FIXME Spelldata has some odd value added data().effectN(3).resource(RESOURCE_INSANITY) / 100
+    insanity_gain( 3.0 * ( 1.0 + p.talents.fortress_of_the_mind -> effectN( 1 ).percent() ) ) // FIXME Spelldata has some odd value added data().effectN(3).resource(RESOURCE_INSANITY)
   {
     parse_options( options_str );
 
@@ -2524,7 +2526,7 @@ struct mind_flay_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->up() )
+    if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->check() )
       am *= 1.0 + priest.buffs.void_ray->check() * priest.buffs.void_ray->data().effectN( 1 ).percent();
 
     return am;
@@ -2568,7 +2570,7 @@ struct shadow_crash_t : public priest_spell_t
 
   shadow_crash_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "shadow_crash", p, p.talents.shadow_crash ),
-    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 )
+    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -2676,7 +2678,7 @@ struct shadow_word_void_t : public priest_spell_t
 
   shadow_word_void_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "shadow_word_void", player, player.talents.shadow_word_void ),
-    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) / 100 )
+    insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -4622,7 +4624,7 @@ struct voidform_t : public priest_buff_t<buff_t>
     if ( priest.buffs.lingering_insanity->check() )
       priest.buffs.lingering_insanity->expire();
 
-    priest.buffs.lingering_insanity->trigger( expiration_stacks - 1 );
+    priest.buffs.lingering_insanity->trigger( expiration_stacks );
     priest.active_spells.voidform->cancel();
 
     if ( priest.buffs.surrender_to_madness->check() ) // FIXME Kill player or not? We're nice now and just have him continue without any Voidform buffs.
@@ -5076,6 +5078,10 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 + ( buffs.lingering_insanity->check() - 1 ) * buffs.lingering_insanity->data().effectN( 1 ).percent();
   }
 
+  if ( buffs.voidform->check() )
+  {
+    h /= 1.0 + ( buffs.voidform->check() - 1 ) * buffs.voidform->data().effectN( 3 ).percent();
+  }
 
   return h;
 }
@@ -5100,6 +5106,11 @@ double priest_t::composite_melee_haste() const
   if ( buffs.lingering_insanity->check() )
   {
     h /= 1.0 + ( buffs.lingering_insanity->check() - 1 ) * buffs.lingering_insanity->data().effectN( 1 ).percent();
+  }
+
+  if ( buffs.voidform->check() )
+  {
+    h /= 1.0 + ( buffs.voidform->check() - 1 ) * buffs.voidform->data().effectN( 3 ).percent();
   }
 
   return h;

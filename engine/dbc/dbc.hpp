@@ -446,6 +446,7 @@ public:
       case RESOURCE_RUNIC_POWER:
       case RESOURCE_RAGE:
         return base_value() * ( 1 / 10.0 );
+      case RESOURCE_INSANITY:
       case RESOURCE_MANA:
         return base_value() * ( 1 / 100.0 );
       default:
