@@ -9350,7 +9350,7 @@ void player_t::analyze( sim_t& s )
   if (  quiet ) return;
   if (  collected_data.fight_length.mean() == 0 ) return;
 
-  range::for_each( sample_data_list, std::mem_fn(&luxurious_sample_data_t::analyze_all ) );
+  range::for_each( sample_data_list, std::mem_fn(&luxurious_sample_data_t::analyze ) );
 
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = static_cast<size_t>(  collected_data.fight_length.max() );
@@ -10313,35 +10313,35 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
 
 void player_collected_data_t::analyze( const player_t& p )
 {
-  fight_length.analyze_all();
+  fight_length.analyze();
   // DMG
-  dmg.analyze_all();
-  compound_dmg.analyze_all();
-  dps.analyze_all();
-  prioritydps.analyze_all();
-  dpse.analyze_all();
-  dmg_taken.analyze_all();
-  dtps.analyze_all();
+  dmg.analyze();
+  compound_dmg.analyze();
+  dps.analyze();
+  prioritydps.analyze();
+  dpse.analyze();
+  dmg_taken.analyze();
+  dtps.analyze();
   timeline_dmg_taken.adjust( *p.sim );
   // Heal
-  heal.analyze_all();
-  compound_heal.analyze_all();
-  hps.analyze_all();
-  hpse.analyze_all();
-  heal_taken.analyze_all();
-  htps.analyze_all();
+  heal.analyze();
+  compound_heal.analyze();
+  hps.analyze();
+  hpse.analyze();
+  heal_taken.analyze();
+  htps.analyze();
   timeline_healing_taken.adjust( *p.sim );
   // Absorb
-  absorb.analyze_all();
-  compound_absorb.analyze_all();
-  aps.analyze_all();
-  absorb_taken.analyze_all();
-  atps.analyze_all();
+  absorb.analyze();
+  compound_absorb.analyze();
+  aps.analyze();
+  absorb_taken.analyze();
+  atps.analyze();
   // Tank
-  deaths.analyze_all();
-  theck_meloree_index.analyze_all();
-  effective_theck_meloree_index.analyze_all();
-  max_spike_amount.analyze_all();
+  deaths.analyze();
+  theck_meloree_index.analyze();
+  effective_theck_meloree_index.analyze();
+  max_spike_amount.analyze();
 
   for ( size_t i = 0; i <  resource_timelines.size(); ++i )
   {

@@ -257,8 +257,8 @@ public:
 
   void reset()
   {
-    _count = 0;
-    _sum   = 0;
+    _count = 0u;
+    _sum   = 0.0;
   }
 };
 
@@ -271,8 +271,9 @@ private:
   using base_t = simple_sample_data_t;
 
 protected:
-  bool _found;
-  value_t _min, _max;
+  bool _found  = false;
+  value_t _min = std::numeric_limits<value_t>::max();
+  value_t _max = std::numeric_limits<value_t>::min();
   void set_min( double x )
   {
     _min   = x;
@@ -285,22 +286,18 @@ protected:
   }
 
 public:
-  simple_sample_data_with_min_max_t()
-    : base_t(),
-      _found( false ),
-      _min( std::numeric_limits<value_t>::max() ),
-      _max( -std::numeric_limits<value_t>::min() )
-  {
-  }
-
   void add( value_t x )
   {
     base_t::add( x );
 
     if ( x < _min )
+    {
       set_min( x );
+    }
     if ( x > _max )
+    {
       set_max( x );
+    }
   }
 
   bool found_min_max() const
@@ -340,7 +337,7 @@ public:
  */
 class extended_sample_data_t : public simple_sample_data_with_min_max_t
 {
-  typedef simple_sample_data_with_min_max_t base_t;
+  using base_t = simple_sample_data_with_min_max_t;
 
 public:
   std::string name_str;
@@ -351,7 +348,7 @@ public:
 
 private:
   std::vector<value_t> _data;
-  std::vector<value_t*> _sorted_data;  // extra sequence so we can keep the
+  std::vector<value_t> _sorted_data;  // extra sequence so we can keep the
                                        // original, unsorted order ( for example
                                        // to do regression on it )
   bool is_sorted;
@@ -417,16 +414,11 @@ public:
   }
 
   // Analyze collected data
-  void analyze_all()
+  void analyze()
   {
-    // Sort Data
     sort();
-
     analyze_basics();
-
-    // Calculate Variance
     analyze_variance();
-
     create_histogram();
   }
 
@@ -440,24 +432,23 @@ public:
     if ( simple )
       return;
 
-    size_t sample_size = data().size();
-    if ( sample_size == 0 )
+    if ( data().empty() )
       return;
 
     if ( sorted() )
     {  // If we have sorted data, we can just take the front/back as min/max
-      base_t::set_min( *_sorted_data.front() );
-      base_t::set_max( *_sorted_data.back() );
-      base_t::_sum = statistics::calculate_sum( data() );
+      base_t::set_min( _sorted_data.front() );
+      base_t::set_max( _sorted_data.back() );
     }
     else
     {
-      base_t::set_min( *std::min_element( data().begin(), data().end() ) );
-      base_t::set_max( *std::max_element( data().begin(), data().end() ) );
-      base_t::_sum = statistics::calculate_sum( data() );
+      auto minmax = std::minmax_element( data().begin(), data().end() );
+      base_t::set_min( *minmax.first );
+      base_t::set_max( *minmax.second );
     }
 
-    _mean = base_t::_sum / sample_size;
+    base_t::_sum = statistics::calculate_sum( data() );
+    _mean = base_t::_sum / data().size();
   }
 
   value_t mean() const
@@ -481,43 +472,35 @@ public:
     if ( simple )
       return;
 
-    size_t sample_size = data().size();
-
-    if ( sample_size == 0 )
+    if ( _data.empty() )
       return;
 
     variance = statistics::calculate_variance( data(), mean() );
     std_dev = std::sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-    if ( sample_size > 1 )
+    if ( data().size() > 1 )
     {
-      mean_variance = variance / sample_size;
+      mean_variance = variance / data().size();
       mean_std_dev  = std::sqrt( mean_variance );
     }
   }
-
-private:
-  struct sorter
-  {
-    bool operator()( const value_t* a, const value_t* b ) const
-    {
-      return *a < *b;
-    }
-  };
 
 public:
   // sort data
   void sort()
   {
-    if ( !is_sorted && !simple )
+    if ( is_sorted )
     {
-      _sorted_data.resize( _data.size() );
-      for ( size_t i = 0; i < _data.size(); ++i )
-        _sorted_data[ i ] = &( _data[ i ] );
-      range::sort( _sorted_data, sorter() );
-      is_sorted = true;
+      return;
     }
+    if ( simple )
+    {
+      return;
+    }
+    _sorted_data = _data;
+    range::sort( _sorted_data );
+    is_sorted = true;
   }
 
   /* Create histogram ( not normalized ) of the data
@@ -562,14 +545,14 @@ public:
       return base_t::nan();
 
     // Should be improved to use linear interpolation
-    return *( sorted_data()[ (int)( x * ( sorted_data().size() - 1 ) ) ] );
+    return ( sorted_data()[ (int)( x * ( sorted_data().size() - 1 ) ) ] );
   }
 
   const std::vector<value_t>& data() const
   {
     return _data;
   }
-  const std::vector<value_t*>& sorted_data() const
+  const std::vector<value_t>& sorted_data() const
   {
     return _sorted_data;
   }
