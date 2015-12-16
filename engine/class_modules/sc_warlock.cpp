@@ -1498,7 +1498,7 @@ public:
   {
     bool consume = spell_t::consume_cost_per_tick( dot );
 
-    resource_e r = current_resource();
+    // resource_e r = current_resource();
 
     return consume;
   }
@@ -2982,6 +2982,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     havoc_target( nullptr ),
     double_nightfall( 0 ),
     pets( pets_t() ),
+    active( active_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
@@ -2989,15 +2990,14 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     grimoire_of_synergy( *this ),
     grimoire_of_synergy_pet( *this ),
     cooldowns( cooldowns_t() ),
-    active( active_t() ),
     spec( specs_t() ),
     buffs( buffs_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
     spells( spells_t() ),
+    initial_soul_shards( 1 ),
     default_pet( "" ),
     shard_react( timespan_t::zero() ),
-    initial_soul_shards( 1 ),
     affliction_trinket( nullptr ),
     demonology_trinket( nullptr ),
     destruction_trinket( nullptr )
@@ -3476,8 +3476,8 @@ void warlock_t::apl_demonology()
 
 void warlock_t::apl_destruction()
 {
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );    
-  action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
+  // action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  // action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 }
 
 void warlock_t::init_action_list()

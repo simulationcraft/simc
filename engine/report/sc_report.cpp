@@ -1162,7 +1162,7 @@ const color::rgb& report::item_quality_color( const item_t& item )
   }
 }
 
-std::string report::decoration_domain( const sim_t& sim )
+std::string report::decoration_domain( const sim_t& )
 {
 #if SC_BETA == 0
   if ( maybe_ptr( sim.dbc.ptr ) )

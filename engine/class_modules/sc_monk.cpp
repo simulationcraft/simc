@@ -787,7 +787,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double m = super_t::composite_target_multiplier( t );
 
-      const sef_td_t* tdata = td( t );
+      // const sef_td_t* tdata = td( t );
 
       return m;
     }

@@ -2304,8 +2304,8 @@ struct whirlwind_parent_t: public warrior_attack_t
   timespan_t spin_time;
   whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
-    mh_attack( nullptr ),
     oh_attack( nullptr ),
+    mh_attack( nullptr ),
     spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) ) // The misc value in the 3rd effect works for arms and fury.
   {
     parse_options( options_str );

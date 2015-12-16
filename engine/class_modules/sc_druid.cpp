@@ -595,13 +595,13 @@ public:
     form( NO_FORM ),
     active_starfalls( 0 ),
     max_fb_energy( 0 ),
-    initial_astral_power( 0 ),
-    initial_moon_stage( NEW_MOON ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     scythe_of_elune(),
     balance_tier18_2pc( *this ),
     predator( *this ),
+    initial_astral_power( 0 ),
+    initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     caster_form_weapon(),
@@ -1576,12 +1576,16 @@ public:
   gain_t* ap_gain;
 
   druid_spell_t( const std::string& token, druid_t* p,
-                 const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string() ) :
-    base_t( token, p, s ), ap_per_hit( 0 ), ap_per_tick( 0 ),
-    ap_per_cast( 0 ), consumes_owlkin_frenzy( false ),
-    benefits_from_ca( false ), benefits_from_elune( false ),
-    ap_gain( p -> get_gain( name() ) )
+                 const spell_data_t* s      = spell_data_t::nil(),
+                 const std::string& options = std::string() )
+    : base_t( token, p, s ),
+      ap_per_hit( 0 ),
+      ap_per_tick( 0 ),
+      ap_per_cast( 0 ),
+      benefits_from_ca( false ),
+      benefits_from_elune( false ),
+      consumes_owlkin_frenzy( false ),
+      ap_gain( p->get_gain( name() ) )
   {
     parse_options( options );
   }
