@@ -308,7 +308,7 @@ public:
     const spell_data_t* chi_wave;
     // Mistweaver
     const spell_data_t* zen_pulse;
-    const spell_data_t* mana_tea;
+    const spell_data_t* mistwalk;
 
     // Tier 30 Talents
     const spell_data_t* chi_torpedo;
@@ -325,9 +325,9 @@ public:
     const spell_data_t* ascension;
     const spell_data_t* power_strikes;
     // Mistweaver
-    const spell_data_t* mist_wrap;
-    const spell_data_t* cranes_grace;
     const spell_data_t* lifecycles;
+    const spell_data_t* cranes_grace;
+    const spell_data_t* soothing_elegance;
 
     // Tier 60 Talents
     const spell_data_t* ring_of_peace;
@@ -343,7 +343,7 @@ public:
 
     // Tier 90 Talents
     const spell_data_t* rushing_jade_wind; // Brewmaster & Windwalker
-    // Brewmaster
+                                           // Brewmaster
     const spell_data_t* invoke_niuzao;
     const spell_data_t* special_delivery;
     // Windwalker
@@ -352,7 +352,7 @@ public:
     // Mistweaver
     const spell_data_t* refreshing_jade_wind;
     const spell_data_t* invoke_chi_ji;
-    const spell_data_t* summon_jade_serpent_statue;
+    const spell_data_t* mist_wrap;
 
     // Tier 100 Talents
     // Brewmaster
@@ -364,9 +364,9 @@ public:
     const spell_data_t* spinning_dragon_strike;
     const spell_data_t* serenity;
     // Mistweaver
-    const spell_data_t* mistwalk;
+    const spell_data_t* mana_tea;
     const spell_data_t* focused_thunder;
-    const spell_data_t* soothing_elegance;
+    const spell_data_t* summon_jade_serpent_statue;
   } talent;
 
   // Specialization
@@ -434,6 +434,25 @@ public:
   // Artifact
   struct artifact_spell_data_t
   {
+    // Brewmaster Artifact
+    // Mistweaver Artifact
+    artifact_power_t blessings_of_yulon;
+    artifact_power_t celestial_breath;
+    artifact_power_t coalescing_mists;
+    artifact_power_t dancing_mists;
+    artifact_power_t extended_healing;
+    artifact_power_t harmony_and_focus;
+    artifact_power_t infusion_of_life;
+    artifact_power_t light_on_your_feet_mw;
+    artifact_power_t mists_of_life;
+    artifact_power_t protection_of_shaohao;
+    artifact_power_t shaohaos_mists_of_wisdom;
+    artifact_power_t sheiluns_gift;
+    artifact_power_t shroud_of_mist;
+    artifact_power_t soothing_remedies;
+    artifact_power_t spirit_tether;
+    artifact_power_t way_of_the_mistweaver;
+
     // Windwalker Artifact
     artifact_power_t acrobatics;
     artifact_power_t crosswinds;
@@ -444,7 +463,7 @@ public:
     artifact_power_t good_karma;
     artifact_power_t healing_winds;
     artifact_power_t inner_peace;
-    artifact_power_t light_on_your_feet;
+    artifact_power_t light_on_your_feet_ww;
     artifact_power_t power_of_a_thousand_cranes;
     artifact_power_t rising_winds;
     artifact_power_t strike_of_the_windlord;
@@ -786,8 +805,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     double composite_target_multiplier( player_t* t ) const
     {
       double m = super_t::composite_target_multiplier( t );
-
-      // const sef_td_t* tdata = td( t );
 
       return m;
     }
@@ -4567,7 +4584,6 @@ void monk_t::create_pets()
 void monk_t::init_spells()
 {
   base_t::init_spells();
-
   // Talents spells =====================================
   // Tier 15 Talents
   talent.chi_burst                   = find_talent_spell( "Chi Burst" );
@@ -4575,7 +4591,7 @@ void monk_t::init_spells()
   talent.chi_wave                    = find_talent_spell( "Chi Wave" );
   // Mistweaver
   talent.zen_pulse                   = find_talent_spell( "Zen Pulse" );
-  talent.mana_tea                    = find_talent_spell( "Mana Tea" );
+  talent.mistwalk                    = find_talent_spell( "Mistwalk" );
 
   // Tier 30 Talents
   talent.chi_torpedo                 = find_talent_spell( "Chi Torpedo" );
@@ -4592,9 +4608,9 @@ void monk_t::init_spells()
   talent.ascension                   = find_talent_spell( "Ascension" );
   talent.power_strikes               = find_talent_spell( "Power Strikes" );
   // Mistweaver
-  talent.mist_wrap                   = find_talent_spell( "Mist Wrap" );
-  talent.cranes_grace                = find_talent_spell(" Crane's Grace" );
   talent.lifecycles                  = find_talent_spell( "Lifecycles" );
+  talent.cranes_grace                = find_talent_spell(" Crane's Grace" );
+  talent.soothing_elegance           = find_talent_spell( "Soothing Elegance" );
 
   // Tier 60 Talents
   talent.ring_of_peace               = find_talent_spell( "Ring of Peace" );
@@ -4619,7 +4635,7 @@ void monk_t::init_spells()
   // Mistweaver
   talent.refreshing_jade_wind        = find_talent_spell( "Refreshing Jade Wind" );
   talent.invoke_chi_ji               = find_talent_spell( "Invoke Chi-Ji, the Red Crane", "invoke_chi_ji" );
-  talent.summon_jade_serpent_statue  = find_talent_spell( "Summon Jade Serpent Statue" );
+  talent.mist_wrap                   = find_talent_spell( "Mist Wrap" );
 
   // Tier 100 Talents
   // Brewmaster
@@ -4631,11 +4647,31 @@ void monk_t::init_spells()
   talent.spinning_dragon_strike      = find_talent_spell( "Spinning Dragon Strike" );
   talent.serenity                    = find_talent_spell( "Serenity" );
   // Mistweaver
-  talent.mistwalk                    = find_talent_spell( "Mistwalk" );
+  talent.mana_tea                    = find_talent_spell( "Mana Tea" );
   talent.focused_thunder             = find_talent_spell( "Focused Thunder" );
-  talent.soothing_elegance           = find_talent_spell( "Soothing Elegance" );
-
+  talent.summon_jade_serpent_statue  = find_talent_spell( "Summon Jade Serpent Statue" );
+  
   // Artifact spells ========================================
+  // Brewmater
+
+  // Mistweaver
+  artifact.blessings_of_yulon         = find_artifact_spell( "Blessings of Yu'lon" );
+  artifact.celestial_breath           = find_artifact_spell( "Celestial Breath" );
+  artifact.coalescing_mists           = find_artifact_spell( "Coalescing Mists" );
+  artifact.dancing_mists              = find_artifact_spell( "Dancing Mists" );
+  artifact.extended_healing           = find_artifact_spell( "Extended Healing" );
+  artifact.harmony_and_focus          = find_artifact_spell( "Harmony and Focus" );
+  artifact.infusion_of_life           = find_artifact_spell( "Infusion of Life" );
+  artifact.light_on_your_feet_mw      = find_artifact_spell( "Light on Your Feet" );
+  artifact.mists_of_life              = find_artifact_spell( "Mists of Life" );
+  artifact.protection_of_shaohao      = find_artifact_spell( "Protection of Shaohao" );
+  artifact.shaohaos_mists_of_wisdom   = find_artifact_spell( "Shaohao's Mists of Wisdom" );
+  artifact.sheiluns_gift              = find_artifact_spell( "Sheilun's Gift" );
+  artifact.shroud_of_mist             = find_artifact_spell( "Shroud of Mist" );
+  artifact.soothing_remedies          = find_artifact_spell( "Soothing Remedies" );
+  artifact.spirit_tether              = find_artifact_spell( "Spirit Tether" );
+  artifact.way_of_the_mistweaver      = find_artifact_spell( "Way of the Mistweaver" );
+
   // Windwalker
   artifact.acrobatics                 = find_artifact_spell( "Acrobatics" );
   artifact.crosswinds                 = find_artifact_spell( "Crosswind" );
@@ -4646,7 +4682,7 @@ void monk_t::init_spells()
   artifact.good_karma                 = find_artifact_spell( "Good Karma" );
   artifact.healing_winds              = find_artifact_spell( "Healing Winds" );
   artifact.inner_peace                = find_artifact_spell( "Inner Peace" );
-  artifact.light_on_your_feet         = find_artifact_spell( "Light on Your Feet" );
+  artifact.light_on_your_feet_ww      = find_artifact_spell( "Light on Your Feet" );
   artifact.power_of_a_thousand_cranes = find_artifact_spell( "Power of a Thousand Cranes" );
   artifact.rising_winds               = find_artifact_spell( "Rising Winds" );
   artifact.strike_of_the_windlord     = find_artifact_spell( "Strike of the Windlord" );
@@ -5267,8 +5303,8 @@ double monk_t::composite_dodge() const
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
 
-  if ( artifact.light_on_your_feet.rank() )
-    d += artifact.light_on_your_feet.percent();
+  if ( artifact.light_on_your_feet_ww.rank() )
+    d += artifact.light_on_your_feet_ww.percent();
 
   return d;
 }
