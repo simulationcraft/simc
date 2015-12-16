@@ -188,7 +188,11 @@ class Item_sparse(DBCRecord):
 
     # Note, parses data directly from the full record using record_offset, instead of receiving a
     # slice of specific record length.
-    def __init__(self, dbc_parser, record, dbc_id, record_offset):
+    def __init__(self, dbc_parser, record, dbc_id, record_offset, record_size):
+        # If we are in debug mode (dbc_parser.options.debug == True), save data
+        if dbc_parser._options.debug:
+            self._record = record[record_offset:record_offset + record_size]
+
         # Create dummy parsers, splits out name/desc, and eliminates extra padding from the whole
         # data format
         if not Item_sparse._p1:
@@ -240,12 +244,11 @@ class Item_sparse(DBCRecord):
         d = self._p2.unpack_from(record, end_offset + 1)
         self._d += d
 
-        # WDB4 files do not have the record size in the same way WDB3 Item-sparse does. For now,
-        # just ugly hack it into the parser by setting the record offset directly once we have
-        # parsed out the data. It's likely the unknown data in the Item-sparse WDB4 file somehow
-        # contains the record size.
-        if dbc_parser._magic == b'WDB4':
-            dbc_parser._record_offset = end_offset + 1 + self._p2.size
+        if (end_offset - record_offset) + Item_sparse._p2.size + 1 != record_size:
+            sys.stderr.write('%s: Record parse failure for record=%d, offset=%u, record_size=%u, parsed_size=%u\n' % (
+                self.__class__.__name__, dbc_id, record_offset, record_size,
+                end_offset - record_offset + Item_sparse._p2.size + 1))
+            sys.exit(1)
 
 class SpellEffect(DBCRecord):
     def __init__(self, dbc_parser, record, dbc_id, record_offset):

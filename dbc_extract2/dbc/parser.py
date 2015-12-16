@@ -253,22 +253,31 @@ class ItemSparseParser(DBCParser):
 
         self._class = dbc.data.Item_sparse
 
-    def open_dbc(self):
-        ret = DBCParser.open_dbc(self)
-
-        self._sb_offset = 0
-        # WDB4 Item-sparse changes things somewhat. Need to build an idtable for it just like any
-        # WDB3-based file, but the ID block offset needs to be computed from the end of the file for
-        # now, instead of relying on string block offset + size (string block size seems to be used
-        # as an end-of-record data marker).
+    # WDB4 Item-sparse changes things somewhat. Need to build an idtable for it just like any
+    # WDB3-based file, but the ID block offset needs to be computed from the end of the file for
+    # now, instead of relying on string block offset + size (string block size seems to be used
+    # as an end-of-record data marker).
+    def _build_idtable(self):
         if self._magic == b'WDB4':
-            self._id_offset = len(self._data) - 4 * self._records
-            self._record_offset = self._data_offset
-            self._build_idtable()
-        else:
-            self._id_offset = 0
+            self._sb_offset = self._string_block_size
+            self._id_offset = self._string_block_size + ((self._last_id - self._first_id) + 1) * _ITEMRECORD.size
+            self._string_block_size = 0
 
-        return ret
+            # Process ID block, and customize idtable stored data to contain
+            # dbc_id, record_offset, record_size triples.
+            for record_id in range(0, self._records):
+                record_offset = self._id_offset + record_id * _ID.size
+                dbc_id = _ID.unpack_from(self._data, record_offset)[0]
+
+                record_index = dbc_id - self._first_id
+                record_data_offset = self._sb_offset + record_index * _ITEMRECORD.size
+                file_offset, record_size = _ITEMRECORD.unpack_from(self._data, record_data_offset)
+
+                self._idtable.append((dbc_id, file_offset, record_size))
+        # WDB3 Item-sparse does nothing of the sort
+        else:
+            self._sb_offset = 0
+            self._id_offset = 0
 
     def get_string_block(self, offset):
         if offset == 0:
@@ -287,9 +296,8 @@ class ItemSparseParser(DBCParser):
 
         if self._magic == b'WDB3':
             return self.__find_wdb3(dbcid)
-        # No searching for wdb4 for now.
         else:
-            return None
+            return self.__find_wdb4(dbcid)
 
     def __find_wdb3(self, dbcid):
         while self._last_record_id < (self._last_id - self._first_id + 1):
@@ -302,7 +310,15 @@ class ItemSparseParser(DBCParser):
             if self._first_id + self._last_record_id - 1 != dbcid:
                 continue
 
-            return self._class(self, self._data[record_offset:record_offset + record_bytes], self._first_id + self._last_record_id - 1, record_offset)
+            return self._class(self, self._data, self._first_id + self._last_record_id - 1, record_offset, record_bytes)
+
+    def __find_wdb4(self, dbcid):
+        for dbc_id, record_offset, record_bytes in self._idtable:
+            if dbc_id != dbcid:
+                continue
+            break
+
+        return self._class(self, self._data, dbc_id, record_offset, record_bytes)
 
     def next_record(self):
         if not self._data and not self.open_dbc():
@@ -323,14 +339,14 @@ class ItemSparseParser(DBCParser):
             record_offset, record_bytes = _ITEMRECORD.unpack_from(self._data, self._data_offset + _ITEMRECORD.size * self._last_record_id)
             self._last_record_id += 1
 
-        return self._class(self, self._data, self._first_id + self._last_record_id - 1, record_offset)
+        return self._class(self, self._data, self._first_id + self._last_record_id - 1, record_offset, record_bytes)
 
     def __next_record_wdb4(self):
         if self._records == 0 or self._last_record_id == self._records:
             return None
 
-        dbc_id, record_id = self._idtable[self._last_record_id]
-        parsed_record = self._class(self, self._data, dbc_id, self._record_offset)
+        dbc_id, record_offset, record_bytes = self._idtable[self._last_record_id]
+        parsed_record = self._class(self, self._data, dbc_id, record_offset, record_bytes)
         self._last_record_id += 1
 
         return parsed_record
