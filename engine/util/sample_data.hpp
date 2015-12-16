@@ -15,15 +15,15 @@
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences
  */
-namespace statistics {
-
+namespace statistics
+{
 /* Arithmetic Sum
  */
 template <typename Range>
 typename Range::value_type calculate_sum( Range r )
 {
   using value_t = typename Range::value_type;
-  return std::accumulate( std::begin(r), std::end(r), value_t{} );
+  return std::accumulate( std::begin( r ), std::end( r ), value_t{} );
 }
 
 /* Arithmetic Mean
@@ -31,25 +31,26 @@ typename Range::value_type calculate_sum( Range r )
 template <typename Range>
 typename Range::value_type calculate_mean( Range r )
 {
-  auto length = std::distance( std::begin(r), std::end(r));
+  auto length = std::distance( std::begin( r ), std::end( r ) );
   auto tmp = calculate_sum( r );
-    tmp /= length;
+  tmp /= length;
   return tmp;
 }
 
 /* Expected Value of the squared deviation from a given mean
  */
 template <typename Range>
-typename Range::value_type calculate_variance( Range r, typename Range::value_type mean )
+typename Range::value_type calculate_variance( Range r,
+                                               typename Range::value_type mean )
 {
   using value_t = typename Range::value_type;
-  auto tmp = value_t{};
+  auto tmp      = value_t{};
 
-  for( auto value : r )
+  for ( auto value : r )
   {
     tmp += ( value - mean ) * ( value - mean );
   }
-  auto length = std::distance( std::begin(r), std::end(r));
+  auto length = std::distance( std::begin( r ), std::end( r ) );
   if ( length > 1 )
     tmp /= length;
   return tmp;
@@ -66,7 +67,8 @@ typename Range::value_type calculate_variance( Range r )
 /* Standard Deviation from a given mean
  */
 template <typename Range>
-typename Range::value_type calculate_stddev( Range r, typename Range::value_type mean )
+typename Range::value_type calculate_stddev( Range r,
+                                             typename Range::value_type mean )
 {
   return std::sqrt( calculate_variance( r, mean ) );
 }
@@ -79,19 +81,22 @@ typename Range::value_type calculate_stddev( Range r )
   return std::sqrt( calculate_variance( r, calculate_mean( r ) ) );
 }
 
-/* Standard Deviation of a given sample mean distribution, according to Central Limit Theorem
+/* Standard Deviation of a given sample mean distribution, according to Central
+ * Limit Theorem
  */
 template <typename Range>
-typename Range::value_type calculate_mean_stddev( Range r, typename Range::value_type mean )
+typename Range::value_type calculate_mean_stddev(
+    Range r, typename Range::value_type mean )
 {
-  auto tmp = calculate_variance( r, mean );
-  auto length = std::distance( std::begin(r), std::begin(r));
+  auto tmp    = calculate_variance( r, mean );
+  auto length = std::distance( std::begin( r ), std::begin( r ) );
   if ( length > 1 )
     tmp /= length;
   return std::sqrt( tmp );
 }
 
-/* Standard Deviation of a given sample mean distribution, according to Central Limit Theorem
+/* Standard Deviation of a given sample mean distribution, according to Central
+ * Limit Theorem
  */
 template <typename Range>
 typename Range::value_type calculate_mean_stddev( Range r )
@@ -100,10 +105,12 @@ typename Range::value_type calculate_mean_stddev( Range r )
 }
 
 template <typename Range>
-std::vector<size_t> create_histogram( Range r, size_t num_buckets, typename Range::value_type min, typename Range::value_type max )
+std::vector<size_t> create_histogram( Range r, size_t num_buckets,
+                                      typename Range::value_type min,
+                                      typename Range::value_type max )
 {
   std::vector<size_t> result;
-  if ( std::begin(r) == std::end(r) )
+  if ( std::begin( r ) == std::end( r ) )
     return result;
 
   assert( min <= *range::min_element( r ) );
@@ -118,8 +125,9 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets, typename Rang
   for ( auto value : r )
   {
     auto position = ( value - min ) / range;
-    size_t index = static_cast<size_t>( num_buckets * position );
-    if ( index == num_buckets ) // if *begin == max, we want to downgrade it into the last bucket
+    size_t index  = static_cast<size_t>( num_buckets * position );
+    if ( index == num_buckets )  // if *begin == max, we want to downgrade it
+                                 // into the last bucket
       --index;
     assert( index < num_buckets );
     result[ index ]++;
@@ -131,10 +139,10 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets, typename Rang
 template <typename Range>
 std::vector<size_t> create_histogram( Range r, size_t num_buckets )
 {
-  if ( std::begin(r) == std::end(r) )
+  if ( std::begin( r ) == std::end( r ) )
     return std::vector<size_t>();
 
-  auto mm = std::minmax_element( std::begin(r), std::end(r) );
+  auto mm = std::minmax_element( std::begin( r ), std::end( r ) );
   auto min = *mm.first;
   auto max = *mm.second;
 
@@ -144,17 +152,19 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets )
 /* Normalizes a histogram.
  * sum over all elements of the histogram will be equal to 1.0
  */
-inline std::vector<double> normalize_histogram( const std::vector<size_t>& in, size_t total_num_entries )
+inline std::vector<double> normalize_histogram( const std::vector<size_t>& in,
+                                                size_t total_num_entries )
 {
   std::vector<double> result;
 
   if ( in.empty() )
     return result;
 
-  assert( total_num_entries == std::accumulate( in.begin(), in.end(), size_t() ) );
+  assert( total_num_entries ==
+          std::accumulate( in.begin(), in.end(), size_t() ) );
   double adjust = 1.0 / total_num_entries;
 
-  for (auto & elem : in)
+  for ( auto& elem : in )
     result.push_back( elem * adjust );
 
   return result;
@@ -175,19 +185,23 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
 }
 
 template <typename iterator>
-std::vector<double> create_normalized_histogram( iterator begin, iterator end, size_t num_buckets, typename std::iterator_traits<iterator>::value_type min, typename std::iterator_traits<iterator>::value_type max )
+std::vector<double> create_normalized_histogram(
+    iterator begin, iterator end, size_t num_buckets,
+    typename std::iterator_traits<iterator>::value_type min,
+    typename std::iterator_traits<iterator>::value_type max )
 {
-  return normalize_histogram( create_histogram( begin, end, num_buckets, min, max ) );
+  return normalize_histogram(
+      create_histogram( begin, end, num_buckets, min, max ) );
 }
 
 template <typename iterator>
-std::vector<double> create_normalized_histogram( iterator begin, iterator end, size_t num_buckets )
+std::vector<double> create_normalized_histogram( iterator begin, iterator end,
+                                                 size_t num_buckets )
 {
   return normalize_histogram( create_histogram( begin, end, num_buckets ) );
 }
 
-} // end sd namespace
-
+}  // end sd namespace
 
 /* Simplest Samplest Data container. Only tracks sum and count
  *
@@ -196,41 +210,55 @@ class simple_sample_data_t
 {
 public:
   using value_t = double;
+
 protected:
   static const bool SAMPLE_DATA_NO_NAN = true;
-  value_t _sum = 0.0;
-  size_t _count = 0;
+  value_t _sum                         = 0.0;
+  size_t _count                        = 0;
 
   static value_t nan()
-  { return SAMPLE_DATA_NO_NAN ? value_t() : std::numeric_limits<value_t>::quiet_NaN(); }
+  {
+    return SAMPLE_DATA_NO_NAN ? value_t()
+                              : std::numeric_limits<value_t>::quiet_NaN();
+  }
 
 public:
-
   void add( double x )
-  { _sum += x; ++_count; }
+  {
+    _sum += x;
+    ++_count;
+  }
 
   value_t mean() const
-  { return _count ? _sum / _count : nan(); }
+  {
+    return _count ? _sum / _count : nan();
+  }
 
   value_t pretty_mean() const
-  { return _count ? _sum / _count : value_t(); }
+  {
+    return _count ? _sum / _count : value_t();
+  }
 
   value_t sum() const
-  { return _sum; }
+  {
+    return _sum;
+  }
 
   size_t count() const
-  { return _count; }
+  {
+    return _count;
+  }
 
   void merge( const simple_sample_data_t& other )
   {
     _count += other._count;
-    _sum  += other._sum;
+    _sum += other._sum;
   }
 
   void reset()
   {
     _count = 0;
-    _sum = 0;
+    _sum   = 0;
   }
 };
 
@@ -245,16 +273,24 @@ private:
 protected:
   bool _found;
   value_t _min, _max;
-  void set_min( double x ) { _min = x; _found = true; }
-  void set_max( double x ) { _max = x; _found = true; }
+  void set_min( double x )
+  {
+    _min   = x;
+    _found = true;
+  }
+  void set_max( double x )
+  {
+    _max   = x;
+    _found = true;
+  }
 
 public:
-  simple_sample_data_with_min_max_t() :
-    base_t(), _found( false ),
-    _min( std::numeric_limits<value_t>::max() ),
-    _max( -std::numeric_limits<value_t>::min() )
+  simple_sample_data_with_min_max_t()
+    : base_t(),
+      _found( false ),
+      _min( std::numeric_limits<value_t>::max() ),
+      _max( -std::numeric_limits<value_t>::min() )
   {
-
   }
 
   void add( value_t x )
@@ -268,11 +304,17 @@ public:
   }
 
   bool found_min_max() const
-  { return _found; }
+  {
+    return _found;
+  }
   value_t min() const
-  { return _found ? _min : base_t::nan(); }
+  {
+    return _found ? _min : base_t::nan();
+  }
   value_t max() const
-  { return _found ? _max : base_t::nan(); }
+  {
+    return _found ? _max : base_t::nan();
+  }
 
   void merge( const simple_sample_data_with_min_max_t& other )
   {
@@ -299,41 +341,53 @@ public:
 class extended_sample_data_t : public simple_sample_data_with_min_max_t
 {
   typedef simple_sample_data_with_min_max_t base_t;
+
 public:
   std::string name_str;
 
   value_t _mean, variance, std_dev, mean_variance, mean_std_dev;
   std::vector<size_t> distribution;
   bool simple;
+
 private:
   std::vector<value_t> _data;
-  std::vector<value_t*> _sorted_data; // extra sequence so we can keep the original, unsorted order ( for example to do regression on it )
+  std::vector<value_t*> _sorted_data;  // extra sequence so we can keep the
+                                       // original, unsorted order ( for example
+                                       // to do regression on it )
   bool is_sorted;
+
 public:
-  extended_sample_data_t( const std::string& n, bool s = true ) :
-    base_t(),
-    name_str( n ),
-    _mean(),
-    variance(),
-    std_dev(),
-    mean_variance(),
-    mean_std_dev(),
-    simple( s ),
-    is_sorted( false )
-  {}
+  extended_sample_data_t( const std::string& n, bool s = true )
+    : base_t(),
+      name_str( n ),
+      _mean(),
+      variance(),
+      std_dev(),
+      mean_variance(),
+      mean_std_dev(),
+      simple( s ),
+      is_sorted( false )
+  {
+  }
 
   void change_mode( bool simple )
   {
-    this -> simple = simple;
+    this->simple = simple;
 
     clear();
   }
 
-  const char* name() const { return name_str.c_str(); }
+  const char* name() const
+  {
+    return name_str.c_str();
+  }
 
   // Reserve memory
   void reserve( std::size_t capacity )
-  { if ( ! simple ) _data.reserve( capacity ); }
+  {
+    if ( !simple )
+      _data.reserve( capacity );
+  }
 
   // Add a sample
   void add( value_t x )
@@ -350,7 +404,9 @@ public:
   }
 
   bool sorted() const
-  { return is_sorted; }
+  {
+    return is_sorted;
+  }
 
   size_t size() const
   {
@@ -389,7 +445,7 @@ public:
       return;
 
     if ( sorted() )
-    { // If we have sorted data, we can just take the front/back as min/max
+    {  // If we have sorted data, we can just take the front/back as min/max
       base_t::set_min( *_sorted_data.front() );
       base_t::set_max( *_sorted_data.back() );
       base_t::_sum = statistics::calculate_sum( data() );
@@ -405,11 +461,17 @@ public:
   }
 
   value_t mean() const
-  { return simple ? base_t::mean() : _mean; }
+  {
+    return simple ? base_t::mean() : _mean;
+  }
   value_t pretty_mean() const
-  { return simple ? base_t::pretty_mean() : _mean; }
+  {
+    return simple ? base_t::pretty_mean() : _mean;
+  }
   size_t count() const
-  { return simple ? base_t::count() : data().size(); }
+  {
+    return simple ? base_t::count() : data().size();
+  }
 
   /* Analyze Variance: Variance, Stddev and Stddev of the mean
    * Requires: Analyzed Mean
@@ -431,7 +493,7 @@ public:
     if ( sample_size > 1 )
     {
       mean_variance = variance / sample_size;
-      mean_std_dev = std::sqrt( mean_variance );
+      mean_std_dev  = std::sqrt( mean_variance );
     }
   }
 
@@ -443,15 +505,16 @@ private:
       return *a < *b;
     }
   };
+
 public:
   // sort data
   void sort()
   {
-    if ( ! is_sorted && !simple )
+    if ( !is_sorted && !simple )
     {
       _sorted_data.resize( _data.size() );
       for ( size_t i = 0; i < _data.size(); ++i )
-        _sorted_data[ i ] =  &( _data[ i ] );
+        _sorted_data[ i ] = &( _data[ i ] );
       range::sort( _sorted_data, sorter() );
       is_sorted = true;
     }
@@ -469,11 +532,18 @@ public:
     if ( data().empty() )
       return;
 
-    distribution = statistics::create_histogram( data(), num_buckets, base_t::min(), base_t::max() );
+    distribution = statistics::create_histogram( data(), num_buckets,
+                                                 base_t::min(), base_t::max() );
   }
 
   void clear()
-  { base_t::_count = 0; base_t::_sum = 0.0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
+  {
+    base_t::_count = 0;
+    base_t::_sum   = 0.0;
+    _sorted_data.clear();
+    _data.clear();
+    distribution.clear();
+  }
 
   // Access functions
 
@@ -492,11 +562,17 @@ public:
       return base_t::nan();
 
     // Should be improved to use linear interpolation
-    return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
+    return *( sorted_data()[ (int)( x * ( sorted_data().size() - 1 ) ) ] );
   }
 
-  const std::vector<value_t>& data() const { return _data; }
-  const std::vector<value_t*>& sorted_data() const { return _sorted_data; }
+  const std::vector<value_t>& data() const
+  {
+    return _data;
+  }
+  const std::vector<value_t*>& sorted_data() const
+  {
+    return _sorted_data;
+  }
 
   void merge( const extended_sample_data_t& other )
   {
@@ -513,16 +589,22 @@ public:
   std::ostream& data_str( std::ostream& s ) const
   {
     s << "Sample_Data \"" << name_str << "\": count: " << count();
-    s << " mean: " << mean() << " variance: " << variance << " mean variance: " << mean_variance << " mean_std_dev: " << mean_std_dev << "\n";
+    s << " mean: " << mean() << " variance: " << variance
+      << " mean variance: " << mean_variance
+      << " mean_std_dev: " << mean_std_dev << "\n";
 
-    if ( ! data().empty() )
+    if ( !data().empty() )
       s << "data: ";
     for ( size_t i = 0, size = data().size(); i < size; ++i )
-    { if ( i > 0 ) s << ", "; s << data()[ i ]; }
+    {
+      if ( i > 0 )
+        s << ", ";
+      s << data()[ i ];
+    }
     s << "\n";
     return s;
   }
 
-}; // sample_data_t
+};  // sample_data_t
 
-#endif // SAMPLE_DATA_HPP
+#endif  // SAMPLE_DATA_HPP
