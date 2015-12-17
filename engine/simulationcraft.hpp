@@ -3031,14 +3031,8 @@ public:
 
 struct player_processed_report_information_t
 {
-  bool generated, buff_lists_generated;
-  std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
-  std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
-  std::array<std::string, STAT_MAX> timeline_stat_chart;
-  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
-  std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-  std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
-  std::string health_change_chart, health_change_sliding_chart;
+  bool generated = false;
+  bool buff_lists_generated = false;
   std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
   std::string save_str;
   std::string save_gear_str;
@@ -3049,7 +3043,6 @@ struct player_processed_report_information_t
   std::string html_profile_str;
   std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
 
-  player_processed_report_information_t() : generated(), buff_lists_generated() {}
 };
 
 /* Contains any data collected during / at the end of combat
