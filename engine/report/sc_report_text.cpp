@@ -5,7 +5,6 @@
 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
-#include "sc_gear_weights.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================

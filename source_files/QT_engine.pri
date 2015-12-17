@@ -15,7 +15,6 @@
  HEADERS += engine/util/cache.hpp
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/report/sc_report.hpp
- HEADERS += engine/report/sc_gear_weights.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp

@@ -141,7 +141,7 @@ const rgb EPIC      = "A335EE";
 const rgb LEGENDARY = "FF8000";
 const rgb HEIRLOOM  = "E6CC80";
 
-} /* namespace color */
+}  // color
 
 namespace chart
 {
@@ -177,7 +177,20 @@ bool generate_scaling_plot( highchart::chart_t& bc, const player_t& p,
                             scale_metric_e metric );
 bool generate_reforge_plot( highchart::chart_t& bc, const player_t& p );
 
-}  // end namespace sc_chart
+}  // chart
+
+namespace gear_weights
+{
+/**
+ * The website works, but the link we send out is not usable. If anyone ever
+ * fixes it, just set this to 1.
+ */
+static const bool LOOTRANK_ENABLED = false;
+std::array<std::string, SCALE_METRIC_MAX> lootrank( const player_t& );
+std::array<std::string, SCALE_METRIC_MAX> wowhead( const player_t& );
+std::array<std::string, SCALE_METRIC_MAX> pawn( const player_t& );
+std::array<std::string, SCALE_METRIC_MAX> askmrrobot( const player_t& );
+}  // gear_weights
 
 // Report
 namespace report

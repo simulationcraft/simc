@@ -15,7 +15,6 @@ SRC += \
     util$(PATHSEP)cache.hpp \
     sim$(PATHSEP)sc_option.hpp \
     report$(PATHSEP)sc_report.hpp \
-    report$(PATHSEP)sc_gear_weights.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \

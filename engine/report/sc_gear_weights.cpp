@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_gear_weights.hpp"
+#include "sc_report.hpp"
 #include "simulationcraft.hpp"
 
 
