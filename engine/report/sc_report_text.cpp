@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
+#include "sc_gear_weights.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -966,11 +967,12 @@ void print_text_scale_factors( FILE* file, player_t* p,
 
   util::fprintf( file, "\n" );
 
-#if LOOTRANK_ENABLED == 1
-  std::array<std::string, SCALE_METRIC_MAX> lootrank =
-      ri.gear_weights_lootrank_link;
-  simplify_html( lootrank[ sm ] );
-#endif
+  if ( gear_weights::LOOTRANK_ENABLED )
+  {
+    std::array<std::string, SCALE_METRIC_MAX> lootrank =
+        ri.gear_weights_lootrank_link;
+    simplify_html( lootrank[ sm ] );
+  }
 
   std::array<std::string, SCALE_METRIC_MAX> wowhead_std =
       ri.gear_weights_wowhead_std_link;

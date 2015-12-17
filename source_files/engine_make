@@ -15,6 +15,7 @@ SRC += \
     util$(PATHSEP)cache.hpp \
     sim$(PATHSEP)sc_option.hpp \
     report$(PATHSEP)sc_report.hpp \
+    report$(PATHSEP)sc_gear_weights.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \
@@ -53,6 +54,7 @@ SRC += \
     report$(PATHSEP)sc_report_html_player.cpp \
     report$(PATHSEP)sc_report.cpp \
     report$(PATHSEP)sc_highchart.cpp \
+    report$(PATHSEP)sc_gear_weights.cpp \
     report$(PATHSEP)sc_chart.cpp \
     player$(PATHSEP)sc_unique_gear.cpp \
     player$(PATHSEP)sc_set_bonus.cpp \

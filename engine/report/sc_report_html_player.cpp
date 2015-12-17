@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include "sc_highchart.hpp"
+#include "sc_gear_weights.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -1666,11 +1667,12 @@ void print_html_player_scale_factor_table(
   if ( !ri.gear_weights_wowhead_std_link[ sm ].empty() )
     os.format( "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
                ri.gear_weights_wowhead_std_link[ sm ].c_str() );
-#if LOOTRANK_ENABLED == 1
-  if ( !ri.gear_weights_lootrank_link[ sm ].empty() )
-    os.format( "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
-               ri.gear_weights_lootrank_link[ sm ].c_str() );
-#endif
+  if ( gear_weights::LOOTRANK_ENABLED )
+  {
+    if ( !ri.gear_weights_lootrank_link[ sm ].empty() )
+      os.format( "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
+                 ri.gear_weights_lootrank_link[ sm ].c_str() );
+  }
   os << "</ul>\n";
   os << "</td>\n";
   os << "</tr>\n";
@@ -3305,13 +3307,13 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
        // it looked, may return to it later
        //<< "<tr>\n" // first row
        //<< "<th colspan=\"3\"><a href=\"#help-dtps\"
-       //class=\"help\">DTPS</a></th>\n"
+       // class=\"help\">DTPS</a></th>\n"
        //<< "<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
        //<< "<th colspan=\"5\"><a href=\"#help-tmi\"
-       //class=\"help\">TMI</a></th>\n"
+       // class=\"help\">TMI</a></th>\n"
        //<< "<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
        //<< "<th colspan=\"4\"><a href=\"#help-msd\"
-       //class=\"help\">MSD</a></th>\n"
+       // class=\"help\">MSD</a></th>\n"
        //<< "</tr>\n" // end first row
        << "<tr>\n"  // start second row
        << "<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"

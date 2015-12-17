@@ -53,21 +53,9 @@ public:
   }
 };
 
-static const int MAX_PLAYERS_PER_CHART = 20;
-
-#define LOOTRANK_ENABLED \
-  0  // The website works, but the link we send out is not usable. If anyone
-     // ever fixes it, just set this to 1.
-
 namespace chart
 {
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank(
-    const player_t& );
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_wowhead(
-    const player_t& );
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_pawn( const player_t& );
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_askmrrobot(
-    const player_t& );
+
 
 // Highcharts stuff
 bool generate_raid_gear( highchart::bar_chart_t&, const sim_t& );
@@ -240,11 +228,6 @@ static const char* const beta_warnings[] = {
     "Beta! Beta! Beta! Beta! Beta! Beta!",
 };
 #endif  // SC_BETA
-
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank( player_t* );
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_wowhead( player_t* );
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_askmrrobot( player_t* );
-std::array<std::string, SCALE_METRIC_MAX> gear_weights_pawn( player_t* p );
 
 std::string decorate_html_string( const std::string& value,
                                   const color::rgb& color );

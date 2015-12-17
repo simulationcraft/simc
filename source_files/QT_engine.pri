@@ -15,6 +15,7 @@
  HEADERS += engine/util/cache.hpp
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/report/sc_report.hpp
+ HEADERS += engine/report/sc_gear_weights.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp
@@ -54,6 +55,7 @@
  SOURCES += engine/report/sc_report_html_player.cpp
  SOURCES += engine/report/sc_report.cpp
  SOURCES += engine/report/sc_highchart.cpp
+ SOURCES += engine/report/sc_gear_weights.cpp
  SOURCES += engine/report/sc_chart.cpp
  SOURCES += engine/player/sc_unique_gear.cpp
  SOURCES += engine/player/sc_set_bonus.cpp
