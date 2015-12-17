@@ -1287,6 +1287,7 @@ struct spell_data_expr_t
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
+
 // Iteration data entry for replayability
 struct iteration_data_entry_t
 {

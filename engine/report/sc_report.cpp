@@ -346,7 +346,7 @@ std::string tooltip_parser_t::parse()
             throw error();
           assert( player );
           replacement_text =
-              pretty_spell_text( *spell, spell->desc(), *player );
+              report::pretty_spell_text( *spell, spell->desc(), *player );
           break;
         }
 
@@ -375,9 +375,58 @@ std::string tooltip_parser_t::parse()
   return result;
 }
 
+const color::rgb& item_quality_color( const item_t& item )
+{
+  switch ( item.parsed.data.quality )
+  {
+    case 1:
+      return color::COMMON;
+    case 2:
+      return color::UNCOMMON;
+    case 3:
+      return color::RARE;
+    case 4:
+      return color::EPIC;
+    case 5:
+      return color::LEGENDARY;
+    case 6:
+      return color::HEIRLOOM;
+    case 7:
+      return color::HEIRLOOM;
+    default:
+      return color::POOR;
+  }
+}
+
+bool find_affix( const std::string& name, const std::string& data_name,
+                        std::string& prefix, std::string& suffix )
+{
+  std::string tokenized_name = data_name;
+  util::tokenize( tokenized_name );
+
+  std::string::size_type affix_offset = name.find( tokenized_name );
+
+  // Add an affix to the name, if the name does not match the
+  // spell name. Affix is either the prefix- or suffix portion of the
+  // non matching parts of the stats name.
+  if ( affix_offset != std::string::npos && tokenized_name != name )
+  {
+    // Suffix
+    if ( affix_offset == 0 )
+      suffix = "&#160;(" + name.substr( tokenized_name.size() ) + ")";
+    // Prefix
+    else if ( affix_offset > 0 )
+      prefix = "(" + name.substr( 0, affix_offset ) + ")&#160;";
+  }
+  else if ( affix_offset == std::string::npos )
+    suffix = "&#160;(" + name + ")";
+
+  return !prefix.empty() || !suffix.empty();
+}
+
 }  // UNNAMED NAMESPACE ======================================================
 
-std::string pretty_spell_text( const spell_data_t& default_spell,
+std::string report::pretty_spell_text( const spell_data_t& default_spell,
                                const std::string& text, const player_t& p )
 {
   return tooltip_parser_t( p, default_spell, text ).parse();
@@ -1033,55 +1082,6 @@ bool report::output_scale_factors( const player_t* p )
   return true;
 }
 
-static bool find_affix( const std::string& name, const std::string& data_name,
-                        std::string& prefix, std::string& suffix )
-{
-  std::string tokenized_name = data_name;
-  util::tokenize( tokenized_name );
-
-  std::string::size_type affix_offset = name.find( tokenized_name );
-
-  // Add an affix to the name, if the name does not match the
-  // spell name. Affix is either the prefix- or suffix portion of the
-  // non matching parts of the stats name.
-  if ( affix_offset != std::string::npos && tokenized_name != name )
-  {
-    // Suffix
-    if ( affix_offset == 0 )
-      suffix = "&#160;(" + name.substr( tokenized_name.size() ) + ")";
-    // Prefix
-    else if ( affix_offset > 0 )
-      prefix = "(" + name.substr( 0, affix_offset ) + ")&#160;";
-  }
-  else if ( affix_offset == std::string::npos )
-    suffix = "&#160;(" + name + ")";
-
-  return !prefix.empty() || !suffix.empty();
-}
-
-const color::rgb& report::item_quality_color( const item_t& item )
-{
-  switch ( item.parsed.data.quality )
-  {
-    case 1:
-      return color::COMMON;
-    case 2:
-      return color::UNCOMMON;
-    case 3:
-      return color::RARE;
-    case 4:
-      return color::EPIC;
-    case 5:
-      return color::LEGENDARY;
-    case 6:
-      return color::HEIRLOOM;
-    case 7:
-      return color::HEIRLOOM;
-    default:
-      return color::POOR;
-  }
-}
-
 std::string report::decoration_domain( const sim_t& )
 {
 #if SC_BETA == 0
@@ -1251,386 +1251,17 @@ std::string report::decorated_action_name( const action_t* action )
   return s.str();
 }
 
-namespace color
+std::vector<std::string> report::beta_warnings()
 {
-rgb::rgb() : r_( 0 ), g_( 0 ), b_( 0 ), a_( 255 )
-{
-}
-
-rgb::rgb( unsigned char r, unsigned char g, unsigned char b )
-  : r_( r ), g_( g ), b_( b ), a_( 255 )
-{
-}
-
-rgb::rgb( double r, double g, double b )
-  : r_( static_cast<unsigned char>( r * 255 ) ),
-    g_( static_cast<unsigned char>( g * 255 ) ),
-    b_( static_cast<unsigned char>( b * 255 ) ),
-    a_( 1 )
-{
-}
-
-rgb::rgb( const std::string& color ) : r_( 0 ), g_( 0 ), b_( 0 ), a_( 255 )
-{
-  parse_color( color );
-}
-
-rgb::rgb( const char* color ) : r_( 0 ), g_( 0 ), b_( 0 ), a_( 255 )
-{
-  parse_color( color );
-}
-
-std::string rgb::rgb_str() const
-{
-  std::stringstream s;
-
-  s << "rgba(" << static_cast<unsigned>( r_ ) << ", "
-    << static_cast<unsigned>( g_ ) << ", " << static_cast<unsigned>( b_ )
-    << ", " << a_ << ")";
-
-  return s.str();
-}
-
-std::string rgb::str() const
-{
-  return *this;
-}
-
-std::string rgb::hex_str() const
-{
-  return str().substr( 1 );
-}
-
-rgb& rgb::adjust( double v )
-{
-  if ( v < 0 || v > 1 )
-  {
-    return *this;
-  }
-
-  r_ *= v;
-  g_ *= v;
-  b_ *= v;
-  return *this;
-}
-
-rgb rgb::adjust( double v ) const
-{
-  return rgb( *this ).adjust( v );
-}
-
-rgb rgb::dark( double pct ) const
-{
-  return rgb( *this ).adjust( 1.0 - pct );
-}
-
-rgb rgb::light( double pct ) const
-{
-  return rgb( *this ).adjust( 1.0 + pct );
-}
-
-rgb rgb::opacity( double pct ) const
-{
-  rgb r( *this );
-  r.a_ = pct;
-
-  return r;
-}
-
-rgb& rgb::operator=( const std::string& color_str )
-{
-  parse_color( color_str );
-  return *this;
-}
-
-rgb& rgb::operator+=( const rgb& other )
-{
-  if ( this == &( other ) )
-  {
-    return *this;
-  }
-
-  unsigned mix_r = ( r_ + other.r_ ) / 2;
-  unsigned mix_g = ( g_ + other.g_ ) / 2;
-  unsigned mix_b = ( b_ + other.b_ ) / 2;
-
-  r_ = static_cast<unsigned char>( mix_r );
-  g_ = static_cast<unsigned char>( mix_g );
-  b_ = static_cast<unsigned char>( mix_b );
-
-  return *this;
-}
-
-rgb rgb::operator+( const rgb& other ) const
-{
-  rgb new_color( *this );
-  new_color += other;
-  return new_color;
-}
-
-rgb::operator std::string() const
-{
-  std::stringstream s;
-  operator<<( s, *this );
-  return s.str();
-}
-
-bool rgb::parse_color( const std::string& color_str )
-{
-  std::stringstream i( color_str );
-
-  if ( color_str.size() < 6 || color_str.size() > 7 )
-  {
-    return false;
-  }
-
-  if ( i.peek() == '#' )
-  {
-    i.get();
-  }
-
-  unsigned v = 0;
-  i >> std::hex >> v;
-  if ( i.fail() )
-  {
-    return false;
-  }
-
-  r_ = static_cast<unsigned char>( v / 0x10000 );
-  g_ = static_cast<unsigned char>( ( v / 0x100 ) % 0x100 );
-  b_ = static_cast<unsigned char>( v % 0x100 );
-
-  return true;
-}
-
-std::ostream& operator<<( std::ostream& s, const rgb& r )
-{
-  s << '#';
-  s << std::setfill( '0' ) << std::internal << std::uppercase << std::hex;
-  s << std::setw( 2 ) << static_cast<unsigned>( r.r_ ) << std::setw( 2 )
-    << static_cast<unsigned>( r.g_ ) << std::setw( 2 )
-    << static_cast<unsigned>( r.b_ );
-  s << std::dec;
+  std::vector<std::string> s = {
+      "Beta! Beta! Beta! Beta! Beta! Beta!",
+      "Not All classes are yet supported.",
+      "Some class models still need tweaking.",
+      "Some class action lists need tweaking.",
+      "Some class BiS gear setups need tweaking.",
+      "Some trinkets not yet implemented.",
+      "Constructive feedback regarding our output will shorten the Beta phase "
+      "dramatically.",
+      "Beta! Beta! Beta! Beta! Beta! Beta!"};
   return s;
 }
-
-rgb class_color( player_e type )
-{
-  switch ( type )
-  {
-    case PLAYER_NONE:
-      return color::GREY;
-    case PLAYER_GUARDIAN:
-      return color::GREY;
-    case DEATH_KNIGHT:
-      return color::COLOR_DEATH_KNIGHT;
-    case DRUID:
-      return color::COLOR_DRUID;
-    case HUNTER:
-      return color::COLOR_HUNTER;
-    case MAGE:
-      return color::COLOR_MAGE;
-    case MONK:
-      return color::COLOR_MONK;
-    case PALADIN:
-      return color::COLOR_PALADIN;
-    case PRIEST:
-      return color::COLOR_PRIEST;
-    case ROGUE:
-      return color::COLOR_ROGUE;
-    case SHAMAN:
-      return color::COLOR_SHAMAN;
-    case WARLOCK:
-      return color::COLOR_WARLOCK;
-    case WARRIOR:
-      return color::COLOR_WARRIOR;
-    case ENEMY:
-      return color::GREY;
-    case ENEMY_ADD:
-      return color::GREY;
-    case HEALING_ENEMY:
-      return color::GREY;
-    case TMI_BOSS:
-      return color::GREY;
-    case TANK_DUMMY:
-      return color::GREY;
-    default:
-      return color::GREY2;
-  }
-}
-
-rgb resource_color( resource_e type )
-{
-  switch ( type )
-  {
-    case RESOURCE_HEALTH:
-    case RESOURCE_RUNE_UNHOLY:
-      return class_color( HUNTER );
-
-    case RESOURCE_RUNE_FROST:
-    case RESOURCE_MANA:
-      return class_color( SHAMAN );
-
-    case RESOURCE_ENERGY:
-    case RESOURCE_FOCUS:
-    case RESOURCE_COMBO_POINT:
-      return class_color( ROGUE );
-
-    case RESOURCE_RAGE:
-    case RESOURCE_RUNIC_POWER:
-    case RESOURCE_RUNE:
-    case RESOURCE_RUNE_BLOOD:
-      return class_color( DEATH_KNIGHT );
-
-    case RESOURCE_HOLY_POWER:
-      return class_color( PALADIN );
-
-    case RESOURCE_SOUL_SHARD:
-      return class_color( WARLOCK );
-
-    case RESOURCE_ASTRAL_POWER:
-      return class_color( DRUID );
-
-    case RESOURCE_CHI:
-      return class_color( MONK );
-
-    case RESOURCE_NONE:
-    default:
-      return GREY2;
-  }
-}
-
-rgb stat_color( stat_e type )
-{
-  switch ( type )
-  {
-    case STAT_STRENGTH:
-      return COLOR_WARRIOR;
-    case STAT_AGILITY:
-      return COLOR_HUNTER;
-    case STAT_INTELLECT:
-      return COLOR_MAGE;
-    case STAT_SPIRIT:
-      return GREY3;
-    case STAT_ATTACK_POWER:
-      return COLOR_ROGUE;
-    case STAT_SPELL_POWER:
-      return COLOR_WARLOCK;
-    case STAT_READINESS_RATING:
-      return COLOR_DEATH_KNIGHT;
-    case STAT_CRIT_RATING:
-      return COLOR_PALADIN;
-    case STAT_HASTE_RATING:
-      return COLOR_SHAMAN;
-    case STAT_MASTERY_RATING:
-      return COLOR_ROGUE.dark();
-    case STAT_MULTISTRIKE_RATING:
-      return COLOR_DEATH_KNIGHT + COLOR_WARRIOR;
-    case STAT_DODGE_RATING:
-      return COLOR_MONK;
-    case STAT_PARRY_RATING:
-      return TEAL;
-    case STAT_ARMOR:
-      return COLOR_PRIEST;
-    case STAT_BONUS_ARMOR:
-      return COLOR_PRIEST;
-    case STAT_VERSATILITY_RATING:
-      return PURPLE.dark();
-    default:
-      return GREY2;
-  }
-}
-
-/* Blizzard shool colors:
- * http://wowprogramming.com/utils/xmlbrowser/live/AddOns/Blizzard_CombatLog/Blizzard_CombatLog.lua
- * search for: SchoolStringTable
- */
-// These colors are picked to sort of line up with classes, but match the "feel"
-// of the spell class' color
-rgb school_color( school_e type )
-{
-  switch ( type )
-  {
-    // -- Single Schools
-    case SCHOOL_NONE:
-      return color::COLOR_NONE;
-    case SCHOOL_PHYSICAL:
-      return color::PHYSICAL;
-    case SCHOOL_HOLY:
-      return color::HOLY;
-    case SCHOOL_FIRE:
-      return color::FIRE;
-    case SCHOOL_NATURE:
-      return color::NATURE;
-    case SCHOOL_FROST:
-      return color::FROST;
-    case SCHOOL_SHADOW:
-      return color::SHADOW;
-    case SCHOOL_ARCANE:
-      return color::ARCANE;
-    // -- Physical and a Magical
-    case SCHOOL_FLAMESTRIKE:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_FIRE );
-    case SCHOOL_FROSTSTRIKE:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_FROST );
-    case SCHOOL_SPELLSTRIKE:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_ARCANE );
-    case SCHOOL_STORMSTRIKE:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_NATURE );
-    case SCHOOL_SHADOWSTRIKE:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_SHADOW );
-    case SCHOOL_HOLYSTRIKE:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_HOLY );
-    // -- Two Magical Schools
-    case SCHOOL_FROSTFIRE:
-      return color::FROSTFIRE;
-    case SCHOOL_SPELLFIRE:
-      return school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_FIRE );
-    case SCHOOL_FIRESTORM:
-      return school_color( SCHOOL_FIRE ) + school_color( SCHOOL_NATURE );
-    case SCHOOL_SHADOWFLAME:
-      return school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_FIRE );
-    case SCHOOL_HOLYFIRE:
-      return school_color( SCHOOL_HOLY ) + school_color( SCHOOL_FIRE );
-    case SCHOOL_SPELLFROST:
-      return school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_FROST );
-    case SCHOOL_FROSTSTORM:
-      return school_color( SCHOOL_FROST ) + school_color( SCHOOL_NATURE );
-    case SCHOOL_SHADOWFROST:
-      return school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_FROST );
-    case SCHOOL_HOLYFROST:
-      return school_color( SCHOOL_HOLY ) + school_color( SCHOOL_FROST );
-    case SCHOOL_SPELLSTORM:
-      return school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE );
-    case SCHOOL_SPELLSHADOW:
-      return school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_SHADOW );
-    case SCHOOL_DIVINE:
-      return school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_HOLY );
-    case SCHOOL_SHADOWSTORM:
-      return school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_NATURE );
-    case SCHOOL_HOLYSTORM:
-      return school_color( SCHOOL_HOLY ) + school_color( SCHOOL_NATURE );
-    case SCHOOL_SHADOWLIGHT:
-      return school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_HOLY );
-    //-- Three or more schools
-    case SCHOOL_ELEMENTAL:
-      return color::ELEMENTAL;
-    case SCHOOL_CHROMATIC:
-      return school_color( SCHOOL_FIRE ) + school_color( SCHOOL_FROST ) +
-             school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE ) +
-             school_color( SCHOOL_SHADOW );
-    case SCHOOL_MAGIC:
-      return school_color( SCHOOL_FIRE ) + school_color( SCHOOL_FROST ) +
-             school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE ) +
-             school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_HOLY );
-    case SCHOOL_CHAOS:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_FIRE ) +
-             school_color( SCHOOL_FROST ) + school_color( SCHOOL_ARCANE ) +
-             school_color( SCHOOL_NATURE ) + school_color( SCHOOL_SHADOW ) +
-             school_color( SCHOOL_HOLY );
-
-    default:
-      return GREY2;
-  }
-}
-} /* namespace color */

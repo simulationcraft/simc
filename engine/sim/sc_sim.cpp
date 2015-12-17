@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "report/sc_highchart.hpp"
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif

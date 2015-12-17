@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include "sc_highchart.hpp"
+#include "simulationcraft.hpp"
 
 #include <cmath>
 #include <clocale>

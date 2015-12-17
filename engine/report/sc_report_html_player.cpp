@@ -838,9 +838,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
             "</div>\n",
             a->data().id(), a->data().name_cstr(),
             util::school_type_string( a->data().get_school_type() ),
-            pretty_spell_text( a->data(), a->data().tooltip(), p ).c_str(),
+            report::pretty_spell_text( a->data(), a->data().tooltip(), p ).c_str(),
             util::encode_html(
-                pretty_spell_text( a->data(), a->data().desc(), p ) )
+                report::pretty_spell_text( a->data(), a->data().desc(), p ) )
                 .c_str() );
       }
 
@@ -2922,14 +2922,14 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
           "</td>\n",
           b.data().id(), b.data().name_cstr(),
           b.player
-              ? util::encode_html( pretty_spell_text( b.data(),
+              ? util::encode_html( report::pretty_spell_text( b.data(),
                                                       b.data().tooltip(),
                                                       *b.player ) )
                     .c_str()
               : b.data().tooltip(),
           b.player
               ? util::encode_html(
-                    pretty_spell_text( b.data(), b.data().desc(), *b.player ) )
+                  report::pretty_spell_text( b.data(), b.data().desc(), *b.player ) )
                     .c_str()
               : b.data().desc(),
           b.data().max_stacks(), b.data().duration().total_seconds(),
@@ -4111,7 +4111,7 @@ void print_html_player_procs( report::sc_html_stream& os,
 // print_html_player_deaths =================================================
 
 void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
-                               const player_processed_report_information_t& ri )
+                               const player_processed_report_information_t& )
 {
   // Death Analysis
 
@@ -4119,13 +4119,6 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
 
   if ( deaths.size() > 0 )
   {
-    std::string distribution_deaths_str = "";
-    if ( !ri.distribution_deaths_chart.empty() )
-    {
-      distribution_deaths_str = "<img src=\"" + ri.distribution_deaths_chart +
-                                "\" alt=\"Deaths Distribution Chart\" />\n";
-    }
-
     os << "<div class=\"player-section gains\">\n"
        << "<h3 class=\"toggle\">Deaths</h3>\n"
        << "<div class=\"toggle-content hide\">\n"

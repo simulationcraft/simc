@@ -10,11 +10,14 @@
 #include <iostream>
 #include <array>
 
+#include "config.hpp"
 #include "sc_highchart.hpp"
 #include "sc_enums.hpp"
 #include "util/io.hpp"
 
 struct player_t;
+struct action_t;
+struct item_t;
 struct xml_node_t;
 struct sc_timeline_t;
 struct spell_data_t;
@@ -52,45 +55,6 @@ public:
         << "seconds." << std::endl;
   }
 };
-
-namespace chart
-{
-
-
-// Highcharts stuff
-bool generate_raid_gear( highchart::bar_chart_t&, const sim_t& );
-bool generate_raid_downtime( highchart::bar_chart_t&, const sim_t& );
-bool generate_raid_aps( highchart::bar_chart_t&, const sim_t&,
-                        const std::string& type );
-bool generate_distribution( highchart::histogram_chart_t&, const player_t* p,
-                            const std::vector<size_t>& dist_data,
-                            const std::string& distribution_name, double avg,
-                            double min, double max );
-bool generate_gains( highchart::pie_chart_t&, const player_t&, resource_e );
-bool generate_spent_time( highchart::pie_chart_t&, const player_t& );
-bool generate_stats_sources( highchart::pie_chart_t&, const player_t&,
-                             const std::string title,
-                             const std::vector<stats_t*>& stats_list );
-bool generate_damage_stats_sources( highchart::pie_chart_t&, const player_t& );
-bool generate_heal_stats_sources( highchart::pie_chart_t&, const player_t& );
-bool generate_raid_dpet( highchart::bar_chart_t&, const sim_t& );
-bool generate_action_dpet( highchart::bar_chart_t&, const player_t& );
-bool generate_apet( highchart::bar_chart_t&, const std::vector<stats_t*>& );
-highchart::time_series_t& generate_stats_timeline( highchart::time_series_t&,
-                                                   const stats_t& );
-highchart::time_series_t& generate_actor_timeline(
-    highchart::time_series_t&, const player_t& p, const std::string& attribute,
-    const std::string& series_color, const sc_timeline_t& data );
-bool generate_actor_dps_series( highchart::time_series_t& series,
-                                const player_t& p );
-bool generate_scale_factors( highchart::bar_chart_t& bc, const player_t& p,
-                             scale_metric_e metric );
-bool generate_scaling_plot( highchart::chart_t& bc, const player_t& p,
-                            scale_metric_e metric );
-bool generate_reforge_plot( highchart::chart_t& bc, const player_t& p );
-
-}  // end namespace sc_chart
-
 namespace color
 {
 struct rgb
@@ -179,9 +143,46 @@ const rgb HEIRLOOM  = "E6CC80";
 
 } /* namespace color */
 
+namespace chart
+{
+// Highcharts stuff
+bool generate_raid_gear( highchart::bar_chart_t&, const sim_t& );
+bool generate_raid_downtime( highchart::bar_chart_t&, const sim_t& );
+bool generate_raid_aps( highchart::bar_chart_t&, const sim_t&,
+                        const std::string& type );
+bool generate_distribution( highchart::histogram_chart_t&, const player_t* p,
+                            const std::vector<size_t>& dist_data,
+                            const std::string& distribution_name, double avg,
+                            double min, double max );
+bool generate_gains( highchart::pie_chart_t&, const player_t&, resource_e );
+bool generate_spent_time( highchart::pie_chart_t&, const player_t& );
+bool generate_stats_sources( highchart::pie_chart_t&, const player_t&,
+                             const std::string title,
+                             const std::vector<stats_t*>& stats_list );
+bool generate_damage_stats_sources( highchart::pie_chart_t&, const player_t& );
+bool generate_heal_stats_sources( highchart::pie_chart_t&, const player_t& );
+bool generate_raid_dpet( highchart::bar_chart_t&, const sim_t& );
+bool generate_action_dpet( highchart::bar_chart_t&, const player_t& );
+bool generate_apet( highchart::bar_chart_t&, const std::vector<stats_t*>& );
+highchart::time_series_t& generate_stats_timeline( highchart::time_series_t&,
+                                                   const stats_t& );
+highchart::time_series_t& generate_actor_timeline(
+    highchart::time_series_t&, const player_t& p, const std::string& attribute,
+    const std::string& series_color, const sc_timeline_t& data );
+bool generate_actor_dps_series( highchart::time_series_t& series,
+                                const player_t& p );
+bool generate_scale_factors( highchart::bar_chart_t& bc, const player_t& p,
+                             scale_metric_e metric );
+bool generate_scaling_plot( highchart::chart_t& bc, const player_t& p,
+                            scale_metric_e metric );
+bool generate_reforge_plot( highchart::chart_t& bc, const player_t& p );
+
+}  // end namespace sc_chart
+
+// Report
 namespace report
 {
-typedef io::ofstream sc_html_stream;
+using sc_html_stream = io::ofstream;
 
 void generate_player_charts( player_t&,
                              player_processed_report_information_t& );
@@ -195,6 +196,14 @@ void print_html_sample_data( report::sc_html_stream&, const player_t&,
 
 bool output_scale_factors( const player_t* p );
 
+std::string decoration_domain( const sim_t& sim );
+std::string decorated_buff_name( const buff_t* buff );
+std::string decorated_action_name( const action_t* action );
+std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell );
+std::string decorated_item_name( const item_t* item );
+std::string decorate_html_string( const std::string& value,
+                                  const color::rgb& color );
+
 void print_spell_query( std::ostream& out, const sim_t& sim,
                         const spell_data_expr_t&, unsigned level );
 void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim,
@@ -206,32 +215,7 @@ void print_json( sim_t& );
 void print_html_player( report::sc_html_stream&, player_t&, int );
 void print_xml( sim_t* );
 void print_suite( sim_t* );
-
-const color::rgb& item_quality_color( const item_t& item );
-
-std::string decoration_domain( const sim_t& sim );
-std::string decorated_buff_name( const buff_t* buff );
-std::string decorated_action_name( const action_t* action );
-std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell );
-std::string decorated_item_name( const item_t* item );
-
-#if SC_BETA
-static const char* const beta_warnings[] = {
-    "Beta! Beta! Beta! Beta! Beta! Beta!", "Not All classes are yet supported.",
-    "Some class models still need tweaking.",
-    "Some class action lists need tweaking.",
-    "Some class BiS gear setups need tweaking.",
-    "Some trinkets not yet implemented.",
-    "Constructive feedback regarding our output will shorten the Beta phase "
-    "dramatically.",
-    "Beta! Beta! Beta! Beta! Beta! Beta!",
-};
-#endif  // SC_BETA
-
-std::string decorate_html_string( const std::string& value,
-                                  const color::rgb& color );
-}  // reort
-
+std::vector<std::string> beta_warnings();
 std::string pretty_spell_text( const spell_data_t& default_spell,
                                const std::string& text, const player_t& p );
 inline std::string pretty_spell_text( const spell_data_t& default_spell,
@@ -240,5 +224,7 @@ inline std::string pretty_spell_text( const spell_data_t& default_spell,
   return text ? pretty_spell_text( default_spell, std::string( text ), p )
               : std::string();
 }
+
+}  // report
 
 #endif  // SC_REPORT_HPP

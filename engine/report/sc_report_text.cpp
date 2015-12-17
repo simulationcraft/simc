@@ -1274,8 +1274,11 @@ void print_text_report( FILE* file, sim_t* sim, bool detail )
 {
 #if SC_BETA
   util::fprintf( file, "\n" );
-  for ( size_t i = 0; i < sizeof_array( report::beta_warnings ); ++i )
-    util::fprintf( file, " * %s\n", report::beta_warnings[ i ] );
+  auto beta_warnings = report::beta_warnings();
+  for ( const auto& line : beta_warnings )
+  {
+    util::fprintf( file, " * %s\n", line.c_str() );
+  }
 #endif
 
   if ( !sim->raid_events_str.empty() )

@@ -1127,8 +1127,9 @@ void print_html_beta_warning( report::sc_html_stream& os )
      << "<h2>Beta Release</h2>\n"
      << "<ul>\n";
 
-  for ( size_t i = 0; i < sizeof_array( report::beta_warnings ); ++i )
-    os << "<li>" << report::beta_warnings[ i ] << "</li>\n";
+  auto beta_warnings = report::beta_warnings();
+  for ( const auto& line : beta_warnings )
+    os << "<li>" << line << "</li>\n";
 
   os << "</ul>\n"
      << "</div>\n\n";
