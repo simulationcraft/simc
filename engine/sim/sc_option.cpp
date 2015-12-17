@@ -795,6 +795,8 @@ option_db_t::option_db_t()
 
     prefix += "/";
 
+    auto_path.push_back( prefix + "legion" ); // legion alpha test profiles
+
     // Add profiles for each tier, except pvp
     for ( unsigned i = 0; i < N_TIER; ++i )
     {
