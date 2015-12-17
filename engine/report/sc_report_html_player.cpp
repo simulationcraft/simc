@@ -2181,7 +2181,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
 
 void print_html_player_statistics(
     report::sc_html_stream& os, const player_t& p,
-    const player_processed_report_information_t& ri )
+    const player_processed_report_information_t& )
 {
   // Statistics & Data Analysis
 
@@ -2281,7 +2281,7 @@ void get_total_player_gains( const player_t& p,
 
 void print_html_player_resources(
     report::sc_html_stream& os, const player_t& p,
-    const player_processed_report_information_t& ri )
+    const player_processed_report_information_t& )
 {
   // Resources Section
 
@@ -2599,11 +2599,8 @@ void print_html_player_resources(
 // print_html_player_charts =================================================
 
 void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
-                               const player_processed_report_information_t& ri )
+                               const player_processed_report_information_t& )
 {
-  const sim_t& sim   = *( p.sim );
-  size_t num_players = sim.players_by_name.size();
-
   os << "<div class=\"player-section\">\n"
      << "<h3 class=\"toggle open\">Charts</h3>\n"
      << "<div class=\"toggle-content\">\n"

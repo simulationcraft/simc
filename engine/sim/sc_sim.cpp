@@ -1311,7 +1311,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   distance_targeting_enabled( false ),
   enable_dps_healing( false ),
   scaling_normalized( 1.0 ),
-  report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), process_priority( computer_process::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),

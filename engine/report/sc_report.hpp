@@ -187,7 +187,6 @@ void generate_player_charts( player_t&,
                              player_processed_report_information_t& );
 void generate_player_buff_lists( player_t&,
                                  player_processed_report_information_t& );
-void generate_sim_report_information( const sim_t&, sim_report_information_t& );
 
 void print_html_sample_data( report::sc_html_stream&, const player_t&,
                              const extended_sample_data_t&,

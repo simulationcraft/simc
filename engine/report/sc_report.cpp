@@ -992,7 +992,7 @@ void report::generate_player_buff_lists(
 void report::generate_player_charts( player_t& p,
                                      player_processed_report_information_t& ri )
 {
-  if ( ri.charts_generated )
+  if ( ri.generated )
     return;
 
   // Scaling charts
@@ -1008,12 +1008,7 @@ void report::generate_player_charts( player_t& p,
   // Create html profile str
   ri.html_profile_str = p.create_profile( SAVE_ALL );
 
-  ri.charts_generated = true;
-}
-
-void report::generate_sim_report_information( const sim_t& sim,
-                                              sim_report_information_t& ri )
-{
+  ri.generated = true;
 }
 
 std::string report::decorate_html_string( const std::string& value,

@@ -401,8 +401,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim,
-                             const sim_report_information_t& ri )
+void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 {
   os << "<div id=\"sim-info\" class=\"section\">\n";
 
@@ -582,8 +581,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim,
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim,
-                              const sim_report_information_t& ri )
+void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
 {
   os << "<div id=\"raid-summary\" class=\"section section-open\">\n\n";
 
@@ -735,96 +733,6 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim,
      << "</div>\n"
      << "</div>\n\n";
 }
-
-// print_html_raid_imagemaps ================================================
-
-void print_html_raid_imagemap( report::sc_html_stream& os, const sim_t& sim,
-                               size_t num, int dps )
-{
-  std::vector<player_t*> player_list;
-  if ( dps == 1 )
-    player_list = sim.players_by_dps;
-  else if ( dps == 2 )
-    player_list = sim.players_by_priority_dps;
-  else if ( dps == 3 )
-    player_list = sim.players_by_hps;
-  else if ( dps == 4 )
-    player_list = sim.players_by_apm;
-
-  size_t start = num * MAX_PLAYERS_PER_CHART;
-  size_t end   = start + MAX_PLAYERS_PER_CHART;
-
-  for ( size_t i = 0; i < player_list.size(); i++ )
-  {
-    player_t* p = player_list[ i ];
-    if ( dps == 1 && p->collected_data.dps.mean() <= 0 )
-    {
-      player_list.resize( i );
-      break;
-    }
-    else if ( dps == 2 && p->collected_data.prioritydps.mean() <= 0 )
-    {
-      player_list.resize( i );
-      break;
-    }
-    else if ( dps == 3 && p->collected_data.hps.mean() <= 0 )
-    {
-      player_list.resize( i );
-      break;
-    }
-    else if ( dps == 4 &&
-              ( p->collected_data.fight_length.mean()
-                    ? 60.0 *
-                          p->collected_data.executed_foreground_actions.mean() /
-                          p->collected_data.fight_length.mean()
-                    : 0 ) <= 0 )
-    {
-      player_list.resize( i );
-      break;
-    }
-  }
-
-  if ( end > player_list.size() )
-    end = player_list.size();
-
-  os << "n = [";
-  for ( int i = (int)end - 1; i >= (int)start; i-- )
-  {
-    os << "\"player" << player_list[ i ]->index << "\"";
-    if ( i != (int)start )
-      os << ", ";
-  }
-  os << "];\n";
-
-  std::string imgid = str::format(
-      "%sIMG%u",
-      ( dps == 1 )
-          ? "DPS"
-          : ( ( dps == 2 ) ? "PRIORITYDPS" : ( ( dps == 3 ) ? "HPS" : "APM" ) ),
-      as<unsigned>( num ) );
-  std::string mapid = str::format(
-      "%sMAP%u",
-      ( dps == 1 )
-          ? "DPS"
-          : ( ( dps == 2 ) ? "PRIORITYDPS" : ( ( dps == 3 ) ? "HPS" : "APM" ) ),
-      as<unsigned>( num ) );
-
-  os.format(
-      "u = document.getElementById('%s').src;\n"
-      "getMap(u, n, function(mapStr) {\n"
-      "document.getElementById('%s').innerHTML += mapStr;\n"
-      "$j('#%s').attr('usemap','#%s');\n"
-      "$j('#%s area').click(function(e) {\n"
-      "anchor = $j(this).attr('href');\n"
-      "target = $j(anchor).children('h2:first');\n"
-      "open_anchor(target);\n"
-      "});\n"
-      "});\n\n",
-      imgid.c_str(), mapid.c_str(), imgid.c_str(), mapid.c_str(),
-      mapid.c_str() );
-}
-
-// print_html_scale_factors =================================================
 
 void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
 {
@@ -1467,7 +1375,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   if ( num_players > 1 || sim.report_raid_summary ||
        !sim.raid_events_str.empty() )
   {
-    print_html_raid_summary( os, sim, sim.report_information );
+    print_html_raid_summary( os, sim );
     print_html_scale_factors( os, sim );
   }
 
@@ -1489,7 +1397,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     }
   }
 
-  print_html_sim_summary( os, sim, sim.report_information );
+  print_html_sim_summary( os, sim );
 
   if ( sim.report_raw_abilities )
     raw_ability_summary::print( os, sim );
@@ -1607,8 +1515,6 @@ void print_html( sim_t& sim )
                 sim.html_file_str.c_str() );
     return;
   }
-
-  report::generate_sim_report_information( sim, sim.report_information );
 
   // Print html report
   print_html_( s, sim );

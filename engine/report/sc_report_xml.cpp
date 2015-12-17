@@ -19,8 +19,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t& writer );
 void print_xml_buffs( sim_t* sim, xml_writer_t& writer );
 void print_xml_hat_donors( sim_t* sim, xml_writer_t& writer );
 void print_xml_performance( sim_t* sim, xml_writer_t& writer );
-void print_xml_summary( sim_t* sim, xml_writer_t& writer,
-                        sim_report_information_t& );
+void print_xml_summary( sim_t* sim, xml_writer_t& writer );
 void print_xml_player( sim_t* sim, xml_writer_t& writer, player_t* p,
                        player_t* owner );
 
@@ -1249,8 +1248,7 @@ void print_xml_config( sim_t* sim, xml_writer_t& writer )
   writer.end_tag( "config" );
 }
 
-void print_xml_summary( sim_t* sim, xml_writer_t& writer,
-                        sim_report_information_t& ri )
+void print_xml_summary( sim_t* sim, xml_writer_t& writer )
 {
   writer.begin_tag( "summary" );
 
@@ -1582,8 +1580,6 @@ void print_xml( sim_t* sim )
     return;
   }
 
-  report::generate_sim_report_information( sim, sim->report_information );
-
   writer.init_document( sim->xml_stylesheet_file_str );
   writer.begin_tag( "simulationcraft" );
 
@@ -1601,7 +1597,7 @@ void print_xml( sim_t* sim )
 #endif
 
   print_xml_config( sim, writer );
-  print_xml_summary( sim, writer, sim->report_information );
+  print_xml_summary( sim, writer );
 
   print_xml_raid_events( sim, writer );
   print_xml_roster( sim, writer );

@@ -1485,11 +1485,6 @@ private:
   sc_raw_ostream_t _raw;
 };
 
-struct sim_report_information_t
-{
-
-};
-
 #ifndef NDEBUG
 #define ACTOR_EVENT_BOOKKEEPING 1
 #else
@@ -1742,8 +1737,6 @@ struct sim_t : private sc_thread_t
   bool distance_targeting_enabled;
   bool enable_dps_healing;
   double scaling_normalized;
-
-  sim_report_information_t report_information;
 
   // Multi-Threading
   mutex_t merge_mutex;
@@ -3038,7 +3031,7 @@ public:
 
 struct player_processed_report_information_t
 {
-  bool charts_generated, buff_lists_generated;
+  bool generated, buff_lists_generated;
   std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
   std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
   std::array<std::string, STAT_MAX> timeline_stat_chart;
@@ -3056,7 +3049,7 @@ struct player_processed_report_information_t
   std::string html_profile_str;
   std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
 
-  player_processed_report_information_t() : charts_generated(), buff_lists_generated() {}
+  player_processed_report_information_t() : generated(), buff_lists_generated() {}
 };
 
 /* Contains any data collected during / at the end of combat
