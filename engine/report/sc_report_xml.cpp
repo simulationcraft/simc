@@ -451,26 +451,13 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.print_attribute( "apr", util::to_string( s -> apr[ p -> primary_resource() ] ) );
       writer.print_attribute( "pdps", util::to_string( s -> portion_aps.mean() ) );
 
-      if ( ! p -> sim -> enable_highcharts )
+      if ( s -> has_direct_amount_results() || s -> has_tick_amount_results() )
       {
-        if ( ! s -> timeline_aps_chart.empty() )
-        {
-          writer.begin_tag( "chart" );
-          writer.print_attribute( "type", "timeline_aps" );
-          writer.print_attribute( "href", s -> timeline_aps_chart );
-          writer.end_tag( "chart" );
-        }
-      }
-      else
-      {
-        if ( s -> has_direct_amount_results() || s -> has_tick_amount_results() )
-        {
-          highchart::time_series_t ts( highchart::build_id( *s ), s -> player -> sim );
-          writer.begin_tag( "chart" );
-          writer.print_attribute( "type", "timeline_aps" );
-          writer.print_text( chart::generate_stats_timeline( ts, *s ).to_xml() );
-          writer.end_tag( "chart" );
-        }
+        highchart::time_series_t ts( highchart::build_id( *s ), s -> player -> sim );
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "timeline_aps" );
+        writer.print_text( chart::generate_stats_timeline( ts, *s ).to_xml() );
+        writer.end_tag( "chart" );
       }
 
       writer.print_tag( "etpe", util::to_string( s -> etpe ) );
@@ -820,178 +807,108 @@ void print_xml_player_charts( xml_writer_t & writer, player_t* p )
 
   writer.begin_tag( "charts" );
 
-  if ( ! p -> sim -> enable_highcharts )
+  if ( ! p -> stats_list.empty() )
   {
-    player_processed_report_information_t& ri = p -> report_information;
-    if ( ! ri.action_dpet_chart.empty() )
+    highchart::bar_chart_t bc( highchart::build_id( *p, "dpet" ), p -> sim );
+    if ( chart::generate_action_dpet( bc, *p ) )
     {
       writer.begin_tag( "chart" );
       writer.print_attribute( "type", "dpet" );
-      writer.print_attribute_unescaped( "href", ri.action_dpet_chart );
-      writer.end_tag( "chart" );
-    }
-
-    if ( ! ri.action_dmg_chart.empty() )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "dmg" );
-      writer.print_attribute_unescaped( "href", ri.action_dmg_chart );
-      writer.end_tag( "chart" );
-    }
-
-    if ( ! ri.scaling_dps_chart.empty() )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "scaling_dps" );
-      writer.print_attribute_unescaped( "href", ri.scaling_dps_chart );
-      writer.end_tag( "chart" );
-    }
-
-    if ( ! ri.reforge_dps_chart.empty() )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "reforge_dps" );
-      writer.print_attribute_unescaped( "href", ri.reforge_dps_chart );
-      writer.end_tag( "chart" );
-    }
-
-    if ( ! ri.scale_factors_chart.empty() )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "scale_factors" );
-      writer.print_attribute_unescaped( "href", ri.scale_factors_chart );
-      writer.end_tag( "chart" );
-    }
-
-    if ( ! ri.timeline_dps_chart.empty() )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "timeline_dps" );
-      writer.print_attribute_unescaped( "href", ri.timeline_dps_chart );
-      writer.end_tag( "chart" );
-    }
-
-    if ( ! ri.distribution_dps_chart.empty() )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "distribution_dps" );
-      writer.print_attribute_unescaped( "href", ri.distribution_dps_chart );
-      writer.end_tag( "chart" );
-    }
-
-    if ( ! ri.time_spent_chart.empty() )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "time_spent" );
-      writer.print_attribute_unescaped( "href", ri.time_spent_chart );
-      writer.end_tag( "chart" );
-    }
-  }
-  else
-  {
-    if ( ! p -> stats_list.empty() )
-    {
-      highchart::bar_chart_t bc( highchart::build_id( *p, "dpet" ), p -> sim );
-      if ( chart::generate_action_dpet( bc, *p ) )
-      {
-        writer.begin_tag( "chart" );
-        writer.print_attribute( "type", "dpet" );
-        writer.print_text( bc.to_xml() );
-        writer.end_tag( "chart" );
-      }
-
-      highchart::pie_chart_t pc( highchart::build_id( *p, "dps_sources" ), p -> sim );
-      if ( chart::generate_damage_stats_sources( pc, *p ) )
-      {
-        writer.begin_tag( "chart" );
-        writer.print_attribute( "type", "dps_sources" );
-        writer.print_text( pc.to_xml() );
-        writer.end_tag( "chart" );
-      }
-
-      highchart::pie_chart_t pc2( highchart::build_id( *p, "hps_sources" ), p -> sim );
-      if ( chart::generate_heal_stats_sources( pc2, *p ) )
-      {
-        writer.begin_tag( "chart" );
-        writer.print_attribute( "type", "hps_sources" );
-        writer.print_text( pc2.to_xml() );
-        writer.end_tag( "chart" );
-      }
-    }
-
-    highchart::chart_t scaling_plot( highchart::build_id( *p, "scaling_plot" ), p -> sim );
-    if ( chart::generate_scaling_plot( scaling_plot, *p, p -> sim -> scaling -> scaling_metric ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "scaling_dps" );
-      writer.print_text( scaling_plot.to_xml() );
-      writer.end_tag( "chart" );
-    }
-
-    highchart::chart_t reforge( highchart::build_id( *p, "reforge_plot" ), p -> sim );
-    if ( chart::generate_reforge_plot( reforge, *p ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "reforge_dps" );
-      writer.print_text( reforge.to_xml() );
-      writer.end_tag( "chart" );
-    }
-
-    scaling_metric_data_t scaling_data = p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
-    std::string scale_factor_id = "scale_factor_";
-    scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
-    highchart::bar_chart_t bc( highchart::build_id( *p, scale_factor_id ), p -> sim );
-    if ( chart::generate_scale_factors( bc, *p, scaling_data.metric ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "scale_factors" );
       writer.print_text( bc.to_xml() );
       writer.end_tag( "chart" );
     }
 
-    if ( p -> collected_data.dps.mean() > 0 )
+    highchart::pie_chart_t pc( highchart::build_id( *p, "dps_sources" ), p -> sim );
+    if ( chart::generate_damage_stats_sources( pc, *p ) )
     {
-      highchart::time_series_t ts( highchart::build_id( *p, "dps" ), p -> sim );
-      if ( chart::generate_actor_dps_series( ts, *p ) )
-      {
-        writer.begin_tag( "chart" );
-        writer.print_attribute( "type", "timeline_dps" );
-        writer.print_text( ts.to_xml() );
-        writer.end_tag( "chart" );
-      }
-    }
-
-    {
-      highchart::histogram_chart_t chart( highchart::build_id( *p, "dps_dist" ), p -> sim );
-      chart::generate_distribution( chart, p, p -> collected_data.dps.distribution, p -> name_str + " DPS",
-          p -> collected_data.dps.mean(),
-          p -> collected_data.dps.min(),
-          p -> collected_data.dps.max() );
       writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "distribution_dps" );
-      writer.print_text( chart.to_xml() );
-      writer.end_tag( "chart" );
-    }
-    {
-      highchart::histogram_chart_t chart( highchart::build_id( *p, "hps_dist" ), p -> sim );
-      chart::generate_distribution( chart, p, p -> collected_data.hps.distribution, p -> name_str + " HPS",
-          p -> collected_data.hps.mean(),
-          p -> collected_data.hps.min(),
-          p -> collected_data.hps.max() );
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "distribution_hps" );
-      writer.print_text( chart.to_xml() );
+      writer.print_attribute( "type", "dps_sources" );
+      writer.print_text( pc.to_xml() );
       writer.end_tag( "chart" );
     }
 
-    highchart::pie_chart_t time_spent( highchart::build_id( *p, "time_spent" ), p -> sim );
-    if ( chart::generate_spent_time( time_spent, *p ) )
+    highchart::pie_chart_t pc2( highchart::build_id( *p, "hps_sources" ), p -> sim );
+    if ( chart::generate_heal_stats_sources( pc2, *p ) )
     {
       writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "dpet" );
-      writer.print_text( time_spent.to_xml() );
+      writer.print_attribute( "type", "hps_sources" );
+      writer.print_text( pc2.to_xml() );
       writer.end_tag( "chart" );
     }
+  }
+
+  highchart::chart_t scaling_plot( highchart::build_id( *p, "scaling_plot" ), p -> sim );
+  if ( chart::generate_scaling_plot( scaling_plot, *p, p -> sim -> scaling -> scaling_metric ) )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "scaling_dps" );
+    writer.print_text( scaling_plot.to_xml() );
+    writer.end_tag( "chart" );
+  }
+
+  highchart::chart_t reforge( highchart::build_id( *p, "reforge_plot" ), p -> sim );
+  if ( chart::generate_reforge_plot( reforge, *p ) )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "reforge_dps" );
+    writer.print_text( reforge.to_xml() );
+    writer.end_tag( "chart" );
+  }
+
+  scaling_metric_data_t scaling_data = p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
+  std::string scale_factor_id = "scale_factor_";
+  scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
+  highchart::bar_chart_t bc( highchart::build_id( *p, scale_factor_id ), p -> sim );
+  if ( chart::generate_scale_factors( bc, *p, scaling_data.metric ) )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "scale_factors" );
+    writer.print_text( bc.to_xml() );
+    writer.end_tag( "chart" );
+  }
+
+  if ( p -> collected_data.dps.mean() > 0 )
+  {
+    highchart::time_series_t ts( highchart::build_id( *p, "dps" ), p -> sim );
+    if ( chart::generate_actor_dps_series( ts, *p ) )
+    {
+      writer.begin_tag( "chart" );
+      writer.print_attribute( "type", "timeline_dps" );
+      writer.print_text( ts.to_xml() );
+      writer.end_tag( "chart" );
+    }
+  }
+
+  {
+    highchart::histogram_chart_t chart( highchart::build_id( *p, "dps_dist" ), p -> sim );
+    chart::generate_distribution( chart, p, p -> collected_data.dps.distribution, p -> name_str + " DPS",
+        p -> collected_data.dps.mean(),
+        p -> collected_data.dps.min(),
+        p -> collected_data.dps.max() );
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "distribution_dps" );
+    writer.print_text( chart.to_xml() );
+    writer.end_tag( "chart" );
+  }
+  {
+    highchart::histogram_chart_t chart( highchart::build_id( *p, "hps_dist" ), p -> sim );
+    chart::generate_distribution( chart, p, p -> collected_data.hps.distribution, p -> name_str + " HPS",
+        p -> collected_data.hps.mean(),
+        p -> collected_data.hps.min(),
+        p -> collected_data.hps.max() );
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "distribution_hps" );
+    writer.print_text( chart.to_xml() );
+    writer.end_tag( "chart" );
+  }
+
+  highchart::pie_chart_t time_spent( highchart::build_id( *p, "time_spent" ), p -> sim );
+  if ( chart::generate_spent_time( time_spent, *p ) )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "dpet" );
+    writer.print_text( time_spent.to_xml() );
+    writer.end_tag( "chart" );
   }
 
   writer.end_tag( "charts" );
@@ -1167,96 +1084,50 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_informatio
   }
 
   writer.begin_tag( "charts" );
-  if ( ! sim -> enable_highcharts )
+
+  highchart::bar_chart_t raid_dps( "raid_dps", sim );
+  if ( chart::generate_raid_aps( raid_dps, sim, "dps" ) )
   {
-    size_t count = ri.dps_charts.size();
-    writer.print_attribute( "max_players_per_chart", util::to_string( MAX_PLAYERS_PER_CHART ) );
-    for ( size_t i = 0; i < count; i++ )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "dps" );
-      writer.print_attribute_unescaped( "img_src", ri.dps_charts[ i ] );
-      writer.end_tag( "chart" );
-    }
-    count = ri.priority_dps_charts.size();
-    for ( size_t i = 0; i < count; i++ )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "prioritydps" );
-      writer.print_attribute_unescaped( "img_src", ri.priority_dps_charts[i] );
-      writer.end_tag( "chart" );
-    }
-    count = ri.apm_charts.size();
-    for ( size_t i = 0; i < count; i++ )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "apm" );
-      writer.print_attribute_unescaped( "img_src", ri.apm_charts[i] );
-      writer.end_tag( "chart" );
-    }
-    count = ri.hps_charts.size();
-    for ( size_t i = 0; i < count; i++ )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "hps" );
-      writer.print_attribute_unescaped( "img_src", ri.hps_charts[ i ] );
-      writer.end_tag( "chart" );
-    }
-    count = ri.dpet_charts.size();
-    for ( size_t i = 0; i < count; i++ )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "dpet" );
-      writer.print_attribute_unescaped( "img_src", ri.dpet_charts[ i ] );
-      writer.end_tag( "chart" );
-    }
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "raid_dps" );
+    writer.print_text( raid_dps.to_xml() );
+    writer.end_tag( "chart" );
   }
-  else
+
+  highchart::bar_chart_t priority_dps( "priority_dps", sim );
+  if ( chart::generate_raid_aps( priority_dps, sim, "dps" ) )
   {
-    highchart::bar_chart_t raid_dps( "raid_dps", sim );
-    if ( chart::generate_raid_aps( raid_dps, sim, "dps" ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "raid_dps" );
-      writer.print_text( raid_dps.to_xml() );
-      writer.end_tag( "chart" );
-    }
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "priority_dps" );
+    writer.print_text( priority_dps.to_xml() );
+    writer.end_tag( "chart" );
+  }
 
-    highchart::bar_chart_t priority_dps( "priority_dps", sim );
-    if ( chart::generate_raid_aps( priority_dps, sim, "dps" ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "priority_dps" );
-      writer.print_text( priority_dps.to_xml() );
-      writer.end_tag( "chart" );
-    }
+  highchart::bar_chart_t raid_hps( "raid_hps", sim );
+  if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "raid_hps" );
+    writer.print_text( raid_hps.to_xml() );
+    writer.end_tag( "chart" );
+  }
 
-    highchart::bar_chart_t raid_hps( "raid_hps", sim );
-    if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "raid_hps" );
-      writer.print_text( raid_hps.to_xml() );
-      writer.end_tag( "chart" );
-    }
+  highchart::bar_chart_t gear( "raid_gear", sim );
+  if ( chart::generate_raid_gear( gear, sim ) )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "raid_gear" );
+    writer.print_text( gear.to_xml() );
+    writer.end_tag( "chart" );
+  }
 
-    highchart::bar_chart_t gear( "raid_gear", sim );
-    if ( chart::generate_raid_gear( gear, sim ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "raid_gear" );
-      writer.print_text( gear.to_xml() );
-      writer.end_tag( "chart" );
-    }
-
-    highchart::bar_chart_t bc( "raid_dpet", sim );
-    if ( chart::generate_raid_dpet( bc, sim ) )
-    {
-      writer.begin_tag( "chart" );
-      writer.print_attribute( "type", "dpet" );
-      writer.print_text( bc.to_xml() );
-      writer.end_tag( "chart" );
-    }
+  highchart::bar_chart_t bc( "raid_dpet", sim );
+  if ( chart::generate_raid_dpet( bc, sim ) )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "dpet" );
+    writer.print_text( bc.to_xml() );
+    writer.end_tag( "chart" );
   }
   writer.end_tag( "charts" );
 

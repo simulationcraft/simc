@@ -1487,10 +1487,7 @@ private:
 
 struct sim_report_information_t
 {
-  bool charts_generated;
-  std::vector<std::string> dps_charts, priority_dps_charts, hps_charts, dtps_charts, tmi_charts, dpet_charts, apm_charts;
-  std::string timeline_chart, downtime_chart;
-  sim_report_information_t() { charts_generated = false; }
+
 };
 
 #ifndef NDEBUG
@@ -1809,7 +1806,6 @@ struct sim_t : private sc_thread_t
   // to correct elements (toggled elements in the HTML report) based on the data.
   std::map<std::string, std::vector<std::string> > chart_data;
 
-  bool enable_highcharts;
   bool output_relative_difference;
   double boxplot_percentile;
 

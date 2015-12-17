@@ -50,32 +50,12 @@ public:
   }
 };
 
-#define MAX_PLAYERS_PER_CHART 20
+static const int MAX_PLAYERS_PER_CHART = 20;
 
 #define LOOTRANK_ENABLED 0 // The website works, but the link we send out is not usable. If anyone ever fixes it, just set this to 1.
 
 namespace chart
 {
-enum chart_e { HORIZONTAL_BAR_STACKED, HORIZONTAL_BAR, VERTICAL_BAR, PIE, LINE, XY_LINE };
-
-std::string raid_downtime ( const std::vector<player_t*> &players_by_name );
-size_t raid_aps ( std::vector<std::string>& images, const sim_t&, const std::vector<player_t*>&, std::string type );
-size_t raid_dpet( std::vector<std::string>& images, const sim_t& );
-size_t raid_gear( std::vector<std::string>& images, const sim_t& );
-
-std::string action_dpet        ( const player_t& );
-std::string aps_portion        ( const player_t& );
-std::string time_spent         ( const player_t& );
-std::string gains              ( const player_t&, resource_e );
-std::string timeline           ( const std::vector<double>&, const std::string&, double avg = 0, std::string color = "FDD017", size_t max_length = 0 );
-std::string timeline_dps_error ( const player_t& );
-std::string scale_factors      ( const player_t& );
-std::string scaling_dps        ( const player_t& );
-std::string reforge_dps        ( const player_t& );
-std::string distribution       ( const std::vector<size_t>& /*dist_data*/, const std::string&, double, double, double );
-std::string normal_distribution(  double mean, double std_dev, double confidence, double tolerance_interval = 0  );
-std::string dps_error( player_t& );
-
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank  ( const player_t& );
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_wowhead   ( const player_t& );
 std::array<std::string, SCALE_METRIC_MAX> gear_weights_pawn      ( const player_t& );

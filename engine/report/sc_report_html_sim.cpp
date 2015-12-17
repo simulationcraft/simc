@@ -298,14 +298,8 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
     {
       os << "<li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
       ci++;
-      if ( ! sim.enable_highcharts )
-      {
-        os << "<li><a href=\"#apm-summary\">Actions per Minute Summary</a></li>\n";
-      }
-      else
-      {
-        os << "<li><a href=\"#apm-summary\">Actions per Minute / DPS Variance Summary</a></li>\n";
-      }
+
+      os << "<li><a href=\"#apm-summary\">Actions per Minute / DPS Variance Summary</a></li>\n";
       ci++;
       if ( sim.scaling -> has_scale_factors() )
       {
@@ -512,85 +506,46 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim, const sim_r
   // Timeline Distribution Chart
   if ( sim.iterations > 1 )
   {
-    if ( ! sim.enable_highcharts && ! ri.timeline_chart.empty() )
+    highchart::histogram_chart_t chart( "sim_length_dist", sim );
+    if ( chart::generate_distribution( chart, nullptr, sim.simulation_length.distribution, "Timeline",
+          sim.simulation_length.mean(),
+          sim.simulation_length.min(),
+          sim.simulation_length.max() ) )
     {
-      os.format(
-        "<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
-        ri.timeline_chart.c_str() );
-    }
-    else if ( sim.enable_highcharts )
-    {
-      highchart::histogram_chart_t chart( "sim_length_dist", sim );
-      if ( chart::generate_distribution( chart, nullptr, sim.simulation_length.distribution, "Timeline",
-            sim.simulation_length.mean(),
-            sim.simulation_length.min(),
-            sim.simulation_length.max() ) )
-      {
-        chart.set_toggle_id( "sim-info-toggle" );
-        os << chart.to_target_div();
-        sim.add_chart_data( chart );
-      }
+      chart.set_toggle_id( "sim-info-toggle" );
+      os << chart.to_target_div();
+      sim.add_chart_data( chart );
     }
   }
 
   // Gear Charts
-  if ( sim.enable_highcharts )
+  highchart::bar_chart_t gear( "raid_gear", sim );
+  if ( chart::generate_raid_gear( gear, sim ) )
   {
-    highchart::bar_chart_t gear( "raid_gear", sim );
-    if ( chart::generate_raid_gear( gear, sim ) )
-    {
-      gear.set_toggle_id( "sim-info-toggle" );
-      os << gear.to_target_div();
-      sim.add_chart_data( gear );
-    }
+    gear.set_toggle_id( "sim-info-toggle" );
+    os << gear.to_target_div();
+    sim.add_chart_data( gear );
   }
 
   // Raid Downtime Chart
-  if ( ! sim.enable_highcharts )
+  highchart::bar_chart_t waiting( "raid_waiting", sim );
+  if ( chart::generate_raid_downtime( waiting, sim ) )
   {
-    if ( !  ri.downtime_chart.empty() )
-    {
-      os.format(
-        "<img src=\"%s\" alt=\"Raid Downtime Chart\" />\n",
-        ri.downtime_chart.c_str() );
-    }
+    waiting.set_toggle_id( "sim-info-toggle" );
+    os << waiting.to_target_div();
+    sim.add_chart_data( waiting );
   }
-  else
-  {
-    highchart::bar_chart_t waiting( "raid_waiting", sim );
-    if ( chart::generate_raid_downtime( waiting, sim ) )
-    {
-      waiting.set_toggle_id( "sim-info-toggle" );
-      os << waiting.to_target_div();
-      sim.add_chart_data( waiting );
-    }
-  }
-
   os << "</div>\n";
 
   // Right side charts: dpet
   os << "<div class=\"charts\">\n";
-
-  if ( ! sim.enable_highcharts )
+  highchart::bar_chart_t dpet( "raid_dpet", sim );
+  if ( chart::generate_raid_dpet( dpet, sim ) )
   {
-    for ( size_t i = 0; i < ri.dpet_charts.size(); i++ )
-    {
-      os.format(
-        "<img src=\"%s\" alt=\"DPET Chart\" />\n",
-        ri.dpet_charts[ i ].c_str() );
-    }
+    dpet.set_toggle_id( "sim-info-toggle" );
+    os << dpet.to_target_div();
+    sim.add_chart_data( dpet );
   }
-  else
-  {
-    highchart::bar_chart_t dpet( "raid_dpet", sim );
-    if ( chart::generate_raid_dpet( dpet, sim ) )
-    {
-      dpet.set_toggle_id( "sim-info-toggle" );
-      os << dpet.to_target_div();
-      sim.add_chart_data( dpet );
-    }
-  }
-
   os << "</div>\n";
 
 
@@ -632,45 +587,20 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim, const sim_
   // Left side charts: dps, raid events
   os << "<div class=\"charts charts-left\">\n";
 
-  if ( ! sim.enable_highcharts )
-  {
-    for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
-    {
-      os.format(
-        "<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", ( int )i, ( int )i );
-      os.format(
-        "<img id='DPSIMG%d' src=\"%s\" alt=\"DPS Chart\" />\n",
-        ( int )i, ri.dps_charts[ i ].c_str() );
-    }
-  }
-  else
-  {
-    highchart::bar_chart_t raid_dps( "raid_dps", sim );
-    if ( chart::generate_raid_aps( raid_dps, sim, "dps" ) )
-      os << raid_dps.to_string();
-  }
+
+  highchart::bar_chart_t raid_dps( "raid_dps", sim );
+  if ( chart::generate_raid_aps( raid_dps, sim, "dps" ) )
+    os << raid_dps.to_string();
+
 
   bool dtps_chart_printed = false;
   if ( sim.num_enemies > 1 || ( ( ( sim.num_tanks * 2 ) >= sim.num_players ) && sim.num_enemies == 1 ) )
   { // Put this chart on the left side to prevent blank space.
     dtps_chart_printed = true;
-    if ( ! sim.enable_highcharts )
-    {
-      for ( size_t i = 0; i < ri.dtps_charts.size(); i++ )
-      {
-        os.format(
-          "<map id='DTPSMAP%d' name='DTPSMAP%d'></map>\n", (int)i, (int)i );
-        os.format(
-          "<img id='DTPSIMG%d' src=\"%s\" alt=\"DTPS Chart\" />\n",
-          (int)i, ri.dtps_charts[i].c_str() );
-      }
-    }
-    else
-    {
-      highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
-      if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
-        os << raid_dtps.to_string();
-    }
+
+    highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
+    if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
+      os << raid_dtps.to_string();
   }
 
   if ( ! sim.raid_events_str.empty() )
@@ -707,74 +637,24 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim, const sim_
 
   if ( sim.num_enemies > 1 )
   {
-    if ( ! sim.enable_highcharts )
-    {
-      for ( size_t i = 0; i < ri.priority_dps_charts.size(); i++ )
-      {
-        os.format(
-          "<map id='PRIORITYDPSMAP%d' name='PRIORITYDPSMAP%d'></map>\n", (int)i, (int)i );
-        os.format(
-          "<img id='PRIORITYDPSIMG%d' src=\"%s\" alt=\"Priority DPS Chart\" />\n",
-          (int)i, ri.priority_dps_charts[i].c_str() );
-      }
-    }
-    else
-    {
-      highchart::bar_chart_t priority_dps( "priority_dps", sim );
-      if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )
-        os << priority_dps.to_string();
-    }
+    highchart::bar_chart_t priority_dps( "priority_dps", sim );
+    if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )
+      os << priority_dps.to_string();
   }
   else if ( !dtps_chart_printed )
   {
-    if ( ! sim.enable_highcharts )
-    {
-      for ( size_t i = 0; i < ri.dtps_charts.size(); i++ )
-      {
-        os.format(
-          "<map id='DTPSMAP%d' name='DTPSMAP%d'></map>\n", (int)i, (int)i );
-        os.format(
-          "<img id='DTPSIMG%d' src=\"%s\" alt=\"DTPS Chart\" />\n",
-          (int)i, ri.dtps_charts[i].c_str() );
-      }
-    }
-    else
-    {
       highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
       if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
         os << raid_dtps.to_string();
-    }
   }
 
-  if ( ! sim.enable_highcharts )
-  {
-    for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
-    {
-      os.format( "<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", (int)i, (int)i );
-      os.format(
-        "<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
-        (int)i, ri.hps_charts[i].c_str() );
-    }
+  highchart::bar_chart_t raid_hps( "raid_hps", sim );
+  if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
+    os << raid_hps.to_string();
 
-    for ( size_t i = 0; i < ri.tmi_charts.size(); i++ )
-    {
-      os.format(
-        "<map id='TMIMAP%d' name='TMIMAP%d'></map>\n", ( int )i, ( int )i );
-      os.format(
-        "<img id='TMIIMG%d' src=\"%s\" alt=\"TMI Chart\" />\n",
-        ( int )i, ri.tmi_charts[ i ].c_str() );
-    }
-  }
-  else
-  {
-    highchart::bar_chart_t raid_hps( "raid_hps", sim );
-    if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
-      os << raid_hps.to_string();
-
-    highchart::bar_chart_t raid_tmi( "raid_tmi", sim );
-    if ( chart::generate_raid_aps( raid_tmi, sim, "tmi" ) )
-      os << raid_tmi.to_string();
-  }
+  highchart::bar_chart_t raid_tmi( "raid_tmi", sim );
+  if ( chart::generate_raid_aps( raid_tmi, sim, "tmi" ) )
+    os << raid_tmi.to_string();
 
   // RNG chart
   if ( sim.report_rng )
@@ -801,50 +681,31 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim, const sim_
      << "</div>\n\n";
 
   os << "<div id=\"apm-summary\" class=\"section grouped-first\">\n\n";
-  if ( ! sim.enable_highcharts )
-  {
-    os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute Summary</h2>\n";
-  }
-  else
-  {
-    os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n";
-  }
+
+  os << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Actions per Minute / DPS Variance Summary</h2>\n";
   os << "<div class=\"toggle-content hide\">\n";
   os << "<ul class=\"params\">\n";
 
   // Left side charts: dps, raid events
   os << "<div class=\"charts charts-left\">\n";
 
-  if ( ! sim.enable_highcharts )
+  highchart::bar_chart_t raid_apm( "raid_apm", sim );
+  if ( chart::generate_raid_aps( raid_apm, sim, "apm" ) )
   {
-    for ( size_t i = 0; i < ri.apm_charts.size(); i++ )
-    {
-      os.format(
-        "<map id='APMMAP%d' name='APMMAP%d'></map>\n", (int)i, (int)i );
-      os.format(
-        "<img id='APMIMG%d' src=\"%s\" alt=\"APM Chart\" />\n",
-        (int)i, ri.apm_charts[i].c_str() );
-    }
+    raid_apm.set_toggle_id( "apm-summary-toggle" );
+    os << raid_apm.to_target_div();
+    sim.add_chart_data( raid_apm );
   }
-  else
+  os << "</div>\n";
+  os << "<div class=\"charts\">\n";
+  highchart::bar_chart_t raid_variance( "raid_variance", sim );
+  if ( chart::generate_raid_aps( raid_variance, sim, "variance" ) )
   {
-    highchart::bar_chart_t raid_apm( "raid_apm", sim );
-    if ( chart::generate_raid_aps( raid_apm, sim, "apm" ) )
-    {
-      raid_apm.set_toggle_id( "apm-summary-toggle" );
-      os << raid_apm.to_target_div();
-      sim.add_chart_data( raid_apm );
-    }
-    os << "</div>\n";
-    os << "<div class=\"charts\">\n";
-    highchart::bar_chart_t raid_variance( "raid_variance", sim );
-    if ( chart::generate_raid_aps( raid_variance, sim, "variance" ) )
-    {
-      raid_variance.set_toggle_id( "apm-summary-toggle" );
-      os << raid_variance.to_target_div();
-      sim.add_chart_data( raid_variance );
-    }
+    raid_variance.set_toggle_id( "apm-summary-toggle" );
+    os << raid_variance.to_target_div();
+    sim.add_chart_data( raid_variance );
   }
+
   os << "</div>\n";
   os << "</ul>\n";
 
@@ -908,46 +769,6 @@ void print_html_raid_imagemap( report::sc_html_stream& os, const sim_t& sim, siz
     "});\n"
     "});\n\n",
     imgid.c_str(), mapid.c_str(), imgid.c_str(), mapid.c_str(), mapid.c_str() );
-}
-
-void print_html_raid_imagemaps( report::sc_html_stream& os, const sim_t& sim, sim_report_information_t& ri )
-{
-  os << "<script type=\"text/javascript\">\n"
-     << "var $j = jQuery.noConflict();\n"
-     << "function getMap(url, names, mapWrite) {\n"
-     << "$j.getJSON(url + '&chof=json&callback=?', function(jsonObj) {\n"
-     << "var area = false;\n"
-     << "var chart = jsonObj.chartshape;\n"
-     << "var mapStr = '';\n"
-     << "for (var i = 0; i < chart.length; i++) {\n"
-     << "area = chart[i];\n"
-     << "area.coords[2] = 523;\n"
-     << "mapStr += \"\\n  <area name='\" + area.name + \"' shape='\" + area.type + \"' coords='\" + area.coords.join(\",\") + \"' href='#\" + names[i] + \"'  title='\" + names[i] + \"'>\";\n"
-     << "}\n"
-     << "mapWrite(mapStr);\n"
-     << "});\n"
-     << "}\n\n";
-
-  for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
-  {
-    print_html_raid_imagemap( os, sim, i, 1 );
-  }
-
-  for ( size_t i = 0; i < ri.priority_dps_charts.size(); i++ )
-  {
-    print_html_raid_imagemap( os, sim, i, 2 );
-  }
-
-  for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
-  {
-    print_html_raid_imagemap( os, sim, i, 3 );
-  }
-
-  for ( size_t i = 0; i < ri.apm_charts.size(); i++ )
-  {
-    print_html_raid_imagemap( os, sim, i, 4 );
-  }
-  os << "</script>\n";
 }
 
 // print_html_scale_factors =================================================
@@ -1459,23 +1280,20 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
 {
   os << "<title>Simulationcraft Results</title>\n";
   os << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
-  if ( sim.enable_highcharts )
-  {
-     os << "<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.11.3.min.js\"></script>\n"
-     << "<script src=\"http://code.highcharts.com/highcharts.js\"></script>\n"
-     << "<script src=\"http://code.highcharts.com/highcharts-more.js\"></script>\n";
-  }
+
+   os << "<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.11.3.min.js\"></script>\n"
+   << "<script src=\"http://code.highcharts.com/highcharts.js\"></script>\n"
+   << "<script src=\"http://code.highcharts.com/highcharts-more.js\"></script>\n";
+
 
   print_html_style( os, sim );
 
-  if ( sim.enable_highcharts )
-  {
-    js::sc_js_t highcharts_theme;
-    highchart::theme( highcharts_theme, highchart::THEME_DEFAULT );
-    os << "<script type=\"text/javascript\">\n"
-      << "Highcharts.setOptions(" << highcharts_theme.to_json() << ");\n"
-      << "</script>";
-  }
+
+  js::sc_js_t highcharts_theme;
+  highchart::theme( highcharts_theme, highchart::THEME_DEFAULT );
+  os << "<script type=\"text/javascript\">\n"
+    << "Highcharts.setOptions(" << highcharts_theme.to_json() << ");\n"
+    << "</script>";
 }
 
 void print_nothing_to_report( report::sc_html_stream& os, const std::string& reason )
@@ -1585,10 +1403,6 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   // jQuery
   // The /1/ url auto-updates to the latest minified version
   //os << "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>\n";
-  if ( ! sim.enable_highcharts )
-  {
-    os << "<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.11.2.min.js\"></script>";
-  }
 
   if ( sim.decorated_tooltips )
   {
@@ -1603,56 +1417,50 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
 
   print_html_image_load_scripts( os );
 
-  if ( num_players > 1 )
-    print_html_raid_imagemaps( os, sim, sim.report_information );
-
-  if ( sim.enable_highcharts )
+  os << "<script type=\"text/javascript\">\n";
+  os << "jQuery( document ).ready( function( $ ) {\n";
+  for ( size_t i = 0; i < sim.on_ready_chart_data.size(); ++i )
   {
-    os << "<script type=\"text/javascript\">\n";
-    os << "jQuery( document ).ready( function( $ ) {\n";
-    for ( size_t i = 0; i < sim.on_ready_chart_data.size(); ++i )
-    {
-      os << sim.on_ready_chart_data[ i ] << std::endl;
-    }
-    os << "});\n";
-    os << "</script>\n";
-    os << "<script type=\"text/javascript\">\n";
-    os << "__chartData = {\n";
-    for ( std::map<std::string, std::vector<std::string> >::const_iterator i = sim.chart_data.begin();
-        i != sim.chart_data.end(); ++i )
-    {
-      os << "\"" + i -> first + "\": [\n";
-      const std::vector<std::string> data = i -> second;
-      for ( size_t j = 0; j < data.size(); ++j )
-      {
-        os << data[ j ];
-        if ( j < data.size() - 1 )
-        {
-          os << ", ";
-          os << "\n";
-        }
-      }
-      os << "],\n";
-    }
-    os << "};\n";
-
-    os << "</script>\n";
-    os << "<script type=\"text/javascript\">\n";
-    os << "jQuery(document).ready(function() {\n";
-    os << "\tjQuery('.toggle, .toggle-details').each(function(index) {\n";
-    os << "\t\tvar s = jQuery(this);\n";
-    os << "\t\tif ( __chartData[s.attr('id')] === undefined ) return;\n";
-    os << "\t\ts.one('click', function() {\n";
-    os << "\t\t\tvar s = jQuery(this);\n";
-    os << "\t\t\tvar d = __chartData[s.attr('id')];\n";
-    os << "\t\t\tfor ( idx in d ) {\n";
-    os << "\t\t\t\tjQuery('#' + d[idx]['target']).highcharts(d[idx]['data']);\n";
-    os << "\t\t\t}\n";
-    os << "\t\t});\n";
-    os << "\t});\n";
-    os << "});\n";
-    os << "</script>\n";
+    os << sim.on_ready_chart_data[ i ] << std::endl;
   }
+  os << "});\n";
+  os << "</script>\n";
+  os << "<script type=\"text/javascript\">\n";
+  os << "__chartData = {\n";
+  for ( std::map<std::string, std::vector<std::string> >::const_iterator i = sim.chart_data.begin();
+      i != sim.chart_data.end(); ++i )
+  {
+    os << "\"" + i -> first + "\": [\n";
+    const std::vector<std::string> data = i -> second;
+    for ( size_t j = 0; j < data.size(); ++j )
+    {
+      os << data[ j ];
+      if ( j < data.size() - 1 )
+      {
+        os << ", ";
+        os << "\n";
+      }
+    }
+    os << "],\n";
+  }
+  os << "};\n";
+
+  os << "</script>\n";
+  os << "<script type=\"text/javascript\">\n";
+  os << "jQuery(document).ready(function() {\n";
+  os << "\tjQuery('.toggle, .toggle-details').each(function(index) {\n";
+  os << "\t\tvar s = jQuery(this);\n";
+  os << "\t\tif ( __chartData[s.attr('id')] === undefined ) return;\n";
+  os << "\t\ts.one('click', function() {\n";
+  os << "\t\t\tvar s = jQuery(this);\n";
+  os << "\t\t\tvar d = __chartData[s.attr('id')];\n";
+  os << "\t\t\tfor ( idx in d ) {\n";
+  os << "\t\t\t\tjQuery('#' + d[idx]['target']).highcharts(d[idx]['data']);\n";
+  os << "\t\t\t}\n";
+  os << "\t\t});\n";
+  os << "\t});\n";
+  os << "});\n";
+  os << "</script>\n";
 
   os << "</body>\n\n"
      << "</html>\n";
