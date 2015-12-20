@@ -4465,8 +4465,7 @@ double player_t::resource_loss( resource_e resource_type,
                    actual_amount,
                    amount,
                    util::resource_type_string( resource_type ),
-                   util::resource_type_string( resource_type ),
-                   resources.pct( resource_type ) * 100,
+                   resources.max[ resource_type ] ? resources.pct( resource_type ) * 100 : 0,
                    resources.current[ resource_type ],
                    resources.max[ resource_type ] );
 
