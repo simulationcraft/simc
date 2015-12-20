@@ -190,7 +190,7 @@ class Item_sparse(DBCRecord):
     # slice of specific record length.
     def __init__(self, dbc_parser, record, dbc_id, record_offset, record_size):
         # If we are in debug mode (dbc_parser.options.debug == True), save data
-        if dbc_parser._options.debug:
+        if dbc_parser and dbc_parser._options.debug:
             self._record = record[record_offset:record_offset + record_size]
 
         # Create dummy parsers, splits out name/desc, and eliminates extra padding from the whole
