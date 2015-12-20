@@ -12,7 +12,6 @@ Disc // Holy
 
 Shadow
  Artifacts Traits 
- Surrender to Madness - Kill Player (right now only strips Lingering Insanity - kind of a high speed battle res)
  Shadow Word: Death - Generates Insanity on Kill (or not - unlikely scenario, and no-kill cooldown reset also always happened, regardless of kill)
  Shadowmend 
  Fix/Check the Fixme's on new build
@@ -2258,6 +2257,7 @@ struct mind_blast_t : public priest_spell_t
       td.buffs.mind_spike->up();  // benefit tracking
       td.buffs.mind_spike->expire();
     }
+
   }
 
 
@@ -2293,6 +2293,7 @@ struct mind_blast_t : public priest_spell_t
     {
       am *= 1.0 + td.buffs.mind_spike->check_stack_value();
     }
+
     return am;
   }
 
@@ -4627,10 +4628,11 @@ struct voidform_t : public priest_buff_t<buff_t>
     priest.buffs.lingering_insanity->trigger( expiration_stacks );
     priest.active_spells.voidform->cancel();
 
-    if ( priest.buffs.surrender_to_madness->check() ) // FIXME Kill player or not? We're nice now and just have him continue without any Voidform buffs.
+    if ( priest.buffs.surrender_to_madness->check() )
     {
-      priest.buffs.surrender_to_madness->expire();
-      priest.buffs.lingering_insanity->expire();
+      priest.demise();
+      //FIXME Add some waiting time here
+      priest.arise();
     }
 
     base_t::expire_override( expiration_stacks, remaining_duration );
@@ -4805,9 +4807,10 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p )
         buff_creator_t( *this, "mental_fatigue" ).chance( 0 );
   }
 
-  buffs.mind_spike = 
-    buff_creator_t( *this, "mind_spike_td" ).spell( p.talents.mind_spike ).default_value( 0.5 ); //FIXME no value in Data?
-
+  if ( priest.talents.mind_spike -> ok() )
+    buffs.mind_spike = 
+        buff_creator_t( *this, "mind_spike" ).spell( p.talents.mind_spike ).default_value( 0.5 ); //FIXME no value in Data?
+  
   target->callbacks_on_demise.push_back(
       std::bind( &priest_td_t::target_demise, this ) );
 }
