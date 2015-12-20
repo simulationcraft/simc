@@ -34,7 +34,7 @@ class DBCRecord(object):
     @classmethod
     def default(cls, *args):
         if not cls.__d:
-            cls.__d = cls(None, None, 0, 0)
+            cls.__d = cls(None, None, 0, 0, 0)
 
         # Ugly++ but it will have to do
         for i in range(0, len(args), 2):
@@ -46,7 +46,7 @@ class DBCRecord(object):
     def data_size(cls):
         return cls._parser.size
 
-    def __init__(self, parser, data, dbc_id, record_offset):
+    def __init__(self, parser, data, dbc_id, record_offset, record_size):
         self._dbcp = parser
         # Store data if we are in debug mode
         if self._dbcp and (self._dbcp._options.debug == True or self._dbcp._options.raw):
@@ -251,14 +251,14 @@ class Item_sparse(DBCRecord):
             sys.exit(1)
 
 class SpellEffect(DBCRecord):
-    def __init__(self, dbc_parser, record, dbc_id, record_offset):
-        DBCRecord.__init__(self, dbc_parser, record, dbc_id, record_offset)
+    def __init__(self, dbc_parser, record, dbc_id, record_offset, record_size):
+        DBCRecord.__init__(self, dbc_parser, record, dbc_id, record_offset, record_size)
 
         self.scaling = None
 
 class Spell(DBCRecord):
-    def __init__(self, dbc_parser, record, dbc_id, record_offset):
-        DBCRecord.__init__(self, dbc_parser, record, dbc_id, record_offset)
+    def __init__(self, dbc_parser, record, dbc_id, record_offset, record_size):
+        DBCRecord.__init__(self, dbc_parser, record, dbc_id, record_offset, record_size)
 
         self._effects = []
         self.max_effect_index = -1
@@ -341,8 +341,8 @@ class SpellCooldowns(DBCRecord):
         return f
 
 class ItemSet(DBCRecord):
-    def __init__(self, dbc_parser, record, dbc_id, record_offset):
-        DBCRecord.__init__(self, dbc_parser, record, dbc_id, record_offset)
+    def __init__(self, dbc_parser, record, dbc_id, record_offset, record_size):
+        DBCRecord.__init__(self, dbc_parser, record, dbc_id, record_offset, record_size)
 
         self.bonus = []
 

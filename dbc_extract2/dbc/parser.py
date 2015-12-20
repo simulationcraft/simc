@@ -100,7 +100,7 @@ class DBCParser(object):
                 if _ID.unpack_from(self._data, record_offset)[0] == id:
                     break
 
-        return self._class(self, self._data[record_offset:record_offset + self._record_size], dbc_id, record_offset)
+        return self._class(self, self._data[record_offset:record_offset + self._record_size], dbc_id, record_offset. self._record_size)
 
     def open_dbc(self):
         if self._data:
@@ -232,7 +232,7 @@ class DBCParser(object):
         else:
             record_offset = self._data_offset + self._last_record_id * self._record_size
 
-        parsed_record = self._class(self, self._data[record_offset:record_offset + self._record_size], dbc_id, record_offset)
+        parsed_record = self._class(self, self._data[record_offset:record_offset + self._record_size], dbc_id, record_offset, self._record_size)
         self._last_record_id += 1
 
         return parsed_record
