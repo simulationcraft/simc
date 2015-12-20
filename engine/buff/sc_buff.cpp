@@ -17,8 +17,12 @@ struct buff_event_t : public event_t
     add_event( d );
   }
 
-  virtual const char* name() const override
-  { return buff -> name(); }
+  const char* name() const override
+  {
+    std::string s( "buff_event_" );
+    s += buff->name();
+    return s.c_str();
+  }
 };
 
 struct react_ready_trigger_t : public buff_event_t
@@ -111,6 +115,13 @@ struct buff_delay_t : public buff_event_t
     if ( buff -> cooldown -> remains() ==  timespan_t::zero() )
       buff -> execute( stacks, value, duration );
     buff -> delay = nullptr;
+  }
+
+  const char* name() const override
+  {
+    std::string s( "buff_delay_event_" );
+    s += buff->name();
+    return s.c_str();
   }
 };
 
