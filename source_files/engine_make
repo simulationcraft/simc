@@ -56,7 +56,6 @@ SRC += \
     report$(PATHSEP)sc_gear_weights.cpp \
     report$(PATHSEP)sc_color.cpp \
     report$(PATHSEP)sc_chart.cpp \
-    report$(PATHSEP)sc_chart.cpp \
     player$(PATHSEP)sc_unique_gear.cpp \
     player$(PATHSEP)sc_set_bonus.cpp \
     player$(PATHSEP)sc_proc.cpp \
