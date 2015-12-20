@@ -1287,6 +1287,7 @@ struct spell_data_expr_t
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
+
 // Iteration data entry for replayability
 struct iteration_data_entry_t
 {
@@ -1483,14 +1484,6 @@ private:
   static void dont_close( std::ostream* ) {}
   sim_t& sim;
   sc_raw_ostream_t _raw;
-};
-
-struct sim_report_information_t
-{
-  bool charts_generated;
-  std::vector<std::string> dps_charts, priority_dps_charts, hps_charts, dtps_charts, tmi_charts, dpet_charts, apm_charts;
-  std::string timeline_chart, downtime_chart;
-  sim_report_information_t() { charts_generated = false; }
 };
 
 #ifndef NDEBUG
@@ -1746,8 +1739,6 @@ struct sim_t : private sc_thread_t
   bool enable_dps_healing;
   double scaling_normalized;
 
-  sim_report_information_t report_information;
-
   // Multi-Threading
   mutex_t merge_mutex;
   int threads;
@@ -1809,7 +1800,6 @@ struct sim_t : private sc_thread_t
   // to correct elements (toggled elements in the HTML report) based on the data.
   std::map<std::string, std::vector<std::string> > chart_data;
 
-  bool enable_highcharts;
   bool output_relative_difference;
   double boxplot_percentile;
 
@@ -3042,14 +3032,8 @@ public:
 
 struct player_processed_report_information_t
 {
-  bool charts_generated, buff_lists_generated;
-  std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
-  std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
-  std::array<std::string, STAT_MAX> timeline_stat_chart;
-  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
-  std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-  std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
-  std::string health_change_chart, health_change_sliding_chart;
+  bool generated = false;
+  bool buff_lists_generated = false;
   std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
   std::string save_str;
   std::string save_gear_str;
@@ -3060,7 +3044,6 @@ struct player_processed_report_information_t
   std::string html_profile_str;
   std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
 
-  player_processed_report_information_t() : charts_generated(), buff_lists_generated() {}
 };
 
 /* Contains any data collected during / at the end of combat

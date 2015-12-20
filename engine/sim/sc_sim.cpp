@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "report/sc_highchart.hpp"
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
@@ -1311,15 +1312,12 @@ sim_t::sim_t( sim_t* p, int index ) :
   distance_targeting_enabled( false ),
   enable_dps_healing( false ),
   scaling_normalized( 1.0 ),
-  report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), process_priority( computer_process::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),
   spell_query(), spell_query_level( MAX_LEVEL ),
   pause_mutex( nullptr ),
   paused( false ),
-  // Highcharts stuff
-  enable_highcharts( false ),
   output_relative_difference( false ),
   boxplot_percentile( .25 ),
   display_hotfixes( false ),
@@ -2841,8 +2839,7 @@ void sim_t::create_options()
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
-  // Highcharts
-  add_option( opt_bool( "enable_highcharts", enable_highcharts ) );
+  // Charts
   add_option( opt_bool( "chart_show_relative_difference", output_relative_difference ) );
   add_option( opt_float( "chart_boxplot_percentile", boxplot_percentile ) );
   // Hotfix

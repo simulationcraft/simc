@@ -15,8 +15,8 @@ js::sc_js_t to_json( const timespan_t& t )
   js::sc_js_t node;
   node.set( "seconds", t.total_seconds() );
   std::string formatted_time;
-  str::format( formatted_time, "%d:%02d.%03d</td>\n", (int) t.total_minutes(), (int) t.total_seconds() % 60,
-               (int) t.total_millis() % 1000 );
+  str::format( formatted_time, "%d:%02d.%03d</td>\n", (int)t.total_minutes(),
+               (int)t.total_seconds() % 60, (int)t.total_millis() % 1000 );
   node.set( "formatted", formatted_time );
   return node;
 }
@@ -55,7 +55,7 @@ js::sc_js_t to_json( const ::extended_sample_data_t& sd )
   node.set( "min", sd.min() );
   node.set( "max", sd.max() );
   node.set( "data", sd.data() );
-  //node.set( "distribution", sd.distribution );
+  // node.set( "distribution", sd.distribution );
   return node;
 }
 
@@ -78,9 +78,9 @@ js::sc_js_t to_json( const gain_t& g )
   {
     js::sc_js_t node2;
     node2.set( "resource", util::resource_type_string( r ) );
-    node2.set( "actual", g.actual[r] );
-    node2.set( "overflow", g.overflow[r] );
-    node2.set( "count", g.count[r] );
+    node2.set( "actual", g.actual[ r ] );
+    node2.set( "overflow", g.overflow[ r ] );
+    node2.set( "count", g.count[ r ] );
     node.add( "data", node2 );
   }
   return node;
@@ -242,10 +242,11 @@ js::sc_js_t to_json( const stats_t& s )
   node.set( "portion_apse", to_json( s.portion_apse ) );
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; ++i )
   {
-    node.add( "direct_results", to_json( i, s.direct_results[i] ) );
-    node.add( "direct_results_detail", to_json( i, s.direct_results_detail[i] ) );
-    node.add( "tick_results", to_json( i, s.tick_results[i] ) );
-    node.add( "tick_results_detail", to_json( i, s.tick_results_detail[i] ) );
+    node.add( "direct_results", to_json( i, s.direct_results[ i ] ) );
+    node.add( "direct_results_detail",
+              to_json( i, s.direct_results_detail[ i ] ) );
+    node.add( "tick_results", to_json( i, s.tick_results[ i ] ) );
+    node.add( "tick_results_detail", to_json( i, s.tick_results_detail[ i ] ) );
   }
   return node;
 }
@@ -266,7 +267,8 @@ js::sc_js_t to_json( const player_collected_data_t::stat_timeline_t& stl )
   return node;
 }
 
-js::sc_js_t to_json( const player_collected_data_t::health_changes_timeline_t& hctl )
+js::sc_js_t to_json(
+    const player_collected_data_t::health_changes_timeline_t& hctl )
 {
   js::sc_js_t node;
   if ( hctl.collect )
@@ -290,14 +292,14 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
   {
     js::sc_js_t anode;
     anode.set( "attribute", util::attribute_type_string( a ) );
-    anode.set( "value", bs.attribute[a] );
+    anode.set( "value", bs.attribute[ a ] );
     node.add( "attributes", anode );
   }
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     js::sc_js_t rnode;
     rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "value", bs.resource[r] );
+    rnode.set( "value", bs.resource[ r ] );
     node.add( "resource_gained", rnode );
   }
   node.add( "spell_power", bs.spell_power );
@@ -332,7 +334,8 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
   return node;
 }
 
-js::sc_js_t to_json( const player_collected_data_t::action_sequence_data_t& asd )
+js::sc_js_t to_json(
+    const player_collected_data_t::action_sequence_data_t& asd )
 {
   js::sc_js_t node;
   node.set( "time", to_json( asd.time ) );
@@ -340,14 +343,15 @@ js::sc_js_t to_json( const player_collected_data_t::action_sequence_data_t& asd 
   {
     node.set( "action_name", asd.action->name() );
     node.set( "target_name", asd.target->name() );
-  } else
+  }
+  else
   {
     node.set( "wait_time", to_json( asd.wait_time ) );
-
   }
-  for( const auto& buff : asd.buff_list ) {
+  for ( const auto& buff : asd.buff_list )
+  {
     js::sc_js_t bnode;
-    bnode.set( "name", buff.first -> name() );
+    bnode.set( "name", buff.first->name() );
     bnode.set( "stacks", buff.second );
     node.add( "buffs", bnode );
   }
@@ -355,14 +359,14 @@ js::sc_js_t to_json( const player_collected_data_t::action_sequence_data_t& asd 
   {
     js::sc_js_t rnode;
     rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "value", asd.resource_snapshot[r] );
+    rnode.set( "value", asd.resource_snapshot[ r ] );
     node.add( "resource_snapshot", rnode );
   }
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     js::sc_js_t rnode;
     rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "value", asd.resource_max_snapshot[r] );
+    rnode.set( "value", asd.resource_max_snapshot[ r ] );
     node.add( "resource_max_snapshot", rnode );
   }
 
@@ -374,7 +378,8 @@ js::sc_js_t to_json( const player_collected_data_t& cd )
   js::sc_js_t node;
   node.set( "fight_length", to_json( cd.fight_length ) );
   node.set( "waiting_time", to_json( cd.waiting_time ) );
-  node.set( "executed_foreground_actions", to_json( cd.executed_foreground_actions ) );
+  node.set( "executed_foreground_actions",
+            to_json( cd.executed_foreground_actions ) );
   node.set( "dmg", to_json( cd.dmg ) );
   node.set( "compound_dmg", to_json( cd.compound_dmg ) );
   node.set( "prioritydps", to_json( cd.prioritydps ) );
@@ -401,7 +406,8 @@ js::sc_js_t to_json( const player_collected_data_t& cd )
 
   node.set( "deaths", to_json( cd.deaths ) );
   node.set( "theck_meloree_index", to_json( cd.theck_meloree_index ) );
-  node.set( "effective_theck_meloree_index", to_json( cd.effective_theck_meloree_index ) );
+  node.set( "effective_theck_meloree_index",
+            to_json( cd.effective_theck_meloree_index ) );
   node.set( "max_spike_amount", to_json( cd.max_spike_amount ) );
 
   node.set( "target_metric", to_json( cd.target_metric ) );
@@ -409,16 +415,16 @@ js::sc_js_t to_json( const player_collected_data_t& cd )
   {
     js::sc_js_t rnode;
     rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "data", to_json( cd.resource_lost[r] ) );
+    rnode.set( "data", to_json( cd.resource_lost[ r ] ) );
     node.add( "resource_lost", rnode );
   }
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     js::sc_js_t rnode;
     rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "data", to_json( cd.resource_gained[r] ) );
+    rnode.set( "data", to_json( cd.resource_gained[ r ] ) );
     node.add( "resource_gained", rnode );
-    node.add( "combat_end_resource", to_json( cd.combat_end_resource[r] ) );
+    node.add( "combat_end_resource", to_json( cd.combat_end_resource[ r ] ) );
   }
   for ( const auto& rtl : cd.resource_timelines )
   {
@@ -475,8 +481,7 @@ js::sc_js_t to_json( const pet_t& p )
 js::sc_js_t to_json( const dbc_t& dbc )
 {
   js::sc_js_t node;
-  bool versions[] =
-  { false, true };
+  bool versions[] = {false, true};
   for ( const auto& ptr : versions )
   {
     js::sc_js_t subnode;
@@ -532,13 +537,15 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "level", p.true_level );
   node.set( "party", p.party );
   node.set( "ready_type", p.ready_type );
-  node.set( "specialization", util::specialization_string( p.specialization() ) );
+  node.set( "specialization",
+            util::specialization_string( p.specialization() ) );
   node.set( "bugs", p.bugs );
   node.set( "scale_player", p.scale_player );
   node.set( "death_pct", p.death_pct );
   node.set( "size", p.size );
   node.set( "potion_used", p.potion_used );
-  node.set( "timeofday", (p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME" : "DAY_TIME") );
+  node.set( "timeofday", ( p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME"
+                                                               : "DAY_TIME" ) );
   node.set( "gcd_ready", to_json( p.gcd_ready ) );
   node.set( "base_gcd", to_json( p.base_gcd ) );
   node.set( "started_waiting", to_json( p.started_waiting ) );
@@ -558,30 +565,30 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "world_lag_override", p.world_lag_override );
   node.set( "world_lag_stddev_override", p.world_lag_stddev_override );
   node.set( "dbc", to_json( p.dbc ) );
-  for( const auto& glyph : p.glyph_list )
+  for ( const auto& glyph : p.glyph_list )
   {
     node.add( "glyphst", to_json( glyph ) );
   }
-  for( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
+  for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
   {
     js::sc_js_t pnode;
     if ( p.profession[ i ] > 0 )
     {
-      pnode.set(util::profession_type_string( i ), p.profession[ i ] );
+      pnode.set( util::profession_type_string( i ), p.profession[ i ] );
     }
     node.add( "professions", pnode );
   }
-  node.set("base_stats", to_json(p.base) );
-  node.set("initial_stats", to_json(p.initial) );
-  node.set("current_stats", to_json(p.current) );
+  node.set( "base_stats", to_json( p.base ) );
+  node.set( "initial_stats", to_json( p.initial ) );
+  node.set( "current_stats", to_json( p.current ) );
   node.set( "base_energy_regen_per_second", p.base_energy_regen_per_second );
   node.set( "base_focus_regen_per_second", p.base_focus_regen_per_second );
   node.set( "base_chi_regen_per_second", p.base_chi_regen_per_second );
-  node.set("diminishing_returns_constants", to_json(p.def_dr) );
-  node.set("main_hand_weapon", to_json(p.main_hand_weapon) );
-  node.set("off_hand_weapon", to_json(p.off_hand_weapon) );
-  node.set("resources", to_json(p.resources) );
-  node.set("consumables", to_json(p.consumables) );
+  node.set( "diminishing_returns_constants", to_json( p.def_dr ) );
+  node.set( "main_hand_weapon", to_json( p.main_hand_weapon ) );
+  node.set( "off_hand_weapon", to_json( p.off_hand_weapon ) );
+  node.set( "resources", to_json( p.resources ) );
+  node.set( "consumables", to_json( p.consumables ) );
 
   // TODO
 
@@ -618,23 +625,23 @@ js::sc_js_t to_json( const raid_event_t& re )
 {
   js::sc_js_t node;
   node.set( "name", re.name() );
-  node.set( "first", to_json(re.first) );
-  node.set( "last", to_json(re.last) );
-  node.set( "next", to_json(re.next) );
-  node.set( "cooldown", to_json(re.cooldown) );
-  node.set( "cooldown_stddev", to_json(re.cooldown_stddev) );
-  node.set( "cooldown_min", to_json(re.cooldown_min) );
-  node.set( "cooldown_max", to_json(re.cooldown_max) );
-  node.set( "duration", to_json(re.duration) );
-  node.set( "duration_stddev", to_json(re.duration_stddev) );
-  node.set( "duration_min", to_json(re.duration_min) );
-  node.set( "duration_max", to_json(re.duration_max) );
+  node.set( "first", to_json( re.first ) );
+  node.set( "last", to_json( re.last ) );
+  node.set( "next", to_json( re.next ) );
+  node.set( "cooldown", to_json( re.cooldown ) );
+  node.set( "cooldown_stddev", to_json( re.cooldown_stddev ) );
+  node.set( "cooldown_min", to_json( re.cooldown_min ) );
+  node.set( "cooldown_max", to_json( re.cooldown_max ) );
+  node.set( "duration", to_json( re.duration ) );
+  node.set( "duration_stddev", to_json( re.duration_stddev ) );
+  node.set( "duration_min", to_json( re.duration_min ) );
+  node.set( "duration_max", to_json( re.duration_max ) );
   node.set( "distance_min", re.distance_min );
   node.set( "distance_max", re.distance_max );
   node.set( "players_only", re.players_only );
   node.set( "player_chance", re.player_chance );
-  node.set( "affected_role", util::role_type_string(re.affected_role) );
-  node.set( "saved_duration", to_json(re.saved_duration) );
+  node.set( "affected_role", util::role_type_string( re.affected_role ) );
+  node.set( "saved_duration", to_json( re.saved_duration ) );
   return node;
 }
 
@@ -755,7 +762,8 @@ js::sc_js_t to_json( const sim_t& sim )
     node.add( "buffs", to_json( *buff ) );
   }
   node.set( "default_aura_delay", to_json( sim.default_aura_delay ) );
-  node.set( "default_aura_delay_stddev", to_json( sim.default_aura_delay_stddev ) );
+  node.set( "default_aura_delay_stddev",
+            to_json( sim.default_aura_delay_stddev ) );
   for ( const auto& cooldown : sim.cooldown_list )
   {
     node.add( "cooldowns", to_json( *cooldown ) );
@@ -840,32 +848,33 @@ std::string print_json_string_pretty( const sim_t& sim )
   return b.GetString();
 }
 */
-} // unnamed namespace
+}  // unnamed namespace
 
 namespace report
 {
-
 void print_json( sim_t& sim )
 {
   if ( sim.json_file_str.empty() )
     return;
-// Setup file stream and open file
+  // Setup file stream and open file
   io::cfile s( sim.json_file_str, "w" );
   if ( !s )
   {
-    sim.errorf( "Failed to open JSON output file '%s'.", sim.json_file_str.c_str() );
+    sim.errorf( "Failed to open JSON output file '%s'.",
+                sim.json_file_str.c_str() );
     return;
   }
 
-// Print JSON report
+  // Print JSON report
   try
   {
-    Timer t("JSON report");
+    Timer t( "JSON report" );
     print_json_pretty( s, sim );
-  } catch ( const std::exception& e )
+  }
+  catch ( const std::exception& e )
   {
     sim.errorf( "Failed to print JSON output! %s", e.what() );
   }
 }
 
-} // report
+}  // report

@@ -106,6 +106,15 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\report\sc_highchart.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\report\sc_gear_weights.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\report\sc_color.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\report\sc_chart.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\report\sc_chart.cpp">
 			
 		</ClCompile>
