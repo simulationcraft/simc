@@ -386,6 +386,7 @@ action_t::action_t( action_e       ty,
   state_cache = 0;
 
   range::fill( base_costs, 0.0 );
+  range::fill( secondary_costs, 0.0 );
   range::fill( base_costs_per_tick, 0.0 );
 
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
@@ -531,6 +532,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs[ pd -> resource() ] = pd -> cost();
     else
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
+
+    secondary_costs[ pd -> resource() ] = pd -> max_cost();
 
     if ( pd -> _cost_per_tick > 0 )
       base_costs_per_tick[ pd -> resource() ] = pd -> cost_per_tick();
@@ -713,6 +716,20 @@ bool action_t::verify_actor_spec() const
   return true;
 }
 
+// action_t::base_cost ======================================================
+
+double action_t::base_cost() const
+{
+  resource_e cr = current_resource();
+  double c = base_costs[ cr ];
+  if ( secondary_costs[ cr ] != 0 )
+  {
+    c += secondary_costs[ cr ];
+  }
+
+  return c;
+}
+
 // action_t::cost ===========================================================
 
 double action_t::cost() const
@@ -722,7 +739,18 @@ double action_t::cost() const
 
   resource_e cr = current_resource();
 
-  double c = base_costs[ cr ];
+  double c;
+  if ( secondary_costs[ cr ] == 0 )
+  {
+    c = base_costs[ cr ];
+  }
+  // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely
+  // possible we need to add some additional functionality (such as an overridable method) to
+  // determine the cost, if the default behavior is not universal.
+  else
+  {
+    c = std::min( base_cost(), player -> resources.current[ cr ] );
+  }
 
   c -= player -> current.resource_reduction[ get_school() ];
 
@@ -1048,7 +1076,7 @@ void action_t::consume_resource()
 {
   resource_e cr = current_resource();
 
-  if ( cr == RESOURCE_NONE || base_costs[ cr ] == 0 || proc ) return;
+  if ( cr == RESOURCE_NONE || base_cost() == 0 || proc ) return;
 
   resource_consumed = cost();
 

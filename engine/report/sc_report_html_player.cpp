@@ -801,6 +801,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           "<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
           "<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
           "<li><span class=\"label\">base_cost:</span>%.1f</li>\n"
+          "<li><span class=\"label\">secondary_cost:</span>%.1f</li>\n"
           "<li><span class=\"label\">cooldown:</span>%.3f</li>\n"
           "<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
           "<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
@@ -813,6 +814,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           util::resource_type_string( a->current_resource() ), a->range,
           a->travel_speed, a->trigger_gcd.total_seconds(),
           a->min_gcd.total_seconds(), a->base_costs[ a->current_resource() ],
+          a->secondary_costs[ a->current_resource() ],
           a->cooldown->duration.total_seconds() *
               a->cooldown->get_recharge_multiplier(),
           a->base_execute_time.total_seconds(), a->base_crit,

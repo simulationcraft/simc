@@ -5062,7 +5062,7 @@ public:
   timespan_t dot_duration;
 
   /// Cost of using the ability.
-  std::array< double, RESOURCE_MAX > base_costs;
+  std::array< double, RESOURCE_MAX > base_costs, secondary_costs;
 
   /// Cost of using ability per periodic effect tick.
   std::array< double, RESOURCE_MAX > base_costs_per_tick;
@@ -5270,6 +5270,7 @@ public:
   virtual bool verify_actor_spec() const;
 
   virtual double cost() const;
+  virtual double base_cost() const;
 
   virtual double cost_per_tick( resource_e ) const;
 
