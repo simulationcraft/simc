@@ -2861,28 +2861,9 @@ struct lava_beam_t : public shaman_spell_t
 
 // Lava Burst Spell =========================================================
 
-struct lava_burst_overload_t : public elemental_overload_spell_t
-{
-  lava_burst_overload_t( shaman_t* p ) :
-    elemental_overload_spell_t( p, "lava_burst_overload", p -> find_spell( 77451 ) )
-  { }
-
-  double composite_target_crit( player_t* t ) const override
-  {
-    double m = shaman_spell_t::composite_target_crit ( t );
-
-    if ( td( target ) -> dot.flame_shock -> is_ticking() )
-    {
-      m = 1.0;
-    }
-
-    return m;
-  }
-};
-
 struct lava_burst_t : public shaman_spell_t
 {
-  lava_burst_overload_t* overload;
+  elemental_overload_spell_t* overload;
 
   lava_burst_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "lava_burst", player, player -> find_specialization_spell( "Lava Burst" ), options_str ),
@@ -2892,7 +2873,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new lava_burst_overload_t( player );
+      overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ) );
       add_child( overload );
     }
   }
