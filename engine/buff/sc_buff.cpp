@@ -102,6 +102,9 @@ struct buff_delay_t : public buff_event_t
     value( value ), duration( d ), stacks( stacks )
   {}
 
+  const char* name() const override
+  { return "buff_delay_event"; }
+
   virtual void execute() override
   {
     // Add a Cooldown check here to avoid extra processing due to delays

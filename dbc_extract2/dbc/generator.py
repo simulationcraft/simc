@@ -1529,6 +1529,7 @@ class SpellDataGenerator(DataGenerator):
           ( 198300, 0 ),                                # Gathering Storms buff
           ( 198830, 0 ), ( 199019, 0 ), ( 198933, 0 ),  # Doomhammer procs
           ( 197576, 0 ),                                # Magnitude ground? effect
+          ( 206442, 0 ),                                # Lava Shock
         ),
 
         # Mage:
