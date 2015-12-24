@@ -3021,7 +3021,8 @@ struct lava_burst_t : public shaman_spell_t
                                  this );
       }
 
-      if ( p() -> real_ppm.volcanic_inferno.trigger() )
+      if ( p() -> artifact.volcanic_inferno.rank() &&
+           p() -> real_ppm.volcanic_inferno.trigger() )
       {
         p() -> volcanic_inferno -> target = state -> target;
         p() -> volcanic_inferno -> schedule_execute();
