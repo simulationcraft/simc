@@ -119,6 +119,7 @@ public:
   action_t* action_ancestral_awakening;
   action_t* action_lightning_strike;
   spell_t*  electrocute;
+  action_t* volcanic_inferno;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -190,6 +191,8 @@ public:
     buff_t* earth_surge;
     buff_t* tempest_totem_empower_lava; // TODO: Placeholder name
     buff_t* lightning_surge;
+
+    buff_t* stormkeeper;
   } buff;
 
   // Cooldowns
@@ -251,6 +254,7 @@ public:
   struct
   {
     real_ppm_t unleash_doom;
+    real_ppm_t volcanic_inferno;
   } real_ppm;
 
   // Class Specializations
@@ -350,6 +354,15 @@ public:
   // Artifact
   struct artifact_spell_data_t
   {
+    // Elemental
+    artifact_power_t stormkeeper;
+    artifact_power_t call_the_thunder;
+    artifact_power_t earthen_attunement;
+    artifact_power_t searing_shocks;
+    artifact_power_t lava_imbued;
+    artifact_power_t volcanic_inferno;
+
+    // Enhancement
     artifact_power_t doom_winds;
     artifact_power_t unleash_doom;
     artifact_power_t hurricane;
@@ -1908,6 +1921,29 @@ struct earthen_might_t : public shaman_spell_t
   }
 };
 
+struct volcanic_inferno_damage_t : public shaman_spell_t
+{
+  volcanic_inferno_damage_t( shaman_t* p ) :
+    shaman_spell_t( "volcanic_inferno_damage", p, p -> find_spell( 205533 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
+struct volcanic_inferno_driver_t : public shaman_spell_t
+{
+  volcanic_inferno_driver_t( shaman_t* p ) :
+    shaman_spell_t( "volcanic_inferno", p, p -> find_spell( 205532 ) )
+  {
+    background = true;
+    may_crit = may_miss = callbacks = hasted_ticks = false; // TODO: Hasted ticks?
+    tick_action = new volcanic_inferno_damage_t( p );
+    base_tick_time = timespan_t::from_seconds( 1 ); // TODO: DBCify
+    dot_duration = data().duration();
+  }
+};
+
 // ==========================================================================
 // Shaman Action / Spell Base
 // ==========================================================================
@@ -1949,7 +1985,7 @@ void shaman_spell_base_t<Base>::execute()
     }
   }
 
-  if ( ! ab::background )
+  if ( ! ab::background && ab::execute_state -> result_raw > 0 )
   {
     p -> buff.elemental_focus -> decrement();
   }
@@ -2699,6 +2735,37 @@ struct chain_lightning_t: public shaman_spell_t
   proc_types proc_type() const override
   { return PROC1_SPELL; }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.stormkeeper -> up() )
+    {
+      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit() const override
+  {
+    double c = shaman_spell_t::composite_crit();
+
+    if ( p() -> buff.stormkeeper -> up() )
+    {
+      c += p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.stormkeeper -> decrement();
+  }
+
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
@@ -2868,6 +2935,7 @@ struct lava_burst_t : public shaman_spell_t
     overload( nullptr )
   {
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
+    base_multiplier *= 1.0 + player -> artifact.lava_imbued.percent();
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
@@ -2943,12 +3011,21 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) &&  p() -> spec.fulmination -> ok() )
+    if ( result_is_hit( state -> result ) )
     {
-      player -> resource_gain( RESOURCE_MAELSTROM,
-                               p() -> spec.fulmination -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                               p() -> gain.fulmination,
-                               this );
+      if ( p() -> spec.fulmination -> ok() )
+      {
+        player -> resource_gain( RESOURCE_MAELSTROM,
+                                 p() -> spec.fulmination -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                                 p() -> gain.fulmination,
+                                 this );
+      }
+
+      if ( p() -> real_ppm.volcanic_inferno.trigger() )
+      {
+        p() -> volcanic_inferno -> target = state -> target;
+        p() -> volcanic_inferno -> schedule_execute();
+      }
     }
 
     if ( p() -> mastery.elemental_overload -> ok() &&
@@ -2975,6 +3052,8 @@ struct lightning_bolt_t : public shaman_spell_t
       attack_power_mod.direct = 0.1; // Hardcoded to tooltip
     }
 
+    base_multiplier *= 1.0 + player -> artifact.call_the_thunder.percent();
+
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new elemental_overload_spell_t( player, "lightning_bolt_overload", player -> find_spell( 45284 ) );
@@ -2985,6 +3064,30 @@ struct lightning_bolt_t : public shaman_spell_t
   double attack_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
     return attack_power_mod.direct * cost();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.stormkeeper -> up() )
+    {
+      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit() const override
+  {
+    double c = shaman_spell_t::composite_crit();
+
+    if ( p() -> buff.stormkeeper -> up() )
+    {
+      c += p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
+    }
+
+    return c;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -3006,6 +3109,13 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     return t;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.stormkeeper -> decrement();
   }
 
   void impact( action_state_t* state ) override
@@ -3381,6 +3491,7 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t( "earth_shock", player, player -> find_specialization_spell( "Earth Shock" ), options_str ),
     base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() )
   {
+    base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
     cooldown -> duration += player -> spec.spiritual_insight -> effectN( 3 ).time_value();
   }
 
@@ -3423,6 +3534,7 @@ struct flame_shock_t : public shaman_spell_t
     tick_may_crit         = true;
     track_cd_waste        = false;
     cooldown -> duration += player -> spec.spiritual_insight -> effectN( 3 ).time_value();
+    dot_duration         += player -> artifact.searing_shocks.time_value();
 
     // Elemental Tier 18 (WoD 6.2) trinket effect is in use, adjust Flame Shock based on spell data
     // of the special effect.
@@ -3478,7 +3590,9 @@ struct frost_shock_t : public shaman_spell_t
 {
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "frost_shock", player, player -> find_specialization_spell( "Frost Shock" ), options_str )
-  { }
+  {
+    base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
+  }
 
   double action_multiplier() const override
   {
@@ -3505,6 +3619,8 @@ struct lava_shock_t : public shaman_spell_t
     base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ),
     flame_shock( new flame_shock_t( player, player -> find_spell( 206444 ) ) )
   {
+    base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
+
     flame_shock -> dual = flame_shock -> background = true;
     flame_shock -> callbacks = false;
   }
@@ -3586,6 +3702,24 @@ struct ascendance_t : public shaman_spell_t
     strike_cd -> reset( false );
 
     p() -> buff.ascendance -> trigger();
+  }
+};
+
+// Stormkeeper Spell ========================================================
+
+struct stormkeeper_t : public shaman_spell_t
+{
+  stormkeeper_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "stormkeeper", player, &( player -> artifact.stormkeeper.data() ), options_str )
+  {
+    may_crit = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.stormkeeper -> trigger( p() -> buff.stormkeeper -> data().max_stacks() );
   }
 };
 
@@ -4378,6 +4512,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
   if ( name == "stonefist_strike"        ) return new         stonefist_strike_t( this, options_str );
   if ( name == "storm_elemental"         ) return new          storm_elemental_t( this, options_str );
+  if ( name == "stormkeeper"             ) return new              stormkeeper_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "sundering"               ) return new                sundering_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
@@ -4639,6 +4774,14 @@ void shaman_t::init_spells()
 
   // Artifact
 
+  // Elemental
+  artifact.stormkeeper               = find_artifact_spell( "Stormkeeper"        );
+  artifact.call_the_thunder          = find_artifact_spell( "Call the Thunder"   );
+  artifact.earthen_attunement        = find_artifact_spell( "Earthen Attunement" );
+  artifact.searing_shocks            = find_artifact_spell( "Searing Shocks"     );
+  artifact.lava_imbued               = find_artifact_spell( "Lava Imbued"        );
+  artifact.volcanic_inferno          = find_artifact_spell( "Volcanic Inferno"   );
+
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
   artifact.unleash_doom              = find_artifact_spell( "Unleash Doom"       );
@@ -4685,6 +4828,11 @@ void shaman_t::init_spells()
   if ( artifact.doom_vortex.rank() )
   {
     doom_vortex = new doom_vortex_t( this );
+  }
+
+  if ( artifact.volcanic_inferno.rank() )
+  {
+    volcanic_inferno = new volcanic_inferno_driver_t( this );
   }
 
   // Constants
@@ -5095,6 +5243,8 @@ void shaman_t::create_buffs()
   buff.lightning_surge = buff_creator_t( this, "lightning_surge", find_spell( 189796 ) )
     // TODO: 1 - 0.5 or 1 / 1.5 ?
     .default_value( 1.0 + find_spell( 189796 ) -> effectN( 1 ).percent() );
+  buff.stormkeeper = buff_creator_t( this, "stormkeeper", &( artifact.stormkeeper.data() ) )
+    .cd( timespan_t::zero() ); // Handled by the action
 }
 
 // shaman_t::init_gains =====================================================
@@ -5146,6 +5296,7 @@ void shaman_t::init_rng()
   player_t::init_rng();
 
   real_ppm.unleash_doom = real_ppm_t( *this, artifact.unleash_doom.data().real_ppm() );
+  real_ppm.volcanic_inferno = real_ppm_t( *this, artifact.volcanic_inferno.data().real_ppm() );
 }
 
 // shaman_t::init_actions ===================================================
@@ -5722,6 +5873,7 @@ void shaman_t::reset()
   for (auto & elem : counters)
     elem -> reset();
   real_ppm.unleash_doom.reset();
+  real_ppm.volcanic_inferno.reset();
 }
 
 // shaman_t::merge ==========================================================

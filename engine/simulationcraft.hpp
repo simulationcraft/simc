@@ -256,6 +256,18 @@ struct artifact_power_t
     }
   }
 
+  timespan_t time_value() const
+  {
+    if ( rank() == 1 )
+    {
+      return spell_ -> effectN( 1 ).time_value();
+    }
+    else
+    {
+      return timespan_t::from_millis( rank_data_ -> value );
+    }
+  }
+
   double percent() const
   { return value() * .01; }
 

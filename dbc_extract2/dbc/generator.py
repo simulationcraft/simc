@@ -1530,6 +1530,7 @@ class SpellDataGenerator(DataGenerator):
           ( 198830, 0 ), ( 199019, 0 ), ( 198933, 0 ),  # Doomhammer procs
           ( 197576, 0 ),                                # Magnitude ground? effect
           ( 206442, 0 ),                                # Lava Shock
+          ( 191635, 0 ), ( 191634, 0 ),                 # Static Overload spells
         ),
 
         # Mage:
