@@ -760,7 +760,7 @@ double action_t::cost() const
   if ( c < 0 ) c = 0;
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
+    sim -> out_debug.printf( "action_t::cost: %s base_cost=%.2f secondary_cost=%.2f cost=%.2f resource=%s", name(), base_costs[ cr ], secondary_costs[ cr ], c, util::resource_type_string( cr ) );
 
   return floor( c );
 }
