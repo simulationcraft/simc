@@ -24,13 +24,6 @@ bool has_avoidance( const std::array<stats_t::stats_results_t, RESULT_MAX>& s )
            s[ RESULT_PARRY ].count.mean() ) > 0;
 }
 
-bool has_multistrike(
-    const std::array<stats_t::stats_results_t, RESULT_MAX>& s )
-{
-  return ( s[ RESULT_MULTISTRIKE ].count.mean() +
-           s[ RESULT_MULTISTRIKE_CRIT ].count.mean() ) > 0;
-}
-
 bool has_block( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& s )
 {
   return ( s[ FULLTYPE_HIT_BLOCK ].count.mean() +
@@ -78,29 +71,6 @@ bool player_has_avoidance( const player_t& p, unsigned stats_mask )
   for ( const auto& pet : p.pet_list )
   {
     if ( player_has_avoidance( *pet, stats_mask ) )
-      return true;
-  }
-
-  return false;
-}
-
-bool player_has_multistrike( const player_t& p, unsigned stats_mask )
-{
-  for ( const auto& stat : p.stats_list )
-  {
-    if ( !( stats_mask & ( 1 << stat->type ) ) )
-      continue;
-
-    if ( has_multistrike( stat->direct_results ) )
-      return true;
-
-    if ( has_multistrike( stat->tick_results ) )
-      return true;
-  }
-
-  for ( const auto& pet : p.pet_list )
-  {
-    if ( player_has_multistrike( *pet, stats_mask ) )
       return true;
   }
 
@@ -193,10 +163,6 @@ double mean_damage(
 
   for ( size_t i = 0; i < result.size(); i++ )
   {
-    // Skip multistrike for mean damage
-    if ( i == RESULT_MULTISTRIKE || i == RESULT_MULTISTRIKE_CRIT )
-      continue;
-
     mean += result[ i ].actual_amount.sum();
     count += result[ i ].actual_amount.count();
   }
@@ -265,22 +231,6 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
             block_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
             block_results[ FULLTYPE_CRIT_BLOCK ].pct +
             block_results[ FULLTYPE_CRIT_CRITBLOCK ].pct );
-
-  if ( player_has_multistrike( p, stats_mask ) )
-  {
-    os.format(
-        "<td class=\"right small\">%.1f</td>\n"     // count
-        "<td class=\"right small\">%.0f</td>\n"     // direct_results
-                                                    // MULTISTRIKE_HIT
-        "<td class=\"right small\">%.0f</td>\n"     // direct_results
-                                                    // MULTISTRIKE_CRIT
-        "<td class=\"right small\">%.1f%%</td>\n",  // direct_results CRIT%
-        results[ RESULT_MULTISTRIKE ].count.pretty_mean() +
-            results[ RESULT_MULTISTRIKE_CRIT ].count.pretty_mean(),
-        results[ RESULT_MULTISTRIKE ].actual_amount.pretty_mean(),
-        results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.pretty_mean(),
-        results[ RESULT_MULTISTRIKE_CRIT ].pct );
-  }
 
   if ( player_has_tick_results( p, stats_mask ) )
   {
@@ -1270,16 +1220,6 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           p.composite_melee_haste_rating() );
       j++;
     }
-    os.format(
-        "<tr%s>\n"
-        "<th class=\"left\">Multistrike</th>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.0f</td>\n"
-        "</tr>\n",
-        ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.multistrike,
-        100 * p.composite_multistrike(), p.composite_multistrike_rating() );
-    j++;
     os.format(
         "<tr%s>\n"
         "<th class=\"left\">Damage / Heal Versatility</th>\n"
@@ -3679,19 +3619,6 @@ void output_player_damage_summary( report::sc_html_stream& os,
     n_optional_columns++;
   }
 
-  if ( player_has_multistrike( actor, MASK_DMG ) )
-  {
-    os << "<th class=\"small\"><a href=\"#help-count\" "
-          "class=\"help\">M-Count</a></th>\n"
-       << "<th class=\"small\"><a href=\"#help-hit\" "
-          "class=\"help\">M-Hit</a></th>\n"
-       << "<th class=\"small\"><a href=\"#help-crit\" "
-          "class=\"help\">M-Crit</a></th>\n"
-       << "<th class=\"small\"><a href=\"#help-crit-pct\" "
-          "class=\"help\">M-Crit%</a></th>\n";
-    n_optional_columns += 4;
-  }
-
   if ( player_has_tick_results( actor, MASK_DMG ) )
   {
     os << "<th class=\"small\"><a href=\"#help-ticks-uptime-pct\" "
@@ -3794,19 +3721,6 @@ void output_player_heal_summary( report::sc_html_stream& os,
         "class=\"help\">Avg</a></th>\n"
      << "<th class=\"small\"><a href=\"#help-crit-pct\" "
         "class=\"help\">Crit%</a></th>\n";
-
-  if ( player_has_multistrike( actor, MASK_HEAL | MASK_ABSORB ) )
-  {
-    os << "<th class=\"small\"><a href=\"#help-count\" "
-          "class=\"help\">M-Count</a></th>\n"
-       << "<th class=\"small\"><a href=\"#help-hit\" "
-          "class=\"help\">M-Hit</a></th>\n"
-       << "<th class=\"small\"><a href=\"#help-crit\" "
-          "class=\"help\">M-Crit</a></th>\n"
-       << "<th class=\"small\"><a href=\"#help-crit-pct\" "
-          "class=\"help\">M-Crit%</a></th>\n";
-    n_optional_columns += 4;
-  }
 
   if ( player_has_tick_results( actor, MASK_HEAL | MASK_ABSORB ) )
   {

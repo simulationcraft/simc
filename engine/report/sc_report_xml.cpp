@@ -385,9 +385,6 @@ void print_xml_player_stats( xml_writer_t& writer, player_t* p )
                               100 * ( 1 / p->cache.attack_speed() - 1 ),
                               p->initial.stats.haste_rating,
                               100 * ( 1 / buffed_stats.attack_speed - 1 ) );
-  print_xml_player_attribute(
-      writer, "multistrike", 100 * p->cache.multistrike(),
-      p->initial.stats.multistrike_rating, 100 * buffed_stats.multistrike );
   print_xml_player_attribute( writer, "damage_versatility",
                               100 * p->cache.damage_versatility(),
                               p->initial.stats.versatility_rating,

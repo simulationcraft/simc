@@ -1709,9 +1709,6 @@ struct ambush_t : public rogue_attack_t
 
       td -> debuffs.find_weakness -> trigger();
     }
-
-    if ( result_is_multistrike( state -> result ) )
-      p() -> trigger_sinister_calling( state );
   }
 
   double composite_crit() const override
@@ -1774,14 +1771,6 @@ struct backstab_t : public rogue_attack_t
       p() -> buffs.sleight_of_hand -> trigger();
   }
 
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( result_is_multistrike( state -> result ) )
-      p() -> trigger_sinister_calling( state );
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
@@ -1826,7 +1815,6 @@ struct dispatch_t : public rogue_attack_t
       callbacks = false;
       background = true;
       may_crit = false;
-      may_multistrike = 1;
     }
 
     void init() override
@@ -2287,7 +2275,7 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     rogue_attack_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       residual_action::trigger( ct_dot, s -> target, s -> result_amount * ct_dot -> data().effectN( 1 ).percent() );
 
@@ -3488,7 +3476,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
-    may_multistrike = 0;
     background = true;
     aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     weapon = &p -> main_hand_weapon;
@@ -3807,9 +3794,6 @@ void rogue_t::trigger_sinister_calling( const action_state_t* state )
   if ( ! spec.sinister_calling -> ok() )
     return;
 
-  if ( ! state -> action -> result_is_multistrike( state -> result ) )
-    return;
-
   rogue_td_t* tdata = get_target_data( state -> target );
   if ( tdata -> dots.rupture -> is_ticking() )
   {
@@ -4035,7 +4019,7 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( !state -> action -> weapon )
     return;
 
-  if ( !state -> action -> result_is_hit_or_multistrike( state -> result ) )
+  if ( !state -> action -> result_is_hit( state -> result ) )
     return;
 
   if ( sim -> active_enemies == 1 )
@@ -4871,7 +4855,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       shadow_reflection_attack_t::impact( s );
 
-      if ( result_is_hit_or_multistrike( s -> result ) )
+      if ( result_is_hit( s -> result ) )
         residual_action::trigger( dot, s -> target, s -> result_amount * dot -> data().effectN( 1 ).percent() );
     }
   };
@@ -5036,9 +5020,6 @@ double rogue_t::composite_rating_multiplier( rating_e rating ) const
   double m = player_t::composite_rating_multiplier( rating );
   switch ( rating )
   {
-    case RATING_MULTISTRIKE:
-      m *= 1.0 + spec.sinister_calling -> effectN( 2 ).percent();
-      break;
     case RATING_MASTERY:
       m *= 1.0 + spec.master_poisoner -> effectN( 1 ).percent();
       break;
@@ -5251,7 +5232,7 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    potion_action_str += "|(buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)|((buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&target.time_to_die<136)";
+    potion_action_str += "|(buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&(trinket.stat.agi.react|buff.archmages_greater_incandescence_agi.react)|((buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&target.time_to_die<136)";
   }
 
   // In-combat potion

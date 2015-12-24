@@ -534,7 +534,6 @@ public:
   virtual double    composite_parry_rating() const override;
   virtual double    composite_parry() const override;
   virtual double    composite_dodge() const override;
-  virtual double    composite_multistrike() const override;
   virtual double    composite_leech() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
@@ -2767,8 +2766,7 @@ struct melee_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( result_is_multistrike( s -> result ) &&
-         p() -> spec.blood_rites -> ok() &&
+    if ( p() -> spec.blood_rites -> ok() &&
          weapon -> group() == WEAPON_2H )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
@@ -3174,13 +3172,6 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
          p() -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 )  )
       p() -> buffs.shadow_infusion -> trigger( p() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 1 ).base_value() );
   }
-
-  void multistrike_direct( const action_state_t* source_state, action_state_t* ms_state ) override
-  {
-    death_knight_melee_attack_t::multistrike_direct( source_state, ms_state );
-
-    p() -> trigger_necrosis( ms_state );
-  }
 };
 
 struct soul_reaper_t : public death_knight_melee_attack_t
@@ -3309,7 +3300,6 @@ struct conversion_heal_t : public death_knight_heal_t
     death_knight_heal_t( "conversion_heal", p, p -> find_spell( 119980 ) )
   {
     may_crit = false;
-    may_multistrike = 0;
     background = true;
     resource_current = RESOURCE_RUNIC_POWER;
     base_costs[ RESOURCE_RUNIC_POWER ] = 15;
@@ -3771,7 +3761,6 @@ struct unholy_coil_t : public death_knight_heal_t
   {
     background = true;
     callbacks = may_crit = false;
-    may_multistrike = 0;
 
     const spell_data_t* data = p -> unholy_coil -> driver();
     heal_multiplier = data -> effectN( 1 ).average( p -> unholy_coil -> item ) / 100.0;
@@ -3909,7 +3898,6 @@ struct blood_shield_t : public absorb_t
     absorb_t( "blood_shield", p, p -> find_spell( 77535 ) )
   {
     may_miss = may_crit = callbacks = false;
-    may_multistrike = 0;
     background = proc = true;
   }
 
@@ -3934,7 +3922,6 @@ struct death_strike_heal_t : public death_knight_heal_t
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr )
   {
     may_crit   = callbacks = false;
-    may_multistrike = 0;
     background = true;
     target     = p;
   }
@@ -4526,7 +4513,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) && fo )
+    if ( result_is_hit( s -> result ) && fo )
     {
       fo -> proxy_execute( s );
     }
@@ -4614,7 +4601,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
     }
 
-    if ( result_is_hit_or_multistrike( s -> result ) && fo )
+    if ( result_is_hit( s -> result ) && fo )
     {
       fo -> proxy_execute( s );
     }
@@ -5330,7 +5317,6 @@ struct mark_of_sindragosa_heal_t: public death_knight_heal_t
     death_knight_heal_t( "mark_of_sindragosa", p, p -> find_spell( 155166 ) )
   {
     may_miss = may_crit = callbacks = false; // Blood DK Heal from enemies who attack the DK with spells and have mark of sindragosa on them.
-    may_multistrike = 0;
     dot_duration = timespan_t::zero();
     attack_power_mod.direct = attack_power_mod.tick = 0.0;
     target = p;
@@ -5638,7 +5624,6 @@ struct death_pact_t : public death_knight_heal_t
     death_knight_heal_t( "death_pact", p, p -> find_talent_spell( "Death Pact" ) )
   {
     may_crit = false;
-    may_multistrike = 0;
     base_pct_heal = data().effectN( 1 ).percent();
 
     parse_options( options_str );
@@ -5946,7 +5931,6 @@ void runeforge::fallen_crusader( special_effect_t& effect )
         background = true;
         target = player;
         callbacks = may_crit = false;
-        may_multistrike = 0;
         base_pct_heal = data -> effectN( 2 ).percent();
         base_pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
       }
@@ -7503,9 +7487,6 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
       active_spells.mark_of_sindragosa -> execute();
     }
   }
-
-  if ( talent.necrotic_plague -> ok() && s -> result_amount > 0 && ! s -> action -> result_is_multistrike( s -> result ) )
-    resource_gain( RESOURCE_RUNIC_POWER, spell.necrotic_plague_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ), gains.necrotic_plague );
 }
 
 // death_knight_t::assess_damage ============================================
@@ -7640,10 +7621,6 @@ double death_knight_t::composite_rating_multiplier( rating_e rating ) const
 
   switch ( rating )
   {
-    case RATING_MULTISTRIKE:
-      m *= 1.0 + spec.multistrike_attunement -> effectN( 1 ).percent();
-      m *= 1.0 + spec.necrosis -> effectN( 1 ).percent();
-      break;
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
@@ -7670,22 +7647,6 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
       return spec.plate_specialization -> effectN( 1 ).percent();
 
   return 0.0;
-}
-
-// death_knight_t::composite_multistrike ===================================
-
-double death_knight_t::composite_multistrike() const
-{
-  double multistrike = player_t::composite_multistrike();
-
-  multistrike += spec.veteran_of_the_third_war -> effectN( 5 ).percent();
-
-  if ( spec.runic_strikes -> ok() )
-  {
-    multistrike *= 1.0 + spec.runic_strikes -> effectN( 1 ).percent();
-  }
-
-  return multistrike;
 }
 
 // death_knight_t::composite_leech ========================================
@@ -8075,9 +8036,6 @@ void death_knight_t::trigger_necrosis( const action_state_t* state )
   if ( ! spec.necrosis -> ok() )
     return;
 
-  if ( ! state -> action -> result_is_multistrike( state -> result ) )
-    return;
-
   active_spells.necrosis -> target = state -> target;
   active_spells.necrosis -> schedule_execute();
 }
@@ -8094,8 +8052,7 @@ void death_knight_t::trigger_t17_4pc_frost( const action_state_t* state )
   if ( state -> result_amount == 0 )
     return;
 
-  if ( state -> action -> result_is_multistrike( state -> result ) ||
-       ! state -> action -> result_is_hit( state -> result ) )
+  if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
   if ( ! buffs.frozen_runeblade -> check() )

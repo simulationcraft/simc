@@ -1576,7 +1576,7 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( ! p() -> spec.icicles -> ok() )
       return;
 
-    if ( ! result_is_hit_or_multistrike( state -> result ) )
+    if ( ! result_is_hit( state -> result ) )
       return;
 
     // Icicles do not double dip on target based multipliers
@@ -1627,7 +1627,6 @@ struct icicle_t : public frost_mage_spell_t
     frost_mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
   {
     may_crit = false;
-    may_multistrike = 0;
     proc = background = true;
   }
 
@@ -1914,7 +1913,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
       {
@@ -2517,7 +2516,7 @@ struct fireball_t : public fire_mage_spell_t
       }
     }
 
-    if ( result_is_hit_or_multistrike( s -> result) )
+    if ( result_is_hit( s -> result) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
       {
@@ -2751,7 +2750,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
       {
@@ -2885,7 +2884,6 @@ struct ice_floes_t : public mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = harmful = false;
-    may_multistrike = 0;
     trigger_gcd = timespan_t::zero();
 
     cooldown -> charges = data().charges();
@@ -3276,7 +3274,6 @@ struct meteor_t : public fire_mage_spell_t
     parse_options( options_str );
     hasted_ticks = false;
     callbacks = false;
-    may_multistrike = 0;
     add_child( meteor_impact );
     add_child( meteor_burn );
     dot_duration = p -> find_spell( 175396 ) -> duration() - p -> find_spell( 153564 ) -> duration();
@@ -3983,7 +3980,7 @@ struct unstable_magic_explosion_t : public mage_spell_t
     mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
-    may_multistrike = callbacks = false;
+    callbacks = false;
     aoe = -1;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
@@ -4162,7 +4159,6 @@ struct nithramus_t : public mage_spell_t
 
     background = split_aoe_damage = true;
     may_crit = callbacks = false;
-    may_multistrike = 0;
     trigger_gcd = timespan_t::zero();
     aoe = -1;
     radius = 20;

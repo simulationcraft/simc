@@ -366,7 +366,6 @@ public:
   virtual double    composite_spell_crit() const override;
   virtual double    composite_melee_haste() const override;
   virtual double    composite_player_critical_damage_multiplier() const override;
-  virtual double    composite_player_multistrike_damage_multiplier() const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
@@ -1323,7 +1322,7 @@ struct beast_cleave_attack_t: public hunter_main_pet_attack_t
 
 static void trigger_beast_cleave( action_state_t* s )
 {
-  if ( !s -> action -> result_is_hit_or_multistrike( s -> result ) )
+  if ( !s -> action -> result_is_hit( s -> result ) )
     return;
 
   if ( s -> action -> sim -> active_enemies == 1 )
@@ -2033,7 +2032,6 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
   {
     may_crit = true;
     tick_may_crit = true;
-    may_multistrike = 1;
   }
 
   void init() override
@@ -2363,7 +2361,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     starved_proc = player -> get_proc( "starved: black_arrow" );
-    may_multistrike = 1;
     lnl_chance = data().effectN( 2 ).percent(); 
   }
   
@@ -2579,7 +2576,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
     callbacks = false;
-    may_multistrike = 0;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
     add_child( frost );
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
@@ -2654,7 +2650,6 @@ struct explosive_shot_tick_t: public residual_action::residual_periodic_action_t
   {
     tick_may_crit = true;
     dual = true;
-    may_multistrike = 1;
 
     // suppress direct damage in the dot.
     base_dd_min = 0;
@@ -2870,7 +2865,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> specs.serpent_sting -> ok() )
       {
@@ -2939,7 +2934,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> specs.serpent_sting -> ok() )
       {
@@ -4496,8 +4491,6 @@ double hunter_t::composite_rating_multiplier( rating_e rating ) const
 
   switch ( rating )
   {
-  case RATING_MULTISTRIKE:
-    return m *= 1.0 + specs.lightning_reflexes -> effectN( 1 ).percent();
   case RATING_MELEE_CRIT:
     return m *= 1.0 + specs.lethal_shots -> effectN( 1 ).percent();
   case RATING_SPELL_CRIT:
@@ -4584,16 +4577,6 @@ double hunter_t::composite_player_critical_damage_multiplier() const
   }
 
   return cdm;
-}
-
-// hunter_t::composite_player_multistrike_damage_multiplier ====================
-
-double hunter_t::composite_player_multistrike_damage_multiplier() const
-{
-  double m = player_t::composite_player_multistrike_damage_multiplier();
-  m *= 1.0 + specs.survivalist -> effectN( 2 ).percent();
-  m *= 1.0 + buffs.heavy_shot -> value();
-  return m;
 }
 
 // hunter_t::composite_player_multiplier ====================================

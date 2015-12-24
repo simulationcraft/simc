@@ -1631,7 +1631,7 @@ void item::blackiron_micro_crucible( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-                   .add_stat( STAT_MULTISTRIKE_RATING, spell -> effectN( 1 ).average( effect.item ) )
+                   .add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
@@ -1909,7 +1909,7 @@ void item::forgemasters_insignia( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   stat_buff_t* b = stat_buff_creator_t( effect.item -> player, buff_name, spell, effect.item )
-                   .add_stat( STAT_MULTISTRIKE_RATING, spell -> effectN( 1 ).average( effect.item ) )
+                   .add_stat( STAT_MASTERY_RATING, spell -> effectN( 1 ).average( effect.item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
@@ -2025,7 +2025,6 @@ void item::legendary_ring( special_effect_t& effect )
       damage_coeff = originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0;
       background = split_aoe_damage = true;
       may_crit = false;
-      may_multistrike = 0;
       callbacks = false;
       trigger_gcd = timespan_t::zero();
       aoe = -1;
@@ -2150,7 +2149,6 @@ void item::infallible_tracking_charm( special_effect_t& effect )
   effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver() -> effectN( 1 ).trigger() );
 
   effect.execute_action -> background = true;
-  effect.execute_action -> may_multistrike = 1;
   effect.execute_action -> item = effect.item;
   effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max = effect.execute_action -> data().effectN( 1 ).average( effect.item );
 

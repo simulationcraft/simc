@@ -94,8 +94,6 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     case RESULT_GLANCE: fulltype=FULLTYPE_GLANCE; break;
     case RESULT_CRIT:   fulltype=FULLTYPE_CRIT; break;
     case RESULT_HIT:    fulltype=FULLTYPE_HIT; break;
-    case RESULT_MULTISTRIKE: fulltype=FULLTYPE_MULTISTRIKE; break;
-    case RESULT_MULTISTRIKE_CRIT: fulltype=FULLTYPE_MULTISTRIKE_CRIT; break;
     case RESULT_MAX:    fulltype=FULLTYPE_MAX; break;
     default:            fulltype=FULLTYPE_NONE;
   }
@@ -105,8 +103,6 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     case RESULT_GLANCE:
     case RESULT_CRIT:
     case RESULT_HIT:
-    case RESULT_MULTISTRIKE:
-    case RESULT_MULTISTRIKE_CRIT:
     {
       switch ( block_result )
       {
@@ -224,13 +220,8 @@ void stats_t::datacollection_end()
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    // Multistrike results are independent of normal results, even though they
-    // are computed through the same stats
-    if ( i != RESULT_MULTISTRIKE && i != RESULT_MULTISTRIKE_CRIT )
-    {
-      idr += direct_results[ i ].iteration_count;
-      itr += tick_results[ i ].iteration_count;
-    }
+    idr += direct_results[ i ].iteration_count;
+    itr += tick_results[ i ].iteration_count;
 
     iaa += direct_results[ i ].iteration_actual_amount + tick_results[ i ].iteration_actual_amount;
     ita += direct_results[ i ].iteration_total_amount + tick_results[ i ].iteration_total_amount;
@@ -287,37 +278,13 @@ void stats_t::analyze()
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    if ( i != RESULT_MULTISTRIKE && i != RESULT_MULTISTRIKE_CRIT )
-    {
-      direct_results[ i ].analyze( num_direct_results.mean() );
-      tick_results[ i ].analyze( num_tick_results.mean() );
-    }
-    else
-    {
-      // Multistrike results are independent of normal results, even though
-      // they are computed through the same stats
-      direct_results[ i ].analyze( direct_results[ RESULT_MULTISTRIKE      ].count.mean() +
-                                   direct_results[ RESULT_MULTISTRIKE_CRIT ].count.mean() );
-      tick_results[ i ].analyze( tick_results[ RESULT_MULTISTRIKE      ].count.mean() + 
-                                 tick_results[ RESULT_MULTISTRIKE_CRIT ].count.mean() );
-    }
+    direct_results[ i ].analyze( num_direct_results.mean() );
+    tick_results[ i ].analyze( num_tick_results.mean() );
   }
   for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
   {
-    if ( i != FULLTYPE_MULTISTRIKE && i != FULLTYPE_MULTISTRIKE_CRIT )
-    {
-      direct_results_detail[ i ].analyze( num_direct_results.mean() );
-      tick_results_detail[ i ].analyze( num_tick_results.mean() );
-    }
-    else
-    {
-      // Multistrike results are independent of normal results, even though
-      // they are computed through the same stats
-      direct_results_detail[ i ].analyze( direct_results_detail[ FULLTYPE_MULTISTRIKE      ].count.mean() +
-                                          direct_results_detail[ FULLTYPE_MULTISTRIKE_CRIT ].count.mean() );
-      tick_results_detail[ i ].analyze( tick_results_detail[ FULLTYPE_MULTISTRIKE      ].count.mean() + 
-                                        tick_results_detail[ FULLTYPE_MULTISTRIKE_CRIT ].count.mean() );
-    }
+    direct_results_detail[ i ].analyze( num_direct_results.mean() );
+    tick_results_detail[ i ].analyze( num_tick_results.mean() );
   }
 
   portion_aps.analyze();
@@ -465,18 +432,12 @@ bool stats_t::has_direct_amount_results() const
 {
   return (
       direct_results[ RESULT_HIT ].actual_amount.mean() > 0 ||
-      direct_results[ RESULT_CRIT ].actual_amount.mean() > 0 ||
-      direct_results[ RESULT_MULTISTRIKE ].actual_amount.mean() > 0 ||
-      direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean() > 0
-  );
+      direct_results[ RESULT_CRIT ].actual_amount.mean() > 0 );
 }
 
 bool stats_t::has_tick_amount_results() const
 {
   return (
       tick_results[ RESULT_HIT ].actual_amount.mean() > 0 ||
-     tick_results[ RESULT_CRIT ].actual_amount.mean() > 0 ||
-      tick_results[ RESULT_MULTISTRIKE ].actual_amount.mean() > 0 ||
-      tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean() > 0
-  );
+     tick_results[ RESULT_CRIT ].actual_amount.mean() > 0 );
 }

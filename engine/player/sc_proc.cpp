@@ -45,9 +45,6 @@ const proc_parse_opt_t __proc2_opts[] =
   { "impact",      PF2_LANDED           },
   { "tickheal",    PF2_PERIODIC_HEAL    },
   { "tickdamage",  PF2_PERIODIC_DAMAGE  },
-  { "ms_hit",      PF2_MULTISTRIKE      },
-  { "ms_crit",     PF2_MULTISTRIKE_CRIT },
-  { "multistrike", PF2_ALL_MULTISTRIKE  },
   { nullptr,             0                    },
 };
 

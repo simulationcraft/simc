@@ -4348,7 +4348,6 @@ struct healing_elixirs_t: public monk_heal_t
   {
     harmful = may_crit = false;
     background = true;
-    may_multistrike = 0;
     target = &p;
     trigger_gcd = timespan_t::zero();
     base_pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
@@ -5879,7 +5878,7 @@ void monk_t::apl_combat_windwalker()
   if ( sim -> allow_potions )
   {
     if ( true_level == 100 )
-      def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&(trinket.proc.agility.react|trinket.proc.multistrike.react))|buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }

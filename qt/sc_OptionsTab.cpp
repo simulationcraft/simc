@@ -481,7 +481,6 @@ void SC_OptionsTab::createScalingTab()
   appendCheckBox( tr( "Crit Rating"                ), "crit",       tr( "Calculate scale factors for Crit Rating"                    ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Haste Rating"               ), "haste",      tr( "Calculate scale factors for Haste Rating"                   ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Mastery Rating"             ), "mastery",    tr( "Calculate scale factors for Mastery Rating"                 ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Multistrike Rating"         ), "mult",       tr( "Calculate scale factors for Multistrike Rating"             ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Versatility Rating"         ), "vers",       tr( "Calculate scale factors for Versatility Rating"             ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Weapon DPS"                 ), "wdps",       tr( "Calculate scale factors for Weapon DPS"                     ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Off-hand Weapon DPS"        ), "wohdps",     tr( "Calculate scale factors for Off-hand Weapon DPS"            ), scalingButtonsLayout, scalingButtonGroup );
@@ -570,7 +569,6 @@ void SC_OptionsTab::createPlotsTab()
   appendCheckBox( tr( "Crit Rating"        ), "crit",       tr( "Generate Scaling curve for Crit Rating"        ), plotButtonsLayout, plotsButtonGroup );
   appendCheckBox( tr( "Haste Rating"       ), "haste",      tr( "Generate Scaling curve for Haste Rating"       ), plotButtonsLayout, plotsButtonGroup );
   appendCheckBox( tr( "Mastery Rating"     ), "mastery",    tr( "Generate Scaling curve for Mastery Rating"     ), plotButtonsLayout, plotsButtonGroup );
-  appendCheckBox( tr( "Multistrike Rating" ), "mult",       tr( "Generate Scaling curve for Multistrike Rating" ), plotButtonsLayout, plotsButtonGroup );
   appendCheckBox( tr( "Versatility Rating" ), "vers",       tr( "Generate Scaling curve for Versatility Rating" ), plotButtonsLayout, plotsButtonGroup );
   appendCheckBox( tr( "Weapon DPS"         ), "wdps",       tr( "Generate Scaling curve for Weapon DPS"         ), plotButtonsLayout, plotsButtonGroup );
   appendCheckBox( tr( "Weapon OH DPS"      ), "wohdps",     tr( "Generate Scaling curve for Weapon OH DPS"      ), plotButtonsLayout, plotsButtonGroup );
@@ -614,7 +612,6 @@ void SC_OptionsTab::createReforgePlotsTab()
   appendCheckBox( tr( "Plot Reforge Options for Crit Rating"        ), "crit",       tr( "Generate reforge plot data for Crit Rating"        ), reforgePlotsLayout, reforgeplotsButtonGroup );
   appendCheckBox( tr( "Plot Reforge Options for Haste Rating"       ), "haste",      tr( "Generate reforge plot data for Haste Rating"       ), reforgePlotsLayout, reforgeplotsButtonGroup );
   appendCheckBox( tr( "Plot Reforge Options for Mastery Rating"     ), "mastery",    tr( "Generate reforge plot data for Mastery Rating"     ), reforgePlotsLayout, reforgeplotsButtonGroup );
-  appendCheckBox( tr( "Plot Reforge Options for Multistrike Rating" ), "mult",       tr( "Generate reforge plot data for Multistrike Rating" ), reforgePlotsLayout, reforgeplotsButtonGroup );
   appendCheckBox( tr( "Plot Reforge Options for Versatility Rating" ), "vers",       tr( "Generate reforge plot data for Versatility Rating" ), reforgePlotsLayout, reforgeplotsButtonGroup );
   appendCheckBox( tr( "Plot Reforge Options for Bonus Armor Rating" ), "bonusarmor", tr( "Generate reforge plot data for Bonus Armor"        ), reforgePlotsLayout, reforgeplotsButtonGroup );
 

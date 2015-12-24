@@ -281,8 +281,6 @@ rgb stat_color( stat_e type )
       return COLOR_SHAMAN;
     case STAT_MASTERY_RATING:
       return COLOR_ROGUE.dark();
-    case STAT_MULTISTRIKE_RATING:
-      return COLOR_DEATH_KNIGHT + COLOR_WARRIOR;
     case STAT_DODGE_RATING:
       return COLOR_MONK;
     case STAT_PARRY_RATING:

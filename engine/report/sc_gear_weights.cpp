@@ -428,9 +428,6 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::wowhead(
         case STAT_VERSATILITY_RATING:
           id = 215;
           break;
-        case STAT_MULTISTRIKE_RATING:
-          id = 200;
-          break;
         case STAT_WEAPON_DPS:
           if ( HUNTER == p.type )
             id = 138;
@@ -526,9 +523,6 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::pawn(
           break;
         case STAT_VERSATILITY_RATING:
           name = "Versatility";
-          break;
-        case STAT_MULTISTRIKE_RATING:
-          name = "Multistrike";
           break;
         case STAT_WEAPON_DPS:
           name = "Dps";

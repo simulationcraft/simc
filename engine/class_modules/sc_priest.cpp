@@ -391,9 +391,6 @@ public:
   double composite_spell_power_multiplier() const override;
   double composite_spell_crit() const override;
   double composite_melee_crit() const override;
-  double composite_multistrike() const override;
-  double composite_player_multistrike_damage_multiplier() const override;
-  double composite_player_multistrike_healing_multiplier() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_absorb_multiplier(
       const action_state_t* s ) const override;
@@ -1116,7 +1113,6 @@ public:
   {
     may_crit        = true;
     tick_may_crit   = false;
-    may_multistrike = 1;
     may_miss        = false;
   }
 
@@ -1150,7 +1146,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
       check_spell( p.specs.divine_aegis );
       proc                   = true;
       background             = true;
-      may_multistrike        = 0;
       may_crit               = false;
       spell_power_mod.direct = 0.0;
     }
@@ -1286,8 +1281,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     : base_t( n, player, s ),
       da( nullptr ),
       ss( nullptr ),
-      divine_aegis_trigger_mask( RESULT_CRIT_MASK |
-                                 ( 1 << RESULT_MULTISTRIKE_CRIT ) ),
+      divine_aegis_trigger_mask( RESULT_CRIT_MASK ),
       can_trigger_EoL( true ),
       can_trigger_spirit_shell( false )
   {
@@ -2132,7 +2126,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     proc                = false;
     callbacks           = true;
     may_miss            = false;
-    instant_multistrike = 0;
 
     trigger_gcd  = timespan_t::zero();
     travel_speed = 6.0;
@@ -2207,7 +2200,6 @@ struct mind_blast_t : public priest_spell_t
             player.talents.fortress_of_the_mind->effectN( 2 ).percent() ) )
   {
     parse_options( options_str );
-    instant_multistrike = 0;
     is_mind_spell       = true;
 
     spell_power_mod.direct *=
@@ -2297,7 +2289,6 @@ struct mind_spike_t : public priest_spell_t
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-    instant_multistrike = 0;
     is_mind_spell       = true;
   }
 
@@ -2336,7 +2327,6 @@ struct mind_sear_tick_t : public priest_spell_t
     aoe                 = -1;
     callbacks           = false;
     direct_tick         = true;
-    instant_multistrike = 0;
     use_off_gcd         = true;
   }
 };
@@ -2353,7 +2343,6 @@ struct mind_sear_t : public priest_spell_t
     hasted_ticks        = false;
     dynamic_tick_action = true;
     tick_zero           = false;
-    instant_multistrike = 0;
     is_mind_spell       = true;
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
@@ -2409,7 +2398,6 @@ struct shadow_word_death_t : public priest_spell_t
       insanity_gain( 30.0 )  // FIXME not in spelldata
   {
     parse_options( options_str );
-    instant_multistrike = 0;
 
     base_multiplier *= 4.0;  // FIXME remove when spelldata is fixed
 
@@ -3324,7 +3312,6 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
   cascade_t( priest_t& p, const std::string& options_str )
     : base_t( "cascade", p, options_str, get_spell_data( p ) )
   {
-    instant_multistrike = 0;
   }
 
   void populate_target_list() override
@@ -3427,7 +3414,6 @@ struct halo_t : public priest_spell_t
       _base_spell( get_base_spell( p ) )
   {
     parse_options( options_str );
-    instant_multistrike = 0;
 
     add_child( _base_spell );
   }
@@ -3518,7 +3504,6 @@ struct divine_star_t : public priest_spell_t
     parse_options( options_str );
 
     dot_duration = base_tick_time = timespan_t::zero();
-    instant_multistrike = 0;
 
     add_child( _base_spell );
   }
@@ -5231,34 +5216,6 @@ double priest_t::composite_melee_crit() const
   return cmc;
 }
 
-double priest_t::composite_multistrike() const
-{
-  double cm = base_t::composite_multistrike();
-
-  if ( buffs.premonition->check() )
-  {
-    cm += buffs.premonition->data().effectN( 1 ).percent();
-  }
-
-  return cm;
-}
-
-// Multistrike Effect Multipliers ====================
-
-double priest_t::composite_player_multistrike_damage_multiplier() const
-{
-  double m = player_t::composite_player_multistrike_damage_multiplier();
-  m *= 1.0 + specs.divine_providence->effectN( 2 ).percent();
-  return m;
-}
-
-double priest_t::composite_player_multistrike_healing_multiplier() const
-{
-  double m = player_t::composite_player_multistrike_healing_multiplier();
-  m *= 1.0 + specs.divine_providence->effectN( 2 ).percent();
-  return m;
-}
-
 // priest_t::composite_player_multiplier ====================================
 
 double priest_t::composite_player_multiplier( school_e school ) const
@@ -5909,8 +5866,7 @@ void priest_t::create_buffs()
   buffs.premonition =
       buff_creator_t( this, "premonition" )
           .spell( find_spell( 188779 ) )
-          .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) )
-          .add_invalidate( CACHE_MULTISTRIKE );
+          .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
 }
 
 // ALL Spec Pre-Combat Action Priority List

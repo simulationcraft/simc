@@ -403,7 +403,6 @@ struct gear_stats_t
   double mastery_rating;
   double resilience_rating;
   double pvp_power;
-  double multistrike_rating;
   double readiness_rating;
   double versatility_rating;
   double leech_rating;
@@ -416,7 +415,7 @@ struct gear_stats_t
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
-    multistrike_rating( 0.0 ), readiness_rating( 0.0 ), versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 ),
+    readiness_rating( 0.0 ), versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 ),
     avoidance_rating( 0.0 )
   { }
 
@@ -449,7 +448,6 @@ struct gear_stats_t
     mastery_rating += right.mastery_rating;
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
-    multistrike_rating += right.multistrike_rating;
     readiness_rating += right.readiness_rating;
     versatility_rating += right.versatility_rating;
     leech_rating += right.leech_rating;
@@ -1630,7 +1628,7 @@ struct sim_t : private sc_thread_t
   unsigned int disable_4_set; // Disables all 4 set bonuses for this tier/integer that this is set as
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
-  bool pvp_crit; // Sets critical strike damage to 150% instead of 200%, and limits multistrike to one roll.
+  bool pvp_crit; // Sets critical strike damage to 150% instead of 200%
 
   // Actor tracking
   int active_enemies;
@@ -2133,7 +2131,6 @@ enum rating_e
   RATING_MELEE_CRIT,
   RATING_RANGED_CRIT,
   RATING_SPELL_CRIT,
-  RATING_MULTISTRIKE,
   RATING_READINESS,
   RATING_PVP_RESILIENCE,
   RATING_LEECH,
@@ -2171,7 +2168,6 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_MASTERY: return CACHE_MASTERY;
     case RATING_PVP_POWER: return CACHE_NONE;
     case RATING_PVP_RESILIENCE: return CACHE_NONE;
-    case RATING_MULTISTRIKE: return CACHE_MULTISTRIKE;
     case RATING_READINESS: return CACHE_READINESS;
     case RATING_DAMAGE_VERSATILITY: return CACHE_DAMAGE_VERSATILITY;
     case RATING_HEAL_VERSATILITY: return CACHE_HEAL_VERSATILITY;
@@ -2193,7 +2189,6 @@ struct rating_t
   double dodge, parry, block;
   double mastery;
   double pvp_resilience, pvp_power;
-  double multistrike;
   double readiness;
   double damage_versatility, heal_versatility, mitigation_versatility;
   double leech, speed, avoidance;
@@ -2218,7 +2213,6 @@ struct rating_t
       case RATING_MASTERY: return mastery;
       case RATING_PVP_POWER: return pvp_power;
       case RATING_PVP_RESILIENCE: return pvp_resilience;
-      case RATING_MULTISTRIKE: return multistrike;
       case RATING_READINESS: return readiness;
       case RATING_DAMAGE_VERSATILITY: return damage_versatility;
       case RATING_HEAL_VERSATILITY: return heal_versatility;
@@ -2944,7 +2938,7 @@ private:
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor, _bonus_armor;
-  mutable double _mastery, _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
+  mutable double _mastery, _mastery_value, _crit_avoidance, _miss, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
   mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
   mutable double _leech, _run_speed, _avoidance;
@@ -2981,7 +2975,6 @@ public:
   double armor() const;
   double mastery() const;
   double mastery_value() const;
-  double multistrike() const;
   double readiness() const;
   double bonus_armor() const;
   double player_multiplier( school_e ) const;
@@ -3019,7 +3012,6 @@ public:
   double armor() const            { return _player -> composite_armor();           }
   double mastery() const          { return _player -> composite_mastery();   }
   double mastery_value() const    { return _player -> composite_mastery_value();   }
-  double multistrike() const      { return _player -> composite_multistrike(); }
   double readiness() const        { return _player -> composite_readiness(); }
   double damage_versatility() const { return _player -> composite_damage_versatility(); }
   double heal_versatility() const { return _player -> composite_heal_versatility(); }
@@ -3194,7 +3186,7 @@ struct player_collected_data_t
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block, bonus_armor;
     double spell_haste, spell_speed, attack_haste, attack_speed;
-    double mastery_value, multistrike, readiness;
+    double mastery_value, readiness;
     double damage_versatility, heal_versatility, mitigation_versatility;
     double leech, run_speed, avoidance;
   } buffed_stats_snapshot;
@@ -3897,7 +3889,6 @@ struct player_t : public actor_t
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
-  virtual double composite_multistrike() const;
   virtual double composite_readiness() const;
   virtual double composite_bonus_armor() const;
 
@@ -3940,10 +3931,6 @@ struct player_t : public actor_t
 
   virtual double composite_player_critical_damage_multiplier() const;
   virtual double composite_player_critical_healing_multiplier() const;
-  virtual double composite_player_multistrike_damage_multiplier() const 
-  { return 0.30; };
-  virtual double composite_player_multistrike_healing_multiplier() const 
-  { return 0.30; };
 
   virtual double composite_mitigation_multiplier( school_e ) const;
 
@@ -3989,9 +3976,6 @@ struct player_t : public actor_t
   { return composite_rating( RATING_PARRY ); }
   virtual double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
-
-  virtual double composite_multistrike_rating() const
-  { return composite_rating( RATING_MULTISTRIKE ); }
 
   virtual double composite_readiness_rating() const
   { return composite_rating( RATING_READINESS ); }
@@ -4530,11 +4514,6 @@ public:
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
 
   double hit_exp() const;
-  
-  virtual double composite_player_multistrike_damage_multiplier() const override
-  { return owner -> composite_player_multistrike_damage_multiplier(); }
-  virtual double composite_player_multistrike_healing_multiplier() const override
-  { return owner -> composite_player_multistrike_healing_multiplier(); }
 
   virtual double composite_movement_speed() const override
   { return owner -> composite_movement_speed(); }
@@ -4564,9 +4543,6 @@ public:
 
   virtual double composite_spell_speed() const override
   { return owner -> cache.spell_speed(); }
-
-  virtual double composite_multistrike() const override
-  { return owner -> cache.multistrike(); }
 
   virtual double composite_readiness() const override
   { return owner -> cache.readiness(); }
@@ -4755,7 +4731,6 @@ struct action_state_t : private noncopyable
   double          target_crit;
   double          attack_power;
   double          spell_power;
-  double          multistrike;
   // Snapshotted multipliers
   double          resolve;
   double          versatility;
@@ -4829,12 +4804,6 @@ struct action_state_t : private noncopyable
       return PROC2_CRIT;
     else if ( result == RESULT_GLANCE )
       return PROC2_GLANCE;
-    // Multistrike can only generate procs on impact, though this could be
-    // moved to execute_proc_type2() too.
-    else if ( result == RESULT_MULTISTRIKE )
-      return PROC2_MULTISTRIKE;
-    else if ( result == RESULT_MULTISTRIKE_CRIT )
-      return PROC2_MULTISTRIKE_CRIT;
 
     return PROC2_INVALID;
   }
@@ -4905,20 +4874,6 @@ public:
 
   /// The amount of targets that an ability impacts on. -1 will hit all targets.
   int aoe;
-
-  /**
-   * @brief If the ability can proc multistrikes.
-   *
-   * 0 disables multistrikes, 1 enables, and -1 enables/disables multistrikes based on if the ability can crit or not.
-   */
-  int may_multistrike;
-
-  /**
-   * @brief Does Multistrike occur instantly?
-   *
-   * -1 = autodetect (NYI), 0 = multistrikes have a delay, 1 = multistrikes occur immediately
-   */
-  int instant_multistrike;
 
   /// If set to true, this action will not be counted toward total amount of executes in reporting. Useful for abilities with parent/children attacks.
   bool dual;
@@ -5295,7 +5250,6 @@ public:
     return RESULT_UNKNOWN;
   }
 
-  virtual result_e calculate_multistrike_result( action_state_t* /* state */, dmg_e /* type */ ) const;
   virtual block_result_e calculate_block_result( action_state_t* s ) const;
   virtual double calculate_direct_amount( action_state_t* state ) const;
 
@@ -5372,12 +5326,6 @@ public:
   virtual double ppm_proc_chance( double PPM ) const;
 
   virtual bool usable_moving() const;
-
-  virtual double composite_multistrike_multiplier( const action_state_t* t ) const
-  { return ( t -> result_type == DMG_DIRECT || t -> result_type == DMG_OVER_TIME )
-      ? player -> composite_player_multistrike_damage_multiplier()
-      : player -> composite_player_multistrike_healing_multiplier();
-  }
 
   virtual timespan_t composite_dot_duration( const action_state_t* ) const;
 
@@ -5460,9 +5408,6 @@ public:
 
     return m;
   }
-
-  virtual double composite_multistrike() const
-  { return player -> cache.multistrike(); }
 
   virtual double composite_readiness() const
   { return player -> cache.readiness(); }
@@ -5570,12 +5515,6 @@ public:
 
   virtual void tick(dot_t* d);
 
-  virtual void multistrike_tick(const action_state_t* source_state,
-      action_state_t* ms_state, double dmg_multiplier = 1.0);
-
-  virtual void multistrike_direct(const action_state_t* state,
-      action_state_t* ms_state);
-
   virtual void last_tick(dot_t* d);
 
   virtual void update_resolve(dmg_e, action_state_t* assess_state);
@@ -5583,9 +5522,6 @@ public:
   virtual void assess_damage(dmg_e, action_state_t* assess_state);
 
   virtual void record_data(action_state_t* data);
-
-  virtual int schedule_multistrike(action_state_t* state, dmg_e type,
-      double dmg_multiplier = 1.0);
 
   virtual void schedule_execute(action_state_t* execute_state = nullptr);
 
@@ -5661,16 +5597,6 @@ public:
     return( r == RESULT_MISS   ||
             r == RESULT_DODGE  ||
             r == RESULT_PARRY );
-  }
-
-  static bool result_is_multistrike( result_e r )
-  {
-    return ( r == RESULT_MULTISTRIKE || r == RESULT_MULTISTRIKE_CRIT );
-  }
-
-  static bool result_is_hit_or_multistrike( result_e r )
-  {
-    return result_is_hit( r ) || result_is_multistrike( r );
   }
 
   static bool result_is_block( block_result_e r )
@@ -5953,8 +5879,6 @@ struct absorb_t : public spell_base_t
   virtual void init_target_cache() override;
   virtual size_t available_targets( std::vector< player_t* >& ) const override;
   virtual int num_targets() const override;
-  virtual void multistrike_direct( const action_state_t*, action_state_t* ms_state ) override;
-  virtual void multistrike_tick( const action_state_t*, action_state_t* ms_state, double tick_multiplier ) override;
 
   virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
@@ -6047,7 +5971,7 @@ inline proc_types action_state_t::proc_type() const
 inline proc_types2 action_state_t::execute_proc_type2() const
 {
   // Bunch up all non-damaging harmful attacks that land into "hit"
-  if ( action -> harmful && action -> result_is_hit_or_multistrike( result ) )
+  if ( action -> harmful )
     return PROC2_LANDED;
   else if ( result == RESULT_DODGE )
     return PROC2_DODGE;
@@ -6638,92 +6562,6 @@ struct travel_event_t : public event_t
   { return "Stateless Action Travel"; }
 };
 
-struct multistrike_execute_event_t : public event_t
-{
-  action_state_t* state;
-
-  multistrike_execute_event_t( action_state_t* s, int ms_count = 0 ) :
-    event_t( *s -> action -> player ), state( s )
-  {
-    if ( sim().debug )
-    {
-      sim().out_debug.printf( "New Multistrike Execute Event: %s %s (target=%s)",
-                  s -> action -> player -> name(), s -> action -> name(),
-                  s -> target -> name() );
-    }
-
-    timespan_t multistrike_offset = timespan_t::zero();
-
-    if ( state -> action -> instant_multistrike == 0 )
-    {
-      // Values taken from Celestalon's second post about this -- Twintop 2015/02/23 (updated link)
-      // http://www.wowhead.com/bluetracker?topic=13087818929#135924364017
-      if ( ms_count == 0 )
-        multistrike_offset = timespan_t::from_millis( 333 );
-      else
-        multistrike_offset = timespan_t::from_millis( 666 );
-    }
-
-    // Hots/Dots will be scheduled immediately, direct damage multistrikes will
-    // jump through hoops .. below
-    if ( state -> result_type == DMG_OVER_TIME || state -> result_type == HEAL_OVER_TIME )
-      add_event( timespan_t::zero() + multistrike_offset );
-
-    // Direct damage/heal multistrikes need to take into account the travel
-    // time of the "real" spell, and impact at the same time(?), so ..
-    // TODO-WOD: Multistrike impacts in combatlog have delay of .. ?
-    else if ( state -> result_type == DMG_DIRECT || state -> result_type == HEAL_DIRECT || state -> result_type == ABSORB )
-    {
-      // No travel time -> impact immediately. Event ordering is guaranteed, as
-      // schedule_travel() in action_t::execute() has already impacted on this
-      // timestamp
-      if ( state -> action -> travel_time() == timespan_t::zero() )
-      {
-        add_event( timespan_t::zero() + multistrike_offset );
-      }
-      // Travel time spell, schedule_travel() has inserted a new entry into the
-      // action's travel events (at the end of the vector), so use it's
-      // remaining time as a basis for this event. Event ordering guaranteed,
-      // as the main spell travel event is already in the queue.
-      else
-      {
-        assert( state -> action -> current_travel_events().size() > 0 );
-        timespan_t time_to_travel = state -> action -> current_travel_events().back() -> remains();
-        add_event( time_to_travel + multistrike_offset );
-      }
-    }
-    else
-    {
-      assert( 0 && "Multistrike Execute event, where state has no result_type" );
-    }
-  }
-  virtual const char* name() const override
-  { return "Multistrike-Execute-Event"; }
-  // Ensure we properly release the carried execute_state even if this event
-  // is never executed.
-  ~multistrike_execute_event_t()
-  {
-    if ( state )
-      action_state_t::release( state );
-  }
-
-  void execute() override
-  {
-    if ( ! state -> target -> is_sleeping() )
-    {
-      if ( sim().debug )
-        state -> debug();
-
-      if ( state -> result_type == DMG_OVER_TIME || state -> result_type == HEAL_OVER_TIME )
-        state -> action -> assess_damage( state -> result_type, state );
-      else
-        state -> action -> impact( state );
-    }
-
-    action_state_t::release( state );
-  }
-};
-
 // Item database ============================================================
 
 namespace item_database
@@ -7026,7 +6864,6 @@ public:
     ab::spell_power_mod.tick = 0;
     ab::dot_behavior  = DOT_REFRESH;
     ab::callbacks = false;
-    ab::may_multistrike = false;
   }
 
   virtual action_state_t* new_state() override

@@ -810,7 +810,6 @@ struct brambles_t : public absorb_t
   {
     background = quiet = true;
     may_crit = false;
-    may_multistrike = 0;
     target = p;
     harmful = false;
 
@@ -874,7 +873,6 @@ struct stalwart_guardian_t : public absorb_t
   {
     background = quiet = true;
     may_crit = false;
-    may_multistrike = 0;
     target = p;
     harmful = false;
 
@@ -1323,14 +1321,6 @@ public:
 
     if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
-  }
-
-  virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier )
-  {
-    ab::multistrike_tick( src_state, ms_state, multiplier );
-
-    if ( p() -> buff.feral_tier17_4pc -> check() )
-      trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
   }
 
   virtual void schedule_execute( action_state_t* s ) override
@@ -3756,7 +3746,6 @@ struct renewal_t : public druid_heal_t
     druid_heal_t( "renewal", p, p -> find_talent_spell( "Renewal" ), options_str )
   {
     may_crit = false;
-    may_multistrike = 0;
   }
 
   virtual void init() override
@@ -7148,9 +7137,7 @@ bool has_amount_results( const std::array<stats_t::stats_results_t,RESULT_MAX>& 
 {
   return (
       res[ RESULT_HIT ].actual_amount.mean() > 0 ||
-      res[ RESULT_CRIT ].actual_amount.mean() > 0 ||
-      res[ RESULT_MULTISTRIKE ].actual_amount.mean() > 0 ||
-      res[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean() > 0
+      res[ RESULT_CRIT ].actual_amount.mean() > 0
   );
 }
 

@@ -53,7 +53,6 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_HIT_RATING2:  hit_rating2  += value; break;
     case STAT_CRIT_RATING:  crit_rating  += value; break;
     case STAT_HASTE_RATING: haste_rating += value; break;
-    case STAT_MULTISTRIKE_RATING: multistrike_rating += value; break;
     case STAT_READINESS_RATING: readiness_rating += value; break;
     case STAT_VERSATILITY_RATING: versatility_rating += value; break;
     case STAT_LEECH_RATING: leech_rating += value; break;
@@ -129,7 +128,6 @@ void gear_stats_t::set_stat( stat_e stat,
     case STAT_HIT_RATING2:  hit_rating2  = value; break;
     case STAT_CRIT_RATING:  crit_rating  = value; break;
     case STAT_HASTE_RATING: haste_rating = value; break;
-    case STAT_MULTISTRIKE_RATING: multistrike_rating = value; break;
     case STAT_READINESS_RATING: readiness_rating = value; break;
     case STAT_VERSATILITY_RATING: versatility_rating = value; break;
     case STAT_LEECH_RATING: leech_rating = value; break;
@@ -204,7 +202,6 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_HIT_RATING2:  return hit_rating2;
     case STAT_CRIT_RATING:  return crit_rating;
     case STAT_HASTE_RATING: return haste_rating;
-    case STAT_MULTISTRIKE_RATING: return multistrike_rating;
     case STAT_READINESS_RATING: return readiness_rating;
     case STAT_VERSATILITY_RATING: return versatility_rating;
     case STAT_LEECH_RATING: return leech_rating;

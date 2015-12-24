@@ -321,14 +321,6 @@ double heal_t::calculate_direct_amount( action_state_t* state ) const
     {
       amount *= 1.0 + total_crit_bonus();
     }
-    else if ( state -> result == RESULT_MULTISTRIKE )
-    {
-      amount *= composite_multistrike_multiplier( state );
-    }
-    else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
-    {
-      amount *= composite_multistrike_multiplier( state ) * ( 1.0 + total_crit_bonus() );
-    }
 
     amount *= state -> composite_da_multiplier();
 
@@ -355,14 +347,6 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
     if ( state -> result == RESULT_CRIT )
     {
       amount *= 1.0 + total_crit_bonus();
-    }
-    else if ( state -> result == RESULT_MULTISTRIKE )
-    {
-      amount *= composite_multistrike_multiplier( state );
-    }
-    else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
-    {
-      amount *= composite_multistrike_multiplier( state ) * ( 1.0 + total_crit_bonus() );
     }
 
     amount *= state -> composite_ta_multiplier();
@@ -650,7 +634,6 @@ absorb_t::absorb_t( const std::string&  token,
     target = p;
 
   may_crit = false;
-  may_multistrike = false;
 
   stats -> type = STATS_ABSORB;
 }
@@ -695,37 +678,8 @@ void absorb_t::assess_damage( dmg_e  /*heal_type*/ , // commented to remove comp
                      s -> target -> name(), s -> result_amount, s -> result_total,
                      util::result_type_string( s -> result ) );
   }
-  else if ( result_is_multistrike( s -> result ) )
-  {
-    target_specific[ s -> target ] -> current_value += s -> result_amount;
-    if ( sim -> log )
-      sim -> out_log.printf( "%s %s multistrike adds to absorb on %s for %.0f (%.0f) (%s)",
-                     player -> name(), name(),
-                     s -> target -> name(), s -> result_amount, s -> result_total,
-                     util::result_type_string( s -> result ) );
-  }
 
   stats -> add_result( 0.0, s -> result_total, ABSORB, s -> result, s -> block_result, s -> target );
-}
-
-void absorb_t::multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
-{
-  if ( source_state -> result == RESULT_CRIT )
-    ms_state -> result = RESULT_MULTISTRIKE_CRIT;
-  else if ( source_state -> result == RESULT_HIT )
-    ms_state -> result = RESULT_MULTISTRIKE;
-
-  ms_state -> result_amount = calculate_direct_amount( ms_state );
-}
-
-void absorb_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double last_tick_multiplier )
-{
-  if ( source_state -> result == RESULT_CRIT )
-    ms_state -> result = RESULT_MULTISTRIKE_CRIT;
-  else if ( source_state -> result == RESULT_HIT )
-    ms_state -> result = RESULT_MULTISTRIKE;
-
-  ms_state -> result_amount = calculate_tick_amount( ms_state, last_tick_multiplier );
 }
 
 // absorb_t::available_targets ==============================================

@@ -166,13 +166,13 @@ const food_data_t food_data[] =
 
   { FOOD_BUTTERED_STURGEON,            STAT_HASTE_RATING,       125 },
 
-  { FOOD_CALAMARI_CREPES,              STAT_MULTISTRIKE_RATING, 100 },
+  { FOOD_CALAMARI_CREPES,              STAT_CRIT_RATING,        100 },
 
   { FOOD_CLEFTHOOF_SAUSAGES,           STAT_VERSATILITY_RATING, 75 },
 
   { FOOD_FAT_SLEEPER_CAKES,            STAT_MASTERY_RATING,     75 },
 
-  { FOOD_FIERY_CALAMARI,               STAT_MULTISTRIKE_RATING, 75 },
+  { FOOD_FIERY_CALAMARI,               STAT_CRIT_RATING,        75 },
 
   { FOOD_FROSTY_STEW,                  STAT_HASTE_RATING,       100 },
 
@@ -188,9 +188,9 @@ const food_data_t food_data[] =
 
   { FOOD_PICKLED_EEL,                  STAT_CRIT_RATING,        125 },
 
-  { FOOD_RYLAK_CREPES,                 STAT_MULTISTRIKE_RATING, 75 },
+  { FOOD_RYLAK_CREPES,                 STAT_CRIT_RATING,        75 },
 
-  { FOOD_SALTY_SQUID_ROLL,             STAT_MULTISTRIKE_RATING, 125 },
+  { FOOD_SALTY_SQUID_ROLL,             STAT_CRIT_RATING,        125 },
 
   { FOOD_SLEEPER_SURPRISE,             STAT_MASTERY_RATING,     100 },
 
@@ -535,7 +535,6 @@ struct food_t : public action_t
     stat_e secondaries[] = { STAT_CRIT_RATING,
                              STAT_HASTE_RATING,
                              STAT_MASTERY_RATING,
-                             STAT_MULTISTRIKE_RATING,
                              STAT_VERSATILITY_RATING };
 
     stat_e highest_secondary = secondaries[0];

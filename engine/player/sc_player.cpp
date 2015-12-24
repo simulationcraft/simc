@@ -1774,7 +1774,6 @@ void player_t::init_spells()
     {
       background = proc = true;
       callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
-      may_multistrike = 0;
     }
 
     void init() override
@@ -1929,7 +1928,6 @@ void player_t::init_scaling()
     scales_with[ STAT_CRIT_RATING               ] = true;
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
-    scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
     scales_with[ STAT_READINESS_RATING          ] = false; // No longer a stat in game.
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
@@ -1982,10 +1980,6 @@ void player_t::init_scaling()
 
         case STAT_MASTERY_RATING:
           initial.stats.mastery_rating += v;
-          break;
-
-        case STAT_MULTISTRIKE_RATING:
-          initial.stats.multistrike_rating += v;
           break;
 
         case STAT_READINESS_RATING:
@@ -2909,13 +2903,6 @@ double player_t::composite_mastery() const
   return util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
 }
 
-// player_t::composite_multistrike ==========================================
-
-double player_t::composite_multistrike() const
-{
-  return 0;
-}
-
 // player_t::composite_readiness ============================================
 
 double player_t::composite_readiness() const
@@ -3242,8 +3229,6 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.parry_rating; break;
     case RATING_BLOCK:
       v = current.stats.block_rating; break;
-    case RATING_MULTISTRIKE:
-      v = current.stats.multistrike_rating; break;
     case RATING_READINESS:
       v = current.stats.readiness_rating; break;
     case RATING_LEECH:
@@ -4683,7 +4668,6 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
-    case STAT_MULTISTRIKE_RATING:
     case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, amount );
@@ -4812,7 +4796,6 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
-    case STAT_MULTISTRIKE_RATING:
     case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, -amount );
@@ -6308,7 +6291,6 @@ struct snapshot_stats_t : public action_t
     buffed_stats.attack_haste = p -> cache.attack_haste();
     buffed_stats.attack_speed = p -> cache.attack_speed();
     buffed_stats.mastery_value = p -> cache.mastery_value();
-    buffed_stats.multistrike = p -> cache.multistrike();
     buffed_stats.readiness = p -> cache.readiness();
     buffed_stats.bonus_armor = p -> composite_bonus_armor();
     buffed_stats.damage_versatility = p -> cache.damage_versatility();
@@ -8071,8 +8053,6 @@ expr_t* player_t::create_expression( action_t* a,
     return make_mem_fn_expr( expression_str, this -> cache, &player_stat_cache_t::attack_speed );
   if ( expression_str == "spell_haste" )
     return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::spell_speed );
-  if ( expression_str == "multistrike" )
-    return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::multistrike );
 
   if ( expression_str == "desired_targets" )
     return make_ref_expr( expression_str, sim -> desired_targets );
@@ -8435,15 +8415,6 @@ expr_t* player_t::create_expression( action_t* a,
       };
       return new spell_haste_expr_t( *this );
     }
-    else if ( util::str_compare_ci( "multistrike_pct", splits[ 1 ] ) )
-    {
-      struct ms_expr_t : public player_expr_t
-      {
-        ms_expr_t( player_t& p ) : player_expr_t( "ms_pct", p ) { }
-        double evaluate() override { return player.cache.multistrike() * 100.0; }
-      };
-      return new ms_expr_t( *this );
-    }
 
     stat_e stat = util::parse_stat_type( splits[ 1 ] );
     switch ( stat )
@@ -8498,7 +8469,6 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_CRIT_RATING:      return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_crit_rating );
       case STAT_HASTE_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_haste_rating );
       case STAT_READINESS_RATING:  return make_mem_fn_expr( expression_str, *this, &player_t::composite_readiness_rating );
-      case STAT_MULTISTRIKE_RATING: return make_mem_fn_expr( expression_str, *this, &player_t::composite_multistrike_rating );
       case STAT_ARMOR:            return make_ref_expr( expression_str, current.stats.armor );
       case STAT_BONUS_ARMOR:      return make_ref_expr( expression_str, current.stats.bonus_armor );
       case STAT_DODGE_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_dodge_rating );
@@ -9226,9 +9196,6 @@ std::string player_t::create_profile( save_e stype )
     if ( enchant.versatility_rating            != 0 )  profile_str += "enchant_versatility_rating="
          + util::to_string( enchant.versatility_rating ) + term;
 
-    if ( enchant.multistrike_rating          != 0 )  profile_str += "enchant_multistrike_rating="
-         + util::to_string( enchant.multistrike_rating ) + term;
-
     if ( enchant.resource[ RESOURCE_HEALTH ] != 0 )  profile_str += "enchant_health="
          + util::to_string( enchant.resource[ RESOURCE_HEALTH ] ) + term;
 
@@ -9423,7 +9390,6 @@ void player_t::create_options()
     add_option( opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ) );
     add_option( opt_float( "gear_armor",            gear.armor ) );
     add_option( opt_float( "gear_mastery_rating",   gear.mastery_rating ) );
-    add_option( opt_float( "gear_multistrike_rating", gear.multistrike_rating ) );
     add_option( opt_float( "gear_readiness_rating", gear.readiness_rating ) );
     add_option( opt_float( "gear_versatility_rating", gear.versatility_rating ) );
     add_option( opt_float( "gear_bonus_armor",      gear.bonus_armor ) );
@@ -9444,7 +9410,6 @@ void player_t::create_options()
     add_option( opt_float( "enchant_hit_rating",       enchant.hit_rating ) );
     add_option( opt_float( "enchant_crit_rating",      enchant.crit_rating ) );
     add_option( opt_float( "enchant_mastery_rating",   enchant.mastery_rating ) );
-    add_option( opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ) );
     add_option( opt_float( "enchant_readiness_rating", enchant.readiness_rating ) );
     add_option( opt_float( "enchant_versatility_rating", enchant.versatility_rating ) );
     add_option( opt_float( "enchant_bonus_armor",      enchant.bonus_armor ) );
@@ -9747,8 +9712,7 @@ void player_callbacks_t::add_proc_callback( proc_types type,
 
     // Healing and ticking spells all require "an amount" on landing, so
     // automatically convert a "proc on spell landed" type to "proc on
-    // hit/crit". Note that periodic multistrikes are skipped here as they by
-    // default generate no procs.
+    // hit/crit".
     if ( pt == PROC2_LANDED &&
          ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN ||
            type == PROC1_PERIODIC_HEAL || type == PROC1_PERIODIC_HEAL_TAKEN ||
@@ -10234,17 +10198,6 @@ double player_stat_cache_t::mastery_value() const
   }
   else assert( _mastery_value == player -> composite_mastery_value() );
   return _mastery_value;
-}
-
-double player_stat_cache_t::multistrike() const
-{
-  if ( ! active || ! valid[ CACHE_MULTISTRIKE ] )
-  {
-    valid[ CACHE_MULTISTRIKE ] = true;
-    _multistrike = player -> composite_multistrike();
-  }
-  else assert( _multistrike == player -> composite_multistrike() );
-  return _multistrike;
 }
 
 double player_stat_cache_t::readiness() const

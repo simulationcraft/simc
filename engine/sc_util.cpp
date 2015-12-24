@@ -624,8 +624,6 @@ const char* util::result_type_string( result_e type )
     case RESULT_GLANCE:     return "glance";
     case RESULT_CRIT:       return "crit";
     case RESULT_HIT:        return "hit";
-    case RESULT_MULTISTRIKE: return "multistrike";
-    case RESULT_MULTISTRIKE_CRIT: return "multistrike_crit";
     default:                return "unknown";
   }
 }
@@ -662,12 +660,6 @@ const char* util::full_result_type_string( full_result_e fulltype )
     case FULLTYPE_HIT_CRITBLOCK:    return "hit (crit blocked)";
     case FULLTYPE_HIT_BLOCK:        return "hit (blocked)";
     case FULLTYPE_HIT:              return "hit";
-    case FULLTYPE_MULTISTRIKE_CRITBLOCK: return "multistrike (crit blocked)";
-    case FULLTYPE_MULTISTRIKE_BLOCK: return "multistrike (blocked)";
-    case FULLTYPE_MULTISTRIKE:      return "multistrike";
-    case FULLTYPE_MULTISTRIKE_CRIT_CRITBLOCK: return "multistrike_crit (crit blocked)";
-    case FULLTYPE_MULTISTRIKE_CRIT_BLOCK: return "multistrike_crit (blocked)";
-    case FULLTYPE_MULTISTRIKE_CRIT: return "multistrike_crit";
     default:                        return "unknown";
   }
 
@@ -1218,7 +1210,6 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_BLOCK:        return "block";
     case CACHE_ARMOR:        return "armor";
     case CACHE_BONUS_ARMOR:  return "bonus_armor";
-    case CACHE_MULTISTRIKE:  return "multistrike";
     case CACHE_READINESS:    return "readiness";
     case CACHE_VERSATILITY:  return "versatility";
     case CACHE_DAMAGE_VERSATILITY:  return "damage_versatility";
@@ -1280,8 +1271,6 @@ const char* util::proc_type2_string( proc_types2 type )
     case PROC2_CAST:   return "Cast";
     case PROC2_CAST_DAMAGE: return "DamageCast";
     case PROC2_CAST_HEAL: return "HealCast";
-    case PROC2_MULTISTRIKE: return "MultistrikeAmount";
-    case PROC2_MULTISTRIKE_CRIT: return "MultistrikeCritAmount";
     default:           return "Unknown";
   }
 }
@@ -1369,7 +1358,6 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_MASTERY_RATING: return "mastery_rating";
 
     case STAT_PVP_POWER: return "pvp_power";
-    case STAT_MULTISTRIKE_RATING: return "multistrike_rating";
     case STAT_READINESS_RATING: return "readiness_rating";
     case STAT_VERSATILITY_RATING: return "versatility_rating";
 
@@ -1440,7 +1428,6 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_PVP_POWER: return "PvPP";
 
-    case STAT_MULTISTRIKE_RATING: return "Mult";
     case STAT_VERSATILITY_RATING: return "Vers";
 
     case STAT_READINESS_RATING: return "Readiness";
@@ -1498,7 +1485,6 @@ const char* util::stat_type_wowhead( stat_e stat )
 
     case STAT_MASTERY_RATING: return "masteryRating";
 
-    case STAT_MULTISTRIKE_RATING: return "multistrike";
     case STAT_READINESS_RATING:   return "readiness";
     case STAT_VERSATILITY_RATING: return "versatility";
 
@@ -1556,7 +1542,6 @@ const char* util::stat_type_askmrrobot( stat_e stat )
     case STAT_ARMOR: return "Armor";
     case STAT_RESILIENCE_RATING: return "PvpResilience";
     case STAT_MASTERY_RATING: return "Mastery";
-    case STAT_MULTISTRIKE_RATING: return "Multistrike";
     case STAT_VERSATILITY_RATING: return "Versatility";
     case STAT_BONUS_ARMOR: return "BonusArmor";
     case STAT_PVP_POWER: return "PvpPower";
@@ -1916,7 +1901,6 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
-    case ITEM_MOD_MULTISTRIKE_RATING:  return STAT_MULTISTRIKE_RATING;
     case ITEM_MOD_READINESS_RATING:    return STAT_READINESS_RATING;
     case ITEM_MOD_STRENGTH_AGILITY_INTELLECT: return STAT_STR_AGI_INT;
     case ITEM_MOD_AGILITY_INTELLECT:   return STAT_AGI_INT;
@@ -1951,7 +1935,6 @@ int util::translate_stat( stat_e stat )
     case STAT_BONUS_ARMOR:        return ITEM_MOD_EXTRA_ARMOR;
     case STAT_RESILIENCE_RATING:  return ITEM_MOD_RESILIENCE_RATING;
     case STAT_PVP_POWER:          return ITEM_MOD_PVP_POWER;
-    case STAT_MULTISTRIKE_RATING: return ITEM_MOD_MULTISTRIKE_RATING;
     case STAT_READINESS_RATING:   return ITEM_MOD_READINESS_RATING;
     case STAT_STR_AGI_INT:        return ITEM_MOD_STRENGTH_AGILITY_INTELLECT;
     case STAT_AGI_INT:            return ITEM_MOD_AGILITY_INTELLECT;
@@ -2006,8 +1989,6 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_MASTERY_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
     return STAT_PVP_POWER;
-  else if ( ratings & RATING_MOD_MULTISTRIKE )
-    return STAT_MULTISTRIKE_RATING;
   else if ( ratings & RATING_MOD_READINESS )
     return STAT_READINESS_RATING;
   else if ( ratings & RATING_MOD_LEECH )
@@ -2978,9 +2959,6 @@ void util::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
   stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block rating" );
   stat_search( encoding_str, splits, STAT_BONUS_ARMOR,      "bonus armor rating" );
-  stat_search( encoding_str, splits, STAT_MULTISTRIKE_RATING, "ms" );
-  stat_search( encoding_str, splits, STAT_MULTISTRIKE_RATING, "multistrike" );
-  stat_search( encoding_str, splits, STAT_MULTISTRIKE_RATING, "multistrike rating" );
   // WOD-TODO: hybrid primary stats?
 }
 

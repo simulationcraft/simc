@@ -66,25 +66,6 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length,
                    s->direct_results[ RESULT_CRIT ].actual_amount.max(),
                    s->direct_results[ RESULT_CRIT ].pct );
   }
-  if ( s->direct_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
-  {
-    util::fprintf( file, "  Mult=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
-                   s->direct_results[ RESULT_MULTISTRIKE ].count.mean(),
-                   s->direct_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
-                   s->direct_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
-                   s->direct_results[ RESULT_MULTISTRIKE ].actual_amount.max(),
-                   s->direct_results[ RESULT_MULTISTRIKE ].pct );
-  }
-  if ( s->direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
-  {
-    util::fprintf(
-        file, "  MultCrit=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
-        s->direct_results[ RESULT_MULTISTRIKE_CRIT ].count.mean(),
-        s->direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
-        s->direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
-        s->direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
-        s->direct_results[ RESULT_MULTISTRIKE_CRIT ].pct );
-  }
   if ( s->direct_results[ RESULT_GLANCE ].actual_amount.sum() > 0 )
   {
     util::fprintf(
@@ -127,23 +108,6 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length,
                    s->tick_results[ RESULT_CRIT ].actual_amount.min(),
                    s->tick_results[ RESULT_CRIT ].actual_amount.max(),
                    s->tick_results[ RESULT_CRIT ].pct );
-  }
-  if ( s->tick_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
-  {
-    util::fprintf( file, "  MultTick=%5.0f|%5.0f|%5.0f|%.1f%%",
-                   s->tick_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
-                   s->tick_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
-                   s->tick_results[ RESULT_MULTISTRIKE ].actual_amount.max(),
-                   s->tick_results[ RESULT_MULTISTRIKE ].pct );
-  }
-  if ( s->tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
-  {
-    util::fprintf(
-        file, "  MultCritTick=%5.0f|%5.0f|%5.0f|%.1f%%",
-        s->tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
-        s->tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
-        s->tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
-        s->tick_results[ RESULT_MULTISTRIKE_CRIT ].pct );
   }
 
   if ( s->total_tick_time.sum() > 0.0 )
@@ -367,11 +331,10 @@ void print_text_generic_stats( FILE* file, player_t* p )
   util::fprintf(
       file,
       "  Generic Stats: mastery=%.2f%%|%.2f%%(%.0f)  "
-      "multistrike=%.2f%%|%.2f%%(%.0f)  versatility=%.2f%%|%.2f%%(%.0f)  "
+      "versatility=%.2f%%|%.2f%%(%.0f)  "
       "leech=%.2f%%|%.2f%%(%.0f)\n",
       100.0 * buffed_stats.mastery_value, 100.0 * p->cache.mastery_value(),
-      p->composite_mastery_rating(), 100.0 * buffed_stats.multistrike,
-      100.0 * p->cache.multistrike(), p->composite_multistrike_rating(),
+      p->composite_mastery_rating(),
       100 * buffed_stats.damage_versatility,
       100 * p->composite_damage_versatility(),
       p->composite_damage_versatility_rating(), 100 * buffed_stats.leech,
