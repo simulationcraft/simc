@@ -187,6 +187,9 @@ public:
     buff_t* lava_dredger;
     buff_t* ghost_wolf;
     buff_t* elemental_focus;
+    buff_t* earth_surge;
+    buff_t* tempest_totem_empower_lava; // TODO: Placeholder name
+    buff_t* lightning_surge;
   } buff;
 
   // Cooldowns
@@ -1302,10 +1305,9 @@ struct primal_elemental_t : public pet_t
   };
 
   const spell_data_t* command;
-  bool gains_damage;
 
   primal_elemental_t( shaman_t* owner, const std::string& name, bool guardian = false ) :
-    pet_t( owner -> sim, owner, name, guardian ), gains_damage( true )
+    pet_t( owner -> sim, owner, name, guardian )
   {
     stamina_per_owner = 1.0;
     regen_type = REGEN_DISABLED;
@@ -1336,8 +1338,7 @@ struct primal_elemental_t : public pet_t
   {
     double m = pet_t::composite_attack_power_multiplier();
 
-    if ( gains_damage )
-      m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+    m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1346,8 +1347,7 @@ struct primal_elemental_t : public pet_t
   {
     double m = pet_t::composite_spell_power_multiplier();
 
-    if ( gains_damage )
-      m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+    m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1516,9 +1516,7 @@ struct storm_elemental_t : public primal_elemental_t
 
   storm_elemental_t( shaman_t* owner, bool guardian ) :
     primal_elemental_t( owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian )
-  {
-    gains_damage = false;
-  }
+  { }
 
   void init_base_stats() override
   {
@@ -2878,6 +2876,18 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.tempest_totem_empower_lava -> up() )
+    {
+      m *= p() -> buff.tempest_totem_empower_lava -> check_value();
+    }
+
+    return m;
+  }
+
   double composite_target_crit( player_t* t ) const override
   {
     double m = shaman_spell_t::composite_target_crit ( t );
@@ -2984,6 +2994,18 @@ struct lightning_bolt_t : public shaman_spell_t
     m *= 1.0 + p() -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
 
     return m;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = shaman_spell_t::execute_time();
+
+    if ( p() -> buff.lightning_surge -> up() )
+    {
+      t *= p() -> buff.lightning_surge -> check_value();
+    }
+
+    return t;
   }
 
   void impact( action_state_t* state ) override
@@ -3365,6 +3387,18 @@ struct earth_shock_t : public shaman_spell_t
   double spell_direct_power_coefficient( const action_state_t* ) const override
   { return base_coefficient * cost(); }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.earth_surge -> up() )
+    {
+      m *= p() -> buff.earth_surge -> check_value();
+    }
+
+    return m;
+  }
+
   bool ready() override
   {
     if ( p() -> buff.ascendance -> check() )
@@ -3445,6 +3479,18 @@ struct frost_shock_t : public shaman_spell_t
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "frost_shock", player, player -> find_specialization_spell( "Frost Shock" ), options_str )
   { }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.earth_surge -> up() )
+    {
+      m *= p() -> buff.earth_surge -> check_value();
+    }
+
+    return m;
+  }
 };
 
 // Lava Shock Spell =========================================================
@@ -3465,6 +3511,18 @@ struct lava_shock_t : public shaman_spell_t
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
   { return base_coefficient * cost(); }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.earth_surge -> up() )
+    {
+      m *= p() -> buff.earth_surge -> check_value();
+    }
+
+    return m;
+  }
 
   void impact( action_state_t* state ) override
   {
@@ -4013,6 +4071,135 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
   }
 };
 
+// Totemic Fury =============================================================
+
+struct totemic_fury_pulse_t : public totem_pulse_action_t
+{
+  totemic_fury_pulse_t( shaman_totem_pet_t* totem, const std::string& name, const spell_data_t* s ) :
+    totem_pulse_action_t( name, totem, s )
+  {
+    hasted_pulse = true;
+  }
+};
+
+struct earth_totem_t : public shaman_totem_pet_t
+{
+  earth_totem_t( shaman_t* owner ) :
+    shaman_totem_pet_t( owner, "earth_totem" )
+  {
+    pulse_amplitude = owner -> find_spell( 188768 ) -> cast_time( owner -> level() );
+  }
+
+  void arise() override
+  {
+    shaman_totem_pet_t::arise();
+
+    o() -> buff.earth_surge -> trigger();
+  }
+
+  void demise() override
+  {
+    shaman_totem_pet_t::demise();
+
+    o() -> buff.earth_surge -> expire();
+  }
+
+  void init_spells() override
+  {
+    shaman_totem_pet_t::init_spells();
+
+    pulse_action = new totemic_fury_pulse_t( this, "tempest_lightning_bolt", owner -> find_spell( 188768 ) );
+  }
+};
+
+struct fire_totem_t : public shaman_totem_pet_t
+{
+  fire_totem_t( shaman_t* owner ) :
+    shaman_totem_pet_t( owner, "fire_totem" )
+  {
+    pulse_amplitude = owner -> find_spell( 188768 ) -> cast_time( owner -> level() );
+  }
+
+  void arise() override
+  {
+    shaman_totem_pet_t::arise();
+
+    o() -> buff.tempest_totem_empower_lava -> trigger();
+  }
+
+  void demise() override
+  {
+    shaman_totem_pet_t::demise();
+
+    o() -> buff.tempest_totem_empower_lava -> expire();
+  }
+
+  void init_spells() override
+  {
+    shaman_totem_pet_t::init_spells();
+
+    pulse_action = new totemic_fury_pulse_t( this, "tempest_lightning_bolt", owner -> find_spell( 188768 ) );
+  }
+};
+
+struct lightning_totem_t : public shaman_totem_pet_t
+{
+  lightning_totem_t( shaman_t* owner ) :
+    shaman_totem_pet_t( owner, "lightning_totem" )
+  {
+    pulse_amplitude = owner -> find_spell( 188768 ) -> cast_time( owner -> level() );
+  }
+
+  void arise() override
+  {
+    shaman_totem_pet_t::arise();
+
+    o() -> buff.lightning_surge -> trigger();
+  }
+
+  void demise() override
+  {
+    shaman_totem_pet_t::demise();
+
+    o() -> buff.lightning_surge -> expire();
+  }
+
+  void init_spells() override
+  {
+    shaman_totem_pet_t::init_spells();
+
+    pulse_action = new totemic_fury_pulse_t( this, "tempest_lightning_bolt", owner -> find_spell( 188768 ) );
+  }
+};
+
+struct totemic_fury_t : public shaman_spell_t
+{
+  std::array<shaman_totem_t*, 3> totem_spells;
+
+  totemic_fury_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "totemic_fury", player, player -> talent.totemic_fury, options_str )
+  {
+    harmful = may_crit = callbacks = false;
+
+    totem_spells[ 0 ] = new shaman_totem_t( "earth_totem", player, "", player -> find_spell( 189713 ) );
+    totem_spells[ 0 ] -> background = totem_spells[ 0 ] -> dual = totem_spells[ 0 ] -> quiet = true;
+    totem_spells[ 1 ] = new shaman_totem_t( "fire_totem", player, "", player -> find_spell( 189711 ) );
+    totem_spells[ 1 ] -> background = totem_spells[ 1 ] -> dual = totem_spells[ 1 ] -> quiet = true;
+    totem_spells[ 2 ] = new shaman_totem_t( "lightning_totem", player, "", player -> find_spell( 188275 ) );
+    totem_spells[ 2 ] -> background = totem_spells[ 2 ] -> dual = totem_spells[ 2 ] -> quiet = true;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    for ( auto totem : totem_spells )
+    {
+      totem -> execute();
+    }
+  }
+};
+
 // ==========================================================================
 // Shaman Custom Buff implementation
 // ==========================================================================
@@ -4194,6 +4381,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "sundering"               ) return new                sundering_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
+  if ( name == "totemic_fury"            ) return new             totemic_fury_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windsong"                ) return new                 windsong_t( this, options_str );
 
@@ -4247,6 +4435,9 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   if ( pet_name == "earthquake_totem"         ) return new earthquake_totem_t( this );
   if ( pet_name == "maelstrom_totem"          ) return new maelstrom_totem_t( this );
   if ( pet_name == "liquid_magma_totem"       ) return new liquid_magma_totem_t( this );
+  if ( pet_name == "earth_totem"              ) return new earth_totem_t( this );
+  if ( pet_name == "fire_totem"               ) return new fire_totem_t( this );
+  if ( pet_name == "lightning_totem"          ) return new lightning_totem_t( this );
 
   return nullptr;
 }
@@ -4303,6 +4494,13 @@ void shaman_t::create_pets()
   if ( talent.liquid_magma_totem -> ok() && find_action( "liquid_magma_totem" ) )
   {
     create_pet( "liquid_magma_totem" );
+  }
+
+  if ( talent.totemic_fury -> ok() && find_action( "totemic_fury" ) )
+  {
+    create_pet( "earth_totem" );
+    create_pet( "fire_totem" );
+    create_pet( "lightning_totem" );
   }
 
   if ( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
@@ -4889,6 +5087,14 @@ void shaman_t::create_buffs()
   buff.elemental_focus = buff_creator_t( this, "elemental_focus", spec.elemental_focus -> effectN( 1 ).trigger() )
     .default_value( 1.0 + spec.elemental_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .activated( false );
+  buff.earth_surge = buff_creator_t( this, "earth_surge", find_spell( 189797 ) )
+    .default_value( 1.0 + find_spell( 189797 ) -> effectN( 1 ).percent() );
+  buff.tempest_totem_empower_lava = buff_creator_t( this, "tempest_totem_empower_lava", find_spell( 190507 ) )
+    .chance( 1.0 ) // TODO: Fixme once spell data stabilizes
+    .default_value( 1.0 + find_spell( 190507 ) -> effectN( 1 ).percent() );
+  buff.lightning_surge = buff_creator_t( this, "lightning_surge", find_spell( 189796 ) )
+    // TODO: 1 - 0.5 or 1 / 1.5 ?
+    .default_value( 1.0 + find_spell( 189796 ) -> effectN( 1 ).percent() );
 }
 
 // shaman_t::init_gains =====================================================
