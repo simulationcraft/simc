@@ -28,7 +28,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 11 abilities
+    // General tree, 10 abilities
     {
       117313, // Bloodthirst Heal
          100, // Charge
@@ -38,7 +38,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       118340, // Impending Victory (Talent)
         6552, // Pummel
       156287, // Ravager
-      192085, // Skyjump to Halls of Valor
       145585, // Storm Bolt Off-Hand
       175710, // Unleashed Rage
            0,
@@ -381,7 +380,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 11 abilities
+    // General tree, 10 abilities
     {
       161862, // Ascension
          528, // Dispel Magic
@@ -390,7 +389,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        77489, // Echo of Light
          586, // Fade
        32375, // Mass Dispel
-      193757, // Naaru Lightshift
         9484, // Shackle Undead
       175701, // Shadowy Grasp
          585, // Smite
