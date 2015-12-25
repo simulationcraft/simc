@@ -192,7 +192,12 @@ public:
     buff_t* tempest_totem_empower_lava; // TODO: Placeholder name
     buff_t* lightning_surge;
 
+    // Artifact related buffs
     buff_t* stormkeeper;
+    buff_t* static_overload;
+    buff_t* master_of_the_elements;
+    buff_t* fire_empowerment;
+    buff_t* nature_empowerment;
   } buff;
 
   // Cooldowns
@@ -200,8 +205,7 @@ public:
   {
     cooldown_t* ascendance;
     cooldown_t* elemental_focus;
-    cooldown_t* earth_elemental_totem;
-    cooldown_t* storm_elemental_totem;
+    cooldown_t* fire_elemental;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
@@ -361,6 +365,12 @@ public:
     artifact_power_t searing_shocks;
     artifact_power_t lava_imbued;
     artifact_power_t volcanic_inferno;
+    artifact_power_t static_overload;
+    artifact_power_t electric_discharge;
+    artifact_power_t master_of_the_elements;
+    artifact_power_t molten_blast;
+    artifact_power_t elementalist;
+    artifact_power_t elemental_empowerment;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -427,12 +437,11 @@ public:
     // Cooldowns
     cooldown.ascendance           = get_cooldown( "ascendance"            );
     cooldown.elemental_focus      = get_cooldown( "elemental_focus"       );
-    cooldown.earth_elemental_totem= get_cooldown( "earth_elemental_totem" );
+    cooldown.fire_elemental       = get_cooldown( "fire_elemental"        );
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
     cooldown.strike               = get_cooldown( "strike"                );
-    cooldown.storm_elemental_totem= get_cooldown( "storm_elemental_totem" );
     cooldown.t16_2pc_melee        = get_cooldown( "t16_2pc_melee"         );
     cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
     cooldown.t16_4pc_melee        = get_cooldown( "t16_4pc_melee"         );
@@ -925,10 +934,12 @@ public:
 
 struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 {
+  action_t* overload;
+
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
-    base_t( token, p, s )
+    base_t( token, p, s ), overload( nullptr )
   {
     parse_options( options );
 
@@ -958,9 +969,18 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
   }
 
+  void execute() override
+  {
+    base_t::execute();
+
+    trigger_elemental_empowerment();
+  }
+
   void impact( action_state_t* state ) override
   {
     base_t::impact( state );
+
+    trigger_elemental_overload( state );
 
     if ( ! result_is_hit( state -> result ) )
     {
@@ -976,6 +996,22 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return true;
 
     return base_t::usable_moving();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = base_t::action_multiplier();
+
+    if ( dbc::is_school( school, SCHOOL_FIRE ) )
+    {
+      m *= 1.0 + p() -> buff.fire_empowerment -> stack_value();
+    }
+    else if ( dbc::is_school( school, SCHOOL_NATURE ) )
+    {
+      m *= 1.0 + p() -> buff.nature_empowerment -> stack_value();
+    }
+
+    return m;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -1015,6 +1051,54 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
 
     return m;
+  }
+
+  virtual double overload_chance( const action_state_t* ) const
+  { return p() -> cache.mastery_value(); }
+
+  void trigger_elemental_overload( const action_state_t* source_state ) const
+  {
+    if ( ! p() -> mastery.elemental_overload -> ok() )
+    {
+      return;
+    }
+
+    if ( ! overload )
+    {
+      return;
+    }
+
+    if ( ! rng().roll( overload_chance( source_state ) ) )
+    {
+      return;
+    }
+
+    action_state_t* overload_state = overload -> get_state( source_state );
+
+    overload -> schedule_execute( overload_state );
+    p() -> buff.master_of_the_elements -> trigger();
+  }
+
+  void trigger_elemental_empowerment() const
+  {
+    if ( background )
+    {
+      return;
+    }
+
+    if ( ! p() -> artifact.elemental_empowerment.rank() )
+    {
+      return;
+    }
+
+    if ( dbc::is_school( school, SCHOOL_FIRE ) )
+    {
+      p() -> buff.nature_empowerment -> trigger();
+    }
+    else if ( dbc::is_school( school, SCHOOL_NATURE ) )
+    {
+      p() -> buff.fire_empowerment -> trigger();
+    }
   }
 };
 
@@ -2714,19 +2798,17 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chain_lightning_t: public shaman_spell_t
 {
-  elemental_overload_spell_t* overload;
-
   chain_lightning_t( shaman_t* player, const std::string& options_str ):
-    shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str ),
-    overload( nullptr )
+    shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
   {
-    aoe = 3;
+    aoe = 3 + player -> artifact.electric_discharge.value();
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ) );
+      overload -> aoe = 3 + player -> artifact.electric_discharge.value();
       add_child( overload );
     }
   }
@@ -2747,6 +2829,16 @@ struct chain_lightning_t: public shaman_spell_t
     return m;
   }
 
+  double overload_chance( const action_state_t* s ) const override
+  {
+    if ( p() -> buff.static_overload -> stack() == p() -> buff.static_overload -> max_stack() )
+    {
+      return 1.0;
+    }
+
+    return shaman_spell_t::overload_chance( s );
+  }
+
   double composite_crit() const override
   {
     double c = shaman_spell_t::composite_crit();
@@ -2761,9 +2853,16 @@ struct chain_lightning_t: public shaman_spell_t
 
   void execute() override
   {
+    // Perform before impacts, so palpatine mode is not offset by one cast
+    p() -> buff.static_overload -> trigger();
+
     shaman_spell_t::execute();
 
     p() -> buff.stormkeeper -> decrement();
+    if ( p() -> buff.static_overload -> stack() == p() -> buff.static_overload -> max_stack() )
+    {
+      p() -> buff.static_overload -> expire();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -2779,12 +2878,6 @@ struct chain_lightning_t: public shaman_spell_t
                                  p() -> gain.fulmination,
                                  this );
       }
-    }
-
-    if ( p() -> mastery.elemental_overload -> ok() &&
-         rng().roll( player -> cache.mastery_value() ) )
-    {
-      overload -> schedule_execute( get_state( state ) );
     }
 
     p() -> trigger_tier15_2pc_caster( state );
@@ -2886,18 +2979,17 @@ struct chain_lightning_t: public shaman_spell_t
 
 struct lava_beam_t : public shaman_spell_t
 {
-  elemental_overload_spell_t* overload;
-
   lava_beam_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lava_beam", player, player -> find_spell( 114074 ), options_str ),
-    overload( nullptr )
+    shaman_spell_t( "lava_beam", player, player -> find_spell( 114074 ), options_str )
   {
-    aoe                   = 5;
+    // TODO: Currently not affected in spell data.
+    aoe                   = 5  + player -> artifact.electric_discharge.value();
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new elemental_overload_spell_t( player, "lava_beam_overload", player -> find_spell( 114738 ) );
+      overload -> aoe = 5  + player -> artifact.electric_discharge.value();
       add_child( overload );
     }
   }
@@ -2905,12 +2997,6 @@ struct lava_beam_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
-
-    if ( p() -> mastery.elemental_overload -> ok() &&
-         rng().roll( player -> cache.mastery_value() ) )
-    {
-      overload -> schedule_execute( get_state( state ) );
-    }
 
     p() -> trigger_tier15_2pc_caster( state );
   }
@@ -2928,18 +3014,19 @@ struct lava_beam_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  elemental_overload_spell_t* overload;
-
   lava_burst_t( shaman_t* player, const std::string& options_str ):
-    shaman_spell_t( "lava_burst", player, player -> find_specialization_spell( "Lava Burst" ), options_str ),
-    overload( nullptr )
+    shaman_spell_t( "lava_burst", player, player -> find_specialization_spell( "Lava Burst" ), options_str )
   {
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
     base_multiplier *= 1.0 + player -> artifact.lava_imbued.percent();
+    // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
+    crit_bonus_multiplier += player -> artifact.molten_blast.percent();
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ) );
+      // State snapshot does not include crit damage bonuses, so need to set it here
+      overload -> crit_bonus_multiplier += player -> artifact.molten_blast.percent();
       add_child( overload );
     }
   }
@@ -2995,6 +3082,7 @@ struct lava_burst_t : public shaman_spell_t
       p() -> buff.lava_surge -> expire();
 
     p() -> lava_surge_during_lvb = false;
+    p() -> cooldown.fire_elemental -> adjust( -timespan_t::from_seconds( p() -> artifact.elementalist.value() ) );
   }
 
   timespan_t execute_time() const override
@@ -3028,13 +3116,6 @@ struct lava_burst_t : public shaman_spell_t
         p() -> volcanic_inferno -> schedule_execute();
       }
     }
-
-    if ( p() -> mastery.elemental_overload -> ok() &&
-         rng().roll( player -> cache.mastery_value() ) )
-    {
-      overload -> schedule_execute( get_state( state ) );
-    }
-
   }
 };
 
@@ -3042,11 +3123,8 @@ struct lava_burst_t : public shaman_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  elemental_overload_spell_t* overload;
-
   lightning_bolt_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str ),
-    overload( nullptr )
+    shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str )
   {
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -3134,12 +3212,6 @@ struct lightning_bolt_t : public shaman_spell_t
       }
     }
 
-    if ( p() -> mastery.elemental_overload -> ok() &&
-         rng().roll( player -> cache.mastery_value() ) )
-    {
-      overload -> schedule_execute( get_state( state ) );
-    }
-
     p() -> trigger_tier15_2pc_caster( state );
     p() -> trigger_tier16_4pc_caster( state );
   }
@@ -3149,10 +3221,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
-  elemental_overload_spell_t* overload;
   elemental_blast_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str ),
-    overload( nullptr )
+    shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str )
   {
     if ( player -> mastery.elemental_overload -> ok() )
     {
@@ -3204,16 +3274,6 @@ struct elemental_blast_t : public shaman_spell_t
       s -> debug();
 
     return result;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    if ( p() -> mastery.elemental_overload -> ok() && rng().roll( player -> cache.mastery_value() ) )
-    {
-      overload -> schedule_execute( get_state( state ) );
-    }
   }
 };
 
@@ -4782,6 +4842,12 @@ void shaman_t::init_spells()
   artifact.searing_shocks            = find_artifact_spell( "Searing Shocks"     );
   artifact.lava_imbued               = find_artifact_spell( "Lava Imbued"        );
   artifact.volcanic_inferno          = find_artifact_spell( "Volcanic Inferno"   );
+  artifact.static_overload           = find_artifact_spell( "Static Overload"    );
+  artifact.electric_discharge        = find_artifact_spell( "Electric Discharge" );
+  artifact.master_of_the_elements    = find_artifact_spell( "Master of the Elements" );
+  artifact.molten_blast              = find_artifact_spell( "Molten Blast"       );
+  artifact.elementalist              = find_artifact_spell( "Elementalist"       );
+  artifact.elemental_empowerment     = find_artifact_spell( "Elemental Empowerment" );
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
@@ -5246,6 +5312,17 @@ void shaman_t::create_buffs()
     .default_value( 1.0 + find_spell( 189796 ) -> effectN( 1 ).percent() );
   buff.stormkeeper = buff_creator_t( this, "stormkeeper", &( artifact.stormkeeper.data() ) )
     .cd( timespan_t::zero() ); // Handled by the action
+  buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
+    .chance( artifact.static_overload.rank() > 0 );
+  buff.master_of_the_elements = buff_creator_t( this, "master_of_the_elements", artifact.master_of_the_elements.data().effectN( 1 ).trigger() )
+    .default_value( artifact.master_of_the_elements.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_HASTE );
+  buff.fire_empowerment = buff_creator_t( this, "fire_empowerment", find_spell( 192624 ) )
+    .default_value( find_spell( 192624 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.nature_empowerment = buff_creator_t( this, "nature_empowerment", find_spell( 192625 ) )
+    .default_value( find_spell( 192625 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5657,6 +5734,11 @@ double shaman_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buff.feral_spirit2 -> data().effectN( 2 ).percent() );
   }
 
+  if ( buff.master_of_the_elements -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buff.master_of_the_elements -> stack_value() );
+  }
+
   return h;
 }
 
@@ -5732,6 +5814,11 @@ double shaman_t::composite_melee_haste() const
   if ( buff.feral_spirit2 -> up() )
   {
     h *= 1.0 / ( 1.0 + buff.feral_spirit2 -> data().effectN( 2 ).percent() );
+  }
+
+  if ( buff.master_of_the_elements -> check() )
+  {
+    h *= buff.master_of_the_elements -> stack_value();
   }
 
   return h;
