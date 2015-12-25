@@ -622,6 +622,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  std::string school_string = util::school_type_string( spell -> get_school_type() );
+  school_string[ 0 ] = std::toupper( school_string[ 0 ] );
+  s << "School           : " << school_string << std::endl;
+
   for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
   {
     const spellpower_data_t* pd = spell -> _power -> at( i );
