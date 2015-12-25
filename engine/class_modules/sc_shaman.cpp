@@ -198,6 +198,7 @@ public:
     buff_t* master_of_the_elements;
     buff_t* fire_empowerment;
     buff_t* nature_empowerment;
+    buff_t* power_of_the_maelstrom;
   } buff;
 
   // Cooldowns
@@ -259,6 +260,7 @@ public:
   {
     real_ppm_t unleash_doom;
     real_ppm_t volcanic_inferno;
+    real_ppm_t power_of_the_maelstrom;
   } real_ppm;
 
   // Class Specializations
@@ -1056,6 +1058,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   virtual double overload_chance( const action_state_t* ) const
   { return p() -> cache.mastery_value(); }
 
+  virtual size_t n_overloads( const action_state_t* ) const
+  { return 1; }
+
   void trigger_elemental_overload( const action_state_t* source_state ) const
   {
     if ( ! p() -> mastery.elemental_overload -> ok() )
@@ -1073,10 +1078,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return;
     }
 
-    action_state_t* overload_state = overload -> get_state( source_state );
+    for ( size_t i = 0, end = n_overloads( source_state ); i < end; ++i )
+    {
+      action_state_t* overload_state = overload -> get_state( source_state );
 
-    overload -> schedule_execute( overload_state );
-    p() -> buff.master_of_the_elements -> trigger();
+      overload -> schedule_execute( overload_state );
+
+      // TODO: Does Master of Elements benefit from Power of the Maelstrom (artifact weapon
+      // passive)?
+      p() -> buff.master_of_the_elements -> trigger();
+    }
   }
 
   void trigger_elemental_empowerment() const
@@ -3140,6 +3151,28 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
+  // TODO: Unclear if Power of the Maelstrom also grants guaranteed overloads, would make sense
+  // though.
+  double overload_chance( const action_state_t* s ) const override
+  {
+    if ( p() -> buff.power_of_the_maelstrom -> check() )
+    {
+      return 1.0;
+    }
+
+    return shaman_spell_t::overload_chance( s );
+  }
+
+  size_t n_overloads( const action_state_t* s ) const override
+  {
+    if ( p() -> buff.power_of_the_maelstrom -> up() )
+    {
+      return 3;
+    }
+
+    return shaman_spell_t::n_overloads( s );
+  }
+
   double attack_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
     return attack_power_mod.direct * cost();
@@ -3195,6 +3228,11 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.stormkeeper -> decrement();
+    p() -> buff.power_of_the_maelstrom -> decrement();
+    if ( p() -> artifact_enabled() && p() -> real_ppm.power_of_the_maelstrom.trigger() )
+    {
+      p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5323,6 +5361,7 @@ void shaman_t::create_buffs()
   buff.nature_empowerment = buff_creator_t( this, "nature_empowerment", find_spell( 192625 ) )
     .default_value( find_spell( 192625 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", find_spell( 191861 ) -> effectN( 1 ).trigger() );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5375,6 +5414,7 @@ void shaman_t::init_rng()
 
   real_ppm.unleash_doom = real_ppm_t( *this, artifact.unleash_doom.data().real_ppm() );
   real_ppm.volcanic_inferno = real_ppm_t( *this, artifact.volcanic_inferno.data().real_ppm() );
+  real_ppm.power_of_the_maelstrom = real_ppm_t( *this, find_spell( 191861 ) -> real_ppm() );
 }
 
 // shaman_t::init_actions ===================================================
@@ -5962,6 +6002,7 @@ void shaman_t::reset()
     elem -> reset();
   real_ppm.unleash_doom.reset();
   real_ppm.volcanic_inferno.reset();
+  real_ppm.power_of_the_maelstrom.reset();
 }
 
 // shaman_t::merge ==========================================================
