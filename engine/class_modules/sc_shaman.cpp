@@ -98,7 +98,6 @@ struct shaman_t : public player_t
 {
 public:
   // Misc
-  timespan_t ls_reset;
   bool       lava_surge_during_lvb;
   std::vector<counter_t*> counters;
 
@@ -106,18 +105,11 @@ public:
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
 
-  // Options
-  timespan_t uf_expiration_delay;
-  timespan_t uf_expiration_delay_stddev;
-
-  // Active
-  action_t* active_lightning_charge;
+  // Cached actions
   std::array<action_t*, 2> unleash_doom;
   action_t* doom_vortex;
-
-  // Cached actions
-  action_t* action_ancestral_awakening;
-  action_t* action_lightning_strike;
+  action_t* ancestral_awakening;
+  action_t* lightning_strike;
   spell_t*  electrocute;
   action_t* volcanic_inferno;
 
@@ -130,9 +122,6 @@ public:
   pet_t* pet_earth_elemental;
   pet_t* guardian_earth_elemental;
   pet_t* guardian_lightning_elemental;
-
-  // Totems
-  shaman_totem_pet_t* totems[ TOTEM_MAX ];
 
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* elemental_bellows;
@@ -151,7 +140,6 @@ public:
   {
     buff_t* ascendance;
     buff_t* echo_of_the_elements;
-    buff_t* enhanced_chain_lightning;
     buff_t* lava_surge;
     buff_t* liquid_magma;
     buff_t* lightning_shield;
@@ -214,7 +202,6 @@ public:
     cooldown_t* t16_2pc_melee;
     cooldown_t* t16_4pc_caster;
     cooldown_t* t16_4pc_melee;
-    cooldown_t* windfury_weapon;
   } cooldown;
 
   // Gains
@@ -232,26 +219,13 @@ public:
   struct
   {
     proc_t* lava_surge;
-    proc_t* ls_fast;
-    proc_t* swings_clipped_mh;
-    proc_t* swings_clipped_oh;
-    proc_t* swings_reset_mh;
-    proc_t* swings_reset_oh;
     proc_t* t15_2pc_melee;
     proc_t* t16_2pc_melee;
     proc_t* t16_4pc_caster;
     proc_t* t16_4pc_melee;
     proc_t* wasted_t15_2pc_melee;
     proc_t* wasted_lava_surge;
-    proc_t* wasted_ls;
-    proc_t* wasted_ls_shock_cd;
-    proc_t* wasted_mw;
     proc_t* windfury;
-
-    proc_t* uf_flame_shock;
-    proc_t* uf_lava_burst;
-    proc_t* uf_elemental_blast;
-    proc_t* uf_wasted;
 
     proc_t* surge_during_lvb;
   } proc;
@@ -394,8 +368,6 @@ public:
   {
     const spell_data_t* resurgence;
     const spell_data_t* echo_of_the_elements;
-    const spell_data_t* flame_shock;
-    const spell_data_t* lightning_strike;
     const spell_data_t* eruption;
     const spell_data_t* maelstrom_melee_gain;
   } spell;
@@ -412,11 +384,8 @@ public:
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
-    ls_reset( timespan_t::zero() ), lava_surge_during_lvb( false ),
-    uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    active_lightning_charge( nullptr ),
-    action_ancestral_awakening( nullptr ),
-    action_lightning_strike( nullptr ),
+    lava_surge_during_lvb( false ),
+    ancestral_awakening( nullptr ),
     pet_fire_elemental( nullptr ),
     guardian_fire_elemental( nullptr ),
     pet_earth_elemental( nullptr ),
@@ -434,7 +403,6 @@ public:
     spell()
   {
     range::fill( pet_feral_spirit, nullptr );
-    range::fill( totems, nullptr );
 
     // Cooldowns
     cooldown.ascendance           = get_cooldown( "ascendance"            );
@@ -447,7 +415,6 @@ public:
     cooldown.t16_2pc_melee        = get_cooldown( "t16_2pc_melee"         );
     cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
     cooldown.t16_4pc_melee        = get_cooldown( "t16_4pc_melee"         );
-    cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
 
     melee_mh = nullptr;
     melee_oh = nullptr;
@@ -500,7 +467,6 @@ public:
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void      create_options() override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
@@ -919,7 +885,17 @@ public:
     ab( n, player, s )
   { }
 
-  void execute() override;
+  void execute() override
+  {
+    ab::execute();
+
+    if ( ! ab::background && ab::execute_state -> result_raw > 0 )
+    {
+      ab::p() -> buff.elemental_focus -> decrement();
+    }
+
+    ab::p() -> buff.spiritwalkers_grace -> up();
+  }
 
   void schedule_travel( action_state_t* s ) override
   {
@@ -1909,28 +1885,6 @@ struct windlash_t : public shaman_attack_t
     else
       return t;
   }
-
-  void execute() override
-  {
-    if ( time_to_execute > timespan_t::zero() && p() -> executing &&
-         p() -> executing -> time_to_execute > timespan_t::zero() &&
-         p() -> executing -> interrupt_auto_attack )
-    {
-      if ( sim -> debug )
-        sim -> out_debug.printf( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
-
-      if ( weapon -> slot == SLOT_OFF_HAND )
-        p() -> proc.swings_clipped_oh -> occur();
-      else
-        p() -> proc.swings_clipped_mh -> occur();
-
-      schedule_execute();
-    }
-    else
-    {
-      shaman_attack_t::execute();
-    }
-  }
 };
 
 struct shaman_flurry_of_xuen_t : public shaman_attack_t
@@ -2039,55 +1993,6 @@ struct volcanic_inferno_driver_t : public shaman_spell_t
   }
 };
 
-// ==========================================================================
-// Shaman Action / Spell Base
-// ==========================================================================
-
-// shaman_spell_base_t::execute =============================================
-
-template <class Base>
-void shaman_spell_base_t<Base>::execute()
-{
-  ab::execute();
-
-  shaman_t* p = ab::p();
-
-  // Shamans have specialized swing timer reset system, where every cast time spell
-  // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
-  // weapon stack is zero, or ancient swiftness was not used to cast the spell
-  if ( p -> specialization() != SHAMAN_ENHANCEMENT && ab::execute_time() > timespan_t::zero() )
-  {
-    if ( ab::sim -> debug )
-    {
-      ab::sim -> out_debug.printf( "%s resetting swing timers for '%s'", p -> name(),
-          ab::name_str.c_str() );
-    }
-
-    timespan_t time_to_next_hit;
-
-    if ( ab::player -> main_hand_attack && ab::player -> main_hand_attack -> execute_event )
-    {
-      time_to_next_hit = ab::player -> main_hand_attack -> execute_time();
-      ab::player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      p -> proc.swings_reset_mh -> occur();
-    }
-
-    if ( ab::player -> off_hand_attack && ab::player -> off_hand_attack -> execute_event )
-    {
-      time_to_next_hit = ab::player -> off_hand_attack -> execute_time();
-      ab::player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      p -> proc.swings_reset_oh -> occur();
-    }
-  }
-
-  if ( ! ab::background && ab::execute_state -> result_raw > 0 )
-  {
-    p -> buff.elemental_focus -> decrement();
-  }
-
-  p -> buff.spiritwalkers_grace -> up();
-}
-
 // shaman_heal_t::impact ====================================================
 
 void shaman_heal_t::impact( action_state_t* s )
@@ -2115,14 +2020,14 @@ void shaman_heal_t::impact( action_state_t* s )
 
     if ( p() -> spec.ancestral_awakening -> ok() )
     {
-      if ( ! p() -> action_ancestral_awakening )
+      if ( ! p() -> ancestral_awakening )
       {
-        p() -> action_ancestral_awakening = new ancestral_awakening_t( p() );
-        p() -> action_ancestral_awakening -> init();
+        p() -> ancestral_awakening = new ancestral_awakening_t( p() );
+        p() -> ancestral_awakening -> init();
       }
 
-      p() -> action_ancestral_awakening -> base_dd_min = s -> result_total;
-      p() -> action_ancestral_awakening -> base_dd_max = s -> result_total;
+      p() -> ancestral_awakening -> base_dd_min = s -> result_total;
+      p() -> ancestral_awakening -> base_dd_max = s -> result_total;
     }
   }
 
@@ -2199,24 +2104,7 @@ struct melee_t : public shaman_attack_t
       first = false;
     }
 
-    if ( time_to_execute > timespan_t::zero() && p() -> executing &&
-         p() -> executing -> time_to_execute > timespan_t::zero() &&
-         p() -> executing -> interrupt_auto_attack )
-    {
-      if ( sim -> debug )
-        sim -> out_debug.printf( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
-
-      if ( weapon -> slot == SLOT_OFF_HAND )
-        p() -> proc.swings_clipped_oh -> occur();
-      else
-        p() -> proc.swings_clipped_mh -> occur();
-
-      schedule_execute();
-    }
-    else
-    {
-      shaman_attack_t::execute();
-    }
+    shaman_attack_t::execute();
   }
 };
 
@@ -2313,16 +2201,6 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     return shaman_attack_t::cost();
-  }
-
-  void update_ready( timespan_t cd = timespan_t::min() ) override
-  {
-    if ( background )
-    {
-      cd = timespan_t::zero();
-    }
-
-    shaman_attack_t::update_ready( cd );
   }
 
   void execute() override
@@ -4563,16 +4441,6 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
 // Shaman Character Definition
 // ==========================================================================
 
-// shaman_t::create_options =================================================
-
-void shaman_t::create_options()
-{
-  player_t::create_options();
-
-  add_option( opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ) );
-  add_option( opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ) );
-}
-
 // shaman_t::create_action  =================================================
 
 action_t* shaman_t::create_action( const std::string& name,
@@ -4903,8 +4771,6 @@ void shaman_t::init_spells()
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
-  spell.flame_shock                  = find_class_spell( "Flame Shock" );
-  spell.lightning_strike             = find_spell( 168557 );
   spell.eruption                     = find_spell( 168556 );
   spell.maelstrom_melee_gain         = find_spell( 187890 );
   if ( specialization() == SHAMAN_ELEMENTAL )
@@ -5142,8 +5008,8 @@ void shaman_t::trigger_tier15_2pc_caster( const action_state_t* s )
 
   if ( rng().roll( sets.set( SET_CASTER, T15, B2 ) -> proc_chance() ) )
   {
-    action_lightning_strike -> target = s -> target;
-    action_lightning_strike -> schedule_execute();
+    lightning_strike -> target = s -> target;
+    lightning_strike -> schedule_execute();
   }
 }
 
@@ -5290,8 +5156,6 @@ void shaman_t::create_buffs()
     .default_value( find_spell( 189063 ) -> effectN( 2 ).percent() )
     .max_stack( 5 ); // Shows 3 stacks in spelldata, but the wording makes it seem that it is actually 5.
 
-  buff.enhanced_chain_lightning = buff_creator_t( this, "enhanced_chain_lightning", find_spell( 157766 ) );
-
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
   buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
@@ -5384,26 +5248,15 @@ void shaman_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.lava_surge         = get_proc( "lava_surge"              );
-  proc.ls_fast            = get_proc( "lightning_shield_too_fast_fill" );
-  proc.swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
-  proc.swings_clipped_oh  = get_proc( "swings_clipped_oh"       );
-  proc.swings_reset_mh    = get_proc( "swings_reset_mh"         );
-  proc.swings_reset_oh    = get_proc( "swings_reset_oh"         );
-  proc.uf_flame_shock     = get_proc( "uf_flame_shock"          );
-  proc.uf_lava_burst      = get_proc( "uf_lava_burst"           );
-  proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
-  proc.uf_wasted          = get_proc( "uf_wasted"               );
+  proc.lava_surge         = get_proc( "Lava Surge"              );
   proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
   proc.t16_2pc_melee      = get_proc( "t16_2pc_melee"           );
   proc.t16_4pc_caster     = get_proc( "t16_4pc_caster"          );
   proc.t16_4pc_melee      = get_proc( "t16_4pc_melee"           );
   proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
-  proc.wasted_lava_surge  = get_proc( "wasted_lava_surge"       );
-  proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
-  proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
-  proc.windfury           = get_proc( "windfury"                );
-  proc.surge_during_lvb   = get_proc( "lava_surge_during_lvb"   );
+  proc.wasted_lava_surge  = get_proc( "Lava Surge: Wasted"      );
+  proc.windfury           = get_proc( "Windfury"                );
+  proc.surge_during_lvb   = get_proc( "Lava Surge: During Lava Burst" );
 }
 
 // shaman_t::init_rng =======================================================
@@ -5458,7 +5311,7 @@ void shaman_t::init_action_list()
 
   if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
   {
-    action_lightning_strike = new t15_2pc_caster_t( this );
+    lightning_strike = new t15_2pc_caster_t( this );
   }
 
   if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
@@ -5996,7 +5849,6 @@ void shaman_t::reset()
 {
   player_t::reset();
 
-  ls_reset = timespan_t::zero();
   lava_surge_during_lvb = false;
   for (auto & elem : counters)
     elem -> reset();
