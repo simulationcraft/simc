@@ -65,7 +65,7 @@ namespace { // UNNAMED NAMESPACE
       Killing Spree : No longer baseline, T90 talent
     T100
      -WOD
-      Venom Rush : RIP
+      Venom Rush : RIP 
       Shadow Reflection : RIP ?
       Death from Above : Still here
      -Legion
@@ -1075,7 +1075,6 @@ struct apply_poison_t : public action_t
     if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
     {
       if ( lethal_str == "deadly"    ) lethal_poison = DEADLY_POISON;
-      if ( lethal_str == "instant"   ) lethal_poison = INSTANT_POISON;
       if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
 
       if ( nonlethal_str == "crippling" ) nonlethal_poison = CRIPPLING_POISON;
